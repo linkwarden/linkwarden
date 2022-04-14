@@ -1,38 +1,61 @@
 .App {
+  padding: 2vh;
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #1f2c38;
+  min-height: 96vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.head {
+  display: flex;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.search {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  padding: 10px;
+  font-size: 1.5rem;
+}
+
+.search-btn {
+  padding: 5px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: #1f2c38b6;
+}
+
+.settings-btn {
+  padding: 5px;
+  border-radius: 10px;
+  color: #1f2c38b6;
+  margin-left: auto;
+}
+
+.add-btn {
+  padding: 5px;
+  border-radius: 10px;
+  color: #1f2c38b6;
+  margin-left: 10px;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+.material-icons-outlined.md-36 { font-size: 36px; }
+
+.lables {
+  display: flex;
+  font-size: 1.3rem;
+}
+
+.lable {
+  padding-right: 15%;
+}
+
+#id {
+  padding-right: 20px;
 }
