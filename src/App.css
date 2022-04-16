@@ -1,11 +1,6 @@
 .App {
   padding: 2vh;
-  text-align: center;
   background-color: #1f2c38;
-  min-height: 96vh;
-  display: flex;
-  flex-direction: column;
-  font-size: calc(10px + 2vmin);
   color: white;
 }
 
@@ -31,14 +26,14 @@
   padding: 5px;
   border-radius: 10px;
   color: #1f2c38b6;
-  margin-left: auto;
 }
 
 .add-btn {
   padding: 5px;
   border-radius: 10px;
   color: #1f2c38b6;
-  margin-left: 10px;
+  margin-left: auto;
+  margin-right: 10px;
 }
 
 textarea:focus, input:focus{
@@ -47,15 +42,17 @@ textarea:focus, input:focus{
 
 .material-icons-outlined.md-36 { font-size: 36px; }
 
-.lables {
-  display: flex;
+.table {
+  text-align: left;
+  padding-top: 20px;
+}
+
+.table td {
   font-size: 1.3rem;
+  padding: 5px;
 }
 
-.lable {
-  padding-right: 15%;
-}
-
-#id {
-  padding-right: 20px;
+.table th {
+  font-size: 1.6rem;
+  padding: 5px;
 }
