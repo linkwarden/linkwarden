@@ -1,4 +1,5 @@
 .App {
+  min-height: 96vh;
   padding: 2vh;
   background-color: #1f2c38;
   color: white;
@@ -43,6 +44,7 @@ textarea:focus, input:focus{
 .material-icons-outlined.md-36 { font-size: 36px; }
 
 .table {
+  width: 100%;
   text-align: left;
   padding-top: 20px;
 }
@@ -55,4 +57,8 @@ textarea:focus, input:focus{
 .table th {
   font-size: 1.6rem;
   padding: 5px;
+}
+
+.table tbody tr:nth-of-type(2n-1) {
+  background-color:#273949;
 }
