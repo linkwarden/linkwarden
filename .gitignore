@@ -1,23 +1,27 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+webmarker/node_modules
+webmarker/..pnp
+webmarker/.pnp.js
+webmarker/coverage
+webmarker/build
+webmarker/.DS_Store
+webmarker/.env.local
+webmarker/.env.development.local
+webmarker/.env.test.local
+webmarker/.env.production.local
+webmarker/npm-debug.log*
+webmarker/yarn-debug.log*
+webmarker/yarn-error.log*
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+webmarker_backend/node_modules
+webmarker_backend/..pnp
+webmarker_backend/.pnp.js
+webmarker_backend/coverage
+webmarker_backend/build
+webmarker_backend/.DS_Store
+webmarker_backend/.env.local
+webmarker_backend/.env.development.local
+webmarker_backend/.env.test.local
+webmarker_backend/.env.production.local
+webmarker_backend/npm-debug.log*
+webmarker_backend/yarn-debug.log*
+webmarker_backend/yarn-error.log*

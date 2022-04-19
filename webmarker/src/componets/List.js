@@ -9,15 +9,17 @@ const List = ({data}) => {
                 <th>Name</th>
                 <th>Title</th>
                 <th>Link</th>
+                <th>Tag</th>
             </tr>
         </thead>
         <tbody>
         {data.map((e, i) => {
             return <tr key={i}>
                 <td>{i + 1}</td>
-                <td>{e.login}</td>
-                <td>{e.node_id}</td>
-                <td>{e.html_url}</td>
+                <td>{e.name}</td>
+                <td>{e.title}</td>
+                <td>{e.link}</td>
+                <td>{e.tag}</td>
             </tr>
         })}
         </tbody>
