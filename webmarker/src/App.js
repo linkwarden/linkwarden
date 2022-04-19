@@ -7,9 +7,9 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('https://api.github.com/users');
+      const res = await fetch('/get');
       const resJSON = await res.json();
-      // data.sort((b, a) => new Date(b.Date) - new Date(a.Date)) // Sort by date
+      console.log(resJSON)
       setData(resJSON);
     }
 
@@ -30,3 +30,22 @@ function App() {
 }
 
 export default App;
+
+// fetch("/post", {
+     
+//   // Adding method type
+//   method: "POST",
+   
+//   // Adding body or contents to send
+//   body: JSON.stringify({
+//       name: "foo",
+//       title: "bar",
+//       link: liveinternet.ru,
+//       tag: Red
+//   }),
+   
+//   // Adding headers to the request
+//   headers: {
+//       "Content-type": "application/json; charset=UTF-8"
+//   }
+// });
