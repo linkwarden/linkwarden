@@ -1,0 +1,56 @@
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(49, 64, 73, 0.781);
+    width: 100vw;
+    height: 100vh;
+}
+
+.box {
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;    position: absolute;
+    top: 20%;
+    left: 20%;
+    background-color: #1b2e3f;
+    width: 60%;
+    height: 60%;
+    border-radius: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.box h2 {
+    margin-top: -1px;
+    text-align: center;
+}
+
+.modal-content {
+    padding: 20px;
+}
+
+.modal-input {
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1.3rem;
+    width: 100%;
+}
+
+.upload-btn {
+    padding: 5px;
+    border-radius: 10px;
+    color: #1f2c38b6;
+    margin-top: 60px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cancel-btn {
+    padding: 5px;
+    border-radius: 10px;
+    color: #1f2c38b6;
+    margin-top: 25px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

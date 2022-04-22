@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const { MongoClient } = require('mongodb');
+const phantom = require('phantom');
+
 const port = process.env.PORT || 3001;
 
 const uri = "mongodb://localhost:27017";
@@ -14,9 +16,11 @@ app.get('/get', async (req, res) => {
   res.send(data);
 });
 
-app.post('/post', (req, res) => {
-  // insertDoc(req.body);
-  console.log(req.body)
+app.post('/post', async (req, res) => {
+  const title = await getTitle(req.body.link);
+  req.body.title = title;
+  
+  insertDoc(req.body);
 });
 
 async function insertDoc(doc) {
@@ -26,8 +30,6 @@ async function insertDoc(doc) {
     const database = client.db("sample_db");
     const list = database.collection("list");
     const result = await list.insertOne(doc);
-
-    console.log('DONE');
   } 
   
   catch(err) {
@@ -57,6 +59,20 @@ async function getDoc() {
   finally {
     await client.close();
   }
+}
+
+async function getTitle(url) {
+  const instance = await phantom.create();
+  const page = await instance.createPage();
+  await page.on('onResourceRequested', function(requestData) {
+    console.info('Requesting', requestData.url);
+  });
+
+  const status = await page.open(url);
+  const title = await page.property('title');  
+  await instance.exit();
+
+  return title;
 }
 
 app.listen(port, () => {
