@@ -1,6 +1,6 @@
-const List = ({data}) => {
-    console.log(data)
+import '../styles/List.css';
 
+const List = ({data}) => {
   return (
     <table className="table">
         <thead>
@@ -14,13 +14,18 @@ const List = ({data}) => {
         </thead>
         <tbody>
         {data.map((e, i) => {
-            return <tr key={i}>
-                <td>{i + 1}</td>
-                <td>{e.name}</td>
-                <td>{e.title}</td>
-                <td>{e.link}</td>
-                <td>{e.tag}</td>
-            </tr>
+            try {
+                const url = new URL(e.link)
+                return <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{e.name}</td>
+                    <td>{e.title}</td>
+                    <td><a href={e.link}>{url.hostname}</a></td>
+                    <td>{e.tag}</td>
+                </tr>
+            } catch (e) {
+                console.log(e)
+            }
         })}
         </tbody>
     </table>

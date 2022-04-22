@@ -4,12 +4,16 @@
   "description": "The backend",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.3",
-    "mongodb": "^4.5.0"
+    "mongodb": "^4.5.0",
+    "phantom": "^6.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
