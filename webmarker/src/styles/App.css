@@ -10,8 +10,7 @@
 }
 
 .search {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-radius: 10px;
   font-size: 1.5rem;
   padding-left: 10px;
   width: 40%;
