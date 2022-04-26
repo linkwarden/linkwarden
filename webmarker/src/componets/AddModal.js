@@ -55,7 +55,7 @@ const AddModal = ({onExit}) => {
     }
 
     else {
-      alert('Please fill all fields and make sure url is valid.\n\n(i.e. starts with http/https)');
+      alert('Please fill all fields and make sure the link is valid.\n\n(i.e. starts with "http"/"https")');
     }
   }
 
@@ -76,7 +76,7 @@ const AddModal = ({onExit}) => {
           <input onChange={SetLink} className="modal-input" type="search" placeholder="e.g. https://example.com/"/>
           <h3>Tag:</h3>
           <input onChange={SetTag} className="modal-input" type="search" placeholder="e.g. Tutorials"/>
-          <button onClick={submitBookmark} className="upload-btn"><span className="material-icons-outlined md-36">upload</span></button>
+          <button onClick={submitBookmark} className="upload-btn">Upload &#xf093;</button>
           <button className="cancel-btn">Cancel</button>
         </div>
       </div>
