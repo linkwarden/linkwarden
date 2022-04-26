@@ -15,7 +15,7 @@ function App() {
   function search(e) {
     setSearchQuery(e.target.value);
   }
-  
+
   const filteredData = data.filter((e) => {
     return (e.name.toLowerCase().includes(searchQuery.toLowerCase()) || e.title.toLowerCase().includes(searchQuery.toLowerCase()) || e.tag.toLowerCase().includes(searchQuery.toLowerCase()))
   });
@@ -29,12 +29,12 @@ function App() {
     }
 
     fetchData();
-  }, []);
+  }, [data]);
   
   return (
     <div className="App">
       <div className="head">
-        <input className="search" type="search" placeholder="Search for name/title/tag" onChange={search}/>
+        <input className="search" type="search" placeholder="Search for Name/Title/Tag" onChange={search}/>
         <button className="add-btn"><span className="material-icons-outlined md-36" onClick={() => setIsAdding(true)}>add</span></button>
         <button className="settings-btn"><span className="material-icons-outlined md-36">settings</span></button>
       </div>
