@@ -19,7 +19,19 @@ const AddModal = ({onExit}) => {
   }
 
   async function submitBookmark() {
-    if(name != '' && link != '' && tag != '') {
+    function isValidHttpUrl(string) {
+      let url;
+      
+      try {
+        url = new URL(string);
+      } catch (_) {
+        return false;  
+      }
+    
+      return url.protocol === "http:" || url.protocol === "https:";
+    }
+
+    if(name != '' && isValidHttpUrl(link) && tag != '') {
       fetch("/post", {
         
         // Adding method type
@@ -43,7 +55,7 @@ const AddModal = ({onExit}) => {
     }
 
     else {
-      alert('Please fill all fields...');
+      alert('Please fill all fields and make sure url is valid.\n\n(i.e. starts with http/https)');
     }
   }
 

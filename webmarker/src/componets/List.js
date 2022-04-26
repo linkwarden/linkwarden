@@ -26,7 +26,7 @@ const List = ({data}) => {
     <table className="table">
         <thead>
             <tr>
-                <th>#</th>
+                <th className='number'>#</th>
                 <th>Name</th>
                 <th>Title</th>
                 <th>Link</th>
@@ -38,12 +38,12 @@ const List = ({data}) => {
             try {
                 const url = new URL(e.link)
                 return <tr key={i}>
-                    <td>{i + 1}</td>
+                    <td className='number'>{i + 1}</td>
                     <td>{e.name}</td>
                     <td>{e.title}</td>
                     <td><a href={e.link}>{url.hostname}</a></td>
                     <td>{e.tag}</td>
-                    <td className="delete" onClick={() => deleteEntity(e._id)}><div>X</div></td>
+                    <td className="delete" onClick={() => deleteEntity(e._id)}><div>x</div></td>
                 </tr>
             } catch (e) {
                 console.log(e)

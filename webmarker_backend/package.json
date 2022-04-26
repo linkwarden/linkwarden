@@ -9,9 +9,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
     "express": "^4.17.3",
     "mongodb": "^4.5.0",
-    "phantom": "^6.3.0"
+    "phantom": "^6.3.0",
+    "url-parse": "^1.5.10"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

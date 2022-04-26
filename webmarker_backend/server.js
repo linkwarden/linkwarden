@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
 const { MongoClient, ObjectId } = require('mongodb');
-const phantom = require('phantom');
+const request = require('request');
+const cheerio = require('cheerio');
+const URL = require('url-parse');
 
 const port = process.env.PORT || 3001;
 
@@ -16,11 +18,18 @@ app.get('/get', async (req, res) => {
   res.send(data);
 });
 
-app.post('/post', async (req, res) => {
-  const title = await getTitle(req.body.link);
-  req.body.title = title;
-  
-  insertDoc(req.body);
+app.post('/post', (req, res) => {
+  let title;
+  const pageToVisit = req.body.link;
+  request(pageToVisit, (error, response, body) => {
+    if(response.statusCode === 200) {
+      // Parse the document body
+      const $ = cheerio.load(body);
+
+      req.body.title = $('title').text();
+      insertDoc(req.body);
+    }
+  });
 });
 
 app.delete('/delete', async (req, res) => {
@@ -85,20 +94,6 @@ async function deleteDoc(doc) {
   finally {
     await client.close();
   }
-}
-
-async function getTitle(url) {
-  const instance = await phantom.create();
-  const page = await instance.createPage();
-  await page.on('onResourceRequested', function(requestData) {
-    console.info('Requesting', requestData.url);
-  });
-
-  const status = await page.open(url);
-  const title = await page.property('title');  
-  await instance.exit();
-
-  return title;
 }
 
 app.listen(port, () => {
