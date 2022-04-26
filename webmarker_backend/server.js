@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const phantom = require('phantom');
 
 const port = process.env.PORT || 3001;
@@ -21,6 +21,14 @@ app.post('/post', async (req, res) => {
   req.body.title = title;
   
   insertDoc(req.body);
+});
+
+app.delete('/delete', async (req, res) => {
+  const id = req.body.id.toString();
+
+  await deleteDoc(id);
+
+  res.send(`Bookmark with ObjectId "${id}" deleted.`);
 });
 
 async function insertDoc(doc) {
@@ -51,6 +59,24 @@ async function getDoc() {
 
     return result;
   }
+  
+  catch(err) {
+    console.log(err);
+  }
+  
+  finally {
+    await client.close();
+  }
+}
+
+async function deleteDoc(doc) {
+  try {
+    await client.connect();
+
+    const database = client.db("sample_db");
+    const list = database.collection("list");
+    const result = await list.deleteOne({"_id": ObjectId(doc)});
+  } 
   
   catch(err) {
     console.log(err);
