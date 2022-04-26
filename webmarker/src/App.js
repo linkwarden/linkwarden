@@ -34,9 +34,8 @@ function App() {
   return (
     <div className="App">
       <div className="head">
-        <input className="search" type="search" placeholder="Search for Name/Title/Tag" onChange={search}/>
-        <button className="add-btn"><span className="material-icons-outlined md-36" onClick={() => setIsAdding(true)}>add</span></button>
-        <button className="settings-btn"><span className="material-icons-outlined md-36">settings</span></button>
+        <input className="search" type="search" placeholder="&#xf002; Search for Name / Title / Tag" onChange={search}/>
+        <button className="add-btn" onClick={() => setIsAdding(true)}>&#xf067;</button>
       </div>
       <List data={filteredData} />
       {isAdding ? <AddModal onExit={exitAdding} /> : null}
