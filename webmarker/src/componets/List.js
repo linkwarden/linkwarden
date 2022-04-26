@@ -43,7 +43,7 @@ const List = ({data}) => {
                     <td>{e.title}</td>
                     <td><a href={e.link}>{url.hostname}</a></td>
                     <td>{e.tag}</td>
-                    <td className="delete" onClick={() => deleteEntity(e._id)}><div>x</div></td>
+                    <td className="delete" onClick={() => deleteEntity(e._id)}>&#xf2ed;</td>
                 </tr>
             } catch (e) {
                 console.log(e)
