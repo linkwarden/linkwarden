@@ -28,6 +28,9 @@ app.post('/post', (req, res) => {
 
       req.body.title = $('title').text();
       insertDoc(req.body);
+    } else {
+      req.body.title = null;
+      insertDoc(req.body);
     }
   });
 });
@@ -42,8 +45,6 @@ app.delete('/delete', async (req, res) => {
 
 async function insertDoc(doc) {
   try {
-    await client.connect();
-
     const database = client.db("sample_db");
     const list = database.collection("list");
     const result = await list.insertOne(doc);
@@ -52,16 +53,10 @@ async function insertDoc(doc) {
   catch(err) {
     console.log(err);
   }
-  
-  finally {
-    await client.close();
-  }
 }
 
 async function getDoc() {
   try {
-    await client.connect();
-
     const database = client.db("sample_db");
     const list = database.collection("list");
     const result = await list.find({}).toArray();
@@ -72,16 +67,10 @@ async function getDoc() {
   catch(err) {
     console.log(err);
   }
-  
-  finally {
-    await client.close();
-  }
 }
 
 async function deleteDoc(doc) {
   try {
-    await client.connect();
-
     const database = client.db("sample_db");
     const list = database.collection("list");
     const result = await list.deleteOne({"_id": ObjectId(doc)});
@@ -90,12 +79,9 @@ async function deleteDoc(doc) {
   catch(err) {
     console.log(err);
   }
-  
-  finally {
-    await client.close();
-  }
 }
 
 app.listen(port, () => {
   console.log(`Success! running on port ${port}.`);
+  client.connect();
 });
