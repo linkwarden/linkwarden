@@ -22,16 +22,22 @@ app.post('/post', (req, res) => {
   let title;
   const pageToVisit = req.body.link;
   request(pageToVisit, (error, response, body) => {
-    if(response.statusCode === 200) {
-      // Parse the document body
-      const $ = cheerio.load(body);
+    try {
+      if(response.statusCode === 200) {
+        // Parse the document body
+        const $ = cheerio.load(body);
 
-      req.body.title = $('title').text();
-      insertDoc(req.body);
-    } else {
-      req.body.title = null;
-      insertDoc(req.body);
-    }
+        req.body.title = $('title').text();
+        insertDoc(req.body);
+      } else {
+          req.body.title = null;
+          insertDoc(req.body);
+        } 
+      } catch (error) {
+        console.log(error);
+        req.body.title = null;
+        insertDoc(req.body);
+      }
   });
 });
 
