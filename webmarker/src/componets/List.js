@@ -1,10 +1,7 @@
 import '../styles/List.css';
-import { useState } from 'react';
 
 const List = ({data}) => {
-  const [reload, setReload] = useState(0);
-
-  async function deleteEntity(id) {
+  function deleteEntity(id) {
     fetch("/delete", {
     
         // Adding method type

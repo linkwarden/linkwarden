@@ -52,6 +52,8 @@ const AddModal = ({onExit}) => {
       });
   
       onExit();
+    } else if(name != '' && link != '' && tag != '') {
+      alert('Please make sure the link is valid.\n\n(i.e. starts with "http"/"https")');
     }
 
     else {
