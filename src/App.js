@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './styles/App.css';
 import List from './componets/List';
 import AddModal from './componets/AddModal';
+import config from './config.json';
 
 function App() {
   const [data, setData] = useState([]);
@@ -22,7 +23,8 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch('/get');
+      const address = config.client.api_address + ":" + config.server.port;
+      const res = await fetch(address + '/get');
       const resJSON = await res.json();
       const Data = resJSON.sort((a, b) => { return b-a });
       setData(Data);

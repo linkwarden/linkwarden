@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import '../styles/Modal.css';
+import config from '../config.json';
 
 const AddModal = ({onExit}) => {
   const [name, setName] = useState('');
@@ -32,7 +33,8 @@ const AddModal = ({onExit}) => {
     }
 
     if(name != '' && isValidHttpUrl(link) && tag != '') {
-      fetch("/post", {
+      const address = config.client.api_address + ":" + config.server.port;
+      fetch(address + "/post", {
         
         // Adding method type
         method: "POST",
