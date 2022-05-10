@@ -1,8 +1,10 @@
 import '../styles/List.css';
+import config from '../config.json';
 
 const List = ({data}) => {
   function deleteEntity(id) {
-    fetch("/delete", {
+    const address = config.client.api_address + ":" + config.server.port;
+    fetch(address + "/delete", {
     
         // Adding method type
         method: "DELETE",
@@ -12,7 +14,7 @@ const List = ({data}) => {
         
         // Adding headers to the request
         headers: {
-            "Content-type": "application/json; charset=UTF-8"
+            "Content-type": "application/json; charset=UTF-8",
         }
     })
     .then(res => res.text())

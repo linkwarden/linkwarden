@@ -4,12 +4,16 @@ const { MongoClient, ObjectId } = require('mongodb');
 const request = require('request');
 const cheerio = require('cheerio');
 const URL = require('url-parse');
+const cors = require('cors');
+const config = require('../src/config.json')
 
-const port = process.env.PORT || 3001;
+const port = config.server.port;
 
-const uri = "mongodb://localhost:27017";
+const uri = config.server.mongodb_full_address;
 
 const client = new MongoClient(uri);
+
+app.use(cors());
 
 app.use(express.json());
 
