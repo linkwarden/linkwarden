@@ -10,6 +10,8 @@ const config = require('../src/config.json')
 const port = config.server.port;
 
 const uri = config.server.mongodb_full_address;
+const database = config.server.database_name;
+const collection = config.server.collection_name;
 
 const client = new MongoClient(uri);
 
@@ -55,8 +57,8 @@ app.delete('/delete', async (req, res) => {
 
 async function insertDoc(doc) {
   try {
-    const database = client.db("sample_db");
-    const list = database.collection("list");
+    const db = client.db(database);
+    const list = db.collection(collection);
     const result = await list.insertOne(doc);
   } 
   
@@ -67,8 +69,8 @@ async function insertDoc(doc) {
 
 async function getDoc() {
   try {
-    const database = client.db("sample_db");
-    const list = database.collection("list");
+    const db = client.db(database);
+    const list = db.collection(collection);
     const result = await list.find({}).toArray();
 
     return result;
@@ -81,9 +83,11 @@ async function getDoc() {
 
 async function deleteDoc(doc) {
   try {
-    const database = client.db("sample_db");
-    const list = database.collection("list");
+    const db = client.db(database);
+    const list = db.collection(collection);
     const result = await list.deleteOne({"_id": ObjectId(doc)});
+
+    return result;
   } 
   
   catch(err) {

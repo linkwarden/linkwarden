@@ -4,6 +4,8 @@
     },
     "server": {
         "port": 5000,
-        "mongodb_full_address": "mongodb://localhost:27017"
+        "mongodb_full_address": "mongodb://localhost:27017",
+        "database_name": "sample_db",
+        "collection_name": "list"
     }
 }
