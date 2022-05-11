@@ -32,7 +32,7 @@ const AddModal = ({onExit}) => {
       return url.protocol === "http:" || url.protocol === "https:";
     }
 
-    if(name != '' && isValidHttpUrl(link) && tag != '') {
+    if(name !== '' && isValidHttpUrl(link) && tag !== '') {
       const address = config.client.api_address + ":" + config.server.port;
       fetch(address + "/post", {
         
@@ -54,7 +54,7 @@ const AddModal = ({onExit}) => {
       });
   
       onExit();
-    } else if(name != '' && link != '' && tag != '') {
+    } else if(name !== '' && link !== '' && tag !== '') {
       alert('Please make sure the link is valid.\n\n(i.e. starts with "http"/"https")');
     }
 
@@ -64,7 +64,7 @@ const AddModal = ({onExit}) => {
   }
 
   function abort(e) {
-    if (e.target.className == "overlay" || e.target.className == "cancel-btn") {
+    if (e.target.className === "overlay" || e.target.className === "cancel-btn") {
       onExit();
     }
   }
