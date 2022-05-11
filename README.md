@@ -4,8 +4,9 @@
 > This project is under development
 (error prone, missing features, etc...) feel free to contribute!
 
-<image src="assets/1" style="width:50%; float: left;"></image>
-<image src="assets/2" style="width:50%; float: left;"></image>
+
+<image src="assets/1" style="width:49%;"></image>
+<image src="assets/2" style="width:49%;"></image>
 
 ## Setup
 ### Linux/MacOS:
