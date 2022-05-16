@@ -5,8 +5,8 @@
 (error prone, missing features, etc...) feel free to contribute!
 
 
-<image src="assets/1" style="width:49%;"></image>
-<image src="assets/2" style="width:49%;"></image>
+<image src="assets/1.png" style="width:49%;"></image>
+<image src="assets/2.png" style="width:49%;"></image>
 
 ## Setup
 ### Linux/MacOS:
