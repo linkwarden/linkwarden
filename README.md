@@ -1,10 +1,6 @@
 # Webmarker
 ### A simple bookmark manager for all your links and resources
 
-> This project is under development
-(error prone, missing features, etc...) feel free to contribute!
-
-
 <image src="assets/1.png" style="width:49%;"></image>
 <image src="assets/2.png" style="width:49%;"></image>
 
