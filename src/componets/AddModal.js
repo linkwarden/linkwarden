@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { nanoid } from 'nanoid'
 import '../styles/Modal.css';
 import config from '../config.json';
 
-const AddModal = ({onExit}) => {
+const AddModal = ({onExit, reFetch}) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
   const [tag, setTag] = useState('');
@@ -33,16 +34,17 @@ const AddModal = ({onExit}) => {
     }
 
     if(name !== '' && isValidHttpUrl(link) && tag !== '') {
-      const address = config.client.api_address + ":" + config.server.port;
-      fetch(address + "/post", {
+      const address = config.api.address + ":" + config.api.port;
+      fetch(address + "/api", {
         
         // Adding method type
         method: "POST",
         
         // Adding body or contents to send
         body: JSON.stringify({
+            _id: nanoid(),
             name: name,
-            title: "foo",
+            title: null,
             link: link,
             tag: tag
         }),
@@ -51,7 +53,10 @@ const AddModal = ({onExit}) => {
         headers: {
             "Content-type": "application/json; charset=UTF-8"
         }
-      });
+      })
+      .then(res => res.text())
+      .then(message => {console.log(message)})
+      .then(() => reFetch());
   
       onExit();
     } else if(name !== '' && link !== '' && tag !== '') {

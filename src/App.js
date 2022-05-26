@@ -21,17 +21,17 @@ function App() {
     return (e.name.toLowerCase().includes(searchQuery.toLowerCase()) || e.title.toLowerCase().includes(searchQuery.toLowerCase()) || e.tag.toLowerCase().includes(searchQuery.toLowerCase()))
   });
 
-  useEffect(() => {
-    async function fetchData() {
-      const address = config.client.api_address + ":" + config.server.port;
-      const res = await fetch(address + '/get');
-      const resJSON = await res.json();
-      const Data = resJSON.sort((a, b) => { return b-a });
-      setData(Data);
-    }
+  async function fetchData() {
+    const address = config.api.address + ":" + config.api.port;
+    const res = await fetch(address + '/api');
+    const resJSON = await res.json();
+    const Data = resJSON.sort((a, b) => { return b-a });
+    setData(Data);
+  }
 
+  useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
   
   return (
     <div className="App">
@@ -39,8 +39,8 @@ function App() {
         <input className="search" type="search" placeholder="&#xf002; Search for Name / Title / Tag" onChange={search}/>
         <button className="add-btn" onClick={() => setIsAdding(true)}>&#xf067;</button>
       </div>
-      <List data={filteredData} />
-      {isAdding ? <AddModal onExit={exitAdding} /> : null}
+      <List data={filteredData} reFetch={fetchData} />
+      {isAdding ? <AddModal onExit={exitAdding} reFetch={fetchData} /> : null}
     </div>
   );
 }
