@@ -6,11 +6,11 @@
 }
 
 .list img {
+  position: absolute;
+  filter: blur(3px);
   margin: 20px;
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  width: 100px;
+  height: 100px;
 }
 
 .img-content-grp {
@@ -29,6 +29,9 @@
 }
 
 .list-entity-content {
+  text-shadow: 1px 1px 2px black;
+  z-index: 1;
+  margin-left: 50px;
   padding: 20px;
   justify-content: space-between;
   display: flex;
@@ -59,9 +62,6 @@
 
 .delete:hover {
   background-color: rgb(255, 123, 123);
-}
-
-.delete:active {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
@@ -76,6 +76,7 @@
   width: fit-content;
   padding: 10px;
   font-size: 1rem;
+  border-radius: 5px;
 }
 
 .num {
