@@ -1,58 +1,48 @@
 const express = require('express');
 const app = express();
-const { MongoClient, ObjectId } = require('mongodb');
-const request = require('request');
-const cheerio = require('cheerio');
-const URL = require('url-parse');
+const { MongoClient } = require('mongodb');
 const cors = require('cors');
-const config = require('../src/config.json')
+const config = require('../src/config.json');
+const getData = require('./modules/getData.js')
 
-const port = config.server.port;
+const port = config.api.port;
 
-const uri = config.server.mongodb_full_address;
-const database = config.server.database_name;
-const collection = config.server.collection_name;
+const URI = config.api.mongodb_URI;
+const database = config.api.database_name;
+const collection = config.api.collection_name;
 
-const client = new MongoClient(uri);
+const client = new MongoClient(URI);
 
 app.use(cors());
 
 app.use(express.json());
 
-app.get('/get', async (req, res) => {
+app.get('/api', async (req, res) => {
   const data = await getDoc();
   res.send(data);
 });
 
-app.post('/post', (req, res) => {
-  let title;
+app.post('/api', async (req, res) => {
   const pageToVisit = req.body.link;
-  request(pageToVisit, (error, response, body) => {
-    try {
-      if(response.statusCode === 200) {
-        // Parse the document body
-        const $ = cheerio.load(body);
 
-        req.body.title = $('title').text();
-        insertDoc(req.body);
-      } else {
-          req.body.title = null;
-          insertDoc(req.body);
-        } 
-      } catch (error) {
-        console.log(error);
-        req.body.title = null;
-        insertDoc(req.body);
-      }
-  });
+  try {
+    const dataResult = await getData(pageToVisit, req.body._id);
+    req.body.title = dataResult;
+    insertDoc(req.body);
+  } catch (err) {
+    console.log(err);
+    insertDoc(req.body);
+  } finally {
+    res.send('DONE!');
+  }
 });
 
-app.delete('/delete', async (req, res) => {
+app.delete('/api', async (req, res) => {
   const id = req.body.id.toString();
 
   await deleteDoc(id);
 
-  res.send(`Bookmark with ObjectId "${id}" deleted.`);
+  res.send(`Bookmark with _id:${id} deleted.`);
 });
 
 async function insertDoc(doc) {
@@ -85,7 +75,7 @@ async function deleteDoc(doc) {
   try {
     const db = client.db(database);
     const list = db.collection(collection);
-    const result = await list.deleteOne({"_id": ObjectId(doc)});
+    const result = await list.deleteOne({"_id": doc});
 
     return result;
   } 
