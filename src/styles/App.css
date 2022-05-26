@@ -1,6 +1,5 @@
 .App {
-  min-height: 96vh;
-  padding: 2vh;
+  min-height: 100vh;
   background-color: #1f2c38;
   color: white;
 }
@@ -10,11 +9,15 @@
 }
 
 .search {
+  border-radius: 10px;
+  margin: 20px 20px 0px 20px;
+  padding: 10px;
   font-family: 'Font Awesome 5 Free';
   font-size: 1.5rem;
   padding-left: 10px;
   border: none;
-  width: 50%;
+  width: 30%;
+  min-width: 450px;
   color: white;
   background-color:#273949;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
@@ -29,6 +32,8 @@
 }
 
 .add-btn {
+  border-radius: 10px;
+  margin: 20px 20px 0px 20px;
   font-family: 'Font Awesome 5 Free';
   padding: 10px;
   font-size: 1.5rem;
@@ -38,7 +43,6 @@
   background-color:#273949;
   border: none;
   margin-left: auto;
-  margin-right: 10px;
   transition: background-color 0.1s;
 }
 

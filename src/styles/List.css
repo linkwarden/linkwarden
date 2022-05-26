@@ -1,32 +1,47 @@
-.table {
+.list {
   width: 100%;
   text-align: left;
   padding-top: 20px;
   border-spacing: 10px 10px;
 }
 
-.table td {
-  font-size: 1.3rem;
-  padding: 10px;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+.list img {
+  margin: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
 }
 
-.table th {
-  font-size: 1.6rem;
+.img-content-grp {
+  display: flex;
+  align-items: center;
 }
 
-.table tbody tr:nth-of-type(2n-1) {
+.list-row {
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color:#273949;
-
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  margin: 20px;
 }
 
-.table a {
+.list-entity-content {
+  padding: 20px;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+}
+
+.list a {
   text-decoration: none;
   color: rgb(194, 193, 193);
   font-size: 1rem;
 }
 
-.table a:hover {
+.list a:hover {
   text-decoration: underline;
 }
 
@@ -35,6 +50,11 @@
   cursor: pointer;
   transition: background-color 0.1s;
   font-family: 'Font Awesome 5 Free';
+  padding: 10px;
+  width: fit-content;
+  height: fit-content;
+  margin: 10px;
+  border-radius: 10px;
 }
 
 .delete:hover {
@@ -45,6 +65,19 @@
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
-.number {
-  text-align: center;
+.row-name {
+  font-size: 2rem;
+}
+
+.tag {
+  margin: 10px;
+  border: solid;
+  border-width: 1px;
+  width: fit-content;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.num {
+  font-size: 1rem;
 }

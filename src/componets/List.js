@@ -1,10 +1,10 @@
 import '../styles/List.css';
 import config from '../config.json';
 
-const List = ({data}) => {
+const List = ({data, reFetch}) => {
   function deleteEntity(id) {
-    const address = config.client.api_address + ":" + config.server.port;
-    fetch(address + "/delete", {
+    const address = config.api.address + ":" + config.api.port;
+    fetch(address + "/api", {
     
         // Adding method type
         method: "DELETE",
@@ -19,37 +19,32 @@ const List = ({data}) => {
     })
     .then(res => res.text())
     .then(message => {console.log(message)})
+    .then(() => reFetch())
   }
 
   return (
-    <table className="table">
-        <thead>
-            <tr>
-                <th className='number'>#</th>
-                <th>Name</th>
-                <th>Title</th>
-                <th>Link</th>
-                <th>Tag</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div className="list">
         {data.map((e, i) => {
             try {
-                const url = new URL(e.link)
-                return <tr key={i}>
-                    <td className='number'>{i + 1}</td>
-                    <td>{e.name}</td>
-                    <td>{e.title}</td>
-                    <td><a href={e.link}>{url.hostname}</a></td>
-                    <td>{e.tag}</td>
-                    <td className="delete" onClick={() => deleteEntity(e._id)}>&#xf2ed;</td>
-                </tr>
+                const url = new URL(e.link);
+                const favicon = 'http://www.google.com/s2/favicons?domain=' + url.hostname;
+                return <div className="list-row">
+                    <div className="img-content-grp">
+                        <img src={favicon} />
+                        <div className="list-entity-content" key={i}>
+                            <div className='row-name'><span className="num">{i + 1}.</span> {e.name}</div>
+                            <div>{e.title}</div>
+                            <div><a href={e.link}>{url.hostname}</a></div>
+                            <div className="tag">{e.tag}</div>
+                        </div>
+                    </div>
+                    <div className="delete" onClick={() => deleteEntity(e._id)}>&#xf2ed;</div>
+                </div>
             } catch (e) {
-                console.log(e)
+                console.log(e);
             }
         })}
-        </tbody>
-    </table>
+    </div>
   )
 }
 
