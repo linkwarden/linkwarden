@@ -39,6 +39,7 @@ function App() {
         <input className="search" type="search" placeholder="&#xf002; Search for Name / Title / Tag" onChange={search}/>
         <button className="add-btn" onClick={() => setIsAdding(true)}>&#xf067;</button>
       </div>
+      <p>hi</p>
       <List data={filteredData} reFetch={fetchData} />
       {isAdding ? <AddModal onExit={exitAdding} reFetch={fetchData} /> : null}
     </div>
