@@ -53,3 +53,8 @@
 textarea:focus, input:focus{
   outline: none;
 }
+
+.results {  
+  margin: 20px;
+  margin-left: 30px;
+}

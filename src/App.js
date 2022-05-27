@@ -8,15 +8,16 @@ function App() {
   const [data, setData] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [numberOfResults, setNumberOfResults] = useState(0);
 
   function exitAdding() {
-    setIsAdding(!isAdding)
+    setIsAdding(!isAdding);
   }
 
   function search(e) {
     setSearchQuery(e.target.value);
   }
-
+  // setNumberOfResults(filteredData.length);
   const filteredData = data.filter((e) => {
     return (e.name.toLowerCase().includes(searchQuery.toLowerCase()) || e.title.toLowerCase().includes(searchQuery.toLowerCase()) || e.tag.toLowerCase().includes(searchQuery.toLowerCase()))
   });
@@ -32,6 +33,10 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setNumberOfResults(filteredData.length);
+  }, [filteredData]);
   
   return (
     <div className="App">
@@ -39,7 +44,7 @@ function App() {
         <input className="search" type="search" placeholder="&#xf002; Search for Name / Title / Tag" onChange={search}/>
         <button className="add-btn" onClick={() => setIsAdding(true)}>&#xf067;</button>
       </div>
-      <p>hi</p>
+      <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks found' : 'Nothing found.'}</p>
       <List data={filteredData} reFetch={fetchData} />
       {isAdding ? <AddModal onExit={exitAdding} reFetch={fetchData} /> : null}
     </div>
