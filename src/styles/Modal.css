@@ -8,6 +8,7 @@
 }
 
 .box {
+    border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
     position: absolute;
     top: 20%;
@@ -29,6 +30,7 @@
 }
 
 .modal-input {
+    border-radius: 10px;
     font-size: 1.3rem;
     padding: 10px;
     border: none;
@@ -43,6 +45,7 @@
 }
 
 .upload-btn {
+    border-radius: 10px;
     font-family: 'Font Awesome 5 Free';
     font-size: 2rem;
     padding: 10px;
@@ -63,6 +66,7 @@
 }
 
 .cancel-btn {
+    border-radius: 10px;
     padding: 5px;
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
@@ -74,6 +78,7 @@
     margin-left: auto;
     margin-right: auto;
     transition: background-color 0.1s;
+    font-weight: 900;
 }
 
 .cancel-btn:hover {
