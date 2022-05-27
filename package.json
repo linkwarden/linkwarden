@@ -9,6 +9,7 @@
     "nanoid": "^3.3.4",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-lazyload": "^3.2.0",
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.4"
   },

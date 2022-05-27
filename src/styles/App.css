@@ -55,6 +55,5 @@ textarea:focus, input:focus{
 }
 
 .results {  
-  margin: 20px;
-  margin-left: 30px;
+  margin: 20px 20px 20px 30px;
 }

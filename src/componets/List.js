@@ -1,5 +1,6 @@
 import '../styles/List.css';
 import config from '../config.json';
+import LazyLoad from 'react-lazyload';
 
 const List = ({data, reFetch}) => {
   function deleteEntity(id) {
@@ -28,18 +29,20 @@ const List = ({data, reFetch}) => {
             try {
                 const url = new URL(e.link);
                 const favicon = 'http://www.google.com/s2/favicons?domain=' + url.hostname;
-                return <div key={i} className="list-row">
-                    <div className="img-content-grp">
-                        <img src={favicon} />
-                        <div className="list-entity-content">
-                            <div className='row-name'><span className="num">{i + 1}.</span> {e.name}</div>
-                            <div>{e.title}</div>
-                            <div><a href={e.link}>{url.hostname}</a></div>
-                            <div className="tag">{e.tag}</div>
+                return <LazyLoad key={i} height={200} offset={200}>
+                    <div className="list-row">
+                        <div className="img-content-grp">
+                            <img src={favicon} />
+                            <div className="list-entity-content">
+                                <div className='row-name'><span className="num">{i + 1}.</span> {e.name}</div>
+                                <div>{e.title}</div>
+                                <div><a href={e.link}>{url.hostname}</a></div>
+                                <div className="tag">{e.tag}</div>
+                            </div>
                         </div>
+                        <div className="delete" onClick={() => deleteEntity(e._id)}>&#xf2ed;</div>
                     </div>
-                    <div className="delete" onClick={() => deleteEntity(e._id)}>&#xf2ed;</div>
-                </div>
+                </LazyLoad>
             } catch (e) {
                 console.log(e);
             }
