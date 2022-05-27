@@ -28,10 +28,10 @@ const List = ({data, reFetch}) => {
             try {
                 const url = new URL(e.link);
                 const favicon = 'http://www.google.com/s2/favicons?domain=' + url.hostname;
-                return <div className="list-row">
+                return <div key={i} className="list-row">
                     <div className="img-content-grp">
                         <img src={favicon} />
-                        <div className="list-entity-content" key={i}>
+                        <div className="list-entity-content">
                             <div className='row-name'><span className="num">{i + 1}.</span> {e.name}</div>
                             <div>{e.title}</div>
                             <div><a href={e.link}>{url.hostname}</a></div>
