@@ -34,10 +34,13 @@ const List = ({data, reFetch}) => {
                         <div className="img-content-grp">
                             <img src={favicon} />
                             <div className="list-entity-content">
-                                <div className='row-name'><span className="num">{i + 1}.</span> {e.name}</div>
+                                <div className='row-name'><span className="num">{i + 1}.</span> {e.name} <a target="_blank" href={e.link}>({url.hostname})</a></div>
                                 <div>{e.title}</div>
-                                <div><a href={e.link}>{url.hostname}</a></div>
-                                <div className="tag">{e.tag}</div>
+                                <div className="tags">
+                                    {e.tag.map((e, i) => {
+                                        return <div key={i}>{e}</div>
+                                    })}
+                                </div>
                             </div>
                         </div>
                         <div className="delete" onClick={() => deleteEntity(e._id)}>&#xf2ed;</div>

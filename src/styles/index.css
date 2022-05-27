@@ -7,3 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #1f2c38;
 }
+
+*::selection {
+  background-color: rgba(101, 142, 255, 0.335);
+}
