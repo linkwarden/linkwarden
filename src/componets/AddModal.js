@@ -6,7 +6,7 @@ import config from '../config.json';
 const AddModal = ({onExit, reFetch}) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
-  const [tag, setTag] = useState('');
+  const [tag, setTag] = useState([]);
 
   function SetName(e) {
     setName(e.target.value);
@@ -17,7 +17,8 @@ const AddModal = ({onExit, reFetch}) => {
   }
 
   function SetTag(e) {
-    setTag(e.target.value);
+    setTag([e.target.value]);
+    setTag(e.target.value.split(/(\s+)/).filter( e => e.trim().length > 0).map(e => e.toLowerCase()))
   }
 
   async function submitBookmark() {
@@ -44,7 +45,7 @@ const AddModal = ({onExit, reFetch}) => {
         body: JSON.stringify({
             _id: nanoid(),
             name: name,
-            title: null,
+            title: '',
             link: link,
             tag: tag
         }),
@@ -84,7 +85,7 @@ const AddModal = ({onExit, reFetch}) => {
           <h3>Link:</h3>
           <input onChange={SetLink} className="modal-input" type="search" placeholder="e.g. https://example.com/"/>
           <h3>Tag:</h3>
-          <input onChange={SetTag} className="modal-input" type="search" placeholder="e.g. Tutorials"/>
+          <input onChange={SetTag} className="modal-input" type="search" placeholder="e.g. Tutorials (Seperate with spaces)"/>
           <button onClick={submitBookmark} className="upload-btn">Upload &#xf093;</button>
           <button className="cancel-btn">Cancel</button>
         </div>

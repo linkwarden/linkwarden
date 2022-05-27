@@ -11,10 +11,11 @@
   user-select: none;
   position: absolute;
   filter: blur(5px);
-  opacity: 60%;
+  opacity: 50%;
   margin: 20px;
   width: 100px;
   height: 100px;
+  transition: opacity 0.3s;
 }
 
 .img-content-grp {
@@ -32,25 +33,40 @@
   margin: 20px;
 }
 
+.list-row:hover img {
+  opacity: 90%;
+}
+
 .list-entity-content {
-  text-shadow: 1px 1px 2px black;
+	text-shadow: 0px 1px 3px #1f2c38;
   z-index: 0;
-  margin-left: 50px;
+  margin-left: 70px;
   padding: 20px;
   justify-content: space-between;
   display: flex;
   flex-direction: column;
+  pointer-events: none;
 }
 
 .list a {
+  white-space: nowrap;
+  font-family: 'Font Awesome 5 Free';
+  pointer-events: all;
   text-decoration: none;
   color: rgb(194, 193, 193);
   font-size: 1rem;
 }
 
-.list a:hover {
-  text-decoration: underline;
+.list a::after {
+  content: " ";
+  opacity: 0%;
+  transition: opacity 0.1s;
 }
+
+.list a:hover::after {
+  opacity: 100%;
+}
+
 
 .delete {
   color: white;
@@ -73,14 +89,23 @@
   font-size: 2rem;
 }
 
-.tag {
+.tags {
+  display: flex;
   margin: 10px;
-  border: solid;
   border-width: 1px;
   width: fit-content;
   padding: 10px;
   font-size: 1rem;
   border-radius: 5px;
+}
+
+.tags div {
+  margin-right: 10px;
+  color: rgb(126, 208, 255);
+}
+
+.tags div::before {
+  content: "#";
 }
 
 .num {
