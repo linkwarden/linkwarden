@@ -10,7 +10,8 @@
   -webkit-user-select: none;
   user-select: none;
   position: absolute;
-  filter: blur(3px);
+  filter: blur(5px);
+  opacity: 60%;
   margin: 20px;
   width: 100px;
   height: 100px;
