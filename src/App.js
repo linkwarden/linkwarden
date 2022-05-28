@@ -17,9 +17,9 @@ function App() {
   function search(e) {
     setSearchQuery(e.target.value);
   }
-  // || e.tag.toLowerCase().includes(searchQuery.toLowerCase())
+  
   const filteredData = data.filter((e) => {
-    return (e.name.toLowerCase().includes(searchQuery.toLowerCase()) || e.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    return (e.name.toLowerCase().includes(searchQuery.toLowerCase()) || e.title.toLowerCase().includes(searchQuery.toLowerCase()) || e.tag.some((e) => e.includes(searchQuery.toLowerCase())))
   });
 
   async function fetchData() {
