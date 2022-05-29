@@ -3,9 +3,6 @@
 
 > Note: Still under development...
 
-<image src="assets/1.png" style="width:49%;"></image>
-<image src="assets/2.png" style="width:49%;"></image>
-
 ## Setup
 ### Linux/MacOS:
 1. Make sure the MongoDB database and collection is up and running.
