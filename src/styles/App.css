@@ -13,11 +13,11 @@
   margin: 20px 20px 0px 20px;
   padding: 10px;
   font-family: 'Font Awesome 5 Free';
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   padding-left: 10px;
   border: none;
-  width: 30%;
-  min-width: 450px;
+  width: 20%;
+  min-width: 300px;
   color: white;
   background-color:#273949;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
@@ -33,7 +33,7 @@
 
 .add-btn {
   border-radius: 10px;
-  margin: 20px 20px 0px 20px;
+  margin: 20px 20px 0px auto;
   font-family: 'Font Awesome 5 Free';
   padding: 10px;
   font-size: 1.5rem;
@@ -42,7 +42,6 @@
   color: #ffffffb6;
   background-color:#273949;
   border: none;
-  margin-left: auto;
   transition: background-color 0.1s;
 }
 
@@ -55,5 +54,39 @@ textarea:focus, input:focus{
 }
 
 .results {  
-  margin: 20px 20px 20px 30px;
+  margin: 20px 20px 0px 30px;
+  display: inline-block;
+}
+
+.filter {
+  display: inline-block;
+}
+
+.filter button {
+  border-radius: 10px;
+  font-family: 'Font Awesome 5 Free';
+  padding: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  color: #ffffffb6;
+  background-color:#273949;
+  border: none;
+  transition: background-color 0.1s;
+}
+
+.filter button:hover {
+  background-color: rgb(76, 117, 170);
+}
+
+.display {
+  visibility: visible;
+}
+
+.filter div {
+  position: absolute;
+  margin: -30px 0 0 50px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }

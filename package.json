@@ -11,6 +11,7 @@
     "react-dom": "^18.0.0",
     "react-lazyload": "^3.2.0",
     "react-scripts": "5.0.0",
+    "react-select": "^5.3.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
