@@ -22,8 +22,11 @@
 
 .box h2 {
     margin-top: -1px;
+    margin-bottom: 30px;
     text-align: center;
 }
+
+.box h3 {text-align: center;}
 
 .modal-content {
     padding: 20px;

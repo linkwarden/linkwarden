@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { nanoid } from 'nanoid'
 import '../styles/Modal.css';
 import config from '../config.json';
+import TagSelection from './TagSelection';
 
 const AddModal = ({onExit, reFetch}) => {
   const [name, setName] = useState('');
@@ -79,13 +80,14 @@ const AddModal = ({onExit, reFetch}) => {
     <div className='overlay' onClick={abort}>
       <div className='box'>
         <div className='modal-content'>
-          <h2>Add Bookmark</h2>
+          <h2>New Bookmark</h2>
           <h3>Name:</h3>
           <input onChange={SetName} className="modal-input" type="search" placeholder="e.g. Example Tutorial"/>
           <h3>Link:</h3>
           <input onChange={SetLink} className="modal-input" type="search" placeholder="e.g. https://example.com/"/>
-          <h3>Tag:</h3>
-          <input onChange={SetTag} className="modal-input" type="search" placeholder="e.g. Tutorials (Seperate with spaces)"/>
+          <h3>Tags:</h3>
+          <TagSelection />
+          {/* <input onChange={SetTag} className="modal-input" type="search" placeholder="e.g. Tutorials (Seperate with spaces)"/> */}
           <button onClick={submitBookmark} className="upload-btn">Upload &#xf093;</button>
           <button className="cancel-btn">Cancel</button>
         </div>
