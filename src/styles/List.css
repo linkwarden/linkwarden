@@ -24,7 +24,6 @@
 }
 
 .list-row {
-  border-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -77,7 +76,7 @@
   width: fit-content;
   height: fit-content;
   margin: 10px;
-  border-radius: 10px;
+  border-radius: 100%;
 }
 
 .delete:hover {
