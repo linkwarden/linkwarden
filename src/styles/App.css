@@ -9,7 +9,6 @@
 }
 
 .search {
-  border-radius: 10px;
   margin: 20px 20px 0px 20px;
   padding: 10px;
   font-family: 'Font Awesome 5 Free';
@@ -32,7 +31,7 @@
 }
 
 .add-btn {
-  border-radius: 10px;
+  border-radius: 100%;
   margin: 20px 20px 0px auto;
   font-family: 'Font Awesome 5 Free';
   padding: 10px;
@@ -58,12 +57,8 @@ textarea:focus, input:focus{
   display: inline-block;
 }
 
-.filter {
-  display: inline-block;
-}
-
-.filter button {
-  border-radius: 10px;
+.filter-button {
+  border-radius: 100%;
   font-family: 'Font Awesome 5 Free';
   padding: 10px;
   font-size: 1rem;
@@ -75,18 +70,10 @@ textarea:focus, input:focus{
   transition: background-color 0.1s;
 }
 
-.filter button:hover {
+.filter-button:active {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.filter-button:hover {
   background-color: rgb(76, 117, 170);
-}
-
-.display {
-  visibility: visible;
-}
-
-.filter div {
-  position: absolute;
-  margin: -30px 0 0 50px;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
 }
