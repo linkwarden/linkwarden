@@ -20,7 +20,9 @@ const customStyles = {
 
   menu: (provided) => ({
     ...provided,
-    padding: '5px',
+    border: 'solid',
+    borderWidth: '1px',
+    borderColor: 'rgb(80, 80, 80)',
     opacity: '90%',
     color: 'gray',
     background: '#273949',
