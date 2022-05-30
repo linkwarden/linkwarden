@@ -1,11 +1,15 @@
 .filter {
+    border: solid;
+    border-width: 1px;
+    font-weight: 300;
+    border-color: rgb(80, 80, 80);
     display: flex;
     flex-direction: column;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     z-index: 2;
     background-color: #273949;
-    padding: 10px;
-    left: 150px;
+    padding: 5px;
+    left: 200px;
     position: absolute;
     margin-top: 4px;
     -moz-user-select: none;
@@ -14,7 +18,7 @@
 }
 
 .filter label {
-    margin: 10px;
+    margin: 5px;
 }
 
 .filter-overlay {
