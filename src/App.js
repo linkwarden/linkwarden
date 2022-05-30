@@ -1,25 +1,19 @@
 import { useEffect, useState } from 'react';
 import './styles/App.css';
 import List from './componets/List';
-import AddModal from './componets/AddModal';
+import AddItem from './componets/AddItem';
 import config from './config.json';
+import Filters from './componets/Filters';
 
 function App() {
   const [data, setData] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [numberOfResults, setNumberOfResults] = useState(0);
   const [nameChecked, setNameChecked] = useState(true);
   const [descriptionChecked, setDescriptionChecked] = useState(true);
   const [tagsChecked, setTagsChecked] = useState(true);
-
-  function toggleFilterBtn(e) {    
-    if(e.target.nextSibling.style.display === 'none') {
-      e.target.nextSibling.style.display = '';
-    } else if(e.target.nextSibling.style.display === '') {
-      e.target.nextSibling.style.display = 'none';
-    }
-  }
 
   function handleNameCheckbox() {
     setNameChecked(!nameChecked);
@@ -35,6 +29,10 @@ function App() {
 
   function exitAdding() {
     setIsAdding(!isAdding);
+  }
+
+  function exitFilter() {
+    setIsFiltering(!isFiltering);
   }
 
   function search(e) {
@@ -68,6 +66,20 @@ function App() {
     setData(Data);
   }
 
+  const concatTags = () => {
+    let tags = [];
+
+    for (let i = 0; i < data.length; i++) {
+      tags = tags.concat(data[i].tag)
+    }
+
+    tags = tags.filter((v, i, a) => a.indexOf(v) === i);
+
+    return tags;
+  }
+
+  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -82,17 +94,23 @@ function App() {
         <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
         <button className="add-btn" onClick={() => setIsAdding(true)}>&#xf067;</button>
       </div>
+
       <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks' : 'No bookmarks.'}</p>
-      <div className='filter'>
-        <button onClick={(e) => toggleFilterBtn(e)}>&#xf0b0;</button>
-        <div>
-          <label><input type="checkbox" checked={nameChecked} onChange={handleNameCheckbox} />Name</label>
-          <label><input type="checkbox" checked={descriptionChecked} onChange={handleDescriptionCheckbox} />Title/Description</label>
-          <label><input type="checkbox" checked={tagsChecked} onChange={handleTagsCheckbox} />Tags</label>
-        </div>
-      </div>
+
+      <button className='filter-button' onClick={() => setIsFiltering(true)}>&#xf0b0;</button>
+      {isFiltering ? <Filters 
+        nameChecked={nameChecked}
+        handleNameCheckbox={handleNameCheckbox}
+        descriptionChecked={descriptionChecked}
+        handleDescriptionCheckbox={handleDescriptionCheckbox}
+        tagsChecked={tagsChecked} 
+        handleTagsCheckbox={handleTagsCheckbox}
+        onExit={exitFilter}
+       /> : null}
+
       <List data={filteredData} reFetch={fetchData} />
-      {isAdding ? <AddModal onExit={exitAdding} reFetch={fetchData} /> : null}
+
+      {isAdding ? <AddItem onExit={exitAdding} reFetch={fetchData} tags={concatTags} /> : null}
     </div>
   );
 }

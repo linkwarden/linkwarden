@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { nanoid } from 'nanoid'
-import '../styles/Modal.css';
+import '../styles/AddItem.css';
 import config from '../config.json';
 import TagSelection from './TagSelection';
 
-const AddModal = ({onExit, reFetch}) => {
+const AddItem = ({onExit, reFetch, tags}) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
   const [tag, setTag] = useState([]);
@@ -17,9 +17,9 @@ const AddModal = ({onExit, reFetch}) => {
     setLink(e.target.value);
   }
 
-  function SetTag(e) {
-    setTag([e.target.value]);
-    setTag(e.target.value.split(/(\s+)/).filter( e => e.trim().length > 0).map(e => e.toLowerCase()))
+  function SetTags(value) {
+    setTag(value);
+    setTag(value.map(e => e.value.toLowerCase()));
   }
 
   async function submitBookmark() {
@@ -71,29 +71,27 @@ const AddModal = ({onExit, reFetch}) => {
   }
 
   function abort(e) {
-    if (e.target.className === "overlay" || e.target.className === "cancel-btn") {
+    if (e.target.className === "add-overlay") {
       onExit();
     }
   }
 
   return (
-    <div className='overlay' onClick={abort}>
+    <>
+      <div className='add-overlay' onClick={abort}></div>
       <div className='box'>
-        <div className='modal-content'>
-          <h2>New Bookmark</h2>
+        <div className='AddItem-content'>
           <h3>Name:</h3>
-          <input onChange={SetName} className="modal-input" type="search" placeholder="e.g. Example Tutorial"/>
+          <input onChange={SetName} className="AddItem-input" type="search" placeholder="e.g. Example Tutorial"/>
           <h3>Link:</h3>
-          <input onChange={SetLink} className="modal-input" type="search" placeholder="e.g. https://example.com/"/>
+          <input onChange={SetLink} className="AddItem-input" type="search" placeholder="e.g. https://example.com/"/>
           <h3>Tags:</h3>
-          <TagSelection />
-          {/* <input onChange={SetTag} className="modal-input" type="search" placeholder="e.g. Tutorials (Seperate with spaces)"/> */}
+          <TagSelection setTags={SetTags} tags={tags} />
           <button onClick={submitBookmark} className="upload-btn">Upload &#xf093;</button>
-          <button className="cancel-btn">Cancel</button>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
-export default AddModal
+export default AddItem

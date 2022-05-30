@@ -1,0 +1,26 @@
+.filter {
+    display: flex;
+    flex-direction: column;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    z-index: 2;
+    background-color: #273949;
+    padding: 10px;
+    left: 150px;
+    position: absolute;
+    margin-top: 4px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.filter label {
+    margin: 10px;
+}
+
+.filter-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+}

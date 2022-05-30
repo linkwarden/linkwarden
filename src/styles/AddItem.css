@@ -1,0 +1,65 @@
+.add-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+}
+
+.box {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    position: absolute;
+    z-index: 2;
+    top: 70px;
+    right: 20px;
+    background-color: #1f2c38;
+    width: 40%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.box h3 {
+    font-weight: 300;
+}
+
+.AddItem-content {
+    padding: 20px;
+}
+
+.AddItem-input {
+    font-size: 1rem;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    color: white;
+    background-color:#273949;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+.AddItem-input:focus {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.upload-btn {
+    font-family: 'Font Awesome 5 Free';
+    font-size: 1.1rem;
+    padding: 5px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    color: #ffffffb6;
+    background-color:#273949;
+    border: none;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.1s;
+}
+
+.upload-btn:hover {
+    background-color: rgb(76, 117, 170);
+}
+
+.upload-btn:active {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
