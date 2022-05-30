@@ -95,7 +95,7 @@ function App() {
         <button className="add-btn" onClick={() => setIsAdding(true)}>&#xf067;</button>
       </div>
 
-      <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks' : 'No bookmarks.'}</p>
+      <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks found' : 'No bookmarks found.'}</p>
 
       <button className='filter-button' onClick={() => setIsFiltering(true)}>&#xf0b0;</button>
       {isFiltering ? <Filters 
