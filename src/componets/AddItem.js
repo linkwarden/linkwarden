@@ -79,7 +79,8 @@ const AddItem = ({onExit, reFetch, tags}) => {
   return (
     <>
       <div className='add-overlay' onClick={abort}></div>
-      <div className='box'>
+      <fieldset className='box'>
+        <legend >New Bookmark</legend>
         <div className='AddItem-content'>
           <h3>Name:</h3>
           <input onChange={SetName} className="AddItem-input" type="search" placeholder="e.g. Example Tutorial"/>
@@ -89,7 +90,7 @@ const AddItem = ({onExit, reFetch, tags}) => {
           <TagSelection setTags={SetTags} tags={tags} />
           <button onClick={submitBookmark} className="upload-btn">Upload &#xf093;</button>
         </div>
-      </div>
+      </fieldset>
     </>
   )
 }

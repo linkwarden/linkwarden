@@ -22,20 +22,18 @@
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
-.settings-btn:active, .add-btn:active {
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-}
-
 .search:focus {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
-.add-btn {
+.btn {
   border-radius: 100%;
   margin: 20px 20px 0px auto;
   font-family: 'Font Awesome 5 Free';
+  width: 40px;
+  height: 40px;
   padding: 10px;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   color: #ffffffb6;
@@ -44,8 +42,12 @@
   transition: background-color 0.1s;
 }
 
-.add-btn:hover {
+.btn:hover {
   background-color: rgb(76, 117, 170);
+}
+
+.btn:active {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 textarea:focus, input:focus{
@@ -55,25 +57,4 @@ textarea:focus, input:focus{
 .results {  
   margin: 20px 20px 0px 30px;
   display: inline-block;
-}
-
-.filter-button {
-  border-radius: 100%;
-  font-family: 'Font Awesome 5 Free';
-  padding: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  color: #ffffffb6;
-  background-color:#273949;
-  border: none;
-  transition: background-color 0.1s;
-}
-
-.filter-button:active {
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-}
-
-.filter-button:hover {
-  background-color: rgb(76, 117, 170);
 }
