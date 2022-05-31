@@ -1,4 +1,6 @@
 .add-overlay {
+    background-color: black;
+    opacity: 10%;
     position: fixed;
     top: 0;
     left: 0;
@@ -9,16 +11,21 @@
 .box {
     border: solid;
     border-width: 1px;
-    border-color: rgb(80, 80, 80);
+    border-color: rgb(141, 141, 141);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     position: absolute;
     z-index: 2;
-    top: 70px;
+    top: 63px;
     right: 20px;
     background-color: #1f2c38;
-    width: 40%;
+    width: 50%;
+    max-width: 500px;
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+.box legend {
+    font-weight: 600;
 }
 
 .box h3 {
