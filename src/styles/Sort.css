@@ -1,4 +1,14 @@
-.filter {
+.sort-overlay {
+    background-color: black;
+    opacity: 10%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+}
+
+.sort {
     border: solid;
     border-width: 1px;
     font-weight: 300;
@@ -9,7 +19,7 @@
     background-color: #273949;
     padding: 5px;
     top: 120px;
-    left: 195px;
+    left: 250px;
     position: absolute;
     margin-top: 4px;
     -moz-user-select: none;
@@ -17,20 +27,10 @@
     user-select: none;
 }
 
-.filter legend {
+.sort legend {
     font-weight: 600;
 }
 
-.filter label {
+.sort label {
     margin: 5px;
-}
-
-.filter-overlay {
-    background-color: black;
-    opacity: 10%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 100vw;
 }
