@@ -11,7 +11,7 @@ const Filters = ({nameChecked, handleNameCheckbox, descriptionChecked, handleDes
     <>  
         <div className='filter-overlay' onClick={abort}></div>
         <fieldset className='filter'>
-            <legend >Filter Results</legend>
+            <legend >Filter by</legend>
             <label><input type="checkbox" checked={nameChecked} onChange={handleNameCheckbox} />Name</label>
             <label><input type="checkbox" checked={descriptionChecked} onChange={handleDescriptionCheckbox} />Title</label>
             <label><input type="checkbox" checked={tagsChecked} onChange={handleTagsCheckbox} />Tags</label>
