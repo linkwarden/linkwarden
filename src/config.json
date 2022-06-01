@@ -1,7 +1,7 @@
 {
     "api": {
         "address": "http://localhost",
-        "port": 5002,
+        "port": 5000,
         "mongodb_URI": "mongodb://localhost:27017",
         "database_name": "sample_db",
         "collection_name": "list",
