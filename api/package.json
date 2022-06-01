@@ -1,7 +1,7 @@
 {
-  "name": "classify-api",
+  "name": "link-warden-api",
   "version": "1.0.0",
-  "description": "Classify backend",
+  "description": "Link Warden backend",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js"

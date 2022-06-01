@@ -1,4 +1,4 @@
-# Classify
+# Link Warden
 ### A bookmark + archive manager for all your links and resources.
 
 > Note: Still under development...
