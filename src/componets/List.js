@@ -1,11 +1,11 @@
 import '../styles/List.css';
-import config from '../config.json';
+import config from '../config';
 import LazyLoad from 'react-lazyload';
 
 const List = ({data, reFetch}) => {
   function deleteEntity(id) {
-    const address = config.api.address + ":" + config.api.port;
-    fetch(address + "/api", {
+    const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
+    fetch(ADDRESS + "/api", {
     
         // Adding method type
         method: "DELETE",

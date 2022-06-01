@@ -1,4 +1,5 @@
 .sort-overlay {
+    animation: fadein 0.2s;
     background-color: black;
     opacity: 10%;
     position: fixed;
@@ -9,6 +10,7 @@
 }
 
 .sort {
+    animation: fadein 0.3s;
     border: solid;
     border-width: 1px;
     font-weight: 300;
@@ -55,4 +57,9 @@
   
 .sort-by-btn:active {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+@keyframes fadein {
+    from { opacity: 0%; }
+    to   {  }
 }
