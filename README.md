@@ -9,6 +9,6 @@
 
 2. Edit `/src/config.json` accordingly.
 
-3. Head to the main folder using terminal and run: `(cd api && npm install) && npm install` for the dependancies.
+3. Head to the main folder using terminal and run: `(cd api && npm install --legacy-peer-deps) && npm install --legacy-peer-deps` for the dependancies.
 
 4. Run `(cd api && npm run dev) & npm start` to start the application.
