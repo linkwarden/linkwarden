@@ -7,16 +7,16 @@ import Filters from './componets/Filters';
 import Sort from './componets/Sort';
 
 function App() {
-  const [data, setData] = useState([]);
-  const [newBox, setNewBox] = useState(false);
-  const [filterBox, setFilterBox] = useState(false);
-  const [sortBox, setSortBox] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [numberOfResults, setNumberOfResults] = useState(0);
-  const [nameChecked, setNameChecked] = useState(true);
-  const [descriptionChecked, setDescriptionChecked] = useState(true);
-  const [tagsChecked, setTagsChecked] = useState(true);
-  const [sort, setSort] = useState('Date');
+  const [data, setData] = useState([]),
+    [newBox, setNewBox] = useState(false),
+    [filterBox, setFilterBox] = useState(false),
+    [sortBox, setSortBox] = useState(false),
+    [searchQuery, setSearchQuery] = useState(''),
+    [numberOfResults, setNumberOfResults] = useState(0),
+    [nameChecked, setNameChecked] = useState(true),
+    [descriptionChecked, setDescriptionChecked] = useState(true),
+    [tagsChecked, setTagsChecked] = useState(true),
+    [sortBy, setSortBy] = useState('Date (Newest first)');
 
   function handleNameCheckbox() {
     setNameChecked(!nameChecked);
@@ -45,6 +45,10 @@ function App() {
   function search(e) {
     setSearchQuery(e.target.value);
   }
+
+  function sortByFunc(e) {
+    setSortBy(e)
+  }
   
   const filteredData = data.filter((e) => {
     const name = e.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -65,12 +69,58 @@ function App() {
     else if(descriptionChecked) { return title }
   });
 
+  function sortList(data = data, sortBy = 'Default') {
+    let sortedData = data;
+    if(sortBy === 'Date (Oldest first)') {
+      sortedData.sort((a, b) => { return b-a });
+    } else if(sortBy === 'Name (A-Z)') {
+      sortedData.sort(function(a, b){
+        const A = a.name.toLowerCase(), B = b.name.toLowerCase();
+        if (A < B)
+         return -1;
+        if (A > B)
+         return 1;
+        return 0;
+       });
+    } else if(sortBy === 'Name (Z-A)') {
+      sortedData.sort(function(a, b){
+        const A = a.name.toLowerCase(), B = b.name.toLowerCase();
+        if (A > B)
+         return -1;
+        if (A < B)
+         return 1;
+        return 0;
+       });
+    } else if(sortBy === 'Title (A-Z)') {
+      sortedData.sort(function(a, b){
+        const A = a.title.toLowerCase(), B = b.title.toLowerCase();
+        if (A < B)
+         return -1;
+        if (A > B)
+         return 1;
+        return 0;
+       });
+    } else if(sortBy === 'Title (Z-A)') {
+      sortedData.sort(function(a, b){
+        const A = a.title.toLowerCase(), B = b.title.toLowerCase();
+        if (A > B)
+         return -1;
+        if (A < B)
+         return 1;
+        return 0;
+       });
+    } 
+
+    return sortedData;
+  }
+
   async function fetchData() {
     const address = config.api.address + ":" + config.api.port;
     const res = await fetch(address + '/api');
     const resJSON = await res.json();
-    const Data = resJSON.sort((a, b) => { return b-a }); // <-- SORT IT!
-    setData(Data);
+    const data = resJSON.sort((a, b) => { return b-a });
+    const sortedData = sortList(data, sortBy);
+    setData(sortedData);
   }
 
   const concatTags = () => {
@@ -87,7 +137,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [sortBy]);
 
   useEffect(() => {
     setNumberOfResults(filteredData.length);
@@ -107,8 +157,8 @@ function App() {
       <List data={filteredData} reFetch={fetchData} />
 
       {sortBox ? <Sort 
-        onExit={exitSorting} 
-        reFetch={fetchData}
+        sortBy={sortByFunc}
+        onExit={exitSorting}
       /> : null}
 
       {filterBox ? <Filters 

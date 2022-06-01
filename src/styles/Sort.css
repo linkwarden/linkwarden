@@ -34,3 +34,25 @@
 .sort label {
     margin: 5px;
 }
+
+.sort-by-btn {
+    text-align: left;
+    margin-bottom: 5px;
+    font-family: 'Font Awesome 5 Free';
+    padding: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    color: #ffffffb6;
+    background-color:#273949;
+    border: none;
+    transition: background-color 0.1s;
+}
+  
+.sort-by-btn:hover {
+    background-color: rgb(76, 117, 170);
+}
+  
+.sort-by-btn:active {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
