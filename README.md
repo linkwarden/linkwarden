@@ -1,5 +1,5 @@
-# Webmarker
-### A simple bookmark manager for all your links and resources
+# WebExtracts
+### A simple bookmark + archive manager for all your links and resources.
 
 > Note: Still under development...
 
