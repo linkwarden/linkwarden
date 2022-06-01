@@ -1,5 +1,5 @@
 {
-  "name": "classify",
+  "name": "link-warden",
   "version": "0.1.0",
   "description": "A bookmark + archive manager for all your links and resources.",
   "private": true,
