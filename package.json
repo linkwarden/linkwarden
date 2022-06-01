@@ -1,6 +1,7 @@
 {
-  "name": "web-extracts",
+  "name": "classify",
   "version": "0.1.0",
+  "description": "A bookmark + archive manager for all your links and resources.",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
