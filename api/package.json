@@ -1,7 +1,7 @@
 {
-  "name": "web-extracts-api",
+  "name": "classify-api",
   "version": "1.0.0",
-  "description": "The backend",
+  "description": "Classify backend",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js"
