@@ -11,11 +11,13 @@ const Sort = ({ onExit }) => {
     <>
         <div className='sort-overlay' onClick={abort}></div>
         <fieldset className='sort'>
-            <legend>Sort List</legend>
-            <label><input name="sort" type="radio" />Date</label>
-            <label><input name="sort" type="radio" />Name</label>
-            <label><input name="sort" type="radio" />Title</label>
-            <label><input name="sort" type="radio" />Tags</label>
+            <legend>Sort by</legend>
+            <label><input name="sort" type="radio" />Date (Newest first)</label>
+            <label><input name="sort" type="radio" />Date (Oldest first)</label>
+            <label><input name="sort" type="radio" />Name (A-Z)</label>
+            <label><input name="sort" type="radio" />Name (Z-A)</label>
+            <label><input name="sort" type="radio" />Title (A-Z)</label>
+            <label><input name="sort" type="radio" />Title (Z-A)</label>
         </fieldset>
     </>
   )
