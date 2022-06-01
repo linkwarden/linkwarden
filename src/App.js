@@ -16,6 +16,7 @@ function App() {
   const [nameChecked, setNameChecked] = useState(true);
   const [descriptionChecked, setDescriptionChecked] = useState(true);
   const [tagsChecked, setTagsChecked] = useState(true);
+  const [sort, setSort] = useState('Date');
 
   function handleNameCheckbox() {
     setNameChecked(!nameChecked);
@@ -68,7 +69,7 @@ function App() {
     const address = config.api.address + ":" + config.api.port;
     const res = await fetch(address + '/api');
     const resJSON = await res.json();
-    const Data = resJSON.sort((a, b) => { return b-a });
+    const Data = resJSON.sort((a, b) => { return b-a }); // <-- SORT IT!
     setData(Data);
   }
 
