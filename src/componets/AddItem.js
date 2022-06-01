@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { nanoid } from 'nanoid'
 import '../styles/AddItem.css';
-import config from '../config.json';
+import config from '../config';
 import TagSelection from './TagSelection';
 
 const AddItem = ({onExit, reFetch, tags}) => {
@@ -36,8 +36,8 @@ const AddItem = ({onExit, reFetch, tags}) => {
     }
 
     if(name !== '' && isValidHttpUrl(link) && tag !== '') {
-      const address = config.api.address + ":" + config.api.port;
-      fetch(address + "/api", {
+      const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
+      fetch(ADDRESS + "/api", {
         
         // Adding method type
         method: "POST",

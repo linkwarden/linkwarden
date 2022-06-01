@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './styles/App.css';
 import List from './componets/List';
 import AddItem from './componets/AddItem';
-import config from './config.json';
+import config from './config';
 import Filters from './componets/Filters';
 import Sort from './componets/Sort';
 
@@ -16,7 +16,7 @@ function App() {
     [nameChecked, setNameChecked] = useState(true),
     [descriptionChecked, setDescriptionChecked] = useState(true),
     [tagsChecked, setTagsChecked] = useState(true),
-    [sortBy, setSortBy] = useState('Date (Newest first)');
+    [sortBy, setSortBy] = useState('Default');
 
   function handleNameCheckbox() {
     setNameChecked(!nameChecked);
@@ -72,7 +72,7 @@ function App() {
   function sortList(data = data, sortBy = 'Default') {
     let sortedData = data;
     if(sortBy === 'Date (Oldest first)') {
-      sortedData.sort((a, b) => { return b-a });
+      sortedData.reverse();
     } else if(sortBy === 'Name (A-Z)') {
       sortedData.sort(function(a, b){
         const A = a.name.toLowerCase(), B = b.name.toLowerCase();
@@ -115,10 +115,10 @@ function App() {
   }
 
   async function fetchData() {
-    const address = config.api.address + ":" + config.api.port;
-    const res = await fetch(address + '/api');
+    const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
+    const res = await fetch(ADDRESS + '/api');
     const resJSON = await res.json();
-    const data = resJSON.sort((a, b) => { return b-a });
+    const data = resJSON.reverse();
     const sortedData = sortList(data, sortBy);
     setData(sortedData);
   }

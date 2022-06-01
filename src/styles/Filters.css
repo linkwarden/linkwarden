@@ -1,4 +1,16 @@
+.filter-overlay {
+    animation: fadein 0.2s;
+    background-color: black;
+    opacity: 10%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+}
+
 .filter {
+    animation: fadein 0.3s;
     border: solid;
     border-width: 1px;
     font-weight: 300;
@@ -25,12 +37,7 @@
     margin: 5px;
 }
 
-.filter-overlay {
-    background-color: black;
-    opacity: 10%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 100vw;
+@keyframes fadein {
+    from { opacity: 0%; }
+    to   {  }
 }
