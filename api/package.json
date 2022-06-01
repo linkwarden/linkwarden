@@ -1,5 +1,5 @@
 {
-  "name": "webmarker_backend",
+  "name": "web-extracts-api",
   "version": "1.0.0",
   "description": "The backend",
   "main": "server.js",
