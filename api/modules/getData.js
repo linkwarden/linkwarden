@@ -1,11 +1,11 @@
 const puppeteer = require('puppeteer');
 const { PuppeteerBlocker } = require('@cliqz/adblocker-puppeteer');
 const fetch = require('cross-fetch');
-const config = require('../../src/config.json');
+const config = require('../../src/config.js');
 const fs = require('fs');
 
-const screenshotDirectory = config.api.storage_location + '/Webmarker/screenshot\'s/';
-const pdfDirectory = config.api.storage_location + '/Webmarker/pdf\'s/';
+const screenshotDirectory = config.API.STORAGE_LOCATION + '/Webmarker/screenshot\'s/';
+const pdfDirectory = config.API.STORAGE_LOCATION + '/Webmarker/pdf\'s/';
 
 if (!fs.existsSync(screenshotDirectory)){
   fs.mkdirSync(screenshotDirectory, { recursive: true });
