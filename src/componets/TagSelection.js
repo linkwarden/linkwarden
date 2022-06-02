@@ -1,12 +1,6 @@
 import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" }
-];
-
 const customStyles = {
   placeholder: (provided) => ({
     ...provided,
@@ -22,6 +16,7 @@ const customStyles = {
     ...provided,
     border: 'solid',
     borderWidth: '1px',
+    borderRadius: '0px',
     borderColor: 'rgb(80, 80, 80)',
     opacity: '90%',
     color: 'gray',
@@ -38,6 +33,7 @@ const customStyles = {
     ...provided,
     background: '#273949',
     border: 'none',
+    borderRadius: '0px',
     boxShadow: state.isFocused ? 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px' : 'rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset',
   }),
 }
