@@ -4,8 +4,8 @@ const fetch = require('cross-fetch');
 const config = require('../../src/config.js');
 const fs = require('fs');
 
-const screenshotDirectory = config.API.STORAGE_LOCATION + '/Webmarker/screenshot\'s/';
-const pdfDirectory = config.API.STORAGE_LOCATION + '/Webmarker/pdf\'s/';
+const screenshotDirectory = config.API.STORAGE_LOCATION + '/LinkWarden/screenshot\'s/';
+const pdfDirectory = config.API.STORAGE_LOCATION + '/LinkWarden/pdf\'s/';
 
 if (!fs.existsSync(screenshotDirectory)){
   fs.mkdirSync(screenshotDirectory, { recursive: true });

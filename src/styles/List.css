@@ -110,3 +110,8 @@
 .num {
   font-size: 1rem;
 }
+
+.options {
+  display: flex;
+  align-items: center;
+}

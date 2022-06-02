@@ -3,7 +3,8 @@ const app = express();
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
 const config = require('../src/config.js');
-const getData = require('./modules/getData.js')
+const getData = require('./modules/getData.js');
+const fs = require('fs');
 
 const port = config.API.PORT;
 
@@ -20,6 +21,14 @@ app.use(express.json());
 app.get('/api', async (req, res) => {
   const data = await getDoc();
   res.send(data);
+});
+
+app.get('/screenshots/:id', async (req, res) => {
+  res.sendFile(config.API.STORAGE_LOCATION + '/LinkWarden/screenshot\'s/' + req.params.id);
+});
+
+app.get('/pdfs/:id', async (req, res) => {
+  res.sendFile(config.API.STORAGE_LOCATION + '/LinkWarden/pdf\'s/' + req.params.id);
 });
 
 app.post('/api', async (req, res) => {
@@ -76,6 +85,19 @@ async function deleteDoc(doc) {
     const db = client.db(database);
     const list = db.collection(collection);
     const result = await list.deleteOne({"_id": doc});
+
+    fs.unlink(config.API.STORAGE_LOCATION + '/LinkWarden/screenshot\'s/' + doc + '.png', (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+
+    fs.unlink(config.API.STORAGE_LOCATION + '/LinkWarden/pdf\'s/' + doc + '.pdf', (err) => {
+      if (err) {
+          console.log(err);
+      }
+    });
+
 
     return result;
   } 
