@@ -33,13 +33,9 @@
     font-weight: 600;
 }
 
-.sort label {
-    margin: 5px;
-}
-
 .sort-by-btn {
+    margin: 5px;
     text-align: left;
-    margin-bottom: 5px;
     font-family: 'Font Awesome 5 Free';
     padding: 10px;
     font-size: 1.1rem;

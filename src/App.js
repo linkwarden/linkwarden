@@ -5,6 +5,9 @@ import AddItem from './componets/AddItem';
 import config from './config';
 import Filters from './componets/Filters';
 import Sort from './componets/Sort';
+import sortList from './modules/sortList';
+import filter from './modules/filterData';
+import concatTags from './modules/concatTags';
 
 function App() {
   const [data, setData] = useState([]),
@@ -50,69 +53,7 @@ function App() {
     setSortBy(e)
   }
   
-  const filteredData = data.filter((e) => {
-    const name = e.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const title = e.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const tags = e.tag.some((e) => e.includes(searchQuery.toLowerCase()));
-
-    if((nameChecked && tagsChecked && descriptionChecked) || (!nameChecked && !tagsChecked && !descriptionChecked)) {
-      return (name || title || tags);
-    } else if(nameChecked && tagsChecked) {
-      return (name || tags);
-    } else if(nameChecked && descriptionChecked) {
-      return (name || title);
-    } else if(tagsChecked && descriptionChecked) {
-      return (tags || title);
-    } 
-    else if(nameChecked) { return name } 
-    else if(tagsChecked) { return tags }
-    else if(descriptionChecked) { return title }
-  });
-
-  function sortList(data = data, sortBy = 'Default') {
-    let sortedData = data;
-    if(sortBy === 'Date (Oldest first)') {
-      sortedData.reverse();
-    } else if(sortBy === 'Name (A-Z)') {
-      sortedData.sort(function(a, b){
-        const A = a.name.toLowerCase(), B = b.name.toLowerCase();
-        if (A < B)
-         return -1;
-        if (A > B)
-         return 1;
-        return 0;
-       });
-    } else if(sortBy === 'Name (Z-A)') {
-      sortedData.sort(function(a, b){
-        const A = a.name.toLowerCase(), B = b.name.toLowerCase();
-        if (A > B)
-         return -1;
-        if (A < B)
-         return 1;
-        return 0;
-       });
-    } else if(sortBy === 'Title (A-Z)') {
-      sortedData.sort(function(a, b){
-        const A = a.title.toLowerCase(), B = b.title.toLowerCase();
-        if (A < B)
-         return -1;
-        if (A > B)
-         return 1;
-        return 0;
-       });
-    } else if(sortBy === 'Title (Z-A)') {
-      sortedData.sort(function(a, b){
-        const A = a.title.toLowerCase(), B = b.title.toLowerCase();
-        if (A > B)
-         return -1;
-        if (A < B)
-         return 1;
-        return 0;
-       });
-    } 
-
-    return sortedData;
-  }
+  const filteredData = filter(data, searchQuery, nameChecked, tagsChecked, descriptionChecked);
 
   async function fetchData() {
     const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
@@ -121,18 +62,6 @@ function App() {
     const data = resJSON.reverse();
     const sortedData = sortList(data, sortBy);
     setData(sortedData);
-  }
-
-  const concatTags = () => {
-    let tags = [];
-
-    for (let i = 0; i < data.length; i++) {
-      tags = tags.concat(data[i].tag)
-    }
-
-    tags = tags.filter((v, i, a) => a.indexOf(v) === i);
-
-    return tags;
   }
 
   useEffect(() => {
@@ -174,7 +103,7 @@ function App() {
       {newBox ? <AddItem 
         onExit={exitAdding} 
         reFetch={fetchData} 
-        tags={concatTags} 
+        tags={() => concatTags(data)} 
       /> : null}
     </div>
   );

@@ -2,14 +2,14 @@ const express = require('express');
 const app = express();
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
-const config = require('../src/config.json');
+const config = require('../src/config.js');
 const getData = require('./modules/getData.js')
 
-const port = config.api.port;
+const port = config.API.PORT;
 
-const URI = config.api.mongodb_URI;
-const database = config.api.database_name;
-const collection = config.api.collection_name;
+const URI = config.API.MONGODB_URI;
+const database = config.API.DB_NAME;
+const collection = config.API.COLLECTION_NAME;
 
 const client = new MongoClient(URI);
 
