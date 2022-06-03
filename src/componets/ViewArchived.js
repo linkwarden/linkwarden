@@ -7,9 +7,9 @@ const ViewArchived = ({ id }) => {
 
   return (
     <div className='view-archived'>
-        <a href={screenshotPath} target='_blank'>Screenshot</a>
+        <a href={screenshotPath} target='_blank' rel="noreferrer">Screenshot</a>
         <hr className='seperator' />
-        <a href={pdfPath} target='_blank'>PDF</a>
+        <a href={pdfPath} target='_blank' rel="noreferrer">PDF</a>
     </div>
   )
 }

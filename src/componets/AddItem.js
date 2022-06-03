@@ -3,10 +3,15 @@ import '../styles/AddItem.css';
 import TagSelection from './TagSelection';
 import addItem from '../modules/addItem';
 
-const AddItem = ({onExit, reFetch, tags}) => {
+const AddItem = ({onExit, reFetch, tags, SetLoader}) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
   const [tag, setTag] = useState([]);
+
+  function newItem() {
+    SetLoader(true)
+    addItem(name, link, tag, reFetch, onExit, SetLoader);
+  }
 
   function SetName(e) {
     setName(e.target.value);
@@ -39,7 +44,7 @@ const AddItem = ({onExit, reFetch, tags}) => {
           <input onChange={SetLink} className="AddItem-input" type="search" placeholder="e.g. https://example.com/"/>
           <h3>Tags:</h3>
           <TagSelection setTags={SetTags} tags={tags} />
-          <button onClick={() => addItem(name, link, tag, reFetch, onExit)} className="upload-btn">Upload &#xf093;</button>
+          <button onClick={newItem} className="upload-btn">Upload &#xf093;</button>
         </div>
       </fieldset>
     </>

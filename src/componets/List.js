@@ -6,22 +6,23 @@ import deleteEntity from '../modules/deleteEntity';
 const List = ({data, reFetch}) => {
   return (
     <div className="list">
+        {/* eslint-disable-next-line */}
         {data.map((e, i) => {
             try {
                 const url = new URL(e.link);
                 const favicon = 'http://www.google.com/s2/favicons?domain=' + url.hostname;
-                return <LazyLoad key={i} height={200} offset={200}>
+                return (<LazyLoad key={i} height={200} offset={200}>
                     <div className="list-row">
                         <div className="img-content-grp">
-                            <img src={favicon} />
+                            <img alt='' src={favicon} />
                             <div className="list-entity-content">
                                 <div className='row-name'>
-                                    <span className="num">{i + 1}.</span> {e.name} <a target="_blank" href={e.link}>({url.hostname})</a>
+                                    <span className="num">{i + 1}.</span> {e.name} <a target="_blank" rel="noreferrer" href={e.link}>({url.hostname})</a>
                                 </div>
                                 <div>{e.title}</div>
                                 <div className="tags">
                                     {e.tag.map((e, i) => {
-                                        return <div key={i}>{e}</div>
+                                        return (<div key={i}>{e}</div>)
                                     })}
                                 </div>
                             </div>
@@ -31,7 +32,7 @@ const List = ({data, reFetch}) => {
                             <div className="delete" onClick={() => deleteEntity(e._id, reFetch)}>&#xf2ed;</div>
                         </div>
                     </div>
-                </LazyLoad>
+                </LazyLoad>)
             } catch (e) {
                 console.log(e);
             }
