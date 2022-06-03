@@ -1,7 +1,7 @@
 import config from '../config';
 import { nanoid } from 'nanoid';
 
-const addItem = async (name, link, tag, reFetch, onExit) => {
+const addItem = async (name, link, tag, reFetch, onExit, SetLoader) => {
     function isValidHttpUrl(string) {
       let url;
       
@@ -30,9 +30,9 @@ const addItem = async (name, link, tag, reFetch, onExit) => {
         }
       })
       .then(res => res.text())
-      .then(message => {console.log(message)})
+      .then(message => {SetLoader(false)})
       .then(() => reFetch());
-  
+
       onExit();
     } else if(name !== '' && link !== '' && tag !== '') {
       alert('Please make sure the link is valid.\n\n(i.e. starts with "http"/"https")');
