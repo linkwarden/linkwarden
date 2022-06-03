@@ -20,10 +20,10 @@
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     background-color: #273949;
     padding: 5px;
-    top: 120px;
-    left: 250px;
+    top: 15%;
+    left: 25%;
+    right: 25%;
     position: absolute;
-    margin-top: 4px;
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;

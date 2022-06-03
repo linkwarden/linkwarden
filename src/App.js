@@ -8,6 +8,8 @@ import Sort from './componets/Sort';
 import sortList from './modules/sortList';
 import filter from './modules/filterData';
 import concatTags from './modules/concatTags';
+import NoResults from './componets/NoResults';
+import Loader from './componets/Loader';
 
 function App() {
   const [data, setData] = useState([]),
@@ -19,7 +21,12 @@ function App() {
     [nameChecked, setNameChecked] = useState(true),
     [descriptionChecked, setDescriptionChecked] = useState(true),
     [tagsChecked, setTagsChecked] = useState(true),
-    [sortBy, setSortBy] = useState('Default');
+    [sortBy, setSortBy] = useState('Default'),
+    [loader, setLoader] = useState(false);
+
+  function SetLoader(x) {
+    setLoader(x)
+  }
 
   function handleNameCheckbox() {
     setNameChecked(!nameChecked);
@@ -66,6 +73,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line
   }, [sortBy]);
 
   useEffect(() => {
@@ -79,11 +87,13 @@ function App() {
         <button className="btn" onClick={() => setNewBox(true)}>&#xf067;</button>
       </div>
 
-      <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks found' : 'No bookmarks found.'}</p>
+      <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks found' : null}</p>
 
       <button className='btn' onClick={() => setFilterBox(true)}>&#xf0b0;</button>
       <button className='btn' onClick={() => setSortBox(true)}>&#xf0dc;</button>
       <List data={filteredData} reFetch={fetchData} />
+
+      {numberOfResults === 0 ? <NoResults /> : null}
 
       {sortBox ? <Sort 
         sortBy={sortByFunc}
@@ -101,10 +111,13 @@ function App() {
        /> : null}
 
       {newBox ? <AddItem 
+        SetLoader={SetLoader}
         onExit={exitAdding} 
         reFetch={fetchData} 
         tags={() => concatTags(data)} 
       /> : null}
+
+      {loader ? <Loader /> : null}
     </div>
   );
 }

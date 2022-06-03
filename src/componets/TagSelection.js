@@ -1,10 +1,14 @@
-import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
 
 const customStyles = {
   placeholder: (provided) => ({
     ...provided,
     color: '#a9a9a9',
+  }),
+
+  multiValueRemove: (provided) => ({
+    ...provided,
+    color: 'gray',
   }),
 
   indicatorSeparator: (provided) => ({
@@ -17,7 +21,7 @@ const customStyles = {
     border: 'solid',
     borderWidth: '1px',
     borderRadius: '0px',
-    borderColor: 'rgb(80, 80, 80)',
+    borderColor: 'rgb(141, 141, 141)',
     opacity: '90%',
     color: 'gray',
     background: '#273949',
