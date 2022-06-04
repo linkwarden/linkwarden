@@ -42,7 +42,7 @@ const List = ({data, tags, reFetch, SetLoader}) => {
                             </div>
                             <div className='etc'>
                                 <ViewArchived className='view-archived' id={e._id} />
-                                <button className="edit-btn" onClick={() => edit(i)}>&#xf044;</button>
+                                <button className="edit-btn" onClick={() => edit(i)}>&#xf303;</button>
                             </div>
                         </div>
                     </LazyLoad>)
