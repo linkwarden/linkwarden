@@ -42,13 +42,17 @@ const customStyles = {
   }),
 }
 
-export default function TagSelection({setTags, tags}) {
+export default function TagSelection({setTags, tags, tag=[]}) {
   const data = tags().map((e) => {
       return { value: e, label: e }
   })
+  const defaultTags = tag.map((e) => {
+    return { value: e, label: e }
+})
 
   return (
     <CreatableSelect
+        defaultValue={defaultTags}
         styles={customStyles}
         isMulti
         onChange={setTags}

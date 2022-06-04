@@ -41,15 +41,15 @@ function App() {
   }
 
   function exitAdding() {
-    setNewBox(!newBox);
+    setNewBox(false);
   }
 
   function exitFilter() {
-    setFilterBox(!filterBox);
+    setFilterBox(false);
   }
 
   function exitSorting() {
-    setSortBox(!sortBox);
+    setSortBox(false);
   }
 
   function search(e) {
@@ -59,8 +59,9 @@ function App() {
   function sortByFunc(e) {
     setSortBy(e)
   }
-  
+
   const filteredData = filter(data, searchQuery, nameChecked, tagsChecked, descriptionChecked);
+  const tags = concatTags(data);
 
   async function fetchData() {
     const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
@@ -91,7 +92,7 @@ function App() {
 
       <button className='btn' onClick={() => setFilterBox(true)}>&#xf0b0;</button>
       <button className='btn' onClick={() => setSortBox(true)}>&#xf0dc;</button>
-      <List data={filteredData} reFetch={fetchData} />
+      <List SetLoader={SetLoader} data={filteredData} tags={tags} reFetch={fetchData} />
 
       {numberOfResults === 0 ? <NoResults /> : null}
 
@@ -114,7 +115,7 @@ function App() {
         SetLoader={SetLoader}
         onExit={exitAdding} 
         reFetch={fetchData} 
-        tags={() => concatTags(data)} 
+        tags={() => tags} 
       /> : null}
 
       {loader ? <Loader /> : null}

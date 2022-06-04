@@ -1,7 +1,7 @@
 import config from '../config';
 import { nanoid } from 'nanoid';
 
-const addItem = async (name, link, tag, reFetch, onExit, SetLoader) => {
+const addItem = async (name, link, tag, reFetch, onExit, SetLoader, method, id=nanoid()) => {
     function isValidHttpUrl(string) {
       let url;
       
@@ -14,12 +14,12 @@ const addItem = async (name, link, tag, reFetch, onExit, SetLoader) => {
       return url.protocol === "http:" || url.protocol === "https:";
     }
 
-    if(name !== '' && isValidHttpUrl(link) && tag !== '') {
+    if(isValidHttpUrl(link)) {
       const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
       fetch(ADDRESS + "/api", {
-        method: "POST",
+        method: method,
         body: JSON.stringify({
-            _id: nanoid(),
+            _id: id,
             name: name,
             title: '',
             link: link,
@@ -30,16 +30,13 @@ const addItem = async (name, link, tag, reFetch, onExit, SetLoader) => {
         }
       })
       .then(res => res.text())
-      .then(message => {SetLoader(false)})
-      .then(() => reFetch());
+      .then(() => reFetch())
+      .then(() => {SetLoader(false)});
 
       onExit();
-    } else if(name !== '' && link !== '' && tag !== '') {
+    } else {
+      SetLoader(false)
       alert('Please make sure the link is valid.\n\n(i.e. starts with "http"/"https")');
-    }
-
-    else {
-      alert('Please fill all fields and make sure the link is valid.\n\n(i.e. starts with "http"/"https")');
     }
   }
 
