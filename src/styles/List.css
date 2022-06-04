@@ -72,10 +72,10 @@
   border-radius: 100%;
   margin: 20px 20px 20px 0px;
   font-family: 'Font Awesome 5 Free';
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   padding: 10px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   color: #ffffffb6;
@@ -126,6 +126,9 @@
 
 .delete {
   float: right;
+  font-size: 1.1rem;
+  width: 40px;
+  height: 40px;
 }
 
 .delete:hover {
