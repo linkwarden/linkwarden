@@ -1,7 +1,7 @@
 import config from '../config';
 import { nanoid } from 'nanoid';
 
-const addItem = async (name, link, tag, reFetch, onExit, SetLoader, method, id=nanoid()) => {
+const addItem = async (name, link, tag, reFetch, onExit, SetLoader, method, id=nanoid(), title='') => {
     function isValidHttpUrl(string) {
       let url;
       
@@ -21,7 +21,7 @@ const addItem = async (name, link, tag, reFetch, onExit, SetLoader, method, id=n
         body: JSON.stringify({
             _id: id,
             name: name,
-            title: '',
+            title: title,
             link: link,
             tag: tag
         }),

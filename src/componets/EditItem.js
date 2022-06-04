@@ -4,20 +4,18 @@ import '../styles/AddItem.css';
 import TagSelection from './TagSelection';
 import editItem from '../modules/send';
 
-// deleteEntity(e._id, reFetch)
-
 const EditItem = ({tags, item, onExit, SetLoader, reFetch}) => {
   const [name, setName] = useState(item.name);
   const [tag, setTag] = useState(item.tag);
 
   function EditItem() {
-    SetLoader(true)
-    editItem(name, item.link, tag, reFetch, onExit, SetLoader, "PUT", item._id);
+    SetLoader(true);
+    editItem(name, item.link, tag, reFetch, onExit, SetLoader, "PUT", item._id, item.title);
   }
 
   function deleteItem() {
-    SetLoader(true)
-    deleteEntity(item._id, reFetch, onExit, SetLoader)
+    SetLoader(true);
+    deleteEntity(item._id, reFetch, onExit, SetLoader);
   }
 
   function SetName(e) {
