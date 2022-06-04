@@ -13,6 +13,8 @@ const database = config.API.DB_NAME;
 const collection = config.API.COLLECTION_NAME;
 
 const client = new MongoClient(URI);
+const db = client.db(database);
+const list = db.collection(collection);
 
 app.use(cors());
 
@@ -42,23 +44,39 @@ app.post('/api', async (req, res) => {
     console.log(err);
     insertDoc(req.body);
   } finally {
-    res.send('DONE!');
+    res.send('Posted!');
   }
 });
 
+app.put('/api', async (req, res) => {
+  const id = req.body._id;
+
+  await updateDoc(id, req.body);
+
+  res.send('Updated!');
+});
+
 app.delete('/api', async (req, res) => {
-  const id = req.body.id.toString();
+  const id = req.body.id;
 
   await deleteDoc(id);
 
   res.send(`Bookmark with _id:${id} deleted.`);
 });
 
+async function updateDoc(id, updatedListing) {
+  try {
+    await list.updateOne({ _id: id }, { $set: updatedListing });    
+  }
+  
+  catch(err) {
+    console.log(err);
+  }
+}
+
 async function insertDoc(doc) {
   try {
-    const db = client.db(database);
-    const list = db.collection(collection);
-    const result = await list.insertOne(doc);
+    await list.insertOne(doc);
   } 
   
   catch(err) {
@@ -68,8 +86,6 @@ async function insertDoc(doc) {
 
 async function getDoc() {
   try {
-    const db = client.db(database);
-    const list = db.collection(collection);
     const result = await list.find({}).toArray();
 
     return result;
@@ -82,8 +98,6 @@ async function getDoc() {
 
 async function deleteDoc(doc) {
   try {
-    const db = client.db(database);
-    const list = db.collection(collection);
     const result = await list.deleteOne({"_id": doc});
 
     fs.unlink(config.API.STORAGE_LOCATION + '/LinkWarden/screenshot\'s/' + doc + '.png', (err) => {

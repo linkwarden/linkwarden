@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import '../styles/AddItem.css';
 import TagSelection from './TagSelection';
-import addItem from '../modules/addItem';
+import addItem from '../modules/send';
 
 const AddItem = ({onExit, reFetch, tags, SetLoader}) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
   const [tag, setTag] = useState([]);
-
+  
   function newItem() {
     SetLoader(true)
-    addItem(name, link, tag, reFetch, onExit, SetLoader);
+    addItem(name, link, tag, reFetch, onExit, SetLoader, "POST");
   }
 
   function SetName(e) {
