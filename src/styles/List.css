@@ -44,7 +44,6 @@
   justify-content: space-between;
   display: flex;
   flex-direction: column;
-  pointer-events: none;
 }
 
 .list a {
