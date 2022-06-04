@@ -67,20 +67,28 @@
 }
 
 
-.delete {
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.1s;
-  font-family: 'Font Awesome 5 Free';
-  padding: 10px;
-  width: fit-content;
-  height: fit-content;
-  margin: 10px;
+.edit-btn {
+  position: relative;
   border-radius: 100%;
+  margin: 20px 20px 20px 0px;
+  font-family: 'Font Awesome 5 Free';
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  color: #ffffffb6;
+  background-color: #1f2c38;
+  border: none;
+  transition: background-color 0.1s;
 }
 
-.delete:hover {
-  background-color: rgb(255, 123, 123);
+.edit-btn:hover {
+  background-color: rgb(76, 117, 170);
+}
+
+.edit-btn:active {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
@@ -111,7 +119,15 @@
   font-size: 1rem;
 }
 
-.options {
+.etc {
   display: flex;
   align-items: center;
+}
+
+.delete {
+  float: right;
+}
+
+.delete:hover {
+  background-color: rgba(255, 65, 65, 0.8);
 }

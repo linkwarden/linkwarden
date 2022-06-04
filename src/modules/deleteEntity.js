@@ -1,6 +1,6 @@
 import config from '../config';
 
-const deleteEntity = (id, reFetch) => {
+const deleteEntity = (id, reFetch, onExit, SetLoader) => {
     const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
     fetch(ADDRESS + "/api", {
         method: "DELETE",
@@ -11,7 +11,9 @@ const deleteEntity = (id, reFetch) => {
     })
     .then(res => res.text())
     .then(message => {console.log(message)})
+    .then(() => onExit())
     .then(() => reFetch())
+    .then(() => {SetLoader(false)});
   }
 
   export default deleteEntity;
