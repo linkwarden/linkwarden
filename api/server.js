@@ -5,6 +5,7 @@ const cors = require('cors');
 const config = require('../src/config.js');
 const getData = require('./modules/getData.js');
 const fs = require('fs');
+const fetch = require('cross-fetch');
 
 const port = config.API.PORT;
 
@@ -35,16 +36,27 @@ app.get('/pdfs/:id', async (req, res) => {
 
 app.post('/api', async (req, res) => {
   const pageToVisit = req.body.link;
+  const id = req.body._id;
+  const getTitle = async(url) => {
+    let body;
+    await fetch(url)
+    .then(res => res.text())
+    .then(text => body = text)
+    // regular expression to parse contents of the <title> tag
+    let match = body.match(/<title>([^<]*)<\/title>/);
+    return match[1];
+  }
 
   try {
+    req.body.title = await getTitle(req.body.link);
+    await insertDoc(req.body);
+
+    res.send("DONE!");
+
     const dataResult = await getData(pageToVisit, req.body._id);
-    req.body.title = dataResult;
-    insertDoc(req.body);
   } catch (err) {
     console.log(err);
     insertDoc(req.body);
-  } finally {
-    res.send('Posted!');
   }
 });
 
