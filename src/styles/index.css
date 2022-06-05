@@ -6,9 +6,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #1f2c38;
+  text-shadow: 0px 1px 1px #1f2c38;
 }
 
 *::selection {
   background-color: rgba(255, 255, 0, 0.6);
-  text-shadow: 0px 1px 3px #1f2c38;
 }
