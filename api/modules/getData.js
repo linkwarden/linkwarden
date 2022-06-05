@@ -25,11 +25,8 @@ module.exports = async (link, id) => {
   
   await page.goto(link, { waitUntil: 'load', timeout: 0 });
 
-  const title = await page.title();
   await page.screenshot({ path: screenshotDirectory + id + '.png', fullPage: true});
   await page.pdf({ path: pdfDirectory + id + '.pdf', format: 'a4' });
 
   await browser.close();
-
-  return title;
 }
