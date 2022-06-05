@@ -52,8 +52,7 @@ app.post('/api', async (req, res) => {
     await insertDoc(req.body);
 
     res.send("DONE!");
-
-    const dataResult = await getData(pageToVisit, req.body._id);
+    getData(pageToVisit, req.body._id);
   } catch (err) {
     console.log(err);
     insertDoc(req.body);
