@@ -34,12 +34,11 @@ const addItem = async (name, link, tag, reFetch, onExit, SetLoader, method, id=n
       .then(() => {SetLoader(false)});
 
       onExit();
-    } else if(name === '' && link === '') {
-      onExit()
-      SetLoader(false)
-    } else {
+    } else if(!isValidHttpUrl(link) && link !== '') {
       SetLoader(false)
       alert('Please make sure the link is valid.\n\n(i.e. starts with "http"/"https")');
+    } else {
+      SetLoader(false)
     }
   }
 
