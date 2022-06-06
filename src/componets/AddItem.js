@@ -36,7 +36,7 @@ const AddItem = ({onExit, reFetch, tags, SetLoader}) => {
     <>
       <div className='add-overlay' onClick={abort}></div>
       <fieldset className='box'>
-        <legend >New bookmark</legend>
+        <legend>New bookmark</legend>
         <div className='AddItem-content'>
           <h3><span style={{color:"red"}}>* </span>Link:</h3>
           <input onChange={SetLink} className="AddItem-input" type="search" placeholder="e.g. https://example.com/"/>
