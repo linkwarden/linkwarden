@@ -83,15 +83,16 @@ function App() {
   
   return (
     <div className="App">
+    <div className='content'>
       <div className="head">
         <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
-        <button className="btn" onClick={() => setNewBox(true)}>&#xf067;</button>
+        <button className="add-btn btn" onClick={() => setNewBox(true)}>&#xf067;</button>
       </div>
 
       <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks found' : null}</p>
 
       <button className='btn' onClick={() => setFilterBox(true)}>&#xf0b0;</button>
-      <button className='btn' onClick={() => setSortBox(true)}>&#xf0dc;</button>
+      <button className='btn' style={{marginLeft: '10px'}} onClick={() => setSortBox(true)}>&#xf0dc;</button>
       <List SetLoader={SetLoader} data={filteredData} tags={tags} reFetch={fetchData} />
 
       {numberOfResults === 0 ? <NoResults /> : null}
@@ -119,6 +120,7 @@ function App() {
       /> : null}
 
       {loader ? <Loader /> : null}
+    </div>
     </div>
   );
 }
