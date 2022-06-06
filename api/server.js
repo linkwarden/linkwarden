@@ -6,6 +6,7 @@ const config = require('../src/config.js');
 const getData = require('./modules/getData.js');
 const fs = require('fs');
 const fetch = require('cross-fetch');
+const { dirname } = require('path');
 
 const port = config.API.PORT;
 
@@ -27,11 +28,19 @@ app.get('/api', async (req, res) => {
 });
 
 app.get('/screenshots/:id', async (req, res) => {
-  res.sendFile(config.API.STORAGE_LOCATION + '/LinkWarden/screenshot\'s/' + req.params.id);
+  res.sendFile(config.API.STORAGE_LOCATION + '/LinkWarden/screenshot\'s/' + req.params.id, (err) => {
+    if (err) {
+      res.sendFile(__dirname +'/pages/404.html');
+    }
+  });
 });
 
 app.get('/pdfs/:id', async (req, res) => {
-  res.sendFile(config.API.STORAGE_LOCATION + '/LinkWarden/pdf\'s/' + req.params.id);
+  res.sendFile(config.API.STORAGE_LOCATION + '/LinkWarden/pdf\'s/' + req.params.id, (err) => {
+    if (err) {
+      res.sendFile(__dirname +'/pages/404.html');
+    }
+  });
 });
 
 app.post('/api', async (req, res) => {
