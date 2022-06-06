@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import deleteEntity from '../modules/deleteEntity';
-import '../styles/AddItem.css';
+import '../styles/SendItem.css';
 import TagSelection from './TagSelection';
 import editItem from '../modules/send';
 
@@ -49,7 +49,7 @@ const EditItem = ({tags, item, onExit, SetLoader, reFetch}) => {
           <input onChange={SetName} className="AddItem-input" type="search" value={name} placeholder={"e.g. Example Tutorial"} />
           <h3>Tags:</h3>
           <TagSelection setTags={SetTags} tags={tags} tag={tag} />
-          <button onClick={EditItem} className="upload-btn">Update &#xf093;</button>
+          <button onClick={EditItem} className="send-btn">Update &#xf303;</button>
         </div>
       </fieldset>
     </>

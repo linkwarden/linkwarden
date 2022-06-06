@@ -51,10 +51,10 @@
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
-.upload-btn {
+.send-btn {
     font-family: 'Font Awesome 5 Free';
-    font-size: 1.1rem;
-    padding: 5px;
+    font-size: 1.2rem;
+    padding: 10px;
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
     color: #ffffffb6;
@@ -67,11 +67,11 @@
     transition: background-color 0.1s;
 }
 
-.upload-btn:hover {
+.send-btn:hover {
     background-color: rgb(76, 117, 170);
 }
 
-.upload-btn:active {
+.send-btn:active {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
