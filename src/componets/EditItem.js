@@ -43,11 +43,11 @@ const EditItem = ({tags, item, onExit, SetLoader, reFetch}) => {
         <button className="edit-btn delete" onClick={deleteItem}>&#xf2ed;</button>
         <div className='AddItem-content'>
         <h3>Link: <a target="_blank" rel="noreferrer" href={item.link}>{url.hostname}</a></h3>
-        <h3>{item.title}</h3>
+        <h3 className='title'><b>{item.title}</b></h3>
         
-          <h3>Name:</h3>
+          <h3>Name: <span className='optional'>(Optional)</span></h3>
           <input onChange={SetName} className="AddItem-input" type="search" value={name} placeholder={"e.g. Example Tutorial"} />
-          <h3>Tags:</h3>
+          <h3>Tags: <span className='optional'>(Optional)</span></h3>
           <TagSelection setTags={SetTags} tags={tags} tag={tag} />
           <button onClick={EditItem} className="send-btn">Update &#xf303;</button>
         </div>

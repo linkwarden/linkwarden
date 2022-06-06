@@ -40,9 +40,9 @@ const AddItem = ({onExit, reFetch, tags, SetLoader}) => {
         <div className='AddItem-content'>
           <h3><span style={{color:"red"}}>* </span>Link:</h3>
           <input onChange={SetLink} className="AddItem-input" type="search" placeholder="e.g. https://example.com/"/>
-          <h3>Name:</h3>
+          <h3>Name: <span className='optional'>(Optional)</span></h3>
           <input onChange={SetName} className="AddItem-input" type="search" placeholder="e.g. Example Tutorial"/>
-          <h3>Tags:</h3>
+          <h3>Tags: <span className='optional'>(Optional)</span></h3>
           <TagSelection setTags={SetTags} tags={tags} />
           <button onClick={newItem} className="send-btn">Add &#xf067;</button>
         </div>

@@ -87,7 +87,7 @@
 }
 
 .edit-btn:active {
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  box-shadow: 0px 0px 10px rgb(83, 143, 255);
 }
 
 .row-name {
@@ -123,6 +123,7 @@
 }
 
 .delete {
+  background-color:#273949;
   float: right;
   font-size: 1.1rem;
   width: 40px;
@@ -131,4 +132,8 @@
 
 .delete:hover {
   background-color: rgba(255, 65, 65, 0.8);
+}
+
+.delete:active {
+  box-shadow: 0px 0px 10px rgb(255, 83, 140);
 }
