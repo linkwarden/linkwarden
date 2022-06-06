@@ -6,7 +6,6 @@ const config = require('../src/config.js');
 const getData = require('./modules/getData.js');
 const fs = require('fs');
 const fetch = require('cross-fetch');
-const { dirname } = require('path');
 
 const port = config.API.PORT;
 
