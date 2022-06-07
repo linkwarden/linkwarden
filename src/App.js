@@ -109,7 +109,7 @@ function App() {
       <div className="head">
         <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
         <button className="add-btn btn" onClick={() => setNewBox(true)}>&#xf067;</button>
-        <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}>&#xf042;</button>
+        <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}></button>
       </div>
 
       <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks found' : null}</p>
