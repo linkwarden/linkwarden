@@ -22,6 +22,7 @@
     top: 15%;
     left: 30%;
     right: 30%;
+    min-width: 300px;
     position: absolute;
     -moz-user-select: none;
     -webkit-user-select: none;
