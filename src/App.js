@@ -22,7 +22,8 @@ function App() {
     [descriptionChecked, setDescriptionChecked] = useState(true),
     [tagsChecked, setTagsChecked] = useState(true),
     [sortBy, setSortBy] = useState('Default'),
-    [loader, setLoader] = useState(false);
+    [loader, setLoader] = useState(false),
+    [lightMode, setLightMode] = useState(false);
 
   function SetLoader(x) {
     setLoader(x)
@@ -57,7 +58,7 @@ function App() {
   }
 
   function sortByFunc(e) {
-    setSortBy(e)
+    setSortBy(e);
   }
 
   const filteredData = filter(data, searchQuery, nameChecked, tagsChecked, descriptionChecked);
@@ -80,6 +81,14 @@ function App() {
   useEffect(() => {
     setNumberOfResults(filteredData.length);
   }, [filteredData]);
+
+  useEffect(() => {
+    if (lightMode) {
+      document.body.classList.add("light");
+    } else {
+      document.body.classList.remove("light");
+    }
+  }, [lightMode]);
   
   return (
     <div className="App">
@@ -87,13 +96,14 @@ function App() {
       <div className="head">
         <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
         <button className="add-btn btn" onClick={() => setNewBox(true)}>&#xf067;</button>
+        <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}>&#xf042;</button>
       </div>
 
       <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks found' : null}</p>
 
-      <button className='btn' onClick={() => setFilterBox(true)}>&#xf0b0;</button>
+      <button className='btn' style={{marginTop: '10px'}} onClick={() => setFilterBox(true)}>&#xf0b0;</button>
       <button className='btn' style={{marginLeft: '10px'}} onClick={() => setSortBox(true)}>&#xf0dc;</button>
-      <List SetLoader={SetLoader} data={filteredData} tags={tags} reFetch={fetchData} />
+      <List lightMode={lightMode} SetLoader={SetLoader} data={filteredData} tags={tags} reFetch={fetchData} />
 
       {numberOfResults === 0 ? <NoResults /> : null}
 
@@ -116,10 +126,11 @@ function App() {
         SetLoader={SetLoader}
         onExit={exitAdding} 
         reFetch={fetchData} 
+        lightMode={lightMode}
         tags={() => tags} 
       /> : null}
 
-      {loader ? <Loader /> : null}
+      {loader ? <Loader lightMode={lightMode} /> : null}
     </div>
     </div>
   );

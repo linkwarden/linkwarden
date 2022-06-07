@@ -57,8 +57,6 @@
     padding: 10px;
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-    color: #ffffffb6;
-    background-color:#273949;
     border: none;
     margin-top: 20px;
     display: block;
@@ -67,13 +65,7 @@
     transition: background-color 0.1s;
 }
 
-.send-btn:hover {
-    background-color: rgb(76, 117, 170);
-}
-
-.send-btn:active {
-    box-shadow: 0px 0px 10px rgb(83, 143, 255);
-}
+.send-btn:active { box-shadow: 0px 0px 10px rgb(83, 143, 255); }
 
 @keyframes fadein {
     from { opacity: 0%; }
@@ -87,6 +79,5 @@
 }
 
 .title {
-    color: darkgray;
     font-size: 0.9em;
 }

@@ -1,7 +1,5 @@
 .App {
   min-height: 100vh;
-  background-color: #1f2c38;
-  color: white;
   display: flex;
 }
 
@@ -25,8 +23,6 @@
   border: none;
   width: 35%;
   min-width: 300px;
-  color: white;
-  background-color:#273949;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
@@ -44,22 +40,15 @@
   font-size: 1.1rem;
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  color: #ffffffb6;
   background-color:#273949;
   border: none;
   transition: background-color 0.1s;
 }
 
+.btn:active { box-shadow: 0px 0px 10px rgb(83, 143, 255); }
+
 .add-btn {
   margin-left: auto;
-}
-
-.btn:hover {
-  background-color: rgb(76, 117, 170);
-}
-
-.btn:active {
-  box-shadow: 0px 0px 10px rgb(83, 143, 255);
 }
 
 textarea:focus, input:focus{
@@ -75,7 +64,11 @@ textarea:focus, input:focus{
   text-align: center;
   padding-top: 5%;
   padding-bottom: 5%;
-  background-color:#273949;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  margin: 20px;
+  margin-top: 10px;
+}
+
+.dark-light-btn {
+  margin-left: 10px;
+  font-size: 1.3em;
 }

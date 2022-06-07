@@ -28,7 +28,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color:#273949;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
@@ -50,7 +49,6 @@
   font-family: 'Font Awesome 5 Free';
   pointer-events: all;
   text-decoration: none;
-  color: rgb(194, 193, 193);
   font-size: 1rem;
 }
 
@@ -66,20 +64,10 @@
 
 
 .edit-btn {
-  position: relative;
-  border-radius: 100%;
   margin: 20px 20px 20px 0px;
-  font-family: 'Font Awesome 5 Free';
   width: 50px;
   height: 50px;
-  padding: 10px;
-  font-size: 1.3rem;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  color: #ffffffb6;
-  background-color: #1f2c38;
-  border: none;
-  transition: background-color 0.1s;
+  font-size: 1.5rem;
 }
 
 .edit-btn:hover {
@@ -106,7 +94,6 @@
 
 .tags div {
   margin-right: 10px;
-  color: rgb(126, 208, 255);
 }
 
 .tags div::before {
@@ -125,15 +112,29 @@
 }
 
 .delete {
+  margin: 20px 20px 20px 0px;
   background-color:#273949;
   float: right;
   font-size: 1.1rem;
   width: 40px;
   height: 40px;
+  position: relative;
+  border-radius: 100%;
+  font-family: 'Font Awesome 5 Free';
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  background-color:#273949;
+  border: none;
+  transition: background-color 0.1s;
 }
 
 .delete:hover {
-  background-color: rgba(255, 65, 65, 0.8);
+  background-color: rgba(255, 75, 75, 0.8);
+  color: #d8d8d8;
 }
 
 .delete:active {
