@@ -23,7 +23,7 @@ function App() {
     [tagsChecked, setTagsChecked] = useState(true),
     [sortBy, setSortBy] = useState('Default'),
     [loader, setLoader] = useState(false),
-    [lightMode, setLightMode] = useState(false);
+    [lightMode, setLightMode] = useState(localStorage.getItem('light-mode') === 'true');
 
   function SetLoader(x) {
     setLoader(x)
@@ -82,13 +82,26 @@ function App() {
     setNumberOfResults(filteredData.length);
   }, [filteredData]);
 
+  // useEffect(() => {
+  //   const isLight = localStorage.getItem("light-mode");
+
+  //   if (JSON.parse(isLight)) {
+  //     setLightMode(true);
+  //   } else {
+  //     setLightMode(false);
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (lightMode) {
       document.body.classList.add("light");
     } else {
       document.body.classList.remove("light");
     }
+
+    localStorage.setItem('light-mode', lightMode);
   }, [lightMode]);
+
   
   return (
     <div className="App">
