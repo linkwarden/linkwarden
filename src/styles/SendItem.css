@@ -1,3 +1,20 @@
+@media (min-width: 800px) {
+    .box {
+        left: 30%;
+        right: 30%;
+        min-width: 300px;
+    }
+}
+
+@media (max-width: 800px) {
+    .box {
+        left: 15%;
+        right: 15%;
+        min-width: 200px;
+    }
+}
+
+
 .add-overlay {
     animation: fadein 0.2s;
     background-color: black;
@@ -15,12 +32,9 @@
     border-width: 1px;
     border-color: rgb(141, 141, 141);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    position: absolute;
+    position: fixed;
     z-index: 2;
     top: 15%;
-    left: 30%;
-    right: 30%;
-    min-width: 300px;
     background-color: #1f2c38;
     overflow-x: hidden;
     overflow-y: auto;

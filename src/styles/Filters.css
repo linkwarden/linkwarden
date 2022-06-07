@@ -1,3 +1,19 @@
+@media (min-width: 800px) {
+    .filter {
+        left: 35%;
+        right: 35%;
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 800px) {
+    .filter {
+        left: 20%;
+        right: 20%;
+        min-width: 100px;
+    }
+}
+
 .filter-overlay {
     animation: fadein 0.2s;
     background-color: black;
@@ -20,10 +36,7 @@
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     padding: 5px;
     top: 15%;
-    left: 30%;
-    right: 30%;
-    min-width: 300px;
-    position: absolute;
+    position: fixed;
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;

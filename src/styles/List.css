@@ -1,3 +1,62 @@
+@media (min-width: 650px) {
+  .list-entity-content {
+    margin-left: 70px;
+  }
+
+  .img-content-grp {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .etc {
+    display: flex;
+    align-items: center;
+  }
+
+  .list-row {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  }
+
+  .list a {
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 650px) {
+  .list-entity-content {
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  .list-row {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  }
+  .etc {
+    display: flex;
+    align-items: center;
+  }
+
+  .img-content-grp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .list a {
+    text-decoration: underline;
+  }
+}
+
 .list {
   width: 100%;
   text-align: left;
@@ -18,26 +77,12 @@
   transition: opacity 0.3s;
 }
 
-.img-content-grp {
-  display: flex;
-  align-items: center;
-}
-
-.list-row {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-}
-
 .list-row:hover img {
   opacity: 90%;
 }
 
 .list-entity-content {
   z-index: 0;
-  margin-left: 70px;
   padding: 20px;
   justify-content: space-between;
   display: flex;
@@ -48,7 +93,6 @@
   white-space: nowrap;
   font-family: 'Font Awesome 5 Free';
   pointer-events: all;
-  text-decoration: none;
   font-size: 1rem;
 }
 
@@ -80,6 +124,7 @@
 
 .row-name {
   font-size: 2rem;
+  word-break: break-all;
 }
 
 .tags {
@@ -90,6 +135,7 @@
   padding: 10px;
   font-size: 1rem;
   border-radius: 5px;
+  flex-wrap: wrap;
 }
 
 .tags div {
@@ -104,11 +150,6 @@
 
 .num {
   font-size: 1rem;
-}
-
-.etc {
-  display: flex;
-  align-items: center;
 }
 
 .delete {
