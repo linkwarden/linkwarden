@@ -18,8 +18,9 @@
     position: absolute;
     z-index: 2;
     top: 15%;
-    left: 20%;
-    right: 20%;
+    left: 30%;
+    right: 30%;
+    min-width: 300px;
     background-color: #1f2c38;
     overflow-x: hidden;
     overflow-y: auto;
