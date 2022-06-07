@@ -19,7 +19,7 @@
     animation: fadein 0.2s;
     background-color: black;
     opacity: 10%;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
