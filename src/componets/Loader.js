@@ -2,10 +2,10 @@ import '../styles/Loader.css';
 import { InfinitySpin } from  'react-loader-spinner'
 
 
-const Loader = () => {
+const Loader = ({ lightMode }) => {
   return (
     <div className='loader'>
-      <InfinitySpin color="white" />
+      <InfinitySpin color={lightMode ? "Black" : "White"} />
     </div>
   )
 }

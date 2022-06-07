@@ -6,9 +6,149 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #1f2c38;
-  text-shadow: 0px 1px 1px #1f2c38;
+  text-shadow: 0px 1px 2px #000000;
+  color: white;
+  transition: background-color 0.1s;
 }
 
 *::selection {
-  background-color: rgba(115, 192, 255, 0.9);
+  background-color: rgba(120, 120, 120, 0.9);
+  color: white;
+  text-shadow: none;
 }
+
+/* Dark Mode settings (Default) */
+
+.delete {
+  background-color: #1f2c38;
+  color: #ffffffb6;
+}
+
+.no-results {
+  background-color: #1f2c38;
+} 
+
+.send-btn {
+  background-color:#273949;
+  color: #ffffffb6;
+}
+
+.sort {
+  background-color: #1f2c38;
+}
+
+.sort-by-btn {
+  background-color:#273949;
+  color: #ffffffb6; 
+}
+
+.btn:hover, .sort-by-btn:hover, .send-btn:hover {
+  background-color: rgb(76, 117, 170);
+}
+
+.tags div {
+  color: rgb(126, 208, 255);
+}
+
+.title {
+  color: darkgray;
+}
+
+.list a {
+  color: rgb(194, 193, 193);
+}
+
+.btn {
+  color: #ffffffb6;
+}
+
+.no-results, .list-row {
+  transition: background-color 0.1s;
+  background-color:#273949;
+}
+
+.search {
+  transition: background-color 0.1s;
+  background-color:#273949;
+  color: white;
+}
+
+.filter {
+  background-color: #1f2c38;
+}
+
+.filter > label {
+  background-color:#273949;
+  color: #ffffffb6;
+}
+
+/* Light Mode settings */
+
+.light {
+  text-shadow: 0px 1px 2px #ffffff;
+  background-color:rgb(233, 220, 179);
+  color: rgb(64, 64, 64);
+}
+
+.light .list-row {
+  background-color: lightyellow;
+}
+
+.light .btn {
+  background-color: lightyellow;
+  color: gray;
+}
+
+.light .delete {
+  background-color: lightyellow;
+  color: rgb(176, 176, 176);
+}
+
+.light input {
+  background-color: lightyellow;
+  color: black;
+}
+
+.light .box, .light .edit-btn {
+  background-color:rgb(233, 220, 179);
+}
+
+.light .title {
+  color: rgb(105, 105, 105);
+}
+
+.light .list a {
+  color: rgb(102, 102, 102);
+}
+
+.light .tags div {
+  color: rgb(9, 139, 214);
+}
+
+.light .filter, .light .sort {
+  background-color: rgb(233, 220, 179);
+}
+
+.light .filter > label {
+  background-color: lightyellow;
+  color: #4b4b4bb6;
+}
+
+.light .sort-by-btn {
+  background-color:lightyellow;
+  color: #4b4b4bb6;
+}
+
+.light .send-btn {
+  background-color: lightyellow;
+  color: #717171b6;
+}
+
+.light .sort-by-btn:hover, .light .btn:hover, .light .send-btn:hover {
+  background-color: rgb(55, 131, 237);
+  color: #d8d8d8;
+}
+
+.light .no-results {
+  background-color: lightyellow;
+} 

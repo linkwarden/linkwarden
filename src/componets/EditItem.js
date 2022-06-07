@@ -4,7 +4,7 @@ import '../styles/SendItem.css';
 import TagSelection from './TagSelection';
 import editItem from '../modules/send';
 
-const EditItem = ({tags, item, onExit, SetLoader, reFetch}) => {
+const EditItem = ({tags, item, onExit, SetLoader, reFetch, lightMode }) => {
   const [name, setName] = useState(item.name);
   const [tag, setTag] = useState(item.tag);
 
@@ -40,7 +40,7 @@ const EditItem = ({tags, item, onExit, SetLoader, reFetch}) => {
       <div className='add-overlay' onClick={abort}></div>
       <fieldset className='box'>
         <legend >Edit bookmark</legend>
-        <button className="edit-btn delete" onClick={deleteItem}>&#xf2ed;</button>
+        <button className="delete" onClick={deleteItem}>&#xf2ed;</button>
         <div className='AddItem-content'>
         <h3>Link: <a target="_blank" rel="noreferrer" href={item.link}>{url.hostname}</a></h3>
         <h3 className='title'><b>{item.title}</b></h3>
@@ -48,7 +48,7 @@ const EditItem = ({tags, item, onExit, SetLoader, reFetch}) => {
           <h3>Name: <span className='optional'>(Optional)</span></h3>
           <input onChange={SetName} className="AddItem-input" type="search" value={name} placeholder={"e.g. Example Tutorial"} />
           <h3>Tags: <span className='optional'>(Optional)</span></h3>
-          <TagSelection setTags={SetTags} tags={tags} tag={tag} />
+          <TagSelection setTags={SetTags} tags={tags} tag={tag} lightMode={lightMode} />
           <button onClick={EditItem} className="send-btn">Update &#xf303;</button>
         </div>
       </fieldset>

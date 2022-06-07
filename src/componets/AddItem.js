@@ -3,7 +3,7 @@ import '../styles/SendItem.css';
 import TagSelection from './TagSelection';
 import addItem from '../modules/send';
 
-const AddItem = ({onExit, reFetch, tags, SetLoader}) => {
+const AddItem = ({onExit, reFetch, tags, SetLoader, lightMode}) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
   const [tag, setTag] = useState([]);
@@ -43,7 +43,7 @@ const AddItem = ({onExit, reFetch, tags, SetLoader}) => {
           <h3>Name: <span className='optional'>(Optional)</span></h3>
           <input onChange={SetName} className="AddItem-input" type="search" placeholder="e.g. Example Tutorial"/>
           <h3>Tags: <span className='optional'>(Optional)</span></h3>
-          <TagSelection setTags={SetTags} tags={tags} />
+          <TagSelection setTags={SetTags} tags={tags} lightMode={lightMode} />
           <button onClick={newItem} className="send-btn">Add &#xf067;</button>
         </div>
       </fieldset>
