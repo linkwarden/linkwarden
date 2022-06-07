@@ -4,7 +4,7 @@ import ViewArchived from './ViewArchived';
 import EditItem from './EditItem';
 import { useState } from 'react'
 
-const List = ({data, tags, reFetch, SetLoader}) => {
+const List = ({data, tags, reFetch, SetLoader, lightMode}) => {
     const [editBox, setEditBox] = useState(false)
     const [editIndex, setEditIndex] = useState(0)
 
@@ -42,7 +42,7 @@ const List = ({data, tags, reFetch, SetLoader}) => {
                             </div>
                             <div className='etc'>
                                 <ViewArchived className='view-archived' id={e._id} />
-                                <button className="edit-btn" onClick={() => edit(i)}>&#xf303;</button>
+                                <button className="edit-btn btn" onClick={() => edit(i)}>&#xf303;</button>
                             </div>
                         </div>
                     </LazyLoad>)
@@ -50,7 +50,7 @@ const List = ({data, tags, reFetch, SetLoader}) => {
                     console.log(e);
                 }
             })}
-            {editBox ? <EditItem tags={() => tags} onExit={exitEditing} SetLoader={SetLoader} reFetch={reFetch} item={data[editIndex]} /> : null}
+            {editBox ? <EditItem lightMode={lightMode} tags={() => tags} onExit={exitEditing} SetLoader={SetLoader} reFetch={reFetch} item={data[editIndex]} /> : null}
         </div>
     )
 }
