@@ -1,7 +1,7 @@
 {
   "name": "link-warden",
   "version": "0.1.0",
-  "description": "A bookmark + archive manager for all your links and resources.",
+  "description": "A place for all your links and resources.",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
@@ -17,7 +17,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": " (cd api && npm run dev) & npm run go",
+    "go": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
