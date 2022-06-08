@@ -112,7 +112,7 @@ function App() {
         <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}></button>
       </div>
 
-      <p className="results">{numberOfResults > 0 ? numberOfResults + ' Bookmarks found' : null}</p>
+      {numberOfResults > 0 ? <p className="results">{numberOfResults} Bookmarks found</p> : null}
 
       <button className='btn' style={{marginTop: '10px'}} onClick={() => setFilterBox(true)}>&#xf0b0;</button>
       <button className='btn' style={{marginLeft: '10px'}} onClick={() => setSortBox(true)}>&#xf0dc;</button>
