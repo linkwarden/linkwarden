@@ -26,7 +26,7 @@ function App() {
     [lightMode, setLightMode] = useState(localStorage.getItem('light-mode') === 'true');
 
   function SetLoader(x) {
-    setLoader(x)
+    setLoader(x);
   }
 
   function handleNameCheckbox() {
@@ -81,16 +81,6 @@ function App() {
   useEffect(() => {
     setNumberOfResults(filteredData.length);
   }, [filteredData]);
-
-  // useEffect(() => {
-  //   const isLight = localStorage.getItem("light-mode");
-
-  //   if (JSON.parse(isLight)) {
-  //     setLightMode(true);
-  //   } else {
-  //     setLightMode(false);
-  //   }
-  // }, []);
 
   useEffect(() => {
     if (lightMode) {
