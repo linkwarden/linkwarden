@@ -1,7 +1,7 @@
 {
   "name": "link-warden-api",
   "version": "1.0.0",
-  "description": "Link Warden backend",
+  "description": "LinkWarden backend",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js"
