@@ -64,6 +64,11 @@ body {
 
 .btn {
   color: #ffffffb6;
+  background-color:#273949;
+}
+
+.edit-btn {
+  background-color: #1f2c38;
 }
 
 .no-results, .list-row {
