@@ -23,7 +23,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 - [x] Lazy loading support (for better performance).
 - [x] Set multiple tags to each link.
 
-### Other planned features
+### Other planned Features
 (These are not 100% guaranteed, they're just idea's.)
 - [ ] Add time stamps to links.
 - [ ] Browser extenstions.
@@ -33,14 +33,17 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 - [ ] Sidenav.
 - [ ] A design logo.
 
-> **To make a pull request please take a look at our [contributing guidelines](.github/CONTRIBUTING.md).**
-
 ## Setup
 ### Linux/MacOS
-1. Make sure the MongoDB database and collection is up and running.
+1. Make sure your MongoDB database and collection is up and running.
 
 2. Edit `/src/config.js` accordingly.
 
 3. Head to the main folder using terminal and run: `(cd api && npm install) && npm install --legacy-peer-deps` for the dependancies.
 
 4. Run `npm start` to start the application.
+
+## LinkWarden Development
+All contributions are welcomed! Please take a look at [how to contribute](.github/CONTRIBUTING.md).
+
+> **For questions/help, feature requests and bug reports please create an [issue](https://github.com/Daniel31x13/link-warden/issues) (please use the right lable).**
