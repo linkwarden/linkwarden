@@ -19,7 +19,7 @@
     animation: fadein 0.2s;
     background-color: black;
     opacity: 10%;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
@@ -32,7 +32,7 @@
     border-width: 1px;
     border-color: rgb(141, 141, 141);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    position: fixed;
+    position: absolute;
     z-index: 2;
     top: 15%;
     background-color: #1f2c38;
