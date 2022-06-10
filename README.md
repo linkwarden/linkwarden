@@ -39,6 +39,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 - [ ] Sidenav.
 - [ ] A design logo.
 - [ ] Better UI (using Material UI).
+- [ ] Save as .warc extension (as an extra format).
 
 ## Setup
 ### Linux/MacOS
