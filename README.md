@@ -38,6 +38,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 - [ ] Folder support.
 - [ ] Sidenav.
 - [ ] A design logo.
+- [ ] Better UI (using Material UI).
 
 ## Setup
 ### Linux/MacOS
