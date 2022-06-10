@@ -23,7 +23,7 @@ const List = ({data, tags, reFetch, SetLoader, lightMode}) => {
             {data.map((e, i, array) => {
                 try {
                     const url = new URL(e.link);
-                    const favicon = 'http://www.google.com/s2/favicons?domain=' + url.hostname;
+                    const favicon = 'https://www.google.com/s2/favicons?domain=' + url.hostname;
                     return (<LazyLoad key={i} height={200} offset={200}>
                         <div className="list-row">
                             <div className="img-content-grp">
