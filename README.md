@@ -42,7 +42,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 ### Linux/MacOS
 1. Make sure your MongoDB database and collection is up and running.
 
-2. Edit `/src/config.js` accordingly.
+2. Edit [/src/config.js](src/config.js) accordingly.
 
 3. Head to the main folder using terminal and run: `(cd api && npm install) && npm install --legacy-peer-deps` for the dependancies.
 
