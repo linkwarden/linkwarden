@@ -40,6 +40,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 - [ ] A design logo.
 - [ ] Better UI (using Material UI).
 - [ ] Save as .warc extension (as an extra format).
+- [ ] Auto export as ePub/mobi for eReaders (using email or anything else...).
 
 ## Setup
 ### Linux/MacOS
