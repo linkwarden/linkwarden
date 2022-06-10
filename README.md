@@ -44,7 +44,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 2. Edit [/src/config.js](src/config.js) accordingly.
 
-3. Head to the main folder using terminal and run: `(cd api && npm install) && npm install --legacy-peer-deps` for the dependancies.
+3. Head to the main folder using terminal and run: `(cd api && npm install) && npm install --legacy-peer-deps` for the dependencies.
 
 4. Run `npm start` to start the application.
 
