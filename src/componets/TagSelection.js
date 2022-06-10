@@ -3,6 +3,10 @@ import CreatableSelect from "react-select/creatable";
 // lightMode ? "Black" : "White"
 export default function TagSelection({setTags, tags, tag=[], lightMode}) {
   const customStyles = {
+    container: (provided) => ({
+      ...provided,
+      textShadow: 'none',
+    }),
     placeholder: (provided) => ({
       ...provided,
       color: '#a9a9a9',
