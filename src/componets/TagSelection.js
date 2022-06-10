@@ -7,6 +7,7 @@ export default function TagSelection({setTags, tags, tag=[], lightMode}) {
       ...provided,
       textShadow: 'none',
     }),
+    
     placeholder: (provided) => ({
       ...provided,
       color: '#a9a9a9',
