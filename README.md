@@ -29,17 +29,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 - [x] Lazy loading support (for better performance).
 - [x] Set multiple tags to each link.
 
-### Other planned Features
-(These are not 100% guaranteed, they're just idea's.)
-- [ ] Add time stamps to links.
-- [ ] Browser extenstions.
-- [ ] Docker support.
-- [ ] Save as [SingleFile](https://github.com/gildas-lormeau/SingleFile).
-- [ ] Folder support.
-- [ ] Sidenav.
-- [ ] A design logo.
-- [ ] Better UI (using Material UI).
-- [ ] Save as .warc extension (as an extra format).
+**Also take a look at our planned features in the [project roadmap section](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap).**
 
 ## Setup
 ### Linux/MacOS
