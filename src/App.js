@@ -69,14 +69,19 @@ function App() {
     const res = await fetch(ADDRESS + '/api');
     const resJSON = await res.json();
     const data = resJSON.reverse();
+    setData(data);
+  }
+
+  useEffect(() => {
     const sortedData = sortList(data, sortBy);
     setData(sortedData);
-  }
+    // eslint-disable-next-line
+  }, [sortBy]);
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line
-  }, [sortBy]);
+  }, []);
 
   useEffect(() => {
     setNumberOfResults(filteredData.length);
