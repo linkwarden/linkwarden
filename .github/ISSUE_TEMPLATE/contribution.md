@@ -1,6 +1,6 @@
 ---
 name: Contribution
-about: Before contributing, discuss your planned implementation.
+about: If you want to contribute, discuss your planned implementation here.
 title: Contribution
 labels: contribution
 assignees: ''
