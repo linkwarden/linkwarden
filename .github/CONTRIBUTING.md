@@ -7,7 +7,7 @@ First off, I'm really glad you're reading this and thank you for taking the time
 
 2. Open an issue with your planned implementation to discuss.
 
-3. Check in with me before starting development to make sure your work wont conflict with or duplicate existing work.
+3. Check in with me before starting development to make sure your work wont conflict with or duplicate existing work (by doing step 2).
 
 4. Commit, push, and submit a PR and wait for review feedback.
 
