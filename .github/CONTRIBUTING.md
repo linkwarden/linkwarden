@@ -5,7 +5,7 @@ First off, I'm really glad you're reading this and thank you for taking the time
 
 1. Confirm your planned implementation fit into our project [features](https://github.com/Daniel31x13/link-warden#features) and [project roadmap](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap) (wether it's adding a new feature or improving our existing code).
 
-2. Open an issue with your planned implementation to discuss.
+2. Open an [issue](https://github.com/Daniel31x13/link-warden/issues/new?assignees=&labels=contribution&template=contribution.md&title=Contribution) with your planned implementation to discuss.
 
 3. Check in with me before starting development to make sure your work wont conflict with or duplicate existing work (by doing step 2).
 
