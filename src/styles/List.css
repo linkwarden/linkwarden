@@ -3,6 +3,10 @@
     margin-left: 70px;
   }
 
+  .tags {
+    margin: 10px 10px 10px 0px;
+  }
+
   .img-content-grp {
     display: flex;
     flex-direction: row;
@@ -30,15 +34,19 @@
 @media (max-width: 650px) {
   .list-entity-content {
     margin-top: 50px;
-    text-align: center;
   }
 
+  .tags {
+    margin: 10px auto 10px auto;
+  }
+  
   .list-row {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    text-align: center;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   }
   .etc {
@@ -54,6 +62,15 @@
 
   .list a {
     text-decoration: underline;
+  }
+
+  .date {
+    margin-left: auto;
+  }
+
+  .title {
+    margin-right: auto;
+    margin-left: auto;
   }
 }
 
@@ -129,10 +146,8 @@
 
 .tags {
   display: flex;
-  margin: 10px;
   border-width: 1px;
   width: fit-content;
-  padding: 10px;
   font-size: 1rem;
   border-radius: 5px;
   flex-wrap: wrap;
@@ -144,7 +159,7 @@
 
 .tags div::before {
 
-  color: rgb(35, 112, 156);
+  color: rgb(42, 125, 172);
   content: "# ";
 }
 
@@ -180,4 +195,11 @@
 
 .delete:active {
   box-shadow: 0px 0px 10px rgb(255, 83, 140);
+}
+
+.date {
+  font-weight: 500;
+  font-size: 0.7rem;
+  opacity: 80%;
+  margin-right: auto;
 }

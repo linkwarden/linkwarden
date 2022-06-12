@@ -75,6 +75,7 @@ function App() {
   useEffect(() => {
     const sortedData = sortList(data, sortBy);
     setData(sortedData);
+    exitSorting();
     // eslint-disable-next-line
   }, [sortBy]);
 
