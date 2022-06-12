@@ -32,12 +32,13 @@ const List = ({data, tags, reFetch, SetLoader, lightMode}) => {
                                     <div className='row-name'>
                                         <span className="num">{i + 1}.</span> {e.name} <a target="_blank" rel="noreferrer" href={e.link}>({url.hostname})</a>
                                     </div>
-                                    <div>{e.title}</div>
+                                    <div className='title'>{e.title}</div>
                                     <div className="tags">
                                         {e.tag.map((e, i) => {
                                             return (<div key={i}>{e}</div>)
                                         })}
                                     </div>
+                                    <div className='date'>{new Date(e.date).toDateString()}</div>
                                 </div>
                             </div>
                             <div className='etc'>
