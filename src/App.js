@@ -10,6 +10,7 @@ import filter from './modules/filterData';
 import concatTags from './modules/concatTags';
 import NoResults from './componets/NoResults';
 import Loader from './componets/Loader';
+import SideBar from './componets/SideBar';
 
 function App() {
   const [data, setData] = useState([]),
@@ -23,7 +24,8 @@ function App() {
     [tagsChecked, setTagsChecked] = useState(true),
     [sortBy, setSortBy] = useState('Default'),
     [loader, setLoader] = useState(false),
-    [lightMode, setLightMode] = useState(localStorage.getItem('light-mode') === 'true');
+    [lightMode, setLightMode] = useState(localStorage.getItem('light-mode') === 'true'),
+    [toggle, setToggle] = useState(true);
 
   function SetLoader(x) {
     setLoader(x);
@@ -59,6 +61,10 @@ function App() {
 
   function sortByFunc(e) {
     setSortBy(e);
+  }
+
+  function handleToggleSidebar() {
+      setToggle(!toggle)
   }
 
   const filteredData = filter(data, searchQuery, nameChecked, tagsChecked, descriptionChecked);
@@ -101,46 +107,48 @@ function App() {
   
   return (
     <div className="App">
-    <div className='content'>
-      <div className="head">
-        <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
-        <button className="add-btn btn" onClick={() => setNewBox(true)}>&#xf067;</button>
-        <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}></button>
+      <SideBar handleToggleSidebar={handleToggleSidebar} toggle={toggle} />
+      <div className='content'>
+        <div className="head">
+          <button className='sidebar-btn btn' style={{marginRight: '10px'}} onClick={handleToggleSidebar}>&#xf0c9;</button>
+          <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
+          <button className="add-btn btn" onClick={() => setNewBox(true)}>&#xf067;</button>
+          <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}></button>
+        </div>
+
+        {numberOfResults > 0 ? <p className="results">{numberOfResults} Bookmarks found</p> : null}
+
+        <button className='btn' style={{marginTop: '10px'}} onClick={() => setFilterBox(true)}>&#xf0b0;</button>
+        <button className='btn' style={{marginLeft: '10px'}} onClick={() => setSortBox(true)}>&#xf0dc;</button>
+        <List lightMode={lightMode} SetLoader={SetLoader} data={filteredData} tags={tags} reFetch={fetchData} />
+
+        {numberOfResults === 0 ? <NoResults /> : null}
+
+        {sortBox ? <Sort 
+          sortBy={sortByFunc}
+          onExit={exitSorting}
+        /> : null}
+
+        {filterBox ? <Filters 
+          nameChecked={nameChecked}
+          handleNameCheckbox={handleNameCheckbox}
+          descriptionChecked={descriptionChecked}
+          handleDescriptionCheckbox={handleDescriptionCheckbox}
+          tagsChecked={tagsChecked} 
+          handleTagsCheckbox={handleTagsCheckbox}
+          onExit={exitFilter}
+        /> : null}
+
+        {newBox ? <AddItem 
+          SetLoader={SetLoader}
+          onExit={exitAdding} 
+          reFetch={fetchData} 
+          lightMode={lightMode}
+          tags={() => tags} 
+        /> : null}
+
+        {loader ? <Loader lightMode={lightMode} /> : null}
       </div>
-
-      {numberOfResults > 0 ? <p className="results">{numberOfResults} Bookmarks found</p> : null}
-
-      <button className='btn' style={{marginTop: '10px'}} onClick={() => setFilterBox(true)}>&#xf0b0;</button>
-      <button className='btn' style={{marginLeft: '10px'}} onClick={() => setSortBox(true)}>&#xf0dc;</button>
-      <List lightMode={lightMode} SetLoader={SetLoader} data={filteredData} tags={tags} reFetch={fetchData} />
-
-      {numberOfResults === 0 ? <NoResults /> : null}
-
-      {sortBox ? <Sort 
-        sortBy={sortByFunc}
-        onExit={exitSorting}
-      /> : null}
-
-      {filterBox ? <Filters 
-        nameChecked={nameChecked}
-        handleNameCheckbox={handleNameCheckbox}
-        descriptionChecked={descriptionChecked}
-        handleDescriptionCheckbox={handleDescriptionCheckbox}
-        tagsChecked={tagsChecked} 
-        handleTagsCheckbox={handleTagsCheckbox}
-        onExit={exitFilter}
-       /> : null}
-
-      {newBox ? <AddItem 
-        SetLoader={SetLoader}
-        onExit={exitAdding} 
-        reFetch={fetchData} 
-        lightMode={lightMode}
-        tags={() => tags} 
-      /> : null}
-
-      {loader ? <Loader lightMode={lightMode} /> : null}
-    </div>
     </div>
   );
 }

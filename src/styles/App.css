@@ -7,7 +7,17 @@
 
 @media (max-width: 650px) {
   .search {
-    width: 200px;
+    width: 170px;
+  }
+}
+
+@media (min-width: 993px) {
+  .content {
+    margin-left: 270px;
+  }
+
+  .sidebar-btn {
+    display: none;
   }
 }
 
@@ -19,9 +29,6 @@
 .content {
   width: 100%;
   padding: 20px;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .head {
