@@ -12,7 +12,7 @@ body {
 }
 
 *::selection {
-  background-color: rgba(78, 78, 78, 0.9);
+  background-color: black;
   color: white;
   text-shadow: none;
 }

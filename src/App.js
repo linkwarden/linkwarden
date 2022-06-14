@@ -68,6 +68,7 @@ function App() {
   }
 
   const filteredData = filter(data, searchQuery, nameChecked, tagsChecked, descriptionChecked);
+
   const tags = concatTags(data);
 
   async function fetchData() {
@@ -107,7 +108,7 @@ function App() {
   
   return (
     <div className="App">
-      <SideBar handleToggleSidebar={handleToggleSidebar} toggle={toggle} />
+      <SideBar tags={tags} handleToggleSidebar={handleToggleSidebar} toggle={toggle} />
       <div className='content'>
         <div className="head">
           <button className='sidebar-btn btn' style={{marginRight: '10px'}} onClick={handleToggleSidebar}>&#xf0c9;</button>
