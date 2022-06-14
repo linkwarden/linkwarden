@@ -1,4 +1,32 @@
 .sidebar {
     height: 100vh;
     position: fixed;
+    border-right: solid;
+    border-width: 1px;
+    border-color: gray;
+}
+
+.sidebar-content {
+    padding: 20px;
+}
+
+.sidebar h1 {
+    text-align: center;
+}
+
+.credits {
+    text-align: center;
+    font-size: small;
+}
+
+.credits a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+
+.pro-sidebar-layout {
+    background: #384952;
+    text-shadow: none;
+    color: white;
 }
