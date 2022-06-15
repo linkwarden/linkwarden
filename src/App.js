@@ -11,6 +11,8 @@ import concatTags from './modules/concatTags';
 import NoResults from './componets/NoResults';
 import Loader from './componets/Loader';
 import SideBar from './componets/SideBar';
+import Tags from './routes/Tags.js';
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   const [data, setData] = useState([]),
@@ -109,47 +111,65 @@ function App() {
   return (
     <div className="App">
       <SideBar tags={tags} handleToggleSidebar={handleToggleSidebar} toggle={toggle} />
-      <div className='content'>
-        <div className="head">
-          <button className='sidebar-btn btn' style={{marginRight: '10px'}} onClick={handleToggleSidebar}>&#xf0c9;</button>
-          <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
-          <button className="add-btn btn" onClick={() => setNewBox(true)}>&#xf067;</button>
-          <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}></button>
-        </div>
+      <Routes>
+        <Route path="/" element={<div className='content'>
+          <div className="head">
+            <button className='sidebar-btn btn' style={{marginRight: '10px'}} onClick={handleToggleSidebar}>&#xf0c9;</button>
+            <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
+            <button className="add-btn btn" onClick={() => setNewBox(true)}>&#xf067;</button>
+            <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}></button>
+          </div>
 
-        {numberOfResults > 0 ? <p className="results">{numberOfResults} Bookmarks found</p> : null}
+          {numberOfResults > 0 ? <p className="results">{numberOfResults} Bookmarks found</p> : null}
 
-        <button className='btn' style={{marginTop: '10px'}} onClick={() => setFilterBox(true)}>&#xf0b0;</button>
-        <button className='btn' style={{marginLeft: '10px'}} onClick={() => setSortBox(true)}>&#xf0dc;</button>
-        <List lightMode={lightMode} SetLoader={SetLoader} data={filteredData} tags={tags} reFetch={fetchData} />
+          <button className='btn' style={{marginTop: '10px'}} onClick={() => setFilterBox(true)}>&#xf0b0;</button>
+          <button className='btn' style={{marginLeft: '10px'}} onClick={() => setSortBox(true)}>&#xf0dc;</button>
+          
+          <List
+            lightMode={lightMode} 
+            SetLoader={SetLoader} 
+            data={filteredData} 
+            tags={tags} 
+            reFetch={fetchData} 
+          />
 
-        {numberOfResults === 0 ? <NoResults /> : null}
+          {numberOfResults === 0 ? <NoResults /> : null}
 
-        {sortBox ? <Sort 
-          sortBy={sortByFunc}
-          onExit={exitSorting}
-        /> : null}
+          {sortBox ? <Sort 
+            sortBy={sortByFunc}
+            onExit={exitSorting}
+          /> : null}
 
-        {filterBox ? <Filters 
-          nameChecked={nameChecked}
-          handleNameCheckbox={handleNameCheckbox}
-          descriptionChecked={descriptionChecked}
-          handleDescriptionCheckbox={handleDescriptionCheckbox}
-          tagsChecked={tagsChecked} 
-          handleTagsCheckbox={handleTagsCheckbox}
-          onExit={exitFilter}
-        /> : null}
+          {filterBox ? <Filters 
+            nameChecked={nameChecked}
+            handleNameCheckbox={handleNameCheckbox}
+            descriptionChecked={descriptionChecked}
+            handleDescriptionCheckbox={handleDescriptionCheckbox}
+            tagsChecked={tagsChecked} 
+            handleTagsCheckbox={handleTagsCheckbox}
+            onExit={exitFilter}
+          /> : null}
 
-        {newBox ? <AddItem 
-          SetLoader={SetLoader}
-          onExit={exitAdding} 
-          reFetch={fetchData} 
-          lightMode={lightMode}
-          tags={() => tags} 
-        /> : null}
+          {newBox ? <AddItem 
+            SetLoader={SetLoader}
+            onExit={exitAdding} 
+            reFetch={fetchData} 
+            lightMode={lightMode}
+            tags={() => tags} 
+          /> : null}
 
-        {loader ? <Loader lightMode={lightMode} /> : null}
-      </div>
+          {loader ? <Loader lightMode={lightMode} /> : null}
+        </div>} />
+
+        <Route path="tags/:tagId" element={<Tags
+          lightMode={lightMode} 
+          SetLoader={SetLoader} 
+          data={filteredData} 
+          tags={tags} 
+          reFetch={fetchData}
+        />} />
+        
+      </Routes>
     </div>
   );
 }
