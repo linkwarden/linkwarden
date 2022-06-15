@@ -16,9 +16,9 @@ const SideBar = ({ tags, handleToggleSidebar, toggle }) => {
     <SidebarContent className='sidebar-content'>
         <Menu iconShape="circle">
             
-            <MenuItem><Link to="/"><h3>View All</h3></Link></MenuItem>
+            <MenuItem><Link to="/"><h3>Show Everything</h3></Link></MenuItem>
             
-            <SubMenu title='Tags'>                
+            <SubMenu icon='#' defaultOpen={true} title='Tags'>                
                 {tags.map((e, i) => {
                     const path = `/tags/${e}`
                     return <MenuItem key={i}><Link to={path}>{e}</Link></MenuItem>
