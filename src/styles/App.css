@@ -23,11 +23,9 @@
 
 .App {
   min-height: 100vh;
-  display: flex;
 }
 
 .content {
-  width: 100%;
   padding: 20px;
 }
 
