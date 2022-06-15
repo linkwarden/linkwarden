@@ -1,6 +1,7 @@
-import { ProSidebar, SidebarHeader, SidebarFooter, SidebarContent } from 'react-pro-sidebar';
+import { ProSidebar, SidebarHeader, SidebarFooter, SidebarContent, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import '../styles/SideBar.css';
+import { Link } from "react-router-dom";
 
 const SideBar = ({ tags, handleToggleSidebar, toggle }) => {
   return (
@@ -13,11 +14,20 @@ const SideBar = ({ tags, handleToggleSidebar, toggle }) => {
         <h1>LinkWarden</h1>
     </SidebarHeader>
     <SidebarContent className='sidebar-content'>
-
-        <h3>Tags:</h3>
-        {tags.map((e) => {
-            return <p>{e}</p>
-        })}
+        <Menu iconShape="circle">
+            
+            <MenuItem><Link to="/"><h3>View All</h3></Link></MenuItem>
+            
+            <SubMenu title='Tags'>                
+                {tags.map((e, i) => {
+                    const path = `/tags/${e}`
+                    return <MenuItem key={i}><Link to={path}>{e}</Link></MenuItem>
+                })}
+            </SubMenu>
+                
+            
+            
+        </Menu>
     </SidebarContent>
     <SidebarFooter>
         <p className='credits'>©{new Date().getFullYear()} Made with 💙 by <a href='https://github.com/Daniel31x13'>Daniel 31X13</a></p>
