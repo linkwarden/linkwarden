@@ -1,10 +1,10 @@
 .view-archived {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
 .seperator {
-    width: 100%;
-    color: #1f2c38;
+  width: 100%;
+  color: #1f2c38;
 }

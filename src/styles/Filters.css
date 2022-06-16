@@ -1,73 +1,77 @@
 @media (min-width: 800px) {
-    .filter {
-        left: 35%;
-        right: 35%;
-        min-width: 200px;
-    }
+  .filter {
+    left: 35%;
+    right: 35%;
+    min-width: 200px;
+  }
 }
 
 @media (max-width: 800px) {
-    .filter {
-        left: 20%;
-        right: 20%;
-        min-width: 100px;
-    }
+  .filter {
+    left: 20%;
+    right: 20%;
+    min-width: 100px;
+  }
 }
 
 .filter-overlay {
-    animation: fadein 0.2s;
-    background-color: black;
-    opacity: 10%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 100vw;
-    z-index: 1;
+  animation: fadein 0.2s;
+  background-color: black;
+  opacity: 10%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  z-index: 1;
 }
 
 .filter-box {
-    position: relative;
+  position: relative;
 }
 
 .filter {
-    animation: fadein 0.3s;
-    border: solid;
-    border-width: 1px;
-    font-weight: 300;
-    border-color: rgb(141, 141, 141);
-    display: flex;
-    flex-direction: column;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    padding: 5px;
-    position: absolute;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    z-index: 2;
+  animation: fadein 0.3s;
+  border: solid;
+  border-width: 1px;
+  font-weight: 300;
+  border-color: rgb(141, 141, 141);
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  padding: 5px;
+  position: absolute;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 2;
 }
 
 .filter legend {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .filter > label {
-    margin: 5px;
-    text-align: left;
-    margin-bottom: 5px;
-    font-family: 'Font Awesome 5 Free';
-    padding: 10px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-    border: none;
+  margin: 5px;
+  text-align: left;
+  margin-bottom: 5px;
+  font-family: "Font Awesome 5 Free";
+  padding: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  border: none;
 }
 
 .filter label:active {
-    box-shadow: 0px 0px 10px rgb(83, 143, 255);
+  box-shadow: 0px 0px 10px rgb(83, 143, 255);
 }
 
 @keyframes fadein {
-    from { opacity: 0%; }
-    to   {  }
+  from {
+    opacity: 0%;
+  }
+  to {
+  }
 }

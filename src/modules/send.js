@@ -1,48 +1,63 @@
-import config from '../config';
-import { nanoid } from 'nanoid';
+import config from "../config";
+import { nanoid } from "nanoid";
 
-const addItem = async (name, link, tag, reFetch, onExit, SetLoader, method, id=nanoid(), title='', date=new Date()) => {
+const addItem = async (
+  name,
+  link,
+  tag,
+  reFetch,
+  onExit,
+  SetLoader,
+  method,
+  id = nanoid(),
+  title = "",
+  date = new Date()
+) => {
   const dateCreated = date.toString();
 
   function isValidHttpUrl(string) {
     let url;
-    
+
     try {
       url = new URL(string);
     } catch (_) {
-      return false;  
+      return false;
     }
-  
+
     return url.protocol === "http:" || url.protocol === "https:";
   }
 
-  if(isValidHttpUrl(link)) {
+  if (isValidHttpUrl(link)) {
     const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
     fetch(ADDRESS + "/api", {
       method: method,
       body: JSON.stringify({
-          _id: id,
-          name: name,
-          title: title,
-          link: link,
-          tag: tag,
-          date: dateCreated
+        _id: id,
+        name: name,
+        title: title,
+        link: link,
+        tag: tag,
+        date: dateCreated,
       }),
       headers: {
-          "Content-type": "application/json; charset=UTF-8"
-      }
+        "Content-type": "application/json; charset=UTF-8",
+      },
     })
-    .then(res => res.text())
-    .then(() => reFetch())
-    .then(() => {SetLoader(false)});
+      .then((res) => res.text())
+      .then(() => reFetch())
+      .then(() => {
+        SetLoader(false);
+      });
 
     onExit();
-  } else if(!isValidHttpUrl(link) && link !== '') {
-    SetLoader(false)
-    alert('Please make sure the link is valid.\n\n(i.e. starts with "http"/"https")');
+  } else if (!isValidHttpUrl(link) && link !== "") {
+    SetLoader(false);
+    alert(
+      'Please make sure the link is valid.\n\n(i.e. starts with "http"/"https")'
+    );
   } else {
-    SetLoader(false)
+    SetLoader(false);
   }
-}
+};
 
 export default addItem;
