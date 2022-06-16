@@ -27,7 +27,7 @@ function App() {
     [sortBy, setSortBy] = useState('Default'),
     [loader, setLoader] = useState(false),
     [lightMode, setLightMode] = useState(localStorage.getItem('light-mode') === 'true'),
-    [toggle, setToggle] = useState(true);
+    [toggle, setToggle] = useState(false);
 
   function SetLoader(x) {
     setLoader(x);
