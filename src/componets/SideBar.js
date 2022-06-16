@@ -37,11 +37,16 @@ const SideBar = ({ tags, handleToggleSidebar, toggle }) => {
             </Link>
           </MenuItem>
 
-          <SubMenu icon="#" defaultOpen={true} title="Tags">
+          <SubMenu
+            icon={<h2>#</h2>}
+            suffix={<span className="badge">{sortedTags.length}</span>}
+            defaultOpen={true}
+            title="Tags"
+          >
             {sortedTags.map((e, i) => {
               const path = `/tags/${e}`;
               return (
-                <MenuItem key={i}>
+                <MenuItem prefix={"#"} key={i}>
                   <Link to={path}>{e}</Link>
                 </MenuItem>
               );
