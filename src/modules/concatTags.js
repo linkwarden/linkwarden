@@ -1,13 +1,13 @@
 const concatTags = (data) => {
-    let tags = [];
+  let tags = [];
 
-    for (let i = 0; i < data.length; i++) {
-      tags = tags.concat(data[i].tag)
-    }
+  for (let i = 0; i < data.length; i++) {
+    tags = tags.concat(data[i].tag);
+  }
 
-    tags = tags.filter((v, i, a) => a.indexOf(v) === i);
+  tags = tags.filter((v, i, a) => a.indexOf(v) === i);
 
-    return tags;
-}
+  return tags;
+};
 
 export default concatTags;

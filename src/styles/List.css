@@ -23,7 +23,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+      rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   }
 
   .list a {
@@ -39,7 +41,7 @@
   .tags {
     margin: 10px auto 10px auto;
   }
-  
+
   .list-row {
     margin-top: 20px;
     display: flex;
@@ -47,7 +49,9 @@
     justify-content: space-between;
     align-items: center;
     text-align: center;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+      rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   }
   .etc {
     display: flex;
@@ -108,7 +112,7 @@
 
 .link {
   white-space: nowrap;
-  font-family: 'Font Awesome 5 Free';
+  font-family: "Font Awesome 5 Free";
   pointer-events: all;
   font-size: 1rem;
 }
@@ -122,7 +126,6 @@
 .link:hover::after {
   opacity: 100%;
 }
-
 
 .edit-btn {
   margin: 20px 20px 20px 0px;
@@ -169,21 +172,22 @@
 
 .delete {
   margin: 20px 20px 20px 0px;
-  background-color:#273949;
+  background-color: #273949;
   float: right;
   font-size: 1.1rem;
   width: 40px;
   height: 40px;
   position: relative;
   border-radius: 100%;
-  font-family: 'Font Awesome 5 Free';
+  font-family: "Font Awesome 5 Free";
   width: 40px;
   height: 40px;
   padding: 10px;
   font-size: 1.1rem;
   cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  background-color:#273949;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  background-color: #273949;
   border: none;
   transition: background-color 0.1s;
 }

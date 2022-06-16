@@ -1,11 +1,11 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const { MongoClient } = require('mongodb');
-const cors = require('cors');
-const config = require('../src/config.js');
-const getData = require('./modules/getData.js');
-const fs = require('fs');
-const fetch = require('cross-fetch');
+const { MongoClient } = require("mongodb");
+const cors = require("cors");
+const config = require("../src/config.js");
+const getData = require("./modules/getData.js");
+const fs = require("fs");
+const fetch = require("cross-fetch");
 
 const port = config.API.PORT;
 
@@ -21,39 +21,45 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get('/api', async (req, res) => {
+app.get("/api", async (req, res) => {
   const data = await getDoc();
   res.send(data);
 });
 
-app.get('/screenshots/:id', async (req, res) => {
-  res.sendFile(config.API.STORAGE_LOCATION + '/LinkWarden/screenshot\'s/' + req.params.id, (err) => {
-    if (err) {
-      res.sendFile(__dirname +'/pages/404.html');
+app.get("/screenshots/:id", async (req, res) => {
+  res.sendFile(
+    config.API.STORAGE_LOCATION + "/LinkWarden/screenshot's/" + req.params.id,
+    (err) => {
+      if (err) {
+        res.sendFile(__dirname + "/pages/404.html");
+      }
     }
-  });
+  );
 });
 
-app.get('/pdfs/:id', async (req, res) => {
-  res.sendFile(config.API.STORAGE_LOCATION + '/LinkWarden/pdf\'s/' + req.params.id, (err) => {
-    if (err) {
-      res.sendFile(__dirname +'/pages/404.html');
+app.get("/pdfs/:id", async (req, res) => {
+  res.sendFile(
+    config.API.STORAGE_LOCATION + "/LinkWarden/pdf's/" + req.params.id,
+    (err) => {
+      if (err) {
+        res.sendFile(__dirname + "/pages/404.html");
+      }
     }
-  });
+  );
 });
 
-app.post('/api', async (req, res) => {
+app.post("/api", async (req, res) => {
   const pageToVisit = req.body.link;
   const id = req.body._id;
-  const getTitle = async(url) => {
+  const getTitle = async (url) => {
     let body;
     await fetch(url)
-    .then(res => res.text())
-    .then(text => body = text)
+      .then((res) => res.text())
+      .then((text) => (body = text));
     // regular expression to parse contents of the <title> tag
     let match = body.match(/<title>([^<]*)<\/title>/);
     return match[1];
-  }
+  };
 
   try {
     req.body.title = await getTitle(req.body.link);
@@ -67,15 +73,15 @@ app.post('/api', async (req, res) => {
   }
 });
 
-app.put('/api', async (req, res) => {
+app.put("/api", async (req, res) => {
   const id = req.body._id;
 
   await updateDoc(id, req.body);
 
-  res.send('Updated!');
+  res.send("Updated!");
 });
 
-app.delete('/api', async (req, res) => {
+app.delete("/api", async (req, res) => {
   const id = req.body.id;
 
   await deleteDoc(id);
@@ -85,10 +91,8 @@ app.delete('/api', async (req, res) => {
 
 async function updateDoc(id, updatedListing) {
   try {
-    await list.updateOne({ _id: id }, { $set: updatedListing });    
-  }
-  
-  catch(err) {
+    await list.updateOne({ _id: id }, { $set: updatedListing });
+  } catch (err) {
     console.log(err);
   }
 }
@@ -96,9 +100,7 @@ async function updateDoc(id, updatedListing) {
 async function insertDoc(doc) {
   try {
     await list.insertOne(doc);
-  } 
-  
-  catch(err) {
+  } catch (err) {
     console.log(err);
   }
 }
@@ -108,34 +110,35 @@ async function getDoc() {
     const result = await list.find({}).toArray();
 
     return result;
-  }
-  
-  catch(err) {
+  } catch (err) {
     console.log(err);
   }
 }
 
 async function deleteDoc(doc) {
   try {
-    const result = await list.deleteOne({"_id": doc});
+    const result = await list.deleteOne({ _id: doc });
 
-    fs.unlink(config.API.STORAGE_LOCATION + '/LinkWarden/screenshot\'s/' + doc + '.png', (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
-
-    fs.unlink(config.API.STORAGE_LOCATION + '/LinkWarden/pdf\'s/' + doc + '.pdf', (err) => {
-      if (err) {
+    fs.unlink(
+      config.API.STORAGE_LOCATION + "/LinkWarden/screenshot's/" + doc + ".png",
+      (err) => {
+        if (err) {
           console.log(err);
+        }
       }
-    });
+    );
 
+    fs.unlink(
+      config.API.STORAGE_LOCATION + "/LinkWarden/pdf's/" + doc + ".pdf",
+      (err) => {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
 
     return result;
-  } 
-  
-  catch(err) {
+  } catch (err) {
     console.log(err);
   }
 }
