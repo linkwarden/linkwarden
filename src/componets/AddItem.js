@@ -35,18 +35,20 @@ const AddItem = ({onExit, reFetch, tags, SetLoader, lightMode}) => {
   return (
     <>
       <div className='add-overlay' onClick={abort}></div>
-      <fieldset className='box'>
-        <legend>New bookmark</legend>
-        <div className='AddItem-content'>
-          <h3><span style={{color:"red"}}>* </span>Link:</h3>
-          <input onChange={SetLink} className="AddItem-input" type="search" placeholder="e.g. https://example.com/"/>
-          <h3>Name: <span className='optional'>(Optional)</span></h3>
-          <input onChange={SetName} className="AddItem-input" type="search" placeholder="e.g. Example Tutorial"/>
-          <h3>Tags: <span className='optional'>(Optional)</span></h3>
-          <TagSelection setTags={SetTags} tags={tags} lightMode={lightMode} />
-          <button onClick={newItem} className="send-btn">Add &#xf067;</button>
-        </div>
-      </fieldset>
+      <div className='send-box'>
+        <fieldset className='box'>
+          <legend>New bookmark</legend>
+          <div className='AddItem-content'>
+            <h3><span style={{color:"red"}}>* </span>Link:</h3>
+            <input onChange={SetLink} className="AddItem-input" type="search" placeholder="e.g. https://example.com/"/>
+            <h3>Name: <span className='optional'>(Optional)</span></h3>
+            <input onChange={SetName} className="AddItem-input" type="search" placeholder="e.g. Example Tutorial"/>
+            <h3>Tags: <span className='optional'>(Optional)</span></h3>
+            <TagSelection setTags={SetTags} tags={tags} lightMode={lightMode} />
+            <button onClick={newItem} className="send-btn">Add &#xf067;</button>
+          </div>
+        </fieldset>
+      </div>
     </>
   )
 }

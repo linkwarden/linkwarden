@@ -3,6 +3,7 @@ import LazyLoad from 'react-lazyload';
 import ViewArchived from './ViewArchived';
 import EditItem from './EditItem';
 import { useState } from 'react'
+import { Link } from "react-router-dom";
 
 const List = ({data, tags, reFetch, SetLoader, lightMode}) => {
     const [editBox, setEditBox] = useState(false)
@@ -19,6 +20,14 @@ const List = ({data, tags, reFetch, SetLoader, lightMode}) => {
 
     return (
         <div className="list">
+            {editBox ? <EditItem 
+                lightMode={lightMode} 
+                tags={() => tags} 
+                onExit={exitEditing} 
+                SetLoader={SetLoader} 
+                reFetch={reFetch} 
+                item={data[editIndex]} 
+            /> : null}
             {/* eslint-disable-next-line */}
             {data.map((e, i, array) => {
                 try {
@@ -30,12 +39,22 @@ const List = ({data, tags, reFetch, SetLoader, lightMode}) => {
                                 <img alt='' src={favicon} />
                                 <div className="list-entity-content">
                                     <div className='row-name'>
-                                        <span className="num">{i + 1}.</span> {e.name} <a target="_blank" rel="noreferrer" href={e.link}>({url.hostname})</a>
+                                        <span className="num">{i + 1}.</span> 
+                                        {e.name} 
+                                        <a 
+                                            className='link' 
+                                            target="_blank" 
+                                            rel="noreferrer" 
+                                            href={e.link}
+                                        >
+                                            ({url.hostname})
+                                        </a>
                                     </div>
                                     <div className='title'>{e.title}</div>
                                     <div className="tags">
                                         {e.tag.map((e, i) => {
-                                            return (<div key={i}>{e}</div>)
+                                            const tagPath = `/tags/${e}`;
+                                            return (<Link to={tagPath} key={i}>{e}</Link>)
                                         })}
                                     </div>
                                     <div className='date'>{new Date(e.date).toDateString()}</div>
@@ -51,7 +70,6 @@ const List = ({data, tags, reFetch, SetLoader, lightMode}) => {
                     console.log(e);
                 }
             })}
-            {editBox ? <EditItem lightMode={lightMode} tags={() => tags} onExit={exitEditing} SetLoader={SetLoader} reFetch={reFetch} item={data[editIndex]} /> : null}
         </div>
     )
 }

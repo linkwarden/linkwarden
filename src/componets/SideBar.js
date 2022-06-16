@@ -4,6 +4,14 @@ import '../styles/SideBar.css';
 import { Link } from "react-router-dom";
 
 const SideBar = ({ tags, handleToggleSidebar, toggle }) => {
+    const sortedTags = tags.sort((a, b) => {
+        const A = a.toLowerCase(), B = b.toLowerCase();
+        if (A < B)
+            return -1;
+        if (A > B)
+            return 1;
+        return 0;
+    });
   return (
     <ProSidebar 
         toggled={toggle}
@@ -19,8 +27,8 @@ const SideBar = ({ tags, handleToggleSidebar, toggle }) => {
             <MenuItem><Link to="/"><h3>Show Everything</h3></Link></MenuItem>
             
             <SubMenu icon='#' defaultOpen={true} title='Tags'>                
-                {tags.map((e, i) => {
-                    const path = `/tags/${e}`
+                {sortedTags.map((e, i) => {
+                    const path = `/tags/${e}`;
                     return <MenuItem key={i}><Link to={path}>{e}</Link></MenuItem>
                 })}
             </SubMenu>

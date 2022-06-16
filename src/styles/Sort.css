@@ -1,7 +1,7 @@
 @media (min-width: 800px) {
     .sort {
-        left: 35%;
-        right: 35%;
+        left: 30%;
+        right: 30%;
         min-width: 200px;
     }
 }
@@ -23,6 +23,11 @@
     left: 0;
     bottom: 0;
     width: 100vw;
+    z-index: 1;
+}
+
+.sort-box {
+    position: relative;
 }
 
 .sort {
@@ -35,11 +40,11 @@
     flex-direction: column;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     padding: 5px;
-    top: 15%;
     position: absolute;
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+    z-index: 2;
 }
 
 .sort legend {

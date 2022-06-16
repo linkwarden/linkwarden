@@ -58,7 +58,7 @@ body {
   color: darkgray;
 }
 
-.list a {
+.link {
   color: rgb(194, 193, 193);
 }
 
@@ -130,7 +130,7 @@ body {
   color: rgb(105, 105, 105);
 }
 
-.light .list a {
+.light .link {
   color: rgb(102, 102, 102);
 }
 
