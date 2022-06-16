@@ -14,7 +14,6 @@
     }
 }
 
-
 .add-overlay {
     animation: fadein 0.2s;
     background-color: black;
@@ -26,6 +25,10 @@
     width: 100vw;
 }
 
+.send-box {
+    position: relative;
+}
+
 .box {
     animation: fadein 0.3s;
     border: solid;
@@ -34,7 +37,6 @@
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     position: absolute;
     z-index: 2;
-    top: 15%;
     background-color: #1f2c38;
     overflow-x: hidden;
     overflow-y: auto;

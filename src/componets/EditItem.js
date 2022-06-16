@@ -38,20 +38,22 @@ const EditItem = ({tags, item, onExit, SetLoader, reFetch, lightMode }) => {
   return (
     <>
       <div className='add-overlay' onClick={abort}></div>
-      <fieldset className='box'>
-        <legend >Edit bookmark</legend>
-        <button className="delete" onClick={deleteItem}>&#xf2ed;</button>
-        <div className='AddItem-content'>
-        <h3>Link: <a target="_blank" rel="noreferrer" href={item.link}>{url.hostname}</a></h3>
-        <h3 className='title'><b>{item.title}</b></h3>
-        
-          <h3>Name: <span className='optional'>(Optional)</span></h3>
-          <input onChange={SetName} className="AddItem-input" type="search" value={name} placeholder={"e.g. Example Tutorial"} />
-          <h3>Tags: <span className='optional'>(Optional)</span></h3>
-          <TagSelection setTags={SetTags} tags={tags} tag={tag} lightMode={lightMode} />
-          <button onClick={EditItem} className="send-btn">Update &#xf303;</button>
-        </div>
-      </fieldset>
+      <div className='send-box'>
+        <fieldset className='box'>
+          <legend >Edit bookmark</legend>
+          <button className="delete" onClick={deleteItem}>&#xf2ed;</button>
+          <div className='AddItem-content'>
+          <h3>Link: <a className='link' target="_blank" rel="noreferrer" href={item.link}>{url.hostname}</a></h3>
+          <h3 className='title'><b>{item.title}</b></h3>
+          
+            <h3>Name: <span className='optional'>(Optional)</span></h3>
+            <input onChange={SetName} className="AddItem-input" type="search" value={name} placeholder={"e.g. Example Tutorial"} />
+            <h3>Tags: <span className='optional'>(Optional)</span></h3>
+            <TagSelection setTags={SetTags} tags={tags} tag={tag} lightMode={lightMode} />
+            <button onClick={EditItem} className="send-btn">Update &#xf303;</button>
+          </div>
+        </fieldset>
+      </div>
     </>
   )
 }
