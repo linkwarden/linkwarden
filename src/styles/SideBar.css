@@ -25,3 +25,11 @@
   text-shadow: none;
   color: white;
 }
+
+.badge {
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  border-radius: 14px;
+  background-color: rgb(52, 121, 181);
+}
