@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import '../styles/SendItem.css';
-import TagSelection from './TagSelection';
-import addItem from '../modules/send';
+import { useState } from "react";
+import "../styles/SendItem.css";
+import TagSelection from "./TagSelection";
+import addItem from "../modules/send";
 
-const AddItem = ({onExit, reFetch, tags, SetLoader, lightMode}) => {
-  const [name, setName] = useState('');
-  const [link, setLink] = useState('');
+const AddItem = ({ onExit, reFetch, tags, SetLoader, lightMode }) => {
+  const [name, setName] = useState("");
+  const [link, setLink] = useState("");
   const [tag, setTag] = useState([]);
-  
+
   function newItem() {
-    SetLoader(true)
+    SetLoader(true);
     addItem(name, link, tag, reFetch, onExit, SetLoader, "POST");
   }
 
@@ -23,7 +23,7 @@ const AddItem = ({onExit, reFetch, tags, SetLoader, lightMode}) => {
 
   function SetTags(value) {
     setTag(value);
-    setTag(value.map(e => e.value.toLowerCase()));
+    setTag(value.map((e) => e.value.toLowerCase()));
   }
 
   function abort(e) {
@@ -34,23 +34,41 @@ const AddItem = ({onExit, reFetch, tags, SetLoader, lightMode}) => {
 
   return (
     <>
-      <div className='add-overlay' onClick={abort}></div>
-      <div className='send-box'>
-        <fieldset className='box'>
+      <div className="add-overlay" onClick={abort}></div>
+      <div className="send-box">
+        <fieldset className="box">
           <legend>New bookmark</legend>
-          <div className='AddItem-content'>
-            <h3><span style={{color:"red"}}>* </span>Link:</h3>
-            <input onChange={SetLink} className="AddItem-input" type="search" placeholder="e.g. https://example.com/"/>
-            <h3>Name: <span className='optional'>(Optional)</span></h3>
-            <input onChange={SetName} className="AddItem-input" type="search" placeholder="e.g. Example Tutorial"/>
-            <h3>Tags: <span className='optional'>(Optional)</span></h3>
+          <div className="AddItem-content">
+            <h3>
+              <span style={{ color: "red" }}>* </span>Link:
+            </h3>
+            <input
+              onChange={SetLink}
+              className="AddItem-input"
+              type="search"
+              placeholder="e.g. https://example.com/"
+            />
+            <h3>
+              Name: <span className="optional">(Optional)</span>
+            </h3>
+            <input
+              onChange={SetName}
+              className="AddItem-input"
+              type="search"
+              placeholder="e.g. Example Tutorial"
+            />
+            <h3>
+              Tags: <span className="optional">(Optional)</span>
+            </h3>
             <TagSelection setTags={SetTags} tags={tags} lightMode={lightMode} />
-            <button onClick={newItem} className="send-btn">Add &#xf067;</button>
+            <button onClick={newItem} className="send-btn">
+              Add &#xf067;
+            </button>
           </div>
         </fieldset>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default AddItem;

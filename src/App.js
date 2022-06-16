@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
-import './styles/App.css';
-import List from './componets/List';
-import AddItem from './componets/AddItem';
-import config from './config';
-import Filters from './componets/Filters';
-import Sort from './componets/Sort';
-import sortList from './modules/sortList';
-import filter from './modules/filterData';
-import concatTags from './modules/concatTags';
-import NoResults from './componets/NoResults';
-import Loader from './componets/Loader';
-import SideBar from './componets/SideBar';
-import Tags from './routes/Tags.js';
+import { useEffect, useState } from "react";
+import "./styles/App.css";
+import List from "./componets/List";
+import AddItem from "./componets/AddItem";
+import config from "./config";
+import Filters from "./componets/Filters";
+import Sort from "./componets/Sort";
+import sortList from "./modules/sortList";
+import filter from "./modules/filterData";
+import concatTags from "./modules/concatTags";
+import NoResults from "./componets/NoResults";
+import Loader from "./componets/Loader";
+import SideBar from "./componets/SideBar";
+import Tags from "./routes/Tags.js";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
@@ -19,14 +19,16 @@ function App() {
     [newBox, setNewBox] = useState(false),
     [filterBox, setFilterBox] = useState(false),
     [sortBox, setSortBox] = useState(false),
-    [searchQuery, setSearchQuery] = useState(''),
+    [searchQuery, setSearchQuery] = useState(""),
     [numberOfResults, setNumberOfResults] = useState(0),
     [nameChecked, setNameChecked] = useState(true),
     [descriptionChecked, setDescriptionChecked] = useState(true),
     [tagsChecked, setTagsChecked] = useState(true),
-    [sortBy, setSortBy] = useState('Default'),
+    [sortBy, setSortBy] = useState("Default"),
     [loader, setLoader] = useState(false),
-    [lightMode, setLightMode] = useState(localStorage.getItem('light-mode') === 'true'),
+    [lightMode, setLightMode] = useState(
+      localStorage.getItem("light-mode") === "true"
+    ),
     [toggle, setToggle] = useState(false);
 
   function SetLoader(x) {
@@ -66,16 +68,22 @@ function App() {
   }
 
   function handleToggleSidebar() {
-      setToggle(!toggle)
+    setToggle(!toggle);
   }
 
-  const filteredData = filter(data, searchQuery, nameChecked, tagsChecked, descriptionChecked);
+  const filteredData = filter(
+    data,
+    searchQuery,
+    nameChecked,
+    tagsChecked,
+    descriptionChecked
+  );
 
   const tags = concatTags(data);
 
   async function fetchData() {
     const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
-    const res = await fetch(ADDRESS + '/api');
+    const res = await fetch(ADDRESS + "/api");
     const resJSON = await res.json();
     const data = resJSON.reverse();
     setData(data);
@@ -104,73 +112,117 @@ function App() {
       document.body.classList.remove("light");
     }
 
-    localStorage.setItem('light-mode', lightMode);
+    localStorage.setItem("light-mode", lightMode);
   }, [lightMode]);
 
-  
   return (
     <div className="App">
-      <SideBar tags={tags} handleToggleSidebar={handleToggleSidebar} toggle={toggle} />
+      <SideBar
+        tags={tags}
+        handleToggleSidebar={handleToggleSidebar}
+        toggle={toggle}
+      />
 
-      <div className='content'>
+      <div className="content">
         <div className="head">
-          <button className='sidebar-btn btn' style={{marginRight: '10px'}} onClick={handleToggleSidebar}>&#xf0c9;</button>
-          <input className="search" type="search" placeholder="&#xf002; Search" onChange={search}/>
-          <button className="add-btn btn" onClick={() => setNewBox(true)}>&#xf067;</button>
-          <button className="dark-light-btn btn" onClick={() => setLightMode(!lightMode)}></button>
+          <button
+            className="sidebar-btn btn"
+            style={{ marginRight: "10px" }}
+            onClick={handleToggleSidebar}
+          >
+            &#xf0c9;
+          </button>
+          <input
+            className="search"
+            type="search"
+            placeholder="&#xf002; Search"
+            onChange={search}
+          />
+          <button className="add-btn btn" onClick={() => setNewBox(true)}>
+            &#xf067;
+          </button>
+          <button
+            className="dark-light-btn btn"
+            onClick={() => setLightMode(!lightMode)}
+          ></button>
         </div>
 
-        {numberOfResults > 0 ? <p className="results">{numberOfResults} Bookmarks found</p> : null}
+        {numberOfResults > 0 ? (
+          <p className="results">{numberOfResults} Bookmarks found</p>
+        ) : null}
 
-        <button className='btn' style={{marginTop: '10px'}} onClick={() => setFilterBox(true)}>&#xf0b0;</button>
-        <button className='btn' style={{marginLeft: '10px'}} onClick={() => setSortBox(true)}>&#xf0dc;</button>
-            
+        <button
+          className="btn"
+          style={{ marginTop: "10px" }}
+          onClick={() => setFilterBox(true)}
+        >
+          &#xf0b0;
+        </button>
+        <button
+          className="btn"
+          style={{ marginLeft: "10px" }}
+          onClick={() => setSortBox(true)}
+        >
+          &#xf0dc;
+        </button>
+
         {numberOfResults === 0 ? <NoResults /> : null}
 
-        {sortBox ? <Sort 
-          sortBy={sortByFunc}
-          onExit={exitSorting}
-        /> : null}
+        {sortBox ? <Sort sortBy={sortByFunc} onExit={exitSorting} /> : null}
 
-        {filterBox ? <Filters 
-          nameChecked={nameChecked}
-          handleNameCheckbox={handleNameCheckbox}
-          descriptionChecked={descriptionChecked}
-          handleDescriptionCheckbox={handleDescriptionCheckbox}
-          tagsChecked={tagsChecked} 
-          handleTagsCheckbox={handleTagsCheckbox}
-          onExit={exitFilter}
-        /> : null}
+        {filterBox ? (
+          <Filters
+            nameChecked={nameChecked}
+            handleNameCheckbox={handleNameCheckbox}
+            descriptionChecked={descriptionChecked}
+            handleDescriptionCheckbox={handleDescriptionCheckbox}
+            tagsChecked={tagsChecked}
+            handleTagsCheckbox={handleTagsCheckbox}
+            onExit={exitFilter}
+          />
+        ) : null}
 
-        {newBox ? <AddItem 
-          SetLoader={SetLoader}
-          onExit={exitAdding} 
-          reFetch={fetchData} 
-          lightMode={lightMode}
-          tags={() => tags} 
-        /> : null}
+        {newBox ? (
+          <AddItem
+            SetLoader={SetLoader}
+            onExit={exitAdding}
+            reFetch={fetchData}
+            lightMode={lightMode}
+            tags={() => tags}
+          />
+        ) : null}
 
         {loader ? <Loader lightMode={lightMode} /> : null}
       </div>
 
       <Routes>
-        <Route path="/" element={<div className='content'>          
-          <List
-            lightMode={lightMode} 
-            SetLoader={SetLoader} 
-            data={filteredData} 
-            tags={tags} 
-            reFetch={fetchData} 
-          />
-        </div>} />
+        <Route
+          path="/"
+          element={
+            <div className="content">
+              <List
+                lightMode={lightMode}
+                SetLoader={SetLoader}
+                data={filteredData}
+                tags={tags}
+                reFetch={fetchData}
+              />
+            </div>
+          }
+        />
 
-        <Route path="tags/:tagId" element={<Tags
-          lightMode={lightMode} 
-          SetLoader={SetLoader} 
-          data={filteredData} 
-          tags={tags} 
-          reFetch={fetchData}
-        />} />        
+        <Route
+          path="tags/:tagId"
+          element={
+            <Tags
+              lightMode={lightMode}
+              SetLoader={SetLoader}
+              data={filteredData}
+              tags={tags}
+              reFetch={fetchData}
+            />
+          }
+        />
       </Routes>
     </div>
   );

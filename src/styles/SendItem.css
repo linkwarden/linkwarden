@@ -1,103 +1,111 @@
 @media (min-width: 800px) {
-    .box {
-        left: 30%;
-        right: 30%;
-        min-width: 300px;
-    }
+  .box {
+    left: 30%;
+    right: 30%;
+    min-width: 300px;
+  }
 }
 
 @media (max-width: 800px) {
-    .box {
-        left: 15%;
-        right: 15%;
-        min-width: 200px;
-    }
+  .box {
+    left: 15%;
+    right: 15%;
+    min-width: 200px;
+  }
 }
 
 .add-overlay {
-    animation: fadein 0.2s;
-    background-color: black;
-    opacity: 10%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 100vw;
+  animation: fadein 0.2s;
+  background-color: black;
+  opacity: 10%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
 }
 
 .send-box {
-    position: relative;
+  position: relative;
 }
 
 .box {
-    animation: fadein 0.3s;
-    border: solid;
-    border-width: 1px;
-    border-color: rgb(141, 141, 141);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-    position: absolute;
-    z-index: 2;
-    background-color: #1f2c38;
-    overflow-x: hidden;
-    overflow-y: auto;
+  animation: fadein 0.3s;
+  border: solid;
+  border-width: 1px;
+  border-color: rgb(141, 141, 141);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  position: absolute;
+  z-index: 2;
+  background-color: #1f2c38;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .box legend {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .box h3 {
-    font-weight: 300;
+  font-weight: 300;
 }
 
 .AddItem-content {
-    padding: 20px;
+  padding: 20px;
 }
 
 .AddItem-input {
-    font-size: 1rem;
-    padding: 10px;
-    border: none;
-    width: 100%;
-    color: white;
-    background-color:#273949;
-    border-radius: 0;
-    -webkit-appearance: none;
-    -webkit-box-shadow:rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  font-size: 1rem;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  color: white;
+  background-color: #273949;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
 .AddItem-input:focus {
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 .send-btn {
-    font-family: 'Font Awesome 5 Free';
-    font-size: 1.2rem;
-    padding: 10px;
-    cursor: pointer;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-    border: none;
-    margin-top: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    transition: background-color 0.1s;
+  font-family: "Font Awesome 5 Free";
+  font-size: 1.2rem;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  border: none;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.1s;
 }
 
-.send-btn:active { box-shadow: 0px 0px 10px rgb(83, 143, 255); }
+.send-btn:active {
+  box-shadow: 0px 0px 10px rgb(83, 143, 255);
+}
 
 @keyframes fadein {
-    from { opacity: 0%; }
-    to   {  }
+  from {
+    opacity: 0%;
+  }
+  to {
+  }
 }
 
 .optional {
-    color: gray;
-    font-size: 0.8em;
-    float: right;
+  color: gray;
+  font-size: 0.8em;
+  float: right;
 }
 
 .title {
-    font-size: 0.9em;
+  font-size: 0.9em;
 }

@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -20,7 +20,7 @@ body {
 /* Dark Mode settings (Default) */
 
 .dark-light-btn::before {
-  content: '';
+  content: "";
 }
 
 .delete {
@@ -30,10 +30,10 @@ body {
 
 .no-results {
   background-color: #1f2c38;
-} 
+}
 
 .send-btn {
-  background-color:#273949;
+  background-color: #273949;
   color: #ffffffb6;
 }
 
@@ -42,11 +42,13 @@ body {
 }
 
 .sort-by-btn {
-  background-color:#273949;
-  color: #ffffffb6; 
+  background-color: #273949;
+  color: #ffffffb6;
 }
 
-.btn:hover, .sort-by-btn:hover, .send-btn:hover {
+.btn:hover,
+.sort-by-btn:hover,
+.send-btn:hover {
   background-color: rgb(76, 117, 170);
 }
 
@@ -64,21 +66,22 @@ body {
 
 .btn {
   color: #ffffffb6;
-  background-color:#273949;
+  background-color: #273949;
 }
 
 .edit-btn {
   background-color: #1f2c38;
 }
 
-.no-results, .list-row {
+.no-results,
+.list-row {
   transition: background-color 0.1s;
-  background-color:#273949;
+  background-color: #273949;
 }
 
 .search {
   transition: background-color 0.1s;
-  background-color:#273949;
+  background-color: #273949;
   color: white;
 }
 
@@ -87,19 +90,19 @@ body {
 }
 
 .filter > label {
-  background-color:#273949;
+  background-color: #273949;
   color: #ffffffb6;
 }
 
 /* Light Mode settings */
 
 .light .dark-light-btn::before {
-  content: '';
+  content: "";
 }
 
 .light {
   text-shadow: 0px 1px 2px #ffffff;
-  background-color:rgb(233, 220, 179);
+  background-color: rgb(233, 220, 179);
   color: rgb(64, 64, 64);
 }
 
@@ -122,8 +125,9 @@ body {
   color: black;
 }
 
-.light .box, .light .edit-btn {
-  background-color:rgb(233, 220, 179);
+.light .box,
+.light .edit-btn {
+  background-color: rgb(233, 220, 179);
 }
 
 .light .title {
@@ -138,7 +142,8 @@ body {
   color: rgb(9, 139, 214);
 }
 
-.light .filter, .light .sort {
+.light .filter,
+.light .sort {
   background-color: rgb(233, 220, 179);
 }
 
@@ -148,7 +153,7 @@ body {
 }
 
 .light .sort-by-btn {
-  background-color:lightyellow;
+  background-color: lightyellow;
   color: #4b4b4bb6;
 }
 
@@ -157,11 +162,13 @@ body {
   color: #717171b6;
 }
 
-.light .sort-by-btn:hover, .light .btn:hover, .light .send-btn:hover {
+.light .sort-by-btn:hover,
+.light .btn:hover,
+.light .send-btn:hover {
   background-color: rgb(55, 131, 237);
   color: #d8d8d8;
 }
 
 .light .no-results {
   background-color: lightyellow;
-} 
+}
