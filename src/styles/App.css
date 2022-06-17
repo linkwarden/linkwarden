@@ -1,13 +1,19 @@
-@media (min-width: 650px) {
+@media (width >= 650px) {
   .search {
     width: 35%;
     min-width: 300px;
   }
 }
 
-@media (max-width: 650px) {
+@media (400px < width < 650px) {
   .search {
-    width: 170px;
+    width: 40%;
+  }
+}
+
+@media (width <= 400px) {
+  .search {
+    width: 120px;
   }
 }
 
