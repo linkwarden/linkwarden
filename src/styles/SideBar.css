@@ -1,9 +1,6 @@
 .sidebar {
   height: 100vh;
   position: fixed;
-  border-right: solid;
-  border-width: 1px;
-  border-color: gray;
 }
 
 .sidebar h1 {
