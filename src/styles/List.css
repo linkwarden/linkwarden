@@ -31,6 +31,10 @@
   .list a {
     text-decoration: none;
   }
+
+  .list-row:hover img {
+    opacity: 90%;
+  }
 }
 
 @media (max-width: 650px) {
@@ -96,10 +100,6 @@
   width: 100px;
   height: 100px;
   transition: opacity 0.3s;
-}
-
-.list-row:hover img {
-  opacity: 90%;
 }
 
 .list-entity-content {
