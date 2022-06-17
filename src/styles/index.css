@@ -32,23 +32,15 @@ body {
   background-color: #1f2c38;
 }
 
-.send-btn {
-  background-color: #273949;
-  color: #ffffffb6;
-}
-
-.sort {
-  background-color: #1f2c38;
-}
-
-.sort-by-btn {
+.send-btn,
+.apply-btn {
   background-color: #273949;
   color: #ffffffb6;
 }
 
 .btn:hover,
-.sort-by-btn:hover,
-.send-btn:hover {
+.send-btn:hover,
+.apply-btn:hover {
   background-color: rgb(76, 117, 170);
 }
 
@@ -89,7 +81,7 @@ body {
   background-color: #1f2c38;
 }
 
-.filter > label {
+.section > label {
   background-color: #273949;
   color: #ffffffb6;
 }
@@ -142,29 +134,24 @@ body {
   color: rgb(9, 139, 214);
 }
 
-.light .filter,
-.light .sort {
+.light .filter {
   background-color: rgb(233, 220, 179);
 }
 
-.light .filter > label {
+.light .section > label {
   background-color: lightyellow;
   color: #4b4b4bb6;
 }
 
-.light .sort-by-btn {
-  background-color: lightyellow;
-  color: #4b4b4bb6;
-}
-
-.light .send-btn {
+.light .send-btn,
+.light .apply-btn {
   background-color: lightyellow;
   color: #717171b6;
 }
 
-.light .sort-by-btn:hover,
 .light .btn:hover,
-.light .send-btn:hover {
+.light .send-btn:hover,
+.light .apply-btn:hover {
   background-color: rgb(55, 131, 237);
   color: #d8d8d8;
 }

@@ -4,7 +4,6 @@ import List from "./componets/List";
 import AddItem from "./componets/AddItem";
 import config from "./config";
 import Filters from "./componets/Filters";
-import Sort from "./componets/Sort";
 import sortList from "./modules/sortList";
 import filter from "./modules/filterData";
 import concatTags from "./modules/concatTags";
@@ -18,13 +17,10 @@ function App() {
   const [data, setData] = useState([]),
     [newBox, setNewBox] = useState(false),
     [filterBox, setFilterBox] = useState(false),
-    [sortBox, setSortBox] = useState(false),
     [searchQuery, setSearchQuery] = useState(""),
     [numberOfResults, setNumberOfResults] = useState(0),
-    [nameChecked, setNameChecked] = useState(true),
-    [descriptionChecked, setDescriptionChecked] = useState(true),
-    [tagsChecked, setTagsChecked] = useState(true),
-    [sortBy, setSortBy] = useState("Default"),
+    [filterCheckbox, setFilterCheckbox] = useState([true, true, true]),
+    [sortBy, setSortBy] = useState(1),
     [loader, setLoader] = useState(false),
     [lightMode, setLightMode] = useState(
       localStorage.getItem("light-mode") === "true"
@@ -35,16 +31,8 @@ function App() {
     setLoader(x);
   }
 
-  function handleNameCheckbox() {
-    setNameChecked(!nameChecked);
-  }
-
-  function handleDescriptionCheckbox() {
-    setDescriptionChecked(!descriptionChecked);
-  }
-
-  function handleTagsCheckbox() {
-    setTagsChecked(!tagsChecked);
+  function handleFilterCheckbox(newVal) {
+    setFilterCheckbox(newVal);
   }
 
   function exitAdding() {
@@ -55,15 +43,11 @@ function App() {
     setFilterBox(false);
   }
 
-  function exitSorting() {
-    setSortBox(false);
-  }
-
   function search(e) {
     setSearchQuery(e.target.value);
   }
 
-  function sortByFunc(e) {
+  function handleSorting(e) {
     setSortBy(e);
   }
 
@@ -71,13 +55,7 @@ function App() {
     setToggle(!toggle);
   }
 
-  const filteredData = filter(
-    data,
-    searchQuery,
-    nameChecked,
-    tagsChecked,
-    descriptionChecked
-  );
+  const filteredData = filter(data, searchQuery, filterCheckbox);
 
   const tags = concatTags(data);
 
@@ -92,9 +70,9 @@ function App() {
   useEffect(() => {
     const sortedData = sortList(data, sortBy);
     setData(sortedData);
-    exitSorting();
+    exitFilter();
     // eslint-disable-next-line
-  }, [sortBy]);
+  }, [sortBy, filterCheckbox]);
 
   useEffect(() => {
     fetchData();
@@ -138,6 +116,14 @@ function App() {
             placeholder="&#xf002; Search"
             onChange={search}
           />
+
+          <button
+            className="btn"
+            style={{ marginLeft: "10px" }}
+            onClick={() => setFilterBox(true)}
+          >
+            &#xf160;
+          </button>
           <button className="add-btn btn" onClick={() => setNewBox(true)}>
             &#xf067;
           </button>
@@ -151,33 +137,14 @@ function App() {
           <p className="results">{numberOfResults} Bookmarks found</p>
         ) : null}
 
-        <button
-          className="btn"
-          style={{ marginTop: "10px" }}
-          onClick={() => setFilterBox(true)}
-        >
-          &#xf0b0;
-        </button>
-        <button
-          className="btn"
-          style={{ marginLeft: "10px" }}
-          onClick={() => setSortBox(true)}
-        >
-          &#xf0dc;
-        </button>
-
         {numberOfResults === 0 ? <NoResults /> : null}
-
-        {sortBox ? <Sort sortBy={sortByFunc} onExit={exitSorting} /> : null}
 
         {filterBox ? (
           <Filters
-            nameChecked={nameChecked}
-            handleNameCheckbox={handleNameCheckbox}
-            descriptionChecked={descriptionChecked}
-            handleDescriptionCheckbox={handleDescriptionCheckbox}
-            tagsChecked={tagsChecked}
-            handleTagsCheckbox={handleTagsCheckbox}
+            filterCheckbox={filterCheckbox}
+            handleFilterCheckbox={handleFilterCheckbox}
+            sortBy={handleSorting}
+            sort={sortBy}
             onExit={exitFilter}
           />
         ) : null}

@@ -1,15 +1,20 @@
-@media (min-width: 800px) {
+@media (min-width: 600px) {
   .filter {
-    left: 35%;
-    right: 35%;
+    left: 10%;
+    right: 10%;
     min-width: 200px;
+  }
+
+  .filter-groups {
+    display: flex;
+    justify-content: space-evenly;
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 600px) {
   .filter {
-    left: 20%;
-    right: 20%;
+    left: 10%;
+    right: 10%;
     min-width: 100px;
   }
 }
@@ -36,10 +41,9 @@
   border-width: 1px;
   font-weight: 300;
   border-color: rgb(141, 141, 141);
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-  padding: 5px;
+  padding: 10px;
   position: absolute;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -51,10 +55,10 @@
   font-weight: 600;
 }
 
-.filter > label {
-  margin: 5px;
+.section > label {
+  display: block;
   text-align: left;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   font-family: "Font Awesome 5 Free";
   padding: 10px;
   font-size: 1.1rem;
@@ -65,6 +69,25 @@
 }
 
 .filter label:active {
+  box-shadow: 0px 0px 10px rgb(83, 143, 255);
+}
+
+.apply-btn {
+  font-family: "Font Awesome 5 Free";
+  font-size: 1.2rem;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  border: none;
+  margin-top: 20px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.1s;
+}
+
+.apply-btn:active {
   box-shadow: 0px 0px 10px rgb(83, 143, 255);
 }
 

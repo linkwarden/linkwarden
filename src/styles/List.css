@@ -159,6 +159,7 @@
 .tags a {
   margin-right: 10px;
   color: #2b8add;
+  text-decoration: none;
 }
 
 .tags a::before {
