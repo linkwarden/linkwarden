@@ -32,7 +32,6 @@ app.get("/api", async (req, res) => {
 });
 
 app.get("/screenshots/:id", async (req, res) => {
-  console.log(screenshotDirectory + "/" + sanitize(req.params.id));
   res.sendFile(
     screenshotDirectory + "/" + sanitize(req.params.id),
     (err) => {
@@ -44,7 +43,6 @@ app.get("/screenshots/:id", async (req, res) => {
 });
 
 app.get("/pdfs/:id", async (req, res) => {
-  console.log(pdfDirectory + "/" + sanitize(req.params.id));
   res.sendFile(
     pdfDirectory + "/" + sanitize(req.params.id),
     (err) => {
