@@ -1,8 +1,7 @@
-import config from "../config";
+import { API_HOST } from "../config";
 
 const deleteEntity = (id, reFetch, onExit, SetLoader) => {
-  const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
-  fetch(ADDRESS + "/api", {
+  fetch(API_HOST + "/api", {
     method: "DELETE",
     body: JSON.stringify({ id }),
     headers: {

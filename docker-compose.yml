@@ -1,0 +1,40 @@
+version: "3"
+
+## This compose file can be used for development
+
+services:
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=linkwarden
+      - MONGO_INITDB_ROOT_PASSWORD=changeme
+    restart: unless-stopped
+
+  link-warden-api:
+    build: ./api
+    environment:
+      - MONGODB_URI=mongodb://linkwarden:changeme@mongo:27017/
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+    volumes:
+      - ./media:/media
+      - ./api:/home/node
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+    depends_on:
+      - mongo
+
+  link-warden:
+    build: .
+    environment:
+      # - DANGEROUSLY_DISABLE_HOST_CHECK=true
+      - REACT_APP_API_HOST=http://localhost:5000
+    command: npm run go
+    volumes:
+      - /home/node/node_modules
+      - .:/home/node
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    depends_on:
+      - link-warden-api

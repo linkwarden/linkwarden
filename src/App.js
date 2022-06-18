@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./styles/App.css";
 import List from "./componets/List";
 import AddItem from "./componets/AddItem";
-import config from "./config";
+import { API_HOST } from "./config";
 import Filters from "./componets/Filters";
 import sortList from "./modules/sortList";
 import filter from "./modules/filterData";
@@ -60,8 +60,7 @@ function App() {
   const tags = concatTags(data);
 
   async function fetchData() {
-    const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
-    const res = await fetch(ADDRESS + "/api");
+    const res = await fetch(API_HOST + "/api");
     const resJSON = await res.json();
     const data = resJSON.reverse();
     setData(data);
