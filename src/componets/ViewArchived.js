@@ -1,11 +1,11 @@
 import "../styles/ViewArchived.css";
-import config from "../config";
+import { API_HOST } from "../config";
 
 const ViewArchived = ({ id }) => {
   const screenshotPath =
-    config.API.ADDRESS + ":" + config.API.PORT + "/screenshots/" + id + ".png";
+    API_HOST + "/screenshots/" + id + ".png";
   const pdfPath =
-    config.API.ADDRESS + ":" + config.API.PORT + "/pdfs/" + id + ".pdf";
+    API_HOST + "/pdfs/" + id + ".pdf";
 
   return (
     <div className="view-archived">

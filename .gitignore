@@ -12,6 +12,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+media
+api/.ash_history
+api/.cache/
+api/.pki/
 api/node_modules
 api/..pnp
 api/.pnp.js

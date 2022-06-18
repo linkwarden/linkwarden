@@ -1,23 +1,13 @@
 const puppeteer = require("puppeteer");
 const { PuppeteerBlocker } = require("@cliqz/adblocker-puppeteer");
 const fetch = require("cross-fetch");
-const config = require("../../src/config.js");
-const fs = require("fs");
-
-const screenshotDirectory =
-  config.API.STORAGE_LOCATION + "/LinkWarden/screenshot's/";
-const pdfDirectory = config.API.STORAGE_LOCATION + "/LinkWarden/pdf's/";
-
-if (!fs.existsSync(screenshotDirectory)) {
-  fs.mkdirSync(screenshotDirectory, { recursive: true });
-}
-
-if (!fs.existsSync(pdfDirectory)) {
-  fs.mkdirSync(pdfDirectory, { recursive: true });
-}
+const { screenshotDirectory, pdfDirectory } = require("../config.js");
 
 module.exports = async (link, id) => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox'],
+    timeout: 10000,
+  });
   const page = await browser.newPage();
 
   await PuppeteerBlocker.fromPrebuiltAdsAndTracking(fetch).then((blocker) => {
@@ -26,11 +16,13 @@ module.exports = async (link, id) => {
 
   await page.goto(link, { waitUntil: "load", timeout: 0 });
 
+  console.log(screenshotDirectory + "/" + id + ".png");
+
   await page.screenshot({
-    path: screenshotDirectory + id + ".png",
+    path: screenshotDirectory + "/" + id + ".png",
     fullPage: true,
   });
-  await page.pdf({ path: pdfDirectory + id + ".pdf", format: "a4" });
+  await page.pdf({ path: pdfDirectory + "/" + id + ".pdf", format: "a4" });
 
   await browser.close();
 };
