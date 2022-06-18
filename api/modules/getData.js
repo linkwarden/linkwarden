@@ -16,8 +16,6 @@ module.exports = async (link, id) => {
 
   await page.goto(link, { waitUntil: "load", timeout: 0 });
 
-  console.log(screenshotDirectory + "/" + id + ".png");
-
   await page.screenshot({
     path: screenshotDirectory + "/" + id + ".png",
     fullPage: true,
