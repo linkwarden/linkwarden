@@ -5,18 +5,15 @@ version: "3"
 services:
   mongo:
     image: mongo
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=linkwarden
-      - MONGO_INITDB_ROOT_PASSWORD=changeme
     restart: unless-stopped
 
   link-warden-api:
     build: ./api
     environment:
-      - MONGODB_URI=mongodb://linkwarden:changeme@mongo:27017/
+      - MONGODB_URI=mongodb://mongo:27017/
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     volumes:
-      - ./media:/media
+      - media:/media
       - ./api:/home/node
     ports:
       - 5000:5000
@@ -38,3 +35,6 @@ services:
     restart: unless-stopped
     depends_on:
       - link-warden-api
+
+volumes:
+  media:
