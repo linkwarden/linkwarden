@@ -2,20 +2,25 @@ const express = require("express");
 const app = express();
 const { MongoClient } = require("mongodb");
 const cors = require("cors");
-const config = require("../src/config.js");
 const getData = require("./modules/getData.js");
 const fs = require("fs");
+const { port, URI, database, collection, screenshotDirectory, pdfDirectory } = require("./config.js");
 const fetch = require("cross-fetch");
-
-const port = config.API.PORT;
-
-const URI = config.API.MONGODB_URI;
-const database = config.API.DB_NAME;
-const collection = config.API.COLLECTION_NAME;
+const sanitize = require("sanitize-filename");
 
 const client = new MongoClient(URI);
 const db = client.db(database);
 const list = db.collection(collection);
+
+// Create the storage directories if they do ot exist
+if (!fs.existsSync(screenshotDirectory)) {
+  fs.mkdirSync(screenshotDirectory, { recursive: true });
+}
+
+if (!fs.existsSync(pdfDirectory)) {
+  fs.mkdirSync(pdfDirectory, { recursive: true });
+}
+
 
 app.use(cors());
 
@@ -28,7 +33,7 @@ app.get("/api", async (req, res) => {
 
 app.get("/screenshots/:id", async (req, res) => {
   res.sendFile(
-    config.API.STORAGE_LOCATION + "/LinkWarden/screenshot's/" + req.params.id,
+    screenshotDirectory + "/" + sanitize(req.params.id),
     (err) => {
       if (err) {
         res.sendFile(__dirname + "/pages/404.html");
@@ -39,7 +44,7 @@ app.get("/screenshots/:id", async (req, res) => {
 
 app.get("/pdfs/:id", async (req, res) => {
   res.sendFile(
-    config.API.STORAGE_LOCATION + "/LinkWarden/pdf's/" + req.params.id,
+    pdfDirectory + "/" + sanitize(req.params.id),
     (err) => {
       if (err) {
         res.sendFile(__dirname + "/pages/404.html");
@@ -57,7 +62,7 @@ app.post("/api", async (req, res) => {
       .then((res) => res.text())
       .then((text) => (body = text));
     // regular expression to parse contents of the <title> tag
-    let match = body.match(/<title>([^<]*)<\/title>/);
+    let match = body.match(/<title.*>([^<]*)<\/title>/);
     return match[1];
   };
 
@@ -116,11 +121,12 @@ async function getDoc() {
 }
 
 async function deleteDoc(doc) {
+  doc = sanitize(doc);
   try {
     const result = await list.deleteOne({ _id: doc });
 
     fs.unlink(
-      config.API.STORAGE_LOCATION + "/LinkWarden/screenshot's/" + doc + ".png",
+      screenshotDirectory + "/" + doc + ".png",
       (err) => {
         if (err) {
           console.log(err);
@@ -129,7 +135,7 @@ async function deleteDoc(doc) {
     );
 
     fs.unlink(
-      config.API.STORAGE_LOCATION + "/LinkWarden/pdf's/" + doc + ".pdf",
+      pdfDirectory +"/" + doc + ".pdf",
       (err) => {
         if (err) {
           console.log(err);
@@ -147,3 +153,4 @@ app.listen(port, () => {
   console.log(`Success! running on port ${port}.`);
   client.connect();
 });
+
