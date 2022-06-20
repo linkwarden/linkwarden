@@ -34,9 +34,12 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 **Also take a look at our planned features in the [project roadmap section](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap).**
 
-## Setup
+## Installation
 
-### Linux/MacOS
+### Using Docker Compose (Recommended)
+()
+
+### Manual Setup (Linux/MacOS)
 
 1. Make sure your MongoDB database and collection is up and running.
 
