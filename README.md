@@ -37,7 +37,14 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 ## Installation
 
 ### Using Docker Compose (Recommended)
-()
+
+1. Make sure Docker docker is installed.
+
+2. Clone this repository.
+
+4. [Optional] If you want to use this app across the network change `REACT_APP_API_HOST` in docker-compose.yml with the computer IP address.
+
+3. head to the main folder and run `docker compose up`.
 
 ### Manual Setup (Linux/MacOS)
 
