@@ -1,4 +1,4 @@
-import config from "../config";
+import { API_HOST } from "../config";
 import { nanoid } from "nanoid";
 
 const addItem = async (
@@ -28,8 +28,7 @@ const addItem = async (
   }
 
   if (isValidHttpUrl(link)) {
-    const ADDRESS = config.API.ADDRESS + ":" + config.API.PORT;
-    fetch(ADDRESS + "/api", {
+    fetch(API_HOST + "/api", {
       method: method,
       body: JSON.stringify({
         _id: id,
