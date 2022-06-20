@@ -12,7 +12,7 @@ const client = new MongoClient(URI);
 const db = client.db(database);
 const list = db.collection(collection);
 
-// Create the storage directories if they do ot exist
+// Create the storage directories if they do not exist
 if (!fs.existsSync(screenshotDirectory)) {
   fs.mkdirSync(screenshotDirectory, { recursive: true });
 }
