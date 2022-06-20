@@ -13,7 +13,7 @@ services:
       - MONGODB_URI=mongodb://mongo:27017/
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     volumes:
-      - media:/media
+      - ./storage:/storage
       - ./api:/home/node
     ports:
       - 5000:5000
@@ -36,5 +36,3 @@ services:
     depends_on:
       - link-warden-api
 
-volumes:
-  media:
