@@ -47,6 +47,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 3. head to the main folder and run `docker compose up`.
 
 ### Manual Setup (Linux/MacOS)
+(Unstable for now.)
 
 1. Make sure your MongoDB database and collection is up and running.
 

@@ -1,5 +1,3 @@
-const fs = require("fs");
-
 module.exports.port = process.env.PORT || 5000;
 module.exports.URI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
 module.exports.database = process.env.DB_NAME || 'sample_db';
