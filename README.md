@@ -48,6 +48,6 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 ## LinkWarden Development
 
-All contributions are welcomed! Please take a look at [how to contribute](.github/CONTRIBUTING.md).
+All contributions are welcomed! But first please take a look at [how to contribute](.github/CONTRIBUTING.md).
 
 > **For questions/help, feature requests and bug reports please create an [issue](https://github.com/Daniel31x13/link-warden/issues) (please use the right lable).**
