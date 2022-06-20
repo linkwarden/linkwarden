@@ -13,6 +13,7 @@ yarn-debug.log*
 yarn-error.log*
 
 storage/**
+!storage/storage
 api/.ash_history
 api/.config
 api/.cache/
