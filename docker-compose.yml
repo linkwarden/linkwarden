@@ -13,7 +13,6 @@ services:
       - MONGODB_URI=mongodb://mongo:27017/
       - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
     volumes:
-      - ./media:/media
       - ./api:/home/node
     ports:
       - 5000:5000

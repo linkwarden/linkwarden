@@ -42,20 +42,21 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 2. Clone this repository.
 
-4. [Optional] If you want to use this app across the network change `REACT_APP_API_HOST` in docker-compose.yml with the computer IP and port.
+4. [Optional] If you want to use this app across the network change `REACT_APP_API_HOST` in docker-compose.yml with the computer IP and API port.
 
 3. head to the main folder and run `docker compose up`.
 
 ### Manual Setup
-(Unstable for now.)
 
 1. Make sure your MongoDB database and collection is up and running.
 
-2. Edit [/src/config.js](src/config.js) accordingly.
+2. Edit [URI, Database name and Collection name](api/config.js) accordingly.
 
-3. Head to the main folder using terminal and run: `(cd api && npm install) && npm install --legacy-peer-deps` for the dependencies.
+3. [Optional] If you want to use this app across the network change [`API_HOST`](src/config.js) address with the computer IP and API port.
 
-4. Run `npm start` to start the application.
+4. Head to the main folder using terminal and run: `(cd api && npm install) && npm install --legacy-peer-deps` for the dependencies.
+
+5. Run `npm start` to start the application.
 
 ## LinkWarden Development
 

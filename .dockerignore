@@ -4,5 +4,4 @@ api
 .dockerignore
 Dockerfile*
 node_modules
-media/**
-!media/explanation
+api/media
