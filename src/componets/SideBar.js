@@ -31,17 +31,16 @@ const SideBar = ({ tags, handleToggleSidebar, toggle }) => {
       </SidebarHeader>
       <SidebarContent className="sidebar-content">
         <Menu iconShape="circle">
-          <MenuItem>
+          <MenuItem icon={<h2 className="sidebar-icon">&#xf015;</h2>}>
             <Link to="/">
-              <h3>Show Everything</h3>
+              <h3 className="menu-item">All</h3>
             </Link>
           </MenuItem>
 
           <SubMenu
-            icon={<h2>#</h2>}
+            icon={<h2 className="sidebar-icon">&#xf02c;</h2>}
             suffix={<span className="badge">{sortedTags.length}</span>}
-            defaultOpen={true}
-            title="Tags"
+            title={<h3 className="menu-item">Tags</h3>}
           >
             {sortedTags.map((e, i) => {
               const path = `/tags/${e}`;

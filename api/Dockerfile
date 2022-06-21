@@ -19,7 +19,7 @@ RUN apk add --no-cache \
 COPY . .
 RUN npm ci && mkdir -p /media
 
-# The collowing command fails when attempting to chown the node_modules directory.
+# The following command fails when attempting to chown the node_modules directory.
 # Running it in its own layer allows it to modify the volume.
 RUN chown -R node:node /home/node /media
 

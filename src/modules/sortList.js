@@ -1,14 +1,14 @@
 const sortList = (data, sortBy) => {
   let sortedData = data;
-  if (sortBy == 1) {
+  if (sortBy.toString() === '1') {
     sortedData.sort((a, b) => {
       return new Date(b.date) - new Date(a.date);
     });
-  } else if (sortBy == 2) {
+  } else if (sortBy.toString() === '2') {
     sortedData.sort((a, b) => {
       return new Date(a.date) - new Date(b.date);
     });
-  } else if (sortBy == 3) {
+  } else if (sortBy.toString() === '3') {
     sortedData.sort((a, b) => {
       const A = a.name.toLowerCase(),
         B = b.name.toLowerCase();
@@ -16,7 +16,7 @@ const sortList = (data, sortBy) => {
       if (A > B) return 1;
       return 0;
     });
-  } else if (sortBy == 4) {
+  } else if (sortBy.toString() === '4') {
     sortedData.sort((a, b) => {
       const A = a.name.toLowerCase(),
         B = b.name.toLowerCase();
@@ -24,7 +24,7 @@ const sortList = (data, sortBy) => {
       if (A < B) return 1;
       return 0;
     });
-  } else if (sortBy == 5) {
+  } else if (sortBy.toString() === '5') {
     sortedData.sort((a, b) => {
       const A = a.title.toLowerCase(),
         B = b.title.toLowerCase();
@@ -32,7 +32,7 @@ const sortList = (data, sortBy) => {
       if (A > B) return 1;
       return 0;
     });
-  } else if (sortBy == 6) {
+  } else if (sortBy.toString() === '6') {
     sortedData.sort((a, b) => {
       const A = a.title.toLowerCase(),
         B = b.title.toLowerCase();

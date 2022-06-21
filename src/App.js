@@ -136,8 +136,6 @@ function App() {
           <p className="results">{numberOfResults} Bookmarks found</p>
         ) : null}
 
-        {numberOfResults === 0 ? <NoResults /> : null}
-
         {filterBox ? (
           <Filters
             filterCheckbox={filterCheckbox}
@@ -147,6 +145,8 @@ function App() {
             onExit={exitFilter}
           />
         ) : null}
+
+        {numberOfResults === 0 ? <NoResults /> : null}
 
         {newBox ? (
           <AddItem
