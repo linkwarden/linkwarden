@@ -41,7 +41,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio == 1}
+                  checked={radio.toString() === '1'}
                   onChange={handleRadio}
                   type="radio"
                   value={1}
@@ -51,7 +51,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio == 2}
+                  checked={radio.toString() === '2'}
                   onChange={handleRadio}
                   type="radio"
                   value={2}
@@ -61,7 +61,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio == 3}
+                  checked={radio.toString() === '3'}
                   onChange={handleRadio}
                   type="radio"
                   value={3}
@@ -71,7 +71,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio == 4}
+                  checked={radio.toString() === '4'}
                   onChange={handleRadio}
                   type="radio"
                   value={4}
@@ -81,7 +81,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio == 5}
+                  checked={radio.toString() === '5'}
                   onChange={handleRadio}
                   type="radio"
                   value={5}
@@ -91,7 +91,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio == 6}
+                  checked={radio.toString() === '6'}
                   onChange={handleRadio}
                   type="radio"
                   value={6}
