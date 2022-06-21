@@ -146,8 +146,6 @@ function App() {
           />
         ) : null}
 
-        {numberOfResults === 0 ? <NoResults /> : null}
-
         {newBox ? (
           <AddItem
             SetLoader={SetLoader}
@@ -157,6 +155,8 @@ function App() {
             tags={() => tags}
           />
         ) : null}
+
+        {numberOfResults === 0 ? <NoResults /> : null}
 
         {loader ? <Loader lightMode={lightMode} /> : null}
       </div>

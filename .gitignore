@@ -12,8 +12,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-media/**
-!media/explanation
+api/media
 api/.ash_history
 api/.config
 api/.cache/
