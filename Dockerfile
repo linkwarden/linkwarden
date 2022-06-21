@@ -5,7 +5,7 @@ WORKDIR /home/node
 
 VOLUME /home/node/node_modules
 
-COPY package*.json ./
+COPY package*.json .
 
 RUN npm i -g npm@latest \
     && npm ci --legacy-peer-deps
