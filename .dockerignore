@@ -5,3 +5,4 @@ api
 Dockerfile*
 node_modules
 api/media
+mongo
