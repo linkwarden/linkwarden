@@ -24,13 +24,19 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 ## Features
 
-- [x] Sleek, minimalist design.
-- [x] Save a copy of each link as screenshot and PDF.
-- [x] Dark/Light mode support.
-- [x] Responsive design.
-- [x] Search, filter and sorting functionality.
-- [x] Lazy loading support (for better performance).
-- [x] Set multiple tags to each link.
+* 🔥 Sleek, minimalist design.
+
+* 📦 Auto-capture a screenshot and PDF from each website.
+
+* 🌤 Dark/Light mode support.
+
+* ↔️ Responsive design.
+
+* 🔎 Search, filter and sorting functionality.
+
+* 💨 Lazy loading support (for better performance).
+
+* 🏷 Set multiple tags to each link.
 
 **Also take a look at our planned features in the [project roadmap section](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap).**
 
