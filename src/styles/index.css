@@ -49,7 +49,7 @@ body {
 }
 
 .title {
-  color: darkgray;
+  color: white;
 }
 
 .link {
@@ -98,6 +98,10 @@ body {
   color: rgb(64, 64, 64);
 }
 
+.light .title {
+  color: rgb(0, 0, 0);
+}
+
 .light .list-row {
   background-color: lightyellow;
 }
@@ -120,10 +124,6 @@ body {
 .light .box,
 .light .edit-btn {
   background-color: rgb(233, 220, 179);
-}
-
-.light .title {
-  color: rgb(105, 105, 105);
 }
 
 .light .link {
