@@ -49,11 +49,14 @@ app.get("/screenshots/:id", async (req, res) => {
 });
 
 app.get("/pdfs/:id", async (req, res) => {
-  res.sendFile(pdfDirectory + "/" + sanitize(req.params.id), (err) => {
-    if (err) {
-      res.sendFile(__dirname + "/pages/404.html");
+  res.sendFile(
+    __dirname + "/" + pdfDirectory + "/" + sanitize(req.params.id),
+    (err) => {
+      if (err) {
+        res.sendFile(__dirname + "/pages/404.html");
+      }
     }
-  });
+  );
 });
 
 app.post("/api", async (req, res) => {
