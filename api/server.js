@@ -4,7 +4,14 @@ const { MongoClient } = require("mongodb");
 const cors = require("cors");
 const getData = require("./modules/getData.js");
 const fs = require("fs");
-const { port, URI, database, collection, screenshotDirectory, pdfDirectory } = require("./config.js");
+const {
+  port,
+  URI,
+  database,
+  collection,
+  screenshotDirectory,
+  pdfDirectory,
+} = require("./config.js");
 const fetch = require("cross-fetch");
 const sanitize = require("sanitize-filename");
 
@@ -21,7 +28,6 @@ if (!fs.existsSync(pdfDirectory)) {
   fs.mkdirSync(pdfDirectory, { recursive: true });
 }
 
-
 app.use(cors());
 
 app.use(express.json());
@@ -33,7 +39,7 @@ app.get("/api", async (req, res) => {
 
 app.get("/screenshots/:id", async (req, res) => {
   res.sendFile(
-    screenshotDirectory + "/" + sanitize(req.params.id),
+    __dirname + "/" + screenshotDirectory + "/" + sanitize(req.params.id),
     (err) => {
       if (err) {
         res.sendFile(__dirname + "/pages/404.html");
@@ -43,14 +49,11 @@ app.get("/screenshots/:id", async (req, res) => {
 });
 
 app.get("/pdfs/:id", async (req, res) => {
-  res.sendFile(
-    pdfDirectory + "/" + sanitize(req.params.id),
-    (err) => {
-      if (err) {
-        res.sendFile(__dirname + "/pages/404.html");
-      }
+  res.sendFile(pdfDirectory + "/" + sanitize(req.params.id), (err) => {
+    if (err) {
+      res.sendFile(__dirname + "/pages/404.html");
     }
-  );
+  });
 });
 
 app.post("/api", async (req, res) => {
@@ -125,23 +128,17 @@ async function deleteDoc(doc) {
   try {
     const result = await list.deleteOne({ _id: doc });
 
-    fs.unlink(
-      screenshotDirectory + "/" + doc + ".png",
-      (err) => {
-        if (err) {
-          console.log(err);
-        }
+    fs.unlink(screenshotDirectory + "/" + doc + ".png", (err) => {
+      if (err) {
+        console.log(err);
       }
-    );
+    });
 
-    fs.unlink(
-      pdfDirectory +"/" + doc + ".pdf",
-      (err) => {
-        if (err) {
-          console.log(err);
-        }
+    fs.unlink(pdfDirectory + "/" + doc + ".pdf", (err) => {
+      if (err) {
+        console.log(err);
       }
-    );
+    });
 
     return result;
   } catch (err) {
