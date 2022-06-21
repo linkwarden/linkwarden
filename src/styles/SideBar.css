@@ -30,3 +30,20 @@
   border-radius: 14px;
   background-color: rgb(52, 121, 181);
 }
+
+.sidebar-icon {
+  font-family: "Font Awesome 5 Free";
+  font-size: 1rem;
+}
+
+.menu-item {
+  color: rgb(255, 255, 255);
+}
+
+.menu-item:hover {
+  color: rgb(255, 255, 255);
+}
+
+.pro-inner-item {
+  margin-bottom: 10px;
+}

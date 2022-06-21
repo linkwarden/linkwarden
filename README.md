@@ -42,11 +42,11 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 2. Clone this repository.
 
-4. [Optional] If you want to use this app across the network change `REACT_APP_API_HOST` in docker-compose.yml with the computer IP address.
+4. [Optional] If you want to use this app across the network change `REACT_APP_API_HOST` in docker-compose.yml with the computer IP and port.
 
 3. head to the main folder and run `docker compose up`.
 
-### Manual Setup (Linux/MacOS)
+### Manual Setup
 (Unstable for now.)
 
 1. Make sure your MongoDB database and collection is up and running.
