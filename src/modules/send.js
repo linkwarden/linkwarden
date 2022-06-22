@@ -5,6 +5,7 @@ const addItem = async (
   name,
   link,
   tag,
+  list,
   reFetch,
   onExit,
   SetLoader,
@@ -36,6 +37,7 @@ const addItem = async (
         title: title,
         link: link,
         tag: tag,
+        list: list,
         date: dateCreated,
       }),
       headers: {

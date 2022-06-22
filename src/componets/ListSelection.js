@@ -1,6 +1,6 @@
 import CreatableSelect from "react-select/creatable";
 
-export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
+export default function ListSelection({ setList, lists, list = 'Unsorted', lightMode }) {
   const customStyles = {
     container: (provided) => ({
       ...provided,
@@ -10,11 +10,6 @@ export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
     placeholder: (provided) => ({
       ...provided,
       color: "#a9a9a9",
-    }),
-
-    multiValueRemove: (provided) => ({
-      ...provided,
-      color: "gray",
     }),
 
     menu: (provided) => ({
@@ -35,6 +30,11 @@ export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
       color: lightMode ? "rgb(64, 64, 64)" : "white",
     }),
 
+    singleValue: (provided) => ({
+      ...provided,
+      color: lightMode ? "rgb(64, 64, 64)" : "white",
+    }),
+
     control: (provided, state) => ({
       ...provided,
       background: lightMode ? "lightyellow" : "#273949",
@@ -46,19 +46,17 @@ export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
     }),
   };
 
-  const data = tags().map((e) => {
-    return { value: e, label: e };
-  });
-  const defaultTags = tag.map((e) => {
+  const data = lists().map((e) => {
     return { value: e, label: e };
   });
 
+  const defaultList = { value: list, label: list };
+
   return (
     <CreatableSelect
-      defaultValue={defaultTags}
+      defaultValue={defaultList}
       styles={customStyles}
-      isMulti
-      onChange={setTags}
+      onChange={setList}
       options={data}
     />
   );
