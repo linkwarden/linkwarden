@@ -32,12 +32,12 @@ const Filters = ({
     <>
       <div className="filter-overlay" onClick={abort}></div>
       <div className="filter-box">
-        <fieldset className="filter">
-          <legend>Filter search</legend>
+        <div className="filter">
+          <h2>Filter search</h2>
 
           <div className="filter-groups">
             <div className="section">
-              <h4>Sort by</h4>
+              <h3>Sort by</h3>
               <label>
                 <input
                   name="sort"
@@ -101,7 +101,7 @@ const Filters = ({
             </div>
 
             <div className="section">
-              <h4>Include/Exclude</h4>
+              <h3>Include/Exclude</h3>
               <label>
                 <input
                   type="checkbox"
@@ -132,7 +132,7 @@ const Filters = ({
           <button className="apply-btn" onClick={applyChanges}>
             Apply
           </button>
-        </fieldset>
+        </div>
       </div>
     </>
   );

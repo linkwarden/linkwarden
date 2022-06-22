@@ -49,8 +49,8 @@ const EditItem = ({ tags, item, onExit, SetLoader, reFetch, lightMode }) => {
     <>
       <div className="add-overlay" onClick={abort}></div>
       <div className="send-box">
-        <fieldset className="box">
-          <legend>Edit bookmark</legend>
+        <div className="box">
+          <h2>Edit bookmark</h2>
           <button className="delete" onClick={deleteItem}>
             &#xf2ed;
           </button>
@@ -93,7 +93,7 @@ const EditItem = ({ tags, item, onExit, SetLoader, reFetch, lightMode }) => {
               Update &#xf303;
             </button>
           </div>
-        </fieldset>
+        </div>
       </div>
     </>
   );
