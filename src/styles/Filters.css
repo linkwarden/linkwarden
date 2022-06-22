@@ -51,8 +51,14 @@
   z-index: 2;
 }
 
-.filter legend {
-  font-weight: 600;
+.filter h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.filter h3 {
+  font-weight: 300;
 }
 
 .section > label {

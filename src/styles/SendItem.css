@@ -42,8 +42,10 @@
   overflow-y: auto;
 }
 
-.box legend {
-  font-weight: 600;
+.box h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 400;
 }
 
 .box h3 {
