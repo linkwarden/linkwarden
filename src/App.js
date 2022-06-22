@@ -12,6 +12,7 @@ import NoResults from "./componets/NoResults";
 import Loader from "./componets/Loader";
 import SideBar from "./componets/SideBar";
 import Tags from "./routes/Tags.js";
+import Lists from "./routes/Lists.js";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
@@ -58,10 +59,6 @@ function App() {
 
   const filteredData = filter(data, searchQuery, filterCheckbox);
 
-  const tags = concatTags(data);
-
-  const lists = concatLists(data);
-
   async function fetchData() {
     const res = await fetch(API_HOST + "/api");
     const resJSON = await res.json();
@@ -98,7 +95,8 @@ function App() {
   return (
     <div className="App">
       <SideBar
-        tags={tags}
+        tags={concatTags(data)}
+        lists={concatLists(data)}
         handleToggleSidebar={handleToggleSidebar}
         toggle={toggle}
       />
@@ -155,8 +153,8 @@ function App() {
             onExit={exitAdding}
             reFetch={fetchData}
             lightMode={lightMode}
-            tags={() => tags}
-            lists={() => lists}
+            tags={() => concatTags(data)}
+            lists={() => concatLists(data)}
           />
         ) : null}
 
@@ -174,8 +172,8 @@ function App() {
                 lightMode={lightMode}
                 SetLoader={SetLoader}
                 data={filteredData}
-                tags={tags}
-                lists={lists}
+                tags={concatTags(data)}
+                lists={concatLists(data)}
                 reFetch={fetchData}
               />
             </div>
@@ -189,7 +187,22 @@ function App() {
               lightMode={lightMode}
               SetLoader={SetLoader}
               data={filteredData}
-              tags={tags}
+              tags={concatTags(data)}
+              lists={concatLists(data)}
+              reFetch={fetchData}
+            />
+          }
+        />
+
+        <Route
+          path="lists/:listId"
+          element={
+            <Lists
+              lightMode={lightMode}
+              SetLoader={SetLoader}
+              data={filteredData}
+              tags={concatTags(data)}
+              lists={concatLists(data)}
               reFetch={fetchData}
             />
           }
