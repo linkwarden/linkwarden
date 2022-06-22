@@ -7,6 +7,7 @@ import Filters from "./componets/Filters";
 import sortList from "./modules/sortList";
 import filter from "./modules/filterData";
 import concatTags from "./modules/concatTags";
+import concatLists from "./modules/concatLists";
 import NoResults from "./componets/NoResults";
 import Loader from "./componets/Loader";
 import SideBar from "./componets/SideBar";
@@ -58,6 +59,8 @@ function App() {
   const filteredData = filter(data, searchQuery, filterCheckbox);
 
   const tags = concatTags(data);
+
+  const lists = concatLists(data);
 
   async function fetchData() {
     const res = await fetch(API_HOST + "/api");
@@ -153,6 +156,7 @@ function App() {
             reFetch={fetchData}
             lightMode={lightMode}
             tags={() => tags}
+            lists={() => lists}
           />
         ) : null}
 
@@ -171,6 +175,7 @@ function App() {
                 SetLoader={SetLoader}
                 data={filteredData}
                 tags={tags}
+                lists={lists}
                 reFetch={fetchData}
               />
             </div>
