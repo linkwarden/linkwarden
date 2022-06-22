@@ -36,8 +36,8 @@ const AddItem = ({ onExit, reFetch, tags, SetLoader, lightMode }) => {
     <>
       <div className="add-overlay" onClick={abort}></div>
       <div className="send-box">
-        <fieldset className="box">
-          <legend>New bookmark</legend>
+        <div className="box">
+          <h2>New bookmark</h2>
           <div className="AddItem-content">
             <h3>
               <span style={{ color: "red" }}>* </span>Link:
@@ -65,7 +65,7 @@ const AddItem = ({ onExit, reFetch, tags, SetLoader, lightMode }) => {
               Add &#xf067;
             </button>
           </div>
-        </fieldset>
+        </div>
       </div>
     </>
   );
