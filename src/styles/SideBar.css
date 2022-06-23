@@ -3,7 +3,7 @@
   position: fixed;
 }
 
-.sidebar h1 {
+.sidebar h3 {
   text-align: center;
 }
 
@@ -46,4 +46,12 @@
 
 .pro-inner-item {
   margin-bottom: 10px;
+}
+
+.sidebar-entity {
+  font-size: 1.2rem;
+}
+
+.sidebar-item-prefix {
+  font-family: "Font Awesome 5 Free";
 }
