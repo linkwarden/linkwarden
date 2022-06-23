@@ -2,15 +2,24 @@ import { useState } from "react";
 import "../styles/SendItem.css";
 import TagSelection from "./TagSelection";
 import addItem from "../modules/send";
+import CollectionSelection from "./CollectionSelection";
 
-const AddItem = ({ onExit, reFetch, tags, SetLoader, lightMode }) => {
-  const [name, setName] = useState("");
-  const [link, setLink] = useState("");
-  const [tag, setTag] = useState([]);
+const AddItem = ({
+  onExit,
+  reFetch,
+  tags,
+  collections,
+  SetLoader,
+  lightMode,
+}) => {
+  const [name, setName] = useState(""),
+    [link, setLink] = useState(""),
+    [tag, setTag] = useState([]),
+    [collection, setCollection] = useState("Unsorted");
 
   function newItem() {
     SetLoader(true);
-    addItem(name, link, tag, reFetch, onExit, SetLoader, "POST");
+    addItem(name, link, tag, collection, reFetch, onExit, SetLoader, "POST");
   }
 
   function SetName(e) {
@@ -22,8 +31,11 @@ const AddItem = ({ onExit, reFetch, tags, SetLoader, lightMode }) => {
   }
 
   function SetTags(value) {
-    setTag(value);
     setTag(value.map((e) => e.value.toLowerCase()));
+  }
+
+  function SetCollection(value) {
+    setCollection(value.value);
   }
 
   function abort(e) {
@@ -61,6 +73,14 @@ const AddItem = ({ onExit, reFetch, tags, SetLoader, lightMode }) => {
               Tags: <span className="optional">(Optional)</span>
             </h3>
             <TagSelection setTags={SetTags} tags={tags} lightMode={lightMode} />
+            <h3>
+              Collections: <span className="optional">(Optional)</span>
+            </h3>
+            <CollectionSelection
+              setCollection={SetCollection}
+              collections={collections}
+              lightMode={lightMode}
+            />
             <button onClick={newItem} className="send-btn">
               Add &#xf067;
             </button>

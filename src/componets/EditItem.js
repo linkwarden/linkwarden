@@ -3,10 +3,20 @@ import deleteEntity from "../modules/deleteEntity";
 import "../styles/SendItem.css";
 import TagSelection from "./TagSelection";
 import editItem from "../modules/send";
+import CollectionSelection from "./CollectionSelection";
 
-const EditItem = ({ tags, item, onExit, SetLoader, reFetch, lightMode }) => {
-  const [name, setName] = useState(item.name);
-  const [tag, setTag] = useState(item.tag);
+const EditItem = ({
+  tags,
+  collections,
+  item,
+  onExit,
+  SetLoader,
+  reFetch,
+  lightMode,
+}) => {
+  const [name, setName] = useState(item.name),
+    [tag, setTag] = useState(item.tag),
+    [collection, setCollection] = useState(item.collection);
 
   function EditItem() {
     SetLoader(true);
@@ -14,6 +24,7 @@ const EditItem = ({ tags, item, onExit, SetLoader, reFetch, lightMode }) => {
       name,
       item.link,
       tag,
+      collection,
       reFetch,
       onExit,
       SetLoader,
@@ -33,8 +44,11 @@ const EditItem = ({ tags, item, onExit, SetLoader, reFetch, lightMode }) => {
   }
 
   function SetTags(value) {
-    setTag(value);
     setTag(value.map((e) => e.value.toLowerCase()));
+  }
+
+  function SetCollection(value) {
+    setCollection(value.value);
   }
 
   function abort(e) {
@@ -50,10 +64,12 @@ const EditItem = ({ tags, item, onExit, SetLoader, reFetch, lightMode }) => {
       <div className="add-overlay" onClick={abort}></div>
       <div className="send-box">
         <div className="box">
-          <h2>Edit bookmark</h2>
+          <div className="title-delete-group">
+          <h2 className="edit-title">Edit bookmark</h2>
           <button className="delete" onClick={deleteItem}>
             &#xf2ed;
           </button>
+          </div>
           <div className="AddItem-content">
             <h3>
               Link:{" "}
@@ -87,6 +103,15 @@ const EditItem = ({ tags, item, onExit, SetLoader, reFetch, lightMode }) => {
               setTags={SetTags}
               tags={tags}
               tag={tag}
+              lightMode={lightMode}
+            />
+            <h3>
+             Collection: <span className="optional">(Optional)</span>
+            </h3>
+            <CollectionSelection
+              setCollection={SetCollection}
+              collections={collections}
+              collection={collection}
               lightMode={lightMode}
             />
             <button onClick={EditItem} className="send-btn">
