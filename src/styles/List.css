@@ -221,3 +221,16 @@
 .title-delete-group {
   text-align: center;
 }
+
+.list-collection-label {
+  margin-top: 10px;
+}
+
+.list-collection-label a::before {
+  font-family: "Font Awesome 5 Free";
+  content: " ";
+}
+
+.list-collection-label a {
+  color: inherit;
+}
