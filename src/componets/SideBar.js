@@ -11,7 +11,7 @@ import "react-pro-sidebar/dist/css/styles.css";
 import "../styles/SideBar.css";
 import { Link } from "react-router-dom";
 
-const SideBar = ({ tags, lists, handleToggleSidebar, toggle }) => {
+const SideBar = ({ tags, collections, handleToggleSidebar, toggle }) => {
   const sortedTags = tags.sort((a, b) => {
     const A = a.toLowerCase(),
       B = b.toLowerCase();
@@ -20,7 +20,7 @@ const SideBar = ({ tags, lists, handleToggleSidebar, toggle }) => {
     return 0;
   });
 
-  const sortedLists = lists
+  const sortedCollections = collections
     .sort((a, b) => {
       const A = a.toLowerCase(),
         B = b.toLowerCase();
@@ -52,11 +52,14 @@ const SideBar = ({ tags, lists, handleToggleSidebar, toggle }) => {
 
           <SubMenu
             icon={<h2 className="sidebar-icon">&#xf5fd;</h2>}
-            suffix={<span className="badge">{sortedTags.length}</span>}
-            title={<div className="menu-item">Lists</div>}
+            suffix={<span className="badge">{sortedCollections.length}</span>}
+            title={<div className="menu-item">Collections</div>}
           >
-            {sortedLists.map((e, i) => {
-              const path = `/lists/${e}`;
+            <MenuItem prefix={<div className="sidebar-item-prefix">&#xf07b;</div>}>
+              <Link className="sidebar-entity" to="/collections/Unsorted">Unsorted</Link>
+            </MenuItem>
+            {sortedCollections.map((e, i) => {
+              const path = `/collections/${e}`;
               return (
                 <MenuItem prefix={<div className="sidebar-item-prefix">&#xf07b;</div>} key={i}>
                   <Link className="sidebar-entity" to={path}>{e}</Link>

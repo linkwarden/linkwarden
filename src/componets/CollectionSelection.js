@@ -1,6 +1,11 @@
 import CreatableSelect from "react-select/creatable";
 
-export default function ListSelection({ setList, lists, list = 'Unsorted', lightMode }) {
+export default function CollectionSelection({
+  setCollection,
+  collections,
+  collection = "Unsorted",
+  lightMode,
+}) {
   const customStyles = {
     container: (provided) => ({
       ...provided,
@@ -46,17 +51,17 @@ export default function ListSelection({ setList, lists, list = 'Unsorted', light
     }),
   };
 
-  const data = lists().map((e) => {
+  const data = collections().map((e) => {
     return { value: e, label: e };
   });
 
-  const defaultList = { value: list, label: list };
+  const defaultCollection = { value: collection, label: collection };
 
   return (
     <CreatableSelect
-      defaultValue={defaultList}
+      defaultValue={defaultCollection}
       styles={customStyles}
-      onChange={setList}
+      onChange={setCollection}
       options={data}
     />
   );
