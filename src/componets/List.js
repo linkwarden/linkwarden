@@ -68,6 +68,11 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
                       </a>
                     </div>
                     <div className="title">{e.title}</div>
+                    <div className="list-collection-label">
+                      <Link to={`/collections/${e.collection}`}>
+                        {e.collection}
+                      </Link>
+                    </div>
                     <div className="tags">
                       {e.tag.map((e, i) => {
                         const tagPath = `/tags/${e}`;
