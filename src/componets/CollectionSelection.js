@@ -17,6 +17,14 @@ export default function CollectionSelection({
       color: "#a9a9a9",
     }),
 
+    option: (provided) => ({
+      ...provided,
+      ':before': {
+        content: '""',
+        marginRight: 8,
+      },
+    }),
+
     menu: (provided) => ({
       ...provided,
       border: "solid",
@@ -33,10 +41,15 @@ export default function CollectionSelection({
     input: (provided) => ({
       ...provided,
       color: lightMode ? "rgb(64, 64, 64)" : "white",
+      
     }),
 
     singleValue: (provided) => ({
       ...provided,
+      ':before': {
+        content: '""',
+        marginRight: 8,
+      },
       color: lightMode ? "rgb(64, 64, 64)" : "white",
     }),
 
@@ -59,6 +72,7 @@ export default function CollectionSelection({
 
   return (
     <CreatableSelect
+      className="select"
       defaultValue={defaultCollection}
       styles={customStyles}
       onChange={setCollection}
