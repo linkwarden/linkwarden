@@ -2,12 +2,14 @@ import "../styles/List.css";
 import LazyLoad from "react-lazyload";
 import ViewArchived from "./ViewArchived";
 import EditItem from "./EditItem";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import NoResults from "./NoResults";
 
 const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
-  const [editBox, setEditBox] = useState(false);
-  const [editIndex, setEditIndex] = useState(0);
+  const [editBox, setEditBox] = useState(false),
+    [editIndex, setEditIndex] = useState(0),
+    [numberOfResults, setNumberOfResults] = useState(0);
 
   function edit(index) {
     setEditBox(true);
@@ -18,8 +20,18 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
     setEditBox(false);
   }
 
+  useEffect(() => {
+    setNumberOfResults(data.length);
+  }, [data]);
+
   return (
     <div className="list">
+      {numberOfResults > 0 ? (
+        <p className="results">{numberOfResults} Bookmarks found</p>
+      ) : null}
+
+      {numberOfResults === 0 ? <NoResults /> : null}
+
       {editBox ? (
         <EditItem
           lightMode={lightMode}

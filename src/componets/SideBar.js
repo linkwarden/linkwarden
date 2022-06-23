@@ -29,7 +29,7 @@ const SideBar = ({ tags, collections, handleToggleSidebar, toggle }) => {
       return 0;
     })
     .filter((e) => {
-      return e != "Unsorted";
+      return e !== "Unsorted";
     });
 
   return (
@@ -52,7 +52,7 @@ const SideBar = ({ tags, collections, handleToggleSidebar, toggle }) => {
 
           <SubMenu
             icon={<h2 className="sidebar-icon">&#xf5fd;</h2>}
-            suffix={<span className="badge">{sortedCollections.length}</span>}
+            suffix={<span className="badge">{sortedCollections.length + 1}</span>}
             title={<div className="menu-item">Collections</div>}
           >
             <MenuItem prefix={<div className="sidebar-item-prefix">&#xf07b;</div>}>

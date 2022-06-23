@@ -8,7 +8,6 @@ import sortList from "./modules/sortList";
 import filter from "./modules/filterData";
 import concatTags from "./modules/concatTags";
 import concatCollections from "./modules/concatCollections";
-import NoResults from "./componets/NoResults";
 import Loader from "./componets/Loader";
 import SideBar from "./componets/SideBar";
 import Tags from "./routes/Tags.js";
@@ -20,7 +19,6 @@ function App() {
     [newBox, setNewBox] = useState(false),
     [filterBox, setFilterBox] = useState(false),
     [searchQuery, setSearchQuery] = useState(""),
-    [numberOfResults, setNumberOfResults] = useState(0),
     [filterCheckbox, setFilterCheckbox] = useState([true, true, true]),
     [sortBy, setSortBy] = useState(1),
     [loader, setLoader] = useState(false),
@@ -79,10 +77,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setNumberOfResults(filteredData.length);
-  }, [filteredData]);
-
-  useEffect(() => {
     if (lightMode) {
       document.body.classList.add("light");
     } else {
@@ -133,10 +127,6 @@ function App() {
           ></button>
         </div>
 
-        {numberOfResults > 0 ? (
-          <p className="results">{numberOfResults} Bookmarks found</p>
-        ) : null}
-
         {filterBox ? (
           <Filters
             filterCheckbox={filterCheckbox}
@@ -158,7 +148,7 @@ function App() {
           />
         ) : null}
 
-        {numberOfResults === 0 ? <NoResults /> : null}
+        
 
         {loader ? <Loader lightMode={lightMode} /> : null}
       </div>
