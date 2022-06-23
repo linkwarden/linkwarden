@@ -64,10 +64,12 @@ const EditItem = ({
       <div className="add-overlay" onClick={abort}></div>
       <div className="send-box">
         <div className="box">
-          <h2>Edit bookmark</h2>
+          <div className="title-delete-group">
+          <h2 className="edit-title">Edit bookmark</h2>
           <button className="delete" onClick={deleteItem}>
             &#xf2ed;
           </button>
+          </div>
           <div className="AddItem-content">
             <h3>
               Link:{" "}
