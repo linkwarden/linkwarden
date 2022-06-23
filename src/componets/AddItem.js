@@ -2,17 +2,24 @@ import { useState } from "react";
 import "../styles/SendItem.css";
 import TagSelection from "./TagSelection";
 import addItem from "../modules/send";
-import ListSelection from "./ListSelection";
+import CollectionSelection from "./CollectionSelection";
 
-const AddItem = ({ onExit, reFetch, tags, lists, SetLoader, lightMode }) => {
+const AddItem = ({
+  onExit,
+  reFetch,
+  tags,
+  collections,
+  SetLoader,
+  lightMode,
+}) => {
   const [name, setName] = useState(""),
     [link, setLink] = useState(""),
     [tag, setTag] = useState([]),
-    [list, setList] = useState([]);
+    [collection, setCollection] = useState("Unsorted");
 
   function newItem() {
     SetLoader(true);
-    addItem(name, link, tag, list, reFetch, onExit, SetLoader, "POST");
+    addItem(name, link, tag, collection, reFetch, onExit, SetLoader, "POST");
   }
 
   function SetName(e) {
@@ -27,8 +34,8 @@ const AddItem = ({ onExit, reFetch, tags, lists, SetLoader, lightMode }) => {
     setTag(value.map((e) => e.value.toLowerCase()));
   }
 
-  function SetList(value) {
-    setList(value.value);
+  function SetCollection(value) {
+    setCollection(value.value);
   }
 
   function abort(e) {
@@ -67,11 +74,11 @@ const AddItem = ({ onExit, reFetch, tags, lists, SetLoader, lightMode }) => {
             </h3>
             <TagSelection setTags={SetTags} tags={tags} lightMode={lightMode} />
             <h3>
-              List: <span className="optional">(Optional)</span>
+              Collections: <span className="optional">(Optional)</span>
             </h3>
-            <ListSelection
-              setList={SetList}
-              lists={lists}
+            <CollectionSelection
+              setCollection={SetCollection}
+              collections={collections}
               lightMode={lightMode}
             />
             <button onClick={newItem} className="send-btn">

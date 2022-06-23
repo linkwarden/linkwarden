@@ -7,12 +7,12 @@ import Filters from "./componets/Filters";
 import sortList from "./modules/sortList";
 import filter from "./modules/filterData";
 import concatTags from "./modules/concatTags";
-import concatLists from "./modules/concatLists";
+import concatCollections from "./modules/concatCollections";
 import NoResults from "./componets/NoResults";
 import Loader from "./componets/Loader";
 import SideBar from "./componets/SideBar";
 import Tags from "./routes/Tags.js";
-import Lists from "./routes/Lists.js";
+import Collections from "./routes/Collections.js";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
@@ -96,7 +96,7 @@ function App() {
     <div className="App">
       <SideBar
         tags={concatTags(data)}
-        lists={concatLists(data)}
+        collections={concatCollections(data)}
         handleToggleSidebar={handleToggleSidebar}
         toggle={toggle}
       />
@@ -154,7 +154,7 @@ function App() {
             reFetch={fetchData}
             lightMode={lightMode}
             tags={() => concatTags(data)}
-            lists={() => concatLists(data)}
+            collections={() => concatCollections(data)}
           />
         ) : null}
 
@@ -173,7 +173,7 @@ function App() {
                 SetLoader={SetLoader}
                 data={filteredData}
                 tags={concatTags(data)}
-                lists={concatLists(data)}
+                collections={concatCollections(data)}
                 reFetch={fetchData}
               />
             </div>
@@ -188,21 +188,21 @@ function App() {
               SetLoader={SetLoader}
               data={filteredData}
               tags={concatTags(data)}
-              lists={concatLists(data)}
+              collections={concatCollections(data)}
               reFetch={fetchData}
             />
           }
         />
 
         <Route
-          path="lists/:listId"
+          path="collections/:collectionId"
           element={
-            <Lists
+            <Collections
               lightMode={lightMode}
               SetLoader={SetLoader}
               data={filteredData}
               tags={concatTags(data)}
-              lists={concatLists(data)}
+              collections={concatCollections(data)}
               reFetch={fetchData}
             />
           }
