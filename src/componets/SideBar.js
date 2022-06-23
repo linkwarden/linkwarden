@@ -40,26 +40,26 @@ const SideBar = ({ tags, lists, handleToggleSidebar, toggle }) => {
       className="sidebar"
     >
       <SidebarHeader>
-        <h1>LinkWarden</h1>
+        <h3>LinkWarden</h3>
       </SidebarHeader>
       <SidebarContent className="sidebar-content">
         <Menu iconShape="circle">
           <MenuItem icon={<h2 className="sidebar-icon">&#xf015;</h2>}>
             <Link to="/">
-              <h3 className="menu-item">All</h3>
+              <div className="menu-item">All</div>
             </Link>
           </MenuItem>
 
           <SubMenu
-            icon={<h2 className="sidebar-icon">&#xf02c;</h2>}
+            icon={<h2 className="sidebar-icon">&#xf5fd;</h2>}
             suffix={<span className="badge">{sortedTags.length}</span>}
-            title={<h3 className="menu-item">Lists</h3>}
+            title={<div className="menu-item">Lists</div>}
           >
             {sortedLists.map((e, i) => {
               const path = `/lists/${e}`;
               return (
-                <MenuItem prefix={"#"} key={i}>
-                  <Link to={path}>{e}</Link>
+                <MenuItem prefix={<div className="sidebar-item-prefix">&#xf07b;</div>} key={i}>
+                  <Link className="sidebar-entity" to={path}>{e}</Link>
                 </MenuItem>
               );
             })}
@@ -68,13 +68,13 @@ const SideBar = ({ tags, lists, handleToggleSidebar, toggle }) => {
           <SubMenu
             icon={<h2 className="sidebar-icon">&#xf02c;</h2>}
             suffix={<span className="badge">{sortedTags.length}</span>}
-            title={<h3 className="menu-item">Tags</h3>}
+            title={<div className="menu-item">Tags</div>}
           >
             {sortedTags.map((e, i) => {
               const path = `/tags/${e}`;
               return (
-                <MenuItem prefix={"#"} key={i}>
-                  <Link to={path}>{e}</Link>
+                <MenuItem prefix={<div className="sidebar-item-prefix">&#x23;</div>} key={i}>
+                  <Link className="sidebar-entity" to={path}>{e}</Link>
                 </MenuItem>
               );
             })}
