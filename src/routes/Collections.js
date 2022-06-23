@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import List from "../componets/List";
 
-const Lists = ({ data, tags, lists, SetLoader, lightMode, reFetch }) => {
-  const { listId } = useParams();
+const Collections = ({ data, tags, collections, SetLoader, lightMode, reFetch }) => {
+  const { collectionId } = useParams();
   const dataWithMatchingTag = data.filter((e) => {
-    return e.list.includes(listId);
+    return e.collection.includes(collectionId);
   });
 
   return (
@@ -13,7 +13,7 @@ const Lists = ({ data, tags, lists, SetLoader, lightMode, reFetch }) => {
         lightMode={lightMode}
         data={dataWithMatchingTag}
         tags={tags}
-        lists={lists}
+        collections={collections}
         SetLoader={SetLoader}
         reFetch={reFetch}
       />
@@ -21,4 +21,4 @@ const Lists = ({ data, tags, lists, SetLoader, lightMode, reFetch }) => {
   );
 };
 
-export default Lists;
+export default Collections;

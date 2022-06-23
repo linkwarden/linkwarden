@@ -3,12 +3,20 @@ import deleteEntity from "../modules/deleteEntity";
 import "../styles/SendItem.css";
 import TagSelection from "./TagSelection";
 import editItem from "../modules/send";
-import ListSelection from "./ListSelection";
+import CollectionSelection from "./CollectionSelection";
 
-const EditItem = ({ tags, lists, item, onExit, SetLoader, reFetch, lightMode }) => {
+const EditItem = ({
+  tags,
+  collections,
+  item,
+  onExit,
+  SetLoader,
+  reFetch,
+  lightMode,
+}) => {
   const [name, setName] = useState(item.name),
-   [tag, setTag] = useState(item.tag),
-   [list, setList] = useState(item.list);
+    [tag, setTag] = useState(item.tag),
+    [collection, setCollection] = useState(item.collection);
 
   function EditItem() {
     SetLoader(true);
@@ -16,7 +24,7 @@ const EditItem = ({ tags, lists, item, onExit, SetLoader, reFetch, lightMode }) 
       name,
       item.link,
       tag,
-      list,
+      collection,
       reFetch,
       onExit,
       SetLoader,
@@ -39,8 +47,8 @@ const EditItem = ({ tags, lists, item, onExit, SetLoader, reFetch, lightMode }) 
     setTag(value.map((e) => e.value.toLowerCase()));
   }
 
-  function SetList(value) {
-    setList(value.value);
+  function SetCollection(value) {
+    setCollection(value.value);
   }
 
   function abort(e) {
@@ -96,12 +104,12 @@ const EditItem = ({ tags, lists, item, onExit, SetLoader, reFetch, lightMode }) 
               lightMode={lightMode}
             />
             <h3>
-              List: <span className="optional">(Optional)</span>
+             Collection: <span className="optional">(Optional)</span>
             </h3>
-            <ListSelection
-              setList={SetList}
-              lists={lists}
-              list={list}
+            <CollectionSelection
+              setCollection={SetCollection}
+              collections={collections}
+              collection={collection}
               lightMode={lightMode}
             />
             <button onClick={EditItem} className="send-btn">

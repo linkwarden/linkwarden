@@ -5,7 +5,7 @@ import EditItem from "./EditItem";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const List = ({ data, tags, lists, reFetch, SetLoader, lightMode }) => {
+const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
   const [editBox, setEditBox] = useState(false);
   const [editIndex, setEditIndex] = useState(0);
 
@@ -24,7 +24,7 @@ const List = ({ data, tags, lists, reFetch, SetLoader, lightMode }) => {
         <EditItem
           lightMode={lightMode}
           tags={() => tags}
-          lists={() => lists}
+          collections={() => collections}
           onExit={exitEditing}
           SetLoader={SetLoader}
           reFetch={reFetch}
