@@ -17,18 +17,11 @@
   text-decoration: underline;
 }
 
-.pro-sidebar-layout {
-  background: #384952;
-  text-shadow: none;
-  color: white;
-}
-
 .badge {
   padding: 3px 10px;
   font-size: 0.8rem;
   letter-spacing: 1px;
   border-radius: 14px;
-  background-color: rgb(52, 121, 181);
 }
 
 .sidebar-icon {
@@ -54,4 +47,9 @@
 
 .sidebar-item-prefix {
   font-family: "Font Awesome 5 Free";
+}
+
+.pro-sidebar-layout * {
+  color: white;
+  text-shadow: none;
 }
