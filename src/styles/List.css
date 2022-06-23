@@ -172,9 +172,9 @@
 }
 
 .delete {
-  margin: 20px 20px 20px 0px;
-  background-color: #273949;
-  float: right;
+  margin-top: 20px;
+  margin-left: 10px;
+  display: inline;
   font-size: 1.1rem;
   width: 40px;
   height: 40px;
@@ -188,17 +188,13 @@
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
     rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  background-color: #273949;
+  background-color: rgba(255, 75, 75, 0.8);
+  color: white;
   border: none;
-  transition: background-color 0.1s;
+  transition: box-shadow 0.1s;
 }
 
 .delete:hover {
-  background-color: rgba(255, 75, 75, 0.8);
-  color: #d8d8d8;
-}
-
-.delete:active {
   box-shadow: 0px 0px 10px rgb(255, 83, 140);
 }
 
@@ -216,4 +212,12 @@
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
     rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   margin-top: 10px;
+}
+
+.edit-title {
+  display: inline;
+}
+
+.title-delete-group {
+  text-align: center;
 }

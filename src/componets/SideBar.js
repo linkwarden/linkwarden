@@ -7,7 +7,8 @@ import {
   MenuItem,
   SubMenu,
 } from "react-pro-sidebar";
-import "react-pro-sidebar/dist/css/styles.css";
+// import "react-pro-sidebar/dist/css/styles.css";
+import "../styles/SideBar_S.scss";
 import "../styles/SideBar.css";
 import { Link } from "react-router-dom";
 
@@ -44,20 +45,23 @@ const SideBar = ({ tags, collections, handleToggleSidebar, toggle }) => {
       </SidebarHeader>
       <SidebarContent className="sidebar-content">
         <Menu iconShape="circle">
-          <MenuItem icon={<h2 className="sidebar-icon">&#xf015;</h2>}>
+          <MenuItem icon={<h2 className="sidebar-icon">&#xf49e;</h2>}>
             <Link to="/">
               <div className="menu-item">All</div>
             </Link>
           </MenuItem>
 
+          <MenuItem icon={<h2 className="sidebar-icon">&#xf01c;</h2>}>
+            <Link to="/collections/Unsorted">
+              <div className="menu-item">Unsorted</div>
+            </Link>
+          </MenuItem>
+
           <SubMenu
             icon={<h2 className="sidebar-icon">&#xf5fd;</h2>}
-            suffix={<span className="badge">{sortedCollections.length + 1}</span>}
+            suffix={<span className="badge">{sortedCollections.length}</span>}
             title={<div className="menu-item">Collections</div>}
           >
-            <MenuItem prefix={<div className="sidebar-item-prefix">&#xf07b;</div>}>
-              <Link className="sidebar-entity" to="/collections/Unsorted">Unsorted</Link>
-            </MenuItem>
             {sortedCollections.map((e, i) => {
               const path = `/collections/${e}`;
               return (
