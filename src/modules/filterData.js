@@ -4,24 +4,24 @@ const filteredData = (
   filterCheckbox
 ) => {
   return data.filter((e) => {
-    const name = e.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const title = e.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const linkName = e.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const websiteTitle = e.title.toLowerCase().includes(searchQuery.toLowerCase());
     const tags = e.tag.some((e) => e.includes(searchQuery.toLowerCase()));
 
-    if (filterCheckbox === [true, true, true]) {
-      return name || title || tags;
+    if (filterCheckbox.every(e => e === true)) {
+      return linkName || websiteTitle || tags;
     } else if (filterCheckbox[0] && filterCheckbox[2]) {
-      return name || tags;
+      return linkName || tags;
     } else if (filterCheckbox[0] && filterCheckbox[1]) {
-      return name || title;
+      return linkName || websiteTitle;
     } else if (filterCheckbox[2] && filterCheckbox[1]) {
-      return tags || title;
+      return tags || websiteTitle;
     } else if (filterCheckbox[0]) {
-      return name;
+      return linkName;
     } else if (filterCheckbox[1]) {
-      return tags;
+      return websiteTitle;
     } else if (filterCheckbox[2]) {
-      return title;
+      return tags;
     }
   });
 };
