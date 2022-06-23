@@ -12,6 +12,14 @@ export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
       color: "#a9a9a9",
     }),
 
+    option: (provided) => ({
+      ...provided,
+      ':before': {
+        content: '"#"',
+        marginRight: 8,
+      },
+    }),
+
     multiValueRemove: (provided) => ({
       ...provided,
       color: "gray",
@@ -35,6 +43,14 @@ export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
       color: lightMode ? "rgb(64, 64, 64)" : "white",
     }),
 
+    multiValueLabel: (provided) => ({
+      ...provided,
+      ':before': {
+        content: '"#"',
+        marginRight: 4,
+      },
+    }),
+
     control: (provided, state) => ({
       ...provided,
       background: lightMode ? "lightyellow" : "#273949",
@@ -55,6 +71,7 @@ export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
 
   return (
     <CreatableSelect
+      className="select"
       defaultValue={defaultTags}
       styles={customStyles}
       isMulti
