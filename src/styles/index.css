@@ -23,11 +23,6 @@ body {
   content: "";
 }
 
-.delete {
-  background-color: #1f2c38;
-  color: #ffffffb6;
-}
-
 .no-results {
   background-color: #1f2c38;
 }
@@ -109,11 +104,6 @@ body {
 .light .btn {
   background-color: lightyellow;
   color: gray;
-}
-
-.light .delete {
-  background-color: lightyellow;
-  color: rgb(176, 176, 176);
 }
 
 .light input {

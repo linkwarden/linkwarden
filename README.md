@@ -38,6 +38,8 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 * 🏷 Set multiple tags to each link.
 
+* 🗂 Assign each link to a collection where we can further group links.
+
 **Also take a look at our planned features in the [project roadmap section](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap).**
 
 ## Installation

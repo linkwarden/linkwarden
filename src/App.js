@@ -7,10 +7,11 @@ import Filters from "./componets/Filters";
 import sortList from "./modules/sortList";
 import filter from "./modules/filterData";
 import concatTags from "./modules/concatTags";
-import NoResults from "./componets/NoResults";
+import concatCollections from "./modules/concatCollections";
 import Loader from "./componets/Loader";
 import SideBar from "./componets/SideBar";
 import Tags from "./routes/Tags.js";
+import Collections from "./routes/Collections.js";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
@@ -18,7 +19,6 @@ function App() {
     [newBox, setNewBox] = useState(false),
     [filterBox, setFilterBox] = useState(false),
     [searchQuery, setSearchQuery] = useState(""),
-    [numberOfResults, setNumberOfResults] = useState(0),
     [filterCheckbox, setFilterCheckbox] = useState([true, true, true]),
     [sortBy, setSortBy] = useState(1),
     [loader, setLoader] = useState(false),
@@ -57,8 +57,6 @@ function App() {
 
   const filteredData = filter(data, searchQuery, filterCheckbox);
 
-  const tags = concatTags(data);
-
   async function fetchData() {
     const res = await fetch(API_HOST + "/api");
     const resJSON = await res.json();
@@ -79,10 +77,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setNumberOfResults(filteredData.length);
-  }, [filteredData]);
-
-  useEffect(() => {
     if (lightMode) {
       document.body.classList.add("light");
     } else {
@@ -95,7 +89,8 @@ function App() {
   return (
     <div className="App">
       <SideBar
-        tags={tags}
+        tags={concatTags(data)}
+        collections={concatCollections(data)}
         handleToggleSidebar={handleToggleSidebar}
         toggle={toggle}
       />
@@ -132,10 +127,6 @@ function App() {
           ></button>
         </div>
 
-        {numberOfResults > 0 ? (
-          <p className="results">{numberOfResults} Bookmarks found</p>
-        ) : null}
-
         {filterBox ? (
           <Filters
             filterCheckbox={filterCheckbox}
@@ -152,11 +143,12 @@ function App() {
             onExit={exitAdding}
             reFetch={fetchData}
             lightMode={lightMode}
-            tags={() => tags}
+            tags={() => concatTags(data)}
+            collections={() => concatCollections(data)}
           />
         ) : null}
 
-        {numberOfResults === 0 ? <NoResults /> : null}
+        
 
         {loader ? <Loader lightMode={lightMode} /> : null}
       </div>
@@ -170,7 +162,8 @@ function App() {
                 lightMode={lightMode}
                 SetLoader={SetLoader}
                 data={filteredData}
-                tags={tags}
+                tags={concatTags(data)}
+                collections={concatCollections(data)}
                 reFetch={fetchData}
               />
             </div>
@@ -184,7 +177,22 @@ function App() {
               lightMode={lightMode}
               SetLoader={SetLoader}
               data={filteredData}
-              tags={tags}
+              tags={concatTags(data)}
+              collections={concatCollections(data)}
+              reFetch={fetchData}
+            />
+          }
+        />
+
+        <Route
+          path="collections/:collectionId"
+          element={
+            <Collections
+              lightMode={lightMode}
+              SetLoader={SetLoader}
+              data={filteredData}
+              tags={concatTags(data)}
+              collections={concatCollections(data)}
               reFetch={fetchData}
             />
           }
