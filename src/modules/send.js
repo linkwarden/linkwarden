@@ -12,10 +12,8 @@ const addItem = async (
   method,
   id = nanoid(),
   title = "",
-  date = new Date()
+  date = new Date().toString()
 ) => {
-  const dateCreated = date.toString();
-
   function isValidHttpUrl(string) {
     let url;
 
@@ -38,7 +36,7 @@ const addItem = async (
         link: link,
         tag: tag,
         collection: collection,
-        date: dateCreated,
+        date: date,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
