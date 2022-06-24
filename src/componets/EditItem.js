@@ -30,7 +30,8 @@ const EditItem = ({
       SetLoader,
       "PUT",
       item._id,
-      item.title
+      item.title,
+      item.date
     );
   }
 
