@@ -26,7 +26,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 * 🔥 Sleek, minimalist design.
 
-* 📦 Auto-capture a screenshot and PDF from each website.
+* 📷 Auto-capture a screenshot and PDF from each website.
 
 * 🌤 Dark/Light mode support.
 
