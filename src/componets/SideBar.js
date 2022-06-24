@@ -41,7 +41,7 @@ const SideBar = ({ tags, collections, handleToggleSidebar, toggle }) => {
       className="sidebar"
     >
       <SidebarHeader>
-        <h3>LinkWarden</h3>
+        <h2>LinkWarden</h2>
       </SidebarHeader>
       <SidebarContent className="sidebar-content">
         <Menu iconShape="circle">

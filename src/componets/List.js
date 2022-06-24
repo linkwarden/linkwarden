@@ -27,7 +27,7 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
   return (
     <div className="list">
       {numberOfResults > 0 ? (
-        <p className="results">{numberOfResults} Bookmarks found</p>
+        <p className="results">{numberOfResults} Bookmarks found.</p>
       ) : null}
 
       {numberOfResults === 0 ? <NoResults /> : null}
