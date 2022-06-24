@@ -43,6 +43,7 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
           item={data[editIndex]}
         />
       ) : null}
+      
       {/* eslint-disable-next-line */}
       {data.map((e, i, array) => {
         try {
