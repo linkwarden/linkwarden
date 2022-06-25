@@ -6,10 +6,15 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NoResults from "./NoResults";
 
-const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
+const List = ({ SetPath, data, tags, collections, reFetch, SetLoader, lightMode }) => {
   const [editBox, setEditBox] = useState(false),
     [editIndex, setEditIndex] = useState(0),
     [numberOfResults, setNumberOfResults] = useState(0);
+
+  useEffect(() => {
+    const currentURL = new URL(window.location.href);
+    SetPath(currentURL.pathname);
+  })
 
   function edit(index) {
     setEditBox(true);
@@ -24,10 +29,15 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
     setNumberOfResults(data.length);
   }, [data]);
 
+  let currentPATH = new URL(window.location.href).pathname
+
   return (
     <div className="list">
       {numberOfResults > 0 ? (
-        <p className="results">{numberOfResults} Bookmarks found.</p>
+        <p>
+          {currentPATH === "/" ? null : <Link className="btn return-btn" to="/">Return to main page</Link>} {numberOfResults} {numberOfResults === 1 ? "Link " : "Links "}
+          found.
+        </p>
       ) : null}
 
       {numberOfResults === 0 ? <NoResults /> : null}
@@ -43,7 +53,7 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
           item={data[editIndex]}
         />
       ) : null}
-      
+
       {/* eslint-disable-next-line */}
       {data.map((e, i, array) => {
         try {
@@ -74,6 +84,9 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
                         {e.collection}
                       </Link>
                     </div>
+                    <div className="date">
+                      {new Date(e.date).toDateString()}
+                    </div>
                     <div className="tags">
                       {e.tag.map((e, i) => {
                         const tagPath = `/tags/${e}`;
@@ -83,9 +96,6 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
                           </Link>
                         );
                       })}
-                    </div>
-                    <div className="date">
-                      {new Date(e.date).toDateString()}
                     </div>
                   </div>
                 </div>

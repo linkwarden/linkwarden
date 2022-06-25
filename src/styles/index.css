@@ -39,10 +39,6 @@ body {
   background-color: rgb(76, 117, 170);
 }
 
-.tags div {
-  color: rgb(126, 208, 255);
-}
-
 .title {
   color: white;
 }
@@ -118,10 +114,6 @@ body {
 
 .light .link {
   color: rgb(102, 102, 102);
-}
-
-.light .tags div {
-  color: rgb(9, 139, 214);
 }
 
 .light .filter {

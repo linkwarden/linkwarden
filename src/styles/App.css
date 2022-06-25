@@ -2,6 +2,7 @@
   .search {
     width: 35%;
     min-width: 300px;
+    font-size: 1rem;
   }
 }
 
@@ -14,6 +15,8 @@
 @media (width <= 400px) {
   .search {
     width: 120px;
+    font-size: 0.6rem;
+    font-weight: 600;
   }
 }
 
@@ -43,7 +46,6 @@
 .search {
   padding: 10px;
   font-family: "Font Awesome 5 Free";
-  font-size: 1.2rem;
   padding-left: 10px;
   border: none;
   border-radius: 0;

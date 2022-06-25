@@ -33,11 +33,11 @@ const Filters = ({
       <div className="filter-overlay" onClick={abort}></div>
       <div className="filter-box">
         <div className="filter">
-          <h2>Filter search</h2>
+          <h2>Filter Results</h2>
 
           <div className="filter-groups">
             <div className="section">
-              <h3>Sort by</h3>
+              <h3>Sort By</h3>
               <label>
                 <input
                   name="sort"
