@@ -49,7 +49,7 @@ const AddItem = ({
       <div className="add-overlay" onClick={abort}></div>
       <div className="send-box">
         <div className="box">
-          <h2>New bookmark</h2>
+          <h2>New Link</h2>
           <div className="AddItem-content">
             <h3>
               <span style={{ color: "red" }}>* </span>Link:

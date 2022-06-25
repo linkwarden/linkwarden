@@ -28,10 +28,6 @@
       rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   }
 
-  .list a {
-    text-decoration: none;
-  }
-
   .list-row:hover img {
     opacity: 90%;
   }
@@ -44,6 +40,7 @@
 
   .tags {
     margin: 10px auto 10px auto;
+    justify-content: center;
   }
 
   .list-row {
@@ -66,10 +63,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .link {
-    text-decoration: underline;
   }
 
   .date {
@@ -108,6 +101,10 @@
   justify-content: space-between;
   display: flex;
   flex-direction: column;
+}
+
+.list a {
+  text-decoration: none;
 }
 
 .link {
@@ -151,19 +148,24 @@
   display: flex;
   border-width: 1px;
   width: fit-content;
-  font-size: 1rem;
+  font-size: 0.8rem;
   border-radius: 5px;
   flex-wrap: wrap;
 }
 
 .tags a {
-  margin-right: 10px;
-  color: #2b8add;
-  text-decoration: none;
+  padding: 10px;
+  background-color:rgb(49, 114, 204);
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+      rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  text-shadow: none;
+  margin: 5px;
+  color: #ffffff;
 }
 
 .tags a::before {
-  color: rgb(42, 125, 172);
+  color: rgb(0, 162, 255);
   content: "# ";
 }
 
@@ -202,6 +204,7 @@
   font-size: 0.7rem;
   opacity: 80%;
   margin-right: auto;
+  margin-top: 10px;
 }
 
 .no-results {
@@ -231,5 +234,15 @@
 }
 
 .list-collection-label a {
-  color: inherit;
+  color: rgb(166, 166, 166);
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.return-btn {
+  border-radius: 10px;
+  padding: 5px;
+  font-size: small;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin-right: 5px;
+  text-shadow: none;
 }
