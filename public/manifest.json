@@ -1,6 +1,6 @@
 {
-  "short_name": "Web Marker",
-  "name": "A bookmark manager",
+  "short_name": "LinkWarden",
+  "name": "LinkWarden",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",

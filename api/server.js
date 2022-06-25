@@ -97,7 +97,7 @@ app.delete("/api", async (req, res) => {
 
   await deleteDoc(id);
 
-  res.send(`Bookmark with _id:${id} deleted.`);
+  res.send(`Link with _id:${id} deleted.`);
 });
 
 async function updateDoc(id, updatedListing) {

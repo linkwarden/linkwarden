@@ -66,7 +66,7 @@ const EditItem = ({
       <div className="send-box">
         <div className="box">
           <div className="title-delete-group">
-          <h2 className="edit-title">Edit bookmark</h2>
+          <h2 className="edit-title">Edit Link</h2>
           <button className="delete" onClick={deleteItem}>
             &#xf2ed;
           </button>
