@@ -67,7 +67,7 @@ const List = ({ SetPath, data, tags, collections, reFetch, SetLoader, lightMode 
                   <img alt="" src={favicon} />
                   <div className="list-entity-content">
                     <div className="row-name">
-                      <span className="num">{i + 1}.</span>
+                      <span className="num">{i + 1}</span>
                       {e.name}
                       <a
                         className="link"

@@ -27,6 +27,11 @@ body {
   background-color: #1f2c38;
 }
 
+.tags a {
+  background: #273949;
+  box-shadow: 6px 6px 11px #21303e, -6px -6px 11px #2d4254;
+}
+
 .send-btn,
 .apply-btn {
   background-color: #273949;
@@ -95,6 +100,11 @@ body {
 
 .light .list-row {
   background-color: lightyellow;
+}
+
+.light .tags a {
+  background: #ffffe0b2;
+  box-shadow: 6px 6px 11px #d9d9be, -6px -6px 11px #ffffff;
 }
 
 .light .btn {
