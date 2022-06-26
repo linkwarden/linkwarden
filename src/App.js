@@ -80,7 +80,7 @@ function App() {
   useEffect(() => {
     const currentURL = new URL(window.location.href);
     SetPath(currentURL.pathname);
-  })
+  }, [path])
 
   useEffect(() => {
     fetchData();
