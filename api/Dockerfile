@@ -17,7 +17,7 @@ RUN apk add --no-cache \
     ttf-freefont
 
 COPY . .
-RUN npm ci && mkdir -p /media
+RUN npm ci && mkdir -p media/{screenshots,pdfs}
 
 # The collowing command fails when attempting to chown the node_modules directory.
 # Running it in its own layer allows it to modify the volume.
