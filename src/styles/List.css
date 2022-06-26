@@ -161,8 +161,6 @@
 }
 
 .tags a {
-  padding: 10px;
-  border-radius: 10px;
   text-shadow: none;
   margin: 5px;
   color: inherit;
@@ -246,10 +244,10 @@
 }
 
 .return-btn {
-  border-radius: 10px;
+  color: inherit;
+  opacity: 80%;
   padding: 5px;
   font-size: small;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin-right: 5px;
   text-shadow: none;
 }
