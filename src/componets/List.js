@@ -29,13 +29,13 @@ const List = ({ SetPath, data, tags, collections, reFetch, SetLoader, lightMode 
     setNumberOfResults(data.length);
   }, [data]);
 
-  let currentPATH = new URL(window.location.href).pathname
+  let currentPATH = new URL(window.location.href).pathname;
 
   return (
     <div className="list">
       {numberOfResults > 0 ? (
         <p>
-          {currentPATH === "/" ? null : <Link className="btn return-btn" to="/">Return to main page</Link>} {numberOfResults} {numberOfResults === 1 ? "Link " : "Links "}
+          {currentPATH === "/" ? null : <Link className="return-btn" to="/">Return to main page</Link>} {numberOfResults} {numberOfResults === 1 ? "Link " : "Links "}
           found.
         </p>
       ) : null}
