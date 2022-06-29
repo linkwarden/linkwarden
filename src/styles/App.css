@@ -60,39 +60,11 @@
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
-.btn {
-  position: relative;
-  border-radius: 100%;
-  font-family: "Font Awesome 5 Free";
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
-    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  border: none;
-  transition: background-color 0.1s;
-}
-
-.btn:active {
-  box-shadow: 0px 0px 10px rgb(83, 143, 255);
-}
-
-.add-btn {
-  margin-left: auto;
-}
-
 textarea:focus,
 input:focus {
   outline: none;
 }
 
-.dark-light-btn {
-  margin-left: 10px;
-  font-size: 1.2em;
-}
-
 .select {
-  font-family: "Font Awesome 5 Free"
+  font-family: "Font Awesome 5 Free";
 }

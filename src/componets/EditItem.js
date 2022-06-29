@@ -4,6 +4,8 @@ import "../styles/SendItem.css";
 import TagSelection from "./TagSelection";
 import editItem from "../modules/send";
 import CollectionSelection from "./CollectionSelection";
+import { AwesomeButton } from "react-awesome-button";
+import "react-awesome-button/dist/themes/theme-blue.css";
 
 const EditItem = ({
   tags,
@@ -66,10 +68,15 @@ const EditItem = ({
       <div className="send-box">
         <div className="box">
           <div className="title-delete-group">
-          <h2 className="edit-title">Edit Link</h2>
-          <button className="delete" onClick={deleteItem}>
-            &#xf2ed;
-          </button>
+            <h2 className="edit-title">Edit Link</h2>
+            <AwesomeButton
+              className="delete"
+              size="icon"
+              action={deleteItem}
+              style={{ marginLeft: "10px" }}
+            >
+              &#xf2ed;
+            </AwesomeButton>
           </div>
           <div className="AddItem-content">
             <h3>
@@ -107,7 +114,7 @@ const EditItem = ({
               lightMode={lightMode}
             />
             <h3>
-             Collection: <span className="optional">(Optional)</span>
+              Collection: <span className="optional">(Optional)</span>
             </h3>
             <CollectionSelection
               setCollection={SetCollection}
@@ -115,9 +122,18 @@ const EditItem = ({
               collection={collection}
               lightMode={lightMode}
             />
-            <button onClick={EditItem} className="send-btn">
+            <AwesomeButton
+              size="medium"
+              action={EditItem}
+              style={{
+                marginTop: "20px",
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
               Update &#xf303;
-            </button>
+            </AwesomeButton>
           </div>
         </div>
       </div>
