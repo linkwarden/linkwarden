@@ -1,5 +1,7 @@
 import "../styles/Filters.css";
 import { useState } from "react";
+import { AwesomeButton } from "react-awesome-button";
+import "react-awesome-button/dist/themes/theme-blue.css";
 
 const Filters = ({
   filterCheckbox,
@@ -41,7 +43,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio.toString() === '1'}
+                  checked={radio.toString() === "1"}
                   onChange={handleRadio}
                   type="radio"
                   value={1}
@@ -51,7 +53,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio.toString() === '2'}
+                  checked={radio.toString() === "2"}
                   onChange={handleRadio}
                   type="radio"
                   value={2}
@@ -61,7 +63,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio.toString() === '3'}
+                  checked={radio.toString() === "3"}
                   onChange={handleRadio}
                   type="radio"
                   value={3}
@@ -71,7 +73,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio.toString() === '4'}
+                  checked={radio.toString() === "4"}
                   onChange={handleRadio}
                   type="radio"
                   value={4}
@@ -81,7 +83,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio.toString() === '5'}
+                  checked={radio.toString() === "5"}
                   onChange={handleRadio}
                   type="radio"
                   value={5}
@@ -91,7 +93,7 @@ const Filters = ({
               <label>
                 <input
                   name="sort"
-                  checked={radio.toString() === '6'}
+                  checked={radio.toString() === "6"}
                   onChange={handleRadio}
                   type="radio"
                   value={6}
@@ -129,9 +131,18 @@ const Filters = ({
             </div>
           </div>
 
-          <button className="apply-btn" onClick={applyChanges}>
-            Apply
-          </button>
+          <AwesomeButton
+            size="medium"
+            action={applyChanges}
+            style={{
+              marginTop: "20px",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            Apply &#xf00c;
+          </AwesomeButton>
         </div>
       </div>
     </>

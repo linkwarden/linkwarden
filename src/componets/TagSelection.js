@@ -33,7 +33,7 @@ export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
       borderColor: "rgb(141, 141, 141)",
       opacity: "90%",
       color: "gray",
-      background: lightMode ? "lightyellow" : "#273949",
+      background: lightMode ? "#e0e0e0" : "#273949",
       boxShadow:
         "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
     }),
@@ -53,7 +53,7 @@ export default function TagSelection({ setTags, tags, tag = [], lightMode }) {
 
     control: (provided, state) => ({
       ...provided,
-      background: lightMode ? "lightyellow" : "#273949",
+      background: lightMode ? "#e0e0e0" : "#273949",
       border: "none",
       borderRadius: "0px",
       boxShadow: state.isFocused

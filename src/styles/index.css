@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #1f2c38;
+  background-color: #273949;
   text-shadow: 0px 1px 2px #000000;
   color: white;
   transition: background-color 0.1s;
@@ -19,24 +19,33 @@ body {
 
 /* Dark Mode settings (Default) */
 
-.dark-light-btn::before {
+.neomorphisim {
+  border-radius: 50px;
+  background: #273949;
+  box-shadow:  5px 5px 10px #21303e,
+              -5px -5px 10px #2d4254;
+}
+
+.dark-light::before {
   content: "";
 }
 
-.no-results {
-  background-color: #1f2c38;
-}
-
-.send-btn,
-.apply-btn {
-  background-color: #273949;
-  color: #ffffffb6;
-}
-
-.btn:hover,
-.send-btn:hover,
-.apply-btn:hover {
-  background-color: rgb(76, 117, 170);
+.App .aws-btn {
+  font-family: "Font Awesome 5 Free";
+  --button-default-height: 51px;
+  --button-default-font-size: 14px;
+  --button-default-border-radius: 25px;
+  --button-horizontal-padding: 20px;
+  --button-raise-level: 3px;
+  --button-hover-pressure: 0;
+  --transform-speed: 0.025s;
+  --button-primary-color: #273949;
+  --button-primary-color-dark: #c6e4ff;
+  --button-primary-color-light: #c6e4ff;
+  --button-primary-color-hover: #0d4a7f;
+  --button-primary-color-active: #0f5ca0;
+  --button-primary-border: none;
+  z-index: 0;
 }
 
 .title {
@@ -47,97 +56,66 @@ body {
   color: rgb(194, 193, 193);
 }
 
-.btn {
-  color: #ffffffb6;
-  background-color: #273949;
-}
-
-.edit-btn {
-  background-color: #1f2c38;
-}
-
-.no-results,
-.list-row {
-  transition: background-color 0.1s;
-  background-color: #273949;
-}
-
 .search {
   transition: background-color 0.1s;
   background-color: #273949;
   color: white;
 }
 
-.filter {
-  background-color: #1f2c38;
-}
-
-.section > label {
+.filter, .box {
   background-color: #273949;
-  color: #ffffffb6;
 }
 
 /* Light Mode settings */
 
-.light .dark-light-btn::before {
+.light .dark-light::before {
   content: "";
 }
 
 .light {
   text-shadow: 0px 1px 2px #ffffff;
-  background-color: rgb(233, 220, 179);
+  background-color: #e0e0e0;
   color: rgb(64, 64, 64);
+}
+
+.light .neomorphisim {
+  border-radius: 50px;
+  background: #e0e0e0;
+  box-shadow:  5px 5px 10px #bebebe,
+              -5px -5px 10px #ffffff;
 }
 
 .light .title {
   color: rgb(0, 0, 0);
 }
 
-.light .list-row {
-  background-color: lightyellow;
-}
-
-.light .btn {
-  background-color: lightyellow;
-  color: gray;
-}
-
 .light input {
-  background-color: lightyellow;
+  background-color: #e0e0e0;
   color: black;
 }
 
-.light .box,
-.light .edit-btn {
-  background-color: rgb(233, 220, 179);
+.light .box, .light .filter {
+  background-color: #e0e0e0;
 }
 
 .light .link {
   color: rgb(102, 102, 102);
 }
 
-.light .filter {
-  background-color: rgb(233, 220, 179);
-}
-
-.light .section > label {
-  background-color: lightyellow;
-  color: #4b4b4bb6;
-}
-
-.light .send-btn,
-.light .apply-btn {
-  background-color: lightyellow;
-  color: #717171b6;
-}
-
-.light .btn:hover,
-.light .send-btn:hover,
-.light .apply-btn:hover {
-  background-color: rgb(55, 131, 237);
-  color: #d8d8d8;
-}
-
-.light .no-results {
-  background-color: lightyellow;
+.light .aws-btn {
+  font-family: "Font Awesome 5 Free";
+  --button-default-height: 51px;
+  --button-default-font-size: 14px;
+  --button-default-border-radius: 25px;
+  --button-horizontal-padding: 20px;
+  --button-raise-level: 3px;
+  --button-hover-pressure: 0;
+  --transform-speed: 0.025s;
+  --button-primary-color: #e0e0e0;
+  --button-primary-color-dark: #354c7d;
+  --button-primary-color-light: #354c7d;
+  --button-primary-color-hover: #e1eaf1;
+  --button-primary-color-active: #e2e2e2;
+  --button-primary-border: none;
+  z-index: 0;
 }

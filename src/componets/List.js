@@ -5,6 +5,10 @@ import EditItem from "./EditItem";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import NoResults from "./NoResults";
+import {
+  AwesomeButton
+} from 'react-awesome-button';
+import 'react-awesome-button/dist/themes/theme-blue.css';
 
 const List = ({ SetPath, data, tags, collections, reFetch, SetLoader, lightMode }) => {
   const [editBox, setEditBox] = useState(false),
@@ -62,7 +66,7 @@ const List = ({ SetPath, data, tags, collections, reFetch, SetLoader, lightMode 
             "https://www.google.com/s2/favicons?domain=" + url.hostname;
           return (
             <LazyLoad key={i} height={200} offset={200}>
-              <div className="list-row">
+              <div className="list-row neomorphisim">
                 <div className="img-content-grp">
                   <img alt="" src={favicon} />
                   <div className="list-entity-content">
@@ -101,9 +105,13 @@ const List = ({ SetPath, data, tags, collections, reFetch, SetLoader, lightMode 
                 </div>
                 <div className="etc">
                   <ViewArchived className="view-archived" id={e._id} />
-                  <button className="btn edit-btn" onClick={() => edit(i)}>
+                  <AwesomeButton
+                    size="icon"
+                    action={() => edit(i)}
+                    style={{ margin: "20px 20px 20px 0px" }}
+                  >
                     &#xf303;
-                  </button>
+                  </AwesomeButton>
                 </div>
               </div>
             </LazyLoad>

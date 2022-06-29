@@ -46,7 +46,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 ### Using Docker Compose (Recommended)
 
-1. Make sure Docker docker is installed.
+1. Make sure docker is installed.
 
 2. Clone this repository.
 
