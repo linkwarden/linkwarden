@@ -22,8 +22,8 @@ body {
 .neomorphisim {
   border-radius: 50px;
   background: #273949;
-  box-shadow:  5px 5px 10px #21303e,
-              -5px -5px 10px #2d4254;
+  box-shadow:  5px 5px 10px #10171d,
+               -5px -5px 10px #3e5b75;
 }
 
 .dark-light::before {
@@ -81,8 +81,8 @@ body {
 .light .neomorphisim {
   border-radius: 50px;
   background: #e0e0e0;
-  box-shadow:  5px 5px 10px #bebebe,
-              -5px -5px 10px #ffffff;
+  box-shadow:  5px 5px 10px #5a5a5a,
+               -5px -5px 10px #ffffff;
 }
 
 .light .title {
