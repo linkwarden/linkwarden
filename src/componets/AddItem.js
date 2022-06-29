@@ -3,6 +3,8 @@ import "../styles/SendItem.css";
 import TagSelection from "./TagSelection";
 import addItem from "../modules/send";
 import CollectionSelection from "./CollectionSelection";
+import { AwesomeButton } from "react-awesome-button";
+import "react-awesome-button/dist/themes/theme-blue.css";
 
 const AddItem = ({
   onExit,
@@ -81,9 +83,20 @@ const AddItem = ({
               collections={collections}
               lightMode={lightMode}
             />
-            <button onClick={newItem} className="send-btn">
-              Add &#xf067;
-            </button>
+            <div>
+              <AwesomeButton
+                size="medium"
+                action={newItem}
+                style={{
+                  marginTop: "20px",
+                  display: "block",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                }}
+              >
+                Add &#xf067;
+              </AwesomeButton>
+            </div>
           </div>
         </div>
       </div>

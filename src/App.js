@@ -13,6 +13,8 @@ import SideBar from "./componets/SideBar";
 import Tags from "./routes/Tags.js";
 import Collections from "./routes/Collections.js";
 import { Route, Routes } from "react-router-dom";
+import { AwesomeButton } from "react-awesome-button";
+import "react-awesome-button/dist/themes/theme-blue.css";
 
 function App() {
   const [data, setData] = useState([]),
@@ -58,7 +60,6 @@ function App() {
 
   function SetPath(pathname) {
     setPath(pathname);
-    console.log(path)
   }
 
   const filteredData = filter(data, searchQuery, filterCheckbox);
@@ -80,7 +81,7 @@ function App() {
   useEffect(() => {
     const currentURL = new URL(window.location.href);
     SetPath(currentURL.pathname);
-  }, [path])
+  }, [path]);
 
   useEffect(() => {
     fetchData();
@@ -108,13 +109,17 @@ function App() {
 
       <div className="content">
         <div className="head">
-          <button
-            className="sidebar-btn btn"
-            style={{ marginRight: "10px" }}
-            onClick={handleToggleSidebar}
-          >
-            &#xf0c9;
-          </button>
+          <div className="sidebar-btn">
+            <AwesomeButton
+              size="icon"
+              type="primary"
+              action={handleToggleSidebar}
+              style={{ marginRight: "10px" }}
+            >
+              &#xf0c9;
+            </AwesomeButton>
+          </div>
+
           <input
             className="search"
             type="search"
@@ -122,20 +127,32 @@ function App() {
             onChange={search}
           />
 
-          <button
-            className="btn"
+          <AwesomeButton
+            size="icon"
+            type="primary"
+            action={() => setFilterBox(true)}
             style={{ marginLeft: "10px" }}
-            onClick={() => setFilterBox(true)}
           >
             &#xf160;
-          </button>
-          <button className="add-btn btn" onClick={() => setNewBox(true)}>
+          </AwesomeButton>
+
+          <AwesomeButton
+            size="icon"
+            type="primary"
+            action={() => setNewBox(true)}
+            style={{ marginLeft: "auto" }}
+          >
             &#xf067;
-          </button>
-          <button
-            className="dark-light-btn btn"
-            onClick={() => setLightMode(!lightMode)}
-          ></button>
+          </AwesomeButton>
+
+          <AwesomeButton
+            size="icon"
+            type="primary"
+            action={() => setLightMode(!lightMode)}
+            style={{ marginLeft: "10px" }}
+          >
+            <div className="dark-light"></div>
+          </AwesomeButton>
         </div>
 
         {filterBox ? (
@@ -158,8 +175,6 @@ function App() {
             collections={() => concatCollections(data)}
           />
         ) : null}
-
-        
 
         {loader ? <Loader lightMode={lightMode} /> : null}
       </div>

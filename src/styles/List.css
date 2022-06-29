@@ -24,9 +24,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
-      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
-      rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   }
 
   .list-row:hover img {
@@ -58,9 +55,6 @@
     justify-content: space-between;
     align-items: center;
     text-align: center;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
-      rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
-      rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   }
   .etc {
     display: flex;
@@ -131,21 +125,6 @@
   opacity: 100%;
 }
 
-.edit-btn {
-  margin: 20px 20px 20px 0px;
-  width: 50px;
-  height: 50px;
-  font-size: 1.5rem;
-}
-
-.edit-btn:hover {
-  background-color: rgb(76, 117, 170);
-}
-
-.edit-btn:active {
-  box-shadow: 0px 0px 10px rgb(83, 143, 255);
-}
-
 .row-name {
   font-size: 2rem;
   word-break: break-word;
@@ -178,32 +157,6 @@
   display: inline;
 }
 
-.delete {
-  margin-top: 20px;
-  margin-left: 10px;
-  font-size: 1.1rem;
-  width: 40px;
-  height: 40px;
-  position: relative;
-  border-radius: 100%;
-  font-family: "Font Awesome 5 Free";
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
-    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  background-color: rgba(255, 75, 75, 0.8);
-  color: white;
-  border: none;
-  transition: box-shadow 0.1s;
-}
-
-.delete:hover {
-  box-shadow: 0px 0px 10px rgb(255, 83, 140);
-}
-
 .date {
   font-weight: 500;
   font-size: 0.7rem;
@@ -216,9 +169,7 @@
   text-align: center;
   padding-top: 5%;
   padding-bottom: 5%;
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
-    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .edit-title {
@@ -227,6 +178,7 @@
 
 .title-delete-group {
   text-align: center;
+  margin-top: 10px;
 }
 
 .list-collection-label {
