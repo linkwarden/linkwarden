@@ -139,6 +139,7 @@ const Filters = ({
               display: "block",
               marginLeft: "auto",
               marginRight: "auto",
+              marginBottom: "15px"
             }}
           >
             Apply &#xf00c;
