@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import List from "../componets/List";
 
-const Collections = ({ SetPath, data, tags, collections, SetLoader, lightMode, reFetch }) => {
+const Collections = ({ data, tags, collections, SetLoader, lightMode, reFetch }) => {
   const { collectionId } = useParams();
   const dataWithMatchingTag = data.filter((e) => {
     return e.collection.includes(collectionId);
@@ -10,7 +10,6 @@ const Collections = ({ SetPath, data, tags, collections, SetLoader, lightMode, r
   return (
     <div className="content">
       <List
-        SetPath={() => SetPath()}
         lightMode={lightMode}
         data={dataWithMatchingTag}
         tags={tags}

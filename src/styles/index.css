@@ -39,12 +39,12 @@ body {
   --button-raise-level: 3px;
   --button-hover-pressure: 0;
   --transform-speed: 0.025s;
-  --button-primary-color: #273949;
+  --button-primary-color: rgba(39, 57, 73, 0.9);
   --button-primary-color-dark: #c6e4ff;
   --button-primary-color-light: #c6e4ff;
   --button-primary-color-hover: #0d4a7f;
   --button-primary-color-active: #0f5ca0;
-  --button-primary-border: none;
+  --button-primary-border: 2px solid #e7f4ff;
   z-index: 0;
 }
 
@@ -111,11 +111,11 @@ body {
   --button-raise-level: 3px;
   --button-hover-pressure: 0;
   --transform-speed: 0.025s;
-  --button-primary-color: #e0e0e0;
+  --button-primary-color: rgba(224, 224, 224, 0.9);
   --button-primary-color-dark: #354c7d;
   --button-primary-color-light: #354c7d;
   --button-primary-color-hover: #e1eaf1;
   --button-primary-color-active: #e2e2e2;
-  --button-primary-border: none;
+  --button-primary-border: 2px solid #1e88e5;
   z-index: 0;
 }
