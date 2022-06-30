@@ -10,15 +10,10 @@ import {
 } from 'react-awesome-button';
 import 'react-awesome-button/dist/themes/theme-blue.css';
 
-const List = ({ SetPath, data, tags, collections, reFetch, SetLoader, lightMode }) => {
+const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
   const [editBox, setEditBox] = useState(false),
     [editIndex, setEditIndex] = useState(0),
     [numberOfResults, setNumberOfResults] = useState(0);
-
-  useEffect(() => {
-    const currentURL = new URL(window.location.href);
-    SetPath(currentURL.pathname);
-  })
 
   function edit(index) {
     setEditBox(true);
