@@ -24,7 +24,6 @@ function App() {
     [filterCheckbox, setFilterCheckbox] = useState([true, true, true]),
     [sortBy, setSortBy] = useState(1),
     [loader, setLoader] = useState(false),
-    [path, setPath] = useState("/"),
     [lightMode, setLightMode] = useState(
       localStorage.getItem("light-mode") === "true"
     ),
@@ -58,10 +57,6 @@ function App() {
     setToggle(!toggle);
   }
 
-  function SetPath(pathname) {
-    setPath(pathname);
-  }
-
   const filteredData = filter(data, searchQuery, filterCheckbox);
 
   async function fetchData() {
@@ -77,11 +72,6 @@ function App() {
     exitFilter();
     // eslint-disable-next-line
   }, [sortBy, filterCheckbox]);
-
-  useEffect(() => {
-    const currentURL = new URL(window.location.href);
-    SetPath(currentURL.pathname);
-  }, [path]);
 
   useEffect(() => {
     fetchData();
@@ -123,7 +113,7 @@ function App() {
           <input
             className="search"
             type="search"
-            placeholder={` Search "${path}"`}
+            placeholder=" Search"
             onChange={search}
           />
 
@@ -185,7 +175,6 @@ function App() {
           element={
             <div className="content">
               <List
-                SetPath={() => SetPath()}
                 lightMode={lightMode}
                 SetLoader={SetLoader}
                 data={filteredData}
@@ -201,7 +190,6 @@ function App() {
           path="tags/:tagId"
           element={
             <Tags
-              SetPath={() => SetPath()}
               lightMode={lightMode}
               SetLoader={SetLoader}
               data={filteredData}
@@ -216,7 +204,6 @@ function App() {
           path="collections/:collectionId"
           element={
             <Collections
-              SetPath={() => SetPath()}
               lightMode={lightMode}
               SetLoader={SetLoader}
               data={filteredData}
