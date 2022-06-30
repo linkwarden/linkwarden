@@ -111,7 +111,7 @@ function App() {
           </div>
 
           <input
-            className="search"
+            className="search text-field"
             type="search"
             placeholder=" Search"
             onChange={search}

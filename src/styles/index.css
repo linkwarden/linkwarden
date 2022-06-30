@@ -26,6 +26,17 @@ body {
                -5px -5px 10px #3e5b75;
 }
 
+.text-field {
+  background-color: #273949;
+  border: solid;
+  border-width: 2px;
+  color: White;
+  border-color: #e7f4ff;
+  box-shadow: 0px 2px 0px #c6e4ff, 0px 3px 1px #363636;
+  -webkit-appearance: none;
+  -webkit-box-shadow: 0px 2px 0px #c6e4ff, 0px 3px 1px #363636;
+}
+
 .dark-light::before {
   content: "";
 }
@@ -39,7 +50,7 @@ body {
   --button-raise-level: 3px;
   --button-hover-pressure: 0;
   --transform-speed: 0.025s;
-  --button-primary-color: rgba(39, 57, 73, 0.9);
+  --button-primary-color: #273949;
   --button-primary-color-dark: #c6e4ff;
   --button-primary-color-light: #c6e4ff;
   --button-primary-color-hover: #0d4a7f;
@@ -89,9 +100,15 @@ body {
   color: rgb(0, 0, 0);
 }
 
-.light input {
+.light .text-field {
   background-color: #e0e0e0;
+  border: solid;
+  border-width: 2px;
   color: black;
+  border-color: #1e88e5;
+  box-shadow: 0px 2px 0px #354c7d, 0px 3px 1px #363636;
+  -webkit-appearance: none;
+  -webkit-box-shadow: 0px 2px 0px #354c7d, 0px 3px 1px #363636;
 }
 
 .light .box, .light .filter {
@@ -111,7 +128,7 @@ body {
   --button-raise-level: 3px;
   --button-hover-pressure: 0;
   --transform-speed: 0.025s;
-  --button-primary-color: rgba(224, 224, 224, 0.9);
+  --button-primary-color: #e0e0e0;
   --button-primary-color-dark: #354c7d;
   --button-primary-color-light: #354c7d;
   --button-primary-color-hover: #e1eaf1;

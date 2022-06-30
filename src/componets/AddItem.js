@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../styles/SendItem.css";
+import "../styles/AddItem.css";
 import TagSelection from "./TagSelection";
 import addItem from "../modules/send";
 import CollectionSelection from "./CollectionSelection";
@@ -58,7 +58,7 @@ const AddItem = ({
             </h3>
             <input
               onChange={SetLink}
-              className="AddItem-input"
+              className="text-field AddItem-input"
               type="search"
               placeholder="e.g. https://example.com/"
             />
@@ -67,7 +67,7 @@ const AddItem = ({
             </h3>
             <input
               onChange={SetName}
-              className="AddItem-input"
+              className="text-field AddItem-input"
               type="search"
               placeholder="e.g. Example Tutorial"
             />
