@@ -1,6 +1,6 @@
 import { useState } from "react";
 import deleteEntity from "../modules/deleteEntity";
-import "../styles/SendItem.css";
+import "../styles/AddItem.css";
 import TagSelection from "./TagSelection";
 import editItem from "../modules/send";
 import CollectionSelection from "./CollectionSelection";
@@ -99,7 +99,7 @@ const EditItem = ({
             </h3>
             <input
               onChange={SetName}
-              className="AddItem-input"
+              className="text-field AddItem-input"
               type="search"
               value={name}
               placeholder={"e.g. Example Tutorial"}
