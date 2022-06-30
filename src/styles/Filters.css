@@ -36,6 +36,7 @@
 }
 
 .filter {
+  border-radius: 50px;
   animation: fadein 0.3s;
   border: solid;
   border-width: 1px;
