@@ -2,7 +2,7 @@ import React from "react";
 
 const NoResults = () => {
   return (
-    <div className="no-results neomorphisim">
+    <div className="no-results neumorphism">
       <h1>¯\_(ツ)_/¯</h1>
       <p>Nothing found.</p>
     </div>

@@ -61,7 +61,7 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
             "https://www.google.com/s2/favicons?domain=" + url.hostname;
           return (
             <LazyLoad key={i} height={200} offset={200}>
-              <div className="list-row neomorphisim">
+              <div className="list-row neumorphism">
                 <div className="img-content-grp">
                   <img alt="" src={favicon} />
                   <div className="list-entity-content">
