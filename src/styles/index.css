@@ -19,7 +19,7 @@ body {
 
 /* Dark Mode settings (Default) */
 
-.neomorphisim {
+.neumorphism {
   border-radius: 50px;
   background: #273949;
   box-shadow:  5px 5px 10px #10171d,
@@ -78,7 +78,7 @@ body {
   color: rgb(64, 64, 64);
 }
 
-.light .neomorphisim {
+.light .neumorphism {
   border-radius: 50px;
   background: #e0e0e0;
   box-shadow:  5px 5px 10px #5a5a5a,

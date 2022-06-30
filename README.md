@@ -12,7 +12,7 @@ LinkWarden
 
 </h1>
 
-[Demo](https://linkwarden.netlify.app/) | [Intro & Motivation](https://github.com/Daniel31x13/link-warden#intro--motivation) | [Features](https://github.com/Daniel31x13/link-warden#features) | [Roadmap](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap) | [Setup](https://github.com/Daniel31x13/link-warden#setup) | [Development](https://github.com/Daniel31x13/link-warden#linkwarden-development)
+[Demo (v1.0.0)](https://linkwarden.netlify.app/) | [Intro & Motivation](https://github.com/Daniel31x13/link-warden#intro--motivation) | [Features](https://github.com/Daniel31x13/link-warden#features) | [Roadmap](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap) | [Setup](https://github.com/Daniel31x13/link-warden#setup) | [Development](https://github.com/Daniel31x13/link-warden#linkwarden-development)
 
 </div>
 
@@ -24,9 +24,9 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 ## Features
 
-* 🔥 Sleek, minimalist design.
-
 * 📷 Auto-capture a screenshot and PDF from each website.
+
+* 🔥 Sleek, minimalist design.
 
 * 🌤 Dark/Light mode support.
 
@@ -34,7 +34,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 * 🔎 Search, filter and sorting functionality.
 
-* 💨 Lazy loading support (for better performance).
+* 🚀 Lazy loading (for better performance).
 
 * 🏷 Set multiple tags to each link.
 
