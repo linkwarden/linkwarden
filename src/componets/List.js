@@ -54,7 +54,7 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
       ) : null}
 
       {/* eslint-disable-next-line */}
-      {data.map((e, i, array) => {
+      {data.map((e, i) => {
         try {
           const url = new URL(e.link);
           const favicon =
@@ -67,7 +67,7 @@ const List = ({ data, tags, collections, reFetch, SetLoader, lightMode }) => {
                   <div className="list-entity-content">
                     <div className="row-name">
                       <span className="num">{i + 1}</span>
-                      {e.name}
+                      {e.name + " "}
                       <a
                         className="link"
                         target="_blank"

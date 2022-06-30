@@ -53,14 +53,13 @@ export default function CollectionSelection({
       color: lightMode ? "rgb(64, 64, 64)" : "white",
     }),
 
-    control: (provided, state) => ({
+    control: (provided) => ({
       ...provided,
       background: lightMode ? "#e0e0e0" : "#273949",
-      border: "none",
-      borderRadius: "0px",
-      boxShadow: state.isFocused
-        ? "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
-        : "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+      borderWidth: "2px",
+      borderColor: lightMode ? "#1e88e5": "#e7f4ff",
+      borderRadius: "50px",
+      boxShadow: lightMode ? "0px 2px 0px #354c7d, 0px 3px 1px #363636" : "0px 2px 0px #c6e4ff, 0px 3px 1px #363636",
     }),
   };
 
