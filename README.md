@@ -52,7 +52,7 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 4. [Optional] If you want to use this app across the network change `REACT_APP_API_HOST` in docker-compose.yml with the computer IP and API port.
 
-3. head to the main folder and run `docker compose up -d`.
+3. **This project is using `docker compose V2`** so head to the main folder and run `docker compose up -d`.
 
 ### Manual Setup
 
