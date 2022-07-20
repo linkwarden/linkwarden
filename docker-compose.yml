@@ -19,7 +19,7 @@ services:
     volumes:
       - ./api:/home/node
     ports:
-      - ${API_PORT:-5000}:5000
+      - ${API_PORT:-5500}:5500
     restart: unless-stopped
     depends_on:
       - mongo
@@ -28,7 +28,7 @@ services:
     build: .
     environment:
       # - DANGEROUSLY_DISABLE_HOST_CHECK=true
-      - REACT_APP_API_HOST=http://${API_ADDRESS:-localhost}:${API_PORT:-5000}
+      - REACT_APP_API_HOST=http://${API_ADDRESS:-localhost}:${API_PORT:-5500}
     command: npm run go
     volumes:
       - /home/node/node_modules
