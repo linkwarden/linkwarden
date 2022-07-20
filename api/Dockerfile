@@ -25,5 +25,5 @@ RUN chown -R node:node /home/node /media
 
 USER node
 
-EXPOSE 5500
+EXPOSE 5000
 CMD node server.js
