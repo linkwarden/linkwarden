@@ -94,7 +94,8 @@
   margin: 20px;
   width: 100px;
   height: 100px;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s ease-in-out;
+  will-change: transform, opacity;
 }
 
 .list-entity-content {

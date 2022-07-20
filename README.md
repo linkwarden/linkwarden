@@ -44,15 +44,25 @@ The objective is to have a self-hosted place to keep useful links in one place, 
 
 ## Installation
 
-### Using Docker Compose (Recommended)
+### Using Docker Compose V2 (Recommended)
 
 1. Make sure docker is installed.
 
 2. Clone this repository.
 
-4. [Optional] If you want to use this app across the network change `REACT_APP_API_HOST` in docker-compose.yml with the computer IP and API port.
+3. Head to the main folder and run `docker compose up -d`.
 
-3. **This project is using `docker compose V2`** so head to the main folder and run `docker compose up -d`.
+The app will be deployed on port 3000.
+
+### Configuration
+To configure the app create a `.env` file (in the main folder), here are the available variables:
+```
+CLIENT_PORT=2500           # Default: 3000
+API_PORT=5500              # Default: 5000
+API_ADDRESS=192.168.1.14   # Default: localhost*
+```
+
+> *If you want to use this app across the network set `API_ADDRESS` as the computer (where LinkWarden is hosted) IP address.
 
 ### Manual Setup
 
