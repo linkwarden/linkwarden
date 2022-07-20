@@ -8,7 +8,7 @@ services:
     volumes:
       - ./mongo:/data/db
     ports:
-      - 27017:27017
+      - 27017
     restart: unless-stopped
 
   link-warden-api:
@@ -19,7 +19,7 @@ services:
     volumes:
       - ./api:/home/node
     ports:
-      - 5500:5500
+      - ${API_PORT:-5000}:5000
     restart: unless-stopped
     depends_on:
       - mongo
@@ -28,13 +28,13 @@ services:
     build: .
     environment:
       # - DANGEROUSLY_DISABLE_HOST_CHECK=true
-      - REACT_APP_API_HOST=http://localhost:5500
+      - REACT_APP_API_HOST=http://${API_ADDRESS:-localhost}:${API_PORT:-5000}
     command: npm run go
     volumes:
       - /home/node/node_modules
       - .:/home/node
     ports:
-      - 3000:3000
+      - ${CLIENT_PORT:-3000}:3000
     restart: unless-stopped
     depends_on:
       - link-warden-api
