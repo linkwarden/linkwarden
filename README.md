@@ -58,11 +58,11 @@ The app will be deployed on port 3000.
 To configure the app create a `.env` file (in the main folder), here are the available variables:
 ```
 CLIENT_PORT=2500           # Default: 3000
-API_PORT=5500              # Default: 5000
-API_ADDRESS=192.168.1.14   # Default: localhost*
+API_PORT=5700              # Default: 5500
+API_ADDRESS=192.168.1.14   # Default: localhost
 ```
 
-> *If you want to use this app across the network set `API_ADDRESS` as the computer (where LinkWarden is hosted) IP address.
+> If you want to use this app across the network set `API_ADDRESS` as the computer (where LinkWarden is hosted) IP address.
 
 ### Manual Setup
 
