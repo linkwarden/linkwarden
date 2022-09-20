@@ -12,6 +12,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 mongo
+.env
 
 api/media
 api/.ash_history
