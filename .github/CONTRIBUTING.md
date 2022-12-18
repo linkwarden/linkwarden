@@ -1,7 +1,8 @@
 # How to contribute
+
 > **For questions/help, feature requests and bug reports please create an [issue](https://github.com/Daniel31x13/link-warden/issues) (please use the right lable).**
 
-First off, I'm really glad you're reading this and thank you for taking the time to contribute! 👍
+First off, I'm really glad you're reading this and thank you for taking the time to contribute!
 
 1. Confirm your planned implementation fit into our project [features](https://github.com/Daniel31x13/link-warden#features) and [project roadmap](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap) (wether it's adding a new feature or improving our existing code).
 
