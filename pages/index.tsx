@@ -1,9 +1,7 @@
 export default function Home() {
   return (
-    <>
-      <main>
-        <h1 className="underline">Linkwarden</h1>
-      </main>
-    </>
+    <div className="p-5">
+      <p className="text-3xl font-bold text-center mb-10">Linkwarden</p>
+    </div>
   );
 }
