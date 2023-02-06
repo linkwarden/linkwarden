@@ -1,34 +1,58 @@
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 interface FormData {
   name: string;
-  username: string;
+  email: string;
   password: string;
 }
 
 export default function Register() {
+  const session = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      router.push("/");
+      console.log("Already logged in.");
+    }
+  }, [session]);
+
   const [form, setForm] = useState<FormData>({
     name: "",
-    username: "",
+    email: "",
     password: "",
   });
 
-  function registerUser() {
+  async function registerUser() {
+    let success: boolean = false;
     console.log(form);
-    if (form.name != "" && form.username != "" && form.password != "") {
-      fetch("/api/register", {
+
+    if (form.name != "" && form.email != "" && form.password != "") {
+      await fetch("/api/auth/register", {
         body: JSON.stringify(form),
         headers: {
           "Content-Type": "application/json",
         },
         method: "POST",
-      });
+      })
+        .then((res) => {
+          success = res.ok;
+          return res.json();
+        })
+        .then((data) => console.log(data));
 
-      setForm({
-        name: "",
-        username: "",
-        password: "",
-      });
+      if (success) {
+        setForm({
+          name: "",
+          email: "",
+          password: "",
+        });
+
+        router.push("/auth/login");
+      }
     } else {
       console.log("Please fill out all the fields.");
     }
@@ -46,9 +70,9 @@ export default function Register() {
       />
       <input
         type="text"
-        placeholder="Username"
-        value={form.username}
-        onChange={(e) => setForm({ ...form, username: e.target.value })}
+        placeholder="Email"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
         className="border border-gray-700 rounded block m-2 mx-auto p-2"
       />
       <input
@@ -59,11 +83,14 @@ export default function Register() {
         className="border border-gray-700 rounded block m-2 mx-auto p-2"
       />
       <div
-        className="mx-auto bg-gray-700 w-min p-3 m-5 text-white rounded cursor-pointer"
+        className="mx-auto bg-black w-min p-3 m-5 text-white rounded cursor-pointer"
         onClick={registerUser}
       >
         Register
       </div>
+      <Link href={"/auth/login"} className="block mx-auto w-min">
+        Login
+      </Link>
     </div>
   );
 }

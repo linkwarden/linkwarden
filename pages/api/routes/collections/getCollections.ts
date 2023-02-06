@@ -13,12 +13,12 @@ export default async function handler(
 ) {
   const session = await getServerSession(req, res, authOptions);
 
-  console.log(session);
-
   if (!session) {
     res.status(401).json({ message: "You must be logged in." });
     return;
   }
+
+  console.log(session?.user?.email);
 
   return res.json({
     message: "Success",
