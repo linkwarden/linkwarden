@@ -1,4 +1,4 @@
-> Note: I'm doing a full rebuild of this project with much more features... Committing to the [ver3](https://github.com/Daniel31x13/link-warden/tree/ver-3) branch, stay tuned!
+> Note: I'm doing a full rebuild of this project with much more features... Committing to the [ver-3](https://github.com/Daniel31x13/link-warden/tree/ver-3) branch, stay tuned!
 
 <div align="center">
 <h1>
