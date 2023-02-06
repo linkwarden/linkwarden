@@ -13,7 +13,7 @@ datasource db {
 model User {
   id String @id @default(cuid())
   name String
-  username String
+  email String
   password String
   collections UserAndCollection[]
 }
