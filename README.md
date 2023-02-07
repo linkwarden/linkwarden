@@ -14,7 +14,7 @@ Linkwarden
 
 </h1>
 
-[Demo (v1.0.0)](https://linkwarden.netlify.app/) | [Intro & Motivation](https://github.com/Daniel31x13/link-warden#intro--motivation) | [Features](https://github.com/Daniel31x13/link-warden#features) | [Setup](https://github.com/Daniel31x13/link-warden#setup) | [Development](https://github.com/Daniel31x13/link-warden#linkwarden-development)
+[Demo (v1.0.0)](https://linkwarden.netlify.app/) | [Intro & Motivation](https://github.com/Daniel31x13/linkwarden#intro--motivation) | [Features](https://github.com/Daniel31x13/linkwarden#features) | [Setup](https://github.com/Daniel31x13/linkwarden#setup) | [Development](https://github.com/Daniel31x13/linkwarden#linkwarden-development)
 
 </div>
 
