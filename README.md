@@ -2,7 +2,7 @@
 
 <div align="center">
 <h1>
-LinkWarden
+Linkwarden
 
 <sub>A place for your useful links.</sub>
 
@@ -14,7 +14,7 @@ LinkWarden
 
 </h1>
 
-[Demo (v1.0.0)](https://linkwarden.netlify.app/) | [Intro & Motivation](https://github.com/Daniel31x13/link-warden#intro--motivation) | [Features](https://github.com/Daniel31x13/link-warden#features) | [Roadmap](https://github.com/Daniel31x13/link-warden/wiki#project-roadmap) | [Setup](https://github.com/Daniel31x13/link-warden#setup) | [Development](https://github.com/Daniel31x13/link-warden#linkwarden-development)
+[Demo (v1.0.0)](https://linkwarden.netlify.app/) | [Intro & Motivation](https://github.com/Daniel31x13/link-warden#intro--motivation) | [Features](https://github.com/Daniel31x13/link-warden#features) | [Setup](https://github.com/Daniel31x13/link-warden#setup) | [Development](https://github.com/Daniel31x13/link-warden#linkwarden-development)
 
 </div>
 
