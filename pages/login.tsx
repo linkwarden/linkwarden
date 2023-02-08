@@ -1,8 +1,6 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useState } from "react";
 
 interface FormData {
   email: string;
@@ -10,16 +8,6 @@ interface FormData {
 }
 
 export default function Login() {
-  const session = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session.status === "authenticated") {
-      console.log("Already logged in.");
-      router.push("/");
-    }
-  }, []);
-
   const [form, setForm] = useState<FormData>({
     email: "",
     password: "",
@@ -40,7 +28,7 @@ export default function Login() {
           password: "",
         });
 
-        router.push("/");
+        // router.push("/");
       } else {
         console.log("User not found or password does not match.", res);
       }
@@ -72,7 +60,7 @@ export default function Login() {
       >
         Login
       </div>
-      <Link href={"/auth/register"} className="block mx-auto w-min">
+      <Link href={"/register"} className="block mx-auto w-min">
         Register
       </Link>
     </div>
