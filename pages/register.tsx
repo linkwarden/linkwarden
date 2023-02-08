@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 
 interface FormData {
@@ -10,15 +9,7 @@ interface FormData {
 }
 
 export default function Register() {
-  const session = useSession();
   const router = useRouter();
-
-  useEffect(() => {
-    if (session.status === "authenticated") {
-      console.log("Already logged in.");
-      router.push("/");
-    }
-  }, [session]);
 
   const [form, setForm] = useState<FormData>({
     name: "",
@@ -51,7 +42,7 @@ export default function Register() {
           password: "",
         });
 
-        router.push("/auth/login");
+        router.push("/login");
       }
     } else {
       console.log("Please fill out all the fields.");
@@ -88,7 +79,7 @@ export default function Register() {
       >
         Register
       </div>
-      <Link href={"/auth/login"} className="block mx-auto w-min">
+      <Link href={"/login"} className="block mx-auto w-min">
         Login
       </Link>
     </div>

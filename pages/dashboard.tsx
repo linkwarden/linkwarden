@@ -6,15 +6,9 @@ export default function Dashboard() {
 
   const user = session?.user;
 
-  console.log();
   return (
     <div className="p-5">
-      <div>
-        <p className="text-3xl font-bold text-center mb-10">Linkwarden</p>
-      </div>
-      <div>
-        <p>Welcome {user?.name?.toLocaleUpperCase()}!</p>
-      </div>
+      <p className="text-3xl font-bold text-center mb-10">Linkwarden</p>
       <Collections />
     </div>
   );
