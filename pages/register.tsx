@@ -1,48 +1,57 @@
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 interface FormData {
+  name: string;
   email: string;
   password: string;
 }
 
-export default function Login() {
+export default function Register() {
   const session = useSession();
   const router = useRouter();
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      router.push("/");
       console.log("Already logged in.");
+      router.push("/");
     }
-  }, []);
+  }, [session]);
 
   const [form, setForm] = useState<FormData>({
+    name: "",
     email: "",
     password: "",
   });
 
-  async function loginUser() {
+  async function registerUser() {
+    let success: boolean = false;
     console.log(form);
-    if (form.email != "" && form.password != "") {
-      const res = await signIn("credentials", {
-        email: form.email,
-        password: form.password,
-        redirect: false,
-      });
 
-      if (res?.ok) {
+    if (form.name != "" && form.email != "" && form.password != "") {
+      await fetch("/api/auth/register", {
+        body: JSON.stringify(form),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      })
+        .then((res) => {
+          success = res.ok;
+          return res.json();
+        })
+        .then((data) => console.log(data));
+
+      if (success) {
         setForm({
+          name: "",
           email: "",
           password: "",
         });
 
-        router.push("/");
-      } else {
-        console.log("User not found or password does not match.", res);
+        router.push("/auth/login");
       }
     } else {
       console.log("Please fill out all the fields.");
@@ -52,6 +61,13 @@ export default function Login() {
   return (
     <div className="p-5">
       <p className="text-3xl font-bold text-center mb-10">Linkwarden</p>
+      <input
+        type="text"
+        placeholder="Name"
+        value={form.name}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
+        className="border border-gray-700 rounded block m-2 mx-auto p-2"
+      />
       <input
         type="text"
         placeholder="Email"
@@ -68,12 +84,12 @@ export default function Login() {
       />
       <div
         className="mx-auto bg-black w-min p-3 m-5 text-white rounded cursor-pointer"
-        onClick={loginUser}
+        onClick={registerUser}
       >
-        Login
-      </div>
-      <Link href={"/auth/register"} className="block mx-auto w-min">
         Register
+      </div>
+      <Link href={"/auth/login"} className="block mx-auto w-min">
+        Login
       </Link>
     </div>
   );
