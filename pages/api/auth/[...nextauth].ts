@@ -14,6 +14,7 @@ export const authOptions: AuthOptions = {
       credentials: {},
       async authorize(credentials, req) {
         const { email, password } = credentials as {
+          id: string;
           email: string;
           password: string;
         };
@@ -28,21 +29,6 @@ export const authOptions: AuthOptions = {
 
         console.log(findUser);
 
-        // const findUser = await prisma.user.findMany({
-        //   where: {
-        //     email: email,
-        //   },
-        //   include: {
-        //     collections: {
-        //       include: {
-        //         collection: true,
-        //       },
-        //     },
-        //   },
-        // });
-
-        // console.log("BOOM!", findUser[0].collections);
-
         let passwordMatches: boolean = false;
 
         if (findUser?.password) {
@@ -50,13 +36,24 @@ export const authOptions: AuthOptions = {
         }
 
         if (passwordMatches) {
-          return { name: findUser?.name, email: findUser?.email };
+          return {
+            id: findUser?.id,
+            name: findUser?.name,
+            email: findUser?.email,
+          };
         } else return null as any;
       },
     }),
   ],
   pages: {
-    signIn: "/auth/login",
+    signIn: "/login",
+  },
+  callbacks: {
+    session: async ({ session, token }) => {
+      session.user.id = token?.sub;
+
+      return session;
+    },
   },
 };
 
