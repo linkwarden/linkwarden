@@ -16,9 +16,9 @@ export default function Collections() {
 
   return (
     <div className="flex flex-wrap">
-      {collections.map((e) => {
+      {collections.map((e, i) => {
         return (
-          <div className="p-5 bg-gray-100 m-2 w-max ">
+          <div className="p-5 bg-gray-100 m-2 w-max " key={i}>
             <p>{e.name}</p>
           </div>
         );
