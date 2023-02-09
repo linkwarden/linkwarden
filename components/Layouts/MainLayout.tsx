@@ -29,9 +29,11 @@ export default function Layout({ children }: LayoutProps) {
         </Head>
         <div className="flex">
           <Sidebar />
-          <div className="ml-80">
-            <Navbar />
-            {children}
+          <div className="ml-80 w-full">
+            <div className="mx-auto w-full">
+              <Navbar />
+              {children}
+            </div>
           </div>
         </div>
       </>

@@ -19,7 +19,6 @@ export default function Login() {
       const res = await signIn("credentials", {
         email: form.email,
         password: form.password,
-        redirect: false,
       });
 
       if (res?.ok) {
@@ -27,8 +26,6 @@ export default function Login() {
           email: "",
           password: "",
         });
-
-        // router.push("/");
       } else {
         console.log("User not found or password does not match.", res);
       }
