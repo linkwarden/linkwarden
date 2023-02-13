@@ -18,7 +18,7 @@ export default function Collections() {
     <div className="flex flex-wrap">
       {collections.map((e, i) => {
         return (
-          <div className="p-5 bg-gray-100 m-2 w-max " key={i}>
+          <div className="p-5 bg-gray-200 m-2 w-max rounded" key={i}>
             <p>{e.name}</p>
           </div>
         );
