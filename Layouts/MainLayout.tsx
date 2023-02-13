@@ -3,15 +3,15 @@ import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode } from "react";
 import { useSession } from "next-auth/react";
-import Loader from "../Loader";
+import Loader from "../components/Loader";
 import useRedirection from "@/hooks/useRedirection";
 import { useRouter } from "next/router";
 
-interface LayoutProps {
+interface Props {
   children: ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children }: Props) {
   const { status } = useSession();
   const router = useRouter();
 

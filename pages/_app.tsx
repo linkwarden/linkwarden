@@ -1,4 +1,4 @@
-import MainLayout from "@/components/Layouts/MainLayout";
+import MainLayout from "@/Layouts/MainLayout";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";

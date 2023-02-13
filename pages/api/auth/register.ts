@@ -18,6 +18,9 @@ export default async function handler(
 ) {
   const body: User = req.body;
 
+  if (!body.email || !body.password || !body.name)
+    return res.status(400).json({ message: "Please fill out all the fields." });
+
   const checkIfUserExists = await prisma.user.findFirst({
     where: {
       email: body.email,
@@ -50,7 +53,8 @@ export default async function handler(
     });
 
     res.status(201).json({ message: "User successfully created." });
-  } else {
+  } else if (checkIfUserExists) {
+    console.log(checkIfUserExists);
     res.status(400).json({ message: "User already exists." });
   }
 }
