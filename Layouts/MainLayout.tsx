@@ -27,14 +27,10 @@ export default function Layout({ children }: Props) {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <div className="flex">
-          <Sidebar />
-          <div className="ml-80 w-full">
-            <div className="mx-auto w-full">
-              <Navbar />
-              {children}
-            </div>
-          </div>
+        <Sidebar />
+        <div className="ml-80 w-full">
+          <Navbar />
+          {children}
         </div>
       </>
     );

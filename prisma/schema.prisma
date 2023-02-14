@@ -11,27 +11,44 @@ datasource db {
 }
 
 model User {
-  id String @id @default(cuid())
+  id Int @id @default(autoincrement())
   name String
-  email String
+  email String @unique
   password String
-  collections UserAndCollection[]
+  collections Collection[]
+  collectionsJoined UserAndCollection[]
+  createdAt DateTime @default(now())
 }
 
 model Collection {
-  id String @id @default(cuid())
+  id Int @id @default(autoincrement())
   name String
-  users UserAndCollection[]
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId Int
+  members UserAndCollection[]
+  links Link[]
+  createdAt DateTime @default(now())
 }
 
 model UserAndCollection {
   user User @relation(fields: [userId], references: [id])
-  userId String
+  userId Int
 
   collection Collection @relation(fields: [collectionId], references: [id])
-  collectionId String
+  collectionId Int
 
-  role String
+  canCreate Boolean
+  canRead Boolean
+  canUpdate Boolean
+  canDelete Boolean
 
   @@id([userId, collectionId])
+}
+
+model Link {
+  id Int @id @default(autoincrement())
+  name String
+  url String
+  collection Collection @relation(fields: [collectionId], references: [id])
+  collectionId Int
 }
