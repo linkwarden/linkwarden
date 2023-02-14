@@ -38,16 +38,9 @@ export default async function handler(
         email: body.email,
         password: hashedPassword,
         collections: {
-          create: [
-            {
-              role: "owner",
-              collection: {
-                create: {
-                  name: "First Collection",
-                },
-              },
-            },
-          ],
+          create: {
+            name: "First Collection",
+          },
         },
       },
     });

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 interface Collections {
-  id: any;
+  id: number;
   name: string;
-  role: string;
+  createdAt: string;
 }
 
 export default function Collections() {
