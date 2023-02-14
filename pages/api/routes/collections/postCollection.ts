@@ -30,16 +30,16 @@ export default async function handler(
     where: {
       email,
     },
-    include: {
+    select: {
       collections: {
         where: {
-          collection: {
-            name: collectionName,
-          },
+          name: collectionName,
         },
       },
     },
   });
+
+  console.log(typeof session.user.id);
 
   const checkIfCollectionExists = findCollection?.collections[0];
 
@@ -69,12 +69,7 @@ export default async function handler(
       collections: {
         create: [
           {
-            role: "owner",
-            collection: {
-              create: {
-                name: collectionName,
-              },
-            },
+            name: collectionName,
           },
         ],
       },

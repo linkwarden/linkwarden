@@ -14,7 +14,7 @@ export const authOptions: AuthOptions = {
       credentials: {},
       async authorize(credentials, req) {
         const { email, password } = credentials as {
-          id: string;
+          id: number;
           email: string;
           password: string;
         };
@@ -50,7 +50,7 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     session: async ({ session, token }) => {
-      session.user.id = token?.sub;
+      session.user.id = parseInt(token?.sub as any);
 
       return session;
     },

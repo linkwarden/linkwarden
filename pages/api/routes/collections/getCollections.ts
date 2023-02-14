@@ -24,16 +24,12 @@ export default async function handler(
       email: email,
     },
     include: {
-      collections: {
-        include: {
-          collection: true,
-        },
-      },
+      collections: true,
     },
   });
 
   const collections = findCollection?.collections.map((e) => {
-    return { id: e.collection.id, name: e.collection.name, role: e.role };
+    return { id: e.id, name: e.name, createdAt: e.createdAt };
   });
 
   // console.log(session?.user?.email);
