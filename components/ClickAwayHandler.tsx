@@ -3,6 +3,7 @@ import React, { useRef, useEffect, ReactNode, RefObject } from "react";
 interface Props {
   children: ReactNode;
   onClickOutside: Function;
+  className?: string;
 }
 
 function useOutsideAlerter(
@@ -27,9 +28,17 @@ function useOutsideAlerter(
   }, [ref, onClickOutside]);
 }
 
-export default function OutsideAlerter({ children, onClickOutside }: Props) {
+export default function OutsideAlerter({
+  children,
+  onClickOutside,
+  className,
+}: Props) {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, onClickOutside);
 
-  return <div ref={wrapperRef}>{children}</div>;
+  return (
+    <div ref={wrapperRef} className={className}>
+      {children}
+    </div>
+  );
 }

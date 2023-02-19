@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import Collections from "@/components/Collections";
+import CollectionCards from "@/components/CollectionCards";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -7,9 +7,9 @@ export default function Dashboard() {
   const user = session?.user;
 
   return (
+    // ml-80
     <div className="p-5">
-      <p className="text-3xl font-bold text-center mb-10">Linkwarden</p>
-      <Collections />
+      <CollectionCards />
     </div>
   );
 }
