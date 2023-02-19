@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
-import { prisma } from "@/lib/db";
+import getCollections from "@/lib/api/controllers/collections/getCollections";
+import postCollections from "@/lib/api/controllers/collections/postCollection";
 
 type Data = {
   response: object[] | string;
@@ -17,24 +18,7 @@ export default async function handler(
     return res.status(401).json({ response: "You must be logged in." });
   }
 
-  const email: string = session.user.email;
+  if (req.method === "GET") return await getCollections(req, res, session);
 
-  const findCollection = await prisma.user.findFirst({
-    where: {
-      email: email,
-    },
-    include: {
-      collections: true,
-    },
-  });
-
-  const collections = findCollection?.collections.map((e) => {
-    return { id: e.id, name: e.name, createdAt: e.createdAt };
-  });
-
-  // console.log(session?.user?.email);
-
-  return res.status(200).json({
-    response: collections || [],
-  });
+  if (req.method === "POST") return await postCollections(req, res, session);
 }

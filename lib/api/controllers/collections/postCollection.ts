@@ -1,18 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
-import { prisma } from "@/lib/db";
-
-type Data = {
-  response: object[] | string;
-};
+import { prisma } from "@/lib/api/db";
+import { Session } from "next-auth";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse,
+  session: Session
 ) {
-  const session = await getServerSession(req, res, authOptions);
-
   if (!session?.user?.email) {
     return res.status(401).json({ response: "You must be logged in." });
   }
@@ -39,44 +33,24 @@ export default async function handler(
     },
   });
 
-  console.log(typeof session.user.id);
-
   const checkIfCollectionExists = findCollection?.collections[0];
 
   if (checkIfCollectionExists) {
     return res.status(400).json({ response: "Collection already exists." });
   }
 
-  // const a = await prisma.user.update({
-  //   where: {
-  //     id: session.user.id,
-  //   },
-  //   data: {
-  //     // collections: {
-  //     //   create: { name: "Das" },
-  //     // },
-  //   },
-  //   include: {
-  //     collections: { include: { collection: true } },
-  //   },
-  // });
-
-  await prisma.user.update({
-    where: {
-      id: session.user.id,
-    },
+  const createCollection = await prisma.collection.create({
     data: {
-      collections: {
-        create: [
-          {
-            name: collectionName,
-          },
-        ],
+      owner: {
+        connect: {
+          id: session.user.id,
+        },
       },
+      name: collectionName,
     },
   });
 
   return res.status(200).json({
-    response: "Success",
+    response: createCollection,
   });
 }
