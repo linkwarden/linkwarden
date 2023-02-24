@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-export default function useRedirection() {
+export default function () {
   const router = useRouter();
   const { status } = useSession();
   const [redirect, setRedirect] = useState(true);

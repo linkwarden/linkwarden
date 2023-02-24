@@ -41,21 +41,6 @@ const useCollectionSlice = create<CollectionSlice>()((set) => ({
       ),
     })),
   removeCollection: (collectionId) => {
-    // await fetch("/api/routes/collections/postCollection", {
-    //   body: JSON.stringify({ collectionName }),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   method: "POST",
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log(data);
-    //     set((state) => ({
-    //       collections: [...state.collections, data.response],
-    //     }));
-    //   });
-
     set((state) => ({
       collections: state.collections.filter((c) => c.id !== collectionId),
     }));
