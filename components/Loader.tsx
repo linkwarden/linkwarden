@@ -1,4 +1,4 @@
-export default function Loader() {
+export default function () {
   return (
     <div>
       <p>Loading...</p>

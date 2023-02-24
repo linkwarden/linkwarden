@@ -12,7 +12,7 @@ interface Props {
   children: ReactNode;
 }
 
-export default function Layout({ children }: Props) {
+export default function ({ children }: Props) {
   const { status } = useSession();
   const router = useRouter();
   const redirection = useRedirection();
@@ -29,7 +29,7 @@ export default function Layout({ children }: Props) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Sidebar />
-        <div className="ml-80 w-full">
+        <div className="ml-80">
           <Navbar />
           {children}
         </div>
