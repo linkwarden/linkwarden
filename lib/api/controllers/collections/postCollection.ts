@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import { Session } from "next-auth";
 
-export default async function handler(
+export default async function (
   req: NextApiRequest,
   res: NextApiResponse,
   session: Session

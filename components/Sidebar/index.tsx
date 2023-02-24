@@ -3,19 +3,25 @@ import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { useState } from "react";
 import useCollectionSlice from "@/store/collection";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFolder, faUserCircle } from "@fortawesome/free-regular-svg-icons";
+import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import {
-  faDatabase,
   faPlus,
   faChevronDown,
+  faFolder,
+  faHouse,
+  faHashtag,
 } from "@fortawesome/free-solid-svg-icons";
+import SidebarItem from "./SidebarItem";
+import useTagSlice from "@/store/tags";
 
-export default function Sidebar() {
+export default function () {
   const { data: session } = useSession();
 
   const [collectionInput, setCollectionInput] = useState(false);
 
   const { collections, addCollection } = useCollectionSlice();
+
+  const { tags } = useTagSlice();
 
   const user = session?.user;
 
@@ -36,7 +42,7 @@ export default function Sidebar() {
 
   return (
     <div className="fixed bg-gray-100 top-0 bottom-0 left-0 w-80 p-5 overflow-y-auto hide-scrollbar border-solid border-r-sky-100 border">
-      <div className="flex gap-3 items-center mb-5 cursor-pointer w-fit text-gray-600">
+      <div className="flex gap-3 items-center mb-5 p-3 cursor-pointer w-fit text-gray-600">
         <FontAwesomeIcon icon={faUserCircle} className="h-8" />
         <div className="flex items-center gap-1">
           <p>{user?.name}</p>
@@ -44,13 +50,10 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="hover:bg-sky-100 hover:shadow-sm duration-100 text-sky-900 rounded my-1 p-3 cursor-pointer flex items-center gap-2">
-        <FontAwesomeIcon icon={faDatabase} className="w-4" />
-        <p>All Collections</p>
-      </div>
+      <SidebarItem item={{ name: "All Collections" }} icon={faHouse} />
 
       <div className="text-gray-500 flex items-center justify-between mt-5">
-        <p>Collections</p>
+        <p className="text-sm p-3">Collections</p>
         {collectionInput ? (
           <ClickAwayHandler
             onClickOutside={toggleCollectionInput}
@@ -59,7 +62,7 @@ export default function Sidebar() {
             <input
               type="text"
               placeholder="Enter Collection Name"
-              className="w-44 rounded p-1"
+              className="w-44 rounded p-2 border-sky-100 border-solid border text-sm outline-none"
               onKeyDown={submitCollection}
               autoFocus
             />
@@ -68,21 +71,21 @@ export default function Sidebar() {
           <FontAwesomeIcon
             icon={faPlus}
             onClick={toggleCollectionInput}
-            className="select-none cursor-pointer rounded p-2 w-3"
+            className="select-none cursor-pointer p-2 w-3"
           />
         )}
       </div>
       <div>
         {collections.map((e, i) => {
-          return (
-            <div
-              className="hover:bg-sky-100 hover:shadow-sm duration-100 text-sky-900 rounded my-1 p-3 cursor-pointer flex items-center gap-2"
-              key={i}
-            >
-              <FontAwesomeIcon icon={faFolder} className="w-4" />
-              <p>{e.name}</p>
-            </div>
-          );
+          return <SidebarItem key={i} item={e} icon={faFolder} />;
+        })}
+      </div>
+      <div className="text-gray-500 flex items-center justify-between mt-5">
+        <p className="text-sm p-3">Tags</p>
+      </div>
+      <div>
+        {tags.map((e, i) => {
+          return <SidebarItem key={i} item={e} icon={faHashtag} />;
         })}
       </div>
     </div>
