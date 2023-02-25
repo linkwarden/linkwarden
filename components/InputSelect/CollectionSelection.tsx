@@ -17,10 +17,14 @@ export default function ({ onChange }: any) {
     return e.id === collectionId;
   });
 
-  const defaultCollection = {
-    value: activeCollection?.id,
-    label: activeCollection?.name,
-  };
+  let defaultCollection = null;
+
+  if (activeCollection) {
+    defaultCollection = {
+      value: activeCollection?.id,
+      label: activeCollection?.name,
+    };
+  }
 
   useEffect(() => {
     const formatedCollections = collections.map((e) => {
