@@ -8,8 +8,9 @@ import {
   faPlus,
   faChevronDown,
   faFolder,
-  faHouse,
+  faBoxesStacked,
   faHashtag,
+  faBookmark,
 } from "@fortawesome/free-solid-svg-icons";
 import SidebarItem from "./SidebarItem";
 import useTagSlice from "@/store/tags";
@@ -50,7 +51,9 @@ export default function () {
         </div>
       </div>
 
-      <SidebarItem item={{ name: "All Collections" }} icon={faHouse} />
+      <SidebarItem item={{ name: "All Links" }} icon={faBookmark} />
+
+      <SidebarItem item={{ name: "All Collections" }} icon={faBoxesStacked} />
 
       <div className="text-gray-500 flex items-center justify-between mt-5">
         <p className="text-sm p-3">Collections</p>
