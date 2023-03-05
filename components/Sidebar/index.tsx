@@ -1,19 +1,20 @@
 import { useSession } from "next-auth/react";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { useState } from "react";
-import useCollectionSlice from "@/store/collection";
+import useCollectionSlice from "@/store/collections";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import {
   faPlus,
   faChevronDown,
   faFolder,
-  faBoxesStacked,
-  faHashtag,
+  faBox,
+  faTag,
   faBookmark,
 } from "@fortawesome/free-solid-svg-icons";
 import SidebarItem from "./SidebarItem";
 import useTagSlice from "@/store/tags";
+import Link from "next/link";
 
 export default function () {
   const { data: session } = useSession();
@@ -51,9 +52,19 @@ export default function () {
         </div>
       </div>
 
-      <SidebarItem item={{ name: "All Links" }} icon={faBookmark} />
+      <Link href="links">
+        <div className="hover:bg-gray-50 duration-100 text-sky-900 rounded my-1 p-3 cursor-pointer flex items-center gap-2">
+          <FontAwesomeIcon icon={faBookmark} className="w-4 text-sky-300" />
+          <p>All Links</p>
+        </div>
+      </Link>
 
-      <SidebarItem item={{ name: "All Collections" }} icon={faBoxesStacked} />
+      <Link href="/collections">
+        <div className="hover:bg-gray-50 duration-100 text-sky-900 rounded my-1 p-3 cursor-pointer flex items-center gap-2">
+          <FontAwesomeIcon icon={faBox} className="w-4 text-sky-300" />
+          <p>All Collections</p>
+        </div>
+      </Link>
 
       <div className="text-gray-500 flex items-center justify-between mt-5">
         <p className="text-sm p-3">Collections</p>
@@ -80,7 +91,14 @@ export default function () {
       </div>
       <div>
         {collections.map((e, i) => {
-          return <SidebarItem key={i} item={e} icon={faFolder} />;
+          return (
+            <SidebarItem
+              key={i}
+              text={e.name}
+              icon={faFolder}
+              path={`/collections/${e.id}`}
+            />
+          );
         })}
       </div>
       <div className="text-gray-500 flex items-center justify-between mt-5">
@@ -88,7 +106,14 @@ export default function () {
       </div>
       <div>
         {tags.map((e, i) => {
-          return <SidebarItem key={i} item={e} icon={faHashtag} />;
+          return (
+            <SidebarItem
+              key={i}
+              text={e.name}
+              icon={faTag}
+              path={`/tags/${e.id}`}
+            />
+          );
         })}
       </div>
     </div>
