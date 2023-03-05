@@ -1,4 +1,4 @@
-import useCollectionSlice from "@/store/collection";
+import useCollectionSlice from "@/store/collections";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";

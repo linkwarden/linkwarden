@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import useCollectionSlice from "@/store/collection";
+import useCollectionSlice from "@/store/collections";
 
 import CollectionCard from "@/components/CollectionCard";
 

@@ -1,18 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import { Session } from "next-auth";
-import { Link } from "@prisma/client";
-
-interface LinkObject {
-  id: number;
-  name: string;
-  url: string;
-  tags: string[];
-  collectionId: {
-    id: string | number;
-    isNew: boolean | undefined;
-  };
-}
+import { LinkAndTags, NewLink } from "@/types/global";
 
 export default async function (
   req: NextApiRequest,
@@ -24,7 +13,7 @@ export default async function (
   }
 
   const email: string = session.user.email;
-  const link: LinkObject = req?.body;
+  const link: NewLink = req?.body;
 
   if (!link.name) {
     return res
@@ -70,10 +59,10 @@ export default async function (
 
   const collectionId = link.collectionId.id as number;
 
-  const createLink: Link = await prisma.link.create({
+  const createLink: LinkAndTags = await prisma.link.create({
     data: {
       name: link.name,
-      url: "https://www.example.com",
+      url: link.url,
       collection: {
         connect: {
           id: collectionId,
@@ -98,6 +87,7 @@ export default async function (
         })),
       },
     },
+    include: { tags: true },
   });
 
   return res.status(200).json({

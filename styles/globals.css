@@ -10,3 +10,40 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+::selection {
+  background-color: #0ea5e9;
+  color: white;
+}
+
+.hyphens {
+  hyphens: auto;
+}
+
+.slide-up {
+  animation: slide-up-animation 70ms;
+}
+
+.fade-in {
+  animation: fade-in-animation 100ms;
+}
+
+@keyframes fade-in-animation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up-animation {
+  0% {
+    transform: translateY(10%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

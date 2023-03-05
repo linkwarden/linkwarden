@@ -19,10 +19,8 @@ function useOutsideAlerter(
         onClickOutside();
       }
     }
-    // Bind the event listener
     document.addEventListener("mouseup", handleClickOutside);
     return () => {
-      // Unbind the event listener on clean up
       document.removeEventListener("mouseup", handleClickOutside);
     };
   }, [ref, onClickOutside]);
