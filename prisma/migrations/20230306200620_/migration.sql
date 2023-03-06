@@ -36,7 +36,12 @@ CREATE TABLE "Link" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "url" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "collectionId" INTEGER NOT NULL,
+    "isFavorites" BOOLEAN NOT NULL,
+    "screenshotPath" TEXT NOT NULL,
+    "pdfPath" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Link_pkey" PRIMARY KEY ("id")
 );
