@@ -47,9 +47,14 @@ model Link {
   id Int @id @default(autoincrement())
   name String
   url String
+  title String
   collection Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
   tags Tag[]
+  isFavorites Boolean
+  screenshotPath String
+  pdfPath String
+  createdAt DateTime @default(now())
 }
 
 model Tag {
