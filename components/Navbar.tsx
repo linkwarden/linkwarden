@@ -59,10 +59,10 @@ export default function () {
     }
   }, [router, collections, tags]);
 
-  const [collectionInput, setCollectionInput] = useState(false);
+  const [linkModal, setLinkModal] = useState(false);
 
-  const toggleCollectionInput = () => {
-    setCollectionInput(!collectionInput);
+  const toggleLinkModal = () => {
+    setLinkModal(!linkModal);
   };
 
   return (
@@ -76,7 +76,7 @@ export default function () {
       <div className="flex items-center gap-3">
         <FontAwesomeIcon
           icon={faPlus}
-          onClick={toggleCollectionInput}
+          onClick={toggleLinkModal}
           className="select-none cursor-pointer w-5 h-5 text-white bg-sky-500 p-2 rounded hover:bg-sky-400 duration-100"
         />
         <FontAwesomeIcon
@@ -90,13 +90,13 @@ export default function () {
           Sign Out
         </div>
 
-        {collectionInput ? (
+        {linkModal ? (
           <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 flex items-center fade-in">
             <ClickAwayHandler
-              onClickOutside={toggleCollectionInput}
+              onClickOutside={toggleLinkModal}
               className="w-fit mx-auto"
             >
-              <AddLinkModal />
+              <AddLinkModal toggleLinkModal={toggleLinkModal} />
             </ClickAwayHandler>
           </div>
         ) : null}

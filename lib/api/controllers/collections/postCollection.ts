@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import { Session } from "next-auth";
+import { existsSync, mkdirSync } from "fs";
 
 export default async function (
   req: NextApiRequest,
@@ -39,7 +40,7 @@ export default async function (
     return res.status(400).json({ response: "Collection already exists." });
   }
 
-  const createCollection = await prisma.collection.create({
+  const newCollection = await prisma.collection.create({
     data: {
       owner: {
         connect: {
@@ -50,7 +51,11 @@ export default async function (
     },
   });
 
+  const collectionPath = `data/archives/${newCollection.id}`;
+  if (!existsSync(collectionPath))
+    mkdirSync(collectionPath, { recursive: true });
+
   return res.status(200).json({
-    response: createCollection,
+    response: newCollection,
   });
 }
