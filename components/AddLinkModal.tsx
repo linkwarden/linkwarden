@@ -7,14 +7,14 @@ import { useRouter } from "next/router";
 import { NewLink } from "@/types/global";
 import useLinkSlice from "@/store/links";
 
-export default function () {
+export default function ({ toggleLinkModal }: { toggleLinkModal: Function }) {
   const router = useRouter();
 
   const [newLink, setNewLink] = useState<NewLink>({
     name: "",
     url: "",
     tags: [],
-    collectionId: { id: Number(router.query.id) },
+    collection: { id: Number(router.query.id) },
   });
 
   const { addLink } = useLinkSlice();
@@ -30,23 +30,13 @@ export default function () {
   const setCollection = (e: any) => {
     const collection = { id: e?.value, isNew: e?.__isNew__ };
 
-    setNewLink({ ...newLink, collectionId: collection });
+    setNewLink({ ...newLink, collection: collection });
   };
 
-  const postLink = async () => {
-    const response = await fetch("/api/routes/links", {
-      body: JSON.stringify(newLink),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
+  const submitLink = async () => {
+    const response = await addLink(newLink);
 
-    const data = await response.json();
-
-    console.log(newLink);
-
-    console.log(data);
+    if (response) toggleLinkModal();
   };
 
   return (
@@ -87,7 +77,7 @@ export default function () {
 
       <div
         className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-        onClick={() => addLink(newLink)}
+        onClick={submitLink}
       >
         <FontAwesomeIcon icon={faPlus} className="h-5" />
         Add Link

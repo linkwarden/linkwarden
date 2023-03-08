@@ -37,17 +37,11 @@ export default async function (
         name: body.name,
         email: body.email,
         password: hashedPassword,
-        collections: {
-          create: {
-            name: "First Collection",
-          },
-        },
       },
     });
 
     res.status(201).json({ message: "User successfully created." });
   } else if (checkIfUserExists) {
-    console.log(checkIfUserExists);
     res.status(400).json({ message: "User already exists." });
   }
 }

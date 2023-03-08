@@ -2,6 +2,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import { Session } from "next-auth";
 import { LinkAndTags, NewLink } from "@/types/global";
+import { existsSync, mkdirSync } from "fs";
+import getTitle from "../../getTitle";
+import archive from "../../archive";
+import { Link } from "@prisma/client";
+import AES from "crypto-js/aes";
 
 export default async function (
   req: NextApiRequest,
@@ -21,8 +26,8 @@ export default async function (
       .json({ response: "Please enter a valid name for the link." });
   }
 
-  if (link.collectionId.isNew) {
-    const collectionId = link.collectionId.id as string;
+  if (link.collection.isNew) {
+    const collectionId = link.collection.id as string;
 
     const findCollection = await prisma.user.findFirst({
       where: {
@@ -43,7 +48,7 @@ export default async function (
       return res.status(400).json({ response: "Collection already exists." });
     }
 
-    const createCollection = await prisma.collection.create({
+    const newCollection = await prisma.collection.create({
       data: {
         owner: {
           connect: {
@@ -54,12 +59,18 @@ export default async function (
       },
     });
 
-    link.collectionId.id = createCollection.id;
+    const collectionPath = `data/archives/${newCollection.id}`;
+    if (!existsSync(collectionPath))
+      mkdirSync(collectionPath, { recursive: true });
+
+    link.collection.id = newCollection.id;
   }
 
-  const collectionId = link.collectionId.id as number;
+  const collectionId = link.collection.id as number;
 
-  const createLink: LinkAndTags = await prisma.link.create({
+  const title = await getTitle(link.url);
+
+  const newLink: Link = await prisma.link.create({
     data: {
       name: link.name,
       url: link.url,
@@ -86,11 +97,34 @@ export default async function (
           },
         })),
       },
+      title,
+      isFavorites: false,
+      screenshotPath: "",
+      pdfPath: "",
     },
+  });
+
+  const AES_SECRET = process.env.AES_SECRET as string;
+
+  const screenShotHashedPath = AES.encrypt(
+    `data/archives/${newLink.collectionId}/${newLink.id}.png`,
+    AES_SECRET
+  ).toString();
+
+  const pdfHashedPath = AES.encrypt(
+    `data/archives/${newLink.collectionId}/${newLink.id}.pdf`,
+    AES_SECRET
+  ).toString();
+
+  const updatedLink: LinkAndTags = await prisma.link.update({
+    where: { id: newLink.id },
+    data: { screenshotPath: screenShotHashedPath, pdfPath: pdfHashedPath },
     include: { tags: true },
   });
 
+  archive(updatedLink.url, updatedLink.collectionId, updatedLink.id);
+
   return res.status(200).json({
-    response: createLink,
+    response: updatedLink,
   });
 }
