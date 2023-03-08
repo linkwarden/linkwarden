@@ -8,7 +8,7 @@ export interface NewLink {
   name: string;
   url: string;
   tags: string[];
-  collectionId: {
+  collection: {
     id: string | number;
     isNew?: boolean;
   };

@@ -4,7 +4,7 @@ import { LinkAndTags, NewLink } from "@/types/global";
 type LinkSlice = {
   links: LinkAndTags[];
   setLinks: () => void;
-  addLink: (linkName: NewLink) => void;
+  addLink: (linkName: NewLink) => Promise<boolean>;
   updateLink: (link: LinkAndTags) => void;
   removeLink: (linkId: number) => void;
 };
@@ -33,6 +33,8 @@ const useLinkSlice = create<LinkSlice>()((set) => ({
       set((state) => ({
         links: [...state.links, data.response],
       }));
+
+    return response.ok;
   },
   updateLink: (link) =>
     set((state) => ({

@@ -36,7 +36,6 @@ model UsersAndCollections {
   collectionId Int
 
   canCreate Boolean
-  canRead Boolean
   canUpdate Boolean
   canDelete Boolean
 

@@ -24,7 +24,6 @@ CREATE TABLE "UsersAndCollections" (
     "userId" INTEGER NOT NULL,
     "collectionId" INTEGER NOT NULL,
     "canCreate" BOOLEAN NOT NULL,
-    "canRead" BOOLEAN NOT NULL,
     "canUpdate" BOOLEAN NOT NULL,
     "canDelete" BOOLEAN NOT NULL,
 
