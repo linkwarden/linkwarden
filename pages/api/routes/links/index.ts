@@ -18,9 +18,6 @@ export default async function (
     return res.status(401).json({ response: "You must be logged in." });
   }
 
-  // Check if user is unauthorized to the collection (If isn't owner or doesn't has the required permission...)
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
   if (req.method === "GET") return await getLinks(req, res, session);
   if (req.method === "POST") return await postLink(req, res, session);
 }

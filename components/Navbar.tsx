@@ -8,7 +8,7 @@ import {
   faPlus,
   faFolder,
   faBox,
-  faTag,
+  faHashtag,
   faBookmark,
   faMagnifyingGlass,
   IconDefinition,
@@ -49,7 +49,7 @@ export default function () {
         setPageName(activeTag?.name);
       }
 
-      setPageIcon(faTag);
+      setPageIcon(faHashtag);
     } else if (router.route === "/collections") {
       setPageName("All Collections");
       setPageIcon(faBox);
