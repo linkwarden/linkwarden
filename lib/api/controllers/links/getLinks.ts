@@ -24,7 +24,10 @@ export default async function (
         ],
       },
     },
-    include: { tags: true },
+    include: {
+      tags: true,
+      collection: true,
+    },
   });
 
   return res.status(200).json({

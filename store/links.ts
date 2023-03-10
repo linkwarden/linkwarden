@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import { LinkAndTags, NewLink } from "@/types/global";
+import { ExtendedLink, NewLink } from "@/types/global";
 
 type LinkSlice = {
-  links: LinkAndTags[];
+  links: ExtendedLink[];
   setLinks: () => void;
   addLink: (linkName: NewLink) => Promise<boolean>;
-  updateLink: (link: LinkAndTags) => void;
+  updateLink: (link: ExtendedLink) => void;
   removeLink: (linkId: number) => void;
 };
 

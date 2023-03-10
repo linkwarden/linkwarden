@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 
 export default async (userId: number, collectionId: number) => {
-  const check: any = await prisma.collection.findFirst({
+  const check = await prisma.collection.findFirst({
     where: {
       AND: {
         id: collectionId,

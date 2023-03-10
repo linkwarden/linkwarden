@@ -9,7 +9,7 @@ import {
   faChevronDown,
   faFolder,
   faBox,
-  faTag,
+  faHashtag,
   faBookmark,
 } from "@fortawesome/free-solid-svg-icons";
 import SidebarItem from "./SidebarItem";
@@ -110,7 +110,7 @@ export default function () {
             <SidebarItem
               key={i}
               text={e.name}
-              icon={faTag}
+              icon={faHashtag}
               path={`/tags/${e.id}`}
             />
           );

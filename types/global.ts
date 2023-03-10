@@ -1,7 +1,8 @@
-import { Link, Tag } from "@prisma/client";
+import { Collection, Link, Tag } from "@prisma/client";
 
-export interface LinkAndTags extends Link {
+export interface ExtendedLink extends Link {
   tags: Tag[];
+  collection: Collection;
 }
 
 export interface NewLink {
