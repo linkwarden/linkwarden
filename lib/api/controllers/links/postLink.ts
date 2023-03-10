@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import { Session } from "next-auth";
-import { LinkAndTags, NewLink } from "@/types/global";
+import { ExtendedLink, NewLink } from "@/types/global";
 import { existsSync, mkdirSync } from "fs";
 import getTitle from "../../getTitle";
 import archive from "../../archive";
-import { Link } from "@prisma/client";
+import { Link, UsersAndCollections } from "@prisma/client";
 import AES from "crypto-js/aes";
+import hasAccessToCollection from "@/lib/api/hasAccessToCollection";
 
 export default async function (
   req: NextApiRequest,
@@ -44,9 +45,8 @@ export default async function (
 
     const checkIfCollectionExists = findCollection?.collections[0];
 
-    if (checkIfCollectionExists) {
+    if (checkIfCollectionExists)
       return res.status(400).json({ response: "Collection already exists." });
-    }
 
     const newCollection = await prisma.collection.create({
       data: {
@@ -67,6 +67,18 @@ export default async function (
   }
 
   const collectionId = link.collection.id as number;
+
+  const collectionIsAccessible = await hasAccessToCollection(
+    session.user.id,
+    collectionId
+  );
+
+  const memberHasAccess = collectionIsAccessible?.members.some(
+    (e: UsersAndCollections) => e.userId === session.user.id && e.canCreate
+  );
+
+  if (!(collectionIsAccessible?.ownerId === session.user.id || memberHasAccess))
+    return res.status(401).json({ response: "Collection is not accessible." });
 
   const title = await getTitle(link.url);
 
@@ -116,10 +128,10 @@ export default async function (
     AES_SECRET
   ).toString();
 
-  const updatedLink: LinkAndTags = await prisma.link.update({
+  const updatedLink: ExtendedLink = await prisma.link.update({
     where: { id: newLink.id },
     data: { screenshotPath: screenShotHashedPath, pdfPath: pdfHashedPath },
-    include: { tags: true },
+    include: { tags: true, collection: true },
   });
 
   archive(updatedLink.url, updatedLink.collectionId, updatedLink.id);
