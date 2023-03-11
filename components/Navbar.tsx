@@ -91,7 +91,7 @@ export default function () {
         </div>
 
         {linkModal ? (
-          <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 flex items-center fade-in">
+          <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 flex items-center fade-in z-10">
             <ClickAwayHandler
               onClickOutside={toggleLinkModal}
               className="w-fit mx-auto"
