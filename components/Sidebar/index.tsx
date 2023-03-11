@@ -43,7 +43,7 @@ export default function () {
   };
 
   return (
-    <div className="fixed bg-gray-100 top-0 bottom-0 left-0 w-80 p-5 overflow-y-auto hide-scrollbar border-solid border-r-sky-100 border">
+    <div className="fixed bg-gray-100 top-0 bottom-0 left-0 w-80 p-5 overflow-y-auto hide-scrollbar border-solid border-r-sky-100 border z-10">
       <div className="flex gap-3 items-center mb-5 p-3 cursor-pointer w-fit text-gray-600">
         <FontAwesomeIcon icon={faUserCircle} className="h-8" />
         <div className="flex items-center gap-1">
@@ -53,14 +53,14 @@ export default function () {
       </div>
 
       <Link href="links">
-        <div className="hover:bg-gray-50 duration-100 text-sky-900 rounded my-1 p-3 cursor-pointer flex items-center gap-2">
+        <div className="hover:bg-gray-50 hover:outline outline-sky-100 outline-1 duration-100 text-sky-900 rounded my-1 p-3 cursor-pointer flex items-center gap-2">
           <FontAwesomeIcon icon={faBookmark} className="w-4 text-sky-300" />
           <p>All Links</p>
         </div>
       </Link>
 
       <Link href="/collections">
-        <div className="hover:bg-gray-50 duration-100 text-sky-900 rounded my-1 p-3 cursor-pointer flex items-center gap-2">
+        <div className="hover:bg-gray-50 hover:outline outline-sky-100 outline-1 duration-100 text-sky-900 rounded my-1 p-3 cursor-pointer flex items-center gap-2">
           <FontAwesomeIcon icon={faBox} className="w-4 text-sky-300" />
           <p>All Collections</p>
         </div>
