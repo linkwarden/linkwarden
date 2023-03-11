@@ -48,7 +48,7 @@ export default function ({
           </div>
           <p className="text-sky-400 text-sm font-medium">{link.title}</p>
           <div className="flex gap-3 items-center flex-wrap my-3">
-            <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-50 duration-100 py-1 px-2 text-sm rounded hover:outline outline-sky-100 outline-1">
+            <div className="flex items-center gap-1 cursor-pointer hover:opacity-80 duration-100">
               <FontAwesomeIcon icon={faFolder} className="w-4 text-sky-300" />
               <p className="text-sky-900">{link.collection.name}</p>
             </div>
@@ -117,7 +117,7 @@ export default function ({
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
                 className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
-                onMouseEnter={() => setArchiveLabel("Web.archive.org")}
+                onMouseEnter={() => setArchiveLabel("Wayback Machine")}
               />
             </div>
           </div>
