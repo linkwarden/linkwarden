@@ -1,4 +1,4 @@
-import useCollectionSlice from "@/store/collections";
+import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
@@ -6,7 +6,7 @@ import { styles } from "./styles";
 import { Options } from "./types";
 
 export default function ({ onChange }: any) {
-  const { collections } = useCollectionSlice();
+  const { collections } = useCollectionStore();
   const router = useRouter();
 
   const [options, setOptions] = useState<Options[]>([]);

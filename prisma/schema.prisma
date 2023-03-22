@@ -50,7 +50,7 @@ model Link {
   collection Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
   tags Tag[]
-  isFavorites Boolean
+  starred Boolean
   screenshotPath String
   pdfPath String
   createdAt DateTime @default(now())

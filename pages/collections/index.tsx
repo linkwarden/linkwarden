@@ -1,10 +1,10 @@
 import { useSession } from "next-auth/react";
-import useCollectionSlice from "@/store/collections";
+import useCollectionStore from "@/store/collections";
 
 import CollectionCard from "@/components/CollectionCard";
 
 export default function () {
-  const { collections } = useCollectionSlice();
+  const { collections } = useCollectionStore();
   const { data: session, status } = useSession();
 
   const user = session?.user;

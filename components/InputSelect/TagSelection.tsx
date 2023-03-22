@@ -1,11 +1,11 @@
-import useTagSlice from "@/store/tags";
+import useTagStore from "@/store/tags";
 import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import { styles } from "./styles";
 import { Options } from "./types";
 
 export default function ({ onChange }: any) {
-  const { tags } = useTagSlice();
+  const { tags } = useTagStore();
 
   const [options, setOptions] = useState<Options[]>([]);
 
