@@ -1,9 +1,9 @@
 import { useSession } from "next-auth/react";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { useState } from "react";
-import useCollectionSlice from "@/store/collections";
+import useCollectionStore from "@/store/collections";
+import { signOut } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import {
   faPlus,
   faChevronDown,
@@ -11,19 +11,24 @@ import {
   faBox,
   faHashtag,
   faBookmark,
+  faCircleUser,
+  faSliders,
+  faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import SidebarItem from "./SidebarItem";
-import useTagSlice from "@/store/tags";
+import useTagStore from "@/store/tags";
 import Link from "next/link";
+import Dropdown from "@/components/Dropdown";
 
 export default function () {
   const { data: session } = useSession();
 
   const [collectionInput, setCollectionInput] = useState(false);
+  const [profileDropdown, setProfileDropdown] = useState(false);
 
-  const { collections, addCollection } = useCollectionSlice();
+  const { collections, addCollection } = useCollectionStore();
 
-  const { tags } = useTagSlice();
+  const { tags } = useTagStore();
 
   const user = session?.user;
 
@@ -44,12 +49,35 @@ export default function () {
 
   return (
     <div className="fixed bg-gray-100 top-0 bottom-0 left-0 w-80 p-5 overflow-y-auto hide-scrollbar border-solid border-r-sky-100 border z-10">
-      <div className="flex gap-3 items-center mb-5 p-3 cursor-pointer w-fit text-gray-600">
-        <FontAwesomeIcon icon={faUserCircle} className="h-8" />
-        <div className="flex items-center gap-1">
+      <div className="flex gap-3 items-center mb-5 p-3 w-fit text-gray-600 relative">
+        <FontAwesomeIcon icon={faCircleUser} className="h-8" />
+        <div
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={() => setProfileDropdown(!profileDropdown)}
+        >
           <p>{user?.name}</p>
           <FontAwesomeIcon icon={faChevronDown} className="h-3" />
         </div>
+        {profileDropdown ? (
+          <Dropdown
+            items={[
+              {
+                name: "Settings",
+                icon: <FontAwesomeIcon icon={faSliders} />,
+              },
+              {
+                name: "Logout",
+                icon: <FontAwesomeIcon icon={faArrowRightFromBracket} />,
+                onClick: () => {
+                  signOut();
+                  setProfileDropdown(!profileDropdown);
+                },
+              },
+            ]}
+            onClickOutside={() => setProfileDropdown(!profileDropdown)}
+            className="absolute top-14 left-0"
+          />
+        ) : null}
       </div>
 
       <Link href="links">

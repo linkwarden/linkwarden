@@ -39,7 +39,7 @@
 
 @keyframes slide-up-animation {
   0% {
-    transform: translateY(10%);
+    transform: translateY(15%);
     opacity: 0;
   }
   100% {

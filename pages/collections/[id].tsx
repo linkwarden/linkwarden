@@ -1,10 +1,10 @@
 import LinkList from "@/components/LinkList";
-import useLinkSlice from "@/store/links";
+import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
 
 export default function () {
   const router = useRouter();
-  const { links } = useLinkSlice();
+  const { links } = useLinkStore();
 
   const linksByCollection = links.filter(
     (e) => e.collectionId === Number(router.query.id)

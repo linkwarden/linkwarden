@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { Tag } from "@prisma/client";
 
-type TagSlice = {
+type TagStore = {
   tags: Tag[];
   setTags: () => void;
 };
 
-const useTagSlice = create<TagSlice>()((set) => ({
+const useTagStore = create<TagStore>()((set) => ({
   tags: [],
   setTags: async () => {
     const response = await fetch("/api/routes/tags");
@@ -17,4 +17,4 @@ const useTagSlice = create<TagSlice>()((set) => ({
   },
 }));
 
-export default useTagSlice;
+export default useTagStore;

@@ -1,6 +1,5 @@
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import useCollectionSlice from "@/store/collections";
+import useCollectionStore from "@/store/collections";
 import { Collection, Tag } from "@prisma/client";
 import ClickAwayHandler from "./ClickAwayHandler";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,15 +14,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import AddLinkModal from "./AddLinkModal";
-import useTagSlice from "@/store/tags";
+import useTagStore from "@/store/tags";
 
 export default function () {
   const router = useRouter();
   const [pageName, setPageName] = useState<string | null>("");
   const [pageIcon, setPageIcon] = useState<IconDefinition | null>(null);
 
-  const { collections } = useCollectionSlice();
-  const { tags } = useTagSlice();
+  const { collections } = useCollectionStore();
+  const { tags } = useTagStore();
 
   useEffect(() => {
     if (router.route === "/collections/[id]") {
@@ -83,12 +82,6 @@ export default function () {
           icon={faMagnifyingGlass}
           className="select-none cursor-pointer w-5 h-5 text-white bg-sky-500 p-2 rounded hover:bg-sky-400 duration-100"
         />
-        <div
-          onClick={() => signOut()}
-          className="cursor-pointer w-max text-sky-900"
-        >
-          Sign Out
-        </div>
 
         {linkModal ? (
           <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 flex items-center fade-in z-10">
