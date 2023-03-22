@@ -110,7 +110,7 @@ export default async function (
         })),
       },
       title,
-      isFavorites: false,
+      starred: false,
       screenshotPath: "",
       pdfPath: "",
     },

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 import { NewLink } from "@/types/global";
-import useLinkSlice from "@/store/links";
+import useLinkStore from "@/store/links";
 
 export default function ({ toggleLinkModal }: { toggleLinkModal: Function }) {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function ({ toggleLinkModal }: { toggleLinkModal: Function }) {
     collection: { id: Number(router.query.id) },
   });
 
-  const { addLink } = useLinkSlice();
+  const { addLink } = useLinkStore();
 
   const setTags = (e: any) => {
     const tagNames = e.map((e: any) => {

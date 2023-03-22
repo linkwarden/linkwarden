@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { ExtendedLink, NewLink } from "@/types/global";
 
-type LinkSlice = {
+type LinkStore = {
   links: ExtendedLink[];
   setLinks: () => void;
   addLink: (linkName: NewLink) => Promise<boolean>;
@@ -9,7 +9,7 @@ type LinkSlice = {
   removeLink: (linkId: number) => void;
 };
 
-const useLinkSlice = create<LinkSlice>()((set) => ({
+const useLinkStore = create<LinkStore>()((set) => ({
   links: [],
   setLinks: async () => {
     const response = await fetch("/api/routes/links");
@@ -47,4 +47,4 @@ const useLinkSlice = create<LinkSlice>()((set) => ({
   },
 }));
 
-export default useLinkSlice;
+export default useLinkStore;

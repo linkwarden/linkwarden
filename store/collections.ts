@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Collection } from "@prisma/client";
 
-type CollectionSlice = {
+type CollectionStore = {
   collections: Collection[];
   setCollections: () => void;
   addCollection: (collectionName: string) => void;
@@ -9,7 +9,7 @@ type CollectionSlice = {
   removeCollection: (collectionId: number) => void;
 };
 
-const useCollectionSlice = create<CollectionSlice>()((set) => ({
+const useCollectionStore = create<CollectionStore>()((set) => ({
   collections: [],
   setCollections: async () => {
     const response = await fetch("/api/routes/collections");
@@ -47,4 +47,4 @@ const useCollectionSlice = create<CollectionSlice>()((set) => ({
   },
 }));
 
-export default useCollectionSlice;
+export default useCollectionStore;

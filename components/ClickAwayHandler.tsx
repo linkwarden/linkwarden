@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, ReactNode, RefObject } from "react";
 
-interface Props {
+type Props = {
   children: ReactNode;
   onClickOutside: Function;
   className?: string;
-}
+};
 
 function useOutsideAlerter(
   ref: RefObject<HTMLElement>,

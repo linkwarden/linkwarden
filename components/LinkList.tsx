@@ -3,13 +3,16 @@ import {
   faFolder,
   faArrowUpRightFromSquare,
   faEllipsis,
-  faHeart,
+  faStar,
+  faPenToSquare,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Image from "next/image";
+import Dropdown from "./Dropdown";
 
 export default function ({
   link,
@@ -18,6 +21,7 @@ export default function ({
   link: ExtendedLink;
   count: number;
 }) {
+  const [editDropdown, setEditDropdown] = useState(false);
   const [archiveLabel, setArchiveLabel] = useState("Archived Formats");
 
   const shortendURL = new URL(link.url).host.toLowerCase();
@@ -42,8 +46,8 @@ export default function ({
           <div className="flex items-baseline gap-1">
             <p className="text-sm text-sky-300 font-bold">{count + 1}.</p>
             <p className="text-lg text-sky-600">{link.name}</p>
-            {link.isFavorites ? (
-              <FontAwesomeIcon icon={faHeart} className="w-3 text-red-600" />
+            {link.starred ? (
+              <FontAwesomeIcon icon={faStar} className="w-3 text-amber-400" />
             ) : null}
           </div>
           <p className="text-sky-400 text-sm font-medium">{link.title}</p>
@@ -76,10 +80,12 @@ export default function ({
             </a>
           </div>
         </div>
-        <div className="flex flex-col justify-between items-end">
+
+        <div className="flex flex-col justify-between items-end relative">
           <FontAwesomeIcon
             icon={faEllipsis}
-            className="w-6 h-6 text-gray-500 cursor-pointer"
+            className="w-6 h-6 text-gray-500 hover:text-gray-400 duration-100 cursor-pointer"
+            onClick={() => setEditDropdown(!editDropdown)}
           />
           <div>
             <p className="text-center text-sky-500 text-sm font-bold">
@@ -121,6 +127,27 @@ export default function ({
               />
             </div>
           </div>
+
+          {editDropdown ? (
+            <Dropdown
+              items={[
+                {
+                  name: "Star",
+                  icon: <FontAwesomeIcon icon={faStar} />,
+                },
+                {
+                  name: "Edit",
+                  icon: <FontAwesomeIcon icon={faPenToSquare} />,
+                },
+                {
+                  name: "Delete",
+                  icon: <FontAwesomeIcon icon={faTrashCan} />,
+                },
+              ]}
+              onClickOutside={() => setEditDropdown(!editDropdown)}
+              className="absolute top-8 right-0"
+            />
+          ) : null}
         </div>
       </div>
     </div>
