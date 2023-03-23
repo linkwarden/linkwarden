@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Image from "next/image";
 import Dropdown from "./Dropdown";
+import useLinkStore from "@/store/links";
 
 export default function ({
   link,
@@ -23,6 +24,8 @@ export default function ({
 }) {
   const [editDropdown, setEditDropdown] = useState(false);
   const [archiveLabel, setArchiveLabel] = useState("Archived Formats");
+
+  const { removeLink } = useLinkStore();
 
   const shortendURL = new URL(link.url).host.toLowerCase();
   const formattedDate = new Date(link.createdAt).toLocaleString("en-US", {
@@ -52,7 +55,7 @@ export default function ({
           </div>
           <p className="text-sky-400 text-sm font-medium">{link.title}</p>
           <div className="flex gap-3 items-center flex-wrap my-3">
-            <div className="flex items-center gap-1 cursor-pointer hover:opacity-80 duration-100">
+            <div className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100">
               <FontAwesomeIcon icon={faFolder} className="w-4 text-sky-300" />
               <p className="text-sky-900">{link.collection.name}</p>
             </div>
@@ -86,6 +89,7 @@ export default function ({
             icon={faEllipsis}
             className="w-6 h-6 text-gray-500 rounded cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-2"
             onClick={() => setEditDropdown(!editDropdown)}
+            id="edit-dropdown"
           />
           <div>
             <p className="text-center text-sky-400 text-sm font-bold">
@@ -142,9 +146,13 @@ export default function ({
                 {
                   name: "Delete",
                   icon: <FontAwesomeIcon icon={faTrashCan} />,
+                  onClick: () => removeLink(link),
                 },
               ]}
-              onClickOutside={() => setEditDropdown(!editDropdown)}
+              onClickOutside={(e: Event) => {
+                const target = e.target as HTMLInputElement;
+                if (target.id !== "edit-dropdown") setEditDropdown(false);
+              }}
               className="absolute top-10 right-0"
             />
           ) : null}

@@ -6,7 +6,7 @@ type LinkStore = {
   setLinks: () => void;
   addLink: (linkName: NewLink) => Promise<boolean>;
   updateLink: (link: ExtendedLink) => void;
-  removeLink: (linkId: number) => void;
+  removeLink: (link: ExtendedLink) => void;
 };
 
 const useLinkStore = create<LinkStore>()((set) => ({
@@ -40,10 +40,25 @@ const useLinkStore = create<LinkStore>()((set) => ({
     set((state) => ({
       links: state.links.map((c) => (c.id === link.id ? link : c)),
     })),
-  removeLink: (linkId) => {
-    set((state) => ({
-      links: state.links.filter((c) => c.id !== linkId),
-    }));
+  removeLink: async (link) => {
+    const response = await fetch("/api/routes/links", {
+      body: JSON.stringify(link),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+    });
+
+    const data = await response.json();
+
+    if (response.ok)
+      set((state) => ({
+        links: state.links.filter((e) => e.id !== link.id),
+      }));
+
+    console.log(data);
+
+    return response.ok;
   },
 }));
 
