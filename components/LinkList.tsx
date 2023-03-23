@@ -84,11 +84,11 @@ export default function ({
         <div className="flex flex-col justify-between items-end relative">
           <FontAwesomeIcon
             icon={faEllipsis}
-            className="w-6 h-6 text-gray-500 hover:text-gray-400 duration-100 cursor-pointer"
+            className="w-6 h-6 text-gray-500 rounded cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-2"
             onClick={() => setEditDropdown(!editDropdown)}
           />
           <div>
-            <p className="text-center text-sky-500 text-sm font-bold">
+            <p className="text-center text-sky-400 text-sm font-bold">
               {archiveLabel}
             </p>
 
@@ -145,7 +145,7 @@ export default function ({
                 },
               ]}
               onClickOutside={() => setEditDropdown(!editDropdown)}
-              className="absolute top-8 right-0"
+              className="absolute top-10 right-0"
             />
           ) : null}
         </div>

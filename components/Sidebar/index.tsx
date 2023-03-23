@@ -49,14 +49,16 @@ export default function () {
 
   return (
     <div className="fixed bg-gray-100 top-0 bottom-0 left-0 w-80 p-5 overflow-y-auto hide-scrollbar border-solid border-r-sky-100 border z-10">
-      <div className="flex gap-3 items-center mb-5 p-3 w-fit text-gray-600 relative">
-        <FontAwesomeIcon icon={faCircleUser} className="h-8" />
+      <div className="relative w-fit">
         <div
-          className="flex items-center gap-1 cursor-pointer"
+          className="flex gap-2 items-center mb-5 p-3 w-fit text-gray-600 cursor-pointer hover:outline outline-sky-100 outline-1 hover:bg-gray-50 rounded duration-100"
           onClick={() => setProfileDropdown(!profileDropdown)}
         >
-          <p>{user?.name}</p>
-          <FontAwesomeIcon icon={faChevronDown} className="h-3" />
+          <FontAwesomeIcon icon={faCircleUser} className="h-5" />
+          <div className="flex items-center gap-1">
+            <p className="font-bold">{user?.name}</p>
+            <FontAwesomeIcon icon={faChevronDown} className="h-3" />
+          </div>
         </div>
         {profileDropdown ? (
           <Dropdown
@@ -75,7 +77,7 @@ export default function () {
               },
             ]}
             onClickOutside={() => setProfileDropdown(!profileDropdown)}
-            className="absolute top-14 left-0"
+            className="absolute top-12 left-0"
           />
         ) : null}
       </div>
@@ -123,7 +125,7 @@ export default function () {
             <SidebarItem
               key={i}
               text={e.name}
-              icon={faFolder}
+              icon={<FontAwesomeIcon icon={faFolder} />}
               path={`/collections/${e.id}`}
             />
           );
@@ -138,7 +140,7 @@ export default function () {
             <SidebarItem
               key={i}
               text={e.name}
-              icon={faHashtag}
+              icon={<FontAwesomeIcon icon={faHashtag} />}
               path={`/tags/${e.id}`}
             />
           );
