@@ -33,12 +33,16 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const decryptedPath = AES.decrypt(encryptedPath, AES_SECRET).toString(enc);
 
   const filePath = path.join(process.cwd(), decryptedPath);
-  const file = fs.readFileSync(filePath);
+  const file = fs.existsSync(filePath)
+    ? fs.readFileSync(filePath)
+    : "File not found, it's possible that the file you're looking for either doesn't exist or hasn't been created yet.";
 
-  if (filePath.endsWith(".pdf"))
-    res.setHeader("Content-Type", "application/pdf");
+  if (!fs.existsSync(filePath))
+    res.setHeader("Content-Type", "text/plain").status(404);
+  else if (filePath.endsWith(".pdf"))
+    res.setHeader("Content-Type", "application/pdf").status(200);
+  else if (filePath.endsWith(".png"))
+    res.setHeader("Content-Type", "image/png").status(200);
 
-  if (filePath.endsWith(".png")) res.setHeader("Content-Type", "image/png");
-
-  return res.status(200).send(file);
+  return res.send(file);
 }

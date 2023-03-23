@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 import getLinks from "@/lib/api/controllers/links/getLinks";
 import postLink from "@/lib/api/controllers/links/postLink";
+import deleteLink from "@/lib/api/controllers/links/deleteLink";
 
 type Data = {
   response: object[] | string;
@@ -19,5 +20,6 @@ export default async function (
   }
 
   if (req.method === "GET") return await getLinks(req, res, session);
-  if (req.method === "POST") return await postLink(req, res, session);
+  else if (req.method === "POST") return await postLink(req, res, session);
+  else if (req.method === "DELETE") return await deleteLink(req, res, session);
 }

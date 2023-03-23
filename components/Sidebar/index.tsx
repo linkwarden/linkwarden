@@ -53,9 +53,13 @@ export default function () {
         <div
           className="flex gap-2 items-center mb-5 p-3 w-fit text-gray-600 cursor-pointer hover:outline outline-sky-100 outline-1 hover:bg-gray-50 rounded duration-100"
           onClick={() => setProfileDropdown(!profileDropdown)}
+          id="profile-dropdown"
         >
-          <FontAwesomeIcon icon={faCircleUser} className="h-5" />
-          <div className="flex items-center gap-1">
+          <FontAwesomeIcon
+            icon={faCircleUser}
+            className="h-5 pointer-events-none"
+          />
+          <div className="flex items-center gap-1 pointer-events-none">
             <p className="font-bold">{user?.name}</p>
             <FontAwesomeIcon icon={faChevronDown} className="h-3" />
           </div>
@@ -76,7 +80,10 @@ export default function () {
                 },
               },
             ]}
-            onClickOutside={() => setProfileDropdown(!profileDropdown)}
+            onClickOutside={(e: Event) => {
+              const target = e.target as HTMLInputElement;
+              if (target.id !== "profile-dropdown") setProfileDropdown(false);
+            }}
             className="absolute top-12 left-0"
           />
         ) : null}

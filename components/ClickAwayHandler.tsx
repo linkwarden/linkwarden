@@ -16,7 +16,7 @@ function useOutsideAlerter(
         ref.current &&
         !ref.current.contains(event.target as HTMLInputElement)
       ) {
-        onClickOutside();
+        onClickOutside(event);
       }
     }
     document.addEventListener("mouseup", handleClickOutside);
