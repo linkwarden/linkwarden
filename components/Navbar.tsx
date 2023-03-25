@@ -65,22 +65,38 @@ export default function () {
   };
 
   return (
-    <div className="flex justify-between items-center p-5 border-solid border-b-sky-100 border border-l-white">
-      <div className="text-sky-900 rounded my-1 flex items-center gap-2 font-bold">
+    <div className="flex justify-between items-center p-2 border-solid border-b-sky-100 border-b">
+      <div className="text-sky-900 rounded-md my-1 flex items-center gap-2 font-bold">
         {pageIcon ? (
           <FontAwesomeIcon icon={pageIcon} className="w-4 text-sky-300" />
         ) : null}
         <p>{pageName}</p>
       </div>
-      <div className="flex items-center gap-3">
+
+      <div className="flex items-center gap-2 justify-between">
+        <div className="flex items-center relative">
+          <label
+            htmlFor="search-box"
+            className="inline-flex w-fit absolute right-0  cursor-pointer"
+            title="Search"
+          >
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              className="select-none w-5 h-5 rounded-md p-1 text-sky-500 "
+            />
+          </label>
+          <input
+            id="search-box"
+            type="text"
+            placeholder="Search for Links"
+            className="border border-sky-100 rounded-md pr-6 w-6 focus:border-sky-500 focus:w-60 hover:border-sky-500 duration-100 outline-none p-1 text-sm"
+          />
+        </div>
         <FontAwesomeIcon
           icon={faPlus}
           onClick={toggleLinkModal}
-          className="select-none cursor-pointer w-5 h-5 text-white bg-sky-500 p-2 rounded hover:bg-sky-400 duration-100"
-        />
-        <FontAwesomeIcon
-          icon={faMagnifyingGlass}
-          className="select-none cursor-pointer w-5 h-5 text-white bg-sky-500 p-2 rounded hover:bg-sky-400 duration-100"
+          title="New Link"
+          className="select-none cursor-pointer w-5 h-5 text-sky-500 p-1 rounded-md hover:outline-sky-500 outline duration-100 hover:bg-white outline-sky-100 outline-1"
         />
 
         {linkModal ? (

@@ -118,7 +118,7 @@ export default async function (
 
   const AES_SECRET = process.env.AES_SECRET as string;
 
-  const screenShotHashedPath = AES.encrypt(
+  const screenshotHashedPath = AES.encrypt(
     `data/archives/${newLink.collectionId}/${newLink.id}.png`,
     AES_SECRET
   ).toString();
@@ -130,7 +130,7 @@ export default async function (
 
   const updatedLink: ExtendedLink = await prisma.link.update({
     where: { id: newLink.id },
-    data: { screenshotPath: screenShotHashedPath, pdfPath: pdfHashedPath },
+    data: { screenshotPath: screenshotHashedPath, pdfPath: pdfHashedPath },
     include: { tags: true, collection: true },
   });
 

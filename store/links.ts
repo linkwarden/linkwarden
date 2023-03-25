@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { ExtendedLink, NewLink } from "@/types/global";
+import useTagStore from "./tags";
+import useCollectionStore from "./collections";
 
 type LinkStore = {
   links: ExtendedLink[];
@@ -34,6 +36,9 @@ const useLinkStore = create<LinkStore>()((set) => ({
         links: [...state.links, data.response],
       }));
 
+    useTagStore.getState().setTags();
+    useCollectionStore.getState().setCollections();
+
     return response.ok;
   },
   updateLink: (link) =>
@@ -56,7 +61,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
         links: state.links.filter((e) => e.id !== link.id),
       }));
 
-    console.log(data);
+    useTagStore.getState().setTags();
 
     return response.ok;
   },

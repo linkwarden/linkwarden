@@ -7,6 +7,15 @@ export default async function (
   res: NextApiResponse,
   session: Session
 ) {
+  // tag cleanup
+  await prisma.tag.deleteMany({
+    where: {
+      links: {
+        none: {},
+      },
+    },
+  });
+
   const tags = await prisma.tag.findMany({
     where: {
       collections: {
