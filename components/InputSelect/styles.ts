@@ -23,7 +23,7 @@ export const styles: StylesConfig = {
     ...styles,
     width: "15rem",
     border: "1px solid #e0f2fe",
-    borderRadius: "0.25rem",
+    borderRadius: "0.375rem",
     fontSize: "0.875rem",
     lineHeight: "1.25rem",
   }),

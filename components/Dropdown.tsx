@@ -19,12 +19,12 @@ export default function ({ onClickOutside, className, items }: Props) {
   return (
     <ClickAwayHandler
       onClickOutside={onClickOutside}
-      className={`${className} border border-sky-100 shadow mb-5 bg-gray-50 rounded flex flex-col `}
+      className={`${className} border border-sky-100 shadow-md mb-5 bg-gray-50 rounded-md flex flex-col w-36`}
     >
       {items.map((e, i) => {
         const inner = (
-          <div className="cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100">
-            <div className="flex items-center gap-2 p-2 rounded hover:opacity-60 duration-100">
+          <div className="cursor-pointer rounded-md hover:bg-white hover:outline outline-sky-100 outline-1 duration-100">
+            <div className="flex items-center gap-2 p-2 rounded-md hover:opacity-60 duration-100">
               {React.cloneElement(e.icon, {
                 className: "text-sky-500 w-5 h-5",
               })}

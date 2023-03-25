@@ -1,12 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import { Session } from "next-auth";
-import { ExtendedLink, NewLink } from "@/types/global";
-import { existsSync, mkdirSync } from "fs";
-import getTitle from "../../getTitle";
-import archive from "../../archive";
+import { ExtendedLink } from "@/types/global";
+import fs from "fs";
 import { Link, UsersAndCollections } from "@prisma/client";
-import AES from "crypto-js/aes";
 import hasAccessToCollection from "@/lib/api/hasAccessToCollection";
 
 export default async function (
@@ -40,6 +37,14 @@ export default async function (
     where: {
       id: link.id,
     },
+  });
+
+  fs.unlink(`data/archives/${link.collectionId}/${link.id}.pdf`, (err) => {
+    if (err) console.log(err);
+  });
+
+  fs.unlink(`data/archives/${link.collectionId}/${link.id}.png`, (err) => {
+    if (err) console.log(err);
   });
 
   return res.status(200).json({

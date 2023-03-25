@@ -1,4 +1,5 @@
 import { chromium, devices } from "playwright";
+import { prisma } from "@/lib/api/db";
 
 export default async (url: string, collectionId: number, linkId: number) => {
   const archivePath = `data/archives/${collectionId}/${linkId}`;
@@ -12,9 +13,18 @@ export default async (url: string, collectionId: number, linkId: number) => {
 
   await page.goto(url);
 
-  await page.pdf({ path: archivePath + ".pdf" });
+  const linkExists = await prisma.link.findFirst({
+    where: {
+      id: linkId,
+    },
+  });
 
-  await page.screenshot({ fullPage: true, path: archivePath + ".png" });
+  if (linkExists) {
+    await Promise.all([
+      page.pdf({ path: archivePath + ".pdf" }),
+      page.screenshot({ fullPage: true, path: archivePath + ".png" }),
+    ]);
+  }
 
   await context.close();
   await browser.close();

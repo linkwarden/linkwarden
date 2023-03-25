@@ -57,24 +57,24 @@ export default function () {
         placeholder="Name"
         value={form.name}
         onChange={(e) => setForm({ ...form, name: e.target.value })}
-        className="border border-gray-700 rounded block m-2 mx-auto p-2"
+        className="border border-gray-700 rounded-md block m-2 mx-auto p-2"
       />
       <input
         type="text"
         placeholder="Email"
         value={form.email}
         onChange={(e) => setForm({ ...form, email: e.target.value })}
-        className="border border-gray-700 rounded block m-2 mx-auto p-2"
+        className="border border-gray-700 rounded-md block m-2 mx-auto p-2"
       />
       <input
         type="text"
         placeholder="Password"
         value={form.password}
         onChange={(e) => setForm({ ...form, password: e.target.value })}
-        className="border border-gray-700 rounded block m-2 mx-auto p-2"
+        className="border border-gray-700 rounded-md block m-2 mx-auto p-2"
       />
       <div
-        className="mx-auto bg-black w-min p-3 m-5 text-white rounded cursor-pointer"
+        className="mx-auto bg-black w-min p-3 m-5 text-white rounded-md cursor-pointer"
         onClick={registerUser}
       >
         Register
