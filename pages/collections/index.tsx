@@ -11,7 +11,7 @@ export default function () {
 
   return (
     // ml-80
-    <div className="flex flex-wrap p-5">
+    <div className="flex flex-wrap p-2 gap-2">
       {collections.map((e, i) => {
         return <CollectionCard key={i} collection={e} />;
       })}

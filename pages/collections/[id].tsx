@@ -12,8 +12,8 @@ export default function () {
 
   return (
     // ml-80
-    <div className="p-5">
-      <p className="text-center mb-5 text-gray-500 font-bold text-sm">
+    <div className="p-2">
+      <p className="text-right mb-2 text-gray-500 font-bold text-sm">
         {linksByCollection.length || 0} Links Found
       </p>
       {linksByCollection.map((e, i) => {

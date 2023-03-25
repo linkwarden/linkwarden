@@ -35,16 +35,32 @@ export default function ({
   });
 
   return (
-    <div className="border border-sky-100 mb-5 bg-gray-100 p-5 rounded flex items-center gap-5 group/item">
+    <div className="mx-auto border border-sky-100 mb-5 bg-gray-100 p-2 rounded-md flex items-start relative gap-5 group/item">
       <Image
         src={`http://icons.duckduckgo.com/ip3/${shortendURL}.ico`}
-        width={100}
-        height={100}
+        width={32}
+        height={32}
         alt=""
-        className="blur-sm opacity-80 group-hover/item:opacity-100 duration-100"
+        className="opacity-100 duration-100 select-none mt-3"
         draggable="false"
+        onError={(e) => {
+          const target = e.target as HTMLElement;
+          target.style.opacity = "0";
+        }}
       />
-      <div className="flex justify-between gap-5 w-full">
+      <Image
+        src={`http://icons.duckduckgo.com/ip3/${shortendURL}.ico`}
+        width={80}
+        height={80}
+        alt=""
+        className="blur-sm absolute left-0 opacity-50 select-none"
+        draggable="false"
+        onError={(e) => {
+          const target = e.target as HTMLElement;
+          target.style.opacity = "0";
+        }}
+      />
+      <div className="flex justify-between gap-5 w-full z-0">
         <div>
           <div className="flex items-baseline gap-1">
             <p className="text-sm text-sky-300 font-bold">{count + 1}.</p>
@@ -87,7 +103,8 @@ export default function ({
         <div className="flex flex-col justify-between items-end relative">
           <FontAwesomeIcon
             icon={faEllipsis}
-            className="w-6 h-6 text-gray-500 rounded cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-2"
+            title="More"
+            className="w-6 h-6 text-gray-500 rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
             onClick={() => setEditDropdown(!editDropdown)}
             id="edit-dropdown"
           />
@@ -153,7 +170,7 @@ export default function ({
                 const target = e.target as HTMLInputElement;
                 if (target.id !== "edit-dropdown") setEditDropdown(false);
               }}
-              className="absolute top-10 right-0"
+              className="absolute top-8 right-0"
             />
           ) : null}
         </div>

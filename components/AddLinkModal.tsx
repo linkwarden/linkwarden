@@ -40,7 +40,7 @@ export default function ({ toggleLinkModal }: { toggleLinkModal: Function }) {
   };
 
   return (
-    <div className="slide-up border-sky-100 border-solid border rounded-md shadow-lg p-5 bg-white flex flex-col gap-3">
+    <div className="slide-up border-sky-100 rounded-md border-solid border rounded-md-md shadow-lg p-5 bg-white flex flex-col gap-3">
       <p className="font-bold text-sky-300 mb-2 text-center">New Link</p>
 
       <div className="flex gap-5 items-center justify-between">
@@ -50,7 +50,7 @@ export default function ({ toggleLinkModal }: { toggleLinkModal: Function }) {
           onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
           type="text"
           placeholder="e.g. Example Link"
-          className="w-60 rounded p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          className="w-60 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
         />
       </div>
 
@@ -61,7 +61,7 @@ export default function ({ toggleLinkModal }: { toggleLinkModal: Function }) {
           onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
           type="text"
           placeholder="e.g. http://example.com/"
-          className="w-60 rounded p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          className="w-60 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
         />
       </div>
 
@@ -76,7 +76,7 @@ export default function ({ toggleLinkModal }: { toggleLinkModal: Function }) {
       </div>
 
       <div
-        className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
+        className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
         onClick={submitLink}
       >
         <FontAwesomeIcon icon={faPlus} className="h-5" />
