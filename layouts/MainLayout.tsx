@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode } from "react";
@@ -23,11 +22,6 @@ export default function ({ children }: Props) {
   if (status === "authenticated" && !redirection && routeExists)
     return (
       <>
-        <Head>
-          <title>Linkwarden</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
         <Sidebar />
         <div className="ml-80">
           <Navbar />
@@ -36,15 +30,6 @@ export default function ({ children }: Props) {
       </>
     );
   else if ((status === "unauthenticated" && !redirection) || !routeExists)
-    return (
-      <>
-        <Head>
-          <title>Linkwarden</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        {children}
-      </>
-    );
+    return <>{children}</>;
   else return <Loader />;
 }

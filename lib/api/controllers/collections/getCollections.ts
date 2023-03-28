@@ -1,19 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
-import { Session } from "next-auth";
 
-export default async function (
-  req: NextApiRequest,
-  res: NextApiResponse,
-  session: Session
-) {
+export default async function (userId: number) {
   const collections = await prisma.collection.findMany({
     where: {
-      ownerId: session?.user.id,
+      ownerId: userId,
     },
   });
 
-  return res.status(200).json({
-    response: collections || [],
-  });
+  return { response: collections, status: 200 };
 }

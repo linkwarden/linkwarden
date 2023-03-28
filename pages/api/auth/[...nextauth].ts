@@ -35,6 +35,8 @@ export const authOptions: AuthOptions = {
           passwordMatches = bcrypt.compareSync(password, findUser.password);
         }
 
+        console.log(passwordMatches);
+
         if (passwordMatches) {
           return {
             id: findUser?.id,

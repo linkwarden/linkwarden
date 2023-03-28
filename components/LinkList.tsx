@@ -3,17 +3,17 @@ import {
   faFolder,
   faArrowUpRightFromSquare,
   faEllipsis,
-  faStar,
   faPenToSquare,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Image from "next/image";
 import Dropdown from "./Dropdown";
 import useLinkStore from "@/store/links";
+import Modal from "./Modal";
+import EditLink from "./Modal/EditLink";
 
 export default function ({
   link,
@@ -23,6 +23,7 @@ export default function ({
   count: number;
 }) {
   const [editDropdown, setEditDropdown] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const [archiveLabel, setArchiveLabel] = useState("Archived Formats");
 
   const { removeLink } = useLinkStore();
@@ -34,14 +35,24 @@ export default function ({
     day: "numeric",
   });
 
+  const toggleEditModal = () => {
+    setEditModal(!editModal);
+  };
+
   return (
-    <div className="mx-auto border border-sky-100 mb-5 bg-gray-100 p-2 rounded-md flex items-start relative gap-5 group/item">
+    <div className="border border-sky-100 bg-gray-100 p-5 rounded-md flex items-start relative gap-5 sm:gap-14 group/item">
+      {editModal ? (
+        <Modal toggleModal={toggleEditModal}>
+          <EditLink toggleLinkModal={toggleEditModal} link={link} />
+        </Modal>
+      ) : null}
+
       <Image
         src={`http://icons.duckduckgo.com/ip3/${shortendURL}.ico`}
         width={32}
         height={32}
         alt=""
-        className="opacity-100 duration-100 select-none mt-3"
+        className="select-none mt-3 z-10 rounded-md"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
@@ -53,7 +64,7 @@ export default function ({
         width={80}
         height={80}
         alt=""
-        className="blur-sm absolute left-0 opacity-50 select-none"
+        className="blur-sm absolute left-2 opacity-50 select-none hidden sm:block"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
@@ -65,9 +76,6 @@ export default function ({
           <div className="flex items-baseline gap-1">
             <p className="text-sm text-sky-300 font-bold">{count + 1}.</p>
             <p className="text-lg text-sky-600">{link.name}</p>
-            {link.starred ? (
-              <FontAwesomeIcon icon={faStar} className="w-3 text-amber-400" />
-            ) : null}
           </div>
           <p className="text-sky-400 text-sm font-medium">{link.title}</p>
           <div className="flex gap-3 items-center flex-wrap my-3">
@@ -101,20 +109,25 @@ export default function ({
         </div>
 
         <div className="flex flex-col justify-between items-end relative">
-          <FontAwesomeIcon
-            icon={faEllipsis}
-            title="More"
-            className="w-6 h-6 text-gray-500 rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
+          <div
             onClick={() => setEditDropdown(!editDropdown)}
             id="edit-dropdown"
-          />
+            className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
+          >
+            <FontAwesomeIcon
+              icon={faEllipsis}
+              title="More"
+              className="w-6 h-6"
+              id="edit-dropdown"
+            />
+          </div>
           <div>
             <p className="text-center text-sky-400 text-sm font-bold">
               {archiveLabel}
             </p>
 
             <div
-              className="flex justify-between mt-3 gap-3"
+              className="flex justify-center mt-3 gap-3"
               onMouseLeave={() => setArchiveLabel("Archived Formats")}
             >
               <a
@@ -153,24 +166,27 @@ export default function ({
             <Dropdown
               items={[
                 {
-                  name: "Star",
-                  icon: <FontAwesomeIcon icon={faStar} />,
-                },
-                {
                   name: "Edit",
                   icon: <FontAwesomeIcon icon={faPenToSquare} />,
+                  onClick: () => {
+                    setEditModal(true);
+                    setEditDropdown(false);
+                  },
                 },
                 {
                   name: "Delete",
                   icon: <FontAwesomeIcon icon={faTrashCan} />,
-                  onClick: () => removeLink(link),
+                  onClick: () => {
+                    removeLink(link);
+                    setEditDropdown(false);
+                  },
                 },
               ]}
               onClickOutside={(e: Event) => {
                 const target = e.target as HTMLInputElement;
                 if (target.id !== "edit-dropdown") setEditDropdown(false);
               }}
-              className="absolute top-8 right-0"
+              className="absolute top-9 right-0"
             />
           ) : null}
         </div>

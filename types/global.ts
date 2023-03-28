@@ -8,9 +8,10 @@ export interface ExtendedLink extends Link {
 export interface NewLink {
   name: string;
   url: string;
-  tags: string[];
+  tags: Tag[];
   collection: {
-    id: string | number;
-    isNew?: boolean;
+    id: number | undefined;
+    name: string | undefined;
+    ownerId: number | undefined;
   };
 }
