@@ -33,20 +33,38 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     console.log(data);
 
-    if (response.ok)
+    if (response.ok) {
       set((state) => ({
         links: [...state.links, data.response],
       }));
-
-    useTagStore.getState().setTags();
-    useCollectionStore.getState().setCollections();
+      useTagStore.getState().setTags();
+      useCollectionStore.getState().setCollections();
+    }
 
     return response.ok;
   },
-  updateLink: (link) =>
-    set((state) => ({
-      links: state.links.map((e) => (e.id === link.id ? link : e)),
-    })),
+  updateLink: async (link) => {
+    console.log(link);
+
+    const response = await fetch("/api/routes/links", {
+      body: JSON.stringify(link),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "PUT",
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (response.ok) {
+      set((state) => ({
+        links: state.links.map((e) => (e.id === link.id ? link : e)),
+      }));
+      useTagStore.getState().setTags();
+    }
+  },
   removeLink: async (link) => {
     const response = await fetch("/api/routes/links", {
       body: JSON.stringify(link),
@@ -58,12 +76,12 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     const data = await response.json();
 
-    if (response.ok)
+    if (response.ok) {
       set((state) => ({
         links: state.links.filter((e) => e.id !== link.id),
       }));
-
-    useTagStore.getState().setTags();
+      useTagStore.getState().setTags();
+    }
 
     return response.ok;
   },
