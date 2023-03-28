@@ -39,6 +39,7 @@ export default async function (link: ExtendedLink, userId: number) {
         },
       },
       tags: {
+        set: [],
         connectOrCreate: link.tags.map((tag) => ({
           where: {
             name_ownerId: {
