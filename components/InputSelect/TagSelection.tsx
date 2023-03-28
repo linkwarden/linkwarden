@@ -4,7 +4,15 @@ import CreatableSelect from "react-select/creatable";
 import { styles } from "./styles";
 import { Options } from "./types";
 
-export default function ({ onChange }: any) {
+type Props = {
+  onChange: any;
+  defaultValue?: {
+    value: number;
+    label: string;
+  }[];
+};
+
+export default function ({ onChange, defaultValue }: Props) {
   const { tags } = useTagStore();
 
   const [options, setOptions] = useState<Options[]>([]);
@@ -23,6 +31,7 @@ export default function ({ onChange }: any) {
       onChange={onChange}
       options={options}
       styles={styles}
+      defaultValue={defaultValue}
       menuPosition="fixed"
       isMulti
     />

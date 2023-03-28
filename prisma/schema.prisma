@@ -13,6 +13,7 @@ model User {
   email String @unique
   password String
   collections Collection[]
+  tags Tag[]
   collectionsJoined UsersAndCollections[]
   createdAt DateTime @default(now())
 }
@@ -24,8 +25,9 @@ model Collection {
   ownerId Int
   members UsersAndCollections[]
   links Link[]
-  tags Tag[]
   createdAt DateTime @default(now())
+
+  @@unique([name, ownerId])
 }
 
 model UsersAndCollections {
@@ -50,7 +52,6 @@ model Link {
   collection Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
   tags Tag[]
-  starred Boolean
   screenshotPath String
   pdfPath String
   createdAt DateTime @default(now())
@@ -60,8 +61,8 @@ model Tag {
   id Int @id @default(autoincrement())
   name String
   links Link[]
-  collections Collection @relation(fields: [collectionId], references: [id])
-  collectionId Int
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId Int
 
-  @@unique([name, collectionId])
+  @@unique([name, ownerId])
 }

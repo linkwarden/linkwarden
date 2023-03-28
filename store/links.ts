@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import { ExtendedLink, NewLink } from "@/types/global";
+import { ExtendedLink } from "@/types/global";
 import useTagStore from "./tags";
 import useCollectionStore from "./collections";
 
 type LinkStore = {
   links: ExtendedLink[];
   setLinks: () => void;
-  addLink: (linkName: NewLink) => Promise<boolean>;
+  addLink: (linkName: ExtendedLink) => Promise<boolean>;
   updateLink: (link: ExtendedLink) => void;
   removeLink: (link: ExtendedLink) => void;
 };
@@ -31,6 +31,8 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     const data = await response.json();
 
+    console.log(data);
+
     if (response.ok)
       set((state) => ({
         links: [...state.links, data.response],
@@ -43,7 +45,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
   },
   updateLink: (link) =>
     set((state) => ({
-      links: state.links.map((c) => (c.id === link.id ? link : c)),
+      links: state.links.map((e) => (e.id === link.id ? link : e)),
     })),
   removeLink: async (link) => {
     const response = await fetch("/api/routes/links", {

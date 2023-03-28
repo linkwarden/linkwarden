@@ -1,29 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
-import { Session } from "next-auth";
 import { existsSync, mkdirSync } from "fs";
 
-export default async function (
-  req: NextApiRequest,
-  res: NextApiResponse,
-  session: Session
-) {
-  if (!session?.user?.email) {
-    return res.status(401).json({ response: "You must be logged in." });
-  }
+export default async function (collectionName: string, userId: number) {
+  if (!collectionName)
+    return {
+      response: "Please enter a valid name for the collection.",
+      status: 400,
+    };
 
-  const email: string = session.user.email;
-  const collectionName: string = req?.body?.collectionName;
-
-  if (!collectionName) {
-    return res
-      .status(401)
-      .json({ response: "Please enter a valid name for the collection." });
-  }
-
-  const findCollection = await prisma.user.findFirst({
+  const findCollection = await prisma.user.findUnique({
     where: {
-      email,
+      id: userId,
     },
     select: {
       collections: {
@@ -36,15 +23,14 @@ export default async function (
 
   const checkIfCollectionExists = findCollection?.collections[0];
 
-  if (checkIfCollectionExists) {
-    return res.status(400).json({ response: "Collection already exists." });
-  }
+  if (checkIfCollectionExists)
+    return { response: "Collection already exists.", status: 400 };
 
   const newCollection = await prisma.collection.create({
     data: {
       owner: {
         connect: {
-          id: session.user.id,
+          id: userId,
         },
       },
       name: collectionName,
@@ -55,7 +41,5 @@ export default async function (
   if (!existsSync(collectionPath))
     mkdirSync(collectionPath, { recursive: true });
 
-  return res.status(200).json({
-    response: newCollection,
-  });
+  return { response: newCollection, status: 200 };
 }
