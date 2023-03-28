@@ -44,8 +44,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
     return response.ok;
   },
   updateLink: async (link) => {
-    console.log(link);
-
     const response = await fetch("/api/routes/links", {
       body: JSON.stringify(link),
       headers: {
