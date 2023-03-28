@@ -21,6 +21,8 @@ export default function () {
         password: form.password,
       });
 
+      console.log(res?.status);
+
       if (res?.ok) {
         setForm({
           email: "",

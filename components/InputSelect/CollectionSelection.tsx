@@ -5,7 +5,17 @@ import CreatableSelect from "react-select/creatable";
 import { styles } from "./styles";
 import { Options } from "./types";
 
-export default function ({ onChange }: any) {
+type Props = {
+  onChange: any;
+  defaultValue:
+    | {
+        value: number;
+        label: string;
+      }
+    | undefined;
+};
+
+export default function ({ onChange, defaultValue }: Props) {
   const { collections } = useCollectionStore();
   const router = useRouter();
 
@@ -17,10 +27,8 @@ export default function ({ onChange }: any) {
     return e.id === collectionId;
   });
 
-  let defaultCollection = null;
-
-  if (activeCollection) {
-    defaultCollection = {
+  if (activeCollection && !defaultValue) {
+    defaultValue = {
       value: activeCollection?.id,
       label: activeCollection?.name,
     };
@@ -28,7 +36,7 @@ export default function ({ onChange }: any) {
 
   useEffect(() => {
     const formatedCollections = collections.map((e) => {
-      return { value: e.id, label: e.name };
+      return { value: e.id, label: e.name, ownerId: e.ownerId };
     });
 
     setOptions(formatedCollections);
@@ -40,7 +48,7 @@ export default function ({ onChange }: any) {
       onChange={onChange}
       options={options}
       styles={styles}
-      defaultValue={defaultCollection}
+      defaultValue={defaultValue}
       menuPosition="fixed"
     />
   );

@@ -1,7 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
-import { Session } from "next-auth";
-import { ExtendedLink, NewLink } from "@/types/global";
+import { ExtendedLink } from "@/types/global";
 import { existsSync, mkdirSync } from "fs";
 import getTitle from "../../getTitle";
 import archive from "../../archive";
@@ -9,76 +7,30 @@ import { Link, UsersAndCollections } from "@prisma/client";
 import AES from "crypto-js/aes";
 import hasAccessToCollection from "@/lib/api/hasAccessToCollection";
 
-export default async function (
-  req: NextApiRequest,
-  res: NextApiResponse,
-  session: Session
-) {
-  if (!session?.user?.email) {
-    return res.status(401).json({ response: "You must be logged in." });
-  }
-
-  const email: string = session.user.email;
-  const link: NewLink = req?.body;
+export default async function (link: ExtendedLink, userId: number) {
+  link.collection.name = link.collection.name.trim();
 
   if (!link.name) {
-    return res
-      .status(401)
-      .json({ response: "Please enter a valid name for the link." });
+    return { response: "Please enter a valid name for the link.", status: 401 };
+  } else if (!link.collection.name) {
+    return { response: "Please enter a valid collection name.", status: 401 };
   }
 
-  if (link.collection.isNew) {
-    const collectionId = link.collection.id as string;
+  if (link.collection.ownerId) {
+    const collectionIsAccessible = await hasAccessToCollection(
+      userId,
+      link.collection.id
+    );
 
-    const findCollection = await prisma.user.findFirst({
-      where: {
-        email,
-      },
-      select: {
-        collections: {
-          where: {
-            name: collectionId,
-          },
-        },
-      },
-    });
+    const memberHasAccess = collectionIsAccessible?.members.some(
+      (e: UsersAndCollections) => e.userId === userId && e.canCreate
+    );
 
-    const checkIfCollectionExists = findCollection?.collections[0];
-
-    if (checkIfCollectionExists)
-      return res.status(400).json({ response: "Collection already exists." });
-
-    const newCollection = await prisma.collection.create({
-      data: {
-        owner: {
-          connect: {
-            id: session.user.id,
-          },
-        },
-        name: collectionId,
-      },
-    });
-
-    const collectionPath = `data/archives/${newCollection.id}`;
-    if (!existsSync(collectionPath))
-      mkdirSync(collectionPath, { recursive: true });
-
-    link.collection.id = newCollection.id;
+    if (!(collectionIsAccessible?.ownerId === userId || memberHasAccess))
+      return { response: "Collection is not accessible.", status: 401 };
+  } else {
+    link.collection.ownerId = userId;
   }
-
-  const collectionId = link.collection.id as number;
-
-  const collectionIsAccessible = await hasAccessToCollection(
-    session.user.id,
-    collectionId
-  );
-
-  const memberHasAccess = collectionIsAccessible?.members.some(
-    (e: UsersAndCollections) => e.userId === session.user.id && e.canCreate
-  );
-
-  if (!(collectionIsAccessible?.ownerId === session.user.id || memberHasAccess))
-    return res.status(401).json({ response: "Collection is not accessible." });
 
   const title = await getTitle(link.url);
 
@@ -87,34 +39,44 @@ export default async function (
       name: link.name,
       url: link.url,
       collection: {
-        connect: {
-          id: collectionId,
-        },
-      },
-      tags: {
-        connectOrCreate: link.tags.map((name) => ({
+        connectOrCreate: {
           where: {
-            name_collectionId: {
-              name,
-              collectionId,
+            name_ownerId: {
+              ownerId: link.collection.ownerId,
+              name: link.collection.name,
             },
           },
           create: {
-            name,
-            collections: {
+            name: link.collection.name,
+            ownerId: userId,
+          },
+        },
+      },
+      tags: {
+        connectOrCreate: link.tags.map((tag) => ({
+          where: {
+            name_ownerId: {
+              name: tag.name,
+              ownerId: link.collection.ownerId,
+            },
+          },
+          create: {
+            name: tag.name,
+            owner: {
               connect: {
-                id: collectionId,
+                id: link.collection.ownerId,
               },
             },
           },
         })),
       },
       title,
-      starred: false,
       screenshotPath: "",
       pdfPath: "",
     },
   });
+
+  console.log(newLink);
 
   const AES_SECRET = process.env.AES_SECRET as string;
 
@@ -136,7 +98,5 @@ export default async function (
 
   archive(updatedLink.url, updatedLink.collectionId, updatedLink.id);
 
-  return res.status(200).json({
-    response: updatedLink,
-  });
+  return { response: updatedLink, status: 200 };
 }

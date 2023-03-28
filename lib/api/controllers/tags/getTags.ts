@@ -1,12 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
-import { Session } from "next-auth";
 
-export default async function (
-  req: NextApiRequest,
-  res: NextApiResponse,
-  session: Session
-) {
+export default async function (userId: number) {
   // tag cleanup
   await prisma.tag.deleteMany({
     where: {
@@ -18,15 +12,22 @@ export default async function (
 
   const tags = await prisma.tag.findMany({
     where: {
-      collections: {
+      ownerId: userId,
+      owner: {
         OR: [
           {
-            ownerId: session?.user.id,
+            id: userId,
           },
           {
-            members: {
+            collections: {
               some: {
-                userId: session?.user.id,
+                members: {
+                  some: {
+                    user: {
+                      id: userId,
+                    },
+                  },
+                },
               },
             },
           },
@@ -35,7 +36,5 @@ export default async function (
     },
   });
 
-  return res.status(200).json({
-    response: tags || [],
-  });
+  return { response: tags, status: 200 };
 }

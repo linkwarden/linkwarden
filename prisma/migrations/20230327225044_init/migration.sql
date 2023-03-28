@@ -37,7 +37,6 @@ CREATE TABLE "Link" (
     "url" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "collectionId" INTEGER NOT NULL,
-    "isFavorites" BOOLEAN NOT NULL,
     "screenshotPath" TEXT NOT NULL,
     "pdfPath" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -50,6 +49,7 @@ CREATE TABLE "Tag" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "collectionId" INTEGER NOT NULL,
+    "ownerId" INTEGER NOT NULL,
 
     CONSTRAINT "Tag_pkey" PRIMARY KEY ("id")
 );
@@ -62,6 +62,12 @@ CREATE TABLE "_LinkToTag" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Collection_name_ownerId_key" ON "Collection"("name", "ownerId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Tag_name_ownerId_key" ON "Tag"("name", "ownerId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Tag_name_collectionId_key" ON "Tag"("name", "collectionId");
@@ -86,6 +92,9 @@ ALTER TABLE "Link" ADD CONSTRAINT "Link_collectionId_fkey" FOREIGN KEY ("collect
 
 -- AddForeignKey
 ALTER TABLE "Tag" ADD CONSTRAINT "Tag_collectionId_fkey" FOREIGN KEY ("collectionId") REFERENCES "Collection"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Tag" ADD CONSTRAINT "Tag_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_LinkToTag" ADD CONSTRAINT "_LinkToTag_A_fkey" FOREIGN KEY ("A") REFERENCES "Link"("id") ON DELETE CASCADE ON UPDATE CASCADE;

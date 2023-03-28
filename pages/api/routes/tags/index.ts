@@ -17,5 +17,8 @@ export default async function (
     return res.status(401).json({ response: "You must be logged in." });
   }
 
-  if (req.method === "GET") return await getTags(req, res, session);
+  if (req.method === "GET") {
+    const tags = await getTags(session.user.id);
+    return res.status(tags.status).json({ response: tags.response });
+  }
 }

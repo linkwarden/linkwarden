@@ -1,23 +1,16 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
-import { Session } from "next-auth";
-
-export default async function (
-  req: NextApiRequest,
-  res: NextApiResponse,
-  session: Session
-) {
-  const tags = await prisma.link.findMany({
+export default async function (userId: number) {
+  const links = await prisma.link.findMany({
     where: {
       collection: {
         OR: [
           {
-            ownerId: session?.user.id,
+            ownerId: userId,
           },
           {
             members: {
               some: {
-                userId: session?.user.id,
+                userId,
               },
             },
           },
@@ -30,7 +23,5 @@ export default async function (
     },
   });
 
-  return res.status(200).json({
-    response: tags || [],
-  });
+  return { response: links, status: 200 };
 }
