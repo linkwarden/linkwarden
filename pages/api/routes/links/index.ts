@@ -4,6 +4,7 @@ import { authOptions } from "pages/api/auth/[...nextauth]";
 import getLinks from "@/lib/api/controllers/links/getLinks";
 import postLink from "@/lib/api/controllers/links/postLink";
 import deleteLink from "@/lib/api/controllers/links/deleteLink";
+import updateLink from "@/lib/api/controllers/links/updateLink";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
@@ -24,6 +25,13 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const deleted = await deleteLink(req.body, session.user.id);
     return res.status(deleted.status).json({
       response: deleted.response,
+    });
+  } else if (req.method === "PUT") {
+    console.log("AAAAAAAAAAAAAAAAAAAAAAaa");
+
+    const updated = await updateLink(req.body, session.user.id);
+    return res.status(updated.status).json({
+      response: updated.response,
     });
   }
 }

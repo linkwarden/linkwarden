@@ -27,7 +27,7 @@ export default function ({ onChange, defaultValue }: Props) {
 
   return (
     <CreatableSelect
-      isClearable
+      isClearable={false}
       onChange={onChange}
       options={options}
       styles={styles}

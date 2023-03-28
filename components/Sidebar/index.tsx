@@ -36,7 +36,7 @@ export default function () {
   };
 
   return (
-    <div className="fixed bg-gray-100 top-0 bottom-0 left-0 w-80 p-2 overflow-y-auto hide-scrollbar border-solid border-r-sky-100 border z-20">
+    <div className="fixed bg-gray-100 top-0 bottom-0 left-0 w-80 p-2 overflow-y-auto border-solid border-r-sky-100 border z-20">
       <p className="p-2 text-sky-500 font-bold text-xl mb-5 leading-4">
         Linkwarden
       </p>
