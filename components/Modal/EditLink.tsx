@@ -43,8 +43,9 @@ export default function EditLink({ toggleLinkModal, link }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <p className="font-bold text-sky-300 mb-2 text-center">Edit Link</p>
-      <p>{shortendURL}</p>
-      <p>{link.title}</p>
+      <p className="text-sky-700">
+        {shortendURL} | {link.title}
+      </p>
       <div className="flex gap-5 items-center justify-between">
         <p className="text-sm font-bold text-sky-300">Name</p>
         <input
