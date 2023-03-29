@@ -28,7 +28,7 @@ export default function ({
 
   const { removeLink } = useLinkStore();
 
-  const shortendURL = new URL(link.url).host.toLowerCase();
+  const url = new URL(link.url);
   const formattedDate = new Date(link.createdAt).toLocaleString("en-US", {
     year: "numeric",
     month: "short",
@@ -48,7 +48,7 @@ export default function ({
       ) : null}
 
       <Image
-        src={`http://icons.duckduckgo.com/ip3/${shortendURL}.ico`}
+        src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
         width={32}
         height={32}
         alt=""
@@ -60,7 +60,7 @@ export default function ({
         }}
       />
       <Image
-        src={`http://icons.duckduckgo.com/ip3/${shortendURL}.ico`}
+        src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
         width={80}
         height={80}
         alt=""
@@ -98,7 +98,7 @@ export default function ({
             <p className="text-gray-500">{formattedDate}</p>
             <a href={link.url} target="_blank" className="group/url">
               <div className="text-gray-500 font-bold flex items-center gap-1">
-                <p>{shortendURL}</p>
+                <p>{url.host}</p>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
                   className="w-3 opacity-0 group-hover/url:opacity-100 duration-75"
