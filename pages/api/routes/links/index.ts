@@ -27,8 +27,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       response: deleted.response,
     });
   } else if (req.method === "PUT") {
-    console.log("AAAAAAAAAAAAAAAAAAAAAAaa");
-
     const updated = await updateLink(req.body, session.user.id);
     return res.status(updated.status).json({
       response: updated.response,

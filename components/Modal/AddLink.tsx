@@ -70,7 +70,7 @@ export default function AddLink({ toggleLinkModal }: Props) {
     if (response) toggleLinkModal();
   };
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 sm:w-96 w-80">
       <p className="font-bold text-sky-300 mb-2 text-center">New Link</p>
 
       <div className="flex gap-5 items-center justify-between">
