@@ -41,10 +41,10 @@ export default function EditLink({ toggleLinkModal, link }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 sm:w-96 w-80">
       <p className="font-bold text-sky-300 mb-2 text-center">Edit Link</p>
       <p className="text-sky-700">
-        {shortendURL} | {link.title}
+        <b>{shortendURL}</b> | {link.title}
       </p>
       <div className="flex gap-5 items-center justify-between">
         <p className="text-sm font-bold text-sky-300">Name</p>
