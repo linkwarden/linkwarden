@@ -1,3 +1,8 @@
+// Copyright (C) 2022-present Daniel31x13 <daniel31x13@gmail.com>
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 import Dropdown from "@/components/Dropdown";
 import LinkList from "@/components/LinkList";
 import useCollectionStore from "@/store/collections";
@@ -21,7 +26,7 @@ export default function () {
   const { links } = useLinkStore();
   const { collections } = useCollectionStore();
 
-  const [editDropdown, setEditDropdown] = useState(false);
+  const [expandDropdown, setExpandDropdown] = useState(false);
   const [activeCollection, setActiveCollection] = useState<Collection>();
   const [linksByCollection, setLinksByCollection] =
     useState<ExtendedLink[]>(links);
@@ -46,7 +51,7 @@ export default function () {
         </div>
         <div className="relative">
           <div
-            onClick={() => setEditDropdown(!editDropdown)}
+            onClick={() => setExpandDropdown(!expandDropdown)}
             id="edit-dropdown"
             className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
           >
@@ -56,7 +61,7 @@ export default function () {
               className="w-4 h-4 text-gray-500"
             />
           </div>
-          {editDropdown ? (
+          {expandDropdown ? (
             <Dropdown
               items={[
                 {
@@ -74,7 +79,7 @@ export default function () {
               ]}
               onClickOutside={(e: Event) => {
                 const target = e.target as HTMLInputElement;
-                if (target.id !== "edit-dropdown") setEditDropdown(false);
+                if (target.id !== "edit-dropdown") setExpandDropdown(false);
               }}
               className="absolute top-7 left-0 z-10 w-44"
             />

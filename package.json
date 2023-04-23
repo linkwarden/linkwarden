@@ -4,7 +4,7 @@
   "main": "index.js",
   "repository": "https://github.com/Daniel31x13/link-warden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
