@@ -1,3 +1,8 @@
+// Copyright (C) 2022-present Daniel31x13 <daniel31x13@gmail.com>
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 import Link from "next/link";
 import React, { MouseEventHandler, ReactElement } from "react";
 import ClickAwayHandler from "./ClickAwayHandler";
@@ -19,7 +24,7 @@ export default function ({ onClickOutside, className, items }: Props) {
   return (
     <ClickAwayHandler
       onClickOutside={onClickOutside}
-      className={`${className} border border-sky-100 shadow-md mb-5 bg-gray-50 rounded-md flex flex-col w-36`}
+      className={`${className} border border-sky-100 shadow-md mb-5 bg-gray-50 rounded-md flex flex-col`}
     >
       {items.map((e, i) => {
         const inner = (
