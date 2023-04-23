@@ -1,3 +1,8 @@
+// Copyright (C) 2022-present Daniel31x13 <daniel31x13@gmail.com>
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 import { ExtendedLink } from "@/types/global";
 import {
   faFolder,
@@ -22,7 +27,7 @@ export default function ({
   link: ExtendedLink;
   count: number;
 }) {
-  const [editDropdown, setEditDropdown] = useState(false);
+  const [expandDropdown, setExpandDropdown] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [archiveLabel, setArchiveLabel] = useState("Archived Formats");
 
@@ -110,7 +115,7 @@ export default function ({
 
         <div className="flex flex-col justify-between items-end relative">
           <div
-            onClick={() => setEditDropdown(!editDropdown)}
+            onClick={() => setExpandDropdown(!expandDropdown)}
             id="edit-dropdown"
             className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
           >
@@ -162,7 +167,7 @@ export default function ({
             </div>
           </div>
 
-          {editDropdown ? (
+          {expandDropdown ? (
             <Dropdown
               items={[
                 {
@@ -170,7 +175,7 @@ export default function ({
                   icon: <FontAwesomeIcon icon={faPenToSquare} />,
                   onClick: () => {
                     setEditModal(true);
-                    setEditDropdown(false);
+                    setExpandDropdown(false);
                   },
                 },
                 {
@@ -178,15 +183,15 @@ export default function ({
                   icon: <FontAwesomeIcon icon={faTrashCan} />,
                   onClick: () => {
                     removeLink(link);
-                    setEditDropdown(false);
+                    setExpandDropdown(false);
                   },
                 },
               ]}
               onClickOutside={(e: Event) => {
                 const target = e.target as HTMLInputElement;
-                if (target.id !== "edit-dropdown") setEditDropdown(false);
+                if (target.id !== "edit-dropdown") setExpandDropdown(false);
               }}
-              className="absolute top-9 right-0"
+              className="absolute top-9 right-0 w-36"
             />
           ) : null}
         </div>
