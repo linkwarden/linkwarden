@@ -20,3 +20,8 @@ export interface NewLink {
     ownerId: number | undefined;
   };
 }
+
+export interface NewCollection {
+  name: string;
+  description: string;
+}

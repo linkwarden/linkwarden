@@ -3,12 +3,9 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import ClickAwayHandler from "@/components/ClickAwayHandler";
-import { useState } from "react";
 import useCollectionStore from "@/store/collections";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faPlus,
   faFolder,
   faBox,
   faHashtag,
@@ -19,26 +16,9 @@ import useTagStore from "@/store/tags";
 import Link from "next/link";
 
 export default function () {
-  const [collectionInput, setCollectionInput] = useState(false);
-
-  const { collections, addCollection } = useCollectionStore();
+  const { collections } = useCollectionStore();
 
   const { tags } = useTagStore();
-
-  const toggleCollectionInput = () => {
-    setCollectionInput(!collectionInput);
-  };
-
-  const submitCollection = async (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    const collectionName: string = (event.target as HTMLInputElement).value;
-
-    if (event.key === "Enter" && collectionName) {
-      addCollection(collectionName);
-      (event.target as HTMLInputElement).value = "";
-    }
-  };
 
   return (
     <div className="fixed bg-gray-100 top-0 bottom-0 left-0 w-80 p-2 overflow-y-auto border-solid border-r-sky-100 border z-20">
@@ -60,30 +40,8 @@ export default function () {
         </div>
       </Link>
 
-      <div className="text-gray-500 flex items-center justify-between mt-5">
+      <div className="text-gray-500 mt-5">
         <p className="text-sm p-2">Collections</p>
-        {collectionInput ? (
-          <ClickAwayHandler
-            onClickOutside={toggleCollectionInput}
-            className="w-fit"
-          >
-            <input
-              type="text"
-              placeholder="Enter Collection Name"
-              className="w-44 rounded-md p-1 border-sky-500 border-solid border text-sm outline-none"
-              onKeyDown={submitCollection}
-              autoFocus
-            />
-          </ClickAwayHandler>
-        ) : (
-          <div
-            title="Add Collection"
-            onClick={toggleCollectionInput}
-            className="select-none text-gray-500 rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
-          >
-            <FontAwesomeIcon icon={faPlus} className="h-3 w-3" />
-          </div>
-        )}
       </div>
       <div>
         {collections.map((e, i) => {
@@ -97,7 +55,7 @@ export default function () {
           );
         })}
       </div>
-      <div className="text-gray-500 flex items-center justify-between mt-5">
+      <div className="text-gray-500 mt-5">
         <p className="text-sm p-2">Tags</p>
       </div>
       <div>
