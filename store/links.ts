@@ -4,14 +4,14 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { create } from "zustand";
-import { ExtendedLink } from "@/types/global";
+import { ExtendedLink, NewLink } from "@/types/global";
 import useTagStore from "./tags";
 import useCollectionStore from "./collections";
 
 type LinkStore = {
   links: ExtendedLink[];
   setLinks: () => void;
-  addLink: (linkName: ExtendedLink) => Promise<boolean>;
+  addLink: (body: NewLink) => Promise<boolean>;
   updateLink: (link: ExtendedLink) => void;
   removeLink: (link: ExtendedLink) => void;
 };
@@ -25,9 +25,9 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     if (response.ok) set({ links: data.response });
   },
-  addLink: async (newLink) => {
+  addLink: async (body) => {
     const response = await fetch("/api/routes/links", {
-      body: JSON.stringify(newLink),
+      body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
       },

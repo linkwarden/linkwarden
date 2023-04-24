@@ -5,11 +5,12 @@
 
 import { create } from "zustand";
 import { Collection } from "@prisma/client";
+import { NewCollection } from "@/types/global";
 
 type CollectionStore = {
   collections: Collection[];
   setCollections: () => void;
-  addCollection: (collectionName: string) => void;
+  addCollection: (body: NewCollection) => Promise<boolean>;
   updateCollection: (collection: Collection) => void;
   removeCollection: (collectionId: number) => void;
 };
@@ -23,9 +24,9 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     if (response.ok) set({ collections: data.response });
   },
-  addCollection: async (collectionName) => {
+  addCollection: async (body) => {
     const response = await fetch("/api/routes/collections", {
-      body: JSON.stringify({ collectionName }),
+      body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
       },
@@ -38,6 +39,8 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
       set((state) => ({
         collections: [...state.collections, data.response],
       }));
+
+    return response.ok;
   },
   updateCollection: (collection) =>
     set((state) => ({

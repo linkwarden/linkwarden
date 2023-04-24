@@ -70,7 +70,7 @@ export default function AddLink({ toggleLinkModal }: Props) {
   const submitLink = async () => {
     console.log(newLink);
 
-    const response = await addLink(newLink as ExtendedLink);
+    const response = await addLink(newLink as NewLink);
 
     if (response) toggleLinkModal();
   };

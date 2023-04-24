@@ -22,10 +22,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       .status(collections.status)
       .json({ response: collections.response });
   } else if (req.method === "POST") {
-    const newCollection = await postCollection(
-      req.body.collectionName.trim(),
-      session.user.id
-    );
+    const newCollection = await postCollection(req.body, session.user.id);
     return res
       .status(newCollection.status)
       .json({ response: newCollection.response });
