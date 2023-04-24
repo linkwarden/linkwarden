@@ -13,6 +13,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Collection" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL DEFAULT '',
     "ownerId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -48,7 +49,6 @@ CREATE TABLE "Link" (
 CREATE TABLE "Tag" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "collectionId" INTEGER NOT NULL,
     "ownerId" INTEGER NOT NULL,
 
     CONSTRAINT "Tag_pkey" PRIMARY KEY ("id")
@@ -70,9 +70,6 @@ CREATE UNIQUE INDEX "Collection_name_ownerId_key" ON "Collection"("name", "owner
 CREATE UNIQUE INDEX "Tag_name_ownerId_key" ON "Tag"("name", "ownerId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Tag_name_collectionId_key" ON "Tag"("name", "collectionId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "_LinkToTag_AB_unique" ON "_LinkToTag"("A", "B");
 
 -- CreateIndex
@@ -89,9 +86,6 @@ ALTER TABLE "UsersAndCollections" ADD CONSTRAINT "UsersAndCollections_collection
 
 -- AddForeignKey
 ALTER TABLE "Link" ADD CONSTRAINT "Link_collectionId_fkey" FOREIGN KEY ("collectionId") REFERENCES "Collection"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Tag" ADD CONSTRAINT "Tag_collectionId_fkey" FOREIGN KEY ("collectionId") REFERENCES "Collection"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Tag" ADD CONSTRAINT "Tag_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

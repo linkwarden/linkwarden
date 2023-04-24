@@ -26,6 +26,7 @@ model User {
 model Collection {
   id Int @id @default(autoincrement())
   name String
+  description String @default("")
   owner User @relation(fields: [ownerId], references: [id])
   ownerId Int
   members UsersAndCollections[]

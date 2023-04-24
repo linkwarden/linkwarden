@@ -4,12 +4,13 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { prisma } from "@/lib/api/db";
+import { Collection } from "@prisma/client";
 import { existsSync, mkdirSync } from "fs";
 
-export default async function (collectionName: string, userId: number) {
-  if (!collectionName)
+export default async function (collection: Collection, userId: number) {
+  if (!collection)
     return {
-      response: "Please enter a valid name for the collection.",
+      response: "Please enter a valid collection.",
       status: 400,
     };
 
@@ -20,7 +21,7 @@ export default async function (collectionName: string, userId: number) {
     select: {
       collections: {
         where: {
-          name: collectionName,
+          name: collection.name,
         },
       },
     },
@@ -38,7 +39,8 @@ export default async function (collectionName: string, userId: number) {
           id: userId,
         },
       },
-      name: collectionName,
+      name: collection.name,
+      description: collection.description,
     },
   });
 
