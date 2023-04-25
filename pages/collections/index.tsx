@@ -4,7 +4,12 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import useCollectionStore from "@/store/collections";
-import { faAdd, faBox, faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAdd,
+  faBox,
+  faEllipsis,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CollectionCard from "@/components/CollectionCard";
 import Dropdown from "@/components/Dropdown";
@@ -18,7 +23,7 @@ export default function () {
 
   const [linkModal, setLinkModal] = useState(false);
 
-  const toggleLinkModal = () => {
+  const toggleCollectionModal = () => {
     setLinkModal(!linkModal);
   };
 
@@ -49,7 +54,7 @@ export default function () {
                   name: "New",
                   icon: <FontAwesomeIcon icon={faAdd} />,
                   onClick: () => {
-                    toggleLinkModal();
+                    toggleCollectionModal();
                     setExpandDropdown(false);
                   },
                 },
@@ -64,8 +69,8 @@ export default function () {
         </div>
 
         {linkModal ? (
-          <Modal toggleModal={toggleLinkModal}>
-            <AddCollection toggleCollectionModal={toggleLinkModal} />
+          <Modal toggleModal={toggleCollectionModal}>
+            <AddCollection toggleCollectionModal={toggleCollectionModal} />
           </Modal>
         ) : null}
       </div>
@@ -73,6 +78,14 @@ export default function () {
         {collections.map((e, i) => {
           return <CollectionCard key={i} collection={e} />;
         })}
+
+        <div
+          className="p-5 bg-gray-100 h-40 w-60 rounded-md border-sky-100 border-solid border flex flex-col gap-4 justify-center items-center cursor-pointer hover:bg-gray-50 duration-100"
+          onClick={toggleCollectionModal}
+        >
+          <p className="text-sky-900">New Collection</p>
+          <FontAwesomeIcon icon={faPlus} className="w-8 h-8 text-sky-500" />
+        </div>
       </div>
     </div>
   );
