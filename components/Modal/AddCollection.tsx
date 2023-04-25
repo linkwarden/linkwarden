@@ -42,7 +42,7 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
           }
           type="text"
           placeholder="e.g. Example Collection"
-          className="w-96 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
         />
       </div>
 
@@ -55,7 +55,7 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
           }
           type="text"
           placeholder="Collection description (Optional)"
-          className="w-96 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
         />
       </div>
 

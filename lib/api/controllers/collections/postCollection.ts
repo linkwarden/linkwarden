@@ -8,7 +8,7 @@ import { Collection } from "@prisma/client";
 import { existsSync, mkdirSync } from "fs";
 
 export default async function (collection: Collection, userId: number) {
-  if (!collection)
+  if (!collection || collection.name.trim() === "")
     return {
       response: "Please enter a valid collection.",
       status: 400,

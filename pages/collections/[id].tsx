@@ -5,6 +5,8 @@
 
 import Dropdown from "@/components/Dropdown";
 import LinkList from "@/components/LinkList";
+import Modal from "@/components/Modal";
+import AddLink from "@/components/Modal/AddLink";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import { ExtendedLink } from "@/types/global";
@@ -27,9 +29,14 @@ export default function () {
   const { collections } = useCollectionStore();
 
   const [expandDropdown, setExpandDropdown] = useState(false);
+  const [linkModal, setLinkModal] = useState(false);
   const [activeCollection, setActiveCollection] = useState<Collection>();
   const [linksByCollection, setLinksByCollection] =
     useState<ExtendedLink[]>(links);
+
+  const toggleLinkModal = () => {
+    setLinkModal(!linkModal);
+  };
 
   useEffect(() => {
     setLinksByCollection(
@@ -67,6 +74,10 @@ export default function () {
                 {
                   name: "Add Link Here",
                   icon: <FontAwesomeIcon icon={faAdd} />,
+                  onClick: () => {
+                    toggleLinkModal();
+                    setExpandDropdown(false);
+                  },
                 },
                 {
                   name: "Edit Collection",
@@ -83,6 +94,12 @@ export default function () {
               }}
               className="absolute top-7 left-0 z-10 w-44"
             />
+          ) : null}
+
+          {linkModal ? (
+            <Modal toggleModal={toggleLinkModal}>
+              <AddLink toggleLinkModal={toggleLinkModal} />
+            </Modal>
           ) : null}
         </div>
       </div>
