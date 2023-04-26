@@ -6,15 +6,12 @@
 import { prisma } from "@/lib/api/db";
 import { ExtendedLink } from "@/types/global";
 import { Link, UsersAndCollections } from "@prisma/client";
-import hasAccessToCollection from "@/lib/api/hasAccessToCollection";
+import getPermission from "@/lib/api/getPermission";
 
 export default async function (link: ExtendedLink, userId: number) {
   if (!link) return { response: "Please choose a valid link.", status: 401 };
 
-  const collectionIsAccessible = await hasAccessToCollection(
-    userId,
-    link.collectionId
-  );
+  const collectionIsAccessible = await getPermission(userId, link.collectionId);
 
   const memberHasAccess = collectionIsAccessible?.members.some(
     (e: UsersAndCollections) => e.userId === userId && e.canUpdate

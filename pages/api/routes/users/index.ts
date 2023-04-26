@@ -6,7 +6,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
-import getTags from "@/lib/api/controllers/tags/getTags";
+import getUsers from "@/lib/api/controllers/users/getUsers";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
@@ -15,8 +15,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ response: "You must be logged in." });
   }
 
+  // get unsensitive user info by email
   if (req.method === "GET") {
-    const tags = await getTags(session.user.id);
-    return res.status(tags.status).json({ response: tags.response });
+    const users = await getUsers(req.query.email as string);
+    return res.status(users.status).json({ response: users.response });
   }
 }
