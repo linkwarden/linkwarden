@@ -3,7 +3,7 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { Collection, Link, Tag } from "@prisma/client";
+import { Collection, Link, Tag, UsersAndCollections } from "@prisma/client";
 
 export interface ExtendedLink extends Link {
   tags: Tag[];
@@ -24,4 +24,15 @@ export interface NewLink {
 export interface NewCollection {
   name: string;
   description: string;
+  members: {
+    name: string;
+    email: string;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  }[];
+}
+
+export interface ExtendedCollection extends Collection {
+  members: UsersAndCollections[];
 }

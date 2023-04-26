@@ -79,6 +79,8 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     const data = await response.json();
 
+    console.log(data);
+
     if (response.ok) {
       set((state) => ({
         links: state.links.filter((e) => e.id !== link.id),

@@ -10,7 +10,7 @@ import AES from "crypto-js/aes";
 import enc from "crypto-js/enc-utf8";
 import path from "path";
 import fs from "fs";
-import hasAccessToCollection from "@/lib/api/hasAccessToCollection";
+import getPermission from "@/lib/api/getPermission";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (!req.query.params)
@@ -23,7 +23,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   if (!session?.user?.email)
     return res.status(401).json({ response: "You must be logged in." });
 
-  const collectionIsAccessible = await hasAccessToCollection(
+  const collectionIsAccessible = await getPermission(
     session.user.id,
     Number(collectionId)
   );

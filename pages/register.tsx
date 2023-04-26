@@ -24,7 +24,6 @@ export default function () {
 
   async function registerUser() {
     let success: boolean = false;
-    console.log(form);
 
     if (form.name != "" && form.email != "" && form.password != "") {
       await fetch("/api/auth/register", {
