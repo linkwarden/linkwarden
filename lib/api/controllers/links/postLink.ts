@@ -9,7 +9,7 @@ import getTitle from "../../getTitle";
 import archive from "../../archive";
 import { Link, UsersAndCollections } from "@prisma/client";
 import AES from "crypto-js/aes";
-import hasAccessToCollection from "@/lib/api/hasAccessToCollection";
+import getPermission from "@/lib/api/getPermission";
 
 export default async function (link: ExtendedLink, userId: number) {
   link.collection.name = link.collection.name.trim();
@@ -21,7 +21,7 @@ export default async function (link: ExtendedLink, userId: number) {
   }
 
   if (link.collection.ownerId) {
-    const collectionIsAccessible = await hasAccessToCollection(
+    const collectionIsAccessible = await getPermission(
       userId,
       link.collection.id
     );

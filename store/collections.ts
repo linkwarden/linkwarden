@@ -5,13 +5,13 @@
 
 import { create } from "zustand";
 import { Collection } from "@prisma/client";
-import { NewCollection } from "@/types/global";
+import { ExtendedCollection, NewCollection } from "@/types/global";
 
 type CollectionStore = {
-  collections: Collection[];
+  collections: ExtendedCollection[];
   setCollections: () => void;
   addCollection: (body: NewCollection) => Promise<boolean>;
-  updateCollection: (collection: Collection) => void;
+  // updateCollection: (collection: Collection) => void;
   removeCollection: (collectionId: number) => void;
 };
 
@@ -44,12 +44,12 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     return response.ok;
   },
-  updateCollection: (collection) =>
-    set((state) => ({
-      collections: state.collections.map((c) =>
-        c.id === collection.id ? collection : c
-      ),
-    })),
+  // updateCollection: (collection) =>
+  //   set((state) => ({
+  //     collections: state.collections.map((c) =>
+  //       c.id === collection.id ? collection : c
+  //     ),
+  //   })),
   removeCollection: (collectionId) => {
     set((state) => ({
       collections: state.collections.filter((c) => c.id !== collectionId),

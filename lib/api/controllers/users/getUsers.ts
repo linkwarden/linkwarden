@@ -5,18 +5,18 @@
 
 import { prisma } from "@/lib/api/db";
 
-export default async function (userId: number) {
-  const collections = await prisma.collection.findMany({
+export default async function (email: string) {
+  const user = await prisma.user.findUnique({
     where: {
-      OR: [
-        { ownerId: userId },
-        { members: { some: { user: { id: userId } } } },
-      ],
-    },
-    include: {
-      members: true,
+      email,
     },
   });
 
-  return { response: collections, status: 200 };
+  const unsensitiveUserInfo = {
+    name: user?.name,
+    email: user?.email,
+    createdAt: user?.createdAt,
+  };
+
+  return { response: unsensitiveUserInfo || null, status: 200 };
 }
