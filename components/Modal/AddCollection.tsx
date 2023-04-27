@@ -135,109 +135,113 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
         return (
           <div
             key={i}
-            className="border p-2 rounded-md border-sky-100 flex items-center justify-between"
+            className="relative border p-2 rounded-md border-sky-100 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
           >
+            <FontAwesomeIcon
+              icon={faClose}
+              className="absolute right-2 top-2 text-gray-500 h-4 hover:text-red-500 duration-100 cursor-pointer"
+              title="Remove Member"
+              onClick={() => {
+                const updatedMembers = newCollection.members.filter(
+                  (member) => {
+                    return member.email !== e.email;
+                  }
+                );
+                setNewCollection({
+                  ...newCollection,
+                  members: updatedMembers,
+                });
+              }}
+            />
             <div>
               <p className="text-sm font-bold text-sky-500">{e.name}</p>
               <p className="text-sky-900">{e.email}</p>
             </div>
-            <div className="relative">
-              <FontAwesomeIcon
-                icon={faClose}
-                className="absolute right-0 top-0 text-gray-500 h-4 hover:text-red-500 duration-100 cursor-pointer"
-                title="Remove Member"
-                onClick={() => {
-                  const updatedMembers = newCollection.members.filter(
-                    (member) => {
-                      return member.email !== e.email;
-                    }
-                  );
-                  setNewCollection({
-                    ...newCollection,
-                    members: updatedMembers,
-                  });
-                }}
-              />
-              <p className="font-bold text-sm text-gray-500">Permissions</p>
-              <p className="text-xs text-gray-400 mb-2">(Click to toggle.)</p>
+            <div className="flex sm:block items-center gap-5">
+              <div>
+                <p className="font-bold text-sm text-gray-500">Permissions</p>
+                <p className="text-xs text-gray-400 mb-2">(Click to toggle.)</p>
+              </div>
 
-              <label className="cursor-pointer mr-1">
-                <input
-                  type="checkbox"
-                  id="canCreate"
-                  className="peer sr-only"
-                  checked={e.canCreate}
-                  onChange={() => {
-                    const updatedMembers = newCollection.members.map(
-                      (member) => {
-                        if (member.email === e.email) {
-                          return { ...member, canCreate: !e.canCreate };
+              <div>
+                <label className="cursor-pointer mr-1">
+                  <input
+                    type="checkbox"
+                    id="canCreate"
+                    className="peer sr-only"
+                    checked={e.canCreate}
+                    onChange={() => {
+                      const updatedMembers = newCollection.members.map(
+                        (member) => {
+                          if (member.email === e.email) {
+                            return { ...member, canCreate: !e.canCreate };
+                          }
+                          return member;
                         }
-                        return member;
-                      }
-                    );
-                    setNewCollection({
-                      ...newCollection,
-                      members: updatedMembers,
-                    });
-                  }}
-                />
-                <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                  Create
-                </span>
-              </label>
+                      );
+                      setNewCollection({
+                        ...newCollection,
+                        members: updatedMembers,
+                      });
+                    }}
+                  />
+                  <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                    Create
+                  </span>
+                </label>
 
-              <label className="cursor-pointer mr-1">
-                <input
-                  type="checkbox"
-                  id="canUpdate"
-                  className="peer sr-only"
-                  checked={e.canUpdate}
-                  onChange={() => {
-                    const updatedMembers = newCollection.members.map(
-                      (member) => {
-                        if (member.email === e.email) {
-                          return { ...member, canUpdate: !e.canUpdate };
+                <label className="cursor-pointer mr-1">
+                  <input
+                    type="checkbox"
+                    id="canUpdate"
+                    className="peer sr-only"
+                    checked={e.canUpdate}
+                    onChange={() => {
+                      const updatedMembers = newCollection.members.map(
+                        (member) => {
+                          if (member.email === e.email) {
+                            return { ...member, canUpdate: !e.canUpdate };
+                          }
+                          return member;
                         }
-                        return member;
-                      }
-                    );
-                    setNewCollection({
-                      ...newCollection,
-                      members: updatedMembers,
-                    });
-                  }}
-                />
-                <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                  Update
-                </span>
-              </label>
+                      );
+                      setNewCollection({
+                        ...newCollection,
+                        members: updatedMembers,
+                      });
+                    }}
+                  />
+                  <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                    Update
+                  </span>
+                </label>
 
-              <label className="cursor-pointer mr-1">
-                <input
-                  type="checkbox"
-                  id="canDelete"
-                  className="peer sr-only"
-                  checked={e.canDelete}
-                  onChange={() => {
-                    const updatedMembers = newCollection.members.map(
-                      (member) => {
-                        if (member.email === e.email) {
-                          return { ...member, canDelete: !e.canDelete };
+                <label className="cursor-pointer mr-1">
+                  <input
+                    type="checkbox"
+                    id="canDelete"
+                    className="peer sr-only"
+                    checked={e.canDelete}
+                    onChange={() => {
+                      const updatedMembers = newCollection.members.map(
+                        (member) => {
+                          if (member.email === e.email) {
+                            return { ...member, canDelete: !e.canDelete };
+                          }
+                          return member;
                         }
-                        return member;
-                      }
-                    );
-                    setNewCollection({
-                      ...newCollection,
-                      members: updatedMembers,
-                    });
-                  }}
-                />
-                <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                  Delete
-                </span>
-              </label>
+                      );
+                      setNewCollection({
+                        ...newCollection,
+                        members: updatedMembers,
+                      });
+                    }}
+                  />
+                  <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                    Delete
+                  </span>
+                </label>
+              </div>
             </div>
           </div>
         );

@@ -7,9 +7,10 @@ import Dropdown from "@/components/Dropdown";
 import LinkList from "@/components/LinkList";
 import Modal from "@/components/Modal";
 import AddLink from "@/components/Modal/AddLink";
+import EditCollection from "@/components/Modal/EditCollection";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
-import { ExtendedLink } from "@/types/global";
+import { ExtendedCollection, ExtendedLink } from "@/types/global";
 import {
   faAdd,
   faEllipsis,
@@ -30,12 +31,18 @@ export default function () {
 
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
-  const [activeCollection, setActiveCollection] = useState<Collection>();
+  const [collectionModal, setCollectionModal] = useState(false);
+  const [activeCollection, setActiveCollection] =
+    useState<ExtendedCollection>();
   const [linksByCollection, setLinksByCollection] =
     useState<ExtendedLink[]>(links);
 
   const toggleLinkModal = () => {
     setLinkModal(!linkModal);
+  };
+
+  const toggleCollectionModal = () => {
+    setCollectionModal(!collectionModal);
   };
 
   useEffect(() => {
@@ -82,6 +89,10 @@ export default function () {
                 {
                   name: "Edit Collection",
                   icon: <FontAwesomeIcon icon={faPenToSquare} />,
+                  onClick: () => {
+                    toggleCollectionModal();
+                    setExpandDropdown(false);
+                  },
                 },
                 {
                   name: "Delete Collection",
@@ -99,6 +110,15 @@ export default function () {
           {linkModal ? (
             <Modal toggleModal={toggleLinkModal}>
               <AddLink toggleLinkModal={toggleLinkModal} />
+            </Modal>
+          ) : null}
+
+          {collectionModal && activeCollection ? (
+            <Modal toggleModal={toggleCollectionModal}>
+              <EditCollection
+                toggleCollectionModal={toggleCollectionModal}
+                collection={activeCollection}
+              />
             </Modal>
           ) : null}
         </div>
