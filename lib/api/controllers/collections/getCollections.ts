@@ -14,7 +14,16 @@ export default async function (userId: number) {
       ],
     },
     include: {
-      members: true,
+      members: {
+        include: {
+          user: {
+            select: {
+              email: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 
