@@ -13,6 +13,7 @@ export default async function (email: string) {
   });
 
   const unsensitiveUserInfo = {
+    id: user?.id,
     name: user?.name,
     email: user?.email,
     createdAt: user?.createdAt,
