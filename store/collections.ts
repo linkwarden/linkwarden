@@ -6,6 +6,7 @@
 import { create } from "zustand";
 import { ExtendedCollection, NewCollection } from "@/types/global";
 import useTagStore from "./tags";
+import useLinkStore from "./links";
 
 type CollectionStore = {
   collections: ExtendedCollection[];
@@ -86,6 +87,7 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
         collections: state.collections.filter((e) => e.id !== id),
       }));
       useTagStore.getState().setTags();
+      useLinkStore.getState().setLinks();
     }
 
     return response.ok;
