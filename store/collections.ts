@@ -4,15 +4,15 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { create } from "zustand";
-import { Collection } from "@prisma/client";
 import { ExtendedCollection, NewCollection } from "@/types/global";
+import useTagStore from "./tags";
 
 type CollectionStore = {
   collections: ExtendedCollection[];
   setCollections: () => void;
   addCollection: (body: NewCollection) => Promise<boolean>;
-  // updateCollection: (collection: Collection) => void;
-  removeCollection: (collectionId: number) => void;
+  updateCollection: (collection: ExtendedCollection) => Promise<boolean>;
+  removeCollection: (collectionId: number) => Promise<boolean>;
 };
 
 const useCollectionStore = create<CollectionStore>()((set) => ({
@@ -44,16 +44,51 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     return response.ok;
   },
-  // updateCollection: (collection) =>
-  //   set((state) => ({
-  //     collections: state.collections.map((c) =>
-  //       c.id === collection.id ? collection : c
-  //     ),
-  //   })),
-  removeCollection: (collectionId) => {
-    set((state) => ({
-      collections: state.collections.filter((c) => c.id !== collectionId),
-    }));
+  updateCollection: async (collection) => {
+    const response = await fetch("/api/routes/collections", {
+      body: JSON.stringify(collection),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "PUT",
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (response.ok)
+      set((state) => ({
+        collections: state.collections.map((e) =>
+          e.id === collection.id ? collection : e
+        ),
+      }));
+
+    return response.ok;
+  },
+  removeCollection: async (id) => {
+    const response = await fetch("/api/routes/collections", {
+      body: JSON.stringify({ id }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+    });
+
+    console.log(id);
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (response.ok) {
+      set((state) => ({
+        collections: state.collections.filter((e) => e.id !== id),
+      }));
+      useTagStore.getState().setTags();
+    }
+
+    return response.ok;
   },
 }));
 

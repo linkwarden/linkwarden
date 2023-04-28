@@ -6,7 +6,7 @@
 import { prisma } from "@/lib/api/db";
 
 export default async function (userId: number) {
-  // tag cleanup
+  // remove empty tags
   await prisma.tag.deleteMany({
     where: {
       links: {
