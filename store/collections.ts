@@ -76,8 +76,6 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
       method: "DELETE",
     });
 
-    console.log(id);
-
     const data = await response.json();
 
     console.log(data);
