@@ -3,23 +3,10 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { prisma } from "@/lib/api/db";
-
 export default async function (email: string) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
+  const response = await fetch(`/api/routes/users?email=${email}`);
 
-  const unsensitiveUserInfo = {
-    id: user?.id,
-    name: user?.name,
-    email: user?.email,
-    createdAt: user?.createdAt,
-  };
+  const data = await response.json();
 
-  const statusCode = user?.id ? 200 : 404;
-
-  return { response: unsensitiveUserInfo || null, status: statusCode };
+  return data.response;
 }

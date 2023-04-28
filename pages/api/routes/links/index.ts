@@ -26,15 +26,15 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     return res.status(newlink.status).json({
       response: newlink.response,
     });
-  } else if (req.method === "DELETE") {
-    const deleted = await deleteLink(req.body, session.user.id);
-    return res.status(deleted.status).json({
-      response: deleted.response,
-    });
   } else if (req.method === "PUT") {
     const updated = await updateLink(req.body, session.user.id);
     return res.status(updated.status).json({
       response: updated.response,
+    });
+  } else if (req.method === "DELETE") {
+    const deleted = await deleteLink(req.body, session.user.id);
+    return res.status(deleted.status).json({
+      response: deleted.response,
     });
   }
 }
