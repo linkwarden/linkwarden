@@ -8,8 +8,6 @@ import getPermission from "@/lib/api/getPermission";
 import fs from "fs";
 
 export default async function (collection: { id: number }, userId: number) {
-  console.log(collection.id);
-
   if (!collection.id)
     return { response: "Please choose a valid collection.", status: 401 };
 
