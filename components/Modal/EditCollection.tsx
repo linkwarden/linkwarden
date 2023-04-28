@@ -5,10 +5,11 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
-import { ExtendedCollection, NewCollection } from "@/types/global";
+import { ExtendedCollection } from "@/types/global";
 import { useSession } from "next-auth/react";
+import getPublicUserDataByEmail from "@/lib/client/getPublicUserDataByEmail";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -24,24 +25,18 @@ export default function EditCollection({
 
   const [memberEmail, setMemberEmail] = useState("");
 
-  // const { addCollection } = useCollectionStore();
+  const { updateCollection } = useCollectionStore();
 
   const session = useSession();
 
-  const submitCollection = async () => {
+  const submit = async () => {
     console.log(activeCollection);
 
-    // const response = await addCollection(newCollection as NewCollection);
+    const response = await updateCollection(
+      activeCollection as ExtendedCollection
+    );
 
-    // if (response) toggleCollectionModal();
-  };
-
-  const getUserByEmail = async (email: string) => {
-    const response = await fetch(`/api/routes/users?email=${email}`);
-
-    const data = await response.json();
-
-    return data.response;
+    if (response) toggleCollectionModal();
   };
 
   return (
@@ -103,7 +98,7 @@ export default function EditCollection({
               memberEmail.trim() !== ownerEmail
             ) {
               // Lookup, get data/err, list ...
-              const user = await getUserByEmail(memberEmail.trim());
+              const user = await getPublicUserDataByEmail(memberEmail.trim());
 
               if (user.email) {
                 const newMember = {
@@ -257,10 +252,10 @@ export default function EditCollection({
 
       <div
         className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-        onClick={submitCollection}
+        onClick={submit}
       >
-        <FontAwesomeIcon icon={faPlus} className="h-5" />
-        Add Collection
+        <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
+        Edit Collection
       </div>
     </div>
   );

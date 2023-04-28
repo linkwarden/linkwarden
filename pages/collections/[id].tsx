@@ -8,6 +8,7 @@ import LinkList from "@/components/LinkList";
 import Modal from "@/components/Modal";
 import AddLink from "@/components/Modal/AddLink";
 import EditCollection from "@/components/Modal/EditCollection";
+import DeleteCollection from "@/components/Modal/DeleteCollection";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import { ExtendedCollection, ExtendedLink } from "@/types/global";
@@ -19,7 +20,6 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Collection } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -31,7 +31,8 @@ export default function () {
 
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
-  const [collectionModal, setCollectionModal] = useState(false);
+  const [editCollectionModal, setEditCollectionModal] = useState(false);
+  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
   const [activeCollection, setActiveCollection] =
     useState<ExtendedCollection>();
   const [linksByCollection, setLinksByCollection] =
@@ -41,8 +42,12 @@ export default function () {
     setLinkModal(!linkModal);
   };
 
-  const toggleCollectionModal = () => {
-    setCollectionModal(!collectionModal);
+  const toggleEditCollectionModal = () => {
+    setEditCollectionModal(!editCollectionModal);
+  };
+
+  const toggleDeleteCollectionModal = () => {
+    setDeleteCollectionModal(!deleteCollectionModal);
   };
 
   useEffect(() => {
@@ -90,13 +95,17 @@ export default function () {
                   name: "Edit Collection",
                   icon: <FontAwesomeIcon icon={faPenToSquare} />,
                   onClick: () => {
-                    toggleCollectionModal();
+                    toggleEditCollectionModal();
                     setExpandDropdown(false);
                   },
                 },
                 {
                   name: "Delete Collection",
                   icon: <FontAwesomeIcon icon={faTrashCan} />,
+                  onClick: () => {
+                    toggleDeleteCollectionModal();
+                    setExpandDropdown(false);
+                  },
                 },
               ]}
               onClickOutside={(e: Event) => {
@@ -113,11 +122,20 @@ export default function () {
             </Modal>
           ) : null}
 
-          {collectionModal && activeCollection ? (
-            <Modal toggleModal={toggleCollectionModal}>
+          {editCollectionModal && activeCollection ? (
+            <Modal toggleModal={toggleEditCollectionModal}>
               <EditCollection
-                toggleCollectionModal={toggleCollectionModal}
+                toggleCollectionModal={toggleEditCollectionModal}
                 collection={activeCollection}
+              />
+            </Modal>
+          ) : null}
+
+          {deleteCollectionModal && activeCollection ? (
+            <Modal toggleModal={toggleDeleteCollectionModal}>
+              <DeleteCollection
+                collection={activeCollection}
+                toggleCollectionModal={toggleDeleteCollectionModal}
               />
             </Modal>
           ) : null}
