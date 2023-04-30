@@ -22,6 +22,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Dashboard from "@/layouts/Dashboard";
 
 export default function () {
   const router = useRouter();
@@ -61,89 +62,90 @@ export default function () {
   }, [links, router, collections]);
 
   return (
-    // ml-80
-    <div className="p-5 flex flex-col gap-5 w-full">
-      <div className="flex gap-3 items-center">
-        <div className="flex gap-2 items-center">
-          <FontAwesomeIcon icon={faFolder} className="w-5 h-5 text-sky-300" />
-          <p className="text-lg text-sky-900">{activeCollection?.name}</p>
-        </div>
-        <div className="relative">
-          <div
-            onClick={() => setExpandDropdown(!expandDropdown)}
-            id="edit-dropdown"
-            className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
-          >
-            <FontAwesomeIcon
-              icon={faEllipsis}
-              id="edit-dropdown"
-              className="w-4 h-4 text-gray-500"
-            />
+    <Dashboard>
+      <div className="p-5 flex flex-col gap-5 w-full">
+        <div className="flex gap-3 items-center">
+          <div className="flex gap-2 items-center">
+            <FontAwesomeIcon icon={faFolder} className="w-5 h-5 text-sky-300" />
+            <p className="text-lg text-sky-900">{activeCollection?.name}</p>
           </div>
-          {expandDropdown ? (
-            <Dropdown
-              items={[
-                {
-                  name: "Add Link Here",
-                  icon: <FontAwesomeIcon icon={faAdd} />,
-                  onClick: () => {
-                    toggleLinkModal();
-                    setExpandDropdown(false);
-                  },
-                },
-                {
-                  name: "Edit Collection",
-                  icon: <FontAwesomeIcon icon={faPenToSquare} />,
-                  onClick: () => {
-                    toggleEditCollectionModal();
-                    setExpandDropdown(false);
-                  },
-                },
-                {
-                  name: "Delete Collection",
-                  icon: <FontAwesomeIcon icon={faTrashCan} />,
-                  onClick: () => {
-                    toggleDeleteCollectionModal();
-                    setExpandDropdown(false);
-                  },
-                },
-              ]}
-              onClickOutside={(e: Event) => {
-                const target = e.target as HTMLInputElement;
-                if (target.id !== "edit-dropdown") setExpandDropdown(false);
-              }}
-              className="absolute top-7 left-0 z-10 w-44"
-            />
-          ) : null}
-
-          {linkModal ? (
-            <Modal toggleModal={toggleLinkModal}>
-              <AddLink toggleLinkModal={toggleLinkModal} />
-            </Modal>
-          ) : null}
-
-          {editCollectionModal && activeCollection ? (
-            <Modal toggleModal={toggleEditCollectionModal}>
-              <EditCollection
-                toggleCollectionModal={toggleEditCollectionModal}
-                collection={activeCollection}
+          <div className="relative">
+            <div
+              onClick={() => setExpandDropdown(!expandDropdown)}
+              id="edit-dropdown"
+              className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+            >
+              <FontAwesomeIcon
+                icon={faEllipsis}
+                id="edit-dropdown"
+                className="w-4 h-4 text-gray-500"
               />
-            </Modal>
-          ) : null}
-
-          {deleteCollectionModal && activeCollection ? (
-            <Modal toggleModal={toggleDeleteCollectionModal}>
-              <DeleteCollection
-                collection={activeCollection}
-                toggleCollectionModal={toggleDeleteCollectionModal}
+            </div>
+            {expandDropdown ? (
+              <Dropdown
+                items={[
+                  {
+                    name: "Add Link Here",
+                    icon: <FontAwesomeIcon icon={faAdd} />,
+                    onClick: () => {
+                      toggleLinkModal();
+                      setExpandDropdown(false);
+                    },
+                  },
+                  {
+                    name: "Edit Collection",
+                    icon: <FontAwesomeIcon icon={faPenToSquare} />,
+                    onClick: () => {
+                      toggleEditCollectionModal();
+                      setExpandDropdown(false);
+                    },
+                  },
+                  {
+                    name: "Delete Collection",
+                    icon: <FontAwesomeIcon icon={faTrashCan} />,
+                    onClick: () => {
+                      toggleDeleteCollectionModal();
+                      setExpandDropdown(false);
+                    },
+                  },
+                ]}
+                onClickOutside={(e: Event) => {
+                  const target = e.target as HTMLInputElement;
+                  if (target.id !== "edit-dropdown") setExpandDropdown(false);
+                }}
+                className="absolute top-7 left-0 z-10 w-44"
               />
-            </Modal>
-          ) : null}
+            ) : null}
+
+            {linkModal ? (
+              <Modal toggleModal={toggleLinkModal}>
+                <AddLink toggleLinkModal={toggleLinkModal} />
+              </Modal>
+            ) : null}
+
+            {editCollectionModal && activeCollection ? (
+              <Modal toggleModal={toggleEditCollectionModal}>
+                <EditCollection
+                  toggleCollectionModal={toggleEditCollectionModal}
+                  collection={activeCollection}
+                />
+              </Modal>
+            ) : null}
+
+            {deleteCollectionModal && activeCollection ? (
+              <Modal toggleModal={toggleDeleteCollectionModal}>
+                <DeleteCollection
+                  collection={activeCollection}
+                  toggleCollectionModal={toggleDeleteCollectionModal}
+                />
+              </Modal>
+            ) : null}
+          </div>
         </div>
+        {linksByCollection.map((e, i) => {
+          return <LinkList key={i} link={e} count={i} />;
+        })}
       </div>
-      {linksByCollection.map((e, i) => {
-        return <LinkList key={i} link={e} count={i} />;
-      })}
-    </div>
+    </Dashboard>
   );
 }

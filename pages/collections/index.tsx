@@ -16,6 +16,7 @@ import Dropdown from "@/components/Dropdown";
 import { useState } from "react";
 import Modal from "@/components/Modal";
 import AddCollection from "@/components/Modal/AddCollection";
+import Dashboard from "@/layouts/Dashboard";
 
 export default function () {
   const { collections } = useCollectionStore();
@@ -29,64 +30,66 @@ export default function () {
 
   return (
     // ml-80
-    <div className="p-5">
-      <div className="flex gap-3 items-center mb-5">
-        <div className="flex gap-2 items-center">
-          <FontAwesomeIcon icon={faBox} className="w-5 h-5 text-sky-300" />
-          <p className="text-lg text-sky-900">All Collections</p>
-        </div>
-        <div className="relative">
-          <div
-            onClick={() => setExpandDropdown(!expandDropdown)}
-            id="edit-dropdown"
-            className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
-          >
-            <FontAwesomeIcon
-              icon={faEllipsis}
-              id="edit-dropdown"
-              className="w-4 h-4 text-gray-500"
-            />
+    <Dashboard>
+      <div className="p-5">
+        <div className="flex gap-3 items-center mb-5">
+          <div className="flex gap-2 items-center">
+            <FontAwesomeIcon icon={faBox} className="w-5 h-5 text-sky-300" />
+            <p className="text-lg text-sky-900">All Collections</p>
           </div>
-          {expandDropdown ? (
-            <Dropdown
-              items={[
-                {
-                  name: "New",
-                  icon: <FontAwesomeIcon icon={faAdd} />,
-                  onClick: () => {
-                    toggleCollectionModal();
-                    setExpandDropdown(false);
+          <div className="relative">
+            <div
+              onClick={() => setExpandDropdown(!expandDropdown)}
+              id="edit-dropdown"
+              className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+            >
+              <FontAwesomeIcon
+                icon={faEllipsis}
+                id="edit-dropdown"
+                className="w-4 h-4 text-gray-500"
+              />
+            </div>
+            {expandDropdown ? (
+              <Dropdown
+                items={[
+                  {
+                    name: "New",
+                    icon: <FontAwesomeIcon icon={faAdd} />,
+                    onClick: () => {
+                      toggleCollectionModal();
+                      setExpandDropdown(false);
+                    },
                   },
-                },
-              ]}
-              onClickOutside={(e: Event) => {
-                const target = e.target as HTMLInputElement;
-                if (target.id !== "edit-dropdown") setExpandDropdown(false);
-              }}
-              className="absolute top-7 left-0 w-36"
-            />
+                ]}
+                onClickOutside={(e: Event) => {
+                  const target = e.target as HTMLInputElement;
+                  if (target.id !== "edit-dropdown") setExpandDropdown(false);
+                }}
+                className="absolute top-7 left-0 w-36"
+              />
+            ) : null}
+          </div>
+
+          {linkModal ? (
+            <Modal toggleModal={toggleCollectionModal}>
+              <AddCollection toggleCollectionModal={toggleCollectionModal} />
+            </Modal>
           ) : null}
         </div>
+        <div className="flex flex-wrap gap-5">
+          {collections.map((e, i) => {
+            return <CollectionCard key={i} collection={e} />;
+          })}
 
-        {linkModal ? (
-          <Modal toggleModal={toggleCollectionModal}>
-            <AddCollection toggleCollectionModal={toggleCollectionModal} />
-          </Modal>
-        ) : null}
-      </div>
-      <div className="flex flex-wrap gap-5">
-        {collections.map((e, i) => {
-          return <CollectionCard key={i} collection={e} />;
-        })}
-
-        <div
-          className="p-5 bg-gray-100 h-40 w-60 rounded-md border-sky-100 border-solid border flex flex-col gap-4 justify-center items-center cursor-pointer hover:bg-gray-50 duration-100"
-          onClick={toggleCollectionModal}
-        >
-          <p className="text-sky-900">New Collection</p>
-          <FontAwesomeIcon icon={faPlus} className="w-8 h-8 text-sky-500" />
+          <div
+            className="p-5 bg-gray-100 h-40 w-60 rounded-md border-sky-100 border-solid border flex flex-col gap-4 justify-center items-center cursor-pointer hover:bg-gray-50 duration-100"
+            onClick={toggleCollectionModal}
+          >
+            <p className="text-sky-900">New Collection</p>
+            <FontAwesomeIcon icon={faPlus} className="w-8 h-8 text-sky-500" />
+          </div>
         </div>
       </div>
-    </div>
+    </Dashboard>
   );
 }
