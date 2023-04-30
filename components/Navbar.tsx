@@ -13,11 +13,14 @@ import {
   faSliders,
   faArrowRightFromBracket,
   faChevronDown,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Dropdown from "@/components/Dropdown";
 import Modal from "./Modal";
 import AddLink from "./Modal/AddLink";
+import ClickAwayHandler from "./ClickAwayHandler";
+import Sidebar from "./Sidebar";
 
 export default function () {
   const { data: session } = useSession();
@@ -27,6 +30,13 @@ export default function () {
   const user = session?.user;
 
   const [linkModal, setLinkModal] = useState(false);
+  const [sidebar, setSidebar] = useState(false);
+
+  window.addEventListener("resize", () => setSidebar(false));
+
+  const toggleSidebar = () => {
+    setSidebar(!sidebar);
+  };
 
   const toggleLinkModal = () => {
     setLinkModal(!linkModal);
@@ -34,6 +44,12 @@ export default function () {
 
   return (
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b">
+      <div
+        onClick={toggleSidebar}
+        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-1 text-sky-500 rounded-md hover:outline-sky-500 outline duration-100 bg-white outline-sky-100 outline-1"
+      >
+        <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
+      </div>
       <div className="flex items-center relative">
         <label
           htmlFor="search-box"
@@ -74,7 +90,9 @@ export default function () {
               className="h-5 w-5 pointer-events-none"
             />
             <div className="flex items-center gap-1 pointer-events-none">
-              <p className="font-bold leading-3">{user?.name}</p>
+              <p className="font-bold leading-3 hidden sm:block">
+                {user?.name}
+              </p>
               <FontAwesomeIcon icon={faChevronDown} className="h-3 w-3" />
             </div>
           </div>
@@ -100,6 +118,16 @@ export default function () {
               }}
               className="absolute top-8 right-0 z-20 w-36"
             />
+          ) : null}
+
+          {sidebar ? (
+            <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 flex items-center fade-in z-30">
+              <ClickAwayHandler onClickOutside={toggleSidebar}>
+                <div className="slide-right">
+                  <Sidebar />
+                </div>
+              </ClickAwayHandler>
+            </div>
           ) : null}
         </div>
       </div>

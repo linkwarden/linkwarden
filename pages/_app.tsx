@@ -4,11 +4,11 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React from "react";
-import MainLayout from "@/layouts/MainLayout";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import AuthRedirect from "@/layouts/AuthRedirect";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -35,9 +35,9 @@ export default function App({ Component, pageProps }: AppProps) {
         />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
-      <MainLayout>
+      <AuthRedirect>
         <Component {...pageProps} />
-      </MainLayout>
+      </AuthRedirect>
     </SessionProvider>
   );
 }

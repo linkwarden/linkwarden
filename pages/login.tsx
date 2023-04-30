@@ -5,6 +5,7 @@
 
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 interface FormData {
@@ -13,6 +14,8 @@ interface FormData {
 }
 
 export default function () {
+  const router = useRouter();
+
   const [form, setForm] = useState<FormData>({
     email: "",
     password: "",
@@ -24,16 +27,12 @@ export default function () {
       const res = await signIn("credentials", {
         email: form.email,
         password: form.password,
+        redirect: false,
       });
 
-      console.log(res?.status);
+      console.log(res);
 
-      if (res?.ok) {
-        setForm({
-          email: "",
-          password: "",
-        });
-      } else {
+      if (!res?.ok) {
         console.log("User not found or password does not match.", res);
       }
     } else {

@@ -27,12 +27,15 @@
   hyphens: auto;
 }
 
-.slide-up {
-  animation: slide-up-animation 70ms;
-}
-
 .fade-in {
   animation: fade-in-animation 100ms;
+}
+
+/* Bug: "lg:block" just didn't work... */
+@media (min-width: 1024px) {
+  .lgblock {
+    display: block;
+  }
 }
 
 @keyframes fade-in-animation {
@@ -44,6 +47,10 @@
   }
 }
 
+.slide-up {
+  animation: slide-up-animation 70ms;
+}
+
 @keyframes slide-up-animation {
   0% {
     transform: translateY(15%);
@@ -51,6 +58,21 @@
   }
   100% {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-right {
+  animation: slide-right-animation 100ms;
+}
+
+@keyframes slide-right-animation {
+  0% {
+    transform: translateX(-25%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
     opacity: 1;
   }
 }

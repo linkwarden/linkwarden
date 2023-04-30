@@ -4,6 +4,7 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import LinkList from "@/components/LinkList";
+import Dashboard from "@/layouts/Dashboard";
 import useLinkStore from "@/store/links";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,16 +13,21 @@ export default function Links() {
   const { links } = useLinkStore();
 
   return (
-    <div className="p-5 flex flex-col gap-5 w-full">
-      <div className="flex gap-3 items-center">
-        <div className="flex gap-2 items-center">
-          <FontAwesomeIcon icon={faBookmark} className="w-5 h-5 text-sky-300" />
-          <p className="text-lg text-sky-900">All Links</p>
+    <Dashboard>
+      <div className="p-5 flex flex-col gap-5 w-full">
+        <div className="flex gap-3 items-center">
+          <div className="flex gap-2 items-center">
+            <FontAwesomeIcon
+              icon={faBookmark}
+              className="w-5 h-5 text-sky-300"
+            />
+            <p className="text-lg text-sky-900">All Links</p>
+          </div>
         </div>
+        {links.map((e, i) => {
+          return <LinkList key={i} link={e} count={i} />;
+        })}
       </div>
-      {links.map((e, i) => {
-        return <LinkList key={i} link={e} count={i} />;
-      })}
-    </div>
+    </Dashboard>
   );
 }
