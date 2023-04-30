@@ -32,15 +32,11 @@ export const authOptions: AuthOptions = {
           },
         });
 
-        console.log(findUser);
-
         let passwordMatches: boolean = false;
 
         if (findUser?.password) {
           passwordMatches = bcrypt.compareSync(password, findUser.password);
         }
-
-        console.log(passwordMatches);
 
         if (passwordMatches) {
           return {

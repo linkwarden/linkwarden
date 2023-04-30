@@ -3,13 +3,11 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import Navbar from "@/components/Navbar";
-import Sidebar from "@/components/Sidebar";
 import { ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import Loader from "../components/Loader";
-import useRedirection from "@/hooks/useRedirection";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import getInitialData from "@/lib/client/getInitialData";
 
 interface Props {
@@ -17,24 +15,31 @@ interface Props {
 }
 
 export default function ({ children }: Props) {
-  const { status } = useSession();
   const router = useRouter();
-  const redirection = useRedirection();
-  const routeExists = router.route === "/_error" ? false : true;
+  const { status } = useSession();
+  const [redirect, setRedirect] = useState(true);
 
   getInitialData();
 
-  if (status === "authenticated" && !redirection && routeExists)
-    return (
-      <>
-        <Sidebar />
-        <div className="ml-80">
-          <Navbar />
-          {children}
-        </div>
-      </>
-    );
-  else if ((status === "unauthenticated" && !redirection) || !routeExists)
-    return <>{children}</>;
+  useEffect(() => {
+    if (
+      status === "authenticated" &&
+      (router.pathname === "/login" || router.pathname === "/register")
+    ) {
+      router.push("/").then(() => {
+        setRedirect(false);
+      });
+    } else if (
+      status === "unauthenticated" &&
+      !(router.pathname === "/login" || router.pathname === "/register")
+    ) {
+      router.push("/login").then(() => {
+        setRedirect(false);
+      });
+    } else if (status === "loading") setRedirect(true);
+    else setRedirect(false);
+  }, [status]);
+
+  if (status !== "loading" && !redirect) return <>{children}</>;
   else return <Loader />;
 }
