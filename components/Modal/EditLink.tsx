@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ExtendedLink } from "@/types/global";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   toggleLinkModal: Function;
@@ -19,7 +20,7 @@ type Props = {
 export default function EditLink({ toggleLinkModal, link }: Props) {
   const [currentLink, setCurrentLink] = useState<ExtendedLink>(link);
 
-  const { updateLink } = useLinkStore();
+  const { updateLink, removeLink } = useLinkStore();
 
   const shortendURL = new URL(link.url).host.toLowerCase();
 
@@ -85,12 +86,32 @@ export default function EditLink({ toggleLinkModal, link }: Props) {
         />
       </div>
 
-      <div
-        className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-        onClick={submit}
-      >
-        <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
-        Edit Link
+      <div className="flex flex-col justify-center items-center gap-2 mt-2">
+        <div
+          className="bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
+          onClick={submit}
+        >
+          <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
+          Edit Link
+        </div>
+
+        <div className="flex items-center justify-center gap-2">
+          <hr className="w-16 border" />
+
+          <p className="text-gray-400 font-bold">OR</p>
+
+          <hr className="w-16 border" />
+        </div>
+
+        <div
+          onClick={() => {
+            removeLink(link);
+            toggleLinkModal();
+          }}
+          className="w-fit inline-flex rounded-md cursor-pointer bg-red-500 hover:bg-red-400 duration-100 p-2"
+        >
+          <FontAwesomeIcon icon={faTrashCan} className="w-4 h-4 text-white" />
+        </div>
       </div>
     </div>
   );

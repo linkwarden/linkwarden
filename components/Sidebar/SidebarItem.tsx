@@ -4,7 +4,8 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import Link from "next/link";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 interface SidebarItemProps {
   text: string;
@@ -13,13 +14,25 @@ interface SidebarItemProps {
 }
 
 export default function ({ text, icon, path }: SidebarItemProps) {
+  const router = useRouter();
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    if (router.asPath === path) setActive(true);
+    else setActive(false);
+  }, [router]);
+
   return (
     <Link href={path}>
-      <div className="hover:bg-gray-50 hover:outline outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2">
+      <div
+        className={`${
+          active ? "bg-sky-500" : "hover:bg-gray-50 hover:outline bg-gray-100"
+        } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2`}
+      >
         {React.cloneElement(icon, {
-          className: "w-4 text-sky-300",
+          className: `w-4 ${active ? "text-white" : "text-sky-300"}`,
         })}
-        <p className="text-sky-900">{text}</p>
+        <p className={`${active ? "text-white" : "text-sky-900"}`}>{text}</p>
       </div>
     </Link>
   );

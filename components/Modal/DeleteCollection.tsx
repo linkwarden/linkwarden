@@ -34,7 +34,7 @@ export default function AddCollection({
   };
 
   return (
-    <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
+    <div className="flex flex-col gap-3 sm:w-[33rem] w-72">
       <p className="font-bold text-sky-300 text-center">Delete Collection</p>
 
       <p className="text-sky-900 select-none text-center">

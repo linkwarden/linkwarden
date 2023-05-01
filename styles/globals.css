@@ -63,16 +63,14 @@
 }
 
 .slide-right {
-  animation: slide-right-animation 100ms;
+  animation: slide-right-animation 200ms;
 }
 
 @keyframes slide-right-animation {
   0% {
-    transform: translateX(-25%);
-    opacity: 0;
+    transform: translateX(-100%);
   }
   100% {
     transform: translateX(0);
-    opacity: 1;
   }
 }
