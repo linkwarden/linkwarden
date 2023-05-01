@@ -63,9 +63,12 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     if (response.ok) {
       set((state) => ({
-        links: state.links.map((e) => (e.id === link.id ? link : e)),
+        links: state.links.map((e) =>
+          e.id === data.response.id ? data.response : e
+        ),
       }));
       useTagStore.getState().setTags();
+      useCollectionStore.getState().setCollections();
     }
   },
   removeLink: async (link) => {

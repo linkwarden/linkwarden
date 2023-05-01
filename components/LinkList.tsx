@@ -19,6 +19,7 @@ import Dropdown from "./Dropdown";
 import useLinkStore from "@/store/links";
 import Modal from "./Modal";
 import EditLink from "./Modal/EditLink";
+import Link from "next/link";
 
 export default function ({
   link,
@@ -57,7 +58,7 @@ export default function ({
         width={32}
         height={32}
         alt=""
-        className="select-none mt-3 z-10 rounded-md"
+        className="select-none mt-3 z-10 rounded-md shadow"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
@@ -84,18 +85,20 @@ export default function ({
           </div>
           <p className="text-sky-400 text-sm font-medium">{link.title}</p>
           <div className="flex gap-3 items-center flex-wrap my-3">
-            <div className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100">
-              <FontAwesomeIcon icon={faFolder} className="w-4 text-sky-300" />
-              <p className="text-sky-900">{link.collection.name}</p>
-            </div>
+            <Link href={`/collections/${link.collection.id}`}>
+              <div className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100">
+                <FontAwesomeIcon icon={faFolder} className="w-4 text-sky-300" />
+                <p className="text-sky-900">{link.collection.name}</p>
+              </div>
+            </Link>
+
             <div className="flex gap-1 items-center flex-wrap">
               {link.tags.map((e, i) => (
-                <p
-                  key={i}
-                  className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer hover:bg-sky-100 duration-100"
-                >
-                  # {e.name}
-                </p>
+                <Link key={i} href={`/tags/${e.id}`}>
+                  <p className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer hover:bg-sky-100 duration-100">
+                    # {e.name}
+                  </p>
+                </Link>
               ))}
             </div>
           </div>
