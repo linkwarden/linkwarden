@@ -41,6 +41,18 @@ export default async function (collection: ExtendedCollection, userId: number) {
           })),
         },
       },
+      include: {
+        members: {
+          include: {
+            user: {
+              select: {
+                email: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
   });
 

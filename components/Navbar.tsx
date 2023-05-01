@@ -68,7 +68,7 @@ export default function () {
           id="search-box"
           type="text"
           placeholder="Search for Links"
-          className="border border-sky-100 rounded-md pr-6 w-60 focus:border-sky-500 sm:focus:w-80 hover:border-sky-500 duration-100 outline-none p-1 text-sm"
+          className="border border-sky-100 rounded-md pr-6 w-60 focus:border-sky-500 sm:focus:w-80 hover:border-sky-500 duration-100 outline-none p-1"
         />
       </div>
       <div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ export default function () {
           title="New Link"
           className="inline-flex gap-1 items-center select-none cursor-pointer p-1 text-sky-500 rounded-md hover:outline-sky-500 outline duration-100 bg-white outline-sky-100 outline-1"
         >
-          <FontAwesomeIcon icon={faPlus} className="w-5 h-5" />
+          <FontAwesomeIcon icon={faPlus} className="w-6 h-6" />
         </div>
 
         {linkModal ? (
@@ -94,7 +94,7 @@ export default function () {
           >
             <FontAwesomeIcon
               icon={faCircleUser}
-              className="h-5 w-5 pointer-events-none"
+              className="h-6 w-6 pointer-events-none"
             />
             <div className="flex items-center gap-1 pointer-events-none">
               <p className="font-bold leading-3 hidden sm:block">
@@ -123,7 +123,7 @@ export default function () {
                 const target = e.target as HTMLInputElement;
                 if (target.id !== "profile-dropdown") setProfileDropdown(false);
               }}
-              className="absolute top-8 right-0 z-20 w-36"
+              className="absolute top-9 right-0 z-20 w-36"
             />
           ) : null}
 

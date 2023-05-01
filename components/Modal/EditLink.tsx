@@ -11,6 +11,7 @@ import { ExtendedLink } from "@/types/global";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import RequiredBadge from "../RequiredBadge";
 
 type Props = {
   toggleLinkModal: Function;
@@ -53,7 +54,10 @@ export default function EditLink({ toggleLinkModal, link }: Props) {
         <b>{shortendURL}</b> | {link.title}
       </p>
       <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Name</p>
+        <p className="text-sm font-bold text-sky-300">
+          Name
+          <RequiredBadge />
+        </p>
         <input
           value={currentLink.name}
           onChange={(e) =>
@@ -61,7 +65,21 @@ export default function EditLink({ toggleLinkModal, link }: Props) {
           }
           type="text"
           placeholder="e.g. Example Link"
-          className="w-60 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          className="w-60 rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+        />
+      </div>
+
+      <div className="flex gap-5 items-center justify-between">
+        <p className="text-sm font-bold text-sky-300">
+          Collection
+          <RequiredBadge />
+        </p>
+        <CollectionSelection
+          onChange={setCollection}
+          defaultValue={{
+            label: link.collection.name,
+            value: link.collection.id,
+          }}
         />
       </div>
 
@@ -72,17 +90,6 @@ export default function EditLink({ toggleLinkModal, link }: Props) {
           defaultValue={link.tags.map((e) => {
             return { label: e.name, value: e.id };
           })}
-        />
-      </div>
-
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Collection</p>
-        <CollectionSelection
-          onChange={setCollection}
-          defaultValue={{
-            label: link.collection.name,
-            value: link.collection.id,
-          }}
         />
       </div>
 

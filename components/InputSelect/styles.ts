@@ -29,8 +29,10 @@ export const styles: StylesConfig = {
     width: "15rem",
     border: "1px solid #e0f2fe",
     borderRadius: "0.375rem",
-    fontSize: "0.875rem",
     lineHeight: "1.25rem",
+    // "@media screen and (min-width: 1024px)": {
+    //   fontSize: "0.875rem",
+    // },
   }),
   input: (styles) => ({
     ...styles,

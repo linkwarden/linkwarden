@@ -61,7 +61,7 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
     if (response.ok)
       set((state) => ({
         collections: state.collections.map((e) =>
-          e.id === collection.id ? collection : e
+          e.id === data.response.id ? data.response : e
         ),
       }));
 

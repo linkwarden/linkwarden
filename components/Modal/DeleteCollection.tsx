@@ -48,7 +48,7 @@ export default function AddCollection({
         onChange={(e) => setInputField(e.target.value)}
         type="text"
         placeholder={`Type "${collection.name}" Here.`}
-        className=" w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+        className=" w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
       />
 
       <div
