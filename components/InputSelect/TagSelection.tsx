@@ -37,7 +37,7 @@ export default function ({ onChange, defaultValue }: Props) {
       options={options}
       styles={styles}
       defaultValue={defaultValue}
-      menuPosition="fixed"
+      // menuPosition="fixed"
       isMulti
     />
   );

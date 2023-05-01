@@ -24,7 +24,7 @@ export default function ({ toggleModal, children }: Props) {
           >
             <FontAwesomeIcon
               icon={faChevronLeft}
-              className="w-4 h-4 text-gray-500"
+              className="w-5 h-5 text-gray-500"
             />
           </div>
           {children}

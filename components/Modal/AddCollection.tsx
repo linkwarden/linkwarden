@@ -9,6 +9,7 @@ import { faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { NewCollection } from "@/types/global";
 import { useSession } from "next-auth/react";
+import RequiredBadge from "../RequiredBadge";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -48,7 +49,10 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
       <p className="font-bold text-sky-300 mb-2 text-center">New Collection</p>
 
       <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Name</p>
+        <p className="text-sm font-bold text-sky-300">
+          Name
+          <RequiredBadge />
+        </p>
         <input
           value={newCollection.name}
           onChange={(e) =>
@@ -56,7 +60,7 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
           }
           type="text"
           placeholder="e.g. Example Collection"
-          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
       </div>
 
@@ -68,8 +72,8 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
             setNewCollection({ ...newCollection, description: e.target.value })
           }
           type="text"
-          placeholder="Collection description (Optional)"
-          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          placeholder="Collection description"
+          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
       </div>
 
@@ -120,8 +124,8 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
             }
           }}
           type="text"
-          placeholder="Email (Optional)"
-          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          placeholder="Email"
+          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
       </div>
 

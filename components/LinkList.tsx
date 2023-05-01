@@ -58,7 +58,7 @@ export default function ({
         width={32}
         height={32}
         alt=""
-        className="select-none mt-3 z-10 rounded-md shadow"
+        className="select-none mt-3 z-10 rounded-md"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
@@ -70,7 +70,7 @@ export default function ({
         width={80}
         height={80}
         alt=""
-        className="blur-sm absolute left-2 opacity-50 select-none hidden sm:block"
+        className="blur-sm absolute left-2 opacity-40 select-none hidden sm:block"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
@@ -194,7 +194,7 @@ export default function ({
                 const target = e.target as HTMLInputElement;
                 if (target.id !== "edit-dropdown") setExpandDropdown(false);
               }}
-              className="absolute top-9 right-0 w-36"
+              className="absolute top-8 right-0 w-36"
             />
           ) : null}
         </div>
