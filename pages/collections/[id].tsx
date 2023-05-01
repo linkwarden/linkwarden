@@ -78,7 +78,7 @@ export default function () {
               <FontAwesomeIcon
                 icon={faEllipsis}
                 id="edit-dropdown"
-                className="w-4 h-4 text-gray-500"
+                className="w-5 h-5 text-gray-500"
               />
             </div>
             {expandDropdown ? (
@@ -113,7 +113,7 @@ export default function () {
                   const target = e.target as HTMLInputElement;
                   if (target.id !== "edit-dropdown") setExpandDropdown(false);
                 }}
-                className="absolute top-7 left-0 z-10 w-44"
+                className="absolute top-8 left-0 z-10 w-44"
               />
             ) : null}
 

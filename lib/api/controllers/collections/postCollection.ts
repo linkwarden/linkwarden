@@ -50,6 +50,18 @@ export default async function (collection: NewCollection, userId: number) {
         })),
       },
     },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              email: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   const collectionPath = `data/archives/${newCollection.id}`;

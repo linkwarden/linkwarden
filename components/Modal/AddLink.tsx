@@ -12,6 +12,7 @@ import { ExtendedLink, NewLink } from "@/types/global";
 import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
 import useCollectionStore from "@/store/collections";
+import RequiredBadge from "../RequiredBadge";
 
 type Props = {
   toggleLinkModal: Function;
@@ -79,34 +80,38 @@ export default function AddLink({ toggleLinkModal }: Props) {
       <p className="font-bold text-sky-300 mb-2 text-center">New Link</p>
 
       <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Name</p>
+        <p className="text-sm font-bold text-sky-300">
+          Name
+          <RequiredBadge />
+        </p>
         <input
           value={newLink.name}
           onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
           type="text"
           placeholder="e.g. Example Link"
-          className="w-60 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          className="w-60 rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
       </div>
 
       <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">URL</p>
+        <p className="text-sm font-bold text-sky-300">
+          URL
+          <RequiredBadge />
+        </p>
         <input
           value={newLink.url}
           onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
           type="text"
           placeholder="e.g. http://example.com/"
-          className="w-60 rounded-md p-3 border-sky-100 border-solid border text-sm outline-none focus:border-sky-500 duration-100"
+          className="w-60 rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
       </div>
 
       <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Tags</p>
-        <TagSelection onChange={setTags} />
-      </div>
-
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Collection</p>
+        <p className="text-sm font-bold text-sky-300">
+          Collection
+          <RequiredBadge />
+        </p>
         <CollectionSelection
           defaultValue={
             newLink.collection.name && newLink.collection.id
@@ -115,6 +120,11 @@ export default function AddLink({ toggleLinkModal }: Props) {
           }
           onChange={setCollection}
         />
+      </div>
+
+      <div className="flex gap-5 items-center justify-between">
+        <p className="text-sm font-bold text-sky-300">Tags</p>
+        <TagSelection onChange={setTags} />
       </div>
 
       <div
