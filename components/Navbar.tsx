@@ -15,12 +15,13 @@ import {
   faChevronDown,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropdown from "@/components/Dropdown";
 import Modal from "./Modal";
 import AddLink from "./Modal/AddLink";
 import ClickAwayHandler from "./ClickAwayHandler";
 import Sidebar from "./Sidebar";
+import { useRouter } from "next/router";
 
 export default function () {
   const { data: session } = useSession();
@@ -32,7 +33,13 @@ export default function () {
   const [linkModal, setLinkModal] = useState(false);
   const [sidebar, setSidebar] = useState(false);
 
+  const router = useRouter();
+
   window.addEventListener("resize", () => setSidebar(false));
+
+  useEffect(() => {
+    setSidebar(false);
+  }, [router]);
 
   const toggleSidebar = () => {
     setSidebar(!sidebar);
@@ -123,7 +130,7 @@ export default function () {
           {sidebar ? (
             <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 flex items-center fade-in z-30">
               <ClickAwayHandler onClickOutside={toggleSidebar}>
-                <div className="slide-right">
+                <div className="slide-right shadow-lg">
                   <Sidebar />
                 </div>
               </ClickAwayHandler>

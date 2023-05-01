@@ -41,5 +41,5 @@ export default function ({ children }: Props) {
   }, [status]);
 
   if (status !== "loading" && !redirect) return <>{children}</>;
-  else return <Loader />;
+  // else return <Loader />;
 }

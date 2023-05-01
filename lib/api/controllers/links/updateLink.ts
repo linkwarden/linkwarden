@@ -5,7 +5,7 @@
 
 import { prisma } from "@/lib/api/db";
 import { ExtendedLink } from "@/types/global";
-import { Link, UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 
 export default async function (link: ExtendedLink, userId: number) {
@@ -17,10 +17,23 @@ export default async function (link: ExtendedLink, userId: number) {
     (e: UsersAndCollections) => e.userId === userId && e.canUpdate
   );
 
-  if (!(collectionIsAccessible?.ownerId === userId || memberHasAccess))
-    return { response: "Collection is not accessible.", status: 401 };
+  if (link.collection.ownerId) {
+    const collectionIsAccessible = await getPermission(
+      userId,
+      link.collection.id
+    );
 
-  const updatedLink: Link = await prisma.link.update({
+    const memberHasAccess = collectionIsAccessible?.members.some(
+      (e: UsersAndCollections) => e.userId === userId && e.canCreate
+    );
+
+    if (!(collectionIsAccessible?.ownerId === userId || memberHasAccess))
+      return { response: "Collection is not accessible.", status: 401 };
+  } else {
+    link.collection.ownerId = userId;
+  }
+
+  const updatedLink: ExtendedLink = await prisma.link.update({
     where: {
       id: link.id,
     },
@@ -59,6 +72,10 @@ export default async function (link: ExtendedLink, userId: number) {
           },
         })),
       },
+    },
+    include: {
+      tags: true,
+      collection: true,
     },
   });
 

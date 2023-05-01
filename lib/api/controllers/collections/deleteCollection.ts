@@ -33,7 +33,13 @@ export default async function (collection: { id: number }, userId: number) {
       },
     });
 
-    fs.rmdirSync(`data/archives/${collection.id}`, { recursive: true });
+    try {
+      fs.rmdirSync(`data/archives/${collection.id}`, { recursive: true });
+    } catch (error) {
+      console.log(
+        "Collection's archive directory wasn't deleted most likely because it didn't exist..."
+      );
+    }
 
     return await prisma.collection.delete({
       where: {

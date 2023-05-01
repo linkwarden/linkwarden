@@ -36,5 +36,5 @@ export default function ({ children }: Props) {
     );
   else if ((status === "unauthenticated" && !redirect) || !routeExists)
     return <>{children}</>;
-  else return <Loader />;
+  else return <></>;
 }

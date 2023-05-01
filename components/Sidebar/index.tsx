@@ -14,11 +14,20 @@ import {
 import SidebarItem from "./SidebarItem";
 import useTagStore from "@/store/tags";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function () {
   const { collections } = useCollectionStore();
-
   const { tags } = useTagStore();
+
+  const router = useRouter();
+
+  const [active, setActive] = useState("");
+
+  useEffect(() => {
+    setActive(router.asPath);
+  }, [router]);
 
   return (
     <div className="bg-gray-100 h-screen w-64 xl:w-80 p-2 overflow-y-auto border-solid border-r-sky-100 border z-20">
@@ -27,16 +36,48 @@ export default function () {
       </p>
 
       <Link href="/links">
-        <div className="hover:bg-gray-50 hover:outline outline-sky-100 outline-1 duration-100 text-sky-900 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2">
-          <FontAwesomeIcon icon={faBookmark} className="w-4 text-sky-300" />
-          <p>All Links</p>
+        <div
+          className={`${
+            active === "/links"
+              ? "bg-sky-500"
+              : "hover:bg-gray-50 hover:outline bg-gray-100"
+          } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2`}
+        >
+          <FontAwesomeIcon
+            icon={faBookmark}
+            className={`w-4 ${
+              active === "/links" ? "text-white" : "text-sky-300"
+            }`}
+          />
+          <p
+            className={`${active === "/links" ? "text-white" : "text-sky-900"}`}
+          >
+            All Links
+          </p>
         </div>
       </Link>
 
       <Link href="/collections">
-        <div className="hover:bg-gray-50 hover:outline outline-sky-100 outline-1 duration-100 text-sky-900 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2">
-          <FontAwesomeIcon icon={faBox} className="w-4 text-sky-300" />
-          <p>All Collections</p>
+        <div
+          className={`${
+            active === "/collections"
+              ? "bg-sky-500"
+              : "hover:bg-gray-50 hover:outline bg-gray-100"
+          } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2`}
+        >
+          <FontAwesomeIcon
+            icon={faBox}
+            className={`w-4 ${
+              active === "/collections" ? "text-white" : "text-sky-300"
+            }`}
+          />
+          <p
+            className={`${
+              active === "/collections" ? "text-white" : "text-sky-900"
+            }`}
+          >
+            All Collections
+          </p>
         </div>
       </Link>
 

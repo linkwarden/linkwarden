@@ -5,11 +5,17 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClose,
+  faPenToSquare,
+  faTrashCan,
+} from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { ExtendedCollection } from "@/types/global";
 import { useSession } from "next-auth/react";
 import getPublicUserDataByEmail from "@/lib/client/getPublicUserDataByEmail";
+import Modal from "@/components/Modal";
+import DeleteCollection from "@/components/Modal/DeleteCollection";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -26,6 +32,12 @@ export default function EditCollection({
   const [memberEmail, setMemberEmail] = useState("");
 
   const { updateCollection } = useCollectionStore();
+
+  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
+
+  const toggleDeleteCollectionModal = () => {
+    setDeleteCollectionModal(!deleteCollectionModal);
+  };
 
   const session = useSession();
 
@@ -250,13 +262,41 @@ export default function EditCollection({
         );
       })}
 
-      <div
-        className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-        onClick={submit}
-      >
-        <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
-        Edit Collection
+      <div className="flex flex-col justify-center items-center gap-2 mt-2">
+        <div
+          className="bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
+          onClick={submit}
+        >
+          <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
+          Edit Collection
+        </div>
+
+        <div className="flex items-center justify-center gap-2">
+          <hr className="w-16 border" />
+
+          <p className="text-gray-400 font-bold">OR</p>
+
+          <hr className="w-16 border" />
+        </div>
+
+        <div
+          onClick={() => {
+            toggleDeleteCollectionModal();
+          }}
+          className="w-fit inline-flex rounded-md cursor-pointer bg-red-500 hover:bg-red-400 duration-100 p-2"
+        >
+          <FontAwesomeIcon icon={faTrashCan} className="w-4 h-4 text-white" />
+        </div>
       </div>
+
+      {deleteCollectionModal ? (
+        <Modal toggleModal={toggleDeleteCollectionModal}>
+          <DeleteCollection
+            collection={activeCollection}
+            toggleCollectionModal={toggleDeleteCollectionModal}
+          />
+        </Modal>
+      ) : null}
     </div>
   );
 }
