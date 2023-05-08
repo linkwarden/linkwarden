@@ -8,7 +8,6 @@ import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import {
   faPlus,
-  faMagnifyingGlass,
   faCircleUser,
   faSliders,
   faArrowRightFromBracket,
@@ -17,11 +16,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Dropdown from "@/components/Dropdown";
-import Modal from "./Modal";
-import AddLink from "./Modal/AddLink";
-import ClickAwayHandler from "./ClickAwayHandler";
-import Sidebar from "./Sidebar";
+import Modal from "@/components/Modal";
+import AddLink from "@/components/Modal/AddLink";
+import ClickAwayHandler from "@/components/ClickAwayHandler";
+import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
+import Search from "@/components/Search";
 
 export default function () {
   const { data: session } = useSession();
@@ -57,20 +57,7 @@ export default function () {
       >
         <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
       </div>
-      <div className="flex items-center relative">
-        <label
-          htmlFor="search-box"
-          className="inline-flex w-fit absolute right-0  cursor-pointer select-none rounded-md p-1 text-sky-500"
-        >
-          <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
-        </label>
-        <input
-          id="search-box"
-          type="text"
-          placeholder="Search for Links"
-          className="border border-sky-100 rounded-md pr-6 w-60 focus:border-sky-500 sm:focus:w-80 hover:border-sky-500 duration-100 outline-none p-1"
-        />
-      </div>
+      <Search />
       <div className="flex items-center gap-2">
         <div
           onClick={toggleLinkModal}

@@ -44,6 +44,7 @@ export default function AddCollection({
       </p>
 
       <input
+        autoFocus
         value={inputField}
         onChange={(e) => setInputField(e.target.value)}
         type="text"
