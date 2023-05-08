@@ -46,3 +46,14 @@ export interface ExtendedCollection extends Collection {
     };
   }[];
 }
+
+export type SearchSettings = {
+  query: string;
+  filter: {
+    name: boolean;
+    url: boolean;
+    title: boolean;
+    collection: boolean;
+    tags: boolean;
+  };
+};
