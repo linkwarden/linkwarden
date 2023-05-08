@@ -37,7 +37,7 @@ export default function Links() {
     });
 
     setFilteredLinks(filter);
-  }, [searchSettings]);
+  }, [searchSettings, links]);
 
   return (
     <Dashboard>
