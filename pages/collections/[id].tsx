@@ -22,7 +22,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Dashboard from "@/layouts/Dashboard";
+import MainLayout from "@/layouts/MainLayout";
 
 export default function () {
   const router = useRouter();
@@ -62,7 +62,7 @@ export default function () {
   }, [links, router, collections]);
 
   return (
-    <Dashboard>
+    <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
         <div className="flex gap-3 items-center">
           <div className="flex gap-2 items-center">
@@ -146,6 +146,6 @@ export default function () {
           return <LinkList key={i} link={e} count={i} />;
         })}
       </div>
-    </Dashboard>
+    </MainLayout>
   );
 }

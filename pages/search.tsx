@@ -4,7 +4,7 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import LinkList from "@/components/LinkList";
-import Dashboard from "@/layouts/Dashboard";
+import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import useSearchSettingsStore from "@/store/search";
 import { ExtendedLink } from "@/types/global";
@@ -40,7 +40,7 @@ export default function Links() {
   }, [searchSettings, links]);
 
   return (
-    <Dashboard>
+    <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
         <div className="flex gap-3 items-center">
           <div className="flex gap-2 items-center">
@@ -48,12 +48,19 @@ export default function Links() {
             <p className="text-lg text-sky-900">Search Results</p>
           </div>
         </div>
-        {filteredLinks[0]
-          ? filteredLinks.map((e, i) => {
-              return <LinkList key={i} link={e} count={i} />;
-            })
-          : "No results..."}
+        {filteredLinks[0] ? (
+          filteredLinks.map((e, i) => {
+            return <LinkList key={i} link={e} count={i} />;
+          })
+        ) : (
+          <p className="text-sky-900">
+            Nothing found.{" "}
+            <span className="text-sky-500 font-bold text-xl" title="Shruggie">
+              ¯\_(ツ)_/¯
+            </span>
+          </p>
+        )}
       </div>
-    </Dashboard>
+    </MainLayout>
   );
 }
