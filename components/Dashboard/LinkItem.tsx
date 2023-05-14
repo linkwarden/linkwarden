@@ -7,18 +7,11 @@ import { ExtendedLink } from "@/types/global";
 import {
   faFolder,
   faArrowUpRightFromSquare,
-  faEllipsis,
-  faPenToSquare,
-  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Image from "next/image";
-import Dropdown from "./Dropdown";
-import useLinkStore from "@/store/links";
-import Modal from "./Modal";
-import EditLink from "./Modal/EditLink";
 import Link from "next/link";
 
 export default function ({
@@ -28,11 +21,7 @@ export default function ({
   link: ExtendedLink;
   count: number;
 }) {
-  const [expandDropdown, setExpandDropdown] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [archiveLabel, setArchiveLabel] = useState("Archived Formats");
-
-  const { removeLink } = useLinkStore();
 
   const url = new URL(link.url);
   const formattedDate = new Date(link.createdAt).toLocaleString("en-US", {
@@ -41,18 +30,8 @@ export default function ({
     day: "numeric",
   });
 
-  const toggleEditModal = () => {
-    setEditModal(!editModal);
-  };
-
   return (
-    <div className="border border-sky-100 bg-gray-100 p-5 rounded-md flex items-start relative gap-5 sm:gap-14 group/item">
-      {editModal ? (
-        <Modal toggleModal={toggleEditModal}>
-          <EditLink toggleLinkModal={toggleEditModal} link={link} />
-        </Modal>
-      ) : null}
-
+    <div className="bg-white p-5 rounded-md flex items-start relative gap-5 sm:gap-14 group/item">
       <Image
         src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
         width={32}
@@ -117,88 +96,34 @@ export default function ({
         </div>
 
         <div className="flex flex-col justify-between items-end relative">
-          <div
-            onClick={() => setExpandDropdown(!expandDropdown)}
-            id="edit-dropdown"
-            className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
+          <a
+            href={`/api/archives/${link.collectionId}/${encodeURIComponent(
+              link.screenshotPath
+            )}`}
+            target="_blank"
+            title="Screenshot"
           >
             <FontAwesomeIcon
-              icon={faEllipsis}
-              title="More"
-              className="w-6 h-6"
-              id="edit-dropdown"
+              icon={faFileImage}
+              className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
             />
-          </div>
-          <div>
-            <p className="text-center text-sky-400 text-sm font-bold">
-              {archiveLabel}
-            </p>
-
-            <div
-              className="flex justify-center mt-3 gap-3"
-              onMouseLeave={() => setArchiveLabel("Archived Formats")}
-            >
-              <a
-                href={`/api/archives/${link.collectionId}/${encodeURIComponent(
-                  link.screenshotPath
-                )}`}
-                onMouseEnter={() => setArchiveLabel("Screenshot")}
-                target="_blank"
-                title="Screenshot"
-              >
-                <FontAwesomeIcon
-                  icon={faFileImage}
-                  className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
-                />
-              </a>
-              <a
-                href={`/api/archives/${link.collectionId}/${encodeURIComponent(
-                  link.pdfPath
-                )}`}
-                target="_blank"
-                onMouseEnter={() => setArchiveLabel("PDF")}
-                title="PDF"
-              >
-                <FontAwesomeIcon
-                  icon={faFilePdf}
-                  className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
-                />
-              </a>
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
-                onMouseEnter={() => setArchiveLabel("Wayback Machine")}
-              />
-            </div>
-          </div>
-
-          {expandDropdown ? (
-            <Dropdown
-              items={[
-                {
-                  name: "Edit",
-                  icon: <FontAwesomeIcon icon={faPenToSquare} />,
-                  onClick: () => {
-                    setEditModal(true);
-                    setExpandDropdown(false);
-                  },
-                },
-                {
-                  name: "Delete",
-                  icon: <FontAwesomeIcon icon={faTrashCan} />,
-                  onClick: () => {
-                    removeLink(link);
-                    setExpandDropdown(false);
-                  },
-                },
-              ]}
-              onClickOutside={(e: Event) => {
-                const target = e.target as HTMLInputElement;
-                if (target.id !== "edit-dropdown") setExpandDropdown(false);
-              }}
-              className="absolute top-8 right-0 w-36"
+          </a>
+          <a
+            href={`/api/archives/${link.collectionId}/${encodeURIComponent(
+              link.pdfPath
+            )}`}
+            target="_blank"
+            title="PDF"
+          >
+            <FontAwesomeIcon
+              icon={faFilePdf}
+              className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
             />
-          ) : null}
+          </a>
+          <FontAwesomeIcon
+            icon={faArrowUpRightFromSquare}
+            className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
+          />
         </div>
       </div>
     </div>

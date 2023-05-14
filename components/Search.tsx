@@ -1,6 +1,6 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClickAwayHandler from "./ClickAwayHandler";
 import useSearchSettingsStore from "@/store/search";
 import { useRouter } from "next/router";
@@ -14,6 +14,10 @@ export default function Search() {
 
   const { searchSettings, toggleCheckbox, setSearchQuery } =
     useSearchSettingsStore();
+
+  useEffect(() => {
+    if (router.pathname !== "/search") setSearchQuery("");
+  }, [router]);
 
   return (
     <ClickAwayHandler onClickOutside={() => setSearchBox(false)}>

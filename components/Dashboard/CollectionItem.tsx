@@ -19,16 +19,19 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
 
   return (
     <Link href={`/collections/${collection.id}`}>
-      <div className="p-5 bg-gray-100 min-h-[10rem] w-72 rounded-md border-sky-100 border-solid border flex flex-col gap-2 justify-between cursor-pointer hover:bg-gray-50 duration-100">
+      <div className="p-5 bg-white rounded-md flex flex-col gap-2 justify-between cursor-pointer hover:bg-gray-50 duration-100">
         <div>
           <div className="flex justify-between text-sky-900 items-center">
-            <p className="text-lg w-max font-bold">{collection.name}</p>
+            <div className="flex items-baseline gap-1">
+              <p className="text-lg w-max font-bold">{collection.name}</p>
+              <p className="text-sky-400">{collection.description}</p>
+            </div>
+
             <FontAwesomeIcon
               icon={faChevronRight}
               className="w-3 h-3 text-gray-500"
             />
           </div>
-          <p className="text-sky-400">{collection.description}</p>
         </div>
         <div className="text-sky-400 flex gap-1 flex-wrap">
           <p>Members:</p>

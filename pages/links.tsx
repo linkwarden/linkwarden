@@ -4,7 +4,7 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import LinkList from "@/components/LinkList";
-import Dashboard from "@/layouts/Dashboard";
+import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +13,7 @@ export default function Links() {
   const { links } = useLinkStore();
 
   return (
-    <Dashboard>
+    <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
         <div className="flex gap-3 items-center">
           <div className="flex gap-2 items-center">
@@ -28,6 +28,6 @@ export default function Links() {
           return <LinkList key={i} link={e} count={i} />;
         })}
       </div>
-    </Dashboard>
+    </MainLayout>
   );
 }
