@@ -10,6 +10,7 @@ import {
   faBox,
   faHashtag,
   faBookmark,
+  faChartSimple,
 } from "@fortawesome/free-solid-svg-icons";
 import SidebarItem from "./SidebarItem";
 import useTagStore from "@/store/tags";
@@ -34,6 +35,30 @@ export default function () {
       <p className="p-2 text-sky-500 font-bold text-xl mb-5 leading-4">
         Linkwarden
       </p>
+
+      <Link href="/dashboard">
+        <div
+          className={`${
+            active === "/dashboard"
+              ? "bg-sky-500"
+              : "hover:bg-gray-50 hover:outline bg-gray-100"
+          } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2`}
+        >
+          <FontAwesomeIcon
+            icon={faChartSimple}
+            className={`w-4 ${
+              active === "/dashboard" ? "text-white" : "text-sky-300"
+            }`}
+          />
+          <p
+            className={`${
+              active === "/dashboard" ? "text-white" : "text-sky-900"
+            }`}
+          >
+            Dashboard
+          </p>
+        </div>
+      </Link>
 
       <Link href="/links">
         <div
