@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ClickAwayHandler from "./ClickAwayHandler";
 import useSearchSettingsStore from "@/store/search";
 import { useRouter } from "next/router";
+import Checkbox from "./Checkbox";
 
 export default function Search() {
   const router = useRouter();
@@ -43,64 +44,34 @@ export default function Search() {
           className="border border-sky-100 rounded-md pr-6 w-60 focus:border-sky-500 sm:focus:w-80 hover:border-sky-500 duration-100 outline-none p-1"
         />
         {searchBox ? (
-          <div className="absolute flex flex-wrap items-baseline justify-between gap-2 top-9 left-0 shadow-md bg-gray-50 rounded-md p-2 z-10 border border-sky-100 w-60 sm:w-80">
-            <p className="text-sky-900">Filter by:</p>
-            <div className="flex gap-1 text-sm font-bold flex-wrap text-sky-500">
-              <label className="cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={searchSettings.filter.name}
-                  onChange={() => toggleCheckbox("name")}
-                  className="peer sr-only"
-                />
-                <span className="text-sky-900 peer-checked:bg-sky-500 text-xs hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                  Name
-                </span>
-              </label>
-              <label className="cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={searchSettings.filter.url}
-                  onChange={() => toggleCheckbox("url")}
-                  className="peer sr-only"
-                />
-                <span className="text-sky-900 peer-checked:bg-sky-500 text-xs hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                  Link
-                </span>
-              </label>
-              <label className="cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={searchSettings.filter.title}
-                  onChange={() => toggleCheckbox("title")}
-                  className="peer sr-only"
-                />
-                <span className="text-sky-900 peer-checked:bg-sky-500 text-xs hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                  Title
-                </span>
-              </label>
-              <label className="cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={searchSettings.filter.collection}
-                  onChange={() => toggleCheckbox("collection")}
-                  className="peer sr-only"
-                />
-                <span className="text-sky-900 peer-checked:bg-sky-500 text-xs hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                  Collection
-                </span>
-              </label>
-              <label className="cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={searchSettings.filter.tags}
-                  onChange={() => toggleCheckbox("tags")}
-                  className="peer sr-only"
-                />
-                <span className="text-sky-900 peer-checked:bg-sky-500 text-xs hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                  Tags
-                </span>
-              </label>
+          <div className="absolute top-9 left-0 shadow-md bg-gray-50 rounded-md p-2 z-20 border border-sky-100 w-60 sm:w-80">
+            <div className="grid grid-cols-2 gap-x-5 gap-y-2 w-fit mx-auto">
+              <p className="text-sky-900 font-semibold">Filter by</p>
+              <Checkbox
+                label="Name"
+                state={searchSettings.filter.name}
+                onClick={() => toggleCheckbox("name")}
+              />
+              <Checkbox
+                label="Link"
+                state={searchSettings.filter.url}
+                onClick={() => toggleCheckbox("url")}
+              />
+              <Checkbox
+                label="Title"
+                state={searchSettings.filter.title}
+                onClick={() => toggleCheckbox("title")}
+              />
+              <Checkbox
+                label="Collection"
+                state={searchSettings.filter.collection}
+                onClick={() => toggleCheckbox("collection")}
+              />
+              <Checkbox
+                label="Tags"
+                state={searchSettings.filter.tags}
+                onClick={() => toggleCheckbox("tags")}
+              />
             </div>
           </div>
         ) : null}
