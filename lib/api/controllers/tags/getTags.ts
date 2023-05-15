@@ -39,6 +39,11 @@ export default async function (userId: number) {
         ],
       },
     },
+    orderBy: {
+      links: {
+        _count: "desc",
+      },
+    },
   });
 
   return { response: tags, status: 200 };

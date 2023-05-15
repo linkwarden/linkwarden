@@ -21,8 +21,6 @@ export default function ({
   link: ExtendedLink;
   count: number;
 }) {
-  const [editModal, setEditModal] = useState(false);
-
   const url = new URL(link.url);
   const formattedDate = new Date(link.createdAt).toLocaleString("en-US", {
     year: "numeric",
@@ -31,7 +29,7 @@ export default function ({
   });
 
   return (
-    <div className="bg-white p-5 rounded-md flex items-start relative gap-5 sm:gap-14 group/item">
+    <div className="bg-white p-5 rounded-md flex items-start border border-sky-100 relative gap-5 lg:gap-10 group/item">
       <Image
         src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
         width={32}
@@ -49,7 +47,7 @@ export default function ({
         width={80}
         height={80}
         alt=""
-        className="blur-sm absolute left-2 opacity-40 select-none hidden sm:block"
+        className="blur-sm absolute left-2 opacity-40 select-none hidden lg:block"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;

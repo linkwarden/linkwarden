@@ -67,12 +67,12 @@ export default function () {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-start justify-evenly gap-5">
-          <div className="flex flex-col gap-2 p-2 bg-sky-50 rounded-md w-full">
+        <div className="flex flex-col 2xl:flex-row items-start justify-evenly gap-5">
+          <div className="flex flex-col gap-2 p-2 bg-gray-100 border border-sky-100 rounded-md w-full">
             <div className="flex justify-between gap-2 items-baseline">
               <p className="text-sky-600 text-xl mb-2">Recently added Links</p>
               <Link href="/links">
-                <div className="text-sky-600 flex items-center gap-1">
+                <div className="text-sky-600 flex items-center gap-1 hover:border-b-sky-500 duration-100 hover:border-b">
                   View All
                   <FontAwesomeIcon
                     icon={faArrowRight}
@@ -93,11 +93,11 @@ export default function () {
               ))}
           </div>
 
-          <div className="flex flex-col gap-2 p-2 bg-sky-50 rounded-md w-full">
+          <div className="flex flex-col gap-2 p-2 bg-gray-100 border border-sky-100 rounded-md w-full">
             <div className="flex justify-between gap-2 items-baseline">
               <p className="text-sky-600 text-xl mb-2">Top Collections</p>
               <Link href="/collections">
-                <div className="text-sky-600 flex items-center gap-1">
+                <div className="text-sky-600 flex items-center gap-1 hover:border-b-sky-500 duration-100 hover:border-b">
                   View All
                   <FontAwesomeIcon
                     icon={faArrowRight}
@@ -109,6 +109,32 @@ export default function () {
             {sortedCollections.map((e, i) => (
               <CollectionItem key={i} collection={e} />
             ))}
+          </div>
+
+          <div className="flex flex-col gap-2 p-2 bg-gray-100 border border-sky-100 rounded-md w-full">
+            <div className="flex justify-between gap-2 items-baseline">
+              <p className="text-sky-600 text-xl mb-2">Top Tags</p>
+              <Link href="/collections">
+                <div className="text-sky-600 flex items-center gap-1 hover:border-b-sky-500 duration-100 hover:border-b">
+                  View All
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className="w-4 h-4 text-sky-300"
+                  />
+                </div>
+              </Link>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {tags.slice(0, 19).map((e, i) => (
+                <Link
+                  href={`/tags/${e.id}`}
+                  key={i}
+                  className="px-2 py-1 bg-sky-200 rounded-full hover:bg-sky-100 duration-100 text-sky-700"
+                >
+                  # {e.name}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>

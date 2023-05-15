@@ -18,7 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export default function () {
+export default function ({ className }: { className?: string }) {
   const { collections } = useCollectionStore();
   const { tags } = useTagStore();
 
@@ -31,7 +31,9 @@ export default function () {
   }, [router]);
 
   return (
-    <div className="bg-gray-100 h-screen w-64 xl:w-80 p-2 overflow-y-auto border-solid border-r-sky-100 border z-20">
+    <div
+      className={`bg-gray-100 h-screen w-64 xl:w-80 p-2 overflow-y-auto border-solid border-r-sky-100 border z-20 ${className}`}
+    >
       <p className="p-2 text-sky-500 font-bold text-xl mb-5 leading-4">
         Linkwarden
       </p>
