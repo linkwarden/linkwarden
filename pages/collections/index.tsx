@@ -7,7 +7,6 @@ import useCollectionStore from "@/store/collections";
 import {
   faAdd,
   faBox,
-  faCheck,
   faEllipsis,
   faPlus,
   faSort,
@@ -20,6 +19,8 @@ import Modal from "@/components/Modal";
 import AddCollection from "@/components/Modal/AddCollection";
 import MainLayout from "@/layouts/MainLayout";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
+import { faCircle, faCircleCheck } from "@fortawesome/free-regular-svg-icons";
+import RadioButton from "@/components/RadioButton";
 
 export default function () {
   const { collections } = useCollectionStore();
@@ -32,7 +33,7 @@ export default function () {
     setCollectionModal(!collectionModal);
   };
 
-  const [sortBy, setSortBy] = useState("");
+  const [sortBy, setSortBy] = useState("Name");
 
   const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSortBy(event.target.value);
@@ -104,59 +105,27 @@ export default function () {
                 }}
                 className="absolute top-8 right-0 shadow-md bg-gray-50 rounded-md p-2 z-10 border border-sky-100 w-36"
               >
-                <p className="mb-2 text-sky-900 text-sm text-center">Sort by</p>
+                <p className="mb-2 text-sky-900 text-center font-semibold">
+                  Sort by
+                </p>
                 <div className="flex flex-col gap-2">
-                  <label className="cursor-pointer flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="Sort"
-                      value="Name"
-                      className="peer sr-only"
-                      checked={sortBy === "Name"}
-                      onChange={handleSortChange}
-                    />
-                    <span className="text-sky-900 peer-checked:bg-sky-500 hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                      Name
-                    </span>
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      className="w-5 h-5 text-sky-500 peer-checked:block hidden"
-                    />
-                  </label>
-                  <label className="cursor-pointer flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="Sort"
-                      value="Description"
-                      className="peer sr-only"
-                      checked={sortBy === "Description"}
-                      onChange={handleSortChange}
-                    />
-                    <span className="text-sky-900 peer-checked:bg-sky-500 hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                      Description
-                    </span>
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      className="w-5 h-5 text-sky-500 peer-checked:block hidden"
-                    />
-                  </label>
-                  <label className="cursor-pointer flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="Sort"
-                      value="Date"
-                      className="peer sr-only"
-                      checked={sortBy === "Date"}
-                      onChange={handleSortChange}
-                    />
-                    <span className="text-sky-900 peer-checked:bg-sky-500 hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                      Date
-                    </span>
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      className="w-5 h-5 text-sky-500 peer-checked:block hidden"
-                    />
-                  </label>
+                  <RadioButton
+                    label="Name"
+                    state={sortBy === "Name"}
+                    onClick={handleSortChange}
+                  />
+
+                  <RadioButton
+                    label="Description"
+                    state={sortBy === "Description"}
+                    onClick={handleSortChange}
+                  />
+
+                  <RadioButton
+                    label="Date"
+                    state={sortBy === "Date"}
+                    onClick={handleSortChange}
+                  />
                 </div>
               </ClickAwayHandler>
             ) : null}
