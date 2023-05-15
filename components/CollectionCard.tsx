@@ -21,7 +21,7 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
     <Link href={`/collections/${collection.id}`}>
       <div className="p-5 bg-gray-100 min-h-[10rem] w-72 rounded-md border-sky-100 border-solid border flex flex-col gap-2 justify-between cursor-pointer hover:bg-gray-50 duration-100">
         <div>
-          <div className="flex justify-between text-sky-900 items-center">
+          <div className="flex justify-between text-sky-600 items-center">
             <p className="text-lg w-max font-bold">{collection.name}</p>
             <FontAwesomeIcon
               icon={faChevronRight}

@@ -18,10 +18,10 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
   });
 
   return (
-    <Link href={`/collections/${collection.id}`}>
-      <div className="p-5 bg-white rounded-md flex flex-col gap-2 justify-between cursor-pointer hover:bg-gray-50 duration-100">
+    <Link href={`/collections/${collection.id}`} className="bg-white">
+      <div className="p-5 rounded-md flex border border-sky-100 flex-col gap-2 justify-between cursor-pointer hover:opacity-60 duration-100">
         <div>
-          <div className="flex justify-between text-sky-900 items-center">
+          <div className="flex justify-between text-sky-600 items-center">
             <div className="flex items-baseline gap-1">
               <p className="text-lg w-max font-bold">{collection.name}</p>
               <p className="text-sky-400">{collection.description}</p>

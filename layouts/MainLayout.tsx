@@ -24,11 +24,11 @@ export default function ({ children }: Props) {
   if (status === "authenticated" && !redirect && routeExists)
     return (
       <div className="flex">
-        <div className="hidden lgblock">
-          <Sidebar />
+        <div className="hidden lg:block">
+          <Sidebar className="fixed" />
         </div>
 
-        <div className="w-full">
+        <div className="w-full lg:ml-64 xl:ml-80">
           <Navbar />
           {children}
         </div>
