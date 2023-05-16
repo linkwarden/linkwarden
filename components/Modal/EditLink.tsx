@@ -53,44 +53,47 @@ export default function EditLink({ toggleLinkModal, link }: Props) {
       <p className="text-sky-700">
         <b>{shortendURL}</b> | {link.title}
       </p>
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">
-          Name
-          <RequiredBadge />
-        </p>
-        <input
-          value={currentLink.name}
-          onChange={(e) =>
-            setCurrentLink({ ...currentLink, name: e.target.value })
-          }
-          type="text"
-          placeholder="e.g. Example Link"
-          className="w-60 rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
-      </div>
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">
-          Collection
-          <RequiredBadge />
-        </p>
-        <CollectionSelection
-          onChange={setCollection}
-          defaultValue={{
-            label: link.collection.name,
-            value: link.collection.id,
-          }}
-        />
-      </div>
+      <div className="grid sm:grid-cols-2 gap-3">
+        <div>
+          <p className="text-sm font-bold text-sky-300 mb-2">
+            Name
+            <RequiredBadge />
+          </p>
+          <input
+            value={currentLink.name}
+            onChange={(e) =>
+              setCurrentLink({ ...currentLink, name: e.target.value })
+            }
+            type="text"
+            placeholder="e.g. Example Link"
+            className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Tags</p>
-        <TagSelection
-          onChange={setTags}
-          defaultValue={link.tags.map((e) => {
-            return { label: e.name, value: e.id };
-          })}
-        />
+        <div>
+          <p className="text-sm font-bold text-sky-300 mb-2">
+            Collection
+            <RequiredBadge />
+          </p>
+          <CollectionSelection
+            onChange={setCollection}
+            defaultValue={{
+              label: link.collection.name,
+              value: link.collection.id,
+            }}
+          />
+        </div>
+
+        <div className="sm:col-span-2">
+          <p className="text-sm font-bold text-sky-300 mb-2">Tags</p>
+          <TagSelection
+            onChange={setTags}
+            defaultValue={link.tags.map((e) => {
+              return { label: e.name, value: e.id };
+            })}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col justify-center items-center gap-2 mt-2">

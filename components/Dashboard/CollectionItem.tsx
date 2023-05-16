@@ -18,7 +18,10 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
   });
 
   return (
-    <Link href={`/collections/${collection.id}`} className="bg-white">
+    <Link
+      href={`/collections/${collection.id}`}
+      className="bg-white rounded-md"
+    >
       <div className="p-5 rounded-md flex border border-sky-100 flex-col gap-2 justify-between cursor-pointer hover:opacity-60 duration-100">
         <div>
           <div className="flex justify-between text-sky-600 items-center">

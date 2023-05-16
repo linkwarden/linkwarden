@@ -11,12 +11,6 @@ import getPermission from "@/lib/api/getPermission";
 export default async function (link: ExtendedLink, userId: number) {
   if (!link) return { response: "Please choose a valid link.", status: 401 };
 
-  const collectionIsAccessible = await getPermission(userId, link.collectionId);
-
-  const memberHasAccess = collectionIsAccessible?.members.some(
-    (e: UsersAndCollections) => e.userId === userId && e.canUpdate
-  );
-
   if (link.collection.ownerId) {
     const collectionIsAccessible = await getPermission(
       userId,

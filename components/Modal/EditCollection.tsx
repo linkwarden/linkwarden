@@ -56,93 +56,93 @@ export default function EditCollection({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       <p className="font-bold text-sky-300 mb-2 text-center">Edit Collection</p>
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">
-          Name
-          <RequiredBadge />
-        </p>
-        <input
-          value={activeCollection.name}
-          onChange={(e) =>
-            setActiveCollection({ ...activeCollection, name: e.target.value })
-          }
-          type="text"
-          placeholder="e.g. Example Collection"
-          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
-      </div>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="w-full">
+          <p className="text-sm font-bold text-sky-300 mb-2">
+            Name
+            <RequiredBadge />
+          </p>
+          <input
+            value={activeCollection.name}
+            onChange={(e) =>
+              setActiveCollection({ ...activeCollection, name: e.target.value })
+            }
+            type="text"
+            placeholder="e.g. Example Collection"
+            className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Description</p>
-        <input
-          value={activeCollection.description}
-          onChange={(e) =>
-            setActiveCollection({
-              ...activeCollection,
-              description: e.target.value,
-            })
-          }
-          type="text"
-          placeholder="Collection description"
-          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
+        <div className="w-full">
+          <p className="text-sm font-bold text-sky-300 mb-2">Description</p>
+          <input
+            value={activeCollection.description}
+            onChange={(e) =>
+              setActiveCollection({
+                ...activeCollection,
+                description: e.target.value,
+              })
+            }
+            type="text"
+            placeholder="Collection description"
+            className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
       </div>
 
       <hr className="border rounded my-2" />
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Members</p>
-        <input
-          value={memberEmail}
-          onChange={(e) => {
-            setMemberEmail(e.target.value);
-          }}
-          onKeyDown={async (e) => {
-            const checkIfMemberAlreadyExists = activeCollection.members.find(
-              (e) => e.user.email === memberEmail
-            );
+      <p className="text-sm font-bold text-sky-300">Members</p>
+      <input
+        value={memberEmail}
+        onChange={(e) => {
+          setMemberEmail(e.target.value);
+        }}
+        onKeyDown={async (e) => {
+          const checkIfMemberAlreadyExists = activeCollection.members.find(
+            (e) => e.user.email === memberEmail
+          );
 
-            const ownerEmail = session.data?.user.email;
+          const ownerEmail = session.data?.user.email;
 
-            if (
-              e.key === "Enter" &&
-              // no duplicate members
-              !checkIfMemberAlreadyExists &&
-              // member can't be empty
-              memberEmail.trim() !== "" &&
-              // member can't be the owner
-              memberEmail.trim() !== ownerEmail
-            ) {
-              // Lookup, get data/err, list ...
-              const user = await getPublicUserDataByEmail(memberEmail.trim());
+          if (
+            e.key === "Enter" &&
+            // no duplicate members
+            !checkIfMemberAlreadyExists &&
+            // member can't be empty
+            memberEmail.trim() !== "" &&
+            // member can't be the owner
+            memberEmail.trim() !== ownerEmail
+          ) {
+            // Lookup, get data/err, list ...
+            const user = await getPublicUserDataByEmail(memberEmail.trim());
 
-              if (user.email) {
-                const newMember = {
-                  collectionId: activeCollection.id,
-                  userId: user.id,
-                  canCreate: false,
-                  canUpdate: false,
-                  canDelete: false,
-                  user: {
-                    name: user.name,
-                    email: user.email,
-                  },
-                };
+            if (user.email) {
+              const newMember = {
+                collectionId: activeCollection.id,
+                userId: user.id,
+                canCreate: false,
+                canUpdate: false,
+                canDelete: false,
+                user: {
+                  name: user.name,
+                  email: user.email,
+                },
+              };
 
-                setActiveCollection({
-                  ...activeCollection,
-                  members: [...activeCollection.members, newMember],
-                });
+              setActiveCollection({
+                ...activeCollection,
+                members: [...activeCollection.members, newMember],
+              });
 
-                setMemberEmail("");
-              }
+              setMemberEmail("");
             }
-          }}
-          type="text"
-          placeholder="Email"
-          className="w-56 sm:w-96 rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
-      </div>
+          }
+        }}
+        type="text"
+        placeholder="Email"
+        className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+      />
 
       {activeCollection.members[0] ? (
         <p className="text-center text-sky-500 text-xs sm:text-sm">

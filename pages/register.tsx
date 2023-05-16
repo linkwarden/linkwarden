@@ -58,7 +58,7 @@ export default function () {
       <p className="text-3xl font-bold text-center mb-10">Linkwarden</p>
       <input
         type="text"
-        placeholder="Name"
+        placeholder="Display Name"
         value={form.name}
         onChange={(e) => setForm({ ...form, name: e.target.value })}
         className="border border-gray-700 rounded-md block m-2 mx-auto p-2"
