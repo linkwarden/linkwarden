@@ -21,9 +21,6 @@ export default function () {
   const { links } = useLinkStore();
   const { tags } = useTagStore();
 
-  const [linkModal, setLinkModal] = useState(false);
-  const [editCollectionModal, setEditCollectionModal] = useState(false);
-  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState("Name (A-Z)");
 

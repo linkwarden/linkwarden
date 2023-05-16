@@ -17,27 +17,22 @@ export default async function (userId: number) {
 
   const tags = await prisma.tag.findMany({
     where: {
-      ownerId: userId,
-      owner: {
-        OR: [
-          {
-            id: userId,
-          },
-          {
-            collections: {
-              some: {
+      OR: [
+        { ownerId: userId }, // Tags owned by the user
+        {
+          links: {
+            some: {
+              collection: {
                 members: {
                   some: {
-                    user: {
-                      id: userId,
-                    },
+                    userId, // Tags from collections where the user is a member
                   },
                 },
               },
             },
           },
-        ],
-      },
+        },
+      ],
     },
     orderBy: {
       links: {
