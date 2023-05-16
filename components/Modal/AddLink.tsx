@@ -75,56 +75,62 @@ export default function AddLink({ toggleLinkModal }: Props) {
 
     if (response) toggleLinkModal();
   };
+
   return (
-    <div className="flex flex-col gap-3 sm:w-96 w-80">
+    <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       <p className="font-bold text-sky-300 mb-2 text-center">New Link</p>
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">
-          Name
-          <RequiredBadge />
-        </p>
-        <input
-          value={newLink.name}
-          onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
-          type="text"
-          placeholder="e.g. Example Link"
-          className="w-60 rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
-      </div>
+      <div className="grid sm:grid-cols-2 gap-3">
+        <div>
+          <p className="text-sm font-bold text-sky-300 mb-2">
+            Name
+            <RequiredBadge />
+          </p>
+          <input
+            value={newLink.name}
+            onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
+            type="text"
+            placeholder="e.g. Example Link"
+            className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">
-          URL
-          <RequiredBadge />
-        </p>
-        <input
-          value={newLink.url}
-          onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-          type="text"
-          placeholder="e.g. http://example.com/"
-          className="w-60 rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
-      </div>
+        <div>
+          <p className="text-sm font-bold text-sky-300 mb-2">
+            URL
+            <RequiredBadge />
+          </p>
+          <input
+            value={newLink.url}
+            onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
+            type="text"
+            placeholder="e.g. http://example.com/"
+            className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">
-          Collection
-          <RequiredBadge />
-        </p>
-        <CollectionSelection
-          defaultValue={
-            newLink.collection.name && newLink.collection.id
-              ? { value: newLink.collection.id, label: newLink.collection.name }
-              : undefined
-          }
-          onChange={setCollection}
-        />
-      </div>
+        <div>
+          <p className="text-sm font-bold text-sky-300 mb-2">
+            Collection
+            <RequiredBadge />
+          </p>
+          <CollectionSelection
+            defaultValue={
+              newLink.collection.name && newLink.collection.id
+                ? {
+                    value: newLink.collection.id,
+                    label: newLink.collection.name,
+                  }
+                : undefined
+            }
+            onChange={setCollection}
+          />
+        </div>
 
-      <div className="flex gap-5 items-center justify-between">
-        <p className="text-sm font-bold text-sky-300">Tags</p>
-        <TagSelection onChange={setTags} />
+        <div>
+          <p className="text-sm font-bold text-sky-300 mb-2">Tags</p>
+          <TagSelection onChange={setTags} />
+        </div>
       </div>
 
       <div

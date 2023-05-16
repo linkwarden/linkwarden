@@ -26,7 +26,6 @@ export const styles: StylesConfig = {
   }),
   container: (styles) => ({
     ...styles,
-    width: "15rem",
     border: "1px solid #e0f2fe",
     borderRadius: "0.375rem",
     lineHeight: "1.25rem",

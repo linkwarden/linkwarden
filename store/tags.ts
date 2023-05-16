@@ -5,6 +5,7 @@
 
 import { create } from "zustand";
 import { Tag } from "@prisma/client";
+import tags from "@/pages/api/routes/tags";
 
 type TagStore = {
   tags: Tag[];

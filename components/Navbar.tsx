@@ -22,6 +22,7 @@ import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
 import Search from "@/components/Search";
+import UserSettings from "./Modal/UserSettings";
 
 export default function () {
   const { data: session } = useSession();
@@ -31,6 +32,7 @@ export default function () {
   const user = session?.user;
 
   const [linkModal, setLinkModal] = useState(false);
+  const [settingsModal, setSettingsModal] = useState(false);
   const [sidebar, setSidebar] = useState(false);
 
   const router = useRouter();
@@ -47,6 +49,10 @@ export default function () {
 
   const toggleLinkModal = () => {
     setLinkModal(!linkModal);
+  };
+
+  const toggleSettingsModal = () => {
+    setSettingsModal(!settingsModal);
   };
 
   return (
@@ -66,12 +72,6 @@ export default function () {
         >
           <FontAwesomeIcon icon={faPlus} className="w-6 h-6" />
         </div>
-
-        {linkModal ? (
-          <Modal toggleModal={toggleLinkModal}>
-            <AddLink toggleLinkModal={toggleLinkModal} />
-          </Modal>
-        ) : null}
 
         <div className="relative">
           <div
@@ -96,6 +96,10 @@ export default function () {
                 {
                   name: "Settings",
                   icon: <FontAwesomeIcon icon={faSliders} />,
+                  onClick: () => {
+                    toggleSettingsModal();
+                    setProfileDropdown(!profileDropdown);
+                  },
                 },
                 {
                   name: "Logout",
@@ -112,6 +116,18 @@ export default function () {
               }}
               className="absolute top-9 right-0 z-20 w-36"
             />
+          ) : null}
+
+          {linkModal ? (
+            <Modal toggleModal={toggleLinkModal}>
+              <AddLink toggleLinkModal={toggleLinkModal} />
+            </Modal>
+          ) : null}
+
+          {settingsModal ? (
+            <Modal toggleModal={toggleSettingsModal}>
+              <UserSettings toggleSettingsModal={toggleSettingsModal} />
+            </Modal>
           ) : null}
 
           {sidebar ? (
