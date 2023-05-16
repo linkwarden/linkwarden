@@ -114,15 +114,6 @@ export default function () {
           <div className="flex flex-col gap-2 p-2 bg-gray-100 border border-sky-100 rounded-md w-full">
             <div className="flex justify-between gap-2 items-baseline">
               <p className="text-sky-600 text-xl mb-2">Top Tags</p>
-              <Link href="/collections">
-                <div className="text-sky-600 flex items-center gap-1 hover:border-b-sky-500 duration-100 hover:border-b">
-                  View All
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className="w-4 h-4 text-sky-300"
-                  />
-                </div>
-              </Link>
             </div>
             <div className="flex gap-2 flex-wrap">
               {tags.slice(0, 19).map((e, i) => (
