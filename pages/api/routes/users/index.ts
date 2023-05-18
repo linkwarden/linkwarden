@@ -15,9 +15,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ response: "You must be logged in." });
   }
 
+  const lookupEmail = req.query.email as string;
+  const isSelf = session.user.email === lookupEmail ? true : false;
+
   // get unsensitive user info by email
   if (req.method === "GET") {
-    const users = await getUsers(req.query.email as string);
+    const users = await getUsers(lookupEmail, isSelf);
     return res.status(users.status).json({ response: users.response });
   }
 }

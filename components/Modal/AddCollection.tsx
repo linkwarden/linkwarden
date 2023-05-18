@@ -46,7 +46,7 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
 
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="font-bold text-sky-300 mb-3 text-center">New Collection</p>
+      <p className="text-xl text-sky-500 mb-2 text-center">New Collection</p>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">

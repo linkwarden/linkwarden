@@ -56,6 +56,7 @@ export default function () {
   };
 
   return (
+    // lg:ml-64 xl:ml-80
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b">
       <div
         onClick={toggleSidebar}

@@ -11,12 +11,12 @@ import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 
 type Props = {
-  toggleCollectionModal: Function;
+  toggleDeleteCollectionModal: Function;
   collection: ExtendedCollection;
 };
 
 export default function AddCollection({
-  toggleCollectionModal,
+  toggleDeleteCollectionModal,
   collection,
 }: Props) {
   const [inputField, setInputField] = useState("");
@@ -28,14 +28,14 @@ export default function AddCollection({
   const submit = async () => {
     const response = await removeCollection(collection.id);
     if (response) {
-      toggleCollectionModal();
+      toggleDeleteCollectionModal();
       router.push("/collections");
     }
   };
 
   return (
     <div className="flex flex-col gap-3 sm:w-[33rem] w-72">
-      <p className="font-bold text-sky-300 text-center">Delete Collection</p>
+      <p className="text-xl text-sky-500 mb-2 text-center">Delete Collection</p>
 
       <p className="text-sky-900 select-none text-center">
         To confirm, type "

@@ -49,7 +49,7 @@ export default function EditLink({ toggleLinkModal, link }: Props) {
 
   return (
     <div className="flex flex-col gap-3 sm:w-96 w-80">
-      <p className="font-bold text-sky-300 mb-2 text-center">Edit Link</p>
+      <p className="text-xl text-sky-500 mb-2 text-center">Edit Link</p>
       <p className="text-sky-700">
         <b>{shortendURL}</b> | {link.title}
       </p>
