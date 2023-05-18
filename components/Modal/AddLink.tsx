@@ -78,7 +78,7 @@ export default function AddLink({ toggleLinkModal }: Props) {
 
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="font-bold text-sky-300 mb-2 text-center">New Link</p>
+      <p className="text-xl text-sky-500 mb-2 text-center">New Link</p>
 
       <div className="grid sm:grid-cols-2 gap-3">
         <div>

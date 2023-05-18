@@ -20,6 +20,9 @@ model User {
   collections Collection[]
   tags Tag[]
   collectionsJoined UsersAndCollections[]
+  collectionProtection Boolean @default(true)
+  whitelistedUsers String[] @default([])
+  profilePhotoPath String @default("")
   createdAt DateTime @default(now())
 }
 

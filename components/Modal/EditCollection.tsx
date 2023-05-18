@@ -54,7 +54,7 @@ export default function EditCollection({
 
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="font-bold text-sky-300 mb-2 text-center">Edit Collection</p>
+      <p className="text-xl text-sky-500 mb-2 text-center">Edit Collection</p>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">
@@ -297,7 +297,7 @@ export default function EditCollection({
         <Modal toggleModal={toggleDeleteCollectionModal}>
           <DeleteCollection
             collection={activeCollection}
-            toggleCollectionModal={toggleDeleteCollectionModal}
+            toggleDeleteCollectionModal={toggleDeleteCollectionModal}
           />
         </Modal>
       ) : null}

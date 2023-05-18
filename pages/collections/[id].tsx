@@ -175,7 +175,7 @@ export default function () {
                 <Modal toggleModal={toggleDeleteCollectionModal}>
                   <DeleteCollection
                     collection={activeCollection}
-                    toggleCollectionModal={toggleDeleteCollectionModal}
+                    toggleDeleteCollectionModal={toggleDeleteCollectionModal}
                   />
                 </Modal>
               ) : null}
