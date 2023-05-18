@@ -3,30 +3,25 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { prisma } from "@/lib/api/db";
+import { create } from "zustand";
+import { User } from "@prisma/client";
 
-export default async function (lookupEmail: string, isSelf: boolean) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: lookupEmail,
-    },
-  });
+type AccountStore = {
+  account: User;
+  setAccount: (email: string) => void;
+};
 
-  const data = isSelf
-    ? {
-        // If user is requesting its data
-        id: user?.id,
-        name: user?.name,
-        email: user?.email,
-      }
-    : {
-        // If user is requesting someone elses data
-        id: user?.id,
-        name: user?.name,
-        email: user?.email,
-      };
+const useAccountStore = create<AccountStore>()((set) => ({
+  account: {} as User,
+  setAccount: async (email) => {
+    const response = await fetch(`/api/routes/users?email=${email}`);
 
-  const statusCode = user?.id ? 200 : 404;
+    const data = await response.json();
 
-  return { response: data || null, status: statusCode };
-}
+    console.log(data);
+
+    if (response.ok) set({ account: data.response });
+  },
+}));
+
+export default useAccountStore;

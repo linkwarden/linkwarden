@@ -5,12 +5,15 @@ import { ChangeEventHandler } from "react";
 type Props = {
   label: string;
   state: boolean;
+  className?: string;
   onClick: ChangeEventHandler<HTMLInputElement>;
 };
 
-export default function Checkbox({ label, state, onClick }: Props) {
+export default function Checkbox({ label, state, className, onClick }: Props) {
   return (
-    <label className="cursor-pointer flex items-center gap-2 text-sky-500">
+    <label
+      className={`cursor-pointer flex items-center gap-2 text-sky-500 ${className}`}
+    >
       <input
         type="checkbox"
         checked={state}
