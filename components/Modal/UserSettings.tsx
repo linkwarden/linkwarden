@@ -67,6 +67,11 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
           <div>
             <p className="text-sm font-bold text-sky-300 mb-2">Email</p>
+            {user.email !== initialUser.email ? (
+              <p className="text-gray-500 text-sm mb-3">
+                Please log back in if you change the Email.
+              </p>
+            ) : null}
             <input
               type="text"
               value={user.email}
