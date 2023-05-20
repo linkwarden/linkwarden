@@ -5,16 +5,34 @@
 
 import { create } from "zustand";
 import { User } from "@prisma/client";
+import { AccountSettings } from "@/types/global";
+import { useSession } from "next-auth/react";
 
 type AccountStore = {
   account: User;
   setAccount: (email: string) => void;
+  updateAccount: (user: AccountSettings) => void;
 };
 
 const useAccountStore = create<AccountStore>()((set) => ({
   account: {} as User,
   setAccount: async (email) => {
     const response = await fetch(`/api/routes/users?email=${email}`);
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (response.ok) set({ account: data.response });
+  },
+  updateAccount: async (user) => {
+    const response = await fetch("/api/routes/users", {
+      method: "PUT",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.json();
 
