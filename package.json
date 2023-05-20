@@ -29,7 +29,7 @@
     "eslint-config-next": "13.1.6",
     "multer": "^1.4.5-lts.1",
     "next": "13.1.6",
-    "next-auth": "^4.19.1",
+    "next-auth": "^4.22.1",
     "puppeteer": "^19.8.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-adblocker": "^2.13.6",
