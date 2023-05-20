@@ -5,7 +5,6 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
 import {
   faPlus,
   faCircleUser,
@@ -23,13 +22,12 @@ import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
 import Search from "@/components/Search";
 import UserSettings from "./Modal/UserSettings";
+import useAccountStore from "@/store/account";
 
 export default function () {
-  const { data: session } = useSession();
+  const { account } = useAccountStore();
 
   const [profileDropdown, setProfileDropdown] = useState(false);
-
-  const user = session?.user;
 
   const [linkModal, setLinkModal] = useState(false);
   const [settingsModal, setSettingsModal] = useState(false);
@@ -86,7 +84,7 @@ export default function () {
             />
             <div className="flex items-center gap-1 pointer-events-none">
               <p className="font-bold leading-3 hidden sm:block">
-                {user?.name}
+                {account.name}
               </p>
               <FontAwesomeIcon icon={faChevronDown} className="h-3 w-3" />
             </div>

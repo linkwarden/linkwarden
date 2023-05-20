@@ -7,6 +7,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 import getUsers from "@/lib/api/controllers/users/getUsers";
+import updateUser from "@/lib/api/controllers/users/updateUser";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
@@ -18,9 +19,11 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const lookupEmail = req.query.email as string;
   const isSelf = session.user.email === lookupEmail ? true : false;
 
-  // get unsensitive user info by email
   if (req.method === "GET") {
     const users = await getUsers(lookupEmail, isSelf);
     return res.status(users.status).json({ response: users.response });
+  } else if (req.method === "PUT" && !req.body.password) {
+    const updated = await updateUser(req.body, session.user.id);
+    return res.status(updated.status).json({ response: updated.response });
   }
 }
