@@ -27,6 +27,7 @@
     "crypto-js": "^4.1.1",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
+    "multer": "^1.4.5-lts.1",
     "next": "13.1.6",
     "next-auth": "^4.19.1",
     "puppeteer": "^19.8.0",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/multer": "^1.4.7",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
     "prisma": "^4.9.0",

@@ -4,27 +4,28 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { prisma } from "@/lib/api/db";
+import { AccountSettings } from "@/types/global";
 
-export default async function (lookupEmail: string, isSelf: boolean) {
-  const user = await prisma.user.findUnique({
+export default async function (user: AccountSettings, userId: number) {
+  console.log(typeof user);
+
+  const updatedUser = await prisma.user.update({
     where: {
-      email: lookupEmail,
+      id: userId,
+    },
+    data: {
+      name: user.name,
+      email: user.email,
+      collectionProtection: user.collectionProtection,
+      whitelistedUsers: user.whitelistedUsers,
+    },
+    select: {
+      name: true,
+      email: true,
+      collectionProtection: true,
+      whitelistedUsers: true,
     },
   });
 
-  if (!user) return { response: "User not found." || null, status: 404 };
-
-  const { password, ...unsensitiveInfo } = user;
-
-  const data = isSelf
-    ? // If user is requesting its own data
-      unsensitiveInfo
-    : {
-        // If user is requesting someone elses data
-        id: unsensitiveInfo.id,
-        name: unsensitiveInfo.name,
-        email: unsensitiveInfo.email,
-      };
-
-  return { response: data || null, status: 200 };
+  return { response: updatedUser, status: 200 };
 }

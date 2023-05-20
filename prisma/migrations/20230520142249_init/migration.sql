@@ -4,6 +4,9 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "collectionProtection" BOOLEAN NOT NULL DEFAULT false,
+    "whitelistedUsers" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "profilePhotoPath" TEXT NOT NULL DEFAULT '',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")

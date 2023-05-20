@@ -57,3 +57,10 @@ export type SearchSettings = {
     tags: boolean;
   };
 };
+
+export type AccountSettings = {
+  name: string;
+  email: string;
+  collectionProtection: boolean;
+  whitelistedUsers: string[];
+};

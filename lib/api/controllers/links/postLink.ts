@@ -10,6 +10,7 @@ import archive from "../../archive";
 import { Link, UsersAndCollections } from "@prisma/client";
 import AES from "crypto-js/aes";
 import getPermission from "@/lib/api/getPermission";
+import { existsSync, mkdirSync } from "fs";
 
 export default async function (link: ExtendedLink, userId: number) {
   link.collection.name = link.collection.name.trim();
@@ -99,6 +100,12 @@ export default async function (link: ExtendedLink, userId: number) {
     data: { screenshotPath: screenshotHashedPath, pdfPath: pdfHashedPath },
     include: { tags: true, collection: true },
   });
+
+  const collectionPath = `data/archives/${updatedLink.collection.id}`;
+  if (!existsSync(collectionPath))
+    mkdirSync(collectionPath, { recursive: true });
+
+  console.log(updatedLink);
 
   archive(updatedLink.url, updatedLink.collectionId, updatedLink.id);
 
