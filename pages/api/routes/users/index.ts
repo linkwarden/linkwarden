@@ -19,11 +19,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const lookupEmail = req.query.email as string;
   const isSelf = session.user.email === lookupEmail ? true : false;
 
-  // const lookup =
-  //   req.query.email == req.query.id
-  //     ? { id: req.query.id }
-  //     : { email: req.query.email };
-
   if (req.method === "GET") {
     const users = await getUsers(lookupEmail, isSelf);
     return res.status(users.status).json({ response: users.response });
