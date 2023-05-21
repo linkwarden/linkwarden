@@ -9,12 +9,14 @@ import { faCircleUser, faClose } from "@fortawesome/free-solid-svg-icons";
 import Checkbox from "../Checkbox";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
+import { useSession } from "next-auth/react";
 
 type Props = {
   toggleSettingsModal: Function;
 };
 
 export default function UserSettings({ toggleSettingsModal }: Props) {
+  const { update } = useSession();
   const { account, updateAccount } = useAccountStore();
 
   let initialUser = {
@@ -37,7 +39,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
   };
 
   const submit = async () => {
-    updateAccount(user);
+    await updateAccount(user);
 
     initialUser = {
       name: account.name,
@@ -45,6 +47,11 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
       collectionProtection: account.collectionProtection,
       whitelistedUsers: account.whitelistedUsers,
     };
+
+    console.log({ email: user.email, name: user.name });
+
+    if (user.email !== initialUser.email || user.name !== initialUser.name)
+      update({ email: user.email, name: user.name });
   };
 
   return (
@@ -52,6 +59,13 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
       <p className="text-xl text-sky-500 mb-2 text-center">Settings</p>
 
       <p className="text-sky-600">Profile Settings</p>
+
+      {user.email !== initialUser.email || user.name !== initialUser.name ? (
+        <p className="text-gray-500 text-sm">
+          Note: The page will be refreshed to apply the changes of "Email" or
+          "Display Name".
+        </p>
+      ) : null}
 
       <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
         <div className="flex flex-col gap-3">
@@ -67,11 +81,6 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
           <div>
             <p className="text-sm font-bold text-sky-300 mb-2">Email</p>
-            {user.email !== initialUser.email ? (
-              <p className="text-gray-500 text-sm mb-3">
-                Please log back in if you change the Email.
-              </p>
-            ) : null}
             <input
               type="text"
               value={user.email}
@@ -155,6 +164,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
             you to additional collections in the box below, separated by spaces.
           </p>
           <textarea
+            autoFocus
             className="w-full resize-none border rounded-md duration-100 bg-white p-2 outline-none border-sky-100 focus:border-sky-500"
             placeholder="No one can add you to any collections right now..."
           ></textarea>

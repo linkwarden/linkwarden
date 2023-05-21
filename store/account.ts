@@ -6,12 +6,11 @@
 import { create } from "zustand";
 import { User } from "@prisma/client";
 import { AccountSettings } from "@/types/global";
-import { useSession } from "next-auth/react";
 
 type AccountStore = {
   account: User;
   setAccount: (email: string) => void;
-  updateAccount: (user: AccountSettings) => void;
+  updateAccount: (user: AccountSettings) => Promise<boolean>;
 };
 
 const useAccountStore = create<AccountStore>()((set) => ({
@@ -39,6 +38,8 @@ const useAccountStore = create<AccountStore>()((set) => ({
     console.log(data);
 
     if (response.ok) set({ account: data.response });
+
+    return response.ok;
   },
 }));
 
