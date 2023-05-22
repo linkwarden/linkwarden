@@ -3140,6 +3140,11 @@ react-dom@18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
+react-image-file-resizer@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/react-image-file-resizer/-/react-image-file-resizer-0.4.8.tgz#85f4ae4469fd2867d961568af660ef403d7a79af"
+  integrity sha512-Ue7CfKnSlsfJ//SKzxNMz8avDgDSpWQDOnTKOp/GNRFJv4dO9L5YGHNEnj40peWkXXAK2OK0eRIoXhOYpUzUTQ==
+
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"

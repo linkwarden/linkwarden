@@ -3,7 +3,8 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { Collection, Link, Tag } from "@prisma/client";
+import { Collection, Link, Tag, User } from "@prisma/client";
+import { SetStateAction } from "react";
 
 export interface ExtendedLink extends Link {
   tags: Tag[];
@@ -58,9 +59,6 @@ export type SearchSettings = {
   };
 };
 
-export type AccountSettings = {
-  name: string;
-  email: string;
-  collectionProtection: boolean;
-  whitelistedUsers: string[];
-};
+export interface AccountSettings extends User {
+  profilePic: string | null;
+}
