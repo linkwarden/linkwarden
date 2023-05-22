@@ -3,13 +3,15 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleUser, faClose } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faClose } from "@fortawesome/free-solid-svg-icons";
 import Checkbox from "../Checkbox";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { useSession } from "next-auth/react";
+import { resizeImage } from "@/lib/client/resizeImage";
+import fileExists from "@/lib/client/fileExists";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -19,38 +21,54 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
   const { update } = useSession();
   const { account, updateAccount } = useAccountStore();
 
-  let initialUser = {
-    name: account.name,
-    email: account.email,
-    collectionProtection: account.collectionProtection,
-    whitelistedUsers: account.whitelistedUsers,
-  };
+  useEffect(() => {
+    const determineProfilePicSource = async () => {
+      const path = `/api/avatar/${account.id}`;
+      const imageExists = await fileExists(path).catch((e) => console.log(e));
+      if (imageExists) setUser({ ...user, profilePic: path });
+    };
 
-  const [user, setUser] = useState<AccountSettings>(initialUser);
+    determineProfilePicSource();
+  }, []);
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [user, setUser] = useState<AccountSettings>({
+    ...account,
+    profilePic: null,
+  });
 
-  const handleFileChange = (e: any) => {
-    setSelectedFile(e.target.files[0]);
-  };
+  const handleImageUpload = async (e: any) => {
+    const file: File = e.target.files[0];
 
-  const stateIsTampered = () => {
-    return JSON.stringify(user) !== JSON.stringify(initialUser);
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    const allowedExtensions = ["png", "jpeg", "jpg"];
+
+    if (allowedExtensions.includes(fileExtension as string)) {
+      const resizedFile = await resizeImage(file);
+
+      console.log(resizedFile.size);
+
+      if (
+        resizedFile.size < 1048576 // 1048576 Bytes == 1MB
+      ) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          setUser({ ...user, profilePic: reader.result as string });
+        };
+
+        reader.readAsDataURL(resizedFile);
+      } else {
+        console.log("Please select a PNG or JPEG file thats less than 1MB.");
+      }
+    } else {
+      console.log("Invalid file format.");
+    }
   };
 
   const submit = async () => {
     await updateAccount(user);
 
-    initialUser = {
-      name: account.name,
-      email: account.email,
-      collectionProtection: account.collectionProtection,
-      whitelistedUsers: account.whitelistedUsers,
-    };
-
-    console.log({ email: user.email, name: user.name });
-
-    if (user.email !== initialUser.email || user.name !== initialUser.name)
+    if (user.email !== account.email || user.name !== account.name)
       update({ email: user.email, name: user.name });
   };
 
@@ -60,7 +78,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
       <p className="text-sky-600">Profile Settings</p>
 
-      {user.email !== initialUser.email || user.name !== initialUser.name ? (
+      {user.email !== account.email || user.name !== account.name ? (
         <p className="text-gray-500 text-sm">
           Note: The page will be refreshed to apply the changes of "Email" or
           "Display Name".
@@ -100,19 +118,37 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
           </div>
         </div>
 
-        {/* <div className="sm:row-span-2 sm:justify-self-center mb-3">
+        <div className="sm:row-span-2 sm:justify-self-center mb-3">
           <p className="text-sm font-bold text-sky-300 mb-2 sm:text-center">
             Profile Photo
           </p>
           <div className="w-28 h-28 flex items-center justify-center border border-sky-100 rounded-full relative">
-            // Image goes here 
-            <FontAwesomeIcon
-              icon={faCircleUser}
-              className="w-28 h-28 text-sky-500"
-            />
-            <div className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 bg-white border-sky-100 rounded-full text-gray-500 hover:text-red-500 duration-100 cursor-pointer">
-              <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
-            </div>
+            {user.profilePic && user.profilePic !== "DELETE" ? (
+              <div>
+                <img
+                  alt="Profile Photo"
+                  className="rounded-full object-cover h-28 w-28 border border-sky-100 border-opacity-0"
+                  src={user.profilePic}
+                />
+                <div
+                  onClick={() =>
+                    setUser({
+                      ...user,
+                      profilePic: "DELETE",
+                    })
+                  }
+                  className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 bg-white border-sky-100 rounded-full text-gray-500 hover:text-red-500 duration-100 cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
+                </div>
+              </div>
+            ) : (
+              <FontAwesomeIcon
+                icon={faUser}
+                className="w-10 h-10 text-sky-400"
+              />
+            )}
+
             <div className="absolute -bottom-2 left-0 right-0 mx-auto w-fit text-center">
               <label
                 htmlFor="upload-photo"
@@ -124,14 +160,14 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
                   type="file"
                   name="photo"
                   id="upload-photo"
-                  accept="image/png, image/jpeg"
+                  accept=".png, .jpeg, .jpg"
                   className="hidden"
-                  onChange={handleFileChange}
+                  onChange={handleImageUpload}
                 />
               </label>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
 
       <hr />
@@ -164,21 +200,18 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
             you to additional collections in the box below, separated by spaces.
           </p>
           <textarea
-            autoFocus
             className="w-full resize-none border rounded-md duration-100 bg-white p-2 outline-none border-sky-100 focus:border-sky-500"
             placeholder="No one can add you to any collections right now..."
           ></textarea>
         </div>
       ) : null}
 
-      {stateIsTampered() ? (
-        <div
-          className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-          onClick={submit}
-        >
-          Apply Settings
-        </div>
-      ) : null}
+      <div
+        className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
+        onClick={submit}
+      >
+        Apply Settings
+      </div>
     </div>
   );
 }

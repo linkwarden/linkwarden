@@ -36,6 +36,7 @@
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-image-file-resizer": "^0.4.8",
     "react-select": "^5.7.0",
     "typescript": "4.9.4",
     "zustand": "^4.3.3"
