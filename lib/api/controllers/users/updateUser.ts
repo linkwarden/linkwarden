@@ -7,10 +7,9 @@ import { prisma } from "@/lib/api/db";
 import { AccountSettings } from "@/types/global";
 import fs from "fs";
 import path from "path";
+import bcrypt from "bcrypt";
 
 export default async function (user: AccountSettings, userId: number) {
-  console.log(console.log(user.profilePic));
-
   const profilePic = user.profilePic;
 
   if (profilePic && profilePic !== "DELETE") {
@@ -49,6 +48,31 @@ export default async function (user: AccountSettings, userId: number) {
       whitelistedUsers: user.whitelistedUsers,
     },
   });
+
+  if (user.newPassword && user.oldPassword) {
+    const saltRounds = 10;
+
+    const requestOldHashedPassword = bcrypt.hashSync(
+      user.oldPassword,
+      saltRounds
+    );
+    console.log(requestOldHashedPassword);
+
+    if (bcrypt.compareSync(user.oldPassword, updatedUser.password)) {
+      const newHashedPassword = bcrypt.hashSync(user.newPassword, saltRounds);
+
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          password: newHashedPassword,
+        },
+      });
+    } else {
+      return { response: "Passwords do not match.", status: 403 };
+    }
+  }
 
   const { password, ...unsensitiveInfo } = updatedUser;
 

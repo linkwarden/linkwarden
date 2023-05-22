@@ -61,4 +61,6 @@ export type SearchSettings = {
 
 export interface AccountSettings extends User {
   profilePic: string | null;
+  oldPassword?: string;
+  newPassword?: string;
 }
