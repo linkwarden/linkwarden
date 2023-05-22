@@ -5,9 +5,38 @@
 
 import { prisma } from "@/lib/api/db";
 import { AccountSettings } from "@/types/global";
+import fs from "fs";
+import path from "path";
 
 export default async function (user: AccountSettings, userId: number) {
-  console.log(typeof user);
+  console.log(console.log(user.profilePic));
+
+  const profilePic = user.profilePic;
+
+  if (profilePic && profilePic !== "DELETE") {
+    if ((user?.profilePic?.length as number) < 1572864) {
+      try {
+        const filePath = path.join(
+          process.cwd(),
+          `data/uploads/avatar/${userId}.jpg`
+        );
+
+        const base64Data = profilePic.replace(/^data:image\/jpeg;base64,/, "");
+
+        fs.writeFile(filePath, base64Data, "base64", function (err) {
+          console.log(err);
+        });
+      } catch (err) {
+        console.log("Error saving image:", err);
+      }
+    } else {
+      console.log("A file larger than 1.5MB was uploaded.");
+    }
+  } else if (profilePic === "DELETE") {
+    fs.unlink(`data/uploads/avatar/${userId}.jpg`, (err) => {
+      if (err) console.log(err);
+    });
+  }
 
   const updatedUser = await prisma.user.update({
     where: {
@@ -19,13 +48,9 @@ export default async function (user: AccountSettings, userId: number) {
       collectionProtection: user.collectionProtection,
       whitelistedUsers: user.whitelistedUsers,
     },
-    select: {
-      name: true,
-      email: true,
-      collectionProtection: true,
-      whitelistedUsers: true,
-    },
   });
 
-  return { response: updatedUser, status: 200 };
+  const { password, ...unsensitiveInfo } = updatedUser;
+
+  return { response: unsensitiveInfo, status: 200 };
 }
