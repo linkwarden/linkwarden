@@ -12,6 +12,9 @@ import { AccountSettings } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { resizeImage } from "@/lib/client/resizeImage";
 import fileExists from "@/lib/client/fileExists";
+import Modal from ".";
+import ChangePassword from "./ChangePassword";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -20,6 +23,21 @@ type Props = {
 export default function UserSettings({ toggleSettingsModal }: Props) {
   const { update } = useSession();
   const { account, updateAccount } = useAccountStore();
+
+  const [user, setUser] = useState<AccountSettings>({
+    ...account,
+    profilePic: null,
+  });
+
+  const [passwordFormModal, setPasswordFormModal] = useState(false);
+
+  const togglePasswordFormModal = () => {
+    setPasswordFormModal(!passwordFormModal);
+  };
+
+  const setPasswordForm = (oldPassword?: string, newPassword?: string) => {
+    setUser({ ...user, oldPassword, newPassword });
+  };
 
   useEffect(() => {
     const determineProfilePicSource = async () => {
@@ -31,11 +49,6 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
     determineProfilePicSource();
   }, []);
 
-  const [user, setUser] = useState<AccountSettings>({
-    ...account,
-    profilePic: null,
-  });
-
   const handleImageUpload = async (e: any) => {
     const file: File = e.target.files[0];
 
@@ -44,8 +57,6 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
     if (allowedExtensions.includes(fileExtension as string)) {
       const resizedFile = await resizeImage(file);
-
-      console.log(resizedFile.size);
 
       if (
         resizedFile.size < 1048576 // 1048576 Bytes == 1MB
@@ -66,7 +77,15 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
   };
 
   const submit = async () => {
-    await updateAccount(user);
+    await updateAccount({
+      ...user,
+      profilePic:
+        user.profilePic === `/api/avatar/${account.id}`
+          ? null
+          : user.profilePic,
+    });
+
+    setPasswordForm(undefined, undefined);
 
     if (user.email !== account.email || user.name !== account.name)
       update({ email: user.email, name: user.name });
@@ -79,7 +98,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
       <p className="text-sky-600">Profile Settings</p>
 
       {user.email !== account.email || user.name !== account.name ? (
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-sm sm:w-1/2">
           Note: The page will be refreshed to apply the changes of "Email" or
           "Display Name".
         </p>
@@ -110,7 +129,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
           <div>
             <p className="text-sm font-bold text-sky-300 mb-2">Password</p>
 
-            <div className="w-fit">
+            <div className="w-fit" onClick={togglePasswordFormModal}>
               <div className="border border-sky-100 rounded-md bg-white px-2 py-1 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-500">
                 Change Password
               </div>
@@ -170,7 +189,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
         </div>
       </div>
 
-      <hr />
+      {/* <hr /> TODO: Export functionality
 
       <p className="text-sky-600">Data Settings</p>
 
@@ -178,7 +197,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
         <div className="border border-sky-100 rounded-md bg-white px-2 py-1 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-500">
           Export Data
         </div>
-      </div>
+      </div> */}
 
       <hr />
 
@@ -210,8 +229,19 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
         className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
         onClick={submit}
       >
+        <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
         Apply Settings
       </div>
+
+      {passwordFormModal ? (
+        <Modal toggleModal={togglePasswordFormModal}>
+          <ChangePassword
+            user={user}
+            togglePasswordFormModal={togglePasswordFormModal}
+            setPasswordForm={setPasswordForm}
+          />
+        </Modal>
+      ) : null}
     </div>
   );
 }
