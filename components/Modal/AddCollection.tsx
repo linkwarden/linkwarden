@@ -10,6 +10,7 @@ import useCollectionStore from "@/store/collections";
 import { NewCollection } from "@/types/global";
 import { useSession } from "next-auth/react";
 import RequiredBadge from "../RequiredBadge";
+import getPublicUserDataByEmail from "@/lib/client/getPublicUserDataByEmail";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -34,14 +35,6 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
     const response = await addCollection(newCollection as NewCollection);
 
     if (response) toggleCollectionModal();
-  };
-
-  const getUserByEmail = async (email: string) => {
-    const response = await fetch(`/api/routes/users?email=${email}`);
-
-    const data = await response.json();
-
-    return data.response;
   };
 
   return (
@@ -107,7 +100,7 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
             memberEmail.trim() !== ownerEmail
           ) {
             // Lookup, get data/err, list ...
-            const user = await getUserByEmail(memberEmail.trim());
+            const user = await getPublicUserDataByEmail(memberEmail.trim());
 
             if (user.email) {
               const newMember = {
