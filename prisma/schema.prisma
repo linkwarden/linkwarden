@@ -20,7 +20,7 @@ model User {
   collections Collection[]
   tags Tag[]
   collectionsJoined UsersAndCollections[]
-  collectionProtection Boolean @default(false)
+  isPrivate Boolean @default(false)
   whitelistedUsers String[] @default([])
   createdAt DateTime @default(now())
 }

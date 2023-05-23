@@ -6,23 +6,41 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
+import { prisma } from "@/lib/api/db";
 import path from "path";
 import fs from "fs";
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
-  if (!req.query.id)
-    return res.status(401).json({ response: "Invalid parameters." });
-
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session?.user?.email)
+  const userId = session?.user.id;
+  const userEmail = session?.user.email;
+  const queryId = Number(req.query.id);
+
+  if (!queryId)
+    return res.status(401).json({ response: "Invalid parameters." });
+
+  if (!userId || !userEmail)
     return res.status(401).json({ response: "You must be logged in." });
 
-  // TODO: If profile is private, hide it to other users...
+  if (userId !== queryId) {
+    const targetUser = await prisma.user.findUnique({
+      where: {
+        id: queryId,
+      },
+    });
+
+    if (
+      targetUser?.isPrivate &&
+      !targetUser.whitelistedUsers.includes(userEmail)
+    ) {
+      return res.status(401).json({ response: "This profile is private." });
+    }
+  }
 
   const filePath = path.join(
     process.cwd(),
-    `data/uploads/avatar/${req.query.id}.jpg`
+    `data/uploads/avatar/${queryId}.jpg`
   );
 
   console.log(filePath);

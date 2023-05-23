@@ -5,14 +5,26 @@
 
 import { prisma } from "@/lib/api/db";
 
-export default async function (lookupEmail: string, isSelf: boolean) {
+export default async function (
+  lookupEmail: string,
+  isSelf: boolean,
+  userEmail: string
+) {
   const user = await prisma.user.findUnique({
     where: {
       email: lookupEmail,
     },
   });
 
-  if (!user) return { response: "User not found." || null, status: 404 };
+  if (!user) return { response: "User not found.", status: 404 };
+
+  if (
+    !isSelf &&
+    user?.isPrivate &&
+    !user.whitelistedUsers.includes(userEmail)
+  ) {
+    return { response: "This profile is private.", status: 401 };
+  }
 
   const { password, ...unsensitiveInfo } = user;
 
