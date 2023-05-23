@@ -35,12 +35,12 @@ export default function Search() {
 
   return (
     <div
-      className="flex items-center relative"
+      className="flex items-center relative group"
       onClick={() => setSearchBox(true)}
     >
       <label
         htmlFor="search-box"
-        className="inline-flex w-fit absolute right-0 pointer-events-none rounded-md p-1 text-sky-500"
+        className="inline-flex w-fit absolute right-2 pointer-events-none rounded-md p-1 text-sky-500 group-hover:text-sky-600"
       >
         <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
       </label>
@@ -55,7 +55,7 @@ export default function Search() {
           router.push("/search");
         }}
         autoFocus={searchBox}
-        className="border border-sky-100 rounded-md pr-6 w-60 focus:border-sky-500 sm:focus:w-80 hover:border-sky-500 duration-100 outline-none p-1"
+        className="border border-sky-100 rounded-md pr-10 w-44 sm:w-60 focus:border-sky-500 sm:focus:w-80 hover:border-sky-500 duration-100 outline-none p-2"
       />
     </div>
   );

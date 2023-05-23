@@ -7,10 +7,10 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
-import { NewCollection } from "@/types/global";
+import { ExtendedCollection, NewCollection } from "@/types/global";
 import { useSession } from "next-auth/react";
 import RequiredBadge from "../RequiredBadge";
-import getPublicUserDataByEmail from "@/lib/client/getPublicUserDataByEmail";
+import addMemberToCollection from "@/lib/client/addMemberToCollection";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -35,6 +35,15 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
     const response = await addCollection(newCollection as NewCollection);
 
     if (response) toggleCollectionModal();
+  };
+
+  const setMemberState = (newMember: any) => {
+    setNewCollection({
+      ...newCollection,
+      members: [...newCollection.members, newMember],
+    });
+
+    setMemberEmail("");
   };
 
   return (
@@ -78,56 +87,36 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
       <hr className="border rounded my-2" />
 
       <p className="text-sm font-bold text-sky-300">Members</p>
-      <input
-        value={memberEmail}
-        onChange={(e) => {
-          setMemberEmail(e.target.value);
-        }}
-        onKeyDown={async (e) => {
-          const checkIfMemberAlreadyExists = newCollection.members.find(
-            (e) => e.email === memberEmail
-          );
+      <div className="relative">
+        <input
+          value={memberEmail}
+          onChange={(e) => {
+            setMemberEmail(e.target.value);
+          }}
+          type="text"
+          placeholder="Email"
+          className="w-full rounded-md p-3 pr-12 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+        />
 
-          const ownerEmail = session.data?.user.email;
-
-          if (
-            e.key === "Enter" &&
-            // no duplicate members
-            !checkIfMemberAlreadyExists &&
-            // member can't be empty
-            memberEmail.trim() !== "" &&
-            // member can't be the owner
-            memberEmail.trim() !== ownerEmail
-          ) {
-            // Lookup, get data/err, list ...
-            const user = await getPublicUserDataByEmail(memberEmail.trim());
-
-            if (user.email) {
-              const newMember = {
-                name: user.name,
-                email: user.email,
-                canCreate: false,
-                canUpdate: false,
-                canDelete: false,
-              };
-
-              setNewCollection({
-                ...newCollection,
-                members: [...newCollection.members, newMember],
-              });
-
-              setMemberEmail("");
-            }
+        <div
+          onClick={() =>
+            addMemberToCollection(
+              session.data?.user.email as string,
+              memberEmail,
+              newCollection as unknown as ExtendedCollection,
+              setMemberState,
+              "ADD"
+            )
           }
-        }}
-        type="text"
-        placeholder="Email"
-        className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-      />
+          className="absolute flex items-center justify-center right-2 top-2 bottom-2 bg-sky-500 hover:bg-sky-400 duration-100 text-white w-9 rounded-md cursor-pointer"
+        >
+          <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
+        </div>
+      </div>
 
       {newCollection.members[0] ? (
-        <p className="text-center text-sky-500 text-xs sm:text-sm">
-          (All Members will have <b>Read</b> access to this collection.)
+        <p className="text-center text-gray-500 text-xs sm:text-sm">
+          (All Members have <b>Read</b> access to this collection.)
         </p>
       ) : null}
 
@@ -153,9 +142,17 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
                 });
               }}
             />
-            <div>
-              <p className="text-sm font-bold text-sky-500">{e.name}</p>
-              <p className="text-sky-900">{e.email}</p>
+            <div className="flex items-center gap-2">
+              <img
+                // @ts-ignore
+                src={`/api/avatar/${e.id}`}
+                className="h-10 w-10 rounded-full border border-sky-100"
+                alt=""
+              />
+              <div>
+                <p className="text-sm font-bold text-sky-500">{e.name}</p>
+                <p className="text-sky-900">{e.email}</p>
+              </div>
             </div>
             <div className="flex sm:block items-center gap-5">
               <div>

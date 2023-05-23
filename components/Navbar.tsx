@@ -55,38 +55,48 @@ export default function () {
 
   return (
     // lg:ml-64 xl:ml-80
-    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b">
+    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b h-16">
       <div
         onClick={toggleSidebar}
-        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-1 text-sky-500 rounded-md hover:outline-sky-500 outline duration-100 bg-white outline-sky-100 outline-1"
+        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-2 text-sky-500 rounded-md hover:outline-sky-500 outline duration-100 bg-white outline-sky-100 outline-1"
       >
-        <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
+        <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
       </div>
       <Search />
       <div className="flex items-center gap-2">
         <div
           onClick={toggleLinkModal}
-          title="New Link"
-          className="inline-flex gap-1 items-center select-none cursor-pointer p-1 text-sky-500 rounded-md hover:outline-sky-500 outline duration-100 bg-white outline-sky-100 outline-1"
+          className="inline-flex gap-1 items-center font-semibold select-none cursor-pointer px-2 sm:px-3 py-2 text-sky-500 hover:text-sky-600 rounded-md hover:outline-sky-500 outline duration-100 bg-white outline-sky-100 outline-1"
         >
-          <FontAwesomeIcon icon={faPlus} className="w-6 h-6" />
+          <FontAwesomeIcon icon={faPlus} className="w-6 h-6 sm:w-5 sm:h-5" />
+          <span className="hidden sm:block">New Link</span>
         </div>
 
         <div className="relative">
           <div
-            className="flex gap-2 items-center p-1 w-fit bg-white text-gray-600 cursor-pointer border border-sky-100 hover:border-sky-500 rounded-md duration-100"
+            className="flex gap-1 group items-center w-fit bg-white text-gray-600 cursor-pointer"
             onClick={() => setProfileDropdown(!profileDropdown)}
             id="profile-dropdown"
           >
-            <FontAwesomeIcon
-              icon={faCircleUser}
-              className="h-6 w-6 pointer-events-none"
-            />
-            <div className="flex items-center gap-1 pointer-events-none">
-              <p className="font-bold leading-3 hidden sm:block">
-                {account.name}
-              </p>
-              <FontAwesomeIcon icon={faChevronDown} className="h-3 w-3" />
+            {account.profilePic ? (
+              <img
+                src={account.profilePic}
+                className="h-10 w-10 pointer-events-none rounded-full border border-sky-100 group-hover:border-sky-500 duration-100"
+                alt=""
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faCircleUser}
+                className="h-10 w-10 pointer-events-none group-hover:text-sky-600 duration-100"
+              />
+            )}
+            <div className="pointer-events-none hidden sm:block group-hover:text-sky-600 duration-100">
+              <div className="flex item-center gap-1">
+                <p className="font-bold leading-3 hidden sm:block">
+                  {account.name}
+                </p>
+                <FontAwesomeIcon icon={faChevronDown} className="h-3 w-3" />
+              </div>
             </div>
           </div>
           {profileDropdown ? (
@@ -113,7 +123,7 @@ export default function () {
                 const target = e.target as HTMLInputElement;
                 if (target.id !== "profile-dropdown") setProfileDropdown(false);
               }}
-              className="absolute top-9 right-0 z-20 w-36"
+              className="absolute top-11 right-0 z-20 w-36"
             />
           ) : null}
 
