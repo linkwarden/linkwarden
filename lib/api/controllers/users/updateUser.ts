@@ -44,7 +44,7 @@ export default async function (user: AccountSettings, userId: number) {
     data: {
       name: user.name,
       email: user.email,
-      collectionProtection: user.collectionProtection,
+      isPrivate: user.isPrivate,
       whitelistedUsers: user.whitelistedUsers,
     },
   });

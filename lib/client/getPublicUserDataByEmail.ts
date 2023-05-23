@@ -8,5 +8,7 @@ export default async function (email: string) {
 
   const data = await response.json();
 
+  console.log(data);
+
   return data.response;
 }

@@ -4,9 +4,7 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AccountSettings } from "@/types/global";
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 
 type Props = {
   togglePasswordFormModal: Function;
@@ -70,8 +68,7 @@ export default function AddCollection({
           className="mx-auto mt-2  text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold duration-100 bg-sky-500 hover:bg-sky-400 cursor-pointer"
           onClick={submit}
         >
-          <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
-          Change Password
+          Save
         </div>
       </div>
     </div>

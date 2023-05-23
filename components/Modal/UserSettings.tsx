@@ -29,6 +29,9 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
     profilePic: null,
   });
 
+  const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState(
+    user.whitelistedUsers.join(", ")
+  );
   const [passwordFormModal, setPasswordFormModal] = useState(false);
 
   const togglePasswordFormModal = () => {
@@ -48,6 +51,21 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
     determineProfilePicSource();
   }, []);
+
+  useEffect(() => {
+    setUser({
+      ...user,
+      whitelistedUsers: stringToArray(whitelistedUsersTextbox),
+    });
+  }, [whitelistedUsersTextbox]);
+
+  const stringToArray = (str: string) => {
+    const stringWithoutSpaces = str.replace(/\s+/g, "");
+
+    const wordsArray = stringWithoutSpaces.split(",");
+
+    return wordsArray;
+  };
 
   const handleImageUpload = async (e: any) => {
     const file: File = e.target.files[0];
@@ -77,6 +95,8 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
   };
 
   const submit = async () => {
+    console.log(user);
+
     await updateAccount({
       ...user,
       profilePic:
@@ -134,6 +154,14 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
                 Change Password
               </div>
             </div>
+
+            {user.newPassword && user.oldPassword ? (
+              <p className="text-gray-500 text-sm mt-2">
+                Password modified. Please click{" "}
+                <span className=" whitespace-nowrap">"Apply Settings"</span> to
+                apply the changes..
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -204,23 +232,33 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
       <p className="text-sky-600">Privacy Settings</p>
 
       <Checkbox
-        label="Limit who can add you to other Collections"
-        state={user.collectionProtection}
+        label="Make profile private"
+        state={user.isPrivate}
         className="text-sm sm:text-base"
-        onClick={() =>
-          setUser({ ...user, collectionProtection: !user.collectionProtection })
-        }
+        onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
       />
 
-      {user.collectionProtection ? (
+      <p className="text-gray-500 text-sm mb-3">
+        This will limit who can find and add you to other Collections.
+      </p>
+
+      {user.isPrivate ? (
         <div>
+          <p className="text-sm font-bold text-sky-300 mb-2">
+            Whitelisted Users
+          </p>
           <p className="text-gray-500 text-sm mb-3">
-            Please enter the email addresses of the users who are allowed to add
-            you to additional collections in the box below, separated by spaces.
+            Please provide the Email addresses of the users you wish to grant
+            visibility to your profile. Separate the addresses with a comma.
+            Users not included will be unable to view your profile.
           </p>
           <textarea
             className="w-full resize-none border rounded-md duration-100 bg-white p-2 outline-none border-sky-100 focus:border-sky-500"
-            placeholder="No one can add you to any collections right now..."
+            placeholder="Your profile is hidden from everyone right now..."
+            value={whitelistedUsersTextbox}
+            onChange={(e) => {
+              setWhiteListedUsersTextbox(e.target.value);
+            }}
           ></textarea>
         </div>
       ) : null}

@@ -20,7 +20,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const isSelf = session.user.email === lookupEmail ? true : false;
 
   if (req.method === "GET") {
-    const users = await getUsers(lookupEmail, isSelf);
+    const users = await getUsers(lookupEmail, isSelf, session.user.email);
     return res.status(users.status).json({ response: users.response });
   } else if (req.method === "PUT" && !req.body.password) {
     const updated = await updateUser(req.body, session.user.id);
