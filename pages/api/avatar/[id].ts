@@ -18,10 +18,16 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
   const queryId = Number(req.query.id);
 
   if (!queryId)
-    return res.status(401).json({ response: "Invalid parameters." });
+    return res
+      .setHeader("Content-Type", "text/plain")
+      .status(401)
+      .send("Invalid parameters.");
 
   if (!userId || !userEmail)
-    return res.status(401).json({ response: "You must be logged in." });
+    return res
+      .setHeader("Content-Type", "text/plain")
+      .status(401)
+      .send("You must be logged in.");
 
   if (userId !== queryId) {
     const targetUser = await prisma.user.findUnique({
@@ -34,7 +40,10 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
       targetUser?.isPrivate &&
       !targetUser.whitelistedUsers.includes(userEmail)
     ) {
-      return res.status(401).json({ response: "This profile is private." });
+      return res
+        .setHeader("Content-Type", "text/plain")
+        .status(401)
+        .send("This profile is private.");
     }
   }
 
@@ -48,9 +57,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     ? fs.readFileSync(filePath)
     : "File not found.";
 
-  if (!fs.existsSync(filePath))
-    res.setHeader("Content-Type", "text/plain").status(404);
-  else res.setHeader("Content-Type", "image/jpeg").status(200);
+  if (!fs.existsSync(filePath)) res.setHeader("Content-Type", "text/plain");
+  else res.setHeader("Content-Type", "image/jpeg");
 
   return res.send(file);
 }
