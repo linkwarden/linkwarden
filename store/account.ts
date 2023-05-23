@@ -9,13 +9,13 @@ import { AccountSettings } from "@/types/global";
 
 type AccountStore = {
   account: User;
-  setAccount: (email: string, id: number) => void;
+  setAccount: (email: string) => void;
   updateAccount: (user: AccountSettings) => Promise<boolean>;
 };
 
 const useAccountStore = create<AccountStore>()((set) => ({
   account: {} as User,
-  setAccount: async (email, id) => {
+  setAccount: async (email) => {
     const response = await fetch(`/api/routes/users?email=${email}`);
 
     const data = await response.json();
