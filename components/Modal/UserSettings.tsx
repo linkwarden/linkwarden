@@ -11,7 +11,6 @@ import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { resizeImage } from "@/lib/client/resizeImage";
-import fileExists from "@/lib/client/fileExists";
 import Modal from ".";
 import ChangePassword from "./ChangePassword";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
@@ -26,7 +25,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
   const [user, setUser] = useState<AccountSettings>({
     ...account,
-    profilePic: null,
+    // profilePic: null,
   });
 
   const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState(
@@ -42,15 +41,15 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
     setUser({ ...user, oldPassword, newPassword });
   };
 
-  useEffect(() => {
-    const determineProfilePicSource = async () => {
-      const path = `/api/avatar/${account.id}`;
-      const imageExists = await fileExists(path).catch((e) => console.log(e));
-      if (imageExists) setUser({ ...user, profilePic: path });
-    };
+  // useEffect(() => {
+  //   const determineProfilePicSource = async () => {
+  //     const path = `/api/avatar/${account.id}`;
+  //     const imageExists = await avatarExists(path).catch((e) => console.log(e));
+  //     if (imageExists) setUser({ ...user, profilePic: path });
+  //   };
 
-    determineProfilePicSource();
-  }, []);
+  //   determineProfilePicSource();
+  // }, []);
 
   useEffect(() => {
     setUser({
@@ -99,11 +98,9 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
     await updateAccount({
       ...user,
-      profilePic:
-        user.profilePic === `/api/avatar/${account.id}`
-          ? null
-          : user.profilePic,
     });
+
+    console.log(account);
 
     setPasswordForm(undefined, undefined);
 
