@@ -22,7 +22,7 @@ export default function () {
       setCollections();
       setTags();
       setLinks();
-      setAccount(data.user.email as string, data.user.id);
+      setAccount(data.user.email as string);
     }
   }, [status]);
 }
