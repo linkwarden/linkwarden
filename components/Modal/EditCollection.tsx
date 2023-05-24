@@ -161,7 +161,7 @@ export default function EditCollection({
               <img
                 // @ts-ignore
                 src={`/api/avatar/${e.userId}`}
-                className="h-10 w-10 rounded-full border border-sky-100"
+                className="h-10 w-10 rounded-full border-[3px] border-sky-100"
                 alt=""
               />
               <div>

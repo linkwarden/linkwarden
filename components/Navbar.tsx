@@ -81,7 +81,7 @@ export default function () {
             {account.profilePic ? (
               <img
                 src={account.profilePic}
-                className="h-10 w-10 pointer-events-none rounded-full border border-sky-100 group-hover:border-sky-500 duration-100"
+                className="h-10 w-10 pointer-events-none rounded-full border-[3px] border-sky-100 group-hover:border-sky-500 duration-100"
                 alt=""
               />
             ) : (

@@ -171,7 +171,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
               <div>
                 <img
                   alt="Profile Photo"
-                  className="rounded-full object-cover h-28 w-28 border border-sky-100 border-opacity-0"
+                  className="rounded-full object-cover h-28 w-28 border-[3px] border-sky-100 border-opacity-0"
                   src={user.profilePic}
                 />
                 <div
