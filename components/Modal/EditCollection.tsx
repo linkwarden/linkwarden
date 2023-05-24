@@ -131,7 +131,7 @@ export default function EditCollection({
       </div>
       {activeCollection.members[0] ? (
         <p className="text-center text-gray-500 text-xs sm:text-sm">
-          (All Members will have <b>Read</b> access to this collection.)
+          (All Members have <b>Read</b> access to this collection.)
         </p>
       ) : null}
 
