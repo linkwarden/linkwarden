@@ -46,7 +46,7 @@ export default function ({
   };
 
   return (
-    <div className="border border-sky-100 bg-gray-100 p-5 rounded-md flex items-start relative gap-5 sm:gap-14 group/item">
+    <div className="border border-sky-100 bg-gray-100 p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
       {editModal ? (
         <Modal toggleModal={toggleEditModal}>
           <EditLink toggleLinkModal={toggleEditModal} link={link} />
@@ -55,10 +55,10 @@ export default function ({
 
       <Image
         src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-        width={32}
-        height={32}
+        width={42}
+        height={42}
         alt=""
-        className="select-none mt-3 z-10 rounded-md"
+        className="select-none mt-3 z-10 rounded-full border-[3px] border-sky-100"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
