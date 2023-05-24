@@ -146,7 +146,7 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
               <img
                 // @ts-ignore
                 src={`/api/avatar/${e.id}`}
-                className="h-10 w-10 rounded-full border border-sky-100"
+                className="h-10 w-10 rounded-full border-[3px] border-sky-100"
                 alt=""
               />
               <div>
