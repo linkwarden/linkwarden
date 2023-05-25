@@ -194,11 +194,16 @@ export default function () {
           })}
 
           <div
-            className="p-5 bg-gray-100 self-stretch min-h-[12rem] rounded-md border-sky-100 border-solid border flex flex-col gap-4 justify-center items-center cursor-pointer hover:bg-gray-50 duration-100"
+            className="p-5 bg-gradient-to-tr from-sky-100 self-stretch to-gray-100 min-h-[12rem] rounded-md cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
             onClick={toggleCollectionModal}
           >
-            <p className="text-sky-900">New Collection</p>
-            <FontAwesomeIcon icon={faPlus} className="w-8 h-8 text-sky-500" />
+            <p className="text-sky-900 group-hover:opacity-0 duration-100">
+              New Collection
+            </p>
+            <FontAwesomeIcon
+              icon={faPlus}
+              className="w-8 h-8 text-sky-500 group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
+            />
           </div>
         </div>
       </div>

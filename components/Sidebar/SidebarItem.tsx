@@ -11,9 +11,10 @@ interface SidebarItemProps {
   text: string;
   icon: ReactElement;
   path: string;
+  className?: string;
 }
 
-export default function ({ text, icon, path }: SidebarItemProps) {
+export default function ({ text, icon, path, className }: SidebarItemProps) {
   const router = useRouter();
   const [active, setActive] = useState(false);
 
@@ -27,7 +28,7 @@ export default function ({ text, icon, path }: SidebarItemProps) {
       <div
         className={`${
           active ? "bg-sky-500" : "hover:bg-gray-50 hover:outline bg-gray-100"
-        } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2`}
+        } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2 ${className}`}
       >
         {React.cloneElement(icon, {
           className: `w-4 ${active ? "text-white" : "text-sky-300"}`,

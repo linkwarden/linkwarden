@@ -10,6 +10,7 @@ import {
   faPenToSquare,
   faPlus,
   faTrashCan,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { ExtendedCollection } from "@/types/global";
@@ -18,6 +19,7 @@ import Modal from "@/components/Modal";
 import DeleteCollection from "@/components/Modal/DeleteCollection";
 import RequiredBadge from "../RequiredBadge";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
+import ImageWithFallback from "../ImageWithFallback";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -159,12 +161,15 @@ export default function EditCollection({
                 }}
               />
               <div className="flex items-center gap-2">
-                <img
-                  // @ts-ignore
+                <ImageWithFallback
+                  key={i}
                   src={`/api/avatar/${e.userId}`}
                   className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100"
-                  alt=""
-                />
+                >
+                  <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 flex items-center justify-center">
+                    <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
+                  </div>
+                </ImageWithFallback>
                 <div>
                   <p className="text-sm font-bold text-sky-500">
                     {e.user.name}
