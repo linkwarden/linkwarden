@@ -112,17 +112,19 @@ export default function ({ className }: { className?: string }) {
         <p className="text-sm p-2">Collections</p>
       </div>
       <div>
-        {collections.map((e, i) => {
-          return (
-            <SidebarItem
-              key={i}
-              text={e.name}
-              icon={<FontAwesomeIcon icon={faFolder} />}
-              path={`/collections/${e.id}`}
-              className="capitalize"
-            />
-          );
-        })}
+        {collections
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((e, i) => {
+            return (
+              <SidebarItem
+                key={i}
+                text={e.name}
+                icon={<FontAwesomeIcon icon={faFolder} />}
+                path={`/collections/${e.id}`}
+                className="capitalize"
+              />
+            );
+          })}
       </div>
       <div className="text-gray-500 mt-5">
         <p className="text-sm p-2">Tags</p>
