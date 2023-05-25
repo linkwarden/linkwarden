@@ -19,7 +19,7 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
   });
 
   return (
-    <div className="p-5 bg-gradient-to-tr from-sky-100 self-stretch to-gray-100 min-h-[12rem] rounded-md cursor-pointer shadow duration-100 hover:shadow-none group">
+    <div className="p-5 bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% self-stretch min-h-[12rem] rounded-md cursor-pointer shadow duration-100 hover:shadow-none group">
       <Link href={`/collections/${collection.id}`}>
         <div className="flex flex-col gap-2 justify-between h-full">
           <div>
