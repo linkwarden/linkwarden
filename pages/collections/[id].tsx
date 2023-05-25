@@ -115,35 +115,40 @@ export default function () {
               </div>
             </div>
 
-            <div>
-              <div className="text-sky-400 flex justify-end items-center w-56 mr-3">
-                <div className="mr-1 bg-sky-500 p-1 leading-3 select-none cursor-pointer hover:bg-sky-400 duration-100 text-white rounded-full text-xs">
-                  View Team
-                </div>
-                {activeCollection?.members
-                  .sort((a, b) => a.userId - b.userId)
-                  .map((e, i) => {
-                    return (
-                      <ImageWithFallback
-                        key={i}
-                        src={`/api/avatar/${e.userId}`}
-                        className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3"
-                      >
-                        <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3 flex items-center justify-center">
-                          <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
-                        </div>
-                      </ImageWithFallback>
-                    );
-                  })
-                  .slice(0, 4)}
-                {activeCollection?.members.length &&
-                activeCollection.members.length - 4 > 0 ? (
-                  <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
-                    +{activeCollection?.members?.length - 3}
+            {activeCollection?.members[0] ? (
+              <div>
+                <div className="text-sky-400 flex justify-end items-center w-56 mr-3">
+                  <div className="mr-1 bg-sky-500 p-1 leading-3 select-none cursor-pointer hover:bg-sky-400 duration-100 text-white rounded-full text-xs">
+                    View Team
                   </div>
-                ) : null}
+                  {activeCollection?.members
+                    .sort((a, b) => a.userId - b.userId)
+                    .map((e, i) => {
+                      return (
+                        <ImageWithFallback
+                          key={i}
+                          src={`/api/avatar/${e.userId}`}
+                          className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3"
+                        >
+                          <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3 flex items-center justify-center">
+                            <FontAwesomeIcon
+                              icon={faUser}
+                              className="w-5 h-5"
+                            />
+                          </div>
+                        </ImageWithFallback>
+                      );
+                    })
+                    .slice(0, 4)}
+                  {activeCollection?.members.length &&
+                  activeCollection.members.length - 4 > 0 ? (
+                    <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
+                      +{activeCollection?.members?.length - 3}
+                    </div>
+                  ) : null}
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
 
           <div className="text-gray-500 flex justify-between items-end gap-5">
