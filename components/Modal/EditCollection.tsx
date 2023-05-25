@@ -135,129 +135,135 @@ export default function EditCollection({
         </p>
       ) : null}
 
-      {activeCollection.members.map((e, i) => {
-        return (
-          <div
-            key={i}
-            className="relative border p-2 rounded-md border-sky-100 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
-          >
-            <FontAwesomeIcon
-              icon={faClose}
-              className="absolute right-2 top-2 text-gray-500 h-4 hover:text-red-500 duration-100 cursor-pointer"
-              title="Remove Member"
-              onClick={() => {
-                const updatedMembers = activeCollection.members.filter(
-                  (member) => {
-                    return member.user.email !== e.user.email;
-                  }
-                );
-                setActiveCollection({
-                  ...activeCollection,
-                  members: updatedMembers,
-                });
-              }}
-            />
-            <div className="flex items-center gap-2">
-              <img
-                // @ts-ignore
-                src={`/api/avatar/${e.userId}`}
-                className="h-10 w-10 rounded-full border-[3px] border-sky-100"
-                alt=""
+      <div className="h-36 overflow-auto flex flex-col gap-3 rounded-md shadow-inner">
+        {activeCollection.members.map((e, i) => {
+          return (
+            <div
+              key={i}
+              className="relative border p-2 rounded-md border-sky-100 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
+            >
+              <FontAwesomeIcon
+                icon={faClose}
+                className="absolute right-2 top-2 text-gray-500 h-4 hover:text-red-500 duration-100 cursor-pointer"
+                title="Remove Member"
+                onClick={() => {
+                  const updatedMembers = activeCollection.members.filter(
+                    (member) => {
+                      return member.user.email !== e.user.email;
+                    }
+                  );
+                  setActiveCollection({
+                    ...activeCollection,
+                    members: updatedMembers,
+                  });
+                }}
               />
-              <div>
-                <p className="text-sm font-bold text-sky-500">{e.user.name}</p>
-                <p className="text-sky-900">{e.user.email}</p>
+              <div className="flex items-center gap-2">
+                <img
+                  // @ts-ignore
+                  src={`/api/avatar/${e.userId}`}
+                  className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100"
+                  alt=""
+                />
+                <div>
+                  <p className="text-sm font-bold text-sky-500">
+                    {e.user.name}
+                  </p>
+                  <p className="text-sky-900">{e.user.email}</p>
+                </div>
+              </div>
+              <div className="flex sm:block items-center gap-5">
+                <div>
+                  <p className="font-bold text-sm text-gray-500">Permissions</p>
+                  <p className="text-xs text-gray-400 mb-2">
+                    (Click to toggle.)
+                  </p>
+                </div>
+
+                <div>
+                  <label className="cursor-pointer mr-1">
+                    <input
+                      type="checkbox"
+                      id="canCreate"
+                      className="peer sr-only"
+                      checked={e.canCreate}
+                      onChange={() => {
+                        const updatedMembers = activeCollection.members.map(
+                          (member) => {
+                            if (member.user.email === e.user.email) {
+                              return { ...member, canCreate: !e.canCreate };
+                            }
+                            return member;
+                          }
+                        );
+                        setActiveCollection({
+                          ...activeCollection,
+                          members: updatedMembers,
+                        });
+                      }}
+                    />
+                    <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                      Create
+                    </span>
+                  </label>
+
+                  <label className="cursor-pointer mr-1">
+                    <input
+                      type="checkbox"
+                      id="canUpdate"
+                      className="peer sr-only"
+                      checked={e.canUpdate}
+                      onChange={() => {
+                        const updatedMembers = activeCollection.members.map(
+                          (member) => {
+                            if (member.user.email === e.user.email) {
+                              return { ...member, canUpdate: !e.canUpdate };
+                            }
+                            return member;
+                          }
+                        );
+                        setActiveCollection({
+                          ...activeCollection,
+                          members: updatedMembers,
+                        });
+                      }}
+                    />
+                    <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                      Update
+                    </span>
+                  </label>
+
+                  <label className="cursor-pointer mr-1">
+                    <input
+                      type="checkbox"
+                      id="canDelete"
+                      className="peer sr-only"
+                      checked={e.canDelete}
+                      onChange={() => {
+                        const updatedMembers = activeCollection.members.map(
+                          (member) => {
+                            if (member.user.email === e.user.email) {
+                              return { ...member, canDelete: !e.canDelete };
+                            }
+                            return member;
+                          }
+                        );
+                        setActiveCollection({
+                          ...activeCollection,
+                          members: updatedMembers,
+                        });
+                      }}
+                    />
+                    <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                      Delete
+                    </span>
+                  </label>
+                </div>
               </div>
             </div>
-            <div className="flex sm:block items-center gap-5">
-              <div>
-                <p className="font-bold text-sm text-gray-500">Permissions</p>
-                <p className="text-xs text-gray-400 mb-2">(Click to toggle.)</p>
-              </div>
-
-              <div>
-                <label className="cursor-pointer mr-1">
-                  <input
-                    type="checkbox"
-                    id="canCreate"
-                    className="peer sr-only"
-                    checked={e.canCreate}
-                    onChange={() => {
-                      const updatedMembers = activeCollection.members.map(
-                        (member) => {
-                          if (member.user.email === e.user.email) {
-                            return { ...member, canCreate: !e.canCreate };
-                          }
-                          return member;
-                        }
-                      );
-                      setActiveCollection({
-                        ...activeCollection,
-                        members: updatedMembers,
-                      });
-                    }}
-                  />
-                  <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                    Create
-                  </span>
-                </label>
-
-                <label className="cursor-pointer mr-1">
-                  <input
-                    type="checkbox"
-                    id="canUpdate"
-                    className="peer sr-only"
-                    checked={e.canUpdate}
-                    onChange={() => {
-                      const updatedMembers = activeCollection.members.map(
-                        (member) => {
-                          if (member.user.email === e.user.email) {
-                            return { ...member, canUpdate: !e.canUpdate };
-                          }
-                          return member;
-                        }
-                      );
-                      setActiveCollection({
-                        ...activeCollection,
-                        members: updatedMembers,
-                      });
-                    }}
-                  />
-                  <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                    Update
-                  </span>
-                </label>
-
-                <label className="cursor-pointer mr-1">
-                  <input
-                    type="checkbox"
-                    id="canDelete"
-                    className="peer sr-only"
-                    checked={e.canDelete}
-                    onChange={() => {
-                      const updatedMembers = activeCollection.members.map(
-                        (member) => {
-                          if (member.user.email === e.user.email) {
-                            return { ...member, canDelete: !e.canDelete };
-                          }
-                          return member;
-                        }
-                      );
-                      setActiveCollection({
-                        ...activeCollection,
-                        members: updatedMembers,
-                      });
-                    }}
-                  />
-                  <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
-                    Delete
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
 
       <div className="flex flex-col justify-center items-center gap-2 mt-2">
         <div
