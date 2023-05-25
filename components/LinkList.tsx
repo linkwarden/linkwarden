@@ -45,7 +45,7 @@ export default function ({
   };
 
   return (
-    <div className="shadow hover:shadow-none duration-100 bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20%   p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
+    <div className="border border-sky-100 bg-gray-100 p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
       {editModal ? (
         <Modal toggleModal={toggleEditModal}>
           <EditLink toggleLinkModal={toggleEditModal} link={link} />
@@ -124,7 +124,7 @@ export default function ({
             <FontAwesomeIcon
               icon={faEllipsis}
               title="More"
-              className="w-6 h-6"
+              className="w-5 h-5"
               id="edit-dropdown"
             />
           </div>

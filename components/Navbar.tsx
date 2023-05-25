@@ -66,7 +66,7 @@ export default function () {
       <div className="flex items-center gap-2">
         <div
           onClick={toggleLinkModal}
-          className="inline-flex gap-1 items-center font-semibold select-none cursor-pointer px-2 sm:px-3 py-2 text-sky-500 hover:text-sky-600 rounded-md hover:outline-sky-500 outline duration-100 bg-white outline-sky-100 outline-1"
+          className="inline-flex gap-1 items-center font-semibold select-none cursor-pointer px-2 sm:px-3 py-2 rounded-md text-white bg-sky-500 hover:bg-sky-400 duration-100"
         >
           <FontAwesomeIcon icon={faPlus} className="w-6 h-6 sm:w-5 sm:h-5" />
           <span className="hidden sm:block">New Link</span>
