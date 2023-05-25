@@ -188,13 +188,13 @@ export default function () {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-5">
+        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 gap-5">
           {sortedCollections.map((e, i) => {
             return <CollectionCard key={i} collection={e} />;
           })}
 
           <div
-            className="p-5 bg-gray-100 h-40 w-60 rounded-md border-sky-100 border-solid border flex flex-col gap-4 justify-center items-center cursor-pointer hover:bg-gray-50 duration-100"
+            className="p-5 bg-gray-100 self-stretch min-h-[12rem] rounded-md border-sky-100 border-solid border flex flex-col gap-4 justify-center items-center cursor-pointer hover:bg-gray-50 duration-100"
             onClick={toggleCollectionModal}
           >
             <p className="text-sky-900">New Collection</p>
