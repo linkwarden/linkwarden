@@ -127,9 +127,11 @@ export default function Links() {
             ) : null}
           </div>
         </div>
-        {sortedLinks.map((e, i) => {
-          return <LinkList key={i} link={e} count={i} />;
-        })}
+        <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
+          {sortedLinks.map((e, i) => {
+            return <LinkList key={i} link={e} count={i} />;
+          })}
+        </div>
       </div>
     </MainLayout>
   );
