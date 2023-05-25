@@ -119,6 +119,7 @@ export default function ({ className }: { className?: string }) {
               text={e.name}
               icon={<FontAwesomeIcon icon={faFolder} />}
               path={`/collections/${e.id}`}
+              className="capitalize"
             />
           );
         })}
