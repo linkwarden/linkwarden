@@ -19,7 +19,7 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
 
   return (
     <Link href={`/collections/${collection.id}`}>
-      <div className="p-5 bg-gray-100 min-h-[10rem] w-72 rounded-md border-sky-100 border-solid border flex flex-col gap-2 justify-between cursor-pointer hover:bg-gray-50 duration-100">
+      <div className="p-5 bg-gray-100 min-h-[12rem] rounded-md border-sky-100 border-solid border flex flex-col gap-2 justify-between cursor-pointer hover:bg-gray-50 duration-100">
         <div>
           <div className="flex justify-between text-sky-600 items-center">
             <p className="text-lg w-max font-bold">{collection.name}</p>
@@ -30,25 +30,33 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
           </div>
           <p className="text-sky-400">{collection.description}</p>
         </div>
-        <div className="text-sky-400 flex gap-1 flex-wrap">
-          <p>Members:</p>
-          {collection.members.map((e, i) => {
-            return (
-              <p
-                className="text-sky-500 font-semibold"
-                title={e.user.email}
-                key={i}
-              >
-                {e.user.name}
-              </p>
-            );
-          })}
-        </div>
-        <div className="flex gap-2 items-baseline">
-          <p className="text-sky-300 font-bold text-sm">{formattedDate}</p>
-          <p className="text-sky-500 font-bold">
-            {links.filter((e) => e.collectionId === collection.id).length} Links
-          </p>
+        <div className="flex justify-between items-center">
+          <div className="text-sky-400 flex items-center w-full">
+            {collection.members
+              .map((e, i) => {
+                return (
+                  <img
+                    src={`/api/avatar/${e.userId}`}
+                    className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3"
+                    alt=""
+                  />
+                );
+              })
+              .reverse()
+              .slice(0, 3)}
+            {collection.members.length - 3 > 0 ? (
+              <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
+                +{collection.members.length - 3}
+              </div>
+            ) : null}
+          </div>
+          <div className="text-right w-full">
+            <p className="text-sky-500 font-bold">
+              {links.filter((e) => e.collectionId === collection.id).length}{" "}
+              Links
+            </p>
+            <p className="text-sky-300 font-bold text-sm">{formattedDate}</p>
+          </div>
         </div>
       </div>
     </Link>
