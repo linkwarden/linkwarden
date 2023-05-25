@@ -194,7 +194,7 @@ export default function () {
           })}
 
           <div
-            className="p-5 bg-gradient-to-tr from-sky-100 self-stretch to-gray-100 min-h-[12rem] rounded-md cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
+            className="p-5 self-stretch bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% min-h-[12rem] rounded-md cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
             onClick={toggleCollectionModal}
           >
             <p className="text-sky-900 group-hover:opacity-0 duration-100">
