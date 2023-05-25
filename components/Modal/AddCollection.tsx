@@ -5,12 +5,13 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { ExtendedCollection, NewCollection } from "@/types/global";
 import { useSession } from "next-auth/react";
 import RequiredBadge from "../RequiredBadge";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
+import ImageWithFallback from "../ImageWithFallback";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -144,12 +145,16 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
                 }}
               />
               <div className="flex items-center gap-2">
-                <img
+                <ImageWithFallback
+                  key={i}
                   // @ts-ignore
                   src={`/api/avatar/${e.id}`}
                   className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100"
-                  alt=""
-                />
+                >
+                  <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 flex items-center justify-center">
+                    <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
+                  </div>
+                </ImageWithFallback>
                 <div>
                   <p className="text-sm font-bold text-sky-500">{e.name}</p>
                   <p className="text-sky-900">{e.email}</p>

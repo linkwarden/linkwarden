@@ -45,7 +45,7 @@ export default function ({
   };
 
   return (
-    <div className="border border-sky-100 bg-gray-100 p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
+    <div className="shadow hover:shadow-none duration-100 bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20%   p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
       {editModal ? (
         <Modal toggleModal={toggleEditModal}>
           <EditLink toggleLinkModal={toggleEditModal} link={link} />
@@ -57,7 +57,7 @@ export default function ({
         width={42}
         height={42}
         alt=""
-        className="select-none mt-3 z-10 rounded-full border-[3px] border-sky-100"
+        className="select-none mt-3 z-10 rounded-full shadow border-[3px] border-sky-100"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
