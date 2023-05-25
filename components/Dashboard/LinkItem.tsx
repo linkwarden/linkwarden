@@ -7,12 +7,19 @@ import { ExtendedLink } from "@/types/global";
 import {
   faFolder,
   faArrowUpRightFromSquare,
+  faEllipsis,
+  faPenToSquare,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Image from "next/image";
+import useLinkStore from "@/store/links";
+import EditLink from "../Modal/EditLink";
 import Link from "next/link";
+import Dropdown from "../Dropdown";
+import Modal from "../Modal";
 
 export default function ({
   link,
@@ -21,6 +28,11 @@ export default function ({
   link: ExtendedLink;
   count: number;
 }) {
+  const [expandDropdown, setExpandDropdown] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+
+  const { removeLink } = useLinkStore();
+
   const url = new URL(link.url);
   const formattedDate = new Date(link.createdAt).toLocaleString("en-US", {
     year: "numeric",
@@ -28,14 +40,24 @@ export default function ({
     day: "numeric",
   });
 
+  const toggleEditModal = () => {
+    setEditModal(!editModal);
+  };
+
   return (
-    <div className="bg-white p-5 rounded-md flex items-start border border-sky-100 relative gap-5 lg:gap-10 group/item">
+    <div className="border border-sky-100 bg-white p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
+      {editModal ? (
+        <Modal toggleModal={toggleEditModal}>
+          <EditLink toggleLinkModal={toggleEditModal} link={link} />
+        </Modal>
+      ) : null}
+
       <Image
         src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-        width={32}
-        height={32}
+        width={42}
+        height={42}
         alt=""
-        className="select-none mt-3 z-10 rounded-md"
+        className="select-none mt-3 z-10 rounded-full border-[3px] border-sky-100"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
@@ -47,15 +69,15 @@ export default function ({
         width={80}
         height={80}
         alt=""
-        className="blur-sm absolute left-2 opacity-40 select-none hidden lg:block"
+        className="blur-sm absolute left-2 opacity-40 select-none hidden sm:block"
         draggable="false"
         onError={(e) => {
           const target = e.target as HTMLElement;
           target.style.opacity = "0";
         }}
       />
-      <div className="flex justify-between gap-5 w-full z-0">
-        <div>
+      <div className="flex justify-between gap-5 w-full h-full z-0">
+        <div className="flex flex-col justify-between">
           <div className="flex items-baseline gap-1">
             <p className="text-sm text-sky-300 font-bold">{count + 1}.</p>
             <p className="text-lg text-sky-600">{link.name}</p>
@@ -94,34 +116,74 @@ export default function ({
         </div>
 
         <div className="flex flex-col justify-between items-end relative">
-          <a
-            href={`/api/archives/${link.collectionId}/${encodeURIComponent(
-              link.screenshotPath
-            )}`}
-            target="_blank"
-            title="Screenshot"
+          <div
+            onClick={() => setExpandDropdown(!expandDropdown)}
+            id="edit-dropdown"
+            className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
           >
             <FontAwesomeIcon
-              icon={faFileImage}
-              className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
+              icon={faEllipsis}
+              title="More"
+              className="w-6 h-6"
+              id="edit-dropdown"
             />
-          </a>
-          <a
-            href={`/api/archives/${link.collectionId}/${encodeURIComponent(
-              link.pdfPath
-            )}`}
-            target="_blank"
-            title="PDF"
-          >
-            <FontAwesomeIcon
-              icon={faFilePdf}
-              className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
+          </div>
+          <div className="relative">
+            <div className="flex flex-col items-end justify-center gap-1">
+              <a
+                href={`/api/archives/${link.collectionId}/${encodeURIComponent(
+                  link.screenshotPath
+                )}`}
+                target="_blank"
+                title="Screenshot"
+              >
+                <FontAwesomeIcon
+                  icon={faFileImage}
+                  className="w-5 h-5 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
+                />
+              </a>
+              <a
+                href={`/api/archives/${link.collectionId}/${encodeURIComponent(
+                  link.pdfPath
+                )}`}
+                target="_blank"
+                title="PDF"
+              >
+                <FontAwesomeIcon
+                  icon={faFilePdf}
+                  className="w-5 h-5 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
+                />
+              </a>
+            </div>
+          </div>
+
+          {expandDropdown ? (
+            <Dropdown
+              items={[
+                {
+                  name: "Edit",
+                  icon: <FontAwesomeIcon icon={faPenToSquare} />,
+                  onClick: () => {
+                    setEditModal(true);
+                    setExpandDropdown(false);
+                  },
+                },
+                {
+                  name: "Delete",
+                  icon: <FontAwesomeIcon icon={faTrashCan} />,
+                  onClick: () => {
+                    removeLink(link);
+                    setExpandDropdown(false);
+                  },
+                },
+              ]}
+              onClickOutside={(e: Event) => {
+                const target = e.target as HTMLInputElement;
+                if (target.id !== "edit-dropdown") setExpandDropdown(false);
+              }}
+              className="absolute top-8 right-0 w-36"
             />
-          </a>
-          <FontAwesomeIcon
-            icon={faArrowUpRightFromSquare}
-            className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
-          />
+          ) : null}
         </div>
       </div>
     </div>

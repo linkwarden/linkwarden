@@ -30,7 +30,6 @@ export default function ({
 }) {
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  const [archiveLabel, setArchiveLabel] = useState("Archived Formats");
 
   const { removeLink } = useLinkStore();
 
@@ -77,8 +76,8 @@ export default function ({
           target.style.opacity = "0";
         }}
       />
-      <div className="flex justify-between gap-5 w-full z-0">
-        <div>
+      <div className="flex justify-between gap-5 w-full h-full z-0">
+        <div className="flex flex-col justify-between">
           <div className="flex items-baseline gap-1">
             <p className="text-sm text-sky-300 font-bold">{count + 1}.</p>
             <p className="text-lg text-sky-600">{link.name}</p>
@@ -129,26 +128,18 @@ export default function ({
               id="edit-dropdown"
             />
           </div>
-          <div>
-            <p className="text-center text-sky-400 text-sm font-bold">
-              {archiveLabel}
-            </p>
-
-            <div
-              className="flex justify-center mt-3 gap-3"
-              onMouseLeave={() => setArchiveLabel("Archived Formats")}
-            >
+          <div className="relative">
+            <div className="flex flex-col items-end justify-center gap-1">
               <a
                 href={`/api/archives/${link.collectionId}/${encodeURIComponent(
                   link.screenshotPath
                 )}`}
-                onMouseEnter={() => setArchiveLabel("Screenshot")}
                 target="_blank"
                 title="Screenshot"
               >
                 <FontAwesomeIcon
                   icon={faFileImage}
-                  className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
+                  className="w-5 h-5 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
                 />
               </a>
               <a
@@ -156,19 +147,13 @@ export default function ({
                   link.pdfPath
                 )}`}
                 target="_blank"
-                onMouseEnter={() => setArchiveLabel("PDF")}
                 title="PDF"
               >
                 <FontAwesomeIcon
                   icon={faFilePdf}
-                  className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
+                  className="w-5 h-5 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
                 />
               </a>
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="w-8 h-8 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
-                onMouseEnter={() => setArchiveLabel("Wayback Machine")}
-              />
             </div>
           </div>
 
