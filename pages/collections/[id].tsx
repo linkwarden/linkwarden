@@ -19,6 +19,7 @@ import {
   faPenToSquare,
   faSort,
   faTrashCan,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -26,6 +27,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import RadioButton from "@/components/RadioButton";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 export default function () {
   const router = useRouter();
@@ -99,152 +101,193 @@ export default function () {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
-        <div className="flex gap-3 items-center justify-between">
-          <div className="flex gap-3 items-center">
-            <div className="flex gap-2 items-center">
-              <FontAwesomeIcon
-                icon={faFolder}
-                className="w-5 h-5 text-sky-300"
-              />
-              <p className="text-lg text-sky-900">{activeCollection?.name}</p>
-            </div>
-            <div className="relative">
-              <div
-                onClick={() => setExpandDropdown(!expandDropdown)}
-                id="edit-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
-              >
+        <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
+          <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+            <div className="flex gap-3 items-center">
+              <div className="flex gap-2">
                 <FontAwesomeIcon
-                  icon={faEllipsis}
-                  id="edit-dropdown"
-                  className="w-5 h-5 text-gray-500"
+                  icon={faFolder}
+                  className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-300"
                 />
+                <p className="sm:text-4xl text-3xl text-sky-900 capitalize">
+                  {activeCollection?.name}
+                </p>
               </div>
-              {expandDropdown ? (
-                <Dropdown
-                  items={[
-                    {
-                      name: "Add Link Here",
-                      icon: <FontAwesomeIcon icon={faAdd} />,
-                      onClick: () => {
-                        toggleLinkModal();
-                        setExpandDropdown(false);
-                      },
-                    },
-                    {
-                      name: "Edit Collection",
-                      icon: <FontAwesomeIcon icon={faPenToSquare} />,
-                      onClick: () => {
-                        toggleEditCollectionModal();
-                        setExpandDropdown(false);
-                      },
-                    },
-                    {
-                      name: "Delete Collection",
-                      icon: <FontAwesomeIcon icon={faTrashCan} />,
-                      onClick: () => {
-                        toggleDeleteCollectionModal();
-                        setExpandDropdown(false);
-                      },
-                    },
-                  ]}
-                  onClickOutside={(e: Event) => {
-                    const target = e.target as HTMLInputElement;
-                    if (target.id !== "edit-dropdown") setExpandDropdown(false);
-                  }}
-                  className="absolute top-8 left-0 z-10 w-44"
-                />
-              ) : null}
+            </div>
 
-              {linkModal ? (
-                <Modal toggleModal={toggleLinkModal}>
-                  <AddLink toggleLinkModal={toggleLinkModal} />
-                </Modal>
-              ) : null}
-
-              {editCollectionModal && activeCollection ? (
-                <Modal toggleModal={toggleEditCollectionModal}>
-                  <EditCollection
-                    toggleCollectionModal={toggleEditCollectionModal}
-                    collection={activeCollection}
-                  />
-                </Modal>
-              ) : null}
-
-              {deleteCollectionModal && activeCollection ? (
-                <Modal toggleModal={toggleDeleteCollectionModal}>
-                  <DeleteCollection
-                    collection={activeCollection}
-                    toggleDeleteCollectionModal={toggleDeleteCollectionModal}
-                  />
-                </Modal>
-              ) : null}
+            <div>
+              <div className="text-sky-400 flex justify-end items-center w-56 mr-3">
+                <div className="mr-1 bg-sky-500 p-1 leading-3 select-none cursor-pointer hover:bg-sky-400 duration-100 text-white rounded-full text-xs">
+                  View Team
+                </div>
+                {activeCollection?.members
+                  .sort((a, b) => a.userId - b.userId)
+                  .map((e, i) => {
+                    return (
+                      <ImageWithFallback
+                        key={i}
+                        src={`/api/avatar/${e.userId}`}
+                        className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3"
+                      >
+                        <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3 flex items-center justify-center">
+                          <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
+                        </div>
+                      </ImageWithFallback>
+                    );
+                  })
+                  .slice(0, 4)}
+                {activeCollection?.members.length &&
+                activeCollection.members.length - 4 > 0 ? (
+                  <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
+                    +{activeCollection?.members?.length - 3}
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
 
-          <div className="relative">
-            <div
-              onClick={() => setSortDropdown(!sortDropdown)}
-              id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
-            >
-              <FontAwesomeIcon
-                icon={faSort}
-                id="sort-dropdown"
-                className="w-5 h-5 text-gray-500"
-              />
-            </div>
-
-            {sortDropdown ? (
-              <ClickAwayHandler
-                onClickOutside={(e: Event) => {
-                  const target = e.target as HTMLInputElement;
-                  if (target.id !== "sort-dropdown") setSortDropdown(false);
-                }}
-                className="absolute top-8 right-0 shadow-md bg-gray-50 rounded-md p-2 z-10 border border-sky-100 w-48"
-              >
-                <p className="mb-2 text-sky-900 text-center font-semibold">
-                  Sort by
-                </p>
-                <div className="flex flex-col gap-2">
-                  <RadioButton
-                    label="Name (A-Z)"
-                    state={sortBy === "Name (A-Z)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Name (Z-A)"
-                    state={sortBy === "Name (Z-A)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Title (A-Z)"
-                    state={sortBy === "Title (A-Z)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Title (Z-A)"
-                    state={sortBy === "Title (Z-A)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Date (Newest First)"
-                    state={sortBy === "Date (Newest First)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Date (Oldest First)"
-                    state={sortBy === "Date (Oldest First)"}
-                    onClick={handleSortChange}
+          <div className="text-gray-500 flex justify-between items-end gap-5">
+            <p>{activeCollection?.description}</p>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <div
+                  onClick={() => setSortDropdown(!sortDropdown)}
+                  id="sort-dropdown"
+                  className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+                >
+                  <FontAwesomeIcon
+                    icon={faSort}
+                    id="sort-dropdown"
+                    className="w-5 h-5 text-gray-500"
                   />
                 </div>
-              </ClickAwayHandler>
-            ) : null}
+
+                {sortDropdown ? (
+                  <ClickAwayHandler
+                    onClickOutside={(e: Event) => {
+                      const target = e.target as HTMLInputElement;
+                      if (target.id !== "sort-dropdown") setSortDropdown(false);
+                    }}
+                    className="absolute top-8 right-0 shadow-md bg-gray-50 rounded-md p-2 z-10 border border-sky-100 w-48"
+                  >
+                    <p className="mb-2 text-sky-900 text-center font-semibold">
+                      Sort by
+                    </p>
+                    <div className="flex flex-col gap-2">
+                      <RadioButton
+                        label="Name (A-Z)"
+                        state={sortBy === "Name (A-Z)"}
+                        onClick={handleSortChange}
+                      />
+
+                      <RadioButton
+                        label="Name (Z-A)"
+                        state={sortBy === "Name (Z-A)"}
+                        onClick={handleSortChange}
+                      />
+
+                      <RadioButton
+                        label="Title (A-Z)"
+                        state={sortBy === "Title (A-Z)"}
+                        onClick={handleSortChange}
+                      />
+
+                      <RadioButton
+                        label="Title (Z-A)"
+                        state={sortBy === "Title (Z-A)"}
+                        onClick={handleSortChange}
+                      />
+
+                      <RadioButton
+                        label="Date (Newest First)"
+                        state={sortBy === "Date (Newest First)"}
+                        onClick={handleSortChange}
+                      />
+
+                      <RadioButton
+                        label="Date (Oldest First)"
+                        state={sortBy === "Date (Oldest First)"}
+                        onClick={handleSortChange}
+                      />
+                    </div>
+                  </ClickAwayHandler>
+                ) : null}
+              </div>
+              <div className="relative">
+                <div
+                  onClick={() => setExpandDropdown(!expandDropdown)}
+                  id="edit-dropdown"
+                  className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+                >
+                  <FontAwesomeIcon
+                    icon={faEllipsis}
+                    id="edit-dropdown"
+                    title="More"
+                    className="w-5 h-5 text-gray-500"
+                  />
+                </div>
+                {expandDropdown ? (
+                  <Dropdown
+                    items={[
+                      {
+                        name: "Add Link Here",
+                        icon: <FontAwesomeIcon icon={faAdd} />,
+                        onClick: () => {
+                          toggleLinkModal();
+                          setExpandDropdown(false);
+                        },
+                      },
+                      {
+                        name: "Edit Collection",
+                        icon: <FontAwesomeIcon icon={faPenToSquare} />,
+                        onClick: () => {
+                          toggleEditCollectionModal();
+                          setExpandDropdown(false);
+                        },
+                      },
+                      {
+                        name: "Delete Collection",
+                        icon: <FontAwesomeIcon icon={faTrashCan} />,
+                        onClick: () => {
+                          toggleDeleteCollectionModal();
+                          setExpandDropdown(false);
+                        },
+                      },
+                    ]}
+                    onClickOutside={(e: Event) => {
+                      const target = e.target as HTMLInputElement;
+                      if (target.id !== "edit-dropdown")
+                        setExpandDropdown(false);
+                    }}
+                    className="absolute top-8 right-0 z-10 w-44"
+                  />
+                ) : null}
+
+                {linkModal ? (
+                  <Modal toggleModal={toggleLinkModal}>
+                    <AddLink toggleLinkModal={toggleLinkModal} />
+                  </Modal>
+                ) : null}
+
+                {editCollectionModal && activeCollection ? (
+                  <Modal toggleModal={toggleEditCollectionModal}>
+                    <EditCollection
+                      toggleCollectionModal={toggleEditCollectionModal}
+                      collection={activeCollection}
+                    />
+                  </Modal>
+                ) : null}
+
+                {deleteCollectionModal && activeCollection ? (
+                  <Modal toggleModal={toggleDeleteCollectionModal}>
+                    <DeleteCollection
+                      collection={activeCollection}
+                      toggleDeleteCollectionModal={toggleDeleteCollectionModal}
+                    />
+                  </Modal>
+                ) : null}
+              </div>
+            </div>
           </div>
         </div>
         <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
