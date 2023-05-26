@@ -5,7 +5,12 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClose,
+  faPlus,
+  faUser,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { ExtendedCollection, NewCollection } from "@/types/global";
 import { useSession } from "next-auth/react";
@@ -111,7 +116,7 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
           }
           className="absolute flex items-center justify-center right-2 top-2 bottom-2 bg-sky-500 hover:bg-sky-400 duration-100 text-white w-9 rounded-md cursor-pointer"
         >
-          <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
+          <FontAwesomeIcon icon={faUserPlus} className="w-6 h-6" />
         </div>
       </div>
 

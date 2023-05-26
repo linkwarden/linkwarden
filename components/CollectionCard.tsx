@@ -41,7 +41,7 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
   };
 
   return (
-    <div className="p-5 bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% self-stretch min-h-[12rem] rounded-md cursor-pointer shadow duration-100 hover:shadow-none group relative">
+    <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% self-stretch min-h-[12rem] rounded-md shadow duration-100 hover:shadow-none group relative">
       <div
         onClick={() => setExpandDropdown(!expandDropdown)}
         id="edit-dropdown"
@@ -54,7 +54,7 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
         />
       </div>
       <Link href={`/collections/${collection.id}`}>
-        <div className="flex flex-col gap-2 justify-between h-full select-none">
+        <div className="flex flex-col gap-2 justify-between h-full select-none p-5 cursor-pointer">
           <p className="text-2xl font-bold capitalize text-sky-600 break-words w-4/5">
             {collection.name}
           </p>
