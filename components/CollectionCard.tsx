@@ -55,11 +55,9 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
       </div>
       <Link href={`/collections/${collection.id}`}>
         <div className="flex flex-col gap-2 justify-between h-full select-none">
-          <div>
-            <p className="text-2xl w-max font-bold capitalize text-sky-600">
-              {collection.name}
-            </p>
-          </div>
+          <p className="text-2xl font-bold capitalize text-sky-600 break-words w-4/5">
+            {collection.name}
+          </p>
           <div className="flex justify-between items-center">
             <div className="text-sky-400 flex items-center w-full">
               {collection.members
