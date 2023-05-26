@@ -28,12 +28,15 @@ import MainLayout from "@/layouts/MainLayout";
 import RadioButton from "@/components/RadioButton";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import ImageWithFallback from "@/components/ImageWithFallback";
+import { useSession } from "next-auth/react";
 
 export default function () {
   const router = useRouter();
 
   const { links } = useLinkStore();
   const { collections } = useCollectionStore();
+
+  const { data } = useSession();
 
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
@@ -102,7 +105,7 @@ export default function () {
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
         <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
-          <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-3 justify-between items-center sm:items-start">
             <div className="flex gap-3 items-center">
               <div className="flex gap-2">
                 <FontAwesomeIcon
@@ -117,9 +120,12 @@ export default function () {
 
             {activeCollection?.members[0] ? (
               <div>
-                <div className="text-sky-400 flex justify-end items-center w-56 mr-3">
-                  <div className="mr-1 bg-sky-500 p-1 leading-3 select-none cursor-pointer hover:bg-sky-400 duration-100 text-white rounded-full text-xs">
-                    View Team
+                <div className="text-sky-400 flex justify-end items-center w-60 mr-3">
+                  <div className="mr-1 bg-sky-500 p-2 leading-3 select-none cursor-pointer hover:bg-sky-400 duration-100 text-white rounded-full text-xs">
+                    {activeCollection.ownerId === data?.user.id
+                      ? "Manage"
+                      : "View"}{" "}
+                    Team
                   </div>
                   {activeCollection?.members
                     .sort((a, b) => a.userId - b.userId)
@@ -143,7 +149,7 @@ export default function () {
                   {activeCollection?.members.length &&
                   activeCollection.members.length - 4 > 0 ? (
                     <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
-                      +{activeCollection?.members?.length - 3}
+                      +{activeCollection?.members?.length - 4}
                     </div>
                   ) : null}
                 </div>

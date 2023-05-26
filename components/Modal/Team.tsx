@@ -5,70 +5,51 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClose,
-  faPenToSquare,
-  faPlus,
-  faTrashCan,
-  faUser,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faClose, faPlus, faUser } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
-import { ExtendedCollection } from "@/types/global";
+import { ExtendedCollection, NewCollection } from "@/types/global";
 import { useSession } from "next-auth/react";
-import Modal from "@/components/Modal";
-import DeleteCollection from "@/components/Modal/DeleteCollection";
 import RequiredBadge from "../RequiredBadge";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import ImageWithFallback from "../ImageWithFallback";
-import Checkbox from "../Checkbox";
 
 type Props = {
   toggleCollectionModal: Function;
-  collection: ExtendedCollection;
 };
 
-export default function EditCollection({
-  toggleCollectionModal,
-  collection,
-}: Props) {
-  const [activeCollection, setActiveCollection] =
-    useState<ExtendedCollection>(collection);
+export default function AddCollection({ toggleCollectionModal }: Props) {
+  const [newCollection, setNewCollection] = useState<NewCollection>({
+    name: "",
+    description: "",
+    members: [],
+  });
 
   const [memberEmail, setMemberEmail] = useState("");
 
-  const { updateCollection } = useCollectionStore();
-
-  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
-
-  const toggleDeleteCollectionModal = () => {
-    setDeleteCollectionModal(!deleteCollectionModal);
-  };
+  const { addCollection } = useCollectionStore();
 
   const session = useSession();
 
+  const submit = async () => {
+    console.log(newCollection);
+
+    const response = await addCollection(newCollection as NewCollection);
+
+    if (response) toggleCollectionModal();
+  };
+
   const setMemberState = (newMember: any) => {
-    setActiveCollection({
-      ...activeCollection,
-      members: [...activeCollection.members, newMember],
+    setNewCollection({
+      ...newCollection,
+      members: [...newCollection.members, newMember],
     });
 
     setMemberEmail("");
   };
 
-  const submit = async () => {
-    console.log(activeCollection);
-
-    const response = await updateCollection(
-      activeCollection as ExtendedCollection
-    );
-
-    if (response) toggleCollectionModal();
-  };
-
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="text-xl text-sky-500 mb-2 text-center">Edit Collection</p>
+      <p className="text-xl text-sky-500 mb-2 text-center">New Collection</p>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">
@@ -77,9 +58,9 @@ export default function EditCollection({
             <RequiredBadge />
           </p>
           <input
-            value={activeCollection.name}
+            value={newCollection.name}
             onChange={(e) =>
-              setActiveCollection({ ...activeCollection, name: e.target.value })
+              setNewCollection({ ...newCollection, name: e.target.value })
             }
             type="text"
             placeholder="e.g. Example Collection"
@@ -90,10 +71,10 @@ export default function EditCollection({
         <div className="w-full">
           <p className="text-sm font-bold text-sky-300 mb-2">Description</p>
           <input
-            value={activeCollection.description}
+            value={newCollection.description}
             onChange={(e) =>
-              setActiveCollection({
-                ...activeCollection,
+              setNewCollection({
+                ...newCollection,
                 description: e.target.value,
               })
             }
@@ -104,27 +85,9 @@ export default function EditCollection({
         </div>
       </div>
 
-      <hr className="my-2" />
+      <hr className="border rounded my-2" />
 
-      {/* <p className="text-sky-600">Sharing & Collaboration Settings</p>
-
-      <p className="text-sm font-bold text-sky-300">Collaboration</p>
-
-      <div className="w-fit">
-        <div className="border border-sky-100 rounded-md bg-white px-2 py-1 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-500">
-          Manage Team
-        </div>
-      </div>
-
-      <Checkbox
-        label="Make this a public collection."
-        state={true}
-        onClick={() => console.log("Clicked!")}
-      />
-      <p className="text-gray-500 text-sm">
-        This will let anyone to access this collection.
-      </p> */}
-
+      <p className="text-sm font-bold text-sky-300">Members</p>
       <div className="relative">
         <input
           value={memberEmail}
@@ -141,24 +104,25 @@ export default function EditCollection({
             addMemberToCollection(
               session.data?.user.email as string,
               memberEmail,
-              activeCollection,
+              newCollection as unknown as ExtendedCollection,
               setMemberState,
-              "UPDATE"
+              "ADD"
             )
           }
           className="absolute flex items-center justify-center right-2 top-2 bottom-2 bg-sky-500 hover:bg-sky-400 duration-100 text-white w-9 rounded-md cursor-pointer"
         >
-          <FontAwesomeIcon icon={faUserPlus} className="w-6 h-6" />
+          <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
         </div>
       </div>
-      {activeCollection.members[0] ? (
+
+      {newCollection.members[0] ? (
         <p className="text-center text-gray-500 text-xs sm:text-sm">
           (All Members have <b>Read</b> access to this collection.)
         </p>
       ) : null}
 
       <div className="h-36 overflow-auto flex flex-col gap-3 rounded-md shadow-inner">
-        {activeCollection.members.map((e, i) => {
+        {newCollection.members.map((e, i) => {
           return (
             <div
               key={i}
@@ -169,13 +133,13 @@ export default function EditCollection({
                 className="absolute right-2 top-2 text-gray-500 h-4 hover:text-red-500 duration-100 cursor-pointer"
                 title="Remove Member"
                 onClick={() => {
-                  const updatedMembers = activeCollection.members.filter(
+                  const updatedMembers = newCollection.members.filter(
                     (member) => {
-                      return member.user.email !== e.user.email;
+                      return member.email !== e.email;
                     }
                   );
-                  setActiveCollection({
-                    ...activeCollection,
+                  setNewCollection({
+                    ...newCollection,
                     members: updatedMembers,
                   });
                 }}
@@ -183,7 +147,8 @@ export default function EditCollection({
               <div className="flex items-center gap-2">
                 <ImageWithFallback
                   key={i}
-                  src={`/api/avatar/${e.userId}`}
+                  // @ts-ignore
+                  src={`/api/avatar/${e.id}`}
                   className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100"
                 >
                   <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 flex items-center justify-center">
@@ -191,10 +156,8 @@ export default function EditCollection({
                   </div>
                 </ImageWithFallback>
                 <div>
-                  <p className="text-sm font-bold text-sky-500">
-                    {e.user.name}
-                  </p>
-                  <p className="text-sky-900">{e.user.email}</p>
+                  <p className="text-sm font-bold text-sky-500">{e.name}</p>
+                  <p className="text-sky-900">{e.email}</p>
                 </div>
               </div>
               <div className="flex sm:block items-center gap-5">
@@ -213,16 +176,16 @@ export default function EditCollection({
                       className="peer sr-only"
                       checked={e.canCreate}
                       onChange={() => {
-                        const updatedMembers = activeCollection.members.map(
+                        const updatedMembers = newCollection.members.map(
                           (member) => {
-                            if (member.user.email === e.user.email) {
+                            if (member.email === e.email) {
                               return { ...member, canCreate: !e.canCreate };
                             }
                             return member;
                           }
                         );
-                        setActiveCollection({
-                          ...activeCollection,
+                        setNewCollection({
+                          ...newCollection,
                           members: updatedMembers,
                         });
                       }}
@@ -239,16 +202,16 @@ export default function EditCollection({
                       className="peer sr-only"
                       checked={e.canUpdate}
                       onChange={() => {
-                        const updatedMembers = activeCollection.members.map(
+                        const updatedMembers = newCollection.members.map(
                           (member) => {
-                            if (member.user.email === e.user.email) {
+                            if (member.email === e.email) {
                               return { ...member, canUpdate: !e.canUpdate };
                             }
                             return member;
                           }
                         );
-                        setActiveCollection({
-                          ...activeCollection,
+                        setNewCollection({
+                          ...newCollection,
                           members: updatedMembers,
                         });
                       }}
@@ -265,16 +228,16 @@ export default function EditCollection({
                       className="peer sr-only"
                       checked={e.canDelete}
                       onChange={() => {
-                        const updatedMembers = activeCollection.members.map(
+                        const updatedMembers = newCollection.members.map(
                           (member) => {
-                            if (member.user.email === e.user.email) {
+                            if (member.email === e.email) {
                               return { ...member, canDelete: !e.canDelete };
                             }
                             return member;
                           }
                         );
-                        setActiveCollection({
-                          ...activeCollection,
+                        setNewCollection({
+                          ...newCollection,
                           members: updatedMembers,
                         });
                       }}
@@ -290,41 +253,13 @@ export default function EditCollection({
         })}
       </div>
 
-      <div className="flex flex-col justify-center items-center gap-2 mt-2">
-        <div
-          className="bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-          onClick={submit}
-        >
-          <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
-          Edit Collection
-        </div>
-
-        <div className="flex items-center justify-center gap-2">
-          <hr className="w-16 border" />
-
-          <p className="text-gray-400 font-bold">OR</p>
-
-          <hr className="w-16 border" />
-        </div>
-
-        <div
-          onClick={() => {
-            toggleDeleteCollectionModal();
-          }}
-          className="w-fit inline-flex rounded-md cursor-pointer bg-red-500 hover:bg-red-400 duration-100 p-2"
-        >
-          <FontAwesomeIcon icon={faTrashCan} className="w-4 h-4 text-white" />
-        </div>
+      <div
+        className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
+        onClick={submit}
+      >
+        <FontAwesomeIcon icon={faPlus} className="h-5" />
+        Add Collection
       </div>
-
-      {deleteCollectionModal ? (
-        <Modal toggleModal={toggleDeleteCollectionModal}>
-          <DeleteCollection
-            collection={activeCollection}
-            toggleDeleteCollectionModal={toggleDeleteCollectionModal}
-          />
-        </Modal>
-      ) : null}
     </div>
   );
 }
