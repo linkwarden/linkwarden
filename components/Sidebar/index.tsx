@@ -130,16 +130,18 @@ export default function ({ className }: { className?: string }) {
         <p className="text-sm p-2">Tags</p>
       </div>
       <div>
-        {tags.map((e, i) => {
-          return (
-            <SidebarItem
-              key={i}
-              text={e.name}
-              icon={<FontAwesomeIcon icon={faHashtag} />}
-              path={`/tags/${e.id}`}
-            />
-          );
-        })}
+        {tags
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((e, i) => {
+            return (
+              <SidebarItem
+                key={i}
+                text={e.name}
+                icon={<FontAwesomeIcon icon={faHashtag} />}
+                path={`/tags/${e.id}`}
+              />
+            );
+          })}
       </div>
     </div>
   );
