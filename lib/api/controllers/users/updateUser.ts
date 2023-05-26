@@ -12,7 +12,7 @@ import bcrypt from "bcrypt";
 export default async function (user: AccountSettings, userId: number) {
   const profilePic = user.profilePic;
 
-  if (profilePic && profilePic !== "DELETE") {
+  if (profilePic?.startsWith("data:image/jpeg;base64")) {
     if ((user?.profilePic?.length as number) < 1572864) {
       try {
         const filePath = path.join(

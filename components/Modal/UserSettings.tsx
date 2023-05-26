@@ -41,16 +41,6 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
     setUser({ ...user, oldPassword, newPassword });
   };
 
-  // useEffect(() => {
-  //   const determineProfilePicSource = async () => {
-  //     const path = `/api/avatar/${account.id}`;
-  //     const imageExists = await avatarExists(path).catch((e) => console.log(e));
-  //     if (imageExists) setUser({ ...user, profilePic: path });
-  //   };
-
-  //   determineProfilePicSource();
-  // }, []);
-
   useEffect(() => {
     setUser({
       ...user,
