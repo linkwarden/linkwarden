@@ -12,8 +12,8 @@ type LinkStore = {
   links: LinkIncludingCollectionAndTags[];
   setLinks: () => void;
   addLink: (body: LinkIncludingCollectionAndTags) => Promise<boolean>;
-  updateLink: (link: LinkIncludingCollectionAndTags) => void;
-  removeLink: (link: LinkIncludingCollectionAndTags) => void;
+  updateLink: (link: LinkIncludingCollectionAndTags) => Promise<boolean>;
+  removeLink: (link: LinkIncludingCollectionAndTags) => Promise<boolean>;
 };
 
 const useLinkStore = create<LinkStore>()((set) => ({
@@ -70,6 +70,8 @@ const useLinkStore = create<LinkStore>()((set) => ({
       useTagStore.getState().setTags();
       useCollectionStore.getState().setCollections();
     }
+
+    return response.ok;
   },
   removeLink: async (link) => {
     const response = await fetch("/api/routes/links", {

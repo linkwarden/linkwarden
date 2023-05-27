@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Image from "next/image";
 import useLinkStore from "@/store/links";
-import EditLink from "../Modal/EditLink";
+import LinkModal from "../Modal/LinkModal";
 import Link from "next/link";
 import Dropdown from "../Dropdown";
 import Modal from "../Modal";
@@ -50,7 +50,11 @@ export default function ({ link, count }: Props) {
     <div className="border border-sky-100 bg-white p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
       {editModal ? (
         <Modal toggleModal={toggleEditModal}>
-          <EditLink toggleLinkModal={toggleEditModal} link={link} />
+          <LinkModal
+            toggleLinkModal={toggleEditModal}
+            activeLink={link}
+            method="UPDATE"
+          />
         </Modal>
       ) : null}
 

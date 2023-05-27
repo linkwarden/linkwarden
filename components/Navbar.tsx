@@ -16,7 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import Dropdown from "@/components/Dropdown";
 import Modal from "@/components/Modal";
-import AddLink from "@/components/Modal/AddLink";
+import LinkModal from "@/components/Modal/LinkModal";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
@@ -129,7 +129,7 @@ export default function () {
 
           {linkModal ? (
             <Modal toggleModal={toggleLinkModal}>
-              <AddLink toggleLinkModal={toggleLinkModal} />
+              <LinkModal toggleLinkModal={toggleLinkModal} method="CREATE" />
             </Modal>
           ) : null}
 

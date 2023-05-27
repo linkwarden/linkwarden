@@ -6,7 +6,7 @@
 import Dropdown from "@/components/Dropdown";
 import LinkList from "@/components/LinkList";
 import Modal from "@/components/Modal";
-import AddLink from "@/components/Modal/AddLink";
+import LinkModal from "@/components/Modal/LinkModal";
 import CollectionModal from "@/components/Modal/CollectionModal";
 import DeleteCollection from "@/components/Modal/DeleteCollection";
 import useCollectionStore from "@/store/collections";
@@ -280,7 +280,10 @@ export default function () {
 
                 {linkModal ? (
                   <Modal toggleModal={toggleLinkModal}>
-                    <AddLink toggleLinkModal={toggleLinkModal} />
+                    <LinkModal
+                      toggleLinkModal={toggleLinkModal}
+                      method="CREATE"
+                    />
                   </Modal>
                 ) : null}
 
