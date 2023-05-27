@@ -21,13 +21,12 @@ import Modal from "./Modal";
 import EditLink from "./Modal/EditLink";
 import Link from "next/link";
 
-export default function ({
-  link,
-  count,
-}: {
+type Props = {
   link: LinkIncludingCollectionAndTags;
   count: number;
-}) {
+};
+
+export default function ({ link, count }: Props) {
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [editModal, setEditModal] = useState(false);
 
