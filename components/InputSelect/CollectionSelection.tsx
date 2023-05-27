@@ -14,8 +14,8 @@ type Props = {
   onChange: any;
   defaultValue:
     | {
-        value: number;
         label: string;
+        value?: number;
       }
     | undefined;
 };

@@ -5,35 +5,16 @@
 
 import { Collection, Link, Tag, User } from "@prisma/client";
 
-type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
+export type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
   Pick<T, TRequired>;
 
-export interface ExtendedLink extends Link {
+export interface LinkIncludingCollectionAndTags
+  extends Omit<Link, "id" | "createdAt" | "collectionId"> {
+  id?: number;
+  createdAt?: string;
+  collectionId?: number;
   tags: Tag[];
-  collection: Collection;
-}
-
-export interface NewLink {
-  name: string;
-  url: string;
-  tags: Tag[];
-  collection: {
-    id: number | undefined;
-    name: string | undefined;
-    ownerId: number | undefined;
-  };
-}
-
-export interface NewCollection {
-  name: string;
-  description: string;
-  members: {
-    name: string;
-    email: string;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-  }[];
+  collection: OptionalExcluding<Collection, "name" | "ownerId">;
 }
 
 export interface Member {

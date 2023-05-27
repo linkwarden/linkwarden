@@ -4,16 +4,16 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { create } from "zustand";
-import { ExtendedLink, NewLink } from "@/types/global";
+import { LinkIncludingCollectionAndTags } from "@/types/global";
 import useTagStore from "./tags";
 import useCollectionStore from "./collections";
 
 type LinkStore = {
-  links: ExtendedLink[];
+  links: LinkIncludingCollectionAndTags[];
   setLinks: () => void;
-  addLink: (body: NewLink) => Promise<boolean>;
-  updateLink: (link: ExtendedLink) => void;
-  removeLink: (link: ExtendedLink) => void;
+  addLink: (body: LinkIncludingCollectionAndTags) => Promise<boolean>;
+  updateLink: (link: LinkIncludingCollectionAndTags) => void;
+  removeLink: (link: LinkIncludingCollectionAndTags) => void;
 };
 
 const useLinkStore = create<LinkStore>()((set) => ({
