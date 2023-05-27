@@ -48,7 +48,7 @@ export interface Member {
 export interface CollectionIncludingMembers
   extends Omit<Collection, "id" | "createdAt"> {
   id?: number;
-  createdAt?: Date;
+  createdAt?: string;
   members: Member[];
 }
 

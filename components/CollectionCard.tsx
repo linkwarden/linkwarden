@@ -17,7 +17,7 @@ import ImageWithFallback from "./ImageWithFallback";
 import Dropdown from "./Dropdown";
 import { useState } from "react";
 import Modal from "@/components/Modal";
-import EditCollection from "@/components/Modal/EditCollection";
+import CollectionModal from "@/components/Modal/CollectionModal";
 import DeleteCollection from "@/components/Modal/DeleteCollection";
 
 export default function ({
@@ -26,13 +26,14 @@ export default function ({
   collection: CollectionIncludingMembers;
 }) {
   const { links } = useLinkStore();
-  const formattedDate = new Date(
-    collection.createdAt as unknown as string
-  ).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  const formattedDate = new Date(collection.createdAt as string).toLocaleString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }
+  );
 
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [editCollectionModal, setEditCollectionModal] = useState(false);
@@ -129,9 +130,10 @@ export default function ({
 
       {editCollectionModal ? (
         <Modal toggleModal={toggleEditCollectionModal}>
-          <EditCollection
+          <CollectionModal
             toggleCollectionModal={toggleEditCollectionModal}
             activeCollection={collection}
+            method="UPDATE"
           />
         </Modal>
       ) : null}
