@@ -5,7 +5,6 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUser,
   faPenToSquare,
   faTrashCan,
   faEllipsis,
@@ -13,12 +12,12 @@ import {
 import Link from "next/link";
 import { CollectionIncludingMembers } from "@/types/global";
 import useLinkStore from "@/store/links";
-import ImageWithFallback from "./ImageWithFallback";
 import Dropdown from "./Dropdown";
 import { useState } from "react";
 import Modal from "@/components/Modal";
 import CollectionModal from "@/components/Modal/CollectionModal";
 import DeleteCollection from "@/components/Modal/DeleteCollection";
+import ProfilePhoto from "./ProfilePhoto";
 
 export default function ({
   collection,
@@ -71,15 +70,11 @@ export default function ({
                 .sort((a, b) => (a.user.id as number) - (b.user.id as number))
                 .map((e, i) => {
                   return (
-                    <ImageWithFallback
+                    <ProfilePhoto
                       key={i}
                       src={`/api/avatar/${e.userId}`}
-                      className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3"
-                    >
-                      <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3 flex items-center justify-center">
-                        <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
-                      </div>
-                    </ImageWithFallback>
+                      className="-mr-3"
+                    />
                   );
                 })
                 .slice(0, 4)}

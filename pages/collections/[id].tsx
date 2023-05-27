@@ -19,7 +19,6 @@ import {
   faPenToSquare,
   faSort,
   faTrashCan,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -27,8 +26,8 @@ import { ChangeEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import RadioButton from "@/components/RadioButton";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
-import ImageWithFallback from "@/components/ImageWithFallback";
 import { useSession } from "next-auth/react";
+import ProfilePhoto from "@/components/ProfilePhoto";
 
 export default function () {
   const router = useRouter();
@@ -120,10 +119,18 @@ export default function () {
               </div>
             </div>
 
-            {activeCollection?.members[0] ? (
-              <div>
-                <div className="text-sky-400 flex justify-end items-center w-60 mr-3">
-                  <div className="mr-1 bg-sky-500 p-2 leading-3 select-none cursor-pointer hover:bg-sky-400 duration-100 text-white rounded-full text-xs">
+            {activeCollection ? (
+              <div
+                className={`text-sky-400 w-60 ${
+                  activeCollection.members[0] && "mr-3"
+                }`}
+              >
+                <div className="flex justify-end items-center w-fit ml-auto group cursor-pointer">
+                  <div
+                    className={`bg-sky-500 p-2 leading-3 select-none group-hover:bg-sky-400 duration-100 text-white rounded-full text-xs ${
+                      activeCollection.members[0] && "mr-1"
+                    }`}
+                  >
                     {activeCollection.ownerId === data?.user.id
                       ? "Manage"
                       : "View"}{" "}
@@ -135,18 +142,11 @@ export default function () {
                     )
                     .map((e, i) => {
                       return (
-                        <ImageWithFallback
+                        <ProfilePhoto
                           key={i}
                           src={`/api/avatar/${e.userId}`}
-                          className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3"
-                        >
-                          <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 -mr-3 flex items-center justify-center">
-                            <FontAwesomeIcon
-                              icon={faUser}
-                              className="w-5 h-5"
-                            />
-                          </div>
-                        </ImageWithFallback>
+                          className="-mr-3 group-hover:brightness-125 bg-white duration-100"
+                        />
                       );
                     })
                     .slice(0, 4)}
