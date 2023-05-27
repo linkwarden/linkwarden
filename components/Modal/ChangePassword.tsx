@@ -12,7 +12,7 @@ type Props = {
   setPasswordForm: Function;
 };
 
-export default function AddCollection({
+export default function ChangePassword({
   togglePasswordFormModal,
   user,
   setPasswordForm,

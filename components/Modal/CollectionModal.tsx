@@ -3,34 +3,38 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClose,
-  faPlus,
+  faPenToSquare,
+  faTrashCan,
   faUser,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembers, Member } from "@/types/global";
 import { useSession } from "next-auth/react";
+import Modal from "@/components/Modal";
+import DeleteCollection from "@/components/Modal/DeleteCollection";
 import RequiredBadge from "../RequiredBadge";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import ImageWithFallback from "../ImageWithFallback";
+import Checkbox from "../Checkbox";
 
 type Props = {
   toggleCollectionModal: Function;
+  activeCollection: CollectionIncludingMembers;
+  method: "CREATE" | "UPDATE";
 };
 
-export default function AddCollection({ toggleCollectionModal }: Props) {
-  const session = useSession();
-
-  const [collection, setCollection] = useState<CollectionIncludingMembers>({
-    name: "",
-    description: "",
-    ownerId: session.data?.user.id as number,
-    members: [],
-  });
+export default function CollectionModal({
+  toggleCollectionModal,
+  activeCollection,
+  method,
+}: Props) {
+  const [collection, setCollection] =
+    useState<CollectionIncludingMembers>(activeCollection);
 
   const [member, setMember] = useState<Member>({
     canCreate: false,
@@ -42,15 +46,15 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
     },
   });
 
-  const { addCollection } = useCollectionStore();
+  const { updateCollection, addCollection } = useCollectionStore();
 
-  const submit = async () => {
-    if (!collection) return null;
+  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
 
-    const response = await addCollection(collection);
-
-    if (response) toggleCollectionModal();
+  const toggleDeleteCollectionModal = () => {
+    setDeleteCollectionModal(!deleteCollectionModal);
   };
+
+  const session = useSession();
 
   const setMemberState = (newMember: Member) => {
     if (!collection) return null;
@@ -71,9 +75,23 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
     });
   };
 
+  const submit = async () => {
+    if (!collection) return null;
+
+    let response = null;
+
+    if (method === "CREATE") response = await updateCollection(collection);
+    else if (method === "UPDATE") response = await addCollection(collection);
+    else console.log("Unknown method.");
+
+    if (response) toggleCollectionModal();
+  };
+
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="text-xl text-sky-500 mb-2 text-center">New Collection</p>
+      <p className="text-xl text-sky-500 mb-2 text-center">
+        {method === "CREATE" ? "Add" : "Edit"} Collection
+      </p>
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">
@@ -109,9 +127,27 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
         </div>
       </div>
 
-      <hr className="border rounded my-2" />
+      <hr className="my-2" />
 
-      <p className="text-sm font-bold text-sky-300">Members</p>
+      {/* <p className="text-sky-600">Sharing & Collaboration Settings</p>
+
+      <p className="text-sm font-bold text-sky-300">Collaboration</p>
+
+      <div className="w-fit">
+        <div className="border border-sky-100 rounded-md bg-white px-2 py-1 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-500">
+          Manage Team
+        </div>
+      </div>
+
+      <Checkbox
+        label="Make this a public collection."
+        state={true}
+        onClick={() => console.log("Clicked!")}
+      />
+      <p className="text-gray-500 text-sm">
+        This will let anyone to access this collection.
+      </p> */}
+
       <div className="relative">
         <input
           value={member.user.email}
@@ -130,7 +166,7 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
           onClick={() =>
             addMemberToCollection(
               session.data?.user.email as string,
-              member.user.email as string,
+              member.user.email,
               collection,
               setMemberState
             )
@@ -140,7 +176,6 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
           <FontAwesomeIcon icon={faUserPlus} className="w-6 h-6" />
         </div>
       </div>
-
       {collection?.members[0]?.user ? (
         <>
           <p className="text-center text-gray-500 text-xs sm:text-sm">
@@ -284,13 +319,41 @@ export default function AddCollection({ toggleCollectionModal }: Props) {
         </>
       ) : null}
 
-      <div
-        className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-        onClick={submit}
-      >
-        <FontAwesomeIcon icon={faPlus} className="h-5" />
-        Add Collection
+      <div className="flex flex-col justify-center items-center gap-2 mt-2">
+        <div
+          className="bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
+          onClick={submit}
+        >
+          <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
+          Edit Collection
+        </div>
+
+        <div className="flex items-center justify-center gap-2">
+          <hr className="w-16 border" />
+
+          <p className="text-gray-400 font-bold">OR</p>
+
+          <hr className="w-16 border" />
+        </div>
+
+        <div
+          onClick={() => {
+            toggleDeleteCollectionModal();
+          }}
+          className="w-fit inline-flex rounded-md cursor-pointer bg-red-500 hover:bg-red-400 duration-100 p-2"
+        >
+          <FontAwesomeIcon icon={faTrashCan} className="w-4 h-4 text-white" />
+        </div>
       </div>
+
+      {deleteCollectionModal ? (
+        <Modal toggleModal={toggleDeleteCollectionModal}>
+          <DeleteCollection
+            collection={collection}
+            toggleDeleteCollectionModal={toggleDeleteCollectionModal}
+          />
+        </Modal>
+      ) : null}
     </div>
   );
 }

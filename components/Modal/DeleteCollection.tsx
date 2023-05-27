@@ -5,7 +5,7 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { CollectionIncludingMembers } from "@/types/global";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
@@ -15,7 +15,7 @@ type Props = {
   collection: CollectionIncludingMembers;
 };
 
-export default function AddCollection({
+export default function DeleteCollection({
   toggleDeleteCollectionModal,
   collection,
 }: Props) {
