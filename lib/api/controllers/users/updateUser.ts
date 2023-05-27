@@ -74,7 +74,7 @@ export default async function (user: AccountSettings, userId: number) {
     }
   }
 
-  const { password, ...unsensitiveInfo } = updatedUser;
+  const { password, ...userInfo } = updatedUser;
 
-  return { response: unsensitiveInfo, status: 200 };
+  return { response: userInfo, status: 200 };
 }

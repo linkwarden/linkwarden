@@ -1,4 +1,4 @@
-import { ElementType, ReactElement, ReactNode, useState } from "react";
+import { ReactNode, useState } from "react";
 
 type Props = {
   src: string;
