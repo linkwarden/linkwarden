@@ -8,7 +8,7 @@ import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { ExtendedLink, NewLink } from "@/types/global";
+import { LinkIncludingCollectionAndTags } from "@/types/global";
 import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
 import useCollectionStore from "@/store/collections";
@@ -20,14 +20,17 @@ type Props = {
 
 export default function AddLink({ toggleLinkModal }: Props) {
   const router = useRouter();
-  const [newLink, setNewLink] = useState<NewLink>({
+  const [link, setLink] = useState<LinkIncludingCollectionAndTags>({
     name: "",
     url: "",
+    title: "",
+    screenshotPath: "",
+    pdfPath: "",
     tags: [],
     collection: {
-      id: undefined,
       name: "",
-      ownerId: undefined,
+      description: "",
+      ownerId: 1,
     },
   });
 
@@ -40,14 +43,15 @@ export default function AddLink({ toggleLinkModal }: Props) {
         (e) => e.id == Number(router.query.id)
       );
 
-      setNewLink({
-        ...newLink,
-        collection: {
-          id: currentCollection?.id,
-          name: currentCollection?.name,
-          ownerId: currentCollection?.ownerId,
-        },
-      });
+      if (currentCollection)
+        setLink({
+          ...link,
+          collection: {
+            id: currentCollection?.id,
+            name: currentCollection?.name,
+            ownerId: currentCollection?.ownerId,
+          },
+        });
     }
   }, []);
 
@@ -56,22 +60,22 @@ export default function AddLink({ toggleLinkModal }: Props) {
       return { name: e.label };
     });
 
-    setNewLink({ ...newLink, tags: tagNames });
+    setLink({ ...link, tags: tagNames });
   };
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = null;
 
-    setNewLink({
-      ...newLink,
+    setLink({
+      ...link,
       collection: { id: e?.value, name: e?.label, ownerId: e?.ownerId },
     });
   };
 
   const submit = async () => {
-    console.log(newLink);
+    console.log(link);
 
-    const response = await addLink(newLink as NewLink);
+    const response = await addLink(link);
 
     if (response) toggleLinkModal();
   };
@@ -87,8 +91,8 @@ export default function AddLink({ toggleLinkModal }: Props) {
             <RequiredBadge />
           </p>
           <input
-            value={newLink.name}
-            onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
+            value={link.name}
+            onChange={(e) => setLink({ ...link, name: e.target.value })}
             type="text"
             placeholder="e.g. Example Link"
             className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
@@ -101,8 +105,8 @@ export default function AddLink({ toggleLinkModal }: Props) {
             <RequiredBadge />
           </p>
           <input
-            value={newLink.url}
-            onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
+            value={link.url}
+            onChange={(e) => setLink({ ...link, url: e.target.value })}
             type="text"
             placeholder="e.g. http://example.com/"
             className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
@@ -116,10 +120,10 @@ export default function AddLink({ toggleLinkModal }: Props) {
           </p>
           <CollectionSelection
             defaultValue={
-              newLink.collection.name && newLink.collection.id
+              link.collection.name && link.collection.id
                 ? {
-                    value: newLink.collection.id,
-                    label: newLink.collection.name,
+                    value: link.collection.id,
+                    label: link.collection.name,
                   }
                 : undefined
             }

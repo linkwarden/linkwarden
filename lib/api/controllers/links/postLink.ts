@@ -4,7 +4,7 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { prisma } from "@/lib/api/db";
-import { ExtendedLink } from "@/types/global";
+import { LinkIncludingCollectionAndTags } from "@/types/global";
 import getTitle from "../../getTitle";
 import archive from "../../archive";
 import { Link, UsersAndCollections } from "@prisma/client";
@@ -12,7 +12,10 @@ import AES from "crypto-js/aes";
 import getPermission from "@/lib/api/getPermission";
 import { existsSync, mkdirSync } from "fs";
 
-export default async function (link: ExtendedLink, userId: number) {
+export default async function (
+  link: LinkIncludingCollectionAndTags,
+  userId: number
+) {
   link.collection.name = link.collection.name.trim();
 
   if (!link.name) {
@@ -21,7 +24,7 @@ export default async function (link: ExtendedLink, userId: number) {
     return { response: "Please enter a valid collection name.", status: 401 };
   }
 
-  if (link.collection.ownerId) {
+  if (link.collection.id) {
     const collectionIsAccessible = await getPermission(
       userId,
       link.collection.id
@@ -81,8 +84,6 @@ export default async function (link: ExtendedLink, userId: number) {
     },
   });
 
-  console.log(newLink);
-
   const AES_SECRET = process.env.AES_SECRET as string;
 
   const screenshotHashedPath = AES.encrypt(
@@ -95,7 +96,7 @@ export default async function (link: ExtendedLink, userId: number) {
     AES_SECRET
   ).toString();
 
-  const updatedLink: ExtendedLink = await prisma.link.update({
+  const updatedLink = await prisma.link.update({
     where: { id: newLink.id },
     data: { screenshotPath: screenshotHashedPath, pdfPath: pdfHashedPath },
     include: { tags: true, collection: true },
@@ -104,8 +105,6 @@ export default async function (link: ExtendedLink, userId: number) {
   const collectionPath = `data/archives/${updatedLink.collection.id}`;
   if (!existsSync(collectionPath))
     mkdirSync(collectionPath, { recursive: true });
-
-  console.log(updatedLink);
 
   archive(updatedLink.url, updatedLink.collectionId, updatedLink.id);
 
