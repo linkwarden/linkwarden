@@ -6,13 +6,13 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { ExtendedCollection } from "@/types/global";
+import { CollectionIncludingMembers } from "@/types/global";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 
 type Props = {
   toggleDeleteCollectionModal: Function;
-  collection: ExtendedCollection;
+  collection: CollectionIncludingMembers;
 };
 
 export default function AddCollection({
@@ -26,6 +26,8 @@ export default function AddCollection({
   const router = useRouter();
 
   const submit = async () => {
+    if (!collection.id) return null;
+
     const response = await removeCollection(collection.id);
     if (response) {
       toggleDeleteCollectionModal();

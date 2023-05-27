@@ -11,7 +11,7 @@ import EditCollection from "@/components/Modal/EditCollection";
 import DeleteCollection from "@/components/Modal/DeleteCollection";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
-import { ExtendedCollection } from "@/types/global";
+import { CollectionIncludingMembers } from "@/types/global";
 import {
   faAdd,
   faEllipsis,
@@ -46,7 +46,7 @@ export default function () {
   const [sortBy, setSortBy] = useState("Name (A-Z)");
 
   const [activeCollection, setActiveCollection] =
-    useState<ExtendedCollection>();
+    useState<CollectionIncludingMembers>();
 
   const [sortedLinks, setSortedLinks] = useState(links);
 
@@ -128,7 +128,9 @@ export default function () {
                     Team
                   </div>
                   {activeCollection?.members
-                    .sort((a, b) => a.userId - b.userId)
+                    .sort(
+                      (a, b) => (a.user.id as number) - (b.user.id as number)
+                    )
                     .map((e, i) => {
                       return (
                         <ImageWithFallback
@@ -284,7 +286,7 @@ export default function () {
                   <Modal toggleModal={toggleEditCollectionModal}>
                     <EditCollection
                       toggleCollectionModal={toggleEditCollectionModal}
-                      collection={activeCollection}
+                      activeCollection={activeCollection}
                     />
                   </Modal>
                 ) : null}

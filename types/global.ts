@@ -4,7 +4,9 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { Collection, Link, Tag, User } from "@prisma/client";
-import { SetStateAction } from "react";
+
+type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
+  Pick<T, TRequired>;
 
 export interface ExtendedLink extends Link {
   tags: Tag[];
@@ -34,18 +36,20 @@ export interface NewCollection {
   }[];
 }
 
-export interface ExtendedCollection extends Collection {
-  members: {
-    collectionId: number;
-    userId: number;
-    canCreate: boolean;
-    canUpdate: boolean;
-    canDelete: boolean;
-    user: {
-      name: string;
-      email: string;
-    };
-  }[];
+export interface Member {
+  collectionId?: number;
+  userId?: number;
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
+  user: OptionalExcluding<User, "email" | "name">;
+}
+
+export interface CollectionIncludingMembers
+  extends Omit<Collection, "id" | "createdAt"> {
+  id?: number;
+  createdAt?: Date;
+  members: Member[];
 }
 
 export type SearchSettings = {

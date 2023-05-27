@@ -6,16 +6,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-import { ExtendedCollection } from "@/types/global";
+import { CollectionIncludingMembers } from "@/types/global";
 import useLinkStore from "@/store/links";
 
-export default function ({ collection }: { collection: ExtendedCollection }) {
+export default function ({
+  collection,
+}: {
+  collection: CollectionIncludingMembers;
+}) {
   const { links } = useLinkStore();
-  const formattedDate = new Date(collection.createdAt).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 
   return (
     <Link
@@ -51,7 +50,6 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
           })}
         </div>
         <div className="flex gap-2 items-baseline">
-          <p className="text-sky-300 font-bold text-sm">{formattedDate}</p>
           <p className="text-sky-500 font-bold">
             {links.filter((e) => e.collectionId === collection.id).length} Links
           </p>

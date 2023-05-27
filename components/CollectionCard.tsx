@@ -11,7 +11,7 @@ import {
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-import { ExtendedCollection } from "@/types/global";
+import { CollectionIncludingMembers } from "@/types/global";
 import useLinkStore from "@/store/links";
 import ImageWithFallback from "./ImageWithFallback";
 import Dropdown from "./Dropdown";
@@ -20,9 +20,15 @@ import Modal from "@/components/Modal";
 import EditCollection from "@/components/Modal/EditCollection";
 import DeleteCollection from "@/components/Modal/DeleteCollection";
 
-export default function ({ collection }: { collection: ExtendedCollection }) {
+export default function ({
+  collection,
+}: {
+  collection: CollectionIncludingMembers;
+}) {
   const { links } = useLinkStore();
-  const formattedDate = new Date(collection.createdAt).toLocaleString("en-US", {
+  const formattedDate = new Date(
+    collection.createdAt as unknown as string
+  ).toLocaleString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -61,7 +67,7 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
           <div className="flex justify-between items-center">
             <div className="text-sky-400 flex items-center w-full">
               {collection.members
-                .sort((a, b) => a.userId - b.userId)
+                .sort((a, b) => (a.user.id as number) - (b.user.id as number))
                 .map((e, i) => {
                   return (
                     <ImageWithFallback
@@ -125,7 +131,7 @@ export default function ({ collection }: { collection: ExtendedCollection }) {
         <Modal toggleModal={toggleEditCollectionModal}>
           <EditCollection
             toggleCollectionModal={toggleEditCollectionModal}
-            collection={collection}
+            activeCollection={collection}
           />
         </Modal>
       ) : null}

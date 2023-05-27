@@ -4,11 +4,14 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { prisma } from "@/lib/api/db";
-import { ExtendedCollection } from "@/types/global";
+import { CollectionIncludingMembers } from "@/types/global";
 import getPermission from "@/lib/api/getPermission";
 
-export default async function (collection: ExtendedCollection, userId: number) {
-  if (!collection)
+export default async function (
+  collection: CollectionIncludingMembers,
+  userId: number
+) {
+  if (!collection.id)
     return { response: "Please choose a valid collection.", status: 401 };
 
   const collectionIsAccessible = await getPermission(userId, collection.id);

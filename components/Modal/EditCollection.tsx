@@ -8,13 +8,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClose,
   faPenToSquare,
-  faPlus,
   faTrashCan,
   faUser,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
-import { ExtendedCollection } from "@/types/global";
+import { CollectionIncludingMembers, Member } from "@/types/global";
 import { useSession } from "next-auth/react";
 import Modal from "@/components/Modal";
 import DeleteCollection from "@/components/Modal/DeleteCollection";
@@ -25,17 +24,25 @@ import Checkbox from "../Checkbox";
 
 type Props = {
   toggleCollectionModal: Function;
-  collection: ExtendedCollection;
+  activeCollection: CollectionIncludingMembers;
 };
 
 export default function EditCollection({
   toggleCollectionModal,
-  collection,
+  activeCollection,
 }: Props) {
-  const [activeCollection, setActiveCollection] =
-    useState<ExtendedCollection>(collection);
+  const [collection, setCollection] =
+    useState<CollectionIncludingMembers>(activeCollection);
 
-  const [memberEmail, setMemberEmail] = useState("");
+  const [member, setMember] = useState<Member>({
+    canCreate: false,
+    canUpdate: false,
+    canDelete: false,
+    user: {
+      name: "",
+      email: "",
+    },
+  });
 
   const { updateCollection } = useCollectionStore();
 
@@ -47,21 +54,29 @@ export default function EditCollection({
 
   const session = useSession();
 
-  const setMemberState = (newMember: any) => {
-    setActiveCollection({
-      ...activeCollection,
-      members: [...activeCollection.members, newMember],
+  const setMemberState = (newMember: Member) => {
+    if (!collection) return null;
+
+    setCollection({
+      ...collection,
+      members: [...collection.members, newMember],
     });
 
-    setMemberEmail("");
+    setMember({
+      canCreate: false,
+      canUpdate: false,
+      canDelete: false,
+      user: {
+        name: "",
+        email: "",
+      },
+    });
   };
 
   const submit = async () => {
-    console.log(activeCollection);
+    if (!collection) return null;
 
-    const response = await updateCollection(
-      activeCollection as ExtendedCollection
-    );
+    const response = await updateCollection(collection);
 
     if (response) toggleCollectionModal();
   };
@@ -77,9 +92,9 @@ export default function EditCollection({
             <RequiredBadge />
           </p>
           <input
-            value={activeCollection.name}
+            value={collection.name}
             onChange={(e) =>
-              setActiveCollection({ ...activeCollection, name: e.target.value })
+              setCollection({ ...collection, name: e.target.value })
             }
             type="text"
             placeholder="e.g. Example Collection"
@@ -90,10 +105,10 @@ export default function EditCollection({
         <div className="w-full">
           <p className="text-sm font-bold text-sky-300 mb-2">Description</p>
           <input
-            value={activeCollection.description}
+            value={collection.description}
             onChange={(e) =>
-              setActiveCollection({
-                ...activeCollection,
+              setCollection({
+                ...collection,
                 description: e.target.value,
               })
             }
@@ -127,9 +142,12 @@ export default function EditCollection({
 
       <div className="relative">
         <input
-          value={memberEmail}
+          value={member.user.email}
           onChange={(e) => {
-            setMemberEmail(e.target.value);
+            setMember({
+              ...member,
+              user: { ...member.user, email: e.target.value },
+            });
           }}
           type="text"
           placeholder="Email"
@@ -140,10 +158,9 @@ export default function EditCollection({
           onClick={() =>
             addMemberToCollection(
               session.data?.user.email as string,
-              memberEmail,
-              activeCollection,
-              setMemberState,
-              "UPDATE"
+              member.user.email,
+              collection,
+              setMemberState
             )
           }
           className="absolute flex items-center justify-center right-2 top-2 bottom-2 bg-sky-500 hover:bg-sky-400 duration-100 text-white w-9 rounded-md cursor-pointer"
@@ -151,14 +168,14 @@ export default function EditCollection({
           <FontAwesomeIcon icon={faUserPlus} className="w-6 h-6" />
         </div>
       </div>
-      {activeCollection.members[0] ? (
+      {collection.members[0] ? (
         <p className="text-center text-gray-500 text-xs sm:text-sm">
           (All Members have <b>Read</b> access to this collection.)
         </p>
       ) : null}
 
       <div className="h-36 overflow-auto flex flex-col gap-3 rounded-md shadow-inner">
-        {activeCollection.members.map((e, i) => {
+        {collection.members.map((e, i) => {
           return (
             <div
               key={i}
@@ -169,13 +186,11 @@ export default function EditCollection({
                 className="absolute right-2 top-2 text-gray-500 h-4 hover:text-red-500 duration-100 cursor-pointer"
                 title="Remove Member"
                 onClick={() => {
-                  const updatedMembers = activeCollection.members.filter(
-                    (member) => {
-                      return member.user.email !== e.user.email;
-                    }
-                  );
-                  setActiveCollection({
-                    ...activeCollection,
+                  const updatedMembers = collection.members.filter((member) => {
+                    return member.user.email !== e.user.email;
+                  });
+                  setCollection({
+                    ...collection,
                     members: updatedMembers,
                   });
                 }}
@@ -213,7 +228,7 @@ export default function EditCollection({
                       className="peer sr-only"
                       checked={e.canCreate}
                       onChange={() => {
-                        const updatedMembers = activeCollection.members.map(
+                        const updatedMembers = collection.members.map(
                           (member) => {
                             if (member.user.email === e.user.email) {
                               return { ...member, canCreate: !e.canCreate };
@@ -221,8 +236,8 @@ export default function EditCollection({
                             return member;
                           }
                         );
-                        setActiveCollection({
-                          ...activeCollection,
+                        setCollection({
+                          ...collection,
                           members: updatedMembers,
                         });
                       }}
@@ -239,7 +254,7 @@ export default function EditCollection({
                       className="peer sr-only"
                       checked={e.canUpdate}
                       onChange={() => {
-                        const updatedMembers = activeCollection.members.map(
+                        const updatedMembers = collection.members.map(
                           (member) => {
                             if (member.user.email === e.user.email) {
                               return { ...member, canUpdate: !e.canUpdate };
@@ -247,8 +262,8 @@ export default function EditCollection({
                             return member;
                           }
                         );
-                        setActiveCollection({
-                          ...activeCollection,
+                        setCollection({
+                          ...collection,
                           members: updatedMembers,
                         });
                       }}
@@ -265,7 +280,7 @@ export default function EditCollection({
                       className="peer sr-only"
                       checked={e.canDelete}
                       onChange={() => {
-                        const updatedMembers = activeCollection.members.map(
+                        const updatedMembers = collection.members.map(
                           (member) => {
                             if (member.user.email === e.user.email) {
                               return { ...member, canDelete: !e.canDelete };
@@ -273,8 +288,8 @@ export default function EditCollection({
                             return member;
                           }
                         );
-                        setActiveCollection({
-                          ...activeCollection,
+                        setCollection({
+                          ...collection,
                           members: updatedMembers,
                         });
                       }}
@@ -320,7 +335,7 @@ export default function EditCollection({
       {deleteCollectionModal ? (
         <Modal toggleModal={toggleDeleteCollectionModal}>
           <DeleteCollection
-            collection={activeCollection}
+            collection={collection}
             toggleDeleteCollectionModal={toggleDeleteCollectionModal}
           />
         </Modal>
