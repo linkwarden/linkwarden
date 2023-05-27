@@ -4,10 +4,13 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { prisma } from "@/lib/api/db";
-import { NewCollection } from "@/types/global";
+import { CollectionIncludingMembers } from "@/types/global";
 import { existsSync, mkdirSync } from "fs";
 
-export default async function (collection: NewCollection, userId: number) {
+export default async function (
+  collection: CollectionIncludingMembers,
+  userId: number
+) {
   if (!collection || collection.name.trim() === "")
     return {
       response: "Please enter a valid collection.",
@@ -43,7 +46,7 @@ export default async function (collection: NewCollection, userId: number) {
       description: collection.description,
       members: {
         create: collection.members.map((e) => ({
-          user: { connect: { email: e.email } },
+          user: { connect: { email: e.user.email } },
           canCreate: e.canCreate,
           canUpdate: e.canUpdate,
           canDelete: e.canDelete,
