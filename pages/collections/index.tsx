@@ -16,10 +16,11 @@ import CollectionCard from "@/components/CollectionCard";
 import Dropdown from "@/components/Dropdown";
 import { ChangeEvent, useEffect, useState } from "react";
 import Modal from "@/components/Modal";
-import AddCollection from "@/components/Modal/AddCollection";
 import MainLayout from "@/layouts/MainLayout";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import RadioButton from "@/components/RadioButton";
+import CollectionModal from "@/components/Modal/CollectionModal";
+import { useSession } from "next-auth/react";
 
 export default function () {
   const { collections } = useCollectionStore();
@@ -29,6 +30,8 @@ export default function () {
   const [sortedCollections, setSortedCollections] = useState(collections);
 
   const [collectionModal, setCollectionModal] = useState(false);
+
+  const session = useSession();
 
   const toggleCollectionModal = () => {
     setCollectionModal(!collectionModal);
@@ -65,14 +68,16 @@ export default function () {
       setSortedCollections(
         collectionsArray.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt as string).getTime() -
+            new Date(a.createdAt as string).getTime()
         )
       );
     else if (sortBy === "Date (Oldest First)")
       setSortedCollections(
         collectionsArray.sort(
           (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            new Date(a.createdAt as string).getTime() -
+            new Date(b.createdAt as string).getTime()
         )
       );
   }, [collections, sortBy]);
@@ -210,7 +215,16 @@ export default function () {
 
       {collectionModal ? (
         <Modal toggleModal={toggleCollectionModal}>
-          <AddCollection toggleCollectionModal={toggleCollectionModal} />
+          <CollectionModal
+            activeCollection={{
+              name: "",
+              description: "",
+              ownerId: session.data?.user.id as number,
+              members: [],
+            }}
+            toggleCollectionModal={toggleCollectionModal}
+            method="CREATE"
+          />
         </Modal>
       ) : null}
     </MainLayout>

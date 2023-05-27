@@ -7,7 +7,7 @@ import Dropdown from "@/components/Dropdown";
 import LinkList from "@/components/LinkList";
 import Modal from "@/components/Modal";
 import AddLink from "@/components/Modal/AddLink";
-import EditCollection from "@/components/Modal/EditCollection";
+import CollectionModal from "@/components/Modal/CollectionModal";
 import DeleteCollection from "@/components/Modal/DeleteCollection";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
@@ -284,9 +284,10 @@ export default function () {
 
                 {editCollectionModal && activeCollection ? (
                   <Modal toggleModal={toggleEditCollectionModal}>
-                    <EditCollection
+                    <CollectionModal
                       toggleCollectionModal={toggleEditCollectionModal}
                       activeCollection={activeCollection}
+                      method="UPDATE"
                     />
                   </Modal>
                 ) : null}
