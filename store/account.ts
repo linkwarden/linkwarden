@@ -4,7 +4,6 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { create } from "zustand";
-import { User } from "@prisma/client";
 import { AccountSettings } from "@/types/global";
 import avatarExists from "@/lib/client/avatarExists";
 
