@@ -18,7 +18,7 @@ import Image from "next/image";
 import Dropdown from "./Dropdown";
 import useLinkStore from "@/store/links";
 import Modal from "./Modal";
-import EditLink from "./Modal/EditLink";
+import LinkModal from "./Modal/LinkModal";
 import Link from "next/link";
 
 type Props = {
@@ -50,7 +50,11 @@ export default function ({ link, count }: Props) {
     <div className="border border-sky-100 bg-gray-100 p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
       {editModal ? (
         <Modal toggleModal={toggleEditModal}>
-          <EditLink toggleLinkModal={toggleEditModal} link={link} />
+          <LinkModal
+            toggleLinkModal={toggleEditModal}
+            activeLink={link}
+            method="UPDATE"
+          />
         </Modal>
       ) : null}
 
