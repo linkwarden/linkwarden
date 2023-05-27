@@ -4,15 +4,17 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { create } from "zustand";
-import { ExtendedCollection, NewCollection } from "@/types/global";
+import { CollectionIncludingMembers } from "@/types/global";
 import useTagStore from "./tags";
 import useLinkStore from "./links";
 
 type CollectionStore = {
-  collections: ExtendedCollection[];
+  collections: CollectionIncludingMembers[];
   setCollections: () => void;
-  addCollection: (body: NewCollection) => Promise<boolean>;
-  updateCollection: (collection: ExtendedCollection) => Promise<boolean>;
+  addCollection: (body: CollectionIncludingMembers) => Promise<boolean>;
+  updateCollection: (
+    collection: CollectionIncludingMembers
+  ) => Promise<boolean>;
   removeCollection: (collectionId: number) => Promise<boolean>;
 };
 

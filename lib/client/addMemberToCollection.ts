@@ -1,15 +1,15 @@
-import { ExtendedCollection, NewCollection } from "@/types/global";
+import { CollectionIncludingMembers, Member } from "@/types/global";
 import getPublicUserDataByEmail from "./getPublicUserDataByEmail";
 
 const addMemberToCollection = async (
   ownerEmail: string,
   memberEmail: string,
-  collection: ExtendedCollection,
-  setMemberState: Function,
-  collectionMethod: "ADD" | "UPDATE"
+  collection: CollectionIncludingMembers,
+  setMember: (newMember: Member) => null | undefined
 ) => {
-  const checkIfMemberAlreadyExists = collection.members.find((e: any) => {
-    const email = collectionMethod === "ADD" ? e.email : e.user.email;
+  console.log(collection.members);
+  const checkIfMemberAlreadyExists = collection.members.find((e) => {
+    const email = e.user.email;
     return email === memberEmail;
   });
 
@@ -24,30 +24,20 @@ const addMemberToCollection = async (
     // Lookup, get data/err, list ...
     const user = await getPublicUserDataByEmail(memberEmail.trim());
 
-    if (user.email) {
-      const newMember =
-        collectionMethod === "ADD"
-          ? {
-              id: user.id,
-              name: user.name,
-              email: user.email,
-              canCreate: false,
-              canUpdate: false,
-              canDelete: false,
-            }
-          : {
-              collectionId: collection.id,
-              userId: user.id,
-              canCreate: false,
-              canUpdate: false,
-              canDelete: false,
-              user: {
-                name: user.name,
-                email: user.email,
-              },
-            };
+    console.log(collection);
 
-      setMemberState(newMember);
+    if (user.email) {
+      setMember({
+        collectionId: collection.id,
+        userId: user.id,
+        canCreate: false,
+        canUpdate: false,
+        canDelete: false,
+        user: {
+          name: user.name,
+          email: user.email,
+        },
+      });
     }
   }
 };
