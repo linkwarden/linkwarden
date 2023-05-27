@@ -5,7 +5,7 @@
 
 import { Collection, Link, Tag, User } from "@prisma/client";
 
-export type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
+type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
   Pick<T, TRequired>;
 
 export interface LinkIncludingCollectionAndTags
@@ -33,6 +33,12 @@ export interface CollectionIncludingMembers
   members: Member[];
 }
 
+export interface AccountSettings extends User {
+  profilePic: string | null;
+  oldPassword?: string;
+  newPassword?: string;
+}
+
 export type SearchSettings = {
   query: string;
   filter: {
@@ -43,9 +49,3 @@ export type SearchSettings = {
     tags: boolean;
   };
 };
-
-export interface AccountSettings extends User {
-  profilePic: string | null;
-  oldPassword?: string;
-  newPassword?: string;
-}
