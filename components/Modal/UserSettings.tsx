@@ -84,18 +84,16 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
   };
 
   const submit = async () => {
-    console.log(user);
-
-    await updateAccount({
+    const response = await updateAccount({
       ...user,
     });
-
-    console.log(account);
 
     setPasswordForm(undefined, undefined);
 
     if (user.email !== account.email || user.name !== account.name)
       update({ email: user.email, name: user.name });
+
+    if (response) toggleSettingsModal();
   };
 
   return (
@@ -103,13 +101,6 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
       <p className="text-xl text-sky-500 mb-2 text-center">Settings</p>
 
       <p className="text-sky-600">Profile Settings</p>
-
-      {user.email !== account.email || user.name !== account.name ? (
-        <p className="text-gray-500 text-sm sm:w-1/2">
-          Note: The page will be refreshed to apply the changes of "Email" or
-          "Display Name".
-        </p>
-      ) : null}
 
       <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
         <div className="flex flex-col gap-3">
