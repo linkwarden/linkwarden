@@ -85,7 +85,7 @@ export default function ({
                 .slice(0, 4)}
               {collection.members.length - 4 > 0 ? (
                 <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
-                  +{collection.members.length - 3}
+                  +{collection.members.length - 4}
                 </div>
               ) : null}
             </div>
