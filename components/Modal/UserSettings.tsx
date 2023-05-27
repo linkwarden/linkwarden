@@ -25,7 +25,6 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
   const [user, setUser] = useState<AccountSettings>({
     ...account,
-    // profilePic: null,
   });
 
   const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState(
