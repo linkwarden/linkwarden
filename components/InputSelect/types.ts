@@ -4,6 +4,6 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 export interface Options {
-  value: string | number;
   label: string;
+  value?: string | number;
 }

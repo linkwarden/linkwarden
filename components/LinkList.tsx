@@ -3,7 +3,7 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { ExtendedLink } from "@/types/global";
+import { LinkIncludingCollectionAndTags } from "@/types/global";
 import {
   faFolder,
   faArrowUpRightFromSquare,
@@ -25,7 +25,7 @@ export default function ({
   link,
   count,
 }: {
-  link: ExtendedLink;
+  link: LinkIncludingCollectionAndTags;
   count: number;
 }) {
   const [expandDropdown, setExpandDropdown] = useState(false);
@@ -34,11 +34,14 @@ export default function ({
   const { removeLink } = useLinkStore();
 
   const url = new URL(link.url);
-  const formattedDate = new Date(link.createdAt).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  const formattedDate = new Date(link.createdAt as string).toLocaleString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }
+  );
 
   const toggleEditModal = () => {
     setEditModal(!editModal);

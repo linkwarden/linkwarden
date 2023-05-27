@@ -4,14 +4,17 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { prisma } from "@/lib/api/db";
-import { ExtendedLink } from "@/types/global";
+import { LinkIncludingCollectionAndTags } from "@/types/global";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 
-export default async function (link: ExtendedLink, userId: number) {
+export default async function (
+  link: LinkIncludingCollectionAndTags,
+  userId: number
+) {
   if (!link) return { response: "Please choose a valid link.", status: 401 };
 
-  if (link.collection.ownerId) {
+  if (link.collection.id) {
     const collectionIsAccessible = await getPermission(
       userId,
       link.collection.id
@@ -27,7 +30,7 @@ export default async function (link: ExtendedLink, userId: number) {
     link.collection.ownerId = userId;
   }
 
-  const updatedLink: ExtendedLink = await prisma.link.update({
+  const updatedLink = await prisma.link.update({
     where: {
       id: link.id,
     },

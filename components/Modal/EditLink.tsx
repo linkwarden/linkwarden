@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ExtendedLink } from "@/types/global";
+import { LinkIncludingCollectionAndTags } from "@/types/global";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
@@ -15,11 +15,12 @@ import RequiredBadge from "../RequiredBadge";
 
 type Props = {
   toggleLinkModal: Function;
-  link: ExtendedLink;
+  link: LinkIncludingCollectionAndTags;
 };
 
 export default function EditLink({ toggleLinkModal, link }: Props) {
-  const [currentLink, setCurrentLink] = useState<ExtendedLink>(link);
+  const [currentLink, setCurrentLink] =
+    useState<LinkIncludingCollectionAndTags>(link);
 
   const { updateLink, removeLink } = useLinkStore();
 
