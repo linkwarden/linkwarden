@@ -42,7 +42,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     ) {
       return res
         .setHeader("Content-Type", "text/plain")
-        .status(401)
         .send("This profile is private.");
     }
   }
