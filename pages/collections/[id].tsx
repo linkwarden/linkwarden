@@ -19,13 +19,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import RadioButton from "@/components/RadioButton";
-import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import TeamManagement from "@/components/Modal/Collection/TeamManagement";
+import SortLinkDropdown from "@/components/SortLinkDropdown";
 
 export default function () {
   const router = useRouter();
@@ -62,10 +61,6 @@ export default function () {
 
   const toggleDeleteCollectionModal = () => {
     setDeleteCollectionModal(!deleteCollectionModal);
-  };
-
-  const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSortBy(event.target.value);
   };
 
   useEffect(() => {
@@ -182,54 +177,11 @@ export default function () {
                 </div>
 
                 {sortDropdown ? (
-                  <ClickAwayHandler
-                    onClickOutside={(e: Event) => {
-                      const target = e.target as HTMLInputElement;
-                      if (target.id !== "sort-dropdown") setSortDropdown(false);
-                    }}
-                    className="absolute top-8 right-0 shadow-md bg-gray-50 rounded-md p-2 z-10 border border-sky-100 w-48"
-                  >
-                    <p className="mb-2 text-sky-900 text-center font-semibold">
-                      Sort by
-                    </p>
-                    <div className="flex flex-col gap-2">
-                      <RadioButton
-                        label="Name (A-Z)"
-                        state={sortBy === "Name (A-Z)"}
-                        onClick={handleSortChange}
-                      />
-
-                      <RadioButton
-                        label="Name (Z-A)"
-                        state={sortBy === "Name (Z-A)"}
-                        onClick={handleSortChange}
-                      />
-
-                      <RadioButton
-                        label="Title (A-Z)"
-                        state={sortBy === "Title (A-Z)"}
-                        onClick={handleSortChange}
-                      />
-
-                      <RadioButton
-                        label="Title (Z-A)"
-                        state={sortBy === "Title (Z-A)"}
-                        onClick={handleSortChange}
-                      />
-
-                      <RadioButton
-                        label="Date (Newest First)"
-                        state={sortBy === "Date (Newest First)"}
-                        onClick={handleSortChange}
-                      />
-
-                      <RadioButton
-                        label="Date (Oldest First)"
-                        state={sortBy === "Date (Oldest First)"}
-                        onClick={handleSortChange}
-                      />
-                    </div>
-                  </ClickAwayHandler>
+                  <SortLinkDropdown
+                    handleSortChange={(e) => setSortBy(e.target.value)}
+                    sortBy={sortBy}
+                    toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
+                  />
                 ) : null}
               </div>
               <div className="relative">
