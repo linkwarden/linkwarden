@@ -13,12 +13,9 @@ import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import { CollectionIncludingMembers } from "@/types/global";
 import {
-  faAdd,
   faEllipsis,
   faFolder,
-  faPenToSquare,
   faSort,
-  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -231,12 +228,12 @@ export default function () {
               <div className="relative">
                 <div
                   onClick={() => setExpandDropdown(!expandDropdown)}
-                  id="edit-dropdown"
+                  id="expand-dropdown"
                   className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
                 >
                   <FontAwesomeIcon
                     icon={faEllipsis}
-                    id="edit-dropdown"
+                    id="expand-dropdown"
                     title="More"
                     className="w-5 h-5 text-gray-500"
                   />
@@ -246,7 +243,6 @@ export default function () {
                     items={[
                       {
                         name: "Add Link Here",
-                        icon: <FontAwesomeIcon icon={faAdd} />,
                         onClick: () => {
                           toggleLinkModal();
                           setExpandDropdown(false);
@@ -254,7 +250,17 @@ export default function () {
                       },
                       {
                         name: "Edit Collection",
-                        icon: <FontAwesomeIcon icon={faPenToSquare} />,
+                        onClick: () => {
+                          toggleEditCollectionModal();
+                          setExpandDropdown(false);
+                        },
+                      },
+                      {
+                        name: `${
+                          activeCollection?.ownerId === data?.user.id
+                            ? "Manage"
+                            : "View"
+                        } Team`,
                         onClick: () => {
                           toggleEditCollectionModal();
                           setExpandDropdown(false);
@@ -262,7 +268,6 @@ export default function () {
                       },
                       {
                         name: "Delete Collection",
-                        icon: <FontAwesomeIcon icon={faTrashCan} />,
                         onClick: () => {
                           toggleDeleteCollectionModal();
                           setExpandDropdown(false);
@@ -271,10 +276,10 @@ export default function () {
                     ]}
                     onClickOutside={(e: Event) => {
                       const target = e.target as HTMLInputElement;
-                      if (target.id !== "edit-dropdown")
+                      if (target.id !== "expand-dropdown")
                         setExpandDropdown(false);
                     }}
-                    className="absolute top-8 right-0 z-10 w-44"
+                    className="absolute top-8 right-0 z-10 w-36"
                   />
                 ) : null}
 
