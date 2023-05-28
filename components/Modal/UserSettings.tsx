@@ -236,7 +236,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
             onChange={(e) => {
               setWhiteListedUsersTextbox(e.target.value);
             }}
-          ></textarea>
+          />
         </div>
       ) : null}
 

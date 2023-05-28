@@ -11,8 +11,8 @@ import useLinkStore from "@/store/links";
 import Dropdown from "./Dropdown";
 import { useState } from "react";
 import Modal from "@/components/Modal";
-import CollectionModal from "@/components/Modal/CollectionModal";
-import DeleteCollection from "@/components/Modal/DeleteCollection";
+import CollectionInfo from "@/components/Modal/Collection/CollectionInfo";
+import DeleteCollection from "@/components/Modal/Collection/DeleteCollection";
 import ProfilePhoto from "./ProfilePhoto";
 
 export default function ({
@@ -63,7 +63,7 @@ export default function ({
           <div className="flex justify-between items-center">
             <div className="text-sky-400 flex items-center w-full">
               {collection.members
-                .sort((a, b) => (a.user.id as number) - (b.user.id as number))
+                .sort((a, b) => (a.userId as number) - (b.userId as number))
                 .map((e, i) => {
                   return (
                     <ProfilePhoto
@@ -120,7 +120,7 @@ export default function ({
 
       {editCollectionModal ? (
         <Modal toggleModal={toggleEditCollectionModal}>
-          <CollectionModal
+          <CollectionInfo
             toggleCollectionModal={toggleEditCollectionModal}
             activeCollection={collection}
             method="UPDATE"

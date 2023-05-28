@@ -7,8 +7,8 @@ import Dropdown from "@/components/Dropdown";
 import LinkList from "@/components/LinkList";
 import Modal from "@/components/Modal";
 import LinkModal from "@/components/Modal/LinkModal";
-import CollectionModal from "@/components/Modal/CollectionModal";
-import DeleteCollection from "@/components/Modal/DeleteCollection";
+import CollectionInfo from "@/components/Modal/Collection/CollectionInfo";
+import DeleteCollection from "@/components/Modal/Collection/DeleteCollection";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import { CollectionIncludingMembers } from "@/types/global";
@@ -25,6 +25,7 @@ import RadioButton from "@/components/RadioButton";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
+import TeamManagement from "@/components/Modal/Collection/TeamManagement";
 
 export default function () {
   const router = useRouter();
@@ -36,7 +37,8 @@ export default function () {
 
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
-  const [editCollectionModal, setEditCollectionModal] = useState(false);
+  const [collectionInfoModal, setCollectionInfoModal] = useState(false);
+  const [collectionMembersModal, setCollectionMembersModal] = useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState("Name (A-Z)");
@@ -50,8 +52,12 @@ export default function () {
     setLinkModal(!linkModal);
   };
 
-  const toggleEditCollectionModal = () => {
-    setEditCollectionModal(!editCollectionModal);
+  const toggleCollectionInfoModal = () => {
+    setCollectionInfoModal(!collectionInfoModal);
+  };
+
+  const toggleCollectionMembersModal = () => {
+    setCollectionMembersModal(!collectionMembersModal);
   };
 
   const toggleDeleteCollectionModal = () => {
@@ -122,7 +128,10 @@ export default function () {
                   activeCollection.members[0] && "mr-3"
                 }`}
               >
-                <div className="flex justify-end items-center w-fit ml-auto group cursor-pointer">
+                <div
+                  onClick={toggleCollectionMembersModal}
+                  className="flex justify-end items-center w-fit ml-auto group cursor-pointer"
+                >
                   <div
                     className={`bg-sky-500 p-2 leading-3 select-none group-hover:bg-sky-400 duration-100 text-white rounded-full text-xs ${
                       activeCollection.members[0] && "mr-1"
@@ -134,9 +143,7 @@ export default function () {
                     Team
                   </div>
                   {activeCollection?.members
-                    .sort(
-                      (a, b) => (a.user.id as number) - (b.user.id as number)
-                    )
+                    .sort((a, b) => (a.userId as number) - (b.userId as number))
                     .map((e, i) => {
                       return (
                         <ProfilePhoto
@@ -249,20 +256,16 @@ export default function () {
                         },
                       },
                       {
-                        name: "Edit Collection",
+                        name: "Edit Collection Info",
                         onClick: () => {
-                          toggleEditCollectionModal();
+                          toggleCollectionInfoModal();
                           setExpandDropdown(false);
                         },
                       },
                       {
-                        name: `${
-                          activeCollection?.ownerId === data?.user.id
-                            ? "Manage"
-                            : "View"
-                        } Team`,
+                        name: "Share/Collaborate",
                         onClick: () => {
-                          toggleEditCollectionModal();
+                          toggleCollectionMembersModal();
                           setExpandDropdown(false);
                         },
                       },
@@ -279,7 +282,7 @@ export default function () {
                       if (target.id !== "expand-dropdown")
                         setExpandDropdown(false);
                     }}
-                    className="absolute top-8 right-0 z-10 w-36"
+                    className="absolute top-8 right-0 z-10 w-40"
                   />
                 ) : null}
 
@@ -292,12 +295,21 @@ export default function () {
                   </Modal>
                 ) : null}
 
-                {editCollectionModal && activeCollection ? (
-                  <Modal toggleModal={toggleEditCollectionModal}>
-                    <CollectionModal
-                      toggleCollectionModal={toggleEditCollectionModal}
+                {collectionInfoModal && activeCollection ? (
+                  <Modal toggleModal={toggleCollectionInfoModal}>
+                    <CollectionInfo
+                      toggleCollectionModal={toggleCollectionInfoModal}
                       activeCollection={activeCollection}
                       method="UPDATE"
+                    />
+                  </Modal>
+                ) : null}
+
+                {collectionMembersModal && activeCollection ? (
+                  <Modal toggleModal={toggleCollectionMembersModal}>
+                    <TeamManagement
+                      toggleCollectionModal={toggleCollectionMembersModal}
+                      activeCollection={activeCollection}
                     />
                   </Modal>
                 ) : null}

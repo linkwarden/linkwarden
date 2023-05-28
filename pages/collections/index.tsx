@@ -18,7 +18,7 @@ import Modal from "@/components/Modal";
 import MainLayout from "@/layouts/MainLayout";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import RadioButton from "@/components/RadioButton";
-import CollectionModal from "@/components/Modal/CollectionModal";
+import CollectionInfo from "@/components/Modal/Collection/CollectionInfo";
 import { useSession } from "next-auth/react";
 
 export default function () {
@@ -214,7 +214,7 @@ export default function () {
 
       {collectionModal ? (
         <Modal toggleModal={toggleCollectionModal}>
-          <CollectionModal
+          <CollectionInfo
             activeCollection={{
               name: "",
               description: "",
