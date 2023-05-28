@@ -14,6 +14,7 @@ import RadioButton from "@/components/RadioButton";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { Tag } from "@prisma/client";
 import useTagStore from "@/store/tags";
+import SortLinkDropdown from "@/components/SortLinkDropdown";
 
 export default function () {
   const router = useRouter();
@@ -55,14 +56,16 @@ export default function () {
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt as string).getTime() -
+            new Date(a.createdAt as string).getTime()
         )
       );
     else if (sortBy === "Date (Oldest First)")
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            new Date(a.createdAt as string).getTime() -
+            new Date(b.createdAt as string).getTime()
         )
       );
   }, [links, router, tags, sortBy]);
@@ -95,54 +98,11 @@ export default function () {
             </div>
 
             {sortDropdown ? (
-              <ClickAwayHandler
-                onClickOutside={(e: Event) => {
-                  const target = e.target as HTMLInputElement;
-                  if (target.id !== "sort-dropdown") setSortDropdown(false);
-                }}
-                className="absolute top-8 right-0 shadow-md bg-gray-50 rounded-md p-2 z-10 border border-sky-100 w-48"
-              >
-                <p className="mb-2 text-sky-900 text-center font-semibold">
-                  Sort by
-                </p>
-                <div className="flex flex-col gap-2">
-                  <RadioButton
-                    label="Name (A-Z)"
-                    state={sortBy === "Name (A-Z)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Name (Z-A)"
-                    state={sortBy === "Name (Z-A)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Title (A-Z)"
-                    state={sortBy === "Title (A-Z)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Title (Z-A)"
-                    state={sortBy === "Title (Z-A)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Date (Newest First)"
-                    state={sortBy === "Date (Newest First)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Date (Oldest First)"
-                    state={sortBy === "Date (Oldest First)"}
-                    onClick={handleSortChange}
-                  />
-                </div>
-              </ClickAwayHandler>
+              <SortLinkDropdown
+                handleSortChange={(e) => setSortBy(e.target.value)}
+                sortBy={sortBy}
+                toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
+              />
             ) : null}
           </div>
         </div>
