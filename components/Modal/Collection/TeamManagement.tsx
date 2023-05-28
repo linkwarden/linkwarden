@@ -239,7 +239,7 @@ export default function TeamManagement({
                               });
                             }}
                           />
-                          <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                          <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-slate-200 duration-75 peer-checked:text-white rounded p-1 select-none">
                             Create
                           </span>
                         </label>
@@ -268,7 +268,7 @@ export default function TeamManagement({
                               });
                             }}
                           />
-                          <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                          <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-slate-200 duration-75 peer-checked:text-white rounded p-1 select-none">
                             Update
                           </span>
                         </label>
@@ -297,7 +297,7 @@ export default function TeamManagement({
                               });
                             }}
                           />
-                          <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-sky-200 duration-75 peer-checked:text-white rounded p-1 select-none">
+                          <span className="text-sky-900 peer-checked:bg-sky-500 text-sm hover:bg-slate-200 duration-75 peer-checked:text-white rounded p-1 select-none">
                             Delete
                           </span>
                         </label>

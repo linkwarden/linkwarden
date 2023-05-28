@@ -14,6 +14,7 @@ import Modal from "@/components/Modal";
 import CollectionInfo from "@/components/Modal/Collection/CollectionInfo";
 import DeleteCollection from "@/components/Modal/Collection/DeleteCollection";
 import ProfilePhoto from "./ProfilePhoto";
+import TeamManagement from "./Modal/Collection/TeamManagement";
 
 export default function ({
   collection,
@@ -32,10 +33,15 @@ export default function ({
 
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [editCollectionModal, setEditCollectionModal] = useState(false);
+  const [collectionMembersModal, setCollectionMembersModal] = useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
 
   const toggleEditCollectionModal = () => {
     setEditCollectionModal(!editCollectionModal);
+  };
+
+  const toggleCollectionMembersModal = () => {
+    setCollectionMembersModal(!collectionMembersModal);
   };
 
   const toggleDeleteCollectionModal = () => {
@@ -102,6 +108,13 @@ export default function ({
               },
             },
             {
+              name: "Share/Collaborate",
+              onClick: () => {
+                toggleCollectionMembersModal();
+                setExpandDropdown(false);
+              },
+            },
+            {
               name: "Delete Collection",
               onClick: () => {
                 toggleDeleteCollectionModal();
@@ -124,6 +137,15 @@ export default function ({
             toggleCollectionModal={toggleEditCollectionModal}
             activeCollection={collection}
             method="UPDATE"
+          />
+        </Modal>
+      ) : null}
+
+      {collectionMembersModal ? (
+        <Modal toggleModal={toggleCollectionMembersModal}>
+          <TeamManagement
+            toggleCollectionModal={toggleCollectionMembersModal}
+            activeCollection={collection}
           />
         </Modal>
       ) : null}

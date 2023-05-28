@@ -34,7 +34,7 @@ export default function Dropdown({ onClickOutside, className, items }: Props) {
       {items.map((e, i) => {
         const inner = (
           <div className="cursor-pointer rounded-md">
-            <div className="flex items-center gap-2 py-1 px-2 hover:bg-sky-200 duration-100">
+            <div className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 duration-100">
               <p className="text-sky-900 select-none">{e.name}</p>
             </div>
           </div>
