@@ -105,7 +105,6 @@ export default function TeamManagement({
                   .writeText(publicCollectionURL)
                   .then(() => console.log("Copied!"));
               } catch (err) {
-                alert(err);
                 console.log(err);
               }
             }}
