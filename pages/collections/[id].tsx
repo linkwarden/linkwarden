@@ -149,7 +149,7 @@ export default function () {
                         <ProfilePhoto
                           key={i}
                           src={`/api/avatar/${e.userId}`}
-                          className="-mr-3 bg-white duration-100"
+                          className="-mr-3 duration-100"
                         />
                       );
                     })
