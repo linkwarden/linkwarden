@@ -8,8 +8,6 @@ import {
   faFolder,
   faArrowUpRightFromSquare,
   faEllipsis,
-  faPenToSquare,
-  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -124,14 +122,14 @@ export default function ({ link, count }: Props) {
         <div className="flex flex-col justify-between items-end relative">
           <div
             onClick={() => setExpandDropdown(!expandDropdown)}
-            id="edit-dropdown"
+            id="expand-dropdown"
             className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
           >
             <FontAwesomeIcon
               icon={faEllipsis}
               title="More"
               className="w-6 h-6"
-              id="edit-dropdown"
+              id="expand-dropdown"
             />
           </div>
           <div className="relative">
@@ -168,7 +166,6 @@ export default function ({ link, count }: Props) {
               items={[
                 {
                   name: "Edit",
-                  icon: <FontAwesomeIcon icon={faPenToSquare} />,
                   onClick: () => {
                     setEditModal(true);
                     setExpandDropdown(false);
@@ -176,7 +173,6 @@ export default function ({ link, count }: Props) {
                 },
                 {
                   name: "Delete",
-                  icon: <FontAwesomeIcon icon={faTrashCan} />,
                   onClick: () => {
                     removeLink(link);
                     setExpandDropdown(false);
@@ -185,7 +181,7 @@ export default function ({ link, count }: Props) {
               ]}
               onClickOutside={(e: Event) => {
                 const target = e.target as HTMLInputElement;
-                if (target.id !== "edit-dropdown") setExpandDropdown(false);
+                if (target.id !== "expand-dropdown") setExpandDropdown(false);
               }}
               className="absolute top-8 right-0 w-36"
             />

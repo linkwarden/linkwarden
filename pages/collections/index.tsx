@@ -5,7 +5,6 @@
 
 import useCollectionStore from "@/store/collections";
 import {
-  faAdd,
   faBox,
   faEllipsis,
   faPlus,
@@ -95,12 +94,12 @@ export default function () {
             <div className="relative">
               <div
                 onClick={() => setExpandDropdown(!expandDropdown)}
-                id="edit-dropdown"
+                id="expand-dropdown"
                 className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
               >
                 <FontAwesomeIcon
                   icon={faEllipsis}
-                  id="edit-dropdown"
+                  id="expand-dropdown"
                   className="w-5 h-5 text-gray-500"
                 />
               </div>
@@ -109,8 +108,7 @@ export default function () {
                 <Dropdown
                   items={[
                     {
-                      name: "New",
-                      icon: <FontAwesomeIcon icon={faAdd} />,
+                      name: "New Collection",
                       onClick: () => {
                         toggleCollectionModal();
                         setExpandDropdown(false);
@@ -119,7 +117,8 @@ export default function () {
                   ]}
                   onClickOutside={(e: Event) => {
                     const target = e.target as HTMLInputElement;
-                    if (target.id !== "edit-dropdown") setExpandDropdown(false);
+                    if (target.id !== "expand-dropdown")
+                      setExpandDropdown(false);
                   }}
                   className="absolute top-8 left-0 w-36"
                 />
