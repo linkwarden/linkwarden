@@ -15,7 +15,7 @@ export const styles: StylesConfig = {
     cursor: "pointer",
     backgroundColor: state.isSelected ? "#0ea5e9" : "inherit",
     "&:hover": {
-      backgroundColor: state.isSelected ? "#0ea5e9" : "#bae6fd",
+      backgroundColor: state.isSelected ? "#0ea5e9" : "#e2e8f0",
     },
     transition: "all 50ms",
   }),
@@ -43,7 +43,7 @@ export const styles: StylesConfig = {
   }),
   clearIndicator: (styles) => ({
     ...styles,
-    cursor: "pointer",
+    visibility: "hidden",
   }),
   placeholder: (styles) => ({
     ...styles,

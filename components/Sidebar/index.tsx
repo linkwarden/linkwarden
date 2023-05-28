@@ -32,9 +32,9 @@ export default function ({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-gray-100 h-screen w-64 xl:w-80 p-2 overflow-y-auto border-solid border-r-sky-100 border z-20 ${className}`}
+      className={`bg-gray-100 h-screen w-64 xl:w-80 overflow-y-auto border-solid border-r-sky-100 border z-20 ${className}`}
     >
-      <p className="p-2 text-sky-500 font-bold text-xl mb-5 leading-4">
+      <p className="p-4 text-sky-500 font-bold text-2xl my-2 leading-4">
         Linkwarden
       </p>
 
@@ -43,12 +43,12 @@ export default function ({ className }: { className?: string }) {
           className={`${
             active === "/dashboard"
               ? "bg-sky-500"
-              : "hover:bg-gray-50 hover:outline bg-gray-100"
-          } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2`}
+              : "hover:bg-slate-200 bg-gray-100"
+          } outline-sky-100 outline-1 duration-100 py-1 px-4 cursor-pointer flex items-center gap-2`}
         >
           <FontAwesomeIcon
             icon={faChartSimple}
-            className={`w-4 ${
+            className={`w-4 h-4 ${
               active === "/dashboard" ? "text-white" : "text-sky-300"
             }`}
           />
@@ -67,12 +67,12 @@ export default function ({ className }: { className?: string }) {
           className={`${
             active === "/links"
               ? "bg-sky-500"
-              : "hover:bg-gray-50 hover:outline bg-gray-100"
-          } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2`}
+              : "hover:bg-slate-200 bg-gray-100"
+          } outline-sky-100 outline-1 duration-100 py-1 px-4 cursor-pointer flex items-center gap-2`}
         >
           <FontAwesomeIcon
             icon={faBookmark}
-            className={`w-4 ${
+            className={`w-4 h-4 ${
               active === "/links" ? "text-white" : "text-sky-300"
             }`}
           />
@@ -87,14 +87,12 @@ export default function ({ className }: { className?: string }) {
       <Link href="/collections">
         <div
           className={`${
-            active === "/collections"
-              ? "bg-sky-500"
-              : "hover:bg-gray-50 hover:outline bg-gray-100"
-          } outline-sky-100 outline-1 duration-100 rounded-md my-1 p-2 cursor-pointer flex items-center gap-2`}
+            active === "/collections" ? "bg-sky-500" : "hover:bg-slate-200"
+          } outline-sky-100 outline-1 duration-100  py-1 px-4  cursor-pointer flex items-center gap-2`}
         >
           <FontAwesomeIcon
             icon={faBox}
-            className={`w-4 ${
+            className={`w-4 h-4 ${
               active === "/collections" ? "text-white" : "text-sky-300"
             }`}
           />
@@ -109,7 +107,7 @@ export default function ({ className }: { className?: string }) {
       </Link>
 
       <div className="text-gray-500 mt-5">
-        <p className="text-sm p-2">Collections</p>
+        <p className="text-sm px-4 mb-2">Collections</p>
       </div>
       <div>
         {collections
@@ -127,7 +125,7 @@ export default function ({ className }: { className?: string }) {
           })}
       </div>
       <div className="text-gray-500 mt-5">
-        <p className="text-sm p-2">Tags</p>
+        <p className="text-sm px-4 mb-2">Tags</p>
       </div>
       <div>
         {tags
