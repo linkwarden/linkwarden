@@ -123,7 +123,7 @@ export default function ({ link, count }: Props) {
           <div
             onClick={() => setExpandDropdown(!expandDropdown)}
             id={"expand-dropdown" + link.id}
-            className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-white hover:outline outline-sky-100 outline-1 duration-100 p-1"
+            className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-white outline outline-sky-100 hover:outline-sky-500 outline-1 duration-100 p-1"
           >
             <FontAwesomeIcon
               icon={faEllipsis}
@@ -184,7 +184,7 @@ export default function ({ link, count }: Props) {
                 if (target.id !== "expand-dropdown" + link.id)
                   setExpandDropdown(false);
               }}
-              className="absolute top-7 right-0 w-36"
+              className="absolute top-8 right-0 w-36"
             />
           ) : null}
         </div>

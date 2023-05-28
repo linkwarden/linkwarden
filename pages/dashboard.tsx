@@ -84,8 +84,8 @@ export default function () {
             {links
               .sort(
                 (a, b) =>
-                  new Date(b.createdAt).getTime() -
-                  new Date(a.createdAt).getTime()
+                  new Date(b.createdAt as string).getTime() -
+                  new Date(a.createdAt as string).getTime()
               )
               .slice(0, 5)
               .map((e, i) => (
