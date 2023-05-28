@@ -8,8 +8,6 @@ import { signOut } from "next-auth/react";
 import {
   faPlus,
   faCircleUser,
-  faSliders,
-  faArrowRightFromBracket,
   faChevronDown,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
@@ -104,7 +102,6 @@ export default function () {
               items={[
                 {
                   name: "Settings",
-                  icon: <FontAwesomeIcon icon={faSliders} />,
                   onClick: () => {
                     toggleSettingsModal();
                     setProfileDropdown(!profileDropdown);
@@ -112,7 +109,6 @@ export default function () {
                 },
                 {
                   name: "Logout",
-                  icon: <FontAwesomeIcon icon={faArrowRightFromBracket} />,
                   onClick: () => {
                     signOut();
                     setProfileDropdown(!profileDropdown);

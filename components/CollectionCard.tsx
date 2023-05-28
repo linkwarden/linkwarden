@@ -4,11 +4,7 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPenToSquare,
-  faTrashCan,
-  faEllipsis,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { CollectionIncludingMembers } from "@/types/global";
 import useLinkStore from "@/store/links";
@@ -50,12 +46,12 @@ export default function ({
     <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% self-stretch min-h-[12rem] rounded-md shadow duration-100 hover:shadow-none group relative">
       <div
         onClick={() => setExpandDropdown(!expandDropdown)}
-        id="edit-dropdown"
+        id={"expand-dropdown" + collection.id}
         className="inline-flex absolute top-5 right-5 rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
       >
         <FontAwesomeIcon
           icon={faEllipsis}
-          id="edit-dropdown"
+          id={"expand-dropdown" + collection.id}
           className="w-5 h-5 text-gray-500"
         />
       </div>
@@ -100,7 +96,6 @@ export default function ({
           items={[
             {
               name: "Edit Collection",
-              icon: <FontAwesomeIcon icon={faPenToSquare} />,
               onClick: () => {
                 toggleEditCollectionModal();
                 setExpandDropdown(false);
@@ -108,7 +103,6 @@ export default function ({
             },
             {
               name: "Delete Collection",
-              icon: <FontAwesomeIcon icon={faTrashCan} />,
               onClick: () => {
                 toggleDeleteCollectionModal();
                 setExpandDropdown(false);
@@ -117,9 +111,10 @@ export default function ({
           ]}
           onClickOutside={(e: Event) => {
             const target = e.target as HTMLInputElement;
-            if (target.id !== "edit-dropdown") setExpandDropdown(false);
+            if (target.id !== "expand-dropdown" + collection.id)
+              setExpandDropdown(false);
           }}
-          className="absolute top-[3.2rem] right-5 z-10 w-44"
+          className="absolute top-[3.2rem] right-5 z-10 w-36"
         />
       ) : null}
 
