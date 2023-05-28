@@ -5,23 +5,10 @@
 
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClose,
-  faPenToSquare,
-  faPlus,
-  faTrashCan,
-  faUser,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faPlus } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
-import { CollectionIncludingMembers, Member } from "@/types/global";
-import { useSession } from "next-auth/react";
-import Modal from "@/components/Modal";
-import DeleteCollection from "@/components/Modal/Collection/DeleteCollection";
+import { CollectionIncludingMembers } from "@/types/global";
 import RequiredBadge from "../../RequiredBadge";
-import addMemberToCollection from "@/lib/client/addMemberToCollection";
-import ImageWithFallback from "../../ImageWithFallback";
-import Checkbox from "../../Checkbox";
 
 type Props = {
   toggleCollectionModal: Function;

@@ -52,7 +52,6 @@ export default function () {
   };
 
   return (
-    // lg:ml-64 xl:ml-80
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b h-16">
       <div
         onClick={toggleSidebar}
@@ -72,23 +71,23 @@ export default function () {
 
         <div className="relative">
           <div
-            className="flex gap-1 group items-center w-fit bg-white text-gray-600 cursor-pointer"
+            className="flex gap-1 group items-center w-fit bg-white cursor-pointer"
             onClick={() => setProfileDropdown(!profileDropdown)}
             id="profile-dropdown"
           >
             {account.profilePic ? (
               <img
                 src={account.profilePic}
-                className="h-10 w-10 shadow pointer-events-none rounded-full border-[3px] border-sky-100 group-hover:border-sky-500 duration-100"
+                className="h-10 w-10 shadow pointer-events-none rounded-full border-[3px] border-sky-500 group-hover:border-sky-400 duration-100"
                 alt=""
               />
             ) : (
               <FontAwesomeIcon
                 icon={faCircleUser}
-                className="h-10 w-10 pointer-events-none group-hover:text-sky-600 duration-100"
+                className="h-10 w-10 pointer-events-none text-sky-500 group-hover:text-sky-400 duration-100"
               />
             )}
-            <div className="pointer-events-none hidden sm:block group-hover:text-sky-600 duration-100">
+            <div className="pointer-events-none hidden sm:block text-sky-500 group-hover:text-sky-400 duration-100">
               <div className="flex item-center gap-1">
                 <p className="font-bold leading-3 hidden sm:block">
                   {account.name}
