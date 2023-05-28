@@ -22,22 +22,26 @@ export default function ({ children }: Props) {
   getInitialData();
 
   useEffect(() => {
-    if (
-      status === "authenticated" &&
-      (router.pathname === "/login" || router.pathname === "/register")
-    ) {
-      router.push("/").then(() => {
-        setRedirect(false);
-      });
-    } else if (
-      status === "unauthenticated" &&
-      !(router.pathname === "/login" || router.pathname === "/register")
-    ) {
-      router.push("/login").then(() => {
-        setRedirect(false);
-      });
-    } else if (status === "loading") setRedirect(true);
-    else setRedirect(false);
+    if (!router.pathname.startsWith("/public")) {
+      if (
+        status === "authenticated" &&
+        (router.pathname === "/login" || router.pathname === "/register")
+      ) {
+        router.push("/").then(() => {
+          setRedirect(false);
+        });
+      } else if (
+        status === "unauthenticated" &&
+        !(router.pathname === "/login" || router.pathname === "/register")
+      ) {
+        router.push("/login").then(() => {
+          setRedirect(false);
+        });
+      } else if (status === "loading") setRedirect(true);
+      else setRedirect(false);
+    } else {
+      setRedirect(false);
+    }
   }, [status]);
 
   if (status !== "loading" && !redirect) return <>{children}</>;

@@ -51,6 +51,7 @@ export default async function (
               select: {
                 email: true,
                 name: true,
+                id: true,
               },
             },
           },

@@ -8,34 +8,33 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClose,
   faPenToSquare,
-  faPlus,
-  faTrashCan,
   faUser,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembers, Member } from "@/types/global";
 import { useSession } from "next-auth/react";
-import Modal from "@/components/Modal";
-import DeleteCollection from "@/components/Modal/DeleteCollection";
-import RequiredBadge from "../RequiredBadge";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
-import ImageWithFallback from "../ImageWithFallback";
-import Checkbox from "../Checkbox";
+import ImageWithFallback from "../../ImageWithFallback";
+import Checkbox from "../../Checkbox";
 
 type Props = {
   toggleCollectionModal: Function;
   activeCollection: CollectionIncludingMembers;
-  method: "CREATE" | "UPDATE";
 };
 
-export default function CollectionModal({
+export default function TeamManagement({
   toggleCollectionModal,
   activeCollection,
-  method,
 }: Props) {
   const [collection, setCollection] =
     useState<CollectionIncludingMembers>(activeCollection);
+
+  const [isPublic, setIsPublic] = useState(false);
+
+  const currentURL = new URL(document.URL);
+
+  const publicCollectionURL = `${currentURL.origin}/public/collections/${collection.id}`;
 
   const [member, setMember] = useState<Member>({
     canCreate: false,
@@ -47,13 +46,7 @@ export default function CollectionModal({
     },
   });
 
-  const { updateCollection, addCollection } = useCollectionStore();
-
-  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
-
-  const toggleDeleteCollectionModal = () => {
-    setDeleteCollectionModal(!deleteCollectionModal);
-  };
+  const { updateCollection } = useCollectionStore();
 
   const session = useSession();
 
@@ -79,75 +72,48 @@ export default function CollectionModal({
   const submit = async () => {
     if (!collection) return null;
 
-    let response = null;
-
-    if (method === "CREATE") response = await addCollection(collection);
-    else if (method === "UPDATE") response = await updateCollection(collection);
-    else console.log("Unknown method.");
+    const response = await updateCollection(collection);
 
     if (response) toggleCollectionModal();
   };
 
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="text-xl text-sky-500 mb-2 text-center">
-        {method === "CREATE" ? "Add" : "Edit"} Collection
+      <p className="text-xl text-sky-500 mb-2 text-center w-5/6 mx-auto">
+        Sharing & Collaboration Settings
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="w-full">
-          <p className="text-sm font-bold text-sky-300 mb-2">
-            Name
-            <RequiredBadge />
-          </p>
-          <input
-            value={collection.name}
-            onChange={(e) =>
-              setCollection({ ...collection, name: e.target.value })
-            }
-            type="text"
-            placeholder="e.g. Example Collection"
-            className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-          />
-        </div>
-
-        <div className="w-full">
-          <p className="text-sm font-bold text-sky-300 mb-2">Description</p>
-          <input
-            value={collection.description}
-            onChange={(e) =>
-              setCollection({
-                ...collection,
-                description: e.target.value,
-              })
-            }
-            type="text"
-            placeholder="Collection description"
-            className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-          />
-        </div>
-      </div>
-
-      <hr className="my-2" />
-
-      {/* <p className="text-sky-600">Sharing & Collaboration Settings</p>
-
-      <p className="text-sm font-bold text-sky-300">Collaboration</p>
-
-      <div className="w-fit">
-        <div className="border border-sky-100 rounded-md bg-white px-2 py-1 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-500">
-          Manage Team
-        </div>
-      </div>
+      <p className="text-sm font-bold text-sky-300">Make Public</p>
 
       <Checkbox
         label="Make this a public collection."
-        state={true}
-        onClick={() => console.log("Clicked!")}
+        state={isPublic}
+        onClick={() => setIsPublic(!isPublic)}
       />
+
       <p className="text-gray-500 text-sm">
-        This will let anyone to access this collection.
-      </p> */}
+        This will let <b>Anyone</b> to view this collection.
+      </p>
+
+      {isPublic ? (
+        <div>
+          <p className="mb-2 text-gray-500">Public Link (Click to copy)</p>
+          <div
+            onClick={() =>
+              navigator.clipboard
+                .writeText(publicCollectionURL)
+                .then(() => console.log("Copied!"))
+            }
+            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-3 border-sky-100 border-solid border outline-none hover:border-sky-500 duration-100 cursor-text"
+          >
+            {publicCollectionURL}
+          </div>
+        </div>
+      ) : null}
+
+      <hr />
+
+      <p className="text-sm font-bold text-sky-300">Member Management</p>
 
       <div className="relative">
         <input
@@ -158,6 +124,15 @@ export default function CollectionModal({
               user: { ...member.user, email: e.target.value },
             });
           }}
+          onKeyDown={(e) =>
+            e.key === "Enter" &&
+            addMemberToCollection(
+              session.data?.user.email as string,
+              member.user.email,
+              collection,
+              setMemberState
+            )
+          }
           type="text"
           placeholder="Email"
           className="w-full rounded-md p-3 pr-12 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
@@ -183,7 +158,7 @@ export default function CollectionModal({
             (All Members have <b>Read</b> access to this collection.)
           </p>
 
-          <div className="h-36 overflow-auto flex flex-col gap-3 rounded-md shadow-inner">
+          <div className="max-h-[20rem] overflow-auto flex flex-col gap-3 rounded-md shadow-inner">
             {collection.members.map((e, i) => {
               return (
                 <div
@@ -325,46 +300,10 @@ export default function CollectionModal({
           className="bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
           onClick={submit}
         >
-          <FontAwesomeIcon
-            icon={method === "CREATE" ? faPlus : faPenToSquare}
-            className="h-5"
-          />
-          {method === "CREATE" ? "Add Collection" : "Edit Collection"}
+          <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
+          Edit Collection
         </div>
-
-        {method === "UPDATE" ? (
-          <>
-            <div className="flex items-center justify-center gap-2">
-              <hr className="w-16 border" />
-
-              <p className="text-gray-400 font-bold">OR</p>
-
-              <hr className="w-16 border" />
-            </div>
-
-            <div
-              onClick={() => {
-                toggleDeleteCollectionModal();
-              }}
-              className="w-fit inline-flex rounded-md cursor-pointer bg-red-500 hover:bg-red-400 duration-100 p-2"
-            >
-              <FontAwesomeIcon
-                icon={faTrashCan}
-                className="w-4 h-4 text-white"
-              />
-            </div>
-          </>
-        ) : null}
       </div>
-
-      {deleteCollectionModal ? (
-        <Modal toggleModal={toggleDeleteCollectionModal}>
-          <DeleteCollection
-            collection={collection}
-            toggleDeleteCollectionModal={toggleDeleteCollectionModal}
-          />
-        </Modal>
-      ) : null}
     </div>
   );
 }
