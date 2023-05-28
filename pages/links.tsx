@@ -38,14 +38,16 @@ export default function Links() {
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt as string).getTime() -
+            new Date(a.createdAt as string).getTime()
         )
       );
     else if (sortBy === "Date (Oldest First)")
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            new Date(a.createdAt as string).getTime() -
+            new Date(b.createdAt as string).getTime()
         )
       );
   }, [links, sortBy]);
