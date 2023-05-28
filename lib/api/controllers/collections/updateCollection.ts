@@ -35,6 +35,7 @@ export default async function (
       data: {
         name: collection.name,
         description: collection.description,
+        isPublic: collection.isPublic,
         members: {
           create: collection.members.map((e) => ({
             user: { connect: { email: e.user.email } },

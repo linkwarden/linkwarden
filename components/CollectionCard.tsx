@@ -96,7 +96,6 @@ export default function ({
           </div>
         </div>
       </Link>
-
       {expandDropdown ? (
         <Dropdown
           items={[
@@ -130,7 +129,6 @@ export default function ({
           className="absolute top-[3.2rem] right-5 z-10 w-36"
         />
       ) : null}
-
       {editCollectionModal ? (
         <Modal toggleModal={toggleEditCollectionModal}>
           <CollectionInfo
@@ -140,7 +138,6 @@ export default function ({
           />
         </Modal>
       ) : null}
-
       {collectionMembersModal ? (
         <Modal toggleModal={toggleCollectionMembersModal}>
           <TeamManagement
@@ -149,7 +146,6 @@ export default function ({
           />
         </Modal>
       ) : null}
-
       {deleteCollectionModal ? (
         <Modal toggleModal={toggleDeleteCollectionModal}>
           <DeleteCollection
