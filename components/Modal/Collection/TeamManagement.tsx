@@ -30,8 +30,6 @@ export default function TeamManagement({
   const [collection, setCollection] =
     useState<CollectionIncludingMembers>(activeCollection);
 
-  const [isPublic, setIsPublic] = useState(false);
-
   const currentURL = new URL(document.URL);
 
   const publicCollectionURL = `${currentURL.origin}/public/collections/${collection.id}`;
@@ -87,15 +85,17 @@ export default function TeamManagement({
 
       <Checkbox
         label="Make this a public collection."
-        state={isPublic}
-        onClick={() => setIsPublic(!isPublic)}
+        state={collection.isPublic}
+        onClick={() =>
+          setCollection({ ...collection, isPublic: !collection.isPublic })
+        }
       />
 
       <p className="text-gray-500 text-sm">
         This will let <b>Anyone</b> to view this collection.
       </p>
 
-      {isPublic ? (
+      {collection.isPublic ? (
         <div>
           <p className="mb-2 text-gray-500">Public Link (Click to copy)</p>
           <div
