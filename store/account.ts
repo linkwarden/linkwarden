@@ -29,8 +29,6 @@ const useAccountStore = create<AccountStore>()((set) => ({
 
     const profilePic = await determineProfilePicSource(data);
 
-    console.log({ ...data.response, profilePic });
-
     if (response.ok) set({ account: { ...data.response, profilePic } });
   },
   updateAccount: async (user) => {
