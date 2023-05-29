@@ -25,8 +25,6 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     const data = await response.json();
 
-    console.log(data);
-
     if (response.ok) set({ collections: data.response });
   },
   addCollection: async (body) => {
