@@ -49,3 +49,9 @@ export type SearchSettings = {
     tags: boolean;
   };
 };
+
+export interface PublicCollectionIncludingLinks
+  extends Omit<Collection, "ownerId"> {
+  ownerName?: string;
+  links: Omit<Link, "screenshotPath" | "pdfPath">;
+}
