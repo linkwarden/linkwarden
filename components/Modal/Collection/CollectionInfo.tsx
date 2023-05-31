@@ -4,6 +4,7 @@ import { faPenToSquare, faPlus } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembers } from "@/types/global";
 import RequiredBadge from "../../RequiredBadge";
+import SubmitButton from "@/components/SubmitButton";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -72,18 +73,12 @@ export default function CollectionInfo({
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center gap-2 mt-2">
-        <div
-          className="bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-          onClick={submit}
-        >
-          <FontAwesomeIcon
-            icon={method === "CREATE" ? faPlus : faPenToSquare}
-            className="h-5"
-          />
-          {method === "CREATE" ? "Add Collection" : "Edit Collection"}
-        </div>
-      </div>
+      <SubmitButton
+        onClick={submit}
+        label={method === "CREATE" ? "Add Collection" : "Edit Collection"}
+        icon={method === "CREATE" ? faPlus : faPenToSquare}
+        className="mx-auto mt-2"
+      />
     </div>
   );
 }

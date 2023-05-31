@@ -44,11 +44,11 @@ export default function ({
   };
 
   return (
-    <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% self-stretch min-h-[12rem] rounded-md shadow duration-100 hover:shadow-none group relative">
+    <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none group relative">
       <div
         onClick={() => setExpandDropdown(!expandDropdown)}
         id={"expand-dropdown" + collection.id}
-        className="inline-flex absolute top-5 right-5 rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+        className="inline-flex absolute top-5 right-5 rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
       >
         <FontAwesomeIcon
           icon={faEllipsis}

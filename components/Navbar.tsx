@@ -50,18 +50,23 @@ export default function () {
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b h-16">
       <div
         onClick={toggleSidebar}
-        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-2 text-sky-500 rounded-md hover:outline-sky-500 outline duration-100 bg-white outline-sky-100 outline-1"
+        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-gray-500 rounded-md duration-100 hover:bg-slate-200"
       >
-        <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
+        <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
       </div>
       <Search />
       <div className="flex items-center gap-2">
         <div
           onClick={toggleLinkModal}
-          className="inline-flex gap-1 items-center font-semibold select-none cursor-pointer px-2 sm:px-3 py-2 rounded-md text-white bg-sky-500 hover:bg-sky-400 duration-100"
+          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-sky-500 sm:text-white sm:bg-sky-500 sm:hover:bg-sky-400 duration-100 group"
         >
-          <FontAwesomeIcon icon={faPlus} className="w-6 h-6 sm:w-5 sm:h-5" />
-          <span className="hidden sm:block">New Link</span>
+          <FontAwesomeIcon
+            icon={faPlus}
+            className="w-5 h-5 sm:group-hover:ml-9 sm:absolute duration-100"
+          />
+          <span className="hidden sm:block group-hover:opacity-0 text-right w-full duration-100">
+            New Link
+          </span>
         </div>
 
         <div className="relative">

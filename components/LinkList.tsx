@@ -40,7 +40,7 @@ export default function ({ link, count }: Props) {
   };
 
   return (
-    <div className="bg-gradient-to-tr from-gray-100 from-10% to-slate-200 via-20% shadow-sm p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
+    <div className="bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow-sm p-5 rounded-2xl flex items-start relative gap-5 sm:gap-10 group/item">
       {editModal ? (
         <Modal toggleModal={toggleEditModal}>
           <LinkModal
@@ -94,7 +94,7 @@ export default function ({ link, count }: Props) {
               {link.tags.map((e, i) => (
                 <Link key={i} href={`/tags/${e.id}`}>
                   <p className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer hover:bg-sky-100 duration-100">
-                    # {e.name}
+                    {e.name}
                   </p>
                 </Link>
               ))}
@@ -118,7 +118,7 @@ export default function ({ link, count }: Props) {
           <div
             onClick={() => setExpandDropdown(!expandDropdown)}
             id={"expand-dropdown" + link.id}
-            className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-white outline outline-sky-100 hover:outline-sky-500 outline-1 duration-100 p-1"
+            className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
           >
             <FontAwesomeIcon
               icon={faEllipsis}
