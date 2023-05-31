@@ -1,8 +1,3 @@
-// Copyright (C) 2022-present Daniel31x13 <daniel31x13@gmail.com>
-// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -63,7 +58,7 @@ export default function ({
       </div>
       <Link href={`/collections/${collection.id}`}>
         <div className="flex flex-col gap-2 justify-between h-full select-none p-5 cursor-pointer">
-          <p className="text-2xl font-bold capitalize text-sky-600 break-words w-4/5">
+          <p className="text-2xl font-bold capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent break-words w-4/5">
             {collection.name}
           </p>
           <div className="flex justify-between items-center">

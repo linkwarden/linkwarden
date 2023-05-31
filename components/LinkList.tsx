@@ -1,8 +1,3 @@
-// Copyright (C) 2022-present Daniel31x13 <daniel31x13@gmail.com>
-// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
-
 import { LinkIncludingCollectionAndTags } from "@/types/global";
 import {
   faFolder,
@@ -45,7 +40,7 @@ export default function ({ link, count }: Props) {
   };
 
   return (
-    <div className="border border-sky-100 bg-gray-100 p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
+    <div className="bg-gradient-to-tr from-gray-100 from-10% to-slate-200 via-20% shadow-sm p-5 rounded-md flex items-start relative gap-5 sm:gap-10 group/item">
       {editModal ? (
         <Modal toggleModal={toggleEditModal}>
           <LinkModal
@@ -84,7 +79,7 @@ export default function ({ link, count }: Props) {
         <div className="flex flex-col justify-between">
           <div className="flex items-baseline gap-1">
             <p className="text-sm text-sky-300 font-bold">{count + 1}.</p>
-            <p className="text-lg text-sky-600">{link.name}</p>
+            <p className="text-lg text-sky-600 font-bold">{link.name}</p>
           </div>
           <p className="text-sky-400 text-sm font-medium">{link.title}</p>
           <div className="flex gap-3 items-center flex-wrap my-3">
