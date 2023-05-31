@@ -90,7 +90,7 @@ export default function () {
               <div
                 onClick={() => setExpandDropdown(!expandDropdown)}
                 id="expand-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
               >
                 <FontAwesomeIcon
                   icon={faEllipsis}
@@ -125,7 +125,7 @@ export default function () {
             <div
               onClick={() => setSortDropdown(!sortDropdown)}
               id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
             >
               <FontAwesomeIcon
                 icon={faSort}
@@ -193,7 +193,7 @@ export default function () {
           })}
 
           <div
-            className="p-5 self-stretch bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% min-h-[12rem] rounded-md cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
+            className="p-5 self-stretch bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
             onClick={toggleCollectionModal}
           >
             <p className="text-sky-900 group-hover:opacity-0 duration-100">

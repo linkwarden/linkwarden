@@ -54,14 +54,16 @@ export default function Links() {
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt as string).getTime() -
+            new Date(a.createdAt as string).getTime()
         )
       );
     else if (sortBy === "Date (Oldest First)")
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            new Date(a.createdAt as string).getTime() -
+            new Date(b.createdAt as string).getTime()
         )
       );
   }, [searchSettings, links, sortBy]);
@@ -80,7 +82,7 @@ export default function Links() {
               <div
                 onClick={() => setFilterDropdown(!filterDropdown)}
                 id="filter-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
               >
                 <FontAwesomeIcon
                   icon={faFilter}
@@ -136,7 +138,7 @@ export default function Links() {
               <div
                 onClick={() => setSortDropdown(!sortDropdown)}
                 id="sort-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
               >
                 <FontAwesomeIcon
                   icon={faSort}

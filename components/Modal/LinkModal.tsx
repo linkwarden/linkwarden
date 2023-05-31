@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LinkIncludingCollectionAndTags } from "@/types/global";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
-import { faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import RequiredBadge from "../RequiredBadge";
 import { useSession } from "next-auth/react";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
+import SubmitButton from "../SubmitButton";
 
 type Props =
   | {
@@ -47,7 +48,7 @@ export default function EditLink({
         }
   );
 
-  const { updateLink, removeLink, addLink } = useLinkStore();
+  const { updateLink, addLink } = useLinkStore();
 
   const router = useRouter();
 
@@ -97,7 +98,7 @@ export default function EditLink({
     if (method === "UPDATE") response = await updateLink(link);
     else if (method === "CREATE") response = await addLink(link);
 
-    toggleLinkModal();
+    response && toggleLinkModal();
   };
 
   return (
@@ -107,7 +108,7 @@ export default function EditLink({
       </p>
 
       {method === "UPDATE" ? (
-        <p className="text-sky-700">
+        <p className="text-gray-500">
           <b>{shortendURL}</b> | {link.title}
         </p>
       ) : null}
@@ -176,43 +177,12 @@ export default function EditLink({
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center gap-2 mt-2">
-        <div
-          className="bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-          onClick={submit}
-        >
-          <FontAwesomeIcon
-            icon={method === "CREATE" ? faPlus : faPenToSquare}
-            className="h-5"
-          />
-          {method === "CREATE" ? "Add Link" : "Edit Link"}
-        </div>
-
-        {method === "UPDATE" ? (
-          <>
-            <div className="flex items-center justify-center gap-2">
-              <hr className="w-16 border" />
-
-              <p className="text-gray-400 font-bold">OR</p>
-
-              <hr className="w-16 border" />
-            </div>
-
-            <div
-              onClick={() => {
-                removeLink(link);
-                toggleLinkModal();
-              }}
-              className="w-fit inline-flex rounded-md cursor-pointer bg-red-500 hover:bg-red-400 duration-100 p-2"
-            >
-              <FontAwesomeIcon
-                icon={faTrashCan}
-                className="w-4 h-4 text-white"
-              />
-            </div>
-          </>
-        ) : null}
-      </div>
+      <SubmitButton
+        onClick={submit}
+        label={method === "CREATE" ? "Add Link" : "Edit Link"}
+        icon={method === "CREATE" ? faPlus : faPenToSquare}
+        className="mx-auto mt-2"
+      />
     </div>
   );
 }

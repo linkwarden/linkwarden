@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import ImageWithFallback from "../../ImageWithFallback";
 import Checkbox from "../../Checkbox";
+import SubmitButton from "@/components/SubmitButton";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -73,7 +74,7 @@ export default function TeamManagement({
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       <p className="text-xl text-sky-500 mb-2 text-center w-5/6 mx-auto">
-        Sharing & Collaboration Settings
+        Sharing & Collaboration
       </p>
 
       <p className="text-sm font-bold text-sky-300">Make Public</p>
@@ -114,7 +115,7 @@ export default function TeamManagement({
 
       <p className="text-sm font-bold text-sky-300">Member Management</p>
 
-      <div className="relative">
+      <div className="flex items-center gap-2">
         <input
           value={member.user.email}
           onChange={(e) => {
@@ -134,7 +135,7 @@ export default function TeamManagement({
           }
           type="text"
           placeholder="Email"
-          className="w-full rounded-md p-3 pr-12 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
 
         <div
@@ -146,9 +147,9 @@ export default function TeamManagement({
               setMemberState
             )
           }
-          className="absolute flex items-center justify-center right-2 top-2 bottom-2 bg-sky-500 hover:bg-sky-400 duration-100 text-white w-9 rounded-md cursor-pointer"
+          className="flex items-center justify-center bg-sky-500 hover:bg-sky-400 duration-100 text-white w-12 h-12 p-3 rounded-md cursor-pointer"
         >
-          <FontAwesomeIcon icon={faUserPlus} className="w-6 h-6" />
+          <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
         </div>
       </div>
       {collection?.members[0]?.user ? (
@@ -305,15 +306,12 @@ export default function TeamManagement({
         </>
       ) : null}
 
-      <div className="flex flex-col justify-center items-center gap-2 mt-2">
-        <div
-          className="bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
-          onClick={submit}
-        >
-          <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
-          Edit Collection
-        </div>
-      </div>
+      <SubmitButton
+        onClick={submit}
+        label="Edit Collection"
+        icon={faPenToSquare}
+        className="mx-auto mt-2"
+      />
     </div>
   );
 }
