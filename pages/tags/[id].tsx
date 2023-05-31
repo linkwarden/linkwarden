@@ -83,7 +83,7 @@ export default function () {
             <div
               onClick={() => setSortDropdown(!sortDropdown)}
               id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
             >
               <FontAwesomeIcon
                 icon={faSort}

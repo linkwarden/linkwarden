@@ -98,7 +98,7 @@ export default function () {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
-        <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
+        <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
           <div className="flex flex-col sm:flex-row gap-3 justify-between items-center sm:items-start">
             <div className="flex gap-3 items-center">
               <div className="flex gap-2">
@@ -162,7 +162,7 @@ export default function () {
                 <div
                   onClick={() => setSortDropdown(!sortDropdown)}
                   id="sort-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+                  className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
                 >
                   <FontAwesomeIcon
                     icon={faSort}
@@ -183,7 +183,7 @@ export default function () {
                 <div
                   onClick={() => setExpandDropdown(!expandDropdown)}
                   id="expand-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-white hover:border-sky-500 border-sky-100 border duration-100 p-1"
+                  className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
                 >
                   <FontAwesomeIcon
                     icon={faEllipsis}

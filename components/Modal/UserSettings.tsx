@@ -9,6 +9,7 @@ import { resizeImage } from "@/lib/client/resizeImage";
 import Modal from ".";
 import ChangePassword from "./ChangePassword";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import SubmitButton from "../SubmitButton";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -221,8 +222,8 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
           </p>
           <p className="text-gray-500 text-sm mb-3">
             Please provide the Email addresses of the users you wish to grant
-            visibility to your profile. Separate the addresses with a comma.
-            Users not included will be unable to view your profile.
+            visibility to your profile. Separate by comma. Users not included
+            will be unable to view your profile.
           </p>
           <textarea
             className="w-full resize-none border rounded-md duration-100 bg-white p-2 outline-none border-sky-100 focus:border-sky-500"
@@ -235,13 +236,12 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
         </div>
       ) : null}
 
-      <div
-        className="mx-auto mt-2 bg-sky-500 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold cursor-pointer duration-100 hover:bg-sky-400"
+      <SubmitButton
         onClick={submit}
-      >
-        <FontAwesomeIcon icon={faPenToSquare} className="h-5" />
-        Apply Settings
-      </div>
+        label="Apply Settings"
+        icon={faPenToSquare}
+        className="mx-auto mt-2"
+      />
 
       {passwordFormModal ? (
         <Modal toggleModal={togglePasswordFormModal}>
