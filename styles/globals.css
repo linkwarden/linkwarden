@@ -74,3 +74,18 @@
     transform: translateX(0);
   }
 }
+
+.slide-right-with-fade {
+  animation: slide-right-animation 150ms;
+}
+
+@keyframes slide-right-animation {
+  0% {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
