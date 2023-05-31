@@ -1,8 +1,3 @@
-// Copyright (C) 2022-present Daniel31x13 <daniel31x13@gmail.com>
-// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
-// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
-
 import Dropdown from "@/components/Dropdown";
 import LinkList from "@/components/LinkList";
 import Modal from "@/components/Modal";
@@ -111,7 +106,7 @@ export default function () {
                   icon={faFolder}
                   className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-300"
                 />
-                <p className="sm:text-4xl text-3xl text-sky-900 capitalize">
+                <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold">
                   {activeCollection?.name}
                 </p>
               </div>
