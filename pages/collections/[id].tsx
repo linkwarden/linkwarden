@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
@@ -56,6 +56,10 @@ export default function () {
 
   const toggleDeleteCollectionModal = () => {
     setDeleteCollectionModal(!deleteCollectionModal);
+  };
+
+  const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSortBy(event.target.value);
   };
 
   useEffect(() => {
@@ -120,7 +124,7 @@ export default function () {
               >
                 <div
                   onClick={toggleCollectionMembersModal}
-                  className="flex justify-end items-center w-fit ml-auto group cursor-pointer"
+                  className="flex justify-center sm:justify-end items-center w-fit mx-auto sm:mr-0 sm:ml-auto group cursor-pointer"
                 >
                   <div
                     className={`bg-sky-500 p-2 leading-3 select-none group-hover:bg-sky-400 duration-100 text-white rounded-full text-xs ${
@@ -173,7 +177,7 @@ export default function () {
 
                 {sortDropdown ? (
                   <SortLinkDropdown
-                    handleSortChange={(e) => setSortBy(e.target.value)}
+                    handleSortChange={handleSortChange}
                     sortBy={sortBy}
                     toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
                   />
