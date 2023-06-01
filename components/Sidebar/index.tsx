@@ -57,28 +57,6 @@ export default function ({ className }: { className?: string }) {
         </div>
       </Link>
 
-      <Link href="/links">
-        <div
-          className={`${
-            active === "/links"
-              ? "bg-sky-500"
-              : "hover:bg-slate-200 bg-gray-100"
-          } outline-sky-100 outline-1 duration-100 py-1 px-4 cursor-pointer flex items-center gap-2`}
-        >
-          <FontAwesomeIcon
-            icon={faBookmark}
-            className={`w-4 h-4 ${
-              active === "/links" ? "text-white" : "text-sky-300"
-            }`}
-          />
-          <p
-            className={`${active === "/links" ? "text-white" : "text-sky-900"}`}
-          >
-            All Links
-          </p>
-        </div>
-      </Link>
-
       <Link href="/collections">
         <div
           className={`${
@@ -97,6 +75,28 @@ export default function ({ className }: { className?: string }) {
             }`}
           >
             All Collections
+          </p>
+        </div>
+      </Link>
+
+      <Link href="/links">
+        <div
+          className={`${
+            active === "/links"
+              ? "bg-sky-500"
+              : "hover:bg-slate-200 bg-gray-100"
+          } outline-sky-100 outline-1 duration-100 py-1 px-4 cursor-pointer flex items-center gap-2`}
+        >
+          <FontAwesomeIcon
+            icon={faBookmark}
+            className={`w-4 h-4 ${
+              active === "/links" ? "text-white" : "text-sky-300"
+            }`}
+          />
+          <p
+            className={`${active === "/links" ? "text-white" : "text-sky-900"}`}
+          >
+            All Links
           </p>
         </div>
       </Link>
