@@ -30,6 +30,7 @@ export default async function (
       data: {
         name: collection.name,
         description: collection.description,
+        color: collection.color,
         isPublic: collection.isPublic,
         members: {
           create: collection.members.map((e) => ({
