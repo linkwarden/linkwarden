@@ -31,13 +31,6 @@
   animation: fade-in-animation 100ms;
 }
 
-/* Bug: "lg:block" just didn't work... */
-@media (min-width: 1024px) {
-  .lgblock {
-    display: block;
-  }
-}
-
 @keyframes fade-in-animation {
   0% {
     opacity: 0;
@@ -88,4 +81,17 @@
     transform: translateX(0);
     opacity: 1;
   }
+}
+
+/* For react-colorful */
+.color-picker .react-colorful {
+  width: 7.5rem;
+  height: 7.5rem;
+}
+.color-picker .react-colorful__hue {
+  height: 1rem;
+}
+.color-picker .react-colorful__pointer {
+  width: 1.3rem;
+  height: 1.3rem;
 }

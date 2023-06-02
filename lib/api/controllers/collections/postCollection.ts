@@ -39,6 +39,7 @@ export default async function (
       },
       name: collection.name,
       description: collection.description,
+      color: collection.color,
       members: {
         create: collection.members.map((e) => ({
           user: { connect: { email: e.user.email } },
