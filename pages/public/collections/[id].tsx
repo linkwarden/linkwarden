@@ -10,15 +10,12 @@ export default function PublicCollections() {
   const [data, setData] = useState<PublicCollectionIncludingLinks>();
 
   useEffect(() => {
-    const setState = async () => {
-      if (router.query.id) {
-        const data = await getPublicCollectionData(router.query.id as string);
-
-        setData(data.response);
-      }
-    };
-
-    setState();
+    if (router.query.id) {
+      getPublicCollectionData(
+        router.query.id as string,
+        (e: PublicCollectionIncludingLinks) => setData(e)
+      );
+    }
 
     // document
     //   .querySelector("body")
@@ -32,7 +29,9 @@ export default function PublicCollections() {
 
   return data ? (
     <div className="max-w-4xl mx-auto p-5 bg">
-      <div className="text-center bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-3xl shadow-lg p-5">
+      <div
+        className={`text-center bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-3xl shadow-lg p-5`}
+      >
         <p className="text-5xl bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold mb-5 capitalize">
           {data.name}
         </p>
