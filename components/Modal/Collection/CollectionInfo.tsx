@@ -66,7 +66,7 @@ export default function CollectionInfo({
                 <p className="text-sm w-full font-bold text-sky-300 mb-2">
                   Icon Color
                 </p>
-                <div style={{ color: collection.color || "#7dd3fc" }}>
+                <div style={{ color: collection.color }}>
                   <FontAwesomeIcon
                     icon={faFolder}
                     className="w-12 h-12 drop-shadow"
@@ -82,7 +82,7 @@ export default function CollectionInfo({
                 </div>
               </div>
               <HexColorPicker
-                color={collection.color || "#7dd3fc"}
+                color={collection.color}
                 onChange={(e) => setCollection({ ...collection, color: e })}
               />
             </div>

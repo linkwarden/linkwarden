@@ -218,6 +218,7 @@ export default function () {
             activeCollection={{
               name: "",
               description: "",
+              color: "#7dd3fc",
               isPublic: false,
               ownerId: session.data?.user.id as number,
               members: [],
