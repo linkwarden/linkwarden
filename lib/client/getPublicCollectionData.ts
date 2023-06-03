@@ -1,11 +1,14 @@
-const getPublicCollectionData = async (collectionId: string) => {
+const getPublicCollectionData = async (
+  collectionId: string,
+  setData?: Function
+) => {
   const res = await fetch(
     "/api/public/routes/collections/?collectionId=" + collectionId
   );
 
   const data = await res.json();
 
-  console.log(data);
+  if (setData) setData(data.response);
 
   return data;
 };
