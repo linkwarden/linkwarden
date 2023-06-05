@@ -1,6 +1,4 @@
-import ClickAwayHandler from "@/components/ClickAwayHandler";
-import LinkList from "@/components/LinkList";
-import RadioButton from "@/components/RadioButton";
+import LinkCard from "@/components/LinkCard";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
@@ -86,7 +84,7 @@ export default function Links() {
         </div>
         <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
           {sortedLinks.map((e, i) => {
-            return <LinkList key={i} link={e} count={i} />;
+            return <LinkCard key={i} link={e} count={i} />;
           })}
         </div>
       </div>

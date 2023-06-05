@@ -1,5 +1,5 @@
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
-import LinkList from "@/components/LinkList";
+import LinkCard from "@/components/LinkCard";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
@@ -152,7 +152,7 @@ export default function Links() {
         </div>
         {sortedLinks[0] ? (
           sortedLinks.map((e, i) => {
-            return <LinkList key={i} link={e} count={i} />;
+            return <LinkCard key={i} link={e} count={i} />;
           })
         ) : (
           <p className="text-sky-900">
