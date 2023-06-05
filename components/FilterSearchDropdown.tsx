@@ -1,20 +1,23 @@
 import React, { SetStateAction } from "react";
 import ClickAwayHandler from "./ClickAwayHandler";
 import Checkbox from "./Checkbox";
-import { SearchSettings } from "@/types/global";
 
 type Props = {
   setFilterDropdown: (value: SetStateAction<boolean>) => void;
-  toggleCheckbox: (
-    name: "name" | "title" | "url" | "collection" | "tags"
-  ) => void;
-  searchSettings: SearchSettings;
+  setSearchFilter: Function;
+  searchFilter: {
+    name: boolean;
+    url: boolean;
+    title: boolean;
+    collection: boolean;
+    tags: boolean;
+  };
 };
 
 export default function FilterSearchDropdown({
   setFilterDropdown,
-  toggleCheckbox,
-  searchSettings,
+  setSearchFilter,
+  searchFilter,
 }: Props) {
   return (
     <ClickAwayHandler
@@ -28,28 +31,41 @@ export default function FilterSearchDropdown({
       <div className="flex flex-col gap-2">
         <Checkbox
           label="Name"
-          state={searchSettings.filter.name}
-          onClick={() => toggleCheckbox("name")}
+          state={searchFilter.name}
+          onClick={() =>
+            setSearchFilter({ ...searchFilter, name: !searchFilter.name })
+          }
         />
         <Checkbox
           label="Link"
-          state={searchSettings.filter.url}
-          onClick={() => toggleCheckbox("url")}
+          state={searchFilter.url}
+          onClick={() =>
+            setSearchFilter({ ...searchFilter, url: !searchFilter.url })
+          }
         />
         <Checkbox
           label="Title"
-          state={searchSettings.filter.title}
-          onClick={() => toggleCheckbox("title")}
+          state={searchFilter.title}
+          onClick={() =>
+            setSearchFilter({ ...searchFilter, title: !searchFilter.title })
+          }
         />
         <Checkbox
           label="Collection"
-          state={searchSettings.filter.collection}
-          onClick={() => toggleCheckbox("collection")}
+          state={searchFilter.collection}
+          onClick={() =>
+            setSearchFilter({
+              ...searchFilter,
+              collection: !searchFilter.collection,
+            })
+          }
         />
         <Checkbox
           label="Tags"
-          state={searchSettings.filter.tags}
-          onClick={() => toggleCheckbox("tags")}
+          state={searchFilter.tags}
+          onClick={() =>
+            setSearchFilter({ ...searchFilter, tags: !searchFilter.tags })
+          }
         />
       </div>
     </ClickAwayHandler>
