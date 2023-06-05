@@ -55,11 +55,11 @@ export default function ({ link, count }: Props) {
               <p className="text-lg text-sky-600  font-bold">{link.name}</p>
             </div>
 
-            <p className="text-sky-400 text-sm font-medium">{link.title}</p>
+            <p className="text-gray-500 text-sm font-medium">{link.title}</p>
 
             <div className="flex gap-2 items-center flex-wrap mt-2">
               <p className="text-gray-500">{formattedDate}</p>
-              <div className="text-gray-500 font-bold flex items-center gap-1">
+              <div className="text-sky-500 font-bold flex items-center gap-1">
                 <p>{url.host}</p>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}

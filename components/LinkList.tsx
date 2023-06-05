@@ -101,7 +101,7 @@ export default function ({ link, count }: Props) {
             <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
             <p className="text-lg text-sky-600 font-bold">{link.name}</p>
           </div>
-          <p className="text-sky-400 text-sm font-medium">{link.title}</p>
+          <p className="text-gray-500 text-sm font-medium">{link.title}</p>
           <div className="flex gap-3 items-center flex-wrap my-3">
             <Link href={`/collections/${link.collection.id}`}>
               <div className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100">
@@ -127,7 +127,7 @@ export default function ({ link, count }: Props) {
           <div className="flex gap-2 items-center flex-wrap">
             <p className="text-gray-500">{formattedDate}</p>
             <a href={link.url} target="_blank" className="group/url">
-              <div className="text-gray-500 font-bold flex items-center gap-1">
+              <div className="text-sky-500 font-bold flex items-center gap-1">
                 <p>{url.host}</p>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
