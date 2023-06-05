@@ -107,10 +107,10 @@ export default function ({ link, count }: Props) {
               <div className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100">
                 <FontAwesomeIcon
                   icon={faFolder}
-                  className="w-4 h-4 mt-1"
-                  style={{ color: collection.color }}
+                  className="w-4 h-4 mt-1 drop-shadow"
+                  style={{ color: collection?.color }}
                 />
-                <p className="text-sky-900">{collection.name}</p>
+                <p className="text-sky-900">{collection?.name}</p>
               </div>
             </Link>
 
