@@ -52,14 +52,14 @@ export default function ({ link, count }: Props) {
           <div className="flex flex-col justify-between">
             <div className="flex items-baseline gap-1">
               <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
-              <p className="text-lg text-sky-600  font-bold">{link.name}</p>
+              <p className="text-lg text-sky-500  font-bold">{link.name}</p>
             </div>
 
             <p className="text-gray-500 text-sm font-medium">{link.title}</p>
 
             <div className="flex gap-2 items-center flex-wrap mt-2">
               <p className="text-gray-500">{formattedDate}</p>
-              <div className="text-sky-500 font-bold flex items-center gap-1">
+              <div className="text-sky-400 font-bold flex items-center gap-1">
                 <p>{url.host}</p>
                 <FontAwesomeIcon
                   icon={faArrowUpRightFromSquare}
