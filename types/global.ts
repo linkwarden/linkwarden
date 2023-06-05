@@ -34,17 +34,6 @@ export interface AccountSettings extends User {
   newPassword?: string;
 }
 
-export type SearchSettings = {
-  query: string;
-  filter: {
-    name: boolean;
-    url: boolean;
-    title: boolean;
-    collection: boolean;
-    tags: boolean;
-  };
-};
-
 export interface PublicCollectionIncludingLinks
   extends Omit<Collection, "ownerId"> {
   ownerName?: string;
