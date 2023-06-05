@@ -80,20 +80,30 @@ export default function () {
                 src={account.profilePic}
                 className="h-10 w-10 shadow pointer-events-none rounded-full border-[3px] border-sky-500 group-hover:border-sky-400 duration-100"
                 alt=""
+                id="profile-dropdown"
               />
             ) : (
               <FontAwesomeIcon
                 icon={faCircleUser}
+                id="profile-dropdown"
                 className="h-10 w-10 pointer-events-none text-sky-500 group-hover:text-sky-400 duration-100"
               />
             )}
-            <div className="pointer-events-none hidden sm:block text-sky-500 group-hover:text-sky-400 duration-100">
-              <div className="flex item-center gap-1">
-                <p className="font-bold leading-3 hidden sm:block">
-                  {account.name}
-                </p>
-                <FontAwesomeIcon icon={faChevronDown} className="h-3 w-3" />
-              </div>
+            <div
+              id="profile-dropdown"
+              className="text-sky-500 group-hover:text-sky-400 duration-100 hidden sm:flex item-center gap-1 max-w-[8rem]"
+            >
+              <p
+                id="profile-dropdown"
+                className="font-bold leading-3 hidden sm:block select-none truncate"
+              >
+                {account.name}
+              </p>
+              <FontAwesomeIcon
+                id="profile-dropdown"
+                icon={faChevronDown}
+                className="h-3 w-3"
+              />
             </div>
           </div>
           {profileDropdown ? (
