@@ -1,4 +1,4 @@
-import LinkList from "@/components/PublicPage/LinkList";
+import LinkCard from "@/components/PublicPage/LinkCard";
 import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
 import { PublicCollectionIncludingLinks } from "@/types/global";
 import { useRouter } from "next/router";
@@ -47,7 +47,7 @@ export default function PublicCollections() {
 
       <div className="flex flex-col gap-5 my-8">
         {data?.links.map((e, i) => {
-          return <LinkList key={i} link={e} count={i} />;
+          return <LinkCard key={i} link={e} count={i} />;
         })}
       </div>
 

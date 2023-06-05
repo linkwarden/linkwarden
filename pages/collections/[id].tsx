@@ -1,5 +1,5 @@
 import Dropdown from "@/components/Dropdown";
-import LinkList from "@/components/LinkList";
+import LinkCard from "@/components/LinkCard";
 import Modal from "@/components/Modal";
 import LinkModal from "@/components/Modal/LinkModal";
 import CollectionInfo from "@/components/Modal/Collection/CollectionInfo";
@@ -282,7 +282,7 @@ export default function () {
         </div>
         <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
           {sortedLinks.map((e, i) => {
-            return <LinkList key={i} link={e} count={i} />;
+            return <LinkCard key={i} link={e} count={i} />;
           })}
         </div>
       </div>

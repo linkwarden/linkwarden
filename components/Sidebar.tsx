@@ -21,6 +21,7 @@ export default function ({ className }: { className?: string }) {
   const [active, setActive] = useState("");
 
   useEffect(() => {
+    console.log(window.location.hash);
     setActive(router.asPath);
   }, [router, collections]);
 
