@@ -4,6 +4,7 @@ export default async function (userId: number) {
   // remove empty tags
   await prisma.tag.deleteMany({
     where: {
+      ownerId: userId,
       links: {
         none: {},
       },

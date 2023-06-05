@@ -47,7 +47,7 @@ export default function CollectionInfo({
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">
-          <p className="text-sm font-bold text-sky-300 mb-2">
+          <p className="text-sm text-sky-500 mb-2">
             Name
             <RequiredBadge />
           </p>
@@ -63,9 +63,7 @@ export default function CollectionInfo({
             />
             <div className="color-picker flex justify-between">
               <div className="flex flex-col justify-between items-center w-32">
-                <p className="text-sm w-full font-bold text-sky-300 mb-2">
-                  Icon Color
-                </p>
+                <p className="text-sm w-full text-sky-500 mb-2">Icon Color</p>
                 <div style={{ color: collection.color }}>
                   <FontAwesomeIcon
                     icon={faFolder}
@@ -73,9 +71,9 @@ export default function CollectionInfo({
                   />
                 </div>
                 <div
-                  className="py-1 px-2 rounded-md text-xs font-semibold cursor-pointer text-gray-500 hover:bg-slate-200 duration-100"
+                  className="py-1 px-2 rounded-md text-xs font-semibold cursor-pointer text-sky-500 hover:bg-slate-200 duration-100"
                   onClick={() =>
-                    setCollection({ ...collection, color: "#7dd3fc" })
+                    setCollection({ ...collection, color: "#0ea5e9" })
                   }
                 >
                   Reset
@@ -90,7 +88,7 @@ export default function CollectionInfo({
         </div>
 
         <div className="w-full">
-          <p className="text-sm font-bold text-sky-300 mb-2">Description</p>
+          <p className="text-sm text-sky-500 mb-2">Description</p>
           <textarea
             className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-white p-3 outline-none border-sky-100 focus:border-sky-500"
             placeholder="The purpose of this Collection..."

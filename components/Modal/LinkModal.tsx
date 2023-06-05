@@ -115,7 +115,7 @@ export default function EditLink({
 
       <div className="grid sm:grid-cols-2 gap-3">
         <div>
-          <p className="text-sm font-bold text-sky-300 mb-2">
+          <p className="text-sm text-sky-500 mb-2">
             Name
             <RequiredBadge />
           </p>
@@ -130,7 +130,7 @@ export default function EditLink({
 
         {method === "CREATE" ? (
           <div>
-            <p className="text-sm font-bold text-sky-300 mb-2">
+            <p className="text-sm text-sky-500 mb-2">
               URL
               <RequiredBadge />
             </p>
@@ -145,7 +145,7 @@ export default function EditLink({
         ) : null}
 
         <div>
-          <p className="text-sm font-bold text-sky-300 mb-2">
+          <p className="text-sm text-sky-500 mb-2">
             Collection
             <RequiredBadge />
           </p>
@@ -167,7 +167,7 @@ export default function EditLink({
         </div>
 
         <div className={method === "UPDATE" ? "sm:col-span-2" : ""}>
-          <p className="text-sm font-bold text-sky-300 mb-2">Tags</p>
+          <p className="text-sm text-sky-500 mb-2">Tags</p>
           <TagSelection
             onChange={setTags}
             defaultValue={link.tags.map((e) => {

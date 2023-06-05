@@ -16,7 +16,7 @@ CREATE TABLE "Collection" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL DEFAULT '',
-    "color" TEXT NOT NULL DEFAULT '#7dd3fc',
+    "color" TEXT NOT NULL DEFAULT '#0ea5e9',
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "ownerId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
