@@ -85,7 +85,7 @@ export default function ({ link, count }: Props) {
           <div className="flex gap-3 items-center flex-wrap my-3">
             <Link href={`/collections/${link.collection.id}`}>
               <div className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100">
-                <FontAwesomeIcon icon={faFolder} className="w-4 text-sky-300" />
+                <FontAwesomeIcon icon={faFolder} className="w-4 text-sky-500" />
                 <p className="text-sky-900">{link.collection.name}</p>
               </div>
             </Link>

@@ -46,7 +46,6 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     `data/uploads/avatar/${queryId}.jpg`
   );
 
-  console.log(filePath);
   const file = fs.existsSync(filePath)
     ? fs.readFileSync(filePath)
     : "File not found.";

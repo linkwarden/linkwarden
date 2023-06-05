@@ -95,12 +95,10 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       <p className="text-xl text-sky-500 mb-2 text-center">Settings</p>
 
-      <p className="text-sky-600">Profile Settings</p>
-
       <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
         <div className="flex flex-col gap-3">
           <div>
-            <p className="text-sm font-bold text-sky-300 mb-2">Display Name</p>
+            <p className="text-sm text-sky-500 mb-2">Display Name</p>
             <input
               type="text"
               value={user.name}
@@ -110,7 +108,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
           </div>
 
           <div>
-            <p className="text-sm font-bold text-sky-300 mb-2">Email</p>
+            <p className="text-sm text-sky-500 mb-2">Email</p>
             <input
               type="text"
               value={user.email}
@@ -120,7 +118,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
           </div>
 
           <div>
-            <p className="text-sm font-bold text-sky-300 mb-2">Password</p>
+            <p className="text-sm text-sky-500 mb-2">Password</p>
 
             <div className="w-fit" onClick={togglePasswordFormModal}>
               <div className="border border-sky-100 rounded-md bg-white px-2 py-1 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-500">
@@ -139,7 +137,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
         </div>
 
         <div className="sm:row-span-2 sm:justify-self-center mb-3">
-          <p className="text-sm font-bold text-sky-300 mb-2 sm:text-center">
+          <p className="text-sm text-sky-500 mb-2 sm:text-center">
             Profile Photo
           </p>
           <div className="w-28 h-28 flex items-center justify-center border border-sky-100 rounded-full relative">
@@ -202,7 +200,7 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
 
       <hr />
 
-      <p className="text-sky-600">Privacy Settings</p>
+      <p className="text-sm text-sky-500 mb-2">Profile Visibility</p>
 
       <Checkbox
         label="Make profile private"
@@ -211,19 +209,16 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
         onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
       />
 
-      <p className="text-gray-500 text-sm mb-3">
+      <p className="text-gray-500 text-sm">
         This will limit who can find and add you to other Collections.
       </p>
 
       {user.isPrivate ? (
         <div>
-          <p className="text-sm font-bold text-sky-300 mb-2">
-            Whitelisted Users
-          </p>
+          <p className="text-sm text-sky-500 mb-2">Whitelisted Users</p>
           <p className="text-gray-500 text-sm mb-3">
             Please provide the Email addresses of the users you wish to grant
-            visibility to your profile. Separate by comma. Users not included
-            will be unable to view your profile.
+            visibility to your profile. Separated by comma.
           </p>
           <textarea
             className="w-full resize-none border rounded-md duration-100 bg-white p-2 outline-none border-sky-100 focus:border-sky-500"

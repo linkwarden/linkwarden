@@ -24,7 +24,7 @@ model Collection {
   id Int @id @default(autoincrement())
   name String
   description String @default("")
-  color String @default("#7dd3fc")
+  color String @default("#0ea5e9")
   isPublic Boolean @default(false)
   owner User @relation(fields: [ownerId], references: [id])
   ownerId Int

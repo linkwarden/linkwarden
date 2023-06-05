@@ -71,7 +71,7 @@ export default function () {
             <div className="flex gap-2">
               <FontAwesomeIcon
                 icon={faHashtag}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-300"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500"
               />
               <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold">
                 {activeTag?.name}

@@ -9,3 +9,10 @@ export const prisma =
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+if (process.env.NODE_ENV !== "production")
+  prisma.$on("query" as any, (e: any) => {
+    console.log("Query: " + e.query);
+    console.log("Params: " + e.params);
+    console.log("\x1b[31m", `Duration: ${e.duration}ms`, "\x1b[0m"); // For benchmarking
+  });
