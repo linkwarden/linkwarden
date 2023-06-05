@@ -1,4 +1,7 @@
-import { LinkIncludingCollectionAndTags } from "@/types/global";
+import {
+  CollectionIncludingMembers,
+  LinkIncludingCollectionAndTags,
+} from "@/types/global";
 import {
   faFolder,
   faArrowUpRightFromSquare,
@@ -6,13 +9,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Dropdown from "./Dropdown";
 import useLinkStore from "@/store/links";
 import Modal from "./Modal";
 import LinkModal from "./Modal/LinkModal";
 import Link from "next/link";
+import useCollectionStore from "@/store/collections";
 
 type Props = {
   link: LinkIncludingCollectionAndTags;
@@ -22,6 +26,22 @@ type Props = {
 export default function ({ link, count }: Props) {
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [editModal, setEditModal] = useState(false);
+
+  const { collections } = useCollectionStore();
+
+  const [collection, setCollection] = useState<CollectionIncludingMembers>(
+    collections.find(
+      (e) => e.id === link.collection.id
+    ) as CollectionIncludingMembers
+  );
+
+  useEffect(() => {
+    setCollection(
+      collections.find(
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembers
+    );
+  }, [collections]);
 
   const { removeLink } = useLinkStore();
 
@@ -88,9 +108,9 @@ export default function ({ link, count }: Props) {
                 <FontAwesomeIcon
                   icon={faFolder}
                   className="w-4 h-4 mt-1"
-                  style={{ color: link.collection.color }}
+                  style={{ color: collection.color }}
                 />
-                <p className="text-sky-900">{link.collection.name}</p>
+                <p className="text-sky-900">{collection.name}</p>
               </div>
             </Link>
 
