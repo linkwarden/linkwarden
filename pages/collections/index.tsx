@@ -77,7 +77,6 @@ export default function () {
   }, [collections, sortBy]);
 
   return (
-    // ml-80
     <MainLayout>
       <div className="p-5">
         <div className="flex gap-3 items-center justify-between mb-5">
