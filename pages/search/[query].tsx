@@ -3,38 +3,60 @@ import LinkList from "@/components/LinkList";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
-import useSearchSettingsStore from "@/store/search";
 import { faFilter, faSearch, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
+
+type SearchFilter = {
+  name: boolean;
+  url: boolean;
+  title: boolean;
+  collection: boolean;
+  tags: boolean;
+};
 
 export default function Links() {
   const { links } = useLinkStore();
+
+  const router = useRouter();
+
+  const routeQuery = decodeURIComponent(
+    router.query.query as string
+  ).toLowerCase();
+
+  const [searchFilter, setSearchFilter] = useState<SearchFilter>({
+    name: true,
+    url: true,
+    title: true,
+    collection: true,
+    tags: true,
+  });
 
   const [filterDropdown, setFilterDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState("Name (A-Z)");
   const [sortedLinks, setSortedLinks] = useState(links);
-  const { searchSettings, toggleCheckbox } = useSearchSettingsStore();
 
   const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSortBy(event.target.value);
   };
 
-  const { name, url, title, collection, tags } = searchSettings.filter;
+  const { name, url, title, collection, tags } = searchFilter;
 
   useEffect(() => {
     const linksArray = [
       ...links.filter((link) => {
-        const query = searchSettings.query.toLowerCase();
-
         if (
-          (name && link.name.toLowerCase().includes(query)) ||
-          (url && link.url.toLowerCase().includes(query)) ||
-          (title && link.title.toLowerCase().includes(query)) ||
-          (collection && link.collection.name.toLowerCase().includes(query)) ||
+          (name && link.name.toLowerCase().includes(routeQuery)) ||
+          (url && link.url.toLowerCase().includes(routeQuery)) ||
+          (title && link.title.toLowerCase().includes(routeQuery)) ||
+          (collection &&
+            link.collection.name.toLowerCase().includes(routeQuery)) ||
           (tags &&
-            link.tags.some((tag) => tag.name.toLowerCase().includes(query)))
+            link.tags.some((tag) =>
+              tag.name.toLowerCase().includes(routeQuery)
+            ))
         )
           return true;
       }),
@@ -64,7 +86,7 @@ export default function Links() {
             new Date(b.createdAt as string).getTime()
         )
       );
-  }, [searchSettings, links, sortBy]);
+  }, [links, searchFilter, sortBy, router]);
 
   return (
     <MainLayout>
@@ -99,8 +121,8 @@ export default function Links() {
               {filterDropdown ? (
                 <FilterSearchDropdown
                   setFilterDropdown={setFilterDropdown}
-                  searchSettings={searchSettings}
-                  toggleCheckbox={toggleCheckbox}
+                  searchFilter={searchFilter}
+                  setSearchFilter={setSearchFilter}
                 />
               ) : null}
             </div>

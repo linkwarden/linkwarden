@@ -1,32 +1,20 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
-import useSearchSettingsStore from "@/store/search";
+import { useState } from "react";
 import { useRouter } from "next/router";
 
 export default function Search() {
   const router = useRouter();
 
-  const [searchBox, setSearchBox] = useState(
-    false || router.pathname == "/search"
+  const routeQuery = router.query.query;
+
+  const [searchQuery, setSearchQuery] = useState(
+    routeQuery ? decodeURIComponent(routeQuery as string) : ""
   );
 
-  const { searchSettings, setSearchSettings, setSearchQuery } =
-    useSearchSettingsStore();
-
-  useEffect(() => {
-    if (router.pathname !== "/search")
-      setSearchSettings({
-        query: "",
-        filter: {
-          name: true,
-          url: true,
-          title: true,
-          collection: true,
-          tags: true,
-        },
-      });
-  }, [router]);
+  const [searchBox, setSearchBox] = useState(
+    router.pathname.startsWith("/search") || false
+  );
 
   return (
     <div
@@ -44,11 +32,14 @@ export default function Search() {
         id="search-box"
         type="text"
         placeholder="Search for Links"
-        value={searchSettings.query}
+        value={searchQuery}
         onChange={(e) => {
-          setSearchQuery(e.target.value);
-          router.push("/search");
+          setSearchQuery(e.target.value.replace("%", ""));
         }}
+        onKeyDown={(e) =>
+          e.key === "Enter" &&
+          router.push("/search/" + encodeURIComponent(searchQuery))
+        }
         autoFocus={searchBox}
         className="border border-sky-100 rounded-md pl-10 py-2 pr-2 w-44 sm:w-60 focus:border-sky-500 sm:focus:w-80 hover:border-sky-500 duration-100 outline-none"
       />
