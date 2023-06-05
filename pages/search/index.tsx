@@ -1,7 +1,5 @@
-import Checkbox from "@/components/Checkbox";
-import ClickAwayHandler from "@/components/ClickAwayHandler";
+import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import LinkList from "@/components/LinkList";
-import RadioButton from "@/components/RadioButton";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
@@ -17,8 +15,7 @@ export default function Links() {
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState("Name (A-Z)");
   const [sortedLinks, setSortedLinks] = useState(links);
-  const { searchSettings, toggleCheckbox, setSearchSettings, setSearchQuery } =
-    useSearchSettingsStore();
+  const { searchSettings, toggleCheckbox } = useSearchSettingsStore();
 
   const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSortBy(event.target.value);
@@ -73,9 +70,16 @@ export default function Links() {
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
         <div className="flex gap-3 items-center justify-between">
-          <div className="flex gap-2 items-center">
-            <FontAwesomeIcon icon={faSearch} className="w-5 h-5 text-sky-300" />
-            <p className="text-lg text-sky-900">Search Results</p>
+          <div className="flex gap-3 items-center mb-5">
+            <div className="flex gap-2">
+              <FontAwesomeIcon
+                icon={faSearch}
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500"
+              />
+              <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold">
+                Search Results
+              </p>
+            </div>
           </div>
 
           <div className="flex gap-3 items-center">
@@ -93,45 +97,11 @@ export default function Links() {
               </div>
 
               {filterDropdown ? (
-                <ClickAwayHandler
-                  onClickOutside={(e: Event) => {
-                    const target = e.target as HTMLInputElement;
-                    if (target.id !== "filter-dropdown")
-                      setFilterDropdown(false);
-                  }}
-                  className="absolute top-8 right-0 shadow-md bg-gray-50 rounded-md p-2 z-20 border border-sky-100 w-40"
-                >
-                  <p className="mb-2 text-sky-900 text-center font-semibold">
-                    Filter by
-                  </p>
-                  <div className="flex flex-col gap-2">
-                    <Checkbox
-                      label="Name"
-                      state={searchSettings.filter.name}
-                      onClick={() => toggleCheckbox("name")}
-                    />
-                    <Checkbox
-                      label="Link"
-                      state={searchSettings.filter.url}
-                      onClick={() => toggleCheckbox("url")}
-                    />
-                    <Checkbox
-                      label="Title"
-                      state={searchSettings.filter.title}
-                      onClick={() => toggleCheckbox("title")}
-                    />
-                    <Checkbox
-                      label="Collection"
-                      state={searchSettings.filter.collection}
-                      onClick={() => toggleCheckbox("collection")}
-                    />
-                    <Checkbox
-                      label="Tags"
-                      state={searchSettings.filter.tags}
-                      onClick={() => toggleCheckbox("tags")}
-                    />
-                  </div>
-                </ClickAwayHandler>
+                <FilterSearchDropdown
+                  setFilterDropdown={setFilterDropdown}
+                  searchSettings={searchSettings}
+                  toggleCheckbox={toggleCheckbox}
+                />
               ) : null}
             </div>
 

@@ -77,7 +77,7 @@ export default function TeamManagement({
         Sharing & Collaboration
       </p>
 
-      <p className="text-sm font-bold text-sky-300">Make Public</p>
+      <p className="text-sm text-sky-500">Make Public</p>
 
       <Checkbox
         label="Make this a public collection."
@@ -93,7 +93,9 @@ export default function TeamManagement({
 
       {collection.isPublic ? (
         <div>
-          <p className="mb-2 text-gray-500">Public Link (Click to copy)</p>
+          <p className="text-sm text-sky-500 mb-2">
+            Public Link (Click to copy)
+          </p>
           <div
             onClick={() => {
               try {
@@ -113,7 +115,7 @@ export default function TeamManagement({
 
       <hr />
 
-      <p className="text-sm font-bold text-sky-300">Member Management</p>
+      <p className="text-sm text-sky-500">Member Management</p>
 
       <div className="flex items-center gap-2">
         <input
@@ -202,10 +204,10 @@ export default function TeamManagement({
                     </div>
                     <div className="flex sm:block items-center gap-5">
                       <div>
-                        <p className="font-bold text-sm text-gray-500">
+                        <p className="font-bold text-sm text-sky-500">
                           Permissions
                         </p>
-                        <p className="text-xs text-gray-400 mb-2">
+                        <p className="text-xs text-gray-500 mb-2">
                           (Click to toggle.)
                         </p>
                       </div>

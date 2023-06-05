@@ -34,7 +34,7 @@ export default function ChangePassword({
       <div className="max-w-sm mx-auto flex flex-col gap-3">
         <p className="text-xl text-sky-500 mb-2 text-center">Change Password</p>
 
-        <p className="text-sm font-bold text-sky-300">Old Password</p>
+        <p className="text-sm text-sky-500">Old Password</p>
 
         <input
           value={oldPassword}
@@ -42,7 +42,7 @@ export default function ChangePassword({
           type="text"
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
-        <p className="text-sm font-bold text-sky-300">New Password</p>
+        <p className="text-sm text-sky-500">New Password</p>
 
         <input
           value={newPassword1}
@@ -50,7 +50,7 @@ export default function ChangePassword({
           type="text"
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
-        <p className="text-sm font-bold text-sky-300">Re-enter New Password</p>
+        <p className="text-sm text-sky-500">Re-enter New Password</p>
 
         <input
           value={newPassword2}
@@ -60,7 +60,7 @@ export default function ChangePassword({
         />
 
         <div
-          className="mx-auto mt-2  text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold duration-100 bg-sky-500 hover:bg-sky-400 cursor-pointer"
+          className="mx-auto mt-2  text-white flex items-center gap-2 py-2 px-5 rounded-md select-none duration-100 bg-sky-500 hover:bg-sky-400 cursor-pointer"
           onClick={submit}
         >
           Save

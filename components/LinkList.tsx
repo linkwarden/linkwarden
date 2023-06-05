@@ -78,22 +78,26 @@ export default function ({ link, count }: Props) {
       <div className="flex justify-between gap-5 w-full h-full z-0">
         <div className="flex flex-col justify-between">
           <div className="flex items-baseline gap-1">
-            <p className="text-sm text-sky-300 font-bold">{count + 1}.</p>
+            <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
             <p className="text-lg text-sky-600 font-bold">{link.name}</p>
           </div>
           <p className="text-sky-400 text-sm font-medium">{link.title}</p>
           <div className="flex gap-3 items-center flex-wrap my-3">
             <Link href={`/collections/${link.collection.id}`}>
               <div className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100">
-                <FontAwesomeIcon icon={faFolder} className="w-4 text-sky-300" />
+                <FontAwesomeIcon
+                  icon={faFolder}
+                  className="w-4 h-4 mt-1"
+                  style={{ color: link.collection.color }}
+                />
                 <p className="text-sky-900">{link.collection.name}</p>
               </div>
             </Link>
 
-            <div className="flex gap-1 items-center flex-wrap">
+            <div className="flex gap-1 items-center flex-wrap mt-1">
               {link.tags.map((e, i) => (
                 <Link key={i} href={`/tags/${e.id}`}>
-                  <p className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer hover:bg-sky-100 duration-100">
+                  <p className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100">
                     {e.name}
                   </p>
                 </Link>

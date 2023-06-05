@@ -51,7 +51,7 @@ export default function ({ link, count }: Props) {
         <div className="flex justify-between items-center gap-5 w-full h-full z-0">
           <div className="flex flex-col justify-between">
             <div className="flex items-baseline gap-1">
-              <p className="text-sm text-sky-300 font-bold">{count + 1}.</p>
+              <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
               <p className="text-lg text-sky-600  font-bold">{link.name}</p>
             </div>
 
