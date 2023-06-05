@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LinkIncludingCollectionAndTags } from "@/types/global";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
