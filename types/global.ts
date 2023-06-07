@@ -29,7 +29,7 @@ export interface CollectionIncludingMembers
 }
 
 export interface AccountSettings extends User {
-  profilePic: string | null;
+  profilePic: string;
   oldPassword?: string;
   newPassword?: string;
 }

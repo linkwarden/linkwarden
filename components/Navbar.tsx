@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import Search from "@/components/Search";
 import UserSettings from "./Modal/UserSettings";
 import useAccountStore from "@/store/account";
+import ProfilePhoto from "./ProfilePhoto";
 
 export default function () {
   const { account } = useAccountStore();
@@ -71,27 +72,17 @@ export default function () {
 
         <div className="relative">
           <div
-            className="flex gap-1 group items-center w-fit bg-white cursor-pointer"
+            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:p-1 duration-100 h-10 rounded-full items-center w-fit bg-white cursor-pointer"
             onClick={() => setProfileDropdown(!profileDropdown)}
             id="profile-dropdown"
           >
-            {account.profilePic ? (
-              <img
-                src={account.profilePic}
-                className="h-10 w-10 shadow pointer-events-none rounded-full border-[3px] border-sky-500 group-hover:border-sky-400 duration-100"
-                alt=""
-                id="profile-dropdown"
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={faCircleUser}
-                id="profile-dropdown"
-                className="h-10 w-10 pointer-events-none text-sky-500 group-hover:text-sky-400 duration-100"
-              />
-            )}
+            <ProfilePhoto
+              src={account.profilePic}
+              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100"
+            />
             <div
               id="profile-dropdown"
-              className="text-sky-500 group-hover:text-sky-400 duration-100 hidden sm:flex item-center gap-1 max-w-[8rem]"
+              className="text-sky-500 duration-100 hidden sm:flex item-center gap-1 max-w-[8rem]"
             >
               <p
                 id="profile-dropdown"
@@ -102,7 +93,7 @@ export default function () {
               <FontAwesomeIcon
                 id="profile-dropdown"
                 icon={faChevronDown}
-                className="h-3 w-3"
+                className="h-3 w-3 text-gray-500"
               />
             </div>
           </div>
