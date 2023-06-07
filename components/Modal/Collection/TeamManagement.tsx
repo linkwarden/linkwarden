@@ -3,16 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClose,
   faPenToSquare,
-  faUser,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembers, Member } from "@/types/global";
 import { useSession } from "next-auth/react";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
-import ImageWithFallback from "../../ImageWithFallback";
 import Checkbox from "../../Checkbox";
 import SubmitButton from "@/components/SubmitButton";
+import ProfilePhoto from "@/components/ProfilePhoto";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -186,15 +185,7 @@ export default function TeamManagement({
                       }}
                     />
                     <div className="flex items-center gap-2">
-                      <ImageWithFallback
-                        key={i}
-                        src={`/api/avatar/${e.userId}`}
-                        className="h-10 w-10 shadow rounded-full border-[3px] border-sky-100"
-                      >
-                        <div className="text-white bg-sky-500 h-10 w-10 shadow rounded-full border-[3px] border-sky-100 flex items-center justify-center">
-                          <FontAwesomeIcon icon={faUser} className="w-5 h-5" />
-                        </div>
-                      </ImageWithFallback>
+                      <ProfilePhoto src={`/api/avatar/${e.userId}`} />
                       <div>
                         <p className="text-sm font-bold text-sky-500">
                           {e.user.name}
