@@ -34,6 +34,8 @@ export default function Search() {
         placeholder="Search for Links"
         value={searchQuery}
         onChange={(e) => {
+          e.target.value.includes("%") &&
+            console.log("The search query should not contain '%'.");
           setSearchQuery(e.target.value.replace("%", ""));
         }}
         onKeyDown={(e) =>
@@ -41,7 +43,7 @@ export default function Search() {
           router.push("/search/" + encodeURIComponent(searchQuery))
         }
         autoFocus={searchBox}
-        className="border border-sky-100 rounded-md pl-10 py-2 pr-2 w-44 sm:w-60 focus:border-sky-500 sm:focus:w-80 hover:border-sky-500 duration-100 outline-none"
+        className="border border-sky-100 rounded-md pl-10 py-2 pr-2 w-44 sm:w-60 focus:border-sky-500 md:focus:w-80 hover:border-sky-500 duration-100 outline-none"
       />
     </div>
   );
