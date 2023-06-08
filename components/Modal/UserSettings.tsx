@@ -10,6 +10,7 @@ import Modal from ".";
 import ChangePassword from "./ChangePassword";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../SubmitButton";
+import ProfilePhoto from "../ProfilePhoto";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -141,37 +142,29 @@ export default function UserSettings({ toggleSettingsModal }: Props) {
             Profile Photo
           </p>
           <div className="w-28 h-28 flex items-center justify-center border border-sky-100 rounded-full relative">
-            {user.profilePic && user.profilePic !== "DELETE" ? (
-              <div>
-                <img
-                  alt="Profile Photo"
-                  className="rounded-full object-cover h-28 w-28 border-[3px] border-sky-100 border-opacity-0"
-                  src={user.profilePic}
-                />
-                <div
-                  onClick={() =>
-                    setUser({
-                      ...user,
-                      profilePic: "DELETE",
-                    })
-                  }
-                  className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 bg-white border-sky-100 rounded-full text-gray-500 hover:text-red-500 duration-100 cursor-pointer"
-                >
-                  <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
-                </div>
+            <ProfilePhoto
+              src={user.profilePic}
+              className="h-28 w-28 border-[1px]"
+            />
+            {user.profilePic && (
+              <div
+                onClick={() =>
+                  setUser({
+                    ...user,
+                    profilePic: "",
+                  })
+                }
+                className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 bg-white border-slate-200 rounded-full text-gray-500 hover:text-red-500 duration-100 cursor-pointer"
+              >
+                <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
               </div>
-            ) : (
-              <FontAwesomeIcon
-                icon={faUser}
-                className="w-10 h-10 text-sky-400"
-              />
             )}
 
             <div className="absolute -bottom-2 left-0 right-0 mx-auto w-fit text-center">
               <label
                 htmlFor="upload-photo"
                 title="PNG or JPG (Max: 3MB)"
-                className="border border-sky-100 rounded-md bg-white px-2 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-500"
+                className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-500"
               >
                 Browse...
                 <input
