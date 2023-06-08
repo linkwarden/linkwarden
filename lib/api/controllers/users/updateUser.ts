@@ -7,8 +7,8 @@ import bcrypt from "bcrypt";
 export default async function (user: AccountSettings, userId: number) {
   const profilePic = user.profilePic;
 
-  if (profilePic?.startsWith("data:image/jpeg;base64")) {
-    if ((user?.profilePic?.length as number) < 1572864) {
+  if (profilePic.startsWith("data:image/jpeg;base64")) {
+    if (user.profilePic.length < 1572864) {
       try {
         const filePath = path.join(
           process.cwd(),
@@ -26,7 +26,7 @@ export default async function (user: AccountSettings, userId: number) {
     } else {
       console.log("A file larger than 1.5MB was uploaded.");
     }
-  } else if (profilePic === "DELETE") {
+  } else if (profilePic == "") {
     fs.unlink(`data/uploads/avatar/${userId}.jpg`, (err) => {
       if (err) console.log(err);
     });
@@ -47,12 +47,6 @@ export default async function (user: AccountSettings, userId: number) {
   if (user.newPassword && user.oldPassword) {
     const saltRounds = 10;
 
-    const requestOldHashedPassword = bcrypt.hashSync(
-      user.oldPassword,
-      saltRounds
-    );
-    console.log(requestOldHashedPassword);
-
     if (bcrypt.compareSync(user.oldPassword, updatedUser.password)) {
       const newHashedPassword = bcrypt.hashSync(user.newPassword, saltRounds);
 
@@ -71,5 +65,10 @@ export default async function (user: AccountSettings, userId: number) {
 
   const { password, ...userInfo } = updatedUser;
 
-  return { response: userInfo, status: 200 };
+  const response: Omit<AccountSettings, "password"> = {
+    ...userInfo,
+    profilePic: `/api/avatar/${userInfo.id}?${Date.now()}`,
+  };
+
+  return { response, status: 200 };
 }
