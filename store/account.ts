@@ -1,18 +1,10 @@
 import { create } from "zustand";
 import { AccountSettings } from "@/types/global";
-import avatarExists from "@/lib/client/avatarExists";
 
 type AccountStore = {
   account: AccountSettings;
   setAccount: (email: string) => void;
   updateAccount: (user: AccountSettings) => Promise<boolean>;
-};
-
-const determineProfilePicSource = async (data: any) => {
-  const path = `/api/avatar/${data.response.id}`;
-  const imageExists = await avatarExists(path);
-  if (imageExists) return path + "?" + Date.now();
-  else return null;
 };
 
 const useAccountStore = create<AccountStore>()((set) => ({
@@ -22,7 +14,7 @@ const useAccountStore = create<AccountStore>()((set) => ({
 
     const data = await response.json();
 
-    const profilePic = await determineProfilePicSource(data);
+    const profilePic = `/api/avatar/${data.response.id}?${Date.now()}`;
 
     if (response.ok) set({ account: { ...data.response, profilePic } });
   },
@@ -39,9 +31,7 @@ const useAccountStore = create<AccountStore>()((set) => ({
 
     console.log(data);
 
-    const profilePic = await determineProfilePicSource(data);
-
-    if (response.ok) set({ account: { ...data.response, profilePic } });
+    if (response.ok) set({ account: { ...data.response } });
 
     return response.ok;
   },
