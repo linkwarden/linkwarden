@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CollectionIncludingMembers } from "@/types/global";
 import useLinkStore from "@/store/links";
 
-export default function ({
+export default function CollectionItem({
   collection,
 }: {
   collection: CollectionIncludingMembers;

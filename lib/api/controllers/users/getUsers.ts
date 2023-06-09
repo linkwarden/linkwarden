@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function (
+export default async function getUser(
   lookupEmail: string,
   isSelf: boolean,
   userEmail: string

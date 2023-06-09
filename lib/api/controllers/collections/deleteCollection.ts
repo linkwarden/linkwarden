@@ -2,7 +2,10 @@ import { prisma } from "@/lib/api/db";
 import getPermission from "@/lib/api/getPermission";
 import fs from "fs";
 
-export default async function (collection: { id: number }, userId: number) {
+export default async function deleteCollection(
+  collection: { id: number },
+  userId: number
+) {
   if (!collection.id)
     return { response: "Please choose a valid collection.", status: 401 };
 

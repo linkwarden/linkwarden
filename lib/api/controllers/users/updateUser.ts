@@ -4,7 +4,40 @@ import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
 
-export default async function (user: AccountSettings, userId: number) {
+export default async function updateUser(
+  user: AccountSettings,
+  userId: number
+) {
+  // Password Settings
+  if (user.newPassword && user.oldPassword) {
+    const targetUser = await prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
+
+    if (
+      targetUser &&
+      bcrypt.compareSync(user.oldPassword, targetUser.password)
+    ) {
+      const saltRounds = 10;
+      const newHashedPassword = bcrypt.hashSync(user.newPassword, saltRounds);
+
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          password: newHashedPassword,
+        },
+      });
+    } else {
+      return { response: "Old password is incorrect.", status: 400 };
+    }
+  }
+
+  // Avatar Settings
+
   const profilePic = user.profilePic;
 
   if (profilePic.startsWith("data:image/jpeg;base64")) {
@@ -25,12 +58,18 @@ export default async function (user: AccountSettings, userId: number) {
       }
     } else {
       console.log("A file larger than 1.5MB was uploaded.");
+      return {
+        response: "A file larger than 1.5MB was uploaded.",
+        status: 400,
+      };
     }
   } else if (profilePic == "") {
     fs.unlink(`data/uploads/avatar/${userId}.jpg`, (err) => {
       if (err) console.log(err);
     });
   }
+
+  // Other settings
 
   const updatedUser = await prisma.user.update({
     where: {
@@ -43,25 +82,6 @@ export default async function (user: AccountSettings, userId: number) {
       whitelistedUsers: user.whitelistedUsers,
     },
   });
-
-  if (user.newPassword && user.oldPassword) {
-    const saltRounds = 10;
-
-    if (bcrypt.compareSync(user.oldPassword, updatedUser.password)) {
-      const newHashedPassword = bcrypt.hashSync(user.newPassword, saltRounds);
-
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          password: newHashedPassword,
-        },
-      });
-    } else {
-      return { response: "Passwords do not match.", status: 403 };
-    }
-  }
 
   const { password, ...userInfo } = updatedUser;
 

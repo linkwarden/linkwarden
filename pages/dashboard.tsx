@@ -9,7 +9,7 @@ import Link from "next/link";
 import CollectionItem from "@/components/Dashboard/CollectionItem";
 import { useEffect, useState } from "react";
 
-export default function () {
+export default function Dashboard() {
   const { collections } = useCollectionStore();
   const { links } = useLinkStore();
   const { tags } = useTagStore();
@@ -29,7 +29,7 @@ export default function () {
     );
 
     // console.log(links.length);
-  }, [collections]);
+  }, [collections, links]);
 
   return (
     // ml-80

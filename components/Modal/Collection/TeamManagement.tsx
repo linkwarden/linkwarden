@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClose,
   faPenToSquare,
+  faPlus,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
@@ -15,16 +16,17 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 
 type Props = {
   toggleCollectionModal: Function;
-  activeCollection: CollectionIncludingMembers;
+  setCollection: Dispatch<SetStateAction<CollectionIncludingMembers>>;
+  collection: CollectionIncludingMembers;
+  method: "CREATE" | "UPDATE";
 };
 
 export default function TeamManagement({
   toggleCollectionModal,
-  activeCollection,
+  setCollection,
+  collection,
+  method,
 }: Props) {
-  const [collection, setCollection] =
-    useState<CollectionIncludingMembers>(activeCollection);
-
   const currentURL = new URL(document.URL);
 
   const publicCollectionURL = `${currentURL.origin}/public/collections/${collection.id}`;
@@ -39,7 +41,7 @@ export default function TeamManagement({
     },
   });
 
-  const { updateCollection } = useCollectionStore();
+  const { addCollection, updateCollection } = useCollectionStore();
 
   const session = useSession();
 
@@ -65,17 +67,17 @@ export default function TeamManagement({
   const submit = async () => {
     if (!collection) return null;
 
-    const response = await updateCollection(collection);
+    let response = null;
+
+    if (method === "CREATE") response = await addCollection(collection);
+    else if (method === "UPDATE") response = await updateCollection(collection);
+    else console.log("Unknown method.");
 
     if (response) toggleCollectionModal();
   };
 
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="text-xl text-sky-500 mb-2 text-center w-5/6 mx-auto">
-        Sharing & Collaboration
-      </p>
-
       <p className="text-sm text-sky-500">Make Public</p>
 
       <Checkbox
@@ -153,12 +155,12 @@ export default function TeamManagement({
           <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
         </div>
       </div>
-      {collection?.members[0]?.user ? (
+
+      {collection?.members[0]?.user && (
         <>
           <p className="text-center text-gray-500 text-xs sm:text-sm">
             (All Members have <b>Read</b> access to this collection.)
           </p>
-
           <div className="max-h-[20rem] overflow-auto flex flex-col gap-3 rounded-md shadow-inner">
             {collection.members
               .sort((a, b) => (a.userId as number) - (b.userId as number))
@@ -297,12 +299,12 @@ export default function TeamManagement({
               })}
           </div>
         </>
-      ) : null}
+      )}
 
       <SubmitButton
         onClick={submit}
-        label="Edit Collection"
-        icon={faPenToSquare}
+        label={method === "CREATE" ? "Add Collection" : "Edit Collection"}
+        icon={method === "CREATE" ? faPlus : faPenToSquare}
         className="mx-auto mt-2"
       />
     </div>

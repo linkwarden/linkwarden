@@ -12,7 +12,7 @@ interface User {
   password: string;
 }
 
-export default async function (
+export default async function Index(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {

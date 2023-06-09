@@ -8,7 +8,7 @@ interface FormData {
   password: string;
 }
 
-export default function () {
+export default function Register() {
   const router = useRouter();
 
   const [form, setForm] = useState<FormData>({

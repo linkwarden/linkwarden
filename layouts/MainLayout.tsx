@@ -10,7 +10,7 @@ interface Props {
   children: ReactNode;
 }
 
-export default function ({ children }: Props) {
+export default function MainLayout({ children }: Props) {
   const { status } = useSession();
   const router = useRouter();
   const redirect = useRedirect();

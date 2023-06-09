@@ -12,7 +12,7 @@ type Props = {
   }[];
 };
 
-export default function ({ onChange, defaultValue }: Props) {
+export default function TagSelection({ onChange, defaultValue }: Props) {
   const { tags } = useTagStore();
 
   const [options, setOptions] = useState<Options[]>([]);

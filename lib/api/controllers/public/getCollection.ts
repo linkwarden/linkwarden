@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function (collectionId: number) {
+export default async function getCollection(collectionId: number) {
   let data;
 
   const collection = await prisma.collection.findFirst({

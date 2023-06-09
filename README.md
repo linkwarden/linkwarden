@@ -1,5 +1,3 @@
-# LinkWarden
-
-## A place for your useful links.
+# Linkwarden
 
 Rebuilding things from ground up...

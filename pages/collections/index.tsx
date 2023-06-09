@@ -13,10 +13,10 @@ import Modal from "@/components/Modal";
 import MainLayout from "@/layouts/MainLayout";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import RadioButton from "@/components/RadioButton";
-import CollectionInfo from "@/components/Modal/Collection/CollectionInfo";
+import CollectionModal from "@/components/Modal/Collection";
 import { useSession } from "next-auth/react";
 
-export default function () {
+export default function Collections() {
   const { collections } = useCollectionStore();
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
@@ -212,8 +212,8 @@ export default function () {
       </div>
 
       {collectionModal ? (
-        <Modal toggleModal={toggleCollectionModal}>
-          <CollectionInfo
+        <Modal toggleModal={toggleCollectionModal} className="h-[35rem]">
+          <CollectionModal
             activeCollection={{
               name: "",
               description: "",

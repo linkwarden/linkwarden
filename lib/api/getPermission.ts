@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/api/db";
 
-export default async (userId: number, collectionId: number) => {
+export default async function getPermission(
+  userId: number,
+  collectionId: number
+) {
   const check = await prisma.collection.findFirst({
     where: {
       AND: {
@@ -12,4 +15,4 @@ export default async (userId: number, collectionId: number) => {
   });
 
   return check;
-};
+}
