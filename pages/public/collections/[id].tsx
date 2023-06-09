@@ -46,7 +46,7 @@ export default function PublicCollections() {
       </div>
 
       <div className="flex flex-col gap-5 my-8">
-        {data?.links.map((e, i) => {
+        {data?.links?.map((e, i) => {
           return <LinkCard key={i} link={e} count={i} />;
         })}
       </div>

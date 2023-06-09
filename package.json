@@ -17,6 +17,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@headlessui/react": "^1.7.15",
     "@next/font": "13.1.6",
     "@prisma/client": "^4.9.0",
     "@types/crypto-js": "^4.1.1",

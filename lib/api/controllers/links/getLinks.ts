@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/api/db";
-export default async function (userId: number) {
+export default async function getLink(userId: number) {
   const links = await prisma.link.findMany({
     where: {
       collection: {

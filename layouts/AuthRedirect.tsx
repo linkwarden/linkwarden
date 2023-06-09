@@ -3,18 +3,18 @@ import { useSession } from "next-auth/react";
 import Loader from "../components/Loader";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import getInitialData from "@/lib/client/getInitialData";
+import useInitialData from "@/hooks/useInitialData";
 
 interface Props {
   children: ReactNode;
 }
 
-export default function ({ children }: Props) {
+export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
   const { status } = useSession();
   const [redirect, setRedirect] = useState(true);
 
-  getInitialData();
+  useInitialData();
 
   useEffect(() => {
     if (!router.pathname.startsWith("/public")) {

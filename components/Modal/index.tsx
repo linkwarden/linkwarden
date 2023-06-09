@@ -6,12 +6,16 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 type Props = {
   toggleModal: Function;
   children: ReactNode;
+  className?: string;
 };
 
-export default function ({ toggleModal, children }: Props) {
+export default function Modal({ toggleModal, className, children }: Props) {
   return (
     <div className="overflow-y-auto py-2 fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 flex items-center fade-in z-30">
-      <ClickAwayHandler onClickOutside={toggleModal} className="w-fit m-auto">
+      <ClickAwayHandler
+        onClickOutside={toggleModal}
+        className={`w-fit m-auto h-[50rem] ${className}`}
+      >
         <div className="slide-up relative border-sky-100 rounded-2xl border-solid border shadow-lg p-5 bg-white">
           <div
             onClick={toggleModal as MouseEventHandler<HTMLDivElement>}

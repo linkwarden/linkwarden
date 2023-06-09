@@ -5,7 +5,7 @@ import { prisma } from "@/lib/api/db";
 import path from "path";
 import fs from "fs";
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
   const userId = session?.user.id;

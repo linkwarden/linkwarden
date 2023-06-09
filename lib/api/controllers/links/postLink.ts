@@ -7,7 +7,7 @@ import AES from "crypto-js/aes";
 import getPermission from "@/lib/api/getPermission";
 import { existsSync, mkdirSync } from "fs";
 
-export default async function (
+export default async function postLink(
   link: LinkIncludingCollectionAndTags,
   userId: number
 ) {

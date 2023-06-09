@@ -9,7 +9,7 @@ import { Tag } from "@prisma/client";
 import useTagStore from "@/store/tags";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
 
-export default function () {
+export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();

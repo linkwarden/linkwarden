@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import {
   faFolder,
   faPenToSquare,
@@ -13,18 +13,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = {
   toggleCollectionModal: Function;
-  activeCollection: CollectionIncludingMembers;
+  setCollection: Dispatch<SetStateAction<CollectionIncludingMembers>>;
+  collection: CollectionIncludingMembers;
   method: "CREATE" | "UPDATE";
 };
 
 export default function CollectionInfo({
   toggleCollectionModal,
-  activeCollection,
+  setCollection,
+  collection,
   method,
 }: Props) {
-  const [collection, setCollection] =
-    useState<CollectionIncludingMembers>(activeCollection);
-
   const { updateCollection, addCollection } = useCollectionStore();
 
   const submit = async () => {
@@ -41,10 +40,6 @@ export default function CollectionInfo({
 
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="text-xl text-sky-500 mb-2 text-center">
-        {method === "CREATE" ? "Add" : "Edit"} Collection
-      </p>
-
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">
           <p className="text-sm text-sky-500 mb-2">

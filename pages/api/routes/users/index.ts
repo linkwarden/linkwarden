@@ -4,7 +4,7 @@ import { authOptions } from "pages/api/auth/[...nextauth]";
 import getUsers from "@/lib/api/controllers/users/getUsers";
 import updateUser from "@/lib/api/controllers/users/updateUser";
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
   if (!session?.user?.email) {

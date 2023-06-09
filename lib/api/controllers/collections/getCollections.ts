@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function (userId: number) {
+export default async function getCollection(userId: number) {
   const collections = await prisma.collection.findMany({
     where: {
       OR: [

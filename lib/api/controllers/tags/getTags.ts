@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function (userId: number) {
+export default async function getTags(userId: number) {
   // remove empty tags
   await prisma.tag.deleteMany({
     where: {

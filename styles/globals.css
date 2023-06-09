@@ -85,7 +85,7 @@
 
 /* For react-colorful */
 .color-picker .react-colorful {
-  width: 7.5rem;
+  width: 100%;
   height: 7.5rem;
 }
 .color-picker .react-colorful__hue {

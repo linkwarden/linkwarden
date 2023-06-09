@@ -1,7 +1,10 @@
 import getCollection from "@/lib/api/controllers/public/getCollection";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function collections(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const collectionId = Number(req.query.collectionId);
 
   if (!collectionId) {

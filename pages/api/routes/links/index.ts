@@ -6,7 +6,7 @@ import postLink from "@/lib/api/controllers/links/postLink";
 import deleteLink from "@/lib/api/controllers/links/deleteLink";
 import updateLink from "@/lib/api/controllers/links/updateLink";
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
   if (!session?.user?.email) {

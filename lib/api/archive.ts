@@ -4,7 +4,11 @@ import puppeteer from "puppeteer-extra";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
-export default async (url: string, collectionId: number, linkId: number) => {
+export default async function archive(
+  url: string,
+  collectionId: number,
+  linkId: number
+) {
   const archivePath = `data/archives/${collectionId}/${linkId}`;
 
   const browser = await puppeteer.launch();
@@ -38,7 +42,7 @@ export default async (url: string, collectionId: number, linkId: number) => {
     console.log(err);
     await browser.close();
   }
-};
+}
 
 const autoScroll = async (page: Page) => {
   await page.evaluate(async () => {

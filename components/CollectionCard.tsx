@@ -6,12 +6,10 @@ import useLinkStore from "@/store/links";
 import Dropdown from "./Dropdown";
 import { useState } from "react";
 import Modal from "@/components/Modal";
-import CollectionInfo from "@/components/Modal/Collection/CollectionInfo";
-import DeleteCollection from "@/components/Modal/Collection/DeleteCollection";
+import CollectionModal from "@/components/Modal/Collection";
 import ProfilePhoto from "./ProfilePhoto";
-import TeamManagement from "./Modal/Collection/TeamManagement";
 
-export default function ({
+export default function CollectionCard({
   collection,
 }: {
   collection: CollectionIncludingMembers;
@@ -126,7 +124,7 @@ export default function ({
       ) : null}
       {editCollectionModal ? (
         <Modal toggleModal={toggleEditCollectionModal}>
-          <CollectionInfo
+          <CollectionModal
             toggleCollectionModal={toggleEditCollectionModal}
             activeCollection={collection}
             method="UPDATE"
@@ -135,17 +133,21 @@ export default function ({
       ) : null}
       {collectionMembersModal ? (
         <Modal toggleModal={toggleCollectionMembersModal}>
-          <TeamManagement
+          <CollectionModal
+            defaultIndex={1}
             toggleCollectionModal={toggleCollectionMembersModal}
             activeCollection={collection}
+            method="UPDATE"
           />
         </Modal>
       ) : null}
       {deleteCollectionModal ? (
         <Modal toggleModal={toggleDeleteCollectionModal}>
-          <DeleteCollection
-            collection={collection}
-            toggleDeleteCollectionModal={toggleDeleteCollectionModal}
+          <CollectionModal
+            defaultIndex={2}
+            activeCollection={collection}
+            toggleCollectionModal={toggleDeleteCollectionModal}
+            method="UPDATE"
           />
         </Modal>
       ) : null}

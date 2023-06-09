@@ -11,7 +11,7 @@ type Props = {
   count: number;
 };
 
-export default function ({ link, count }: Props) {
+export default function LinkCard({ link, count }: Props) {
   const url = new URL(link.url);
   const formattedDate = new Date(
     link.createdAt as unknown as string
@@ -22,7 +22,7 @@ export default function ({ link, count }: Props) {
   });
 
   return (
-    <a href={link.url} target="_blank" className="rounded-3xl">
+    <a href={link.url} target="_blank" rel="noreferrer" className="rounded-3xl">
       <div className="bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow-md sm:hover:shadow-none duration-100 rounded-3xl cursor-pointer p-5 flex items-start relative gap-5 sm:gap-10 group/item">
         <Image
           src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}

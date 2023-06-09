@@ -2,8 +2,7 @@ import Dropdown from "@/components/Dropdown";
 import LinkCard from "@/components/LinkCard";
 import Modal from "@/components/Modal";
 import LinkModal from "@/components/Modal/LinkModal";
-import CollectionInfo from "@/components/Modal/Collection/CollectionInfo";
-import DeleteCollection from "@/components/Modal/Collection/DeleteCollection";
+import CollectionModal from "@/components/Modal/Collection";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import { CollectionIncludingMembers } from "@/types/global";
@@ -18,10 +17,9 @@ import { ChangeEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import TeamManagement from "@/components/Modal/Collection/TeamManagement";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
 
-export default function () {
+export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();
@@ -250,8 +248,11 @@ export default function () {
                 ) : null}
 
                 {collectionInfoModal && activeCollection ? (
-                  <Modal toggleModal={toggleCollectionInfoModal}>
-                    <CollectionInfo
+                  <Modal
+                    toggleModal={toggleCollectionInfoModal}
+                    className="h-[35rem]"
+                  >
+                    <CollectionModal
                       toggleCollectionModal={toggleCollectionInfoModal}
                       activeCollection={activeCollection}
                       method="UPDATE"
@@ -260,19 +261,29 @@ export default function () {
                 ) : null}
 
                 {collectionMembersModal && activeCollection ? (
-                  <Modal toggleModal={toggleCollectionMembersModal}>
-                    <TeamManagement
+                  <Modal
+                    toggleModal={toggleCollectionMembersModal}
+                    className="h-[35rem]"
+                  >
+                    <CollectionModal
+                      defaultIndex={1}
                       toggleCollectionModal={toggleCollectionMembersModal}
                       activeCollection={activeCollection}
+                      method="UPDATE"
                     />
                   </Modal>
                 ) : null}
 
                 {deleteCollectionModal && activeCollection ? (
-                  <Modal toggleModal={toggleDeleteCollectionModal}>
-                    <DeleteCollection
-                      collection={activeCollection}
-                      toggleDeleteCollectionModal={toggleDeleteCollectionModal}
+                  <Modal
+                    toggleModal={toggleDeleteCollectionModal}
+                    className="h-[35rem]"
+                  >
+                    <CollectionModal
+                      defaultIndex={2}
+                      toggleCollectionModal={toggleDeleteCollectionModal}
+                      activeCollection={activeCollection}
+                      method="UPDATE"
                     />
                   </Modal>
                 ) : null}
