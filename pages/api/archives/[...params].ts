@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 import getPermission from "@/lib/api/getPermission";
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   if (!req.query.params)
     return res.status(401).json({ response: "Invalid parameters." });
 

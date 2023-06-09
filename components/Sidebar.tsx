@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export default function ({ className }: { className?: string }) {
+export default function Sidebar({ className }: { className?: string }) {
   const { collections } = useCollectionStore();
   const { tags } = useTagStore();
 

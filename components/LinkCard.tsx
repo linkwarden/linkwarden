@@ -23,7 +23,7 @@ type Props = {
   count: number;
 };
 
-export default function ({ link, count }: Props) {
+export default function LinkCard({ link, count }: Props) {
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [editModal, setEditModal] = useState(false);
 
@@ -126,7 +126,12 @@ export default function ({ link, count }: Props) {
           </div>
           <div className="flex gap-2 items-center flex-wrap">
             <p className="text-gray-500">{formattedDate}</p>
-            <a href={link.url} target="_blank" className="group/url">
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noreferrer"
+              className="group/url"
+            >
               <div className="text-sky-400 font-bold flex items-center gap-1">
                 <p>{url.host}</p>
                 <FontAwesomeIcon
@@ -158,6 +163,7 @@ export default function ({ link, count }: Props) {
                   link.screenshotPath
                 )}`}
                 target="_blank"
+                rel="noreferrer"
                 title="Screenshot"
               >
                 <FontAwesomeIcon
@@ -170,6 +176,7 @@ export default function ({ link, count }: Props) {
                   link.pdfPath
                 )}`}
                 target="_blank"
+                rel="noreferrer"
                 title="PDF"
               >
                 <FontAwesomeIcon

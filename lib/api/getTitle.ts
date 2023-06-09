@@ -1,4 +1,4 @@
-export default async (url: string) => {
+export default async function getTitle(url: string) {
   const response = await fetch(url);
   const text = await response.text();
 
@@ -6,4 +6,4 @@ export default async (url: string) => {
   let match = text.match(/<title.*>([^<]*)<\/title>/);
   if (match) return match[1];
   else return "";
-};
+}

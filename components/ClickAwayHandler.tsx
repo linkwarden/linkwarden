@@ -26,7 +26,11 @@ function useOutsideAlerter(
   }, [ref, onClickOutside]);
 }
 
-export default function ({ children, onClickOutside, className }: Props) {
+export default function ClickAwayHandler({
+  children,
+  onClickOutside,
+  className,
+}: Props) {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, onClickOutside);
 

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { CollectionIncludingMembers } from "@/types/global";
 import { existsSync, mkdirSync } from "fs";
 
-export default async function (
+export default async function postCollection(
   collection: CollectionIncludingMembers,
   userId: number
 ) {

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 import getTags from "@/lib/api/controllers/tags/getTags";
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function tags(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
   if (!session?.user?.email) {

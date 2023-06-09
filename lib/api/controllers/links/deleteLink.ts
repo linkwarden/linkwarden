@@ -4,7 +4,7 @@ import fs from "fs";
 import { Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 
-export default async function (
+export default async function deleteLink(
   link: LinkIncludingCollectionAndTags,
   userId: number
 ) {

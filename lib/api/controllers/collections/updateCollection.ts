@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { CollectionIncludingMembers } from "@/types/global";
 import getPermission from "@/lib/api/getPermission";
 
-export default async function (
+export default async function updateCollection(
   collection: CollectionIncludingMembers,
   userId: number
 ) {

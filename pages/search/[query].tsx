@@ -42,18 +42,17 @@ export default function Links() {
     setSortBy(event.target.value);
   };
 
-  const { name, url, title, collection, tags } = searchFilter;
-
   useEffect(() => {
     const linksArray = [
       ...links.filter((link) => {
         if (
-          (name && link.name.toLowerCase().includes(routeQuery)) ||
-          (url && link.url.toLowerCase().includes(routeQuery)) ||
-          (title && link.title.toLowerCase().includes(routeQuery)) ||
-          (collection &&
+          (searchFilter.name && link.name.toLowerCase().includes(routeQuery)) ||
+          (searchFilter.url && link.url.toLowerCase().includes(routeQuery)) ||
+          (searchFilter.title &&
+            link.title.toLowerCase().includes(routeQuery)) ||
+          (searchFilter.collection &&
             link.collection.name.toLowerCase().includes(routeQuery)) ||
-          (tags &&
+          (searchFilter.tags &&
             link.tags.some((tag) =>
               tag.name.toLowerCase().includes(routeQuery)
             ))

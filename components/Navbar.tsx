@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut } from "next-auth/react";
 import {
   faPlus,
-  faCircleUser,
   faChevronDown,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
@@ -14,11 +13,11 @@ import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
 import Search from "@/components/Search";
-import UserSettings from "./Modal/UserSettings";
+import UserModal from "@/components/Modal/User";
 import useAccountStore from "@/store/account";
-import ProfilePhoto from "./ProfilePhoto";
+import ProfilePhoto from "@/components/ProfilePhoto";
 
-export default function () {
+export default function Navbar() {
   const { account } = useAccountStore();
 
   const [profileDropdown, setProfileDropdown] = useState(false);
@@ -131,7 +130,10 @@ export default function () {
 
           {settingsModal ? (
             <Modal toggleModal={toggleSettingsModal}>
-              <UserSettings toggleSettingsModal={toggleSettingsModal} />
+              <UserModal
+                toggleSettingsModal={toggleSettingsModal}
+                activeUser={account}
+              />
             </Modal>
           ) : null}
 

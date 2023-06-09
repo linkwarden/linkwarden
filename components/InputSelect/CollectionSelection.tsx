@@ -15,7 +15,7 @@ type Props = {
     | undefined;
 };
 
-export default function ({ onChange, defaultValue }: Props) {
+export default function CollectionSelection({ onChange, defaultValue }: Props) {
   const { collections } = useCollectionStore();
   const router = useRouter();
 

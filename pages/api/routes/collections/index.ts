@@ -6,7 +6,10 @@ import postCollection from "@/lib/api/controllers/collections/postCollection";
 import updateCollection from "@/lib/api/controllers/collections/updateCollection";
 import deleteCollection from "@/lib/api/controllers/collections/deleteCollection";
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function collections(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const session = await getServerSession(req, res, authOptions);
 
   if (!session?.user?.email) {

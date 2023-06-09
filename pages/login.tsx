@@ -1,6 +1,5 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 interface FormData {
@@ -8,9 +7,7 @@ interface FormData {
   password: string;
 }
 
-export default function () {
-  const router = useRouter();
-
+export default function Login() {
   const [form, setForm] = useState<FormData>({
     email: "",
     password: "",

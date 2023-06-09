@@ -5,7 +5,7 @@ import useTagStore from "@/store/tags";
 import useLinkStore from "@/store/links";
 import useAccountStore from "@/store/account";
 
-export default function () {
+export default function useInitialData() {
   const { status, data } = useSession();
   const { setCollections } = useCollectionStore();
   const { setTags } = useTagStore();
