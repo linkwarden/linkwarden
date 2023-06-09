@@ -85,14 +85,14 @@ export default function Navbar() {
             >
               <p
                 id="profile-dropdown"
-                className="font-bold leading-3 hidden sm:block select-none truncate"
+                className="font-bold leading-3 hidden sm:block select-none truncate py-1"
               >
                 {account.name}
               </p>
               <FontAwesomeIcon
                 id="profile-dropdown"
                 icon={faChevronDown}
-                className="h-3 w-3 text-gray-500"
+                className="mt-1 h-3 w-3 text-gray-500"
               />
             </div>
           </div>
