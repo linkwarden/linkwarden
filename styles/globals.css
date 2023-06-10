@@ -27,6 +27,16 @@
   hyphens: auto;
 }
 
+.rotate {
+  transition: transform 0.1s ease;
+  transform: rotate(-90deg);
+}
+
+.rotate-reverse {
+  transition: transform 0.1s ease;
+  transform: rotate(0deg);
+}
+
 .fade-in {
   animation: fade-in-animation 100ms;
 }
