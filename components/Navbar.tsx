@@ -138,7 +138,7 @@ export default function Navbar() {
           ) : null}
 
           {sidebar ? (
-            <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 flex items-center fade-in z-30">
+            <div className="fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-30">
               <ClickAwayHandler onClickOutside={toggleSidebar}>
                 <div className="slide-right shadow-lg">
                   <Sidebar />
