@@ -248,10 +248,7 @@ export default function Index() {
                 ) : null}
 
                 {collectionInfoModal && activeCollection ? (
-                  <Modal
-                    toggleModal={toggleCollectionInfoModal}
-                    className="h-[35rem]"
-                  >
+                  <Modal toggleModal={toggleCollectionInfoModal}>
                     <CollectionModal
                       toggleCollectionModal={toggleCollectionInfoModal}
                       activeCollection={activeCollection}
@@ -261,10 +258,7 @@ export default function Index() {
                 ) : null}
 
                 {collectionMembersModal && activeCollection ? (
-                  <Modal
-                    toggleModal={toggleCollectionMembersModal}
-                    className="h-[35rem]"
-                  >
+                  <Modal toggleModal={toggleCollectionMembersModal}>
                     <CollectionModal
                       defaultIndex={1}
                       toggleCollectionModal={toggleCollectionMembersModal}
@@ -275,10 +269,7 @@ export default function Index() {
                 ) : null}
 
                 {deleteCollectionModal && activeCollection ? (
-                  <Modal
-                    toggleModal={toggleDeleteCollectionModal}
-                    className="h-[35rem]"
-                  >
+                  <Modal toggleModal={toggleDeleteCollectionModal}>
                     <CollectionModal
                       defaultIndex={2}
                       toggleCollectionModal={toggleDeleteCollectionModal}

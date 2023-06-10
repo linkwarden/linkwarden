@@ -212,7 +212,7 @@ export default function Collections() {
       </div>
 
       {collectionModal ? (
-        <Modal toggleModal={toggleCollectionModal} className="h-[35rem]">
+        <Modal toggleModal={toggleCollectionModal}>
           <CollectionModal
             activeCollection={{
               name: "",
