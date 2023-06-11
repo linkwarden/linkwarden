@@ -32,7 +32,12 @@ export default async function archive(
 
     if (linkExists) {
       await Promise.all([
-        page.pdf({ path: archivePath + ".pdf", format: "a4" }),
+        page.pdf({
+          path: archivePath + ".pdf",
+          format: "a4",
+          printBackground: true,
+          margin: { top: "15px", bottom: "15px" },
+        }),
         page.screenshot({ fullPage: true, path: archivePath + ".png" }),
       ]);
     }

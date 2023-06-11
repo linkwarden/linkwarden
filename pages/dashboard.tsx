@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import useTagStore from "@/store/tags";
-import LinkItem from "@/components/Dashboard/LinkItem";
+import LinkCard from "@/components/LinkCard";
 import Link from "next/link";
-import CollectionItem from "@/components/Dashboard/CollectionItem";
+import CollectionCard from "@/components/CollectionCard";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
@@ -68,7 +68,7 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col 2xl:flex-row items-start justify-evenly gap-5">
-          <div className="flex flex-col gap-2 p-2 bg-gray-100 border border-sky-100 rounded-md w-full">
+          <div className="flex flex-col gap-5 p-2 w-full">
             <div className="flex justify-between gap-2 items-baseline">
               <p className="text-sky-600 text-xl mb-2">Recently added Links</p>
               <Link href="/links">
@@ -89,11 +89,11 @@ export default function Dashboard() {
               )
               .slice(0, 5)
               .map((e, i) => (
-                <LinkItem key={i} link={e} count={i} />
+                <LinkCard key={i} link={e} count={i} />
               ))}
           </div>
 
-          <div className="flex flex-col gap-2 p-2 bg-gray-100 border border-sky-100 rounded-md w-full">
+          <div className="flex flex-col gap-5 p-2 w-full">
             <div className="flex justify-between gap-2 items-baseline">
               <p className="text-sky-600 text-xl mb-2">Top Collections</p>
               <Link href="/collections">
@@ -107,14 +107,11 @@ export default function Dashboard() {
               </Link>
             </div>
             {sortedCollections.map((e, i) => (
-              <CollectionItem key={i} collection={e} />
+              <CollectionCard key={i} collection={e} />
             ))}
           </div>
 
-          <div className="flex flex-col gap-2 p-2 bg-gray-100 border border-sky-100 rounded-md w-full">
-            <div className="flex justify-between gap-2 items-baseline">
-              <p className="text-sky-600 text-xl mb-2">Top Tags</p>
-            </div>
+          <div className="flex flex-col gap-5 p-2 w-full">
             <div className="flex gap-2 flex-wrap">
               {tags.slice(0, 19).map((e, i) => (
                 <Link
