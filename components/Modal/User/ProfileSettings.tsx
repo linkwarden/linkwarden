@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import useAccountStore from "@/store/account";
@@ -22,6 +22,12 @@ export default function ProfileSettings({
 }: Props) {
   const { update } = useSession();
   const { account, updateAccount } = useAccountStore();
+  const [profileStatus, setProfileStatus] = useState(true);
+
+  const handleProfileStatus = (e: boolean) => {
+    console.log(e);
+    setProfileStatus(!e);
+  };
 
   const handleImageUpload = async (e: any) => {
     const file: File = e.target.files[0];
@@ -54,6 +60,10 @@ export default function ProfileSettings({
     setUser({ ...user, oldPassword: undefined, newPassword: undefined });
   }, []);
 
+  useEffect(() => {
+    console.log(user.profilePic);
+  }, [user.profilePic]);
+
   const submit = async () => {
     const response = await updateAccount({
       ...user,
@@ -76,8 +86,9 @@ export default function ProfileSettings({
             <ProfilePhoto
               src={user.profilePic}
               className="h-28 w-28 border-[1px]"
+              status={handleProfileStatus}
             />
-            {user.profilePic && (
+            {profileStatus && (
               <div
                 onClick={() =>
                   setUser({
