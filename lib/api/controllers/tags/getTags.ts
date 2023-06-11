@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 
 export default async function getTags(userId: number) {
-  // remove empty tags
+  // Remove empty tags
   await prisma.tag.deleteMany({
     where: {
       ownerId: userId,
@@ -30,11 +30,11 @@ export default async function getTags(userId: number) {
         },
       ],
     },
-    orderBy: {
-      links: {
-        _count: "desc",
-      },
-    },
+    // orderBy: {
+    //   links: {
+    //     _count: "desc",
+    //   },
+    // },
   });
 
   return { response: tags, status: 200 };

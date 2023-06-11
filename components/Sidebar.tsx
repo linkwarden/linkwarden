@@ -4,9 +4,9 @@ import {
   faFolder,
   faBox,
   faHashtag,
-  faBookmark,
   faChartSimple,
   faChevronDown,
+  faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import useTagStore from "@/store/tags";
 import Link from "next/link";
@@ -97,7 +97,7 @@ export default function Sidebar({ className }: { className?: string }) {
             } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex items-center gap-2`}
           >
             <FontAwesomeIcon
-              icon={faBookmark}
+              icon={faLink}
               className={`w-6 h-6 drop-shadow text-sky-500`}
             />
             <p className="text-sky-600">All Links</p>
