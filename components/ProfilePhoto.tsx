@@ -8,9 +8,15 @@ type Props = {
   src: string;
   className?: string;
   emptyImage?: boolean;
+  status?: Function;
 };
 
-export default function ProfilePhoto({ src, className, emptyImage }: Props) {
+export default function ProfilePhoto({
+  src,
+  className,
+  emptyImage,
+  status,
+}: Props) {
   const [error, setError] = useState<boolean>(emptyImage || true);
 
   const checkAvatarExistence = async () => {
@@ -21,9 +27,11 @@ export default function ProfilePhoto({ src, className, emptyImage }: Props) {
 
   useEffect(() => {
     if (src) checkAvatarExistence();
-  }, [src]);
 
-  return error ? (
+    status && status(error || !src);
+  }, [src, error]);
+
+  return error || !src ? (
     <div
       className={`bg-sky-500 text-white h-10 w-10 shadow rounded-full border-[3px] border-slate-200 flex items-center justify-center ${className}`}
     >
@@ -31,7 +39,7 @@ export default function ProfilePhoto({ src, className, emptyImage }: Props) {
     </div>
   ) : (
     <Image
-      alt="Avatar"
+      alt=""
       src={src}
       height={112}
       width={112}
