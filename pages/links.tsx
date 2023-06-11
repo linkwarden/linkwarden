@@ -2,7 +2,7 @@ import LinkCard from "@/components/LinkCard";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
-import { faBookmark, faSort } from "@fortawesome/free-solid-svg-icons";
+import { faLink, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -52,7 +52,7 @@ export default function Links() {
         <div className="flex gap-3 justify-between items-center">
           <div className="flex gap-2">
             <FontAwesomeIcon
-              icon={faBookmark}
+              icon={faLink}
               className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
             />
             <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold">

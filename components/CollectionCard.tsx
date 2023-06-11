@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faLink } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { CollectionIncludingMembers } from "@/types/global";
 import useLinkStore from "@/store/links";
@@ -8,6 +8,7 @@ import { useState } from "react";
 import Modal from "@/components/Modal";
 import CollectionModal from "@/components/Modal/Collection";
 import ProfilePhoto from "./ProfilePhoto";
+import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 
 export default function CollectionCard({
   collection,
@@ -80,11 +81,17 @@ export default function CollectionCard({
               ) : null}
             </div>
             <div className="text-right w-40">
-              <p className="text-sky-500 font-bold text-sm">
-                {links.filter((e) => e.collectionId === collection.id).length}{" "}
-                Links
-              </p>
-              <p className="text-gray-500 font-bold text-xs">{formattedDate}</p>
+              <div className="text-sky-500 font-bold text-sm flex justify-end gap-1 items-center">
+                <FontAwesomeIcon
+                  icon={faLink}
+                  className="w-5 h-5 text-sky-600"
+                />
+                {links.filter((e) => e.collectionId === collection.id).length}
+              </div>
+              <div className="flex items-center justify-end gap-1 text-gray-600">
+                <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
+                <p className="font-bold text-xs">{formattedDate}</p>
+              </div>
             </div>
           </div>
         </div>
