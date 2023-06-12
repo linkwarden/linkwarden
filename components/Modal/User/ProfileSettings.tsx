@@ -25,7 +25,6 @@ export default function ProfileSettings({
   const [profileStatus, setProfileStatus] = useState(true);
 
   const handleProfileStatus = (e: boolean) => {
-    console.log(e);
     setProfileStatus(!e);
   };
 
@@ -59,10 +58,6 @@ export default function ProfileSettings({
   useEffect(() => {
     setUser({ ...user, oldPassword: undefined, newPassword: undefined });
   }, []);
-
-  useEffect(() => {
-    console.log(user.profilePic);
-  }, [user.profilePic]);
 
   const submit = async () => {
     const response = await updateAccount({
