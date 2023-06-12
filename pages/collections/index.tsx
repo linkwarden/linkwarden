@@ -191,7 +191,7 @@ export default function Collections() {
           </div>
         </div>
 
-        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 gap-5">
+        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
           {sortedCollections.map((e, i) => {
             return <CollectionCard key={i} collection={e} />;
           })}

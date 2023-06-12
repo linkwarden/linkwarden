@@ -14,6 +14,9 @@ model User {
   password String
   collections Collection[]
   tags Tag[]
+  pinnedCollections PinnedCollections[]
+  pinnedLinks PinnedLinks[]
+  pinnedTags PinnedTags[]
   collectionsJoined UsersAndCollections[]
   isPrivate Boolean @default(false)
   whitelistedUsers String[] @default([])
@@ -26,6 +29,7 @@ model Collection {
   description String @default("")
   color String @default("#0ea5e9")
   isPublic Boolean @default(false)
+  pins PinnedCollections[]
   owner User @relation(fields: [ownerId], references: [id])
   ownerId Int
   members UsersAndCollections[]
@@ -34,6 +38,37 @@ model Collection {
 
   @@unique([name, ownerId])
 }
+
+model PinnedCollections {
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+  collection Collection @relation(fields: [collectionId], references: [id])
+  collectionId Int
+}
+
+model PinnedLinks {
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  
+  link Link @relation(fields: [linkId], references: [id])
+  linkId Int
+}
+
+model PinnedTags {
+  id Int @id @default(autoincrement())
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+  tag Tag @relation(fields: [tagId], references: [id])
+  tagId Int
+}
+
 
 model UsersAndCollections {
   user User @relation(fields: [userId], references: [id])
@@ -57,6 +92,7 @@ model Link {
   collection Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
   tags Tag[]
+  pins PinnedLinks[]
   screenshotPath String
   pdfPath String
   createdAt DateTime @default(now())
@@ -66,6 +102,7 @@ model Tag {
   id Int @id @default(autoincrement())
   name String
   links Link[]
+  pins PinnedTags[]
   owner User @relation(fields: [ownerId], references: [id])
   ownerId Int
 

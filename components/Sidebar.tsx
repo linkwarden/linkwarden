@@ -74,20 +74,6 @@ export default function Sidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        <Link href="/collections">
-          <div
-            className={`${
-              active === "/collections" ? "bg-sky-200" : "hover:bg-slate-200"
-            } outline-sky-100 outline-1 duration-100  py-1 px-2 rounded-md cursor-pointer flex items-center gap-2`}
-          >
-            <FontAwesomeIcon
-              icon={faBox}
-              className={`w-6 h-6 drop-shadow text-sky-500`}
-            />
-            <p className="text-sky-600">All Collections</p>
-          </div>
-        </Link>
-
         <Link href="/links">
           <div
             className={`${
@@ -101,6 +87,20 @@ export default function Sidebar({ className }: { className?: string }) {
               className={`w-6 h-6 drop-shadow text-sky-500`}
             />
             <p className="text-sky-600">All Links</p>
+          </div>
+        </Link>
+
+        <Link href="/collections">
+          <div
+            className={`${
+              active === "/collections" ? "bg-sky-200" : "hover:bg-slate-200"
+            } outline-sky-100 outline-1 duration-100  py-1 px-2 rounded-md cursor-pointer flex items-center gap-2`}
+          >
+            <FontAwesomeIcon
+              icon={faBox}
+              className={`w-6 h-6 drop-shadow text-sky-500`}
+            />
+            <p className="text-sky-600">All Collections</p>
           </div>
         </Link>
       </div>

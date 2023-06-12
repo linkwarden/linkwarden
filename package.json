@@ -46,9 +46,9 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/multer": "^1.4.7",
-    "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.21",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
     "prisma": "^4.9.0",
-    "tailwindcss": "^3.2.4"
+    "tailwindcss": "^3.3.2"
   }
 }
