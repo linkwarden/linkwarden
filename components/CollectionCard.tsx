@@ -10,11 +10,12 @@ import CollectionModal from "@/components/Modal/Collection";
 import ProfilePhoto from "./ProfilePhoto";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 
-export default function CollectionCard({
-  collection,
-}: {
+type Props = {
   collection: CollectionIncludingMembers;
-}) {
+  className?: string;
+};
+
+export default function CollectionCard({ collection, className }: Props) {
   const { links } = useLinkStore();
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",
@@ -43,7 +44,9 @@ export default function CollectionCard({
   };
 
   return (
-    <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none group relative">
+    <div
+      className={`bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% to-white to-100% self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none group relative ${className}`}
+    >
       <div
         onClick={() => setExpandDropdown(!expandDropdown)}
         id={"expand-dropdown" + collection.id}
@@ -55,43 +58,41 @@ export default function CollectionCard({
           className="w-5 h-5 text-gray-500"
         />
       </div>
-      <Link href={`/collections/${collection.id}`}>
-        <div className="flex flex-col gap-2 justify-between h-full select-none p-5 cursor-pointer">
-          <p className="text-2xl font-bold capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent break-words w-4/5">
-            {collection.name}
-          </p>
-          <div className="flex justify-between items-center">
-            <div className="text-sky-400 flex items-center w-full">
-              {collection.members
-                .sort((a, b) => (a.userId as number) - (b.userId as number))
-                .map((e, i) => {
-                  return (
-                    <ProfilePhoto
-                      key={i}
-                      src={`/api/avatar/${e.userId}`}
-                      className="-mr-3"
-                    />
-                  );
-                })
-                .slice(0, 4)}
-              {collection.members.length - 4 > 0 ? (
-                <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
-                  +{collection.members.length - 4}
-                </div>
-              ) : null}
+      <Link
+        href={`/collections/${collection.id}`}
+        className="flex flex-col gap-2 justify-between min-h-[12rem] h-full select-none p-5"
+      >
+        <p className="text-2xl font-bold capitalize text-sky-500 break-words line-clamp-3 w-4/5">
+          {collection.name}
+        </p>
+        <div className="flex justify-between items-center">
+          <div className="text-sky-400 flex items-center w-full">
+            {collection.members
+              .sort((a, b) => (a.userId as number) - (b.userId as number))
+              .map((e, i) => {
+                return (
+                  <ProfilePhoto
+                    key={i}
+                    src={`/api/avatar/${e.userId}`}
+                    className="-mr-3"
+                  />
+                );
+              })
+              .slice(0, 4)}
+            {collection.members.length - 4 > 0 ? (
+              <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
+                +{collection.members.length - 4}
+              </div>
+            ) : null}
+          </div>
+          <div className="text-right w-40">
+            <div className="text-sky-500 font-bold text-sm flex justify-end gap-1 items-center">
+              <FontAwesomeIcon icon={faLink} className="w-5 h-5 text-sky-600" />
+              {links.filter((e) => e.collectionId === collection.id).length}
             </div>
-            <div className="text-right w-40">
-              <div className="text-sky-500 font-bold text-sm flex justify-end gap-1 items-center">
-                <FontAwesomeIcon
-                  icon={faLink}
-                  className="w-5 h-5 text-sky-600"
-                />
-                {links.filter((e) => e.collectionId === collection.id).length}
-              </div>
-              <div className="flex items-center justify-end gap-1 text-gray-600">
-                <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
-                <p className="font-bold text-xs">{formattedDate}</p>
-              </div>
+            <div className="flex items-center justify-end gap-1 text-gray-600">
+              <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
+              <p className="font-bold text-xs">{formattedDate}</p>
             </div>
           </div>
         </div>
