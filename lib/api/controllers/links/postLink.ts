@@ -73,8 +73,6 @@ export default async function postLink(
         })),
       },
       title,
-      screenshotPath: "",
-      pdfPath: "",
     },
     include: { tags: true, collection: true },
   });
