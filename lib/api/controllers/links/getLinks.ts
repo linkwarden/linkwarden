@@ -20,6 +20,10 @@ export default async function getLink(userId: number) {
     include: {
       tags: true,
       collection: true,
+      pinnedBy: {
+        where: { id: userId },
+        select: { id: true },
+      },
     },
   });
 

@@ -64,10 +64,18 @@ export default async function updateLink(
           },
         })),
       },
+      pinnedBy:
+        link?.pinnedBy && link.pinnedBy[0]
+          ? { connect: { id: userId } }
+          : { disconnect: { id: userId } },
     },
     include: {
       tags: true,
       collection: true,
+      pinnedBy: {
+        where: { id: userId },
+        select: { id: true },
+      },
     },
   });
 

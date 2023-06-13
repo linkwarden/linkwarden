@@ -9,6 +9,9 @@ export interface LinkIncludingCollectionAndTags
   createdAt?: string;
   collectionId?: number;
   tags: Tag[];
+  pinnedBy?: {
+    id: number;
+  }[];
   collection: OptionalExcluding<Collection, "name" | "ownerId">;
 }
 
@@ -37,5 +40,5 @@ export interface AccountSettings extends User {
 export interface PublicCollectionIncludingLinks
   extends Omit<Collection, "ownerId"> {
   ownerName?: string;
-  links: Omit<Link, "screenshotPath" | "pdfPath">[];
+  links: Link[];
 }

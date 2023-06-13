@@ -7,7 +7,7 @@ import Image from "next/image";
 import { Link as LinkType } from "@prisma/client";
 
 type Props = {
-  link: Omit<LinkType, "screenshotPath" | "pdfPath">;
+  link: LinkType;
   count: number;
 };
 

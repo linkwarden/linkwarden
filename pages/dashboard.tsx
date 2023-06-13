@@ -102,7 +102,7 @@ export default function Dashboard() {
 
         <div className="flex flex-col 2xl:flex-row items-start justify-evenly 2xl:gap-2">
           <Disclosure defaultOpen={linkPinDisclosure}>
-            <div className="flex flex-col gap-5 p-2 w-full">
+            <div className="flex flex-col gap-5 p-2 w-full mx-auto md:w-2/3">
               <Disclosure.Button
                 onClick={() => {
                   setLinkPinDisclosure(!linkPinDisclosure);
@@ -131,15 +131,17 @@ export default function Dashboard() {
                 leaveTo="transform opacity-0 -translate-y-3"
               >
                 <Disclosure.Panel className="flex flex-col gap-5 w-full">
-                  {links.slice(0, 5).map((e, i) => (
-                    <LinkCard key={i} link={e} count={i} />
-                  ))}
+                  {links
+                    .filter((e) => e.pinnedBy && e.pinnedBy[0])
+                    .map((e, i) => (
+                      <LinkCard key={i} link={e} count={i} />
+                    ))}
                 </Disclosure.Panel>
               </Transition>
             </div>
           </Disclosure>
 
-          <Disclosure defaultOpen={collectionPinDisclosure}>
+          {/* <Disclosure defaultOpen={collectionPinDisclosure}>
             <div className="flex flex-col gap-5 p-2 w-full">
               <Disclosure.Button
                 onClick={() => {
@@ -174,9 +176,9 @@ export default function Dashboard() {
                 </Disclosure.Panel>
               </Transition>
             </div>
-          </Disclosure>
+          </Disclosure> */}
 
-          <Disclosure defaultOpen={tagPinDisclosure}>
+          {/* <Disclosure defaultOpen={tagPinDisclosure}>
             <div className="flex flex-col gap-5 p-2 w-full">
               <Disclosure.Button
                 onClick={() => {
@@ -217,7 +219,7 @@ export default function Dashboard() {
                 </Disclosure.Panel>
               </Transition>
             </div>
-          </Disclosure>
+          </Disclosure> */}
         </div>
       </div>
     </MainLayout>
