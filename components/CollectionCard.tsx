@@ -5,10 +5,9 @@ import { CollectionIncludingMembers } from "@/types/global";
 import useLinkStore from "@/store/links";
 import Dropdown from "./Dropdown";
 import { useState } from "react";
-import Modal from "@/components/Modal";
-import CollectionModal from "@/components/Modal/Collection";
 import ProfilePhoto from "./ProfilePhoto";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
+import useModalStore from "@/store/modals";
 
 type Props = {
   collection: CollectionIncludingMembers;
@@ -16,6 +15,8 @@ type Props = {
 };
 
 export default function CollectionCard({ collection, className }: Props) {
+  const { setModal } = useModalStore();
+
   const { links } = useLinkStore();
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",
@@ -27,21 +28,6 @@ export default function CollectionCard({ collection, className }: Props) {
   );
 
   const [expandDropdown, setExpandDropdown] = useState(false);
-  const [editCollectionModal, setEditCollectionModal] = useState(false);
-  const [collectionMembersModal, setCollectionMembersModal] = useState(false);
-  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
-
-  const toggleEditCollectionModal = () => {
-    setEditCollectionModal(!editCollectionModal);
-  };
-
-  const toggleCollectionMembersModal = () => {
-    setCollectionMembersModal(!collectionMembersModal);
-  };
-
-  const toggleDeleteCollectionModal = () => {
-    setDeleteCollectionModal(!deleteCollectionModal);
-  };
 
   return (
     <div
@@ -103,21 +89,38 @@ export default function CollectionCard({ collection, className }: Props) {
             {
               name: "Edit Collection",
               onClick: () => {
-                toggleEditCollectionModal();
+                setModal({
+                  modal: "COLLECTION",
+                  state: true,
+                  method: "UPDATE",
+                  active: collection,
+                });
                 setExpandDropdown(false);
               },
             },
             {
               name: "Share/Collaborate",
               onClick: () => {
-                toggleCollectionMembersModal();
+                setModal({
+                  modal: "COLLECTION",
+                  state: true,
+                  method: "UPDATE",
+                  active: collection,
+                  defaultIndex: 1,
+                });
                 setExpandDropdown(false);
               },
             },
             {
               name: "Delete Collection",
               onClick: () => {
-                toggleDeleteCollectionModal();
+                setModal({
+                  modal: "COLLECTION",
+                  state: true,
+                  method: "UPDATE",
+                  active: collection,
+                  defaultIndex: 2,
+                });
                 setExpandDropdown(false);
               },
             },
@@ -129,35 +132,6 @@ export default function CollectionCard({ collection, className }: Props) {
           }}
           className="absolute top-[3.2rem] right-5 z-10 w-36"
         />
-      ) : null}
-      {editCollectionModal ? (
-        <Modal toggleModal={toggleEditCollectionModal}>
-          <CollectionModal
-            toggleCollectionModal={toggleEditCollectionModal}
-            activeCollection={collection}
-            method="UPDATE"
-          />
-        </Modal>
-      ) : null}
-      {collectionMembersModal ? (
-        <Modal toggleModal={toggleCollectionMembersModal}>
-          <CollectionModal
-            defaultIndex={1}
-            toggleCollectionModal={toggleCollectionMembersModal}
-            activeCollection={collection}
-            method="UPDATE"
-          />
-        </Modal>
-      ) : null}
-      {deleteCollectionModal ? (
-        <Modal toggleModal={toggleDeleteCollectionModal}>
-          <CollectionModal
-            defaultIndex={2}
-            activeCollection={collection}
-            toggleCollectionModal={toggleDeleteCollectionModal}
-            method="UPDATE"
-          />
-        </Modal>
       ) : null}
     </div>
   );
