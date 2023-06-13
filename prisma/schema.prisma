@@ -93,8 +93,6 @@ model Link {
   collectionId Int
   tags Tag[]
   pins PinnedLinks[]
-  screenshotPath String
-  pdfPath String
   createdAt DateTime @default(now())
 }
 

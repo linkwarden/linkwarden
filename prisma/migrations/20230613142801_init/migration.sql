@@ -69,8 +69,6 @@ CREATE TABLE "Link" (
     "url" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "collectionId" INTEGER NOT NULL,
-    "screenshotPath" TEXT NOT NULL,
-    "pdfPath" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Link_pkey" PRIMARY KEY ("id")

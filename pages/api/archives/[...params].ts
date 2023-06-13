@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
-import AES from "crypto-js/aes";
-import enc from "crypto-js/enc-utf8";
 import path from "path";
 import fs from "fs";
 import getPermission from "@/lib/api/getPermission";
@@ -12,6 +10,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ response: "Invalid parameters." });
 
   const collectionId = req.query.params[0];
+  const linkId = req.query.params[1];
 
   const session = await getServerSession(req, res, authOptions);
 
@@ -28,11 +27,10 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       .status(401)
       .json({ response: "You don't have access to this collection." });
 
-  const AES_SECRET = process.env.AES_SECRET as string;
-  const encryptedPath = decodeURIComponent(req.query.params[1]) as string;
-  const decryptedPath = AES.decrypt(encryptedPath, AES_SECRET).toString(enc);
+  const requestedPath = `data/archives/${collectionId}/${linkId}`;
 
-  const filePath = path.join(process.cwd(), decryptedPath);
+  const filePath = path.join(process.cwd(), requestedPath);
+
   const file = fs.existsSync(filePath)
     ? fs.readFileSync(filePath)
     : "File not found, it's possible that the file you're looking for either doesn't exist or hasn't been created yet.";
