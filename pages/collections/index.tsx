@@ -9,12 +9,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CollectionCard from "@/components/CollectionCard";
 import Dropdown from "@/components/Dropdown";
 import { ChangeEvent, useEffect, useState } from "react";
-import Modal from "@/components/Modal";
 import MainLayout from "@/layouts/MainLayout";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import RadioButton from "@/components/RadioButton";
-import CollectionModal from "@/components/Modal/Collection";
 import { useSession } from "next-auth/react";
+import useModalStore from "@/store/modals";
 
 export default function Collections() {
   const { collections } = useCollectionStore();
@@ -23,13 +22,9 @@ export default function Collections() {
   const [sortBy, setSortBy] = useState("Name (A-Z)");
   const [sortedCollections, setSortedCollections] = useState(collections);
 
-  const [collectionModal, setCollectionModal] = useState(false);
-
   const session = useSession();
 
-  const toggleCollectionModal = () => {
-    setCollectionModal(!collectionModal);
-  };
+  const { setModal } = useModalStore();
 
   const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSortBy(event.target.value);
@@ -109,7 +104,19 @@ export default function Collections() {
                     {
                       name: "New Collection",
                       onClick: () => {
-                        toggleCollectionModal();
+                        setModal({
+                          modal: "COLLECTION",
+                          state: true,
+                          method: "CREATE",
+                          active: {
+                            name: "",
+                            description: "",
+                            color: "#0ea5e9",
+                            isPublic: false,
+                            ownerId: session.data?.user.id as number,
+                            members: [],
+                          },
+                        });
                         setExpandDropdown(false);
                       },
                     },
@@ -198,7 +205,21 @@ export default function Collections() {
 
           <div
             className="p-5 self-stretch bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
-            onClick={toggleCollectionModal}
+            onClick={() => {
+              setModal({
+                modal: "COLLECTION",
+                state: true,
+                method: "CREATE",
+                active: {
+                  name: "",
+                  description: "",
+                  color: "#0ea5e9",
+                  isPublic: false,
+                  ownerId: session.data?.user.id as number,
+                  members: [],
+                },
+              });
+            }}
           >
             <p className="text-sky-900 group-hover:opacity-0 duration-100">
               New Collection
@@ -210,23 +231,6 @@ export default function Collections() {
           </div>
         </div>
       </div>
-
-      {collectionModal ? (
-        <Modal toggleModal={toggleCollectionModal}>
-          <CollectionModal
-            activeCollection={{
-              name: "",
-              description: "",
-              color: "#0ea5e9",
-              isPublic: false,
-              ownerId: session.data?.user.id as number,
-              members: [],
-            }}
-            toggleCollectionModal={toggleCollectionModal}
-            method="CREATE"
-          />
-        </Modal>
-      ) : null}
     </MainLayout>
   );
 }

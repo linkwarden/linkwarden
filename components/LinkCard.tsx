@@ -13,10 +13,9 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Dropdown from "./Dropdown";
 import useLinkStore from "@/store/links";
-import Modal from "./Modal";
-import LinkModal from "./Modal/LinkModal";
 import Link from "next/link";
 import useCollectionStore from "@/store/collections";
+import useModalStore from "@/store/modals";
 
 type Props = {
   link: LinkIncludingCollectionAndTags;
@@ -25,8 +24,9 @@ type Props = {
 };
 
 export default function LinkCard({ link, count, className }: Props) {
+  const { setModal } = useModalStore();
+
   const [expandDropdown, setExpandDropdown] = useState(false);
-  const [editModal, setEditModal] = useState(false);
 
   const { collections } = useCollectionStore();
 
@@ -56,25 +56,11 @@ export default function LinkCard({ link, count, className }: Props) {
     }
   );
 
-  const toggleEditModal = () => {
-    setEditModal(!editModal);
-  };
-
   return (
     <div
       className={`bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow-sm p-5 rounded-2xl relative group/item ${className}`}
     >
       <div className="flex items-start gap-5 sm:gap-10 h-full w-full">
-        {editModal ? (
-          <Modal toggleModal={toggleEditModal}>
-            <LinkModal
-              toggleLinkModal={toggleEditModal}
-              activeLink={link}
-              method="UPDATE"
-            />
-          </Modal>
-        ) : null}
-
         <Image
           src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
           width={42}
@@ -203,7 +189,12 @@ export default function LinkCard({ link, count, className }: Props) {
                   {
                     name: "Edit",
                     onClick: () => {
-                      setEditModal(true);
+                      setModal({
+                        modal: "LINK",
+                        state: true,
+                        method: "UPDATE",
+                        active: link,
+                      });
                       setExpandDropdown(false);
                     },
                   },

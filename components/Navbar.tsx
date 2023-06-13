@@ -7,23 +7,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Dropdown from "@/components/Dropdown";
-import Modal from "@/components/Modal";
-import LinkModal from "@/components/Modal/LinkModal";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
 import Search from "@/components/Search";
-import UserModal from "@/components/Modal/User";
 import useAccountStore from "@/store/account";
 import ProfilePhoto from "@/components/ProfilePhoto";
+import useModalStore from "@/store/modals";
 
 export default function Navbar() {
+  const { setModal } = useModalStore();
+
   const { account } = useAccountStore();
 
   const [profileDropdown, setProfileDropdown] = useState(false);
 
-  const [linkModal, setLinkModal] = useState(false);
-  const [settingsModal, setSettingsModal] = useState(false);
   const [sidebar, setSidebar] = useState(false);
 
   const router = useRouter();
@@ -38,14 +36,6 @@ export default function Navbar() {
     setSidebar(!sidebar);
   };
 
-  const toggleLinkModal = () => {
-    setLinkModal(!linkModal);
-  };
-
-  const toggleSettingsModal = () => {
-    setSettingsModal(!settingsModal);
-  };
-
   return (
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b h-16">
       <div
@@ -57,7 +47,13 @@ export default function Navbar() {
       <Search />
       <div className="flex items-center gap-2">
         <div
-          onClick={toggleLinkModal}
+          onClick={() => {
+            setModal({
+              modal: "LINK",
+              state: true,
+              method: "CREATE",
+            });
+          }}
           className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-sky-500 sm:text-white sm:bg-sky-500 sm:hover:bg-sky-400 duration-100 group"
         >
           <FontAwesomeIcon
@@ -102,7 +98,12 @@ export default function Navbar() {
                 {
                   name: "Settings",
                   onClick: () => {
-                    toggleSettingsModal();
+                    setModal({
+                      modal: "ACCOUNT",
+                      state: true,
+                      method: "CREATE",
+                      active: account,
+                    });
                     setProfileDropdown(!profileDropdown);
                   },
                 },
@@ -120,21 +121,6 @@ export default function Navbar() {
               }}
               className="absolute top-11 right-0 z-20 w-36"
             />
-          ) : null}
-
-          {linkModal ? (
-            <Modal toggleModal={toggleLinkModal}>
-              <LinkModal toggleLinkModal={toggleLinkModal} method="CREATE" />
-            </Modal>
-          ) : null}
-
-          {settingsModal ? (
-            <Modal toggleModal={toggleSettingsModal}>
-              <UserModal
-                toggleSettingsModal={toggleSettingsModal}
-                activeUser={account}
-              />
-            </Modal>
           ) : null}
 
           {sidebar ? (

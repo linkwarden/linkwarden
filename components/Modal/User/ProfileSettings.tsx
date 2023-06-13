@@ -80,7 +80,7 @@ export default function ProfileSettings({
           <div className="w-28 h-28 flex items-center justify-center border border-sky-100 rounded-full relative">
             <ProfilePhoto
               src={user.profilePic}
-              className="h-28 w-28 border-[1px]"
+              className="h-auto aspect-square w-28 border-[0px]"
               status={handleProfileStatus}
             />
             {profileStatus && (
