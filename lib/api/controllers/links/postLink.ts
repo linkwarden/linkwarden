@@ -3,7 +3,6 @@ import { LinkIncludingCollectionAndTags } from "@/types/global";
 import getTitle from "../../getTitle";
 import archive from "../../archive";
 import { Link, UsersAndCollections } from "@prisma/client";
-import AES from "crypto-js/aes";
 import getPermission from "@/lib/api/getPermission";
 import { existsSync, mkdirSync } from "fs";
 
@@ -77,31 +76,14 @@ export default async function postLink(
       screenshotPath: "",
       pdfPath: "",
     },
-  });
-
-  const AES_SECRET = process.env.AES_SECRET as string;
-
-  const screenshotHashedPath = AES.encrypt(
-    `data/archives/${newLink.collectionId}/${newLink.id}.png`,
-    AES_SECRET
-  ).toString();
-
-  const pdfHashedPath = AES.encrypt(
-    `data/archives/${newLink.collectionId}/${newLink.id}.pdf`,
-    AES_SECRET
-  ).toString();
-
-  const updatedLink = await prisma.link.update({
-    where: { id: newLink.id },
-    data: { screenshotPath: screenshotHashedPath, pdfPath: pdfHashedPath },
     include: { tags: true, collection: true },
   });
 
-  const collectionPath = `data/archives/${updatedLink.collection.id}`;
+  const collectionPath = `data/archives/${newLink.collectionId}`;
   if (!existsSync(collectionPath))
     mkdirSync(collectionPath, { recursive: true });
 
-  archive(updatedLink.url, updatedLink.collectionId, updatedLink.id);
+  archive(newLink.url, newLink.collectionId, newLink.id);
 
-  return { response: updatedLink, status: 200 };
+  return { response: newLink, status: 200 };
 }

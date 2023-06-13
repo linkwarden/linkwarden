@@ -155,9 +155,7 @@ export default function LinkCard({ link, count, className }: Props) {
             <div className="relative">
               <div className="flex flex-col items-end justify-center gap-1">
                 <a
-                  href={`/api/archives/${
-                    link.collectionId
-                  }/${encodeURIComponent(link.screenshotPath)}`}
+                  href={`/api/archives/${link.collectionId}/${link.id}.png`}
                   target="_blank"
                   rel="noreferrer"
                   title="Screenshot"
@@ -168,9 +166,7 @@ export default function LinkCard({ link, count, className }: Props) {
                   />
                 </a>
                 <a
-                  href={`/api/archives/${
-                    link.collectionId
-                  }/${encodeURIComponent(link.pdfPath)}`}
+                  href={`/api/archives/${link.collectionId}/${link.id}.pdf`}
                   target="_blank"
                   rel="noreferrer"
                   title="PDF"
