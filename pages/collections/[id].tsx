@@ -1,8 +1,5 @@
 import Dropdown from "@/components/Dropdown";
 import LinkCard from "@/components/LinkCard";
-import Modal from "@/components/Modal";
-import LinkModal from "@/components/Modal/LinkModal";
-import CollectionModal from "@/components/Modal/Collection";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import { CollectionIncludingMembers } from "@/types/global";
@@ -18,8 +15,11 @@ import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
+import useModalStore from "@/store/modals";
 
 export default function Index() {
+  const { setModal } = useModalStore();
+
   const router = useRouter();
 
   const { links } = useLinkStore();
@@ -28,10 +28,6 @@ export default function Index() {
   const { data } = useSession();
 
   const [expandDropdown, setExpandDropdown] = useState(false);
-  const [linkModal, setLinkModal] = useState(false);
-  const [collectionInfoModal, setCollectionInfoModal] = useState(false);
-  const [collectionMembersModal, setCollectionMembersModal] = useState(false);
-  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState("Name (A-Z)");
 
@@ -39,22 +35,6 @@ export default function Index() {
     useState<CollectionIncludingMembers>();
 
   const [sortedLinks, setSortedLinks] = useState(links);
-
-  const toggleLinkModal = () => {
-    setLinkModal(!linkModal);
-  };
-
-  const toggleCollectionInfoModal = () => {
-    setCollectionInfoModal(!collectionInfoModal);
-  };
-
-  const toggleCollectionMembersModal = () => {
-    setCollectionMembersModal(!collectionMembersModal);
-  };
-
-  const toggleDeleteCollectionModal = () => {
-    setDeleteCollectionModal(!deleteCollectionModal);
-  };
 
   const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSortBy(event.target.value);
@@ -124,7 +104,16 @@ export default function Index() {
                 }`}
               >
                 <div
-                  onClick={toggleCollectionMembersModal}
+                  onClick={() =>
+                    activeCollection &&
+                    setModal({
+                      modal: "COLLECTION",
+                      state: true,
+                      method: "UPDATE",
+                      active: activeCollection,
+                      defaultIndex: 1,
+                    })
+                  }
                   className="flex justify-center sm:justify-end items-center w-fit mx-auto sm:mr-0 sm:ml-auto group cursor-pointer"
                 >
                   <div
@@ -203,28 +192,52 @@ export default function Index() {
                       {
                         name: "Add Link Here",
                         onClick: () => {
-                          toggleLinkModal();
+                          setModal({
+                            modal: "LINK",
+                            state: true,
+                            method: "CREATE",
+                          });
                           setExpandDropdown(false);
                         },
                       },
                       {
                         name: "Edit Collection Info",
                         onClick: () => {
-                          toggleCollectionInfoModal();
+                          activeCollection &&
+                            setModal({
+                              modal: "COLLECTION",
+                              state: true,
+                              method: "UPDATE",
+                              active: activeCollection,
+                            });
                           setExpandDropdown(false);
                         },
                       },
                       {
                         name: "Share/Collaborate",
                         onClick: () => {
-                          toggleCollectionMembersModal();
+                          activeCollection &&
+                            setModal({
+                              modal: "COLLECTION",
+                              state: true,
+                              method: "UPDATE",
+                              active: activeCollection,
+                              defaultIndex: 1,
+                            });
                           setExpandDropdown(false);
                         },
                       },
                       {
                         name: "Delete Collection",
                         onClick: () => {
-                          toggleDeleteCollectionModal();
+                          activeCollection &&
+                            setModal({
+                              modal: "COLLECTION",
+                              state: true,
+                              method: "UPDATE",
+                              active: activeCollection,
+                              defaultIndex: 2,
+                            });
                           setExpandDropdown(false);
                         },
                       },
@@ -236,47 +249,6 @@ export default function Index() {
                     }}
                     className="absolute top-8 right-0 z-10 w-40"
                   />
-                ) : null}
-
-                {linkModal ? (
-                  <Modal toggleModal={toggleLinkModal}>
-                    <LinkModal
-                      toggleLinkModal={toggleLinkModal}
-                      method="CREATE"
-                    />
-                  </Modal>
-                ) : null}
-
-                {collectionInfoModal && activeCollection ? (
-                  <Modal toggleModal={toggleCollectionInfoModal}>
-                    <CollectionModal
-                      toggleCollectionModal={toggleCollectionInfoModal}
-                      activeCollection={activeCollection}
-                      method="UPDATE"
-                    />
-                  </Modal>
-                ) : null}
-
-                {collectionMembersModal && activeCollection ? (
-                  <Modal toggleModal={toggleCollectionMembersModal}>
-                    <CollectionModal
-                      defaultIndex={1}
-                      toggleCollectionModal={toggleCollectionMembersModal}
-                      activeCollection={activeCollection}
-                      method="UPDATE"
-                    />
-                  </Modal>
-                ) : null}
-
-                {deleteCollectionModal && activeCollection ? (
-                  <Modal toggleModal={toggleDeleteCollectionModal}>
-                    <CollectionModal
-                      defaultIndex={2}
-                      toggleCollectionModal={toggleDeleteCollectionModal}
-                      activeCollection={activeCollection}
-                      method="UPDATE"
-                    />
-                  </Modal>
                 ) : null}
               </div>
             </div>
