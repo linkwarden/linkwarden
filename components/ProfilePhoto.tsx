@@ -33,9 +33,9 @@ export default function ProfilePhoto({
 
   return error || !src ? (
     <div
-      className={`bg-sky-500 text-white h-10 w-10 shadow rounded-full border-[3px] border-slate-200 flex items-center justify-center ${className}`}
+      className={`bg-sky-500 text-white h-10 w-10 aspect-square shadow rounded-full border-[3px] border-slate-200 flex items-center justify-center ${className}`}
     >
-      <FontAwesomeIcon icon={faUser} className="w-1/2 h-1/2" />
+      <FontAwesomeIcon icon={faUser} className="w-1/2 h-1/2 aspect-square" />
     </div>
   ) : (
     <Image
@@ -43,7 +43,7 @@ export default function ProfilePhoto({
       src={src}
       height={112}
       width={112}
-      className={`h-10 w-10 shadow rounded-full border-[3px] border-slate-200 ${className}`}
+      className={`h-10 w-10 shadow rounded-full aspect-square border-[3px] border-slate-200 ${className}`}
     />
   );
 }
