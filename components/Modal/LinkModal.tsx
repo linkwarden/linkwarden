@@ -37,8 +37,6 @@ export default function EditLink({
           name: "",
           url: "",
           title: "",
-          screenshotPath: "",
-          pdfPath: "",
           tags: [],
           collection: {
             name: "",

@@ -15,6 +15,7 @@ import Dropdown from "./Dropdown";
 import useLinkStore from "@/store/links";
 import Link from "next/link";
 import useCollectionStore from "@/store/collections";
+import useAccountStore from "@/store/account";
 import useModalStore from "@/store/modals";
 
 type Props = {
@@ -30,6 +31,8 @@ export default function LinkCard({ link, count, className }: Props) {
 
   const { collections } = useCollectionStore();
 
+  const { account } = useAccountStore();
+
   const [collection, setCollection] = useState<CollectionIncludingMembers>(
     collections.find(
       (e) => e.id === link.collection.id
@@ -44,7 +47,7 @@ export default function LinkCard({ link, count, className }: Props) {
     );
   }, [collections]);
 
-  const { removeLink } = useLinkStore();
+  const { removeLink, updateLink } = useLinkStore();
 
   const url = new URL(link.url);
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
@@ -66,7 +69,7 @@ export default function LinkCard({ link, count, className }: Props) {
           width={42}
           height={42}
           alt=""
-          className="select-none mt-3 z-10 rounded-full shadow border-[3px] border-white bg-white"
+          className="select-none mt-3 z-10 rounded-full shadow border-[3px] border-white bg-white aspect-square"
           draggable="false"
           onError={(e) => {
             const target = e.target as HTMLElement;
@@ -129,7 +132,7 @@ export default function LinkCard({ link, count, className }: Props) {
                 className="group/url"
               >
                 <div className="text-sky-400 font-bold flex items-center gap-1">
-                  <p className="truncate w-40">{url.host}</p>
+                  <p className="truncate max-w-[10rem]">{url.host}</p>
                   <FontAwesomeIcon
                     icon={faArrowUpRightFromSquare}
                     className="w-3 opacity-0 group-hover/url:opacity-100 duration-75"
@@ -182,6 +185,22 @@ export default function LinkCard({ link, count, className }: Props) {
             {expandDropdown ? (
               <Dropdown
                 items={[
+                  {
+                    name:
+                      link?.pinnedBy && link.pinnedBy[0]
+                        ? "Unpin"
+                        : "Pin to Dashboard",
+                    onClick: () => {
+                      updateLink({
+                        ...link,
+                        pinnedBy:
+                          link?.pinnedBy && link.pinnedBy[0]
+                            ? undefined
+                            : [{ id: account.id }],
+                      });
+                      setExpandDropdown(false);
+                    },
+                  },
                   {
                     name: "Edit",
                     onClick: () => {
