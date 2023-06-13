@@ -34,7 +34,8 @@ export default async function archive(
       await Promise.all([
         page.pdf({
           path: archivePath + ".pdf",
-          format: "a4",
+          width: "1366px",
+          height: "1931px",
           printBackground: true,
           margin: { top: "15px", bottom: "15px" },
         }),
