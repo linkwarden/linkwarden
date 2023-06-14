@@ -6,6 +6,7 @@ import {
   faFolder,
   faArrowUpRightFromSquare,
   faEllipsis,
+  faThumbTack,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -76,6 +77,18 @@ export default function LinkCard({ link, count, className }: Props) {
             target.style.opacity = "0";
           }}
         />
+
+        {link?.pinnedBy && link.pinnedBy[0] && (
+          <div
+            className="absolute bottom-7 left-7"
+            title="This is a pinned Link."
+          >
+            <FontAwesomeIcon
+              icon={faThumbTack}
+              className="w-5 h-5 text-gray-500"
+            />
+          </div>
+        )}
         <Image
           src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
           width={80}
@@ -88,6 +101,7 @@ export default function LinkCard({ link, count, className }: Props) {
             target.style.opacity = "0";
           }}
         />
+
         <div className="flex justify-between gap-5 w-full h-full z-0">
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-baseline gap-1">
