@@ -1,18 +1,19 @@
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import LinkCard from "@/components/LinkCard";
-import SortLinkDropdown from "@/components/SortLinkDropdown";
+import SortDropdown from "@/components/SortDropdown";
+import useSort from "@/hooks/useSort";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import { Sort } from "@/types/global";
 import { faFilter, faSearch, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type SearchFilter = {
   name: boolean;
   url: boolean;
-  title: boolean;
+  description: boolean;
   collection: boolean;
   tags: boolean;
 };
@@ -29,7 +30,7 @@ export default function Links() {
   const [searchFilter, setSearchFilter] = useState<SearchFilter>({
     name: true,
     url: true,
-    title: true,
+    description: true,
     collection: true,
     tags: true,
   });
@@ -37,20 +38,20 @@ export default function Links() {
   const [filterDropdown, setFilterDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
-  const [sortedLinks, setSortedLinks] = useState(links);
 
-  const handleSortChange = (e: Sort) => {
-    setSortBy(e);
-  };
+  const [filteredLinks, setFilteredLinks] = useState(links);
+  const [sortedLinks, setSortedLinks] = useState(filteredLinks);
+
+  useSort({ sortBy, setData: setSortedLinks, data: links });
 
   useEffect(() => {
-    const linksArray = [
-      ...links.filter((link) => {
+    setFilteredLinks([
+      ...sortedLinks.filter((link) => {
         if (
           (searchFilter.name && link.name.toLowerCase().includes(routeQuery)) ||
           (searchFilter.url && link.url.toLowerCase().includes(routeQuery)) ||
-          (searchFilter.title &&
-            link.title.toLowerCase().includes(routeQuery)) ||
+          (searchFilter.description &&
+            link.description.toLowerCase().includes(routeQuery)) ||
           (searchFilter.collection &&
             link.collection.name.toLowerCase().includes(routeQuery)) ||
           (searchFilter.tags &&
@@ -60,33 +61,8 @@ export default function Links() {
         )
           return true;
       }),
-    ];
-
-    if (sortBy === Sort.NameAZ)
-      setSortedLinks(linksArray.sort((a, b) => a.name.localeCompare(b.name)));
-    else if (sortBy === Sort.TitleAZ)
-      setSortedLinks(linksArray.sort((a, b) => a.title.localeCompare(b.title)));
-    else if (sortBy === Sort.NameZA)
-      setSortedLinks(linksArray.sort((a, b) => b.name.localeCompare(a.name)));
-    else if (sortBy === Sort.TitleZA)
-      setSortedLinks(linksArray.sort((a, b) => b.title.localeCompare(a.title)));
-    else if (sortBy === Sort.DateNewestFirst)
-      setSortedLinks(
-        linksArray.sort(
-          (a, b) =>
-            new Date(b.createdAt as string).getTime() -
-            new Date(a.createdAt as string).getTime()
-        )
-      );
-    else if (sortBy === Sort.DateOldestFirst)
-      setSortedLinks(
-        linksArray.sort(
-          (a, b) =>
-            new Date(a.createdAt as string).getTime() -
-            new Date(b.createdAt as string).getTime()
-        )
-      );
-  }, [links, searchFilter, sortBy, router]);
+    ]);
+  }, [searchFilter, sortedLinks, router]);
 
   return (
     <MainLayout>
@@ -141,17 +117,17 @@ export default function Links() {
               </div>
 
               {sortDropdown ? (
-                <SortLinkDropdown
-                  handleSortChange={handleSortChange}
+                <SortDropdown
                   sortBy={sortBy}
+                  setSort={setSortBy}
                   toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
                 />
               ) : null}
             </div>
           </div>
         </div>
-        {sortedLinks[0] ? (
-          sortedLinks.map((e, i) => {
+        {filteredLinks[0] ? (
+          filteredLinks.map((e, i) => {
             return <LinkCard key={i} link={e} count={i} />;
           })
         ) : (

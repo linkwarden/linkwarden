@@ -111,7 +111,7 @@ export default function LinkCard({ link, count, className }: Props) {
               </p>
             </div>
             <p className="text-gray-500 text-sm font-medium line-clamp-3 w-4/5">
-              {link.title}
+              {link.description}
             </p>
             <div className="flex gap-3 items-center flex-wrap my-3">
               <Link href={`/collections/${link.collection.id}`}>
