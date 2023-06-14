@@ -40,7 +40,7 @@ CREATE TABLE "Link" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL DEFAULT '',
     "collectionId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

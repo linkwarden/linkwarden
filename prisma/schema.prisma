@@ -58,7 +58,7 @@ model Link {
   id Int @id @default(autoincrement())
   name String
   url String
-  title String
+  description String @default("")
 
   pinnedBy User[]
 

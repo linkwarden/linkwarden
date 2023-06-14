@@ -55,7 +55,9 @@ export default function LinkCard({ link, count }: Props) {
               <p className="text-lg text-sky-500  font-bold">{link.name}</p>
             </div>
 
-            <p className="text-gray-500 text-sm font-medium">{link.title}</p>
+            <p className="text-gray-500 text-sm font-medium">
+              {link.description}
+            </p>
 
             <div className="flex gap-2 items-center flex-wrap mt-2">
               <p className="text-gray-500">{formattedDate}</p>

@@ -36,7 +36,7 @@ export default function EditLink({
       : {
           name: "",
           url: "",
-          title: "",
+          description: "",
           tags: [],
           collection: {
             name: "",
@@ -106,7 +106,7 @@ export default function EditLink({
 
       {method === "UPDATE" ? (
         <p className="text-gray-500">
-          <b>{shortendURL}</b> | {link.title}
+          <b>{shortendURL}</b> | {link.description}
         </p>
       ) : null}
 

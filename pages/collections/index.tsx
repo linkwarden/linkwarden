@@ -8,68 +8,26 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CollectionCard from "@/components/CollectionCard";
 import Dropdown from "@/components/Dropdown";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import ClickAwayHandler from "@/components/ClickAwayHandler";
-import RadioButton from "@/components/RadioButton";
 import { useSession } from "next-auth/react";
 import useModalStore from "@/store/modals";
+import SortDropdown from "@/components/SortDropdown";
+import { Sort } from "@/types/global";
+import useSort from "@/hooks/useSort";
 
 export default function Collections() {
   const { collections } = useCollectionStore();
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
-  const [sortBy, setSortBy] = useState("Name (A-Z)");
+  const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
   const [sortedCollections, setSortedCollections] = useState(collections);
 
   const session = useSession();
 
   const { setModal } = useModalStore();
 
-  const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSortBy(event.target.value);
-  };
-
-  useEffect(() => {
-    const collectionsArray = [...collections];
-
-    if (sortBy === "Name (A-Z)")
-      setSortedCollections(
-        collectionsArray.sort((a, b) => a.name.localeCompare(b.name))
-      );
-    else if (sortBy === "Description (A-Z)")
-      setSortedCollections(
-        collectionsArray.sort((a, b) =>
-          a.description.localeCompare(b.description)
-        )
-      );
-    else if (sortBy === "Name (Z-A)")
-      setSortedCollections(
-        collectionsArray.sort((a, b) => b.name.localeCompare(a.name))
-      );
-    else if (sortBy === "Description (Z-A)")
-      setSortedCollections(
-        collectionsArray.sort((a, b) =>
-          b.description.localeCompare(a.description)
-        )
-      );
-    else if (sortBy === "Date (Newest First)")
-      setSortedCollections(
-        collectionsArray.sort(
-          (a, b) =>
-            new Date(b.createdAt as string).getTime() -
-            new Date(a.createdAt as string).getTime()
-        )
-      );
-    else if (sortBy === "Date (Oldest First)")
-      setSortedCollections(
-        collectionsArray.sort(
-          (a, b) =>
-            new Date(a.createdAt as string).getTime() -
-            new Date(b.createdAt as string).getTime()
-        )
-      );
-  }, [collections, sortBy]);
+  useSort({ sortBy, setData: setSortedCollections, data: collections });
 
   return (
     <MainLayout>
@@ -146,54 +104,11 @@ export default function Collections() {
             </div>
 
             {sortDropdown ? (
-              <ClickAwayHandler
-                onClickOutside={(e: Event) => {
-                  const target = e.target as HTMLInputElement;
-                  if (target.id !== "sort-dropdown") setSortDropdown(false);
-                }}
-                className="absolute top-8 right-0 shadow-md bg-gray-50 rounded-md p-2 z-10 border border-sky-100 w-48"
-              >
-                <p className="mb-2 text-sky-900 text-center font-semibold">
-                  Sort by
-                </p>
-                <div className="flex flex-col gap-2">
-                  <RadioButton
-                    label="Name (A-Z)"
-                    state={sortBy === "Name (A-Z)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Name (Z-A)"
-                    state={sortBy === "Name (Z-A)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Description (A-Z)"
-                    state={sortBy === "Description (A-Z)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Description (Z-A)"
-                    state={sortBy === "Description (Z-A)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Date (Newest First)"
-                    state={sortBy === "Date (Newest First)"}
-                    onClick={handleSortChange}
-                  />
-
-                  <RadioButton
-                    label="Date (Oldest First)"
-                    state={sortBy === "Date (Oldest First)"}
-                    onClick={handleSortChange}
-                  />
-                </div>
-              </ClickAwayHandler>
+              <SortDropdown
+                sortBy={sortBy}
+                setSort={setSortBy}
+                toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
+              />
             ) : null}
           </div>
         </div>

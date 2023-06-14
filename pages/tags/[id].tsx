@@ -3,12 +3,13 @@ import useLinkStore from "@/store/links";
 import { faHashtag, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { Tag } from "@prisma/client";
 import useTagStore from "@/store/tags";
-import SortLinkDropdown from "@/components/SortLinkDropdown";
+import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
+import useSort from "@/hooks/useSort";
 
 export default function Index() {
   const router = useRouter();
@@ -23,46 +24,11 @@ export default function Index() {
 
   const [sortedLinks, setSortedLinks] = useState(links);
 
-  const handleSortChange = (e: Sort) => {
-    setSortBy(e);
-  };
+  useSort({ sortBy, setData: setSortedLinks, data: links });
 
   useEffect(() => {
     setActiveTag(tags.find((e) => e.id === Number(router.query.id)));
-
-    // Sorting logic
-
-    const linksArray = [
-      ...links.filter((e) =>
-        e.tags.some((e) => e.id === Number(router.query.id))
-      ),
-    ];
-
-    if (sortBy === Sort.NameAZ)
-      setSortedLinks(linksArray.sort((a, b) => a.name.localeCompare(b.name)));
-    else if (sortBy === Sort.TitleAZ)
-      setSortedLinks(linksArray.sort((a, b) => a.title.localeCompare(b.title)));
-    else if (sortBy === Sort.NameZA)
-      setSortedLinks(linksArray.sort((a, b) => b.name.localeCompare(a.name)));
-    else if (sortBy === Sort.TitleZA)
-      setSortedLinks(linksArray.sort((a, b) => b.title.localeCompare(a.title)));
-    else if (sortBy === Sort.DateNewestFirst)
-      setSortedLinks(
-        linksArray.sort(
-          (a, b) =>
-            new Date(b.createdAt as string).getTime() -
-            new Date(a.createdAt as string).getTime()
-        )
-      );
-    else if (sortBy === Sort.DateOldestFirst)
-      setSortedLinks(
-        linksArray.sort(
-          (a, b) =>
-            new Date(a.createdAt as string).getTime() -
-            new Date(b.createdAt as string).getTime()
-        )
-      );
-  }, [links, router, tags, sortBy]);
+  }, [router, tags]);
 
   return (
     <MainLayout>
@@ -94,9 +60,9 @@ export default function Index() {
             </div>
 
             {sortDropdown ? (
-              <SortLinkDropdown
-                handleSortChange={handleSortChange}
+              <SortDropdown
                 sortBy={sortBy}
+                setSort={setSortBy}
                 toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
               />
             ) : null}
