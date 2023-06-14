@@ -42,3 +42,12 @@ export interface PublicCollectionIncludingLinks
   ownerName?: string;
   links: Link[];
 }
+
+export enum Sort {
+  NameAZ,
+  NameZA,
+  TitleAZ,
+  TitleZA,
+  DateNewestFirst,
+  DateOldestFirst,
+}
