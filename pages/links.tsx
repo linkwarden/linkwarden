@@ -2,6 +2,7 @@ import LinkCard from "@/components/LinkCard";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
+import { Sort } from "@/types/global";
 import { faLink, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -10,25 +11,25 @@ export default function Links() {
   const { links } = useLinkStore();
 
   const [sortDropdown, setSortDropdown] = useState(false);
-  const [sortBy, setSortBy] = useState("Name (A-Z)");
+  const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
   const [sortedLinks, setSortedLinks] = useState(links);
 
-  const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSortBy(event.target.value);
+  const handleSortChange = (e: Sort) => {
+    setSortBy(e);
   };
 
   useEffect(() => {
     const linksArray = [...links];
 
-    if (sortBy === "Name (A-Z)")
+    if (sortBy === Sort.NameAZ)
       setSortedLinks(linksArray.sort((a, b) => a.name.localeCompare(b.name)));
-    else if (sortBy === "Title (A-Z)")
+    else if (sortBy === Sort.TitleAZ)
       setSortedLinks(linksArray.sort((a, b) => a.title.localeCompare(b.title)));
-    else if (sortBy === "Name (Z-A)")
+    else if (sortBy === Sort.NameZA)
       setSortedLinks(linksArray.sort((a, b) => b.name.localeCompare(a.name)));
-    else if (sortBy === "Title (Z-A)")
+    else if (sortBy === Sort.TitleZA)
       setSortedLinks(linksArray.sort((a, b) => b.title.localeCompare(a.title)));
-    else if (sortBy === "Date (Newest First)")
+    else if (sortBy === Sort.DateNewestFirst)
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
@@ -36,7 +37,7 @@ export default function Links() {
             new Date(a.createdAt as string).getTime()
         )
       );
-    else if (sortBy === "Date (Oldest First)")
+    else if (sortBy === Sort.DateOldestFirst)
       setSortedLinks(
         linksArray.sort(
           (a, b) =>

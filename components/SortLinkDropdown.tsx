@@ -1,10 +1,11 @@
 import React, { ChangeEvent } from "react";
 import ClickAwayHandler from "./ClickAwayHandler";
 import RadioButton from "./RadioButton";
+import { Sort } from "@/types/global";
 
 type Props = {
-  handleSortChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  sortBy: string;
+  handleSortChange: (e: Sort) => void;
+  sortBy: Sort;
   toggleSortDropdown: Function;
 };
 
@@ -25,38 +26,38 @@ export default function SortLinkDropdown({
       <div className="flex flex-col gap-2">
         <RadioButton
           label="Name (A-Z)"
-          state={sortBy === "Name (A-Z)"}
-          onClick={handleSortChange}
+          state={sortBy === Sort.NameAZ}
+          onClick={() => handleSortChange(Sort.NameAZ)}
         />
 
         <RadioButton
           label="Name (Z-A)"
-          state={sortBy === "Name (Z-A)"}
-          onClick={handleSortChange}
+          state={sortBy === Sort.NameZA}
+          onClick={() => handleSortChange(Sort.NameZA)}
         />
 
         <RadioButton
           label="Title (A-Z)"
-          state={sortBy === "Title (A-Z)"}
-          onClick={handleSortChange}
+          state={sortBy === Sort.TitleAZ}
+          onClick={() => handleSortChange(Sort.TitleAZ)}
         />
 
         <RadioButton
           label="Title (Z-A)"
-          state={sortBy === "Title (Z-A)"}
-          onClick={handleSortChange}
+          state={sortBy === Sort.TitleZA}
+          onClick={() => handleSortChange(Sort.TitleZA)}
         />
 
         <RadioButton
           label="Date (Newest First)"
-          state={sortBy === "Date (Newest First)"}
-          onClick={handleSortChange}
+          state={sortBy === Sort.DateNewestFirst}
+          onClick={() => handleSortChange(Sort.DateNewestFirst)}
         />
 
         <RadioButton
           label="Date (Oldest First)"
-          state={sortBy === "Date (Oldest First)"}
-          onClick={handleSortChange}
+          state={sortBy === Sort.DateOldestFirst}
+          onClick={() => handleSortChange(Sort.DateOldestFirst)}
         />
       </div>
     </ClickAwayHandler>
