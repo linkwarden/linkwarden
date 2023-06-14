@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { CollectionIncludingMembers } from "@/types/global";
 import useTagStore from "./tags";
-import useLinkStore from "./links";
 
 type CollectionStore = {
   collections: CollectionIncludingMembers[];
@@ -80,7 +79,6 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
         collections: state.collections.filter((e) => e.id !== id),
       }));
       useTagStore.getState().setTags();
-      useLinkStore.getState().setLinks();
     }
 
     return response.ok;

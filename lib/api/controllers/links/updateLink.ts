@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/api/db";
-import { LinkIncludingCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 
 export default async function updateLink(
-  link: LinkIncludingCollectionAndTags,
+  link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
   if (!link) return { response: "Please choose a valid link.", status: 401 };

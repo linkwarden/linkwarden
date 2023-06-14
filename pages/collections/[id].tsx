@@ -16,7 +16,7 @@ import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import SortDropdown from "@/components/SortDropdown";
 import useModalStore from "@/store/modals";
-import useSort from "@/hooks/useSort";
+import useLinks from "@/hooks/useLinks";
 
 export default function Index() {
   const { setModal } = useModalStore();
@@ -30,14 +30,12 @@ export default function Index() {
 
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
-  const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
+  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   const [activeCollection, setActiveCollection] =
     useState<CollectionIncludingMembers>();
 
-  const [sortedLinks, setSortedLinks] = useState(links);
-
-  useSort({ sortBy, setData: setSortedLinks, data: links });
+  useLinks({ collectionId: Number(router.query.id), sort: sortBy });
 
   useEffect(() => {
     setActiveCollection(
@@ -223,7 +221,7 @@ export default function Index() {
           </div>
         </div>
         <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {sortedLinks.map((e, i) => {
+          {links.map((e, i) => {
             return <LinkCard key={i} link={e} count={i} />;
           })}
         </div>

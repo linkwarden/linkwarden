@@ -9,14 +9,14 @@ export default function useInitialData() {
   const { status, data } = useSession();
   const { setCollections } = useCollectionStore();
   const { setTags } = useTagStore();
-  const { setLinks } = useLinkStore();
+  // const { setLinks } = useLinkStore();
   const { setAccount } = useAccountStore();
 
   useEffect(() => {
     if (status === "authenticated") {
       setCollections();
       setTags();
-      setLinks();
+      // setLinks();
       setAccount(data.user.email as string);
     }
   }, [status]);

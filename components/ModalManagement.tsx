@@ -4,7 +4,7 @@ import LinkModal from "./Modal/LinkModal";
 import {
   AccountSettings,
   CollectionIncludingMembers,
-  LinkIncludingCollectionAndTags,
+  LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import CollectionModal from "./Modal/Collection";
 import UserModal from "./Modal/User";
@@ -22,7 +22,7 @@ export default function ModalManagement() {
         <LinkModal
           toggleLinkModal={toggleModal}
           method={modal.method}
-          activeLink={modal.active as LinkIncludingCollectionAndTags}
+          activeLink={modal.active as LinkIncludingShortenedCollectionAndTags}
         />
       </Modal>
     );

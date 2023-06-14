@@ -1,6 +1,6 @@
 import {
   CollectionIncludingMembers,
-  LinkIncludingCollectionAndTags,
+  LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import {
   faFolder,
@@ -20,7 +20,7 @@ import useAccountStore from "@/store/account";
 import useModalStore from "@/store/modals";
 
 type Props = {
-  link: LinkIncludingCollectionAndTags;
+  link: LinkIncludingShortenedCollectionAndTags;
   count: number;
   className?: string;
 };
@@ -146,7 +146,7 @@ export default function LinkCard({ link, count, className }: Props) {
                 className="group/url"
               >
                 <div className="text-sky-400 font-bold flex items-center gap-1">
-                  <p className="truncate max-w-[10rem]">{url.host}</p>
+                  <p className="truncate max-w-[12rem]">{url.host}</p>
                   <FontAwesomeIcon
                     icon={faArrowUpRightFromSquare}
                     className="w-3 opacity-0 group-hover/url:opacity-100 duration-75"

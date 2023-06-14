@@ -1,35 +1,40 @@
 import { prisma } from "@/lib/api/db";
+import { PublicLinkRequestQuery } from "@/types/global";
 
-export default async function getCollection(collectionId: number) {
+export default async function getCollection(query: PublicLinkRequestQuery) {
   let data;
 
   const collection = await prisma.collection.findFirst({
     where: {
-      id: collectionId,
+      id: Number(query.collectionId),
       isPublic: true,
-    },
-    include: {
-      links: {
-        select: {
-          id: true,
-          name: true,
-          url: true,
-          description: true,
-          collectionId: true,
-          createdAt: true,
-        },
-      },
     },
   });
 
   if (collection) {
-    const user = await prisma.user.findUnique({
+    const links = await prisma.link.findMany({
+      take: Number(process.env.PAGINATION_TAKE_COUNT),
+      skip: query.cursor !== "undefined" ? 1 : undefined,
+      cursor:
+        query.cursor !== "undefined"
+          ? {
+              id: Number(query.cursor),
+            }
+          : undefined,
       where: {
-        id: collection.ownerId,
+        collection: {
+          id: Number(query.collectionId),
+        },
+      },
+      include: {
+        tags: true,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 
-    data = { ownerName: user?.name, ...collection };
+    data = { ...collection, links: [...links] };
 
     return { response: data, status: 200 };
   } else {

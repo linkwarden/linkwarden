@@ -3,7 +3,7 @@ import { Collection, Link, Tag, User } from "@prisma/client";
 type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
   Pick<T, TRequired>;
 
-export interface LinkIncludingCollectionAndTags
+export interface LinkIncludingShortenedCollectionAndTags
   extends Omit<Link, "id" | "createdAt" | "collectionId"> {
   id?: number;
   createdAt?: string;
@@ -12,7 +12,10 @@ export interface LinkIncludingCollectionAndTags
   pinnedBy?: {
     id: number;
   }[];
-  collection: OptionalExcluding<Collection, "name" | "ownerId">;
+  collection: OptionalExcluding<
+    Pick<Collection, "id" | "ownerId" | "name" | "color">,
+    "name" | "ownerId"
+  >;
 }
 
 export interface Member {
@@ -37,17 +40,42 @@ export interface AccountSettings extends User {
   newPassword?: string;
 }
 
-export interface PublicCollectionIncludingLinks
-  extends Omit<Collection, "ownerId"> {
-  ownerName?: string;
-  links: Link[];
+interface LinksIncludingTags extends Link {
+  tags: Tag[];
+}
+
+export interface PublicCollectionIncludingLinks extends Collection {
+  links: LinksIncludingTags[];
 }
 
 export enum Sort {
+  DateNewestFirst,
+  DateOldestFirst,
   NameAZ,
   NameZA,
   DescriptionAZ,
   DescriptionZA,
-  DateNewestFirst,
-  DateOldestFirst,
 }
+
+export type LinkSearchFilter = {
+  name: boolean;
+  url: boolean;
+  description: boolean;
+  collection: boolean;
+  tags: boolean;
+};
+
+export type LinkRequestQuery = {
+  cursor?: string;
+  collectionId?: number;
+  tagId?: number;
+  sort?: Sort;
+  searchFilter?: LinkSearchFilter;
+  searchQuery?: string;
+  pinnedOnly?: boolean;
+};
+
+export type PublicLinkRequestQuery = {
+  cursor?: string;
+  collectionId?: number;
+};

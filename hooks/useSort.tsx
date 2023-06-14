@@ -1,12 +1,12 @@
 import {
   CollectionIncludingMembers,
-  LinkIncludingCollectionAndTags,
+  LinkIncludingShortenedCollectionAndTags,
   Sort,
 } from "@/types/global";
 import { SetStateAction, useEffect } from "react";
 
 type Props<
-  T extends CollectionIncludingMembers | LinkIncludingCollectionAndTags
+  T extends CollectionIncludingMembers | LinkIncludingShortenedCollectionAndTags
 > = {
   sortBy: Sort;
 
@@ -15,7 +15,7 @@ type Props<
 };
 
 export default function useSort<
-  T extends CollectionIncludingMembers | LinkIncludingCollectionAndTags
+  T extends CollectionIncludingMembers | LinkIncludingShortenedCollectionAndTags
 >({ sortBy, data, setData }: Props<T>) {
   useEffect(() => {
     const dataArray = [...data];

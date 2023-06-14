@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/api/db";
-import { LinkIncludingCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import fs from "fs";
 import { Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 
 export default async function deleteLink(
-  link: LinkIncludingCollectionAndTags,
+  link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
   if (!link || !link.collectionId)
