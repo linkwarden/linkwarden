@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/api/db";
-import { LinkIncludingCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import getTitle from "../../getTitle";
 import archive from "../../archive";
 import { Link, UsersAndCollections } from "@prisma/client";
@@ -7,7 +7,7 @@ import getPermission from "@/lib/api/getPermission";
 import { existsSync, mkdirSync } from "fs";
 
 export default async function postLink(
-  link: LinkIncludingCollectionAndTags,
+  link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
   link.collection.name = link.collection.name.trim();

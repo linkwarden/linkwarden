@@ -9,7 +9,7 @@ import { Tag } from "@prisma/client";
 import useTagStore from "@/store/tags";
 import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
-import useSort from "@/hooks/useSort";
+import useLinks from "@/hooks/useLinks";
 
 export default function Index() {
   const router = useRouter();
@@ -18,13 +18,11 @@ export default function Index() {
   const { tags } = useTagStore();
 
   const [sortDropdown, setSortDropdown] = useState(false);
-  const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
+  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   const [activeTag, setActiveTag] = useState<Tag>();
 
-  const [sortedLinks, setSortedLinks] = useState(links);
-
-  useSort({ sortBy, setData: setSortedLinks, data: links });
+  useLinks({ tagId: Number(router.query.id), sort: sortBy });
 
   useEffect(() => {
     setActiveTag(tags.find((e) => e.id === Number(router.query.id)));
@@ -69,7 +67,7 @@ export default function Index() {
           </div>
         </div>
         <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {sortedLinks.map((e, i) => {
+          {links.map((e, i) => {
             return <LinkCard key={i} link={e} count={i} />;
           })}
         </div>

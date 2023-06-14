@@ -4,10 +4,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { Link as LinkType } from "@prisma/client";
+import { Link as LinkType, Tag } from "@prisma/client";
+
+interface LinksIncludingTags extends LinkType {
+  tags: Tag[];
+}
 
 type Props = {
-  link: LinkType;
+  link: LinksIncludingTags;
   count: number;
 };
 
@@ -58,7 +62,18 @@ export default function LinkCard({ link, count }: Props) {
             <p className="text-gray-500 text-sm font-medium">
               {link.description}
             </p>
-
+            <div className="flex gap-3 items-center flex-wrap my-3">
+              <div className="flex gap-1 items-center flex-wrap mt-1">
+                {link.tags.map((e, i) => (
+                  <p
+                    key={i}
+                    className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer truncate max-w-[10rem]"
+                  >
+                    {e.name}
+                  </p>
+                ))}
+              </div>
+            </div>
             <div className="flex gap-2 items-center flex-wrap mt-2">
               <p className="text-gray-500">{formattedDate}</p>
               <div className="text-sky-400 font-bold flex items-center gap-1">

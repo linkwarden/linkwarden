@@ -12,6 +12,7 @@ import Link from "next/link";
 import CollectionCard from "@/components/CollectionCard";
 import { Disclosure, Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
+import useLinks from "@/hooks/useLinks";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
@@ -33,6 +34,8 @@ export default function Dashboard() {
     const storedValue = localStorage.getItem("linkPinDisclosure");
     return storedValue ? storedValue === "true" : true;
   });
+
+  useLinks({ pinnedOnly: true });
 
   useEffect(() => {
     localStorage.setItem(
@@ -131,11 +134,9 @@ export default function Dashboard() {
                 leaveTo="transform opacity-0 -translate-y-3"
               >
                 <Disclosure.Panel className="flex flex-col gap-5 w-full">
-                  {links
-                    .filter((e) => e.pinnedBy && e.pinnedBy[0])
-                    .map((e, i) => (
-                      <LinkCard key={i} link={e} count={i} />
-                    ))}
+                  {links.map((e, i) => (
+                    <LinkCard key={i} link={e} count={i} />
+                  ))}
                 </Disclosure.Panel>
               </Transition>
             </div>

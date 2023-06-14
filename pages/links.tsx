@@ -1,6 +1,6 @@
 import LinkCard from "@/components/LinkCard";
 import SortDropdown from "@/components/SortDropdown";
-import useSort from "@/hooks/useSort";
+import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import { Sort } from "@/types/global";
@@ -12,10 +12,9 @@ export default function Links() {
   const { links } = useLinkStore();
 
   const [sortDropdown, setSortDropdown] = useState(false);
-  const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
-  const [sortedLinks, setSortedLinks] = useState(links);
+  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
-  useSort({ sortBy, setData: setSortedLinks, data: links });
+  useLinks({ sort: sortBy });
 
   return (
     <MainLayout>
@@ -54,7 +53,7 @@ export default function Links() {
           </div>
         </div>
         <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {sortedLinks.map((e, i) => {
+          {links.map((e, i) => {
             return <LinkCard key={i} link={e} count={i} />;
           })}
         </div>

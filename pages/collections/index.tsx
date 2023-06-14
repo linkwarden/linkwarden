@@ -20,7 +20,7 @@ export default function Collections() {
   const { collections } = useCollectionStore();
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
-  const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
+  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
   const [sortedCollections, setSortedCollections] = useState(collections);
 
   const session = useSession();

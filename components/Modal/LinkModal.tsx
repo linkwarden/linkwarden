@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
-import { LinkIncludingCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -15,12 +15,12 @@ type Props =
   | {
       toggleLinkModal: Function;
       method: "CREATE";
-      activeLink?: LinkIncludingCollectionAndTags;
+      activeLink?: LinkIncludingShortenedCollectionAndTags;
     }
   | {
       toggleLinkModal: Function;
       method: "UPDATE";
-      activeLink: LinkIncludingCollectionAndTags;
+      activeLink: LinkIncludingShortenedCollectionAndTags;
     };
 
 export default function EditLink({
@@ -30,7 +30,7 @@ export default function EditLink({
 }: Props) {
   const { data } = useSession();
 
-  const [link, setLink] = useState<LinkIncludingCollectionAndTags>(
+  const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>(
     method === "UPDATE"
       ? activeLink
       : {
