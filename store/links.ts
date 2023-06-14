@@ -1,24 +1,34 @@
 import { create } from "zustand";
-import { LinkIncludingCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import useTagStore from "./tags";
 import useCollectionStore from "./collections";
 
 type LinkStore = {
-  links: LinkIncludingCollectionAndTags[];
-  setLinks: () => void;
-  addLink: (body: LinkIncludingCollectionAndTags) => Promise<boolean>;
-  updateLink: (link: LinkIncludingCollectionAndTags) => Promise<boolean>;
-  removeLink: (link: LinkIncludingCollectionAndTags) => Promise<boolean>;
+  links: LinkIncludingShortenedCollectionAndTags[];
+  setLinks: (
+    data: LinkIncludingShortenedCollectionAndTags[],
+    isInitialCall: boolean
+  ) => void;
+  addLink: (body: LinkIncludingShortenedCollectionAndTags) => Promise<boolean>;
+  updateLink: (
+    link: LinkIncludingShortenedCollectionAndTags
+  ) => Promise<boolean>;
+  removeLink: (
+    link: LinkIncludingShortenedCollectionAndTags
+  ) => Promise<boolean>;
+  resetLinks: () => void;
 };
 
 const useLinkStore = create<LinkStore>()((set) => ({
   links: [],
-  setLinks: async () => {
-    const response = await fetch("/api/routes/links");
-
-    const data = await response.json();
-
-    if (response.ok) set({ links: data.response });
+  setLinks: async (data, isInitialCall) => {
+    isInitialCall &&
+      set(() => ({
+        links: [],
+      }));
+    set((state) => ({
+      links: [...state.links, ...data],
+    }));
   },
   addLink: async (body) => {
     const response = await fetch("/api/routes/links", {
@@ -35,7 +45,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     if (response.ok) {
       set((state) => ({
-        links: [...state.links, data.response],
+        links: [data.response, ...state.links],
       }));
       useTagStore.getState().setTags();
       useCollectionStore.getState().setCollections();
@@ -90,6 +100,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     return response.ok;
   },
+  resetLinks: () => set({ links: [] }),
 }));
 
 export default useLinkStore;

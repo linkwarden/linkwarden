@@ -26,6 +26,18 @@ export default function SortDropdown({
       <p className="mb-2 text-sky-900 text-center font-semibold">Sort by</p>
       <div className="flex flex-col gap-2">
         <RadioButton
+          label="Date (Newest First)"
+          state={sortBy === Sort.DateNewestFirst}
+          onClick={() => setSort(Sort.DateNewestFirst)}
+        />
+
+        <RadioButton
+          label="Date (Oldest First)"
+          state={sortBy === Sort.DateOldestFirst}
+          onClick={() => setSort(Sort.DateOldestFirst)}
+        />
+
+        <RadioButton
           label="Name (A-Z)"
           state={sortBy === Sort.NameAZ}
           onClick={() => setSort(Sort.NameAZ)}
@@ -47,18 +59,6 @@ export default function SortDropdown({
           label="Description (Z-A)"
           state={sortBy === Sort.DescriptionZA}
           onClick={() => setSort(Sort.DescriptionZA)}
-        />
-
-        <RadioButton
-          label="Date (Newest First)"
-          state={sortBy === Sort.DateNewestFirst}
-          onClick={() => setSort(Sort.DateNewestFirst)}
-        />
-
-        <RadioButton
-          label="Date (Oldest First)"
-          state={sortBy === Sort.DateOldestFirst}
-          onClick={() => setSort(Sort.DateOldestFirst)}
         />
       </div>
     </ClickAwayHandler>

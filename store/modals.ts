@@ -1,7 +1,7 @@
 import {
   AccountSettings,
   CollectionIncludingMembers,
-  LinkIncludingCollectionAndTags,
+  LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import { create } from "zustand";
 
@@ -16,13 +16,13 @@ type Modal =
       modal: "LINK";
       state: boolean;
       method: "CREATE";
-      active?: LinkIncludingCollectionAndTags;
+      active?: LinkIncludingShortenedCollectionAndTags;
     }
   | {
       modal: "LINK";
       state: boolean;
       method: "UPDATE";
-      active: LinkIncludingCollectionAndTags;
+      active: LinkIncludingShortenedCollectionAndTags;
     }
   | {
       modal: "COLLECTION";

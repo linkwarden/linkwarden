@@ -1,33 +1,21 @@
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import LinkCard from "@/components/LinkCard";
 import SortDropdown from "@/components/SortDropdown";
-import useSort from "@/hooks/useSort";
+import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
-import { Sort } from "@/types/global";
+import { LinkSearchFilter, Sort } from "@/types/global";
 import { faFilter, faSearch, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-
-type SearchFilter = {
-  name: boolean;
-  url: boolean;
-  description: boolean;
-  collection: boolean;
-  tags: boolean;
-};
+import { useState } from "react";
 
 export default function Links() {
   const { links } = useLinkStore();
 
   const router = useRouter();
 
-  const routeQuery = decodeURIComponent(
-    router.query.query as string
-  ).toLowerCase();
-
-  const [searchFilter, setSearchFilter] = useState<SearchFilter>({
+  const [searchFilter, setSearchFilter] = useState<LinkSearchFilter>({
     name: true,
     url: true,
     description: true,
@@ -37,32 +25,13 @@ export default function Links() {
 
   const [filterDropdown, setFilterDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
-  const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
+  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
-  const [filteredLinks, setFilteredLinks] = useState(links);
-  const [sortedLinks, setSortedLinks] = useState(filteredLinks);
-
-  useSort({ sortBy, setData: setSortedLinks, data: links });
-
-  useEffect(() => {
-    setFilteredLinks([
-      ...sortedLinks.filter((link) => {
-        if (
-          (searchFilter.name && link.name.toLowerCase().includes(routeQuery)) ||
-          (searchFilter.url && link.url.toLowerCase().includes(routeQuery)) ||
-          (searchFilter.description &&
-            link.description.toLowerCase().includes(routeQuery)) ||
-          (searchFilter.collection &&
-            link.collection.name.toLowerCase().includes(routeQuery)) ||
-          (searchFilter.tags &&
-            link.tags.some((tag) =>
-              tag.name.toLowerCase().includes(routeQuery)
-            ))
-        )
-          return true;
-      }),
-    ]);
-  }, [searchFilter, sortedLinks, router]);
+  useLinks({
+    searchFilter: searchFilter,
+    searchQuery: router.query.query as string,
+    sort: sortBy,
+  });
 
   return (
     <MainLayout>
@@ -126,8 +95,8 @@ export default function Links() {
             </div>
           </div>
         </div>
-        {filteredLinks[0] ? (
-          filteredLinks.map((e, i) => {
+        {links[0] ? (
+          links.map((e, i) => {
             return <LinkCard key={i} link={e} count={i} />;
           })
         ) : (

@@ -1,4 +1,5 @@
 import LinkCard from "@/components/PublicPage/LinkCard";
+import useDetectPageBottom from "@/hooks/useDetectPageBottom";
 import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
 import { PublicCollectionIncludingLinks } from "@/types/global";
 import { useRouter } from "next/router";
@@ -6,6 +7,7 @@ import React, { useEffect, useState } from "react";
 
 export default function PublicCollections() {
   const router = useRouter();
+  const hasReachedBottom = useDetectPageBottom();
 
   const [data, setData] = useState<PublicCollectionIncludingLinks>();
 
@@ -13,7 +15,8 @@ export default function PublicCollections() {
     if (router.query.id) {
       getPublicCollectionData(
         router.query.id as string,
-        (e: PublicCollectionIncludingLinks) => setData(e)
+        data as PublicCollectionIncludingLinks,
+        setData
       );
     }
 
@@ -27,6 +30,16 @@ export default function PublicCollections() {
     //   );
   }, []);
 
+  useEffect(() => {
+    if (hasReachedBottom && router.query.id) {
+      getPublicCollectionData(
+        router.query.id as string,
+        data as PublicCollectionIncludingLinks,
+        setData
+      );
+    }
+  }, [hasReachedBottom]);
+
   return data ? (
     <div className="max-w-4xl mx-auto p-5 bg">
       <div
@@ -35,10 +48,6 @@ export default function PublicCollections() {
         <p className="text-5xl bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold mb-5 capitalize">
           {data.name}
         </p>
-
-        {data.ownerName && (
-          <p className="text-sky-500">{"By " + data.ownerName}</p>
-        )}
 
         <hr className="mt-5 max-w-[30rem] mx-auto border-1 border-slate-400" />
 
