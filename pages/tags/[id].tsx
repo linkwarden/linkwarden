@@ -8,6 +8,7 @@ import MainLayout from "@/layouts/MainLayout";
 import { Tag } from "@prisma/client";
 import useTagStore from "@/store/tags";
 import SortLinkDropdown from "@/components/SortLinkDropdown";
+import { Sort } from "@/types/global";
 
 export default function Index() {
   const router = useRouter();
@@ -16,14 +17,14 @@ export default function Index() {
   const { tags } = useTagStore();
 
   const [sortDropdown, setSortDropdown] = useState(false);
-  const [sortBy, setSortBy] = useState("Name (A-Z)");
+  const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
 
   const [activeTag, setActiveTag] = useState<Tag>();
 
   const [sortedLinks, setSortedLinks] = useState(links);
 
-  const handleSortChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSortBy(event.target.value);
+  const handleSortChange = (e: Sort) => {
+    setSortBy(e);
   };
 
   useEffect(() => {
@@ -37,15 +38,15 @@ export default function Index() {
       ),
     ];
 
-    if (sortBy === "Name (A-Z)")
+    if (sortBy === Sort.NameAZ)
       setSortedLinks(linksArray.sort((a, b) => a.name.localeCompare(b.name)));
-    else if (sortBy === "Title (A-Z)")
+    else if (sortBy === Sort.TitleAZ)
       setSortedLinks(linksArray.sort((a, b) => a.title.localeCompare(b.title)));
-    else if (sortBy === "Name (Z-A)")
+    else if (sortBy === Sort.NameZA)
       setSortedLinks(linksArray.sort((a, b) => b.name.localeCompare(a.name)));
-    else if (sortBy === "Title (Z-A)")
+    else if (sortBy === Sort.TitleZA)
       setSortedLinks(linksArray.sort((a, b) => b.title.localeCompare(a.title)));
-    else if (sortBy === "Date (Newest First)")
+    else if (sortBy === Sort.DateNewestFirst)
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
@@ -53,7 +54,7 @@ export default function Index() {
             new Date(a.createdAt as string).getTime()
         )
       );
-    else if (sortBy === "Date (Oldest First)")
+    else if (sortBy === Sort.DateOldestFirst)
       setSortedLinks(
         linksArray.sort(
           (a, b) =>
