@@ -72,7 +72,7 @@ export default async function postLink(
           },
         })),
       },
-      title,
+      description: title,
     },
     include: { tags: true, collection: true },
   });

@@ -1,11 +1,12 @@
 import LinkCard from "@/components/LinkCard";
-import SortLinkDropdown from "@/components/SortLinkDropdown";
+import SortDropdown from "@/components/SortDropdown";
+import useSort from "@/hooks/useSort";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import { Sort } from "@/types/global";
 import { faLink, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Links() {
   const { links } = useLinkStore();
@@ -14,38 +15,7 @@ export default function Links() {
   const [sortBy, setSortBy] = useState<Sort>(Sort.NameAZ);
   const [sortedLinks, setSortedLinks] = useState(links);
 
-  const handleSortChange = (e: Sort) => {
-    setSortBy(e);
-  };
-
-  useEffect(() => {
-    const linksArray = [...links];
-
-    if (sortBy === Sort.NameAZ)
-      setSortedLinks(linksArray.sort((a, b) => a.name.localeCompare(b.name)));
-    else if (sortBy === Sort.TitleAZ)
-      setSortedLinks(linksArray.sort((a, b) => a.title.localeCompare(b.title)));
-    else if (sortBy === Sort.NameZA)
-      setSortedLinks(linksArray.sort((a, b) => b.name.localeCompare(a.name)));
-    else if (sortBy === Sort.TitleZA)
-      setSortedLinks(linksArray.sort((a, b) => b.title.localeCompare(a.title)));
-    else if (sortBy === Sort.DateNewestFirst)
-      setSortedLinks(
-        linksArray.sort(
-          (a, b) =>
-            new Date(b.createdAt as string).getTime() -
-            new Date(a.createdAt as string).getTime()
-        )
-      );
-    else if (sortBy === Sort.DateOldestFirst)
-      setSortedLinks(
-        linksArray.sort(
-          (a, b) =>
-            new Date(a.createdAt as string).getTime() -
-            new Date(b.createdAt as string).getTime()
-        )
-      );
-  }, [links, sortBy]);
+  useSort({ sortBy, setData: setSortedLinks, data: links });
 
   return (
     <MainLayout>
@@ -75,9 +45,9 @@ export default function Links() {
             </div>
 
             {sortDropdown ? (
-              <SortLinkDropdown
-                handleSortChange={handleSortChange}
+              <SortDropdown
                 sortBy={sortBy}
+                setSort={setSortBy}
                 toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
               />
             ) : null}

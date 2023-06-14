@@ -14,7 +14,7 @@ export default async function getCollection(collectionId: number) {
           id: true,
           name: true,
           url: true,
-          title: true,
+          description: true,
           collectionId: true,
           createdAt: true,
         },

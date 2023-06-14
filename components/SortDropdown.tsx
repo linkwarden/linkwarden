@@ -1,18 +1,19 @@
-import React, { ChangeEvent } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import ClickAwayHandler from "./ClickAwayHandler";
 import RadioButton from "./RadioButton";
 import { Sort } from "@/types/global";
 
 type Props = {
-  handleSortChange: (e: Sort) => void;
   sortBy: Sort;
+  setSort: Dispatch<SetStateAction<Sort>>;
+
   toggleSortDropdown: Function;
 };
 
-export default function SortLinkDropdown({
-  handleSortChange,
+export default function SortDropdown({
   sortBy,
   toggleSortDropdown,
+  setSort,
 }: Props) {
   return (
     <ClickAwayHandler
@@ -27,37 +28,37 @@ export default function SortLinkDropdown({
         <RadioButton
           label="Name (A-Z)"
           state={sortBy === Sort.NameAZ}
-          onClick={() => handleSortChange(Sort.NameAZ)}
+          onClick={() => setSort(Sort.NameAZ)}
         />
 
         <RadioButton
           label="Name (Z-A)"
           state={sortBy === Sort.NameZA}
-          onClick={() => handleSortChange(Sort.NameZA)}
+          onClick={() => setSort(Sort.NameZA)}
         />
 
         <RadioButton
-          label="Title (A-Z)"
-          state={sortBy === Sort.TitleAZ}
-          onClick={() => handleSortChange(Sort.TitleAZ)}
+          label="Description (A-Z)"
+          state={sortBy === Sort.DescriptionAZ}
+          onClick={() => setSort(Sort.DescriptionAZ)}
         />
 
         <RadioButton
-          label="Title (Z-A)"
-          state={sortBy === Sort.TitleZA}
-          onClick={() => handleSortChange(Sort.TitleZA)}
+          label="Description (Z-A)"
+          state={sortBy === Sort.DescriptionZA}
+          onClick={() => setSort(Sort.DescriptionZA)}
         />
 
         <RadioButton
           label="Date (Newest First)"
           state={sortBy === Sort.DateNewestFirst}
-          onClick={() => handleSortChange(Sort.DateNewestFirst)}
+          onClick={() => setSort(Sort.DateNewestFirst)}
         />
 
         <RadioButton
           label="Date (Oldest First)"
           state={sortBy === Sort.DateOldestFirst}
-          onClick={() => handleSortChange(Sort.DateOldestFirst)}
+          onClick={() => setSort(Sort.DateOldestFirst)}
         />
       </div>
     </ClickAwayHandler>

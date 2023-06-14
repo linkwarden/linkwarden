@@ -14,8 +14,9 @@ import { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import SortLinkDropdown from "@/components/SortLinkDropdown";
+import SortDropdown from "@/components/SortDropdown";
 import useModalStore from "@/store/modals";
+import useSort from "@/hooks/useSort";
 
 export default function Index() {
   const { setModal } = useModalStore();
@@ -36,46 +37,13 @@ export default function Index() {
 
   const [sortedLinks, setSortedLinks] = useState(links);
 
-  const handleSortChange = (e: Sort) => {
-    setSortBy(e);
-  };
+  useSort({ sortBy, setData: setSortedLinks, data: links });
 
   useEffect(() => {
     setActiveCollection(
       collections.find((e) => e.id === Number(router.query.id))
     );
-
-    // Sorting logic
-
-    const linksArray = [
-      ...links.filter((e) => e.collection.id === Number(router.query.id)),
-    ];
-
-    if (sortBy === Sort.NameAZ)
-      setSortedLinks(linksArray.sort((a, b) => a.name.localeCompare(b.name)));
-    else if (sortBy === Sort.TitleAZ)
-      setSortedLinks(linksArray.sort((a, b) => a.title.localeCompare(b.title)));
-    else if (sortBy === Sort.NameZA)
-      setSortedLinks(linksArray.sort((a, b) => b.name.localeCompare(a.name)));
-    else if (sortBy === Sort.TitleZA)
-      setSortedLinks(linksArray.sort((a, b) => b.title.localeCompare(a.title)));
-    else if (sortBy === Sort.DateNewestFirst)
-      setSortedLinks(
-        linksArray.sort(
-          (a, b) =>
-            new Date(b.createdAt as string).getTime() -
-            new Date(a.createdAt as string).getTime()
-        )
-      );
-    else if (sortBy === Sort.DateOldestFirst)
-      setSortedLinks(
-        linksArray.sort(
-          (a, b) =>
-            new Date(a.createdAt as string).getTime() -
-            new Date(b.createdAt as string).getTime()
-        )
-      );
-  }, [links, router, collections, sortBy]);
+  }, [router, collections]);
 
   return (
     <MainLayout>
@@ -166,9 +134,9 @@ export default function Index() {
                 </div>
 
                 {sortDropdown ? (
-                  <SortLinkDropdown
-                    handleSortChange={handleSortChange}
+                  <SortDropdown
                     sortBy={sortBy}
+                    setSort={setSortBy}
                     toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
                   />
                 ) : null}

@@ -46,8 +46,8 @@ export interface PublicCollectionIncludingLinks
 export enum Sort {
   NameAZ,
   NameZA,
-  TitleAZ,
-  TitleZA,
+  DescriptionAZ,
+  DescriptionZA,
   DateNewestFirst,
   DateOldestFirst,
 }
