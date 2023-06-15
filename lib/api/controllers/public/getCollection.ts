@@ -9,7 +9,7 @@ export default async function getCollection(body: string) {
 
   const collection = await prisma.collection.findFirst({
     where: {
-      id: Number(query.collectionId),
+      id: query.collectionId,
       isPublic: true,
     },
   });
@@ -20,12 +20,12 @@ export default async function getCollection(body: string) {
       skip: query.cursor ? 1 : undefined,
       cursor: query.cursor
         ? {
-            id: Number(query.cursor),
+            id: query.cursor,
           }
         : undefined,
       where: {
         collection: {
-          id: Number(query.collectionId),
+          id: query.collectionId,
         },
       },
       include: {
