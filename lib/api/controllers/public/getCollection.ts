@@ -1,7 +1,10 @@
 import { prisma } from "@/lib/api/db";
 import { PublicLinkRequestQuery } from "@/types/global";
 
-export default async function getCollection(query: PublicLinkRequestQuery) {
+export default async function getCollection(body: string) {
+  const query: PublicLinkRequestQuery = JSON.parse(decodeURIComponent(body));
+  console.log(query);
+
   let data;
 
   const collection = await prisma.collection.findFirst({
@@ -14,13 +17,12 @@ export default async function getCollection(query: PublicLinkRequestQuery) {
   if (collection) {
     const links = await prisma.link.findMany({
       take: Number(process.env.PAGINATION_TAKE_COUNT),
-      skip: query.cursor !== "undefined" ? 1 : undefined,
-      cursor:
-        query.cursor !== "undefined"
-          ? {
-              id: Number(query.cursor),
-            }
-          : undefined,
+      skip: query.cursor ? 1 : undefined,
+      cursor: query.cursor
+        ? {
+            id: Number(query.cursor),
+          }
+        : undefined,
       where: {
         collection: {
           id: Number(query.collectionId),

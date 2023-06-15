@@ -221,9 +221,11 @@ export default function Index() {
           </div>
         </div>
         <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {links.map((e, i) => {
-            return <LinkCard key={i} link={e} count={i} />;
-          })}
+          {links
+            .filter((e) => e.collectionId === Number(router.query.id))
+            .map((e, i) => {
+              return <LinkCard key={i} link={e} count={i} />;
+            })}
         </div>
       </div>
     </MainLayout>

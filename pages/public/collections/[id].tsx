@@ -14,7 +14,7 @@ export default function PublicCollections() {
   useEffect(() => {
     if (router.query.id) {
       getPublicCollectionData(
-        router.query.id as string,
+        Number(router.query.id),
         data as PublicCollectionIncludingLinks,
         setData
       );
@@ -33,7 +33,7 @@ export default function PublicCollections() {
   useEffect(() => {
     if (hasReachedBottom && router.query.id) {
       getPublicCollectionData(
-        router.query.id as string,
+        Number(router.query.id),
         data as PublicCollectionIncludingLinks,
         setData
       );

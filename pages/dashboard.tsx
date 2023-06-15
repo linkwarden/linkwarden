@@ -35,7 +35,7 @@ export default function Dashboard() {
     return storedValue ? storedValue === "true" : true;
   });
 
-  useLinks({ pinnedOnly: true });
+  useLinks({ pinnedOnly: true, sort: 0 });
 
   useEffect(() => {
     localStorage.setItem(
@@ -134,9 +134,11 @@ export default function Dashboard() {
                 leaveTo="transform opacity-0 -translate-y-3"
               >
                 <Disclosure.Panel className="flex flex-col gap-5 w-full">
-                  {links.map((e, i) => (
-                    <LinkCard key={i} link={e} count={i} />
-                  ))}
+                  {links
+                    .filter((e) => e.pinnedBy)
+                    .map((e, i) => (
+                      <LinkCard key={i} link={e} count={i} />
+                    ))}
                 </Disclosure.Panel>
               </Transition>
             </div>
