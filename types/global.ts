@@ -66,16 +66,16 @@ export type LinkSearchFilter = {
 };
 
 export type LinkRequestQuery = {
-  cursor?: string;
+  cursor?: number;
   collectionId?: number;
   tagId?: number;
-  sort?: Sort;
+  sort: Sort;
   searchFilter?: LinkSearchFilter;
   searchQuery?: string;
   pinnedOnly?: boolean;
 };
 
 export type PublicLinkRequestQuery = {
-  cursor?: string;
-  collectionId?: number;
+  cursor?: number;
+  collectionId: number;
 };

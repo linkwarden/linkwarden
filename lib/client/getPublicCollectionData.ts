@@ -1,16 +1,23 @@
-import { PublicCollectionIncludingLinks } from "@/types/global";
+import {
+  PublicCollectionIncludingLinks,
+  PublicLinkRequestQuery,
+} from "@/types/global";
 import { Dispatch, SetStateAction } from "react";
 
 const getPublicCollectionData = async (
-  collectionId: string,
+  collectionId: number,
   prevData: PublicCollectionIncludingLinks,
   setData: Dispatch<SetStateAction<PublicCollectionIncludingLinks | undefined>>
 ) => {
+  const requestBody: PublicLinkRequestQuery = {
+    cursor: prevData?.links?.at(-1)?.id,
+    collectionId,
+  };
+
+  const encodedData = encodeURIComponent(JSON.stringify(requestBody));
+
   const res = await fetch(
-    "/api/public/routes/collections?collectionId=" +
-      collectionId +
-      "&cursor=" +
-      prevData?.links?.at(-1)?.id
+    "/api/public/routes/collections?body=" + encodeURIComponent(encodedData)
   );
 
   const data = await res.json();
