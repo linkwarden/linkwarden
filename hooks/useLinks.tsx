@@ -4,41 +4,38 @@ import useDetectPageBottom from "./useDetectPageBottom";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
 
-export default function useLinks({
-  sort,
-  searchFilter,
-  searchQuery,
-  pinnedOnly,
-  collectionId,
-  tagId,
-}: Omit<LinkRequestQuery, "cursor"> = {}) {
+export default function useLinks(
+  {
+    sort,
+    searchFilter,
+    searchQuery,
+    pinnedOnly,
+    collectionId,
+    tagId,
+  }: Omit<LinkRequestQuery, "cursor"> = { sort: 0 }
+) {
   const { links, setLinks, resetLinks } = useLinkStore();
   const router = useRouter();
 
   const hasReachedBottom = useDetectPageBottom();
 
   const getLinks = async (isInitialCall: boolean, cursor?: number) => {
+    const requestBody: LinkRequestQuery = {
+      cursor,
+      sort,
+      searchFilter,
+      searchQuery,
+      pinnedOnly,
+      collectionId,
+      tagId,
+    };
+
+    const encodedData = encodeURIComponent(JSON.stringify(requestBody));
+
+    console.log(encodedData);
+
     const response = await fetch(
-      `/api/routes/links?cursor=${cursor}${
-        (sort ? "&sort=" + sort : "") +
-        (searchQuery && searchFilter
-          ? "&searchQuery=" +
-            searchQuery +
-            "&searchFilter=" +
-            searchFilter.name +
-            "-" +
-            searchFilter.url +
-            "-" +
-            searchFilter.description +
-            "-" +
-            searchFilter.collection +
-            "-" +
-            searchFilter.tags
-          : "") +
-        (collectionId ? "&collectionId=" + collectionId : "") +
-        (tagId ? "&tagId=" + tagId : "") +
-        (pinnedOnly ? "&pinnedOnly=" + pinnedOnly : "")
-      }`
+      `/api/routes/links?body=${encodeURIComponent(encodedData)}`
     );
 
     const data = await response.json();
