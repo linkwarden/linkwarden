@@ -47,33 +47,41 @@ export default async function getLink(userId: number, body: string) {
         },
         {
           name: {
-            contains: query.searchFilter?.name ? query.searchQuery : undefined,
+            contains:
+              query.searchQuery && query.searchFilter?.name
+                ? query.searchQuery
+                : undefined,
             mode: "insensitive",
           },
         },
         {
           url: {
-            contains: query.searchFilter?.url ? query.searchQuery : undefined,
+            contains:
+              query.searchQuery && query.searchFilter?.url
+                ? query.searchQuery
+                : undefined,
             mode: "insensitive",
           },
         },
         {
           description: {
-            contains: query.searchFilter?.description
-              ? query.searchQuery
-              : undefined,
+            contains:
+              query.searchQuery && query.searchFilter?.description
+                ? query.searchQuery
+                : undefined,
             mode: "insensitive",
           },
         },
         {
           collection: {
             id: query.collectionId ? query.collectionId : undefined, // If collectionId was defined, filter by collection
-            name: query.searchFilter?.collection
-              ? {
-                  contains: query.searchQuery,
-                  mode: "insensitive",
-                }
-              : undefined,
+            name:
+              query.searchQuery && query.searchFilter?.collection
+                ? {
+                    contains: query.searchQuery,
+                    mode: "insensitive",
+                  }
+                : undefined,
             OR: query.searchQuery
               ? undefined
               : [
@@ -97,21 +105,23 @@ export default async function getLink(userId: number, body: string) {
               : {
                   some: {
                     id: query.tagId ? query.tagId : undefined, // If tagId was defined, filter by tag
-                    name: query.searchFilter?.tags
-                      ? {
-                          contains: query.searchQuery,
-                          mode: "insensitive",
-                        }
-                      : undefined,
+                    name:
+                      query.searchQuery && query.searchFilter?.tags
+                        ? {
+                            contains: query.searchQuery,
+                            mode: "insensitive",
+                          }
+                        : undefined,
                     OR: [
                       { ownerId: userId }, // Tags owned by the user
                       {
                         links: {
                           some: {
                             name: {
-                              contains: query.searchFilter?.tags
-                                ? query.searchQuery
-                                : undefined,
+                              contains:
+                                query.searchQuery && query.searchFilter?.tags
+                                  ? query.searchQuery
+                                  : undefined,
                               mode: "insensitive",
                             },
                             collection: {
