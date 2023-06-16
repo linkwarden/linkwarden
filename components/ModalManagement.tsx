@@ -3,7 +3,7 @@ import Modal from "./Modal";
 import LinkModal from "./Modal/LinkModal";
 import {
   AccountSettings,
-  CollectionIncludingMembers,
+  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import CollectionModal from "./Modal/Collection";
@@ -33,7 +33,9 @@ export default function ModalManagement() {
           toggleCollectionModal={toggleModal}
           method={modal.method}
           defaultIndex={modal.defaultIndex}
-          activeCollection={modal.active as CollectionIncludingMembers}
+          activeCollection={
+            modal.active as CollectionIncludingMembersAndLinkCount
+          }
         />
       </Modal>
     );

@@ -5,7 +5,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
-import { CollectionIncludingMembers } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import RequiredBadge from "../../RequiredBadge";
 import SubmitButton from "@/components/SubmitButton";
 import { HexColorPicker } from "react-colorful";
@@ -13,8 +13,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = {
   toggleCollectionModal: Function;
-  setCollection: Dispatch<SetStateAction<CollectionIncludingMembers>>;
-  collection: CollectionIncludingMembers;
+  setCollection: Dispatch<
+    SetStateAction<CollectionIncludingMembersAndLinkCount>
+  >;
+  collection: CollectionIncludingMembersAndLinkCount;
   method: "CREATE" | "UPDATE";
 };
 

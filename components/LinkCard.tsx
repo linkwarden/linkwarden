@@ -1,5 +1,5 @@
 import {
-  CollectionIncludingMembers,
+  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import {
@@ -34,17 +34,18 @@ export default function LinkCard({ link, count, className }: Props) {
 
   const { account } = useAccountStore();
 
-  const [collection, setCollection] = useState<CollectionIncludingMembers>(
-    collections.find(
-      (e) => e.id === link.collection.id
-    ) as CollectionIncludingMembers
-  );
+  const [collection, setCollection] =
+    useState<CollectionIncludingMembersAndLinkCount>(
+      collections.find(
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
+    );
 
   useEffect(() => {
     setCollection(
       collections.find(
         (e) => e.id === link.collection.id
-      ) as CollectionIncludingMembers
+      ) as CollectionIncludingMembersAndLinkCount
     );
   }, [collections]);
 

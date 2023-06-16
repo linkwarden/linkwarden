@@ -77,7 +77,11 @@ export default function Dashboard() {
         <div className="flex flex-col md:flex-row md:items-center justify-evenly gap-2 mb-10">
           <div className="flex items-baseline gap-2">
             <p className="font-bold text-6xl bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent">
-              {links.length}
+              {collections.reduce(
+                (accumulator, collection) =>
+                  accumulator + collection._count.links,
+                0
+              )}
             </p>
             <p className="text-sky-900 text-xl">
               Links

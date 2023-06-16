@@ -9,6 +9,9 @@ export default async function getCollection(userId: number) {
       ],
     },
     include: {
+      _count: {
+        select: { links: true },
+      },
       members: {
         include: {
           user: {
