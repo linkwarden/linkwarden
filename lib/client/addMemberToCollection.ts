@@ -1,10 +1,10 @@
-import { CollectionIncludingMembers, Member } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserDataByEmail from "./getPublicUserDataByEmail";
 
 const addMemberToCollection = async (
   ownerEmail: string,
   memberEmail: string,
-  collection: CollectionIncludingMembers,
+  collection: CollectionIncludingMembersAndLinkCount,
   setMember: (newMember: Member) => null | undefined
 ) => {
   console.log(collection.members);

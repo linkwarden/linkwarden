@@ -2,7 +2,7 @@ import Dropdown from "@/components/Dropdown";
 import LinkCard from "@/components/LinkCard";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
-import { CollectionIncludingMembers, Sort } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount, Sort } from "@/types/global";
 import {
   faEllipsis,
   faFolder,
@@ -33,7 +33,7 @@ export default function Index() {
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   const [activeCollection, setActiveCollection] =
-    useState<CollectionIncludingMembers>();
+    useState<CollectionIncludingMembersAndLinkCount>();
 
   useLinks({ collectionId: Number(router.query.id), sort: sortBy });
 

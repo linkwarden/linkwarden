@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/api/db";
-import { CollectionIncludingMembers } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import getPermission from "@/lib/api/getPermission";
 
 export default async function updateCollection(
-  collection: CollectionIncludingMembers,
+  collection: CollectionIncludingMembersAndLinkCount,
   userId: number
 ) {
   if (!collection.id)
@@ -27,6 +27,7 @@ export default async function updateCollection(
       where: {
         id: collection.id,
       },
+
       data: {
         name: collection.name,
         description: collection.description,
@@ -42,6 +43,9 @@ export default async function updateCollection(
         },
       },
       include: {
+        _count: {
+          select: { links: true },
+        },
         members: {
           include: {
             user: {

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { CollectionIncludingMembers } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 
 type Props = {
   toggleDeleteCollectionModal: Function;
-  collection: CollectionIncludingMembers;
+  collection: CollectionIncludingMembersAndLinkCount;
 };
 
 export default function DeleteCollection({

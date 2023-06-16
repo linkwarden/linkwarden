@@ -1,13 +1,15 @@
 import { create } from "zustand";
-import { CollectionIncludingMembers } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import useTagStore from "./tags";
 
 type CollectionStore = {
-  collections: CollectionIncludingMembers[];
+  collections: CollectionIncludingMembersAndLinkCount[];
   setCollections: () => void;
-  addCollection: (body: CollectionIncludingMembers) => Promise<boolean>;
+  addCollection: (
+    body: CollectionIncludingMembersAndLinkCount
+  ) => Promise<boolean>;
   updateCollection: (
-    collection: CollectionIncludingMembers
+    collection: CollectionIncludingMembersAndLinkCount
   ) => Promise<boolean>;
   removeCollection: (collectionId: number) => Promise<boolean>;
 };
