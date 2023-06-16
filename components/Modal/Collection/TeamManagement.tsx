@@ -7,7 +7,7 @@ import {
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
-import { CollectionIncludingMembers, Member } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import { useSession } from "next-auth/react";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Checkbox from "../../Checkbox";
@@ -16,8 +16,10 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 
 type Props = {
   toggleCollectionModal: Function;
-  setCollection: Dispatch<SetStateAction<CollectionIncludingMembers>>;
-  collection: CollectionIncludingMembers;
+  setCollection: Dispatch<
+    SetStateAction<CollectionIncludingMembersAndLinkCount>
+  >;
+  collection: CollectionIncludingMembersAndLinkCount;
   method: "CREATE" | "UPDATE";
 };
 

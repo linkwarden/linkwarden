@@ -1,13 +1,13 @@
 import { Tab } from "@headlessui/react";
 import CollectionInfo from "./CollectionInfo";
-import { CollectionIncludingMembers } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import TeamManagement from "./TeamManagement";
 import { useState } from "react";
 import DeleteCollection from "./DeleteCollection";
 
 type Props = {
   toggleCollectionModal: Function;
-  activeCollection: CollectionIncludingMembers;
+  activeCollection: CollectionIncludingMembersAndLinkCount;
   method: "CREATE" | "UPDATE";
   className?: string;
   defaultIndex?: number;
@@ -21,7 +21,7 @@ export default function CollectionModal({
   method,
 }: Props) {
   const [collection, setCollection] =
-    useState<CollectionIncludingMembers>(activeCollection);
+    useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
   return (
     <div className={className}>

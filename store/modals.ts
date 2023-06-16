@@ -1,6 +1,6 @@
 import {
   AccountSettings,
-  CollectionIncludingMembers,
+  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import { create } from "zustand";
@@ -28,7 +28,7 @@ type Modal =
       modal: "COLLECTION";
       state: boolean;
       method: "CREATE" | "UPDATE";
-      active: CollectionIncludingMembers;
+      active: CollectionIncludingMembersAndLinkCount;
       defaultIndex?: number;
     }
   | null;

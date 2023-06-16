@@ -27,10 +27,11 @@ export interface Member {
   user: OptionalExcluding<User, "email" | "name">;
 }
 
-export interface CollectionIncludingMembers
+export interface CollectionIncludingMembersAndLinkCount
   extends Omit<Collection, "id" | "createdAt"> {
   id?: number;
   createdAt?: string;
+  _count: { links: number };
   members: Member[];
 }
 

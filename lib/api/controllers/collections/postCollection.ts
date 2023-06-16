@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/api/db";
-import { CollectionIncludingMembers } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { existsSync, mkdirSync } from "fs";
 
 export default async function postCollection(
-  collection: CollectionIncludingMembers,
+  collection: CollectionIncludingMembersAndLinkCount,
   userId: number
 ) {
   if (!collection || collection.name.trim() === "")
@@ -50,6 +50,9 @@ export default async function postCollection(
       },
     },
     include: {
+      _count: {
+        select: { links: true },
+      },
       members: {
         include: {
           user: {
