@@ -19,6 +19,8 @@ export default function Dashboard() {
   const { links } = useLinkStore();
   const { tags } = useTagStore();
 
+  const [numberOfLinks, setNumberOfLinks] = useState(0);
+
   const [tagPinDisclosure, setTagPinDisclosure] = useState<boolean>(() => {
     const storedValue = localStorage.getItem("tagPinDisclosure");
     return storedValue ? storedValue === "true" : true;
@@ -36,6 +38,15 @@ export default function Dashboard() {
   });
 
   useLinks({ pinnedOnly: true, sort: 0 });
+
+  useEffect(() => {
+    setNumberOfLinks(
+      collections.reduce(
+        (accumulator, collection) => accumulator + collection._count.links,
+        0
+      )
+    );
+  }, [collections]);
 
   useEffect(() => {
     localStorage.setItem(
@@ -74,18 +85,15 @@ export default function Dashboard() {
           </div>
         </div>
 
+        <br />
+
         <div className="flex flex-col md:flex-row md:items-center justify-evenly gap-2 mb-10">
           <div className="flex items-baseline gap-2">
             <p className="font-bold text-6xl bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent">
-              {collections.reduce(
-                (accumulator, collection) =>
-                  accumulator + collection._count.links,
-                0
-              )}
+              {numberOfLinks}
             </p>
             <p className="text-sky-900 text-xl">
-              Links
-              {/* {links.length == 1 ? "Links" : "Link"} */}
+              {numberOfLinks === 1 ? "Link" : "Links"}
             </p>
           </div>
 
