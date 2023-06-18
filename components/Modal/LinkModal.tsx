@@ -57,7 +57,7 @@ export default function EditLink({
         (e) => e.id == Number(router.query.id)
       );
 
-      if (currentCollection)
+      if (currentCollection && currentCollection.ownerId)
         setLink({
           ...link,
           collection: {
