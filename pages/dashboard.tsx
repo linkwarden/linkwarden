@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import useTagStore from "@/store/tags";
-import LinkCard from "@/components/LinkCard";
+import CompactLinkCard from "@/components/CompactLinkCard";
 import Link from "next/link";
 import CollectionCard from "@/components/CollectionCard";
 import { Disclosure, Transition } from "@headlessui/react";
@@ -38,6 +38,10 @@ export default function Dashboard() {
   });
 
   useLinks({ pinnedOnly: true, sort: 0 });
+
+  useEffect(() => {
+    console.log(links);
+  }, [links]);
 
   useEffect(() => {
     setNumberOfLinks(
@@ -145,11 +149,11 @@ export default function Dashboard() {
                 leaveFrom="transform opacity-100 translate-y-0"
                 leaveTo="transform opacity-0 -translate-y-3"
               >
-                <Disclosure.Panel className="flex flex-col gap-5 w-full">
+                <Disclosure.Panel className="grid grid-cols-1 xl:grid-cols-2 gap-5 w-full">
                   {links
-                    .filter((e) => e.pinnedBy)
+                    .filter((e) => e.pinnedBy && e.pinnedBy[0])
                     .map((e, i) => (
-                      <LinkCard key={i} link={e} count={i} />
+                      <CompactLinkCard key={i} link={e} count={i} />
                     ))}
                 </Disclosure.Panel>
               </Transition>

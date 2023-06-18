@@ -1,10 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut } from "next-auth/react";
-import {
-  faPlus,
-  faChevronDown,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faBars } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Dropdown from "@/components/Dropdown";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
@@ -67,7 +63,7 @@ export default function Navbar() {
 
         <div className="relative">
           <div
-            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:p-1 duration-100 h-10 rounded-full items-center w-fit bg-white cursor-pointer"
+            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit bg-white cursor-pointer"
             onClick={() => setProfileDropdown(!profileDropdown)}
             id="profile-dropdown"
           >
@@ -75,22 +71,12 @@ export default function Navbar() {
               src={account.profilePic}
               className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100"
             />
-            <div
+            <p
               id="profile-dropdown"
-              className="text-sky-500 duration-100 hidden sm:flex item-center gap-1 max-w-[8rem]"
+              className="font-bold text-sky-500 leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
             >
-              <p
-                id="profile-dropdown"
-                className="font-bold leading-3 hidden sm:block select-none truncate py-1"
-              >
-                {account.name}
-              </p>
-              <FontAwesomeIcon
-                id="profile-dropdown"
-                icon={faChevronDown}
-                className="mt-1 h-3 w-3 text-gray-500"
-              />
-            </div>
+              {account.name}
+            </p>
           </div>
           {profileDropdown ? (
             <Dropdown
@@ -101,7 +87,6 @@ export default function Navbar() {
                     setModal({
                       modal: "ACCOUNT",
                       state: true,
-                      method: "CREATE",
                       active: account,
                     });
                     setProfileDropdown(!profileDropdown);

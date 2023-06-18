@@ -27,8 +27,15 @@ type Modal =
   | {
       modal: "COLLECTION";
       state: boolean;
-      method: "CREATE" | "UPDATE";
+      method: "UPDATE";
       active: CollectionIncludingMembersAndLinkCount;
+      defaultIndex?: number;
+    }
+  | {
+      modal: "COLLECTION";
+      state: boolean;
+      method: "CREATE";
+      active?: CollectionIncludingMembersAndLinkCount;
       defaultIndex?: number;
     }
   | null;

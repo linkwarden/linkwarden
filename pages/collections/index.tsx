@@ -66,14 +66,6 @@ export default function Collections() {
                           modal: "COLLECTION",
                           state: true,
                           method: "CREATE",
-                          active: {
-                            name: "",
-                            description: "",
-                            color: "#0ea5e9",
-                            isPublic: false,
-                            ownerId: session.data?.user.id as number,
-                            members: [],
-                          },
                         });
                         setExpandDropdown(false);
                       },
@@ -125,14 +117,6 @@ export default function Collections() {
                 modal: "COLLECTION",
                 state: true,
                 method: "CREATE",
-                active: {
-                  name: "",
-                  description: "",
-                  color: "#0ea5e9",
-                  isPublic: false,
-                  ownerId: session.data?.user.id as number,
-                  members: [],
-                },
               });
             }}
           >
