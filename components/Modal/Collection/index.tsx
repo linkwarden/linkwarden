@@ -5,13 +5,21 @@ import TeamManagement from "./TeamManagement";
 import { useState } from "react";
 import DeleteCollection from "./DeleteCollection";
 
-type Props = {
-  toggleCollectionModal: Function;
-  activeCollection: CollectionIncludingMembersAndLinkCount;
-  method: "CREATE" | "UPDATE";
-  className?: string;
-  defaultIndex?: number;
-};
+type Props =
+  | {
+      toggleCollectionModal: Function;
+      activeCollection: CollectionIncludingMembersAndLinkCount;
+      method: "UPDATE";
+      className?: string;
+      defaultIndex?: number;
+    }
+  | {
+      toggleCollectionModal: Function;
+      activeCollection?: CollectionIncludingMembersAndLinkCount;
+      method: "CREATE";
+      className?: string;
+      defaultIndex?: number;
+    };
 
 export default function CollectionModal({
   className,
@@ -21,7 +29,15 @@ export default function CollectionModal({
   method,
 }: Props) {
   const [collection, setCollection] =
-    useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
+    useState<CollectionIncludingMembersAndLinkCount>(
+      activeCollection || {
+        name: "",
+        description: "",
+        color: "#0ea5e9",
+        isPublic: false,
+        members: [],
+      }
+    );
 
   return (
     <div className={className}>
