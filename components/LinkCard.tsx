@@ -2,22 +2,16 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import {
-  faFolder,
-  faArrowUpRightFromSquare,
-  faEllipsis,
-  faThumbTack,
-} from "@fortawesome/free-solid-svg-icons";
-import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
+import { faFolder, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Dropdown from "./Dropdown";
 import useLinkStore from "@/store/links";
-import Link from "next/link";
 import useCollectionStore from "@/store/collections";
 import useAccountStore from "@/store/account";
 import useModalStore from "@/store/modals";
+import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -63,39 +57,38 @@ export default function LinkCard({ link, count, className }: Props) {
 
   return (
     <div
-      className={`bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow-sm p-5 rounded-2xl relative group/item ${className}`}
+      className={`bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow hover:shadow-none cursor-pointer duration-100 p-5 rounded-2xl relative group ${className}`}
     >
-      <div className="flex items-start gap-5 sm:gap-10 h-full w-full">
-        <Image
-          src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-          width={42}
-          height={42}
-          alt=""
-          className="select-none mt-3 z-10 rounded-full shadow border-[3px] border-white bg-white aspect-square"
-          draggable="false"
-          onError={(e) => {
-            const target = e.target as HTMLElement;
-            target.style.opacity = "0";
-          }}
+      <div
+        onClick={() => setExpandDropdown(!expandDropdown)}
+        id={"expand-dropdown" + link.id}
+        className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-slate-200 absolute right-5 top-5 z-10 duration-100 p-1"
+      >
+        <FontAwesomeIcon
+          icon={faEllipsis}
+          title="More"
+          className="w-5 h-5"
+          id={"expand-dropdown" + link.id}
         />
+      </div>
 
-        {link?.pinnedBy && link.pinnedBy[0] && (
-          <div
-            className="absolute bottom-7 left-7"
-            title="This is a pinned Link."
-          >
-            <FontAwesomeIcon
-              icon={faThumbTack}
-              className="w-5 h-5 text-gray-500"
-            />
-          </div>
-        )}
+      <div
+        onClick={() => {
+          setModal({
+            modal: "LINK",
+            state: true,
+            method: "UPDATE",
+            active: link,
+          });
+        }}
+        className="flex items-start gap-5 sm:gap-10 h-full w-full"
+      >
         <Image
           src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-          width={80}
-          height={80}
+          width={70}
+          height={70}
           alt=""
-          className="blur-sm absolute left-2 opacity-40 select-none hidden sm:block"
+          className="blur-sm absolute bottom-5 right-5 opacity-60 group-hover:opacity-80 duration-100 select-none"
           draggable="false"
           onError={(e) => {
             const target = e.target as HTMLElement;
@@ -107,146 +100,77 @@ export default function LinkCard({ link, count, className }: Props) {
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-baseline gap-1">
               <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
-              <p className="text-lg text-sky-500 font-bold truncate max-w-[12rem]">
+              <p className="text-lg text-sky-500 font-bold truncate max-w-[10rem]">
                 {link.name}
               </p>
             </div>
-            <p className="text-gray-500 text-sm font-medium line-clamp-3 w-4/5">
-              {link.description}
-            </p>
             <div className="flex gap-3 items-center flex-wrap my-3">
-              <Link href={`/collections/${link.collection.id}`}>
-                <div className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100">
-                  <FontAwesomeIcon
-                    icon={faFolder}
-                    className="w-4 h-4 mt-1 drop-shadow"
-                    style={{ color: collection?.color }}
-                  />
-                  <p className="text-sky-900 truncate max-w-[10rem]">
-                    {collection?.name}
-                  </p>
-                </div>
-              </Link>
-
-              <div className="flex gap-1 items-center flex-wrap mt-1">
-                {link.tags.map((e, i) => (
-                  <Link key={i} href={`/tags/${e.id}`}>
-                    <p className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[10rem]">
-                      {e.name}
-                    </p>
-                  </Link>
-                ))}
+              <div className="flex items-center gap-1">
+                <FontAwesomeIcon
+                  icon={faFolder}
+                  className="w-4 h-4 mt-1 drop-shadow"
+                  style={{ color: collection?.color }}
+                />
+                <p className="text-sky-900 truncate max-w-[10rem]">
+                  {collection?.name}
+                </p>
               </div>
             </div>
-            <div className="flex gap-2 items-center flex-wrap">
-              <p className="text-gray-500">{formattedDate}</p>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="group/url"
-              >
-                <div className="text-sky-400 font-bold flex items-center gap-1">
-                  <p className="truncate max-w-[12rem]">{url.host}</p>
-                  <FontAwesomeIcon
-                    icon={faArrowUpRightFromSquare}
-                    className="w-3 opacity-0 group-hover/url:opacity-100 duration-75"
-                  />
-                </div>
-              </a>
+            <div className="flex items-center gap-1 text-gray-500">
+              <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
+              <p>{formattedDate}</p>
             </div>
-          </div>
-
-          <div className="flex flex-col justify-between items-end relative">
-            <div
-              onClick={() => setExpandDropdown(!expandDropdown)}
-              id={"expand-dropdown" + link.id}
-              className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
-            >
-              <FontAwesomeIcon
-                icon={faEllipsis}
-                title="More"
-                className="w-5 h-5"
-                id={"expand-dropdown" + link.id}
-              />
-            </div>
-            <div className="relative">
-              <div className="flex flex-col items-end justify-center gap-1">
-                <a
-                  href={`/api/archives/${link.collectionId}/${link.id}.png`}
-                  target="_blank"
-                  rel="noreferrer"
-                  title="Screenshot"
-                >
-                  <FontAwesomeIcon
-                    icon={faFileImage}
-                    className="w-5 h-5 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
-                  />
-                </a>
-                <a
-                  href={`/api/archives/${link.collectionId}/${link.id}.pdf`}
-                  target="_blank"
-                  rel="noreferrer"
-                  title="PDF"
-                >
-                  <FontAwesomeIcon
-                    icon={faFilePdf}
-                    className="w-5 h-5 text-sky-600 cursor-pointer hover:text-sky-500 duration-100"
-                  />
-                </a>
-              </div>
-            </div>
-
-            {expandDropdown ? (
-              <Dropdown
-                items={[
-                  {
-                    name:
-                      link?.pinnedBy && link.pinnedBy[0]
-                        ? "Unpin"
-                        : "Pin to Dashboard",
-                    onClick: () => {
-                      updateLink({
-                        ...link,
-                        pinnedBy:
-                          link?.pinnedBy && link.pinnedBy[0]
-                            ? undefined
-                            : [{ id: account.id }],
-                      });
-                      setExpandDropdown(false);
-                    },
-                  },
-                  {
-                    name: "Edit",
-                    onClick: () => {
-                      setModal({
-                        modal: "LINK",
-                        state: true,
-                        method: "UPDATE",
-                        active: link,
-                      });
-                      setExpandDropdown(false);
-                    },
-                  },
-                  {
-                    name: "Delete",
-                    onClick: () => {
-                      removeLink(link);
-                      setExpandDropdown(false);
-                    },
-                  },
-                ]}
-                onClickOutside={(e: Event) => {
-                  const target = e.target as HTMLInputElement;
-                  if (target.id !== "expand-dropdown" + link.id)
-                    setExpandDropdown(false);
-                }}
-                className="absolute top-8 right-0 w-36"
-              />
-            ) : null}
           </div>
         </div>
       </div>
+      {expandDropdown ? (
+        <Dropdown
+          items={[
+            {
+              name:
+                link?.pinnedBy && link.pinnedBy[0]
+                  ? "Unpin"
+                  : "Pin to Dashboard",
+              onClick: () => {
+                updateLink({
+                  ...link,
+                  pinnedBy:
+                    link?.pinnedBy && link.pinnedBy[0]
+                      ? undefined
+                      : [{ id: account.id }],
+                });
+                setExpandDropdown(false);
+              },
+            },
+            {
+              name: "Edit",
+              onClick: () => {
+                setModal({
+                  modal: "LINK",
+                  state: true,
+                  method: "UPDATE",
+                  active: link,
+                  defaultIndex: 1,
+                });
+                setExpandDropdown(false);
+              },
+            },
+            {
+              name: "Delete",
+              onClick: () => {
+                removeLink(link);
+                setExpandDropdown(false);
+              },
+            },
+          ]}
+          onClickOutside={(e: Event) => {
+            const target = e.target as HTMLInputElement;
+            if (target.id !== "expand-dropdown" + link.id)
+              setExpandDropdown(false);
+          }}
+          className="absolute top-12 right-5 w-36"
+        />
+      ) : null}
     </div>
   );
 }

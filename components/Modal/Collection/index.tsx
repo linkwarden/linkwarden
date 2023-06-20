@@ -42,15 +42,10 @@ export default function CollectionModal({
   return (
     <div className={className}>
       <Tab.Group defaultIndex={defaultIndex}>
-        <p
-          className={`text-xl text-sky-500 text-center ${
-            method === "UPDATE" && "mb-5"
-          }`}
-        >
-          {method === "CREATE" && "Add"} Collection{" "}
-          {method === "UPDATE" && "Settings"}
-        </p>
-        <Tab.List className="flex justify-center flex-col sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-600">
+        {method === "CREATE" && (
+          <p className="text-xl text-sky-500 text-center">New Collection</p>
+        )}
+        <Tab.List className="flex justify-center flex-col max-w-[15rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-600">
           {method === "UPDATE" && (
             <>
               <Tab
