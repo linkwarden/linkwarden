@@ -5,11 +5,11 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import RequiredBadge from "../RequiredBadge";
+import RequiredBadge from "../../RequiredBadge";
 import { useSession } from "next-auth/react";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
-import SubmitButton from "../SubmitButton";
+import SubmitButton from "../../SubmitButton";
 
 type Props =
   | {
@@ -31,18 +31,16 @@ export default function EditLink({
   const { data } = useSession();
 
   const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>(
-    method === "UPDATE"
-      ? activeLink
-      : {
-          name: "",
-          url: "",
-          description: "",
-          tags: [],
-          collection: {
-            name: "",
-            ownerId: data?.user.id as number,
-          },
-        }
+    activeLink || {
+      name: "",
+      url: "",
+      description: "",
+      tags: [],
+      collection: {
+        name: "",
+        ownerId: data?.user.id as number,
+      },
+    }
   );
 
   const { updateLink, addLink } = useLinkStore();
@@ -100,13 +98,12 @@ export default function EditLink({
 
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
-      <p className="text-xl text-sky-500 mb-2 text-center">
-        {method === "UPDATE" ? "Edit" : "New"} Link
-      </p>
-
       {method === "UPDATE" ? (
-        <p className="text-gray-500">
-          <b>{shortendURL}</b> | {link.description}
+        <p
+          className="text-gray-500 my-2 text-center truncate w-full"
+          title={link.url}
+        >
+          Edit <span className="underline">{link.url}</span>
         </p>
       ) : null}
 
@@ -172,11 +169,24 @@ export default function EditLink({
             })}
           />
         </div>
+        <div className="sm:col-span-2">
+          <p className="text-sm text-sky-500 mb-2">Description</p>
+          <textarea
+            value={link.description}
+            onChange={(e) => setLink({ ...link, description: e.target.value })}
+            placeholder={
+              method === "CREATE"
+                ? "Will be auto generated if nothing is provided."
+                : ""
+            }
+            className="resize-none w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
       </div>
 
       <SubmitButton
         onClick={submit}
-        label={method === "CREATE" ? "Add Link" : "Edit Link"}
+        label={method === "CREATE" ? "Add" : "Save"}
         icon={method === "CREATE" ? faPlus : faPenToSquare}
         className="mx-auto mt-2"
       />

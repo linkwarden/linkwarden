@@ -17,12 +17,14 @@ type Modal =
       state: boolean;
       method: "CREATE";
       active?: LinkIncludingShortenedCollectionAndTags;
+      defaultIndex?: number;
     }
   | {
       modal: "LINK";
       state: boolean;
       method: "UPDATE";
       active: LinkIncludingShortenedCollectionAndTags;
+      defaultIndex?: number;
     }
   | {
       modal: "COLLECTION";

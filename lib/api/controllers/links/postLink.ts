@@ -34,12 +34,16 @@ export default async function postLink(
     link.collection.ownerId = userId;
   }
 
-  const title = await getTitle(link.url);
+  const description =
+    link.description && link.description !== ""
+      ? link.description
+      : await getTitle(link.url);
 
   const newLink: Link = await prisma.link.create({
     data: {
       name: link.name,
       url: link.url,
+      description,
       collection: {
         connectOrCreate: {
           where: {
@@ -72,7 +76,6 @@ export default async function postLink(
           },
         })),
       },
-      description: title,
     },
     include: { tags: true, collection: true },
   });
