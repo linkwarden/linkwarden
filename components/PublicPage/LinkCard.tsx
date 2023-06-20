@@ -1,7 +1,4 @@
-import {
-  faArrowUpRightFromSquare,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { Link as LinkType, Tag } from "@prisma/client";
@@ -78,10 +75,6 @@ export default function LinkCard({ link, count }: Props) {
               <p className="text-gray-500">{formattedDate}</p>
               <div className="text-sky-400 font-bold flex items-center gap-1">
                 <p>{url.host}</p>
-                <FontAwesomeIcon
-                  icon={faArrowUpRightFromSquare}
-                  className="w-3 opacity-0 group-hover/item:opacity-100 duration-75"
-                />
               </div>
             </div>
           </div>
