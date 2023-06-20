@@ -31,6 +31,7 @@ export default async function updateLink(
     },
     data: {
       name: link.name,
+      description: link.description,
       collection: {
         connectOrCreate: {
           where: {

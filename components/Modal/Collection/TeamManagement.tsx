@@ -305,7 +305,7 @@ export default function TeamManagement({
 
       <SubmitButton
         onClick={submit}
-        label={method === "CREATE" ? "Add Collection" : "Edit Collection"}
+        label={method === "CREATE" ? "Add" : "Save"}
         icon={method === "CREATE" ? faPlus : faPenToSquare}
         className="mx-auto mt-2"
       />

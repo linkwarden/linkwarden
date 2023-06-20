@@ -1,6 +1,6 @@
 import useModalStore from "@/store/modals";
 import Modal from "./Modal";
-import LinkModal from "./Modal/LinkModal";
+import LinkModal from "./Modal/Link";
 import {
   AccountSettings,
   CollectionIncludingMembersAndLinkCount,
@@ -8,6 +8,8 @@ import {
 } from "@/types/global";
 import CollectionModal from "./Modal/Collection";
 import UserModal from "./Modal/User";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function ModalManagement() {
   const { modal, setModal } = useModalStore();
@@ -16,12 +18,18 @@ export default function ModalManagement() {
     setModal(null);
   };
 
+  const router = useRouter();
+  useEffect(() => {
+    toggleModal();
+  }, [router]);
+
   if (modal && modal.modal === "LINK")
     return (
       <Modal toggleModal={toggleModal}>
         <LinkModal
           toggleLinkModal={toggleModal}
           method={modal.method}
+          defaultIndex={modal.defaultIndex}
           activeLink={modal.active as LinkIncludingShortenedCollectionAndTags}
         />
       </Modal>

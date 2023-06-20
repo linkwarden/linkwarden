@@ -23,10 +23,7 @@ export default function UserModal({
   return (
     <div className={className}>
       <Tab.Group defaultIndex={defaultIndex}>
-        <p className="text-xl text-sky-500 mb-5 text-center">
-          Account Settings
-        </p>
-        <Tab.List className="flex justify-center flex-col sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-600">
+        <Tab.List className="flex justify-center flex-col max-w-[15rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-600">
           <Tab
             className={({ selected }) =>
               selected
