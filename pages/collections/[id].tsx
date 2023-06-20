@@ -46,7 +46,7 @@ export default function Index() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
-        <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
+        <div className="bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
           <div className="flex flex-col sm:flex-row gap-3 justify-between items-center sm:items-start">
             {activeCollection && (
               <div className="flex gap-3 items-center">
