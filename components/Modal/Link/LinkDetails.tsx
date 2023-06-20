@@ -194,11 +194,9 @@ export default function LinkDetails({ link }: Props) {
       </div>
       {link.description && (
         <>
-          <hr className="my-3" />
-          <div className="text-sky-900 max-h-[20rem] rounded-md overflow-y-auto hyphens-auto">
+          <div className="text-gray-500 max-h-[20rem] my-3 rounded-md overflow-y-auto hyphens-auto">
             {link.description}
           </div>
-          <hr className="my-3" />
         </>
       )}
 
