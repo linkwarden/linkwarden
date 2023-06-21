@@ -1,6 +1,7 @@
 import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
+  Member,
 } from "@/types/global";
 import { faFolder, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +13,7 @@ import useCollectionStore from "@/store/collections";
 import useAccountStore from "@/store/account";
 import useModalStore from "@/store/modals";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
+import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -21,6 +23,8 @@ type Props = {
 
 export default function LinkCard({ link, count, className }: Props) {
   const { setModal } = useModalStore();
+
+  const permissions = usePermissions(link.collection.id as number);
 
   const [expandDropdown, setExpandDropdown] = useState(false);
 
@@ -59,18 +63,20 @@ export default function LinkCard({ link, count, className }: Props) {
     <div
       className={`bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow hover:shadow-none cursor-pointer duration-100 p-5 rounded-2xl relative group ${className}`}
     >
-      <div
-        onClick={() => setExpandDropdown(!expandDropdown)}
-        id={"expand-dropdown" + link.id}
-        className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-slate-200 absolute right-5 top-5 z-10 duration-100 p-1"
-      >
-        <FontAwesomeIcon
-          icon={faEllipsis}
-          title="More"
-          className="w-5 h-5"
+      {permissions && (
+        <div
+          onClick={() => setExpandDropdown(!expandDropdown)}
           id={"expand-dropdown" + link.id}
-        />
-      </div>
+          className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-slate-200 absolute right-5 top-5 z-10 duration-100 p-1"
+        >
+          <FontAwesomeIcon
+            icon={faEllipsis}
+            title="More"
+            className="w-5 h-5"
+            id={"expand-dropdown" + link.id}
+          />
+        </div>
+      )}
 
       <div
         onClick={() => {
@@ -126,42 +132,48 @@ export default function LinkCard({ link, count, className }: Props) {
       {expandDropdown ? (
         <Dropdown
           items={[
-            {
-              name:
-                link?.pinnedBy && link.pinnedBy[0]
-                  ? "Unpin"
-                  : "Pin to Dashboard",
-              onClick: () => {
-                updateLink({
-                  ...link,
-                  pinnedBy:
+            permissions === true || permissions?.canUpdate
+              ? {
+                  name:
                     link?.pinnedBy && link.pinnedBy[0]
-                      ? undefined
-                      : [{ id: account.id }],
-                });
-                setExpandDropdown(false);
-              },
-            },
-            {
-              name: "Edit",
-              onClick: () => {
-                setModal({
-                  modal: "LINK",
-                  state: true,
-                  method: "UPDATE",
-                  active: link,
-                  defaultIndex: 1,
-                });
-                setExpandDropdown(false);
-              },
-            },
-            {
-              name: "Delete",
-              onClick: () => {
-                removeLink(link);
-                setExpandDropdown(false);
-              },
-            },
+                      ? "Unpin"
+                      : "Pin to Dashboard",
+                  onClick: () => {
+                    updateLink({
+                      ...link,
+                      pinnedBy:
+                        link?.pinnedBy && link.pinnedBy[0]
+                          ? undefined
+                          : [{ id: account.id }],
+                    });
+                    setExpandDropdown(false);
+                  },
+                }
+              : undefined,
+            permissions === true || permissions?.canUpdate
+              ? {
+                  name: "Edit",
+                  onClick: () => {
+                    setModal({
+                      modal: "LINK",
+                      state: true,
+                      method: "UPDATE",
+                      active: link,
+                      defaultIndex: 1,
+                    });
+                    setExpandDropdown(false);
+                  },
+                }
+              : undefined,
+            permissions === true || permissions?.canDelete
+              ? {
+                  name: "Delete",
+                  onClick: () => {
+                    removeLink(link);
+                    setExpandDropdown(false);
+                  },
+                }
+              : undefined,
           ]}
           onClickOutside={(e: Event) => {
             const target = e.target as HTMLInputElement;
