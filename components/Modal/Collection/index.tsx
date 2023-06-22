@@ -10,6 +10,7 @@ type Props =
       toggleCollectionModal: Function;
       activeCollection: CollectionIncludingMembersAndLinkCount;
       method: "UPDATE";
+      isOwner: boolean;
       className?: string;
       defaultIndex?: number;
     }
@@ -17,6 +18,7 @@ type Props =
       toggleCollectionModal: Function;
       activeCollection?: CollectionIncludingMembersAndLinkCount;
       method: "CREATE";
+      isOwner: boolean;
       className?: string;
       defaultIndex?: number;
     };
@@ -25,6 +27,7 @@ export default function CollectionModal({
   className,
   defaultIndex,
   toggleCollectionModal,
+  isOwner,
   activeCollection,
   method,
 }: Props) {
@@ -48,6 +51,17 @@ export default function CollectionModal({
         <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-600">
           {method === "UPDATE" && (
             <>
+              {isOwner && (
+                <Tab
+                  className={({ selected }) =>
+                    selected
+                      ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
+                      : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+                  }
+                >
+                  Collection Info
+                </Tab>
+              )}
               <Tab
                 className={({ selected }) =>
                   selected
@@ -55,7 +69,7 @@ export default function CollectionModal({
                     : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
                 }
               >
-                Collection Info
+                {isOwner ? "Share & Collaborate" : "View Team"}
               </Tab>
               <Tab
                 className={({ selected }) =>
@@ -64,29 +78,22 @@ export default function CollectionModal({
                     : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
                 }
               >
-                Share & Collaborate
-              </Tab>
-              <Tab
-                className={({ selected }) =>
-                  selected
-                    ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
-                }
-              >
-                Delete Collection
+                {isOwner ? "Delete Collection" : "Leave Collection"}
               </Tab>
             </>
           )}
         </Tab.List>
         <Tab.Panels>
-          <Tab.Panel>
-            <CollectionInfo
-              toggleCollectionModal={toggleCollectionModal}
-              setCollection={setCollection}
-              collection={collection}
-              method={method}
-            />
-          </Tab.Panel>
+          {(isOwner || method === "CREATE") && (
+            <Tab.Panel>
+              <CollectionInfo
+                toggleCollectionModal={toggleCollectionModal}
+                setCollection={setCollection}
+                collection={collection}
+                method={method}
+              />
+            </Tab.Panel>
+          )}
 
           {method === "UPDATE" && (
             <>

@@ -77,10 +77,10 @@ export default function ProfileSettings({
       <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
         <div className="sm:row-span-2 sm:justify-self-center mx-auto mb-3">
           <p className="text-sm text-sky-500 mb-2 text-center">Profile Photo</p>
-          <div className="w-28 h-28 flex items-center justify-center border border-sky-100 rounded-full relative">
+          <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
             <ProfilePhoto
               src={user.profilePic}
-              className="h-auto aspect-square w-28 border-[1px]"
+              className="h-auto  w-28"
               status={handleProfileStatus}
             />
             {profileStatus && (
