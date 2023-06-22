@@ -69,7 +69,7 @@ export default function Navbar() {
           >
             <ProfilePhoto
               src={account.profilePic}
-              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100"
+              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100  border-[3px]"
             />
             <p
               id="profile-dropdown"

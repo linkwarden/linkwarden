@@ -30,6 +30,7 @@ type Modal =
       modal: "COLLECTION";
       state: boolean;
       method: "UPDATE";
+      isOwner: boolean;
       active: CollectionIncludingMembersAndLinkCount;
       defaultIndex?: number;
     }
@@ -37,6 +38,7 @@ type Modal =
       modal: "COLLECTION";
       state: boolean;
       method: "CREATE";
+      isOwner: boolean;
       active?: CollectionIncludingMembersAndLinkCount;
       defaultIndex?: number;
     }

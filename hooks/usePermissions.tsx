@@ -1,7 +1,7 @@
 import useAccountStore from "@/store/account";
 import useCollectionStore from "@/store/collections";
-import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
-import React, { useEffect, useState } from "react";
+import { Member } from "@/types/global";
+import { useEffect, useState } from "react";
 
 export default function usePermissions(collectionId: number) {
   const { collections } = useCollectionStore();
@@ -26,7 +26,7 @@ export default function usePermissions(collectionId: number) {
 
       setPermissions(account.id === collection.ownerId || getPermission);
     }
-  }, [collections]);
+  }, [account, collections, collectionId]);
 
   return permissions;
 }
