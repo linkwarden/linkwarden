@@ -7,6 +7,7 @@ import { useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import useModalStore from "@/store/modals";
+import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
@@ -26,6 +27,8 @@ export default function CollectionCard({ collection, className }: Props) {
   );
 
   const [expandDropdown, setExpandDropdown] = useState(false);
+
+  const permissions = usePermissions(collection.id as number);
 
   return (
     <div
@@ -58,7 +61,7 @@ export default function CollectionCard({ collection, className }: Props) {
                   <ProfilePhoto
                     key={i}
                     src={`/api/avatar/${e.userId}`}
-                    className="-mr-3"
+                    className="-mr-3 border-[3px]"
                   />
                 );
               })
@@ -72,7 +75,7 @@ export default function CollectionCard({ collection, className }: Props) {
           <div className="text-right w-40">
             <div className="text-sky-500 font-bold text-sm flex justify-end gap-1 items-center">
               <FontAwesomeIcon icon={faLink} className="w-5 h-5 text-sky-600" />
-              {collection._count.links}
+              {collection._count && collection._count.links}
             </div>
             <div className="flex items-center justify-end gap-1 text-gray-600">
               <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
@@ -91,6 +94,7 @@ export default function CollectionCard({ collection, className }: Props) {
                   modal: "COLLECTION",
                   state: true,
                   method: "UPDATE",
+                  isOwner: permissions === true,
                   active: collection,
                 });
                 setExpandDropdown(false);
@@ -103,6 +107,7 @@ export default function CollectionCard({ collection, className }: Props) {
                   modal: "COLLECTION",
                   state: true,
                   method: "UPDATE",
+                  isOwner: permissions === true,
                   active: collection,
                   defaultIndex: 1,
                 });
@@ -116,6 +121,7 @@ export default function CollectionCard({ collection, className }: Props) {
                   modal: "COLLECTION",
                   state: true,
                   method: "UPDATE",
+                  isOwner: permissions === true,
                   active: collection,
                   defaultIndex: 2,
                 });

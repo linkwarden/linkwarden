@@ -1,7 +1,6 @@
 import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
-  Member,
 } from "@/types/global";
 import { faFolder, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -61,7 +60,7 @@ export default function LinkCard({ link, count, className }: Props) {
 
   return (
     <div
-      className={`bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow hover:shadow-none cursor-pointer duration-100 p-5 rounded-2xl relative group ${className}`}
+      className={`bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow hover:shadow-none cursor-pointer duration-100 rounded-2xl relative group ${className}`}
     >
       {permissions && (
         <div
@@ -87,7 +86,7 @@ export default function LinkCard({ link, count, className }: Props) {
             active: link,
           });
         }}
-        className="flex items-start gap-5 sm:gap-10 h-full w-full"
+        className="flex items-start gap-5 sm:gap-10 h-full w-full p-5"
       >
         <Image
           src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}

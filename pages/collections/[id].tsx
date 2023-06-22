@@ -17,6 +17,7 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 import SortDropdown from "@/components/SortDropdown";
 import useModalStore from "@/store/modals";
 import useLinks from "@/hooks/useLinks";
+import usePermissions from "@/hooks/usePermissions";
 
 export default function Index() {
   const { setModal } = useModalStore();
@@ -34,6 +35,8 @@ export default function Index() {
 
   const [activeCollection, setActiveCollection] =
     useState<CollectionIncludingMembersAndLinkCount>();
+
+  const permissions = usePermissions(activeCollection?.id as number);
 
   useLinks({ collectionId: Number(router.query.id), sort: sortBy });
 
@@ -71,13 +74,13 @@ export default function Index() {
               >
                 <div
                   onClick={() =>
-                    activeCollection &&
                     setModal({
                       modal: "COLLECTION",
                       state: true,
                       method: "UPDATE",
+                      isOwner: permissions === true,
                       active: activeCollection,
-                      defaultIndex: 1,
+                      defaultIndex: permissions === true ? 1 : 0,
                     })
                   }
                   className="flex justify-center sm:justify-end items-center w-fit mx-auto sm:mr-0 sm:ml-auto group cursor-pointer"
@@ -87,10 +90,7 @@ export default function Index() {
                       activeCollection.members[0] && "mr-1"
                     }`}
                   >
-                    {activeCollection.ownerId === data?.user.id
-                      ? "Manage"
-                      : "View"}{" "}
-                    Team
+                    {permissions === true ? "Manage" : "View"} Team
                   </div>
                   {activeCollection?.members
                     .sort((a, b) => (a.userId as number) - (b.userId as number))
@@ -99,7 +99,7 @@ export default function Index() {
                         <ProfilePhoto
                           key={i}
                           src={`/api/avatar/${e.userId}`}
-                          className="-mr-3 duration-100"
+                          className="-mr-3 duration-100  border-[3px]"
                         />
                       );
                     })
@@ -155,54 +155,68 @@ export default function Index() {
                 {expandDropdown ? (
                   <Dropdown
                     items={[
+                      permissions === true || permissions?.canCreate
+                        ? {
+                            name: "Add Link Here",
+                            onClick: () => {
+                              setModal({
+                                modal: "LINK",
+                                state: true,
+                                method: "CREATE",
+                              });
+                              setExpandDropdown(false);
+                            },
+                          }
+                        : undefined,
+                      permissions === true
+                        ? {
+                            name: "Edit Collection Info",
+                            onClick: () => {
+                              activeCollection &&
+                                setModal({
+                                  modal: "COLLECTION",
+                                  state: true,
+                                  method: "UPDATE",
+                                  isOwner: permissions === true,
+                                  active: activeCollection,
+                                });
+                              setExpandDropdown(false);
+                            },
+                          }
+                        : undefined,
                       {
-                        name: "Add Link Here",
-                        onClick: () => {
-                          setModal({
-                            modal: "LINK",
-                            state: true,
-                            method: "CREATE",
-                          });
-                          setExpandDropdown(false);
-                        },
-                      },
-                      {
-                        name: "Edit Collection Info",
+                        name:
+                          permissions === true
+                            ? "Share/Collaborate"
+                            : "View Team",
                         onClick: () => {
                           activeCollection &&
                             setModal({
                               modal: "COLLECTION",
                               state: true,
                               method: "UPDATE",
-                              active: activeCollection,
-                            });
-                          setExpandDropdown(false);
-                        },
-                      },
-                      {
-                        name: "Share/Collaborate",
-                        onClick: () => {
-                          activeCollection &&
-                            setModal({
-                              modal: "COLLECTION",
-                              state: true,
-                              method: "UPDATE",
+                              isOwner: permissions === true,
                               active: activeCollection,
                               defaultIndex: 1,
                             });
                           setExpandDropdown(false);
                         },
                       },
+
                       {
-                        name: "Delete Collection",
+                        name:
+                          permissions === true
+                            ? "Delete Collection"
+                            : "Leave Collection",
                         onClick: () => {
                           activeCollection &&
                             setModal({
                               modal: "COLLECTION",
                               state: true,
                               method: "UPDATE",
+                              isOwner: permissions === true,
                               active: activeCollection,
-                              defaultIndex: 2,
+                              defaultIndex: permissions === true ? 2 : 1,
                             });
                           setExpandDropdown(false);
                         },
