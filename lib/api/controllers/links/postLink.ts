@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import getTitle from "../../getTitle";
 import archive from "../../archive";
-import { Link, UsersAndCollections } from "@prisma/client";
+import { Collection, Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import { existsSync, mkdirSync } from "fs";
 
@@ -13,16 +13,20 @@ export default async function postLink(
   link.collection.name = link.collection.name.trim();
 
   if (!link.name) {
-    return { response: "Please enter a valid name for the link.", status: 401 };
+    return { response: "Please enter a valid name for the link.", status: 400 };
   } else if (!link.collection.name) {
-    return { response: "Please enter a valid collection name.", status: 401 };
+    return { response: "Please enter a valid collection.", status: 400 };
   }
 
   if (link.collection.id) {
-    const collectionIsAccessible = await getPermission(
+    const collectionIsAccessible = (await getPermission(
       userId,
       link.collection.id
-    );
+    )) as
+      | (Collection & {
+          members: UsersAndCollections[];
+        })
+      | null;
 
     const memberHasAccess = collectionIsAccessible?.members.some(
       (e: UsersAndCollections) => e.userId === userId && e.canCreate

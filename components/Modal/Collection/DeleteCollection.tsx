@@ -97,7 +97,7 @@ export default function DeleteCollection({
       )}
 
       <div
-        className={`mx-auto mt-2  text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold duration-100 ${
+        className={`mx-auto mt-2 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold duration-100 ${
           permissions === true
             ? inputField === collection.name
               ? "bg-red-500 hover:bg-red-400 cursor-pointer"

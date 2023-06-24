@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import fs from "fs";
-import { Link, UsersAndCollections } from "@prisma/client";
+import { Collection, Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 
 export default async function deleteLink(
@@ -11,7 +11,14 @@ export default async function deleteLink(
   if (!link || !link.collectionId)
     return { response: "Please choose a valid link.", status: 401 };
 
-  const collectionIsAccessible = await getPermission(userId, link.collectionId);
+  const collectionIsAccessible = (await getPermission(
+    userId,
+    link.collectionId
+  )) as
+    | (Collection & {
+        members: UsersAndCollections[];
+      })
+    | null;
 
   const memberHasAccess = collectionIsAccessible?.members.some(
     (e: UsersAndCollections) => e.userId === userId && e.canDelete
