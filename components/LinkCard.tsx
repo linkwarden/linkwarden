@@ -83,6 +83,7 @@ export default function LinkCard({ link, count, className }: Props) {
             modal: "LINK",
             state: true,
             method: "UPDATE",
+            isOwner: permissions === true,
             active: link,
           });
         }}
@@ -90,10 +91,10 @@ export default function LinkCard({ link, count, className }: Props) {
       >
         <Image
           src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-          width={70}
-          height={70}
+          width={64}
+          height={64}
           alt=""
-          className="blur-sm absolute bottom-5 right-5 opacity-60 group-hover:opacity-80 duration-100 select-none"
+          className="blur-sm absolute w-16 group-hover:scale-50 group-hover:blur-none group-hover:opacity-100 duration-100 rounded-md bottom-5 right-5 opacity-60 select-none"
           draggable="false"
           onError={(e) => {
             const target = e.target as HTMLElement;
@@ -157,6 +158,7 @@ export default function LinkCard({ link, count, className }: Props) {
                       modal: "LINK",
                       state: true,
                       method: "UPDATE",
+                      isOwner: permissions === true,
                       active: link,
                       defaultIndex: 1,
                     });

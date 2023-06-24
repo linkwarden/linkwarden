@@ -16,6 +16,7 @@ type Modal =
       modal: "LINK";
       state: boolean;
       method: "CREATE";
+      isOwner?: boolean;
       active?: LinkIncludingShortenedCollectionAndTags;
       defaultIndex?: number;
     }
@@ -23,6 +24,7 @@ type Modal =
       modal: "LINK";
       state: boolean;
       method: "UPDATE";
+      isOwner: boolean;
       active: LinkIncludingShortenedCollectionAndTags;
       defaultIndex?: number;
     }
