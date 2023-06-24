@@ -197,7 +197,7 @@ export default function Index() {
                               method: "UPDATE",
                               isOwner: permissions === true,
                               active: activeCollection,
-                              defaultIndex: 1,
+                              defaultIndex: permissions === true ? 1 : 0,
                             });
                           setExpandDropdown(false);
                         },

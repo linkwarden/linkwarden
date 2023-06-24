@@ -87,44 +87,51 @@ export default function CollectionCard({ collection, className }: Props) {
       {expandDropdown ? (
         <Dropdown
           items={[
+            permissions === true
+              ? {
+                  name: "Edit Collection Info",
+                  onClick: () => {
+                    collection &&
+                      setModal({
+                        modal: "COLLECTION",
+                        state: true,
+                        method: "UPDATE",
+                        isOwner: permissions === true,
+                        active: collection,
+                      });
+                    setExpandDropdown(false);
+                  },
+                }
+              : undefined,
             {
-              name: "Edit Collection",
+              name: permissions === true ? "Share/Collaborate" : "View Team",
               onClick: () => {
-                setModal({
-                  modal: "COLLECTION",
-                  state: true,
-                  method: "UPDATE",
-                  isOwner: permissions === true,
-                  active: collection,
-                });
+                collection &&
+                  setModal({
+                    modal: "COLLECTION",
+                    state: true,
+                    method: "UPDATE",
+                    isOwner: permissions === true,
+                    active: collection,
+                    defaultIndex: permissions === true ? 1 : 0,
+                  });
                 setExpandDropdown(false);
               },
             },
+
             {
-              name: "Share/Collaborate",
+              name:
+                permissions === true ? "Delete Collection" : "Leave Collection",
               onClick: () => {
-                setModal({
-                  modal: "COLLECTION",
-                  state: true,
-                  method: "UPDATE",
-                  isOwner: permissions === true,
-                  active: collection,
-                  defaultIndex: 1,
-                });
-                setExpandDropdown(false);
-              },
-            },
-            {
-              name: "Delete Collection",
-              onClick: () => {
-                setModal({
-                  modal: "COLLECTION",
-                  state: true,
-                  method: "UPDATE",
-                  isOwner: permissions === true,
-                  active: collection,
-                  defaultIndex: 2,
-                });
+                collection &&
+                  setModal({
+                    modal: "COLLECTION",
+                    state: true,
+                    method: "UPDATE",
+                    isOwner: permissions === true,
+                    active: collection,
+                    defaultIndex: permissions === true ? 2 : 1,
+                  });
                 setExpandDropdown(false);
               },
             },

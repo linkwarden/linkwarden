@@ -7,6 +7,7 @@ type Props =
   | {
       toggleLinkModal: Function;
       method: "CREATE";
+      isOwner?: boolean;
       activeLink?: LinkIncludingShortenedCollectionAndTags;
       defaultIndex?: number;
       className?: string;
@@ -14,6 +15,7 @@ type Props =
   | {
       toggleLinkModal: Function;
       method: "UPDATE";
+      isOwner: boolean;
       activeLink: LinkIncludingShortenedCollectionAndTags;
       defaultIndex?: number;
       className?: string;
@@ -23,6 +25,7 @@ export default function CollectionModal({
   className,
   defaultIndex,
   toggleLinkModal,
+  isOwner,
   activeLink,
   method,
 }: Props) {
@@ -32,8 +35,12 @@ export default function CollectionModal({
         {method === "CREATE" && (
           <p className="text-xl text-sky-500 text-center">New Link</p>
         )}
-        <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-600">
-          {method === "UPDATE" && (
+        <Tab.List
+          className={`flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-600 ${
+            isOwner ? "" : "pb-8"
+          }`}
+        >
+          {method === "UPDATE" && isOwner && (
             <>
               <Tab
                 className={({ selected }) =>

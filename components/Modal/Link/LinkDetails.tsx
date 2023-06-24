@@ -116,12 +116,12 @@ export default function LinkDetails({ link }: Props) {
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {!imageError && (
-        <div id="link-banner" className="link-banner h-40 -mx-5 -mt-5 relative">
+        <div id="link-banner" className="link-banner h-44 -mx-5 -mt-5 relative">
           <div id="link-banner-inner" className="link-banner-inner"></div>
         </div>
       )}
       <div
-        className={`relative flex gap-5 items-start ${!imageError && "-mt-16"}`}
+        className={`relative flex gap-5 items-start ${!imageError && "-mt-32"}`}
       >
         {!imageError && (
           <Image
@@ -167,7 +167,7 @@ export default function LinkDetails({ link }: Props) {
       <div className="flex gap-1 items-center flex-wrap">
         <Link
           href={`/collections/${link.collection.id}`}
-          className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2"
+          className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
         >
           <FontAwesomeIcon
             icon={faFolder}
@@ -182,7 +182,7 @@ export default function LinkDetails({ link }: Props) {
           </p>
         </Link>
         {link.tags.map((e, i) => (
-          <Link key={i} href={`/tags/${e.id}`}>
+          <Link key={i} href={`/tags/${e.id}`} className="z-10">
             <p
               title={e.name}
               className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"

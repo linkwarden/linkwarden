@@ -19,7 +19,7 @@ export default function Modal({ toggleModal, className, children }: Props) {
         <div className="slide-up relative border-sky-100 rounded-2xl border-solid border shadow-lg p-5 bg-white">
           <div
             onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
-            className="absolute top-5 left-5 inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-2"
+            className="absolute top-5 left-5 inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 z-20 p-2"
           >
             <FontAwesomeIcon
               icon={faChevronLeft}
