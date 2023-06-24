@@ -62,7 +62,9 @@ export default function LinkCard({ link, count, className }: Props) {
     <div
       className={`bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow hover:shadow-none cursor-pointer duration-100 rounded-2xl relative group ${className}`}
     >
-      {permissions && (
+      {(permissions === true ||
+        permissions?.canUpdate ||
+        permissions?.canDelete) && (
         <div
           onClick={() => setExpandDropdown(!expandDropdown)}
           id={"expand-dropdown" + link.id}
@@ -83,7 +85,8 @@ export default function LinkCard({ link, count, className }: Props) {
             modal: "LINK",
             state: true,
             method: "UPDATE",
-            isOwner: permissions === true,
+            isOwnerOrMod:
+              permissions === true || (permissions?.canUpdate as boolean),
             active: link,
           });
         }}
@@ -106,7 +109,7 @@ export default function LinkCard({ link, count, className }: Props) {
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-baseline gap-1">
               <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
-              <p className="text-lg text-sky-500 font-bold truncate max-w-[10rem]">
+              <p className="text-lg text-sky-500 font-bold truncate max-w-[10rem] capitalize">
                 {link.name}
               </p>
             </div>
@@ -117,7 +120,7 @@ export default function LinkCard({ link, count, className }: Props) {
                   className="w-4 h-4 mt-1 drop-shadow"
                   style={{ color: collection?.color }}
                 />
-                <p className="text-sky-900 truncate max-w-[10rem]">
+                <p className="text-sky-900 truncate max-w-[10rem] capitalize">
                   {collection?.name}
                 </p>
               </div>
@@ -132,7 +135,7 @@ export default function LinkCard({ link, count, className }: Props) {
       {expandDropdown ? (
         <Dropdown
           items={[
-            permissions === true || permissions?.canUpdate
+            permissions === true
               ? {
                   name:
                     link?.pinnedBy && link.pinnedBy[0]
@@ -158,7 +161,8 @@ export default function LinkCard({ link, count, className }: Props) {
                       modal: "LINK",
                       state: true,
                       method: "UPDATE",
-                      isOwner: permissions === true,
+                      isOwnerOrMod:
+                        permissions === true || permissions?.canUpdate,
                       active: link,
                       defaultIndex: 1,
                     });

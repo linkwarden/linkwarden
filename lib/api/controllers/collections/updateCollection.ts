@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import getPermission from "@/lib/api/getPermission";
+import { Collection, UsersAndCollections } from "@prisma/client";
 
 export default async function updateCollection(
   collection: CollectionIncludingMembersAndLinkCount,
@@ -9,7 +10,14 @@ export default async function updateCollection(
   if (!collection.id)
     return { response: "Please choose a valid collection.", status: 401 };
 
-  const collectionIsAccessible = await getPermission(userId, collection.id);
+  const collectionIsAccessible = (await getPermission(
+    userId,
+    collection.id
+  )) as
+    | (Collection & {
+        members: UsersAndCollections[];
+      })
+    | null;
 
   if (!(collectionIsAccessible?.ownerId === userId))
     return { response: "Collection is not accessible.", status: 401 };
