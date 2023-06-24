@@ -12,10 +12,7 @@ export interface LinkIncludingShortenedCollectionAndTags
   pinnedBy?: {
     id: number;
   }[];
-  collection: OptionalExcluding<
-    Pick<Collection, "id" | "ownerId" | "name" | "color">,
-    "name" | "ownerId"
-  >;
+  collection: OptionalExcluding<Collection, "name" | "ownerId">;
 }
 
 export interface Member {
