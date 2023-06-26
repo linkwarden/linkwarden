@@ -2,16 +2,21 @@ import { create } from "zustand";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import useTagStore from "./tags";
 
+type ResponseObject = {
+  ok: boolean;
+  data: object | string;
+};
+
 type CollectionStore = {
   collections: CollectionIncludingMembersAndLinkCount[];
   setCollections: () => void;
   addCollection: (
     body: CollectionIncludingMembersAndLinkCount
-  ) => Promise<boolean>;
+  ) => Promise<ResponseObject>;
   updateCollection: (
     collection: CollectionIncludingMembersAndLinkCount
-  ) => Promise<boolean>;
-  removeCollection: (collectionId: number) => Promise<boolean>;
+  ) => Promise<ResponseObject>;
+  removeCollection: (collectionId: number) => Promise<ResponseObject>;
 };
 
 const useCollectionStore = create<CollectionStore>()((set) => ({
@@ -39,7 +44,7 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
         collections: [...state.collections, data.response],
       }));
 
-    return response.ok;
+    return { ok: response.ok, data: data.response };
   },
   updateCollection: async (collection) => {
     const response = await fetch("/api/routes/collections", {
@@ -52,8 +57,6 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     const data = await response.json();
 
-    console.log(data);
-
     if (response.ok)
       set((state) => ({
         collections: state.collections.map((e) =>
@@ -61,7 +64,7 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
         ),
       }));
 
-    return response.ok;
+    return { ok: response.ok, data: data.response };
   },
   removeCollection: async (id) => {
     const response = await fetch("/api/routes/collections", {
@@ -74,8 +77,6 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     const data = await response.json();
 
-    console.log(data);
-
     if (response.ok) {
       set((state) => ({
         collections: state.collections.filter((e) => e.id !== id),
@@ -83,7 +84,7 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
       useTagStore.getState().setTags();
     }
 
-    return response.ok;
+    return { ok: response.ok, data: data.response };
   },
 }));
 

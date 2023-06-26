@@ -116,12 +116,12 @@ export default function LinkDetails({ link }: Props) {
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {!imageError && (
-        <div id="link-banner" className="link-banner h-44 -mx-5 -mt-5 relative">
+        <div id="link-banner" className="link-banner h-32 -mx-5 -mt-5 relative">
           <div id="link-banner-inner" className="link-banner-inner"></div>
         </div>
       )}
       <div
-        className={`relative flex gap-5 items-start ${!imageError && "-mt-32"}`}
+        className={`relative flex gap-5 items-start ${!imageError && "-mt-24"}`}
       >
         {!imageError && (
           <Image

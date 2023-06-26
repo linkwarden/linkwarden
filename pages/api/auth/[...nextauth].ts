@@ -19,8 +19,6 @@ export const authOptions: AuthOptions = {
           password: string;
         };
 
-        console.log(email, password);
-
         const findUser = await prisma.user.findFirst({
           where: {
             email: email,

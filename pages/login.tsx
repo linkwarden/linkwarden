@@ -1,6 +1,8 @@
+import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 interface FormData {
   email: string;
@@ -8,56 +10,82 @@ interface FormData {
 }
 
 export default function Login() {
+  const [submitLoader, setSubmitLoader] = useState(false);
+
   const [form, setForm] = useState<FormData>({
     email: "",
     password: "",
   });
 
   async function loginUser() {
-    console.log(form);
-    if (form.email != "" && form.password != "") {
+    if (form.email !== "" && form.password !== "") {
+      setSubmitLoader(true);
+
+      const load = toast.loading("Authenticating...");
+
       const res = await signIn("credentials", {
         email: form.email,
         password: form.password,
         redirect: false,
       });
 
-      console.log(res);
+      toast.dismiss(load);
+
+      setSubmitLoader(false);
 
       if (!res?.ok) {
-        console.log("User not found or password does not match.", res);
+        toast.error("Invalid login.");
       }
     } else {
-      console.log("Please fill out all the fields.");
+      toast.error("Please fill out all the fields.");
     }
   }
 
   return (
-    <div className="p-5">
-      <p className="text-3xl font-bold text-center mb-10">Linkwarden</p>
-      <input
-        type="text"
-        placeholder="Email"
-        value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-        className="border border-gray-700 rounded-md block m-2 mx-auto p-2"
-      />
-      <input
-        type="text"
-        placeholder="Password"
-        value={form.password}
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
-        className="border border-gray-700 rounded-md block m-2 mx-auto p-2"
-      />
-      <div
-        className="mx-auto bg-black w-min p-3 m-5 text-white rounded-md cursor-pointer"
-        onClick={loginUser}
-      >
-        Login
+    <>
+      <p className="text-xl font-bold text-center text-sky-500 my-10">
+        Linkwarden
+      </p>
+      <div className="p-5 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+        <div className="my-5 text-center">
+          <p className="text-3xl font-bold text-sky-500">Welcome back</p>
+          <p className="text-md font-semibold text-sky-400">
+            Sign in to your account
+          </p>
+        </div>
+
+        <p className="text-sm text-sky-500 w-fit font-semibold">Email</p>
+
+        <input
+          type="text"
+          placeholder="johnny@example.com"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+        />
+
+        <p className="text-sm text-sky-500 w-fit font-semibold">Password</p>
+
+        <input
+          type="password"
+          placeholder="*****************"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+        />
+        <SubmitButton
+          onClick={loginUser}
+          label="Login"
+          className="mt-2 w-full text-center"
+          loading={submitLoader}
+        />
       </div>
-      <Link href={"/register"} className="block mx-auto w-min">
-        Register
-      </Link>
-    </div>
+      <div className="flex items-baseline gap-1 justify-center mt-10">
+        <p className="w-fit text-gray-500">New here?</p>
+        <Link href={"/register"} className="block text-sky-500 font-bold">
+          Sign Up
+        </Link>
+      </div>
+    </>
   );
 }

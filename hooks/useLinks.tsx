@@ -32,8 +32,6 @@ export default function useLinks(
 
     const encodedData = encodeURIComponent(JSON.stringify(requestBody));
 
-    console.log(encodedData);
-
     const response = await fetch(
       `/api/routes/links?body=${encodeURIComponent(encodedData)}`
     );

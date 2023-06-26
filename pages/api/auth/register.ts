@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 
 interface Data {
-  message: string | object;
+  response: string | object;
 }
 
 interface User {
@@ -19,7 +19,9 @@ export default async function Index(
   const body: User = req.body;
 
   if (!body.email || !body.password || !body.name)
-    return res.status(400).json({ message: "Please fill out all the fields." });
+    return res
+      .status(400)
+      .json({ response: "Please fill out all the fields." });
 
   const checkIfUserExists = await prisma.user.findFirst({
     where: {
@@ -40,8 +42,8 @@ export default async function Index(
       },
     });
 
-    res.status(201).json({ message: "User successfully created." });
+    res.status(201).json({ response: "User successfully created." });
   } else if (checkIfUserExists) {
-    res.status(400).json({ message: "User already exists." });
+    res.status(400).json({ response: "User already exists." });
   }
 }

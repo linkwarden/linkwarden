@@ -2,6 +2,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { toast } from "react-hot-toast";
 
 export default function Search() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function Search() {
         value={searchQuery}
         onChange={(e) => {
           e.target.value.includes("%") &&
-            console.log("The search query should not contain '%'.");
+            toast.error("The search query should not contain '%'.");
           setSearchQuery(e.target.value.replace("%", ""));
         }}
         onKeyDown={(e) =>
