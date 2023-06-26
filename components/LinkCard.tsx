@@ -14,6 +14,7 @@ import useModalStore from "@/store/modals";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
+import isValidUrl from "@/lib/client/isValidUrl";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -78,7 +79,8 @@ export default function LinkCard({ link, count, className }: Props) {
     setExpandDropdown(false);
   };
 
-  const url = new URL(link.url);
+  const url = isValidUrl(link.url) ? new URL(link.url) : undefined;
+
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
     "en-US",
     {
@@ -122,18 +124,20 @@ export default function LinkCard({ link, count, className }: Props) {
         }}
         className="flex items-start gap-5 sm:gap-10 h-full w-full p-5"
       >
-        <Image
-          src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-          width={64}
-          height={64}
-          alt=""
-          className="blur-sm absolute w-16 group-hover:opacity-80 duration-100 rounded-md bottom-5 right-5 opacity-60 select-none"
-          draggable="false"
-          onError={(e) => {
-            const target = e.target as HTMLElement;
-            target.style.opacity = "0";
-          }}
-        />
+        {url && (
+          <Image
+            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
+            width={64}
+            height={64}
+            alt=""
+            className="blur-sm absolute w-16 group-hover:opacity-80 duration-100 rounded-md bottom-5 right-5 opacity-60 select-none"
+            draggable="false"
+            onError={(e) => {
+              const target = e.target as HTMLElement;
+              target.style.display = "none";
+            }}
+          />
+        )}
 
         <div className="flex justify-between gap-5 w-full h-full z-0">
           <div className="flex flex-col justify-between w-full">

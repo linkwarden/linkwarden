@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import EditLink from "./EditLink";
+import AddOrEditLink from "./AddOrEditLink";
 import LinkDetails from "./LinkDetails";
 
 type Props =
@@ -72,13 +72,16 @@ export default function LinkModal({
 
           <Tab.Panel>
             {activeLink && method === "UPDATE" ? (
-              <EditLink
+              <AddOrEditLink
                 toggleLinkModal={toggleLinkModal}
                 method="UPDATE"
                 activeLink={activeLink}
               />
             ) : (
-              <EditLink toggleLinkModal={toggleLinkModal} method="CREATE" />
+              <AddOrEditLink
+                toggleLinkModal={toggleLinkModal}
+                method="CREATE"
+              />
             )}
           </Tab.Panel>
         </Tab.Panels>

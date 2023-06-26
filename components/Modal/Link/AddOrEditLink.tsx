@@ -24,7 +24,7 @@ type Props =
       activeLink: LinkIncludingShortenedCollectionAndTags;
     };
 
-export default function EditLink({
+export default function AddOrEditLink({
   toggleLinkModal,
   method,
   activeLink,
@@ -70,8 +70,7 @@ export default function EditLink({
     }
   }, []);
 
-  const shortendURL =
-    method === "UPDATE" ? new URL(link.url).host.toLowerCase() : undefined;
+  // const shortendURL = method === "UPDATE" ? new URL(link.url).host.toLowerCase() : undefined;
 
   const setTags = (e: any) => {
     const tagNames = e.map((e: any) => {

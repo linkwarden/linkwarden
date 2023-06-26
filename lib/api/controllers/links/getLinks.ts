@@ -103,39 +103,43 @@ export default async function getLink(userId: number, body: string) {
             query.searchQuery && !query.searchFilter?.tags
               ? undefined
               : {
-                  some: {
-                    id: query.tagId ? query.tagId : undefined, // If tagId was defined, filter by tag
-                    name:
-                      query.searchQuery && query.searchFilter?.tags
-                        ? {
-                            contains: query.searchQuery,
-                            mode: "insensitive",
-                          }
-                        : undefined,
-                    OR: [
-                      { ownerId: userId }, // Tags owned by the user
-                      {
-                        links: {
-                          some: {
-                            name: {
-                              contains:
-                                query.searchQuery && query.searchFilter?.tags
-                                  ? query.searchQuery
-                                  : undefined,
-                              mode: "insensitive",
-                            },
-                            collection: {
-                              members: {
-                                some: {
-                                  userId, // Tags from collections where the user is a member
+                  some: query.tagId
+                    ? {
+                        // If tagId was defined, filter by tag
+                        id: query.tagId,
+                        name:
+                          query.searchQuery && query.searchFilter?.tags
+                            ? {
+                                contains: query.searchQuery,
+                                mode: "insensitive",
+                              }
+                            : undefined,
+                        OR: [
+                          { ownerId: userId }, // Tags owned by the user
+                          {
+                            links: {
+                              some: {
+                                name: {
+                                  contains:
+                                    query.searchQuery &&
+                                    query.searchFilter?.tags
+                                      ? query.searchQuery
+                                      : undefined,
+                                  mode: "insensitive",
+                                },
+                                collection: {
+                                  members: {
+                                    some: {
+                                      userId, // Tags from collections where the user is a member
+                                    },
+                                  },
                                 },
                               },
                             },
                           },
-                        },
-                      },
-                    ],
-                  },
+                        ],
+                      }
+                    : undefined,
                 },
         },
       ],
@@ -152,6 +156,8 @@ export default async function getLink(userId: number, body: string) {
       createdAt: "desc",
     },
   });
+
+  console.log(links);
 
   return { response: links, status: 200 };
 }
