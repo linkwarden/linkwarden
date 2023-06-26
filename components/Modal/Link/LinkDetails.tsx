@@ -19,6 +19,7 @@ import {
   faFileImage,
   faFilePdf,
 } from "@fortawesome/free-regular-svg-icons";
+import isValidUrl from "@/lib/client/isValidUrl";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -56,7 +57,7 @@ export default function LinkDetails({ link }: Props) {
 
   const colorThief = new ColorThief();
 
-  const url = new URL(link.url);
+  const url = isValidUrl(link.url) ? new URL(link.url) : undefined;
 
   const rgbToHex = (r: number, g: number, b: number): string =>
     "#" +
@@ -123,7 +124,7 @@ export default function LinkDetails({ link }: Props) {
       <div
         className={`relative flex gap-5 items-start ${!imageError && "-mt-24"}`}
       >
-        {!imageError && (
+        {!imageError && url && (
           <Image
             src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
             width={42}
@@ -160,7 +161,7 @@ export default function LinkDetails({ link }: Props) {
             rel="noreferrer"
             className="text-sm text-gray-500 break-all hover:underline cursor-pointer w-fit"
           >
-            {url.host}
+            {url ? url.host : link.url}
           </Link>
         </div>
       </div>

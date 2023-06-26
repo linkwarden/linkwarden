@@ -49,9 +49,12 @@ export default function PublicCollections() {
           {data.name}
         </p>
 
-        <hr className="mt-5 max-w-[30rem] mx-auto border-1 border-slate-400" />
-
-        <p className="mt-2 text-gray-500">{data.description}</p>
+        {data.description && (
+          <>
+            <hr className="mt-5 max-w-[30rem] mx-auto border-1 border-slate-400" />
+            <p className="mt-2 text-gray-500">{data.description}</p>
+          </>
+        )}
       </div>
 
       <div className="flex flex-col gap-5 my-8">
