@@ -157,7 +157,5 @@ export default async function getLink(userId: number, body: string) {
     },
   });
 
-  console.log(links);
-
   return { response: links, status: 200 };
 }
