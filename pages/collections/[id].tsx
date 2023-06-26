@@ -46,8 +46,6 @@ export default function Index() {
     );
   }, [router, collections]);
 
-  console.log(links);
-
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
