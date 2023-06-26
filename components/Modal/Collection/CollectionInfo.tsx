@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   faFolder,
   faPenToSquare,
@@ -10,6 +10,7 @@ import RequiredBadge from "../../RequiredBadge";
 import SubmitButton from "@/components/SubmitButton";
 import { HexColorPicker } from "react-colorful";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { toast } from "react-hot-toast";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -26,18 +27,33 @@ export default function CollectionInfo({
   collection,
   method,
 }: Props) {
+  const [submitLoader, setSubmitLoader] = useState(false);
   const { updateCollection, addCollection } = useCollectionStore();
 
   const submit = async () => {
     if (!collection) return null;
 
-    let response = null;
+    setSubmitLoader(true);
+
+    const load = toast.loading(
+      method === "UPDATE" ? "Applying..." : "Creating..."
+    );
+
+    let response;
 
     if (method === "CREATE") response = await addCollection(collection);
-    else if (method === "UPDATE") response = await updateCollection(collection);
-    else console.log("Unknown method.");
+    else response = await updateCollection(collection);
 
-    if (response) toggleCollectionModal();
+    toast.dismiss(load);
+
+    if (response.ok) {
+      toast.success(
+        `Collection ${method === "UPDATE" ? "Saved!" : "Created!"}`
+      );
+      toggleCollectionModal();
+    } else toast.error(response.data as string);
+
+    setSubmitLoader(false);
   };
 
   return (
@@ -102,6 +118,7 @@ export default function CollectionInfo({
 
       <SubmitButton
         onClick={submit}
+        loading={submitLoader}
         label={method === "CREATE" ? "Add" : "Save"}
         icon={method === "CREATE" ? faPlus : faPenToSquare}
         className="mx-auto mt-2"

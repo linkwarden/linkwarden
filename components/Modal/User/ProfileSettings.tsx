@@ -8,6 +8,7 @@ import { resizeImage } from "@/lib/client/resizeImage";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../../SubmitButton";
 import ProfilePhoto from "../../ProfilePhoto";
+import { toast } from "react-hot-toast";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -23,6 +24,8 @@ export default function ProfileSettings({
   const { update } = useSession();
   const { account, updateAccount } = useAccountStore();
   const [profileStatus, setProfileStatus] = useState(true);
+
+  const [submitLoader, setSubmitLoader] = useState(false);
 
   const handleProfileStatus = (e: boolean) => {
     setProfileStatus(!e);
@@ -48,10 +51,10 @@ export default function ProfileSettings({
 
         reader.readAsDataURL(resizedFile);
       } else {
-        console.log("Please select a PNG or JPEG file thats less than 1MB.");
+        toast.error("Please select a PNG or JPEG file thats less than 1MB.");
       }
     } else {
-      console.log("Invalid file format.");
+      toast.error("Invalid file format.");
     }
   };
 
@@ -60,16 +63,30 @@ export default function ProfileSettings({
   }, []);
 
   const submit = async () => {
+    setSubmitLoader(true);
+
+    const load = toast.loading("Applying...");
+
     const response = await updateAccount({
       ...user,
     });
 
-    setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+    toast.dismiss(load);
+
+    if (response.ok) {
+      toast.success("Settings Applied!");
+      toggleSettingsModal();
+    } else toast.error(response.data as string);
+
+    setSubmitLoader(false);
 
     if (user.email !== account.email || user.name !== account.name)
       update({ email: user.email, name: user.name });
 
-    if (response) toggleSettingsModal();
+    if (response.ok) {
+      setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+      toggleSettingsModal();
+    }
   };
 
   return (
@@ -151,6 +168,7 @@ export default function ProfileSettings({
       </div> */}
       <SubmitButton
         onClick={submit}
+        loading={submitLoader}
         label="Apply Settings"
         icon={faPenToSquare}
         className="mx-auto mt-2"

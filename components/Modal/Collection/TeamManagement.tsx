@@ -14,6 +14,7 @@ import Checkbox from "../../Checkbox";
 import SubmitButton from "@/components/SubmitButton";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
+import { toast } from "react-hot-toast";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -69,16 +70,30 @@ export default function TeamManagement({
     });
   };
 
+  const [submitLoader, setSubmitLoader] = useState(false);
+
   const submit = async () => {
     if (!collection) return null;
 
-    let response = null;
+    setSubmitLoader(true);
+
+    const load = toast.loading(
+      method === "UPDATE" ? "Applying..." : "Creating..."
+    );
+
+    let response;
 
     if (method === "CREATE") response = await addCollection(collection);
-    else if (method === "UPDATE") response = await updateCollection(collection);
-    else console.log("Unknown method.");
+    else response = await updateCollection(collection);
 
-    if (response) toggleCollectionModal();
+    toast.dismiss(load);
+
+    if (response.ok) {
+      toast.success("Collection Saved!");
+      toggleCollectionModal();
+    } else toast.error(response.data as string);
+
+    setSubmitLoader(false);
   };
 
   return (
@@ -111,7 +126,7 @@ export default function TeamManagement({
               try {
                 navigator.clipboard
                   .writeText(publicCollectionURL)
-                  .then(() => console.log("Copied!"));
+                  .then(() => toast.success("Copied!"));
               } catch (err) {
                 console.log(err);
               }
@@ -379,6 +394,7 @@ export default function TeamManagement({
       {permissions === true && (
         <SubmitButton
           onClick={submit}
+          loading={submitLoader}
           label={method === "CREATE" ? "Add" : "Save"}
           icon={method === "CREATE" ? faPlus : faPenToSquare}
           className="mx-auto mt-2"

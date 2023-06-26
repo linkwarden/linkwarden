@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 import SubmitButton from "../../SubmitButton";
+import { toast } from "react-hot-toast";
 
 type Props =
   | {
@@ -28,6 +29,8 @@ export default function EditLink({
   method,
   activeLink,
 }: Props) {
+  const [submitLoader, setSubmitLoader] = useState(false);
+
   const { data } = useSession();
 
   const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>(
@@ -88,12 +91,26 @@ export default function EditLink({
   };
 
   const submit = async () => {
+    setSubmitLoader(true);
+
     let response;
+    const load = toast.loading(
+      method === "UPDATE" ? "Applying..." : "Creating..."
+    );
 
     if (method === "UPDATE") response = await updateLink(link);
-    else if (method === "CREATE") response = await addLink(link);
+    else response = await addLink(link);
 
-    response && toggleLinkModal();
+    toast.dismiss(load);
+
+    if (response.ok) {
+      toast.success(`Link ${method === "UPDATE" ? "Saved!" : "Created!"}`);
+      toggleLinkModal();
+    } else toast.error(response.data as string);
+
+    setSubmitLoader(false);
+
+    return response;
   };
 
   return (
@@ -188,7 +205,8 @@ export default function EditLink({
         onClick={submit}
         label={method === "CREATE" ? "Add" : "Save"}
         icon={method === "CREATE" ? faPlus : faPenToSquare}
-        className="mx-auto mt-2"
+        loading={submitLoader}
+        className={`mx-auto mt-2`}
       />
     </div>
   );

@@ -5,6 +5,7 @@ import { AccountSettings } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../../SubmitButton";
+import { toast } from "react-hot-toast";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -19,6 +20,8 @@ export default function PrivacySettings({
 }: Props) {
   const { update } = useSession();
   const { account, updateAccount } = useAccountStore();
+
+  const [submitLoader, setSubmitLoader] = useState(false);
 
   const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState(
     user.whitelistedUsers.join(", ")
@@ -44,16 +47,30 @@ export default function PrivacySettings({
   };
 
   const submit = async () => {
+    setSubmitLoader(true);
+
+    const load = toast.loading("Applying...");
+
     const response = await updateAccount({
       ...user,
     });
 
-    setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+    toast.dismiss(load);
+
+    if (response.ok) {
+      toast.success("Settings Applied!");
+      toggleSettingsModal();
+    } else toast.error(response.data as string);
+
+    setSubmitLoader(false);
 
     if (user.email !== account.email || user.name !== account.name)
       update({ email: user.email, name: user.name });
 
-    if (response) toggleSettingsModal();
+    if (response.ok) {
+      setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+      toggleSettingsModal();
+    }
   };
 
   return (
@@ -93,6 +110,7 @@ export default function PrivacySettings({
 
       <SubmitButton
         onClick={submit}
+        loading={submitLoader}
         label="Apply Settings"
         icon={faPenToSquare}
         className="mx-auto mt-2"

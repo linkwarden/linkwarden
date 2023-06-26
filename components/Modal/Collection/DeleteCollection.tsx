@@ -8,6 +8,7 @@ import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
+import { toast } from "react-hot-toast";
 
 type Props = {
   toggleDeleteCollectionModal: Function;
@@ -27,8 +28,14 @@ export default function DeleteCollection({
   const submit = async () => {
     if (permissions === true) if (collection.name !== inputField) return null;
 
+    const load = toast.loading("Deleting...");
+
     const response = await removeCollection(collection.id as number);
-    if (response) {
+
+    toast.dismiss(load);
+
+    if (response.ok) {
+      toast.success("Collection Deleted.");
       toggleDeleteCollectionModal();
       router.push("/collections");
     }
