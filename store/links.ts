@@ -3,19 +3,26 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import useTagStore from "./tags";
 import useCollectionStore from "./collections";
 
+type ResponseObject = {
+  ok: boolean;
+  data: object | string;
+};
+
 type LinkStore = {
   links: LinkIncludingShortenedCollectionAndTags[];
   setLinks: (
     data: LinkIncludingShortenedCollectionAndTags[],
     isInitialCall: boolean
   ) => void;
-  addLink: (body: LinkIncludingShortenedCollectionAndTags) => Promise<boolean>;
+  addLink: (
+    body: LinkIncludingShortenedCollectionAndTags
+  ) => Promise<ResponseObject>;
   updateLink: (
     link: LinkIncludingShortenedCollectionAndTags
-  ) => Promise<boolean>;
+  ) => Promise<ResponseObject>;
   removeLink: (
     link: LinkIncludingShortenedCollectionAndTags
-  ) => Promise<boolean>;
+  ) => Promise<ResponseObject>;
   resetLinks: () => void;
 };
 
@@ -41,8 +48,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     const data = await response.json();
 
-    console.log(data);
-
     if (response.ok) {
       set((state) => ({
         links: [data.response, ...state.links],
@@ -51,7 +56,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
       useCollectionStore.getState().setCollections();
     }
 
-    return response.ok;
+    return { ok: response.ok, data: data.response };
   },
   updateLink: async (link) => {
     const response = await fetch("/api/routes/links", {
@@ -64,8 +69,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     const data = await response.json();
 
-    console.log(data);
-
     if (response.ok) {
       set((state) => ({
         links: state.links.map((e) =>
@@ -76,7 +79,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
       useCollectionStore.getState().setCollections();
     }
 
-    return response.ok;
+    return { ok: response.ok, data: data.response };
   },
   removeLink: async (link) => {
     const response = await fetch("/api/routes/links", {
@@ -89,8 +92,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     const data = await response.json();
 
-    console.log(data);
-
     if (response.ok) {
       set((state) => ({
         links: state.links.filter((e) => e.id !== link.id),
@@ -98,7 +99,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
       useTagStore.getState().setTags();
     }
 
-    return response.ok;
+    return { ok: response.ok, data: data.response };
   },
   resetLinks: () => set({ links: [] }),
 }));

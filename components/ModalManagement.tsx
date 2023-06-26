@@ -41,7 +41,7 @@ export default function ModalManagement() {
         <CollectionModal
           toggleCollectionModal={toggleModal}
           method={modal.method}
-          isOwner={modal.isOwner}
+          isOwner={modal.isOwner as boolean}
           defaultIndex={modal.defaultIndex}
           activeCollection={
             modal.active as CollectionIncludingMembersAndLinkCount

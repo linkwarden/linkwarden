@@ -13,6 +13,7 @@ import useAccountStore from "@/store/account";
 import useModalStore from "@/store/modals";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import usePermissions from "@/hooks/usePermissions";
+import { toast } from "react-hot-toast";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -47,6 +48,35 @@ export default function LinkCard({ link, count, className }: Props) {
   }, [collections]);
 
   const { removeLink, updateLink } = useLinkStore();
+
+  const pinLink = async () => {
+    const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0];
+
+    const load = toast.loading("Applying...");
+
+    setExpandDropdown(false);
+
+    const response = await updateLink({
+      ...link,
+      pinnedBy: isAlreadyPinned ? undefined : [{ id: account.id }],
+    });
+
+    toast.dismiss(load);
+
+    response.ok &&
+      toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
+  };
+
+  const deleteLink = async () => {
+    const load = toast.loading("Deleting...");
+
+    const response = await removeLink(link);
+
+    toast.dismiss(load);
+
+    response.ok && toast.success(`Link Deleted.`);
+    setExpandDropdown(false);
+  };
 
   const url = new URL(link.url);
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
@@ -97,7 +127,7 @@ export default function LinkCard({ link, count, className }: Props) {
           width={64}
           height={64}
           alt=""
-          className="blur-sm absolute w-16 group-hover:scale-50 group-hover:blur-none group-hover:opacity-100 duration-100 rounded-md bottom-5 right-5 opacity-60 select-none"
+          className="blur-sm absolute w-16 group-hover:opacity-80 duration-100 rounded-md bottom-5 right-5 opacity-60 select-none"
           draggable="false"
           onError={(e) => {
             const target = e.target as HTMLElement;
@@ -141,16 +171,7 @@ export default function LinkCard({ link, count, className }: Props) {
                     link?.pinnedBy && link.pinnedBy[0]
                       ? "Unpin"
                       : "Pin to Dashboard",
-                  onClick: () => {
-                    updateLink({
-                      ...link,
-                      pinnedBy:
-                        link?.pinnedBy && link.pinnedBy[0]
-                          ? undefined
-                          : [{ id: account.id }],
-                    });
-                    setExpandDropdown(false);
-                  },
+                  onClick: pinLink,
                 }
               : undefined,
             permissions === true || permissions?.canUpdate
@@ -173,10 +194,7 @@ export default function LinkCard({ link, count, className }: Props) {
             permissions === true || permissions?.canDelete
               ? {
                   name: "Delete",
-                  onClick: () => {
-                    removeLink(link);
-                    setExpandDropdown(false);
-                  },
+                  onClick: deleteLink,
                 }
               : undefined,
           ]}

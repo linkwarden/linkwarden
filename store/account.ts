@@ -1,10 +1,15 @@
 import { create } from "zustand";
 import { AccountSettings } from "@/types/global";
 
+type ResponseObject = {
+  ok: boolean;
+  data: object | string;
+};
+
 type AccountStore = {
   account: AccountSettings;
   setAccount: (email: string) => void;
-  updateAccount: (user: AccountSettings) => Promise<boolean>;
+  updateAccount: (user: AccountSettings) => Promise<ResponseObject>;
 };
 
 const useAccountStore = create<AccountStore>()((set) => ({
@@ -29,11 +34,9 @@ const useAccountStore = create<AccountStore>()((set) => ({
 
     const data = await response.json();
 
-    console.log(data);
-
     if (response.ok) set({ account: { ...data.response } });
 
-    return response.ok;
+    return { ok: response.ok, data: data.response };
   },
 }));
 

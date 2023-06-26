@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
+import { Toaster } from "react-hot-toast";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -30,6 +31,11 @@ export default function App({ Component, pageProps }: AppProps) {
         />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{ className: "border border-sky-100" }}
+      />
       <AuthRedirect>
         <Component {...pageProps} />
       </AuthRedirect>
