@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  password String
+  collections Collection[]
+  tags Tag[]
+
+  pinnedLinks Link[]
+  
+  collectionsJoined UsersAndCollections[]
+  isPrivate Boolean @default(false)
+  whitelistedUsers String[] @default([])
+  createdAt DateTime @default(now())
+}
+
+model Collection {
+  id Int @id @default(autoincrement())
+  name String
+  description String @default("")
+  color String @default("#0ea5e9")
+  isPublic Boolean @default(false)
+
+
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId Int
+  members UsersAndCollections[]
+  links Link[]
+  createdAt DateTime @default(now())
+
+  @@unique([name, ownerId])
+}
+
+model UsersAndCollections {
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+  collection Collection @relation(fields: [collectionId], references: [id])
+  collectionId Int
+
+  canCreate Boolean
+  canUpdate Boolean
+  canDelete Boolean
+
+  @@id([userId, collectionId])
+}
+
+model Link {
+  id Int @id @default(autoincrement())
+  name String
+  url String
+  description String @default("")
+
+  pinnedBy User[]
+
+  collection Collection @relation(fields: [collectionId], references: [id])
+  collectionId Int
+  tags Tag[]
+  createdAt DateTime @default(now())
+}
+
+model Tag {
+  id Int @id @default(autoincrement())
+  name String
+  links Link[]
+  owner User @relation(fields: [ownerId], references: [id])
+  ownerId Int
+
+  @@unique([name, ownerId])
+}

@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hide scrollbar */
+.hidw-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+::selection {
+  background-color: #0ea5e9;
+  color: white;
+}
+
+.hyphens {
+  hyphens: auto;
+}
+
+.rotate {
+  transition: transform 0.1s ease;
+  transform: rotate(-90deg);
+}
+
+.rotate-reverse {
+  transition: transform 0.1s ease;
+  transform: rotate(0deg);
+}
+
+.fade-in {
+  animation: fade-in-animation 100ms;
+}
+
+@keyframes fade-in-animation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  animation: slide-up-animation 70ms;
+}
+
+@keyframes slide-up-animation {
+  0% {
+    transform: translateY(15%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-right {
+  animation: slide-right-animation 200ms;
+}
+
+@keyframes slide-right-animation {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.slide-right-with-fade {
+  animation: slide-right-animation 150ms;
+}
+
+@keyframes slide-right-animation {
+  0% {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.spin {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* For react-colorful */
+.color-picker .react-colorful {
+  width: 100%;
+  height: 7.5rem;
+}
+.color-picker .react-colorful__hue {
+  height: 1rem;
+}
+.color-picker .react-colorful__pointer {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+/* For the Link banner */
+.link-banner {
+  /* box-shadow: inset 0px 10px 20px 20px #ffffff; */
+  opacity: 25%;
+  z-index: 0;
+}
+.link-banner .link-banner-inner {
+  /* box-shadow: inset 0px 10px 20px 20px #ffffff; */
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-mask: linear-gradient(#fff, transparent);
+  mask: linear-gradient(#fff, transparent);
+}
+.link-banner::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 1) 90%
+  );
+  width: 100%;
+  height: 4rem;
+}
+.link-banner::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 1) 90%
+  );
+  width: 100%;
+  height: 4rem;
+}
