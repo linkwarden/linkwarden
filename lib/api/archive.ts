@@ -3,6 +3,7 @@ import { prisma } from "@/lib/api/db";
 import puppeteer from "puppeteer-extra";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
+import fs from "fs";
 
 export default async function archive(
   url: string,
@@ -24,23 +25,29 @@ export default async function archive(
 
     await autoScroll(page);
 
-    const linkExists = await prisma.link.findFirst({
+    const linkExists = await prisma.link.findUnique({
       where: {
         id: linkId,
       },
     });
 
     if (linkExists) {
-      await Promise.all([
-        page.pdf({
-          path: archivePath + ".pdf",
-          width: "1366px",
-          height: "1931px",
-          printBackground: true,
-          margin: { top: "15px", bottom: "15px" },
-        }),
-        page.screenshot({ fullPage: true, path: archivePath + ".png" }),
-      ]);
+      const pdf = await page.pdf({
+        width: "1366px",
+        height: "1931px",
+        printBackground: true,
+        margin: { top: "15px", bottom: "15px" },
+      });
+      const screenshot = await page.screenshot({
+        fullPage: true,
+      });
+
+      fs.writeFile(archivePath + ".pdf", pdf, function (err) {
+        console.log(err);
+      });
+      fs.writeFile(archivePath + ".png", screenshot, function (err) {
+        console.log(err);
+      });
     }
 
     await browser.close();
