@@ -36,3 +36,6 @@ next-env.d.ts
 
 # generated files and folders
 /data
+
+# tests
+/tests
