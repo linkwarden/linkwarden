@@ -3,15 +3,13 @@ import { prisma } from "@/lib/api/db";
 import puppeteer from "puppeteer-extra";
 import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
-import fs from "fs";
+import createFile from "@/lib/api/storage/createFile";
 
 export default async function archive(
   url: string,
   collectionId: number,
   linkId: number
 ) {
-  const archivePath = `data/archives/${collectionId}/${linkId}`;
-
   const browser = await puppeteer.launch();
 
   try {
@@ -42,11 +40,14 @@ export default async function archive(
         fullPage: true,
       });
 
-      fs.writeFile(archivePath + ".pdf", pdf, function (err) {
-        console.log(err);
+      createFile({
+        data: screenshot,
+        filePath: `archives/${collectionId}/${linkId}.png`,
       });
-      fs.writeFile(archivePath + ".png", screenshot, function (err) {
-        console.log(err);
+
+      createFile({
+        data: pdf,
+        filePath: `archives/${collectionId}/${linkId}.pdf`,
       });
     }
 

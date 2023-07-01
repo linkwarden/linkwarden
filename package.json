@@ -1,6 +1,6 @@
 {
   "name": "linkwarden",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/Daniel31x13/link-warden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
@@ -13,6 +13,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.363.0",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
