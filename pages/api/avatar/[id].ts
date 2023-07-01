@@ -2,8 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 import { prisma } from "@/lib/api/db";
-import path from "path";
-import fs from "fs";
+import readFile from "@/lib/api/storage/readFile";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
@@ -41,17 +40,11 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
     }
   }
 
-  const filePath = path.join(
-    process.cwd(),
-    `data/uploads/avatar/${queryId}.jpg`
-  );
+  const { file, contentType } = await readFile({
+    filePath: `uploads/avatar/${queryId}.jpg`,
+  });
 
-  const file = fs.existsSync(filePath)
-    ? fs.readFileSync(filePath)
-    : "File not found.";
-
-  if (!fs.existsSync(filePath)) res.setHeader("Content-Type", "text/plain");
-  else res.setHeader("Content-Type", "image/jpeg");
+  res.setHeader("Content-Type", contentType);
 
   return res.send(file);
 }
