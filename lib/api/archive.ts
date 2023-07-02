@@ -44,10 +44,10 @@ export default async function archive(
       });
     }
 
-    // await browser.close();
+    await browser.close();
   } catch (err) {
     console.log(err);
-    // await browser.close();
+    await browser.close();
   }
 }
 

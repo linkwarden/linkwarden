@@ -3,7 +3,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import Image from "next/image";
-// import ColorThief, { RGBColor } from "colorthief";
+import ColorThief, { RGBColor } from "colorthief";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -53,47 +53,47 @@ export default function LinkDetails({ link }: Props) {
     );
   }, [collections]);
 
-  // const [colorPalette, setColorPalette] = useState<RGBColor[]>();
+  const [colorPalette, setColorPalette] = useState<RGBColor[]>();
 
-  // const colorThief = new ColorThief();
+  const colorThief = new ColorThief();
 
   const url = isValidUrl(link.url) ? new URL(link.url) : undefined;
 
-  // const rgbToHex = (r: number, g: number, b: number): string =>
-  //   "#" +
-  //   [r, g, b]
-  //     .map((x) => {
-  //       const hex = x.toString(16);
-  //       return hex.length === 1 ? "0" + hex : hex;
-  //     })
-  //     .join("");
+  const rgbToHex = (r: number, g: number, b: number): string =>
+    "#" +
+    [r, g, b]
+      .map((x) => {
+        const hex = x.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+      })
+      .join("");
 
-  // useEffect(() => {
-  //   const banner = document.getElementById("link-banner");
-  //   const bannerInner = document.getElementById("link-banner-inner");
+  useEffect(() => {
+    const banner = document.getElementById("link-banner");
+    const bannerInner = document.getElementById("link-banner-inner");
 
-  //   if (colorPalette && banner && bannerInner) {
-  //     banner.style.background = `linear-gradient(to right, ${rgbToHex(
-  //       colorPalette[0][0],
-  //       colorPalette[0][1],
-  //       colorPalette[0][2]
-  //     )}, ${rgbToHex(
-  //       colorPalette[1][0],
-  //       colorPalette[1][1],
-  //       colorPalette[1][2]
-  //     )})`;
+    if (colorPalette && banner && bannerInner) {
+      banner.style.background = `linear-gradient(to right, ${rgbToHex(
+        colorPalette[0][0],
+        colorPalette[0][1],
+        colorPalette[0][2]
+      )}, ${rgbToHex(
+        colorPalette[1][0],
+        colorPalette[1][1],
+        colorPalette[1][2]
+      )})`;
 
-  //     bannerInner.style.background = `linear-gradient(to right, ${rgbToHex(
-  //       colorPalette[2][0],
-  //       colorPalette[2][1],
-  //       colorPalette[2][2]
-  //     )}, ${rgbToHex(
-  //       colorPalette[3][0],
-  //       colorPalette[3][1],
-  //       colorPalette[3][2]
-  //     )})`;
-  //   }
-  // }, [colorPalette]);
+      bannerInner.style.background = `linear-gradient(to right, ${rgbToHex(
+        colorPalette[2][0],
+        colorPalette[2][1],
+        colorPalette[2][2]
+      )}, ${rgbToHex(
+        colorPalette[3][0],
+        colorPalette[3][1],
+        colorPalette[3][2]
+      )})`;
+    }
+  }, [colorPalette]);
 
   const handleDownload = (format: "png" | "pdf") => {
     const path = `/api/archives/${link.collection.id}/${link.id}.${format}`;
@@ -133,19 +133,18 @@ export default function LinkDetails({ link }: Props) {
             id={"favicon-" + link.id}
             className="select-none mt-2 rounded-full shadow border-[3px] border-white bg-white aspect-square"
             draggable="false"
-            // onLoad={(e) => {
-            //   try {
-            //     const color = colorThief.getPalette(
-            //       e.target as HTMLImageElement,
-            //       4,
-            //       20
-            //     );
+            onLoad={(e) => {
+              try {
+                const color = colorThief.getPalette(
+                  e.target as HTMLImageElement,
+                  4
+                );
 
-            //     setColorPalette(color);
-            //   } catch (err) {
-            //     console.log(err);
-            //   }
-            // }}
+                setColorPalette(color);
+              } catch (err) {
+                console.log(err);
+              }
+            }}
             onError={(e) => {
               setImageError(true);
             }}
