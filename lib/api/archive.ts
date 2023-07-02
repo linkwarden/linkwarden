@@ -1,8 +1,5 @@
 import { Page, chromium, devices } from "playwright";
 import { prisma } from "@/lib/api/db";
-// import puppeteer from "puppeteer-extra";
-// import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
-// import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import createFile from "@/lib/api/storage/createFile";
 
 export default async function archive(
@@ -15,13 +12,7 @@ export default async function archive(
   const page = await context.newPage();
 
   try {
-    // puppeteer.use(AdblockerPlugin()).use(StealthPlugin());
-
-    // const page = await browser.newPage();
-
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 300000 });
-
-    // await page.setViewport({ width: 1080, height: 1024 });
 
     await autoScroll(page);
 
