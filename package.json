@@ -41,6 +41,7 @@
     "react-hot-toast": "^2.4.1",
     "react-image-file-resizer": "^0.4.8",
     "react-select": "^5.7.0",
+    "sharp": "^0.32.1",
     "typescript": "4.9.4",
     "zustand": "^4.3.3"
   },
