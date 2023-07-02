@@ -35,6 +35,7 @@
     "next": "13.1.6",
     "next-auth": "^4.22.1",
     "nodemailer": "^6.9.3",
+    "playwright": "^1.35.1",
     "puppeteer": "^19.8.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-adblocker": "^2.13.6",
@@ -49,6 +50,7 @@
     "zustand": "^4.3.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.35.1",
     "@types/bcrypt": "^5.0.0",
     "@types/multer": "^1.4.7",
     "autoprefixer": "^10.4.14",
