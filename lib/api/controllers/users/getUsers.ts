@@ -7,7 +7,7 @@ export default async function getUser(
 ) {
   const user = await prisma.user.findUnique({
     where: {
-      email: lookupEmail,
+      email: lookupEmail.toLowerCase(),
     },
   });
 
@@ -16,7 +16,7 @@ export default async function getUser(
   if (
     !isSelf &&
     user?.isPrivate &&
-    !user.whitelistedUsers.includes(userEmail)
+    !user.whitelistedUsers.includes(userEmail.toLowerCase())
   ) {
     return { response: "This profile is private.", status: 401 };
   }

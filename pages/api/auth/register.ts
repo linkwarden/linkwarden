@@ -25,7 +25,7 @@ export default async function Index(
 
   const checkIfUserExists = await prisma.user.findFirst({
     where: {
-      email: body.email,
+      email: body.email.toLowerCase(),
     },
   });
 
@@ -37,7 +37,7 @@ export default async function Index(
     await prisma.user.create({
       data: {
         name: body.name,
-        email: body.email,
+        email: body.email.toLowerCase(),
         password: hashedPassword,
       },
     });

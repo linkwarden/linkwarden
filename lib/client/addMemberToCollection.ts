@@ -9,8 +9,8 @@ const addMemberToCollection = async (
   setMember: (newMember: Member) => null | undefined
 ) => {
   const checkIfMemberAlreadyExists = collection.members.find((e) => {
-    const email = e.user.email;
-    return email === memberEmail;
+    const email = e.user.email.toLowerCase();
+    return email === memberEmail.toLowerCase();
   });
 
   if (
@@ -22,7 +22,9 @@ const addMemberToCollection = async (
     memberEmail.trim() !== ownerEmail
   ) {
     // Lookup, get data/err, list ...
-    const user = await getPublicUserDataByEmail(memberEmail.trim());
+    const user = await getPublicUserDataByEmail(
+      memberEmail.trim().toLowerCase()
+    );
 
     if (user.email) {
       setMember({
