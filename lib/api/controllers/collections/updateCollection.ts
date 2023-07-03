@@ -43,7 +43,7 @@ export default async function updateCollection(
         isPublic: collection.isPublic,
         members: {
           create: collection.members.map((e) => ({
-            user: { connect: { email: e.user.email } },
+            user: { connect: { email: e.user.email.toLowerCase() } },
             canCreate: e.canCreate,
             canUpdate: e.canUpdate,
             canDelete: e.canDelete,
