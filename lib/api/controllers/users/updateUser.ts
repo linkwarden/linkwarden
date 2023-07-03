@@ -72,7 +72,7 @@ export default async function updateUser(
     },
     data: {
       name: user.name,
-      email: user.email,
+      email: user.email.toLowerCase(),
       isPrivate: user.isPrivate,
       whitelistedUsers: user.whitelistedUsers,
     },
