@@ -20,7 +20,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.15",
     "@next/font": "13.4.7",
-    "@prisma/client": "^4.9.0",
+    "@prisma/client": "^4.16.2",
     "@types/crypto-js": "^4.1.1",
     "@types/node": "18.11.18",
     "@types/nodemailer": "^6.4.8",
