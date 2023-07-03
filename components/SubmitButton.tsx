@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/free-regular-svg-icons";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 type Props = {
   onClick: Function;
-  icon?: IconDefinition;
+  icon?: IconProp;
   label: string;
   loading: boolean;
   className?: string;
