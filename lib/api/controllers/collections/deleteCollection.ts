@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import getPermission from "@/lib/api/getPermission";
 import { Collection, UsersAndCollections } from "@prisma/client";
-import fs from "fs";
+import removeFolder from "@/lib/api/storage/removeFolder";
 
 export default async function deleteCollection(
   collection: { id: number },
@@ -56,13 +56,7 @@ export default async function deleteCollection(
       },
     });
 
-    try {
-      fs.rmdirSync(`data/archives/${collectionId}`, { recursive: true });
-    } catch (error) {
-      console.log(
-        "Collection's archive directory wasn't deleted most likely because it didn't exist..."
-      );
-    }
+    removeFolder({ filePath: `archives/${collectionId}` });
 
     return await prisma.collection.delete({
       where: {

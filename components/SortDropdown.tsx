@@ -21,7 +21,7 @@ export default function SortDropdown({
         const target = e.target as HTMLInputElement;
         if (target.id !== "sort-dropdown") toggleSortDropdown();
       }}
-      className="absolute top-8 right-0 border border-sky-100 shadow-md bg-gray-50 rounded-md p-2 z-10 w-48"
+      className="absolute top-8 right-0 border border-sky-100 shadow-md bg-gray-50 rounded-md p-2 z-20 w-48"
     >
       <p className="mb-2 text-sky-900 text-center font-semibold">Sort by</p>
       <div className="flex flex-col gap-2">
