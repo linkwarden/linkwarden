@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/api/db";
 import { AccountSettings } from "@/types/global";
-import fs from "fs";
-import path from "path";
 import bcrypt from "bcrypt";
+import removeFile from "@/lib/api/storage/removeFile";
+import createFile from "@/lib/api/storage/createFile";
 
 export default async function updateUser(
   user: AccountSettings,
@@ -43,15 +43,12 @@ export default async function updateUser(
   if (profilePic.startsWith("data:image/jpeg;base64")) {
     if (user.profilePic.length < 1572864) {
       try {
-        const filePath = path.join(
-          process.cwd(),
-          `data/uploads/avatar/${userId}.jpg`
-        );
-
         const base64Data = profilePic.replace(/^data:image\/jpeg;base64,/, "");
 
-        fs.writeFile(filePath, base64Data, "base64", function (err) {
-          console.log(err);
+        await createFile({
+          filePath: `uploads/avatar/${userId}.jpg`,
+          data: base64Data,
+          isBase64: true,
         });
       } catch (err) {
         console.log("Error saving image:", err);
@@ -64,9 +61,7 @@ export default async function updateUser(
       };
     }
   } else if (profilePic == "") {
-    fs.unlink(`data/uploads/avatar/${userId}.jpg`, (err) => {
-      if (err) console.log(err);
-    });
+    removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
   }
 
   // Other settings

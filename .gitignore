@@ -36,3 +36,9 @@ next-env.d.ts
 
 # generated files and folders
 /data
+
+# tests
+/tests
+/test-results/
+/playwright-report/
+/playwright/.cache/

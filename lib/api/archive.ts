@@ -1,46 +1,47 @@
-import { Page } from "puppeteer";
+import { Page, chromium, devices } from "playwright";
 import { prisma } from "@/lib/api/db";
-import puppeteer from "puppeteer-extra";
-import AdblockerPlugin from "puppeteer-extra-plugin-adblocker";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
+import createFile from "@/lib/api/storage/createFile";
 
 export default async function archive(
   url: string,
   collectionId: number,
   linkId: number
 ) {
-  const archivePath = `data/archives/${collectionId}/${linkId}`;
-
-  const browser = await puppeteer.launch();
+  const browser = await chromium.launch();
+  const context = await browser.newContext(devices["Desktop Chrome"]);
+  const page = await context.newPage();
 
   try {
-    puppeteer.use(AdblockerPlugin()).use(StealthPlugin());
-
-    const page = await browser.newPage();
-
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 300000 });
-
-    await page.setViewport({ width: 1080, height: 1024 });
 
     await autoScroll(page);
 
-    const linkExists = await prisma.link.findFirst({
+    const linkExists = await prisma.link.findUnique({
       where: {
         id: linkId,
       },
     });
 
     if (linkExists) {
-      await Promise.all([
-        page.pdf({
-          path: archivePath + ".pdf",
-          width: "1366px",
-          height: "1931px",
-          printBackground: true,
-          margin: { top: "15px", bottom: "15px" },
-        }),
-        page.screenshot({ fullPage: true, path: archivePath + ".png" }),
-      ]);
+      const pdf = await page.pdf({
+        width: "1366px",
+        height: "1931px",
+        printBackground: true,
+        margin: { top: "15px", bottom: "15px" },
+      });
+      const screenshot = await page.screenshot({
+        fullPage: true,
+      });
+
+      createFile({
+        data: screenshot,
+        filePath: `archives/${collectionId}/${linkId}.png`,
+      });
+
+      createFile({
+        data: pdf,
+        filePath: `archives/${collectionId}/${linkId}.pdf`,
+      });
     }
 
     await browser.close();

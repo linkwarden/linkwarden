@@ -137,8 +137,7 @@ export default function LinkDetails({ link }: Props) {
               try {
                 const color = colorThief.getPalette(
                   e.target as HTMLImageElement,
-                  4,
-                  20
+                  4
                 );
 
                 setColorPalette(color);
