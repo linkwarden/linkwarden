@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import getTitle from "../../getTitle";
-import archive from "../../archive";
+import getTitle from "@/lib/api/getTitle";
+import archive from "@/lib/api/archive";
 import { Collection, Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import { existsSync, mkdirSync } from "fs";
 
 export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
@@ -83,10 +82,6 @@ export default async function postLink(
     },
     include: { tags: true, collection: true },
   });
-
-  const collectionPath = `data/archives/${newLink.collectionId}`;
-  if (!existsSync(collectionPath))
-    mkdirSync(collectionPath, { recursive: true });
 
   archive(newLink.url, newLink.collectionId, newLink.id);
 

@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import fs from "fs";
 import { Collection, Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
+import removeFile from "@/lib/api/storage/removeFile";
 
 export default async function deleteLink(
   link: LinkIncludingShortenedCollectionAndTags,
@@ -33,13 +33,8 @@ export default async function deleteLink(
     },
   });
 
-  fs.unlink(`data/archives/${link.collectionId}/${link.id}.pdf`, (err) => {
-    if (err) console.log(err);
-  });
-
-  fs.unlink(`data/archives/${link.collectionId}/${link.id}.png`, (err) => {
-    if (err) console.log(err);
-  });
+  removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
+  removeFile({ filePath: `archives/${link.collectionId}/${link.id}.png` });
 
   return { response: deleteLink, status: 200 };
 }

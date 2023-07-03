@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
-import { existsSync, mkdirSync } from "fs";
+import createFolder from "@/lib/api/storage/createFolder";
 
 export default async function postCollection(
   collection: CollectionIncludingMembersAndLinkCount,
@@ -66,9 +66,7 @@ export default async function postCollection(
     },
   });
 
-  const collectionPath = `data/archives/${newCollection.id}`;
-  if (!existsSync(collectionPath))
-    mkdirSync(collectionPath, { recursive: true });
+  createFolder({ filePath: `archives/${newCollection.id}` });
 
   return { response: newCollection, status: 200 };
 }
