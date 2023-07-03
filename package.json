@@ -14,15 +14,15 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.363.0",
-    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
-    "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.15",
-    "@next/font": "13.1.6",
-    "@prisma/client": "^4.9.0",
+    "@next/font": "13.4.7",
+    "@prisma/client": "^4.16.2",
     "@types/crypto-js": "^4.1.1",
-    "@types/node": "18.11.18",
+    "@types/node": "20.3.3",
     "@types/nodemailer": "^6.4.8",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
@@ -30,7 +30,7 @@
     "colorthief": "^2.4.0",
     "crypto-js": "^4.1.1",
     "eslint": "8.44.0",
-    "eslint-config-next": "13.1.6",
+    "eslint-config-next": "13.4.7",
     "next": "13.1.6",
     "next-auth": "^4.22.1",
     "nodemailer": "^6.9.3",
@@ -40,17 +40,17 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-image-file-resizer": "^0.4.8",
-    "react-select": "^5.7.0",
+    "react-select": "^5.7.3",
     "sharp": "^0.32.1",
     "typescript": "4.9.4",
-    "zustand": "^4.3.3"
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.35.1",
     "@types/bcrypt": "^5.0.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.24",
-    "prisma": "^4.9.0",
+    "prisma": "^4.16.2",
     "tailwindcss": "^3.3.2"
   }
 }
