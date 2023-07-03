@@ -1,7 +1,9 @@
 import { toast } from "react-hot-toast";
 
 export default async function getPublicUserDataByEmail(email: string) {
-  const response = await fetch(`/api/routes/users?email=${email}`);
+  const response = await fetch(
+    `/api/routes/users?email=${email.toLowerCase()}`
+  );
 
   const data = await response.json();
 

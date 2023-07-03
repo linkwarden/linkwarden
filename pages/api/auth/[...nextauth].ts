@@ -21,7 +21,7 @@ export const authOptions: AuthOptions = {
 
         const findUser = await prisma.user.findFirst({
           where: {
-            email: email,
+            email: email.toLowerCase(),
           },
         });
 
@@ -35,7 +35,7 @@ export const authOptions: AuthOptions = {
           return {
             id: findUser?.id,
             name: findUser?.name,
-            email: findUser?.email,
+            email: findUser?.email.toLowerCase(),
           };
         } else return null as any;
       },
@@ -55,7 +55,7 @@ export const authOptions: AuthOptions = {
       if (trigger === "update" && session?.name && session?.email) {
         // Note, that `session` can be any arbitrary object, remember to validate it!
         token.name = session.name;
-        token.email = session.email;
+        token.email = session.email.toLowerCase();
       }
       return token;
     },

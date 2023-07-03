@@ -8,7 +8,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
   const userId = session?.user.id;
-  const userEmail = session?.user.email;
+  const userEmail = session?.user.email?.toLowerCase();
   const queryId = Number(req.query.id);
 
   if (!queryId)
