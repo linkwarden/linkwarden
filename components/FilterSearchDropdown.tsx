@@ -1,16 +1,12 @@
 import React, { SetStateAction } from "react";
 import ClickAwayHandler from "./ClickAwayHandler";
 import Checkbox from "./Checkbox";
+import { LinkSearchFilter } from "@/types/global";
 
 type Props = {
   setFilterDropdown: (value: SetStateAction<boolean>) => void;
   setSearchFilter: Function;
-  searchFilter: {
-    name: boolean;
-    url: boolean;
-    description: boolean;
-    tags: boolean;
-  };
+  searchFilter: LinkSearchFilter;
 };
 
 export default function FilterSearchDropdown({
