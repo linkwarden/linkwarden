@@ -19,7 +19,6 @@ export default function Links() {
     name: true,
     url: true,
     description: true,
-    collection: true,
     tags: true,
   });
 
