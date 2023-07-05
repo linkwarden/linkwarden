@@ -60,7 +60,6 @@ export type LinkSearchFilter = {
   name: boolean;
   url: boolean;
   description: boolean;
-  collection: boolean;
   tags: boolean;
 };
 

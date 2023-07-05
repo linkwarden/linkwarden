@@ -41,6 +41,21 @@ export default async function getLink(userId: number, body: string) {
         }
       : undefined,
     where: {
+      collection: {
+        id: query.collectionId ? query.collectionId : undefined, // If collectionId was defined, filter by collection
+        OR: [
+          {
+            ownerId: userId,
+          },
+          {
+            members: {
+              some: {
+                userId,
+              },
+            },
+          },
+        ],
+      },
       [query.searchQuery ? "OR" : "AND"]: [
         {
           pinnedBy: query.pinnedOnly ? { some: { id: userId } } : undefined,
@@ -70,32 +85,6 @@ export default async function getLink(userId: number, body: string) {
                 ? query.searchQuery
                 : undefined,
             mode: "insensitive",
-          },
-        },
-        {
-          collection: {
-            id: query.collectionId ? query.collectionId : undefined, // If collectionId was defined, filter by collection
-            name:
-              query.searchQuery && query.searchFilter?.collection
-                ? {
-                    contains: query.searchQuery,
-                    mode: "insensitive",
-                  }
-                : undefined,
-            OR: query.searchQuery
-              ? undefined
-              : [
-                  {
-                    ownerId: userId,
-                  },
-                  {
-                    members: {
-                      some: {
-                        userId,
-                      },
-                    },
-                  },
-                ],
           },
         },
         {

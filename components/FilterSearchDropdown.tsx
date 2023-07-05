@@ -9,7 +9,6 @@ type Props = {
     name: boolean;
     url: boolean;
     description: boolean;
-    collection: boolean;
     tags: boolean;
   };
 };
@@ -50,16 +49,6 @@ export default function FilterSearchDropdown({
             setSearchFilter({
               ...searchFilter,
               description: !searchFilter.description,
-            })
-          }
-        />
-        <Checkbox
-          label="Collection"
-          state={searchFilter.collection}
-          onClick={() =>
-            setSearchFilter({
-              ...searchFilter,
-              collection: !searchFilter.collection,
             })
           }
         />
