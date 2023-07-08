@@ -6,7 +6,7 @@ import SubmitButton from "@/components/SubmitButton";
 
 interface FormData {
   name: string;
-  email: string;
+  username: string;
   password: string;
   passwordConfirmation: string;
 }
@@ -18,7 +18,7 @@ export default function Register() {
 
   const [form, setForm] = useState<FormData>({
     name: "",
-    email: "",
+    username: "",
     password: "",
     passwordConfirmation: "",
   });
@@ -26,7 +26,7 @@ export default function Register() {
   async function registerUser() {
     if (
       form.name !== "" &&
-      form.email !== "" &&
+      form.username !== "" &&
       form.password !== "" &&
       form.passwordConfirmation !== ""
     ) {
@@ -54,7 +54,7 @@ export default function Register() {
         if (response.ok) {
           setForm({
             name: "",
-            email: "",
+            username: "",
             password: "",
             passwordConfirmation: "",
           });
@@ -96,13 +96,13 @@ export default function Register() {
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
 
-        <p className="text-sm text-sky-500 w-fit font-semibold">Email</p>
+        <p className="text-sm text-sky-500 w-fit font-semibold">Username</p>
 
         <input
           type="text"
           placeholder="johnny@example.com"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          value={form.username}
+          onChange={(e) => setForm({ ...form, username: e.target.value })}
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
 

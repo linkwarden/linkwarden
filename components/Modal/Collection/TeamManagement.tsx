@@ -43,7 +43,7 @@ export default function TeamManagement({
     canDelete: false,
     user: {
       name: "",
-      email: "",
+      username: "",
     },
   });
 
@@ -65,7 +65,7 @@ export default function TeamManagement({
       canDelete: false,
       user: {
         name: "",
-        email: "",
+        username: "",
       },
     });
   };
@@ -146,32 +146,32 @@ export default function TeamManagement({
 
           <div className="flex items-center gap-2">
             <input
-              value={member.user.email}
+              value={member.user.username}
               onChange={(e) => {
                 setMember({
                   ...member,
-                  user: { ...member.user, email: e.target.value },
+                  user: { ...member.user, username: e.target.value },
                 });
               }}
               onKeyDown={(e) =>
                 e.key === "Enter" &&
                 addMemberToCollection(
-                  session.data?.user.email as string,
-                  member.user.email,
+                  session.data?.user.username as string,
+                  member.user.username,
                   collection,
                   setMemberState
                 )
               }
               type="text"
-              placeholder="Email"
+              placeholder="Username"
               className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
 
             <div
               onClick={() =>
                 addMemberToCollection(
-                  session.data?.user.email as string,
-                  member.user.email,
+                  session.data?.user.username as string,
+                  member.user.username,
                   collection,
                   setMemberState
                 )
@@ -206,7 +206,7 @@ export default function TeamManagement({
                         onClick={() => {
                           const updatedMembers = collection.members.filter(
                             (member) => {
-                              return member.user.email !== e.user.email;
+                              return member.user.username !== e.user.username;
                             }
                           );
                           setCollection({
@@ -225,7 +225,7 @@ export default function TeamManagement({
                         <p className="text-sm font-bold text-sky-500">
                           {e.user.name}
                         </p>
-                        <p className="text-sky-900">{e.user.email}</p>
+                        <p className="text-sky-900">{e.user.username}</p>
                       </div>
                     </div>
                     <div className="flex sm:block items-center gap-5 min-w-[10rem]">
@@ -269,7 +269,9 @@ export default function TeamManagement({
                                 if (permissions === true) {
                                   const updatedMembers = collection.members.map(
                                     (member) => {
-                                      if (member.user.email === e.user.email) {
+                                      if (
+                                        member.user.username === e.user.username
+                                      ) {
                                         return {
                                           ...member,
                                           canCreate: !e.canCreate,
@@ -312,7 +314,9 @@ export default function TeamManagement({
                                 if (permissions === true) {
                                   const updatedMembers = collection.members.map(
                                     (member) => {
-                                      if (member.user.email === e.user.email) {
+                                      if (
+                                        member.user.username === e.user.username
+                                      ) {
                                         return {
                                           ...member,
                                           canUpdate: !e.canUpdate,
@@ -355,7 +359,9 @@ export default function TeamManagement({
                                 if (permissions === true) {
                                   const updatedMembers = collection.members.map(
                                     (member) => {
-                                      if (member.user.email === e.user.email) {
+                                      if (
+                                        member.user.username === e.user.username
+                                      ) {
                                         return {
                                           ...member,
                                           canDelete: !e.canDelete,

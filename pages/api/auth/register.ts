@@ -8,7 +8,7 @@ interface Data {
 
 interface User {
   name: string;
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -18,14 +18,14 @@ export default async function Index(
 ) {
   const body: User = req.body;
 
-  if (!body.email || !body.password || !body.name)
+  if (!body.username || !body.password || !body.name)
     return res
       .status(400)
       .json({ response: "Please fill out all the fields." });
 
   const checkIfUserExists = await prisma.user.findFirst({
     where: {
-      email: body.email.toLowerCase(),
+      username: body.username.toLowerCase(),
     },
   });
 
@@ -37,7 +37,7 @@ export default async function Index(
     await prisma.user.create({
       data: {
         name: body.name,
-        email: body.email.toLowerCase(),
+        username: body.username.toLowerCase(),
         password: hashedPassword,
       },
     });

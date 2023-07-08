@@ -56,8 +56,8 @@ export default function ChangePassword({
 
       setSubmitLoader(false);
 
-      if (user.email !== account.email || user.name !== account.name)
-        update({ email: user.email, name: user.name });
+      if (user.username !== account.username || user.name !== account.name)
+        update({ username: user.username, name: user.name });
 
       if (response.ok) {
         setUser({ ...user, oldPassword: undefined, newPassword: undefined });
