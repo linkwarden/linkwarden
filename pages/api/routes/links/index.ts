@@ -9,7 +9,7 @@ import updateLink from "@/lib/api/controllers/links/updateLink";
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user?.username) {
     return res.status(401).json({ response: "You must be logged in." });
   }
 

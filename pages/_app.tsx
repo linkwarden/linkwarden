@@ -5,8 +5,14 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
 import { Toaster } from "react-hot-toast";
+import { Session } from "next-auth";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps,
+}: AppProps<{
+  session: Session;
+}>) {
   return (
     <SessionProvider session={pageProps.session}>
       <Head>

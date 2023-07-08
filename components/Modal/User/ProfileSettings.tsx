@@ -80,8 +80,12 @@ export default function ProfileSettings({
 
     setSubmitLoader(false);
 
-    if (user.email !== account.email || user.name !== account.name)
-      update({ email: user.email, name: user.name });
+    if (user.username !== account.username || user.name !== account.name)
+      update({
+        username: user.username,
+        email: user.username,
+        name: user.name,
+      });
 
     if (response.ok) {
       setUser({ ...user, oldPassword: undefined, newPassword: undefined });
@@ -146,11 +150,11 @@ export default function ProfileSettings({
           </div>
 
           <div>
-            <p className="text-sm text-sky-500 mb-2">Email</p>
+            <p className="text-sm text-sky-500 mb-2">Username</p>
             <input
               type="text"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              value={user.username}
+              onChange={(e) => setUser({ ...user, username: e.target.value })}
               className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
           </div>

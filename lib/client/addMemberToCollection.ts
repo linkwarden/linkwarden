@@ -1,32 +1,32 @@
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
-import getPublicUserDataByEmail from "./getPublicUserDataByEmail";
+import getPublicUserDataByUsername from "./getPublicUserDataByUsername";
 import { toast } from "react-hot-toast";
 
 const addMemberToCollection = async (
-  ownerEmail: string,
-  memberEmail: string,
+  ownerUsername: string,
+  memberUsername: string,
   collection: CollectionIncludingMembersAndLinkCount,
   setMember: (newMember: Member) => null | undefined
 ) => {
   const checkIfMemberAlreadyExists = collection.members.find((e) => {
-    const email = e.user.email.toLowerCase();
-    return email === memberEmail.toLowerCase();
+    const username = e.user.username.toLowerCase();
+    return username === memberUsername.toLowerCase();
   });
 
   if (
     // no duplicate members
     !checkIfMemberAlreadyExists &&
     // member can't be empty
-    memberEmail.trim() !== "" &&
+    memberUsername.trim() !== "" &&
     // member can't be the owner
-    memberEmail.trim() !== ownerEmail
+    memberUsername.trim() !== ownerUsername
   ) {
     // Lookup, get data/err, list ...
-    const user = await getPublicUserDataByEmail(
-      memberEmail.trim().toLowerCase()
+    const user = await getPublicUserDataByUsername(
+      memberUsername.trim().toLowerCase()
     );
 
-    if (user.email) {
+    if (user.username) {
       setMember({
         collectionId: collection.id,
         userId: user.id,
@@ -35,12 +35,12 @@ const addMemberToCollection = async (
         canDelete: false,
         user: {
           name: user.name,
-          email: user.email,
+          username: user.username,
         },
       });
     }
   } else if (checkIfMemberAlreadyExists) toast.error("User already exists.");
-  else if (memberEmail.trim() === ownerEmail)
+  else if (memberUsername.trim() === ownerUsername)
     toast.error("You are already the collection owner.");
 };
 

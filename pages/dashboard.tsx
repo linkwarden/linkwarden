@@ -22,18 +22,23 @@ export default function Dashboard() {
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
   const [tagPinDisclosure, setTagPinDisclosure] = useState<boolean>(() => {
-    const storedValue = localStorage.getItem("tagPinDisclosure");
+    const storedValue =
+      typeof window !== "undefined" && localStorage.getItem("tagPinDisclosure");
     return storedValue ? storedValue === "true" : true;
   });
 
   const [collectionPinDisclosure, setCollectionPinDisclosure] =
     useState<boolean>(() => {
-      const storedValue = localStorage.getItem("collectionPinDisclosure");
+      const storedValue =
+        typeof window !== "undefined" &&
+        localStorage.getItem("collectionPinDisclosure");
       return storedValue ? storedValue === "true" : true;
     });
 
   const [linkPinDisclosure, setLinkPinDisclosure] = useState<boolean>(() => {
-    const storedValue = localStorage.getItem("linkPinDisclosure");
+    const storedValue =
+      typeof window !== "undefined" &&
+      localStorage.getItem("linkPinDisclosure");
     return storedValue ? storedValue === "true" : true;
   });
 

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 interface FormData {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -13,18 +13,18 @@ export default function Login() {
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const [form, setForm] = useState<FormData>({
-    email: "",
+    username: "",
     password: "",
   });
 
   async function loginUser() {
-    if (form.email !== "" && form.password !== "") {
+    if (form.username !== "" && form.password !== "") {
       setSubmitLoader(true);
 
       const load = toast.loading("Authenticating...");
 
       const res = await signIn("credentials", {
-        email: form.email,
+        username: form.username,
         password: form.password,
         redirect: false,
       });
@@ -54,13 +54,13 @@ export default function Login() {
           </p>
         </div>
 
-        <p className="text-sm text-sky-500 w-fit font-semibold">Email</p>
+        <p className="text-sm text-sky-500 w-fit font-semibold">Username</p>
 
         <input
           type="text"
           placeholder="johnny@example.com"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          value={form.username}
+          onChange={(e) => setForm({ ...form, username: e.target.value })}
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
 

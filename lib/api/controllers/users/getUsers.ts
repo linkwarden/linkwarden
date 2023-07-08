@@ -1,13 +1,13 @@
 import { prisma } from "@/lib/api/db";
 
 export default async function getUser(
-  lookupEmail: string,
+  lookupUsername: string,
   isSelf: boolean,
-  userEmail: string
+  username: string
 ) {
   const user = await prisma.user.findUnique({
     where: {
-      email: lookupEmail.toLowerCase(),
+      username: lookupUsername.toLowerCase(),
     },
   });
 
@@ -16,7 +16,7 @@ export default async function getUser(
   if (
     !isSelf &&
     user?.isPrivate &&
-    !user.whitelistedUsers.includes(userEmail.toLowerCase())
+    !user.whitelistedUsers.includes(username.toLowerCase())
   ) {
     return { response: "This profile is private.", status: 401 };
   }
@@ -30,7 +30,7 @@ export default async function getUser(
         // If user is requesting someone elses data
         id: unsensitiveInfo.id,
         name: unsensitiveInfo.name,
-        email: unsensitiveInfo.email,
+        username: unsensitiveInfo.username,
       };
 
   return { response: data || null, status: 200 };
