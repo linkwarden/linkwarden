@@ -7,15 +7,15 @@ import updateUser from "@/lib/api/controllers/users/updateUser";
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session?.user?.email) {
+  if (!session?.user.username) {
     return res.status(401).json({ response: "You must be logged in." });
   }
 
-  const lookupEmail = req.query.email as string;
-  const isSelf = session.user.email === lookupEmail ? true : false;
+  const lookupUsername = req.query.username as string;
+  const isSelf = session.user.username === lookupUsername ? true : false;
 
   if (req.method === "GET") {
-    const users = await getUsers(lookupEmail, isSelf, session.user.email);
+    const users = await getUsers(lookupUsername, isSelf, session.user.username);
     return res.status(users.status).json({ response: users.response });
   } else if (req.method === "PUT" && !req.body.password) {
     const updated = await updateUser(req.body, session.user.id);

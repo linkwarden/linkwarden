@@ -64,8 +64,8 @@ export default function PrivacySettings({
 
     setSubmitLoader(false);
 
-    if (user.email !== account.email || user.name !== account.name)
-      update({ email: user.email, name: user.name });
+    if (user.username !== account.username || user.name !== account.name)
+      update({ username: user.username, name: user.name });
 
     if (response.ok) {
       setUser({ ...user, oldPassword: undefined, newPassword: undefined });
@@ -93,7 +93,7 @@ export default function PrivacySettings({
           <div>
             <p className="text-sm text-sky-500 my-2">Whitelisted Users</p>
             <p className="text-gray-500 text-sm mb-3">
-              Please provide the Email addresses of the users you wish to grant
+              Please provide the Username of the users you wish to grant
               visibility to your profile. Separated by comma.
             </p>
             <textarea

@@ -16,7 +16,7 @@ export default async function getCollection(userId: number) {
         include: {
           user: {
             select: {
-              email: true,
+              username: true,
               name: true,
             },
           },

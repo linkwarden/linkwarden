@@ -42,7 +42,7 @@ export default async function postCollection(
       color: collection.color,
       members: {
         create: collection.members.map((e) => ({
-          user: { connect: { email: e.user.email.toLowerCase() } },
+          user: { connect: { username: e.user.username.toLowerCase() } },
           canCreate: e.canCreate,
           canUpdate: e.canUpdate,
           canDelete: e.canDelete,
@@ -57,7 +57,7 @@ export default async function postCollection(
         include: {
           user: {
             select: {
-              email: true,
+              username: true,
               name: true,
             },
           },

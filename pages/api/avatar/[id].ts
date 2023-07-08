@@ -8,7 +8,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
   const userId = session?.user.id;
-  const userEmail = session?.user.email?.toLowerCase();
+  const userName = session?.user.username?.toLowerCase();
   const queryId = Number(req.query.id);
 
   if (!queryId)
@@ -17,7 +17,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       .status(401)
       .send("Invalid parameters.");
 
-  if (!userId || !userEmail)
+  if (!userId || !userName)
     return res
       .setHeader("Content-Type", "text/plain")
       .status(401)
@@ -32,7 +32,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
     if (
       targetUser?.isPrivate &&
-      !targetUser.whitelistedUsers.includes(userEmail)
+      !targetUser.whitelistedUsers.includes(userName)
     ) {
       return res
         .setHeader("Content-Type", "text/plain")
