@@ -62,7 +62,6 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     session: async ({ session, token }: { session: Session; token: JWT }) => {
-      console.log(token);
       session.user.id = parseInt(token.id as string);
       session.user.username = token.username as string;
 
@@ -70,7 +69,6 @@ export const authOptions: AuthOptions = {
     },
     // Using the `...rest` parameter to be able to narrow down the type based on `trigger`
     jwt({ token, trigger, session, user }) {
-      console.log(user);
       if (trigger === "signIn") {
         token.id = user.id;
         token.username = (user as any).username;
