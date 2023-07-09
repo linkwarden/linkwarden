@@ -6,7 +6,6 @@ import Loader from "../components/Loader";
 import useRedirect from "@/hooks/useRedirect";
 import { useRouter } from "next/router";
 import ModalManagement from "@/components/ModalManagement";
-import useModalStore from "@/store/modals";
 
 interface Props {
   children: ReactNode;
@@ -17,13 +16,6 @@ export default function MainLayout({ children }: Props) {
   const router = useRouter();
   const redirect = useRedirect();
   const routeExists = router.route === "/_error" ? false : true;
-  const { modal } = useModalStore();
-
-  useEffect(() => {
-    modal
-      ? (document.body.style.overflow = "hidden")
-      : (document.body.style.overflow = "auto");
-  }, [modal]);
 
   if (status === "authenticated" && !redirect && routeExists)
     return (
