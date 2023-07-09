@@ -146,7 +146,7 @@ export default function TeamManagement({
 
           <div className="flex items-center gap-2">
             <input
-              value={member.user.username as string}
+              value={member.user.username}
               onChange={(e) => {
                 setMember({
                   ...member,

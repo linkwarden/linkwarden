@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Hide scrollbar */
-.hidw-scrollbar::-webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .hide-scrollbar {
