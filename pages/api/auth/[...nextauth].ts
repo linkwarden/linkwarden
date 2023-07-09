@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/api/db";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { AuthOptions } from "next-auth";
+import { AuthOptions, Session } from "next-auth";
 import bcrypt from "bcrypt";
 import EmailProvider from "next-auth/providers/email";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions: AuthOptions = {
   session: {
@@ -35,8 +36,6 @@ export const authOptions: AuthOptions = {
         //   password: string;
         // };
 
-        console.log(credentials);
-
         const findUser = await prisma.user.findFirst({
           where: {
             username: credentials.username.toLowerCase(),
@@ -52,18 +51,8 @@ export const authOptions: AuthOptions = {
           );
         }
 
-        console.log({
-          id: findUser?.id,
-          name: findUser?.name,
-          username: findUser?.username.toLowerCase(),
-        });
-
         if (passwordMatches) {
-          return {
-            id: findUser?.id,
-            name: findUser?.name,
-            email: findUser?.username.toLowerCase(),
-          };
+          return findUser;
         } else return null as any;
       },
     }),
@@ -72,17 +61,20 @@ export const authOptions: AuthOptions = {
     signIn: "/login",
   },
   callbacks: {
-    session: async ({ session, token }) => {
-      console.log("TOKEN:", token);
-      session.user.id = parseInt(token?.sub as any);
-      session.user.username = session.user.email;
-      console.log("SESSION:", session);
+    session: async ({ session, token }: { session: Session; token: JWT }) => {
+      console.log(token);
+      session.user.id = parseInt(token.id as string);
+      session.user.username = token.username as string;
 
       return session;
     },
     // Using the `...rest` parameter to be able to narrow down the type based on `trigger`
-    jwt({ token, trigger, session }) {
-      if (trigger === "update" && session?.name && session?.username) {
+    jwt({ token, trigger, session, user }) {
+      console.log(user);
+      if (trigger === "signIn") {
+        token.id = user.id;
+        token.username = (user as any).username;
+      } else if (trigger === "update" && session?.name && session?.username) {
         // Note, that `session` can be any arbitrary object, remember to validate it!
         token.name = session.name;
         token.username = session.username.toLowerCase();
