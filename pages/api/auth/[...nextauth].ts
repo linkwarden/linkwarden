@@ -5,16 +5,19 @@ import { AuthOptions, Session } from "next-auth";
 import bcrypt from "bcrypt";
 import EmailProvider from "next-auth/providers/email";
 import { JWT } from "next-auth/jwt";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { Adapter } from "next-auth/adapters";
 
 export const authOptions: AuthOptions = {
+  adapter: PrismaAdapter(prisma) as Adapter,
   session: {
     strategy: "jwt",
   },
   providers: [
-    // EmailProvider({
-    //   server: process.env.EMAIL_SERVER,
-    //   from: process.env.EMAIL_FROM,
-    // }),
+    EmailProvider({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
+    }),
     CredentialsProvider({
       type: "credentials",
       credentials: {
@@ -29,12 +32,6 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials, req) {
         if (!credentials) return null;
-
-        // const { username, password } = credentials as {
-        //   id: number;
-        //   username: string;
-        //   password: string;
-        // };
 
         const findUser = await prisma.user.findFirst({
           where: {
