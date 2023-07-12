@@ -34,14 +34,15 @@ export default async function Index(
   const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
 
   // Remove user's who aren't verified for more than 10 minutes
-  await prisma.user.deleteMany({
-    where: {
-      createdAt: {
-        lt: tenMinutesAgo,
+  if (EmailProvider)
+    await prisma.user.deleteMany({
+      where: {
+        createdAt: {
+          lt: tenMinutesAgo,
+        },
+        emailVerified: null,
       },
-      emailVerified: null,
-    },
-  });
+    });
 
   const checkIfUserExists = await prisma.user.findFirst({
     where: EmailProvider
