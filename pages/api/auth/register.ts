@@ -37,6 +37,14 @@ export default async function Index(
   if (EmailProvider)
     await prisma.user.deleteMany({
       where: {
+        OR: [
+          {
+            email: body.email,
+          },
+          {
+            username: body.username,
+          },
+        ],
         createdAt: {
           lt: tenMinutesAgo,
         },
