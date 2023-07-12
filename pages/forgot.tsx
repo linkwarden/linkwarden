@@ -1,4 +1,3 @@
-import EmailConfirmaion from "@/components/Modal/EmailConfirmaion";
 import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
@@ -11,7 +10,6 @@ interface FormData {
 
 export default function Forgot() {
   const [submitLoader, setSubmitLoader] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const [form, setForm] = useState<FormData>({
     email: "",
@@ -23,20 +21,16 @@ export default function Forgot() {
 
       const load = toast.loading("Sending login link...");
 
-      const res = await signIn("email", {
+      await signIn("email", {
         email: form.email,
-        callbackUrl: window.location.origin,
+        callbackUrl: "/",
       });
-
-      setShowConfirmation(true);
 
       toast.dismiss(load);
 
       setSubmitLoader(false);
 
-      if (!res?.ok) {
-        toast.error("Invalid login.");
-      }
+      toast.success("Login link sent.");
     } else {
       toast.error("Please fill out all the fields.");
     }
@@ -44,9 +38,6 @@ export default function Forgot() {
 
   return (
     <>
-      {showConfirmation && form.email ? (
-        <EmailConfirmaion email={form.email} />
-      ) : undefined}
       <p className="text-xl font-bold text-center text-sky-500 mt-10 mb-3">
         Linkwarden
       </p>
