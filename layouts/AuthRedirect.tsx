@@ -39,7 +39,7 @@ export default function AuthRedirect({ children }: Props) {
     }
   }, [status]);
 
-  return <>{children}</>;
-  // if (status !== "loading" && !redirect) return <>{children}</>;
-  // else return <></>;
+  if (status !== "loading" && !redirect) return <>{children}</>;
+  else return <></>;
+  // return <>{children}</>;
 }

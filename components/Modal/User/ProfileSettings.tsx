@@ -16,6 +16,8 @@ type Props = {
   user: AccountSettings;
 };
 
+const EmailProvider = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+
 export default function ProfileSettings({
   toggleSettingsModal,
   setUser,
@@ -59,7 +61,7 @@ export default function ProfileSettings({
   };
 
   useEffect(() => {
-    setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+    setUser({ ...user, newPassword: undefined });
   }, []);
 
   const submit = async () => {
@@ -80,7 +82,11 @@ export default function ProfileSettings({
 
     setSubmitLoader(false);
 
-    if (user.username !== account.username || user.name !== account.name)
+    if (
+      user.username !== account.username ||
+      user.name !== account.name ||
+      user.email !== account.email
+    )
       update({
         username: user.username,
         email: user.username,
@@ -88,7 +94,7 @@ export default function ProfileSettings({
       });
 
     if (response.ok) {
-      setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+      setUser({ ...user, newPassword: undefined });
       toggleSettingsModal();
     }
   };
@@ -158,6 +164,18 @@ export default function ProfileSettings({
               className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
           </div>
+
+          {EmailProvider ? (
+            <div>
+              <p className="text-sm text-sky-500 mb-2">Email</p>
+              <input
+                type="text"
+                value={user.email || ""}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
+                className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              />
+            </div>
+          ) : undefined}
         </div>
       </div>
 
