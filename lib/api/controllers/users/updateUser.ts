@@ -8,33 +8,11 @@ export default async function updateUser(
   user: AccountSettings,
   userId: number
 ) {
-  // Password Settings
-  if (user.newPassword && user.oldPassword) {
-    const targetUser = await prisma.user.findUnique({
-      where: {
-        id: user.id,
-      },
-    });
-
-    if (
-      targetUser &&
-      bcrypt.compareSync(user.oldPassword, targetUser.password)
-    ) {
-      const saltRounds = 10;
-      const newHashedPassword = bcrypt.hashSync(user.newPassword, saltRounds);
-
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          password: newHashedPassword,
-        },
-      });
-    } else {
-      return { response: "Old password is incorrect.", status: 400 };
-    }
-  }
+  if (!user.username || !user.email)
+    return {
+      response: "Username/Email invalid.",
+      status: 400,
+    };
 
   // Avatar Settings
 
@@ -66,6 +44,9 @@ export default async function updateUser(
 
   // Other settings
 
+  const saltRounds = 10;
+  const newHashedPassword = bcrypt.hashSync(user.newPassword || "", saltRounds);
+
   const updatedUser = await prisma.user.update({
     where: {
       id: userId,
@@ -73,8 +54,13 @@ export default async function updateUser(
     data: {
       name: user.name,
       username: user.username.toLowerCase(),
+      email: user.email?.toLowerCase(),
       isPrivate: user.isPrivate,
       whitelistedUsers: user.whitelistedUsers,
+      password:
+        user.newPassword && user.newPassword !== ""
+          ? newHashedPassword
+          : undefined,
     },
   });
 
