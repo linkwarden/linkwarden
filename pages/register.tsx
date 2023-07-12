@@ -3,7 +3,6 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
-import EmailConfirmaion from "@/components/Modal/EmailConfirmaion";
 
 const EmailProvider = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -17,7 +16,6 @@ type FormData = {
 
 export default function Register() {
   const [submitLoader, setSubmitLoader] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const [form, setForm] = useState<FormData>({
     name: "",
@@ -50,7 +48,7 @@ export default function Register() {
     const sendConfirmation = async () => {
       await signIn("email", {
         email: form.email,
-        redirect: false,
+        callbackUrl: "/",
       });
     };
 
@@ -76,10 +74,7 @@ export default function Register() {
         setSubmitLoader(false);
 
         if (response.ok) {
-          if (form.email) {
-            await sendConfirmation();
-            setShowConfirmation(true);
-          }
+          if (form.email) await sendConfirmation();
 
           toast.success(
             EmailProvider
@@ -99,9 +94,6 @@ export default function Register() {
 
   return (
     <>
-      {showConfirmation && form.email ? (
-        <EmailConfirmaion email={form.email} />
-      ) : undefined}
       <p className="text-xl font-bold text-center my-10 mb-3 text-sky-500">
         Linkwarden
       </p>
