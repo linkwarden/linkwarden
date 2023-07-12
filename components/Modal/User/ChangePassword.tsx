@@ -17,7 +17,6 @@ export default function ChangePassword({
   setUser,
   user,
 }: Props) {
-  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword1] = useState("");
   const [newPassword2, setNewPassword2] = useState("");
 
@@ -28,15 +27,15 @@ export default function ChangePassword({
 
   useEffect(() => {
     if (
-      !(oldPassword == "" || newPassword == "" || newPassword2 == "") &&
+      !(newPassword == "" || newPassword2 == "") &&
       newPassword === newPassword2
     ) {
-      setUser({ ...user, oldPassword, newPassword });
+      setUser({ ...user, newPassword });
     }
-  }, [oldPassword, newPassword, newPassword2]);
+  }, [newPassword, newPassword2]);
 
   const submit = async () => {
-    if (oldPassword == "" || newPassword == "" || newPassword2 == "") {
+    if (newPassword == "" || newPassword2 == "") {
       toast.error("Please fill all the fields.");
     } else if (newPassword === newPassword2) {
       setSubmitLoader(true);
@@ -56,11 +55,15 @@ export default function ChangePassword({
 
       setSubmitLoader(false);
 
-      if (user.username !== account.username || user.name !== account.name)
+      if (
+        (user.username !== account.username || user.name !== account.name) &&
+        user.username &&
+        user.email
+      )
         update({ username: user.username, name: user.name });
 
       if (response.ok) {
-        setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+        setUser({ ...user, newPassword: undefined });
         togglePasswordFormModal();
       }
     } else {
@@ -71,20 +74,13 @@ export default function ChangePassword({
   return (
     <div className="mx-auto sm:w-[35rem] w-80">
       <div className="max-w-[25rem] w-full mx-auto flex flex-col gap-3 justify-between">
-        <p className="text-sm text-sky-500">Old Password</p>
-
-        <input
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-          type="password"
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
         <p className="text-sm text-sky-500">New Password</p>
 
         <input
           value={newPassword}
           onChange={(e) => setNewPassword1(e.target.value)}
           type="password"
+          placeholder="*****************"
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
         <p className="text-sm text-sky-500">Re-enter New Password</p>
@@ -93,6 +89,7 @@ export default function ChangePassword({
           value={newPassword2}
           onChange={(e) => setNewPassword2(e.target.value)}
           type="password"
+          placeholder="*****************"
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
 
