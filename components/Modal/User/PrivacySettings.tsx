@@ -35,7 +35,7 @@ export default function PrivacySettings({
   }, [whitelistedUsersTextbox]);
 
   useEffect(() => {
-    setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+    setUser({ ...user, newPassword: undefined });
   }, []);
 
   const stringToArray = (str: string) => {
@@ -68,7 +68,7 @@ export default function PrivacySettings({
       update({ username: user.username, name: user.name });
 
     if (response.ok) {
-      setUser({ ...user, oldPassword: undefined, newPassword: undefined });
+      setUser({ ...user, newPassword: undefined });
       toggleSettingsModal();
     }
   };

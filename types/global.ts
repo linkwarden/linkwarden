@@ -35,7 +35,6 @@ export interface CollectionIncludingMembersAndLinkCount
 
 export interface AccountSettings extends User {
   profilePic: string;
-  oldPassword?: string;
   newPassword?: string;
 }
 

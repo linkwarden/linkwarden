@@ -9,6 +9,8 @@ interface FormData {
   password: string;
 }
 
+const EmailProvider = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+
 export default function Login() {
   const [submitLoader, setSubmitLoader] = useState(false);
 
@@ -43,7 +45,7 @@ export default function Login() {
 
   return (
     <>
-      <p className="text-xl font-bold text-center text-sky-500 my-10">
+      <p className="text-xl font-bold text-center text-sky-500 mt-10 mb-3">
         Linkwarden
       </p>
       <div className="p-5 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
@@ -54,11 +56,14 @@ export default function Login() {
           </p>
         </div>
 
-        <p className="text-sm text-sky-500 w-fit font-semibold">Username</p>
+        <p className="text-sm text-sky-500 w-fit font-semibold">
+          Username
+          {EmailProvider ? " or Email" : undefined}
+        </p>
 
         <input
           type="text"
-          placeholder="johnny@example.com"
+          placeholder="johnny"
           value={form.username}
           onChange={(e) => setForm({ ...form, username: e.target.value })}
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
@@ -80,12 +85,20 @@ export default function Login() {
           loading={submitLoader}
         />
       </div>
-      <div className="flex items-baseline gap-1 justify-center mt-10">
+      <div className="flex items-baseline gap-1 justify-center my-3">
         <p className="w-fit text-gray-500">New here?</p>
         <Link href={"/register"} className="block text-sky-500 font-bold">
           Sign Up
         </Link>
       </div>
+      {EmailProvider && (
+        <div className="flex items-baseline gap-1 justify-center mb-3">
+          <p className="w-fit text-gray-500">Forgot your password?</p>
+          <Link href={"/forgot"} className="block text-sky-500 font-bold">
+            Send login link
+          </Link>
+        </div>
+      )}
     </>
   );
 }
