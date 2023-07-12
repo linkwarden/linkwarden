@@ -41,4 +41,5 @@ export default function AuthRedirect({ children }: Props) {
 
   if (status !== "loading" && !redirect) return <>{children}</>;
   else return <></>;
+  // return <>{children}</>;
 }
