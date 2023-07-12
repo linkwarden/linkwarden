@@ -10,6 +10,8 @@ import { Adapter } from "next-auth/adapters";
 import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
 import { Provider } from "next-auth/providers";
 
+let email;
+
 const providers: Provider[] = [
   CredentialsProvider({
     type: "credentials",
@@ -63,6 +65,7 @@ if (process.env.EMAIL_SERVER && process.env.EMAIL_FROM)
       from: process.env.EMAIL_FROM,
       maxAge: 600,
       sendVerificationRequest(params) {
+        email = params.identifier;
         sendVerificationRequest(params);
       },
     })
@@ -76,6 +79,7 @@ export const authOptions: AuthOptions = {
   providers,
   pages: {
     signIn: "/login",
+    verifyRequest: "/confirmation",
   },
   callbacks: {
     session: async ({ session, token }: { session: Session; token: JWT }) => {
