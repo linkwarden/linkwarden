@@ -63,9 +63,9 @@ export default function PublicCollections() {
         })}
       </div>
 
-      <p className="text-center font-bold text-gray-500">
+      {/* <p className="text-center font-bold text-gray-500">
         List created with <span className="text-sky-500">Linkwarden.</span>
-      </p>
+      </p> */}
     </div>
   ) : (
     <></>
