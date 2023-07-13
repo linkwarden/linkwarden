@@ -19,7 +19,7 @@ const addMemberToCollection = async (
     // member can't be empty
     memberUsername.trim() !== "" &&
     // member can't be the owner
-    memberUsername.trim() !== ownerUsername
+    memberUsername.trim().toLowerCase() !== ownerUsername.toLowerCase()
   ) {
     // Lookup, get data/err, list ...
     const user = await getPublicUserDataByUsername(
@@ -40,7 +40,7 @@ const addMemberToCollection = async (
       });
     }
   } else if (checkIfMemberAlreadyExists) toast.error("User already exists.");
-  else if (memberUsername.trim() === ownerUsername)
+  else if (memberUsername.trim().toLowerCase() === ownerUsername.toLowerCase())
     toast.error("You are already the collection owner.");
 };
 

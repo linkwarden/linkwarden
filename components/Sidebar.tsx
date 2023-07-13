@@ -2,7 +2,6 @@ import useCollectionStore from "@/store/collections";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFolder,
-  faBox,
   faHashtag,
   faChartSimple,
   faChevronDown,
@@ -13,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
+import Image from "next/image";
 
 export default function Sidebar({ className }: { className?: string }) {
   const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
@@ -53,55 +53,50 @@ export default function Sidebar({ className }: { className?: string }) {
     <div
       className={`bg-gray-100 h-screen w-64 xl:w-80 overflow-y-auto border-solid border-r-sky-100 px-2 border z-20 ${className}`}
     >
-      <p className="p-2 text-sky-500 font-bold text-2xl my-2 leading-4">
-        Linkwarden
-      </p>
-
-      <div className="flex flex-col gap-1">
-        <Link href="/dashboard">
-          <div
-            className={`${
-              active === "/dashboard"
-                ? "bg-sky-200"
-                : "hover:bg-slate-200 bg-gray-100"
-            } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex items-center gap-2`}
-          >
-            <FontAwesomeIcon
-              icon={faChartSimple}
-              className={`w-6 h-6 drop-shadow text-sky-500`}
-            />
-            <p className="text-sky-600">Dashboard</p>
-          </div>
+      <div className="flex justify-center gap-2 mt-2">
+        <Link
+          href="/dashboard"
+          className={`${
+            active === "/dashboard"
+              ? "bg-sky-200"
+              : "hover:bg-slate-200 bg-gray-100"
+          } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1`}
+        >
+          <FontAwesomeIcon
+            icon={faChartSimple}
+            className={`w-8 h-8 drop-shadow text-sky-500`}
+          />
+          <p className="text-sky-600 text-xs font-semibold">Dashboard</p>
         </Link>
 
-        <Link href="/links">
-          <div
-            className={`${
-              active === "/links"
-                ? "bg-sky-200"
-                : "hover:bg-slate-200 bg-gray-100"
-            } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex items-center gap-2`}
-          >
-            <FontAwesomeIcon
-              icon={faLink}
-              className={`w-6 h-6 drop-shadow text-sky-500`}
-            />
-            <p className="text-sky-600">All Links</p>
-          </div>
+        <Link
+          href="/links"
+          className={`${
+            active === "/links"
+              ? "bg-sky-200"
+              : "hover:bg-slate-200 bg-gray-100"
+          } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
+        >
+          <FontAwesomeIcon
+            icon={faLink}
+            className={`w-8 h-8 drop-shadow text-sky-500`}
+          />
+          <p className="text-sky-600 text-xs font-semibold">All Links</p>
         </Link>
 
-        <Link href="/collections">
-          <div
-            className={`${
-              active === "/collections" ? "bg-sky-200" : "hover:bg-slate-200"
-            } outline-sky-100 outline-1 duration-100  py-1 px-2 rounded-md cursor-pointer flex items-center gap-2`}
-          >
-            <FontAwesomeIcon
-              icon={faBox}
-              className={`w-6 h-6 drop-shadow text-sky-500`}
-            />
-            <p className="text-sky-600">All Collections</p>
-          </div>
+        <Link
+          href="/collections"
+          className={`${
+            active === "/collections" ? "bg-sky-200" : "hover:bg-slate-200"
+          } outline-sky-100 outline-1 duration-100  py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
+        >
+          <FontAwesomeIcon
+            icon={faFolder}
+            className={`w-8 h-8 drop-shadow text-sky-500`}
+          />
+          <p className="text-sky-600 text-xs font-semibold">
+            <span className="hidden xl:inline-block">All</span> Collections
+          </p>
         </Link>
       </div>
 

@@ -73,11 +73,20 @@ export default function Login() {
 
         <input
           type="password"
-          placeholder="*****************"
+          placeholder="***********"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
+        {EmailProvider && (
+          <Link
+            href={"/forgot"}
+            className="w-fit ml-auto text-gray-500 font-semibold"
+          >
+            Forgot Password?
+          </Link>
+        )}
+
         <SubmitButton
           onClick={loginUser}
           label="Login"
@@ -91,14 +100,6 @@ export default function Login() {
           Sign Up
         </Link>
       </div>
-      {EmailProvider && (
-        <div className="flex items-baseline gap-1 justify-center mb-3">
-          <p className="w-fit text-gray-500">Forgot your password?</p>
-          <Link href={"/forgot"} className="block text-sky-500 font-bold">
-            Send login link
-          </Link>
-        </div>
-      )}
     </>
   );
 }

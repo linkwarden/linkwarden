@@ -1,7 +1,7 @@
 import useCollectionStore from "@/store/collections";
 import {
-  faBox,
   faEllipsis,
+  faFolder,
   faPlus,
   faSort,
 } from "@fortawesome/free-solid-svg-icons";
@@ -36,7 +36,7 @@ export default function Collections() {
           <div className="flex gap-3 items-end">
             <div className="flex gap-2">
               <FontAwesomeIcon
-                icon={faBox}
+                icon={faFolder}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
               />
               <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold">

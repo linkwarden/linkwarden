@@ -139,41 +139,50 @@ export default function Register() {
           </>
         ) : undefined}
 
-        <p className="text-sm text-sky-500 w-fit font-semibold">Password</p>
+        <div className="flex item-center gap-5">
+          <div>
+            <p className="text-sm text-sky-500 w-fit font-semibold mb-3">
+              Password
+            </p>
 
-        <input
-          type="password"
-          placeholder="*****************"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
+            <input
+              type="password"
+              placeholder="***********"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            />
+          </div>
 
-        <p className="text-sm text-sky-500 w-fit font-semibold">
-          Re-enter Password
-        </p>
+          <div>
+            <p className="text-sm text-sky-500 w-fit font-semibold mb-3">
+              Confirm Password
+            </p>
 
-        <input
-          type="password"
-          placeholder="*****************"
-          value={form.passwordConfirmation}
-          onChange={(e) =>
-            setForm({ ...form, passwordConfirmation: e.target.value })
-          }
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
+            <input
+              type="password"
+              placeholder="***********"
+              value={form.passwordConfirmation}
+              onChange={(e) =>
+                setForm({ ...form, passwordConfirmation: e.target.value })
+              }
+              className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            />
+          </div>
+        </div>
         <SubmitButton
           onClick={registerUser}
           label="Sign Up"
           className="mt-2 w-full text-center"
           loading={submitLoader}
         />
-      </div>
-      <div className="flex items-baseline gap-1 justify-center my-3">
-        <p className="w-fit text-gray-500">Already have an account?</p>
-        <Link href={"/login"} className="block w-min text-sky-500 font-bold">
-          Login
-        </Link>
+
+        <div className="flex items-baseline gap-1 justify-center">
+          <p className="w-fit text-gray-500">Already have an account?</p>
+          <Link href={"/login"} className="block w-min text-sky-500 font-bold">
+            Login
+          </Link>
+        </div>
       </div>
     </>
   );
