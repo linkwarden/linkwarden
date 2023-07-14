@@ -27,7 +27,6 @@
     "@types/nodemailer": "^6.4.8",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
-
     "bcrypt": "^5.1.0",
     "colorthief": "^2.4.0",
     "crypto-js": "^4.1.1",
