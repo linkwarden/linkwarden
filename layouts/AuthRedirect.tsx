@@ -20,14 +20,22 @@ export default function AuthRedirect({ children }: Props) {
     if (!router.pathname.startsWith("/public")) {
       if (
         status === "authenticated" &&
-        (router.pathname === "/login" || router.pathname === "/register")
+        (router.pathname === "/login" ||
+          router.pathname === "/register" ||
+          router.pathname === "/confirmation" ||
+          router.pathname === "/forgot")
       ) {
         router.push("/").then(() => {
           setRedirect(false);
         });
       } else if (
         status === "unauthenticated" &&
-        !(router.pathname === "/login" || router.pathname === "/register")
+        !(
+          router.pathname === "/login" ||
+          router.pathname === "/register" ||
+          router.pathname === "/confirmation" ||
+          router.pathname === "/forgot"
+        )
       ) {
         router.push("/login").then(() => {
           setRedirect(false);
