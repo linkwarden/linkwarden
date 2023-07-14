@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 
 const EmailProvider = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -94,54 +95,70 @@ export default function Register() {
 
   return (
     <>
-      <p className="text-xl font-bold text-center my-10 mb-3 text-sky-500">
-        Linkwarden
-      </p>
-      <div className="p-5 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <div className="my-5 text-center">
-          <p className="text-3xl font-bold text-sky-500">Get started</p>
-          <p className="text-md font-semibold text-sky-400">
-            Create a new account
-          </p>
+      <div className="p-5 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+        <div className="flex flex-col gap-2 sm:flex-row justify-between items-center mb-5">
+          <Image
+            src="/linkwarden.png"
+            width={1694}
+            height={483}
+            alt="Linkwarden"
+            className="h-12 w-fit"
+          />
+          <div className="text-center sm:text-right">
+            <p className="text-3xl font-bold text-sky-500">Get started</p>
+            <p className="text-md font-semibold text-sky-400">
+              Create a new account
+            </p>
+          </div>
         </div>
 
-        <p className="text-sm text-sky-500 w-fit font-semibold">Display Name</p>
+        <div>
+          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+            Display Name
+          </p>
 
-        <input
-          type="text"
-          placeholder="Johnny"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
+          <input
+            type="text"
+            placeholder="Johnny"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
 
-        <p className="text-sm text-sky-500 w-fit font-semibold">Username</p>
+        <div>
+          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+            Username
+          </p>
 
-        <input
-          type="text"
-          placeholder="john"
-          value={form.username}
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-        />
+          <input
+            type="text"
+            placeholder="john"
+            value={form.username}
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
 
         {EmailProvider ? (
-          <>
-            <p className="text-sm text-sky-500 w-fit font-semibold">Email</p>
+          <div>
+            <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+              Email
+            </p>
 
             <input
               type="email"
               placeholder="johnny@example.com"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
-          </>
+          </div>
         ) : undefined}
 
         <div className="flex item-center gap-5">
           <div>
-            <p className="text-sm text-sky-500 w-fit font-semibold mb-3">
+            <p className="text-sm text-sky-500 w-fit font-semibold  mb-1">
               Password
             </p>
 
@@ -150,12 +167,12 @@ export default function Register() {
               placeholder="***********"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
           </div>
 
           <div>
-            <p className="text-sm text-sky-500 w-fit font-semibold mb-3">
+            <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
               Confirm Password
             </p>
 
@@ -166,7 +183,7 @@ export default function Register() {
               onChange={(e) =>
                 setForm({ ...form, passwordConfirmation: e.target.value })
               }
-              className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
           </div>
         </div>
@@ -176,10 +193,9 @@ export default function Register() {
           className="mt-2 w-full text-center"
           loading={submitLoader}
         />
-
         <div className="flex items-baseline gap-1 justify-center">
           <p className="w-fit text-gray-500">Already have an account?</p>
-          <Link href={"/login"} className="block w-min text-sky-500 font-bold">
+          <Link href={"/login"} className="block text-sky-500 font-bold">
             Login
           </Link>
         </div>
