@@ -35,12 +35,12 @@ model Session {
 }
 
 model User {
-  id                  Int         @id       @default(autoincrement())
+  id                  Int        @id       @default(autoincrement())
   name                String
 
   username            String     @unique
 
-  email               String?     @unique
+  email               String?    @unique
   emailVerified       DateTime?
   image               String?
 
@@ -60,7 +60,6 @@ model User {
   createdAt           DateTime    @default(now())
 }
 
-
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -68,7 +67,6 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-
 
 model Collection {
   id Int @id @default(autoincrement())

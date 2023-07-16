@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 
-const EmailProvider =
+const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 interface Data {
@@ -22,7 +22,7 @@ export default async function Index(
 ) {
   const body: User = req.body;
 
-  const checkHasEmptyFields = EmailProvider
+  const checkHasEmptyFields = emailEnabled
     ? !body.username || !body.password || !body.name || !body.email
     : !body.username || !body.password || !body.name;
 
@@ -34,7 +34,7 @@ export default async function Index(
   const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
 
   // Remove user's who aren't verified for more than 10 minutes
-  if (EmailProvider)
+  if (emailEnabled)
     await prisma.user.deleteMany({
       where: {
         OR: [
@@ -53,10 +53,12 @@ export default async function Index(
     });
 
   const checkIfUserExists = await prisma.user.findFirst({
-    where: EmailProvider
+    where: emailEnabled
       ? {
           OR: [
-            { username: body.username.toLowerCase() },
+            {
+              username: body.username.toLowerCase(),
+            },
             {
               email: body.email?.toLowerCase(),
             },

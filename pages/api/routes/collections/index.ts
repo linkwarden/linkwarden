@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import getCollections from "@/lib/api/controllers/collections/getCollections";
 import postCollection from "@/lib/api/controllers/collections/postCollection";
 import updateCollection from "@/lib/api/controllers/collections/updateCollection";
@@ -14,7 +14,11 @@ export default async function collections(
 
   if (!session?.user?.username) {
     return res.status(401).json({ response: "You must be logged in." });
-  }
+  } else if (session?.user?.isSubscriber === false)
+    res.status(401).json({
+      response:
+        "You are not a subscriber, feel free to reach out to us at hello@linkwarden.app in case of any issues.",
+    });
 
   if (req.method === "GET") {
     const collections = await getCollections(session.user.id);
