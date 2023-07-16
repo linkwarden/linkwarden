@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import getLinks from "@/lib/api/controllers/links/getLinks";
 import postLink from "@/lib/api/controllers/links/postLink";
 import deleteLink from "@/lib/api/controllers/links/deleteLink";
@@ -11,7 +11,11 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 
   if (!session?.user?.username) {
     return res.status(401).json({ response: "You must be logged in." });
-  }
+  } else if (session?.user?.isSubscriber === false)
+    res.status(401).json({
+      response:
+        "You are not a subscriber, feel free to reach out to us at hello@linkwarden.app in case of any issues.",
+    });
 
   if (req.method === "GET") {
     const links = await getLinks(session.user.id, req?.query?.body as string);

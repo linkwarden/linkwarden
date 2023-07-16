@@ -22,6 +22,7 @@
     "@headlessui/react": "^1.7.15",
     "@next/font": "13.4.9",
     "@prisma/client": "^4.16.2",
+    "@stripe/stripe-js": "^1.54.1",
     "@types/crypto-js": "^4.1.1",
     "@types/node": "20.3.3",
     "@types/nodemailer": "^6.4.8",
@@ -43,6 +44,7 @@
     "react-image-file-resizer": "^0.4.8",
     "react-select": "^5.7.3",
     "sharp": "^0.32.1",
+    "stripe": "^12.13.0",
     "typescript": "4.9.4",
     "zustand": "^4.3.8"
   },

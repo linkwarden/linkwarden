@@ -11,18 +11,23 @@ interface Props {
 
 export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
-  const { status } = useSession();
+  const { status, data } = useSession();
   const [redirect, setRedirect] = useState(true);
 
   useInitialData();
 
   useEffect(() => {
     if (!router.pathname.startsWith("/public")) {
-      if (
+      if (status === "authenticated" && data.user.isSubscriber === false) {
+        router.push("/subscribe").then(() => {
+          setRedirect(false);
+        });
+      } else if (
         status === "authenticated" &&
         (router.pathname === "/login" ||
           router.pathname === "/register" ||
           router.pathname === "/confirmation" ||
+          router.pathname === "/subscribe" ||
           router.pathname === "/forgot")
       ) {
         router.push("/").then(() => {

@@ -1,6 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import Loader from "../components/Loader";
 import useRedirect from "@/hooks/useRedirect";
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function MainLayout({ children }: Props) {
-  const { status } = useSession();
+  const { status, data } = useSession();
   const router = useRouter();
   const redirect = useRedirect();
   const routeExists = router.route === "/_error" ? false : true;
