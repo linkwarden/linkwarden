@@ -15,6 +15,11 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
   if (!session?.user?.username)
     return res.status(401).json({ response: "You must be logged in." });
+  else if (session?.user?.isSubscriber === false)
+    res.status(401).json({
+      response:
+        "You are not a subscriber, feel free to reach out to us at hello@linkwarden.app in case of any issues.",
+    });
 
   const collectionIsAccessible = await getPermission(
     session.user.id,

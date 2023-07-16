@@ -16,7 +16,7 @@ type Props = {
   user: AccountSettings;
 };
 
-const EmailProvider = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
 export default function ProfileSettings({
   toggleSettingsModal,
@@ -165,7 +165,7 @@ export default function ProfileSettings({
             />
           </div>
 
-          {EmailProvider ? (
+          {emailEnabled ? (
             <div>
               <p className="text-sm text-sky-500 mb-2">Email</p>
               <input

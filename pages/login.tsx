@@ -10,7 +10,7 @@ interface FormData {
   password: string;
 }
 
-const EmailProvider = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
 export default function Login() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -46,7 +46,7 @@ export default function Login() {
 
   return (
     <>
-      <div className="p-5 my-10 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+      <div className="p-2 my-10 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
         <div className="text-right flex flex-col gap-2 sm:flex-row justify-between items-center mb-5">
           <Image
             src="/linkwarden.png"
@@ -56,7 +56,7 @@ export default function Login() {
             className="h-12 w-fit"
           />
           <div className="text-center sm:text-right">
-            <p className="text-3xl font-bold text-sky-500">Welcome back</p>
+            <p className="text-3xl text-sky-500">Welcome back</p>
             <p className="text-md font-semibold text-sky-400">
               Sign in to your account
             </p>
@@ -66,7 +66,7 @@ export default function Login() {
         <div>
           <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
             Username
-            {EmailProvider ? "/Email" : undefined}
+            {emailEnabled ? "/Email" : undefined}
           </p>
 
           <input
@@ -85,12 +85,12 @@ export default function Login() {
 
           <input
             type="password"
-            placeholder="***********"
+            placeholder="••••••••••••••"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
           />
-          {EmailProvider && (
+          {emailEnabled && (
             <div className="w-fit ml-auto mt-1">
               <Link href={"/forgot"} className="text-gray-500 font-semibold">
                 Forgot Password?

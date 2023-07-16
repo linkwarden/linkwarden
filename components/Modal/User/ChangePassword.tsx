@@ -80,7 +80,7 @@ export default function ChangePassword({
           value={newPassword}
           onChange={(e) => setNewPassword1(e.target.value)}
           type="password"
-          placeholder="***********"
+          placeholder="••••••••••••••"
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
         <p className="text-sm text-sky-500">Confirm New Password</p>
@@ -89,7 +89,7 @@ export default function ChangePassword({
           value={newPassword2}
           onChange={(e) => setNewPassword2(e.target.value)}
           type="password"
-          placeholder="***********"
+          placeholder="••••••••••••••"
           className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
         />
 
