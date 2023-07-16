@@ -86,14 +86,15 @@ export default function ProfileSettings({
       user.username !== account.username ||
       user.name !== account.name ||
       user.email !== account.email
-    )
+    ) {
       update({
         username: user.username,
         email: user.username,
         name: user.name,
       });
 
-    signOut();
+      signOut();
+    }
 
     if (response.ok) {
       setUser({ ...user, newPassword: undefined });
