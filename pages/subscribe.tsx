@@ -51,6 +51,13 @@ export default function Subscribe() {
           <p className="text-md text-gray-500 mt-1">
             You will be redirected to Stripe.
           </p>
+          <p className="text-md text-gray-500 mt-1">
+            feel free to reach out to us at{" "}
+            <a className="font-semibold" href="mailto:hello@linkwarden.app">
+              hello@linkwarden.app
+            </a>{" "}
+            in case of any issues.
+          </p>
         </div>
 
         <SubmitButton
