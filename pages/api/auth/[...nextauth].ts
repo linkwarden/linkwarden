@@ -93,9 +93,10 @@ export const authOptions: AuthOptions = {
       const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
       const PRICE_ID = process.env.PRICE_ID;
 
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa", token);
-
-      const secondsInTwoWeeks = 1209600;
+      const TRIAL_PERIOD_DAYS = process.env.TRIAL_PERIOD_DAYS;
+      const secondsInTwoWeeks = TRIAL_PERIOD_DAYS
+        ? Number(TRIAL_PERIOD_DAYS) * 86400
+        : 1209600;
       const subscriptionIsTimesUp =
         token.subscriptionCanceledAt &&
         new Date() >
@@ -104,7 +105,11 @@ export const authOptions: AuthOptions = {
               1000
           );
 
-      if (STRIPE_SECRET_KEY && PRICE_ID && (trigger || subscriptionIsTimesUp)) {
+      if (
+        STRIPE_SECRET_KEY &&
+        PRICE_ID &&
+        (trigger || subscriptionIsTimesUp || !token.isSubscriber)
+      ) {
         console.log("EXECUTED!!!");
         const subscription = await checkSubscription(
           STRIPE_SECRET_KEY,

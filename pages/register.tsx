@@ -77,11 +77,7 @@ export default function Register() {
         if (response.ok) {
           if (form.email) await sendConfirmation();
 
-          toast.success(
-            emailEnabled
-              ? "User Created! Please check you email."
-              : "User Created!"
-          );
+          toast.success("User Created!");
         } else {
           toast.error(data.response);
         }

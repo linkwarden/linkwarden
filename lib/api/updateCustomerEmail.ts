@@ -18,7 +18,10 @@ export default async function updateCustomerEmail(
   const customer = listByEmail.data.find((customer, i) => {
     const hasValidSubscription = customer.subscriptions?.data.some(
       (subscription) => {
-        const secondsInTwoWeeks = 1209600;
+        const TRIAL_PERIOD_DAYS = process.env.TRIAL_PERIOD_DAYS;
+        const secondsInTwoWeeks = TRIAL_PERIOD_DAYS
+          ? Number(TRIAL_PERIOD_DAYS) * 86400
+          : 1209600;
 
         const isNotCanceledOrHasTime = !(
           subscription.canceled_at &&

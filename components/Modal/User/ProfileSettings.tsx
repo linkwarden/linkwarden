@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { resizeImage } from "@/lib/client/resizeImage";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../../SubmitButton";
@@ -92,6 +92,8 @@ export default function ProfileSettings({
         email: user.username,
         name: user.name,
       });
+
+    signOut();
 
     if (response.ok) {
       setUser({ ...user, newPassword: undefined });
