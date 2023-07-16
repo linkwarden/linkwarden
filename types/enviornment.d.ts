@@ -19,7 +19,7 @@ declare global {
 
       STRIPE_SECRET_KEY?: string;
       PRICE_ID?: string;
-      STRIPE_BILLING_PORTAL_URL?: string;
+      NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL?: string;
     }
   }
 }
