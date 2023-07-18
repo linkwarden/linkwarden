@@ -1,5 +1,5 @@
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
-import getPublicUserDataByUsername from "./getPublicUserDataByUsername";
+import getPublicUserData from "./getPublicUserData";
 import { toast } from "react-hot-toast";
 
 const addMemberToCollection = async (
@@ -22,9 +22,9 @@ const addMemberToCollection = async (
     memberUsername.trim().toLowerCase() !== ownerUsername.toLowerCase()
   ) {
     // Lookup, get data/err, list ...
-    const user = await getPublicUserDataByUsername(
-      memberUsername.trim().toLowerCase()
-    );
+    const user = await getPublicUserData({
+      username: memberUsername.trim().toLowerCase(),
+    });
 
     if (user.username) {
       setMember({
