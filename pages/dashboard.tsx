@@ -173,7 +173,7 @@ export default function Dashboard() {
               </p>
               <p className="text-center text-sky-900 text-sm">
                 You can Pin Links by clicking on the three dots on each Link and
-                clicking "Pin to Dashboard."
+                clicking &quot;Pin to Dashboard.&quot;
               </p>
             </div>
           )}
