@@ -1,7 +1,8 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClose,
+  faCrown,
   faPenToSquare,
   faPlus,
   faUserPlus,
@@ -15,6 +16,7 @@ import SubmitButton from "@/components/SubmitButton";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
+import getPublicUserData from "@/lib/client/getPublicUserData";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -46,6 +48,21 @@ export default function TeamManagement({
       username: "",
     },
   });
+
+  const [collectionOwner, setCollectionOwner] = useState({
+    id: null,
+    name: "",
+    username: "",
+  });
+
+  useEffect(() => {
+    const fetchOwner = async () => {
+      const owner = await getPublicUserData({ id: collection.ownerId });
+      setCollectionOwner(owner);
+    };
+
+    fetchOwner();
+  }, []);
 
   const { addCollection, updateCollection } = useCollectionStore();
 
@@ -163,7 +180,7 @@ export default function TeamManagement({
                 )
               }
               type="text"
-              placeholder="Username"
+              placeholder="Username (without the '@')"
               className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
 
@@ -225,7 +242,7 @@ export default function TeamManagement({
                         <p className="text-sm font-bold text-sky-500">
                           {e.user.name}
                         </p>
-                        <p className="text-sky-900">{e.user.username}</p>
+                        <p className="text-sky-900">@{e.user.username}</p>
                       </div>
                     </div>
                     <div className="flex sm:block items-center gap-5 min-w-[10rem]">
@@ -396,6 +413,30 @@ export default function TeamManagement({
           </div>
         </>
       )}
+
+      <div
+        className="relative border p-2 rounded-md border-sky-100 flex flex-col gap-2 justify-between"
+        title={`'@${collectionOwner.username}' is the owner of this collection.`}
+      >
+        <div className="flex items-center gap-2">
+          <ProfilePhoto
+            src={`/api/avatar/${collection.ownerId}`}
+            className="border-[3px]"
+          />
+          <div>
+            <div className="flex items-center gap-1">
+              <p className="text-sm font-bold text-sky-500">
+                {collectionOwner.name}
+              </p>
+              <FontAwesomeIcon
+                icon={faCrown}
+                className="w-3 h-3 text-yellow-500"
+              />
+            </div>
+            <p className="text-sky-900">@{collectionOwner.username}</p>
+          </div>
+        </div>
+      </div>
 
       {permissions === true && (
         <SubmitButton

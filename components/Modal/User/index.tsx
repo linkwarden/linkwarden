@@ -4,6 +4,7 @@ import { useState } from "react";
 import ChangePassword from "./ChangePassword";
 import ProfileSettings from "./ProfileSettings";
 import PrivacySettings from "./PrivacySettings";
+import BillingPortal from "./BillingPortal";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -11,6 +12,9 @@ type Props = {
   className?: string;
   defaultIndex?: number;
 };
+
+const STRIPE_BILLING_PORTAL_URL =
+  process.env.NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL;
 
 export default function UserModal({
   className,
@@ -53,6 +57,18 @@ export default function UserModal({
           >
             Password
           </Tab>
+
+          {STRIPE_BILLING_PORTAL_URL ? (
+            <Tab
+              className={({ selected }) =>
+                selected
+                  ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
+                  : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+              }
+            >
+              Billing Portal
+            </Tab>
+          ) : undefined}
         </Tab.List>
         <Tab.Panels>
           <Tab.Panel>
@@ -78,6 +94,12 @@ export default function UserModal({
               user={user}
             />
           </Tab.Panel>
+
+          {STRIPE_BILLING_PORTAL_URL ? (
+            <Tab.Panel>
+              <BillingPortal />
+            </Tab.Panel>
+          ) : undefined}
         </Tab.Panels>
       </Tab.Group>
     </div>

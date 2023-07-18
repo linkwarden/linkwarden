@@ -16,6 +16,11 @@ declare global {
       NEXT_PUBLIC_EMAIL_PROVIDER?: true;
       EMAIL_FROM?: string;
       EMAIL_SERVER?: string;
+
+      STRIPE_SECRET_KEY?: string;
+      PRICE_ID?: string;
+      NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL?: string;
+      TRIAL_PERIOD_DAYS?: string;
     }
   }
 }
