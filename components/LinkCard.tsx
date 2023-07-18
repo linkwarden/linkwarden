@@ -143,18 +143,18 @@ export default function LinkCard({ link, count, className }: Props) {
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-baseline gap-1">
               <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
-              <p className="text-lg text-sky-500 font-bold truncate max-w-[10rem] capitalize">
+              <p className="text-lg text-sky-500 font-bold truncate capitalize w-full pr-8">
                 {link.name}
               </p>
             </div>
-            <div className="flex gap-3 items-center flex-wrap my-3">
-              <div className="flex items-center gap-1">
+            <div className="flex gap-3 items-center my-3">
+              <div className="flex items-center gap-1 w-full pr-20">
                 <FontAwesomeIcon
                   icon={faFolder}
                   className="w-4 h-4 mt-1 drop-shadow"
                   style={{ color: collection?.color }}
                 />
-                <p className="text-sky-900 truncate max-w-[10rem] capitalize">
+                <p className="text-sky-900 truncate capitalize">
                   {collection?.name}
                 </p>
               </div>
