@@ -20,6 +20,26 @@ export default async function updateUser(
       status: 400,
     };
 
+  const userIsTaken = await prisma.user.findFirst({
+    where: {
+      id: { not: sessionUser.id },
+      OR: [
+        {
+          username: user.username.toLowerCase(),
+        },
+        {
+          email: user.email.toLowerCase(),
+        },
+      ],
+    },
+  });
+
+  if (userIsTaken)
+    return {
+      response: "Username/Email is taken.",
+      status: 400,
+    };
+
   // Avatar Settings
 
   const profilePic = user.profilePic;
