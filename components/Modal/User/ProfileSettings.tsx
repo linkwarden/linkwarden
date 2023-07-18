@@ -124,7 +124,7 @@ export default function ProfileSettings({
               </div>
             )}
 
-            <div className="absolute -bottom-2 left-0 right-0 mx-auto w-fit text-center">
+            <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
               <label
                 htmlFor="upload-photo"
                 title="PNG or JPG (Max: 3MB)"

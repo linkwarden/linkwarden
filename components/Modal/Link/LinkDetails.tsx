@@ -151,7 +151,7 @@ export default function LinkDetails({ link }: Props) {
           />
         )}
         <div className="flex flex-col gap- justify-end drop-shadow">
-          <p className="text-2xl text-sky-500 capitalize hyphens-auto">
+          <p className="text-2xl text-sky-500 capitalize break-words hyphens-auto">
             {link.name}
           </p>
           <Link
