@@ -155,10 +155,7 @@ export default function AddOrEditLink({
         ) : null}
 
         <div>
-          <p className="text-sm text-sky-500 mb-2">
-            Collection
-            <RequiredBadge />
-          </p>
+          <p className="text-sm text-sky-500 mb-2">Collection</p>
           <CollectionSelection
             onChange={setCollection}
             // defaultValue={{
