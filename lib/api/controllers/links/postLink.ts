@@ -4,6 +4,7 @@ import getTitle from "@/lib/api/getTitle";
 import archive from "@/lib/api/archive";
 import { Collection, Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
+import createFolder from "@/lib/api/storage/createFolder";
 
 export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
@@ -14,7 +15,7 @@ export default async function postLink(
   if (!link.name) {
     return { response: "Please enter a valid name for the link.", status: 400 };
   } else if (!link.collection.name) {
-    return { response: "Please enter a valid collection.", status: 400 };
+    link.collection.name = "Unnamed Collection";
   }
 
   if (link.collection.id) {
@@ -82,6 +83,8 @@ export default async function postLink(
     },
     include: { tags: true, collection: true },
   });
+
+  createFolder({ filePath: `archives/${newLink.collectionId}` });
 
   archive(newLink.url, newLink.collectionId, newLink.id);
 

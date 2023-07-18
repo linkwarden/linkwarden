@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { resizeImage } from "@/lib/client/resizeImage";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../../SubmitButton";
@@ -16,7 +16,7 @@ type Props = {
   user: AccountSettings;
 };
 
-const EmailProvider = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
 export default function ProfileSettings({
   toggleSettingsModal,
@@ -78,25 +78,25 @@ export default function ProfileSettings({
     if (response.ok) {
       toast.success("Settings Applied!");
       toggleSettingsModal();
-    } else toast.error(response.data as string);
 
-    setSubmitLoader(false);
+      if (
+        user.username !== account.username ||
+        user.name !== account.name ||
+        user.email !== account.email
+      ) {
+        update({
+          username: user.username,
+          email: user.username,
+          name: user.name,
+        });
 
-    if (
-      user.username !== account.username ||
-      user.name !== account.name ||
-      user.email !== account.email
-    )
-      update({
-        username: user.username,
-        email: user.username,
-        name: user.name,
-      });
+        signOut();
+      }
 
-    if (response.ok) {
       setUser({ ...user, newPassword: undefined });
       toggleSettingsModal();
-    }
+    } else toast.error(response.data as string);
+    setSubmitLoader(false);
   };
 
   return (
@@ -165,7 +165,7 @@ export default function ProfileSettings({
             />
           </div>
 
-          {EmailProvider ? (
+          {emailEnabled ? (
             <div>
               <p className="text-sm text-sky-500 mb-2">Email</p>
               <input

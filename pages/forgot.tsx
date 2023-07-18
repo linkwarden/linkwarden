@@ -39,7 +39,7 @@ export default function Forgot() {
 
   return (
     <>
-      <div className="p-5 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+      <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
         <div className="flex flex-col gap-2 sm:flex-row justify-between items-center mb-5">
           <Image
             src="/linkwarden.png"
@@ -49,7 +49,7 @@ export default function Forgot() {
             className="h-12 w-fit"
           />
           <div className="text-center sm:text-right">
-            <p className="text-3xl font-bold text-sky-500">Password Reset</p>
+            <p className="text-3xl text-sky-500">Password Reset</p>
           </div>
         </div>
 

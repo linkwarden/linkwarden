@@ -11,17 +11,22 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const userName = session?.user.username?.toLowerCase();
   const queryId = Number(req.query.id);
 
-  if (!queryId)
-    return res
-      .setHeader("Content-Type", "text/plain")
-      .status(401)
-      .send("Invalid parameters.");
-
   if (!userId || !userName)
     return res
       .setHeader("Content-Type", "text/plain")
       .status(401)
       .send("You must be logged in.");
+  else if (session?.user?.isSubscriber === false)
+    res.status(401).json({
+      response:
+        "You are not a subscriber, feel free to reach out to us at hello@linkwarden.app in case of any issues.",
+    });
+
+  if (!queryId)
+    return res
+      .setHeader("Content-Type", "text/plain")
+      .status(401)
+      .send("Invalid parameters.");
 
   if (userId !== queryId) {
     const targetUser = await prisma.user.findUnique({

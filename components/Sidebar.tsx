@@ -60,7 +60,7 @@ export default function Sidebar({ className }: { className?: string }) {
             active === "/dashboard"
               ? "bg-sky-200"
               : "hover:bg-slate-200 bg-gray-100"
-          } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1`}
+          } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
         >
           <FontAwesomeIcon
             icon={faChartSimple}
@@ -81,7 +81,9 @@ export default function Sidebar({ className }: { className?: string }) {
             icon={faLink}
             className={`w-8 h-8 drop-shadow text-sky-500`}
           />
-          <p className="text-sky-600 text-xs font-semibold">All Links</p>
+          <p className="text-sky-600 text-xs font-semibold">
+            <span className="hidden xl:inline-block">All</span> Links
+          </p>
         </Link>
 
         <Link
