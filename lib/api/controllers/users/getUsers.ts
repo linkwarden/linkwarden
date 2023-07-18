@@ -1,13 +1,21 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function getUser(
-  lookupUsername: string,
-  isSelf: boolean,
-  username: string
-) {
+export default async function getUser({
+  params,
+  isSelf,
+  username,
+}: {
+  params: {
+    lookupUsername?: string;
+    lookupId?: number;
+  };
+  isSelf: boolean;
+  username: string;
+}) {
   const user = await prisma.user.findUnique({
     where: {
-      username: lookupUsername.toLowerCase(),
+      id: params.lookupId,
+      username: params.lookupUsername?.toLowerCase(),
     },
   });
 
