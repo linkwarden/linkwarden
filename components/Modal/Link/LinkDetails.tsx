@@ -131,7 +131,7 @@ export default function LinkDetails({ link }: Props) {
             height={42}
             alt=""
             id={"favicon-" + link.id}
-            className="select-none mt-2 rounded-full shadow border-[3px] border-white bg-white aspect-square"
+            className="select-none mt-2 rounded-md shadow border-[3px] border-white bg-white aspect-square"
             draggable="false"
             onLoad={(e) => {
               try {
