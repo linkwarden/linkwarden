@@ -78,28 +78,25 @@ export default function ProfileSettings({
     if (response.ok) {
       toast.success("Settings Applied!");
       toggleSettingsModal();
-    } else toast.error(response.data as string);
 
-    setSubmitLoader(false);
+      if (
+        user.username !== account.username ||
+        user.name !== account.name ||
+        user.email !== account.email
+      ) {
+        update({
+          username: user.username,
+          email: user.username,
+          name: user.name,
+        });
 
-    if (
-      user.username !== account.username ||
-      user.name !== account.name ||
-      user.email !== account.email
-    ) {
-      update({
-        username: user.username,
-        email: user.username,
-        name: user.name,
-      });
+        signOut();
+      }
 
-      signOut();
-    }
-
-    if (response.ok) {
       setUser({ ...user, newPassword: undefined });
       toggleSettingsModal();
-    }
+    } else toast.error(response.data as string);
+    setSubmitLoader(false);
   };
 
   return (
