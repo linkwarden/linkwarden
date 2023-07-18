@@ -15,7 +15,7 @@ export default async function postLink(
   if (!link.name) {
     return { response: "Please enter a valid name for the link.", status: 400 };
   } else if (!link.collection.name) {
-    link.collection.name = "Other";
+    link.collection.name = "Unnamed Collection";
   }
 
   if (link.collection.id) {
