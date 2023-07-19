@@ -33,7 +33,7 @@ export default async function Index(
 
   const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
 
-  if (!emailEnabled && !checkUsername.test(body.username || ""))
+  if (!emailEnabled && !checkUsername.test(body.username?.toLowerCase() || ""))
     return res.status(400).json({
       response:
         "Username has to be between 3-30 characters, no spaces and special characters are allowed.",

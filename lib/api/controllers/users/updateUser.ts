@@ -22,7 +22,7 @@ export default async function updateUser(
 
   const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
 
-  if (!checkUsername.test(user.username))
+  if (!checkUsername.test(user.username.toLowerCase()))
     return {
       response:
         "Username has to be between 3-30 characters, no spaces and special characters are allowed.",
