@@ -9,7 +9,7 @@ const addMemberToCollection = async (
   setMember: (newMember: Member) => null | undefined
 ) => {
   const checkIfMemberAlreadyExists = collection.members.find((e) => {
-    const username = e.user.username.toLowerCase();
+    const username = (e.user.username || "").toLowerCase();
     return username === memberUsername.toLowerCase();
   });
 
