@@ -51,17 +51,19 @@ export default function ChangePassword({
       if (response.ok) {
         toast.success("Settings Applied!");
 
-        if (
-          user.email !== account.email ||
-          user.username !== account.username ||
-          user.name !== account.name
-        ) {
+        if (user.email !== account.email) {
           update({
             id: data?.user.id,
           });
 
           signOut();
-        }
+        } else if (
+          user.username !== account.username ||
+          user.name !== account.name
+        )
+          update({
+            id: data?.user.id,
+          });
 
         setUser({ ...user, newPassword: undefined });
         togglePasswordFormModal();
