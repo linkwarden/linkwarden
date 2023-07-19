@@ -52,13 +52,13 @@ export default function ChangePassword({
         toast.success("Settings Applied!");
 
         if (
+          user.email !== account.email ||
           user.username !== account.username ||
-          user.name !== account.name ||
-          user.email !== account.email
+          user.name !== account.name
         ) {
           update({
             username: user.username,
-            email: user.username,
+            email: user.email,
             name: user.name,
           });
 
@@ -71,6 +71,7 @@ export default function ChangePassword({
     } else {
       toast.error("Passwords do not match.");
     }
+    setSubmitLoader(false);
   };
 
   return (
