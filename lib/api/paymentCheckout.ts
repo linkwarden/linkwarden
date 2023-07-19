@@ -4,7 +4,6 @@ import checkSubscription from "./checkSubscription";
 export default async function paymentCheckout(
   stripeSecretKey: string,
   email: string,
-  action: "register" | "login",
   priceId: string
 ) {
   const stripe = new Stripe(stripeSecretKey, {

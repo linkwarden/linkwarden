@@ -24,6 +24,8 @@ export default function UserModal({
 }: Props) {
   const [user, setUser] = useState<AccountSettings>(activeUser);
 
+  console.log(activeUser);
+
   return (
     <div className={className}>
       <Tab.Group defaultIndex={defaultIndex}>
