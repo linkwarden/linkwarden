@@ -9,7 +9,7 @@ export default function NoLinksFound() {
   return (
     <div className="border border-solid border-sky-100 w-full p-10 rounded-2xl">
       <p className="text-center text-3xl text-sky-500">
-        You haven't created any Links Here
+        You haven&apos;t created any Links Here
       </p>
       <br />
       <div className="text-center text-sky-900 text-sm flex items-baseline justify-center gap-1 w-full">
