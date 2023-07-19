@@ -35,8 +35,6 @@ export default function Subscribe() {
       update({
         id: data?.user.id,
       });
-
-      signOut();
     } else toast.error(response.data as string);
     toast.dismiss(redirectionToast);
     setSubmitLoader(false);
@@ -75,10 +73,6 @@ export default function Subscribe() {
             className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
           />
         </div>
-
-        <p className="text-gray-500 text-center">
-          Note that you will have to log back in to complete the process.
-        </p>
         <div>
           <p className="text-md text-gray-500 mt-1">
             Feel free to reach out to us at{" "}

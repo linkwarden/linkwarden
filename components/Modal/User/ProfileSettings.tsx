@@ -78,17 +78,19 @@ export default function ProfileSettings({
     if (response.ok) {
       toast.success("Settings Applied!");
 
-      if (
-        user.email !== account.email ||
-        user.username !== account.username ||
-        user.name !== account.name
-      ) {
+      if (user.email !== account.email) {
         update({
           id: data?.user.id,
         });
 
         signOut();
-      }
+      } else if (
+        user.username !== account.username ||
+        user.name !== account.name
+      )
+        update({
+          id: data?.user.id,
+        });
 
       setUser({ ...user, newPassword: undefined });
       toggleSettingsModal();
@@ -174,11 +176,9 @@ export default function ProfileSettings({
             </div>
           ) : undefined}
 
-          {user.username !== account.username ||
-          user.name !== account.name ||
-          user.email !== account.email ? (
+          {user.email !== account.email ? (
             <p className="text-gray-500">
-              You will need to log back in after you apply the changes.
+              You will need to log back in after you apply this Email.
             </p>
           ) : undefined}
         </div>
