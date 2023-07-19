@@ -20,6 +20,15 @@ export default async function updateUser(
       status: 400,
     };
 
+  const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
+
+  if (!checkUsername.test(user.username))
+    return {
+      response:
+        "Username has to be between 3-30 characters, no spaces and special characters are allowed.",
+      status: 400,
+    };
+
   const userIsTaken = await prisma.user.findFirst({
     where: {
       id: { not: sessionUser.id },

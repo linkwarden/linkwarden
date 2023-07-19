@@ -52,6 +52,14 @@ export default async function Index(
       },
     });
 
+  const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
+
+  if (!checkUsername.test(body.username))
+    return res.status(400).json({
+      response:
+        "Username has to be between 3-30 characters, no spaces and special characters are allowed.",
+    });
+
   const checkIfUserExists = await prisma.user.findFirst({
     where: emailEnabled
       ? {
@@ -84,8 +92,10 @@ export default async function Index(
       },
     });
 
-    res.status(201).json({ response: "User successfully created." });
+    return res.status(201).json({ response: "User successfully created." });
   } else if (checkIfUserExists) {
-    res.status(400).json({ response: "Username and/or Email already exists." });
+    return res
+      .status(400)
+      .json({ response: "Username and/or Email already exists." });
   }
 }
