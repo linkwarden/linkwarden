@@ -28,8 +28,8 @@ export default async function paymentCheckout(
     ],
     mode: "subscription",
     customer_email: isExistingCostomer ? undefined : email.toLowerCase(),
-    success_url: "http://localhost:3000?session_id={CHECKOUT_SESSION_ID}",
-    cancel_url: "http://localhost:3000/login",
+    success_url: `${process.env.BASE_URL}?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.BASE_URL}/login`,
     automatic_tax: {
       enabled: true,
     },
