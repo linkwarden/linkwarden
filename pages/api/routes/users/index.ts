@@ -7,7 +7,7 @@ import updateUser from "@/lib/api/controllers/users/updateUser";
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session?.user.username) {
+  if (!session?.user.id) {
     return res.status(401).json({ response: "You must be logged in." });
   } else if (session?.user?.isSubscriber === false)
     res.status(401).json({
@@ -17,7 +17,10 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
 
   const lookupUsername = (req.query.username as string) || undefined;
   const lookupId = Number(req.query.id) || undefined;
-  const isSelf = session.user.username === lookupUsername ? true : false;
+  const isSelf =
+    session.user.username === lookupUsername || session.user.id === lookupId
+      ? true
+      : false;
 
   if (req.method === "GET") {
     const users = await getUsers({
@@ -34,10 +37,3 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     return res.status(updated.status).json({ response: updated.response });
   }
 }
-
-// {
-//   lookupUsername,
-//   lookupId,
-// },
-// isSelf,
-// session.user.username

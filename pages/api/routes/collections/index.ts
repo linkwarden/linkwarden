@@ -12,7 +12,7 @@ export default async function collections(
 ) {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session?.user?.username) {
+  if (!session?.user?.id) {
     return res.status(401).json({ response: "You must be logged in." });
   } else if (session?.user?.isSubscriber === false)
     res.status(401).json({
