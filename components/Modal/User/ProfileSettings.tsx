@@ -79,13 +79,13 @@ export default function ProfileSettings({
       toast.success("Settings Applied!");
 
       if (
+        user.email !== account.email ||
         user.username !== account.username ||
-        user.name !== account.name ||
-        user.email !== account.email
+        user.name !== account.name
       ) {
         update({
           username: user.username,
-          email: user.username,
+          email: user.email,
           name: user.name,
         });
 
@@ -174,6 +174,14 @@ export default function ProfileSettings({
                 className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
               />
             </div>
+          ) : undefined}
+
+          {user.username !== account.username ||
+          user.name !== account.name ||
+          user.email !== account.email ? (
+            <p className="text-gray-500">
+              You will need to log back in after you apply the changes.
+            </p>
           ) : undefined}
         </div>
       </div>
