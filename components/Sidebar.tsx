@@ -127,29 +127,41 @@ export default function Sidebar({ className }: { className?: string }) {
           leaveTo="transform opacity-0 -translate-y-3"
         >
           <Disclosure.Panel className="flex flex-col gap-1">
-            {collections
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((e, i) => {
-                return (
-                  <Link key={i} href={`/collections/${e.id}`}>
-                    <div
-                      className={`${
-                        active === `/collections/${e.id}`
-                          ? "bg-sky-200"
-                          : "hover:bg-slate-200 bg-gray-100"
-                      } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-                    >
-                      <FontAwesomeIcon
-                        icon={faFolder}
-                        className="w-6 h-6 drop-shadow"
-                        style={{ color: e.color }}
-                      />
+            {collections[0] ? (
+              collections
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((e, i) => {
+                  return (
+                    <Link key={i} href={`/collections/${e.id}`}>
+                      <div
+                        className={`${
+                          active === `/collections/${e.id}`
+                            ? "bg-sky-200"
+                            : "hover:bg-slate-200 bg-gray-100"
+                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+                      >
+                        <FontAwesomeIcon
+                          icon={faFolder}
+                          className="w-6 h-6 drop-shadow"
+                          style={{ color: e.color }}
+                        />
 
-                      <p className="text-sky-600 truncate w-4/6">{e.name}</p>
-                    </div>
-                  </Link>
-                );
-              })}
+                        <p className="text-sky-600 truncate w-full pr-7">
+                          {e.name}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })
+            ) : (
+              <div
+                className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              >
+                <p className="text-gray-500 text-xs font-semibold truncate w-full pr-7">
+                  You Have No Collections...
+                </p>
+              </div>
+            )}
           </Disclosure.Panel>
         </Transition>
       </Disclosure>
@@ -175,28 +187,40 @@ export default function Sidebar({ className }: { className?: string }) {
           leaveTo="transform opacity-0 -translate-y-3"
         >
           <Disclosure.Panel className="flex flex-col gap-1">
-            {tags
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((e, i) => {
-                return (
-                  <Link key={i} href={`/tags/${e.id}`}>
-                    <div
-                      className={`${
-                        active === `/tags/${e.id}`
-                          ? "bg-sky-200"
-                          : "hover:bg-slate-200 bg-gray-100"
-                      } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
-                    >
-                      <FontAwesomeIcon
-                        icon={faHashtag}
-                        className="w-4 h-4 text-sky-500 mt-1"
-                      />
+            {tags[0] ? (
+              tags
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((e, i) => {
+                  return (
+                    <Link key={i} href={`/tags/${e.id}`}>
+                      <div
+                        className={`${
+                          active === `/tags/${e.id}`
+                            ? "bg-sky-200"
+                            : "hover:bg-slate-200 bg-gray-100"
+                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                      >
+                        <FontAwesomeIcon
+                          icon={faHashtag}
+                          className="w-4 h-4 text-sky-500 mt-1"
+                        />
 
-                      <p className="text-sky-600 truncate w-4/6">{e.name}</p>
-                    </div>
-                  </Link>
-                );
-              })}
+                        <p className="text-sky-600 truncate w-full pr-7">
+                          {e.name}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })
+            ) : (
+              <div
+                className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              >
+                <p className="text-gray-500 text-xs font-semibold truncate w-full pr-7">
+                  You Have No Tags...
+                </p>
+              </div>
+            )}
           </Disclosure.Panel>
         </Transition>
       </Disclosure>
