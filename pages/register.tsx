@@ -53,35 +53,35 @@ export default function Register() {
     };
 
     if (checkHasEmptyFields()) {
-      if (form.password === form.passwordConfirmation) {
-        const { passwordConfirmation, ...request } = form;
+      if (form.password !== form.passwordConfirmation)
+        return toast.error("Passwords do not match.");
+      else if (form.password.length < 8)
+        return toast.error("Passwords must be at least 8 characters.");
+      const { passwordConfirmation, ...request } = form;
 
-        setSubmitLoader(true);
+      setSubmitLoader(true);
 
-        const load = toast.loading("Creating Account...");
+      const load = toast.loading("Creating Account...");
 
-        const response = await fetch("/api/auth/register", {
-          body: JSON.stringify(request),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-        });
+      const response = await fetch("/api/auth/register", {
+        body: JSON.stringify(request),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        toast.dismiss(load);
-        setSubmitLoader(false);
+      toast.dismiss(load);
+      setSubmitLoader(false);
 
-        if (response.ok) {
-          if (form.email) await sendConfirmation();
+      if (response.ok) {
+        if (form.email) await sendConfirmation();
 
-          toast.success("User Created!");
-        } else {
-          toast.error(data.response);
-        }
+        toast.success("User Created!");
       } else {
-        toast.error("Passwords do not match.");
+        toast.error(data.response);
       }
     } else {
       toast.error("Please fill out all the fields.");
