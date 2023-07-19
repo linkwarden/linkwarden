@@ -33,7 +33,7 @@
     "crypto-js": "^4.1.1",
     "eslint": "8.44.0",
     "eslint-config-next": "13.4.9",
-    "next": "13.1.6",
+    "next": "13.4.10",
     "next-auth": "^4.22.1",
     "nodemailer": "^6.9.3",
     "playwright": "^1.35.1",
