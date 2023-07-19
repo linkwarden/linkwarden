@@ -3,7 +3,7 @@ import { AccountSettings } from "@/types/global";
 
 type ResponseObject = {
   ok: boolean;
-  data: object | string;
+  data: Omit<AccountSettings, "password"> | object | string;
 };
 
 type AccountStore = {

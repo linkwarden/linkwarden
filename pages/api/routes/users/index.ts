@@ -32,7 +32,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
       username: session.user.username,
     });
     return res.status(users.status).json({ response: users.response });
-  } else if (req.method === "PUT" && !req.body.password) {
+  } else if (req.method === "PUT") {
     const updated = await updateUser(req.body, session.user);
     return res.status(updated.status).json({ response: updated.response });
   }

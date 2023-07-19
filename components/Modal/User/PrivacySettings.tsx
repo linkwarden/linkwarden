@@ -18,7 +18,7 @@ export default function PrivacySettings({
   setUser,
   user,
 }: Props) {
-  const { update } = useSession();
+  const { update, data } = useSession();
   const { account, updateAccount } = useAccountStore();
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -66,9 +66,7 @@ export default function PrivacySettings({
         user.name !== account.name
       ) {
         update({
-          username: user.username,
-          email: user.email,
-          name: user.name,
+          id: data?.user.id,
         });
 
         signOut();

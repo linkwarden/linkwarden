@@ -23,7 +23,7 @@ export default function ChangePassword({
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const { account, updateAccount } = useAccountStore();
-  const { update } = useSession();
+  const { update, data } = useSession();
 
   useEffect(() => {
     if (
@@ -57,9 +57,7 @@ export default function ChangePassword({
           user.name !== account.name
         ) {
           update({
-            username: user.username,
-            email: user.email,
-            name: user.name,
+            id: data?.user.id,
           });
 
           signOut();

@@ -10,43 +10,12 @@ export default async function paymentCheckout(
     apiVersion: "2022-11-15",
   });
 
-  // const a = await stripe.prices.retrieve("price_1NTn3PDaRUw6CJPLkw4dcwlJ");
-
-  // const listBySub = await stripe.subscriptions.list({
-  //   customer: "cus_OGUzJrRea8Qbxx",
-  // });
-
   const listByEmail = await stripe.customers.list({
     email: email.toLowerCase(),
     expand: ["data.subscriptions"],
   });
 
   const isExistingCostomer = listByEmail?.data[0]?.id || undefined;
-
-  // const hasPreviouslySubscribed = listByEmail.data.find((customer, i) => {
-  //   const hasValidSubscription = customer.subscriptions?.data.some(
-  //     (subscription) => {
-  //       return subscription?.items?.data?.some(
-  //         (subscriptionItem) => subscriptionItem?.plan?.id === priceId
-  //       );
-  //     }
-  //   );
-
-  //   return (
-  //     customer.email?.toLowerCase() === email.toLowerCase() &&
-  //     hasValidSubscription
-  //   );
-  // });
-
-  // const previousSubscriptionId =
-  //   hasPreviouslySubscribed?.subscriptions?.data[0].id;
-
-  // if (previousSubscriptionId) {
-  //   console.log(previousSubscriptionId);
-  //   const subscription = await stripe.subscriptions.resume(
-  //     previousSubscriptionId
-  //   );
-  // }
 
   const TRIAL_PERIOD_DAYS = process.env.TRIAL_PERIOD_DAYS;
   const session = await stripe.checkout.sessions.create({

@@ -23,7 +23,7 @@ export default function ProfileSettings({
   setUser,
   user,
 }: Props) {
-  const { update } = useSession();
+  const { update, data } = useSession();
   const { account, updateAccount } = useAccountStore();
   const [profileStatus, setProfileStatus] = useState(true);
 
@@ -84,9 +84,7 @@ export default function ProfileSettings({
         user.name !== account.name
       ) {
         update({
-          username: user.username,
-          email: user.email,
-          name: user.name,
+          id: data?.user.id,
         });
 
         signOut();
@@ -158,7 +156,7 @@ export default function ProfileSettings({
             <p className="text-sm text-sky-500 mb-2">Username</p>
             <input
               type="text"
-              value={user.username}
+              value={user.username || ""}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
               className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
