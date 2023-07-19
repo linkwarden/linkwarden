@@ -110,7 +110,6 @@ export const authOptions: AuthOptions = {
         PRICE_ID &&
         (trigger || subscriptionIsTimesUp || !token.isSubscriber)
       ) {
-        console.log("EXECUTED!!!");
         const subscription = await checkSubscription(
           STRIPE_SECRET_KEY,
           token.email as string,

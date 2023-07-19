@@ -8,14 +8,14 @@ type ResponseObject = {
 
 type AccountStore = {
   account: AccountSettings;
-  setAccount: (username: string) => void;
+  setAccount: (id: number) => void;
   updateAccount: (user: AccountSettings) => Promise<ResponseObject>;
 };
 
 const useAccountStore = create<AccountStore>()((set) => ({
   account: {} as AccountSettings,
-  setAccount: async (username) => {
-    const response = await fetch(`/api/routes/users?username=${username}`);
+  setAccount: async (id) => {
+    const response = await fetch(`/api/routes/users?id=${id}`);
 
     const data = await response.json();
 
