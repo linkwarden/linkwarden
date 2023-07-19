@@ -18,6 +18,7 @@ import SortDropdown from "@/components/SortDropdown";
 import useModalStore from "@/store/modals";
 import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
+import NoLinksFound from "@/components/NoLinksFound";
 
 export default function Index() {
   const { setModal } = useModalStore();
@@ -234,13 +235,17 @@ export default function Index() {
             </div>
           </div>
         </div>
-        <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {links
-            .filter((e) => e.collectionId === Number(router.query.id))
-            .map((e, i) => {
-              return <LinkCard key={i} link={e} count={i} />;
-            })}
-        </div>
+        {links[0] ? (
+          <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
+            {links
+              .filter((e) => e.collectionId === Number(router.query.id))
+              .map((e, i) => {
+                return <LinkCard key={i} link={e} count={i} />;
+              })}
+          </div>
+        ) : (
+          <NoLinksFound />
+        )}
       </div>
     </MainLayout>
   );
