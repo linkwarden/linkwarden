@@ -126,11 +126,20 @@ export const authOptions: AuthOptions = {
       if (trigger === "signIn") {
         token.id = user.id;
         token.username = (user as any).username;
-      } else if (trigger === "update" && session?.name && session?.username) {
-        // Note, that `session` can be any arbitrary object, remember to validate it!
-        token.name = session.name;
-        token.username = session.username.toLowerCase();
-        token.email = session.email.toLowerCase();
+      } else if (trigger === "update" && token.id) {
+        console.log(token);
+
+        const user = await prisma.user.findUnique({
+          where: {
+            id: token.id as number,
+          },
+        });
+
+        if (user) {
+          token.name = user.name;
+          token.username = user.username?.toLowerCase();
+          token.email = user.email?.toLowerCase();
+        }
       }
       return token;
     },

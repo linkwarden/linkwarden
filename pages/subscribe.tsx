@@ -12,10 +12,6 @@ export default function Subscribe() {
   const { data, status } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    console.log(data?.user);
-  }, [status]);
-
   async function loginUser() {
     setSubmitLoader(true);
 
@@ -52,7 +48,7 @@ export default function Subscribe() {
             You will be redirected to Stripe.
           </p>
           <p className="text-md text-gray-500 mt-1">
-            feel free to reach out to us at{" "}
+            Feel free to reach out to us at{" "}
             <a className="font-semibold" href="mailto:hello@linkwarden.app">
               hello@linkwarden.app
             </a>{" "}
