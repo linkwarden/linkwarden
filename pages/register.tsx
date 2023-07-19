@@ -9,7 +9,7 @@ const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
 type FormData = {
   name: string;
-  username: string;
+  username?: string;
   email?: string;
   password: string;
   passwordConfirmation: string;
@@ -20,7 +20,7 @@ export default function Register() {
 
   const [form, setForm] = useState<FormData>({
     name: "",
-    username: "",
+    username: emailEnabled ? undefined : "",
     email: emailEnabled ? "" : undefined,
     password: "",
     passwordConfirmation: "",
@@ -31,7 +31,6 @@ export default function Register() {
       if (emailEnabled) {
         return (
           form.name !== "" &&
-          form.username !== "" &&
           form.email !== "" &&
           form.password !== "" &&
           form.passwordConfirmation !== ""
@@ -122,19 +121,21 @@ export default function Register() {
           />
         </div>
 
-        <div>
-          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
-            Username
-          </p>
+        {emailEnabled ? undefined : (
+          <div>
+            <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+              Username
+            </p>
 
-          <input
-            type="text"
-            placeholder="john"
-            value={form.username}
-            onChange={(e) => setForm({ ...form, username: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-          />
-        </div>
+            <input
+              type="text"
+              placeholder="john"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            />
+          </div>
+        )}
 
         {emailEnabled ? (
           <div>
