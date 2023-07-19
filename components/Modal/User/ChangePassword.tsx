@@ -37,40 +37,44 @@ export default function ChangePassword({
   const submit = async () => {
     if (newPassword == "" || newPassword2 == "") {
       toast.error("Please fill all the fields.");
-    } else if (newPassword === newPassword2) {
-      setSubmitLoader(true);
-
-      const load = toast.loading("Applying...");
-
-      const response = await updateAccount({
-        ...user,
-      });
-
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success("Settings Applied!");
-
-        if (user.email !== account.email) {
-          update({
-            id: data?.user.id,
-          });
-
-          signOut();
-        } else if (
-          user.username !== account.username ||
-          user.name !== account.name
-        )
-          update({
-            id: data?.user.id,
-          });
-
-        setUser({ ...user, newPassword: undefined });
-        togglePasswordFormModal();
-      } else toast.error(response.data as string);
-    } else {
-      toast.error("Passwords do not match.");
     }
+
+    if (newPassword !== newPassword2)
+      return toast.error("Passwords do not match.");
+    else if (newPassword.length < 8)
+      return toast.error("Passwords must be at least 8 characters.");
+
+    setSubmitLoader(true);
+
+    const load = toast.loading("Applying...");
+
+    const response = await updateAccount({
+      ...user,
+    });
+
+    toast.dismiss(load);
+
+    if (response.ok) {
+      toast.success("Settings Applied!");
+
+      if (user.email !== account.email) {
+        update({
+          id: data?.user.id,
+        });
+
+        signOut();
+      } else if (
+        user.username !== account.username ||
+        user.name !== account.name
+      )
+        update({
+          id: data?.user.id,
+        });
+
+      setUser({ ...user, newPassword: undefined });
+      togglePasswordFormModal();
+    } else toast.error(response.data as string);
+
     setSubmitLoader(false);
   };
 
