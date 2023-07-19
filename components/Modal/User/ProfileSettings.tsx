@@ -77,7 +77,6 @@ export default function ProfileSettings({
 
     if (response.ok) {
       toast.success("Settings Applied!");
-      toggleSettingsModal();
 
       if (
         user.username !== account.username ||
