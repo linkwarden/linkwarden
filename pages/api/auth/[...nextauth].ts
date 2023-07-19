@@ -116,8 +116,6 @@ export const authOptions: AuthOptions = {
           PRICE_ID
         );
 
-        subscription.isSubscriber;
-
         if (subscription.subscriptionCanceledAt) {
           token.subscriptionCanceledAt = subscription.subscriptionCanceledAt;
         } else token.subscriptionCanceledAt = undefined;
