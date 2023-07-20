@@ -17,7 +17,8 @@ export default async function paymentCheckout(
 
   const isExistingCostomer = listByEmail?.data[0]?.id || undefined;
 
-  const TRIAL_PERIOD_DAYS = process.env.TRIAL_PERIOD_DAYS;
+  const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =
+    process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS;
   const session = await stripe.checkout.sessions.create({
     customer: isExistingCostomer ? isExistingCostomer : undefined,
     line_items: [
@@ -34,7 +35,9 @@ export default async function paymentCheckout(
       enabled: true,
     },
     subscription_data: {
-      trial_period_days: TRIAL_PERIOD_DAYS ? Number(TRIAL_PERIOD_DAYS) : 14,
+      trial_period_days: NEXT_PUBLIC_TRIAL_PERIOD_DAYS
+        ? Number(NEXT_PUBLIC_TRIAL_PERIOD_DAYS)
+        : 14,
     },
   });
 

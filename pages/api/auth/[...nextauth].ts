@@ -93,9 +93,10 @@ export const authOptions: AuthOptions = {
       const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
       const PRICE_ID = process.env.PRICE_ID;
 
-      const TRIAL_PERIOD_DAYS = process.env.TRIAL_PERIOD_DAYS;
-      const secondsInTwoWeeks = TRIAL_PERIOD_DAYS
-        ? Number(TRIAL_PERIOD_DAYS) * 86400
+      const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =
+        process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS;
+      const secondsInTwoWeeks = NEXT_PUBLIC_TRIAL_PERIOD_DAYS
+        ? Number(NEXT_PUBLIC_TRIAL_PERIOD_DAYS) * 86400
         : 1209600;
       const subscriptionIsTimesUp =
         token.subscriptionCanceledAt &&
