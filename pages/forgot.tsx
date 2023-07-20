@@ -46,7 +46,7 @@ export default function Forgot() {
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
-      <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+      <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
         <p className="text-xl text-sky-500 w-fit font-bold">Fogot Password?</p>
         <p className="text-md text-gray-500 mt-1">
           Enter your Email so we can send you a link to recover your account.
