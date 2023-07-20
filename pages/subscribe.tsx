@@ -35,7 +35,7 @@ export default function Subscribe() {
       />
       <p className="text-xl font-semibold text-sky-500 text-center px-2">
         {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14} days free trial, then
-        $5/month afterwards
+        ${process.env.NEXT_PUBLIC_PRICING}/month afterwards
       </p>
       <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
         <div>
