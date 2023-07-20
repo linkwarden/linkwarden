@@ -17,7 +17,7 @@ declare global {
       EMAIL_FROM?: string;
       EMAIL_SERVER?: string;
 
-      NEXT_PUBLC_STRIPE_IS_ACTIVE?: string;
+      NEXT_PUBLIC_STRIPE_IS_ACTIVE?: string;
       STRIPE_SECRET_KEY?: string;
       PRICE_ID?: string;
       NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL?: string;
