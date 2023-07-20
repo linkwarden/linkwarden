@@ -90,23 +90,26 @@ export default function Register() {
 
   return (
     <>
+      <Image
+        src="/linkwarden.png"
+        width={1694}
+        height={483}
+        alt="Linkwarden"
+        className="h-12 w-fit mx-auto mt-10"
+      />
+      <div className="text-center">
+        <p className="text-xl font-semibold text-sky-500">
+          {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+            ? `Start using our premium services with a ${
+                process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
+              }-day free trial!`
+            : "Create a new account"}
+        </p>
+      </div>
       <div className="p-2 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <div className="flex flex-col gap-2 sm:flex-row justify-between items-center mb-5">
-          <Image
-            src="/linkwarden.png"
-            width={1694}
-            height={483}
-            alt="Linkwarden"
-            className="h-12 w-fit"
-          />
-          <div className="text-center sm:text-right">
-            <p className="text-3xl text-sky-500">Get started</p>
-            <p className="text-md font-semibold text-sky-400">
-              Create a new account
-            </p>
-          </div>
-        </div>
-
+        <p className="text-xl text-sky-500 w-fit font-bold">
+          Enter your details
+        </p>
         <div>
           <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
             Display Name
@@ -197,6 +200,9 @@ export default function Register() {
           </Link>
         </div>
       </div>
+      <p className="text-center text-xs text-gray-500 mb-10">
+        © {new Date().getFullYear()} Linkwarden. All rights reserved.{" "}
+      </p>
     </>
   );
 }
