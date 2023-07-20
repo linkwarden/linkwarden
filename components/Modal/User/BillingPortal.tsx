@@ -33,8 +33,8 @@ export default function PaymentPortal() {
         <p className="text-md text-gray-500">
           If you still need help or encountered any issues, feel free to reach
           out to us at:{" "}
-          <a className="font-semibold" href="mailto:hello@linkwarden.app">
-            hello@linkwarden.app
+          <a className="font-semibold" href="mailto:support@linkwarden.app">
+            support@linkwarden.app
           </a>
         </p>
       </div>
