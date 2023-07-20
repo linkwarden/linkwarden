@@ -97,15 +97,13 @@ export default function Register() {
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
-      <div className="text-center">
-        <p className="text-xl font-semibold text-sky-500">
-          {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
-            ? `Start using our premium services with a ${
-                process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
-              }-day free trial!`
-            : "Create a new account"}
-        </p>
-      </div>
+      <p className="text-center px-2 text-xl font-semibold text-sky-500">
+        {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+          ? `Start using our premium services with a ${
+              process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
+            }-day free trial!`
+          : "Create a new account"}
+      </p>
       <div className="p-2 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
         <p className="text-xl text-sky-500 w-fit font-bold">
           Enter your details
