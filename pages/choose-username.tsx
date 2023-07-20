@@ -70,8 +70,8 @@ export default function Subscribe() {
         <div>
           <p className="text-md text-gray-500 mt-1">
             Feel free to reach out to us at{" "}
-            <a className="font-semibold" href="mailto:hello@linkwarden.app">
-              hello@linkwarden.app
+            <a className="font-semibold" href="mailto:support@linkwarden.app">
+              support@linkwarden.app
             </a>{" "}
             in case of any issues.
           </p>
