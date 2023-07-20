@@ -104,7 +104,7 @@ export default function Register() {
             }-day free trial!`
           : "Create a new account"}
       </p>
-      <div className="p-2 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+      <div className="p-2 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
         <p className="text-xl text-sky-500 w-fit font-bold">
           Enter your details
         </p>

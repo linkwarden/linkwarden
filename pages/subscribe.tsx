@@ -37,7 +37,7 @@ export default function Subscribe() {
         {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14} days free trial, then
         $5/month afterwards
       </p>
-      <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+      <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
         <div>
           <p className="text-md text-gray-500 mt-1">
             You will be redirected to Stripe.
