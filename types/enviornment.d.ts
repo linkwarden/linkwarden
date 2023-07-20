@@ -17,10 +17,11 @@ declare global {
       EMAIL_FROM?: string;
       EMAIL_SERVER?: string;
 
+      NEXT_PUBLC_STRIPE_IS_ACTIVE?: boolean;
       STRIPE_SECRET_KEY?: string;
       PRICE_ID?: string;
       NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL?: string;
-      TRIAL_PERIOD_DAYS?: string;
+      NEXT_PUBLIC_TRIAL_PERIOD_DAYS?: string;
       BASE_URL?: string;
     }
   }

@@ -18,57 +18,57 @@ export default function AuthRedirect({ children }: Props) {
 
   useInitialData();
 
-  useEffect(() => {
-    if (!router.pathname.startsWith("/public")) {
-      if (
-        emailEnabled &&
-        status === "authenticated" &&
-        (data.user.isSubscriber === true ||
-          data.user.isSubscriber === undefined) &&
-        !data.user.username
-      ) {
-        router.push("/choose-username").then(() => {
-          setRedirect(false);
-        });
-      } else if (
-        status === "authenticated" &&
-        data.user.isSubscriber === false
-      ) {
-        router.push("/subscribe").then(() => {
-          setRedirect(false);
-        });
-      } else if (
-        status === "authenticated" &&
-        (router.pathname === "/login" ||
-          router.pathname === "/register" ||
-          router.pathname === "/confirmation" ||
-          router.pathname === "/subscribe" ||
-          router.pathname === "/choose-username" ||
-          router.pathname === "/forgot")
-      ) {
-        router.push("/").then(() => {
-          setRedirect(false);
-        });
-      } else if (
-        status === "unauthenticated" &&
-        !(
-          router.pathname === "/login" ||
-          router.pathname === "/register" ||
-          router.pathname === "/confirmation" ||
-          router.pathname === "/forgot"
-        )
-      ) {
-        router.push("/login").then(() => {
-          setRedirect(false);
-        });
-      } else if (status === "loading") setRedirect(true);
-      else setRedirect(false);
-    } else {
-      setRedirect(false);
-    }
-  }, [status]);
+  // useEffect(() => {
+  //   if (!router.pathname.startsWith("/public")) {
+  //     if (
+  //       emailEnabled &&
+  //       status === "authenticated" &&
+  //       (data.user.isSubscriber === true ||
+  //         data.user.isSubscriber === undefined) &&
+  //       !data.user.username
+  //     ) {
+  //       router.push("/choose-username").then(() => {
+  //         setRedirect(false);
+  //       });
+  //     } else if (
+  //       status === "authenticated" &&
+  //       data.user.isSubscriber === false
+  //     ) {
+  //       router.push("/subscribe").then(() => {
+  //         setRedirect(false);
+  //       });
+  //     } else if (
+  //       status === "authenticated" &&
+  //       (router.pathname === "/login" ||
+  //         router.pathname === "/register" ||
+  //         router.pathname === "/confirmation" ||
+  //         router.pathname === "/subscribe" ||
+  //         router.pathname === "/choose-username" ||
+  //         router.pathname === "/forgot")
+  //     ) {
+  //       router.push("/").then(() => {
+  //         setRedirect(false);
+  //       });
+  //     } else if (
+  //       status === "unauthenticated" &&
+  //       !(
+  //         router.pathname === "/login" ||
+  //         router.pathname === "/register" ||
+  //         router.pathname === "/confirmation" ||
+  //         router.pathname === "/forgot"
+  //       )
+  //     ) {
+  //       router.push("/login").then(() => {
+  //         setRedirect(false);
+  //       });
+  //     } else if (status === "loading") setRedirect(true);
+  //     else setRedirect(false);
+  //   } else {
+  //     setRedirect(false);
+  //   }
+  // }, [status]);
 
-  if (status !== "loading" && !redirect) return <>{children}</>;
-  else return <></>;
-  // return <>{children}</>;
+  // if (status !== "loading" && !redirect) return <>{children}</>;
+  // else return <></>;
+  return <>{children}</>;
 }

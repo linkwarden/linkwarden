@@ -42,23 +42,17 @@ export default function Subscribe() {
 
   return (
     <>
+      <Image
+        src="/linkwarden.png"
+        width={1694}
+        height={483}
+        alt="Linkwarden"
+        className="h-12 w-fit mx-auto mt-10"
+      />
       <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <div className="flex flex-col gap-2 justify-between items-center mb-5">
-          <Image
-            src="/linkwarden.png"
-            width={1694}
-            height={483}
-            alt="Linkwarden"
-            className="h-12 w-fit mx-auto"
-          />
-
-          <div className="text-center">
-            <p className="text-3xl text-sky-500">One Last Step...</p>
-            <p className="font-semibold text-sky-400">
-              Please choose a username to start using your account.
-            </p>
-          </div>
-        </div>
+        <p className="text-xl text-sky-500 w-fit font-bold">
+          Choose a Username (Last step)
+        </p>
 
         <div>
           <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
@@ -85,7 +79,7 @@ export default function Subscribe() {
 
         <SubmitButton
           onClick={submitUsername}
-          label="Choose Username"
+          label="Complete Registration"
           className="mt-2 w-full text-center"
           loading={submitLoader}
         />
@@ -97,6 +91,9 @@ export default function Subscribe() {
           Sign Out
         </div>
       </div>
+      <p className="text-center text-xs text-gray-500 my-10">
+        © {new Date().getFullYear()} Linkwarden. All rights reserved.{" "}
+      </p>
     </>
   );
 }
