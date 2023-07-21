@@ -14,11 +14,26 @@ export default function AuthRedirect({ children }: Props) {
   const { status, data } = useSession();
   const [redirect, setRedirect] = useState(true);
 
+  const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+
   useInitialData();
 
   useEffect(() => {
     if (!router.pathname.startsWith("/public")) {
-      if (status === "authenticated" && data.user.isSubscriber === false) {
+      if (
+        emailEnabled &&
+        status === "authenticated" &&
+        (data.user.isSubscriber === true ||
+          data.user.isSubscriber === undefined) &&
+        !data.user.username
+      ) {
+        router.push("/choose-username").then(() => {
+          setRedirect(false);
+        });
+      } else if (
+        status === "authenticated" &&
+        data.user.isSubscriber === false
+      ) {
         router.push("/subscribe").then(() => {
           setRedirect(false);
         });
@@ -28,6 +43,7 @@ export default function AuthRedirect({ children }: Props) {
           router.pathname === "/register" ||
           router.pathname === "/confirmation" ||
           router.pathname === "/subscribe" ||
+          router.pathname === "/choose-username" ||
           router.pathname === "/forgot")
       ) {
         router.push("/").then(() => {

@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Checkbox from "../../Checkbox";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../../SubmitButton";
 import { toast } from "react-hot-toast";
@@ -18,7 +18,7 @@ export default function PrivacySettings({
   setUser,
   user,
 }: Props) {
-  const { update } = useSession();
+  const { update, data } = useSession();
   const { account, updateAccount } = useAccountStore();
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -59,18 +59,25 @@ export default function PrivacySettings({
 
     if (response.ok) {
       toast.success("Settings Applied!");
-      toggleSettingsModal();
-    } else toast.error(response.data as string);
 
-    setSubmitLoader(false);
+      if (user.email !== account.email) {
+        update({
+          id: data?.user.id,
+        });
 
-    if (user.username !== account.username || user.name !== account.name)
-      update({ username: user.username, name: user.name });
+        signOut();
+      } else if (
+        user.username !== account.username ||
+        user.name !== account.name
+      )
+        update({
+          id: data?.user.id,
+        });
 
-    if (response.ok) {
       setUser({ ...user, newPassword: undefined });
       toggleSettingsModal();
-    }
+    } else toast.error(response.data as string);
+    setSubmitLoader(false);
   };
 
   return (

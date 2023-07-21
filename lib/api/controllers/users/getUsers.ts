@@ -29,16 +29,16 @@ export default async function getUser({
     return { response: "This profile is private.", status: 401 };
   }
 
-  const { password, ...unsensitiveInfo } = user;
+  const { password, ...lessSensitiveInfo } = user;
 
   const data = isSelf
     ? // If user is requesting its own data
-      unsensitiveInfo
+      lessSensitiveInfo
     : {
         // If user is requesting someone elses data
-        id: unsensitiveInfo.id,
-        name: unsensitiveInfo.name,
-        username: unsensitiveInfo.username,
+        id: lessSensitiveInfo.id,
+        name: lessSensitiveInfo.name,
+        username: lessSensitiveInfo.username,
       };
 
   return { response: data || null, status: 200 };

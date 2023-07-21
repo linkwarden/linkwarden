@@ -23,7 +23,7 @@ export default function ProfileSettings({
   setUser,
   user,
 }: Props) {
-  const { update } = useSession();
+  const { update, data } = useSession();
   const { account, updateAccount } = useAccountStore();
   const [profileStatus, setProfileStatus] = useState(true);
 
@@ -77,21 +77,20 @@ export default function ProfileSettings({
 
     if (response.ok) {
       toast.success("Settings Applied!");
-      toggleSettingsModal();
 
-      if (
-        user.username !== account.username ||
-        user.name !== account.name ||
-        user.email !== account.email
-      ) {
+      if (user.email !== account.email) {
         update({
-          username: user.username,
-          email: user.username,
-          name: user.name,
+          id: data?.user.id,
         });
 
         signOut();
-      }
+      } else if (
+        user.username !== account.username ||
+        user.name !== account.name
+      )
+        update({
+          id: data?.user.id,
+        });
 
       setUser({ ...user, newPassword: undefined });
       toggleSettingsModal();
@@ -124,7 +123,7 @@ export default function ProfileSettings({
               </div>
             )}
 
-            <div className="absolute -bottom-2 left-0 right-0 mx-auto w-fit text-center">
+            <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
               <label
                 htmlFor="upload-photo"
                 title="PNG or JPG (Max: 3MB)"
@@ -159,7 +158,7 @@ export default function ProfileSettings({
             <p className="text-sm text-sky-500 mb-2">Username</p>
             <input
               type="text"
-              value={user.username}
+              value={user.username || ""}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
               className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
             />
@@ -175,6 +174,12 @@ export default function ProfileSettings({
                 className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
               />
             </div>
+          ) : undefined}
+
+          {user.email !== account.email ? (
+            <p className="text-gray-500">
+              You will need to log back in after you apply this Email.
+            </p>
           ) : undefined}
         </div>
       </div>

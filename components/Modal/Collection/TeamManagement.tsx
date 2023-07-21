@@ -163,7 +163,7 @@ export default function TeamManagement({
 
           <div className="flex items-center gap-2">
             <input
-              value={member.user.username}
+              value={member.user.username || ""}
               onChange={(e) => {
                 setMember({
                   ...member,
@@ -174,7 +174,7 @@ export default function TeamManagement({
                 e.key === "Enter" &&
                 addMemberToCollection(
                   session.data?.user.username as string,
-                  member.user.username,
+                  member.user.username || "",
                   collection,
                   setMemberState
                 )
@@ -188,7 +188,7 @@ export default function TeamManagement({
               onClick={() =>
                 addMemberToCollection(
                   session.data?.user.username as string,
-                  member.user.username,
+                  member.user.username || "",
                   collection,
                   setMemberState
                 )

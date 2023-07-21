@@ -30,7 +30,7 @@ CREATE TABLE "Session" (
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
+    "username" TEXT,
     "email" TEXT,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
