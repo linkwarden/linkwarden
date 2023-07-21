@@ -17,7 +17,7 @@ export default function useInitialData() {
       setCollections();
       setTags();
       // setLinks();
-      setAccount(data.user.username as string);
+      setAccount(data.user.id);
     }
   }, [status]);
 }

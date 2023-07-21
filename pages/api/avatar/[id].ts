@@ -8,10 +8,10 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
   const userId = session?.user.id;
-  const userName = session?.user.username?.toLowerCase();
+  const username = session?.user.username?.toLowerCase();
   const queryId = Number(req.query.id);
 
-  if (!userId || !userName)
+  if (!userId || !username)
     return res
       .setHeader("Content-Type", "text/plain")
       .status(401)
@@ -19,7 +19,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   else if (session?.user?.isSubscriber === false)
     res.status(401).json({
       response:
-        "You are not a subscriber, feel free to reach out to us at hello@linkwarden.app in case of any issues.",
+        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
     });
 
   if (!queryId)
@@ -37,7 +37,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
     if (
       targetUser?.isPrivate &&
-      !targetUser.whitelistedUsers.includes(userName)
+      !targetUser.whitelistedUsers.includes(username)
     ) {
       return res
         .setHeader("Content-Type", "text/plain")

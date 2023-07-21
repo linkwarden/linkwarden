@@ -167,7 +167,7 @@ export default function Dashboard() {
               </div>
             </Disclosure>
           ) : (
-            <div className="border border-solid border-sky-100 w-full mx-auto md:w-2/3 p-10 rounded-md">
+            <div className="border border-solid border-sky-100 w-full mx-auto md:w-2/3 p-10 rounded-2xl">
               <p className="text-center text-2xl text-sky-500">
                 No Pinned Links
               </p>

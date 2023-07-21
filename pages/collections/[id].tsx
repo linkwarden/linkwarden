@@ -18,6 +18,7 @@ import SortDropdown from "@/components/SortDropdown";
 import useModalStore from "@/store/modals";
 import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
+import NoLinksFound from "@/components/NoLinksFound";
 
 export default function Index() {
   const { setModal } = useModalStore();
@@ -59,7 +60,7 @@ export default function Index() {
                     style={{ color: activeCollection?.color }}
                     className="sm:w-8 sm:h-8 w-6 h-6 mt-3 drop-shadow"
                   />
-                  <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold py-1">
+                  <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold w-full py-1 break-words hyphens-auto">
                     {activeCollection?.name}
                   </p>
                 </div>
@@ -234,13 +235,17 @@ export default function Index() {
             </div>
           </div>
         </div>
-        <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {links
-            .filter((e) => e.collectionId === Number(router.query.id))
-            .map((e, i) => {
-              return <LinkCard key={i} link={e} count={i} />;
-            })}
-        </div>
+        {links[0] ? (
+          <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
+            {links
+              .filter((e) => e.collectionId === Number(router.query.id))
+              .map((e, i) => {
+                return <LinkCard key={i} link={e} count={i} />;
+              })}
+          </div>
+        ) : (
+          <NoLinksFound />
+        )}
       </div>
     </MainLayout>
   );

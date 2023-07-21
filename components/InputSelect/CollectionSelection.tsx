@@ -45,7 +45,7 @@ export default function CollectionSelection({ onChange, defaultValue }: Props) {
   return (
     <Select
       isClearable
-      placeholder="Unnamed Collection"
+      placeholder="Default: Unnamed Collection"
       onChange={onChange}
       options={options}
       styles={styles}

@@ -5,23 +5,39 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import useAccountStore from "@/store/account";
 
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
+  const [inputedUsername, setInputedUsername] = useState("");
 
-  const { data, status } = useSession();
-  const router = useRouter();
+  const { data, status, update } = useSession();
 
-  async function loginUser() {
+  const { updateAccount, account } = useAccountStore();
+
+  useEffect(() => {
+    console.log(data?.user);
+  }, [status]);
+
+  async function submitUsername() {
     setSubmitLoader(true);
 
-    const redirectionToast = toast.loading("Redirecting to Stripe...");
+    const redirectionToast = toast.loading("Applying...");
 
-    const res = await fetch("/api/payment");
-    const data = await res.json();
+    const response = await updateAccount({
+      ...account,
+      username: inputedUsername,
+    });
 
-    console.log(data);
-    router.push(data.response);
+    if (response.ok) {
+      toast.success("Username Applied!");
+
+      update({
+        id: data?.user.id,
+      });
+    } else toast.error(response.data as string);
+    toast.dismiss(redirectionToast);
+    setSubmitLoader(false);
   }
 
   return (
@@ -33,15 +49,25 @@ export default function Subscribe() {
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
-      <p className="text-xl font-semibold text-sky-500 text-center px-2">
-        {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14} days free trial, then
-        ${process.env.NEXT_PUBLIC_PRICING}/month afterwards
-      </p>
       <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+        <p className="text-xl text-sky-500 w-fit font-bold">
+          Choose a Username (Last step)
+        </p>
+
         <div>
-          <p className="text-md text-gray-500 mt-1">
-            You will be redirected to Stripe.
+          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+            Username
           </p>
+
+          <input
+            type="text"
+            placeholder="john"
+            value={inputedUsername}
+            onChange={(e) => setInputedUsername(e.target.value)}
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          />
+        </div>
+        <div>
           <p className="text-md text-gray-500 mt-1">
             Feel free to reach out to us at{" "}
             <a className="font-semibold" href="mailto:support@linkwarden.app">
@@ -52,8 +78,8 @@ export default function Subscribe() {
         </div>
 
         <SubmitButton
-          onClick={loginUser}
-          label="Complete your Subscription"
+          onClick={submitUsername}
+          label="Complete Registration"
           className="mt-2 w-full text-center"
           loading={submitLoader}
         />

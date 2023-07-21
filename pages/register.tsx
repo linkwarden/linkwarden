@@ -9,7 +9,7 @@ const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
 type FormData = {
   name: string;
-  username: string;
+  username?: string;
   email?: string;
   password: string;
   passwordConfirmation: string;
@@ -20,7 +20,7 @@ export default function Register() {
 
   const [form, setForm] = useState<FormData>({
     name: "",
-    username: "",
+    username: emailEnabled ? undefined : "",
     email: emailEnabled ? "" : undefined,
     password: "",
     passwordConfirmation: "",
@@ -31,7 +31,6 @@ export default function Register() {
       if (emailEnabled) {
         return (
           form.name !== "" &&
-          form.username !== "" &&
           form.email !== "" &&
           form.password !== "" &&
           form.passwordConfirmation !== ""
@@ -54,35 +53,35 @@ export default function Register() {
     };
 
     if (checkHasEmptyFields()) {
-      if (form.password === form.passwordConfirmation) {
-        const { passwordConfirmation, ...request } = form;
+      if (form.password !== form.passwordConfirmation)
+        return toast.error("Passwords do not match.");
+      else if (form.password.length < 8)
+        return toast.error("Passwords must be at least 8 characters.");
+      const { passwordConfirmation, ...request } = form;
 
-        setSubmitLoader(true);
+      setSubmitLoader(true);
 
-        const load = toast.loading("Creating Account...");
+      const load = toast.loading("Creating Account...");
 
-        const response = await fetch("/api/auth/register", {
-          body: JSON.stringify(request),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-        });
+      const response = await fetch("/api/auth/register", {
+        body: JSON.stringify(request),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        toast.dismiss(load);
-        setSubmitLoader(false);
+      toast.dismiss(load);
+      setSubmitLoader(false);
 
-        if (response.ok) {
-          if (form.email) await sendConfirmation();
+      if (response.ok) {
+        if (form.email) await sendConfirmation();
 
-          toast.success("User Created!");
-        } else {
-          toast.error(data.response);
-        }
+        toast.success("User Created!");
       } else {
-        toast.error("Passwords do not match.");
+        toast.error(data.response);
       }
     } else {
       toast.error("Please fill out all the fields.");
@@ -91,23 +90,24 @@ export default function Register() {
 
   return (
     <>
-      <div className="p-2 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[28rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <div className="flex flex-col gap-2 sm:flex-row justify-between items-center mb-5">
-          <Image
-            src="/linkwarden.png"
-            width={1694}
-            height={483}
-            alt="Linkwarden"
-            className="h-12 w-fit"
-          />
-          <div className="text-center sm:text-right">
-            <p className="text-3xl text-sky-500">Get started</p>
-            <p className="text-md font-semibold text-sky-400">
-              Create a new account
-            </p>
-          </div>
-        </div>
-
+      <Image
+        src="/linkwarden.png"
+        width={1694}
+        height={483}
+        alt="Linkwarden"
+        className="h-12 w-fit mx-auto mt-10"
+      />
+      <p className="text-center px-2 text-xl font-semibold text-sky-500">
+        {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+          ? `Start using our premium services with a ${
+              process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
+            }-day free trial!`
+          : "Create a new account"}
+      </p>
+      <div className="p-2 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+        <p className="text-xl text-sky-500 w-fit font-bold">
+          Enter your details
+        </p>
         <div>
           <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
             Display Name
@@ -122,19 +122,21 @@ export default function Register() {
           />
         </div>
 
-        <div>
-          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
-            Username
-          </p>
+        {emailEnabled ? undefined : (
+          <div>
+            <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+              Username
+            </p>
 
-          <input
-            type="text"
-            placeholder="john"
-            value={form.username}
-            onChange={(e) => setForm({ ...form, username: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
-          />
-        </div>
+            <input
+              type="text"
+              placeholder="john"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            />
+          </div>
+        )}
 
         {emailEnabled ? (
           <div>
@@ -196,6 +198,9 @@ export default function Register() {
           </Link>
         </div>
       </div>
+      <p className="text-center text-xs text-gray-500 mb-10">
+        © {new Date().getFullYear()} Linkwarden. All rights reserved.{" "}
+      </p>
     </>
   );
 }

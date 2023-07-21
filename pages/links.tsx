@@ -1,4 +1,5 @@
 import LinkCard from "@/components/LinkCard";
+import NoLinksFound from "@/components/NoLinksFound";
 import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
@@ -52,11 +53,15 @@ export default function Links() {
             ) : null}
           </div>
         </div>
-        <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {links.map((e, i) => {
-            return <LinkCard key={i} link={e} count={i} />;
-          })}
-        </div>
+        {links[0] ? (
+          <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
+            {links.map((e, i) => {
+              return <LinkCard key={i} link={e} count={i} />;
+            })}
+          </div>
+        ) : (
+          <NoLinksFound />
+        )}
       </div>
     </MainLayout>
   );
