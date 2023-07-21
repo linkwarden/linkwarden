@@ -33,7 +33,7 @@ export default async function getLink(userId: number, body: string) {
     };
 
   const links = await prisma.link.findMany({
-    take: Number(process.env.PAGINATION_TAKE_COUNT),
+    take: Number(process.env.PAGINATION_TAKE_COUNT) || 20,
     skip: query.cursor ? 1 : undefined,
     cursor: query.cursor
       ? {

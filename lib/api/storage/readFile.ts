@@ -41,7 +41,7 @@ export default async function readFile({ filePath }: { filePath: string }) {
       };
     }
   } else {
-    const storagePath = process.env.STORAGE_FOLDER;
+    const storagePath = process.env.STORAGE_FOLDER || "data";
     const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
 
     const file = fs.existsSync(creationPath)
