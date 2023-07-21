@@ -93,9 +93,10 @@ export const authOptions: AuthOptions = {
       const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
       const PRICE_ID = process.env.PRICE_ID;
 
-      const TRIAL_PERIOD_DAYS = process.env.TRIAL_PERIOD_DAYS;
-      const secondsInTwoWeeks = TRIAL_PERIOD_DAYS
-        ? Number(TRIAL_PERIOD_DAYS) * 86400
+      const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =
+        process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS;
+      const secondsInTwoWeeks = NEXT_PUBLIC_TRIAL_PERIOD_DAYS
+        ? Number(NEXT_PUBLIC_TRIAL_PERIOD_DAYS) * 86400
         : 1209600;
       const subscriptionIsTimesUp =
         token.subscriptionCanceledAt &&
@@ -110,14 +111,11 @@ export const authOptions: AuthOptions = {
         PRICE_ID &&
         (trigger || subscriptionIsTimesUp || !token.isSubscriber)
       ) {
-        console.log("EXECUTED!!!");
         const subscription = await checkSubscription(
           STRIPE_SECRET_KEY,
           token.email as string,
           PRICE_ID
         );
-
-        subscription.isSubscriber;
 
         if (subscription.subscriptionCanceledAt) {
           token.subscriptionCanceledAt = subscription.subscriptionCanceledAt;
@@ -129,11 +127,20 @@ export const authOptions: AuthOptions = {
       if (trigger === "signIn") {
         token.id = user.id;
         token.username = (user as any).username;
-      } else if (trigger === "update" && session?.name && session?.username) {
-        // Note, that `session` can be any arbitrary object, remember to validate it!
-        token.name = session.name;
-        token.username = session.username.toLowerCase();
-        token.email = session.email.toLowerCase();
+      } else if (trigger === "update" && token.id) {
+        console.log(token);
+
+        const user = await prisma.user.findUnique({
+          where: {
+            id: token.id as number,
+          },
+        });
+
+        if (user) {
+          token.name = user.name;
+          token.username = user.username?.toLowerCase();
+          token.email = user.email?.toLowerCase();
+        }
       }
       return token;
     },

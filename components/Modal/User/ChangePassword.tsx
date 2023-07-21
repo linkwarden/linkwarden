@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AccountSettings } from "@/types/global";
 import useAccountStore from "@/store/account";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
@@ -23,7 +23,7 @@ export default function ChangePassword({
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const { account, updateAccount } = useAccountStore();
-  const { update } = useSession();
+  const { update, data } = useSession();
 
   useEffect(() => {
     if (
@@ -37,38 +37,45 @@ export default function ChangePassword({
   const submit = async () => {
     if (newPassword == "" || newPassword2 == "") {
       toast.error("Please fill all the fields.");
-    } else if (newPassword === newPassword2) {
-      setSubmitLoader(true);
-
-      const load = toast.loading("Applying...");
-
-      const response = await updateAccount({
-        ...user,
-      });
-
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success("Settings Applied!");
-        togglePasswordFormModal();
-      } else toast.error(response.data as string);
-
-      setSubmitLoader(false);
-
-      if (
-        (user.username !== account.username || user.name !== account.name) &&
-        user.username &&
-        user.email
-      )
-        update({ username: user.username, name: user.name });
-
-      if (response.ok) {
-        setUser({ ...user, newPassword: undefined });
-        togglePasswordFormModal();
-      }
-    } else {
-      toast.error("Passwords do not match.");
     }
+
+    if (newPassword !== newPassword2)
+      return toast.error("Passwords do not match.");
+    else if (newPassword.length < 8)
+      return toast.error("Passwords must be at least 8 characters.");
+
+    setSubmitLoader(true);
+
+    const load = toast.loading("Applying...");
+
+    const response = await updateAccount({
+      ...user,
+    });
+
+    toast.dismiss(load);
+
+    if (response.ok) {
+      toast.success("Settings Applied!");
+
+      if (user.email !== account.email) {
+        update({
+          id: data?.user.id,
+        });
+
+        signOut();
+      } else if (
+        user.username !== account.username ||
+        user.name !== account.name
+      )
+        update({
+          id: data?.user.id,
+        });
+
+      setUser({ ...user, newPassword: undefined });
+      togglePasswordFormModal();
+    } else toast.error(response.data as string);
+
+    setSubmitLoader(false);
   };
 
   return (

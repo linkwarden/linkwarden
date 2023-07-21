@@ -12,6 +12,6 @@ First off, we really appreciate the time you spent!
 
 If you found a vulnerability, these are the ways you can reach us:
 
-Email: [hello@linkwarden.app](mailto:hello@daniel31x13.io)
+Email: [security@linkwarden.app](mailto:security@linkwarden.app)
 
-Or you can directly reach me via Twitter: [@daniel31x13](https://twitter.com/Daniel31X13).
+Or you can directly DM me via Twitter: [@daniel31x13](https://twitter.com/Daniel31X13).
