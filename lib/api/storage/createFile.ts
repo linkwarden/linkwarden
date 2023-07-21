@@ -28,7 +28,7 @@ export default async function createFile({
       return false;
     }
   } else {
-    const storagePath = process.env.STORAGE_FOLDER;
+    const storagePath = process.env.STORAGE_FOLDER || "data";
     const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
 
     fs.writeFile(creationPath, data, isBase64 ? "base64" : {}, function (err) {
