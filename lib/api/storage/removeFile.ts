@@ -16,7 +16,7 @@ export default async function removeFile({ filePath }: { filePath: string }) {
       console.log("Error", err);
     }
   } else {
-    const storagePath = process.env.STORAGE_FOLDER;
+    const storagePath = process.env.STORAGE_FOLDER || "data";
     const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
 
     fs.unlink(creationPath, (err) => {
