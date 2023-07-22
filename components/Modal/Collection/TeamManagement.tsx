@@ -206,7 +206,7 @@ export default function TeamManagement({
           <p className="text-center text-gray-500 text-xs sm:text-sm">
             (All Members have <b>Read</b> access to this collection.)
           </p>
-          <div className="max-h-[20rem] overflow-auto flex flex-col gap-3 rounded-md">
+          <div className="flex flex-col gap-3 rounded-md">
             {collection.members
               .sort((a, b) => (a.userId as number) - (b.userId as number))
               .map((e, i) => {
@@ -415,7 +415,7 @@ export default function TeamManagement({
       )}
 
       <div
-        className="relative border p-2 rounded-md border-sky-100 flex flex-col gap-2 justify-between"
+        className="relative border px-2 rounded-md border-sky-100 flex min-h-[7rem] sm:min-h-[5rem] gap-2 justify-between"
         title={`'@${collectionOwner.username}' is the owner of this collection.`}
       >
         <div className="flex items-center gap-2">
@@ -435,6 +435,11 @@ export default function TeamManagement({
             </div>
             <p className="text-sky-900">@{collectionOwner.username}</p>
           </div>
+        </div>
+
+        <div className="flex flex-col justify-center min-w-[10rem]">
+          <p className={`font-bold text-sm text-sky-700`}>Permissions</p>
+          <p className="text-sky-700">Full Access (Owner)</p>
         </div>
       </div>
 
