@@ -41,8 +41,8 @@ export default function Forgot() {
     <>
       <Image
         src="/linkwarden.png"
-        width={1694}
-        height={483}
+        width={518}
+        height={145}
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
