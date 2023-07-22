@@ -235,7 +235,7 @@ export default function TeamManagement({
                     )}
                     <div className="flex items-center gap-2">
                       <ProfilePhoto
-                        src={`/api/avatar/${e.userId}`}
+                        src={`/api/avatar/${e.userId}?${Date.now()}`}
                         className="border-[3px]"
                       />
                       <div>
@@ -420,7 +420,7 @@ export default function TeamManagement({
       >
         <div className="flex items-center gap-2">
           <ProfilePhoto
-            src={`/api/avatar/${collection.ownerId}`}
+            src={`/api/avatar/${collection.ownerId}?${Date.now()}`}
             className="border-[3px]"
           />
           <div>
