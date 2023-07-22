@@ -99,7 +99,7 @@ export default function Index() {
                       return (
                         <ProfilePhoto
                           key={i}
-                          src={`/api/avatar/${e.userId}`}
+                          src={`/api/avatar/${e.userId}?${Date.now()}`}
                           className="-mr-3 duration-100  border-[3px]"
                         />
                       );
