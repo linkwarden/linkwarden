@@ -58,8 +58,8 @@ export default function LinkCard({ link, count }: Props) {
         <div className="flex justify-between items-center gap-5 w-full h-full z-0">
           <div className="flex flex-col justify-between">
             <div className="flex items-baseline gap-1">
-              <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
-              <p className="text-lg text-sky-500  font-bold">{link.name}</p>
+              <p className="text-sm text-sky-500 font-bold">{count + 1}.</p>
+              <p className="text-lg text-sky-700  font-bold">{link.name}</p>
             </div>
 
             <p className="text-gray-500 text-sm font-medium">
@@ -79,7 +79,7 @@ export default function LinkCard({ link, count }: Props) {
             </div>
             <div className="flex gap-2 items-center flex-wrap mt-2">
               <p className="text-gray-500">{formattedDate}</p>
-              <div className="text-sky-400 font-bold flex items-center gap-1">
+              <div className="text-sky-500 font-bold flex items-center gap-1">
                 <p>{url ? url.host : link.url}</p>
               </div>
             </div>

@@ -92,12 +92,12 @@ export default function Register() {
     <>
       <Image
         src="/linkwarden.png"
-        width={1694}
-        height={483}
+        width={518}
+        height={145}
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
-      <p className="text-center px-2 text-xl font-semibold text-sky-500">
+      <p className="text-center px-2 text-xl font-semibold text-sky-700">
         {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
           ? `Start using our premium services with a ${
               process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
@@ -105,11 +105,11 @@ export default function Register() {
           : "Create a new account"}
       </p>
       <div className="p-2 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <p className="text-xl text-sky-500 w-fit font-bold">
+        <p className="text-xl text-sky-700 w-fit font-bold">
           Enter your details
         </p>
         <div>
-          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
             Display Name
           </p>
 
@@ -118,13 +118,13 @@ export default function Register() {
             placeholder="Johnny"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
 
         {emailEnabled ? undefined : (
           <div>
-            <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+            <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
               Username
             </p>
 
@@ -133,14 +133,14 @@ export default function Register() {
               placeholder="john"
               value={form.username}
               onChange={(e) => setForm({ ...form, username: e.target.value })}
-              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
             />
           </div>
         )}
 
         {emailEnabled ? (
           <div>
-            <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+            <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
               Email
             </p>
 
@@ -149,14 +149,14 @@ export default function Register() {
               placeholder="johnny@example.com"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
             />
           </div>
         ) : undefined}
 
         <div className="flex item-center gap-2">
           <div className="w-full">
-            <p className="text-sm text-sky-500 w-fit font-semibold  mb-1">
+            <p className="text-sm text-sky-700 w-fit font-semibold  mb-1">
               Password
             </p>
 
@@ -165,12 +165,12 @@ export default function Register() {
               placeholder="••••••••••••••"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
             />
           </div>
 
           <div className="w-full">
-            <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+            <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
               Confirm Password
             </p>
 
@@ -181,7 +181,7 @@ export default function Register() {
               onChange={(e) =>
                 setForm({ ...form, passwordConfirmation: e.target.value })
               }
-              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
             />
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function Register() {
         />
         <div className="flex items-baseline gap-1 justify-center">
           <p className="w-fit text-gray-500">Already have an account?</p>
-          <Link href={"/login"} className="block text-sky-500 font-bold">
+          <Link href={"/login"} className="block text-sky-700 font-bold">
             Login
           </Link>
         </div>

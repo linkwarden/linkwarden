@@ -83,7 +83,7 @@ export default function DeleteCollection({
           <div className="flex flex-col gap-3">
             <p className="text-sky-900 select-none text-center">
               To confirm, type &quot;
-              <span className="font-bold text-sky-500">{collection.name}</span>
+              <span className="font-bold text-sky-700">{collection.name}</span>
               &quot; in the box below:
             </p>
 
@@ -93,7 +93,7 @@ export default function DeleteCollection({
               onChange={(e) => setInputField(e.target.value)}
               type="text"
               placeholder={`Type "${collection.name}" Here.`}
-              className="w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
             />
           </div>
         </>

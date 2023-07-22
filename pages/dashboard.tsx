@@ -85,7 +85,7 @@ export default function Dashboard() {
               icon={faChartSimple}
               className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
             />
-            <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold">
+            <p className="sm:text-4xl text-3xl capitalize text-sky-700 font-bold">
               Dashboard
             </p>
           </div>
@@ -95,16 +95,14 @@ export default function Dashboard() {
 
         <div className="flex flex-col md:flex-row md:items-center justify-evenly gap-2 mb-10">
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent">
-              {numberOfLinks}
-            </p>
+            <p className="font-bold text-6xl text-sky-700">{numberOfLinks}</p>
             <p className="text-sky-900 text-xl">
               {numberOfLinks === 1 ? "Link" : "Links"}
             </p>
           </div>
 
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent">
+            <p className="font-bold text-6xl text-sky-700">
               {collections.length}
             </p>
             <p className="text-sky-900 text-xl">
@@ -113,9 +111,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent">
-              {tags.length}
-            </p>
+            <p className="font-bold text-6xl text-sky-700">{tags.length}</p>
             <p className="text-sky-900 text-xl">
               {tags.length === 1 ? "Tag" : "Tags"}
             </p>
@@ -135,9 +131,9 @@ export default function Dashboard() {
                   }}
                   className="flex justify-between gap-2 items-baseline shadow active:shadow-inner duration-100 py-2 px-4 rounded-full"
                 >
-                  <p className="text-sky-600 text-xl">Pinned Links</p>
+                  <p className="text-sky-700 text-xl">Pinned Links</p>
 
-                  <div className="text-sky-600 flex items-center gap-2">
+                  <div className="text-sky-700 flex items-center gap-2">
                     {linkPinDisclosure ? "Hide" : "Show"}
                     <FontAwesomeIcon
                       icon={faChevronDown}
@@ -168,7 +164,7 @@ export default function Dashboard() {
             </Disclosure>
           ) : (
             <div className="border border-solid border-sky-100 w-full mx-auto md:w-2/3 p-10 rounded-2xl">
-              <p className="text-center text-2xl text-sky-500">
+              <p className="text-center text-2xl text-sky-700">
                 No Pinned Links
               </p>
               <p className="text-center text-sky-900 text-sm">
@@ -186,9 +182,9 @@ export default function Dashboard() {
                 }}
                 className="flex justify-between gap-2 items-baseline shadow active:shadow-inner duration-100 py-2 px-4 rounded-full"
               >
-                <p className="text-sky-600 text-xl">Pinned Collections</p>
+                <p className="text-sky-700 text-xl">Pinned Collections</p>
 
-                <div className="text-sky-600 flex items-center gap-2">
+                <div className="text-sky-700 flex items-center gap-2">
                   {collectionPinDisclosure ? "Hide" : "Show"}
                   <FontAwesomeIcon
                     icon={faChevronDown}
@@ -223,9 +219,9 @@ export default function Dashboard() {
                 }}
                 className="flex justify-between gap-2 items-baseline shadow active:shadow-inner duration-100 py-2 px-4 rounded-full"
               >
-                <p className="text-sky-600 text-xl">Pinned Tags</p>
+                <p className="text-sky-700 text-xl">Pinned Tags</p>
 
-                <div className="text-sky-600 flex items-center gap-2">
+                <div className="text-sky-700 flex items-center gap-2">
                   {tagPinDisclosure ? "Hide" : "Show"}
                   <FontAwesomeIcon
                     icon={faChevronDown}
