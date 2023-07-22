@@ -66,7 +66,7 @@ export default function Sidebar({ className }: { className?: string }) {
             icon={faChartSimple}
             className={`w-8 h-8 drop-shadow text-sky-500`}
           />
-          <p className="text-sky-600 text-xs font-semibold">Dashboard</p>
+          <p className="text-sky-700 text-xs font-semibold">Dashboard</p>
         </Link>
 
         <Link
@@ -81,7 +81,7 @@ export default function Sidebar({ className }: { className?: string }) {
             icon={faLink}
             className={`w-8 h-8 drop-shadow text-sky-500`}
           />
-          <p className="text-sky-600 text-xs font-semibold">
+          <p className="text-sky-700 text-xs font-semibold">
             <span className="hidden xl:inline-block">All</span> Links
           </p>
         </Link>
@@ -96,7 +96,7 @@ export default function Sidebar({ className }: { className?: string }) {
             icon={faFolder}
             className={`w-8 h-8 drop-shadow text-sky-500`}
           />
-          <p className="text-sky-600 text-xs font-semibold">
+          <p className="text-sky-700 text-xs font-semibold">
             <span className="hidden xl:inline-block">All</span> Collections
           </p>
         </Link>
@@ -146,7 +146,7 @@ export default function Sidebar({ className }: { className?: string }) {
                           style={{ color: e.color }}
                         />
 
-                        <p className="text-sky-600 truncate w-full pr-7">
+                        <p className="text-sky-700 truncate w-full pr-7">
                           {e.name}
                         </p>
                       </div>
@@ -205,7 +205,7 @@ export default function Sidebar({ className }: { className?: string }) {
                           className="w-4 h-4 text-sky-500 mt-1"
                         />
 
-                        <p className="text-sky-600 truncate w-full pr-7">
+                        <p className="text-sky-700 truncate w-full pr-7">
                           {e.name}
                         </p>
                       </div>

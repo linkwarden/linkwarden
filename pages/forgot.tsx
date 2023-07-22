@@ -41,13 +41,13 @@ export default function Forgot() {
     <>
       <Image
         src="/linkwarden.png"
-        width={1694}
-        height={483}
+        width={518}
+        height={145}
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
       <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <p className="text-xl text-sky-500 w-fit font-bold">Fogot Password?</p>
+        <p className="text-xl text-sky-700 w-fit font-bold">Fogot Password?</p>
         <p className="text-md text-gray-500 mt-1">
           Enter your Email so we can send you a link to recover your account.
         </p>
@@ -55,14 +55,14 @@ export default function Forgot() {
           Make sure to change your password in the profile settings afterwards.
         </p>
         <div>
-          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">Email</p>
+          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">Email</p>
 
           <input
             type="text"
             placeholder="johnny@example.com"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
 
@@ -73,7 +73,7 @@ export default function Forgot() {
           loading={submitLoader}
         />
         <div className="flex items-baseline gap-1 justify-center">
-          <Link href={"/login"} className="block text-sky-500 font-bold">
+          <Link href={"/login"} className="block text-sky-700 font-bold">
             Go back
           </Link>
         </div>

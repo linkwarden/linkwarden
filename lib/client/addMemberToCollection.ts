@@ -34,6 +34,7 @@ const addMemberToCollection = async (
         canUpdate: false,
         canDelete: false,
         user: {
+          id: user.id,
           name: user.name,
           username: user.username,
         },
