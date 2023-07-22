@@ -33,7 +33,7 @@ export default function Subscribe() {
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
-      <p className="text-xl font-semibold text-sky-500 text-center px-2">
+      <p className="text-xl font-semibold text-sky-700 text-center px-2">
         {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14} days free trial, then
         ${process.env.NEXT_PUBLIC_PRICING}/month afterwards
       </p>
