@@ -42,7 +42,7 @@ export default function Links() {
                 icon={faSearch}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-sky-500 font-bold">
+              <p className="sm:text-4xl text-3xl capitalize text-sky-700 font-bold">
                 Search Results
               </p>
             </div>
@@ -101,7 +101,7 @@ export default function Links() {
         ) : (
           <p className="text-sky-900">
             Nothing found.{" "}
-            <span className="text-sky-500 font-bold text-xl" title="Shruggie">
+            <span className="text-sky-700 font-bold text-xl" title="Shruggie">
               ¯\_(ツ)_/¯
             </span>
           </p>

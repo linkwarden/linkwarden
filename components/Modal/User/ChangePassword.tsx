@@ -81,23 +81,23 @@ export default function ChangePassword({
   return (
     <div className="mx-auto sm:w-[35rem] w-80">
       <div className="max-w-[25rem] w-full mx-auto flex flex-col gap-3 justify-between">
-        <p className="text-sm text-sky-500">New Password</p>
+        <p className="text-sm text-sky-700">New Password</p>
 
         <input
           value={newPassword}
           onChange={(e) => setNewPassword1(e.target.value)}
           type="password"
           placeholder="••••••••••••••"
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
         />
-        <p className="text-sm text-sky-500">Confirm New Password</p>
+        <p className="text-sm text-sky-700">Confirm New Password</p>
 
         <input
           value={newPassword2}
           onChange={(e) => setNewPassword2(e.target.value)}
           type="password"
           placeholder="••••••••••••••"
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
         />
 
         <SubmitButton

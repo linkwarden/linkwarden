@@ -8,7 +8,7 @@ export default function NoLinksFound() {
 
   return (
     <div className="border border-solid border-sky-100 w-full p-10 rounded-2xl">
-      <p className="text-center text-3xl text-sky-500">
+      <p className="text-center text-3xl text-sky-700">
         You haven&apos;t created any Links Here
       </p>
       <br />
@@ -22,7 +22,7 @@ export default function NoLinksFound() {
               method: "CREATE",
             });
           }}
-          className="inline-flex gap-1 relative w-[7.2rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-full text-white bg-sky-500 hover:bg-sky-400 duration-100 group"
+          className="inline-flex gap-1 relative w-[7.2rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-full text-white bg-sky-700 hover:bg-sky-600 duration-100 group"
         >
           <FontAwesomeIcon
             icon={faPlus}

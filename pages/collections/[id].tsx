@@ -60,7 +60,7 @@ export default function Index() {
                     style={{ color: activeCollection?.color }}
                     className="sm:w-8 sm:h-8 w-6 h-6 mt-3 drop-shadow"
                   />
-                  <p className="sm:text-4xl text-3xl capitalize text-sky-500 font-bold w-full py-1 break-words hyphens-auto">
+                  <p className="sm:text-4xl text-3xl capitalize text-sky-700 font-bold w-full py-1 break-words hyphens-auto">
                     {activeCollection?.name}
                   </p>
                 </div>
@@ -69,7 +69,7 @@ export default function Index() {
 
             {activeCollection ? (
               <div
-                className={`text-sky-400 min-w-[15rem] ${
+                className={`min-w-[15rem] ${
                   activeCollection.members[0] && "mr-3"
                 }`}
               >
@@ -87,7 +87,7 @@ export default function Index() {
                   className="flex justify-center sm:justify-end items-center w-fit mx-auto sm:mr-0 sm:ml-auto group cursor-pointer"
                 >
                   <div
-                    className={`bg-sky-500 p-2 leading-3 select-none group-hover:bg-sky-400 duration-100 text-white rounded-full text-xs ${
+                    className={`bg-sky-700 p-2 leading-3 select-none group-hover:bg-sky-600 duration-100 text-white rounded-full text-xs ${
                       activeCollection.members[0] && "mr-1"
                     }`}
                   >
@@ -107,7 +107,7 @@ export default function Index() {
                     .slice(0, 4)}
                   {activeCollection?.members.length &&
                   activeCollection.members.length - 4 > 0 ? (
-                    <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
+                    <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-700 border-sky-100 -mr-3">
                       +{activeCollection?.members?.length - 4}
                     </div>
                   ) : null}
@@ -116,7 +116,7 @@ export default function Index() {
             ) : null}
           </div>
 
-          <div className="text-gray-500 flex justify-between items-end gap-5">
+          <div className="text-gray-600 flex justify-between items-end gap-5">
             <p>{activeCollection?.description}</p>
             <div className="flex items-center gap-2">
               <div className="relative">

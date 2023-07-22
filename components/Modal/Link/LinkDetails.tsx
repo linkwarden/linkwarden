@@ -151,7 +151,7 @@ export default function LinkDetails({ link }: Props) {
           />
         )}
         <div className="flex flex-col gap- justify-end drop-shadow">
-          <p className="text-2xl text-sky-500 capitalize break-words hyphens-auto">
+          <p className="text-2xl text-sky-700 capitalize break-words hyphens-auto">
             {link.name}
           </p>
           <Link
@@ -223,12 +223,12 @@ export default function LinkDetails({ link }: Props) {
             <p className="text-gray-500">Screenshot</p>
           </div>
 
-          <div className="flex text-sky-600 gap-1">
+          <div className="flex text-sky-500 gap-1">
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.png`}
               target="_blank"
               rel="noreferrer"
-              className="cursor-pointer hover:bg-sky-100 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:bg-slate-200 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
@@ -238,7 +238,7 @@ export default function LinkDetails({ link }: Props) {
 
             <div
               onClick={() => handleDownload("png")}
-              className="cursor-pointer hover:bg-sky-100 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:bg-slate-200 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
@@ -257,12 +257,12 @@ export default function LinkDetails({ link }: Props) {
             <p className="text-gray-500">PDF</p>
           </div>
 
-          <div className="flex text-sky-600 gap-1">
+          <div className="flex text-sky-500 gap-1">
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.pdf`}
               target="_blank"
               rel="noreferrer"
-              className="cursor-pointer hover:bg-sky-100 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:bg-slate-200 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
@@ -272,7 +272,7 @@ export default function LinkDetails({ link }: Props) {
 
             <div
               onClick={() => handleDownload("pdf")}
-              className="cursor-pointer hover:bg-sky-100 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:bg-slate-200 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
