@@ -60,7 +60,7 @@ export default function CollectionCard({ collection, className }: Props) {
                 return (
                   <ProfilePhoto
                     key={i}
-                    src={`/api/avatar/${e.userId}`}
+                    src={`/api/avatar/${e.userId}?${Date.now()}`}
                     className="-mr-3 border-[3px]"
                   />
                 );
