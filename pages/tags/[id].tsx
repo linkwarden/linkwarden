@@ -38,7 +38,7 @@ export default function Index() {
                 icon={faHashtag}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-sky-500 font-bold">
+              <p className="sm:text-4xl text-3xl capitalize text-sky-700 font-bold">
                 {activeTag?.name}
               </p>
             </div>

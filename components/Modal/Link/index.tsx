@@ -33,10 +33,10 @@ export default function LinkModal({
     <div className={className}>
       <Tab.Group defaultIndex={defaultIndex}>
         {method === "CREATE" && (
-          <p className="text-xl text-sky-500 text-center">New Link</p>
+          <p className="text-xl text-sky-700 text-center">New Link</p>
         )}
         <Tab.List
-          className={`flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-600 ${
+          className={`flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-700 ${
             isOwnerOrMod ? "" : "pb-8"
           }`}
         >

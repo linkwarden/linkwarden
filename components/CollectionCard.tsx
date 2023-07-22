@@ -49,11 +49,11 @@ export default function CollectionCard({ collection, className }: Props) {
         href={`/collections/${collection.id}`}
         className="flex flex-col gap-2 justify-between min-h-[12rem] h-full select-none p-5"
       >
-        <p className="text-2xl font-bold capitalize text-sky-500 break-words line-clamp-3 w-4/5">
+        <p className="text-2xl font-bold capitalize text-sky-700 break-words line-clamp-3 w-4/5">
           {collection.name}
         </p>
         <div className="flex justify-between items-center">
-          <div className="text-sky-400 flex items-center w-full">
+          <div className="flex items-center w-full">
             {collection.members
               .sort((a, b) => (a.userId as number) - (b.userId as number))
               .map((e, i) => {
@@ -67,14 +67,14 @@ export default function CollectionCard({ collection, className }: Props) {
               })
               .slice(0, 4)}
             {collection.members.length - 4 > 0 ? (
-              <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-500 border-sky-100 -mr-3">
+              <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-700 border-sky-100 -mr-3">
                 +{collection.members.length - 4}
               </div>
             ) : null}
           </div>
           <div className="text-right w-40">
-            <div className="text-sky-500 font-bold text-sm flex justify-end gap-1 items-center">
-              <FontAwesomeIcon icon={faLink} className="w-5 h-5 text-sky-600" />
+            <div className="text-sky-700 font-bold text-sm flex justify-end gap-1 items-center">
+              <FontAwesomeIcon icon={faLink} className="w-5 h-5 text-sky-500" />
               {collection._count && collection._count.links}
             </div>
             <div className="flex items-center justify-end gap-1 text-gray-600">

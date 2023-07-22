@@ -83,7 +83,7 @@ export default function PrivacySettings({
   return (
     <div className="flex flex-col gap-3 justify-between sm:w-[35rem] w-80">
       <div>
-        <p className="text-sm text-sky-500 mb-2">Profile Visibility</p>
+        <p className="text-sm text-sky-700 mb-2">Profile Visibility</p>
 
         <Checkbox
           label="Make profile private"
@@ -98,13 +98,13 @@ export default function PrivacySettings({
 
         {user.isPrivate && (
           <div>
-            <p className="text-sm text-sky-500 my-2">Whitelisted Users</p>
+            <p className="text-sm text-sky-700 my-2">Whitelisted Users</p>
             <p className="text-gray-500 text-sm mb-3">
               Please provide the Username of the users you wish to grant
               visibility to your profile. Separated by comma.
             </p>
             <textarea
-              className="w-full resize-none border rounded-md duration-100 bg-white p-2 outline-none border-sky-100 focus:border-sky-500"
+              className="w-full resize-none border rounded-md duration-100 bg-white p-2 outline-none border-sky-100 focus:border-sky-700"
               placeholder="Your profile is hidden from everyone right now..."
               value={whitelistedUsersTextbox}
               onChange={(e) => {

@@ -142,8 +142,8 @@ export default function LinkCard({ link, count, className }: Props) {
         <div className="flex justify-between gap-5 w-full h-full z-0">
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-baseline gap-1">
-              <p className="text-sm text-sky-400 font-bold">{count + 1}.</p>
-              <p className="text-lg text-sky-500 font-bold truncate capitalize w-full pr-8">
+              <p className="text-sm text-sky-500 font-bold">{count + 1}.</p>
+              <p className="text-lg text-sky-700 font-bold truncate capitalize w-full pr-8">
                 {link.name}
               </p>
             </div>

@@ -117,7 +117,7 @@ export default function TeamManagement({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {permissions === true && (
         <>
-          <p className="text-sm text-sky-500">Make Public</p>
+          <p className="text-sm text-sky-700">Make Public</p>
 
           <Checkbox
             label="Make this a public collection."
@@ -135,7 +135,7 @@ export default function TeamManagement({
 
       {collection.isPublic ? (
         <div>
-          <p className="text-sm text-sky-500 mb-2">
+          <p className="text-sm text-sky-700 mb-2">
             Public Link (Click to copy)
           </p>
           <div
@@ -148,7 +148,7 @@ export default function TeamManagement({
                 console.log(err);
               }
             }}
-            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-3 border-sky-100 border-solid border outline-none hover:border-sky-500 duration-100 cursor-text"
+            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-3 border-sky-100 border-solid border outline-none hover:border-sky-700 duration-100 cursor-text"
           >
             {publicCollectionURL}
           </div>
@@ -159,7 +159,7 @@ export default function TeamManagement({
 
       {permissions === true && (
         <>
-          <p className="text-sm text-sky-500">Member Management</p>
+          <p className="text-sm text-sky-700">Member Management</p>
 
           <div className="flex items-center gap-2">
             <input
@@ -181,7 +181,7 @@ export default function TeamManagement({
               }
               type="text"
               placeholder="Username (without the '@')"
-              className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+              className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
             />
 
             <div
@@ -193,7 +193,7 @@ export default function TeamManagement({
                   setMemberState
                 )
               }
-              className="flex items-center justify-center bg-sky-500 hover:bg-sky-400 duration-100 text-white w-12 h-12 p-3 rounded-md cursor-pointer"
+              className="flex items-center justify-center bg-sky-700 hover:bg-sky-600 duration-100 text-white w-12 h-12 p-3 rounded-md cursor-pointer"
             >
               <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
             </div>
@@ -239,7 +239,7 @@ export default function TeamManagement({
                         className="border-[3px]"
                       />
                       <div>
-                        <p className="text-sm font-bold text-sky-500">
+                        <p className="text-sm font-bold text-sky-700">
                           {e.user.name}
                         </p>
                         <p className="text-sky-900">@{e.user.username}</p>
@@ -248,7 +248,7 @@ export default function TeamManagement({
                     <div className="flex sm:block items-center gap-5 min-w-[10rem]">
                       <div>
                         <p
-                          className={`font-bold text-sm text-sky-500 ${
+                          className={`font-bold text-sm text-sky-700 ${
                             permissions === true ? "" : "mb-2"
                           }`}
                         >
@@ -305,7 +305,7 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-sky-900 peer-checked:bg-sky-500 text-sm ${
+                              className={`text-sky-900 peer-checked:bg-sky-700 text-sm ${
                                 permissions === true
                                   ? "hover:bg-slate-200 duration-75"
                                   : ""
@@ -350,7 +350,7 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-sky-900 peer-checked:bg-sky-500 text-sm ${
+                              className={`text-sky-900 peer-checked:bg-sky-700 text-sm ${
                                 permissions === true
                                   ? "hover:bg-slate-200 duration-75"
                                   : ""
@@ -395,7 +395,7 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-sky-900 peer-checked:bg-sky-500 text-sm ${
+                              className={`text-sky-900 peer-checked:bg-sky-700 text-sm ${
                                 permissions === true
                                   ? "hover:bg-slate-200 duration-75"
                                   : ""
@@ -425,7 +425,7 @@ export default function TeamManagement({
           />
           <div>
             <div className="flex items-center gap-1">
-              <p className="text-sm font-bold text-sky-500">
+              <p className="text-sm font-bold text-sky-700">
                 {collectionOwner.name}
               </p>
               <FontAwesomeIcon
