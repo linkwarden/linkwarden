@@ -42,7 +42,7 @@ export default function Links() {
                 icon={faSearch}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold">
+              <p className="sm:text-4xl text-3xl capitalize text-sky-500 font-bold">
                 Search Results
               </p>
             </div>

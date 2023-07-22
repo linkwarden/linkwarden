@@ -60,7 +60,7 @@ export default function Index() {
                     style={{ color: activeCollection?.color }}
                     className="sm:w-8 sm:h-8 w-6 h-6 mt-3 drop-shadow"
                   />
-                  <p className="sm:text-4xl text-3xl capitalize bg-gradient-to-tr from-sky-500 to-slate-400 bg-clip-text text-transparent font-bold w-full py-1 break-words hyphens-auto">
+                  <p className="sm:text-4xl text-3xl capitalize text-sky-500 font-bold w-full py-1 break-words hyphens-auto">
                     {activeCollection?.name}
                   </p>
                 </div>
