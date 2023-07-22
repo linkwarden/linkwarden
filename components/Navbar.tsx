@@ -36,7 +36,7 @@ export default function Navbar() {
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b h-16">
       <div
         onClick={toggleSidebar}
-        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-gray-500 rounded-md duration-100 hover:bg-slate-200"
+        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-sky-700 rounded-md duration-100 hover:bg-slate-200"
       >
         <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
       </div>
@@ -50,7 +50,7 @@ export default function Navbar() {
               method: "CREATE",
             });
           }}
-          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-sky-500 sm:text-white sm:bg-sky-500 sm:hover:bg-sky-400 duration-100 group"
+          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-sky-700 sm:text-white sm:bg-sky-700 sm:hover:bg-sky-600 duration-100 group"
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -73,7 +73,7 @@ export default function Navbar() {
             />
             <p
               id="profile-dropdown"
-              className="font-bold text-sky-500 leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
+              className="font-bold text-sky-700 leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
             >
               {account.name}
             </p>

@@ -44,18 +44,18 @@ export default function Subscribe() {
     <>
       <Image
         src="/linkwarden.png"
-        width={1694}
-        height={483}
+        width={518}
+        height={145}
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
       <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <p className="text-xl text-sky-500 w-fit font-bold">
+        <p className="text-xl text-sky-700 w-fit font-bold">
           Choose a Username (Last step)
         </p>
 
         <div>
-          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
             Username
           </p>
 
@@ -64,7 +64,7 @@ export default function Subscribe() {
             placeholder="john"
             value={inputedUsername}
             onChange={(e) => setInputedUsername(e.target.value)}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
         <div>

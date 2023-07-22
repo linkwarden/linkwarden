@@ -45,7 +45,7 @@ export default async function removeFolder({ filePath }: { filePath: string }) {
       console.log("Error", err);
     }
   } else {
-    const storagePath = process.env.STORAGE_FOLDER;
+    const storagePath = process.env.STORAGE_FOLDER || "data";
     const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
 
     try {

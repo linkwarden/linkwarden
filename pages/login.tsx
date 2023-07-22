@@ -48,20 +48,20 @@ export default function Login() {
     <>
       <Image
         src="/linkwarden.png"
-        width={1694}
-        height={483}
+        width={518}
+        height={145}
         alt="Linkwarden"
         className="h-12 w-fit mx-auto mt-10"
       />
-      <p className="text-xl font-semibold text-sky-500  px-2 text-center">
+      <p className="text-xl font-semibold text-sky-700  px-2 text-center">
         Sign in to your account
       </p>
       <div className="p-2 my-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <p className="text-xl text-sky-500 w-fit font-bold">
+        <p className="text-xl text-sky-700 w-fit font-bold">
           Enter your credentials
         </p>
         <div>
-          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
             Username
             {emailEnabled ? "/Email" : undefined}
           </p>
@@ -71,12 +71,12 @@ export default function Login() {
             placeholder="johnny"
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
 
         <div>
-          <p className="text-sm text-sky-500 w-fit font-semibold mb-1">
+          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
             Password
           </p>
 
@@ -85,7 +85,7 @@ export default function Login() {
             placeholder="••••••••••••••"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-500 duration-100"
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
           {emailEnabled && (
             <div className="w-fit ml-auto mt-1">
@@ -104,7 +104,7 @@ export default function Login() {
         />
         <div className="flex items-baseline gap-1 justify-center">
           <p className="w-fit text-gray-500">New here?</p>
-          <Link href={"/register"} className="block text-sky-500 font-bold">
+          <Link href={"/register"} className="block text-sky-700 font-bold">
             Sign Up
           </Link>
         </div>
