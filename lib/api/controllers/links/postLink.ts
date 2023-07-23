@@ -57,7 +57,7 @@ export default async function postLink(
             },
           },
           create: {
-            name: link.collection.name,
+            name: link.collection.name.trim(),
             ownerId: userId,
           },
         },
