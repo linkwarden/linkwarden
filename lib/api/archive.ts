@@ -7,7 +7,7 @@ export default async function archive(
   collectionId: number,
   linkId: number
 ) {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch();
   const context = await browser.newContext(devices["Desktop Chrome"]);
   const page = await context.newPage();
 
