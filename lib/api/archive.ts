@@ -55,7 +55,7 @@ const autoScroll = async (page: Page) => {
   await page.evaluate(async () => {
     const timeoutPromise = new Promise<void>((_, reject) => {
       setTimeout(() => {
-        reject(new Error("Auto scroll took too long (more than 10 seconds)."));
+        reject(new Error("Auto scroll took too long (more than 20 seconds)."));
       }, 20000);
     });
 
