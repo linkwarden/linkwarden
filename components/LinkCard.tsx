@@ -2,7 +2,11 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import { faFolder, faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFolder,
+  faEllipsis,
+  faLink,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -32,6 +36,14 @@ export default function LinkCard({ link, count, className }: Props) {
   const { collections } = useCollectionStore();
 
   const { account } = useAccountStore();
+
+  let shortendURL;
+
+  try {
+    shortendURL = new URL(link.url).host.toLowerCase();
+  } catch (error) {
+    console.log(error);
+  }
 
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
@@ -144,7 +156,7 @@ export default function LinkCard({ link, count, className }: Props) {
             <div className="flex items-baseline gap-1">
               <p className="text-sm text-sky-500 font-bold">{count + 1}.</p>
               <p className="text-lg text-sky-700 font-bold truncate capitalize w-full pr-8">
-                {link.name}
+                {link.name || link.description}
               </p>
             </div>
             <div className="flex gap-3 items-center my-3">
@@ -158,6 +170,10 @@ export default function LinkCard({ link, count, className }: Props) {
                   {collection?.name}
                 </p>
               </div>
+            </div>
+            <div className="flex items-center gap-1 w-full pr-20 text-gray-500">
+              <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
+              <p className="truncate w-full">{shortendURL}</p>
             </div>
             <div className="flex items-center gap-1 text-gray-500">
               <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
