@@ -35,6 +35,8 @@ export default function LinkCard({ link, count, className }: Props) {
 
   const { collections } = useCollectionStore();
 
+  const { links } = useLinkStore();
+
   const { account } = useAccountStore();
 
   let shortendURL;
@@ -58,7 +60,7 @@ export default function LinkCard({ link, count, className }: Props) {
         (e) => e.id === link.collection.id
       ) as CollectionIncludingMembersAndLinkCount
     );
-  }, [collections]);
+  }, [collections, links]);
 
   const { removeLink, updateLink } = useLinkStore();
 
