@@ -124,23 +124,23 @@ export default function AddOrEditLink({
         </p>
       ) : null}
 
+      {method === "CREATE" ? (
+        <div>
+          <p className="text-sm text-sky-700 mb-2 font-bold">
+            Address (URL)
+            <RequiredBadge />
+          </p>
+          <input
+            value={link.url}
+            onChange={(e) => setLink({ ...link, url: e.target.value })}
+            type="text"
+            placeholder="e.g. http://example.com/"
+            className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+          />
+        </div>
+      ) : null}
+      <hr />
       <div className="grid sm:grid-cols-2 gap-3">
-        {method === "CREATE" ? (
-          <div className="sm:col-span-2">
-            <p className="text-sm text-sky-700 mb-2">
-              URL
-              <RequiredBadge />
-            </p>
-            <input
-              value={link.url}
-              onChange={(e) => setLink({ ...link, url: e.target.value })}
-              type="text"
-              placeholder="e.g. http://example.com/"
-              className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
-            />
-          </div>
-        ) : null}
-
         <div>
           <p className="text-sm text-sky-700 mb-2">Collection</p>
           <CollectionSelection
