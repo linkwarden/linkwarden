@@ -66,7 +66,7 @@ export default function Index() {
             ) : null}
           </div>
         </div>
-        <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
           {links
             .filter((e) => e.tags.some((e) => e.id === Number(router.query.id)))
             .map((e, i) => {
