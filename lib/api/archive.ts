@@ -12,7 +12,7 @@ export default async function archive(
   const page = await context.newPage();
 
   try {
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 300000 });
+    await page.goto(url, { waitUntil: "domcontentloaded" });
 
     await autoScroll(page);
 
@@ -53,7 +53,13 @@ export default async function archive(
 
 const autoScroll = async (page: Page) => {
   await page.evaluate(async () => {
-    await new Promise<void>((resolve, reject) => {
+    const timeoutPromise = new Promise<void>((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("Auto scroll took too long (more than 20 seconds)."));
+      }, 20000);
+    });
+
+    const scrollingPromise = new Promise<void>((resolve) => {
       let totalHeight = 0;
       let distance = 100;
       let scrollDown = setInterval(() => {
@@ -68,6 +74,6 @@ const autoScroll = async (page: Page) => {
       }, 100);
     });
 
-    await new Promise((r) => setTimeout(r, 2000));
+    await Promise.race([scrollingPromise, timeoutPromise]);
   });
 };

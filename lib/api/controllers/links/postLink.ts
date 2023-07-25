@@ -10,11 +10,19 @@ export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
+  try {
+    new URL(link.url);
+  } catch (error) {
+    return {
+      response:
+        "Please enter a valid Address for the Link. (It should start with http/https)",
+      status: 400,
+    };
+  }
+
   link.collection.name = link.collection.name.trim();
 
-  if (!link.name) {
-    return { response: "Please enter a valid name for the link.", status: 400 };
-  } else if (!link.collection.name) {
+  if (!link.collection.name) {
     link.collection.name = "Unnamed Collection";
   }
 
@@ -45,8 +53,8 @@ export default async function postLink(
 
   const newLink: Link = await prisma.link.create({
     data: {
-      name: link.name,
       url: link.url,
+      name: link.name,
       description,
       collection: {
         connectOrCreate: {
@@ -57,7 +65,7 @@ export default async function postLink(
             },
           },
           create: {
-            name: link.collection.name,
+            name: link.collection.name.trim(),
             ownerId: userId,
           },
         },
@@ -66,12 +74,12 @@ export default async function postLink(
         connectOrCreate: link.tags.map((tag) => ({
           where: {
             name_ownerId: {
-              name: tag.name,
+              name: tag.name.trim(),
               ownerId: link.collection.ownerId,
             },
           },
           create: {
-            name: tag.name,
+            name: tag.name.trim(),
             owner: {
               connect: {
                 id: link.collection.ownerId,

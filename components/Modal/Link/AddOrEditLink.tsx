@@ -11,6 +11,7 @@ import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 import SubmitButton from "../../SubmitButton";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 type Props =
   | {
@@ -70,8 +71,6 @@ export default function AddOrEditLink({
     }
   }, []);
 
-  // const shortendURL = method === "UPDATE" ? new URL(link.url).host.toLowerCase() : undefined;
-
   const setTags = (e: any) => {
     const tagNames = e.map((e: any) => {
       return { name: e.label };
@@ -119,41 +118,29 @@ export default function AddOrEditLink({
           className="text-gray-500 my-2 text-center truncate w-full"
           title={link.url}
         >
-          Edit <span className="underline">{link.url}</span>
+          <Link href={link.url} target="_blank" className=" font-bold">
+            {link.url}
+          </Link>
         </p>
       ) : null}
 
-      <div className="grid sm:grid-cols-2 gap-3">
+      {method === "CREATE" ? (
         <div>
-          <p className="text-sm text-sky-700 mb-2">
-            Name
+          <p className="text-sm text-sky-700 mb-2 font-bold">
+            Address (URL)
             <RequiredBadge />
           </p>
           <input
-            value={link.name}
-            onChange={(e) => setLink({ ...link, name: e.target.value })}
+            value={link.url}
+            onChange={(e) => setLink({ ...link, url: e.target.value })}
             type="text"
-            placeholder="e.g. Example Link"
+            placeholder="e.g. http://example.com/"
             className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
-
-        {method === "CREATE" ? (
-          <div>
-            <p className="text-sm text-sky-700 mb-2">
-              URL
-              <RequiredBadge />
-            </p>
-            <input
-              value={link.url}
-              onChange={(e) => setLink({ ...link, url: e.target.value })}
-              type="text"
-              placeholder="e.g. http://example.com/"
-              className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
-            />
-          </div>
-        ) : null}
-
+      ) : null}
+      <hr />
+      <div className="grid sm:grid-cols-2 gap-3">
         <div>
           <p className="text-sm text-sky-700 mb-2">Collection</p>
           <CollectionSelection
@@ -173,7 +160,7 @@ export default function AddOrEditLink({
           />
         </div>
 
-        <div className={method === "UPDATE" ? "sm:col-span-2" : ""}>
+        <div>
           <p className="text-sm text-sky-700 mb-2">Tags</p>
           <TagSelection
             onChange={setTags}
@@ -182,6 +169,18 @@ export default function AddOrEditLink({
             })}
           />
         </div>
+
+        <div className="sm:col-span-2">
+          <p className="text-sm text-sky-700 mb-2">Name</p>
+          <input
+            value={link.name}
+            onChange={(e) => setLink({ ...link, name: e.target.value })}
+            type="text"
+            placeholder="e.g. Example Link"
+            className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+          />
+        </div>
+
         <div className="sm:col-span-2">
           <p className="text-sm text-sky-700 mb-2">Description</p>
           <textarea

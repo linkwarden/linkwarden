@@ -37,7 +37,7 @@ export default async function postCollection(
           id: userId,
         },
       },
-      name: collection.name,
+      name: collection.name.trim(),
       description: collection.description,
       color: collection.color,
       members: {
