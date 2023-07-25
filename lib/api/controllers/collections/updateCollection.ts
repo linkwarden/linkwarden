@@ -37,7 +37,7 @@ export default async function updateCollection(
       },
 
       data: {
-        name: collection.name,
+        name: collection.name.trim(),
         description: collection.description,
         color: collection.color,
         isPublic: collection.isPublic,
