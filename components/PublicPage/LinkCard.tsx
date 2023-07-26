@@ -34,7 +34,7 @@ export default function LinkCard({ link, count }: Props) {
               width={42}
               height={42}
               alt=""
-              className="select-none mt-3 z-10 rounded-full shadow border-[3px] border-white bg-white"
+              className="select-none mt-3 z-10 rounded-md shadow border-[3px] border-white bg-white"
               draggable="false"
               onError={(e) => {
                 const target = e.target as HTMLElement;
