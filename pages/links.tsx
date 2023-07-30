@@ -54,7 +54,7 @@ export default function Links() {
           </div>
         </div>
         {links[0] ? (
-          <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
+          <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5">
             {links.map((e, i) => {
               return <LinkCard key={i} link={e} count={i} />;
             })}
