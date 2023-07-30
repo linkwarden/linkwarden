@@ -33,7 +33,7 @@ export default function MainLayout({ children }: Props) {
 
         <div className="flex">
           <div className="hidden lg:block">
-            <Sidebar className="fixed" />
+            <Sidebar className="fixed top-0" />
           </div>
 
           <div className="w-full lg:ml-64 xl:ml-80">
