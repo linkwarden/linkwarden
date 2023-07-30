@@ -51,7 +51,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-gray-100 h-screen w-64 xl:w-80 overflow-y-auto border-solid border-r-sky-100 px-2 border z-20 ${className}`}
+      className={`bg-gray-100 h-full w-64 xl:w-80 overflow-y-auto border-solid border-r-sky-100 px-2 border z-20 ${className}`}
     >
       <div className="flex justify-center gap-2 mt-2">
         <Link
