@@ -11,7 +11,7 @@
 
 <div align='center'>
 
-[Homepage](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Homepage](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
@@ -37,8 +37,8 @@ We highly recommend you **not** to use the old version as it is no longer mainta
 - NextJS
 - TypeScript
 - Tailwind
-- Next-auth
 - Prisma
+- Zustand
 
 ## Features
 
@@ -68,7 +68,21 @@ If you want to contribute, please start by creating an issue stating what you ar
 
 ## Security
 
-If you found a security vulnerability, please do **not** create a public issue, instead send an email to security@linkwarden.app stating the vulnerability. Thanks!
+If you found a security vulnerability, please do **not** create a public issue, instead send an email to [security@linkwarden.app](mailto:security@linkwarden.app) stating the vulnerability. Thanks!
+
+## Screenshots
+
+### Listing All Collections
+
+<img src="./assets/collections.png" />
+
+### Managing The Collaborators
+
+<img src="./assets/collaborators.png" />
+
+### Expanding Link Details
+
+<img src="./assets/link_details.png" />
 
 ## Support ❤
 
