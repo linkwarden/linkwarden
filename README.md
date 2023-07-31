@@ -72,15 +72,9 @@ If you found a security vulnerability, please do **not** create a public issue, 
 
 ## Screenshots
 
-### Listing All Collections
-
 <img src="./assets/collections.png" />
 
-### Managing The Collaborators
-
 <img src="./assets/collaborators.png" />
-
-### Expanding Link Details
 
 <img src="./assets/link_details.png" />
 
