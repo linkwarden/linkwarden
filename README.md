@@ -12,7 +12,7 @@
 
 <div align='center'>
 
-[Homepage](https://linkwarden.app) | [Docs](https://docs.linkwarden.app) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Support ❤](https://github.com/linkwarden/linkwarden#support-❤)
+[Homepage](https://linkwarden.app) | [Docs](https://docs.linkwarden.app) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
