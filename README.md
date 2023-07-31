@@ -85,7 +85,7 @@ Any [donations](https://opencollective.com/linkwarden) are highly appreciated. <
 Here are the other ways to support/cheer this project:
 
 - Starring this repo.
-- Joining us on Discord.
+- Joining us on [Discord](https://discord.com/invite/CtuYV47nuJ).
 - Following @daniel31x13 on [Mastodon](https://mastodon.social/@daniel31x13), [Twitter](https://twitter.com/daniel31x13) and [GitHub](https://github.com/daniel31x13).
 - Referring Linkwarden to a friend.
 
