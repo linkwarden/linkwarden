@@ -72,7 +72,7 @@ If you found a security vulnerability, please do **not** create a public issue, 
 
 ## Support ❤
 
-Any [donation’s](https://opencollective.com/linkwarden) are highly appreciated. <3
+Any [donations](https://opencollective.com/linkwarden) are highly appreciated. <3
 
 Here are the other ways to support/cheer this project:
 
