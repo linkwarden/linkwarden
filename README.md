@@ -51,13 +51,11 @@ We highly recommend you **not** to use the old version as it is no longer mainta
 
 ## Roadmap
 
-_Some_ of the 100% planned todo’s are:
+There are _many_ upcoming features, below are only _some_ of the 100% planned ones:
 
 - 🐳 Docker version.
 - 🌒 Dark mode.
 - 📦 Import/Export your data.
-
-There are many more upcoming features...
 
 ## Docs
 
