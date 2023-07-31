@@ -185,6 +185,31 @@ export default function Register() {
             />
           </div>
         </div>
+
+        {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE ? (
+          <p className="text-center text-xs text-gray-500 my-5">
+            By signing up, you agree to our{" "}
+            <Link href="https://linkwarden.app/tos" className="font-semibold">
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="https://linkwarden.app/privacy-policy"
+              className="font-semibold"
+            >
+              Privacy Policy
+            </Link>
+            . Need help?{" "}
+            <Link
+              href="mailto:support@linkwarden.app"
+              className="font-semibold"
+            >
+              Get in touch
+            </Link>
+            .
+          </p>
+        ) : undefined}
+
         <SubmitButton
           onClick={registerUser}
           label="Sign Up"
