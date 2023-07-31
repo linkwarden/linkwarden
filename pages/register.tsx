@@ -202,7 +202,7 @@ export default function Register() {
               </Link>
               .
             </p>
-            <p>
+            <p className="text-xs text-gray-500">
               Need help?{" "}
               <Link
                 href="mailto:support@linkwarden.app"
