@@ -12,7 +12,7 @@
 
 <div align='center'>
 
-[Homepage](https://linkwarden.app) | [Docs](https://docs.linkwarden.app) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Homepage](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
@@ -40,13 +40,13 @@ We highly recommend you **not** to use the old version as it is no longer mainta
 
 ## Features
 
-- ✅ Auto capture screenshot and PDF for each link.
+- ✅ Auto capture a screenshot and a PDF of each link.
 - ✅ Organize links by collection, name, description and multiple tags.
-- ✅ Collaborate with on gathering links in a collection.
+- ✅ Collaborate on gathering links in a collection.
 - ✅ Customize the permissions of each member.
 - ✅ Share your collected links with the world.
 - ✅ Search, filter and sort by link details.
-- ✅ Responsive design and works on all devices.
+- ✅ Responsive design and supports most browsers.
 
 ## Roadmap
 
@@ -57,6 +57,10 @@ _Some_ of the 100% planned todo’s are:
 - 📦 Import/Export your data.
 
 There are many more upcoming features...
+
+## Docs
+
+Currently, the Documentation is a bit targeted towards a more tech-savvy audience and has so much room to improve, you can find it [here](https://docs.linkwarden.app).
 
 ## Development
 
@@ -70,7 +74,7 @@ If you found a security vulnerability, please do **not** create a public issue, 
 
 Any [donation’s](https://opencollective.com/linkwarden) are highly appreciated. <3
 
-Here are the other ways to support this project:
+Here are the other ways to support/cheer this project:
 
 - Starring this repo.
 - Joining us on Discord.
