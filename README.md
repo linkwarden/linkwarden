@@ -57,6 +57,7 @@ There are _many_ upcoming features, below are only _some_ of the 100% planned on
 - 🐳 Docker version.
 - 🌒 Dark mode.
 - 📦 Import/Export your data.
+- 🧩 Browser extention.
 
 ## Docs
 
