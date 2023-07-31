@@ -18,6 +18,7 @@
 ## Intro & motivation
 
 **Linkwarden is a self-hosted, open-source collaborative bookmark manager to collect, organize and archive webpages.** The objective is to organize useful webpages and articles you find across the web in one place, and since useful webpages can go away (see the inevitability of [Link Rot](https://www.howtogeek.com/786227/what-is-link-rot-and-how-does-it-threaten-the-web/)), Linkwarden also saves a copy of each webpage as a Screenshot and PDF, ensuring accessibility even if the original content is no longer available.
+
 Additionally, Linkwarden is designed with collaboration in mind, sharing links with the public and/or allowing multiple users to work together seamlessly.
 
 <img src="./assets/showcase_image.png" />
