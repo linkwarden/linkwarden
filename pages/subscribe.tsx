@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import CenteredForm from "@/layouts/CenteredForm";
 
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -20,29 +21,24 @@ export default function Subscribe() {
     const res = await fetch("/api/payment");
     const data = await res.json();
 
-    console.log(data);
     router.push(data.response);
   }
 
   return (
-    <>
-      <Image
-        src="/linkwarden.png"
-        width={518}
-        height={145}
-        alt="Linkwarden"
-        className="h-12 w-fit mx-auto mt-10"
-      />
-      <p className="text-xl font-semibold text-sky-700 text-center px-2">
-        {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14} days free trial, then
-        ${process.env.NEXT_PUBLIC_PRICING}/month afterwards
-      </p>
-      <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
+    <CenteredForm
+      text={`${
+        process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
+      }-Day free trial, then $
+    ${process.env.NEXT_PUBLIC_PRICING}/month afterwards`}
+    >
+      <div className="p-2 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
+        <p className="text-2xl text-center font-bold">
+          Subscribe to Linkwarden!
+        </p>
+
         <div>
-          <p className="text-md text-gray-500 mt-1">
-            You will be redirected to Stripe.
-          </p>
-          <p className="text-md text-gray-500 mt-1">
+          <p>You will be redirected to Stripe.</p>
+          <p>
             Feel free to reach out to us at{" "}
             <a className="font-semibold" href="mailto:support@linkwarden.app">
               support@linkwarden.app
@@ -65,9 +61,6 @@ export default function Subscribe() {
           Sign Out
         </div>
       </div>
-      <p className="text-center text-xs text-gray-500 my-10">
-        © {new Date().getFullYear()} Linkwarden. All rights reserved.{" "}
-      </p>
-    </>
+    </CenteredForm>
   );
 }
