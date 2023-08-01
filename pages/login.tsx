@@ -1,4 +1,5 @@
 import SubmitButton from "@/components/SubmitButton";
+import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,21 +46,12 @@ export default function Login() {
   }
 
   return (
-    <>
-      <Image
-        src="/linkwarden.png"
-        width={518}
-        height={145}
-        alt="Linkwarden"
-        className="h-12 w-fit mx-auto mt-10"
-      />
-      <p className="text-xl font-semibold text-sky-700  px-2 text-center">
-        Sign in to your account
-      </p>
-      <div className="p-2 my-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <p className="text-xl text-sky-700 w-fit font-bold">
+    <CenteredForm text="Sign in to your account">
+      <div className="p-2 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
+        <p className="text-2xl text-black text-center font-bold">
           Enter your credentials
         </p>
+
         <div>
           <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
             Username
@@ -99,7 +91,7 @@ export default function Login() {
         <SubmitButton
           onClick={loginUser}
           label="Login"
-          className="mt-2 w-full text-center"
+          className=" w-full text-center"
           loading={submitLoader}
         />
         <div className="flex items-baseline gap-1 justify-center">
@@ -109,9 +101,6 @@ export default function Login() {
           </Link>
         </div>
       </div>
-      <p className="text-center text-xs text-gray-500 mb-10">
-        © {new Date().getFullYear()} Linkwarden. All rights reserved.{" "}
-      </p>
-    </>
+    </CenteredForm>
   );
 }
