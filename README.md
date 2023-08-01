@@ -59,13 +59,15 @@ There are _many_ upcoming features, below are only _some_ of the 100% planned on
 - 📦 Import/Export your data.
 - 🧩 Browser extention.
 
+Also make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/projects/1). 
+
 ## Docs
 
 Currently, the Documentation is a bit targeted towards a more tech-savvy audience and has so much room to improve, you can find it [here](https://docs.linkwarden.app).
 
 ## Development
 
-If you want to contribute, please start by creating an issue stating what you are going to work on based on the project roadmap.
+If you want to contribute, Thanks! Start by checking our [public roadmap](https://github.com/orgs/linkwarden/projects/1), there you'll see a [readme item for contributers](https://github.com/orgs/linkwarden/projects/1?pane=issue&itemId=34708277) for the rest of the info on how to contribute to this repo.
 
 ## Security
 
