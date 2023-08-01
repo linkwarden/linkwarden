@@ -1,4 +1,5 @@
 import SubmitButton from "@/components/SubmitButton";
+import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,22 +39,19 @@ export default function Forgot() {
   }
 
   return (
-    <>
-      <Image
-        src="/linkwarden.png"
-        width={518}
-        height={145}
-        alt="Linkwarden"
-        className="h-12 w-fit mx-auto mt-10"
-      />
-      <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <p className="text-xl text-sky-700 w-fit font-bold">Fogot Password?</p>
-        <p className="text-md text-gray-500 mt-1">
-          Enter your Email so we can send you a link to recover your account.
-        </p>
-        <p className="text-md text-gray-500 mt-1">
-          Make sure to change your password in the profile settings afterwards.
-        </p>
+    <CenteredForm>
+      <div className="p-2 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
+        <p className="text-2xl text-black font-bold">Password Recovery</p>
+        <div>
+          <p className="text-md text-black">
+            Enter your Email so we can send you a link to recover your account.
+            Make sure to change your password in the profile settings
+            afterwards.
+          </p>
+          <p className="text-sm text-gray-500">
+            You wont get logged in if you haven't created an account yet.
+          </p>
+        </div>
         <div>
           <p className="text-sm text-sky-700 w-fit font-semibold mb-1">Email</p>
 
@@ -78,9 +76,6 @@ export default function Forgot() {
           </Link>
         </div>
       </div>
-      <p className="text-center text-xs text-gray-500 my-10">
-        © {new Date().getFullYear()} Linkwarden. All rights reserved.{" "}
-      </p>
-    </>
+    </CenteredForm>
   );
 }

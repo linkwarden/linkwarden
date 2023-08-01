@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import useAccountStore from "@/store/account";
+import CenteredForm from "@/layouts/CenteredForm";
 
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -14,10 +15,6 @@ export default function Subscribe() {
   const { data, status, update } = useSession();
 
   const { updateAccount, account } = useAccountStore();
-
-  useEffect(() => {
-    console.log(data?.user);
-  }, [status]);
 
   async function submitUsername() {
     setSubmitLoader(true);
@@ -41,16 +38,9 @@ export default function Subscribe() {
   }
 
   return (
-    <>
-      <Image
-        src="/linkwarden.png"
-        width={518}
-        height={145}
-        alt="Linkwarden"
-        className="h-12 w-fit mx-auto mt-10"
-      />
-      <div className="p-2 mt-10 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <p className="text-xl text-sky-700 w-fit font-bold">
+    <CenteredForm>
+      <div className="p-2 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
+        <p className="text-2xl text-center text-black font-bold">
           Choose a Username (Last step)
         </p>
 
@@ -91,9 +81,6 @@ export default function Subscribe() {
           Sign Out
         </div>
       </div>
-      <p className="text-center text-xs text-gray-500 my-10">
-        © {new Date().getFullYear()} Linkwarden. All rights reserved.{" "}
-      </p>
-    </>
+    </CenteredForm>
   );
 }
