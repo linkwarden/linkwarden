@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
+import CenteredForm from "@/layouts/CenteredForm";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -89,23 +90,17 @@ export default function Register() {
   }
 
   return (
-    <>
-      <Image
-        src="/linkwarden.png"
-        width={518}
-        height={145}
-        alt="Linkwarden"
-        className="h-12 w-fit mx-auto mt-10"
-      />
-      <p className="text-center px-2 text-xl font-semibold text-sky-700">
-        {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
-          ? `Start using our premium services with a ${
+    <CenteredForm
+      text={
+        process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+          ? `Start using our Premium Services with a ${
               process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
             }-day free trial!`
-          : "Create a new account"}
-      </p>
-      <div className="p-2 mx-auto my-10 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-md border border-sky-100">
-        <p className="text-xl text-sky-700 w-fit font-bold">
+          : "Create a new account"
+      }
+    >
+      <div className="p-2 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
+        <p className="text-2xl text-black text-center font-bold">
           Enter your details
         </p>
         <div>
@@ -154,40 +149,38 @@ export default function Register() {
           </div>
         ) : undefined}
 
-        <div className="flex item-center gap-2">
-          <div className="w-full">
-            <p className="text-sm text-sky-700 w-fit font-semibold  mb-1">
-              Password
-            </p>
+        <div className="w-full">
+          <p className="text-sm text-sky-700 w-fit font-semibold  mb-1">
+            Password
+          </p>
 
-            <input
-              type="password"
-              placeholder="••••••••••••••"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
-            />
-          </div>
+          <input
+            type="password"
+            placeholder="••••••••••••••"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+          />
+        </div>
 
-          <div className="w-full">
-            <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
-              Confirm Password
-            </p>
+        <div className="w-full">
+          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
+            Confirm Password
+          </p>
 
-            <input
-              type="password"
-              placeholder="••••••••••••••"
-              value={form.passwordConfirmation}
-              onChange={(e) =>
-                setForm({ ...form, passwordConfirmation: e.target.value })
-              }
-              className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
-            />
-          </div>
+          <input
+            type="password"
+            placeholder="••••••••••••••"
+            value={form.passwordConfirmation}
+            onChange={(e) =>
+              setForm({ ...form, passwordConfirmation: e.target.value })
+            }
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+          />
         </div>
 
         {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE ? (
-          <>
+          <div>
             <p className="text-xs text-gray-500">
               By signing up, you agree to our{" "}
               <Link href="https://linkwarden.app/tos" className="font-semibold">
@@ -212,7 +205,7 @@ export default function Register() {
               </Link>
               .
             </p>
-          </>
+          </div>
         ) : undefined}
 
         <SubmitButton
@@ -228,9 +221,6 @@ export default function Register() {
           </Link>
         </div>
       </div>
-      <p className="text-center text-xs text-gray-500 mb-10">
-        © {new Date().getFullYear()} Linkwarden. All rights reserved.{" "}
-      </p>
-    </>
+    </CenteredForm>
   );
 }
