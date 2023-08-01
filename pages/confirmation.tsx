@@ -15,7 +15,7 @@ export default function EmailConfirmaion() {
         <hr className="my-5" />
 
         <p className="text-sm text-gray-500 ">
-          If you didn't recieve anything, go to the{" "}
+          If you didn&apos;t recieve anything, go to the{" "}
           <Link href="/forgot" className="font-bold">
             Password Recovery
           </Link>{" "}

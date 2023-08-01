@@ -49,7 +49,7 @@ export default function Forgot() {
             afterwards.
           </p>
           <p className="text-sm text-gray-500">
-            You wont get logged in if you haven't created an account yet.
+            You wont get logged in if you haven&apos;t created an account yet.
           </p>
         </div>
         <div>
