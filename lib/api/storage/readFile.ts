@@ -1,14 +1,21 @@
-import { GetObjectCommand, GetObjectCommandInput } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  GetObjectCommandInput,
+  S3,
+} from "@aws-sdk/client-s3";
 import fs from "fs";
 import path from "path";
 import s3Client from "./s3Client";
+import util from "util";
+
+type ReturnContentTypes =
+  | "text/plain"
+  | "image/jpeg"
+  | "image/png"
+  | "application/pdf";
 
 export default async function readFile({ filePath }: { filePath: string }) {
-  let contentType:
-    | "text/plain"
-    | "image/jpeg"
-    | "image/png"
-    | "application/pdf";
+  let contentType: ReturnContentTypes;
 
   if (s3Client) {
     const bucketParams: GetObjectCommandInput = {
@@ -17,26 +24,52 @@ export default async function readFile({ filePath }: { filePath: string }) {
     };
 
     try {
-      const response = await s3Client.send(new GetObjectCommand(bucketParams));
-      const data = await streamToBuffer(response.Body);
+      let returnObject:
+        | {
+            file: Buffer | string;
+            contentType: ReturnContentTypes;
+          }
+        | undefined;
 
-      if (filePath.endsWith(".pdf")) {
-        contentType = "application/pdf";
-      } else if (filePath.endsWith(".png")) {
-        contentType = "image/png";
-      } else {
-        // if (filePath.endsWith(".jpg"))
-        contentType = "image/jpeg";
+      const headObjectAsync = util.promisify(
+        s3Client.headObject.bind(s3Client)
+      );
+
+      try {
+        await headObjectAsync(bucketParams);
+      } catch (err) {
+        contentType = "text/plain";
+
+        returnObject = {
+          file: "File not found, it's possible that the file you're looking for either doesn't exist or hasn't been created yet.",
+          contentType,
+        };
       }
 
-      return { file: data, contentType };
+      if (!returnObject) {
+        const response = await (s3Client as S3).send(
+          new GetObjectCommand(bucketParams)
+        );
+        const data = await streamToBuffer(response.Body);
+
+        if (filePath.endsWith(".pdf")) {
+          contentType = "application/pdf";
+        } else if (filePath.endsWith(".png")) {
+          contentType = "image/png";
+        } else {
+          // if (filePath.endsWith(".jpg"))
+          contentType = "image/jpeg";
+        }
+        returnObject = { file: data as Buffer, contentType };
+      }
+
+      return returnObject;
     } catch (err) {
-      console.log("Error", err);
+      console.log("Error:", err);
 
       contentType = "text/plain";
-
       return {
-        file: "File not found, it's possible that the file you're looking for either doesn't exist or hasn't been created yet.",
+        file: "An internal occurred, please contact support.",
         contentType,
       };
     }
