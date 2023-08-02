@@ -83,9 +83,9 @@ export default function Dashboard() {
           <div className="flex gap-2">
             <FontAwesomeIcon
               icon={faChartSimple}
-              className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
+              className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
             />
-            <p className="sm:text-4xl text-3xl capitalize text-sky-700 font-bold">
+            <p className="sm:text-4xl text-3xl capitalize text-sky-700 dark:text-sky-400 font-bold">
               Dashboard
             </p>
           </div>
@@ -95,24 +95,24 @@ export default function Dashboard() {
 
         <div className="flex flex-col md:flex-row md:items-center justify-evenly gap-2 mb-10">
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl text-sky-700">{numberOfLinks}</p>
-            <p className="text-sky-900 text-xl">
+            <p className="font-bold text-6xl text-sky-700 dark:text-sky-300">{numberOfLinks}</p>
+            <p className="text-sky-900 dark:text-sky-500 text-xl">
               {numberOfLinks === 1 ? "Link" : "Links"}
             </p>
           </div>
 
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl text-sky-700">
+            <p className="font-bold text-6xl text-sky-700 dark:text-sky-300">
               {collections.length}
             </p>
-            <p className="text-sky-900 text-xl">
+            <p className="text-sky-900 dark:text-sky-500 text-xl">
               {collections.length === 1 ? "Collection" : "Collections"}
             </p>
           </div>
 
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl text-sky-700">{tags.length}</p>
-            <p className="text-sky-900 text-xl">
+            <p className="font-bold text-6xl text-sky-700 dark:text-sky-300">{tags.length}</p>
+            <p className="text-sky-900 dark:text-sky-500 text-xl">
               {tags.length === 1 ? "Tag" : "Tags"}
             </p>
           </div>
@@ -163,11 +163,11 @@ export default function Dashboard() {
               </div>
             </Disclosure>
           ) : (
-            <div className="border border-solid border-sky-100 w-full mx-auto md:w-2/3 p-10 rounded-2xl">
-              <p className="text-center text-2xl text-sky-700">
+            <div className="border border-solid border-sky-100 dark:border-sky-800 w-full mx-auto md:w-2/3 p-10 rounded-2xl">
+              <p className="text-center text-2xl text-sky-700 dark:text-sky-300">
                 No Pinned Links
               </p>
-              <p className="text-center text-sky-900 text-sm">
+              <p className="text-center text-sky-900 dark:text-sky-500 text-sm">
                 You can Pin Links by clicking on the three dots on each Link and
                 clicking &quot;Pin to Dashboard.&quot;
               </p>

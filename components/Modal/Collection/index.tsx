@@ -46,9 +46,9 @@ export default function CollectionModal({
     <div className={className}>
       <Tab.Group defaultIndex={defaultIndex}>
         {method === "CREATE" && (
-          <p className="text-xl text-sky-700 text-center">New Collection</p>
+          <p className="text-xl text-sky-700 dark:text-sky-400 text-center">New Collection</p>
         )}
-        <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-700">
+        <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-700 dark:text-sky-400">
           {method === "UPDATE" && (
             <>
               {isOwner && (
