@@ -7,12 +7,12 @@ export default function NoLinksFound() {
   const { setModal } = useModalStore();
 
   return (
-    <div className="border border-solid border-sky-100 w-full p-10 rounded-2xl">
-      <p className="text-center text-3xl text-sky-700">
+    <div className="border border-solid border-sky-100 dark:border-sky-800 w-full p-10 rounded-2xl">
+      <p className="text-center text-3xl text-sky-700 dark:text-white">
         You haven&apos;t created any Links Here
       </p>
       <br />
-      <div className="text-center text-sky-900 text-sm flex items-baseline justify-center gap-1 w-full">
+      <div className="text-center text-sky-900 dark:text-white text-sm flex items-baseline justify-center gap-1 w-full">
         <p>Start by creating a</p>{" "}
         <div
           onClick={() => {
@@ -22,7 +22,7 @@ export default function NoLinksFound() {
               method: "CREATE",
             });
           }}
-          className="inline-flex gap-1 relative w-[7.2rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-full text-white bg-sky-700 hover:bg-sky-600 duration-100 group"
+          className="inline-flex gap-1 relative w-[7.2rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-full text-white bg-sky-700 dark:bg-sky-400 hover:bg-sky-600 duration-100 group"
         >
           <FontAwesomeIcon
             icon={faPlus}

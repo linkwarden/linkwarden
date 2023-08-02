@@ -25,13 +25,13 @@ export default function Dropdown({ onClickOutside, className, items }: Props) {
   return (
     <ClickAwayHandler
       onClickOutside={onClickOutside}
-      className={`${className} py-1 shadow-md border border-sky-100 bg-gray-50 rounded-md flex flex-col z-20`}
+      className={`${className} py-1 shadow-md border border-sky-100 dark:border-sky-800 bg-gray-50 dark:bg-blue-925 rounded-md flex flex-col z-20`}
     >
       {items.map((e, i) => {
         const inner = e && (
           <div className="cursor-pointer rounded-md">
             <div className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 duration-100">
-              <p className="text-sky-900 select-none">{e.name}</p>
+              <p className="text-sky-900 dark:text-sky-400 select-none">{e.name}</p>
             </div>
           </div>
         );
