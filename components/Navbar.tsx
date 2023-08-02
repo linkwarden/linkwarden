@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import Search from "@/components/Search";
 import useAccountStore from "@/store/account";
 import ProfilePhoto from "@/components/ProfilePhoto";
+import ToggleDarkMode from "@/components/ToggleDarkMode";
 import useModalStore from "@/store/modals";
 
 export default function Navbar() {
@@ -33,7 +34,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b h-16">
+    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 dark:border-b-sky-800 border-b h-16">
       <div
         onClick={toggleSidebar}
         className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-sky-700 rounded-md duration-100 hover:bg-slate-200"
@@ -50,7 +51,7 @@ export default function Navbar() {
               method: "CREATE",
             });
           }}
-          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-sky-700 sm:text-white sm:bg-sky-700 sm:hover:bg-sky-600 duration-100 group"
+          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-sky-700 sm:text-white sm:bg-sky-700 sm:dark:bg-sky-400 sm:hover:bg-sky-600 duration-100 group"
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -60,16 +61,16 @@ export default function Navbar() {
             New Link
           </span>
         </div>
-
+        <ToggleDarkMode />
         <div className="relative">
           <div
-            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit bg-white cursor-pointer"
+            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:dark:bg-slate-800 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit bg-white dark:bg-blue-950 cursor-pointer"
             onClick={() => setProfileDropdown(!profileDropdown)}
             id="profile-dropdown"
           >
             <ProfilePhoto
               src={account.profilePic}
-              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100  border-[3px]"
+              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100 border-[3px] dark:border-blue-800"
             />
             <p
               id="profile-dropdown"

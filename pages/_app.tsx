@@ -6,6 +6,7 @@ import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
 import { Toaster } from "react-hot-toast";
 import { Session } from "next-auth";
+import { ThemeProvider } from "next-themes";
 
 export default function App({
   Component,
@@ -43,7 +44,9 @@ export default function App({
         toastOptions={{ className: "border border-sky-100" }}
       />
       <AuthRedirect>
-        <Component {...pageProps} />
+        <ThemeProvider attribute="class">
+          <Component {...pageProps} />
+        </ThemeProvider>
       </AuthRedirect>
     </SessionProvider>
   );

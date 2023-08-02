@@ -159,3 +159,11 @@
   width: 100%;
   height: 4rem;
 }
+
+/* Theme */
+
+@layer base {
+  body {
+    @apply dark:bg-blue-950 bg-white dark:text-white
+  }
+}

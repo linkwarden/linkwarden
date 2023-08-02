@@ -21,9 +21,9 @@ export default function SortDropdown({
         const target = e.target as HTMLInputElement;
         if (target.id !== "sort-dropdown") toggleSortDropdown();
       }}
-      className="absolute top-8 right-0 border border-sky-100 shadow-md bg-gray-50 rounded-md p-2 z-20 w-48"
+      className="absolute top-8 right-0 border border-sky-100 dark:border-sky-800 shadow-md bg-gray-50 dark:bg-blue-925 rounded-md p-2 z-20 w-48"
     >
-      <p className="mb-2 text-sky-900 text-center font-semibold">Sort by</p>
+      <p className="mb-2 text-sky-900 dark:text-sky-200 text-center font-semibold">Sort by</p>
       <div className="flex flex-col gap-2">
         <RadioButton
           label="Date (Newest First)"

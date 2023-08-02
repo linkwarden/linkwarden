@@ -20,13 +20,13 @@ export default function RadioButton({ label, state, onClick }: Props) {
       />
       <FontAwesomeIcon
         icon={faCircleCheck}
-        className="w-5 h-5 text-sky-700 peer-checked:block hidden"
+        className="w-5 h-5 text-sky-700 dark:text-sky-300 peer-checked:block hidden"
       />
       <FontAwesomeIcon
         icon={faCircle}
-        className="w-5 h-5 text-sky-700 peer-checked:hidden block"
+        className="w-5 h-5 text-sky-700 dark:text-sky-300 peer-checked:hidden block"
       />
-      <span className="text-sky-900 rounded select-none">{label}</span>
+      <span className="text-sky-900 dark:text-sky-300 rounded select-none">{label}</span>
     </label>
   );
 }
