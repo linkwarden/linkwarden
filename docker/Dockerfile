@@ -25,18 +25,23 @@ RUN apt-get -yqq update && apt-get install -yqq --no-install-recommends curl gnu
     && useradd --uid 1000 --gid 1000 -m node
 
 COPY --chown=node:node --from=builder /app/node_modules /app/node_modules
+COPY --chown=node:node --from=builder /root/.cache/ms-playwright /home/node/.cache/ms-playwright
 COPY --chown=node:node . /app
 
 WORKDIR /app
 
 # This installs playwright dependencies on Ubuntu APT repositories.
+# Also prepare the `data` directory for node user.
 RUN npx playwright install-deps \
     && rm -rf /var/lib/apt/lists/* \
-    && npx next telemetry disable \
-    && yarn build
+    && mkdir /app/data \
+    && chown -R node:node /app/data
 
 # Start the app as a non-privileged user.
 USER node
+
+RUN npx next telemetry disable \
+    && yarn build
 
 # The entrypoint plays prisma migrations before starting whatever command the user wants (defaults to `yarn start`).
 ENTRYPOINT ["/app/docker-entrypoint.sh"]

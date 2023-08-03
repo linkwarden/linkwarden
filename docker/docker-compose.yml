@@ -14,7 +14,10 @@ services:
       NEXTAUTH_URL: http://localhost:3000
       DATABASE_URL: postgresql://postgres:postgres@linkwarden-postgres:5432/linkwarden
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    volumes:
+      - app-data:/app/data
 
   postgres:
     container_name: linkwarden-postgres
@@ -27,6 +30,15 @@ services:
       - '5432:5432'
     volumes: 
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 volumes:
   postgres-data:
     driver: local
+    name: linkwarden-postgres-data
+  app-data:
+    driver: local
+    name: linkwarden-app-data
