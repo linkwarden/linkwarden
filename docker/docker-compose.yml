@@ -1,0 +1,32 @@
+--- 
+version: '3.8'
+services:
+  linkwarden:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    container_name: linkwarden-app
+    restart:  always
+    ports:
+      - '3000:3000'
+    environment:
+      NEXTAUTH_SECRET: SuperSecret!
+      NEXTAUTH_URL: http://localhost:3000
+      DATABASE_URL: postgresql://postgres:postgres@linkwarden-postgres:5432/linkwarden
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: linkwarden-postgres
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes: 
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:
+    driver: local

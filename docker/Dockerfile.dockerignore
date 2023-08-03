@@ -1,0 +1,52 @@
+# docker files
+docker/
+
+# git stuff
+.git
+.gitignore
+.github
+
+# misc
+.DS_Store
+*.pem
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# generated files and folders
+/data
+
+# tests
+/tests
+/test-results/
+/playwright-report/
+/playwright/.cache/
