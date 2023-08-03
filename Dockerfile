@@ -1,7 +1,7 @@
 # playwright doesnt support debian image
 FROM ubuntu:focal
 
-run apt-get update && apt-get install wget xz-utils -y
+RUN apt-get update && apt-get install wget xz-utils -y
 
 RUN mkdir /data
 
@@ -14,7 +14,7 @@ RUN wget https://nodejs.org/dist/v20.5.0/node-v20.5.0-linux-x64.tar.xz -O nodejs
 ENV PATH="$PATH:/opt/nodejs/bin"
 RUN npm install -g yarn
 
-COPY ./package.json ./yarn.lock ./playwright.config.ts .
+COPY ./package.json ./yarn.lock ./playwright.config.ts ./
 
 RUN yarn
 RUN npx playwright install-deps
