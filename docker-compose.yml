@@ -2,6 +2,8 @@ version: "3.5"
 services:
   linkwarden:
     env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
     restart: always
     build: .
     ports:
