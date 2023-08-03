@@ -3,7 +3,11 @@ import { AccountSettings } from "@/types/global";
 import bcrypt from "bcrypt";
 import removeFile from "@/lib/api/storage/removeFile";
 import createFile from "@/lib/api/storage/createFile";
-import updateCustomerEmail from "../../updateCustomerEmail";
+import updateCustomerEmail from "@/lib/api/updateCustomerEmail";
+import createFolder from "@/lib/api/storage/createFolder";
+
+const emailEnabled =
+  process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 export default async function updateUser(
   user: AccountSettings,
@@ -14,9 +18,14 @@ export default async function updateUser(
     isSubscriber: boolean;
   }
 ) {
-  if (!user.username || !user.email)
+  if (emailEnabled && !user.email)
     return {
-      response: "Username/Email invalid.",
+      response: "Email invalid.",
+      status: 400,
+    };
+  else if (!user.username)
+    return {
+      response: "Username invalid.",
       status: 400,
     };
 
@@ -32,14 +41,18 @@ export default async function updateUser(
   const userIsTaken = await prisma.user.findFirst({
     where: {
       id: { not: sessionUser.id },
-      OR: [
-        {
-          username: user.username.toLowerCase(),
-        },
-        {
-          email: user.email.toLowerCase(),
-        },
-      ],
+      OR: emailEnabled
+        ? [
+            {
+              username: user.username.toLowerCase(),
+            },
+            {
+              email: user.email?.toLowerCase(),
+            },
+          ]
+        : {
+            username: user.username.toLowerCase(),
+          },
     },
   });
 
@@ -57,6 +70,8 @@ export default async function updateUser(
     if (user.profilePic.length < 1572864) {
       try {
         const base64Data = profilePic.replace(/^data:image\/jpeg;base64,/, "");
+
+        createFolder({ filePath: `uploads/avatar` });
 
         await createFile({
           filePath: `uploads/avatar/${sessionUser.id}.jpg`,
@@ -102,12 +117,12 @@ export default async function updateUser(
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
   const PRICE_ID = process.env.PRICE_ID;
 
-  if (STRIPE_SECRET_KEY && PRICE_ID)
+  if (STRIPE_SECRET_KEY && PRICE_ID && emailEnabled)
     await updateCustomerEmail(
       STRIPE_SECRET_KEY,
       PRICE_ID,
       sessionUser.email,
-      user.email
+      user.email as string
     );
 
   const { password, ...userInfo } = updatedUser;
