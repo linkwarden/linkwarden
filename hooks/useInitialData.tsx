@@ -13,7 +13,10 @@ export default function useInitialData() {
   const { setAccount } = useAccountStore();
 
   useEffect(() => {
-    if (status === "authenticated" && data.user.isSubscriber) {
+    if (
+      status === "authenticated" &&
+      (!process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE || data.user.isSubscriber)
+    ) {
       setCollections();
       setTags();
       // setLinks();
