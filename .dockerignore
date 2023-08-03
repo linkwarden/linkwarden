@@ -1,0 +1,7 @@
+node_modules
+pgdata
+.env
+.devcontainer
+docker-compose.yml
+Dockerfile
+README.md
