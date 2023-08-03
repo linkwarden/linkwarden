@@ -11,7 +11,7 @@
 
 <div align='center'>
 
-[Homepage](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
@@ -62,7 +62,7 @@ Also make sure to check out our [public roadmap](https://github.com/orgs/linkwar
 
 ## Docs
 
-For information on how to get started or ot set up your own instance please visit the [documenation](https://docs.linkwarden.app).
+For information on how to get started or to set up your own instance, please visit the [documentation](https://docs.linkwarden.app).
 
 ## Development
 
