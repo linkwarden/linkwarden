@@ -1,0 +1,20 @@
+version: "3.5"
+services:
+  linkwarden:
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+    restart: always
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - /var/lib/elasticsearch/data
+  postgres:
+    image: postgres
+    env_file: .env
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
