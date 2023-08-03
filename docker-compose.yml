@@ -8,6 +8,8 @@ services:
       - ./pgdata:/var/lib/postgresql/data
   linkwarden:
     env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
     restart: always
     build: .
     ports:
