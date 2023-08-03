@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
@@ -18,6 +18,7 @@ type FormData = {
 
 export default function Register() {
   const [submitLoader, setSubmitLoader] = useState(false);
+  const router = useRouter();
 
   const [form, setForm] = useState<FormData>({
     name: "",
@@ -28,7 +29,7 @@ export default function Register() {
   });
 
   async function registerUser() {
-    const checkHasEmptyFields = () => {
+    const checkFields = () => {
       if (emailEnabled) {
         return (
           form.name !== "" &&
@@ -46,14 +47,7 @@ export default function Register() {
       }
     };
 
-    const sendConfirmation = async () => {
-      await signIn("email", {
-        email: form.email,
-        callbackUrl: "/",
-      });
-    };
-
-    if (checkHasEmptyFields()) {
+    if (checkFields()) {
       if (form.password !== form.passwordConfirmation)
         return toast.error("Passwords do not match.");
       else if (form.password.length < 8)
@@ -78,7 +72,12 @@ export default function Register() {
       setSubmitLoader(false);
 
       if (response.ok) {
-        if (form.email) await sendConfirmation();
+        if (form.email && emailEnabled)
+          await signIn("email", {
+            email: form.email,
+            callbackUrl: "/",
+          });
+        else if (!emailEnabled) router.push("/login");
 
         toast.success("User Created!");
       } else {
