@@ -21,9 +21,7 @@ RUN npx playwright install-deps
 
 COPY . .
 
+RUN yarn prisma generate
 RUN yarn build
 
 CMD yarn prisma migrate deploy && yarn start
-
-# RUN apt-get update && apt-get install \
-#   git
