@@ -13,4 +13,6 @@ services:
     env_file: .env
     restart: always
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
