@@ -66,7 +66,6 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.name
                 ? query.searchQuery
                 : undefined,
-            mode: "insensitive",
           },
         },
         {
@@ -75,7 +74,6 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.url
                 ? query.searchQuery
                 : undefined,
-            mode: "insensitive",
           },
         },
         {
@@ -84,7 +82,6 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.description
                 ? query.searchQuery
                 : undefined,
-            mode: "insensitive",
           },
         },
         {
@@ -100,7 +97,6 @@ export default async function getLink(userId: number, body: string) {
                           query.searchQuery && query.searchFilter?.tags
                             ? {
                                 contains: query.searchQuery,
-                                mode: "insensitive",
                               }
                             : undefined,
                         OR: [
@@ -114,7 +110,6 @@ export default async function getLink(userId: number, body: string) {
                                     query.searchFilter?.tags
                                       ? query.searchQuery
                                       : undefined,
-                                  mode: "insensitive",
                                 },
                                 collection: {
                                   members: {
