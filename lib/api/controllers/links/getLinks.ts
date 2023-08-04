@@ -1,5 +1,5 @@
-import {prisma} from "@/lib/api/db";
-import {LinkRequestQuery, Sort} from "@/types/global";
+import { prisma } from "@/lib/api/db";
+import { LinkRequestQuery, Sort } from "@/types/global";
 
 export default async function getLink(userId: number, body: string) {
   const query: LinkRequestQuery = JSON.parse(decodeURIComponent(body));
@@ -38,8 +38,8 @@ export default async function getLink(userId: number, body: string) {
     skip: query.cursor ? 1 : undefined,
     cursor: query.cursor
       ? {
-        id: query.cursor,
-      }
+          id: query.cursor,
+        }
       : undefined,
     where: {
       collection: {
@@ -59,7 +59,7 @@ export default async function getLink(userId: number, body: string) {
       },
       [query.searchQuery ? "OR" : "AND"]: [
         {
-          pinnedBy: query.pinnedOnly ? {some: {id: userId}} : undefined,
+          pinnedBy: query.pinnedOnly ? { some: { id: userId } } : undefined,
         },
         {
           name: {
@@ -67,7 +67,7 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.name
                 ? query.searchQuery
                 : undefined,
-            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined
+            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
           },
         },
         {
@@ -76,7 +76,7 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.url
                 ? query.searchQuery
                 : undefined,
-            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined
+            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
           },
         },
         {
@@ -85,7 +85,7 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.description
                 ? query.searchQuery
                 : undefined,
-            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined
+            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
           },
         },
         {
@@ -93,44 +93,48 @@ export default async function getLink(userId: number, body: string) {
             query.searchQuery && !query.searchFilter?.tags
               ? undefined
               : {
-                some: query.tagId
-                  ? {
-                    // If tagId was defined, filter by tag
-                    id: query.tagId,
-                    name:
-                      query.searchQuery && query.searchFilter?.tags
-                        ? {
-                          contains: query.searchQuery,
-                          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined
-                        }
-                        : undefined,
-                    OR: [
-                      {ownerId: userId}, // Tags owned by the user
-                      {
-                        links: {
-                          some: {
-                            name: {
-                              contains:
-                                query.searchQuery &&
-                                query.searchFilter?.tags
-                                  ? query.searchQuery
+                  some: query.tagId
+                    ? {
+                        // If tagId was defined, filter by tag
+                        id: query.tagId,
+                        name:
+                          query.searchQuery && query.searchFilter?.tags
+                            ? {
+                                contains: query.searchQuery,
+                                mode: POSTGRES_IS_ENABLED
+                                  ? "insensitive"
                                   : undefined,
-                              mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined
-                            },
-                            collection: {
-                              members: {
-                                some: {
-                                  userId, // Tags from collections where the user is a member
+                              }
+                            : undefined,
+                        OR: [
+                          { ownerId: userId }, // Tags owned by the user
+                          {
+                            links: {
+                              some: {
+                                name: {
+                                  contains:
+                                    query.searchQuery &&
+                                    query.searchFilter?.tags
+                                      ? query.searchQuery
+                                      : undefined,
+                                  mode: POSTGRES_IS_ENABLED
+                                    ? "insensitive"
+                                    : undefined,
+                                },
+                                collection: {
+                                  members: {
+                                    some: {
+                                      userId, // Tags from collections where the user is a member
+                                    },
+                                  },
                                 },
                               },
                             },
                           },
-                        },
-                      },
-                    ],
-                  }
-                  : undefined,
-              },
+                        ],
+                      }
+                    : undefined,
+                },
         },
       ],
     },
@@ -138,8 +142,8 @@ export default async function getLink(userId: number, body: string) {
       tags: true,
       collection: true,
       pinnedBy: {
-        where: {id: userId},
-        select: {id: true},
+        where: { id: userId },
+        select: { id: true },
       },
     },
     orderBy: order || {
@@ -147,5 +151,5 @@ export default async function getLink(userId: number, body: string) {
     },
   });
 
-  return {response: links, status: 200};
+  return { response: links, status: 200 };
 }
