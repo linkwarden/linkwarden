@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../../SubmitButton";
 import { toast } from "react-hot-toast";
+import exportRequest from "@/lib/client/exportRequest";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -113,6 +114,24 @@ export default function PrivacySettings({
             />
           </div>
         )}
+      </div>
+
+      <div className="mt-5">
+        <p className="text-sm text-sky-700 mb-2">Import/Export Data</p>
+
+        <div className="flex gap-2">
+          <div className="w-fit">
+            <div className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-700">
+              Import Data
+            </div>
+          </div>
+
+          <div className="w-fit" onClick={exportRequest}>
+            <div className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-700">
+              Export Data
+            </div>
+          </div>
+        </div>
       </div>
 
       <SubmitButton
