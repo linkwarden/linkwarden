@@ -1,6 +1,5 @@
 import {prisma} from "@/lib/api/db";
 import {LinkRequestQuery, Sort} from "@/types/global";
-import * as process from "process";
 
 export default async function getLink(userId: number, body: string) {
     const query: LinkRequestQuery = JSON.parse(decodeURIComponent(body));
