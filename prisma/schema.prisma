@@ -4,22 +4,22 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             Int
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -35,29 +35,37 @@ model Session {
 }
 
 model User {
-  id                  Int        @id       @default(autoincrement())
-  name                String
+  id   Int    @id @default(autoincrement())
+  name String
 
-  username            String?     @unique
+  username String? @unique
 
-  email               String?    @unique
-  emailVerified       DateTime?
-  image               String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
 
-  accounts            Account[]
-  sessions            Session[]
-  
-  password            String
-  collections         Collection[]
+  accounts Account[]
+  sessions Session[]
 
-  tags                Tag[]
+  password    String
+  collections Collection[]
 
-  pinnedLinks         Link[]
-  
-  collectionsJoined   UsersAndCollections[]
-  isPrivate           Boolean     @default(false)
-  whitelistedUsers    String[]    @default([])
-  createdAt           DateTime    @default(now())
+  tags Tag[]
+
+  pinnedLinks Link[]
+
+  collectionsJoined UsersAndCollections[]
+  isPrivate         Boolean               @default(false)
+  whitelistedUsers  WhitelistedUser[]
+  createdAt         DateTime              @default(now())
+}
+
+model WhitelistedUser {
+  id Int @id @default(autoincrement())
+
+  username String @default("")
+  User     User?  @relation(fields: [userId], references: [id])
+  userId   Int?
 }
 
 model VerificationToken {
@@ -69,27 +77,26 @@ model VerificationToken {
 }
 
 model Collection {
-  id Int @id @default(autoincrement())
-  name String
-  description String @default("")
-  color String @default("#0ea5e9")
-  isPublic Boolean @default(false)
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String  @default("")
+  color       String  @default("#0ea5e9")
+  isPublic    Boolean @default(false)
 
-
-  owner User @relation(fields: [ownerId], references: [id])
-  ownerId Int
-  members UsersAndCollections[]
-  links Link[]
-  createdAt DateTime @default(now())
+  owner     User                  @relation(fields: [ownerId], references: [id])
+  ownerId   Int
+  members   UsersAndCollections[]
+  links     Link[]
+  createdAt DateTime              @default(now())
 
   @@unique([name, ownerId])
 }
 
 model UsersAndCollections {
-  user User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
   userId Int
 
-  collection Collection @relation(fields: [collectionId], references: [id])
+  collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
 
   canCreate Boolean
@@ -100,24 +107,24 @@ model UsersAndCollections {
 }
 
 model Link {
-  id Int @id @default(autoincrement())
-  name String
-  url String
+  id          Int    @id @default(autoincrement())
+  name        String
+  url         String
   description String @default("")
 
   pinnedBy User[]
 
-  collection Collection @relation(fields: [collectionId], references: [id])
+  collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
-  tags Tag[]
-  createdAt DateTime @default(now())
+  tags         Tag[]
+  createdAt    DateTime   @default(now())
 }
 
 model Tag {
-  id Int @id @default(autoincrement())
-  name String
-  links Link[]
-  owner User @relation(fields: [ownerId], references: [id])
+  id      Int    @id @default(autoincrement())
+  name    String
+  links   Link[]
+  owner   User   @relation(fields: [ownerId], references: [id])
   ownerId Int
 
   @@unique([name, ownerId])
