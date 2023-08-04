@@ -33,11 +33,16 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       where: {
         id: queryId,
       },
+      include: {
+        whitelistedUsers: true
+      }
     });
+
+    const whitelistedUsernames = targetUser?.whitelistedUsers.map(whitelistedUsername => whitelistedUsername.username);
 
     if (
       targetUser?.isPrivate &&
-      !targetUser.whitelistedUsers.includes(username)
+      !whitelistedUsernames?.includes(username)
     ) {
       return res
         .setHeader("Content-Type", "text/plain")

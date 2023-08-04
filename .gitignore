@@ -36,6 +36,8 @@ next-env.d.ts
 
 # generated files and folders
 /data
+.idea
+prisma/dev.db
 
 # tests
 /tests
