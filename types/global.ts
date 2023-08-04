@@ -36,6 +36,7 @@ export interface CollectionIncludingMembersAndLinkCount
 export interface AccountSettings extends User {
   profilePic: string;
   newPassword?: string;
+  whitelistedUsers: string[]
 }
 
 interface LinksIncludingTags extends Link {
