@@ -17,14 +17,23 @@ export default async function getUser({
       id: params.lookupId,
       username: params.lookupUsername?.toLowerCase(),
     },
+    include: {
+      whitelistedUsers: {
+        select: {
+          username: true
+        }
+      }
+    }
   });
 
   if (!user) return { response: "User not found.", status: 404 };
 
+  const whitelistedUsernames = user.whitelistedUsers?.map(usernames => usernames.username);
+
   if (
     !isSelf &&
     user?.isPrivate &&
-    !user.whitelistedUsers.includes(username.toLowerCase())
+    !whitelistedUsernames.includes(username.toLowerCase())
   ) {
     return { response: "This profile is private.", status: 401 };
   }
@@ -33,7 +42,7 @@ export default async function getUser({
 
   const data = isSelf
     ? // If user is requesting its own data
-      lessSensitiveInfo
+      {...lessSensitiveInfo, whitelistedUsers: whitelistedUsernames}
     : {
         // If user is requesting someone elses data
         id: lessSensitiveInfo.id,

@@ -20,11 +20,14 @@ export default async function postLink(
     };
   }
 
-  link.collection.name = link.collection.name.trim();
-
+  // This has to move above we assign link.collection.name
+  // Because if the link is null (write then delete text on collection)
+  // It will try to do trim on empty string and will throw and error, this prevents it.
   if (!link.collection.name) {
     link.collection.name = "Unnamed Collection";
   }
+
+  link.collection.name = link.collection.name.trim();
 
   if (link.collection.id) {
     const collectionIsAccessible = (await getPermission(
