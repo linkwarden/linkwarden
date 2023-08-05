@@ -50,9 +50,11 @@ export default async function updateUser(
               email: user.email?.toLowerCase(),
             },
           ]
-        : {
-            username: user.username.toLowerCase(),
-          },
+        : [
+            {
+              username: user.username.toLowerCase(),
+            },
+          ],
     },
   });
 
@@ -112,10 +114,9 @@ export default async function updateUser(
           : undefined,
     },
     include: {
-      whitelistedUsers: true
-    }
+      whitelistedUsers: true,
+    },
   });
-
 
   const { whitelistedUsers, password, ...userInfo } = updatedUser;
 
@@ -123,16 +124,19 @@ export default async function updateUser(
   const newWhitelistedUsernames: string[] = user.whitelistedUsers || [];
 
   // Get the current whitelisted usernames
-  const currentWhitelistedUsernames: string[] = whitelistedUsers.map((user) => user.username);
+  const currentWhitelistedUsernames: string[] = whitelistedUsers.map(
+    (user) => user.username
+  );
 
   // Find the usernames to be deleted (present in current but not in new)
   const usernamesToDelete: string[] = currentWhitelistedUsernames.filter(
-      (username) => !newWhitelistedUsernames.includes(username)
+    (username) => !newWhitelistedUsernames.includes(username)
   );
 
   // Find the usernames to be created (present in new but not in current)
   const usernamesToCreate: string[] = newWhitelistedUsernames.filter(
-      (username) => !currentWhitelistedUsernames.includes(username) && username.trim() !== ''
+    (username) =>
+      !currentWhitelistedUsernames.includes(username) && username.trim() !== ""
   );
 
   // Delete whitelistedUsers that are not present in the new list
@@ -154,7 +158,6 @@ export default async function updateUser(
       },
     });
   }
-
 
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
   const PRICE_ID = process.env.PRICE_ID;
