@@ -196,7 +196,7 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/tags/${e.id}`
-                            ? "bg-sky-200"
+                            ? "bg-sky-200 dark:bg-sky-700"
                             : "hover:bg-slate-200 hover:dark:bg-sky-800 bg-gray-100 dark:bg-blue-925"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
