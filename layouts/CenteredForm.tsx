@@ -18,12 +18,12 @@ export default function CenteredForm({ text, children }: Props) {
           className="h-12 w-fit mx-auto"
         />
         {text ? (
-          <p className="text-lg sm:w-[30rem] w-80 mx-auto font-semibold text-black px-2 text-center">
+          <p className="text-lg sm:w-[30rem] w-80 mx-auto font-semibold text-black dark:text-white px-2 text-center">
             {text}
           </p>
         ) : undefined}
         {children}
-        <p className="text-center text-xs text-gray-500">
+        <p className="text-center text-xs text-gray-500 dark:text-sky-500">
           © {new Date().getFullYear()} Linkwarden. All rights reserved.
         </p>
       </div>
