@@ -2,11 +2,7 @@ import { Page, chromium, devices } from "playwright";
 import { prisma } from "@/lib/api/db";
 import createFile from "@/lib/api/storage/createFile";
 
-export default async function archive(
-  url: string,
-  collectionId: number,
-  linkId: number
-) {
+export default async function archive(linkId: number, url: string) {
   const browser = await chromium.launch();
   const context = await browser.newContext(devices["Desktop Chrome"]);
   const page = await context.newPage();
@@ -35,12 +31,12 @@ export default async function archive(
 
       createFile({
         data: screenshot,
-        filePath: `archives/${collectionId}/${linkId}.png`,
+        filePath: `archives/${linkExists.collectionId}/${linkId}.png`,
       });
 
       createFile({
         data: pdf,
-        filePath: `archives/${collectionId}/${linkId}.pdf`,
+        filePath: `archives/${linkExists.collectionId}/${linkId}.pdf`,
       });
     }
 
