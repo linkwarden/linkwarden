@@ -2,6 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { Collection, Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
+import moveFile from "@/lib/api/storage/moveFile";
 
 export default async function updateLink(
   link: LinkIncludingShortenedCollectionAndTags,
@@ -97,6 +98,18 @@ export default async function updateLink(
           : undefined,
       },
     });
+
+    if (targetLink.collection.id !== link.collection.id) {
+      await moveFile(
+        `archives/${targetLink.collection.id}/${link.id}.pdf`,
+        `archives/${link.collection.id}/${link.id}.pdf`
+      );
+
+      await moveFile(
+        `archives/${targetLink.collection.id}/${link.id}.png`,
+        `archives/${link.collection.id}/${link.id}.png`
+      );
+    }
 
     return { response: updatedLink, status: 200 };
   }
