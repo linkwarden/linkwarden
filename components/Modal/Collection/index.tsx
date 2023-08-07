@@ -55,8 +55,8 @@ export default function CollectionModal({
                 <Tab
                   className={({ selected }) =>
                     selected
-                      ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
-                      : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+                      ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-sky-900 duration-100 rounded-md outline-none"
+                      : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-sky-300 hover:dark:text-sky-900 rounded-md duration-100 outline-none"
                   }
                 >
                   Collection Info
@@ -65,8 +65,8 @@ export default function CollectionModal({
               <Tab
                 className={({ selected }) =>
                   selected
-                    ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+                    ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-sky-900 duration-100 rounded-md outline-none"
+                    : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-sky-300 hover:dark:text-sky-900 rounded-md duration-100 outline-none"
                 }
               >
                 {isOwner ? "Share & Collaborate" : "View Team"}
@@ -74,8 +74,8 @@ export default function CollectionModal({
               <Tab
                 className={({ selected }) =>
                   selected
-                    ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+                    ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-sky-900 duration-100 rounded-md outline-none"
+                    : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-sky-300 hover:dark:text-sky-900 rounded-md duration-100 outline-none"
                 }
               >
                 {isOwner ? "Delete Collection" : "Leave Collection"}
