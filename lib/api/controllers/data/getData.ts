@@ -18,7 +18,7 @@ export default async function getData(userId: number) {
 
   if (!user) return { response: "User not found.", status: 404 };
 
-  const { password, id, ...userData } = user;
+  const { password, id, image, ...userData } = user;
 
   return { response: userData, status: 200 };
 }
