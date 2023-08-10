@@ -20,9 +20,6 @@ export default async function postLink(
     };
   }
 
-  // This has to move above we assign link.collection.name
-  // Because if the link is null (write then delete text on collection)
-  // It will try to do trim on empty string and will throw and error, this prevents it.
   if (!link.collection.name) {
     link.collection.name = "Unnamed Collection";
   }
@@ -54,7 +51,7 @@ export default async function postLink(
       ? link.description
       : await getTitle(link.url);
 
-  const newLink: Link = await prisma.link.create({
+  const newLink = await prisma.link.create({
     data: {
       url: link.url,
       name: link.name,

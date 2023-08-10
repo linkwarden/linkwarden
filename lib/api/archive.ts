@@ -10,7 +10,10 @@ export default async function archive(linkId: number, url: string) {
   try {
     await page.goto(url, { waitUntil: "domcontentloaded" });
 
-    await autoScroll(page);
+    await page.evaluate(
+      autoScroll,
+      Number(process.env.AUTOSCROLL_TIMEOUT) || 30
+    );
 
     const linkExists = await prisma.link.findUnique({
       where: {
@@ -47,29 +50,31 @@ export default async function archive(linkId: number, url: string) {
   }
 }
 
-const autoScroll = async (page: Page) => {
-  await page.evaluate(async () => {
-    const timeoutPromise = new Promise<void>((_, reject) => {
-      setTimeout(() => {
-        reject(new Error("Auto scroll took too long (more than 20 seconds)."));
-      }, 20000);
-    });
-
-    const scrollingPromise = new Promise<void>((resolve) => {
-      let totalHeight = 0;
-      let distance = 100;
-      let scrollDown = setInterval(() => {
-        let scrollHeight = document.body.scrollHeight;
-        window.scrollBy(0, distance);
-        totalHeight += distance;
-        if (totalHeight >= scrollHeight) {
-          clearInterval(scrollDown);
-          window.scroll(0, 0);
-          resolve();
-        }
-      }, 100);
-    });
-
-    await Promise.race([scrollingPromise, timeoutPromise]);
+const autoScroll = async (AUTOSCROLL_TIMEOUT: number) => {
+  const timeoutPromise = new Promise<void>((_, reject) => {
+    setTimeout(() => {
+      reject(
+        new Error(
+          `Auto scroll took too long (more than ${AUTOSCROLL_TIMEOUT} seconds).`
+        )
+      );
+    }, AUTOSCROLL_TIMEOUT * 1000);
   });
+
+  const scrollingPromise = new Promise<void>((resolve) => {
+    let totalHeight = 0;
+    let distance = 100;
+    let scrollDown = setInterval(() => {
+      let scrollHeight = document.body.scrollHeight;
+      window.scrollBy(0, distance);
+      totalHeight += distance;
+      if (totalHeight >= scrollHeight) {
+        clearInterval(scrollDown);
+        window.scroll(0, 0);
+        resolve();
+      }
+    }, 100);
+  });
+
+  await Promise.race([scrollingPromise, timeoutPromise]);
 };
