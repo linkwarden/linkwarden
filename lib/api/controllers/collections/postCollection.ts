@@ -40,14 +40,6 @@ export default async function postCollection(
       name: collection.name.trim(),
       description: collection.description,
       color: collection.color,
-      members: {
-        create: collection.members.map((e) => ({
-          user: { connect: { id: e.user.id } },
-          canCreate: e.canCreate,
-          canUpdate: e.canUpdate,
-          canDelete: e.canDelete,
-        })),
-      },
     },
     include: {
       _count: {
