@@ -6,6 +6,7 @@ declare global {
       NEXTAUTH_URL: string;
       PAGINATION_TAKE_COUNT?: string;
       STORAGE_FOLDER?: string;
+      AUTOSCROLL_TIMEOUT?: string;
 
       SPACES_KEY?: string;
       SPACES_SECRET?: string;
