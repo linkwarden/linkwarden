@@ -93,31 +93,32 @@ model Collection {
 }
 
 model UsersAndCollections {
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  user         User       @relation(fields: [userId], references: [id])
+  userId       Int
 
   collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
 
-  canCreate Boolean
-  canUpdate Boolean
-  canDelete Boolean
+  canCreate    Boolean
+  canUpdate    Boolean
+  canDelete    Boolean
 
   @@id([userId, collectionId])
 }
 
 model Link {
-  id          Int    @id @default(autoincrement())
-  name        String
-  url         String
-  description String @default("")
+  id             Int        @id @default(autoincrement())
+  name           String
+  url            String
+  description    String     @default("")
 
-  pinnedBy User[]
+  pinnedBy       User[]
 
-  collection   Collection @relation(fields: [collectionId], references: [id])
-  collectionId Int
-  tags         Tag[]
-  createdAt    DateTime   @default(now())
+  collection     Collection @relation(fields: [collectionId], references: [id])
+  collectionId   Int
+  tags           Tag[]
+
+  createdAt      DateTime   @default(now())
 }
 
 model Tag {

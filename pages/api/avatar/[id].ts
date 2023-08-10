@@ -13,7 +13,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
   if (!userId || !username)
     return res
-      .setHeader("Content-Type", "text/plain")
+      .setHeader("Content-Type", "text/html")
       .status(401)
       .send("You must be logged in.");
   else if (session?.user?.isSubscriber === false)
@@ -24,7 +24,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
   if (!queryId)
     return res
-      .setHeader("Content-Type", "text/plain")
+      .setHeader("Content-Type", "text/html")
       .status(401)
       .send("Invalid parameters.");
 
@@ -34,27 +34,27 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
         id: queryId,
       },
       include: {
-        whitelistedUsers: true
-      }
+        whitelistedUsers: true,
+      },
     });
 
-    const whitelistedUsernames = targetUser?.whitelistedUsers.map(whitelistedUsername => whitelistedUsername.username);
+    const whitelistedUsernames = targetUser?.whitelistedUsers.map(
+      (whitelistedUsername) => whitelistedUsername.username
+    );
 
-    if (
-      targetUser?.isPrivate &&
-      !whitelistedUsernames?.includes(username)
-    ) {
+    if (targetUser?.isPrivate && !whitelistedUsernames?.includes(username)) {
       return res
-        .setHeader("Content-Type", "text/plain")
+        .setHeader("Content-Type", "text/html")
         .send("This profile is private.");
     }
   }
 
-  const { file, contentType } = await readFile({
-    filePath: `uploads/avatar/${queryId}.jpg`,
-  });
+  const { file, contentType, status } = await readFile(
+    `uploads/avatar/${queryId}.jpg`
+  );
 
-  res.setHeader("Content-Type", contentType);
-
-  return res.send(file);
+  return res
+    .setHeader("Content-Type", contentType)
+    .status(status as number)
+    .send(file);
 }
