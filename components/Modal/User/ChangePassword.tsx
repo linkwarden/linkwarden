@@ -88,16 +88,18 @@ export default function ChangePassword({
           onChange={(e) => setNewPassword1(e.target.value)}
           type="password"
           placeholder="••••••••••••••"
-          className="w-full rounded-md p-3 mx-auto border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+          className="w-full rounded-md p-3 mx-auto border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
         />
-        <p className="text-sm text-sky-700 dark:text-sky-400">Confirm New Password</p>
+        <p className="text-sm text-sky-700 dark:text-sky-400">
+          Confirm New Password
+        </p>
 
         <input
           value={newPassword2}
           onChange={(e) => setNewPassword2(e.target.value)}
           type="password"
           placeholder="••••••••••••••"
-          className="w-full rounded-md p-3 mx-auto border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+          className="w-full rounded-md p-3 mx-auto border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
         />
 
         <SubmitButton

@@ -148,7 +148,7 @@ export default function TeamManagement({
                 console.log(err);
               }
             }}
-            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-3 border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none hover:border-sky-700 duration-100 cursor-text"
+            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-3 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none hover:border-sky-700 duration-100 cursor-text"
           >
             {publicCollectionURL}
           </div>
@@ -183,7 +183,7 @@ export default function TeamManagement({
               }
               type="text"
               placeholder="Username (without the '@')"
-              className="w-full rounded-md p-3 border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-full rounded-md p-3 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
             />
 
             <div

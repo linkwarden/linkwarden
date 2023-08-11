@@ -72,11 +72,13 @@ export default function CollectionInfo({
               }
               type="text"
               placeholder="e.g. Example Collection"
-              className="w-full rounded-md p-3 border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-full rounded-md p-3 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
             />
             <div className="color-picker flex justify-between">
               <div className="flex flex-col justify-between items-center w-32">
-                <p className="text-sm w-full text-sky-700 dark:text-sky-400 mb-2">Icon Color</p>
+                <p className="text-sm w-full text-sky-700 dark:text-sky-400 mb-2">
+                  Icon Color
+                </p>
                 <div style={{ color: collection.color }}>
                   <FontAwesomeIcon
                     icon={faFolder}
@@ -101,9 +103,11 @@ export default function CollectionInfo({
         </div>
 
         <div className="w-full">
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">Description</p>
+          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
+            Description
+          </p>
           <textarea
-            className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-white dark:bg-blue-950 p-3 outline-none border-sky-100 dark:border-sky-800 focus:border-sky-700"
+            className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-white dark:bg-sky-950 p-3 outline-none border-sky-100 dark:border-sky-800 focus:border-sky-700"
             placeholder="The purpose of this Collection..."
             value={collection.description}
             onChange={(e) =>

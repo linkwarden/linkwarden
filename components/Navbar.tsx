@@ -64,17 +64,17 @@ export default function Navbar() {
         <ToggleDarkMode />
         <div className="relative">
           <div
-            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:dark:bg-slate-800 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit bg-white dark:bg-blue-950 cursor-pointer"
+            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:dark:bg-sky-900 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit bg-white dark:bg-sky-950 cursor-pointer"
             onClick={() => setProfileDropdown(!profileDropdown)}
             id="profile-dropdown"
           >
             <ProfilePhoto
               src={account.profilePic}
-              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100 border-[3px] dark:border-blue-800"
+              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100 border-[3px] dark:border-sky-800"
             />
             <p
               id="profile-dropdown"
-              className="font-bold text-sky-700 leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
+              className="font-bold text-black dark:text-white leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
             >
               {account.name}
             </p>

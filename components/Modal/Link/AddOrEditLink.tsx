@@ -135,14 +135,16 @@ export default function AddOrEditLink({
             onChange={(e) => setLink({ ...link, url: e.target.value })}
             type="text"
             placeholder="e.g. http://example.com/"
-            className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+            className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
       ) : null}
       <hr className="dark:border-sky-800" />
       <div className="grid sm:grid-cols-2 gap-3">
         <div>
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">Collection</p>
+          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
+            Collection
+          </p>
           <CollectionSelection
             onChange={setCollection}
             // defaultValue={{
@@ -177,12 +179,14 @@ export default function AddOrEditLink({
             onChange={(e) => setLink({ ...link, name: e.target.value })}
             type="text"
             placeholder="e.g. Example Link"
-            className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+            className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
 
         <div className="sm:col-span-2">
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">Description</p>
+          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
+            Description
+          </p>
           <textarea
             value={link.description}
             onChange={(e) => setLink({ ...link, description: e.target.value })}
@@ -191,7 +195,7 @@ export default function AddOrEditLink({
                 ? "Will be auto generated if nothing is provided."
                 : ""
             }
-            className="resize-none w-full rounded-md p-2 border-sky-100 dark:border-sky-800 border-solid border outline-none focus:border-sky-700 duration-100 dark:bg-blue-950"
+            className="resize-none w-full rounded-md p-2 border-sky-100 dark:border-sky-800 border-solid border outline-none focus:border-sky-700 duration-100 dark:bg-sky-950"
           />
         </div>
       </div>
