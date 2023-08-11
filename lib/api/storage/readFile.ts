@@ -9,12 +9,14 @@ import s3Client from "./s3Client";
 import util from "util";
 
 type ReturnContentTypes =
-  | "text/plain"
+  | "text/html"
   | "image/jpeg"
   | "image/png"
   | "application/pdf";
 
-export default async function readFile({ filePath }: { filePath: string }) {
+export default async function readFile(filePath: string) {
+  const isRequestingAvatar = filePath.startsWith("uploads/avatar");
+
   let contentType: ReturnContentTypes;
 
   if (s3Client) {
@@ -28,6 +30,7 @@ export default async function readFile({ filePath }: { filePath: string }) {
         | {
             file: Buffer | string;
             contentType: ReturnContentTypes;
+            status: number;
           }
         | undefined;
 
@@ -38,11 +41,12 @@ export default async function readFile({ filePath }: { filePath: string }) {
       try {
         await headObjectAsync(bucketParams);
       } catch (err) {
-        contentType = "text/plain";
+        contentType = "text/html";
 
         returnObject = {
-          file: "File not found, it's possible that the file you're looking for either doesn't exist or hasn't been created yet.",
+          file: isRequestingAvatar ? "File not found." : fileNotFoundTemplate,
           contentType,
+          status: isRequestingAvatar ? 200 : 400,
         };
       }
 
@@ -60,14 +64,14 @@ export default async function readFile({ filePath }: { filePath: string }) {
           // if (filePath.endsWith(".jpg"))
           contentType = "image/jpeg";
         }
-        returnObject = { file: data as Buffer, contentType };
+        returnObject = { file: data as Buffer, contentType, status: 200 };
       }
 
       return returnObject;
     } catch (err) {
       console.log("Error:", err);
 
-      contentType = "text/plain";
+      contentType = "text/html";
       return {
         file: "An internal occurred, please contact support.",
         contentType,
@@ -77,13 +81,7 @@ export default async function readFile({ filePath }: { filePath: string }) {
     const storagePath = process.env.STORAGE_FOLDER || "data";
     const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
 
-    const file = fs.existsSync(creationPath)
-      ? fs.readFileSync(creationPath)
-      : "File not found, it's possible that the file you're looking for either doesn't exist or hasn't been created yet.";
-
-    if (file.toString().startsWith("File not found")) {
-      contentType = "text/plain";
-    } else if (filePath.endsWith(".pdf")) {
+    if (filePath.endsWith(".pdf")) {
       contentType = "application/pdf";
     } else if (filePath.endsWith(".png")) {
       contentType = "image/png";
@@ -92,7 +90,16 @@ export default async function readFile({ filePath }: { filePath: string }) {
       contentType = "image/jpeg";
     }
 
-    return { file, contentType };
+    if (!fs.existsSync(creationPath))
+      return {
+        file: isRequestingAvatar ? "File not found." : fileNotFoundTemplate,
+        contentType: "text/html",
+        status: isRequestingAvatar ? 200 : 400,
+      };
+    else {
+      const file = fs.readFileSync(creationPath);
+      return { file, contentType, status: 200 };
+    }
   }
 }
 
@@ -105,3 +112,21 @@ const streamToBuffer = (stream: any) => {
     stream.on("end", () => resolve(Buffer.concat(chunks)));
   });
 };
+
+const fileNotFoundTemplate = `<!DOCTYPE html>
+                              <html lang="en">
+                              <head>
+                                <meta charset="UTF-8">
+                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                <title>File not found</title>
+                              </head>
+                              <body style="margin-left: auto; margin-right: auto; max-width: 500px; padding: 1rem; font-family: sans-serif; background-color: rgb(251, 251, 251);">
+                                <h1>File not found</h1>
+                                <h2>It is possible that the file you're looking for either doesn't exist or hasn't been created yet.</h2>
+                                <h3>Some possible reasons are:</h3>
+                                <ul>
+                                  <li>You are trying to access a file too early, before it has been fully archived.</li>
+                                  <li>The file doesn't exist either because it encountered an error while being archived, or it simply doesn't exist.</li>
+                                </ul>
+                              </body>
+                              </html>`;

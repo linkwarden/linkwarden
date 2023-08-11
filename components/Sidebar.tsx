@@ -66,7 +66,9 @@ export default function Sidebar({ className }: { className?: string }) {
             icon={faChartSimple}
             className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-100`}
           />
-          <p className="text-sky-700 dark:text-sky-200 text-xs font-semibold">Dashboard</p>
+          
+          <p className="text-sky-700 dark:text-sky-200 text-xs xl:text-sm font-semibold">Dashboard</p>
+
         </Link>
 
         <Link
@@ -81,9 +83,9 @@ export default function Sidebar({ className }: { className?: string }) {
             icon={faLink}
             className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-100`}
           />
-          <p className="text-sky-700 dark:text-sky-200 text-xs font-semibold">
-            <span className="hidden xl:inline-block">All</span> Links
-          </p>
+          
+          <p className="text-sky-700 dark:text-sky-200 text-xs xl:text-sm font-semibold">Links</p>
+
         </Link>
 
         <Link
@@ -96,8 +98,9 @@ export default function Sidebar({ className }: { className?: string }) {
             icon={faFolder}
             className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-100`}
           />
-          <p className="text-sky-700 dark:text-sky-200 text-xs font-semibold">
-            <span className="hidden xl:inline-block">All</span> Collections
+          
+          <p className="text-sky-700 dark:text-sky-200 text-xs xl:text-sm font-semibold">
+            Collections
           </p>
         </Link>
       </div>

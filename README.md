@@ -11,7 +11,7 @@
 
 <div align='center'>
 
-[Homepage](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
@@ -54,16 +54,15 @@ We highly recommend you **not** to use the old version as it is no longer mainta
 
 There are _many_ upcoming features, below are only _some_ of the 100% planned ones:
 
-- 🐳 Docker version.
 - 🌒 Dark mode.
 - 📦 Import/Export your data.
 - 🧩 Browser extention.
 
-Also make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/projects/1). 
+Also make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/projects/1).
 
 ## Docs
 
-Currently, the Documentation is a bit targeted towards a more tech-savvy audience and has so much room to improve, you can find it [here](https://docs.linkwarden.app).
+For information on how to get started or to set up your own instance, please visit the [documentation](https://docs.linkwarden.app).
 
 ## Development
 
