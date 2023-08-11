@@ -31,10 +31,10 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       .status(401)
       .json({ response: "You don't have access to this collection." });
 
-  const { file, contentType } = await readFile({
-    filePath: `archives/${collectionId}/${linkId}`,
-  });
-  res.setHeader("Content-Type", contentType).status(200);
+  const { file, contentType, status } = await readFile(
+    `archives/${collectionId}/${linkId}`
+  );
+  res.setHeader("Content-Type", contentType).status(status as number);
 
   return res.send(file);
 }

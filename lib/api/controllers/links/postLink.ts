@@ -20,11 +20,11 @@ export default async function postLink(
     };
   }
 
-  link.collection.name = link.collection.name.trim();
-
   if (!link.collection.name) {
     link.collection.name = "Unnamed Collection";
   }
+
+  link.collection.name = link.collection.name.trim();
 
   if (link.collection.id) {
     const collectionIsAccessible = (await getPermission(
@@ -51,7 +51,7 @@ export default async function postLink(
       ? link.description
       : await getTitle(link.url);
 
-  const newLink: Link = await prisma.link.create({
+  const newLink = await prisma.link.create({
     data: {
       url: link.url,
       name: link.name,
@@ -94,7 +94,7 @@ export default async function postLink(
 
   createFolder({ filePath: `archives/${newLink.collectionId}` });
 
-  archive(newLink.url, newLink.collectionId, newLink.id);
+  archive(newLink.id, newLink.url);
 
   return { response: newLink, status: 200 };
 }
