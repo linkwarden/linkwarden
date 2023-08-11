@@ -114,7 +114,7 @@ export default function LinkCard({ link, count, className }: Props) {
         <div
           onClick={() => setExpandDropdown(!expandDropdown)}
           id={"expand-dropdown" + link.id}
-          className="text-gray-500 dark:text-sky-400 inline-flex rounded-md cursor-pointer hover:bg-slate-200 absolute right-5 top-5 z-10 duration-100 p-1"
+          className="text-gray-500 dark:text-white inline-flex rounded-md cursor-pointer hover:bg-slate-200 absolute right-5 top-5 z-10 duration-100 p-1"
         >
           <FontAwesomeIcon
             icon={faEllipsis}
@@ -156,8 +156,10 @@ export default function LinkCard({ link, count, className }: Props) {
         <div className="flex justify-between gap-5 w-full h-full z-0">
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-baseline gap-1">
-              <p className="text-sm text-sky-500 dark:text-sky-200 font-bold">{count + 1}.</p>
-              <p className="text-lg text-sky-700 dark:text-sky-200 font-bold truncate capitalize w-full pr-8">
+              <p className="text-sm text-black dark:text-white font-bold">
+                {count + 1}.
+              </p>
+              <p className="text-lg text-black dark:text-white font-bold truncate capitalize w-full pr-8">
                 {link.name || link.description}
               </p>
             </div>
@@ -168,16 +170,16 @@ export default function LinkCard({ link, count, className }: Props) {
                   className="w-4 h-4 mt-1 drop-shadow"
                   style={{ color: collection?.color }}
                 />
-                <p className="text-sky-900 dark:text-sky-300 truncate capitalize">
+                <p className="text-black dark:text-white truncate capitalize">
                   {collection?.name}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-1 w-full pr-20 text-gray-500 dark:text-sky-500">
+            <div className="flex items-center gap-1 w-full pr-20 text-gray-500 dark:text-white">
               <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
               <p className="truncate w-full">{shortendURL}</p>
             </div>
-            <div className="flex items-center gap-1 text-gray-500 dark:text-sky-500">
+            <div className="flex items-center gap-1 text-gray-500 dark:text-white">
               <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
               <p>{formattedDate}</p>
             </div>

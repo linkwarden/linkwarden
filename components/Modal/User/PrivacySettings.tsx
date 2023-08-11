@@ -119,7 +119,7 @@ export default function PrivacySettings({
   return (
     <div className="flex flex-col gap-3 justify-between sm:w-[35rem] w-80">
       <div>
-        <p className="text-sm text-sky-700 mb-2">Profile Visibility</p>
+        <p className="text-sm text-black mb-2">Profile Visibility</p>
 
         <Checkbox
           label="Make profile private"
@@ -134,7 +134,7 @@ export default function PrivacySettings({
 
         {user.isPrivate && (
           <div>
-            <p className="text-sm text-sky-700 my-2">Whitelisted Users</p>
+            <p className="text-sm text-black my-2">Whitelisted Users</p>
             <p className="text-gray-500 text-sm mb-3">
               Please provide the Username of the users you wish to grant
               visibility to your profile. Separated by comma.
@@ -152,7 +152,7 @@ export default function PrivacySettings({
       </div>
 
       <div className="mt-5">
-        <p className="text-sm text-sky-700 mb-2">Import/Export Data</p>
+        <p className="text-sm text-black mb-2">Import/Export Data</p>
 
         <div className="flex gap-2">
           <div
@@ -162,7 +162,7 @@ export default function PrivacySettings({
           >
             <div
               id="import-dropdown"
-              className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-700"
+              className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-black duration-100 hover:border-sky-700"
             >
               Import From
             </div>
@@ -196,7 +196,7 @@ export default function PrivacySettings({
           </div>
 
           <Link className="w-fit" href="/api/data">
-            <div className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-700">
+            <div className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-black duration-100 hover:border-sky-700">
               Export Data
             </div>
           </Link>

@@ -53,7 +53,7 @@ export default function Forgot() {
           </p>
         </div>
         <div>
-          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">Email</p>
+          <p className="text-sm text-black w-fit font-semibold mb-1">Email</p>
 
           <input
             type="text"
@@ -71,7 +71,7 @@ export default function Forgot() {
           loading={submitLoader}
         />
         <div className="flex items-baseline gap-1 justify-center">
-          <Link href={"/login"} className="block text-sky-700 font-bold">
+          <Link href={"/login"} className="block text-black font-bold">
             Go back
           </Link>
         </div>

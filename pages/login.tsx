@@ -53,7 +53,7 @@ export default function Login() {
         </p>
 
         <div>
-          <p className="text-sm text-sky-700 dark:text-sky-300 w-fit font-semibold mb-1">
+          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
             Username
             {emailEnabled ? "/Email" : undefined}
           </p>
@@ -68,7 +68,7 @@ export default function Login() {
         </div>
 
         <div>
-          <p className="text-sm text-sky-700 dark:text-sky-300 w-fit font-semibold mb-1">
+          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
             Password
           </p>
 
@@ -95,8 +95,11 @@ export default function Login() {
           loading={submitLoader}
         />
         <div className="flex items-baseline gap-1 justify-center">
-          <p className="w-fit text-gray-500 dark:text-sky-300">New here?</p>
-          <Link href={"/register"} className="block text-sky-700 dark:text-sky-500 font-bold">
+          <p className="w-fit text-gray-500 dark:text-white">New here?</p>
+          <Link
+            href={"/register"}
+            className="block text-black dark:text-white font-bold"
+          >
             Sign Up
           </Link>
         </div>
