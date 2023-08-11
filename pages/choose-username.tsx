@@ -45,7 +45,7 @@ export default function Subscribe() {
         </p>
 
         <div>
-          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
+          <p className="text-sm text-black w-fit font-semibold mb-1">
             Username
           </p>
 

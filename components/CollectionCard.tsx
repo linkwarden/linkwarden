@@ -42,14 +42,14 @@ export default function CollectionCard({ collection, className }: Props) {
         <FontAwesomeIcon
           icon={faEllipsis}
           id={"expand-dropdown" + collection.id}
-          className="w-5 h-5 text-gray-500 dark:text-sky-500"
+          className="w-5 h-5 text-gray-500 dark:text-white"
         />
       </div>
       <Link
         href={`/collections/${collection.id}`}
         className="flex flex-col gap-2 justify-between min-h-[12rem] h-full select-none p-5"
       >
-        <p className="text-2xl font-bold capitalize text-sky-700 dark:text-sky-300 break-words line-clamp-3 w-4/5">
+        <p className="text-2xl font-bold capitalize text-black dark:text-white break-words line-clamp-3 w-4/5">
           {collection.name}
         </p>
         <div className="flex justify-between items-center">
@@ -73,11 +73,14 @@ export default function CollectionCard({ collection, className }: Props) {
             ) : null}
           </div>
           <div className="text-right w-40">
-            <div className="text-sky-700 dark:text-sky-400 font-bold text-sm flex justify-end gap-1 items-center">
-              <FontAwesomeIcon icon={faLink} className="w-5 h-5 text-sky-500 dark:text-sky-300" />
+            <div className="text-black dark:text-white font-bold text-sm flex justify-end gap-1 items-center">
+              <FontAwesomeIcon
+                icon={faLink}
+                className="w-5 h-5 text-black dark:text-white"
+              />
               {collection._count && collection._count.links}
             </div>
-            <div className="flex items-center justify-end gap-1 text-gray-600 dark:text-sky-500">
+            <div className="flex items-center justify-end gap-1 text-gray-600 dark:text-white">
               <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
               <p className="font-bold text-xs">{formattedDate}</p>
             </div>

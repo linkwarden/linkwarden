@@ -126,7 +126,7 @@ export default function AddOrEditLink({
 
       {method === "CREATE" ? (
         <div>
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2 font-bold">
+          <p className="text-sm text-black dark:text-white mb-2 font-bold">
             Address (URL)
             <RequiredBadge />
           </p>
@@ -142,9 +142,7 @@ export default function AddOrEditLink({
       <hr className="dark:border-sky-800" />
       <div className="grid sm:grid-cols-2 gap-3">
         <div>
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
-            Collection
-          </p>
+          <p className="text-sm text-black dark:text-white mb-2">Collection</p>
           <CollectionSelection
             onChange={setCollection}
             // defaultValue={{
@@ -163,7 +161,7 @@ export default function AddOrEditLink({
         </div>
 
         <div>
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">Tags</p>
+          <p className="text-sm text-black dark:text-white mb-2">Tags</p>
           <TagSelection
             onChange={setTags}
             defaultValue={link.tags.map((e) => {
@@ -173,7 +171,7 @@ export default function AddOrEditLink({
         </div>
 
         <div className="sm:col-span-2">
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">Name</p>
+          <p className="text-sm text-black dark:text-white mb-2">Name</p>
           <input
             value={link.name}
             onChange={(e) => setLink({ ...link, name: e.target.value })}
@@ -184,9 +182,7 @@ export default function AddOrEditLink({
         </div>
 
         <div className="sm:col-span-2">
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
-            Description
-          </p>
+          <p className="text-sm text-black dark:text-white mb-2">Description</p>
           <textarea
             value={link.description}
             onChange={(e) => setLink({ ...link, description: e.target.value })}

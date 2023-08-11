@@ -103,7 +103,7 @@ export default function Register() {
           Enter your details
         </p>
         <div>
-          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
+          <p className="text-sm text-black w-fit font-semibold mb-1">
             Display Name
           </p>
 
@@ -118,7 +118,7 @@ export default function Register() {
 
         {emailEnabled ? undefined : (
           <div>
-            <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
+            <p className="text-sm text-black w-fit font-semibold mb-1">
               Username
             </p>
 
@@ -134,9 +134,7 @@ export default function Register() {
 
         {emailEnabled ? (
           <div>
-            <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
-              Email
-            </p>
+            <p className="text-sm text-black w-fit font-semibold mb-1">Email</p>
 
             <input
               type="email"
@@ -149,7 +147,7 @@ export default function Register() {
         ) : undefined}
 
         <div className="w-full">
-          <p className="text-sm text-sky-700 w-fit font-semibold  mb-1">
+          <p className="text-sm text-black w-fit font-semibold  mb-1">
             Password
           </p>
 
@@ -163,7 +161,7 @@ export default function Register() {
         </div>
 
         <div className="w-full">
-          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
+          <p className="text-sm text-black w-fit font-semibold mb-1">
             Confirm Password
           </p>
 
@@ -215,7 +213,7 @@ export default function Register() {
         />
         <div className="flex items-baseline gap-1 justify-center">
           <p className="w-fit text-gray-500">Already have an account?</p>
-          <Link href={"/login"} className="block text-sky-700 font-bold">
+          <Link href={"/login"} className="block text-black font-bold">
             Login
           </Link>
         </div>

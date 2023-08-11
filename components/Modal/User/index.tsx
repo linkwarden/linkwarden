@@ -27,11 +27,11 @@ export default function UserModal({
   return (
     <div className={className}>
       <Tab.Group defaultIndex={defaultIndex}>
-        <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-700 dark:text-sky-300">
+        <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-black dark:text-white">
           <Tab
             className={({ selected }) =>
               selected
-                ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-sky-100  duration-100 rounded-md outline-none"
+                ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-white  duration-100 rounded-md outline-none"
                 : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-sky-700 rounded-md duration-100 outline-none"
             }
           >
@@ -41,7 +41,7 @@ export default function UserModal({
           <Tab
             className={({ selected }) =>
               selected
-                ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-sky-100 duration-100 rounded-md outline-none"
+                ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-white duration-100 rounded-md outline-none"
                 : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-sky-600 rounded-md duration-100 outline-none"
             }
           >
@@ -51,7 +51,7 @@ export default function UserModal({
           <Tab
             className={({ selected }) =>
               selected
-                ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-sky-100 duration-100 rounded-md outline-none"
+                ? "px-2 py-1 bg-sky-200 dark:bg-sky-500 dark:text-white duration-100 rounded-md outline-none"
                 : "px-2 py-1 hover:bg-slate-200  hover:dark:bg-sky-600 rounded-md duration-100 outline-none"
             }
           >

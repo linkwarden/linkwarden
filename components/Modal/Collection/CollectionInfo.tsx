@@ -60,7 +60,7 @@ export default function CollectionInfo({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
+          <p className="text-sm text-black dark:text-white mb-2">
             Name
             <RequiredBadge />
           </p>
@@ -76,7 +76,7 @@ export default function CollectionInfo({
             />
             <div className="color-picker flex justify-between">
               <div className="flex flex-col justify-between items-center w-32">
-                <p className="text-sm w-full text-sky-700 dark:text-sky-400 mb-2">
+                <p className="text-sm w-full text-black dark:text-white mb-2">
                   Icon Color
                 </p>
                 <div style={{ color: collection.color }}>
@@ -86,7 +86,7 @@ export default function CollectionInfo({
                   />
                 </div>
                 <div
-                  className="py-1 px-2 rounded-md text-xs font-semibold cursor-pointer text-sky-700 dark:text-sky-400 hover:bg-slate-200 duration-100"
+                  className="py-1 px-2 rounded-md text-xs font-semibold cursor-pointer text-black dark:text-white hover:bg-slate-200 duration-100"
                   onClick={() =>
                     setCollection({ ...collection, color: "#0ea5e9" })
                   }
@@ -103,9 +103,7 @@ export default function CollectionInfo({
         </div>
 
         <div className="w-full">
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
-            Description
-          </p>
+          <p className="text-sm text-black dark:text-white mb-2">Description</p>
           <textarea
             className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-white dark:bg-sky-950 p-3 outline-none border-sky-100 dark:border-sky-800 focus:border-sky-700"
             placeholder="The purpose of this Collection..."
