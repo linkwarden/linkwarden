@@ -102,7 +102,9 @@ export default function ProfileSettings({
     <div className="flex flex-col gap-3 justify-between sm:w-[35rem] w-80">
       <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
         <div className="sm:row-span-2 sm:justify-self-center mx-auto mb-3">
-          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2 text-center">Profile Photo</p>
+          <p className="text-sm text-sky-700 dark:text-sky-400 mb-2 text-center">
+            Profile Photo
+          </p>
           <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
             <ProfilePhoto
               src={user.profilePic}
@@ -145,22 +147,26 @@ export default function ProfileSettings({
 
         <div className="flex flex-col gap-3">
           <div>
-            <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">Display Name</p>
+            <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
+              Display Name
+            </p>
             <input
               type="text"
               value={user.name}
               onChange={(e) => setUser({ ...user, name: e.target.value })}
-              className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
             />
           </div>
 
           <div>
-            <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">Username</p>
+            <p className="text-sm text-sky-700 dark:text-sky-400 mb-2">
+              Username
+            </p>
             <input
               type="text"
               value={user.username || ""}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
-              className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
             />
           </div>
 

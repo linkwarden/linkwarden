@@ -164,6 +164,6 @@
 
 @layer base {
   body {
-    @apply dark:bg-blue-950 bg-white dark:text-white
+    @apply dark:bg-sky-950 bg-white dark:text-white;
   }
 }

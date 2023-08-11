@@ -93,7 +93,7 @@ export default function DeleteCollection({
               onChange={(e) => setInputField(e.target.value)}
               type="text"
               placeholder={`Type "${collection.name}" Here.`}
-              className="w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 dark:border-sky-800 dark:bg-blue-950 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
             />
           </div>
         </>
