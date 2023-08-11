@@ -39,7 +39,7 @@ export default function Collections() {
                 icon={faFolder}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-sky-700 dark:text-sky-400 font-bold">
+              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-bold">
                 All Collections
               </p>
             </div>
@@ -52,7 +52,7 @@ export default function Collections() {
                 <FontAwesomeIcon
                   icon={faEllipsis}
                   id="expand-dropdown"
-                  className="w-5 h-5 text-gray-500 dark:text-sky-500"
+                  className="w-5 h-5 text-gray-500 dark:text-white"
                 />
               </div>
 
@@ -91,7 +91,7 @@ export default function Collections() {
               <FontAwesomeIcon
                 icon={faSort}
                 id="sort-dropdown"
-                className="w-5 h-5 text-gray-500 dark:text-sky-500"
+                className="w-5 h-5 text-gray-500 dark:text-white"
               />
             </div>
 
@@ -120,7 +120,7 @@ export default function Collections() {
               });
             }}
           >
-            <p className="text-sky-900 dark:text-sky-400 group-hover:opacity-0 duration-100">
+            <p className="text-black dark:text-white group-hover:opacity-0 duration-100">
               New Collection
             </p>
             <FontAwesomeIcon

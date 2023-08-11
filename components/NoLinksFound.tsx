@@ -8,11 +8,11 @@ export default function NoLinksFound() {
 
   return (
     <div className="border border-solid border-sky-100 dark:border-sky-800 w-full p-10 rounded-2xl">
-      <p className="text-center text-3xl text-sky-700 dark:text-white">
+      <p className="text-center text-3xl text-black dark:text-white">
         You haven&apos;t created any Links Here
       </p>
       <br />
-      <div className="text-center text-sky-900 dark:text-white text-sm flex items-baseline justify-center gap-1 w-full">
+      <div className="text-center text-black dark:text-white text-sm flex items-baseline justify-center gap-1 w-full">
         <p>Start by creating a</p>{" "}
         <div
           onClick={() => {

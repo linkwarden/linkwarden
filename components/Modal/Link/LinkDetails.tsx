@@ -151,14 +151,14 @@ export default function LinkDetails({ link }: Props) {
           />
         )}
         <div className="flex flex-col min-h-[3rem] justify-end drop-shadow">
-          <p className="text-2xl text-sky-700 dark:text-sky-300 capitalize break-words hyphens-auto">
+          <p className="text-2xl text-black dark:text-white capitalize break-words hyphens-auto">
             {link.name}
           </p>
           <Link
             href={link.url}
             target="_blank"
             rel="noreferrer"
-            className="text-sm text-gray-500 dark:text-sky-400 break-all hover:underline cursor-pointer w-fit"
+            className="text-sm text-gray-500 dark:text-white break-all hover:underline cursor-pointer w-fit"
           >
             {url ? url.host : link.url}
           </Link>
@@ -176,7 +176,7 @@ export default function LinkDetails({ link }: Props) {
           />
           <p
             title={collection?.name}
-            className="text-sky-900 dark:text-sky-500 text-lg truncate max-w-[12rem]"
+            className="text-black dark:text-white text-lg truncate max-w-[12rem]"
           >
             {collection?.name}
           </p>
@@ -185,7 +185,7 @@ export default function LinkDetails({ link }: Props) {
           <Link key={i} href={`/tags/${e.id}`} className="z-10">
             <p
               title={e.name}
-              className="px-2 py-1 bg-sky-200 text-sky-700 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+              className="px-2 py-1 bg-sky-200 text-black text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
             >
               {e.name}
             </p>
@@ -194,19 +194,19 @@ export default function LinkDetails({ link }: Props) {
       </div>
       {link.description && (
         <>
-          <div className="text-gray-500 dark:text-sky-400 max-h-[20rem] my-3 rounded-md overflow-y-auto hyphens-auto">
+          <div className="text-gray-500 dark:text-white max-h-[20rem] my-3 rounded-md overflow-y-auto hyphens-auto">
             {link.description}
           </div>
         </>
       )}
 
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-1 text-gray-500 dark:text-sky-400">
+        <div className="flex items-center gap-1 text-gray-500 dark:text-white">
           <FontAwesomeIcon icon={faBoxArchive} className="w-4 h-4" />
           <p>Archived Formats:</p>
         </div>
         <div
-          className="flex items-center gap-1 text-gray-500 dark:text-sky-400"
+          className="flex items-center gap-1 text-gray-500 dark:text-white"
           title={"Created at: " + formattedDate}
         >
           <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
@@ -220,10 +220,10 @@ export default function LinkDetails({ link }: Props) {
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
             </div>
 
-            <p className="text-gray-500 dark:text-sky-400">Screenshot</p>
+            <p className="text-gray-500 dark:text-white">Screenshot</p>
           </div>
 
-          <div className="flex text-sky-400 gap-1">
+          <div className="flex text-black gap-1">
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.png`}
               target="_blank"
@@ -254,10 +254,10 @@ export default function LinkDetails({ link }: Props) {
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
             </div>
 
-            <p className="text-gray-500 dark:text-sky-400">PDF</p>
+            <p className="text-gray-500 dark:text-white">PDF</p>
           </div>
 
-          <div className="flex text-sky-500 gap-1">
+          <div className="flex text-black gap-1">
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.pdf`}
               target="_blank"

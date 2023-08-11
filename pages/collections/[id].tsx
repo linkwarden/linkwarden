@@ -60,7 +60,7 @@ export default function Index() {
                     style={{ color: activeCollection?.color }}
                     className="sm:w-8 sm:h-8 w-6 h-6 mt-3 drop-shadow"
                   />
-                  <p className="sm:text-4xl text-3xl capitalize text-sky-700 dark:text-sky-300 font-bold w-full py-1 break-words hyphens-auto">
+                  <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-bold w-full py-1 break-words hyphens-auto">
                     {activeCollection?.name}
                   </p>
                 </div>
@@ -116,7 +116,7 @@ export default function Index() {
             ) : null}
           </div>
 
-          <div className="text-gray-600 dark:text-sky-400 flex justify-between items-end gap-5">
+          <div className="text-gray-600 dark:text-white flex justify-between items-end gap-5">
             <p>{activeCollection?.description}</p>
             <div className="flex items-center gap-2">
               <div className="relative">
@@ -128,7 +128,7 @@ export default function Index() {
                   <FontAwesomeIcon
                     icon={faSort}
                     id="sort-dropdown"
-                    className="w-5 h-5 text-gray-500 dark:text-sky-400"
+                    className="w-5 h-5 text-gray-500 dark:text-white"
                   />
                 </div>
 
@@ -150,7 +150,7 @@ export default function Index() {
                     icon={faEllipsis}
                     id="expand-dropdown"
                     title="More"
-                    className="w-5 h-5 text-gray-500 dark:text-sky-400"
+                    className="w-5 h-5 text-gray-500 dark:text-white"
                   />
                 </div>
                 {expandDropdown ? (

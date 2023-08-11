@@ -26,7 +26,7 @@ export default function Links() {
               icon={faLink}
               className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
             />
-            <p className="sm:text-4xl text-3xl capitalize text-sky-700 dark:text-sky-300 font-bold">
+            <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-bold">
               All Links
             </p>
           </div>

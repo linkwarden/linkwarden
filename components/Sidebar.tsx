@@ -64,7 +64,7 @@ export default function Sidebar({ className }: { className?: string }) {
         >
           <FontAwesomeIcon
             icon={faChartSimple}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-100`}
+            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-300`}
           />
 
           <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
@@ -82,10 +82,10 @@ export default function Sidebar({ className }: { className?: string }) {
         >
           <FontAwesomeIcon
             icon={faLink}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-100`}
+            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-300`}
           />
 
-          <p className="text-sky-700 dark:text-sky-200 text-xs xl:text-sm font-semibold">
+          <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
             Links
           </p>
         </Link>
@@ -100,10 +100,10 @@ export default function Sidebar({ className }: { className?: string }) {
         >
           <FontAwesomeIcon
             icon={faFolder}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-100`}
+            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-300`}
           />
 
-          <p className="text-sky-700 dark:text-sky-200 text-xs xl:text-sm font-semibold">
+          <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
             Collections
           </p>
         </Link>
@@ -114,7 +114,7 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setCollectionDisclosure(!collectionDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-sky-500 mt-5"
+          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-white mt-5"
         >
           <p>Collections</p>
 
@@ -153,7 +153,7 @@ export default function Sidebar({ className }: { className?: string }) {
                           style={{ color: e.color }}
                         />
 
-                        <p className="text-sky-700 dark:text-sky-200 truncate w-full pr-7">
+                        <p className="text-black dark:text-white truncate w-full pr-7">
                           {e.name}
                         </p>
                       </div>
@@ -164,7 +164,7 @@ export default function Sidebar({ className }: { className?: string }) {
               <div
                 className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
               >
-                <p className="text-gray-500 dark:text-sky-500 text-xs font-semibold truncate w-full pr-7">
+                <p className="text-gray-500 dark:text-white text-xs font-semibold truncate w-full pr-7">
                   You Have No Collections...
                 </p>
               </div>
@@ -177,7 +177,7 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setTagDisclosure(!tagDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-sky-500 mt-5"
+          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-white mt-5"
         >
           <p>Tags</p>
           <FontAwesomeIcon
@@ -209,10 +209,10 @@ export default function Sidebar({ className }: { className?: string }) {
                       >
                         <FontAwesomeIcon
                           icon={faHashtag}
-                          className="w-4 h-4 text-sky-500 mt-1"
+                          className="w-4 h-4 text-sky-500 dark:text-sky-300 mt-1"
                         />
 
-                        <p className="text-sky-700 dark:text-sky-300 truncate w-full pr-7">
+                        <p className="text-black dark:text-white truncate w-full pr-7">
                           {e.name}
                         </p>
                       </div>
@@ -223,7 +223,7 @@ export default function Sidebar({ className }: { className?: string }) {
               <div
                 className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
               >
-                <p className="text-gray-500 dark:text-sky-500 text-xs font-semibold truncate w-full pr-7">
+                <p className="text-gray-500 dark:text-white text-xs font-semibold truncate w-full pr-7">
                   You Have No Tags...
                 </p>
               </div>

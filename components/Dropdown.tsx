@@ -31,9 +31,7 @@ export default function Dropdown({ onClickOutside, className, items }: Props) {
         const inner = e && (
           <div className="cursor-pointer rounded-md">
             <div className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 duration-100">
-              <p className="text-sky-900 dark:text-sky-400 select-none">
-                {e.name}
-              </p>
+              <p className="text-black dark:text-white select-none">{e.name}</p>
             </div>
           </div>
         );

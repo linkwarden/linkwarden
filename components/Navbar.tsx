@@ -37,7 +37,7 @@ export default function Navbar() {
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 dark:border-b-sky-800 border-b h-16">
       <div
         onClick={toggleSidebar}
-        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-sky-700 rounded-md duration-100 hover:bg-slate-200"
+        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-black rounded-md duration-100 hover:bg-slate-200"
       >
         <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
       </div>
@@ -51,7 +51,7 @@ export default function Navbar() {
               method: "CREATE",
             });
           }}
-          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-sky-700 sm:text-white sm:bg-sky-700 sm:dark:bg-sky-400 sm:hover:bg-sky-600 duration-100 group"
+          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-black sm:text-white sm:bg-sky-700 sm:dark:bg-sky-400 sm:hover:bg-sky-600 duration-100 group"
         >
           <FontAwesomeIcon
             icon={faPlus}
