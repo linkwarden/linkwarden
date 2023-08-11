@@ -15,10 +15,10 @@ export default function ToggleDarkMode() {
 
   return (
     <div
-      className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:dark:bg-slate-800 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit cursor-pointer"
+      className="flex gap-1 duration-100 h-10 rounded-full items-center w-fit cursor-pointer"
       onClick={handleToggle}
     >
-      <div className="shadow bg-sky-700 dark:bg-sky-400 flex items-center justify-center rounded-full text-white w-10 h-10 sm:group-hover:w-8 sm:group-hover:h-8 duration-100 border-[3px] border-slate-200 dark:border-blue-900">
+      <div className="shadow bg-sky-700 dark:bg-sky-400 flex items-center justify-center rounded-full text-white w-10 h-10 duration-100">
         <FontAwesomeIcon
           icon={theme === "dark" ? faSun : faMoon}
           className="w-1/2 h-1/2"
