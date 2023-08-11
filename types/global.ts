@@ -36,6 +36,7 @@ export interface CollectionIncludingMembersAndLinkCount
 export interface AccountSettings extends User {
   profilePic: string;
   newPassword?: string;
+  whitelistedUsers: string[];
 }
 
 interface LinksIncludingTags extends Link {
@@ -76,3 +77,11 @@ export type PublicLinkRequestQuery = {
   cursor?: number;
   collectionId: number;
 };
+
+interface CollectionIncludingLinks extends Collection {
+  links: LinksIncludingTags[];
+}
+
+export interface Backup extends Omit<User, "password" | "id" | "image"> {
+  collections: CollectionIncludingLinks[];
+}

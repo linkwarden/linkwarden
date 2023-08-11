@@ -5,6 +5,7 @@ export default async function getLink(userId: number, body: string) {
   const query: LinkRequestQuery = JSON.parse(decodeURIComponent(body));
   console.log(query);
 
+  const POSTGRES_IS_ENABLED = process.env.DATABASE_URL.startsWith("postgresql");
   // Sorting logic
   let order: any;
   if (query.sort === Sort.DateNewestFirst)
@@ -66,7 +67,7 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.name
                 ? query.searchQuery
                 : undefined,
-            mode: "insensitive",
+            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
           },
         },
         {
@@ -75,7 +76,7 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.url
                 ? query.searchQuery
                 : undefined,
-            mode: "insensitive",
+            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
           },
         },
         {
@@ -84,7 +85,7 @@ export default async function getLink(userId: number, body: string) {
               query.searchQuery && query.searchFilter?.description
                 ? query.searchQuery
                 : undefined,
-            mode: "insensitive",
+            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
           },
         },
         {
@@ -100,7 +101,9 @@ export default async function getLink(userId: number, body: string) {
                           query.searchQuery && query.searchFilter?.tags
                             ? {
                                 contains: query.searchQuery,
-                                mode: "insensitive",
+                                mode: POSTGRES_IS_ENABLED
+                                  ? "insensitive"
+                                  : undefined,
                               }
                             : undefined,
                         OR: [
@@ -114,7 +117,9 @@ export default async function getLink(userId: number, body: string) {
                                     query.searchFilter?.tags
                                       ? query.searchQuery
                                       : undefined,
-                                  mode: "insensitive",
+                                  mode: POSTGRES_IS_ENABLED
+                                    ? "insensitive"
+                                    : undefined,
                                 },
                                 collection: {
                                   members: {
