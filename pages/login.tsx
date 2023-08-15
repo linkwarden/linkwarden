@@ -47,13 +47,13 @@ export default function Login() {
 
   return (
     <CenteredForm text="Sign in to your account">
-      <div className="p-2 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
-        <p className="text-2xl text-black text-center font-bold">
+      <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+        <p className="text-2xl text-black dark:text-white text-center font-bold">
           Enter your credentials
         </p>
 
         <div>
-          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
+          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
             Username
             {emailEnabled ? "/Email" : undefined}
           </p>
@@ -63,12 +63,12 @@ export default function Login() {
             placeholder="johnny"
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+            className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-300 dark:focus:border-sky-600 duration-100"
           />
         </div>
 
         <div>
-          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">
+          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
             Password
           </p>
 
@@ -77,11 +77,14 @@ export default function Login() {
             placeholder="••••••••••••••"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+            className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-300 dark:focus:border-sky-600 duration-100"
           />
           {emailEnabled && (
             <div className="w-fit ml-auto mt-1">
-              <Link href={"/forgot"} className="text-gray-500 font-semibold">
+              <Link
+                href={"/forgot"}
+                className="text-gray-500 dark:text-gray-400 font-semibold"
+              >
                 Forgot Password?
               </Link>
             </div>
@@ -95,8 +98,11 @@ export default function Login() {
           loading={submitLoader}
         />
         <div className="flex items-baseline gap-1 justify-center">
-          <p className="w-fit text-gray-500">New here?</p>
-          <Link href={"/register"} className="block text-sky-700 font-bold">
+          <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
+          <Link
+            href={"/register"}
+            className="block text-black dark:text-white font-semibold"
+          >
             Sign Up
           </Link>
         </div>

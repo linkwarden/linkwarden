@@ -33,10 +33,12 @@ export default function LinkModal({
     <div className={className}>
       <Tab.Group defaultIndex={defaultIndex}>
         {method === "CREATE" && (
-          <p className="text-xl text-sky-700 text-center">New Link</p>
+          <p className="text-xl text-black dark:text-white text-center">
+            New Link
+          </p>
         )}
         <Tab.List
-          className={`flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-sky-700 ${
+          className={`flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-black dark:text-white ${
             isOwnerOrMod ? "" : "pb-8"
           }`}
         >
@@ -45,8 +47,8 @@ export default function LinkModal({
               <Tab
                 className={({ selected }) =>
                   selected
-                    ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+                    ? "px-2 py-1 bg-sky-200 dark:bg-sky-600 duration-100 rounded-md outline-none"
+                    : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 rounded-md duration-100 outline-none"
                 }
               >
                 Link Details
@@ -54,8 +56,8 @@ export default function LinkModal({
               <Tab
                 className={({ selected }) =>
                   selected
-                    ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+                    ? "px-2 py-1 bg-sky-200 dark:bg-sky-600 duration-100 rounded-md outline-none"
+                    : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 rounded-md duration-100 outline-none"
                 }
               >
                 Edit Link
