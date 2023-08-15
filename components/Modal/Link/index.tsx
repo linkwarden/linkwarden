@@ -47,8 +47,8 @@ export default function LinkModal({
               <Tab
                 className={({ selected }) =>
                   selected
-                    ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+                    ? "px-2 py-1 bg-sky-200 dark:bg-sky-600 duration-100 rounded-md outline-none"
+                    : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 rounded-md duration-100 outline-none"
                 }
               >
                 Link Details
@@ -56,8 +56,8 @@ export default function LinkModal({
               <Tab
                 className={({ selected }) =>
                   selected
-                    ? "px-2 py-1 bg-sky-200 duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 rounded-md duration-100 outline-none"
+                    ? "px-2 py-1 bg-sky-200 dark:bg-sky-600 duration-100 rounded-md outline-none"
+                    : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 rounded-md duration-100 outline-none"
                 }
               >
                 Edit Link

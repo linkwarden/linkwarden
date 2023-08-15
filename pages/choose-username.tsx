@@ -39,13 +39,13 @@ export default function Subscribe() {
 
   return (
     <CenteredForm>
-      <div className="p-2 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
-        <p className="text-2xl text-center text-black font-bold">
+      <div className="p-4 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
+        <p className="text-2xl text-center text-black dark:text-white font-bold">
           Choose a Username (Last step)
         </p>
 
         <div>
-          <p className="text-sm text-black w-fit font-semibold mb-1">
+          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
             Username
           </p>
 
@@ -54,13 +54,16 @@ export default function Subscribe() {
             placeholder="john"
             value={inputedUsername}
             onChange={(e) => setInputedUsername(e.target.value)}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 dark:focus:border-sky-600 dark:border-neutral-700 dark:bg-neutral-900 duration-100"
           />
         </div>
         <div>
-          <p className="text-md text-gray-500 mt-1">
+          <p className="text-md text-gray-500 dark:text-gray-400 mt-1">
             Feel free to reach out to us at{" "}
-            <a className="font-semibold" href="mailto:support@linkwarden.app">
+            <a
+              className="font-semibold underline"
+              href="mailto:support@linkwarden.app"
+            >
               support@linkwarden.app
             </a>{" "}
             in case of any issues.
@@ -76,7 +79,7 @@ export default function Subscribe() {
 
         <div
           onClick={() => signOut()}
-          className="w-fit mx-auto cursor-pointer text-gray-500 font-semibold "
+          className="w-fit mx-auto cursor-pointer text-gray-500 dark:text-gray-400 font-semibold "
         >
           Sign Out
         </div>

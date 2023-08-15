@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
@@ -14,6 +14,10 @@ export default function App({
 }: AppProps<{
   session: Session;
 }>) {
+  useEffect(() => {
+    if (!localStorage.getItem("theme")) localStorage.setItem("theme", "light");
+  }, []);
+
   return (
     <SessionProvider session={pageProps.session}>
       <Head>
@@ -38,13 +42,16 @@ export default function App({
         />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        toastOptions={{ className: "border border-sky-100" }}
-      />
       <AuthRedirect>
         <ThemeProvider attribute="class">
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              className:
+                "border border-sky-100 dark:dark:border-neutral-700 dark:bg-neutral-900 dark:text-white",
+            }}
+          />
           <Component {...pageProps} />
         </ThemeProvider>
       </AuthRedirect>

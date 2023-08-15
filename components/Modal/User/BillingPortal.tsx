@@ -18,7 +18,7 @@ export default function PaymentPortal() {
   return (
     <div className="mx-auto sm:w-[35rem] w-80">
       <div className="max-w-[25rem] w-full mx-auto flex flex-col gap-3 justify-between">
-        <p className="text-md text-gray-500">
+        <p className="text-md text-gray-500 dark:text-gray-400">
           To manage/cancel your subsciption, visit the billing portal.
         </p>
 
@@ -30,10 +30,13 @@ export default function PaymentPortal() {
           className="mx-auto mt-2"
         />
 
-        <p className="text-md text-gray-500">
+        <p className="text-md text-gray-500 dark:text-gray-400">
           If you still need help or encountered any issues, feel free to reach
           out to us at:{" "}
-          <a className="font-semibold" href="mailto:support@linkwarden.app">
+          <a
+            className="font-semibold underline"
+            href="mailto:support@linkwarden.app"
+          >
             support@linkwarden.app
           </a>
         </p>

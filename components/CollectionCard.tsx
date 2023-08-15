@@ -32,24 +32,24 @@ export default function CollectionCard({ collection, className }: Props) {
 
   return (
     <div
-      className={`bg-gradient-to-tr from-sky-100 dark:from-sky-800 from-10% via-gray-100 via-20% to-white to-100% self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none group relative ${className}`}
+      className={`bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none group relative ${className}`}
     >
       <div
         onClick={() => setExpandDropdown(!expandDropdown)}
         id={"expand-dropdown" + collection.id}
-        className="inline-flex absolute top-5 right-5 rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-sky-800 duration-100 p-1"
+        className="inline-flex absolute top-5 right-5 rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
       >
         <FontAwesomeIcon
           icon={faEllipsis}
           id={"expand-dropdown" + collection.id}
-          className="w-5 h-5 text-gray-500 dark:text-white"
+          className="w-5 h-5 text-gray-500 dark:text-gray-300"
         />
       </div>
       <Link
         href={`/collections/${collection.id}`}
         className="flex flex-col gap-2 justify-between min-h-[12rem] h-full select-none p-5"
       >
-        <p className="text-2xl font-bold capitalize text-black dark:text-white break-words line-clamp-3 w-4/5">
+        <p className="text-2xl capitalize text-black dark:text-white break-words line-clamp-3 w-4/5">
           {collection.name}
         </p>
         <div className="flex justify-between items-center">

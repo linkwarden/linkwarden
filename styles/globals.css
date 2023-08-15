@@ -136,11 +136,6 @@
   bottom: 0;
   left: 0;
   pointer-events: none;
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 1) 90%
-  );
   width: 100%;
   height: 4rem;
 }
@@ -151,19 +146,71 @@
   top: 0;
   left: 0;
   pointer-events: none;
+  width: 100%;
+  height: 4rem;
+}
+
+/* For light mode */
+.link-banner::after {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 1) 90%
+  );
+}
+.link-banner::before {
   background-image: linear-gradient(
     to top,
     rgba(255, 255, 255, 0),
     rgba(255, 255, 255, 1) 90%
   );
-  width: 100%;
-  height: 4rem;
+}
+
+/* For dark mode */
+.banner-dark-mode .link-banner::after {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    #171717 90%
+  );
+}
+.banner-dark-mode .link-banner::before {
+  background-image: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0),
+    #171717 90%
+  );
 }
 
 /* Theme */
 
 @layer base {
   body {
-    @apply dark:bg-sky-950 bg-white dark:text-white;
+    @apply dark:bg-neutral-900 bg-white dark:text-white;
+  }
+}
+
+/* react-select */
+
+@layer components {
+  .react-select-container .react-select__control {
+    @apply dark:bg-neutral-900 dark:border-neutral-700 dark:hover:border-neutral-500;
+  }
+
+  .react-select-container {
+    @apply dark:border-neutral-700;
+  }
+
+  .react-select-container .react-select__menu {
+    @apply dark:bg-neutral-900 dark:border-neutral-700 border;
+  }
+
+  .react-select-container .react-select__option {
+    @apply dark:hover:bg-neutral-800;
+  }
+
+  .react-select-container .react-select__input-container,
+  .react-select-container .react-select__single-value {
+    @apply dark:text-white;
   }
 }

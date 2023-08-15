@@ -20,12 +20,15 @@ import {
   faFilePdf,
 } from "@fortawesome/free-regular-svg-icons";
 import isValidUrl from "@/lib/client/isValidUrl";
+import { useTheme } from "next-themes";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
 };
 
 export default function LinkDetails({ link }: Props) {
+  const { theme, setTheme } = useTheme();
+
   const [imageError, setImageError] = useState<boolean>(false);
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
     "en-US",
@@ -71,6 +74,9 @@ export default function LinkDetails({ link }: Props) {
   useEffect(() => {
     const banner = document.getElementById("link-banner");
     const bannerInner = document.getElementById("link-banner-inner");
+    const bannerOut = document.getElementById("link-banner-outside");
+
+    if (theme === "dark") bannerOut?.classList.toggle("banner-dark-mode");
 
     if (colorPalette && banner && bannerInner) {
       banner.style.background = `linear-gradient(to right, ${rgbToHex(
@@ -93,7 +99,7 @@ export default function LinkDetails({ link }: Props) {
         colorPalette[3][2]
       )})`;
     }
-  }, [colorPalette]);
+  }, [colorPalette, theme]);
 
   const handleDownload = (format: "png" | "pdf") => {
     const path = `/api/archives/${link.collection.id}/${link.id}.${format}`;
@@ -115,7 +121,10 @@ export default function LinkDetails({ link }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
+    <div
+      id="link-banner-outside"
+      className="flex flex-col gap-3 sm:w-[35rem] w-80"
+    >
       {!imageError && (
         <div id="link-banner" className="link-banner h-32 -mx-5 -mt-5 relative">
           <div id="link-banner-inner" className="link-banner-inner"></div>
@@ -131,7 +140,7 @@ export default function LinkDetails({ link }: Props) {
             height={42}
             alt=""
             id={"favicon-" + link.id}
-            className="select-none mt-2 rounded-md shadow border-[3px] border-white dark:border-sky-800 bg-white dark:bg-sky-950 aspect-square"
+            className="select-none mt-2 rounded-md shadow border-[3px] border-white dark:border-neutral-900 bg-white dark:bg-neutral-900 aspect-square"
             draggable="false"
             onLoad={(e) => {
               try {
@@ -158,7 +167,7 @@ export default function LinkDetails({ link }: Props) {
             href={link.url}
             target="_blank"
             rel="noreferrer"
-            className="text-sm text-gray-500 dark:text-white break-all hover:underline cursor-pointer w-fit"
+            className="text-sm text-gray-500 dark:text-gray-300 break-all hover:underline cursor-pointer w-fit"
           >
             {url ? url.host : link.url}
           </Link>
@@ -185,7 +194,7 @@ export default function LinkDetails({ link }: Props) {
           <Link key={i} href={`/tags/${e.id}`} className="z-10">
             <p
               title={e.name}
-              className="px-2 py-1 bg-sky-200 text-black text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+              className="px-2 py-1 bg-sky-200 text-black dark:text-white dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
             >
               {e.name}
             </p>
@@ -194,19 +203,19 @@ export default function LinkDetails({ link }: Props) {
       </div>
       {link.description && (
         <>
-          <div className="text-gray-500 dark:text-white max-h-[20rem] my-3 rounded-md overflow-y-auto hyphens-auto">
+          <div className="text-black dark:text-white max-h-[20rem] my-3 rounded-md overflow-y-auto hyphens-auto">
             {link.description}
           </div>
         </>
       )}
 
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-1 text-gray-500 dark:text-white">
+        <div className="flex items-center gap-1 text-gray-500 dark:text-gray-300">
           <FontAwesomeIcon icon={faBoxArchive} className="w-4 h-4" />
           <p>Archived Formats:</p>
         </div>
         <div
-          className="flex items-center gap-1 text-gray-500 dark:text-white"
+          className="flex items-center gap-1 text-gray-500 dark:text-gray-300"
           title={"Created at: " + formattedDate}
         >
           <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
@@ -214,7 +223,7 @@ export default function LinkDetails({ link }: Props) {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center p-2 border border-sky-100 dark:border-sky-800 rounded-md">
+        <div className="flex justify-between items-center p-2 border border-sky-100 dark:border-neutral-700 rounded-md">
           <div className="flex gap-2 items-center">
             <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-md">
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
@@ -223,32 +232,32 @@ export default function LinkDetails({ link }: Props) {
             <p className="text-gray-500 dark:text-white">Screenshot</p>
           </div>
 
-          <div className="flex text-black gap-1">
+          <div className="flex text-black dark:text-white gap-1">
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.png`}
               target="_blank"
               rel="noreferrer"
-              className="cursor-pointer hover:bg-slate-200 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
-                className="w-5 h-5"
+                className="w-5 h-5 text-sky-500 dark:text-sky-300"
               />
             </Link>
 
             <div
               onClick={() => handleDownload("png")}
-              className="cursor-pointer hover:bg-slate-200 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer"
+                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-300"
               />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-between items-center p-2 border border-sky-100 dark:border-sky-800 rounded-md">
+        <div className="flex justify-between items-center p-2 border border-sky-100 dark:border-neutral-700 rounded-md">
           <div className="flex gap-2 items-center">
             <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-md">
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
@@ -257,26 +266,26 @@ export default function LinkDetails({ link }: Props) {
             <p className="text-gray-500 dark:text-white">PDF</p>
           </div>
 
-          <div className="flex text-black gap-1">
+          <div className="flex text-black dark:text-white gap-1">
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.pdf`}
               target="_blank"
               rel="noreferrer"
-              className="cursor-pointer hover:bg-slate-200 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
-                className="w-5 h-5"
+                className="w-5 h-5 text-sky-500 dark:text-sky-300"
               />
             </Link>
 
             <div
               onClick={() => handleDownload("pdf")}
-              className="cursor-pointer hover:bg-slate-200 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer"
+                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-300"
               />
             </div>
           </div>

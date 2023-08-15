@@ -50,7 +50,7 @@ export default function Index() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
-        <div className="bg-gradient-to-tr from-sky-100 dark:from-sky-800 from-10% via-gray-100 via-20% rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
+        <div className="bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
           <div className="flex flex-col sm:flex-row gap-3 justify-between items-center sm:items-start">
             {activeCollection && (
               <div className="flex gap-3 items-center">
@@ -60,7 +60,7 @@ export default function Index() {
                     style={{ color: activeCollection?.color }}
                     className="sm:w-8 sm:h-8 w-6 h-6 mt-3 drop-shadow"
                   />
-                  <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-bold w-full py-1 break-words hyphens-auto">
+                  <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white w-full py-1 break-words hyphens-auto">
                     {activeCollection?.name}
                   </p>
                 </div>
@@ -116,14 +116,14 @@ export default function Index() {
             ) : null}
           </div>
 
-          <div className="text-gray-600 dark:text-white flex justify-between items-end gap-5">
+          <div className="text-gray-500 dark:text-gray-300 flex justify-between items-end gap-5">
             <p>{activeCollection?.description}</p>
             <div className="flex items-center gap-2">
               <div className="relative">
                 <div
                   onClick={() => setSortDropdown(!sortDropdown)}
                   id="sort-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
+                  className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
                 >
                   <FontAwesomeIcon
                     icon={faSort}
@@ -144,7 +144,7 @@ export default function Index() {
                 <div
                   onClick={() => setExpandDropdown(!expandDropdown)}
                   id="expand-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
+                  className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
                 >
                   <FontAwesomeIcon
                     icon={faEllipsis}
