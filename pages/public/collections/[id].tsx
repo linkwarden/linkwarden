@@ -45,9 +45,7 @@ export default function PublicCollections() {
       <div
         className={`text-center bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-3xl shadow-lg p-5`}
       >
-        <p className="text-5xl text-black font-bold mb-5 capitalize">
-          {data.name}
-        </p>
+        <p className="text-5xl text-black mb-5 capitalize">{data.name}</p>
 
         {data.description && (
           <>

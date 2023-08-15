@@ -85,7 +85,7 @@ export default function Dashboard() {
               icon={faChartSimple}
               className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
             />
-            <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-bold">
+            <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
               Dashboard
             </p>
           </div>
@@ -133,15 +133,17 @@ export default function Dashboard() {
                   onClick={() => {
                     setLinkPinDisclosure(!linkPinDisclosure);
                   }}
-                  className="flex justify-between gap-2 items-baseline shadow active:shadow-inner duration-100 py-2 px-4 rounded-full"
+                  className="flex justify-between gap-2 items-baseline shadow active:shadow-inner dark:bg-neutral-700 duration-100 py-2 px-4 rounded-full"
                 >
-                  <p className="text-black text-xl">Pinned Links</p>
+                  <p className="text-black dark:text-white text-xl">
+                    Pinned Links
+                  </p>
 
-                  <div className="text-black flex items-center gap-2">
+                  <div className="text-black dark:text-white flex items-center gap-2">
                     {linkPinDisclosure ? "Hide" : "Show"}
                     <FontAwesomeIcon
                       icon={faChevronDown}
-                      className={`w-4 h-4 text-black ${
+                      className={`w-4 h-4 text-black dark:text-white ${
                         linkPinDisclosure ? "rotate-reverse" : "rotate"
                       }`}
                     />
@@ -167,7 +169,7 @@ export default function Dashboard() {
               </div>
             </Disclosure>
           ) : (
-            <div className="border border-solid border-sky-100 dark:border-sky-800 w-full mx-auto md:w-2/3 p-10 rounded-2xl">
+            <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto md:w-2/3 p-10 rounded-2xl">
               <p className="text-center text-2xl text-black dark:text-white">
                 No Pinned Links
               </p>

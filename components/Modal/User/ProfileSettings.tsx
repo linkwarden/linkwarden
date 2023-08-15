@@ -129,7 +129,7 @@ export default function ProfileSettings({
               <label
                 htmlFor="upload-photo"
                 title="PNG or JPG (Max: 3MB)"
-                className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-black duration-100 hover:border-sky-700"
+                className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600"
               >
                 Browse...
                 <input
@@ -154,7 +154,7 @@ export default function ProfileSettings({
               type="text"
               value={user.name}
               onChange={(e) => setUser({ ...user, name: e.target.value })}
-              className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 focus:dark:border-sky-600 duration-100"
             />
           </div>
 
@@ -164,7 +164,7 @@ export default function ProfileSettings({
               type="text"
               value={user.username || ""}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
-              className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 focus:dark:border-sky-600 duration-100"
             />
           </div>
 

@@ -44,7 +44,7 @@ export default function Search() {
           router.push("/search/" + encodeURIComponent(searchQuery))
         }
         autoFocus={searchBox}
-        className="border border-sky-100 dark:border-sky-800 rounded-md pl-10 py-2 pr-2 w-44 sm:w-60 focus:border-sky-300 dark:focus:border-sky-600 dark:hover:border-sky-600 md:focus:w-80 hover:border-sky-300 duration-100 outline-none dark:bg-sky-950"
+        className="border border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 rounded-md pl-10 py-2 pr-2 w-44 sm:w-60 dark:hover:border-neutral-600 md:focus:w-80 hover:border-sky-300 duration-100 outline-none bg-inherit"
       />
     </div>
   );

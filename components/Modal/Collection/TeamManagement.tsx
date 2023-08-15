@@ -148,7 +148,7 @@ export default function TeamManagement({
                 console.log(err);
               }
             }}
-            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-3 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none hover:border-sky-700 duration-100 cursor-text"
+            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-3 border-sky-100 dark:border-neutral-700 border-solid border outline-none hover:border-sky-300 dark:hover:border-sky-600 duration-100 cursor-text"
           >
             {publicCollectionURL}
           </div>
@@ -183,7 +183,7 @@ export default function TeamManagement({
               }
               type="text"
               placeholder="Username (without the '@')"
-              className="w-full rounded-md p-3 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-full rounded-md p-3 dark:bg-neutral-900 border-solid border outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 duration-100"
             />
 
             <div
@@ -215,7 +215,7 @@ export default function TeamManagement({
                 return (
                   <div
                     key={i}
-                    className="relative border p-2 rounded-md border-sky-100 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
+                    className="relative border p-2 rounded-md border-sky-100 dark:border-neutral-700 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
                   >
                     {permissions === true && (
                       <FontAwesomeIcon
@@ -244,7 +244,9 @@ export default function TeamManagement({
                         <p className="text-sm font-bold text-black dark:text-white">
                           {e.user.name}
                         </p>
-                        <p className="text-black">@{e.user.username}</p>
+                        <p className="text-gray-500 dark:text-gray-300">
+                          @{e.user.username}
+                        </p>
                       </div>
                     </div>
                     <div className="flex sm:block items-center gap-5 min-w-[10rem]">
@@ -307,11 +309,11 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-black dark:text-white peer-checked:bg-sky-700 text-sm ${
+                              className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
-                                  ? "hover:bg-slate-200 duration-75"
+                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-75"
                                   : ""
-                              } peer-checked:text-white rounded p-1 select-none`}
+                              } rounded p-1 select-none`}
                             >
                               Create
                             </span>
@@ -352,11 +354,11 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-black dark:text-white peer-checked:bg-sky-700 text-sm ${
+                              className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
-                                  ? "hover:bg-slate-200 duration-75"
+                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-75"
                                   : ""
-                              } peer-checked:text-white rounded p-1 select-none`}
+                              } rounded p-1 select-none`}
                             >
                               Update
                             </span>
@@ -397,11 +399,11 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-black dark:text-white peer-checked:bg-sky-700 text-sm ${
+                              className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
-                                  ? "hover:bg-slate-200 duration-75"
+                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-75"
                                   : ""
-                              } peer-checked:text-white rounded p-1 select-none`}
+                              } rounded p-1 select-none`}
                             >
                               Delete
                             </span>
@@ -417,13 +419,13 @@ export default function TeamManagement({
       )}
 
       <div
-        className="relative border px-2 rounded-md border-sky-100 dark:border-sky-800 flex min-h-[7rem] sm:min-h-[5rem] gap-2 justify-between"
+        className="relative border px-2 rounded-md border-sky-100 dark:border-neutral-700 flex min-h-[7rem] sm:min-h-[5rem] gap-2 justify-between"
         title={`'@${collectionOwner.username}' is the owner of this collection.`}
       >
         <div className="flex items-center gap-2">
           <ProfilePhoto
             src={`/api/avatar/${collection.ownerId}?${Date.now()}`}
-            className="border-[3px] dark:border-sky-800"
+            className="border-[3px]"
           />
           <div>
             <div className="flex items-center gap-1">
@@ -435,7 +437,7 @@ export default function TeamManagement({
                 className="w-3 h-3 text-yellow-500"
               />
             </div>
-            <p className="text-black dark:text-white">
+            <p className="text-gray-500 dark:text-gray-300">
               @{collectionOwner.username}
             </p>
           </div>
