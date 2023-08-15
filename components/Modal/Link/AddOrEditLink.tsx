@@ -115,10 +115,10 @@ export default function AddOrEditLink({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {method === "UPDATE" ? (
         <p
-          className="text-gray-500 my-2 text-center truncate w-full"
+          className="text-gray-500 dark:text-gray-300 my-2 text-center truncate w-full"
           title={link.url}
         >
-          <Link href={link.url} target="_blank" className=" font-bold">
+          <Link href={link.url} target="_blank" className="font-bold">
             {link.url}
           </Link>
         </p>
@@ -135,11 +135,11 @@ export default function AddOrEditLink({
             onChange={(e) => setLink({ ...link, url: e.target.value })}
             type="text"
             placeholder="e.g. http://example.com/"
-            className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
+            className="w-full rounded-md p-2 dark:bg-neutral-900 border-solid border outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 duration-100"
           />
         </div>
       ) : null}
-      <hr className="dark:border-sky-800" />
+      <hr className="dark:border-neutral-700" />
       <div className="grid sm:grid-cols-2 gap-3">
         <div>
           <p className="text-sm text-black dark:text-white mb-2">Collection</p>
@@ -177,7 +177,7 @@ export default function AddOrEditLink({
             onChange={(e) => setLink({ ...link, name: e.target.value })}
             type="text"
             placeholder="e.g. Example Link"
-            className="w-full rounded-md p-2 border-sky-100 dark:border-sky-800 dark:bg-sky-950 border-solid border outline-none focus:border-sky-700 duration-100"
+            className="w-full rounded-md p-2 dark:bg-neutral-900 border-solid border outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 duration-100"
           />
         </div>
 
@@ -191,7 +191,7 @@ export default function AddOrEditLink({
                 ? "Will be auto generated if nothing is provided."
                 : ""
             }
-            className="resize-none w-full rounded-md p-2 border-sky-100 dark:border-sky-800 border-solid border outline-none focus:border-sky-700 duration-100 dark:bg-sky-950"
+            className="resize-none w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-900"
           />
         </div>
       </div>

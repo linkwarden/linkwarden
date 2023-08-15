@@ -39,7 +39,7 @@ export default function Collections() {
                 icon={faFolder}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-bold">
+              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
                 All Collections
               </p>
             </div>
@@ -47,7 +47,7 @@ export default function Collections() {
               <div
                 onClick={() => setExpandDropdown(!expandDropdown)}
                 id="expand-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
+                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
               >
                 <FontAwesomeIcon
                   icon={faEllipsis}
@@ -86,7 +86,7 @@ export default function Collections() {
             <div
               onClick={() => setSortDropdown(!sortDropdown)}
               id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-sky-800 duration-100 p-1"
+              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
             >
               <FontAwesomeIcon
                 icon={faSort}
@@ -111,7 +111,7 @@ export default function Collections() {
           })}
 
           <div
-            className="p-5 self-stretch bg-gradient-to-tr from-sky-100 dark:from-sky-800 from-10% via-gray-100 via-20% min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
+            className="p-5 self-stretch bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
             onClick={() => {
               setModal({
                 modal: "COLLECTION",

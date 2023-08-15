@@ -7,7 +7,7 @@ export default function NoLinksFound() {
   const { setModal } = useModalStore();
 
   return (
-    <div className="border border-solid border-sky-100 dark:border-sky-800 w-full p-10 rounded-2xl">
+    <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full p-10 rounded-2xl">
       <p className="text-center text-3xl text-black dark:text-white">
         You haven&apos;t created any Links Here
       </p>

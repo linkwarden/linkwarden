@@ -26,7 +26,7 @@ export default function Links() {
               icon={faLink}
               className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
             />
-            <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-bold">
+            <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
               All Links
             </p>
           </div>
@@ -35,7 +35,7 @@ export default function Links() {
             <div
               onClick={() => setSortDropdown(!sortDropdown)}
               id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-sky-800 duration-100 p-1"
+              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
             >
               <FontAwesomeIcon
                 icon={faSort}

@@ -23,7 +23,7 @@ export default function CenteredForm({ text, children }: Props) {
           </p>
         ) : undefined}
         {children}
-        <p className="text-center text-xs text-gray-500 dark:text-white">
+        <p className="text-center text-xs text-gray-500 dark:text-gray-400">
           © {new Date().getFullYear()} Linkwarden. All rights reserved.
         </p>
       </div>

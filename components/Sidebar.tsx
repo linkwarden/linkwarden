@@ -51,7 +51,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-gray-100 dark:bg-sky-900 h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-sky-950 border-r-sky-100 dark:border-r-sky-800 px-2 z-20 ${className}`}
+      className={`bg-gray-100 dark:bg-neutral-800 h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-800 border-r-sky-100 dark:border-r-neutral-700 px-2 z-20 ${className}`}
     >
       <div className="flex justify-center gap-2 mt-2">
         <Link
@@ -59,7 +59,7 @@ export default function Sidebar({ className }: { className?: string }) {
           className={`${
             active === "/dashboard"
               ? "bg-sky-200 dark:bg-sky-600"
-              : "hover:bg-slate-200 hover:dark:bg-sky-800 bg-gray-100 dark:bg-sky-900"
+              : "hover:bg-slate-200 hover:dark:bg-neutral-700"
           } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
         >
           <FontAwesomeIcon
@@ -77,7 +77,7 @@ export default function Sidebar({ className }: { className?: string }) {
           className={`${
             active === "/links"
               ? "bg-sky-200 dark:bg-sky-600"
-              : "hover:bg-slate-200 hover:dark:bg-sky-800 bg-gray-100 dark:bg-sky-900"
+              : "hover:bg-slate-200 hover:dark:bg-neutral-700"
           } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
         >
           <FontAwesomeIcon
@@ -95,7 +95,7 @@ export default function Sidebar({ className }: { className?: string }) {
           className={`${
             active === "/collections"
               ? "bg-sky-200 dark:bg-sky-600"
-              : "hover:bg-slate-200 hover:dark:bg-sky-800"
+              : "hover:bg-slate-200 hover:dark:bg-neutral-700"
           } outline-sky-100 outline-1 duration-100  py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
         >
           <FontAwesomeIcon
@@ -144,7 +144,7 @@ export default function Sidebar({ className }: { className?: string }) {
                         className={`${
                           active === `/collections/${e.id}`
                             ? "bg-sky-200 dark:bg-sky-700 "
-                            : "hover:bg-slate-200 hover:dark:bg-sky-800 bg-gray100 dark:bg-sky-900"
+                            : "hover:bg-slate-200 hover:dark:bg-neutral-700"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
                         <FontAwesomeIcon
@@ -204,7 +204,7 @@ export default function Sidebar({ className }: { className?: string }) {
                         className={`${
                           active === `/tags/${e.id}`
                             ? "bg-sky-200 dark:bg-sky-700"
-                            : "hover:bg-slate-200 hover:dark:bg-sky-800 bg-gray-100 dark:bg-sky-900"
+                            : "hover:bg-slate-200 hover:dark:bg-neutral-700"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
                         <FontAwesomeIcon
