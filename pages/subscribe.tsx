@@ -28,10 +28,11 @@ export default function Subscribe() {
     <CenteredForm
       text={`${
         process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
-      }-Day free trial, then $
-    ${process.env.NEXT_PUBLIC_PRICING}/month afterwards`}
+      }-Day free trial, then $${
+        process.env.NEXT_PUBLIC_PRICING
+      }/month afterwards`}
     >
-      <div className="p-2 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
+      <div className="p-2 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] dark:border-neutral-700 w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
         <p className="text-2xl text-center font-bold">
           Subscribe to Linkwarden!
         </p>
@@ -56,7 +57,7 @@ export default function Subscribe() {
 
         <div
           onClick={() => signOut()}
-          className="w-fit mx-auto cursor-pointer text-gray-500 font-semibold "
+          className="w-fit mx-auto cursor-pointer text-gray-500 dark:text-gray-400 font-semibold "
         >
           Sign Out
         </div>

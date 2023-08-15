@@ -83,9 +83,9 @@ export default function Dashboard() {
           <div className="flex gap-2">
             <FontAwesomeIcon
               icon={faChartSimple}
-              className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
+              className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
             />
-            <p className="sm:text-4xl text-3xl capitalize text-sky-700 font-bold">
+            <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
               Dashboard
             </p>
           </div>
@@ -95,24 +95,28 @@ export default function Dashboard() {
 
         <div className="flex flex-col md:flex-row md:items-center justify-evenly gap-2 mb-10">
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl text-sky-700">{numberOfLinks}</p>
-            <p className="text-sky-900 text-xl">
+            <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
+              {numberOfLinks}
+            </p>
+            <p className="text-black dark:text-white text-xl">
               {numberOfLinks === 1 ? "Link" : "Links"}
             </p>
           </div>
 
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl text-sky-700">
+            <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
               {collections.length}
             </p>
-            <p className="text-sky-900 text-xl">
+            <p className="text-black dark:text-white text-xl">
               {collections.length === 1 ? "Collection" : "Collections"}
             </p>
           </div>
 
           <div className="flex items-baseline gap-2">
-            <p className="font-bold text-6xl text-sky-700">{tags.length}</p>
-            <p className="text-sky-900 text-xl">
+            <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
+              {tags.length}
+            </p>
+            <p className="text-black dark:text-white text-xl">
               {tags.length === 1 ? "Tag" : "Tags"}
             </p>
           </div>
@@ -129,15 +133,17 @@ export default function Dashboard() {
                   onClick={() => {
                     setLinkPinDisclosure(!linkPinDisclosure);
                   }}
-                  className="flex justify-between gap-2 items-baseline shadow active:shadow-inner duration-100 py-2 px-4 rounded-full"
+                  className="flex justify-between gap-2 items-baseline shadow active:shadow-inner dark:bg-neutral-700 duration-100 py-2 px-4 rounded-full"
                 >
-                  <p className="text-sky-700 text-xl">Pinned Links</p>
+                  <p className="text-black dark:text-white text-xl">
+                    Pinned Links
+                  </p>
 
-                  <div className="text-sky-700 flex items-center gap-2">
+                  <div className="text-black dark:text-white flex items-center gap-2">
                     {linkPinDisclosure ? "Hide" : "Show"}
                     <FontAwesomeIcon
                       icon={faChevronDown}
-                      className={`w-4 h-4 text-sky-300 ${
+                      className={`w-4 h-4 text-black dark:text-white ${
                         linkPinDisclosure ? "rotate-reverse" : "rotate"
                       }`}
                     />
@@ -163,11 +169,11 @@ export default function Dashboard() {
               </div>
             </Disclosure>
           ) : (
-            <div className="border border-solid border-sky-100 w-full mx-auto md:w-2/3 p-10 rounded-2xl">
-              <p className="text-center text-2xl text-sky-700">
+            <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto md:w-2/3 p-10 rounded-2xl">
+              <p className="text-center text-2xl text-black dark:text-white">
                 No Pinned Links
               </p>
-              <p className="text-center text-sky-900 text-sm">
+              <p className="text-center text-black dark:text-white text-sm">
                 You can Pin Links by clicking on the three dots on each Link and
                 clicking &quot;Pin to Dashboard.&quot;
               </p>
@@ -182,13 +188,13 @@ export default function Dashboard() {
                 }}
                 className="flex justify-between gap-2 items-baseline shadow active:shadow-inner duration-100 py-2 px-4 rounded-full"
               >
-                <p className="text-sky-700 text-xl">Pinned Collections</p>
+                <p className="text-black text-xl">Pinned Collections</p>
 
-                <div className="text-sky-700 flex items-center gap-2">
+                <div className="text-black flex items-center gap-2">
                   {collectionPinDisclosure ? "Hide" : "Show"}
                   <FontAwesomeIcon
                     icon={faChevronDown}
-                    className={`w-4 h-4 text-sky-300 ${
+                    className={`w-4 h-4 text-black ${
                       collectionPinDisclosure ? "rotate-reverse" : "rotate"
                     }`}
                   />
@@ -219,13 +225,13 @@ export default function Dashboard() {
                 }}
                 className="flex justify-between gap-2 items-baseline shadow active:shadow-inner duration-100 py-2 px-4 rounded-full"
               >
-                <p className="text-sky-700 text-xl">Pinned Tags</p>
+                <p className="text-black text-xl">Pinned Tags</p>
 
-                <div className="text-sky-700 flex items-center gap-2">
+                <div className="text-black flex items-center gap-2">
                   {tagPinDisclosure ? "Hide" : "Show"}
                   <FontAwesomeIcon
                     icon={faChevronDown}
-                    className={`w-4 h-4 text-sky-300 ${
+                    className={`w-4 h-4 text-black ${
                       tagPinDisclosure ? "rotate-reverse" : "rotate"
                     }`}
                   />
@@ -244,7 +250,7 @@ export default function Dashboard() {
                     <Link
                       href={`/tags/${e.id}`}
                       key={i}
-                      className="px-2 py-1 bg-sky-200 rounded-full hover:opacity-60 duration-100 text-sky-700"
+                      className="px-2 py-1 bg-sky-200 rounded-full hover:opacity-60 duration-100 text-black"
                     >
                       {e.name}
                     </Link>

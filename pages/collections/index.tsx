@@ -37,9 +37,9 @@ export default function Collections() {
             <div className="flex gap-2">
               <FontAwesomeIcon
                 icon={faFolder}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-sky-700 font-bold">
+              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
                 All Collections
               </p>
             </div>
@@ -47,12 +47,12 @@ export default function Collections() {
               <div
                 onClick={() => setExpandDropdown(!expandDropdown)}
                 id="expand-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
+                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
               >
                 <FontAwesomeIcon
                   icon={faEllipsis}
                   id="expand-dropdown"
-                  className="w-5 h-5 text-gray-500"
+                  className="w-5 h-5 text-gray-500 dark:text-white"
                 />
               </div>
 
@@ -86,12 +86,12 @@ export default function Collections() {
             <div
               onClick={() => setSortDropdown(!sortDropdown)}
               id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
+              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
             >
               <FontAwesomeIcon
                 icon={faSort}
                 id="sort-dropdown"
-                className="w-5 h-5 text-gray-500"
+                className="w-5 h-5 text-gray-500 dark:text-white"
               />
             </div>
 
@@ -111,7 +111,7 @@ export default function Collections() {
           })}
 
           <div
-            className="p-5 self-stretch bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
+            className="p-5 self-stretch bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
             onClick={() => {
               setModal({
                 modal: "COLLECTION",
@@ -120,12 +120,12 @@ export default function Collections() {
               });
             }}
           >
-            <p className="text-sky-900 group-hover:opacity-0 duration-100">
+            <p className="text-black dark:text-white group-hover:opacity-0 duration-100">
               New Collection
             </p>
             <FontAwesomeIcon
               icon={faPlus}
-              className="w-8 h-8 text-sky-500 group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
+              className="w-8 h-8 text-sky-500 dark:text-sky-300 group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
             />
           </div>
         </div>
