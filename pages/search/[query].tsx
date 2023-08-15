@@ -40,9 +40,9 @@ export default function Links() {
             <div className="flex gap-2">
               <FontAwesomeIcon
                 icon={faSearch}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 drop-shadow"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-sky-700 font-bold">
+              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
                 Search Results
               </p>
             </div>
@@ -53,12 +53,12 @@ export default function Links() {
               <div
                 onClick={() => setFilterDropdown(!filterDropdown)}
                 id="filter-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
+                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
               >
                 <FontAwesomeIcon
                   icon={faFilter}
                   id="filter-dropdown"
-                  className="w-5 h-5 text-gray-500"
+                  className="w-5 h-5 text-gray-500 dark:text-white"
                 />
               </div>
 
@@ -75,12 +75,12 @@ export default function Links() {
               <div
                 onClick={() => setSortDropdown(!sortDropdown)}
                 id="sort-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 p-1"
+                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
               >
                 <FontAwesomeIcon
                   icon={faSort}
                   id="sort-dropdown"
-                  className="w-5 h-5 text-gray-500"
+                  className="w-5 h-5 text-gray-500 dark:text-white"
                 />
               </div>
 
@@ -99,9 +99,9 @@ export default function Links() {
             return <LinkCard key={i} link={e} count={i} />;
           })
         ) : (
-          <p className="text-sky-900">
+          <p className="text-black dark:text-white">
             Nothing found.{" "}
-            <span className="text-sky-700 font-bold text-xl" title="Shruggie">
+            <span className="font-bold text-xl" title="Shruggie">
               ¯\_(ツ)_/¯
             </span>
           </p>

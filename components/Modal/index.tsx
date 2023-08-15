@@ -16,14 +16,14 @@ export default function Modal({ toggleModal, className, children }: Props) {
         onClickOutside={toggleModal}
         className={`m-auto ${className}`}
       >
-        <div className="slide-up relative border-sky-100 rounded-2xl border-solid border shadow-lg p-5 bg-white">
+        <div className="slide-up relative border-sky-100 dark:border-neutral-700 rounded-2xl border-solid border shadow-lg p-5 bg-white dark:bg-neutral-900">
           <div
             onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
-            className="absolute top-5 left-5 inline-flex rounded-md cursor-pointer hover:bg-slate-200 duration-100 z-20 p-2"
+            className="absolute top-5 left-5 inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 z-20 p-2"
           >
             <FontAwesomeIcon
               icon={faChevronLeft}
-              className="w-4 h-4 text-gray-500"
+              className="w-4 h-4 text-gray-500 dark:text-gray-200"
             />
           </div>
           {children}

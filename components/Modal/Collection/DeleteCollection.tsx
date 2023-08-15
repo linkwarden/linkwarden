@@ -50,7 +50,7 @@ export default function DeleteCollection({
           <p className="text-red-500 font-bold text-center">Warning!</p>
 
           <div className="max-h-[20rem] overflow-y-auto">
-            <div className="text-gray-500">
+            <div className="text-gray-500 dark:text-white">
               <p>
                 Please note that deleting the collection will permanently remove
                 all its contents, including the following:
@@ -81,9 +81,9 @@ export default function DeleteCollection({
           </div>
 
           <div className="flex flex-col gap-3">
-            <p className="text-sky-900 select-none text-center">
+            <p className="text-black dark:text-white select-none text-center">
               To confirm, type &quot;
-              <span className="font-bold text-sky-700">{collection.name}</span>
+              <span className="font-bold">{collection.name}</span>
               &quot; in the box below:
             </p>
 
@@ -93,12 +93,12 @@ export default function DeleteCollection({
               onChange={(e) => setInputField(e.target.value)}
               type="text"
               placeholder={`Type "${collection.name}" Here.`}
-              className="w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+              className="w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 dark:bg-neutral-900 border-solid border outline-none duration-100"
             />
           </div>
         </>
       ) : (
-        <p className="text-gray-500">
+        <p className="text-gray-500 dark:text-white">
           Click the button below to leave the current collection:
         </p>
       )}
@@ -107,9 +107,9 @@ export default function DeleteCollection({
         className={`mx-auto mt-2 text-white flex items-center gap-2 py-2 px-5 rounded-md select-none font-bold duration-100 ${
           permissions === true
             ? inputField === collection.name
-              ? "bg-red-500 hover:bg-red-400 cursor-pointer"
-              : "cursor-not-allowed bg-red-300"
-            : "bg-red-500 hover:bg-red-400 cursor-pointer"
+              ? "bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer"
+              : "cursor-not-allowed bg-red-300 dark:bg-red-900"
+            : "bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer"
         }`}
         onClick={submit}
       >
