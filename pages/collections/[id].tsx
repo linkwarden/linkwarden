@@ -116,7 +116,7 @@ export default function Index() {
             ) : null}
           </div>
 
-          <div className="text-gray-500 dark:text-gray-300 flex justify-between items-end gap-5">
+          <div className="text-black dark:text-white flex justify-between items-end gap-5">
             <p>{activeCollection?.description}</p>
             <div className="flex items-center gap-2">
               <div className="relative">

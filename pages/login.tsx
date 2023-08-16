@@ -55,7 +55,7 @@ export default function Login() {
         <div>
           <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
             Username
-            {emailEnabled ? "/Email" : undefined}
+            {emailEnabled ? " or Email" : undefined}
           </p>
 
           <input
