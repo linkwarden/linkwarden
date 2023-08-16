@@ -14,8 +14,11 @@ export default function App({
 }: AppProps<{
   session: Session;
 }>) {
+  const defaultTheme: "light" | "dark" = "dark";
+
   useEffect(() => {
-    if (!localStorage.getItem("theme")) localStorage.setItem("theme", "light");
+    if (!localStorage.getItem("theme"))
+      localStorage.setItem("theme", defaultTheme);
   }, []);
 
   return (
