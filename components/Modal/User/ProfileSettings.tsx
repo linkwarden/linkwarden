@@ -170,12 +170,12 @@ export default function ProfileSettings({
 
           {emailEnabled ? (
             <div>
-              <p className="text-sm text-black mb-2">Email</p>
+              <p className="text-sm text-black dark:text-white mb-2">Email</p>
               <input
                 type="text"
                 value={user.email || ""}
                 onChange={(e) => setUser({ ...user, email: e.target.value })}
-                className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+                className="w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 focus:dark:border-sky-600 duration-100"
               />
             </div>
           ) : undefined}

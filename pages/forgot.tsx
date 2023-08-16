@@ -41,7 +41,7 @@ export default function Forgot() {
   return (
     <CenteredForm>
       <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
-        <p className="text-2xl text-black dark:text-white font-bold">
+        <p className="text-2xl text-center text-black dark:text-white font-bold">
           Password Recovery
         </p>
         <div>
