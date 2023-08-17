@@ -9,6 +9,7 @@ import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
+import TextInput from "@/components/TextInput";
 
 type Props = {
   toggleDeleteCollectionModal: Function;
@@ -87,13 +88,12 @@ export default function DeleteCollection({
               &quot; in the box below:
             </p>
 
-            <input
-              autoFocus
+            <TextInput
+              autoFocus={true}
               value={inputField}
               onChange={(e) => setInputField(e.target.value)}
-              type="text"
               placeholder={`Type "${collection.name}" Here.`}
-              className="w-72 sm:w-96 rounded-md p-3 mx-auto border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 dark:bg-neutral-900 border-solid border outline-none duration-100"
+              className="w-3/4 mx-auto"
             />
           </div>
         </>

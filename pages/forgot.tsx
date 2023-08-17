@@ -1,4 +1,5 @@
 import SubmitButton from "@/components/SubmitButton";
+import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
@@ -59,12 +60,11 @@ export default function Forgot() {
             Email
           </p>
 
-          <input
-            type="text"
+          <TextInput
+            type="email"
             placeholder="johnny@example.com"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none dark:focus:border-sky-600 dark:border-neutral-700 dark:bg-neutral-900 focus:border-sky-700 duration-100"
           />
         </div>
 

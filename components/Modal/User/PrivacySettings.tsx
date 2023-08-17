@@ -144,7 +144,7 @@ export default function PrivacySettings({
               visibility to your profile. Separated by comma.
             </p>
             <textarea
-              className="w-full resize-none border rounded-md duration-100 bg-white dark:bg-neutral-900 p-2 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
+              className="w-full resize-none border rounded-md duration-100 bg-white dark:bg-neutral-950 p-2 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
               placeholder="Your profile is hidden from everyone right now..."
               value={whitelistedUsersTextbox}
               onChange={(e) => {

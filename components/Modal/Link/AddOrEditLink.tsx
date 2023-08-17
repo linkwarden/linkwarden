@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import SubmitButton from "../../SubmitButton";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import TextInput from "@/components/TextInput";
 
 type Props =
   | {
@@ -130,12 +131,10 @@ export default function AddOrEditLink({
             Address (URL)
             <RequiredBadge />
           </p>
-          <input
+          <TextInput
             value={link.url}
             onChange={(e) => setLink({ ...link, url: e.target.value })}
-            type="text"
             placeholder="e.g. http://example.com/"
-            className="w-full rounded-md p-2 dark:bg-neutral-900 border-solid border outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 duration-100"
           />
         </div>
       ) : null}
@@ -172,12 +171,10 @@ export default function AddOrEditLink({
 
         <div className="sm:col-span-2">
           <p className="text-sm text-black dark:text-white mb-2">Name</p>
-          <input
+          <TextInput
             value={link.name}
             onChange={(e) => setLink({ ...link, name: e.target.value })}
-            type="text"
             placeholder="e.g. Example Link"
-            className="w-full rounded-md p-2 dark:bg-neutral-900 border-solid border outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 duration-100"
           />
         </div>
 
@@ -191,7 +188,7 @@ export default function AddOrEditLink({
                 ? "Will be auto generated if nothing is provided."
                 : ""
             }
-            className="resize-none w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-900"
+            className="resize-none w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
           />
         </div>
       </div>

@@ -1,4 +1,5 @@
 import SubmitButton from "@/components/SubmitButton";
+import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
@@ -58,12 +59,10 @@ export default function Login() {
             {emailEnabled ? " or Email" : undefined}
           </p>
 
-          <input
-            type="text"
+          <TextInput
             placeholder="johnny"
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-300 dark:focus:border-sky-600 duration-100"
           />
         </div>
 
@@ -72,12 +71,11 @@ export default function Login() {
             Password
           </p>
 
-          <input
+          <TextInput
             type="password"
             placeholder="••••••••••••••"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-300 dark:focus:border-sky-600 duration-100"
           />
           {emailEnabled && (
             <div className="w-fit ml-auto mt-1">

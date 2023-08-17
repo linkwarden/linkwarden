@@ -17,6 +17,7 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
 import getPublicUserData from "@/lib/client/getPublicUserData";
+import TextInput from "@/components/TextInput";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -148,7 +149,7 @@ export default function TeamManagement({
                 console.log(err);
               }
             }}
-            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-3 border-sky-100 dark:border-neutral-700 border-solid border outline-none hover:border-sky-300 dark:hover:border-sky-600 duration-100 cursor-text"
+            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 dark:bg-neutral-950 border-sky-100 dark:border-neutral-700 border-solid border outline-none hover:border-sky-300 dark:hover:border-sky-600 duration-100 cursor-text"
           >
             {publicCollectionURL}
           </div>
@@ -164,8 +165,9 @@ export default function TeamManagement({
           </p>
 
           <div className="flex items-center gap-2">
-            <input
+            <TextInput
               value={member.user.username || ""}
+              placeholder="Username (without the '@')"
               onChange={(e) => {
                 setMember({
                   ...member,
@@ -181,9 +183,6 @@ export default function TeamManagement({
                   setMemberState
                 )
               }
-              type="text"
-              placeholder="Username (without the '@')"
-              className="w-full rounded-md p-3 dark:bg-neutral-900 border-solid border outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 duration-100"
             />
 
             <div
@@ -195,7 +194,7 @@ export default function TeamManagement({
                   setMemberState
                 )
               }
-              className="flex items-center justify-center bg-sky-700 dark:bg-sky-400 hover:bg-sky-600 duration-100 text-white w-12 h-12 p-3 rounded-md cursor-pointer"
+              className="flex items-center justify-center bg-sky-700 hover:bg-sky-600 duration-100 text-white w-10 h-10 p-2 rounded-md cursor-pointer"
             >
               <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
             </div>

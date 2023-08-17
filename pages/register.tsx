@@ -5,6 +5,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
+import TextInput from "@/components/TextInput";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -107,12 +108,10 @@ export default function Register() {
             Display Name
           </p>
 
-          <input
-            type="text"
+          <TextInput
             placeholder="Johnny"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 dark:focus:border-sky-600 duration-100"
           />
         </div>
 
@@ -122,12 +121,10 @@ export default function Register() {
               Username
             </p>
 
-            <input
-              type="text"
+            <TextInput
               placeholder="john"
               value={form.username}
               onChange={(e) => setForm({ ...form, username: e.target.value })}
-              className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 dark:focus:border-sky-600 duration-100"
             />
           </div>
         )}
@@ -138,12 +135,11 @@ export default function Register() {
               Email
             </p>
 
-            <input
+            <TextInput
               type="email"
               placeholder="johnny@example.com"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 dark:focus:border-sky-600 duration-100"
             />
           </div>
         ) : undefined}
@@ -153,12 +149,11 @@ export default function Register() {
             Password
           </p>
 
-          <input
+          <TextInput
             type="password"
             placeholder="••••••••••••••"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 dark:focus:border-sky-600 duration-100"
           />
         </div>
 
@@ -167,14 +162,13 @@ export default function Register() {
             Confirm Password
           </p>
 
-          <input
+          <TextInput
             type="password"
             placeholder="••••••••••••••"
             value={form.passwordConfirmation}
             onChange={(e) =>
               setForm({ ...form, passwordConfirmation: e.target.value })
             }
-            className="w-full rounded-md p-2 mx-auto border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 dark:focus:border-sky-600 duration-100"
           />
         </div>
 
