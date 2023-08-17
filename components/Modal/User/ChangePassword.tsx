@@ -5,6 +5,7 @@ import { signOut, useSession } from "next-auth/react";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
+import TextInput from "@/components/TextInput";
 
 type Props = {
   togglePasswordFormModal: Function;
@@ -80,24 +81,25 @@ export default function ChangePassword({
 
   return (
     <div className="mx-auto sm:w-[35rem] w-80">
-      <div className="max-w-[25rem] w-full mx-auto flex flex-col gap-3 justify-between">
-        <p className="text-sm text-sky-700">New Password</p>
+      <div className="max-w-[25rem] w-full mx-auto flex flex-col gap-2 justify-between">
+        <p className="text-sm text-black dark:text-white">New Password</p>
 
-        <input
+        <TextInput
           value={newPassword}
           onChange={(e) => setNewPassword1(e.target.value)}
-          type="password"
           placeholder="••••••••••••••"
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+          type="password"
         />
-        <p className="text-sm text-sky-700">Confirm New Password</p>
 
-        <input
+        <p className="text-sm text-black dark:text-white">
+          Confirm New Password
+        </p>
+
+        <TextInput
           value={newPassword2}
           onChange={(e) => setNewPassword2(e.target.value)}
-          type="password"
           placeholder="••••••••••••••"
-          className="w-full rounded-md p-3 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+          type="password"
         />
 
         <SubmitButton

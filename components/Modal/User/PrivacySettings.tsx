@@ -119,7 +119,9 @@ export default function PrivacySettings({
   return (
     <div className="flex flex-col gap-3 justify-between sm:w-[35rem] w-80">
       <div>
-        <p className="text-sm text-sky-700 mb-2">Profile Visibility</p>
+        <p className="text-sm text-black dark:text-white mb-2">
+          Profile Visibility
+        </p>
 
         <Checkbox
           label="Make profile private"
@@ -128,19 +130,21 @@ export default function PrivacySettings({
           onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
         />
 
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 dark:text-gray-300 text-sm">
           This will limit who can find and add you to other Collections.
         </p>
 
         {user.isPrivate && (
           <div>
-            <p className="text-sm text-sky-700 my-2">Whitelisted Users</p>
-            <p className="text-gray-500 text-sm mb-3">
+            <p className="text-sm text-black dark:text-white mt-2">
+              Whitelisted Users
+            </p>
+            <p className="text-gray-500 dark:text-gray-300 text-sm mb-3">
               Please provide the Username of the users you wish to grant
               visibility to your profile. Separated by comma.
             </p>
             <textarea
-              className="w-full resize-none border rounded-md duration-100 bg-white p-2 outline-none border-sky-100 focus:border-sky-700"
+              className="w-full resize-none border rounded-md duration-100 bg-white dark:bg-neutral-950 p-2 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
               placeholder="Your profile is hidden from everyone right now..."
               value={whitelistedUsersTextbox}
               onChange={(e) => {
@@ -152,7 +156,9 @@ export default function PrivacySettings({
       </div>
 
       <div className="mt-5">
-        <p className="text-sm text-sky-700 mb-2">Import/Export Data</p>
+        <p className="text-sm text-black dark:text-white mb-2">
+          Import/Export Data
+        </p>
 
         <div className="flex gap-2">
           <div
@@ -162,7 +168,7 @@ export default function PrivacySettings({
           >
             <div
               id="import-dropdown"
-              className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-700"
+              className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600"
             >
               Import From
             </div>
@@ -172,13 +178,13 @@ export default function PrivacySettings({
                   const target = e.target as HTMLInputElement;
                   if (target.id !== "import-dropdown") setImportDropdown(false);
                 }}
-                className={`absolute top-7 left-0 w-36 py-1 shadow-md border border-sky-100 bg-gray-50 rounded-md flex flex-col z-20`}
+                className={`absolute top-7 left-0 w-36 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
               >
                 <div className="cursor-pointer rounded-md">
                   <label
                     htmlFor="import-file"
                     title="JSON"
-                    className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 duration-100 cursor-pointer"
+                    className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
                   >
                     Linkwarden
                     <input
@@ -196,7 +202,7 @@ export default function PrivacySettings({
           </div>
 
           <Link className="w-fit" href="/api/data">
-            <div className="border border-slate-200 rounded-md bg-white px-2 text-center select-none cursor-pointer text-sky-900 duration-100 hover:border-sky-700">
+            <div className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
               Export Data
             </div>
           </Link>
