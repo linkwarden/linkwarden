@@ -1,4 +1,5 @@
 import SubmitButton from "@/components/SubmitButton";
+import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
@@ -40,27 +41,30 @@ export default function Forgot() {
 
   return (
     <CenteredForm>
-      <div className="p-2 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 rounded-2xl shadow-md border border-sky-100">
-        <p className="text-2xl text-black font-bold">Password Recovery</p>
+      <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
+        <p className="text-2xl text-center text-black dark:text-white font-bold">
+          Password Recovery
+        </p>
         <div>
-          <p className="text-md text-black">
+          <p className="text-md text-black dark:text-white">
             Enter your Email so we can send you a link to recover your account.
             Make sure to change your password in the profile settings
             afterwards.
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             You wont get logged in if you haven&apos;t created an account yet.
           </p>
         </div>
         <div>
-          <p className="text-sm text-sky-700 w-fit font-semibold mb-1">Email</p>
+          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+            Email
+          </p>
 
-          <input
-            type="text"
+          <TextInput
+            type="email"
             placeholder="johnny@example.com"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
 
@@ -71,7 +75,10 @@ export default function Forgot() {
           loading={submitLoader}
         />
         <div className="flex items-baseline gap-1 justify-center">
-          <Link href={"/login"} className="block text-sky-700 font-bold">
+          <Link
+            href={"/login"}
+            className="block text-black dark:text-white font-bold"
+          >
             Go back
           </Link>
         </div>
