@@ -28,6 +28,8 @@ export default function TagSelection({ onChange, defaultValue }: Props) {
   return (
     <CreatableSelect
       isClearable
+      className="react-select-container"
+      classNamePrefix="react-select"
       onChange={onChange}
       options={options}
       styles={styles}

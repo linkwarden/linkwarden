@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import SubmitButton from "../../SubmitButton";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import TextInput from "@/components/TextInput";
 
 type Props =
   | {
@@ -115,10 +116,10 @@ export default function AddOrEditLink({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {method === "UPDATE" ? (
         <p
-          className="text-gray-500 my-2 text-center truncate w-full"
+          className="text-gray-500 dark:text-gray-300 my-2 text-center truncate w-full"
           title={link.url}
         >
-          <Link href={link.url} target="_blank" className=" font-bold">
+          <Link href={link.url} target="_blank" className="font-bold">
             {link.url}
           </Link>
         </p>
@@ -126,23 +127,21 @@ export default function AddOrEditLink({
 
       {method === "CREATE" ? (
         <div>
-          <p className="text-sm text-sky-700 mb-2 font-bold">
+          <p className="text-sm text-black dark:text-white mb-2 font-bold">
             Address (URL)
             <RequiredBadge />
           </p>
-          <input
+          <TextInput
             value={link.url}
             onChange={(e) => setLink({ ...link, url: e.target.value })}
-            type="text"
             placeholder="e.g. http://example.com/"
-            className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
       ) : null}
-      <hr />
+      <hr className="dark:border-neutral-700" />
       <div className="grid sm:grid-cols-2 gap-3">
         <div>
-          <p className="text-sm text-sky-700 mb-2">Collection</p>
+          <p className="text-sm text-black dark:text-white mb-2">Collection</p>
           <CollectionSelection
             onChange={setCollection}
             // defaultValue={{
@@ -161,7 +160,7 @@ export default function AddOrEditLink({
         </div>
 
         <div>
-          <p className="text-sm text-sky-700 mb-2">Tags</p>
+          <p className="text-sm text-black dark:text-white mb-2">Tags</p>
           <TagSelection
             onChange={setTags}
             defaultValue={link.tags.map((e) => {
@@ -171,18 +170,16 @@ export default function AddOrEditLink({
         </div>
 
         <div className="sm:col-span-2">
-          <p className="text-sm text-sky-700 mb-2">Name</p>
-          <input
+          <p className="text-sm text-black dark:text-white mb-2">Name</p>
+          <TextInput
             value={link.name}
             onChange={(e) => setLink({ ...link, name: e.target.value })}
-            type="text"
             placeholder="e.g. Example Link"
-            className="w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
           />
         </div>
 
         <div className="sm:col-span-2">
-          <p className="text-sm text-sky-700 mb-2">Description</p>
+          <p className="text-sm text-black dark:text-white mb-2">Description</p>
           <textarea
             value={link.description}
             onChange={(e) => setLink({ ...link, description: e.target.value })}
@@ -191,7 +188,7 @@ export default function AddOrEditLink({
                 ? "Will be auto generated if nothing is provided."
                 : ""
             }
-            className="resize-none w-full rounded-md p-2 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
+            className="resize-none w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
           />
         </div>
       </div>
