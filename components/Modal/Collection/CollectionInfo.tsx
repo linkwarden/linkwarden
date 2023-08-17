@@ -11,6 +11,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { HexColorPicker } from "react-colorful";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-hot-toast";
+import TextInput from "@/components/TextInput";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -65,14 +66,12 @@ export default function CollectionInfo({
             <RequiredBadge />
           </p>
           <div className="flex flex-col gap-3">
-            <input
+            <TextInput
               value={collection.name}
+              placeholder="e.g. Example Collection"
               onChange={(e) =>
                 setCollection({ ...collection, name: e.target.value })
               }
-              type="text"
-              placeholder="e.g. Example Collection"
-              className="w-full rounded-md p-3 dark:bg-neutral-900 border-solid border outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 duration-100"
             />
             <div className="color-picker flex justify-between">
               <div className="flex flex-col justify-between items-center w-32">
@@ -105,7 +104,7 @@ export default function CollectionInfo({
         <div className="w-full">
           <p className="text-sm text-black dark:text-white mb-2">Description</p>
           <textarea
-            className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-white dark:bg-neutral-900 p-3 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
+            className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-white dark:bg-neutral-950 p-2 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
             placeholder="The purpose of this Collection..."
             value={collection.description}
             onChange={(e) =>

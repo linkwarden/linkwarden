@@ -9,6 +9,7 @@ import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../../SubmitButton";
 import ProfilePhoto from "../../ProfilePhoto";
 import { toast } from "react-hot-toast";
+import TextInput from "@/components/TextInput";
 
 type Props = {
   toggleSettingsModal: Function;
@@ -150,32 +151,26 @@ export default function ProfileSettings({
             <p className="text-sm text-black dark:text-white mb-2">
               Display Name
             </p>
-            <input
-              type="text"
-              value={user.name}
+            <TextInput
+              value={user.name || ""}
               onChange={(e) => setUser({ ...user, name: e.target.value })}
-              className="w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 focus:dark:border-sky-600 duration-100"
             />
           </div>
 
           <div>
             <p className="text-sm text-black dark:text-white mb-2">Username</p>
-            <input
-              type="text"
+            <TextInput
               value={user.username || ""}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
-              className="w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 focus:dark:border-sky-600 duration-100"
             />
           </div>
 
           {emailEnabled ? (
             <div>
               <p className="text-sm text-black dark:text-white mb-2">Email</p>
-              <input
-                type="text"
+              <TextInput
                 value={user.email || ""}
                 onChange={(e) => setUser({ ...user, email: e.target.value })}
-                className="w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 border-solid border outline-none focus:border-sky-700 focus:dark:border-sky-600 duration-100"
               />
             </div>
           ) : undefined}
@@ -188,15 +183,6 @@ export default function ProfileSettings({
         </div>
       </div>
 
-      {/* <hr /> TODO: Export functionality
-
-      <p className="text-black">Data Settings</p>
-
-      <div className="w-fit">
-        <div className="border border-sky-100 rounded-md bg-white px-2 py-1 text-center select-none cursor-pointer text-black duration-100 hover:border-sky-700">
-          Export Data
-        </div>
-      </div> */}
       <SubmitButton
         onClick={submit}
         loading={submitLoader}
