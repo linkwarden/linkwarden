@@ -183,7 +183,6 @@
 }
 
 /* Theme */
-
 @layer base {
   body {
     @apply dark:bg-neutral-900 bg-white dark:text-white;
@@ -191,10 +190,9 @@
 }
 
 /* react-select */
-
 @layer components {
   .react-select-container .react-select__control {
-    @apply dark:bg-neutral-900 dark:border-neutral-700 dark:hover:border-neutral-500;
+    @apply dark:bg-neutral-950 dark:border-neutral-700 dark:hover:border-neutral-500;
   }
 
   .react-select-container {

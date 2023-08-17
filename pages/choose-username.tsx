@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import useAccountStore from "@/store/account";
 import CenteredForm from "@/layouts/CenteredForm";
+import TextInput from "@/components/TextInput";
 
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -49,12 +50,10 @@ export default function Subscribe() {
             Username
           </p>
 
-          <input
-            type="text"
+          <TextInput
             placeholder="john"
             value={inputedUsername}
             onChange={(e) => setInputedUsername(e.target.value)}
-            className="w-full rounded-md p-2 mx-auto border-sky-100 border-solid border outline-none focus:border-sky-700 dark:focus:border-sky-600 dark:border-neutral-700 dark:bg-neutral-900 duration-100"
           />
         </div>
         <div>
