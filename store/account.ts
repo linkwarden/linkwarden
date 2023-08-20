@@ -15,7 +15,7 @@ type AccountStore = {
 const useAccountStore = create<AccountStore>()((set) => ({
   account: {} as AccountSettings,
   setAccount: async (id) => {
-    const response = await fetch(`/api/routes/users?id=${id}`);
+    const response = await fetch(`/api/users?id=${id}`);
 
     const data = await response.json();
 
@@ -24,7 +24,7 @@ const useAccountStore = create<AccountStore>()((set) => ({
     if (response.ok) set({ account: { ...data.response, profilePic } });
   },
   updateAccount: async (user) => {
-    const response = await fetch("/api/routes/users", {
+    const response = await fetch("/api/users", {
       method: "PUT",
       body: JSON.stringify(user),
       headers: {
