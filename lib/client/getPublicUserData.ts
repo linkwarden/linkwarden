@@ -8,7 +8,7 @@ export default async function getPublicUserData({
   id?: number;
 }) {
   const response = await fetch(
-    `/api/routes/users?id=${id}&${
+    `/api/users?id=${id}&${
       username ? `username=${username?.toLowerCase()}` : undefined
     }`
   );
