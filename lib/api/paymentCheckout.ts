@@ -1,5 +1,4 @@
 import Stripe from "stripe";
-import checkSubscription from "./checkSubscription";
 
 export default async function paymentCheckout(
   stripeSecretKey: string,
