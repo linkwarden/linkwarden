@@ -2,7 +2,6 @@ import Stripe from "stripe";
 
 export default async function updateCustomerEmail(
   stripeSecretKey: string,
-  priceId: string,
   email: string,
   newEmail: string
 ) {
@@ -30,11 +29,7 @@ export default async function updateCustomerEmail(
             new Date((subscription.canceled_at + secondsInTwoWeeks) * 1000)
         );
 
-        return (
-          subscription?.items?.data?.some(
-            (subscriptionItem) => subscriptionItem?.plan?.id === priceId
-          ) && isNotCanceledOrHasTime
-        );
+        return subscription?.items?.data[0].plan && isNotCanceledOrHasTime;
       }
     );
 

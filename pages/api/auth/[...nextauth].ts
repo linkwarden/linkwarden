@@ -91,7 +91,6 @@ export const authOptions: AuthOptions = {
     // Using the `...rest` parameter to be able to narrow down the type based on `trigger`
     async jwt({ token, trigger, session, user }) {
       const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-      const PRICE_ID = process.env.PRICE_ID;
 
       const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =
         process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS;
@@ -108,13 +107,11 @@ export const authOptions: AuthOptions = {
 
       if (
         STRIPE_SECRET_KEY &&
-        PRICE_ID &&
         (trigger || subscriptionIsTimesUp || !token.isSubscriber)
       ) {
         const subscription = await checkSubscription(
           STRIPE_SECRET_KEY,
-          token.email as string,
-          PRICE_ID
+          token.email as string
         );
 
         if (subscription.subscriptionCanceledAt) {
