@@ -23,7 +23,7 @@ export default function Modal({ toggleModal, className, children }: Props) {
           >
             <FontAwesomeIcon
               icon={faChevronLeft}
-              className="w-4 h-4 text-gray-500 dark:text-gray-200"
+              className="w-4 h-4 text-gray-500 dark:text-gray-300"
             />
           </div>
           {children}

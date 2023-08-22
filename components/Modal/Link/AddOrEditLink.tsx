@@ -228,7 +228,7 @@ export default function AddOrEditLink({
                     ? "Will be auto generated if nothing is provided."
                     : ""
                 }
-                className="resize-none w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
+                className="resize-none w-full rounded-md p-2 border-sky-100 bg-gray-50 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
               />
             </div>
           </div>

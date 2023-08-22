@@ -76,11 +76,11 @@ export default function CollectionCard({ collection, className }: Props) {
             <div className="text-black dark:text-white font-bold text-sm flex justify-end gap-1 items-center">
               <FontAwesomeIcon
                 icon={faLink}
-                className="w-5 h-5 text-black dark:text-white"
+                className="w-5 h-5 text-gray-500 dark:text-gray-300"
               />
               {collection._count && collection._count.links}
             </div>
-            <div className="flex items-center justify-end gap-1 text-gray-600 dark:text-white">
+            <div className="flex items-center justify-end gap-1 text-gray-500 dark:text-gray-300">
               <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
               <p className="font-bold text-xs">{formattedDate}</p>
             </div>
