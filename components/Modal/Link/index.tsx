@@ -37,11 +37,7 @@ export default function LinkModal({
             New Link
           </p>
         )}
-        <Tab.List
-          className={`flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-black dark:text-white ${
-            isOwnerOrMod ? "" : "pb-8"
-          }`}
-        >
+        <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-black dark:text-white">
           {method === "UPDATE" && isOwnerOrMod && (
             <>
               <Tab
@@ -68,7 +64,7 @@ export default function LinkModal({
         <Tab.Panels>
           {activeLink && method === "UPDATE" && (
             <Tab.Panel>
-              <LinkDetails link={activeLink} />
+              <LinkDetails link={activeLink} isOwnerOrMod={isOwnerOrMod} />
             </Tab.Panel>
           )}
 

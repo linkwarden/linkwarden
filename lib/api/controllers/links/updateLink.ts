@@ -35,8 +35,13 @@ export default async function updateLink(
     link.collection.ownerId === userId &&
     targetLink?.collection.ownerId === userId;
 
+  const authorizedSwitchCollection =
+    !isCollectionOwner && targetLink?.collection.id === link.collection.id;
+
+  console.log(authorizedSwitchCollection);
+
   // Makes sure collection members (non-owners) cannot move a link to/from a collection.
-  if (!isCollectionOwner)
+  if (!authorizedSwitchCollection)
     return {
       response: "You can't move a link to/from a collection you don't own.",
       status: 401,
