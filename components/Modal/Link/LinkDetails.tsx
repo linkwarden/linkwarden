@@ -21,12 +21,14 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import isValidUrl from "@/lib/client/isValidUrl";
 import { useTheme } from "next-themes";
+import unescapeString from "@/lib/client/unescapeString";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
+  isOwnerOrMod: boolean;
 };
 
-export default function LinkDetails({ link }: Props) {
+export default function LinkDetails({ link, isOwnerOrMod }: Props) {
   const { theme, setTheme } = useTheme();
 
   const [imageError, setImageError] = useState<boolean>(false);
@@ -123,7 +125,9 @@ export default function LinkDetails({ link }: Props) {
   return (
     <div
       id="link-banner-outside"
-      className="flex flex-col gap-3 sm:w-[35rem] w-80"
+      className={`flex flex-col gap-3 sm:w-[35rem] w-80 ${
+        isOwnerOrMod ? "" : "mt-12"
+      }`}
     >
       {!imageError && (
         <div id="link-banner" className="link-banner h-32 -mx-5 -mt-5 relative">
@@ -140,7 +144,7 @@ export default function LinkDetails({ link }: Props) {
             height={42}
             alt=""
             id={"favicon-" + link.id}
-            className="select-none mt-2 rounded-md shadow border-[3px] border-white dark:border-neutral-900 bg-white dark:bg-neutral-900 aspect-square"
+            className="select-none mt-2 w-10 rounded-md shadow border-[3px] border-white dark:border-neutral-900 bg-white dark:bg-neutral-900 aspect-square"
             draggable="false"
             onLoad={(e) => {
               try {
@@ -159,15 +163,17 @@ export default function LinkDetails({ link }: Props) {
             }}
           />
         )}
-        <div className="flex flex-col min-h-[3rem] justify-end drop-shadow">
+        <div className="flex w-full flex-col min-h-[3rem] justify-center drop-shadow">
           <p className="text-2xl text-black dark:text-white capitalize break-words hyphens-auto">
-            {link.name}
+            {unescapeString(link.name)}
           </p>
           <Link
             href={link.url}
             target="_blank"
             rel="noreferrer"
-            className="text-sm text-gray-500 dark:text-gray-300 break-all hover:underline cursor-pointer w-fit"
+            className={`${
+              link.name ? "text-sm" : "text-xl"
+            } text-gray-500 dark:text-gray-300 break-all hover:underline cursor-pointer w-fit`}
           >
             {url ? url.host : link.url}
           </Link>
@@ -204,7 +210,7 @@ export default function LinkDetails({ link }: Props) {
       {link.description && (
         <>
           <div className="text-black dark:text-white max-h-[20rem] my-3 rounded-md overflow-y-auto hyphens-auto">
-            {link.description}
+            {unescapeString(link.description)}
           </div>
         </>
       )}

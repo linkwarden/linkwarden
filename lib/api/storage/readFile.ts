@@ -125,7 +125,7 @@ const fileNotFoundTemplate = `<!DOCTYPE html>
                                 <h2>It is possible that the file you're looking for either doesn't exist or hasn't been created yet.</h2>
                                 <h3>Some possible reasons are:</h3>
                                 <ul>
-                                  <li>You are trying to access a file too early, before it has been fully archived.</li>
+                                  <li>You are trying to access a file too early, before it has been fully archived. In this case, refreshing the page might resolve the issue.</li>
                                   <li>The file doesn't exist either because it encountered an error while being archived, or it simply doesn't exist.</li>
                                 </ul>
                               </body>

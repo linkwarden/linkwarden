@@ -47,7 +47,6 @@ export default function CollectionSelection({ onChange, defaultValue }: Props) {
       isClearable
       className="react-select-container"
       classNamePrefix="react-select"
-      placeholder="Default: Unnamed Collection"
       onChange={onChange}
       options={options}
       styles={styles}
