@@ -235,7 +235,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
             </div>
 
-            <p className="text-gray-500 dark:text-white">Screenshot</p>
+            <p className="text-black dark:text-white">Screenshot</p>
           </div>
 
           <div className="flex text-black dark:text-white gap-1">
@@ -269,7 +269,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
             </div>
 
-            <p className="text-gray-500 dark:text-white">PDF</p>
+            <p className="text-black dark:text-white">PDF</p>
           </div>
 
           <div className="flex text-black dark:text-white gap-1">

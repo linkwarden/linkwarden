@@ -53,7 +53,7 @@ export default function Index() {
               <FontAwesomeIcon
                 icon={faSort}
                 id="sort-dropdown"
-                className="w-5 h-5 text-gray-500 dark:text-white"
+                className="w-5 h-5 text-gray-500 dark:text-gray-300"
               />
             </div>
 

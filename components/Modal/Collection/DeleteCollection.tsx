@@ -51,7 +51,7 @@ export default function DeleteCollection({
           <p className="text-red-500 font-bold text-center">Warning!</p>
 
           <div className="max-h-[20rem] overflow-y-auto">
-            <div className="text-gray-500 dark:text-white">
+            <div className="text-black dark:text-white">
               <p>
                 Please note that deleting the collection will permanently remove
                 all its contents, including the following:
@@ -98,7 +98,7 @@ export default function DeleteCollection({
           </div>
         </>
       ) : (
-        <p className="text-gray-500 dark:text-white">
+        <p className="text-black dark:text-white">
           Click the button below to leave the current collection:
         </p>
       )}
