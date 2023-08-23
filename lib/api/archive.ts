@@ -1,9 +1,20 @@
-import { Page, chromium, devices } from "playwright";
+import { LaunchOptions, Page, chromium, devices } from "playwright";
 import { prisma } from "@/lib/api/db";
 import createFile from "@/lib/api/storage/createFile";
 
 export default async function archive(linkId: number, url: string) {
-  const browser = await chromium.launch();
+  // allow user to configure a proxy
+  let browserOptions:LaunchOptions = {};
+  if (process.env.ARCHIVER_PROXY) {
+      browserOptions.proxy = {
+        server: process.env.ARCHIVER_PROXY,
+        bypass: process.env.ARCHIVER_PROXY_BYPASS,
+        username: process.env.ARCHIVER_PROXY_USERNAME,
+        password: process.env.ARCHIVER_PROXY_PASSWORD,
+      }
+  }
+
+  const browser = await chromium.launch(browserOptions);
   const context = await browser.newContext(devices["Desktop Chrome"]);
   const page = await context.newPage();
 

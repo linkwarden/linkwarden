@@ -25,6 +25,13 @@ declare global {
       NEXT_PUBLIC_TRIAL_PERIOD_DAYS?: string;
       BASE_URL?: string;
       NEXT_PUBLIC_PRICING?: string;
+
+      ARCHIVER_PROXY?: string;
+      ARCHIVER_PROXY_USERNAME?: string;
+      ARCHIVER_PROXY_PASSWORD?: string;
+      ARCHIVER_PROXY_BYPASS?: string;
+      ARCHIVER_PDF_MARGIN_TOP?: string;
+      ARCHIVER_PDF_MARGIN_BOTTOM?: string;
     }
   }
 }
