@@ -33,11 +33,19 @@ export default async function archive(linkId: number, url: string) {
     });
 
     if (linkExists) {
+      // apply administrator's defined pdf margins or default to 15px
+      const margins = { top: "15px", bottom: "15px" };
+      if (process.env.ARCHIVER_PDF_MARGIN_TOP) {
+        margins.top = process.env.ARCHIVER_PDF_MARGIN_TOP;
+      } else if (process.env.ARCHIVER_PDF_MARGIN_BOTTOM) {
+        margins.bottom = process.env.ARCHIVER_PDF_MARGIN_BOTTOM;
+      }
+
       const pdf = await page.pdf({
         width: "1366px",
         height: "1931px",
         printBackground: true,
-        margin: { top: "15px", bottom: "15px" },
+        margin: margins,
       });
       const screenshot = await page.screenshot({
         fullPage: true,
