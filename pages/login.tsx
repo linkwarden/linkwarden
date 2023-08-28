@@ -62,6 +62,7 @@ export default function Login() {
           <TextInput
             placeholder="johnny"
             value={form.username}
+            className="bg-white"
             onChange={(e) => setForm({ ...form, username: e.target.value })}
           />
         </div>
@@ -75,6 +76,7 @@ export default function Login() {
             type="password"
             placeholder="••••••••••••••"
             value={form.password}
+            className="bg-white"
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
           {emailEnabled && (

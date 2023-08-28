@@ -53,6 +53,7 @@ export default function Subscribe() {
           <TextInput
             placeholder="john"
             value={inputedUsername}
+            className="bg-white"
             onChange={(e) => setInputedUsername(e.target.value)}
           />
         </div>

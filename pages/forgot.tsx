@@ -64,6 +64,7 @@ export default function Forgot() {
             type="email"
             placeholder="johnny@example.com"
             value={form.email}
+            className="bg-white"
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
         </div>
