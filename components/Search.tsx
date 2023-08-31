@@ -24,7 +24,7 @@ export default function Search() {
     >
       <label
         htmlFor="search-box"
-        className="inline-flex w-fit absolute left-2 pointer-events-none rounded-md p-1 text-sky-500 dark:text-sky-300"
+        className="inline-flex w-fit absolute left-2 pointer-events-none rounded-md p-1 text-sky-500 dark:text-sky-500"
       >
         <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
       </label>
