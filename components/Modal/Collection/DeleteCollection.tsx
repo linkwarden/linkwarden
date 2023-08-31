@@ -99,7 +99,7 @@ export default function DeleteCollection({
         </>
       ) : (
         <p className="text-black dark:text-white">
-          Click the button below to leave the current collection:
+          Click the button below to leave the current collection.
         </p>
       )}
 

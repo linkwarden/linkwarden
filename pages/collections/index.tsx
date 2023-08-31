@@ -37,7 +37,7 @@ export default function Collections() {
             <div className="flex gap-2">
               <FontAwesomeIcon
                 icon={faFolder}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
               />
               <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
                 All Collections
@@ -125,7 +125,7 @@ export default function Collections() {
             </p>
             <FontAwesomeIcon
               icon={faPlus}
-              className="w-8 h-8 text-sky-500 dark:text-sky-300 group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
+              className="w-8 h-8 text-sky-500 dark:text-sky-500 group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
             />
           </div>
         </div>

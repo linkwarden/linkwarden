@@ -36,7 +36,7 @@ export default function Index() {
             <div className="flex gap-2">
               <FontAwesomeIcon
                 icon={faHashtag}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500"
               />
               <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
                 {activeTag?.name}

@@ -247,7 +247,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-sky-500 dark:text-sky-300"
+                className="w-5 h-5 text-sky-500 dark:text-sky-500"
               />
             </Link>
 
@@ -257,7 +257,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-300"
+                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
               />
             </div>
           </div>
@@ -281,7 +281,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-sky-500 dark:text-sky-300"
+                className="w-5 h-5 text-sky-500 dark:text-sky-500"
               />
             </Link>
 
@@ -291,7 +291,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-300"
+                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
               />
             </div>
           </div>
