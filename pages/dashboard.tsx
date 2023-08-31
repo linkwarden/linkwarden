@@ -61,7 +61,7 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col md:flex-row md:items-center gap-5">
-          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700">
+          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
             <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
               {numberOfLinks}
             </p>
@@ -70,7 +70,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700">
+          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
             <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
               {collections.length}
             </p>
@@ -79,7 +79,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700">
+          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
             <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
               {tags.length}
             </p>
@@ -127,7 +127,7 @@ export default function Dashboard() {
                 ))}
             </div>
           ) : (
-            <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl">
+            <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
               <p className="text-center text-2xl text-black dark:text-white">
                 No Pinned Links
               </p>
