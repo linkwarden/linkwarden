@@ -95,9 +95,11 @@ export default function Links() {
           </div>
         </div>
         {links[0] ? (
-          links.map((e, i) => {
-            return <LinkCard key={i} link={e} count={i} />;
-          })
+          <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5">
+            {links.map((e, i) => {
+              return <LinkCard key={i} link={e} count={i} />;
+            })}
+          </div>
         ) : (
           <p className="text-black dark:text-white">
             Nothing found.{" "}
