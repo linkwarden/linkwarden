@@ -3,17 +3,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import useModalStore from "@/store/modals";
 
-export default function NoLinksFound() {
+type Props = {
+  text?: string;
+};
+
+export default function NoLinksFound({ text }: Props) {
   const { setModal } = useModalStore();
 
   return (
-    <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full p-10 rounded-2xl">
-      <p className="text-center text-3xl text-black dark:text-white">
-        You haven&apos;t created any Links Here
+    <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
+      <p className="text-center text-2xl text-black dark:text-white">
+        {text || "You haven't created any Links Here"}
       </p>
-      <br />
-      <div className="text-center text-black dark:text-white text-sm flex items-baseline justify-center gap-1 w-full">
-        <p>Start by creating a</p>{" "}
+      <div className="text-center text-black dark:text-white w-full mt-4">
         <div
           onClick={() => {
             setModal({
@@ -22,14 +24,14 @@ export default function NoLinksFound() {
               method: "CREATE",
             });
           }}
-          className="inline-flex gap-1 relative w-[7.2rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-full text-white bg-sky-700 dark:bg-sky-400 hover:bg-sky-600 duration-100 group"
+          className="inline-flex gap-1 relative w-[11.4rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-full dark:hover:bg-sky-600 text-white bg-sky-700 hover:bg-sky-600 duration-100 group"
         >
           <FontAwesomeIcon
             icon={faPlus}
-            className="w-5 h-5 group-hover:ml-9 absolute duration-100"
+            className="w-5 h-5 group-hover:ml-[4.325rem] absolute duration-100"
           />
-          <span className="block group-hover:opacity-0 text-right w-full duration-100">
-            New Link
+          <span className="group-hover:opacity-0 text-right w-full duration-100">
+            Create New Link
           </span>
         </div>
       </div>
