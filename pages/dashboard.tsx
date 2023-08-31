@@ -52,7 +52,7 @@ export default function Dashboard() {
           <div className="flex gap-2">
             <FontAwesomeIcon
               icon={faChartSimple}
-              className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-300 drop-shadow"
+              className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
             />
             <p className="sm:text-4xl text-3xl text-black dark:text-white">
               Dashboard
@@ -62,7 +62,7 @@ export default function Dashboard() {
 
         <div className="flex flex-col md:flex-row md:items-center gap-5">
           <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
-            <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
+            <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
               {numberOfLinks}
             </p>
             <p className="text-black dark:text-white text-xl">
@@ -71,7 +71,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
-            <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
+            <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
               {collections.length}
             </p>
             <p className="text-black dark:text-white text-xl">
@@ -80,7 +80,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
-            <p className="font-bold text-6xl text-sky-500 dark:text-sky-300">
+            <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
               {tags.length}
             </p>
             <p className="text-black dark:text-white text-xl">
@@ -93,7 +93,7 @@ export default function Dashboard() {
           <div className="flex gap-2 items-center">
             <FontAwesomeIcon
               icon={faThumbTack}
-              className="w-5 h-5 text-sky-500 dark:text-sky-300 drop-shadow"
+              className="w-5 h-5 text-sky-500 dark:text-sky-500 drop-shadow"
             />
             <p className="text-2xl text-black dark:text-white">Pinned Links</p>
           </div>

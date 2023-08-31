@@ -58,13 +58,13 @@ export default function Sidebar({ className }: { className?: string }) {
           href="/dashboard"
           className={`${
             active === "/dashboard"
-              ? "bg-sky-200 dark:bg-sky-600"
+              ? "bg-sky-200 dark:bg-sky-800"
               : "hover:bg-slate-200 hover:dark:bg-neutral-700"
           } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
         >
           <FontAwesomeIcon
             icon={faChartSimple}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-300`}
+            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-500`}
           />
 
           <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
@@ -76,13 +76,13 @@ export default function Sidebar({ className }: { className?: string }) {
           href="/links"
           className={`${
             active === "/links"
-              ? "bg-sky-200 dark:bg-sky-600"
+              ? "bg-sky-200 dark:bg-sky-800"
               : "hover:bg-slate-200 hover:dark:bg-neutral-700"
           } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
         >
           <FontAwesomeIcon
             icon={faLink}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-300`}
+            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-500`}
           />
 
           <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
@@ -94,13 +94,13 @@ export default function Sidebar({ className }: { className?: string }) {
           href="/collections"
           className={`${
             active === "/collections"
-              ? "bg-sky-200 dark:bg-sky-600"
+              ? "bg-sky-200 dark:bg-sky-800"
               : "hover:bg-slate-200 hover:dark:bg-neutral-700"
           } outline-sky-100 outline-1 duration-100  py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
         >
           <FontAwesomeIcon
             icon={faFolder}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-300`}
+            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-500`}
           />
 
           <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
@@ -143,7 +143,7 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/collections/${e.id}`
-                            ? "bg-sky-200 dark:bg-sky-700 "
+                            ? "bg-sky-200 dark:bg-sky-800"
                             : "hover:bg-slate-200 hover:dark:bg-neutral-700"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
@@ -203,13 +203,13 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/tags/${e.id}`
-                            ? "bg-sky-200 dark:bg-sky-700"
+                            ? "bg-sky-200 dark:bg-sky-800"
                             : "hover:bg-slate-200 hover:dark:bg-neutral-700"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
                         <FontAwesomeIcon
                           icon={faHashtag}
-                          className="w-4 h-4 text-sky-500 dark:text-sky-300 mt-1"
+                          className="w-4 h-4 text-sky-500 dark:text-sky-500 mt-1"
                         />
 
                         <p className="text-black dark:text-white truncate w-full pr-7">
