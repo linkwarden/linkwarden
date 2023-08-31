@@ -12,7 +12,7 @@ export default function useLinks(
     pinnedOnly,
     collectionId,
     tagId,
-  }: Omit<LinkRequestQuery, "cursor"> = { sort: 0 }
+  }: LinkRequestQuery = { sort: 0 }
 ) {
   const { links, setLinks, resetLinks } = useLinkStore();
   const router = useRouter();
