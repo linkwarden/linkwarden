@@ -227,3 +227,7 @@
     @apply dark:text-white;
   }
 }
+
+.sky-shadow {
+  box-shadow: 0px 0px 3px #0ea5e9;
+}

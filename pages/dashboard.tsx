@@ -47,7 +47,7 @@ export default function Dashboard() {
 
   return (
     <MainLayout>
-      <div className="p-5 flex flex-col gap-5">
+      <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
         <div className="flex gap-3 items-center">
           <div className="flex gap-2">
             <FontAwesomeIcon
@@ -61,7 +61,7 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col md:flex-row md:items-center gap-5">
-          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
+          <div className="sky-shadow flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
             <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
               {numberOfLinks}
             </p>
@@ -70,7 +70,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
+          <div className="sky-shadow flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
             <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
               {collections.length}
             </p>
@@ -79,7 +79,7 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
+          <div className="sky-shadow flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
             <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
               {tags.length}
             </p>
@@ -113,7 +113,10 @@ export default function Dashboard() {
           ) : undefined}
         </div>
 
-        <div className="flex flex-col 2xl:flex-row items-start justify-evenly 2xl:gap-2">
+        <div
+          style={{ flex: "1 1 auto" }}
+          className="flex flex-col 2xl:flex-row items-start justify-evenly 2xl:gap-2"
+        >
           {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div
               className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full ${
@@ -127,11 +130,14 @@ export default function Dashboard() {
                 ))}
             </div>
           ) : (
-            <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
+            <div
+              style={{ flex: "1 1 auto" }}
+              className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+            >
               <p className="text-center text-2xl text-black dark:text-white">
-                No Pinned Links
+                Pin Your Favorite Links Here!
               </p>
-              <p className="text-center text-gray-500 dark:text-gray-300 text-sm mt-2">
+              <p className="text-center mx-auto w-96 text-gray-500 dark:text-gray-300 text-sm mt-2">
                 You can Pin your favorite Links by clicking on the three dots on
                 each Link and clicking{" "}
                 <span className="font-semibold">Pin to Dashboard</span>.
