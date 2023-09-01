@@ -36,7 +36,7 @@ export default function MainLayout({ children }: Props) {
             <Sidebar className="fixed top-0" />
           </div>
 
-          <div className="w-full lg:ml-64 xl:ml-80">
+          <div className="w-full flex flex-col h-screen lg:ml-64 xl:ml-80">
             <Navbar />
             {children}
           </div>
