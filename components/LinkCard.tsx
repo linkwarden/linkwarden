@@ -106,7 +106,7 @@ export default function LinkCard({ link, count, className }: Props) {
 
   return (
     <div
-      className={`bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none cursor-pointer duration-100 rounded-2xl relative group ${className}`}
+      className={`h-fit bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none cursor-pointer duration-100 rounded-2xl relative group ${className}`}
     >
       {(permissions === true ||
         permissions?.canUpdate ||
@@ -144,7 +144,7 @@ export default function LinkCard({ link, count, className }: Props) {
             width={64}
             height={64}
             alt=""
-            className="blur-sm absolute w-16 group-hover:opacity-80 duration-100 rounded-md bottom-5 right-5 opacity-60 select-none"
+            className="blur-sm absolute w-16 group-hover:opacity-80 duration-100 rounded-2xl bottom-5 right-5 opacity-60 select-none"
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
