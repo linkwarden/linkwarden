@@ -11,6 +11,8 @@ export default function PublicCollections() {
 
   const [data, setData] = useState<PublicCollectionIncludingLinks>();
 
+  document.body.style.background = "white";
+
   useEffect(() => {
     if (router.query.id) {
       getPublicCollectionData(

@@ -107,7 +107,7 @@ export default function Index() {
                     .slice(0, 4)}
                   {activeCollection?.members.length &&
                   activeCollection.members.length - 4 > 0 ? (
-                    <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-700 border-sky-100 -mr-3">
+                    <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 dark:border-neutral-700 -mr-3">
                       +{activeCollection?.members?.length - 4}
                     </div>
                   ) : null}
@@ -156,19 +156,6 @@ export default function Index() {
                 {expandDropdown ? (
                   <Dropdown
                     items={[
-                      permissions === true || permissions?.canCreate
-                        ? {
-                            name: "Add Link Here",
-                            onClick: () => {
-                              setModal({
-                                modal: "LINK",
-                                state: true,
-                                method: "CREATE",
-                              });
-                              setExpandDropdown(false);
-                            },
-                          }
-                        : undefined,
                       permissions === true
                         ? {
                             name: "Edit Collection Info",
