@@ -76,9 +76,6 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
   useEffect(() => {
     const banner = document.getElementById("link-banner");
     const bannerInner = document.getElementById("link-banner-inner");
-    const bannerOut = document.getElementById("link-banner-outside");
-
-    if (theme === "dark") bannerOut?.classList.toggle("banner-dark-mode");
 
     if (colorPalette && banner && bannerInner) {
       banner.style.background = `linear-gradient(to right, ${rgbToHex(
@@ -124,10 +121,9 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
 
   return (
     <div
-      id="link-banner-outside"
       className={`flex flex-col gap-3 sm:w-[35rem] w-80 ${
         isOwnerOrMod ? "" : "mt-12"
-      }`}
+      } ${theme === "dark" ? "banner-dark-mode" : "banner-light-mode"}`}
     >
       {!imageError && (
         <div id="link-banner" className="link-banner h-32 -mx-5 -mt-5 relative">
