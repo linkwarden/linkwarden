@@ -166,14 +166,14 @@
 }
 
 /* For light mode */
-.link-banner::after {
+.banner-light-mode .link-banner::after {
   background-image: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0),
     rgba(255, 255, 255, 1) 90%
   );
 }
-.link-banner::before {
+.banner-light-mode .link-banner::before {
   background-image: linear-gradient(
     to top,
     rgba(255, 255, 255, 0),
