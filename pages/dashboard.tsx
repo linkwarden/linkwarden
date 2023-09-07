@@ -137,7 +137,7 @@ export default function Dashboard() {
               <p className="text-center text-2xl text-black dark:text-white">
                 Pin Your Favorite Links Here!
               </p>
-              <p className="text-center mx-auto w-96 text-gray-500 dark:text-gray-300 text-sm mt-2">
+              <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">
                 You can Pin your favorite Links by clicking on the three dots on
                 each Link and clicking{" "}
                 <span className="font-semibold">Pin to Dashboard</span>.
