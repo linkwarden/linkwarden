@@ -3,7 +3,7 @@
   <h1>Linkwarden</h1>
 
 <a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?logo=discord&style=flat-square" alt="Discord"></a>
-<img src="https://img.shields.io/github/commit-activity/m/linkwarden/linkwarden?style=flat-square" alt="Github Activity">
+<img alt="GitHub commits since latest release (by SemVer including pre-releases)" src="https://img.shields.io/github/commits-since/linkwarden/linkwarden/v1.0.1/dev">
 <img src="https://img.shields.io/github/languages/top/linkwarden/linkwarden?style=flat-square" alt="Top Language">
 <img src="https://img.shields.io/github/stars/linkwarden/linkwarden?style=flat-square" alt="Github Stars">
 
