@@ -20,11 +20,11 @@ declare global {
 
       NEXT_PUBLIC_STRIPE_IS_ACTIVE?: string;
       STRIPE_SECRET_KEY?: string;
-      PRICE_ID?: string;
+      MONTHLY_PRICE_ID?: string;
+      YEARLY_PRICE_ID?: string;
       NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL?: string;
       NEXT_PUBLIC_TRIAL_PERIOD_DAYS?: string;
       BASE_URL?: string;
-      NEXT_PUBLIC_PRICING?: string;
     }
   }
 }
