@@ -106,7 +106,7 @@ export default function LinkCard({ link, count, className }: Props) {
 
   return (
     <div
-      className={`bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow hover:shadow-none cursor-pointer duration-100 rounded-2xl relative group ${className}`}
+      className={`h-fit bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none cursor-pointer duration-100 rounded-2xl relative group ${className}`}
     >
       {(permissions === true ||
         permissions?.canUpdate ||
@@ -114,7 +114,7 @@ export default function LinkCard({ link, count, className }: Props) {
         <div
           onClick={() => setExpandDropdown(!expandDropdown)}
           id={"expand-dropdown" + link.id}
-          className="text-gray-500 inline-flex rounded-md cursor-pointer hover:bg-slate-200 absolute right-5 top-5 z-10 duration-100 p-1"
+          className="text-gray-500 dark:text-gray-300 inline-flex rounded-md cursor-pointer hover:bg-slate-200 dark:hover:bg-neutral-700 absolute right-5 top-5 z-10 duration-100 p-1"
         >
           <FontAwesomeIcon
             icon={faEllipsis}
@@ -144,7 +144,7 @@ export default function LinkCard({ link, count, className }: Props) {
             width={64}
             height={64}
             alt=""
-            className="blur-sm absolute w-16 group-hover:opacity-80 duration-100 rounded-md bottom-5 right-5 opacity-60 select-none"
+            className="blur-sm absolute w-16 group-hover:opacity-80 duration-100 rounded-2xl bottom-5 right-5 opacity-60 select-none"
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
@@ -156,8 +156,10 @@ export default function LinkCard({ link, count, className }: Props) {
         <div className="flex justify-between gap-5 w-full h-full z-0">
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-baseline gap-1">
-              <p className="text-sm text-sky-500 font-bold">{count + 1}.</p>
-              <p className="text-lg text-sky-700 font-bold truncate capitalize w-full pr-8">
+              <p className="text-sm text-gray-500 dark:text-gray-300">
+                {count + 1}
+              </p>
+              <p className="text-lg text-black dark:text-white truncate capitalize w-full pr-8">
                 {link.name || link.description}
               </p>
             </div>
@@ -168,16 +170,16 @@ export default function LinkCard({ link, count, className }: Props) {
                   className="w-4 h-4 mt-1 drop-shadow"
                   style={{ color: collection?.color }}
                 />
-                <p className="text-sky-900 truncate capitalize">
+                <p className="text-black dark:text-white truncate capitalize">
                   {collection?.name}
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-1 w-full pr-20 text-gray-500">
+            <div className="flex items-center gap-1 w-full pr-20 text-gray-500 dark:text-gray-300">
               <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
               <p className="truncate w-full">{shortendURL}</p>
             </div>
-            <div className="flex items-center gap-1 text-gray-500">
+            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-300">
               <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
               <p>{formattedDate}</p>
             </div>

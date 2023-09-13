@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
@@ -6,6 +6,7 @@ import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
 import { Toaster } from "react-hot-toast";
 import { Session } from "next-auth";
+import { ThemeProvider } from "next-themes";
 
 export default function App({
   Component,
@@ -13,6 +14,13 @@ export default function App({
 }: AppProps<{
   session: Session;
 }>) {
+  const defaultTheme: "light" | "dark" = "dark";
+
+  useEffect(() => {
+    if (!localStorage.getItem("theme"))
+      localStorage.setItem("theme", defaultTheme);
+  }, []);
+
   return (
     <SessionProvider session={pageProps.session}>
       <Head>
@@ -37,13 +45,18 @@ export default function App({
         />
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        toastOptions={{ className: "border border-sky-100" }}
-      />
       <AuthRedirect>
-        <Component {...pageProps} />
+        <ThemeProvider attribute="class">
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              className:
+                "border border-sky-100 dark:dark:border-neutral-700 dark:bg-neutral-900 dark:text-white",
+            }}
+          />
+          <Component {...pageProps} />
+        </ThemeProvider>
       </AuthRedirect>
     </SessionProvider>
   );

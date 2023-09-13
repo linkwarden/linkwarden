@@ -11,9 +11,7 @@ type Props = {
 
 export default function Checkbox({ label, state, className, onClick }: Props) {
   return (
-    <label
-      className={`cursor-pointer flex items-center gap-2 text-sky-700 ${className}`}
-    >
+    <label className={`cursor-pointer flex items-center gap-2 ${className}`}>
       <input
         type="checkbox"
         checked={state}
@@ -22,13 +20,15 @@ export default function Checkbox({ label, state, className, onClick }: Props) {
       />
       <FontAwesomeIcon
         icon={faSquareCheck}
-        className="w-5 h-5 text-sky-700 peer-checked:block hidden"
+        className="w-5 h-5 text-sky-500 dark:text-sky-500 peer-checked:block hidden"
       />
       <FontAwesomeIcon
         icon={faSquare}
-        className="w-5 h-5 text-sky-700 peer-checked:hidden block"
+        className="w-5 h-5 text-sky-500 dark:text-sky-500 peer-checked:hidden block"
       />
-      <span className="text-sky-900 rounded select-none">{label}</span>
+      <span className="text-black dark:text-white rounded select-none">
+        {label}
+      </span>
     </label>
   );
 }

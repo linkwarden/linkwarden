@@ -2,8 +2,7 @@ import Stripe from "stripe";
 
 export default async function checkSubscription(
   stripeSecretKey: string,
-  email: string,
-  priceId: string
+  email: string
 ) {
   const stripe = new Stripe(stripeSecretKey, {
     apiVersion: "2022-11-15",
@@ -33,11 +32,7 @@ export default async function checkSubscription(
             new Date((subscription.canceled_at + secondsInTwoWeeks) * 1000)
         );
 
-        return (
-          subscription?.items?.data?.some(
-            (subscriptionItem) => subscriptionItem?.plan?.id === priceId
-          ) && isNotCanceledOrHasTime
-        );
+        return subscription?.items?.data[0].plan && isNotCanceledOrHasTime;
       }
     );
 

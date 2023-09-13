@@ -160,12 +160,10 @@ export default async function updateUser(
   }
 
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-  const PRICE_ID = process.env.PRICE_ID;
 
-  if (STRIPE_SECRET_KEY && PRICE_ID && emailEnabled)
+  if (STRIPE_SECRET_KEY && emailEnabled)
     await updateCustomerEmail(
       STRIPE_SECRET_KEY,
-      PRICE_ID,
       sessionUser.email,
       user.email as string
     );

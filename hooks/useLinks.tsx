@@ -12,7 +12,7 @@ export default function useLinks(
     pinnedOnly,
     collectionId,
     tagId,
-  }: Omit<LinkRequestQuery, "cursor"> = { sort: 0 }
+  }: LinkRequestQuery = { sort: 0 }
 ) {
   const { links, setLinks, resetLinks } = useLinkStore();
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function useLinks(
     const encodedData = encodeURIComponent(JSON.stringify(requestBody));
 
     const response = await fetch(
-      `/api/routes/links?body=${encodeURIComponent(encodedData)}`
+      `/api/links?body=${encodeURIComponent(encodedData)}`
     );
 
     const data = await response.json();
