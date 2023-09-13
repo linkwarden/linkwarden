@@ -11,6 +11,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { HexColorPicker } from "react-colorful";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-hot-toast";
+import TextInput from "@/components/TextInput";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -60,23 +61,23 @@ export default function CollectionInfo({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">
-          <p className="text-sm text-sky-700 mb-2">
+          <p className="text-sm text-black dark:text-white mb-2">
             Name
             <RequiredBadge />
           </p>
           <div className="flex flex-col gap-3">
-            <input
+            <TextInput
               value={collection.name}
+              placeholder="e.g. Example Collection"
               onChange={(e) =>
                 setCollection({ ...collection, name: e.target.value })
               }
-              type="text"
-              placeholder="e.g. Example Collection"
-              className="w-full rounded-md p-3 border-sky-100 border-solid border outline-none focus:border-sky-700 duration-100"
             />
             <div className="color-picker flex justify-between">
               <div className="flex flex-col justify-between items-center w-32">
-                <p className="text-sm w-full text-sky-700 mb-2">Icon Color</p>
+                <p className="text-sm w-full text-black dark:text-white mb-2">
+                  Icon Color
+                </p>
                 <div style={{ color: collection.color }}>
                   <FontAwesomeIcon
                     icon={faFolder}
@@ -84,7 +85,7 @@ export default function CollectionInfo({
                   />
                 </div>
                 <div
-                  className="py-1 px-2 rounded-md text-xs font-semibold cursor-pointer text-sky-700 hover:bg-slate-200 duration-100"
+                  className="py-1 px-2 rounded-md text-xs font-semibold cursor-pointer text-black dark:text-white hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100"
                   onClick={() =>
                     setCollection({ ...collection, color: "#0ea5e9" })
                   }
@@ -101,9 +102,9 @@ export default function CollectionInfo({
         </div>
 
         <div className="w-full">
-          <p className="text-sm text-sky-700 mb-2">Description</p>
+          <p className="text-sm text-black dark:text-white mb-2">Description</p>
           <textarea
-            className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-white p-3 outline-none border-sky-100 focus:border-sky-700"
+            className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-gray-50 dark:bg-neutral-950 p-2 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
             placeholder="The purpose of this Collection..."
             value={collection.description}
             onChange={(e) =>

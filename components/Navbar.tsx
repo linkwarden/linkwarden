@@ -10,6 +10,7 @@ import Search from "@/components/Search";
 import useAccountStore from "@/store/account";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import useModalStore from "@/store/modals";
+import { useTheme } from "next-themes";
 
 export default function Navbar() {
   const { setModal } = useModalStore();
@@ -22,6 +23,16 @@ export default function Navbar() {
 
   const router = useRouter();
 
+  const { theme, setTheme } = useTheme();
+
+  const handleToggle = () => {
+    if (theme === "dark") {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+  };
+
   window.addEventListener("resize", () => setSidebar(false));
 
   useEffect(() => {
@@ -33,10 +44,10 @@ export default function Navbar() {
   };
 
   return (
-    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 border-b h-16">
+    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-sky-100 dark:border-b-neutral-700 border-b h-16">
       <div
         onClick={toggleSidebar}
-        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-sky-700 rounded-md duration-100 hover:bg-slate-200"
+        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
       >
         <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
       </div>
@@ -50,7 +61,7 @@ export default function Navbar() {
               method: "CREATE",
             });
           }}
-          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 text-sky-700 sm:text-white sm:bg-sky-700 sm:hover:bg-sky-600 duration-100 group"
+          className="inline-flex gap-1 relative sm:w-[7.2rem] items-center font-semibold select-none cursor-pointer p-[0.687rem] sm:p-2 sm:px-3 rounded-md sm:rounded-full hover:bg-sky-100 dark:hover:bg-sky-800 sm:dark:hover:bg-sky-600 text-sky-500 sm:text-white sm:bg-sky-700 sm:hover:bg-sky-600 duration-100 group"
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -60,20 +71,19 @@ export default function Navbar() {
             New Link
           </span>
         </div>
-
         <div className="relative">
           <div
-            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit bg-white cursor-pointer"
+            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:dark:bg-neutral-700 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit cursor-pointer"
             onClick={() => setProfileDropdown(!profileDropdown)}
             id="profile-dropdown"
           >
             <ProfilePhoto
               src={account.profilePic}
-              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100  border-[3px]"
+              className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100 border-[3px]"
             />
             <p
               id="profile-dropdown"
-              className="font-bold text-sky-700 leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
+              className="font-bold text-black dark:text-white leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
             >
               {account.name}
             </p>
@@ -89,6 +99,13 @@ export default function Navbar() {
                       state: true,
                       active: account,
                     });
+                    setProfileDropdown(!profileDropdown);
+                  },
+                },
+                {
+                  name: `Switch to ${theme === "light" ? "Dark" : "Light"}`,
+                  onClick: () => {
+                    handleToggle();
                     setProfileDropdown(!profileDropdown);
                   },
                 },

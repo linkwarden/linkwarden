@@ -32,11 +32,15 @@ export default async function updateLink(
 
   const isCollectionOwner =
     targetLink?.collection.ownerId === link.collection.ownerId &&
-    link.collection.ownerId === userId &&
-    targetLink?.collection.ownerId === userId;
+    link.collection.ownerId === userId;
+
+  const unauthorizedSwitchCollection =
+    !isCollectionOwner && targetLink?.collection.id !== link.collection.id;
+
+  console.log(isCollectionOwner);
 
   // Makes sure collection members (non-owners) cannot move a link to/from a collection.
-  if (!isCollectionOwner)
+  if (unauthorizedSwitchCollection)
     return {
       response: "You can't move a link to/from a collection you don't own.",
       status: 401,
@@ -54,15 +58,11 @@ export default async function updateLink(
       data: {
         name: link.name,
         description: link.description,
-        collection:
-          targetLink?.collection.ownerId === link.collection.ownerId &&
-          link.collection.ownerId === userId
-            ? {
-                connect: {
-                  id: link.collection.id,
-                },
-              }
-            : undefined,
+        collection: {
+          connect: {
+            id: link.collection.id,
+          },
+        },
         tags: {
           set: [],
           connectOrCreate: link.tags.map((tag) => ({
@@ -99,14 +99,14 @@ export default async function updateLink(
       },
     });
 
-    if (targetLink.collection.id !== link.collection.id) {
+    if (targetLink?.collection.id !== link.collection.id) {
       await moveFile(
-        `archives/${targetLink.collection.id}/${link.id}.pdf`,
+        `archives/${targetLink?.collection.id}/${link.id}.pdf`,
         `archives/${link.collection.id}/${link.id}.pdf`
       );
 
       await moveFile(
-        `archives/${targetLink.collection.id}/${link.id}.png`,
+        `archives/${targetLink?.collection.id}/${link.id}.png`,
         `archives/${link.collection.id}/${link.id}.png`
       );
     }
