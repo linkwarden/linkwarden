@@ -21,7 +21,7 @@ export default async function postLink(
   }
 
   if (!link.collection.name) {
-    link.collection.name = "Unnamed Collection";
+    link.collection.name = "Unorganized";
   }
 
   link.collection.name = link.collection.name.trim();

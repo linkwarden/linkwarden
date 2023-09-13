@@ -85,3 +85,8 @@ interface CollectionIncludingLinks extends Collection {
 export interface Backup extends Omit<User, "password" | "id" | "image"> {
   collections: CollectionIncludingLinks[];
 }
+
+export enum Plan {
+  monthly,
+  yearly,
+}

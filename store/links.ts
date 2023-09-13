@@ -38,7 +38,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     }));
   },
   addLink: async (body) => {
-    const response = await fetch("/api/routes/links", {
+    const response = await fetch("/api/links", {
       body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     return { ok: response.ok, data: data.response };
   },
   updateLink: async (link) => {
-    const response = await fetch("/api/routes/links", {
+    const response = await fetch("/api/links", {
       body: JSON.stringify(link),
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     return { ok: response.ok, data: data.response };
   },
   removeLink: async (link) => {
-    const response = await fetch("/api/routes/links", {
+    const response = await fetch("/api/links", {
       body: JSON.stringify(link),
       headers: {
         "Content-Type": "application/json",

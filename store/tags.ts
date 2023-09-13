@@ -9,7 +9,7 @@ type TagStore = {
 const useTagStore = create<TagStore>()((set) => ({
   tags: [],
   setTags: async () => {
-    const response = await fetch("/api/routes/tags");
+    const response = await fetch("/api/tags");
 
     const data = await response.json();
 

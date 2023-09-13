@@ -11,6 +11,8 @@ export default function PublicCollections() {
 
   const [data, setData] = useState<PublicCollectionIncludingLinks>();
 
+  document.body.style.background = "white";
+
   useEffect(() => {
     if (router.query.id) {
       getPublicCollectionData(
@@ -45,9 +47,7 @@ export default function PublicCollections() {
       <div
         className={`text-center bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-3xl shadow-lg p-5`}
       >
-        <p className="text-5xl text-sky-700 font-bold mb-5 capitalize">
-          {data.name}
-        </p>
+        <p className="text-5xl text-black mb-5 capitalize">{data.name}</p>
 
         {data.description && (
           <>
@@ -64,7 +64,7 @@ export default function PublicCollections() {
       </div>
 
       {/* <p className="text-center font-bold text-gray-500">
-        List created with <span className="text-sky-700">Linkwarden.</span>
+        List created with <span className="text-black">Linkwarden.</span>
       </p> */}
     </div>
   ) : (

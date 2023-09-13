@@ -26,11 +26,11 @@ export default async function getLink(userId: number, body: string) {
     };
   else if (query.sort === Sort.DescriptionAZ)
     order = {
-      name: "asc",
+      description: "asc",
     };
   else if (query.sort === Sort.DescriptionZA)
     order = {
-      name: "desc",
+      description: "desc",
     };
 
   const links = await prisma.link.findMany({

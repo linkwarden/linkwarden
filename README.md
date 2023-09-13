@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/icon.png" width="100px" />
+  <img src="./assets/logo.png" width="100px" />
   <h1>Linkwarden</h1>
 
 <a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?logo=discord&style=flat-square" alt="Discord"></a>
@@ -11,7 +11,7 @@
 
 <div align='center'>
 
-[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/linkwarden/linkwarden#roadmap) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
@@ -52,13 +52,7 @@ We highly recommend you **not** to use the old version as it is no longer mainta
 
 ## Roadmap
 
-There are _many_ upcoming features, below are only _some_ of the 100% planned ones:
-
-- 🌒 Dark mode.
-- 📦 Import/Export your data.
-- 🧩 Browser extention.
-
-Also make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/projects/1).
+Make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/projects/1).
 
 ## Docs
 
