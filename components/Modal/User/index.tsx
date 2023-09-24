@@ -66,7 +66,7 @@ export default function UserModal({
                   : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 rounded-md duration-100 outline-none"
               }
             >
-              Billing Portal
+              Billing
             </Tab>
           ) : undefined}
         </Tab.List>
