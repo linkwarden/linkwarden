@@ -31,7 +31,7 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 Linkwarden has been completely rebuilt and redesigned from ground up, so pretty much the only thing it has in common with its predecessor is the idea behind it - bookmark management.
 
 **What happened to the old version?**
-What happened to the old version? We highly recommend that you don't use the old version because it is no longer maintained and has far fewer features. However, if you still want to check it out, we've forked the old version from the current repository into [this repo](https://github.com/linkwarden/linkwarden-old).
+We highly recommend that you don't use the old version because it is no longer maintained and has far fewer features. However, if you still want to check it out, we've forked the old version from the current repository into [this repo](https://github.com/linkwarden/linkwarden-old).
 
 </details>
 
@@ -46,7 +46,7 @@ What happened to the old version? We highly recommend that you don't use the old
 - 🔍 Search, filter and sort by link details.
 - 📱 Responsive design and supports most browsers.
 - 🌓 Dark/Light mode support.
-- 🧩 Browser extension (managed by the [community](https://github.com/linkwarden/browser-extension)).
+- 🧩 Browser extension, managed by the community [check it out!](https://github.com/linkwarden/browser-extension)
 
 ## Roadmap
 
