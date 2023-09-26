@@ -46,7 +46,7 @@ What happened to the old version? We highly recommend that you don't use the old
 - 🔍 Search, filter and sort by link details.
 - 📱 Responsive design and supports most browsers.
 - 🌓 Dark/Light mode support.
-- 🧩 Browser extension.
+- 🧩 Browser extension (managed by the [community](https://github.com/linkwarden/browser-extension)).
 
 ## Roadmap
 
