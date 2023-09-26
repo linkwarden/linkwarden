@@ -13,19 +13,19 @@ export default function CenteredForm({ text, children }: Props) {
   return (
     <div className="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center p-5">
       <div className="m-auto flex flex-col gap-2">
-        {theme === "light" ? (
+        {theme === "dark" ? (
           <Image
             src="/linkwarden.png"
-            width={518}
-            height={145}
+            width={640}
+            height={136}
             alt="Linkwarden"
             className="h-12 w-fit mx-auto"
           />
         ) : (
           <Image
-            src="/linkwarden_darkmode.png"
-            width={518}
-            height={145}
+            src="/linkwarden_light.png"
+            width={640}
+            height={136}
             alt="Linkwarden"
             className="h-12 w-fit mx-auto"
           />
