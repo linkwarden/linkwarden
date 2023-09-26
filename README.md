@@ -23,32 +23,29 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 
 <img src="./assets/showcase_image.png" />
 
+> **Note**
+> Our official [Cloud](https://linkwarden.app/#pricing) offering provides the simplest way to begin using Linkwarden. It's the preferred choice for many due to its time-saving benefits. Your subscription supports our hosting infrastructure and ongoing development. <br> Alternatively, if you prefer [self-hosting](https://docs.linkwarden.app/getting-started/self-hosting) Linkwarden, no problem! You'll still have access to all the premium features.
+
 <details>
 <summary><b>A bit of a "history"</b></summary>
 Linkwarden has been completely rebuilt and redesigned from ground up, so pretty much the only thing it has in common with its predecessor is the idea behind it - bookmark management.
 
 **What happened to the old version?**
-We highly recommend you **not** to use the old version as it is no longer maintained and has much less features. But anyway if you really wanna check it out, here it is in [this repo](https://github.com/linkwarden/linkwarden-old).
+What happened to the old version? We highly recommend that you don't use the old version because it is no longer maintained and has far fewer features. However, if you still want to check it out, we've forked the old version from the current repository into [this repo](https://github.com/linkwarden/linkwarden-old).
 
 </details>
 
-## Main Tech Stack
-
-- NextJS
-- TypeScript
-- Tailwind
-- Prisma
-- Zustand
-
 ## Features
 
-- ✅ Auto capture a screenshot and a PDF of each link.
-- ✅ Organize links by collection, name, description and multiple tags.
-- ✅ Collaborate on gathering links in a collection.
-- ✅ Customize the permissions of each member.
-- ✅ Share your collected links with the world.
-- ✅ Search, filter and sort by link details.
-- ✅ Responsive design and supports most browsers.
+- 📸 Auto capture a screenshot and a PDF of each link.
+- 📂 Organize links by collection, name, description and multiple tags.
+- 👥 Collaborate on gathering links in a collection.
+- 🔐 Customize the permissions of each member.
+- 🌐 Share your collected links with the world.
+- 📌 Pin your favorite links to dashboard.
+- 🔍 Search, filter and sort by link details.
+- 📱 Responsive design and supports most browsers.
+- 🌓 Dark/Light mode support.
 
 ## Roadmap
 
@@ -57,6 +54,14 @@ Make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/p
 ## Docs
 
 For information on how to get started or to set up your own instance, please visit the [documentation](https://docs.linkwarden.app).
+
+## Main Tech Stack
+
+- NextJS
+- TypeScript
+- Tailwind
+- Prisma
+- Zustand
 
 ## Development
 
@@ -76,7 +81,7 @@ If you found a security vulnerability, please do **not** create a public issue, 
 
 ## Support ❤
 
-Any [donations](https://opencollective.com/linkwarden) are highly appreciated. <3
+Other than using our official [Cloud](https://linkwarden.app/#pricing) offering, any [donations](https://opencollective.com/linkwarden) are highly appreciated as well. <3
 
 Here are the other ways to support/cheer this project:
 
