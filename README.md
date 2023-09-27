@@ -74,11 +74,13 @@ If you found a security vulnerability, please do **not** create a public issue, 
 
 ## Screenshots
 
-<img src="./assets/collections.png" />
+<div align="center">
+<img src="./assets/collections.png" height="188" />
 
-<img src="./assets/collaborators.png" />
+<img src="./assets/collaborators.png" height="188" />
 
-<img src="./assets/link_details.png" />
+<img src="./assets/link_details.png" height="188" />
+</div>
 
 ## Support ❤
 
