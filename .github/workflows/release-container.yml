@@ -2,8 +2,8 @@ name: Create and publish a container image on release
 
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - main
 
 env:
   REGISTRY: ghcr.io
