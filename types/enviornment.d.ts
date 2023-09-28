@@ -4,6 +4,7 @@ declare global {
       NEXTAUTH_SECRET: string;
       DATABASE_URL: string;
       NEXTAUTH_URL: string;
+      NEXT_PUBLIC_DISABLE_REGISTRATION?: string;
       PAGINATION_TAKE_COUNT?: string;
       STORAGE_FOLDER?: string;
       AUTOSCROLL_TIMEOUT?: string;
