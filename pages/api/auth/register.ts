@@ -20,6 +20,10 @@ export default async function Index(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  if (process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true") {
+    return res.status(400).json({ response: "Registration is disabled." });
+  }
+
   const body: User = req.body;
 
   const checkHasEmptyFields = emailEnabled
