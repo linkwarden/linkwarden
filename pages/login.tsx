@@ -97,15 +97,17 @@ export default function Login() {
           className=" w-full text-center"
           loading={submitLoader}
         />
-        <div className="flex items-baseline gap-1 justify-center">
-          <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
-          <Link
-            href={"/register"}
-            className="block text-black dark:text-white font-semibold"
-          >
-            Sign Up
-          </Link>
-        </div>
+        {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? undefined : (
+          <div className="flex items-baseline gap-1 justify-center">
+            <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
+            <Link
+              href={"/register"}
+              className="block text-black dark:text-white font-semibold"
+            >
+              Sign Up
+            </Link>
+          </div>
+        )}
       </div>
     </CenteredForm>
   );
