@@ -2,7 +2,9 @@ import { prisma } from "@/lib/api/db";
 import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 
-export default async function getData(userId: number, data: Backup) {
+export default async function getData(userId: number, rawData: any) {
+  const data: Backup = JSON.parse(rawData);
+
   // Import collections
   try {
     data.collections.forEach(async (e) => {
