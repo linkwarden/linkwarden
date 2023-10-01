@@ -59,7 +59,7 @@ export default function PrivacySettings({
       reader.onload = async function (e) {
         const load = toast.loading("Importing...");
 
-        const response = await fetch("/api/data", {
+        const response = await fetch("/api/migration", {
           method: "POST",
           body: e.target?.result,
         });
@@ -201,7 +201,7 @@ export default function PrivacySettings({
             ) : null}
           </div>
 
-          <Link className="w-fit" href="/api/data">
+          <Link className="w-fit" href="/api/migration">
             <div className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
               Export Data
             </div>
