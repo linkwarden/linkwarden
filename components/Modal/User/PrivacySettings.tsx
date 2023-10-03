@@ -50,7 +50,7 @@ export default function PrivacySettings({
     return wordsArray;
   };
 
-  const postJSONFile = async (e: any) => {
+  const postBookmarkFile = async (e: any) => {
     const file: File = e.target.files[0];
 
     if (file) {
@@ -59,7 +59,7 @@ export default function PrivacySettings({
       reader.onload = async function (e) {
         const load = toast.loading("Importing...");
 
-        const response = await fetch("/api/data", {
+        const response = await fetch("/api/migration", {
           method: "POST",
           body: e.target?.result,
         });
@@ -156,9 +156,7 @@ export default function PrivacySettings({
       </div>
 
       <div className="mt-5">
-        <p className="text-sm text-black dark:text-white mb-2">
-          Import/Export Data
-        </p>
+        <p className="text-sm text-black dark:text-white mb-2">Import Data</p>
 
         <div className="flex gap-2">
           <div
@@ -178,22 +176,22 @@ export default function PrivacySettings({
                   const target = e.target as HTMLInputElement;
                   if (target.id !== "import-dropdown") setImportDropdown(false);
                 }}
-                className={`absolute top-7 left-0 w-36 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+                className={`absolute top-7 left-0 w-48 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
               >
                 <div className="cursor-pointer rounded-md">
                   <label
                     htmlFor="import-file"
-                    title="JSON"
+                    title="HTML File"
                     className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
                   >
-                    Linkwarden
+                    Bookmarks HTML file...
                     <input
                       type="file"
                       name="photo"
                       id="import-file"
-                      accept=".json"
+                      accept=".html"
                       className="hidden"
-                      onChange={postJSONFile}
+                      onChange={postBookmarkFile}
                     />
                   </label>
                 </div>
@@ -201,11 +199,12 @@ export default function PrivacySettings({
             ) : null}
           </div>
 
-          <Link className="w-fit" href="/api/data">
+          {/* Commented out for now. */}
+          {/* <Link className="w-fit" href="/api/migration">
             <div className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
               Export Data
             </div>
-          </Link>
+          </Link> */}
         </div>
       </div>
 

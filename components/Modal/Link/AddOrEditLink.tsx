@@ -7,8 +7,8 @@ import useLinkStore from "@/store/links";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import RequiredBadge from "../../RequiredBadge";
 import { useSession } from "next-auth/react";
-// import useCollectionStore from "@/store/collections";
-// import { useRouter } from "next/router";
+import useCollectionStore from "@/store/collections";
+import { useRouter } from "next/router";
 import SubmitButton from "../../SubmitButton";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
@@ -55,27 +55,40 @@ export default function AddOrEditLink({
 
   const { updateLink, addLink } = useLinkStore();
 
-  // const router = useRouter();
+  const router = useRouter();
+  const { collections } = useCollectionStore();
 
-  // const { collections } = useCollectionStore();
+  useEffect(() => {
+    if (method === "CREATE") {
+      if (router.query.id) {
+        const currentCollection = collections.find(
+          (e) => e.id == Number(router.query.id)
+        );
 
-  // useEffect(() => {
-  //   if (router.query.id) {
-  //     const currentCollection = collections.find(
-  //       (e) => e.id == Number(router.query.id)
-  //     );
-
-  //     if (currentCollection && currentCollection.ownerId)
-  //       setLink({
-  //         ...link,
-  //         collection: {
-  //           id: currentCollection.id,
-  //           name: currentCollection.name,
-  //           ownerId: currentCollection.ownerId,
-  //         },
-  //       });
-  //   }
-  // }, []);
+        if (
+          currentCollection &&
+          currentCollection.ownerId &&
+          router.asPath.startsWith("/collections/")
+        )
+          setLink({
+            ...link,
+            collection: {
+              id: currentCollection.id,
+              name: currentCollection.name,
+              ownerId: currentCollection.ownerId,
+            },
+          });
+      } else
+        setLink({
+          ...link,
+          collection: {
+            // id: ,
+            name: "Unorganized",
+            ownerId: data?.user.id as number,
+          },
+        });
+    }
+  }, []);
 
   const setTags = (e: any) => {
     const tagNames = e.map((e: any) => {
@@ -147,27 +160,29 @@ export default function AddOrEditLink({
             <p className="text-sm text-black dark:text-white mb-2">
               Collection
             </p>
-            <CollectionSelection
-              onChange={setCollection}
-              // defaultValue={{
-              //   label: link.collection.name,
-              //   value: link.collection.id,
-              // }}
-              defaultValue={
-                link.collection.id
-                  ? {
-                      value: link.collection.id,
-                      label: link.collection.name,
-                    }
-                  : {
-                      value: null as unknown as number,
-                      label: "Unorganized",
-                    }
-              }
-            />
+            {link.collection.name ? (
+              <CollectionSelection
+                onChange={setCollection}
+                // defaultValue={{
+                //   label: link.collection.name,
+                //   value: link.collection.id,
+                // }}
+                defaultValue={
+                  link.collection.id
+                    ? {
+                        value: link.collection.id,
+                        label: link.collection.name,
+                      }
+                    : {
+                        value: null as unknown as number,
+                        label: "Unorganized",
+                      }
+                }
+              />
+            ) : null}
           </div>
         </div>
-      ) : null}
+      ) : undefined}
 
       {optionsExpanded ? (
         <div>
@@ -187,20 +202,22 @@ export default function AddOrEditLink({
                 <p className="text-sm text-black dark:text-white mb-2">
                   Collection
                 </p>
-                <CollectionSelection
-                  onChange={setCollection}
-                  defaultValue={
-                    link.collection.name && link.collection.id
-                      ? {
-                          value: link.collection.id,
-                          label: link.collection.name,
-                        }
-                      : {
-                          value: null as unknown as number,
-                          label: "Unorganized",
-                        }
-                  }
-                />
+                {link.collection.name ? (
+                  <CollectionSelection
+                    onChange={setCollection}
+                    defaultValue={
+                      link.collection.name && link.collection.id
+                        ? {
+                            value: link.collection.id,
+                            label: link.collection.name,
+                          }
+                        : {
+                            value: null as unknown as number,
+                            label: "Unorganized",
+                          }
+                    }
+                  />
+                ) : undefined}
               </div>
             ) : undefined}
 

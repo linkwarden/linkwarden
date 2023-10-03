@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function getData(userId: number) {
+export default async function exportData(userId: number) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     include: {
