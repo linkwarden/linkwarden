@@ -17,7 +17,7 @@ export default function useLinks(
   const { links, setLinks, resetLinks } = useLinkStore();
   const router = useRouter();
 
-  const hasReachedBottom = useDetectPageBottom();
+  const { reachedBottom, setReachedBottom } = useDetectPageBottom();
 
   const getLinks = async (isInitialCall: boolean, cursor?: number) => {
     const requestBody: LinkRequestQuery = {
@@ -48,6 +48,8 @@ export default function useLinks(
   }, [router, sort, searchFilter]);
 
   useEffect(() => {
-    if (hasReachedBottom) getLinks(false, links?.at(-1)?.id);
-  }, [hasReachedBottom]);
+    if (reachedBottom) getLinks(false, links?.at(-1)?.id);
+
+    setReachedBottom(false);
+  }, [reachedBottom]);
 }

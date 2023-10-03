@@ -82,7 +82,7 @@ export default function DeleteCollection({
           </div>
 
           <div className="flex flex-col gap-3">
-            <p className="text-black dark:text-white select-none text-center">
+            <p className="text-black dark:text-white text-center">
               To confirm, type &quot;
               <span className="font-bold">{collection.name}</span>
               &quot; in the box below:
