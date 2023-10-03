@@ -5,21 +5,22 @@ const useDetectPageBottom = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const offsetHeight = document.documentElement.offsetHeight;
-      const innerHeight = window.innerHeight;
-      const scrollTop = document.documentElement.scrollTop;
+      const totalHeight = document.documentElement.scrollHeight;
+      const scrolledHeight = window.scrollY + window.innerHeight;
 
-      const hasReachedBottom = offsetHeight - (innerHeight + scrollTop) <= 100;
-
-      setReachedBottom(hasReachedBottom);
+      if (scrolledHeight >= totalHeight) {
+        setReachedBottom(true);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  return reachedBottom;
+  return { reachedBottom, setReachedBottom };
 };
 
 export default useDetectPageBottom;
