@@ -8,6 +8,7 @@ export default async function updateLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
+  console.log(link);
   if (!link || !link.collection.id)
     return {
       response: "Please choose a valid link and collection.",
