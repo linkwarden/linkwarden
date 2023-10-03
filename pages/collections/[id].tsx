@@ -222,7 +222,7 @@ export default function Index() {
             </div>
           </div>
         </div>
-        {links[0] ? (
+        {links.some((e) => e.collectionId === Number(router.query.id)) ? (
           <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
             {links
               .filter((e) => e.collectionId === Number(router.query.id))
