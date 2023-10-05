@@ -19,6 +19,7 @@ import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
 import isValidUrl from "@/lib/client/isValidUrl";
+import Link from "next/link";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -106,7 +107,7 @@ export default function LinkCard({ link, count, className }: Props) {
 
   return (
     <div
-      className={`h-fit bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none cursor-pointer duration-100 rounded-2xl relative group ${className}`}
+      className={`h-fit border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none duration-100 rounded-2xl relative group ${className}`}
     >
       {(permissions === true ||
         permissions?.canUpdate ||
@@ -136,7 +137,7 @@ export default function LinkCard({ link, count, className }: Props) {
             active: link,
           });
         }}
-        className="flex items-start gap-5 sm:gap-10 h-full w-full p-5"
+        className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-5"
       >
         {url && (
           <Image
@@ -163,22 +164,33 @@ export default function LinkCard({ link, count, className }: Props) {
                 {link.name || link.description}
               </p>
             </div>
-            <div className="flex gap-3 items-center my-3">
-              <div className="flex items-center gap-1 w-full pr-20">
-                <FontAwesomeIcon
-                  icon={faFolder}
-                  className="w-4 h-4 mt-1 drop-shadow"
-                  style={{ color: collection?.color }}
-                />
-                <p className="text-black dark:text-white truncate capitalize">
-                  {collection?.name}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1 w-full pr-20 text-gray-500 dark:text-gray-300">
+            <Link
+              href={`/collections/${link.collection.id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="flex items-center gap-1 max-w-full w-fit my-3 hover:opacity-70 duration-100"
+            >
+              <FontAwesomeIcon
+                icon={faFolder}
+                className="w-4 h-4 mt-1 drop-shadow"
+                style={{ color: collection?.color }}
+              />
+              <p className="text-black dark:text-white truncate capitalize w-full">
+                {collection?.name}
+              </p>
+            </Link>
+            <Link
+              href={link.url}
+              target="_blank"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="flex items-center gap-1 max-w-full w-fit text-gray-500 dark:text-gray-300 hover:opacity-70 duration-100"
+            >
               <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
               <p className="truncate w-full">{shortendURL}</p>
-            </div>
+            </Link>
             <div className="flex items-center gap-1 text-gray-500 dark:text-gray-300">
               <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
               <p>{formattedDate}</p>

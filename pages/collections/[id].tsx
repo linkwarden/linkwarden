@@ -50,7 +50,7 @@ export default function Index() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
-        <div className="bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
+        <div className="border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
           <div className="flex flex-col sm:flex-row gap-3 justify-between items-center sm:items-start">
             {activeCollection && (
               <div className="flex gap-3 items-center">

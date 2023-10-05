@@ -32,7 +32,7 @@ export default function CollectionCard({ collection, className }: Props) {
 
   return (
     <div
-      className={`bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none group relative ${className}`}
+      className={`border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${className}`}
     >
       <div
         onClick={() => setExpandDropdown(!expandDropdown)}
