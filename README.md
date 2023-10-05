@@ -47,6 +47,7 @@ We highly recommend that you don't use the old version because it is no longer m
 - 📱 Responsive design and supports most browsers.
 - 🌓 Dark/Light mode support.
 - 🧩 Browser extension, managed by the community [check it out!](https://github.com/linkwarden/browser-extension)
+- ⬇️ Import your bookmarks from other browsers.
 
 ## Roadmap
 
