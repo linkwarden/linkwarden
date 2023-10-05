@@ -166,7 +166,6 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
           <Link
             href={link.url}
             target="_blank"
-            rel="noreferrer"
             className={`${
               link.name ? "text-sm" : "text-xl"
             } text-gray-500 dark:text-gray-300 break-all hover:underline cursor-pointer w-fit`}
