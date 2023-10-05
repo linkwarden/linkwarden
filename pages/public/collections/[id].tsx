@@ -1,3 +1,4 @@
+"use client";
 import LinkCard from "@/components/PublicPage/LinkCard";
 import useDetectPageBottom from "@/hooks/useDetectPageBottom";
 import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
