@@ -26,7 +26,7 @@ export default function LinkCard({ link, count }: Props) {
 
   return (
     <a href={link.url} target="_blank" rel="noreferrer" className="rounded-3xl">
-      <div className="bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow-md sm:hover:shadow-none duration-100 rounded-3xl cursor-pointer p-5 flex items-start relative gap-5 sm:gap-10 group/item">
+      <div className="border border-solid border-sky-100 bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow-md sm:hover:shadow-none duration-100 rounded-3xl cursor-pointer p-5 flex items-start relative gap-5 sm:gap-10 group/item">
         {url && (
           <>
             <Image
