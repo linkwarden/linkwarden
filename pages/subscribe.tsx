@@ -70,8 +70,8 @@ export default function Subscribe() {
           >
             <p>Yearly</p>
           </button>
-          <div className="absolute -top-4 -right-4 px-1 bg-red-500 text-white rounded-md rotate-[22deg]">
-            %25 Off
+          <div className="absolute -top-3 -right-4 px-1 bg-red-500 text-sm text-white rounded-md rotate-[22deg]">
+            25% Off
           </div>
         </div>
 
@@ -90,7 +90,7 @@ export default function Subscribe() {
             <div className="w-full p-1 rounded-md border border-solid border-sky-100 dark:border-neutral-700">
               <p className="text-sm">
                 {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS}-day free trial, then
-                ${plan === Plan.monthly ? "4" : "3"} per month
+                ${plan === Plan.monthly ? "4 per month" : "36 annually"}
               </p>
               <p className="text-sm">+ VAT if applicable</p>
             </div>
