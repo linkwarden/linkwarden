@@ -15,8 +15,8 @@ export default function EmailConfirmaion() {
         <hr className="my-5 dark:border-neutral-700" />
 
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Can't find the email in your inbox? Check your spam folder or visit
-          the{" "}
+          Didn&apos;t find the email in your inbox? Check your spam folder or
+          visit the{" "}
           <Link href="/forgot" className="font-bold underline">
             Password Recovery
           </Link>{" "}
