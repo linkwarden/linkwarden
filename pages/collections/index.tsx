@@ -111,7 +111,7 @@ export default function Collections() {
           })}
 
           <div
-            className="p-5 self-stretch bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
+            className="p-5 self-stretch border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
             onClick={() => {
               setModal({
                 modal: "COLLECTION",
