@@ -15,11 +15,12 @@ export default function EmailConfirmaion() {
         <hr className="my-5 dark:border-neutral-700" />
 
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          If you didn&apos;t receive anything, go to the{" "}
+          Can't find the email in your inbox? Check your spam folder or visit
+          the{" "}
           <Link href="/forgot" className="font-bold underline">
             Password Recovery
           </Link>{" "}
-          page and enter your Email to resend the sign in link.
+          page to resend the sign-in link by entering your email.
         </p>
       </div>
     </CenteredForm>
