@@ -85,7 +85,7 @@ If you found a security vulnerability, please do **not** create a public issue, 
 
 ## Support ❤
 
-Other than using our official [Cloud](https://linkwarden.app/#pricing) offering, any [donations](https://opencollective.com/linkwarden) are highly appreciated as well. <3
+Other than using our official [Cloud](https://linkwarden.app/#pricing) offering, any [donations](https://opencollective.com/linkwarden) are highly appreciated as well!
 
 Here are the other ways to support/cheer this project:
 
