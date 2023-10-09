@@ -43,7 +43,7 @@ export default function ProfilePhoto({
       src={src}
       height={112}
       width={112}
-      className={`h-10 w-10 shadow rounded-full aspect-square border border-slate-200 dark:border-neutral-700 ${className}`}
+      className={`h-10 w-10 bg-sky-600 dark:bg-sky-600 shadow rounded-full aspect-square border border-slate-200 dark:border-neutral-700 ${className}`}
     />
   );
 }

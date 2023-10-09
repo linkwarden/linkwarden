@@ -8,6 +8,7 @@ import ProfilePhoto from "./ProfilePhoto";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import useModalStore from "@/store/modals";
 import usePermissions from "@/hooks/usePermissions";
+import { useTheme } from "next-themes";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
@@ -16,6 +17,8 @@ type Props = {
 
 export default function CollectionCard({ collection, className }: Props) {
   const { setModal } = useModalStore();
+
+  const { theme } = useTheme();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",
@@ -32,7 +35,12 @@ export default function CollectionCard({ collection, className }: Props) {
 
   return (
     <div
-      className={`border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${className}`}
+      style={{
+        backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
+          theme === "dark" ? "#262626" : "#f3f4f6"
+        } 50%, ${theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
+      }}
+      className={`border border-solid border-sky-100 dark:border-neutral-700 self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${className}`}
     >
       <div
         onClick={() => setExpandDropdown(!expandDropdown)}

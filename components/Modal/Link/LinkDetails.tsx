@@ -29,7 +29,7 @@ type Props = {
 };
 
 export default function LinkDetails({ link, isOwnerOrMod }: Props) {
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   const [imageError, setImageError] = useState<boolean>(false);
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
