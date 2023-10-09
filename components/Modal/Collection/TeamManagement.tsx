@@ -310,7 +310,7 @@ export default function TeamManagement({
                             <span
                               className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
-                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-75"
+                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100"
                                   : ""
                               } rounded p-1 select-none`}
                             >
@@ -355,7 +355,7 @@ export default function TeamManagement({
                             <span
                               className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
-                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-75"
+                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100"
                                   : ""
                               } rounded p-1 select-none`}
                             >
@@ -400,7 +400,7 @@ export default function TeamManagement({
                             <span
                               className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
-                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-75"
+                                  ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100"
                                   : ""
                               } rounded p-1 select-none`}
                             >

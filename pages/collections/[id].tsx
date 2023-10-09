@@ -19,11 +19,14 @@ import useModalStore from "@/store/modals";
 import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
+import { useTheme } from "next-themes";
 
 export default function Index() {
   const { setModal } = useModalStore();
 
   const router = useRouter();
+
+  const { theme } = useTheme();
 
   const { links } = useLinkStore();
   const { collections } = useCollectionStore();
@@ -50,8 +53,17 @@ export default function Index() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
-        <div className="border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-sky-100 dark:from-gray-800 from-10% via-gray-100 via-20% to-white dark:to-neutral-800 to-100% rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between">
-          <div className="flex flex-col sm:flex-row gap-3 justify-between items-center sm:items-start">
+        <div
+          style={{
+            backgroundImage: `linear-gradient(-45deg, ${
+              activeCollection?.color
+            }30 10%, ${theme === "dark" ? "#262626" : "#f3f4f6"} 50%, ${
+              theme === "dark" ? "#262626" : "#f9fafb"
+            } 100%)`,
+          }}
+          className="border border-solid border-sky-100 dark:border-neutral-700 rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between"
+        >
+          <div className="flex flex-col sm:flex-row gap-3 justify-between sm:items-start">
             {activeCollection && (
               <div className="flex gap-3 items-center">
                 <div className="flex gap-2">
@@ -84,15 +96,8 @@ export default function Index() {
                       defaultIndex: permissions === true ? 1 : 0,
                     })
                   }
-                  className="flex justify-center sm:justify-end items-center w-fit mx-auto sm:mr-0 sm:ml-auto group cursor-pointer"
+                  className="hover:opacity-80 duration-100 flex justify-center sm:justify-end items-center w-fit sm:mr-0 sm:ml-auto cursor-pointer"
                 >
-                  <div
-                    className={`bg-sky-700 p-2 leading-3 select-none group-hover:bg-sky-600 duration-100 text-white rounded-full text-xs ${
-                      activeCollection.members[0] && "mr-1"
-                    }`}
-                  >
-                    {permissions === true ? "Manage" : "View"} Team
-                  </div>
                   {activeCollection?.members
                     .sort((a, b) => (a.userId as number) - (b.userId as number))
                     .map((e, i) => {
@@ -100,7 +105,7 @@ export default function Index() {
                         <ProfilePhoto
                           key={i}
                           src={`/api/avatar/${e.userId}?${Date.now()}`}
-                          className="-mr-3 duration-100  border-[3px]"
+                          className="-mr-3 border-[3px]"
                         />
                       );
                     })
@@ -123,7 +128,7 @@ export default function Index() {
                 <div
                   onClick={() => setSortDropdown(!sortDropdown)}
                   id="sort-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                  className="inline-flex rounded-md cursor-pointer hover:bg-black hover:dark:bg-white hover:bg-opacity-10 hover:dark:bg-opacity-10 duration-100 p-1"
                 >
                   <FontAwesomeIcon
                     icon={faSort}
@@ -144,7 +149,7 @@ export default function Index() {
                 <div
                   onClick={() => setExpandDropdown(!expandDropdown)}
                   id="expand-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                  className="inline-flex rounded-md cursor-pointer hover:bg-black hover:dark:bg-white hover:bg-opacity-10 hover:dark:bg-opacity-10 duration-100 p-1"
                 >
                   <FontAwesomeIcon
                     icon={faEllipsis}
