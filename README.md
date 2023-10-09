@@ -11,7 +11,7 @@
 
 <div align='center'>
 
-[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
@@ -24,7 +24,7 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 <img src="./assets/showcase_image.png" />
 
 > **Note**
-> Our official [Cloud](https://linkwarden.app/#pricing) offering provides the simplest way to begin using Linkwarden and it's the preferred choice for many due to its time-saving benefits. <br> Your subscription supports our hosting infrastructure and ongoing development. <br> Alternatively, if you prefer [self-hosting](https://docs.linkwarden.app/getting-started/self-hosting) Linkwarden, no problem! You'll still have access to all the premium features.
+> Our official [Cloud](https://linkwarden.app/#pricing) offering provides the simplest way to begin using Linkwarden and it's the preferred choice for many due to its time-saving benefits. <br> Your subscription supports our hosting infrastructure and ongoing development. <br> Alternatively, if you prefer [self-hosting](https://docs.linkwarden.app/self-hosting/installation) Linkwarden, no problem! You'll still have access to all the premium features.
 
 <details>
 <summary><b>A bit of a "history"</b></summary>
@@ -76,11 +76,11 @@ If you found a security vulnerability, please do **not** create a public issue, 
 ## Screenshots
 
 <div align="center">
-<img src="./assets/collections.png" height="185" />
+<img src="./assets/collections.png" height="180" />
 
-<img src="./assets/collaborators.png" height="185" />
+<img src="./assets/collaborators.png" height="180" />
 
-<img src="./assets/link_details.png" height="185" />
+<img src="./assets/link_details.png" height="180" />
 </div>
 
 ## Support ❤
