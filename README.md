@@ -11,7 +11,7 @@
 
 <div align='center'>
 
-[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
