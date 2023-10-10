@@ -49,6 +49,10 @@ We highly recommend that you don't use the old version because it is no longer m
 - 🧩 Browser extension, managed by the community [check it out!](https://github.com/linkwarden/browser-extension)
 - ⬇️ Import your bookmarks from other browsers.
 
+## Suggestions
+
+We usually go after the [popular suggestions](https://github.com/linkwarden/linkwarden/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc). Feel free to open a [new issue](https://github.com/linkwarden/linkwarden/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=) to suggest one - others might be interested too! :)
+
 ## Roadmap
 
 Make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/projects/1).
@@ -89,7 +93,7 @@ Other than using our official [Cloud](https://linkwarden.app/#pricing) offering,
 
 Here are the other ways to support/cheer this project:
 
-- Starring this repo.
+- Starring this repository.
 - Joining us on [Discord](https://discord.com/invite/CtuYV47nuJ).
 - Following @daniel31x13 on [Mastodon](https://mastodon.social/@daniel31x13), [Twitter](https://twitter.com/daniel31x13) and [GitHub](https://github.com/daniel31x13).
 - Referring Linkwarden to a friend.
