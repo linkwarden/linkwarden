@@ -1,6 +1,5 @@
 import SubmitButton from "@/components/SubmitButton";
 import { signOut } from "next-auth/react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
@@ -11,7 +10,7 @@ import { Plan } from "@/types/global";
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
 
-  const [plan, setPlan] = useState<Plan>(0);
+  const [plan, setPlan] = useState<Plan>(1);
 
   const { data, status } = useSession();
   const router = useRouter();
