@@ -6,6 +6,7 @@ import { PublicCollectionIncludingLinks } from "@/types/global";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { motion, Variants } from "framer-motion";
+import Head from "next/head";
 
 const cardVariants: Variants = {
   offscreen: {
@@ -62,6 +63,16 @@ export default function PublicCollections() {
 
   return data ? (
     <div className="max-w-4xl mx-auto p-5 bg">
+      {data ? (
+        <Head>
+          <title>{data.name} | Linkwarden</title>
+          <meta
+            property="og:title"
+            content={`${data.name} | Linkwarden`}
+            key="title"
+          />
+        </Head>
+      ) : undefined}
       <div
         className={`border border-solid border-sky-100 text-center bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-3xl shadow-lg p-5`}
       >
