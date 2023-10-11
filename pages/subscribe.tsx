@@ -11,7 +11,7 @@ import { Plan } from "@/types/global";
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
 
-  const [plan, setPlan] = useState<Plan>(0);
+  const [plan, setPlan] = useState<Plan>(1);
 
   const { data, status } = useSession();
   const router = useRouter();
