@@ -137,7 +137,8 @@ export default function AddOrEditLink({
           className="text-gray-500 dark:text-gray-300 text-center truncate w-full"
           title={link.url}
         >
-          <Link href={link.url} target="_blank" className="font-bold">
+          Editing:{" "}
+          <Link href={link.url} target="_blank">
             {link.url}
           </Link>
         </p>
