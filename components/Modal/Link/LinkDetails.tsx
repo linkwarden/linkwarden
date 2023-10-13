@@ -297,7 +297,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
               <FontAwesomeIcon icon={faGlobe} className="w-6 h-6" />
             </div>
 
-            <p className="text-black dark:text-white">Wayback Machine</p>
+            <p className="text-black dark:text-white">Archive.org Snapshot</p>
           </div>
 
           <Link
