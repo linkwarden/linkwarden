@@ -3,7 +3,10 @@ import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
 
-export default async function importData(userId: number, rawData: string) {
+export default async function importFromHTMLFile(
+  userId: number,
+  rawData: string
+) {
   try {
     const dom = new JSDOM(rawData);
     const document = dom.window.document;
