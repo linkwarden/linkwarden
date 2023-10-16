@@ -109,7 +109,7 @@ export default function ProfileSettings({
           <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
             <ProfilePhoto
               src={user.profilePic}
-              className="h-auto  w-28"
+              className="h-auto border-none w-28"
               status={handleProfileStatus}
             />
             {profileStatus && (
@@ -120,7 +120,7 @@ export default function ProfileSettings({
                     profilePic: "",
                   })
                 }
-                className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 bg-white border-slate-200 rounded-full text-gray-500 hover:text-red-500 duration-100 cursor-pointer"
+                className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 border-slate-200 dark:border-neutral-700 rounded-full bg-white dark:bg-neutral-800 text-center select-none cursor-pointer duration-100 hover:text-red-500"
               >
                 <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
               </div>

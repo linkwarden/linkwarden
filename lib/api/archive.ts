@@ -1,11 +1,14 @@
 import { Page, chromium, devices } from "playwright";
 import { prisma } from "@/lib/api/db";
 import createFile from "@/lib/api/storage/createFile";
+import sendToWayback from "./sendToWayback";
 
 export default async function archive(linkId: number, url: string) {
   const browser = await chromium.launch();
   const context = await browser.newContext(devices["Desktop Chrome"]);
   const page = await context.newPage();
+
+  sendToWayback(url);
 
   try {
     await page.goto(url, { waitUntil: "domcontentloaded" });

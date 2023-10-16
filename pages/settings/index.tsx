@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function Index() {
+export default function Settings() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/dashboard");
+    router.push("/settings/profile");
   }, []);
 }
