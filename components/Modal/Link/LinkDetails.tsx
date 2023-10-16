@@ -12,6 +12,7 @@ import {
   faBoxArchive,
   faCloudArrowDown,
   faFolder,
+  faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import {
@@ -78,25 +79,29 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
     const bannerInner = document.getElementById("link-banner-inner");
 
     if (colorPalette && banner && bannerInner) {
-      banner.style.background = `linear-gradient(to right, ${rgbToHex(
-        colorPalette[0][0],
-        colorPalette[0][1],
-        colorPalette[0][2]
-      )}, ${rgbToHex(
-        colorPalette[1][0],
-        colorPalette[1][1],
-        colorPalette[1][2]
-      )})`;
+      if (colorPalette[0] && colorPalette[1]) {
+        banner.style.background = `linear-gradient(to right, ${rgbToHex(
+          colorPalette[0][0],
+          colorPalette[0][1],
+          colorPalette[0][2]
+        )}, ${rgbToHex(
+          colorPalette[1][0],
+          colorPalette[1][1],
+          colorPalette[1][2]
+        )})`;
+      }
 
-      bannerInner.style.background = `linear-gradient(to right, ${rgbToHex(
-        colorPalette[2][0],
-        colorPalette[2][1],
-        colorPalette[2][2]
-      )}, ${rgbToHex(
-        colorPalette[3][0],
-        colorPalette[3][1],
-        colorPalette[3][2]
-      )})`;
+      if (colorPalette[2] && colorPalette[3]) {
+        bannerInner.style.background = `linear-gradient(to right, ${rgbToHex(
+          colorPalette[2][0],
+          colorPalette[2][1],
+          colorPalette[2][2]
+        )}, ${rgbToHex(
+          colorPalette[3][0],
+          colorPalette[3][1],
+          colorPalette[3][2]
+        )})`;
+      }
     }
   }, [colorPalette, theme]);
 
@@ -224,9 +229,9 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center p-2 border border-sky-100 dark:border-neutral-700 rounded-md">
+        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
           <div className="flex gap-2 items-center">
-            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-md">
+            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
             </div>
 
@@ -237,7 +242,6 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.png`}
               target="_blank"
-              rel="noreferrer"
               className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
@@ -258,9 +262,9 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
           </div>
         </div>
 
-        <div className="flex justify-between items-center p-2 border border-sky-100 dark:border-neutral-700 rounded-md">
+        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
           <div className="flex gap-2 items-center">
-            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-md">
+            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
             </div>
 
@@ -271,7 +275,6 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.pdf`}
               target="_blank"
-              rel="noreferrer"
               className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
@@ -290,6 +293,30 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
               />
             </div>
           </div>
+        </div>
+
+        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
+          <div className="flex gap-2 items-center">
+            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
+              <FontAwesomeIcon icon={faGlobe} className="w-6 h-6" />
+            </div>
+
+            <p className="text-black dark:text-white">Archive.org Snapshot</p>
+          </div>
+
+          <Link
+            href={`https://web.archive.org/web/${link.url.replace(
+              /(^\w+:|^)\/\//,
+              ""
+            )}`}
+            target="_blank"
+            className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
+          >
+            <FontAwesomeIcon
+              icon={faArrowUpRightFromSquare}
+              className="w-5 h-5 text-sky-500 dark:text-sky-500"
+            />
+          </Link>
         </div>
       </div>
     </div>

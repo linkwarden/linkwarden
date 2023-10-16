@@ -12,7 +12,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
-import Image from "next/image";
 
 export default function Sidebar({ className }: { className?: string }) {
   const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
