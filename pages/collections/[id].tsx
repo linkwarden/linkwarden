@@ -229,11 +229,9 @@ export default function Index() {
         </div>
         {links.some((e) => e.collectionId === Number(router.query.id)) ? (
           <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-            {links
-              .filter((e) => e.collectionId === Number(router.query.id))
-              .map((e, i) => {
-                return <LinkCard key={i} link={e} count={i} />;
-              })}
+            {links.map((e, i) => {
+              return <LinkCard key={i} link={e} count={i} />;
+            })}
           </div>
         ) : (
           <NoLinksFound />
