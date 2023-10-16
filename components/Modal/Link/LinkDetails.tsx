@@ -79,25 +79,29 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
     const bannerInner = document.getElementById("link-banner-inner");
 
     if (colorPalette && banner && bannerInner) {
-      banner.style.background = `linear-gradient(to right, ${rgbToHex(
-        colorPalette[0][0],
-        colorPalette[0][1],
-        colorPalette[0][2]
-      )}, ${rgbToHex(
-        colorPalette[1][0],
-        colorPalette[1][1],
-        colorPalette[1][2]
-      )})`;
+      if (colorPalette[0] && colorPalette[1]) {
+        banner.style.background = `linear-gradient(to right, ${rgbToHex(
+          colorPalette[0][0],
+          colorPalette[0][1],
+          colorPalette[0][2]
+        )}, ${rgbToHex(
+          colorPalette[1][0],
+          colorPalette[1][1],
+          colorPalette[1][2]
+        )})`;
+      }
 
-      bannerInner.style.background = `linear-gradient(to right, ${rgbToHex(
-        colorPalette[2][0],
-        colorPalette[2][1],
-        colorPalette[2][2]
-      )}, ${rgbToHex(
-        colorPalette[3][0],
-        colorPalette[3][1],
-        colorPalette[3][2]
-      )})`;
+      if (colorPalette[2] && colorPalette[3]) {
+        bannerInner.style.background = `linear-gradient(to right, ${rgbToHex(
+          colorPalette[2][0],
+          colorPalette[2][1],
+          colorPalette[2][2]
+        )}, ${rgbToHex(
+          colorPalette[3][0],
+          colorPalette[3][1],
+          colorPalette[3][2]
+        )})`;
+      }
     }
   }, [colorPalette, theme]);
 

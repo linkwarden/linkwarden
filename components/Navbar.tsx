@@ -19,8 +19,6 @@ export default function Navbar() {
 
   const [profileDropdown, setProfileDropdown] = useState(false);
 
-  const [sidebar, setSidebar] = useState(false);
-
   const router = useRouter();
 
   const { theme, setTheme } = useTheme();
@@ -32,6 +30,8 @@ export default function Navbar() {
       setTheme("dark");
     }
   };
+
+  const [sidebar, setSidebar] = useState(false);
 
   window.addEventListener("resize", () => setSidebar(false));
 
@@ -79,6 +79,7 @@ export default function Navbar() {
           >
             <ProfilePhoto
               src={account.profilePic}
+              priority={true}
               className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100 border-[3px]"
             />
             <p
@@ -132,7 +133,7 @@ export default function Navbar() {
                 onClickOutside={toggleSidebar}
               >
                 <div className="slide-right h-full shadow-lg">
-                  <Sidebar className="" />
+                  <Sidebar />
                 </div>
               </ClickAwayHandler>
             </div>
