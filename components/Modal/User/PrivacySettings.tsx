@@ -1,7 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Checkbox from "../../Checkbox";
 import useAccountStore from "@/store/account";
-import { AccountSettings } from "@/types/global";
+import {
+  AccountSettings,
+  MigrationFormat,
+  MigrationRequest,
+} from "@/types/global";
 import { signOut, useSession } from "next-auth/react";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "../../SubmitButton";
@@ -50,7 +54,7 @@ export default function PrivacySettings({
     return wordsArray;
   };
 
-  const postBookmarkFile = async (e: any) => {
+  const importBookmarks = async (e: any, format: MigrationFormat) => {
     const file: File = e.target.files[0];
 
     if (file) {
@@ -59,9 +63,16 @@ export default function PrivacySettings({
       reader.onload = async function (e) {
         const load = toast.loading("Importing...");
 
+        const request: string = e.target?.result as string;
+
+        const body: MigrationRequest = {
+          format,
+          data: request,
+        };
+
         const response = await fetch("/api/migration", {
           method: "POST",
-          body: e.target?.result,
+          body: JSON.stringify(body),
         });
 
         const data = await response.json();
@@ -180,7 +191,7 @@ export default function PrivacySettings({
               >
                 <div className="cursor-pointer rounded-md">
                   <label
-                    htmlFor="import-file"
+                    htmlFor="import-html-file"
                     title="HTML File"
                     className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
                   >
@@ -188,10 +199,29 @@ export default function PrivacySettings({
                     <input
                       type="file"
                       name="photo"
-                      id="import-file"
+                      id="import-html-file"
                       accept=".html"
                       className="hidden"
-                      onChange={postBookmarkFile}
+                      onChange={(e) =>
+                        importBookmarks(e, MigrationFormat.htmlFile)
+                      }
+                    />
+                  </label>
+                  <label
+                    htmlFor="import-linkwarden-file"
+                    title="JSON File"
+                    className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
+                  >
+                    Linkwarden...
+                    <input
+                      type="file"
+                      name="photo"
+                      id="import-linkwarden-file"
+                      accept=".json"
+                      className="hidden"
+                      onChange={(e) =>
+                        importBookmarks(e, MigrationFormat.linkwarden)
+                      }
                     />
                   </label>
                 </div>
@@ -199,12 +229,11 @@ export default function PrivacySettings({
             ) : null}
           </div>
 
-          {/* Commented out for now. */}
-          {/* <Link className="w-fit" href="/api/migration">
+          <Link className="w-fit" href="/api/migration">
             <div className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
               Export Data
             </div>
-          </Link> */}
+          </Link>
         </div>
       </div>
 
