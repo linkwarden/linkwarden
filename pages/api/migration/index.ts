@@ -2,7 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import exportData from "@/lib/api/controllers/migration/exportData";
-import importData from "@/lib/api/controllers/migration/importData";
+import importFromHTMLFile from "@/lib/api/controllers/migration/importFromHTMLFile";
+import importFromLinkwarden from "@/lib/api/controllers/migration/importFromLinkwarden";
+import { MigrationFormat, MigrationRequest } from "@/types/global";
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
@@ -25,7 +27,15 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
         .status(data.status)
         .json(data.response);
   } else if (req.method === "POST") {
-    const data = await importData(session.user.id, req.body);
-    return res.status(data.status).json({ response: data.response });
+    const request: MigrationRequest = JSON.parse(req.body);
+
+    let data;
+    if (request.format === MigrationFormat.htmlFile)
+      data = await importFromHTMLFile(session.user.id, request.data);
+
+    if (request.format === MigrationFormat.linkwarden)
+      data = await importFromLinkwarden(session.user.id, request.data);
+
+    if (data) return res.status(data.status).json({ response: data.response });
   }
 }

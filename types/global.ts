@@ -86,6 +86,16 @@ export interface Backup extends Omit<User, "password" | "id" | "image"> {
   collections: CollectionIncludingLinks[];
 }
 
+export type MigrationRequest = {
+  format: MigrationFormat;
+  data: string;
+};
+
+export enum MigrationFormat {
+  linkwarden,
+  htmlFile,
+}
+
 export enum Plan {
   monthly,
   yearly,

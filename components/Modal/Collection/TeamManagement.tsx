@@ -156,7 +156,9 @@ export default function TeamManagement({
         </div>
       ) : null}
 
-      {permissions !== true && collection.isPublic && <hr />}
+      {permissions !== true && collection.isPublic && (
+        <hr className="mb-3 border border-sky-100 dark:border-neutral-700" />
+      )}
 
       {permissions === true && (
         <>
