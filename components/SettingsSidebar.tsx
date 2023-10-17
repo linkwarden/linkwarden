@@ -34,7 +34,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-gray-100 dark:bg-neutral-800 h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-800 border-r-sky-100 dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${className}`}
+      className={`dark:bg-neutral-900 bg-white h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-900 border-r-sky-100 dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${className}`}
     >
       <div className="flex flex-col gap-1">
         <Link href="/settings/profile">

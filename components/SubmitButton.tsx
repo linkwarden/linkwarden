@@ -27,8 +27,8 @@ export default function SubmitButton({
         if (!loading) onClick();
       }}
     >
-      {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
-      <p className="text-center w-full">{label}</p>
+      {icon && <FontAwesomeIcon icon={icon} className="h-5 select-none" />}
+      <p className="text-center w-full select-none">{label}</p>
     </div>
   );
 }

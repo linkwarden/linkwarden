@@ -5,7 +5,8 @@ import useModalStore from "@/store/modals";
 import { useRouter } from "next/router";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 interface Props {
   children: ReactNode;
@@ -38,12 +39,12 @@ export default function SettingsLayout({ children }: Props) {
     <>
       <ModalManagement />
 
-      <div className="flex">
+      <div className="flex max-w-screen-lg mx-auto">
         <div className="hidden lg:block">
-          <SettingsSidebar className="fixed top-0" />
+          <SettingsSidebar />
         </div>
 
-        <div className="w-full flex flex-col h-screen lg:ml-64 xl:ml-80 p-5">
+        <div className="w-full flex flex-col h-screen p-5">
           <div className="flex gap-3">
             <div
               onClick={toggleSidebar}
@@ -52,11 +53,18 @@ export default function SettingsLayout({ children }: Props) {
               <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
             </div>
 
+            <Link
+              href="/dashboard"
+              className="inline-flex gap-1 items-center select-none cursor-pointer p-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
+            >
+              <FontAwesomeIcon icon={faChevronLeft} className="w-5 h-5" />
+            </Link>
+
             <p className="capitalize text-3xl">
               {router.asPath.split("/").pop()} Settings
             </p>
           </div>
-          <hr className="my-3" />
+          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
           {children}
 
           {sidebar ? (

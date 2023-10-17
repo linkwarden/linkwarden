@@ -20,6 +20,7 @@ import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
 import isValidUrl from "@/lib/client/isValidUrl";
 import Link from "next/link";
+import unescapeString from "@/lib/client/unescapeString";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -161,7 +162,7 @@ export default function LinkCard({ link, count, className }: Props) {
                 {count + 1}
               </p>
               <p className="text-lg text-black dark:text-white truncate capitalize w-full pr-8">
-                {link.name || link.description}
+                {unescapeString(link.name || link.description)}
               </p>
             </div>
             <Link
