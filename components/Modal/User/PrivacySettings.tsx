@@ -12,7 +12,6 @@ import SubmitButton from "../../SubmitButton";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
-import useInitialData from "@/hooks/useInitialData";
 
 type Props = {
   toggleSettingsModal: Function;
