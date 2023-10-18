@@ -39,7 +39,7 @@ export default function SettingsLayout({ children }: Props) {
     <>
       <ModalManagement />
 
-      <div className="flex max-w-screen-lg mx-auto">
+      <div className="flex max-w-screen-md mx-auto">
         <div className="hidden lg:block">
           <SettingsSidebar />
         </div>
@@ -60,11 +60,13 @@ export default function SettingsLayout({ children }: Props) {
               <FontAwesomeIcon icon={faChevronLeft} className="w-5 h-5" />
             </Link>
 
-            <p className="capitalize text-3xl">
+            <p className="capitalize text-3xl font-thin">
               {router.asPath.split("/").pop()} Settings
             </p>
           </div>
+
           <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+
           {children}
 
           {sidebar ? (
