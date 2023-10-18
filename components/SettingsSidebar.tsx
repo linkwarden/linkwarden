@@ -34,13 +34,13 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`dark:bg-neutral-900 bg-white h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-900 border-r-sky-100 dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${className}`}
+      className={`dark:bg-neutral-900 bg-white h-full w-64 overflow-y-auto border-solid border-white border dark:border-neutral-900 border-r-sky-100 dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${className}`}
     >
       <div className="flex flex-col gap-1">
-        <Link href="/settings/profile">
+        <Link href="/settings/account">
           <div
             className={`${
-              active === `/settings/profile`
+              active === `/settings/account`
                 ? "bg-sky-200 dark:bg-sky-800"
                 : "hover:bg-slate-200 hover:dark:bg-neutral-700"
             } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
@@ -51,7 +51,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             />
 
             <p className="text-black dark:text-white truncate w-full pr-7">
-              Profile
+              Account
             </p>
           </div>
         </Link>
@@ -94,7 +94,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        <Link href="/settings/migration">
+        {/* <Link href="/settings/migration">
           <div
             className={`${
               active === `/settings/migration`
@@ -111,9 +111,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               Import & Export
             </p>
           </div>
-        </Link>
+        </Link> */}
 
-        <Link href="/settings/privacy">
+        {/* <Link href="/settings/privacy">
           <div
             className={`${
               active === `/settings/privacy`
@@ -130,7 +130,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               Privacy
             </p>
           </div>
-        </Link>
+        </Link> */}
 
         <Link href="/settings/password">
           <div
@@ -174,6 +174,36 @@ export default function SettingsSidebar({ className }: { className?: string }) {
       </div>
 
       <div className="flex flex-col gap-1">
+        <Link href="https://docs.linkwarden.app" target="_blank">
+          <div
+            className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+          >
+            <FontAwesomeIcon
+              icon={faCircleQuestion as any}
+              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+            />
+
+            <p className="text-black dark:text-white truncate w-full pr-7">
+              Help
+            </p>
+          </div>
+        </Link>
+
+        <Link href="https://github.com/linkwarden/linkwarden" target="_blank">
+          <div
+            className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+          >
+            <FontAwesomeIcon
+              icon={faGithub as any}
+              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+            />
+
+            <p className="text-black dark:text-white truncate w-full pr-7">
+              GitHub
+            </p>
+          </div>
+        </Link>
+
         <Link href="https://twitter.com/linkwarden_app" target="_blank">
           <div
             className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
@@ -200,36 +230,6 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
             <p className="text-black dark:text-white truncate w-full pr-7">
               Mastodon
-            </p>
-          </div>
-        </Link>
-
-        <Link href="https://github.com/linkwarden/linkwarden" target="_blank">
-          <div
-            className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
-          >
-            <FontAwesomeIcon
-              icon={faGithub as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
-
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              GitHub
-            </p>
-          </div>
-        </Link>
-
-        <Link href="https://docs.linkwarden.app" target="_blank">
-          <div
-            className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
-          >
-            <FontAwesomeIcon
-              icon={faCircleQuestion as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
-
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Help
             </p>
           </div>
         </Link>
