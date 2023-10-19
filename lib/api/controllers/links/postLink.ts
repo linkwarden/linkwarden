@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import getTitle from "@/lib/api/getTitle";
 import archive from "@/lib/api/archive";
-import { Collection, Link, UsersAndCollections } from "@prisma/client";
+import { Collection, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import createFolder from "@/lib/api/storage/createFolder";
 
