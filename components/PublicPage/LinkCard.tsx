@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { Link as LinkType, Tag } from "@prisma/client";
 import isValidUrl from "@/lib/client/isValidUrl";
+import unescapeString from "@/lib/client/unescapeString";
 
 interface LinksIncludingTags extends LinkType {
   tags: Tag[];
@@ -60,12 +61,12 @@ export default function LinkCard({ link, count }: Props) {
             <div className="flex items-baseline gap-1">
               <p className="text-xs text-gray-500">{count + 1}</p>
               <p className="text-lg text-black">
-                {link.name || link.description}
+                {unescapeString(link.name || link.description)}
               </p>
             </div>
 
             <p className="text-gray-500 text-sm font-medium">
-              {link.description}
+              {unescapeString(link.description)}
             </p>
             <div className="flex gap-3 items-center flex-wrap my-3">
               <div className="flex gap-1 items-center flex-wrap mt-1">
