@@ -40,11 +40,11 @@ export default function SettingsLayout({ children }: Props) {
       <ModalManagement />
 
       <div className="flex max-w-screen-md mx-auto">
-        <div className="hidden lg:block">
+        <div className="hidden lg:block fixed h-screen">
           <SettingsSidebar />
         </div>
 
-        <div className="w-full flex flex-col h-screen p-5">
+        <div className="w-full flex flex-col min-h-screen p-5 lg:ml-64">
           <div className="flex gap-3">
             <div
               onClick={toggleSidebar}
