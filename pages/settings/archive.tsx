@@ -6,7 +6,7 @@ import useAccountStore from "@/store/account";
 import { toast } from "react-hot-toast";
 import { AccountSettings } from "@/types/global";
 
-export default function archive() {
+export default function Archive() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { account, updateAccount } = useAccountStore();
   const [user, setUser] = useState<AccountSettings>(account);
