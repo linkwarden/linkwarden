@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import getTitle from "@/lib/api/getTitle";
 import archive from "@/lib/api/archive";
-import { Collection, Link, UsersAndCollections } from "@prisma/client";
+import { Collection, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import createFolder from "@/lib/api/storage/createFolder";
 
@@ -94,7 +94,7 @@ export default async function postLink(
 
   createFolder({ filePath: `archives/${newLink.collectionId}` });
 
-  archive(newLink.id, newLink.url);
+  archive(newLink.id, newLink.url, userId);
 
   return { response: newLink, status: 200 };
 }

@@ -239,6 +239,16 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
           </div>
 
           <div className="flex text-black dark:text-white gap-1">
+            <div
+              onClick={() => handleDownload("png")}
+              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
+            >
+              <FontAwesomeIcon
+                icon={faCloudArrowDown}
+                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
+              />
+            </div>
+
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.png`}
               target="_blank"
@@ -249,16 +259,6 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
                 className="w-5 h-5 text-sky-500 dark:text-sky-500"
               />
             </Link>
-
-            <div
-              onClick={() => handleDownload("png")}
-              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
-            >
-              <FontAwesomeIcon
-                icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
-              />
-            </div>
           </div>
         </div>
 
@@ -272,6 +272,16 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
           </div>
 
           <div className="flex text-black dark:text-white gap-1">
+            <div
+              onClick={() => handleDownload("pdf")}
+              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
+            >
+              <FontAwesomeIcon
+                icon={faCloudArrowDown}
+                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
+              />
+            </div>
+
             <Link
               href={`/api/archives/${link.collectionId}/${link.id}.pdf`}
               target="_blank"
@@ -282,16 +292,6 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
                 className="w-5 h-5 text-sky-500 dark:text-sky-500"
               />
             </Link>
-
-            <div
-              onClick={() => handleDownload("pdf")}
-              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
-            >
-              <FontAwesomeIcon
-                icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
-              />
-            </div>
           </div>
         </div>
 
@@ -301,7 +301,9 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
               <FontAwesomeIcon icon={faGlobe} className="w-6 h-6" />
             </div>
 
-            <p className="text-black dark:text-white">Archive.org Snapshot</p>
+            <p className="text-black dark:text-white">
+              Latest archive.org Snapshot
+            </p>
           </div>
 
           <Link
