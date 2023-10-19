@@ -108,6 +108,9 @@ export default async function updateUser(
       username: user.username.toLowerCase(),
       email: user.email?.toLowerCase(),
       isPrivate: user.isPrivate,
+      archiveAsScreenshot: user.archiveAsScreenshot,
+      archiveAsPDF: user.archiveAsPDF,
+      archiveAsWaybackMachine: user.archiveAsWaybackMachine,
       password:
         user.newPassword && user.newPassword !== ""
           ? newHashedPassword

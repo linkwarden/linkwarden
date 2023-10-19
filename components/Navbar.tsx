@@ -94,14 +94,7 @@ export default function Navbar() {
               items={[
                 {
                   name: "Settings",
-                  onClick: () => {
-                    setModal({
-                      modal: "ACCOUNT",
-                      state: true,
-                      active: account,
-                    });
-                    setProfileDropdown(!profileDropdown);
-                  },
+                  href: "/settings/account",
                 },
                 {
                   name: `Switch to ${theme === "light" ? "Dark" : "Light"}`,

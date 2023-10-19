@@ -1,55 +1,72 @@
-import { Page, chromium, devices } from "playwright";
+import { chromium, devices } from "playwright";
 import { prisma } from "@/lib/api/db";
 import createFile from "@/lib/api/storage/createFile";
 import sendToWayback from "./sendToWayback";
 
-export default async function archive(linkId: number, url: string) {
-  const browser = await chromium.launch();
-  const context = await browser.newContext(devices["Desktop Chrome"]);
-  const page = await context.newPage();
+export default async function archive(
+  linkId: number,
+  url: string,
+  userId: number
+) {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
 
-  sendToWayback(url);
+  if (user?.archiveAsWaybackMachine) sendToWayback(url);
 
-  try {
-    await page.goto(url, { waitUntil: "domcontentloaded" });
+  if (user?.archiveAsPDF || user?.archiveAsScreenshot) {
+    const browser = await chromium.launch();
+    const context = await browser.newContext(devices["Desktop Chrome"]);
+    const page = await context.newPage();
 
-    await page.evaluate(
-      autoScroll,
-      Number(process.env.AUTOSCROLL_TIMEOUT) || 30
-    );
+    try {
+      await page.goto(url, { waitUntil: "domcontentloaded" });
 
-    const linkExists = await prisma.link.findUnique({
-      where: {
-        id: linkId,
-      },
-    });
+      await page.evaluate(
+        autoScroll,
+        Number(process.env.AUTOSCROLL_TIMEOUT) || 30
+      );
 
-    if (linkExists) {
-      const pdf = await page.pdf({
-        width: "1366px",
-        height: "1931px",
-        printBackground: true,
-        margin: { top: "15px", bottom: "15px" },
-      });
-      const screenshot = await page.screenshot({
-        fullPage: true,
-      });
-
-      createFile({
-        data: screenshot,
-        filePath: `archives/${linkExists.collectionId}/${linkId}.png`,
+      const linkExists = await prisma.link.findUnique({
+        where: {
+          id: linkId,
+        },
       });
 
-      createFile({
-        data: pdf,
-        filePath: `archives/${linkExists.collectionId}/${linkId}.pdf`,
-      });
+      if (linkExists) {
+        if (user.archiveAsScreenshot) {
+          const screenshot = await page.screenshot({
+            fullPage: true,
+          });
+
+          createFile({
+            data: screenshot,
+            filePath: `archives/${linkExists.collectionId}/${linkId}.png`,
+          });
+        }
+
+        if (user.archiveAsPDF) {
+          const pdf = await page.pdf({
+            width: "1366px",
+            height: "1931px",
+            printBackground: true,
+            margin: { top: "15px", bottom: "15px" },
+          });
+
+          createFile({
+            data: pdf,
+            filePath: `archives/${linkExists.collectionId}/${linkId}.pdf`,
+          });
+        }
+      }
+
+      await browser.close();
+    } catch (err) {
+      console.log(err);
+      await browser.close();
     }
-
-    await browser.close();
-  } catch (err) {
-    console.log(err);
-    await browser.close();
   }
 }
 

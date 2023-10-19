@@ -94,7 +94,7 @@ export default async function postLink(
 
   createFolder({ filePath: `archives/${newLink.collectionId}` });
 
-  archive(newLink.id, newLink.url);
+  archive(newLink.id, newLink.url, userId);
 
   return { response: newLink, status: 200 };
 }
