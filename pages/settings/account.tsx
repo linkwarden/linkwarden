@@ -207,7 +207,7 @@ export default function Account() {
             ) : undefined}
 
             {user.email !== account.email ? (
-              <p className="text-gray-500">
+              <p className="text-gray-500 dark:text-gray-400">
                 You will need to log back in after you apply this Email.
               </p>
             ) : undefined}
