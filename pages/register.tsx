@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
+import AuthSubmitButton from "@/components/AuthSubmitButton";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -29,7 +30,9 @@ export default function Register() {
     passwordConfirmation: "",
   });
 
-  async function registerUser() {
+  async function registerUser(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     const checkFields = () => {
       if (emailEnabled) {
         return (
@@ -107,7 +110,8 @@ export default function Register() {
           </p>
         </div>
       ) : (
-        <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+        <form onSubmit={registerUser}>
+          <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
           <p className="text-2xl text-black dark:text-white text-center font-bold">
             Enter your details
           </p>
@@ -117,6 +121,7 @@ export default function Register() {
             </p>
 
             <TextInput
+              autoFocus={true}
               placeholder="Johnny"
               value={form.name}
               className="bg-white"
@@ -217,8 +222,7 @@ export default function Register() {
             </div>
           ) : undefined}
 
-          <SubmitButton
-            onClick={registerUser}
+          <AuthSubmitButton
             label="Sign Up"
             className="mt-2 w-full text-center"
             loading={submitLoader}
@@ -235,6 +239,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
+        </form>
       )}
     </CenteredForm>
   );
