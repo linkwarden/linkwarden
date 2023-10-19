@@ -6,7 +6,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
 
-export default function password() {
+export default function Password() {
   const [newPassword, setNewPassword1] = useState("");
   const [newPassword2, setNewPassword2] = useState("");
 

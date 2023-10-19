@@ -2,7 +2,7 @@ import SettingsLayout from "@/layouts/SettingsLayout";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default function billing() {
+export default function Billing() {
   const router = useRouter();
 
   useEffect(() => {

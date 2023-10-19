@@ -16,7 +16,7 @@ import Link from "next/link";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Checkbox from "@/components/Checkbox";
 
-export default function account() {
+export default function Account() {
   const { update, data } = useSession();
 
   const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
