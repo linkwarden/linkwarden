@@ -2,12 +2,10 @@ import useModalStore from "@/store/modals";
 import Modal from "./Modal";
 import LinkModal from "./Modal/Link";
 import {
-  AccountSettings,
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import CollectionModal from "./Modal/Collection";
-import UserModal from "./Modal/User";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -46,16 +44,6 @@ export default function ModalManagement() {
           activeCollection={
             modal.active as CollectionIncludingMembersAndLinkCount
           }
-        />
-      </Modal>
-    );
-  else if (modal && modal.modal === "ACCOUNT")
-    return (
-      <Modal toggleModal={toggleModal}>
-        <UserModal
-          toggleSettingsModal={toggleModal}
-          defaultIndex={modal.defaultIndex}
-          activeUser={modal.active as AccountSettings}
         />
       </Modal>
     );

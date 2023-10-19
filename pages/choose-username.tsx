@@ -1,15 +1,13 @@
 import SubmitButton from "@/components/SubmitButton";
 import { signOut } from "next-auth/react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import useAccountStore from "@/store/account";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
 
-export default function Subscribe() {
+export default function ChooseUsername() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const [inputedUsername, setInputedUsername] = useState("");
 

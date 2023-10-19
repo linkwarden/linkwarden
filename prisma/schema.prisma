@@ -54,6 +54,10 @@ model User {
 
   pinnedLinks Link[]
 
+  archiveAsScreenshot     Boolean         @default(true)
+  archiveAsPDF            Boolean         @default(true)
+  archiveAsWaybackMachine Boolean         @default(false)
+
   collectionsJoined UsersAndCollections[]
   isPrivate         Boolean               @default(false)
   whitelistedUsers  WhitelistedUser[]

@@ -108,6 +108,9 @@ export default async function updateUser(
       username: user.username.toLowerCase(),
       email: user.email?.toLowerCase(),
       isPrivate: user.isPrivate,
+      archiveAsScreenshot: user.archiveAsScreenshot,
+      archiveAsPDF: user.archiveAsPDF,
+      archiveAsWaybackMachine: user.archiveAsWaybackMachine,
       password:
         user.newPassword && user.newPassword !== ""
           ? newHashedPassword
@@ -161,7 +164,7 @@ export default async function updateUser(
 
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
-  if (STRIPE_SECRET_KEY && emailEnabled)
+  if (STRIPE_SECRET_KEY && emailEnabled && sessionUser.email !== user.email)
     await updateCustomerEmail(
       STRIPE_SECRET_KEY,
       sessionUser.email,

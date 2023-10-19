@@ -1,17 +1,10 @@
 import {
-  AccountSettings,
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import { create } from "zustand";
 
 type Modal =
-  | {
-      modal: "ACCOUNT";
-      state: boolean;
-      active: AccountSettings;
-      defaultIndex?: number;
-    }
   | {
       modal: "LINK";
       state: boolean;
