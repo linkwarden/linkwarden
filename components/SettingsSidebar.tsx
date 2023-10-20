@@ -4,9 +4,7 @@ import {
   faUser,
   faPalette,
   faBoxArchive,
-  faLock,
   faKey,
-  faRightLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -94,44 +92,6 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        {/* <Link href="/settings/migration">
-          <div
-            className={`${
-              active === `/settings/migration`
-                ? "bg-sky-200 dark:bg-sky-800"
-                : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
-          >
-            <FontAwesomeIcon
-              icon={faRightLeft}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
-
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Import & Export
-            </p>
-          </div>
-        </Link> */}
-
-        {/* <Link href="/settings/privacy">
-          <div
-            className={`${
-              active === `/settings/privacy`
-                ? "bg-sky-200 dark:bg-sky-800"
-                : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
-          >
-            <FontAwesomeIcon
-              icon={faLock}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
-
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Privacy
-            </p>
-          </div>
-        </Link> */}
-
         <Link href="/settings/password">
           <div
             className={`${
@@ -204,7 +164,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        <Link href="https://twitter.com/linkwarden_app" target="_blank">
+        <Link href="https://twitter.com/LinkwardenHQ" target="_blank">
           <div
             className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
