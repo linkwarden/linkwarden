@@ -1,5 +1,4 @@
-# playwright doesnt support debian image
-FROM node:20-bullseye-slim
+FROM node:18.18-bullseye-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 
