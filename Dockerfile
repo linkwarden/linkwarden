@@ -8,10 +8,13 @@ WORKDIR /data
 
 COPY ./package.json ./yarn.lock ./playwright.config.ts ./
 
-RUN yarn && \
-    npx playwright install-deps && \
-    apt-get clean && \
-    yarn cache clean
+RUN yarn
+
+RUN npx playwright install-deps
+
+RUN apt-get clean
+
+RUN yarn cache clean
 
 COPY . .
 
