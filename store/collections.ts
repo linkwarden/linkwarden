@@ -22,14 +22,14 @@ type CollectionStore = {
 const useCollectionStore = create<CollectionStore>()((set) => ({
   collections: [],
   setCollections: async () => {
-    const response = await fetch("/api/collections");
+    const response = await fetch("/api/v1/collections");
 
     const data = await response.json();
 
     if (response.ok) set({ collections: data.response });
   },
   addCollection: async (body) => {
-    const response = await fetch("/api/collections", {
+    const response = await fetch("/api/v1/collections", {
       body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
     return { ok: response.ok, data: data.response };
   },
   updateCollection: async (collection) => {
-    const response = await fetch("/api/collections", {
+    const response = await fetch(`/api/v1/collections/${collection.id}`, {
       body: JSON.stringify(collection),
       headers: {
         "Content-Type": "application/json",
@@ -66,9 +66,8 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     return { ok: response.ok, data: data.response };
   },
-  removeCollection: async (id) => {
-    const response = await fetch("/api/collections", {
-      body: JSON.stringify({ id }),
+  removeCollection: async (collectionId) => {
+    const response = await fetch(`/api/v1/collections/${collectionId}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -79,7 +78,7 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     if (response.ok) {
       set((state) => ({
-        collections: state.collections.filter((e) => e.id !== id),
+        collections: state.collections.filter((e) => e.id !== collectionId),
       }));
       useTagStore.getState().setTags();
     }

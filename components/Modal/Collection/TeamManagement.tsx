@@ -58,7 +58,7 @@ export default function TeamManagement({
 
   useEffect(() => {
     const fetchOwner = async () => {
-      const owner = await getPublicUserData({ id: collection.ownerId });
+      const owner = await getPublicUserData(collection.ownerId as number);
       setCollectionOwner(owner);
     };
 
@@ -238,7 +238,7 @@ export default function TeamManagement({
                     )}
                     <div className="flex items-center gap-2">
                       <ProfilePhoto
-                        src={`/api/avatar/${e.userId}?${Date.now()}`}
+                        src={`/api/v1/avatar/${e.userId}?${Date.now()}`}
                         className="border-[3px]"
                       />
                       <div>
@@ -425,7 +425,7 @@ export default function TeamManagement({
       >
         <div className="flex items-center gap-2">
           <ProfilePhoto
-            src={`/api/avatar/${collection.ownerId}?${Date.now()}`}
+            src={`/api/v1/avatar/${collection.ownerId}?${Date.now()}`}
             className="border-[3px]"
           />
           <div>

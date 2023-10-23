@@ -4,15 +4,16 @@ import { Collection, UsersAndCollections } from "@prisma/client";
 import removeFolder from "@/lib/api/storage/removeFolder";
 
 export default async function deleteCollection(
-  collection: { id: number },
-  userId: number
+  userId: number,
+  collectionId: number
 ) {
-  const collectionId = collection.id;
-
   if (!collectionId)
     return { response: "Please choose a valid collection.", status: 401 };
 
-  const collectionIsAccessible = (await getPermission(userId, collectionId)) as
+  const collectionIsAccessible = (await getPermission({
+    userId,
+    collectionId,
+  })) as
     | (Collection & {
         members: UsersAndCollections[];
       })

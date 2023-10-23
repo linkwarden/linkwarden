@@ -4,16 +4,17 @@ import getPermission from "@/lib/api/getPermission";
 import { Collection, UsersAndCollections } from "@prisma/client";
 
 export default async function updateCollection(
-  collection: CollectionIncludingMembersAndLinkCount,
-  userId: number
+  userId: number,
+  collectionId: number,
+  data: CollectionIncludingMembersAndLinkCount
 ) {
-  if (!collection.id)
+  if (!collectionId)
     return { response: "Please choose a valid collection.", status: 401 };
 
-  const collectionIsAccessible = (await getPermission(
+  const collectionIsAccessible = (await getPermission({
     userId,
-    collection.id
-  )) as
+    collectionId,
+  })) as
     | (Collection & {
         members: UsersAndCollections[];
       })
@@ -26,23 +27,23 @@ export default async function updateCollection(
     await prisma.usersAndCollections.deleteMany({
       where: {
         collection: {
-          id: collection.id,
+          id: collectionId,
         },
       },
     });
 
     return await prisma.collection.update({
       where: {
-        id: collection.id,
+        id: collectionId,
       },
 
       data: {
-        name: collection.name.trim(),
-        description: collection.description,
-        color: collection.color,
-        isPublic: collection.isPublic,
+        name: data.name.trim(),
+        description: data.description,
+        color: data.color,
+        isPublic: data.isPublic,
         members: {
-          create: collection.members.map((e) => ({
+          create: data.members.map((e) => ({
             user: { connect: { id: e.user.id || e.userId } },
             canCreate: e.canCreate,
             canUpdate: e.canUpdate,
