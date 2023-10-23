@@ -3,7 +3,7 @@ import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 
 interface FormData {
@@ -21,7 +21,9 @@ export default function Login() {
     password: "",
   });
 
-  async function loginUser() {
+  async function loginUser(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     if (form.username !== "" && form.password !== "") {
       setSubmitLoader(true);
 
@@ -47,67 +49,73 @@ export default function Login() {
 
   return (
     <CenteredForm text="Sign in to your account">
-      <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
-        <p className="text-2xl text-black dark:text-white text-center font-bold">
-          Enter your credentials
-        </p>
-
-        <div>
-          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-            Username
-            {emailEnabled ? " or Email" : undefined}
+      <form onSubmit={loginUser}>
+        <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+          <p className="text-2xl text-black dark:text-white text-center font-bold">
+            Enter your credentials
           </p>
 
-          <TextInput
-            placeholder="johnny"
-            value={form.username}
-            className="bg-white"
-            onChange={(e) => setForm({ ...form, username: e.target.value })}
-          />
-        </div>
+          <div>
+            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+              Username
+              {emailEnabled ? " or Email" : undefined}
+            </p>
 
-        <div>
-          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-            Password
-          </p>
+            <TextInput
+              autoFocus={true}
+              placeholder="johnny"
+              value={form.username}
+              className="bg-white"
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+            />
+          </div>
 
-          <TextInput
-            type="password"
-            placeholder="••••••••••••••"
-            value={form.password}
-            className="bg-white"
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          <div>
+            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+              Password
+            </p>
+
+            <TextInput
+              type="password"
+              placeholder="••••••••••••••"
+              value={form.password}
+              className="bg-white"
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            {emailEnabled && (
+              <div className="w-fit ml-auto mt-1">
+                <Link
+                  href={"/forgot"}
+                  className="text-gray-500 dark:text-gray-400 font-semibold"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <SubmitButton
+            type="submit"
+            label="Login"
+            className=" w-full text-center"
+            loading={submitLoader}
           />
-          {emailEnabled && (
-            <div className="w-fit ml-auto mt-1">
+          {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION ===
+          "true" ? undefined : (
+            <div className="flex items-baseline gap-1 justify-center">
+              <p className="w-fit text-gray-500 dark:text-gray-400">
+                New here?
+              </p>
               <Link
-                href={"/forgot"}
-                className="text-gray-500 dark:text-gray-400 font-semibold"
+                href={"/register"}
+                className="block text-black dark:text-white font-semibold"
               >
-                Forgot Password?
+                Sign Up
               </Link>
             </div>
           )}
         </div>
-
-        <SubmitButton
-          onClick={loginUser}
-          label="Login"
-          className=" w-full text-center"
-          loading={submitLoader}
-        />
-        {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? undefined : (
-          <div className="flex items-baseline gap-1 justify-center">
-            <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
-            <Link
-              href={"/register"}
-              className="block text-black dark:text-white font-semibold"
-            >
-              Sign Up
-            </Link>
-          </div>
-        )}
-      </div>
+      </form>
     </CenteredForm>
   );
 }
