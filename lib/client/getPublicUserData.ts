@@ -1,17 +1,7 @@
 import { toast } from "react-hot-toast";
 
-export default async function getPublicUserData({
-  username,
-  id,
-}: {
-  username?: string;
-  id?: number;
-}) {
-  const response = await fetch(
-    `/api/users?id=${id}&${
-      username ? `username=${username?.toLowerCase()}` : undefined
-    }`
-  );
+export default async function getPublicUserData(id: number | string) {
+  const response = await fetch(`/api/v1/users/${id}`);
 
   const data = await response.json();
 

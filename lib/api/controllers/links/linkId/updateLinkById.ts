@@ -5,40 +5,32 @@ import getPermission from "@/lib/api/getPermission";
 import moveFile from "@/lib/api/storage/moveFile";
 
 export default async function updateLink(
-  link: LinkIncludingShortenedCollectionAndTags,
-  userId: number
+  userId: number,
+  linkId: number,
+  data: LinkIncludingShortenedCollectionAndTags
 ) {
-  console.log(link);
-  if (!link || !link.collection.id)
+  if (!data || !data.collection.id)
     return {
       response: "Please choose a valid link and collection.",
       status: 401,
     };
 
-  const targetLink = (await getPermission(
-    userId,
-    link.collection.id,
-    link.id
-  )) as
-    | (Link & {
-        collection: Collection & {
-          members: UsersAndCollections[];
-        };
+  const collectionIsAccessible = (await getPermission({ userId, linkId })) as
+    | (Collection & {
+        members: UsersAndCollections[];
       })
     | null;
 
-  const memberHasAccess = targetLink?.collection.members.some(
+  const memberHasAccess = collectionIsAccessible?.members.some(
     (e: UsersAndCollections) => e.userId === userId && e.canUpdate
   );
 
   const isCollectionOwner =
-    targetLink?.collection.ownerId === link.collection.ownerId &&
-    link.collection.ownerId === userId;
+    collectionIsAccessible?.ownerId === data.collection.ownerId &&
+    data.collection.ownerId === userId;
 
   const unauthorizedSwitchCollection =
-    !isCollectionOwner && targetLink?.collection.id !== link.collection.id;
-
-  console.log(isCollectionOwner);
+    !isCollectionOwner && collectionIsAccessible?.id !== data.collection.id;
 
   // Makes sure collection members (non-owners) cannot move a link to/from a collection.
   if (unauthorizedSwitchCollection)
@@ -46,7 +38,7 @@ export default async function updateLink(
       response: "You can't move a link to/from a collection you don't own.",
       status: 401,
     };
-  else if (targetLink?.collection.ownerId !== userId && !memberHasAccess)
+  else if (collectionIsAccessible?.ownerId !== userId && !memberHasAccess)
     return {
       response: "Collection is not accessible.",
       status: 401,
@@ -54,37 +46,37 @@ export default async function updateLink(
   else {
     const updatedLink = await prisma.link.update({
       where: {
-        id: link.id,
+        id: linkId,
       },
       data: {
-        name: link.name,
-        description: link.description,
+        name: data.name,
+        description: data.description,
         collection: {
           connect: {
-            id: link.collection.id,
+            id: data.collection.id,
           },
         },
         tags: {
           set: [],
-          connectOrCreate: link.tags.map((tag) => ({
+          connectOrCreate: data.tags.map((tag) => ({
             where: {
               name_ownerId: {
                 name: tag.name,
-                ownerId: link.collection.ownerId,
+                ownerId: data.collection.ownerId,
               },
             },
             create: {
               name: tag.name,
               owner: {
                 connect: {
-                  id: link.collection.ownerId,
+                  id: data.collection.ownerId,
                 },
               },
             },
           })),
         },
         pinnedBy:
-          link?.pinnedBy && link.pinnedBy[0]
+          data?.pinnedBy && data.pinnedBy[0]
             ? { connect: { id: userId } }
             : { disconnect: { id: userId } },
       },
@@ -100,15 +92,15 @@ export default async function updateLink(
       },
     });
 
-    if (targetLink?.collection.id !== link.collection.id) {
+    if (collectionIsAccessible?.id !== data.collection.id) {
       await moveFile(
-        `archives/${targetLink?.collection.id}/${link.id}.pdf`,
-        `archives/${link.collection.id}/${link.id}.pdf`
+        `archives/${collectionIsAccessible?.id}/${linkId}.pdf`,
+        `archives/${data.collection.id}/${linkId}.pdf`
       );
 
       await moveFile(
-        `archives/${targetLink?.collection.id}/${link.id}.png`,
-        `archives/${link.collection.id}/${link.id}.png`
+        `archives/${collectionIsAccessible?.id}/${linkId}.png`,
+        `archives/${data.collection.id}/${linkId}.png`
       );
     }
 

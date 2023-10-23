@@ -1,24 +1,37 @@
 import LinkCard from "@/components/LinkCard";
 import useLinkStore from "@/store/links";
-import { faHashtag, faSort } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faEllipsis,
+  faHashtag,
+  faSort,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { Tag } from "@prisma/client";
 import useTagStore from "@/store/tags";
 import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
 import useLinks from "@/hooks/useLinks";
+import Dropdown from "@/components/Dropdown";
+import { toast } from "react-hot-toast";
 
 export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();
-  const { tags } = useTagStore();
+  const { tags, updateTag } = useTagStore();
 
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
+
+  const [expandDropdown, setExpandDropdown] = useState(false);
+
+  const [renameTag, setRenameTag] = useState(false);
+  const [newTagName, setNewTagName] = useState<string>();
 
   const [activeTag, setActiveTag] = useState<Tag>();
 
@@ -28,19 +41,130 @@ export default function Index() {
     setActiveTag(tags.find((e) => e.id === Number(router.query.id)));
   }, [router, tags]);
 
+  useEffect(() => {
+    setNewTagName(activeTag?.name);
+  }, [activeTag]);
+
+  const [submitLoader, setSubmitLoader] = useState(false);
+
+  const cancelUpdateTag = async () => {
+    setNewTagName(activeTag?.name);
+    setRenameTag(false);
+  };
+
+  const submit = async (e?: FormEvent) => {
+    e?.preventDefault();
+
+    if (activeTag?.name === newTagName) return setRenameTag(false);
+    else if (newTagName === "") {
+      return cancelUpdateTag();
+    }
+
+    setSubmitLoader(true);
+
+    const load = toast.loading("Applying...");
+
+    let response;
+
+    if (activeTag && newTagName)
+      response = await updateTag({
+        ...activeTag,
+        name: newTagName,
+      });
+
+    toast.dismiss(load);
+
+    if (response?.ok) {
+      toast.success("Tag Renamed!");
+    } else toast.error(response?.data as string);
+    setSubmitLoader(false);
+    setRenameTag(false);
+  };
+
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
         <div className="flex gap-3 items-center justify-between">
           <div className="flex gap-3 items-center">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-end">
               <FontAwesomeIcon
                 icon={faHashtag}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
-                {activeTag?.name}
-              </p>
+              {renameTag ? (
+                <>
+                  <form onSubmit={submit} className="flex items-end gap-2">
+                    <input
+                      type="text"
+                      autoFocus
+                      className="sm:text-4xl text-3xl capitalize text-black dark:text-white bg-transparent h-10 w-3/4 outline-none border-b border-b-sky-100 dark:border-b-neutral-700"
+                      value={newTagName}
+                      onChange={(e) => setNewTagName(e.target.value)}
+                    />
+                    <div
+                      onClick={() => submit()}
+                      id="expand-dropdown"
+                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                    >
+                      <FontAwesomeIcon
+                        icon={faCheck}
+                        id="expand-dropdown"
+                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                      />
+                    </div>
+                    <div
+                      onClick={() => cancelUpdateTag()}
+                      id="expand-dropdown"
+                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                    >
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        id="expand-dropdown"
+                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                      />
+                    </div>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
+                    {activeTag?.name}
+                  </p>
+                  <div className="relative">
+                    <div
+                      onClick={() => setExpandDropdown(!expandDropdown)}
+                      id="expand-dropdown"
+                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                    >
+                      <FontAwesomeIcon
+                        icon={faEllipsis}
+                        id="expand-dropdown"
+                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                      />
+                    </div>
+
+                    {expandDropdown ? (
+                      <Dropdown
+                        items={[
+                          {
+                            name: "Rename Tag",
+                            onClick: () => {
+                              setRenameTag(true);
+                              setExpandDropdown(false);
+                            },
+                          },
+                        ]}
+                        onClickOutside={(e: Event) => {
+                          const target = e.target as HTMLInputElement;
+                          if (target.id !== "expand-dropdown")
+                            setExpandDropdown(false);
+                        }}
+                        className="absolute top-8 left-0 w-36"
+                      />
+                    ) : null}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

@@ -10,20 +10,20 @@ const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 export default async function updateUser(
-  user: AccountSettings,
   sessionUser: {
     id: number;
     username: string;
     email: string;
     isSubscriber: boolean;
-  }
+  },
+  data: AccountSettings
 ) {
-  if (emailEnabled && !user.email)
+  if (emailEnabled && !data.email)
     return {
       response: "Email invalid.",
       status: 400,
     };
-  else if (!user.username)
+  else if (!data.username)
     return {
       response: "Username invalid.",
       status: 400,
@@ -31,7 +31,7 @@ export default async function updateUser(
 
   const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
 
-  if (!checkUsername.test(user.username.toLowerCase()))
+  if (!checkUsername.test(data.username.toLowerCase()))
     return {
       response:
         "Username has to be between 3-30 characters, no spaces and special characters are allowed.",
@@ -44,15 +44,15 @@ export default async function updateUser(
       OR: emailEnabled
         ? [
             {
-              username: user.username.toLowerCase(),
+              username: data.username.toLowerCase(),
             },
             {
-              email: user.email?.toLowerCase(),
+              email: data.email?.toLowerCase(),
             },
           ]
         : [
             {
-              username: user.username.toLowerCase(),
+              username: data.username.toLowerCase(),
             },
           ],
     },
@@ -66,10 +66,10 @@ export default async function updateUser(
 
   // Avatar Settings
 
-  const profilePic = user.profilePic;
+  const profilePic = data.profilePic;
 
   if (profilePic.startsWith("data:image/jpeg;base64")) {
-    if (user.profilePic.length < 1572864) {
+    if (data.profilePic.length < 1572864) {
       try {
         const base64Data = profilePic.replace(/^data:image\/jpeg;base64,/, "");
 
@@ -97,22 +97,22 @@ export default async function updateUser(
   // Other settings
 
   const saltRounds = 10;
-  const newHashedPassword = bcrypt.hashSync(user.newPassword || "", saltRounds);
+  const newHashedPassword = bcrypt.hashSync(data.newPassword || "", saltRounds);
 
   const updatedUser = await prisma.user.update({
     where: {
       id: sessionUser.id,
     },
     data: {
-      name: user.name,
-      username: user.username.toLowerCase(),
-      email: user.email?.toLowerCase(),
-      isPrivate: user.isPrivate,
-      archiveAsScreenshot: user.archiveAsScreenshot,
-      archiveAsPDF: user.archiveAsPDF,
-      archiveAsWaybackMachine: user.archiveAsWaybackMachine,
+      name: data.name,
+      username: data.username.toLowerCase(),
+      email: data.email?.toLowerCase(),
+      isPrivate: data.isPrivate,
+      archiveAsScreenshot: data.archiveAsScreenshot,
+      archiveAsPDF: data.archiveAsPDF,
+      archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       password:
-        user.newPassword && user.newPassword !== ""
+        data.newPassword && data.newPassword !== ""
           ? newHashedPassword
           : undefined,
     },
@@ -124,11 +124,11 @@ export default async function updateUser(
   const { whitelistedUsers, password, ...userInfo } = updatedUser;
 
   // If user.whitelistedUsers is not provided, we will assume the whitelistedUsers should be removed
-  const newWhitelistedUsernames: string[] = user.whitelistedUsers || [];
+  const newWhitelistedUsernames: string[] = data.whitelistedUsers || [];
 
   // Get the current whitelisted usernames
   const currentWhitelistedUsernames: string[] = whitelistedUsers.map(
-    (user) => user.username
+    (data) => data.username
   );
 
   // Find the usernames to be deleted (present in current but not in new)
@@ -164,17 +164,17 @@ export default async function updateUser(
 
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
-  if (STRIPE_SECRET_KEY && emailEnabled && sessionUser.email !== user.email)
+  if (STRIPE_SECRET_KEY && emailEnabled && sessionUser.email !== data.email)
     await updateCustomerEmail(
       STRIPE_SECRET_KEY,
       sessionUser.email,
-      user.email as string
+      data.email as string
     );
 
   const response: Omit<AccountSettings, "password"> = {
     ...userInfo,
     whitelistedUsers: newWhitelistedUsernames,
-    profilePic: `/api/avatar/${userInfo.id}?${Date.now()}`,
+    profilePic: `/api/v1/avatar/${userInfo.id}?${Date.now()}`,
   };
 
   return { response, status: 200 };

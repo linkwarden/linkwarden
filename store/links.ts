@@ -20,9 +20,7 @@ type LinkStore = {
   updateLink: (
     link: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
-  removeLink: (
-    link: LinkIncludingShortenedCollectionAndTags
-  ) => Promise<ResponseObject>;
+  removeLink: (linkId: number) => Promise<ResponseObject>;
   resetLinks: () => void;
 };
 
@@ -38,7 +36,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     }));
   },
   addLink: async (body) => {
-    const response = await fetch("/api/links", {
+    const response = await fetch("/api/v1/links", {
       body: JSON.stringify(body),
       headers: {
         "Content-Type": "application/json",
@@ -59,7 +57,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     return { ok: response.ok, data: data.response };
   },
   updateLink: async (link) => {
-    const response = await fetch("/api/links", {
+    const response = await fetch(`/api/v1/links/${link.id}`, {
       body: JSON.stringify(link),
       headers: {
         "Content-Type": "application/json",
@@ -81,9 +79,8 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     return { ok: response.ok, data: data.response };
   },
-  removeLink: async (link) => {
-    const response = await fetch("/api/links", {
-      body: JSON.stringify(link),
+  removeLink: async (linkId) => {
+    const response = await fetch(`/api/v1/links/${linkId}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -94,7 +91,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     if (response.ok) {
       set((state) => ({
-        links: state.links.filter((e) => e.id !== link.id),
+        links: state.links.filter((e) => e.id !== linkId),
       }));
       useTagStore.getState().setTags();
     }
