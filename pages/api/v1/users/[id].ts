@@ -4,6 +4,7 @@ import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import getUserById from "@/lib/api/controllers/users/userId/getUserById";
 import getPublicUserById from "@/lib/api/controllers/users/userId/getPublicUserById";
 import updateUserById from "@/lib/api/controllers/users/userId/updateUserById";
+import deleteUserById from "@/lib/api/controllers/users/userId/deleteUserById";
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
@@ -35,6 +36,13 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     return res.status(users.status).json({ response: users.response });
   } else if (req.method === "PUT") {
     const updated = await updateUserById(session.user, req.body);
+    return res.status(updated.status).json({ response: updated.response });
+  } else if (
+    req.method === "DELETE" &&
+    session.user.id === Number(req.query.id)
+  ) {
+    console.log(req.body);
+    const updated = await deleteUserById(session.user.id, req.body);
     return res.status(updated.status).json({ response: updated.response });
   }
 }

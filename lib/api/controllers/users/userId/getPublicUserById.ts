@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function getUser(
+export default async function getPublicUserById(
   targetId: number | string,
   isId: boolean,
   requestingUsername?: string
