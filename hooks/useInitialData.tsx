@@ -2,7 +2,6 @@ import useCollectionStore from "@/store/collections";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import useTagStore from "@/store/tags";
-import useLinkStore from "@/store/links";
 import useAccountStore from "@/store/account";
 
 export default function useInitialData() {

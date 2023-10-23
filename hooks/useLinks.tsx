@@ -7,11 +7,14 @@ import useLinkStore from "@/store/links";
 export default function useLinks(
   {
     sort,
-    searchFilter,
-    searchQuery,
-    pinnedOnly,
     collectionId,
     tagId,
+    pinnedOnly,
+    searchQueryString,
+    searchByName,
+    searchByUrl,
+    searchByDescription,
+    searchByTags,
   }: LinkRequestQuery = { sort: 0 }
 ) {
   const { links, setLinks, resetLinks } = useLinkStore();
@@ -20,20 +23,37 @@ export default function useLinks(
   const { reachedBottom, setReachedBottom } = useDetectPageBottom();
 
   const getLinks = async (isInitialCall: boolean, cursor?: number) => {
-    const requestBody: LinkRequestQuery = {
-      cursor,
+    const params = {
       sort,
-      searchFilter,
-      searchQuery,
-      pinnedOnly,
+      cursor,
       collectionId,
       tagId,
+      pinnedOnly,
+      searchQueryString,
+      searchByName,
+      searchByUrl,
+      searchByDescription,
+      searchByTags,
     };
 
-    const encodedData = encodeURIComponent(JSON.stringify(requestBody));
+    const buildQueryString = (params: LinkRequestQuery) => {
+      return Object.keys(params)
+        .filter((key) => params[key as keyof LinkRequestQuery] !== undefined)
+        .map(
+          (key) =>
+            `${encodeURIComponent(key)}=${encodeURIComponent(
+              params[key as keyof LinkRequestQuery] as string
+            )}`
+        )
+        .join("&");
+    };
+
+    const queryString = buildQueryString(params);
 
     const response = await fetch(
-      `/api/v1/links?body=${encodeURIComponent(encodedData)}`
+      `/api/v1/${
+        router.asPath === "/dashboard" ? "dashboard" : "links"
+      }?${queryString}`
     );
 
     const data = await response.json();
@@ -45,7 +65,15 @@ export default function useLinks(
     resetLinks();
 
     getLinks(true);
-  }, [router, sort, searchFilter]);
+  }, [
+    router,
+    sort,
+    searchQueryString,
+    searchByName,
+    searchByUrl,
+    searchByDescription,
+    searchByTags,
+  ]);
 
   useEffect(() => {
     if (reachedBottom) getLinks(false, links?.at(-1)?.id);
