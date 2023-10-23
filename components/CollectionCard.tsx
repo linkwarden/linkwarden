@@ -152,7 +152,7 @@ export default function CollectionCard({ collection, className }: Props) {
             if (target.id !== "expand-dropdown" + collection.id)
               setExpandDropdown(false);
           }}
-          className="absolute top-[3.2rem] right-5 z-10"
+          className="absolute top-[3.2rem] right-5 z-10 w-fit"
         />
       ) : null}
     </div>

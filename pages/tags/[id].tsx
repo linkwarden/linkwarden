@@ -93,7 +93,7 @@ export default function Index() {
               />
               {renameTag ? (
                 <>
-                  <form onSubmit={submit} className="flex items-end gap-2">
+                  <form onSubmit={submit} className="flex items-center gap-2">
                     <input
                       type="text"
                       autoFocus
