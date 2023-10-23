@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import { prisma } from "@/lib/api/db";
 import readFile from "@/lib/api/storage/readFile";
 

@@ -20,7 +20,7 @@ export default function Subscribe() {
 
     const redirectionToast = toast.loading("Redirecting to Stripe...");
 
-    const res = await fetch("/api/payment?plan=" + plan);
+    const res = await fetch("/api/v1/payment?plan=" + plan);
     const data = await res.json();
 
     router.push(data.response);

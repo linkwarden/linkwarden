@@ -1,10 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import getCollections from "@/lib/api/controllers/collections/getCollections";
 import postCollection from "@/lib/api/controllers/collections/postCollection";
-import updateCollection from "@/lib/api/controllers/collections/updateCollection";
-import deleteCollection from "@/lib/api/controllers/collections/deleteCollection";
 
 export default async function collections(
   req: NextApiRequest,
@@ -30,11 +28,5 @@ export default async function collections(
     return res
       .status(newCollection.status)
       .json({ response: newCollection.response });
-  } else if (req.method === "PUT") {
-    const updated = await updateCollection(req.body, session.user.id);
-    return res.status(updated.status).json({ response: updated.response });
-  } else if (req.method === "DELETE") {
-    const deleted = await deleteCollection(req.body, session.user.id);
-    return res.status(deleted.status).json({ response: deleted.response });
   }
 }

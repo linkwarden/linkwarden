@@ -38,7 +38,7 @@ We highly recommend that you don't use the old version because it is no longer m
 ## Features
 
 - 📸 Auto capture a screenshot and a PDF of each link.
-- 🏛️ Send your webpage to Wayback Machine archive.org for a snapshot.
+- 🏛️ Send your webpage to Wayback Machine ([archive.org](https://archive.org)) for a snapshot. (Optional)
 - 📂 Organize links by collection, name, description and multiple tags.
 - 👥 Collaborate on gathering links in a collection.
 - 🔐 Customize the permissions of each member.

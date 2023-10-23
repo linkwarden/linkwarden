@@ -1,24 +1,30 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function getPermission(
-  userId: number,
-  collectionId: number,
-  linkId?: number
-) {
+type Props = {
+  userId: number;
+  collectionId?: number;
+  linkId?: number;
+};
+
+export default async function getPermission({
+  userId,
+  collectionId,
+  linkId,
+}: Props) {
   if (linkId) {
-    const link = await prisma.link.findUnique({
+    const check = await prisma.collection.findFirst({
       where: {
-        id: linkId,
-      },
-      include: {
-        collection: {
-          include: { members: true },
+        links: {
+          some: {
+            id: linkId,
+          },
         },
       },
+      include: { members: true },
     });
 
-    return link;
-  } else {
+    return check;
+  } else if (collectionId) {
     const check = await prisma.collection.findFirst({
       where: {
         AND: {
