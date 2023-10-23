@@ -9,7 +9,7 @@ import createFolder from "@/lib/api/storage/createFolder";
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
-export default async function updateUser(
+export default async function updateUserById(
   sessionUser: {
     id: number;
     username: string;

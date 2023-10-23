@@ -11,6 +11,7 @@ import useAccountStore from "@/store/account";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import useModalStore from "@/store/modals";
 import { useTheme } from "next-themes";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 
 export default function Navbar() {
   const { setModal } = useModalStore();
@@ -33,7 +34,11 @@ export default function Navbar() {
 
   const [sidebar, setSidebar] = useState(false);
 
-  window.addEventListener("resize", () => setSidebar(false));
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    setSidebar(false);
+  }, [width]);
 
   useEffect(() => {
     setSidebar(false);
