@@ -240,7 +240,7 @@ export default function LinkCard({ link, count, className }: Props) {
             if (target.id !== "expand-dropdown" + link.id)
               setExpandDropdown(false);
           }}
-          className="absolute top-12 right-5 w-36"
+          className="absolute top-12 right-5 w-fit"
         />
       ) : null}
     </div>
