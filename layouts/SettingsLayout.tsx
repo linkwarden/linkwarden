@@ -7,6 +7,7 @@ import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 
 interface Props {
   children: ReactNode;
@@ -25,7 +26,11 @@ export default function SettingsLayout({ children }: Props) {
 
   const [sidebar, setSidebar] = useState(false);
 
-  window.addEventListener("resize", () => setSidebar(false));
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    setSidebar(false);
+  }, [width]);
 
   useEffect(() => {
     setSidebar(false);

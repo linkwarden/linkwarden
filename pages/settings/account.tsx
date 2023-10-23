@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faClose } from "@fortawesome/free-solid-svg-icons";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
@@ -269,7 +269,7 @@ export default function Account() {
                 Import your data from other platforms.
               </p>
               <div
-                onClick={() => setImportDropdown(true)}
+                onClick={() => setImportDropdown(!importDropdown)}
                 className="w-fit relative"
                 id="import-dropdown"
               >
@@ -286,7 +286,7 @@ export default function Account() {
                       if (target.id !== "import-dropdown")
                         setImportDropdown(false);
                     }}
-                    className={`absolute top-7 left-0 w-48 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+                    className={`absolute top-7 left-0 w-52 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
                   >
                     <div className="cursor-pointer rounded-md">
                       <label

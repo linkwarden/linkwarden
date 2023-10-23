@@ -52,7 +52,7 @@ export default function Index() {
 
   return (
     <MainLayout>
-      <div className="p-5 flex flex-col gap-5 w-full">
+      <div className="p-5 flex flex-col gap-5 w-full h-full">
         <div
           style={{
             backgroundImage: `linear-gradient(-45deg, ${
