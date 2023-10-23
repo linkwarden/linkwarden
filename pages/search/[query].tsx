@@ -4,7 +4,7 @@ import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
-import { LinkSearchFilter, Sort } from "@/types/global";
+import { Sort } from "@/types/global";
 import { faFilter, faSearch, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -15,7 +15,7 @@ export default function Links() {
 
   const router = useRouter();
 
-  const [searchFilter, setSearchFilter] = useState<LinkSearchFilter>({
+  const [searchFilter, setSearchFilter] = useState({
     name: true,
     url: true,
     description: true,
@@ -27,9 +27,12 @@ export default function Links() {
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({
-    searchFilter: searchFilter,
-    searchQuery: router.query.query as string,
     sort: sortBy,
+    searchQueryString: router.query.query as string,
+    searchByName: searchFilter.name,
+    searchByUrl: searchFilter.url,
+    searchByDescription: searchFilter.description,
+    searchByTags: searchFilter.tags,
   });
 
   return (

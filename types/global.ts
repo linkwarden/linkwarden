@@ -56,21 +56,17 @@ export enum Sort {
   DescriptionZA,
 }
 
-export type LinkSearchFilter = {
-  name: boolean;
-  url: boolean;
-  description: boolean;
-  tags: boolean;
-};
-
 export type LinkRequestQuery = {
+  sort: Sort;
   cursor?: number;
   collectionId?: number;
   tagId?: number;
-  sort: Sort;
-  searchFilter?: LinkSearchFilter;
-  searchQuery?: string;
   pinnedOnly?: boolean;
+  searchQueryString?: string;
+  searchByName?: boolean;
+  searchByUrl?: boolean;
+  searchByDescription?: boolean;
+  searchByTags?: boolean;
 };
 
 export type PublicLinkRequestQuery = {

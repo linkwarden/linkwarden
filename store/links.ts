@@ -32,7 +32,16 @@ const useLinkStore = create<LinkStore>()((set) => ({
         links: [],
       }));
     set((state) => ({
-      links: [...state.links, ...data],
+      // Filter duplicate links by id
+      links: [...state.links, ...data].reduce(
+        (links: LinkIncludingShortenedCollectionAndTags[], item) => {
+          if (!links.some((link) => link.id === item.id)) {
+            links.push(item);
+          }
+          return links;
+        },
+        []
+      ),
     }));
   },
   addLink: async (body) => {
@@ -94,6 +103,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
         links: state.links.filter((e) => e.id !== linkId),
       }));
       useTagStore.getState().setTags();
+      useCollectionStore.getState().setCollections();
     }
 
     return { ok: response.ok, data: data.response };

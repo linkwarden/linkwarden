@@ -1,9 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { LinkRequestQuery, Sort } from "@/types/global";
 
-export default async function getLink(userId: number, body: string) {
-  const query: LinkRequestQuery = JSON.parse(decodeURIComponent(body));
-
+export default async function getLink(userId: number, query: LinkRequestQuery) {
   const POSTGRES_IS_ENABLED = process.env.DATABASE_URL.startsWith("postgresql");
 
   let order: any;
@@ -16,40 +14,40 @@ export default async function getLink(userId: number, body: string) {
 
   const searchConditions = [];
 
-  if (query.searchQuery) {
-    if (query.searchFilter?.name) {
+  if (query.searchQueryString) {
+    if (query.searchByName) {
       searchConditions.push({
         name: {
-          contains: query.searchQuery,
+          contains: query.searchQueryString,
           mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
         },
       });
     }
 
-    if (query.searchFilter?.url) {
+    if (query.searchByUrl) {
       searchConditions.push({
         url: {
-          contains: query.searchQuery,
+          contains: query.searchQueryString,
           mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
         },
       });
     }
 
-    if (query.searchFilter?.description) {
+    if (query.searchByDescription) {
       searchConditions.push({
         description: {
-          contains: query.searchQuery,
+          contains: query.searchQueryString,
           mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
         },
       });
     }
 
-    if (query.searchFilter?.tags) {
+    if (query.searchByTags) {
       searchConditions.push({
         tags: {
           some: {
             name: {
-              contains: query.searchQuery,
+              contains: query.searchQueryString,
               mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
             },
             OR: [
@@ -117,7 +115,7 @@ export default async function getLink(userId: number, body: string) {
           OR: [
             ...tagCondition,
             {
-              [query.searchQuery ? "OR" : "AND"]: [
+              [query.searchQueryString ? "OR" : "AND"]: [
                 {
                   pinnedBy: query.pinnedOnly
                     ? { some: { id: userId } }
