@@ -22,7 +22,7 @@ export default function App({
   }, []);
 
   return (
-    <SessionProvider session={pageProps.session}>
+    <SessionProvider session={pageProps.session} basePath="/api/v1/auth">
       <Head>
         <title>Linkwarden</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />

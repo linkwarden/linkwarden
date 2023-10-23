@@ -15,16 +15,16 @@ type AccountStore = {
 const useAccountStore = create<AccountStore>()((set) => ({
   account: {} as AccountSettings,
   setAccount: async (id) => {
-    const response = await fetch(`/api/users?id=${id}`);
+    const response = await fetch(`/api/v1/users/${id}`);
 
     const data = await response.json();
 
-    const profilePic = `/api/avatar/${data.response.id}?${Date.now()}`;
+    const profilePic = `/api/v1/avatar/${data.response.id}?${Date.now()}`;
 
     if (response.ok) set({ account: { ...data.response, profilePic } });
   },
   updateAccount: async (user) => {
-    const response = await fetch("/api/users", {
+    const response = await fetch(`/api/v1/users/${user.id}`, {
       method: "PUT",
       body: JSON.stringify(user),
       headers: {

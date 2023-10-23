@@ -22,9 +22,7 @@ const addMemberToCollection = async (
     memberUsername.trim().toLowerCase() !== ownerUsername.toLowerCase()
   ) {
     // Lookup, get data/err, list ...
-    const user = await getPublicUserData({
-      username: memberUsername.trim().toLowerCase(),
-    });
+    const user = await getPublicUserData(memberUsername.trim().toLowerCase());
 
     if (user.username) {
       setMember({

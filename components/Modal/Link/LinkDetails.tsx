@@ -106,7 +106,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
   }, [colorPalette, theme]);
 
   const handleDownload = (format: "png" | "pdf") => {
-    const path = `/api/archives/${link.collection.id}/${link.id}.${format}`;
+    const path = `/api/v1/archives/${link.collection.id}/${link.id}.${format}`;
     fetch(path)
       .then((response) => {
         if (response.ok) {
@@ -250,7 +250,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
             </div>
 
             <Link
-              href={`/api/archives/${link.collectionId}/${link.id}.png`}
+              href={`/api/v1/archives/${link.collectionId}/${link.id}.png`}
               target="_blank"
               className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
             >
@@ -283,7 +283,7 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
             </div>
 
             <Link
-              href={`/api/archives/${link.collectionId}/${link.id}.pdf`}
+              href={`/api/v1/archives/${link.collectionId}/${link.id}.pdf`}
               target="_blank"
               className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
             >
