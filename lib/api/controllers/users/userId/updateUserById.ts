@@ -29,6 +29,15 @@ export default async function updateUser(
       status: 400,
     };
 
+  // Check email (if enabled)
+  const checkEmail =
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  if (emailEnabled && !checkEmail.test(data.email?.toLowerCase() || ""))
+    return {
+      response: "Please enter a valid email.",
+      status: 400,
+    };
+
   const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
 
   if (!checkUsername.test(data.username.toLowerCase()))
@@ -58,11 +67,25 @@ export default async function updateUser(
     },
   });
 
-  if (userIsTaken)
+  if (userIsTaken) {
+    if (data.email?.toLowerCase().trim() === userIsTaken.email?.trim())
+      return {
+        response: "Email is taken.",
+        status: 400,
+      };
+    else if (
+      data.username?.toLowerCase().trim() === userIsTaken.username?.trim()
+    )
+      return {
+        response: "Username is taken.",
+        status: 400,
+      };
+
     return {
       response: "Username/Email is taken.",
       status: 400,
     };
+  }
 
   // Avatar Settings
 
@@ -105,8 +128,8 @@ export default async function updateUser(
     },
     data: {
       name: data.name,
-      username: data.username.toLowerCase(),
-      email: data.email?.toLowerCase(),
+      username: data.username.toLowerCase().trim(),
+      email: data.email?.toLowerCase().trim(),
       isPrivate: data.isPrivate,
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
