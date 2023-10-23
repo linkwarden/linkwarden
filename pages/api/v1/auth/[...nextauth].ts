@@ -88,8 +88,7 @@ export const authOptions: AuthOptions = {
 
       return session;
     },
-    // Using the `...rest` parameter to be able to narrow down the type based on `trigger`
-    async jwt({ token, trigger, session, user }) {
+    async jwt({ token, trigger, user }) {
       const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
       const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =

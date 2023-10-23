@@ -87,7 +87,7 @@ export default function LinkCard({ link, count, className }: Props) {
   const deleteLink = async () => {
     const load = toast.loading("Deleting...");
 
-    const response = await removeLink(link);
+    const response = await removeLink(link.id as number);
 
     toast.dismiss(load);
 

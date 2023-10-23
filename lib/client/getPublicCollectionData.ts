@@ -17,7 +17,7 @@ const getPublicCollectionData = async (
   const encodedData = encodeURIComponent(JSON.stringify(requestBody));
 
   const res = await fetch(
-    "/api/public/collections?body=" + encodeURIComponent(encodedData)
+    "/api/v1/public/collections?body=" + encodeURIComponent(encodedData)
   );
 
   const data = await res.json();

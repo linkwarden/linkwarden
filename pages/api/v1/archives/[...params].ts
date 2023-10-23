@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import getPermission from "@/lib/api/getPermission";
 import readFile from "@/lib/api/storage/readFile";
 
@@ -21,10 +21,10 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
         "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
     });
 
-  const collectionIsAccessible = await getPermission(
-    session.user.id,
-    Number(collectionId)
-  );
+  const collectionIsAccessible = await getPermission({
+    userId: session.user.id,
+    collectionId: Number(collectionId),
+  });
 
   if (!collectionIsAccessible)
     return res
