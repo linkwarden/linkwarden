@@ -19,7 +19,7 @@ export default function Links() {
 
   return (
     <MainLayout>
-      <div className="p-5 flex flex-col gap-5 w-full">
+      <div className="p-5 flex flex-col gap-5 w-full h-full">
         <div className="flex gap-3 justify-between items-center">
           <div className="flex gap-2">
             <FontAwesomeIcon
@@ -60,7 +60,7 @@ export default function Links() {
             })}
           </div>
         ) : (
-          <NoLinksFound />
+          <NoLinksFound text="You Haven't Created Any Links Yet" />
         )}
       </div>
     </MainLayout>
