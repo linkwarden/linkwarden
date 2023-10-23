@@ -54,10 +54,10 @@ export default async function postUser(
   const checkIfUserExists = await prisma.user.findFirst({
     where: emailEnabled
       ? {
-          email: body.email?.toLowerCase(),
+          email: body.email?.toLowerCase().trim(),
         }
       : {
-          username: (body.username as string).toLowerCase(),
+          username: (body.username as string).toLowerCase().trim(),
         },
   });
 
@@ -71,8 +71,8 @@ export default async function postUser(
         name: body.name,
         username: emailEnabled
           ? undefined
-          : (body.username as string).toLowerCase(),
-        email: emailEnabled ? body.email?.toLowerCase() : undefined,
+          : (body.username as string).toLowerCase().trim(),
+        email: emailEnabled ? body.email?.toLowerCase().trim() : undefined,
         password: hashedPassword,
       },
     });
