@@ -5,7 +5,6 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
-import AuthSubmitButton from "@/components/AuthSubmitButton";
 
 interface FormData {
   username: string;
@@ -95,14 +94,18 @@ export default function Login() {
             )}
           </div>
 
-          <AuthSubmitButton
+          <SubmitButton
+            type="submit"
             label="Login"
             className=" w-full text-center"
             loading={submitLoader}
           />
-          {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? undefined : (
+          {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION ===
+          "true" ? undefined : (
             <div className="flex items-baseline gap-1 justify-center">
-              <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
+              <p className="w-fit text-gray-500 dark:text-gray-400">
+                New here?
+              </p>
               <Link
                 href={"/register"}
                 className="block text-black dark:text-white font-semibold"
