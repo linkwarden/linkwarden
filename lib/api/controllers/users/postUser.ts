@@ -16,7 +16,7 @@ interface User {
   password: string;
 }
 
-export default async function Index(
+export default async function postUser(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
@@ -35,8 +35,16 @@ export default async function Index(
       .status(400)
       .json({ response: "Please fill out all the fields." });
 
-  const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
+  // Check email (if enabled)
+  const checkEmail =
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  if (emailEnabled && !checkEmail.test(body.email?.toLowerCase() || ""))
+    return res.status(400).json({
+      response: "Please enter a valid email.",
+    });
 
+  // Check username (if email was disabled)
+  const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
   if (!emailEnabled && !checkUsername.test(body.username?.toLowerCase() || ""))
     return res.status(400).json({
       response:
@@ -47,7 +55,6 @@ export default async function Index(
     where: emailEnabled
       ? {
           email: body.email?.toLowerCase(),
-          emailVerified: { not: null },
         }
       : {
           username: (body.username as string).toLowerCase(),
@@ -72,8 +79,8 @@ export default async function Index(
 
     return res.status(201).json({ response: "User successfully created." });
   } else if (checkIfUserExists) {
-    return res
-      .status(400)
-      .json({ response: "Username and/or Email already exists." });
+    return res.status(400).json({
+      response: `${emailEnabled ? "Email" : "Username"} already exists.`,
+    });
   }
 }

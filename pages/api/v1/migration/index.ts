@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import exportData from "@/lib/api/controllers/migration/exportData";
 import importFromHTMLFile from "@/lib/api/controllers/migration/importFromHTMLFile";
 import importFromLinkwarden from "@/lib/api/controllers/migration/importFromLinkwarden";

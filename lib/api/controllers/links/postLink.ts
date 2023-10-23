@@ -27,10 +27,10 @@ export default async function postLink(
   link.collection.name = link.collection.name.trim();
 
   if (link.collection.id) {
-    const collectionIsAccessible = (await getPermission(
+    const collectionIsAccessible = (await getPermission({
       userId,
-      link.collection.id
-    )) as
+      collectionId: link.collection.id,
+    })) as
       | (Collection & {
           members: UsersAndCollections[];
         })

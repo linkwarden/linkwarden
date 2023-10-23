@@ -59,7 +59,7 @@ export default function Register() {
 
       const load = toast.loading("Creating Account...");
 
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("/api/v1/users", {
         body: JSON.stringify(request),
         headers: {
           "Content-Type": "application/json",
