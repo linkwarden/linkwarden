@@ -41,10 +41,12 @@ export default function ChooseUsername() {
   return (
     <CenteredForm>
       <form onSubmit={submitUsername}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
-          <p className="text-2xl text-center text-black dark:text-white font-bold">
-            Choose a Username (Last step)
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
+          <p className="text-3xl text-center text-black dark:text-white font-extralight">
+            Choose a Username
           </p>
+
+          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
 
           <div>
             <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">

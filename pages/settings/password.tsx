@@ -16,7 +16,7 @@ export default function Password() {
 
   const submit = async () => {
     if (newPassword == "" || newPassword2 == "") {
-      toast.error("Please fill all the fields.");
+      return toast.error("Please fill all the fields.");
     }
 
     if (newPassword !== newPassword2)

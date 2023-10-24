@@ -15,7 +15,7 @@ export default function Subscribe() {
   const { data, status } = useSession();
   const router = useRouter();
 
-  async function loginUser() {
+  async function submit() {
     setSubmitLoader(true);
 
     const redirectionToast = toast.loading("Redirecting to Stripe...");
@@ -32,10 +32,12 @@ export default function Subscribe() {
         process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
       }-day free trial, cancel anytime!`}
     >
-      <div className="p-2 mx-auto flex flex-col gap-3 justify-between sm:w-[30rem] dark:border-neutral-700 w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
-        <p className="text-2xl text-center font-bold">
+      <div className="p-4 mx-auto flex flex-col gap-3 justify-between dark:border-neutral-700 max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
+        <p className="sm:text-3xl text-2xl text-center font-extralight">
           Subscribe to Linkwarden!
         </p>
+
+        <hr className="border-1 border-sky-100 dark:border-neutral-700" />
 
         <div>
           <p>
@@ -84,24 +86,27 @@ export default function Subscribe() {
           <p className="font-semibold">
             Billed {plan === Plan.monthly ? "Monthly" : "Yearly"}
           </p>
-          <div className="flex gap-3">
-            <p className="w-fit">Total:</p>
-            <div className="w-full p-1 rounded-md border border-solid border-sky-100 dark:border-neutral-700">
-              <p className="text-sm">
-                {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS}-day free trial, then
-                ${plan === Plan.monthly ? "4 per month" : "36 annually"}
-              </p>
-              <p className="text-sm">+ VAT if applicable</p>
-            </div>
-          </div>
+          <fieldset className="w-full px-4 pb-4 pt-1 rounded-md border border-sky-100 dark:border-neutral-700">
+            <legend className="w-fit font-extralight px-2 border border-sky-100 dark:border-neutral-700 rounded-md text-xl">
+              Total
+            </legend>
+
+            <p className="text-sm">
+              {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS}-day free trial, then $
+              {plan === Plan.monthly ? "4 per month" : "36 annually"}
+            </p>
+            <p className="text-sm">+ VAT if applicable</p>
+          </fieldset>
         </div>
 
-        <SubmitButton
-          onClick={loginUser}
-          label="Complete your Subscription"
-          className="mt-2 w-full text-center"
-          loading={submitLoader}
-        />
+        <button
+          className={`border primary-btn-gradient select-none duration-100 bg-black border-[#0071B7] hover:border-[#059bf8] rounded-lg text-center px-4 py-2 text-slate-200 hover:text-white `}
+          onClick={() => {
+            if (!submitLoader) submit();
+          }}
+        >
+          <p className="text-center w-full font-bold">Complete Subscription!</p>
+        </button>
 
         <div
           onClick={() => signOut()}

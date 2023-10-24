@@ -6,6 +6,14 @@ import importFromHTMLFile from "@/lib/api/controllers/migration/importFromHTMLFi
 import importFromLinkwarden from "@/lib/api/controllers/migration/importFromLinkwarden";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: process.env.IMPORT_SIZE_LIMIT || "2mb",
+    },
+  },
+};
+
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
 
