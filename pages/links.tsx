@@ -20,18 +20,24 @@ export default function Links() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full h-full">
-        <div className="flex gap-3 justify-between items-center">
-          <div className="flex gap-2">
+        <div className="flex gap-3 justify-between">
+          <div className="flex items-center gap-3">
             <FontAwesomeIcon
               icon={faLink}
-              className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
+              className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
             />
-            <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-thin">
-              All Links
-            </p>
+            <div>
+              <p className="text-3xl capitalize text-black dark:text-white font-thin">
+                All Links
+              </p>
+
+              <p className="capitalize text-black dark:text-white">
+                All Links from every Collections
+              </p>
+            </div>
           </div>
 
-          <div className="relative">
+          <div className="relative mt-2">
             <div
               onClick={() => setSortDropdown(!sortDropdown)}
               id="sort-dropdown"

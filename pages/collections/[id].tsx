@@ -220,7 +220,7 @@ export default function Index() {
                       if (target.id !== "expand-dropdown")
                         setExpandDropdown(false);
                     }}
-                    className="absolute top-8 right-0 z-10 w-fit"
+                    className="absolute top-8 right-0 z-10 w-40"
                   />
                 ) : null}
               </div>

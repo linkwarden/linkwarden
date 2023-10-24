@@ -26,7 +26,7 @@ export default function Collections() {
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
   const [sortedCollections, setSortedCollections] = useState(collections);
 
-  const session = useSession();
+  const { data } = useSession();
 
   const { setModal } = useModalStore();
 
@@ -35,18 +35,24 @@ export default function Collections() {
   return (
     <MainLayout>
       <div className="p-5">
-        <div className="flex gap-3 items-center justify-between mb-5">
-          <div className="flex gap-3 items-end">
-            <div className="flex gap-2">
+        <div className="flex gap-3 justify-between mb-5">
+          <div className="flex gap-3">
+            <div className="flex items-center gap-3">
               <FontAwesomeIcon
                 icon={faFolder}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
+                className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-thin">
-                All Collections
-              </p>
+              <div>
+                <p className="text-3xl capitalize text-black dark:text-white font-thin">
+                  Your Collections
+                </p>
+
+                <p className="capitalize text-black dark:text-white">
+                  Collections you own
+                </p>
+              </div>
             </div>
-            <div className="relative">
+            <div className="relative mt-2">
               <div
                 onClick={() => setExpandDropdown(!expandDropdown)}
                 id="expand-dropdown"
@@ -79,13 +85,13 @@ export default function Collections() {
                     if (target.id !== "expand-dropdown")
                       setExpandDropdown(false);
                   }}
-                  className="absolute top-8 left-0 w-36"
+                  className="absolute top-8 sm:left-0 right-0 sm:right-auto w-36"
                 />
               ) : null}
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative mt-2">
             <div
               onClick={() => setSortDropdown(!sortDropdown)}
               id="sort-dropdown"
@@ -109,9 +115,11 @@ export default function Collections() {
         </div>
 
         <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
-          {sortedCollections.map((e, i) => {
-            return <CollectionCard key={i} collection={e} />;
-          })}
+          {sortedCollections
+            .filter((e) => e.ownerId !== data?.user.id)
+            .map((e, i) => {
+              return <CollectionCard key={i} collection={e} />;
+            })}
 
           <div
             className="p-5 bg-gray-50 dark:bg-neutral-800 self-stretch border border-solid border-sky-100 dark:border-neutral-700 min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
@@ -132,6 +140,34 @@ export default function Collections() {
             />
           </div>
         </div>
+
+        {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] ? (
+          <>
+            <div className="flex items-center gap-3 my-5">
+              <FontAwesomeIcon
+                icon={faFolder}
+                className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
+              />
+              <div>
+                <p className="text-3xl capitalize text-black dark:text-white font-thin">
+                  Other Collections
+                </p>
+
+                <p className="capitalize text-black dark:text-white">
+                  Shared collections you're a member of
+                </p>
+              </div>
+            </div>
+
+            <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+              {sortedCollections
+                .filter((e) => e.ownerId !== data?.user.id)
+                .map((e, i) => {
+                  return <CollectionCard key={i} collection={e} />;
+                })}
+            </div>
+          </>
+        ) : undefined}
       </div>
     </MainLayout>
   );
