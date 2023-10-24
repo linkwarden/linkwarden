@@ -116,7 +116,7 @@ export default function Collections() {
 
         <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
           {sortedCollections
-            .filter((e) => e.ownerId !== data?.user.id)
+            .filter((e) => e.ownerId === data?.user.id)
             .map((e, i) => {
               return <CollectionCard key={i} collection={e} />;
             })}
