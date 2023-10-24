@@ -50,10 +50,12 @@ export default function Login() {
   return (
     <CenteredForm text="Sign in to your account">
       <form onSubmit={loginUser}>
-        <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
-          <p className="text-2xl text-black dark:text-white text-center font-bold">
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+          <p className="text-3xl text-black dark:text-white text-center font-extralight">
             Enter your credentials
           </p>
+
+          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
 
           <div>
             <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
@@ -70,7 +72,7 @@ export default function Login() {
             />
           </div>
 
-          <div>
+          <div className="w-full">
             <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
               Password
             </p>
