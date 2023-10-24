@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis, faLink } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faGlobe, faLink } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Dropdown from "./Dropdown";
@@ -82,6 +82,13 @@ export default function CollectionCard({ collection, className }: Props) {
           </div>
           <div className="text-right w-40">
             <div className="text-black dark:text-white font-bold text-sm flex justify-end gap-1 items-center">
+              {collection.isPublic ? (
+                <FontAwesomeIcon
+                  icon={faGlobe}
+                  title="This collection is being shared publicly."
+                  className="w-4 h-4 drop-shadow text-gray-500 dark:text-gray-300"
+                />
+              ) : undefined}
               <FontAwesomeIcon
                 icon={faLink}
                 className="w-5 h-5 text-gray-500 dark:text-gray-300"

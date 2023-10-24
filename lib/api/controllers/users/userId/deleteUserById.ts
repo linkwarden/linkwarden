@@ -2,14 +2,8 @@ import { prisma } from "@/lib/api/db";
 import bcrypt from "bcrypt";
 import removeFolder from "@/lib/api/storage/removeFolder";
 import Stripe from "stripe";
-
-type DeleteUserBody = {
-  password: string;
-  cancellation_details?: {
-    comment?: string;
-    feedback?: Stripe.SubscriptionCancelParams.CancellationDetails.Feedback;
-  };
-};
+import { DeleteUserBody } from "@/types/global";
+import removeFile from "@/lib/api/storage/removeFile";
 
 export default async function deleteUserById(
   userId: number,
@@ -22,7 +16,7 @@ export default async function deleteUserById(
 
   if (!user) {
     return {
-      response: "User not found.",
+      response: "Invalid credentials.",
       status: 404,
     };
   }
@@ -32,7 +26,7 @@ export default async function deleteUserById(
 
   if (!isPasswordValid) {
     return {
-      response: "Invalid password.",
+      response: "Invalid credentials.",
       status: 401, // Unauthorized
     };
   }
@@ -54,7 +48,7 @@ export default async function deleteUserById(
       where: { ownerId: userId },
     });
 
-    // Delete collections
+    // Find collections that the user owns
     const collections = await prisma.collection.findMany({
       where: { ownerId: userId },
     });
@@ -65,7 +59,7 @@ export default async function deleteUserById(
         where: { collectionId: collection.id },
       });
 
-      // Optionally delete archive folders associated with collections
+      // Delete archive folders associated with collections
       removeFolder({ filePath: `archives/${collection.id}` });
     }
 
@@ -74,8 +68,8 @@ export default async function deleteUserById(
       where: { ownerId: userId },
     });
 
-    // Optionally delete user's avatar
-    removeFolder({ filePath: `uploads/avatar/${userId}.jpg` });
+    // Delete user's avatar
+    removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
 
     // Finally, delete the user
     await prisma.user.delete({
@@ -88,26 +82,30 @@ export default async function deleteUserById(
       apiVersion: "2022-11-15",
     });
 
-    const listByEmail = await stripe.customers.list({
-      email: user.email?.toLowerCase(),
-      expand: ["data.subscriptions"],
-    });
+    try {
+      const listByEmail = await stripe.customers.list({
+        email: user.email?.toLowerCase(),
+        expand: ["data.subscriptions"],
+      });
 
-    if (listByEmail.data[0].subscriptions?.data[0].id) {
-      const deleted = await stripe.subscriptions.cancel(
-        listByEmail.data[0].subscriptions?.data[0].id,
-        {
-          cancellation_details: {
-            comment: body.cancellation_details?.comment,
-            feedback: body.cancellation_details?.feedback,
-          },
-        }
-      );
+      if (listByEmail.data[0].subscriptions?.data[0].id) {
+        const deleted = await stripe.subscriptions.cancel(
+          listByEmail.data[0].subscriptions?.data[0].id,
+          {
+            cancellation_details: {
+              comment: body.cancellation_details?.comment,
+              feedback: body.cancellation_details?.feedback,
+            },
+          }
+        );
 
-      return {
-        response: deleted,
-        status: 200,
-      };
+        return {
+          response: deleted,
+          status: 200,
+        };
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 

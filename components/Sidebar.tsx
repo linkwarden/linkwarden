@@ -6,6 +6,7 @@ import {
   faChartSimple,
   faChevronDown,
   faLink,
+  faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 import useTagStore from "@/store/tags";
 import Link from "next/link";
@@ -151,10 +152,17 @@ export default function Sidebar({ className }: { className?: string }) {
                           className="w-6 h-6 drop-shadow"
                           style={{ color: e.color }}
                         />
-
-                        <p className="text-black dark:text-white truncate w-full pr-7">
+                        <p className="text-black dark:text-white truncate w-full">
                           {e.name}
                         </p>
+
+                        {e.isPublic ? (
+                          <FontAwesomeIcon
+                            icon={faGlobe}
+                            title="This collection is being shared publicly."
+                            className="w-4 h-4 drop-shadow text-gray-500 dark:text-gray-300"
+                          />
+                        ) : undefined}
                       </div>
                     </Link>
                   );

@@ -32,62 +32,64 @@ export default function Register() {
   async function registerUser(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const checkFields = () => {
-      if (emailEnabled) {
-        return (
-          form.name !== "" &&
-          form.email !== "" &&
-          form.password !== "" &&
-          form.passwordConfirmation !== ""
-        );
+    if (!submitLoader) {
+      const checkFields = () => {
+        if (emailEnabled) {
+          return (
+            form.name !== "" &&
+            form.email !== "" &&
+            form.password !== "" &&
+            form.passwordConfirmation !== ""
+          );
+        } else {
+          return (
+            form.name !== "" &&
+            form.username !== "" &&
+            form.password !== "" &&
+            form.passwordConfirmation !== ""
+          );
+        }
+      };
+
+      if (checkFields()) {
+        if (form.password !== form.passwordConfirmation)
+          return toast.error("Passwords do not match.");
+        else if (form.password.length < 8)
+          return toast.error("Passwords must be at least 8 characters.");
+        const { passwordConfirmation, ...request } = form;
+
+        setSubmitLoader(true);
+
+        const load = toast.loading("Creating Account...");
+
+        const response = await fetch("/api/v1/users", {
+          body: JSON.stringify(request),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+        });
+
+        const data = await response.json();
+
+        toast.dismiss(load);
+        setSubmitLoader(false);
+
+        if (response.ok) {
+          if (form.email && emailEnabled)
+            await signIn("email", {
+              email: form.email,
+              callbackUrl: "/",
+            });
+          else if (!emailEnabled) router.push("/login");
+
+          toast.success("User Created!");
+        } else {
+          toast.error(data.response);
+        }
       } else {
-        return (
-          form.name !== "" &&
-          form.username !== "" &&
-          form.password !== "" &&
-          form.passwordConfirmation !== ""
-        );
+        toast.error("Please fill out all the fields.");
       }
-    };
-
-    if (checkFields()) {
-      if (form.password !== form.passwordConfirmation)
-        return toast.error("Passwords do not match.");
-      else if (form.password.length < 8)
-        return toast.error("Passwords must be at least 8 characters.");
-      const { passwordConfirmation, ...request } = form;
-
-      setSubmitLoader(true);
-
-      const load = toast.loading("Creating Account...");
-
-      const response = await fetch("/api/v1/users", {
-        body: JSON.stringify(request),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      });
-
-      const data = await response.json();
-
-      toast.dismiss(load);
-      setSubmitLoader(false);
-
-      if (response.ok) {
-        if (form.email && emailEnabled)
-          await signIn("email", {
-            email: form.email,
-            callbackUrl: "/",
-          });
-        else if (!emailEnabled) router.push("/login");
-
-        toast.success("User Created!");
-      } else {
-        toast.error(data.response);
-      }
-    } else {
-      toast.error("Please fill out all the fields.");
     }
   }
 
@@ -95,14 +97,14 @@ export default function Register() {
     <CenteredForm
       text={
         process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
-          ? `Start using our Premium Services with a ${
+          ? `Unlock ${
               process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
-            }-day free trial!`
+            } days of Premium Service at no cost!`
           : "Create a new account"
       }
     >
       {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? (
-        <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
           <p>
             Registration is disabled for this instance, please contact the admin
             in case of any issues.
@@ -110,10 +112,13 @@ export default function Register() {
         </div>
       ) : (
         <form onSubmit={registerUser}>
-          <div className="p-4 flex flex-col gap-3 justify-between sm:w-[30rem] w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
-            <p className="text-2xl text-black dark:text-white text-center font-bold">
+          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+            <p className="text-3xl text-black dark:text-white text-center font-extralight">
               Enter your details
             </p>
+
+            <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+
             <div>
               <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
                 Display Name
@@ -223,12 +228,12 @@ export default function Register() {
               </div>
             ) : undefined}
 
-            <SubmitButton
+            <button
               type="submit"
-              label="Sign Up"
-              className="mt-2 w-full text-center"
-              loading={submitLoader}
-            />
+              className={`border primary-btn-gradient select-none duration-100 bg-black border-[#0071B7] hover:border-[#059bf8] rounded-lg text-center px-4 py-2 text-slate-200 hover:text-white `}
+            >
+              <p className="text-center w-full font-bold">Sign Up</p>
+            </button>
             <div className="flex items-baseline gap-1 justify-center">
               <p className="w-fit text-gray-500 dark:text-gray-400">
                 Already have an account?
