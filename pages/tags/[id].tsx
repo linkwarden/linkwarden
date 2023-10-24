@@ -86,7 +86,7 @@ export default function Index() {
       <div className="p-5 flex flex-col gap-5 w-full">
         <div className="flex gap-3 items-center justify-between">
           <div className="flex gap-3 items-center">
-            <div className="flex gap-2 items-end">
+            <div className="flex gap-2 items-end font-thin">
               <FontAwesomeIcon
                 icon={faHashtag}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500"
@@ -159,7 +159,7 @@ export default function Index() {
                           if (target.id !== "expand-dropdown")
                             setExpandDropdown(false);
                         }}
-                        className="absolute top-8 left-0 w-36"
+                        className="absolute top-8 left-0 w-36 font-normal"
                       />
                     ) : null}
                   </div>
