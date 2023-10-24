@@ -42,7 +42,7 @@ export default function Collections() {
                 icon={faFolder}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
+              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-thin">
                 All Collections
               </p>
             </div>

@@ -8,6 +8,7 @@ declare global {
       PAGINATION_TAKE_COUNT?: string;
       STORAGE_FOLDER?: string;
       AUTOSCROLL_TIMEOUT?: string;
+      IMPORT_SIZE_LIMIT?: string;
 
       SPACES_KEY?: string;
       SPACES_SECRET?: string;

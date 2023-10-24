@@ -231,3 +231,11 @@
 .sky-shadow {
   box-shadow: 0px 0px 3px #0ea5e9;
 }
+
+.primary-btn-gradient {
+  box-shadow: inset 0px -10px 10px #0071b7;
+}
+
+.primary-btn-gradient:hover {
+  box-shadow: inset 0px -15px 10px #059bf8;
+}

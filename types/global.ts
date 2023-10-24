@@ -1,4 +1,5 @@
 import { Collection, Link, Tag, User } from "@prisma/client";
+import Stripe from "stripe";
 
 type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
   Pick<T, TRequired>;
@@ -96,3 +97,11 @@ export enum Plan {
   monthly,
   yearly,
 }
+
+export type DeleteUserBody = {
+  password: string;
+  cancellation_details?: {
+    comment?: string;
+    feedback?: Stripe.SubscriptionCancelParams.CancellationDetails.Feedback;
+  };
+};
