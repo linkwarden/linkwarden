@@ -2,7 +2,7 @@
 name: Ask a Question
 about: Ask about a particular topic
 title: ''
-labels: enhancement, question
+labels: question
 assignees: ''
 
 ---
