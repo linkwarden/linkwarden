@@ -72,7 +72,7 @@ export default function Index() {
                     style={{ color: activeCollection?.color }}
                     className="sm:w-8 sm:h-8 w-6 h-6 mt-3 drop-shadow"
                   />
-                  <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white w-full py-1 break-words hyphens-auto">
+                  <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white w-full py-1 break-words hyphens-auto font-thin">
                     {activeCollection?.name}
                   </p>
                 </div>
@@ -220,7 +220,7 @@ export default function Index() {
                       if (target.id !== "expand-dropdown")
                         setExpandDropdown(false);
                     }}
-                    className="absolute top-8 right-0 z-10 w-fit"
+                    className="absolute top-8 right-0 z-10 w-40"
                   />
                 ) : null}
               </div>

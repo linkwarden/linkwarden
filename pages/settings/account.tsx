@@ -269,7 +269,7 @@ export default function Account() {
                 Import your data from other platforms.
               </p>
               <div
-                onClick={() => setImportDropdown(!importDropdown)}
+                onClick={() => setImportDropdown(true)}
                 className="w-fit relative"
                 id="import-dropdown"
               >
@@ -387,6 +387,33 @@ export default function Account() {
           label="Save"
           className="mt-2 mx-auto lg:mx-0"
         />
+
+        <div>
+          <div className="flex items-center gap-2 w-full rounded-md h-8">
+            <p className="text-red-500 dark:text-red-500 truncate w-full pr-7 text-3xl font-thin">
+              Delete Account
+            </p>
+          </div>
+
+          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+
+          <p>
+            This will permanently delete ALL the Links, Collections, Tags, and
+            archived data you own.{" "}
+            {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+              ? "It will also cancel your subscription. "
+              : undefined}{" "}
+            You will be prompted to enter your password before the deletion
+            process.
+          </p>
+
+          <Link
+            href="/settings/delete"
+            className="mx-auto lg:mx-0 text-white mt-3 flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit bg-red-500 hover:bg-red-400 cursor-pointer"
+          >
+            <p className="text-center w-full">Delete Your Account</p>
+          </Link>
+        </div>
       </div>
     </SettingsLayout>
   );
