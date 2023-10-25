@@ -59,7 +59,7 @@ export default async function deleteUserById(
         where: { collectionId: collection.id },
       });
 
-      // Delete archive folders associated with collections
+      // Delete archive folders
       removeFolder({ filePath: `archives/${collection.id}` });
     }
 
