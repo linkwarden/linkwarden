@@ -42,7 +42,7 @@ model User {
 
   email         String?   @unique
   emailVerified DateTime?
-  image         String?
+  imagePath     String?
 
   accounts Account[]
   sessions Session[]
@@ -121,6 +121,9 @@ model Link {
   collection     Collection @relation(fields: [collectionId], references: [id])
   collectionId   Int
   tags           Tag[]
+
+  screenshotPath String?
+  pdfPath        String?
 
   createdAt      DateTime   @default(now())
 }
