@@ -154,7 +154,7 @@ export default function Collections() {
                 </p>
 
                 <p className="capitalize text-black dark:text-white">
-                  Shared collections you're a member of
+                  Shared collections you&apos;re a member of
                 </p>
               </div>
             </div>

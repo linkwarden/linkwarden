@@ -119,7 +119,8 @@ export default function Password() {
             </label>
             <div>
               <p className="text-sm mb-2 text-black dark:text-white">
-                More information (the more details, the more helpful it'd be)
+                More information (the more details, the more helpful it&apos;d
+                be)
               </p>
 
               <textarea
