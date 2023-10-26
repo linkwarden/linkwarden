@@ -46,6 +46,8 @@ export default function AddOrEditLink({
       url: "",
       description: "",
       tags: [],
+      screenshotPath: "",
+      pdfPath: "",
       collection: {
         name: "",
         ownerId: data?.user.id as number,
