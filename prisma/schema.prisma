@@ -7,75 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
-  id                String  @id @default(cuid())
-  userId            Int
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       Int
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model User {
-  id   Int    @id @default(autoincrement())
-  name String
+  id                      Int             @id @default(autoincrement())
+  name                    String
 
-  username String? @unique
+  username                String?         @unique
 
-  email         String?   @unique
-  emailVerified DateTime?
-  imagePath     String?
+  email                   String?         @unique
+  emailVerified           DateTime?
+  imagePath               String?
 
-  accounts Account[]
-  sessions Session[]
+  password                String
+  collections             Collection[]
 
-  password    String
-  collections Collection[]
+  tags                    Tag[]
 
-  tags Tag[]
-
-  pinnedLinks Link[]
+  pinnedLinks             Link[]
 
   archiveAsScreenshot     Boolean         @default(true)
   archiveAsPDF            Boolean         @default(true)
   archiveAsWaybackMachine Boolean         @default(false)
 
-  collectionsJoined UsersAndCollections[]
-  isPrivate         Boolean               @default(false)
-  whitelistedUsers  WhitelistedUser[]
-  createdAt         DateTime              @default(now())
+  collectionsJoined       UsersAndCollections[]
+  isPrivate               Boolean         @default(false)
+  whitelistedUsers        WhitelistedUser[]
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt @default(now())
 }
 
 model WhitelistedUser {
-  id Int @id @default(autoincrement())
+  id             Int        @id @default(autoincrement())
 
-  username String @default("")
-  User     User?  @relation(fields: [userId], references: [id])
-  userId   Int?
+  username       String     @default("")
+  User           User?      @relation(fields: [userId], references: [id])
+  userId         Int?
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt @default(now())
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+  identifier     String
+  token          String     @unique
+  expires        DateTime
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt @default(now())
 
   @@unique([identifier, token])
 }
@@ -91,7 +68,8 @@ model Collection {
   ownerId   Int
   members   UsersAndCollections[]
   links     Link[]
-  createdAt DateTime              @default(now())
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt @default(now())
 
   @@unique([name, ownerId])
 }
@@ -106,6 +84,9 @@ model UsersAndCollections {
   canCreate    Boolean
   canUpdate    Boolean
   canDelete    Boolean
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt @default(now())
 
   @@id([userId, collectionId])
 }
@@ -126,6 +107,7 @@ model Link {
   pdfPath        String?
 
   createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt @default(now())
 }
 
 model Tag {
@@ -134,6 +116,9 @@ model Tag {
   links   Link[]
   owner   User   @relation(fields: [ownerId], references: [id])
   ownerId Int
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt @default(now())
 
   @@unique([name, ownerId])
 }
