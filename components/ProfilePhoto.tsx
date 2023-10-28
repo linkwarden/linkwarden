@@ -14,7 +14,6 @@ export default function ProfilePhoto({ src, className, priority }: Props) {
   const [image, setImage] = useState("");
 
   useEffect(() => {
-    console.log(src);
     if (src && !src?.includes("base64"))
       setImage(`/api/v1/${src.replace("uploads/", "").replace(".jpg", "")}`);
     else if (!src) setImage("");
@@ -36,6 +35,7 @@ export default function ProfilePhoto({ src, className, priority }: Props) {
       height={112}
       width={112}
       priority={priority}
+      draggable={false}
       className={`h-10 w-10 bg-sky-600 dark:bg-sky-600 shadow rounded-full aspect-square border border-slate-200 dark:border-neutral-700 ${className}`}
     />
   );

@@ -40,15 +40,7 @@ export default function TeamManagement({
 
   const publicCollectionURL = `${currentURL.origin}/public/collections/${collection.id}`;
 
-  const [member, setMember] = useState<Member>({
-    canCreate: false,
-    canUpdate: false,
-    canDelete: false,
-    user: {
-      name: "",
-      username: "",
-    },
-  });
+  const [memberUsername, setMemberUsername] = useState("");
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null,
@@ -77,15 +69,7 @@ export default function TeamManagement({
       members: [...collection.members, newMember],
     });
 
-    setMember({
-      canCreate: false,
-      canUpdate: false,
-      canDelete: false,
-      user: {
-        name: "",
-        username: "",
-      },
-    });
+    setMemberUsername("");
   };
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -168,19 +152,14 @@ export default function TeamManagement({
 
           <div className="flex items-center gap-2">
             <TextInput
-              value={member.user.username || ""}
+              value={memberUsername || ""}
               placeholder="Username (without the '@')"
-              onChange={(e) => {
-                setMember({
-                  ...member,
-                  user: { ...member.user, username: e.target.value },
-                });
-              }}
+              onChange={(e) => setMemberUsername(e.target.value)}
               onKeyDown={(e) =>
                 e.key === "Enter" &&
                 addMemberToCollection(
                   session.data?.user.username as string,
-                  member.user.username || "",
+                  memberUsername || "",
                   collection,
                   setMemberState
                 )
@@ -191,7 +170,7 @@ export default function TeamManagement({
               onClick={() =>
                 addMemberToCollection(
                   session.data?.user.username as string,
-                  member.user.username || "",
+                  memberUsername || "",
                   collection,
                   setMemberState
                 )

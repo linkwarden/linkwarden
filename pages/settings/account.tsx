@@ -48,7 +48,6 @@ export default function Account() {
   }
 
   useEffect(() => {
-    console.log(account);
     if (!objectIsEmpty(account)) setUser({ ...account });
   }, [account]);
 

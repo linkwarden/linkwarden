@@ -105,7 +105,7 @@ export default function Index() {
                         <ProfilePhoto
                           key={i}
                           src={e.user.image ? e.user.image : undefined}
-                          className="-mr-3 border-[3px]"
+                          className="border-[3px]"
                         />
                       );
                     })

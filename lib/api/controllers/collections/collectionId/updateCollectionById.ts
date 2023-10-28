@@ -59,6 +59,7 @@ export default async function updateCollection(
           include: {
             user: {
               select: {
+                image: true,
                 username: true,
                 name: true,
                 id: true,
