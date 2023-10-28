@@ -132,14 +132,15 @@ export default function LinkCard({ link, count, className }: Props) {
 
   return (
     <div
-      className={`h-fit border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none duration-100 rounded-2xl relative group ${className}`}
+      className={`h-fit border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none duration-100 rounded-2xl relative group ${
+        className || ""
+      }`}
     >
       {(permissions === true ||
         permissions?.canUpdate ||
         permissions?.canDelete) && (
         <div
           onClick={(e) => {
-            console.log(expandDropdown);
             setExpandDropdown({ x: e.clientX, y: e.clientY });
           }}
           id={"expand-dropdown" + link.id}
@@ -228,11 +229,7 @@ export default function LinkCard({ link, count, className }: Props) {
       </div>
       {expandDropdown ? (
         <Dropdown
-          style={{
-            position: "fixed",
-            top: `${expandDropdown.y}px`,
-            left: `${expandDropdown.x}px`,
-          }}
+          points={{ x: expandDropdown.x, y: expandDropdown.y }}
           items={[
             permissions === true
               ? {
@@ -278,7 +275,7 @@ export default function LinkCard({ link, count, className }: Props) {
             if (target.id !== "expand-dropdown" + link.id)
               setExpandDropdown(false);
           }}
-          className="w-40"
+          width={10}
         />
       ) : null}
     </div>
