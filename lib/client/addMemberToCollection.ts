@@ -27,10 +27,10 @@ const addMemberToCollection = async (
     if (user.username) {
       setMember({
         collectionId: collection.id,
-        userId: user.id,
         canCreate: false,
         canUpdate: false,
         canDelete: false,
+        userId: user.id,
         user: {
           id: user.id,
           name: user.name,

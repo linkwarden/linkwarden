@@ -18,11 +18,11 @@ export interface LinkIncludingShortenedCollectionAndTags
 
 export interface Member {
   collectionId?: number;
-  userId?: number;
+  userId: number;
   canCreate: boolean;
   canUpdate: boolean;
   canDelete: boolean;
-  user: OptionalExcluding<User, "username" | "name">;
+  user: OptionalExcluding<User, "username" | "name" | "id">;
 }
 
 export interface CollectionIncludingMembersAndLinkCount
