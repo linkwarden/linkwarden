@@ -68,7 +68,7 @@ export default function CollectionCard({ collection, className }: Props) {
                 return (
                   <ProfilePhoto
                     key={i}
-                    src={`/api/v1/avatar/${e.userId}?${Date.now()}`}
+                    src={e.user.image ? e.user.image : undefined}
                     className="-mr-3 border-[3px]"
                   />
                 );

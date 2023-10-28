@@ -19,9 +19,7 @@ const useAccountStore = create<AccountStore>()((set) => ({
 
     const data = await response.json();
 
-    const profilePic = `/api/v1/avatar/${data.response.id}?${Date.now()}`;
-
-    if (response.ok) set({ account: { ...data.response, profilePic } });
+    if (response.ok) set({ account: { ...data.response } });
   },
   updateAccount: async (user) => {
     const response = await fetch(`/api/v1/users/${user.id}`, {
