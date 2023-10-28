@@ -82,7 +82,7 @@ export default function Index() {
             {activeCollection ? (
               <div
                 className={`min-w-[15rem] ${
-                  activeCollection.members[0] && "mr-3"
+                  activeCollection.members[1] && "mr-3"
                 }`}
               >
                 <div
@@ -105,7 +105,9 @@ export default function Index() {
                         <ProfilePhoto
                           key={i}
                           src={e.user.image ? e.user.image : undefined}
-                          className="border-[3px]"
+                          className={`${
+                            activeCollection.members[1] && "-mr-3"
+                          } border-[3px]`}
                         />
                       );
                     })
