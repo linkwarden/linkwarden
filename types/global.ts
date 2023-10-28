@@ -5,7 +5,7 @@ type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
   Pick<T, TRequired>;
 
 export interface LinkIncludingShortenedCollectionAndTags
-  extends Omit<Link, "id" | "createdAt" | "collectionId"> {
+  extends Omit<Link, "id" | "createdAt" | "collectionId" | "updatedAt"> {
   id?: number;
   createdAt?: string;
   collectionId?: number;
