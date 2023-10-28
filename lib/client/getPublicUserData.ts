@@ -5,6 +5,8 @@ export default async function getPublicUserData(id: number | string) {
 
   const data = await response.json();
 
+  console.log(data);
+
   if (!response.ok) toast.error(data.response);
 
   return data.response;

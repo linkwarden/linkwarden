@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: ["t2.gstatic.com"],
+    minimumCacheTTL: 10,
   },
 };
 

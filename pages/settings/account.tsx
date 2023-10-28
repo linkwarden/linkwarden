@@ -21,12 +21,7 @@ export default function Account() {
 
   const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
-  const [profileStatus, setProfileStatus] = useState(true);
   const [submitLoader, setSubmitLoader] = useState(false);
-
-  const handleProfileStatus = (e: boolean) => {
-    setProfileStatus(!e);
-  };
 
   const { account, updateAccount } = useAccountStore();
 
@@ -40,12 +35,11 @@ export default function Account() {
           username: "",
           email: "",
           emailVerified: null,
-          image: null,
+          image: "",
           isPrivate: true,
           // @ts-ignore
           createdAt: null,
           whitelistedUsers: [],
-          profilePic: "",
         } as unknown as AccountSettings)
   );
 
@@ -54,6 +48,7 @@ export default function Account() {
   }
 
   useEffect(() => {
+    console.log(account);
     if (!objectIsEmpty(account)) setUser({ ...account });
   }, [account]);
 
@@ -68,7 +63,7 @@ export default function Account() {
       ) {
         const reader = new FileReader();
         reader.onload = () => {
-          setUser({ ...user, profilePic: reader.result as string });
+          setUser({ ...user, image: reader.result as string });
         };
         reader.readAsDataURL(resizedFile);
       } else {
@@ -220,16 +215,15 @@ export default function Account() {
             <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
               <ProfilePhoto
                 priority={true}
-                src={user.profilePic}
+                src={user.image ? user.image : undefined}
                 className="h-auto border-none w-28"
-                status={handleProfileStatus}
               />
-              {profileStatus && (
+              {user.image && (
                 <div
                   onClick={() =>
                     setUser({
                       ...user,
-                      profilePic: "",
+                      image: "",
                     })
                   }
                   className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 border-slate-200 dark:border-neutral-700 rounded-full bg-white dark:bg-neutral-800 text-center select-none cursor-pointer duration-100 hover:text-red-500"

@@ -13,7 +13,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
   if (!userId || !username)
     return res
-      .setHeader("Content-Type", "text/html")
+      .setHeader("Content-Type", "text/plain")
       .status(401)
       .send("You must be logged in.");
   else if (session?.user?.isSubscriber === false)
@@ -24,7 +24,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
   if (!queryId)
     return res
-      .setHeader("Content-Type", "text/html")
+      .setHeader("Content-Type", "text/plain")
       .status(401)
       .send("Invalid parameters.");
 
@@ -44,8 +44,9 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
     if (targetUser?.isPrivate && !whitelistedUsernames?.includes(username)) {
       return res
-        .setHeader("Content-Type", "text/html")
-        .send("This profile is private.");
+        .setHeader("Content-Type", "text/plain")
+        .status(400)
+        .send("File not found.");
     }
   }
 

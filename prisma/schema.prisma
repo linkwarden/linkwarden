@@ -15,7 +15,7 @@ model User {
 
   email                   String?         @unique
   emailVerified           DateTime?
-  imagePath               String?
+  image                   String?
 
   password                String
   collections             Collection[]

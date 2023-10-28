@@ -42,6 +42,7 @@ export default async function getPublicUserById(
   const data = {
     name: lessSensitiveInfo.name,
     username: lessSensitiveInfo.username,
+    image: lessSensitiveInfo.image,
   };
 
   return { response: data, status: 200 };
