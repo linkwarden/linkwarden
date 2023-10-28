@@ -19,11 +19,18 @@ type Props = {
   onClickOutside: Function;
   className?: string;
   items: MenuItem[];
+  style?: React.CSSProperties;
 };
 
-export default function Dropdown({ onClickOutside, className, items }: Props) {
+export default function Dropdown({
+  style,
+  onClickOutside,
+  className,
+  items,
+}: Props) {
   return (
     <ClickAwayHandler
+      style={style}
       onClickOutside={onClickOutside}
       className={`${className} py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
     >

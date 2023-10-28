@@ -4,6 +4,7 @@ type Props = {
   children: ReactNode;
   onClickOutside: Function;
   className?: string;
+  style?: React.CSSProperties;
 };
 
 function useOutsideAlerter(
@@ -30,12 +31,13 @@ export default function ClickAwayHandler({
   children,
   onClickOutside,
   className,
+  style,
 }: Props) {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef, onClickOutside);
 
   return (
-    <div ref={wrapperRef} className={className}>
+    <div ref={wrapperRef} className={className} style={style}>
       {children}
     </div>
   );
