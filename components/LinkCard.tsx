@@ -139,7 +139,7 @@ export default function LinkCard({ link, count, className }: Props) {
         permissions?.canDelete) && (
         <div
           onClick={(e) => {
-            console.log();
+            console.log(expandDropdown);
             setExpandDropdown({ x: e.clientX, y: e.clientY });
           }}
           id={"expand-dropdown" + link.id}
@@ -228,6 +228,11 @@ export default function LinkCard({ link, count, className }: Props) {
       </div>
       {expandDropdown ? (
         <Dropdown
+          style={{
+            position: "fixed",
+            top: `${expandDropdown.y}px`,
+            left: `${expandDropdown.x}px`,
+          }}
           items={[
             permissions === true
               ? {
@@ -273,7 +278,7 @@ export default function LinkCard({ link, count, className }: Props) {
             if (target.id !== "expand-dropdown" + link.id)
               setExpandDropdown(false);
           }}
-          className="absolute top-12 right-5 w-40"
+          className="w-40"
         />
       ) : null}
     </div>
