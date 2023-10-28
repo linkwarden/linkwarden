@@ -40,6 +40,7 @@ export default async function getPublicUserById(
   const { password, ...lessSensitiveInfo } = user;
 
   const data = {
+    id: lessSensitiveInfo.id,
     name: lessSensitiveInfo.name,
     username: lessSensitiveInfo.username,
     image: lessSensitiveInfo.image,
