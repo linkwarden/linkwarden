@@ -89,12 +89,10 @@ export default async function updateUserById(
 
   // Avatar Settings
 
-  const profilePic = data.profilePic;
-
-  if (profilePic.startsWith("data:image/jpeg;base64")) {
-    if (data.profilePic.length < 1572864) {
+  if (data.image?.startsWith("data:image/jpeg;base64")) {
+    if (data.image.length < 1572864) {
       try {
-        const base64Data = profilePic.replace(/^data:image\/jpeg;base64,/, "");
+        const base64Data = data.image.replace(/^data:image\/jpeg;base64,/, "");
 
         createFolder({ filePath: `uploads/avatar` });
 
@@ -113,7 +111,7 @@ export default async function updateUserById(
         status: 400,
       };
     }
-  } else if (profilePic == "") {
+  } else if (data.image == "") {
     removeFile({ filePath: `uploads/avatar/${sessionUser.id}.jpg` });
   }
 
@@ -131,6 +129,7 @@ export default async function updateUserById(
       username: data.username.toLowerCase().trim(),
       email: data.email?.toLowerCase().trim(),
       isPrivate: data.isPrivate,
+      image: data.image ? `uploads/avatar/${sessionUser.id}.jpg` : "",
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
@@ -197,7 +196,7 @@ export default async function updateUserById(
   const response: Omit<AccountSettings, "password"> = {
     ...userInfo,
     whitelistedUsers: newWhitelistedUsernames,
-    profilePic: `/api/v1/avatar/${userInfo.id}?${Date.now()}`,
+    image: userInfo.image ? `${userInfo.image}?${Date.now()}` : "",
   };
 
   return { response, status: 200 };

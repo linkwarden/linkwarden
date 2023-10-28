@@ -35,7 +35,6 @@ export interface CollectionIncludingMembersAndLinkCount
 }
 
 export interface AccountSettings extends User {
-  profilePic: string;
   newPassword?: string;
   whitelistedUsers: string[];
 }
@@ -79,7 +78,7 @@ interface CollectionIncludingLinks extends Collection {
   links: LinksIncludingTags[];
 }
 
-export interface Backup extends Omit<User, "password" | "id" | "image"> {
+export interface Backup extends Omit<User, "password" | "id"> {
   collections: CollectionIncludingLinks[];
 }
 

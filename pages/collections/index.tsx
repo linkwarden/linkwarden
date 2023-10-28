@@ -15,11 +15,8 @@ import useModalStore from "@/store/modals";
 import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
 import useSort from "@/hooks/useSort";
-import { useTheme } from "next-themes";
 
 export default function Collections() {
-  const { theme } = useTheme();
-
   const { collections } = useCollectionStore();
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);

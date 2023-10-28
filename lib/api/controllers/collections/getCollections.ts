@@ -18,6 +18,7 @@ export default async function getCollection(userId: number) {
             select: {
               username: true,
               name: true,
+              image: true,
             },
           },
         },

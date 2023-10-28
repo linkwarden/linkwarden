@@ -9,14 +9,12 @@ import s3Client from "./s3Client";
 import util from "util";
 
 type ReturnContentTypes =
-  | "text/html"
+  | "text/plain"
   | "image/jpeg"
   | "image/png"
   | "application/pdf";
 
 export default async function readFile(filePath: string) {
-  const isRequestingAvatar = filePath.startsWith("uploads/avatar");
-
   let contentType: ReturnContentTypes;
 
   if (s3Client) {
@@ -41,12 +39,12 @@ export default async function readFile(filePath: string) {
       try {
         await headObjectAsync(bucketParams);
       } catch (err) {
-        contentType = "text/html";
+        contentType = "text/plain";
 
         returnObject = {
-          file: isRequestingAvatar ? "File not found." : fileNotFoundTemplate,
+          file: "File not found.",
           contentType,
-          status: isRequestingAvatar ? 200 : 400,
+          status: 400,
         };
       }
 
@@ -71,9 +69,9 @@ export default async function readFile(filePath: string) {
     } catch (err) {
       console.log("Error:", err);
 
-      contentType = "text/html";
+      contentType = "text/plain";
       return {
-        file: "An internal occurred, please contact support.",
+        file: "An internal occurred, please contact the support team.",
         contentType,
       };
     }
@@ -92,9 +90,9 @@ export default async function readFile(filePath: string) {
 
     if (!fs.existsSync(creationPath))
       return {
-        file: isRequestingAvatar ? "File not found." : fileNotFoundTemplate,
-        contentType: "text/html",
-        status: isRequestingAvatar ? 200 : 400,
+        file: "File not found.",
+        contentType: "text/plain",
+        status: 400,
       };
     else {
       const file = fs.readFileSync(creationPath);
