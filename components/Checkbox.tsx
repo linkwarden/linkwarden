@@ -11,7 +11,9 @@ type Props = {
 
 export default function Checkbox({ label, state, className, onClick }: Props) {
   return (
-    <label className={`cursor-pointer flex items-center gap-2 ${className}`}>
+    <label
+      className={`cursor-pointer flex items-center gap-2 ${className || ""}`}
+    >
       <input
         type="checkbox"
         checked={state}

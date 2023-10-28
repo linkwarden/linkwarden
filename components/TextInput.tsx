@@ -27,7 +27,9 @@ export default function TextInput({
       value={value}
       onChange={onChange}
       onKeyDown={onKeyDown}
-      className={`w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-950 border-solid border outline-none focus:border-sky-300 focus:dark:border-sky-600 duration-100 ${className}`}
+      className={`w-full rounded-md p-2 border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-950 border-solid border outline-none focus:border-sky-300 focus:dark:border-sky-600 duration-100 ${
+        className || ""
+      }`}
     />
   );
 }

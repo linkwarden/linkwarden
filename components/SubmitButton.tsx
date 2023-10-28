@@ -25,7 +25,7 @@ export default function SubmitButton({
         loading
           ? "bg-sky-600 cursor-auto"
           : "bg-sky-700 hover:bg-sky-600 cursor-pointer"
-      } ${className}`}
+      } ${className || ""}`}
       onClick={() => {
         if (!loading && onClick) onClick();
       }}

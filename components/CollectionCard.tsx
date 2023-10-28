@@ -40,7 +40,9 @@ export default function CollectionCard({ collection, className }: Props) {
           theme === "dark" ? "#262626" : "#f3f4f6"
         } 50%, ${theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
       }}
-      className={`border border-solid border-sky-100 dark:border-neutral-700 self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${className}`}
+      className={`border border-solid border-sky-100 dark:border-neutral-700 self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${
+        className || ""
+      }`}
     >
       <div
         onClick={() => setExpandDropdown(!expandDropdown)}
