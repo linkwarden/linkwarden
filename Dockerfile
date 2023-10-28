@@ -1,6 +1,7 @@
 FROM node:18.18-bullseye-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG DATABASE_PROVIDER
 
 RUN mkdir /data
 
@@ -16,6 +17,8 @@ RUN npx playwright install-deps && \
     yarn cache clean
 
 COPY . .
+
+RUN sed -i "s/DATABASE_PROVIDER/${DATABASE_PROVIDER}/g" ./prisma/schema.prisma
 
 RUN yarn prisma generate && \
     yarn build

@@ -1,11 +1,5 @@
 version: "3.5"
 services:
-  postgres:
-    image: postgres
-    env_file: .env
-    restart: always
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
   linkwarden:
     env_file: .env
     environment:
@@ -16,5 +10,3 @@ services:
       - 3000:3000
     volumes:
       - ./data:/data/data
-    depends_on:
-      - postgres
