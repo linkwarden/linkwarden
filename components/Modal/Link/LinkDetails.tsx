@@ -228,72 +228,77 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
           <p>{formattedDate}</p>
         </div>
       </div>
+
       <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
-          <div className="flex gap-2 items-center">
-            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
-              <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
+        {link.screenshotPath && link.screenshotPath !== "pending" ? (
+          <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
+            <div className="flex gap-2 items-center">
+              <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
+                <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
+              </div>
+
+              <p className="text-black dark:text-white">Screenshot</p>
             </div>
 
-            <p className="text-black dark:text-white">Screenshot</p>
-          </div>
+            <div className="flex text-black dark:text-white gap-1">
+              <div
+                onClick={() => handleDownload("png")}
+                className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
+              >
+                <FontAwesomeIcon
+                  icon={faCloudArrowDown}
+                  className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
+                />
+              </div>
 
-          <div className="flex text-black dark:text-white gap-1">
-            <div
-              onClick={() => handleDownload("png")}
-              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
-            >
-              <FontAwesomeIcon
-                icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
-              />
+              <Link
+                href={`/api/v1/archives/${link.collectionId}/${link.id}.png`}
+                target="_blank"
+                className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
+              >
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="w-5 h-5 text-sky-500 dark:text-sky-500"
+                />
+              </Link>
+            </div>
+          </div>
+        ) : undefined}
+
+        {link.pdfPath && link.pdfPath !== "pending" ? (
+          <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
+            <div className="flex gap-2 items-center">
+              <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
+                <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
+              </div>
+
+              <p className="text-black dark:text-white">PDF</p>
             </div>
 
-            <Link
-              href={`/api/v1/archives/${link.collectionId}/${link.id}.png`}
-              target="_blank"
-              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
-            >
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-sky-500 dark:text-sky-500"
-              />
-            </Link>
-          </div>
-        </div>
+            <div className="flex text-black dark:text-white gap-1">
+              <div
+                onClick={() => handleDownload("pdf")}
+                className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
+              >
+                <FontAwesomeIcon
+                  icon={faCloudArrowDown}
+                  className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
+                />
+              </div>
 
-        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
-          <div className="flex gap-2 items-center">
-            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
-              <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
+              <Link
+                href={`/api/v1/archives/${link.collectionId}/${link.id}.pdf`}
+                target="_blank"
+                className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
+              >
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="w-5 h-5 text-sky-500 dark:text-sky-500"
+                />
+              </Link>
             </div>
-
-            <p className="text-black dark:text-white">PDF</p>
           </div>
-
-          <div className="flex text-black dark:text-white gap-1">
-            <div
-              onClick={() => handleDownload("pdf")}
-              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
-            >
-              <FontAwesomeIcon
-                icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-sky-500 dark:text-sky-500"
-              />
-            </div>
-
-            <Link
-              href={`/api/v1/archives/${link.collectionId}/${link.id}.pdf`}
-              target="_blank"
-              className="cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-2 rounded-md"
-            >
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-sky-500 dark:text-sky-500"
-              />
-            </Link>
-          </div>
-        </div>
+        ) : undefined}
 
         <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
           <div className="flex gap-2 items-center">

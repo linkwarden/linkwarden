@@ -14,6 +14,16 @@ export default async function archive(
     },
   });
 
+  const link = await prisma.link.update({
+    where: {
+      id: linkId,
+    },
+    data: {
+      screenshotPath: "pending",
+      pdfPath: "pending",
+    },
+  });
+
   if (user?.archiveAsWaybackMachine) sendToWayback(url);
 
   if (user?.archiveAsPDF || user?.archiveAsScreenshot) {
@@ -41,7 +51,7 @@ export default async function archive(
             fullPage: true,
           });
 
-          createFile({
+          await createFile({
             data: screenshot,
             filePath: `archives/${linkExists.collectionId}/${linkId}.png`,
           });
@@ -55,11 +65,25 @@ export default async function archive(
             margin: { top: "15px", bottom: "15px" },
           });
 
-          createFile({
+          await createFile({
             data: pdf,
             filePath: `archives/${linkExists.collectionId}/${linkId}.pdf`,
           });
         }
+
+        const updateLink = await prisma.link.update({
+          where: {
+            id: linkId,
+          },
+          data: {
+            screenshotPath: user.archiveAsScreenshot
+              ? `archives/${linkExists.collectionId}/${linkId}.png`
+              : null,
+            pdfPath: user.archiveAsPDF
+              ? `archives/${linkExists.collectionId}/${linkId}.pdf`
+              : null,
+          },
+        });
       }
 
       await browser.close();

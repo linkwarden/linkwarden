@@ -28,12 +28,19 @@ type Props = {
   className?: string;
 };
 
+type DropdownTrigger =
+  | {
+      x: number;
+      y: number;
+    }
+  | false;
+
 export default function LinkCard({ link, count, className }: Props) {
   const { setModal } = useModalStore();
 
   const permissions = usePermissions(link.collection.id as number);
 
-  const [expandDropdown, setExpandDropdown] = useState(false);
+  const [expandDropdown, setExpandDropdown] = useState<DropdownTrigger>(false);
 
   const { collections } = useCollectionStore();
 
@@ -84,6 +91,23 @@ export default function LinkCard({ link, count, className }: Props) {
       toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
   };
 
+  const updateArchive = async () => {
+    const load = toast.loading("Applying...");
+
+    setExpandDropdown(false);
+
+    const response = await fetch(`/api/v1/links/${link.id}/archive`, {
+      method: "PUT",
+    });
+
+    const data = await response.json();
+
+    toast.dismiss(load);
+
+    if (response.ok) toast.success(`Link is being archived.`);
+    else toast.error(data);
+  };
+
   const deleteLink = async () => {
     const load = toast.loading("Deleting...");
 
@@ -114,7 +138,10 @@ export default function LinkCard({ link, count, className }: Props) {
         permissions?.canUpdate ||
         permissions?.canDelete) && (
         <div
-          onClick={() => setExpandDropdown(!expandDropdown)}
+          onClick={(e) => {
+            console.log();
+            setExpandDropdown({ x: e.clientX, y: e.clientY });
+          }}
           id={"expand-dropdown" + link.id}
           className="text-gray-500 dark:text-gray-300 inline-flex rounded-md cursor-pointer hover:bg-slate-200 dark:hover:bg-neutral-700 absolute right-5 top-5 z-10 duration-100 p-1"
         >
@@ -226,6 +253,12 @@ export default function LinkCard({ link, count, className }: Props) {
                     });
                     setExpandDropdown(false);
                   },
+                }
+              : undefined,
+            permissions === true
+              ? {
+                  name: "Update Archive",
+                  onClick: updateArchive,
                 }
               : undefined,
             permissions === true || permissions?.canDelete
