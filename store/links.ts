@@ -17,6 +17,7 @@ type LinkStore = {
   addLink: (
     body: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
+  getLink: (linkId: number) => Promise<ResponseObject>;
   updateLink: (
     link: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
@@ -61,6 +62,21 @@ const useLinkStore = create<LinkStore>()((set) => ({
       }));
       useTagStore.getState().setTags();
       useCollectionStore.getState().setCollections();
+    }
+
+    return { ok: response.ok, data: data.response };
+  },
+  getLink: async (linkId) => {
+    const response = await fetch(`/api/v1/links/${linkId}`);
+
+    const data = await response.json();
+
+    if (response.ok) {
+      set((state) => ({
+        links: state.links.map((e) =>
+          e.id === data.response.id ? data.response : e
+        ),
+      }));
     }
 
     return { ok: response.ok, data: data.response };

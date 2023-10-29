@@ -4,7 +4,7 @@ import { Collection, Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import moveFile from "@/lib/api/storage/moveFile";
 
-export default async function updateLink(
+export default async function updateLinkById(
   userId: number,
   linkId: number,
   data: LinkIncludingShortenedCollectionAndTags
