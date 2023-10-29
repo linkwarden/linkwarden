@@ -31,8 +31,6 @@ export default function Index() {
   const { links } = useLinkStore();
   const { collections } = useCollectionStore();
 
-  const { data } = useSession();
-
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);

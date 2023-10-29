@@ -10,9 +10,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowUpRightFromSquare,
   faBoxArchive,
+  faBuildingColumns,
   faCloudArrowDown,
   faFolder,
-  faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import {
@@ -345,7 +345,7 @@ export default function LinkDetails({ linkId, isOwnerOrMod }: Props) {
         <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
           <div className="flex gap-2 items-center">
             <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
-              <FontAwesomeIcon icon={faGlobe} className="w-6 h-6" />
+              <FontAwesomeIcon icon={faBuildingColumns} className="w-6 h-6" />
             </div>
 
             <p className="text-black dark:text-white">
