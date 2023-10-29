@@ -64,7 +64,10 @@ export default function LinkModal({
         <Tab.Panels>
           {activeLink && method === "UPDATE" && (
             <Tab.Panel>
-              <LinkDetails link={activeLink} isOwnerOrMod={isOwnerOrMod} />
+              <LinkDetails
+                linkId={activeLink.id as number}
+                isOwnerOrMod={isOwnerOrMod}
+              />
             </Tab.Panel>
           )}
 
@@ -73,7 +76,9 @@ export default function LinkModal({
               <AddOrEditLink
                 toggleLinkModal={toggleLinkModal}
                 method="UPDATE"
-                activeLink={activeLink}
+                activeLink={
+                  activeLink as LinkIncludingShortenedCollectionAndTags
+                }
               />
             ) : (
               <AddOrEditLink

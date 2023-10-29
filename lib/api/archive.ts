@@ -14,13 +14,29 @@ export default async function archive(
     },
   });
 
+  // const checkExistingLink = await prisma.link.findFirst({
+  //   where: {
+  //     id: linkId,
+  //     OR: [
+  //       {
+  //         screenshotPath: "pending",
+  //       },
+  //       {
+  //         pdfPath: "pending",
+  //       },
+  //     ],
+  //   },
+  // });
+
+  // if (checkExistingLink) return "A request has already been made.";
+
   const link = await prisma.link.update({
     where: {
       id: linkId,
     },
     data: {
-      screenshotPath: "pending",
-      pdfPath: "pending",
+      screenshotPath: user?.archiveAsScreenshot ? "pending" : null,
+      pdfPath: user?.archiveAsPDF ? "pending" : null,
     },
   });
 
@@ -88,8 +104,8 @@ export default async function archive(
 
       await browser.close();
     } catch (err) {
-      console.log(err);
       await browser.close();
+      return err;
     }
   }
 }

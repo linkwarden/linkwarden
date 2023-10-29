@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import deleteLinkById from "@/lib/api/controllers/links/linkId/deleteLinkById";
 import updateLinkById from "@/lib/api/controllers/links/linkId/updateLinkById";
+import getLinkById from "@/lib/api/controllers/links/linkId/getLinkById";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions);
@@ -15,7 +16,12 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
     });
 
-  if (req.method === "PUT") {
+  if (req.method === "GET") {
+    const updated = await getLinkById(session.user.id, Number(req.query.id));
+    return res.status(updated.status).json({
+      response: updated.response,
+    });
+  } else if (req.method === "PUT") {
     const updated = await updateLinkById(
       session.user.id,
       Number(req.query.id),
