@@ -19,9 +19,9 @@ type Props = {
   onClickOutside: Function;
   className?: string;
   items: MenuItem[];
-  points: { x: number; y: number };
+  points?: { x: number; y: number };
   style?: React.CSSProperties;
-  width: number; // in rem
+  width?: number; // in rem
 };
 
 export default function Dropdown({
@@ -33,6 +33,7 @@ export default function Dropdown({
 }: Props) {
   const [pos, setPos] = useState<{ x: number; y: number }>();
   const [dropdownHeight, setDropdownHeight] = useState<number>();
+  const [dropdownWidth, setDropdownWidth] = useState<number>();
 
   function convertRemToPixels(rem: number) {
     return (
@@ -41,48 +42,46 @@ export default function Dropdown({
   }
 
   useEffect(() => {
-    const dropdownWidth = convertRemToPixels(width);
+    if (points) {
+      let finalX = points.x;
+      let finalY = points.y;
 
-    let finalX = points.x;
-    let finalY = points.y;
+      // Check for x-axis overflow (left side)
+      if (dropdownWidth && points.x + dropdownWidth > window.innerWidth) {
+        finalX = points.x - dropdownWidth;
+      }
 
-    // Check for x-axis overflow (left side)
-    if (points.x + dropdownWidth > window.innerWidth) {
-      finalX = points.x - dropdownWidth;
+      // Check for y-axis overflow (bottom side)
+      if (dropdownHeight && points.y + dropdownHeight > window.innerHeight) {
+        finalY =
+          window.innerHeight -
+          (dropdownHeight + (window.innerHeight - points.y));
+      }
+
+      setPos({ x: finalX, y: finalY });
     }
-
-    // Check for y-axis overflow (bottom side)
-    if (dropdownHeight && points.y + dropdownHeight > window.innerHeight) {
-      finalY =
-        window.innerHeight - (dropdownHeight + (window.innerHeight - points.y));
-    }
-
-    setPos({ x: finalX, y: finalY });
   }, [points, width, dropdownHeight]);
 
-  useEffect(() => {
-    const dropdownWidth = convertRemToPixels(width);
-
-    if (points.x + dropdownWidth > window.innerWidth) {
-      setPos({ x: points.x - dropdownWidth, y: points.y });
-    } else setPos(points);
-  }, [points, width]);
-
   return (
-    pos && (
+    (!points || pos) && (
       <ClickAwayHandler
         onMount={(e) => {
           setDropdownHeight(e.height);
+          setDropdownWidth(e.width);
         }}
-        style={{
-          position: "fixed",
-          top: `${pos?.y}px`,
-          left: `${pos?.x}px`,
-        }}
+        style={
+          points
+            ? {
+                position: "fixed",
+                top: `${pos?.y}px`,
+                left: `${pos?.x}px`,
+              }
+            : undefined
+        }
         onClickOutside={onClickOutside}
         className={`${
           className || ""
-        } py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20 w-[${width}rem]`}
+        } py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
       >
         {items.map((e, i) => {
           const inner = e && (

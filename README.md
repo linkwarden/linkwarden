@@ -96,7 +96,6 @@ Here are the other ways to support/cheer this project:
 
 - Starring this repository.
 - Joining us on [Discord](https://discord.com/invite/CtuYV47nuJ).
-- Following @daniel31x13 on [Mastodon](https://mastodon.social/@daniel31x13), [Twitter](https://twitter.com/daniel31x13) and [GitHub](https://github.com/daniel31x13).
 - Referring Linkwarden to a friend.
 
 If you did any of the above, Thanksss! Otherwise thanks.

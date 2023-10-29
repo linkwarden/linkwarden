@@ -23,14 +23,48 @@ import {
 import isValidUrl from "@/lib/client/isValidUrl";
 import { useTheme } from "next-themes";
 import unescapeString from "@/lib/client/unescapeString";
+import useLinkStore from "@/store/links";
 
 type Props = {
-  link: LinkIncludingShortenedCollectionAndTags;
+  linkId: number;
   isOwnerOrMod: boolean;
 };
 
-export default function LinkDetails({ link, isOwnerOrMod }: Props) {
+export default function LinkDetails({ linkId, isOwnerOrMod }: Props) {
   const { theme } = useTheme();
+
+  const { links, getLink } = useLinkStore();
+
+  const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>(
+    links.find(
+      (e) => e.id === linkId
+    ) as LinkIncludingShortenedCollectionAndTags
+  );
+
+  useEffect(() => {
+    setLink(
+      links.find(
+        (e) => e.id === linkId
+      ) as LinkIncludingShortenedCollectionAndTags
+    );
+  }, [links]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timer | undefined;
+    if (link.screenshotPath === "pending" || link.pdfPath === "pending") {
+      interval = setInterval(() => getLink(link.id as number), 5000);
+    } else {
+      if (interval) {
+        clearInterval(interval);
+      }
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [link.screenshotPath, link.pdfPath]);
 
   const [imageError, setImageError] = useState<boolean>(false);
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
@@ -50,6 +84,14 @@ export default function LinkDetails({ link, isOwnerOrMod }: Props) {
         (e) => e.id === link.collection.id
       ) as CollectionIncludingMembersAndLinkCount
     );
+
+  useEffect(() => {
+    setCollection(
+      collections.find(
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
+    );
+  }, [collections]);
 
   useEffect(() => {
     setCollection(
