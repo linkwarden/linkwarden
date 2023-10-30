@@ -92,22 +92,23 @@ model UsersAndCollections {
 }
 
 model Link {
-  id             Int        @id @default(autoincrement())
-  name           String
-  url            String
-  description    String     @default("")
-
-  pinnedBy       User[]
-
-  collection     Collection @relation(fields: [collectionId], references: [id])
-  collectionId   Int
-  tags           Tag[]
-
-  screenshotPath String?
-  pdfPath        String?
-
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt @default(now())
+  id                Int        @id @default(autoincrement())
+  name              String
+  url               String
+  description       String     @default("")
+    
+  pinnedBy          User[]
+    
+  collection        Collection @relation(fields: [collectionId], references: [id])
+  collectionId      Int
+  tags              Tag[]
+    
+  screenshotPath    String?
+  pdfPath           String?
+  readabilityPath   String?
+    
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt @default(now())
 }
 
 model Tag {
