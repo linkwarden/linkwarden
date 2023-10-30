@@ -21,6 +21,7 @@ import { toast } from "react-hot-toast";
 import isValidUrl from "@/lib/client/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
+import { useRouter } from "next/router";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -37,6 +38,8 @@ type DropdownTrigger =
 
 export default function LinkCard({ link, count, className }: Props) {
   const { setModal } = useModalStore();
+
+  const router = useRouter();
 
   const permissions = usePermissions(link.collection.id as number);
 
@@ -159,16 +162,7 @@ export default function LinkCard({ link, count, className }: Props) {
         )}
 
         <div
-          onClick={() => {
-            setModal({
-              modal: "LINK",
-              state: true,
-              method: "UPDATE",
-              isOwnerOrMod:
-                permissions === true || (permissions?.canUpdate as boolean),
-              active: link,
-            });
-          }}
+          onClick={() => router.push("/links/" + link.id)}
           className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-5"
         >
           {url && (
@@ -252,10 +246,7 @@ export default function LinkCard({ link, count, className }: Props) {
                       modal: "LINK",
                       state: true,
                       method: "UPDATE",
-                      isOwnerOrMod:
-                        permissions === true || permissions?.canUpdate,
                       active: link,
-                      defaultIndex: 1,
                     });
                     setExpandDropdown(false);
                   },
