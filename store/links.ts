@@ -72,11 +72,23 @@ const useLinkStore = create<LinkStore>()((set) => ({
     const data = await response.json();
 
     if (response.ok) {
-      set((state) => ({
-        links: state.links.map((e) =>
-          e.id === data.response.id ? data.response : e
-        ),
-      }));
+      set((state) => {
+        const linkExists = state.links.some(
+          (link) => link.id === data.response.id
+        );
+
+        if (linkExists) {
+          return {
+            links: state.links.map((e) =>
+              e.id === data.response.id ? data.response : e
+            ),
+          };
+        } else {
+          return {
+            links: [...state.links, data.response],
+          };
+        }
+      });
     }
 
     return { ok: response.ok, data: data.response };

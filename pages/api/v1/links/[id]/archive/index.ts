@@ -5,7 +5,6 @@ import archive from "@/lib/api/archive";
 import { prisma } from "@/lib/api/db";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
-  console.log("hi");
   const session = await getServerSession(req, res, authOptions);
 
   if (!session?.user?.id) {

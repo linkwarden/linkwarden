@@ -16,7 +16,7 @@ export default async function getLinkById(userId: number, linkId: number) {
     | null;
 
   const memberHasAccess = collectionIsAccessible?.members.some(
-    (e: UsersAndCollections) => e.userId === userId && e.canUpdate
+    (e: UsersAndCollections) => e.userId === userId
   );
 
   const isCollectionOwner = collectionIsAccessible?.ownerId === userId;
