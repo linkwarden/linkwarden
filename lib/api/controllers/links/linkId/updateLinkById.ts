@@ -102,6 +102,11 @@ export default async function updateLinkById(
         `archives/${collectionIsAccessible?.id}/${linkId}.png`,
         `archives/${data.collection.id}/${linkId}.png`
       );
+
+      await moveFile(
+        `archives/${collectionIsAccessible?.id}/${linkId}_readability.txt`,
+        `archives/${data.collection.id}/${linkId}_readability.txt`
+      );
     }
 
     return { response: updatedLink, status: 200 };
