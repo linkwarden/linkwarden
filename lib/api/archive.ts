@@ -44,6 +44,8 @@ export default async function archive(
     },
   });
 
+  // Archive.org
+
   if (user?.archiveAsWaybackMachine) sendToWayback(url);
 
   if (user?.archiveAsPDF || user?.archiveAsScreenshot) {
@@ -74,13 +76,13 @@ export default async function archive(
           id: linkId,
         },
         data: {
-          readabilityPath: `archives/${targetLink.collectionId}/${linkId}_readability.txt`,
+          readabilityPath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
         },
       });
 
       await createFile({
         data: JSON.stringify(article),
-        filePath: `archives/${targetLink.collectionId}/${linkId}_readability.txt`,
+        filePath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
       });
 
       console.log(JSON.parse(JSON.stringify(article)));
