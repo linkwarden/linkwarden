@@ -32,7 +32,7 @@ export default async function deleteLink(userId: number, linkId: number) {
     filePath: `archives/${collectionIsAccessible?.id}/${linkId}.png`,
   });
   removeFile({
-    filePath: `archives/${collectionIsAccessible?.id}/${linkId}_readability.txt`,
+    filePath: `archives/${collectionIsAccessible?.id}/${linkId}_readability.json`,
   });
 
   return { response: deleteLink, status: 200 };

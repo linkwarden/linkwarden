@@ -104,8 +104,8 @@ export default async function updateLinkById(
       );
 
       await moveFile(
-        `archives/${collectionIsAccessible?.id}/${linkId}_readability.txt`,
-        `archives/${data.collection.id}/${linkId}_readability.txt`
+        `archives/${collectionIsAccessible?.id}/${linkId}_readability.json`,
+        `archives/${data.collection.id}/${linkId}_readability.json`
       );
     }
 
