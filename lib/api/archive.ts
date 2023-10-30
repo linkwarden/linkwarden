@@ -85,8 +85,6 @@ export default async function archive(
         filePath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
       });
 
-      console.log(JSON.parse(JSON.stringify(article)));
-
       // Screenshot/PDF
 
       let faulty = true;

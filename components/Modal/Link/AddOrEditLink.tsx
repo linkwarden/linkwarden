@@ -4,8 +4,7 @@ import TagSelection from "@/components/InputSelect/TagSelection";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import RequiredBadge from "../../RequiredBadge";
+import { faLink, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useSession } from "next-auth/react";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
@@ -14,6 +13,7 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props =
   | {
@@ -48,6 +48,7 @@ export default function AddOrEditLink({
       tags: [],
       screenshotPath: "",
       pdfPath: "",
+      readabilityPath: "",
       collection: {
         name: "",
         ownerId: data?.user.id as number,
@@ -135,23 +136,22 @@ export default function AddOrEditLink({
   return (
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {method === "UPDATE" ? (
-        <p
-          className="text-gray-500 dark:text-gray-300 text-center truncate w-full"
+        <div
+          className="text-gray-500 dark:text-gray-300 break-all w-full flex gap-2"
           title={link.url}
         >
-          Editing:{" "}
-          <Link href={link.url} target="_blank">
+          <FontAwesomeIcon icon={faLink} className="w-6 h-6" />
+          <Link href={link.url} target="_blank" className="w-full">
             {link.url}
           </Link>
-        </p>
+        </div>
       ) : null}
 
       {method === "CREATE" ? (
         <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
           <div className="sm:col-span-3 col-span-5">
-            <p className="text-sm text-black dark:text-white mb-2 font-bold">
+            <p className="text-sm text-black dark:text-white mb-2">
               Address (URL)
-              <RequiredBadge />
             </p>
             <TextInput
               value={link.url}
@@ -189,7 +189,7 @@ export default function AddOrEditLink({
 
       {optionsExpanded ? (
         <div>
-          <hr className="mb-3 border border-sky-100 dark:border-neutral-700" />
+          {/* <hr className="mb-3 border border-sky-100 dark:border-neutral-700" /> */}
           <div className="grid sm:grid-cols-2 gap-3">
             <div className={`${method === "UPDATE" ? "sm:col-span-2" : ""}`}>
               <p className="text-sm text-black dark:text-white mb-2">Name</p>
