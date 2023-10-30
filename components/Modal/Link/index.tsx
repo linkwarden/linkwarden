@@ -60,7 +60,7 @@ export default function LinkModal({
           <p className="ml-10 mt-[0.1rem] text-xl mb-3 font-thin">
             Manage Preserved Formats
           </p>
-          <PreservedFormats activeLink={activeLink} />
+          <PreservedFormats />
         </>
       ) : undefined}
     </div>
