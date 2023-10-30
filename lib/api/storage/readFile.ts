@@ -58,6 +58,8 @@ export default async function readFile(filePath: string) {
           contentType = "application/pdf";
         } else if (filePath.endsWith(".png")) {
           contentType = "image/png";
+        } else if (filePath.endsWith("_readability.txt")) {
+          contentType = "text/plain";
         } else {
           // if (filePath.endsWith(".jpg"))
           contentType = "image/jpeg";
@@ -83,6 +85,8 @@ export default async function readFile(filePath: string) {
       contentType = "application/pdf";
     } else if (filePath.endsWith(".png")) {
       contentType = "image/png";
+    } else if (filePath.endsWith("_readability.txt")) {
+      contentType = "text/plain";
     } else {
       // if (filePath.endsWith(".jpg"))
       contentType = "image/jpeg";

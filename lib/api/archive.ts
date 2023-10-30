@@ -2,6 +2,9 @@ import { chromium, devices } from "playwright";
 import { prisma } from "@/lib/api/db";
 import createFile from "@/lib/api/storage/createFile";
 import sendToWayback from "./sendToWayback";
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
+import DOMPurify from "dompurify";
 
 export default async function archive(
   linkId: number,
@@ -30,13 +33,14 @@ export default async function archive(
 
   // if (checkExistingLink) return "A request has already been made.";
 
-  const link = await prisma.link.update({
+  const targetLink = await prisma.link.update({
     where: {
       id: linkId,
     },
     data: {
       screenshotPath: user?.archiveAsScreenshot ? "pending" : null,
       pdfPath: user?.archiveAsPDF ? "pending" : null,
+      readabilityPath: "pending",
     },
   });
 
@@ -50,10 +54,43 @@ export default async function archive(
     try {
       await page.goto(url, { waitUntil: "domcontentloaded" });
 
-      await page.evaluate(
-        autoScroll,
-        Number(process.env.AUTOSCROLL_TIMEOUT) || 30
-      );
+      await page.goto(url);
+      const content = await page.content();
+
+      // Readability
+
+      const window = new JSDOM("").window;
+      const purify = DOMPurify(window);
+      const cleanedUpContent = purify.sanitize(content);
+
+      const dom = new JSDOM(cleanedUpContent, {
+        url: url,
+      });
+
+      const article = new Readability(dom.window.document).parse();
+
+      await prisma.link.update({
+        where: {
+          id: linkId,
+        },
+        data: {
+          readabilityPath: `archives/${targetLink.collectionId}/${linkId}_readability.txt`,
+        },
+      });
+
+      await createFile({
+        data: JSON.stringify(article),
+        filePath: `archives/${targetLink.collectionId}/${linkId}_readability.txt`,
+      });
+
+      console.log(JSON.parse(JSON.stringify(article)));
+
+      // Screenshot/PDF
+
+      let faulty = true;
+      await page
+        .evaluate(autoScroll, Number(process.env.AUTOSCROLL_TIMEOUT) || 30)
+        .catch((e) => (faulty = false));
 
       const linkExists = await prisma.link.findUnique({
         where: {
@@ -61,7 +98,7 @@ export default async function archive(
         },
       });
 
-      if (linkExists) {
+      if (linkExists && faulty) {
         if (user.archiveAsScreenshot) {
           const screenshot = await page.screenshot({
             fullPage: true,
@@ -100,10 +137,21 @@ export default async function archive(
               : null,
           },
         });
+      } else if (faulty) {
+        await prisma.link.update({
+          where: {
+            id: linkId,
+          },
+          data: {
+            screenshotPath: null,
+            pdfPath: null,
+          },
+        });
       }
 
       await browser.close();
     } catch (err) {
+      console.log(err);
       await browser.close();
       return err;
     }
