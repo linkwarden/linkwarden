@@ -203,7 +203,7 @@ export default function Index() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <p className="capitalize text-3xl font-thin">
+              <p className="capitalize text-2xl sm:text-3xl font-thin">
                 {unescapeString(link?.name || link?.description || "")}
               </p>
 
