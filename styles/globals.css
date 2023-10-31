@@ -184,5 +184,67 @@
 }
 
 .line-break * {
-  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Reader view custom stylings */
+.reader-view {
+  line-height: 3rem;
+}
+.reader-view h1 {
+  font-size: 2.2rem;
+}
+.reader-view h2 {
+  line-height: 4rem;
+  font-size: 1.9rem;
+}
+.reader-view h3 {
+  line-height: 3.5rem;
+  font-size: 1.6rem;
+}
+.reader-view h4 {
+  font-size: 1.3rem;
+}
+.reader-view h5 {
+  font-size: 1.1rem;
+}
+.reader-view li {
+  list-style: inside;
+  margin-left: 2rem;
+}
+.reader-view a {
+  text-decoration: underline;
+}
+.reader-view b {
+  font-weight: bolder;
+}
+.reader-view pre,
+.reader-view code {
+  font-family: "Courier New", Courier, monospace;
+}
+.reader-view blockquote {
+  opacity: 50%;
+  padding-left: 1.5rem;
+  border-left: solid 3px;
+}
+.reader-view img {
+  margin: auto;
+  border-radius: 10px;
+}
+.reader-view pre {
+  padding: 1rem;
+  line-height: normal;
+}
+.reader-view code {
+  padding: 0.15rem 0.4rem 0.15rem 0.4rem;
+}
+[class="dark"] .reader-view code,
+[class="dark"] .reader-view pre {
+  background-color: rgb(49, 49, 49);
+  border-radius: 8px;
+}
+[class="light"] .reader-view code,
+[class="light"] .reader-view pre {
+  background-color: rgb(230, 230, 230);
+  border-radius: 8px;
 }
