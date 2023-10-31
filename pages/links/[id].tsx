@@ -191,7 +191,7 @@ export default function Index() {
                     <Link
                       href={link?.url || ""}
                       target="_blank"
-                      className="hover:underline break-all"
+                      className="hover:opacity-60 duration-100 break-all"
                     >
                       {isValidUrl(link?.url || "")
                         ? new URL(link?.url as string).host
