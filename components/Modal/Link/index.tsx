@@ -30,11 +30,15 @@ export default function LinkModal({
 }: Props) {
   return (
     <div className={className}>
-      {/* {method === "CREATE" && (
-        <p className="text-xl text-black dark:text-white text-center">
-          New Link
-        </p>
-      )} */}
+      {method === "CREATE" ? (
+        <>
+          <p className="ml-10 mt-[0.1rem] text-xl mb-3 font-thin">
+            Create a New Link
+          </p>
+          <AddOrEditLink toggleLinkModal={toggleLinkModal} method="CREATE" />
+        </>
+      ) : undefined}
+
       {activeLink && method === "UPDATE" ? (
         <>
           <p className="ml-10 mt-[0.1rem] text-xl mb-3 font-thin">Edit Link</p>
@@ -46,19 +50,10 @@ export default function LinkModal({
         </>
       ) : undefined}
 
-      {method === "CREATE" ? (
+      {method === "FORMATS" ? (
         <>
           <p className="ml-10 mt-[0.1rem] text-xl mb-3 font-thin">
-            Create a New Link
-          </p>
-          <AddOrEditLink toggleLinkModal={toggleLinkModal} method="CREATE" />
-        </>
-      ) : undefined}
-
-      {activeLink && method === "FORMATS" ? (
-        <>
-          <p className="ml-10 mt-[0.1rem] text-xl mb-3 font-thin">
-            Manage Preserved Formats
+            Preserved Formats
           </p>
           <PreservedFormats />
         </>

@@ -106,6 +106,8 @@ model Link {
   screenshotPath    String?
   pdfPath           String?
   readabilityPath   String?
+
+  lastPreserved     DateTime?
     
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt @default(now())
