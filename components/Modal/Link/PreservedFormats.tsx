@@ -92,7 +92,7 @@ export default function PreservedFormats() {
           <div className="flex text-black dark:text-white gap-1">
             <div
               onClick={() => handleDownload("png")}
-              className="cursor-pointer hover:opacity-50 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
@@ -103,7 +103,7 @@ export default function PreservedFormats() {
             <Link
               href={`/api/v1/archives/${link.collectionId}/${link.id}.png`}
               target="_blank"
-              className="cursor-pointer hover:opacity-50 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
@@ -127,7 +127,7 @@ export default function PreservedFormats() {
           <div className="flex text-black dark:text-white gap-1">
             <div
               onClick={() => handleDownload("pdf")}
-              className="cursor-pointer hover:opacity-50 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
@@ -138,7 +138,7 @@ export default function PreservedFormats() {
             <Link
               href={`/api/v1/archives/${link.collectionId}/${link.id}.pdf`}
               target="_blank"
-              className="cursor-pointer hover:opacity-50 duration-100 p-2 rounded-md"
+              className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
@@ -165,7 +165,7 @@ export default function PreservedFormats() {
             ""
           )}`}
           target="_blank"
-          className="sm:mt-3 text-gray-500 dark:text-gray-300 duration-100 hover:opacity-50 flex gap-2 w-fit items-center text-sm"
+          className="sm:mt-3 text-gray-500 dark:text-gray-300 duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm"
         >
           <FontAwesomeIcon
             icon={faArrowUpRightFromSquare}
