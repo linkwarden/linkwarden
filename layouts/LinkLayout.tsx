@@ -60,7 +60,7 @@ export default function LinkLayout({ children }: Props) {
 
             <div
               onClick={() => router.back()}
-              className="inline-flex gap-1 lg:hover:opacity-50 items-center select-none cursor-pointer p-2 lg:p-0 lg:px-1 lg:my-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
+              className="inline-flex gap-1 lg:hover:opacity-60 items-center select-none cursor-pointer p-2 lg:p-0 lg:px-1 lg:my-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
             >
               <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
               Back

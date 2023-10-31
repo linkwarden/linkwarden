@@ -69,7 +69,7 @@ export default function SettingsSidebar({ className, onClick }: Props) {
                 : undefined;
               onClick && onClick();
             }}
-            className={`hover:opacity-50 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
+            className={`hover:opacity-60 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faPen}
@@ -95,7 +95,7 @@ export default function SettingsSidebar({ className, onClick }: Props) {
             onClick && onClick();
           }}
           title="Preserved Formats"
-          className={`hover:opacity-50 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
+          className={`hover:opacity-60 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
         >
           <FontAwesomeIcon
             icon={faBoxesStacked}
@@ -120,7 +120,7 @@ export default function SettingsSidebar({ className, onClick }: Props) {
               }
             }}
             title="Delete"
-            className={`hover:opacity-50 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
+            className={`hover:opacity-60 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faTrashCan}
