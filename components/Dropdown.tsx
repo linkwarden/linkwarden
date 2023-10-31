@@ -21,7 +21,6 @@ type Props = {
   items: MenuItem[];
   points?: { x: number; y: number };
   style?: React.CSSProperties;
-  width?: number; // in rem
 };
 
 export default function Dropdown({
@@ -29,7 +28,6 @@ export default function Dropdown({
   onClickOutside,
   className,
   items,
-  width,
 }: Props) {
   const [pos, setPos] = useState<{ x: number; y: number }>();
   const [dropdownHeight, setDropdownHeight] = useState<number>();
@@ -60,7 +58,7 @@ export default function Dropdown({
 
       setPos({ x: finalX, y: finalY });
     }
-  }, [points, width, dropdownHeight]);
+  }, [points, dropdownHeight]);
 
   return (
     (!points || pos) && (

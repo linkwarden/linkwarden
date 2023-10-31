@@ -76,7 +76,11 @@ export default function Index() {
 
   useEffect(() => {
     let interval: NodeJS.Timer | undefined;
-    if (link?.screenshotPath === "pending" || link?.pdfPath === "pending") {
+    if (
+      link?.screenshotPath === "pending" ||
+      link?.pdfPath === "pending" ||
+      link?.readabilityPath === "pending"
+    ) {
       interval = setInterval(() => getLink(link.id as number), 5000);
     } else {
       if (interval) {
@@ -190,6 +194,7 @@ export default function Index() {
                     <p>•</p>
                     <Link
                       href={link?.url || ""}
+                      title={link?.url}
                       target="_blank"
                       className="hover:opacity-60 duration-100 break-all"
                     >
@@ -240,46 +245,52 @@ export default function Index() {
         </div>
 
         <div className="flex flex-col gap-5 h-full">
-          {link &&
-          link?.readabilityPath &&
-          link?.readabilityPath !== "pending" ? (
+          {link?.readabilityPath?.startsWith("archives") ? (
             <div
-              className="line-break px-5"
+              className="line-break px-3"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(linkContent?.content || "") || "",
               }}
             ></div>
           ) : (
             <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
-              <p className="text-center text-2xl text-black dark:text-white">
-                There is no reader view for this webpage
-              </p>
-              <p className="text-center text-sm text-black dark:text-white">
-                {link?.collection.ownerId === userId
-                  ? "You can update (refetch) the preserved formats by managing them below"
-                  : "The collections owners can refetch the preserved formats"}
-              </p>
-              {link?.collection.ownerId === userId ? (
-                <div
-                  onClick={() =>
-                    link
-                      ? setModal({
-                          modal: "LINK",
-                          state: true,
-                          active: link,
-                          method: "FORMATS",
-                        })
-                      : undefined
-                  }
-                  className="mt-4 flex gap-2 w-fit mx-auto relative items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-md dark:hover:bg-sky-600 text-white bg-sky-700 hover:bg-sky-600 duration-100"
-                >
-                  <FontAwesomeIcon
-                    icon={faBoxesStacked}
-                    className="w-5 h-5 duration-100"
-                  />
-                  <p>Manage preserved formats</p>
-                </div>
-              ) : undefined}
+              {link?.readabilityPath === "pending" ? (
+                <p className="text-center">
+                  Generating readable format, please wait...
+                </p>
+              ) : (
+                <>
+                  <p className="text-center text-2xl text-black dark:text-white">
+                    There is no reader view for this webpage
+                  </p>
+                  <p className="text-center text-sm text-black dark:text-white">
+                    {link?.collection.ownerId === userId
+                      ? "You can update (refetch) the preserved formats by managing them below"
+                      : "The collections owners can refetch the preserved formats"}
+                  </p>
+                  {link?.collection.ownerId === userId ? (
+                    <div
+                      onClick={() =>
+                        link
+                          ? setModal({
+                              modal: "LINK",
+                              state: true,
+                              active: link,
+                              method: "FORMATS",
+                            })
+                          : undefined
+                      }
+                      className="mt-4 flex gap-2 w-fit mx-auto relative items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-md dark:hover:bg-sky-600 text-white bg-sky-700 hover:bg-sky-600 duration-100"
+                    >
+                      <FontAwesomeIcon
+                        icon={faBoxesStacked}
+                        className="w-5 h-5 duration-100"
+                      />
+                      <p>Manage preserved formats</p>
+                    </div>
+                  ) : undefined}
+                </>
+              )}
             </div>
           )}
         </div>

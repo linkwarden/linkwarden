@@ -56,6 +56,7 @@ export default async function postLink(
       url: link.url,
       name: link.name,
       description,
+      readabilityPath: "pending",
       collection: {
         connectOrCreate: {
           where: {
