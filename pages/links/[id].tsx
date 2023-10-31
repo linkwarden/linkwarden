@@ -11,7 +11,7 @@ import unescapeString from "@/lib/client/unescapeString";
 import isValidUrl from "@/lib/client/isValidUrl";
 import DOMPurify from "dompurify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBoxesStacked } from "@fortawesome/free-solid-svg-icons";
+import { faBoxesStacked, faFolder } from "@fortawesome/free-solid-svg-icons";
 import useModalStore from "@/store/modals";
 import { useSession } from "next-auth/react";
 
@@ -142,42 +142,39 @@ export default function Index() {
       >
         <div
           id="link-banner"
-          className="link-banner p-5 mb-6 relative bg-opacity-10 border border-solid border-sky-100 dark:border-neutral-700 shadow-md"
+          className="link-banner p-3 mb-6 relative bg-opacity-10 border border-solid border-sky-100 dark:border-neutral-700 shadow-md"
         >
           <div id="link-banner-inner" className="link-banner-inner"></div>
 
-          <div className={`relative flex gap-5 items-start`}>
-            {!imageError && link?.url && (
-              <Image
-                src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
-                width={42}
-                height={42}
-                alt=""
-                id={"favicon-" + link.id}
-                className="select-none mt-2 w-10 rounded-md shadow border-[3px] border-white dark:border-neutral-900 bg-white dark:bg-neutral-900 aspect-square"
-                draggable="false"
-                onLoad={(e) => {
-                  try {
-                    const color = colorThief.getPalette(
-                      e.target as HTMLImageElement,
-                      4
-                    );
+          <div className={`relative flex flex-col gap-3 items-start`}>
+            <div className="flex gap-3 items-end">
+              {!imageError && link?.url && (
+                <Image
+                  src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
+                  width={42}
+                  height={42}
+                  alt=""
+                  id={"favicon-" + link.id}
+                  className="select-none mt-2 w-10 rounded-md shadow border-[3px] border-white dark:border-neutral-900 bg-white dark:bg-neutral-900 aspect-square"
+                  draggable="false"
+                  onLoad={(e) => {
+                    try {
+                      const color = colorThief.getPalette(
+                        e.target as HTMLImageElement,
+                        4
+                      );
 
-                    setColorPalette(color);
-                  } catch (err) {
-                    console.log(err);
-                  }
-                }}
-                onError={(e) => {
-                  setImageError(true);
-                }}
-              />
-            )}
+                      setColorPalette(color);
+                    } catch (err) {
+                      console.log(err);
+                    }
+                  }}
+                  onError={(e) => {
+                    setImageError(true);
+                  }}
+                />
+              )}
 
-            <div>
-              <p className="capitalize text-3xl font-thin">
-                {unescapeString(link?.name || link?.description || "")}
-              </p>
               <div className="flex gap-2 text-sm text-gray-500 dark:text-gray-300">
                 <p className=" min-w-fit">
                   {link?.createdAt
@@ -202,6 +199,41 @@ export default function Index() {
                     </Link>
                   </>
                 ) : undefined}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <p className="capitalize text-3xl font-thin">
+                {unescapeString(link?.name || link?.description || "")}
+              </p>
+
+              <div className="flex gap-1 items-center flex-wrap">
+                <Link
+                  href={`/collections/${link?.collection.id}`}
+                  className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
+                >
+                  <FontAwesomeIcon
+                    icon={faFolder}
+                    className="w-5 h-5 drop-shadow"
+                    style={{ color: link?.collection.color }}
+                  />
+                  <p
+                    title={link?.collection.name}
+                    className="text-black dark:text-white text-lg truncate max-w-[12rem]"
+                  >
+                    {link?.collection.name}
+                  </p>
+                </Link>
+                {link?.tags.map((e, i) => (
+                  <Link key={i} href={`/tags/${e.id}`} className="z-10">
+                    <p
+                      title={e.name}
+                      className="px-2 py-1 bg-sky-200 text-black dark:text-white dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                    >
+                      {e.name}
+                    </p>
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
