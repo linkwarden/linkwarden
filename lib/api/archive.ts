@@ -11,36 +11,15 @@ export default async function archive(
   url: string,
   userId: number
 ) {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-
-  // const checkExistingLink = await prisma.link.findFirst({
-  //   where: {
-  //     id: linkId,
-  //     OR: [
-  //       {
-  //         screenshotPath: "pending",
-  //       },
-  //       {
-  //         pdfPath: "pending",
-  //       },
-  //     ],
-  //   },
-  // });
-
-  // if (checkExistingLink) return "A request has already been made.";
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
   const targetLink = await prisma.link.update({
-    where: {
-      id: linkId,
-    },
+    where: { id: linkId },
     data: {
       screenshotPath: user?.archiveAsScreenshot ? "pending" : null,
       pdfPath: user?.archiveAsPDF ? "pending" : null,
       readabilityPath: "pending",
+      lastPreserved: new Date().toISOString(),
     },
   });
 
@@ -56,7 +35,6 @@ export default async function archive(
     try {
       await page.goto(url, { waitUntil: "domcontentloaded" });
 
-      await page.goto(url);
       const content = await page.content();
 
       // Readability
@@ -64,46 +42,35 @@ export default async function archive(
       const window = new JSDOM("").window;
       const purify = DOMPurify(window);
       const cleanedUpContent = purify.sanitize(content);
-
-      const dom = new JSDOM(cleanedUpContent, {
-        url: url,
-      });
-
+      const dom = new JSDOM(cleanedUpContent, { url: url });
       const article = new Readability(dom.window.document).parse();
-
-      await prisma.link.update({
-        where: {
-          id: linkId,
-        },
-        data: {
-          readabilityPath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
-        },
-      });
 
       await createFile({
         data: JSON.stringify(article),
         filePath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
       });
 
-      // Screenshot/PDF
-
-      let faulty = true;
-      await page
-        .evaluate(autoScroll, Number(process.env.AUTOSCROLL_TIMEOUT) || 30)
-        .catch((e) => (faulty = false));
-
-      const linkExists = await prisma.link.findUnique({
-        where: {
-          id: linkId,
+      await prisma.link.update({
+        where: { id: linkId },
+        data: {
+          readabilityPath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
         },
       });
 
-      if (linkExists && faulty) {
-        if (user.archiveAsScreenshot) {
-          const screenshot = await page.screenshot({
-            fullPage: true,
-          });
+      // Screenshot/PDF
 
+      let faulty = false;
+      await page
+        .evaluate(autoScroll, Number(process.env.AUTOSCROLL_TIMEOUT) || 30)
+        .catch((e) => (faulty = true));
+
+      const linkExists = await prisma.link.findUnique({
+        where: { id: linkId },
+      });
+
+      if (linkExists && !faulty) {
+        if (user.archiveAsScreenshot) {
+          const screenshot = await page.screenshot({ fullPage: true });
           await createFile({
             data: screenshot,
             filePath: `archives/${linkExists.collectionId}/${linkId}.png`,
@@ -124,10 +91,8 @@ export default async function archive(
           });
         }
 
-        const updateLink = await prisma.link.update({
-          where: {
-            id: linkId,
-          },
+        await prisma.link.update({
+          where: { id: linkId },
           data: {
             screenshotPath: user.archiveAsScreenshot
               ? `archives/${linkExists.collectionId}/${linkId}.png`
@@ -139,21 +104,18 @@ export default async function archive(
         });
       } else if (faulty) {
         await prisma.link.update({
-          where: {
-            id: linkId,
-          },
+          where: { id: linkId },
           data: {
             screenshotPath: null,
             pdfPath: null,
           },
         });
       }
-
-      await browser.close();
     } catch (err) {
       console.log(err);
+      throw err;
+    } finally {
       await browser.close();
-      return err;
     }
   }
 }
@@ -161,11 +123,7 @@ export default async function archive(
 const autoScroll = async (AUTOSCROLL_TIMEOUT: number) => {
   const timeoutPromise = new Promise<void>((_, reject) => {
     setTimeout(() => {
-      reject(
-        new Error(
-          `Auto scroll took too long (more than ${AUTOSCROLL_TIMEOUT} seconds).`
-        )
-      );
+      reject(new Error(`Webpage was too long to be archived.`));
     }, AUTOSCROLL_TIMEOUT * 1000);
   });
 

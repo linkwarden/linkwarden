@@ -55,7 +55,7 @@ export default function PreservedFormats() {
     if (response.ok) {
       toast.success(`Link is being archived...`);
       getLink(link?.id as number);
-    } else toast.error(data);
+    } else toast.error(data.response);
   };
 
   const handleDownload = (format: "png" | "pdf") => {
@@ -152,11 +152,18 @@ export default function PreservedFormats() {
       <div className="flex flex-col-reverse sm:flex-row gap-5 items-center justify-center">
         {link?.collection.ownerId === session.data?.user.id ? (
           <div
-            className="w-full text-center bg-sky-600 p-1 rounded-md cursor-pointer select-none mt-3"
+            className={`w-full text-center bg-sky-700 p-1 rounded-md cursor-pointer select-none hover:bg-sky-600 duration-100 ${
+              link?.pdfPath &&
+              link?.screenshotPath &&
+              link?.pdfPath !== "pending" &&
+              link?.screenshotPath !== "pending"
+                ? "mt-3"
+                : ""
+            }`}
             onClick={() => updateArchive()}
           >
             <p>Update Preserved Formats</p>
-            <p className="text-xs">(re-fetch)</p>
+            <p className="text-xs">(Refresh Formats)</p>
           </div>
         ) : undefined}
         <Link
@@ -165,7 +172,14 @@ export default function PreservedFormats() {
             ""
           )}`}
           target="_blank"
-          className="sm:mt-3 text-gray-500 dark:text-gray-300 duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm"
+          className={`text-gray-500 dark:text-gray-300 duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm ${
+            link?.pdfPath &&
+            link?.screenshotPath &&
+            link?.pdfPath !== "pending" &&
+            link?.screenshotPath !== "pending"
+              ? "sm:mt-3"
+              : ""
+          }`}
         >
           <FontAwesomeIcon
             icon={faArrowUpRightFromSquare}
