@@ -247,7 +247,7 @@ export default function Index() {
         <div className="flex flex-col gap-5 h-full">
           {link?.readabilityPath?.startsWith("archives") ? (
             <div
-              className="line-break px-3"
+              className="line-break px-3 reader-view"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(linkContent?.content || "") || "",
               }}
