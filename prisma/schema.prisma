@@ -103,6 +103,8 @@ model Link {
   collectionId      Int
   tags              Tag[]
     
+  textContent       String?
+
   screenshotPath    String?
   pdfPath           String?
   readabilityPath   String?
