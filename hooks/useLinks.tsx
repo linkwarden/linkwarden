@@ -15,6 +15,7 @@ export default function useLinks(
     searchByUrl,
     searchByDescription,
     searchByTags,
+    searchByTextContent,
   }: LinkRequestQuery = { sort: 0 }
 ) {
   const { links, setLinks, resetLinks } = useLinkStore();
@@ -34,6 +35,7 @@ export default function useLinks(
       searchByUrl,
       searchByDescription,
       searchByTags,
+      searchByTextContent,
     };
 
     const buildQueryString = (params: LinkRequestQuery) => {
@@ -72,6 +74,7 @@ export default function useLinks(
     searchByName,
     searchByUrl,
     searchByDescription,
+    searchByTextContent,
     searchByTags,
   ]);
 

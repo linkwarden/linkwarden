@@ -19,6 +19,7 @@ export default function Search() {
     name: true,
     url: true,
     description: true,
+    textContent: true,
     tags: true,
   });
 
@@ -32,6 +33,7 @@ export default function Search() {
     searchByName: searchFilter.name,
     searchByUrl: searchFilter.url,
     searchByDescription: searchFilter.description,
+    searchByTextContent: searchFilter.textContent,
     searchByTags: searchFilter.tags,
   });
 

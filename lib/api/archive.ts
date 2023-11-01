@@ -45,6 +45,10 @@ export default async function archive(
       const dom = new JSDOM(cleanedUpContent, { url: url });
       const article = new Readability(dom.window.document).parse();
 
+      const articleText = article?.textContent
+        .replace(/ +(?= )/g, "") // strip out multiple spaces
+        .replace(/(\r\n|\n|\r)/gm, " "); // strip out line breaks
+
       await createFile({
         data: JSON.stringify(article),
         filePath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
@@ -54,6 +58,7 @@ export default async function archive(
         where: { id: linkId },
         data: {
           readabilityPath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
+          textContent: articleText,
         },
       });
 
