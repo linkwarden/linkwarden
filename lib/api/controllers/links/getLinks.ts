@@ -42,6 +42,15 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
       });
     }
 
+    if (query.searchByTextContent) {
+      searchConditions.push({
+        textContent: {
+          contains: query.searchQueryString,
+          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+        },
+      });
+    }
+
     if (query.searchByTags) {
       searchConditions.push({
         tags: {

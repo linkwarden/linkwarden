@@ -35,6 +35,8 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       searchByUrl: req.query.searchByUrl === "true" ? true : undefined,
       searchByDescription:
         req.query.searchByDescription === "true" ? true : undefined,
+      searchByTextContent:
+        req.query.searchByTextContent === "true" ? true : undefined,
       searchByTags: req.query.searchByTags === "true" ? true : undefined,
     };
 

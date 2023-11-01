@@ -66,6 +66,7 @@ export type LinkRequestQuery = {
   searchByName?: boolean;
   searchByUrl?: boolean;
   searchByDescription?: boolean;
+  searchByTextContent?: boolean;
   searchByTags?: boolean;
 };
 

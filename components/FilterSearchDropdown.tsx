@@ -9,6 +9,7 @@ type Props = {
     name: boolean;
     url: boolean;
     description: boolean;
+    textContent: boolean;
     tags: boolean;
   };
 };
@@ -51,6 +52,16 @@ export default function FilterSearchDropdown({
             setSearchFilter({
               ...searchFilter,
               description: !searchFilter.description,
+            })
+          }
+        />
+        <Checkbox
+          label="Text Content"
+          state={searchFilter.textContent}
+          onClick={() =>
+            setSearchFilter({
+              ...searchFilter,
+              textContent: !searchFilter.textContent,
             })
           }
         />
