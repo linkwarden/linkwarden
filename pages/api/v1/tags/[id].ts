@@ -1,23 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import updateTag from "@/lib/api/controllers/tags/tagId/updeteTagById";
+import authenticateUser from "@/lib/api/authenticateUser";
 
 export default async function tags(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, authOptions);
-
-  if (!session?.user?.username) {
-    return res.status(401).json({ response: "You must be logged in." });
-  } else if (session?.user?.isSubscriber === false)
-    return res.status(401).json({
-      response:
-        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
-    });
+  const user = await authenticateUser({ req, res });
+  if (!user) return res.status(404).json({ response: "User not found." });
 
   const tagId = Number(req.query.id);
 
   if (req.method === "PUT") {
-    const tags = await updateTag(session.user.id, tagId, req.body);
+    const tags = await updateTag(user.id, tagId, req.body);
     return res.status(tags.status).json({ response: tags.response });
   }
 }

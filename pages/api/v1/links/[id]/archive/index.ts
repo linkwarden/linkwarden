@@ -1,21 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import archive from "@/lib/api/archive";
 import { prisma } from "@/lib/api/db";
+import authenticateUser from "@/lib/api/authenticateUser";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, authOptions);
-
-  if (!session?.user?.id) {
-    return res.status(401).json({ response: "You must be logged in." });
-  } else if (session?.user?.isSubscriber === false)
-    return res.status(401).json({
-      response:
-        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
-    });
+  const user = await authenticateUser({ req, res });
+  if (!user) return res.status(404).json({ response: "User not found." });
 
   const link = await prisma.link.findUnique({
     where: {
@@ -29,7 +21,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       response: "Link not found.",
     });
 
-  if (link.collection.ownerId !== session.user.id)
+  if (link.collection.ownerId !== user.id)
     return res.status(401).json({
       response: "Permission denied.",
     });
@@ -49,7 +41,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         } minutes or create a new one.`,
       });
 
-    archive(link.id, link.url, session.user.id);
+    archive(link.id, link.url, user.id);
     return res.status(200).json({
       response: "Link is being archived.",
     });

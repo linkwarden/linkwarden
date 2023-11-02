@@ -18,7 +18,7 @@ const providers: Provider[] = [
     type: "credentials",
     credentials: {},
     async authorize(credentials, req) {
-      console.log("User logged in...");
+      console.log("User logged in attempt...");
       if (!credentials) return null;
 
       const { username, password } = credentials as {
@@ -51,7 +51,7 @@ const providers: Provider[] = [
       }
 
       if (passwordMatches) {
-        return findUser;
+        return { id: findUser?.id };
       } else return null as any;
     },
   }),
@@ -101,9 +101,15 @@ export const authOptions: AuthOptions = {
         STRIPE_SECRET_KEY &&
         (trigger || subscriptionIsTimesUp || !token.isSubscriber)
       ) {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: Number(token.sub),
+          },
+        });
+
         const subscription = await checkSubscription(
           STRIPE_SECRET_KEY,
-          token.email as string
+          user?.email as string
         );
 
         if (subscription.subscriptionCanceledAt) {
@@ -115,27 +121,22 @@ export const authOptions: AuthOptions = {
 
       if (trigger === "signIn") {
         token.id = user.id as number;
-        token.username = (user as any).username;
       } else if (trigger === "update" && token.id) {
-        console.log(token);
-
         const user = await prisma.user.findUnique({
           where: {
             id: token.id as number,
           },
         });
 
-        if (user?.name && user.username && user.email) {
+        if (user?.name) {
           token.name = user.name;
-          token.username = user.username?.toLowerCase();
-          token.email = user.email?.toLowerCase();
         }
       }
+
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id;
-      session.user.username = token.username;
       session.user.isSubscriber = token.isSubscriber;
 
       return session;

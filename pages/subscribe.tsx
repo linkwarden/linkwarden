@@ -1,8 +1,6 @@
-import SubmitButton from "@/components/SubmitButton";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import { Plan } from "@/types/global";
@@ -12,7 +10,6 @@ export default function Subscribe() {
 
   const [plan, setPlan] = useState<Plan>(1);
 
-  const { data, status } = useSession();
   const router = useRouter();
 
   async function submit() {

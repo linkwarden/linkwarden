@@ -4,6 +4,7 @@ import Loader from "../components/Loader";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useInitialData from "@/hooks/useInitialData";
+import useAccountStore from "@/store/account";
 
 interface Props {
   children: ReactNode;
@@ -13,6 +14,7 @@ export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
   const { status, data } = useSession();
   const [redirect, setRedirect] = useState(true);
+  const { account } = useAccountStore();
 
   const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -25,7 +27,8 @@ export default function AuthRedirect({ children }: Props) {
         status === "authenticated" &&
         (data.user.isSubscriber === true ||
           data.user.isSubscriber === undefined) &&
-        !data.user.username
+        account.id &&
+        !account.username
       ) {
         router.push("/choose-username").then(() => {
           setRedirect(false);
@@ -66,7 +69,7 @@ export default function AuthRedirect({ children }: Props) {
     } else {
       setRedirect(false);
     }
-  }, [status]);
+  }, [status, account]);
 
   if (status !== "loading" && !redirect) return <>{children}</>;
   else return <></>;

@@ -49,6 +49,7 @@ export default function AddOrEditLink({
       screenshotPath: "",
       pdfPath: "",
       readabilityPath: "",
+      textContent: "",
       collection: {
         name: "",
         ownerId: data?.user.id as number,

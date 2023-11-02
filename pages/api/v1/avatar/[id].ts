@@ -1,26 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import { prisma } from "@/lib/api/db";
 import readFile from "@/lib/api/storage/readFile";
+import authenticateUser from "@/lib/api/authenticateUser";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, authOptions);
-
-  const userId = session?.user.id;
-  const username = session?.user.username?.toLowerCase();
   const queryId = Number(req.query.id);
 
-  if (!userId || !username)
-    return res
-      .setHeader("Content-Type", "text/plain")
-      .status(401)
-      .send("You must be logged in.");
-  else if (session?.user?.isSubscriber === false)
-    return res.status(401).json({
-      response:
-        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
-    });
+  const user = await authenticateUser({ req, res });
+  if (!user) return res.status(404).json({ response: "User not found." });
 
   if (!queryId)
     return res
@@ -28,7 +15,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       .status(401)
       .send("Invalid parameters.");
 
-  if (userId !== queryId) {
+  if (user.id !== queryId) {
     const targetUser = await prisma.user.findUnique({
       where: {
         id: queryId,
@@ -42,7 +29,11 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       (whitelistedUsername) => whitelistedUsername.username
     );
 
-    if (targetUser?.isPrivate && !whitelistedUsernames?.includes(username)) {
+    if (
+      targetUser?.isPrivate &&
+      user.username &&
+      !whitelistedUsernames?.includes(user.username)
+    ) {
       return res
         .setHeader("Content-Type", "text/plain")
         .status(400)
