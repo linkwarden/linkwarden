@@ -13,7 +13,7 @@ export default async function collections(
   if (!session?.user?.id) {
     return res.status(401).json({ response: "You must be logged in." });
   } else if (session?.user?.isSubscriber === false)
-    res.status(401).json({
+    return res.status(401).json({
       response:
         "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
     });

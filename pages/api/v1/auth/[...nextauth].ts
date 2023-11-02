@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/api/db";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { AuthOptions, Session } from "next-auth";
+import { AuthOptions, Session, User } from "next-auth";
 import bcrypt from "bcrypt";
 import EmailProvider from "next-auth/providers/email";
-import { JWT } from "next-auth/jwt";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { Adapter } from "next-auth/adapters";
 import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
@@ -19,6 +18,7 @@ const providers: Provider[] = [
     type: "credentials",
     credentials: {},
     async authorize(credentials, req) {
+      console.log("User logged in...");
       if (!credentials) return null;
 
       const { username, password } = credentials as {
@@ -81,13 +81,6 @@ export const authOptions: AuthOptions = {
     verifyRequest: "/confirmation",
   },
   callbacks: {
-    session: async ({ session, token }: { session: Session; token: JWT }) => {
-      session.user.id = parseInt(token.id as string);
-      session.user.username = token.username as string;
-      session.user.isSubscriber = token.isSubscriber as boolean;
-
-      return session;
-    },
     async jwt({ token, trigger, user }) {
       const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
@@ -121,7 +114,7 @@ export const authOptions: AuthOptions = {
       }
 
       if (trigger === "signIn") {
-        token.id = user.id;
+        token.id = user.id as number;
         token.username = (user as any).username;
       } else if (trigger === "update" && token.id) {
         console.log(token);
@@ -132,13 +125,20 @@ export const authOptions: AuthOptions = {
           },
         });
 
-        if (user) {
+        if (user?.name && user.username && user.email) {
           token.name = user.name;
           token.username = user.username?.toLowerCase();
           token.email = user.email?.toLowerCase();
         }
       }
       return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.username = token.username;
+      session.user.isSubscriber = token.isSubscriber;
+
+      return session;
     },
   },
 };

@@ -4,14 +4,19 @@ import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import getLinks from "@/lib/api/controllers/links/getLinks";
 import postLink from "@/lib/api/controllers/links/postLink";
 import { LinkRequestQuery } from "@/types/global";
+import { getToken } from "next-auth/jwt";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, authOptions);
+  const token = await getToken({ req });
+
+  // const session = await getServerSession(req, res, authOptions);
+
+  return res.status(200).json(token);
 
   if (!session?.user?.id) {
     return res.status(401).json({ response: "You must be logged in." });
   } else if (session?.user?.isSubscriber === false)
-    res.status(401).json({
+    return res.status(401).json({
       response:
         "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
     });
