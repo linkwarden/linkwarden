@@ -12,7 +12,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import SortDropdown from "@/components/SortDropdown";
 import useModalStore from "@/store/modals";

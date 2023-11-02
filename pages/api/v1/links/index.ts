@@ -1,25 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import getLinks from "@/lib/api/controllers/links/getLinks";
 import postLink from "@/lib/api/controllers/links/postLink";
 import { LinkRequestQuery } from "@/types/global";
-import { getToken } from "next-auth/jwt";
+import authenticateUser from "@/lib/api/authenticateUser";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
-  const token = await getToken({ req });
-
-  // const session = await getServerSession(req, res, authOptions);
-
-  return res.status(200).json(token);
-
-  if (!session?.user?.id) {
-    return res.status(401).json({ response: "You must be logged in." });
-  } else if (session?.user?.isSubscriber === false)
-    return res.status(401).json({
-      response:
-        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
-    });
+  const user = await authenticateUser({ req, res });
+  if (!user) return res.status(404).json({ response: "User not found." });
 
   if (req.method === "GET") {
     // Convert the type of the request query to "LinkRequestQuery"
@@ -45,10 +32,10 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       searchByTags: req.query.searchByTags === "true" ? true : undefined,
     };
 
-    const links = await getLinks(session.user.id, convertedData);
+    const links = await getLinks(user.id, convertedData);
     return res.status(links.status).json({ response: links.response });
   } else if (req.method === "POST") {
-    const newlink = await postLink(req.body, session.user.id);
+    const newlink = await postLink(req.body, user.id);
     return res.status(newlink.status).json({
       response: newlink.response,
     });

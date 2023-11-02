@@ -9,7 +9,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
-import { useSession } from "next-auth/react";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Checkbox from "../../Checkbox";
 import SubmitButton from "@/components/SubmitButton";
@@ -18,6 +17,7 @@ import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import TextInput from "@/components/TextInput";
+import useAccountStore from "@/store/account";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -34,6 +34,7 @@ export default function TeamManagement({
   collection,
   method,
 }: Props) {
+  const { account } = useAccountStore();
   const permissions = usePermissions(collection.id as number);
 
   const currentURL = new URL(document.URL);
@@ -58,8 +59,6 @@ export default function TeamManagement({
   }, []);
 
   const { addCollection, updateCollection } = useCollectionStore();
-
-  const session = useSession();
 
   const setMemberState = (newMember: Member) => {
     if (!collection) return null;
@@ -158,7 +157,7 @@ export default function TeamManagement({
               onKeyDown={(e) =>
                 e.key === "Enter" &&
                 addMemberToCollection(
-                  session.data?.user.username as string,
+                  account.username as string,
                   memberUsername || "",
                   collection,
                   setMemberState
@@ -169,7 +168,7 @@ export default function TeamManagement({
             <div
               onClick={() =>
                 addMemberToCollection(
-                  session.data?.user.username as string,
+                  account.username as string,
                   memberUsername || "",
                   collection,
                   setMemberState

@@ -10,12 +10,7 @@ const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 export default async function updateUserById(
-  sessionUser: {
-    id: number;
-    username: string;
-    email: string;
-    isSubscriber: boolean;
-  },
+  userId: number,
   data: AccountSettings
 ) {
   if (emailEnabled && !data.email)
@@ -49,7 +44,7 @@ export default async function updateUserById(
 
   const userIsTaken = await prisma.user.findFirst({
     where: {
-      id: { not: sessionUser.id },
+      id: { not: userId },
       OR: emailEnabled
         ? [
             {
@@ -97,7 +92,7 @@ export default async function updateUserById(
         createFolder({ filePath: `uploads/avatar` });
 
         await createFile({
-          filePath: `uploads/avatar/${sessionUser.id}.jpg`,
+          filePath: `uploads/avatar/${userId}.jpg`,
           data: base64Data,
           isBase64: true,
         });
@@ -112,8 +107,12 @@ export default async function updateUserById(
       };
     }
   } else if (data.image == "") {
-    removeFile({ filePath: `uploads/avatar/${sessionUser.id}.jpg` });
+    removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
   }
+
+  const previousEmail = (
+    await prisma.user.findUnique({ where: { id: userId } })
+  )?.email;
 
   // Other settings
 
@@ -122,14 +121,14 @@ export default async function updateUserById(
 
   const updatedUser = await prisma.user.update({
     where: {
-      id: sessionUser.id,
+      id: userId,
     },
     data: {
       name: data.name,
       username: data.username.toLowerCase().trim(),
       email: data.email?.toLowerCase().trim(),
       isPrivate: data.isPrivate,
-      image: data.image ? `uploads/avatar/${sessionUser.id}.jpg` : "",
+      image: data.image ? `uploads/avatar/${userId}.jpg` : "",
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
@@ -167,7 +166,7 @@ export default async function updateUserById(
   // Delete whitelistedUsers that are not present in the new list
   await prisma.whitelistedUser.deleteMany({
     where: {
-      userId: sessionUser.id,
+      userId: userId,
       username: {
         in: usernamesToDelete,
       },
@@ -179,17 +178,17 @@ export default async function updateUserById(
     await prisma.whitelistedUser.create({
       data: {
         username,
-        userId: sessionUser.id,
+        userId: userId,
       },
     });
   }
 
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
-  if (STRIPE_SECRET_KEY && emailEnabled && sessionUser.email !== data.email)
+  if (STRIPE_SECRET_KEY && emailEnabled && previousEmail !== data.email)
     await updateCustomerEmail(
       STRIPE_SECRET_KEY,
-      sessionUser.email,
+      previousEmail as string,
       data.email as string
     );
 
