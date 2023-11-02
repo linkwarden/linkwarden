@@ -21,5 +21,5 @@ export default function useInitialData() {
       // setLinks();
       setAccount(data.user.id);
     }
-  }, [status]);
+  }, [status, data]);
 }

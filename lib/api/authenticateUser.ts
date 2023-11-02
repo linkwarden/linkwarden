@@ -1,21 +1,31 @@
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { getToken } from "next-auth/jwt";
+import { prisma } from "./db";
+import { User } from "@prisma/client";
 
 type Props = {
   req: NextApiRequest;
+  res: NextApiResponse;
 };
 
-export default async function authenticateUser({ req }: Props) {
+export default async function authenticateUser({
+  req,
+  res,
+}: Props): Promise<User | null> {
   const token = await getToken({ req });
+  const userId = token?.id;
 
-  if (!token?.id) {
-    return { response: "You must be logged in.", status: 401 };
-  } else if (token.isSubscriber === false)
-    return {
-      response:
-        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
-      status: 401,
-    };
+  if (!userId) {
+    res.status(401).json({ message: "You must be logged in." });
+    return null;
+  } else if (token.isSubscriber === false) {
+    res.status(401).json({
+      message:
+        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app if you think this is an issue.",
+    });
+    return null;
+  }
 
-  return token;
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  return user;
 }
