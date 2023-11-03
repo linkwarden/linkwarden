@@ -10,6 +10,7 @@ type TagStore = {
   tags: Tag[];
   setTags: () => void;
   updateTag: (tag: Tag) => Promise<ResponseObject>;
+  removeTag: (tagId: number) => Promise<ResponseObject>;
 };
 
 const useTagStore = create<TagStore>()((set) => ({
@@ -40,6 +41,20 @@ const useTagStore = create<TagStore>()((set) => ({
       }));
     }
 
+    return { ok: response.ok, data: data.response };
+  },
+  removeTag: async (tagId) => {
+    const response = await fetch(`/api/v1/tags/${tagId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      set((state) => ({
+        tags: state.tags.filter((e) => e.id !== tagId),
+      }));
+    }
+
+    const data = await response.json();
     return { ok: response.ok, data: data.response };
   },
 }));

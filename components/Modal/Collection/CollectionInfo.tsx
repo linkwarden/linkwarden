@@ -6,7 +6,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
-import RequiredBadge from "../../RequiredBadge";
 import SubmitButton from "@/components/SubmitButton";
 import { HexColorPicker } from "react-colorful";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -61,10 +60,7 @@ export default function CollectionInfo({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="w-full">
-          <p className="text-sm text-black dark:text-white mb-2">
-            Name
-            <RequiredBadge />
-          </p>
+          <p className="text-black dark:text-white mb-2">Name</p>
           <div className="flex flex-col gap-3">
             <TextInput
               value={collection.name}
@@ -75,9 +71,7 @@ export default function CollectionInfo({
             />
             <div className="color-picker flex justify-between">
               <div className="flex flex-col justify-between items-center w-32">
-                <p className="text-sm w-full text-black dark:text-white mb-2">
-                  Icon Color
-                </p>
+                <p className="w-full text-black dark:text-white mb-2">Color</p>
                 <div style={{ color: collection.color }}>
                   <FontAwesomeIcon
                     icon={faFolder}
@@ -102,7 +96,7 @@ export default function CollectionInfo({
         </div>
 
         <div className="w-full">
-          <p className="text-sm text-black dark:text-white mb-2">Description</p>
+          <p className="text-black dark:text-white mb-2">Description</p>
           <textarea
             className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-gray-50 dark:bg-neutral-950 p-2 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
             placeholder="The purpose of this Collection..."

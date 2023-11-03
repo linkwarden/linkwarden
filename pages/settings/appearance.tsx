@@ -8,7 +8,7 @@ export default function Appearance() {
 
   return (
     <SettingsLayout>
-      <p className="mb-3 text-sm">Select Theme</p>
+      <p className="mb-3">Select Theme</p>
       <div className="flex gap-3 w-full">
         <div
           className={`w-full text-center outline-solid outline-sky-100 outline dark:outline-neutral-700 h-40 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
