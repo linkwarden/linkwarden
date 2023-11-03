@@ -101,7 +101,7 @@ export default function TeamManagement({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {permissions === true && (
         <>
-          <p className="text-sm text-black dark:text-white">Make Public</p>
+          <p className="text-black dark:text-white">Make Public</p>
 
           <Checkbox
             label="Make this a public collection."
@@ -119,7 +119,7 @@ export default function TeamManagement({
 
       {collection.isPublic ? (
         <div>
-          <p className="text-sm text-black dark:text-white mb-2">
+          <p className="text-black dark:text-white mb-2">
             Public Link (Click to copy)
           </p>
           <div
@@ -145,9 +145,7 @@ export default function TeamManagement({
 
       {permissions === true && (
         <>
-          <p className="text-sm text-black dark:text-white">
-            Member Management
-          </p>
+          <p className="text-black dark:text-white">Member Management</p>
 
           <div className="flex items-center gap-2">
             <TextInput

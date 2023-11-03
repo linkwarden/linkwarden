@@ -87,19 +87,19 @@ export default function Account() {
     if (response.ok) {
       toast.success("Settings Applied!");
 
-      if (user.email !== account.email) {
-        update({
-          id: data?.user.id,
-        });
+      // if (user.email !== account.email) {
+      //   update({
+      //     id: data?.user.id,
+      //   });
 
-        signOut();
-      } else if (
-        user.username !== account.username ||
-        user.name !== account.name
-      )
-        update({
-          id: data?.user.id,
-        });
+      //   signOut();
+      // } else if (
+      //   user.username !== account.username ||
+      //   user.name !== account.name
+      // )
+      //   update({
+      //     id: data?.user.id,
+      //   });
     } else toast.error(response.data as string);
     setSubmitLoader(false);
   };
@@ -172,18 +172,14 @@ export default function Account() {
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
           <div className="flex flex-col gap-3">
             <div>
-              <p className="text-sm text-black dark:text-white mb-2">
-                Display Name
-              </p>
+              <p className="text-black dark:text-white mb-2">Display Name</p>
               <TextInput
                 value={user.name || ""}
                 onChange={(e) => setUser({ ...user, name: e.target.value })}
               />
             </div>
             <div>
-              <p className="text-sm text-black dark:text-white mb-2">
-                Username
-              </p>
+              <p className="text-black dark:text-white mb-2">Username</p>
               <TextInput
                 value={user.username || ""}
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
@@ -192,23 +188,23 @@ export default function Account() {
 
             {emailEnabled ? (
               <div>
-                <p className="text-sm text-black dark:text-white mb-2">Email</p>
+                <p className="text-black dark:text-white mb-2">Email</p>
+                {user.email !== account.email &&
+                process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE === "true" ? (
+                  <p className="text-gray-500 dark:text-gray-400 mb-2 text-sm">
+                    Updating this field will change your billing email as well
+                  </p>
+                ) : undefined}
                 <TextInput
                   value={user.email || ""}
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                 />
               </div>
             ) : undefined}
-
-            {user.email !== account.email ? (
-              <p className="text-gray-500 dark:text-gray-400">
-                You will need to log back in after you apply this Email.
-              </p>
-            ) : undefined}
           </div>
 
           <div className="sm:row-span-2 sm:justify-self-center mx-auto my-3">
-            <p className="text-sm text-black dark:text-white mb-2 text-center">
+            <p className="text-black dark:text-white mb-2 text-center">
               Profile Photo
             </p>
             <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
@@ -258,7 +254,7 @@ export default function Account() {
 
           <div className="flex gap-3 flex-col">
             <div>
-              <p className="text-sm text-black dark:text-white mb-2">
+              <p className="text-black dark:text-white mb-2">
                 Import your data from other platforms.
               </p>
               <div
@@ -323,7 +319,7 @@ export default function Account() {
             </div>
 
             <div>
-              <p className="text-sm text-black dark:text-white mb-2">
+              <p className="text-black dark:text-white mb-2">
                 Download your data instantly.
               </p>
               <Link className="w-fit" href="/api/v1/migration">
@@ -347,7 +343,6 @@ export default function Account() {
           <Checkbox
             label="Make profile private"
             state={user.isPrivate}
-            className="text-sm sm:text-base"
             onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
           />
 
@@ -357,7 +352,7 @@ export default function Account() {
 
           {user.isPrivate && (
             <div>
-              <p className="text-sm text-black dark:text-white mt-2">
+              <p className="text-black dark:text-white mt-2">
                 Whitelisted Users
               </p>
               <p className="text-gray-500 dark:text-gray-300 text-sm mb-3">

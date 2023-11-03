@@ -23,7 +23,7 @@ export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();
-  const { tags, updateTag } = useTagStore();
+  const { tags, updateTag, removeTag } = useTagStore();
 
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -76,6 +76,25 @@ export default function Index() {
 
     if (response?.ok) {
       toast.success("Tag Renamed!");
+    } else toast.error(response?.data as string);
+    setSubmitLoader(false);
+    setRenameTag(false);
+  };
+
+  const remove = async () => {
+    setSubmitLoader(true);
+
+    const load = toast.loading("Applying...");
+
+    let response;
+
+    if (activeTag?.id) response = await removeTag(activeTag?.id);
+
+    toast.dismiss(load);
+
+    if (response?.ok) {
+      toast.success("Tag Removed.");
+      router.push("/links");
     } else toast.error(response?.data as string);
     setSubmitLoader(false);
     setRenameTag(false);
@@ -150,6 +169,13 @@ export default function Index() {
                             name: "Rename Tag",
                             onClick: () => {
                               setRenameTag(true);
+                              setExpandDropdown(false);
+                            },
+                          },
+                          {
+                            name: "Remove Tag",
+                            onClick: () => {
+                              remove();
                               setExpandDropdown(false);
                             },
                           },

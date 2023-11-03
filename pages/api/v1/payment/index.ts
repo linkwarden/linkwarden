@@ -17,9 +17,9 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
 
   let PRICE_ID = MONTHLY_PRICE_ID;
 
-  if ((Number(req.query.plan) as unknown as Plan) === Plan.monthly)
+  if ((Number(req.query.plan) as Plan) === Plan.monthly)
     PRICE_ID = MONTHLY_PRICE_ID;
-  else if ((Number(req.query.plan) as unknown as Plan) === Plan.yearly)
+  else if ((Number(req.query.plan) as Plan) === Plan.yearly)
     PRICE_ID = YEARLY_PRICE_ID;
 
   if (req.method === "GET") {
