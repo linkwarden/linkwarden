@@ -79,7 +79,7 @@ export default function Password() {
         </p>
 
         <div>
-          <p className="text-sm mb-2 text-black dark:text-white">
+          <p className="mb-2 text-black dark:text-white">
             Confirm Your Password
           </p>
 

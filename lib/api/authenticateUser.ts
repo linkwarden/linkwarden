@@ -18,7 +18,7 @@ export default async function authenticateUser({
   if (!userId) {
     res.status(401).json({ message: "You must be logged in." });
     return null;
-  } else if (token.isSubscriber === false) {
+  } else if (process.env.STRIPE_SECRET_KEY && token.isSubscriber === false) {
     res.status(401).json({
       message:
         "You are not a subscriber, feel free to reach out to us at support@linkwarden.app if you think this is an issue.",
