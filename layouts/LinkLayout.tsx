@@ -93,11 +93,14 @@ export default function LinkLayout({ children }: Props) {
             </div> */}
 
             <div
-              onClick={() => router.back()}
+              onClick={() => router.push(`/collections/${linkCollection?.id}`)}
               className="inline-flex gap-1 hover:opacity-60 items-center select-none cursor-pointer p-2 lg:p-0 lg:px-1 lg:my-2 text-gray-500 dark:text-gray-300 rounded-md duration-100"
             >
               <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
-              Back
+              Back{" "}
+              <span className="hidden sm:inline-block">
+                to <span className="capitalize">{linkCollection?.name}</span>
+              </span>
             </div>
 
             <div className="lg:hidden">

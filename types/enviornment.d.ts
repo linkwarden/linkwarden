@@ -17,11 +17,11 @@ declare global {
       BUCKET_NAME?: string;
       SPACES_REGION?: string;
 
-      NEXT_PUBLIC_EMAIL_PROVIDER?: true;
+      NEXT_PUBLIC_EMAIL_PROVIDER?: string;
       EMAIL_FROM?: string;
       EMAIL_SERVER?: string;
 
-      NEXT_PUBLIC_STRIPE_IS_ACTIVE?: string;
+      NEXT_PUBLIC_STRIPE?: string;
       STRIPE_SECRET_KEY?: string;
       MONTHLY_PRICE_ID?: string;
       YEARLY_PRICE_ID?: string;

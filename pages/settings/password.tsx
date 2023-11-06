@@ -1,7 +1,6 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useState } from "react";
 import useAccountStore from "@/store/account";
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";

@@ -113,7 +113,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE ? (
+        {process.env.NEXT_PUBLIC_STRIPE ? (
           <Link href="/settings/billing">
             <div
               className={`${

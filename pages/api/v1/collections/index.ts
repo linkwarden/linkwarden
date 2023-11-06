@@ -1,14 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getCollections from "@/lib/api/controllers/collections/getCollections";
 import postCollection from "@/lib/api/controllers/collections/postCollection";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 
 export default async function collections(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   if (req.method === "GET") {
     const collections = await getCollections(user.id);
