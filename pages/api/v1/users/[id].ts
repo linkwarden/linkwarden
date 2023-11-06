@@ -1,48 +1,58 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getUserById from "@/lib/api/controllers/users/userId/getUserById";
-import getPublicUserById from "@/lib/api/controllers/users/userId/getPublicUserById";
 import updateUserById from "@/lib/api/controllers/users/userId/updateUserById";
 import deleteUserById from "@/lib/api/controllers/users/userId/deleteUserById";
-import authenticateUser from "@/lib/api/authenticateUser";
-import { prisma } from "@/lib/api/db";
 import { getToken } from "next-auth/jwt";
+import { prisma } from "@/lib/api/db";
+import verifySubscription from "@/lib/api/verifySubscription";
+
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const token = await getToken({ req });
   const userId = token?.id;
 
-  if (!token?.id)
-    return res.status(400).json({ response: "Invalid parameters." });
+  if (!userId) {
+    return res.status(401).json({ response: "You must be logged in." });
+  }
 
-  const username = (await prisma.user.findUnique({ where: { id: token.id } }))
-    ?.username;
+  if (userId !== Number(req.query.id))
+    return res.status(401).json({ response: "Permission denied." });
 
-  if (!username) return res.status(404).json({ response: "User not found." });
-
-  const lookupId = req.query.id as string;
-  const isSelf =
-    userId === Number(lookupId) || username === lookupId ? true : false;
-
-  // Check if "lookupId" is the user "id" or their "username"
-  const isId = lookupId.split("").every((e) => Number.isInteger(parseInt(e)));
-
-  if (req.method === "GET" && !isSelf) {
-    const users = await getPublicUserById(lookupId, isId, username);
+  if (req.method === "GET") {
+    const users = await getUserById(userId);
     return res.status(users.status).json({ response: users.response });
   }
 
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  if (STRIPE_SECRET_KEY) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: token.id,
+      },
+      include: {
+        subscriptions: true,
+      },
+    });
 
-  if (req.method === "GET") {
-    const users = await getUserById(user.id);
-    return res.status(users.status).json({ response: users.response });
-  } else if (req.method === "PUT") {
-    const updated = await updateUserById(user.id, req.body);
+    if (user) {
+      const subscribedUser = await verifySubscription(user);
+      if (!subscribedUser) {
+        return res.status(401).json({
+          response:
+            "You are not a subscriber, feel free to reach out to us at support@linkwarden.app if you think this is an issue.",
+        });
+      }
+    } else {
+      return res.status(404).json({ response: "User not found." });
+    }
+  }
+
+  if (req.method === "PUT") {
+    const updated = await updateUserById(userId, req.body);
     return res.status(updated.status).json({ response: updated.response });
-  } else if (req.method === "DELETE" && user.id === Number(req.query.id)) {
+  } else if (req.method === "DELETE") {
     console.log(req.body);
-    const updated = await deleteUserById(user.id, req.body);
+    const updated = await deleteUserById(userId, req.body);
     return res.status(updated.status).json({ response: updated.response });
   }
 }

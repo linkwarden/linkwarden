@@ -1,14 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import updateCollectionById from "@/lib/api/controllers/collections/collectionId/updateCollectionById";
 import deleteCollectionById from "@/lib/api/controllers/collections/collectionId/deleteCollectionById";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 
 export default async function collections(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   if (req.method === "PUT") {
     const updated = await updateCollectionById(

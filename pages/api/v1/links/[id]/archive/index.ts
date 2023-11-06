@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import archive from "@/lib/api/archive";
 import { prisma } from "@/lib/api/db";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   const link = await prisma.link.findUnique({
     where: {

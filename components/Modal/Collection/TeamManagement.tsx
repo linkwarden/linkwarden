@@ -47,6 +47,7 @@ export default function TeamManagement({
     id: null,
     name: "",
     username: "",
+    image: "",
   });
 
   useEffect(() => {
@@ -401,7 +402,7 @@ export default function TeamManagement({
       >
         <div className="flex items-center gap-2">
           <ProfilePhoto
-            src={`uploads/avatar/${collection.ownerId}.jpg`}
+            src={collectionOwner.image ? collectionOwner.image : undefined}
             className="border-[3px]"
           />
           <div>

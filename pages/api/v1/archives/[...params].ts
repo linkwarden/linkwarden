@@ -1,14 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getPermission from "@/lib/api/getPermission";
 import readFile from "@/lib/api/storage/readFile";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   if (!req.query.params)
     return res.status(401).json({ response: "Invalid parameters." });
 
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   const collectionId = req.query.params[0];
   const linkId = req.query.params[1];

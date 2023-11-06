@@ -18,19 +18,21 @@ model User {
   image                   String?
 
   password                String
+
   collections             Collection[]
-
   tags                    Tag[]
-
   pinnedLinks             Link[]
+  collectionsJoined       UsersAndCollections[]
+  whitelistedUsers        WhitelistedUser[]
+
+  subscriptions           Subscription?
 
   archiveAsScreenshot     Boolean         @default(true)
   archiveAsPDF            Boolean         @default(true)
   archiveAsWaybackMachine Boolean         @default(false)
 
-  collectionsJoined       UsersAndCollections[]
   isPrivate               Boolean         @default(false)
-  whitelistedUsers        WhitelistedUser[]
+
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt @default(now())
 }
@@ -126,4 +128,18 @@ model Tag {
   updatedAt      DateTime   @updatedAt @default(now())
 
   @@unique([name, ownerId])
+}
+
+model Subscription {
+  id                   Int        @id @default(autoincrement())
+  active               Boolean    
+  stripeSubscriptionId String     @unique
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+
+  user                 User       @relation(fields: [userId], references: [id])
+  userId               Int        @unique
+
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt @default(now())
 }

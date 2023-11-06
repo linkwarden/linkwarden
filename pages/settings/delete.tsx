@@ -72,7 +72,7 @@ export default function Password() {
         <p>
           This will permanently delete all the Links, Collections, Tags, and
           archived data you own. It will also log you out
-          {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+          {process.env.NEXT_PUBLIC_STRIPE
             ? " and cancel your subscription"
             : undefined}
           . This action is irreversible!
@@ -91,7 +91,7 @@ export default function Password() {
           />
         </div>
 
-        {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE ? (
+        {process.env.NEXT_PUBLIC_STRIPE ? (
           <fieldset className="border rounded-md p-2 border-sky-500">
             <legend className="px-3 py-1 text-sm sm:text-base border rounded-md border-sky-500">
               <b>Optional</b>{" "}

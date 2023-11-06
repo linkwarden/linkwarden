@@ -86,20 +86,6 @@ export default function Account() {
 
     if (response.ok) {
       toast.success("Settings Applied!");
-
-      // if (user.email !== account.email) {
-      //   update({
-      //     id: data?.user.id,
-      //   });
-
-      //   signOut();
-      // } else if (
-      //   user.username !== account.username ||
-      //   user.name !== account.name
-      // )
-      //   update({
-      //     id: data?.user.id,
-      //   });
     } else toast.error(response.data as string);
     setSubmitLoader(false);
   };
@@ -190,7 +176,7 @@ export default function Account() {
               <div>
                 <p className="text-black dark:text-white mb-2">Email</p>
                 {user.email !== account.email &&
-                process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE === "true" ? (
+                process.env.NEXT_PUBLIC_STRIPE === "true" ? (
                   <p className="text-gray-500 dark:text-gray-400 mb-2 text-sm">
                     Updating this field will change your billing email as well
                   </p>
@@ -388,7 +374,7 @@ export default function Account() {
           <p>
             This will permanently delete ALL the Links, Collections, Tags, and
             archived data you own.{" "}
-            {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+            {process.env.NEXT_PUBLIC_STRIPE
               ? "It will also cancel your subscription. "
               : undefined}{" "}
             You will be prompted to enter your password before the deletion
