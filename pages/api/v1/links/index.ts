@@ -2,11 +2,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import getLinks from "@/lib/api/controllers/links/getLinks";
 import postLink from "@/lib/api/controllers/links/postLink";
 import { LinkRequestQuery } from "@/types/global";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   if (req.method === "GET") {
     // Convert the type of the request query to "LinkRequestQuery"

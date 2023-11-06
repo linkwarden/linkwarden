@@ -68,6 +68,11 @@ export default async function deleteUserById(
       where: { ownerId: userId },
     });
 
+    // Delete subscription
+    await prisma.subscription.delete({
+      where: { userId },
+    });
+
     // Delete user's avatar
     removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
 

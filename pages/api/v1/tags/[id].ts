@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import updeteTagById from "@/lib/api/controllers/tags/tagId/updeteTagById";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 import deleteTagById from "@/lib/api/controllers/tags/tagId/deleteTagById";
 
 export default async function tags(req: NextApiRequest, res: NextApiResponse) {
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   const tagId = Number(req.query.id);
 

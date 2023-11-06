@@ -11,6 +11,7 @@ export default async function getUserById(userId: number) {
           username: true,
         },
       },
+      subscriptions: true,
     },
   });
 
@@ -21,11 +22,14 @@ export default async function getUserById(userId: number) {
     (usernames) => usernames.username
   );
 
-  const { password, ...lessSensitiveInfo } = user;
+  const { password, subscriptions, ...lessSensitiveInfo } = user;
 
   const data = {
     ...lessSensitiveInfo,
     whitelistedUsers: whitelistedUsernames,
+    subscription: {
+      active: subscriptions?.active,
+    },
   };
 
   return { response: data, status: 200 };

@@ -40,6 +40,9 @@ export interface CollectionIncludingMembersAndLinkCount
 export interface AccountSettings extends User {
   newPassword?: string;
   whitelistedUsers: string[];
+  subscription?: {
+    active?: boolean;
+  };
 }
 
 interface LinksIncludingTags extends Link {

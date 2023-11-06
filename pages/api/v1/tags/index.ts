@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getTags from "@/lib/api/controllers/tags/getTags";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 
 export default async function tags(req: NextApiRequest, res: NextApiResponse) {
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   if (req.method === "GET") {
     const tags = await getTags(user.id);

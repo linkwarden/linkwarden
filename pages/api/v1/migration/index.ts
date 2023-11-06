@@ -3,7 +3,7 @@ import exportData from "@/lib/api/controllers/migration/exportData";
 import importFromHTMLFile from "@/lib/api/controllers/migration/importFromHTMLFile";
 import importFromLinkwarden from "@/lib/api/controllers/migration/importFromLinkwarden";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 
 export const config = {
   api: {
@@ -14,8 +14,8 @@ export const config = {
 };
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   if (req.method === "GET") {
     const data = await exportData(user.id);

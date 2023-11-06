@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { LinkRequestQuery } from "@/types/global";
 import getDashboardData from "@/lib/api/controllers/dashboard/getDashboardData";
-import authenticateUser from "@/lib/api/authenticateUser";
+import verifyUser from "@/lib/api/verifyUser";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
-  const user = await authenticateUser({ req, res });
-  if (!user) return res.status(404).json({ response: "User not found." });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   if (req.method === "GET") {
     const convertedData: LinkRequestQuery = {

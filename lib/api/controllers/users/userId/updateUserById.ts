@@ -139,10 +139,12 @@ export default async function updateUserById(
     },
     include: {
       whitelistedUsers: true,
+      subscriptions: true,
     },
   });
 
-  const { whitelistedUsers, password, ...userInfo } = updatedUser;
+  const { whitelistedUsers, password, subscriptions, ...userInfo } =
+    updatedUser;
 
   // If user.whitelistedUsers is not provided, we will assume the whitelistedUsers should be removed
   const newWhitelistedUsernames: string[] = data.whitelistedUsers || [];
@@ -196,6 +198,7 @@ export default async function updateUserById(
     ...userInfo,
     whitelistedUsers: newWhitelistedUsernames,
     image: userInfo.image ? `${userInfo.image}?${Date.now()}` : "",
+    subscription: { active: subscriptions?.active },
   };
 
   return { response, status: 200 };
