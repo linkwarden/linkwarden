@@ -62,7 +62,12 @@ export default async function verifySubscription(
     }
 
     if (!active) {
-      return null;
+      if (user.username)
+        // await prisma.user.update({
+        //   where: { id: user.id },
+        //   data: { username: null },
+        // });
+        return null;
     }
   }
 
