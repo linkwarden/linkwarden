@@ -110,7 +110,7 @@ export default function LinkCard({ link, count, className }: Props) {
     if (response.ok) {
       toast.success(`Link is being archived...`);
       getLink(link.id as number);
-    } else toast.error(data);
+    } else toast.error(data.response);
   };
 
   const deleteLink = async () => {
