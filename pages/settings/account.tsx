@@ -269,7 +269,7 @@ export default function Account() {
                         title="JSON File"
                         className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
                       >
-                        Linkwarden...
+                        Linkwarden File...
                         <input
                           type="file"
                           name="photo"
