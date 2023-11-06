@@ -60,7 +60,7 @@ export default async function deleteUserById(
       });
 
       // Delete archive folders
-      removeFolder({ filePath: `archives/${collection.id}` });
+      await removeFolder({ filePath: `archives/${collection.id}` });
     }
 
     // Delete collections after cleaning up related data
@@ -69,12 +69,13 @@ export default async function deleteUserById(
     });
 
     // Delete subscription
-    await prisma.subscription.delete({
-      where: { userId },
-    });
+    if (process.env.STRIPE_SECRET_KEY)
+      await prisma.subscription.delete({
+        where: { userId },
+      });
 
     // Delete user's avatar
-    removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
+    await removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
 
     // Finally, delete the user
     await prisma.user.delete({
