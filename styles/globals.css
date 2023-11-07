@@ -253,3 +253,29 @@ body {
   background-color: rgb(230, 230, 230);
   border-radius: 8px;
 }
+
+.rainbow {
+  background: linear-gradient(
+    45deg,
+    #ff00004b,
+    #ff99004b,
+    #33cc334b,
+    #0099cc4b,
+    #9900cc4b,
+    #ff33cc4b
+  );
+  background-size: 400% 400%;
+  animation: rainbow 30s linear infinite;
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
