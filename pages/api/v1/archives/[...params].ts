@@ -1,28 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
 import getPermission from "@/lib/api/getPermission";
 import readFile from "@/lib/api/storage/readFile";
+import verifyUser from "@/lib/api/verifyUser";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   if (!req.query.params)
     return res.status(401).json({ response: "Invalid parameters." });
 
+  const user = await verifyUser({ req, res });
+  if (!user) return;
+
   const collectionId = req.query.params[0];
   const linkId = req.query.params[1];
 
-  const session = await getServerSession(req, res, authOptions);
-
-  if (!session?.user?.username)
-    return res.status(401).json({ response: "You must be logged in." });
-  else if (session?.user?.isSubscriber === false)
-    res.status(401).json({
-      response:
-        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
-    });
-
   const collectionIsAccessible = await getPermission({
-    userId: session.user.id,
+    userId: user.id,
     collectionId: Number(collectionId),
   });
 

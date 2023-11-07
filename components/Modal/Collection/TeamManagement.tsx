@@ -9,7 +9,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
-import { useSession } from "next-auth/react";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Checkbox from "../../Checkbox";
 import SubmitButton from "@/components/SubmitButton";
@@ -18,6 +17,7 @@ import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import TextInput from "@/components/TextInput";
+import useAccountStore from "@/store/account";
 
 type Props = {
   toggleCollectionModal: Function;
@@ -34,26 +34,20 @@ export default function TeamManagement({
   collection,
   method,
 }: Props) {
+  const { account } = useAccountStore();
   const permissions = usePermissions(collection.id as number);
 
   const currentURL = new URL(document.URL);
 
   const publicCollectionURL = `${currentURL.origin}/public/collections/${collection.id}`;
 
-  const [member, setMember] = useState<Member>({
-    canCreate: false,
-    canUpdate: false,
-    canDelete: false,
-    user: {
-      name: "",
-      username: "",
-    },
-  });
+  const [memberUsername, setMemberUsername] = useState("");
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null,
     name: "",
     username: "",
+    image: "",
   });
 
   useEffect(() => {
@@ -67,8 +61,6 @@ export default function TeamManagement({
 
   const { addCollection, updateCollection } = useCollectionStore();
 
-  const session = useSession();
-
   const setMemberState = (newMember: Member) => {
     if (!collection) return null;
 
@@ -77,15 +69,7 @@ export default function TeamManagement({
       members: [...collection.members, newMember],
     });
 
-    setMember({
-      canCreate: false,
-      canUpdate: false,
-      canDelete: false,
-      user: {
-        name: "",
-        username: "",
-      },
-    });
+    setMemberUsername("");
   };
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -118,7 +102,7 @@ export default function TeamManagement({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {permissions === true && (
         <>
-          <p className="text-sm text-black dark:text-white">Make Public</p>
+          <p className="text-black dark:text-white">Make Public</p>
 
           <Checkbox
             label="Make this a public collection."
@@ -136,7 +120,7 @@ export default function TeamManagement({
 
       {collection.isPublic ? (
         <div>
-          <p className="text-sm text-black dark:text-white mb-2">
+          <p className="text-black dark:text-white mb-2">
             Public Link (Click to copy)
           </p>
           <div
@@ -162,25 +146,18 @@ export default function TeamManagement({
 
       {permissions === true && (
         <>
-          <p className="text-sm text-black dark:text-white">
-            Member Management
-          </p>
+          <p className="text-black dark:text-white">Member Management</p>
 
           <div className="flex items-center gap-2">
             <TextInput
-              value={member.user.username || ""}
+              value={memberUsername || ""}
               placeholder="Username (without the '@')"
-              onChange={(e) => {
-                setMember({
-                  ...member,
-                  user: { ...member.user, username: e.target.value },
-                });
-              }}
+              onChange={(e) => setMemberUsername(e.target.value)}
               onKeyDown={(e) =>
                 e.key === "Enter" &&
                 addMemberToCollection(
-                  session.data?.user.username as string,
-                  member.user.username || "",
+                  account.username as string,
+                  memberUsername || "",
                   collection,
                   setMemberState
                 )
@@ -190,8 +167,8 @@ export default function TeamManagement({
             <div
               onClick={() =>
                 addMemberToCollection(
-                  session.data?.user.username as string,
-                  member.user.username || "",
+                  account.username as string,
+                  memberUsername || "",
                   collection,
                   setMemberState
                 )
@@ -238,7 +215,7 @@ export default function TeamManagement({
                     )}
                     <div className="flex items-center gap-2">
                       <ProfilePhoto
-                        src={`/api/v1/avatar/${e.userId}?${Date.now()}`}
+                        src={e.user.image ? e.user.image : undefined}
                         className="border-[3px]"
                       />
                       <div>
@@ -425,7 +402,7 @@ export default function TeamManagement({
       >
         <div className="flex items-center gap-2">
           <ProfilePhoto
-            src={`/api/v1/avatar/${collection.ownerId}?${Date.now()}`}
+            src={collectionOwner.image ? collectionOwner.image : undefined}
             className="border-[3px]"
           />
           <div>

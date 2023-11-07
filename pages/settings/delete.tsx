@@ -72,14 +72,14 @@ export default function Password() {
         <p>
           This will permanently delete all the Links, Collections, Tags, and
           archived data you own. It will also log you out
-          {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+          {process.env.NEXT_PUBLIC_STRIPE
             ? " and cancel your subscription"
             : undefined}
           . This action is irreversible!
         </p>
 
         <div>
-          <p className="text-sm mb-2 text-black dark:text-white">
+          <p className="mb-2 text-black dark:text-white">
             Confirm Your Password
           </p>
 
@@ -91,7 +91,7 @@ export default function Password() {
           />
         </div>
 
-        {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE ? (
+        {process.env.NEXT_PUBLIC_STRIPE ? (
           <fieldset className="border rounded-md p-2 border-sky-500">
             <legend className="px-3 py-1 text-sm sm:text-base border rounded-md border-sky-500">
               <b>Optional</b>{" "}
@@ -119,7 +119,8 @@ export default function Password() {
             </label>
             <div>
               <p className="text-sm mb-2 text-black dark:text-white">
-                More information (the more details, the more helpful it'd be)
+                More information (the more details, the more helpful it&apos;d
+                be)
               </p>
 
               <textarea

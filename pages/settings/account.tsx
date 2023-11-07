@@ -21,12 +21,7 @@ export default function Account() {
 
   const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
-  const [profileStatus, setProfileStatus] = useState(true);
   const [submitLoader, setSubmitLoader] = useState(false);
-
-  const handleProfileStatus = (e: boolean) => {
-    setProfileStatus(!e);
-  };
 
   const { account, updateAccount } = useAccountStore();
 
@@ -40,12 +35,11 @@ export default function Account() {
           username: "",
           email: "",
           emailVerified: null,
-          image: null,
+          image: "",
           isPrivate: true,
           // @ts-ignore
           createdAt: null,
           whitelistedUsers: [],
-          profilePic: "",
         } as unknown as AccountSettings)
   );
 
@@ -68,7 +62,7 @@ export default function Account() {
       ) {
         const reader = new FileReader();
         reader.onload = () => {
-          setUser({ ...user, profilePic: reader.result as string });
+          setUser({ ...user, image: reader.result as string });
         };
         reader.readAsDataURL(resizedFile);
       } else {
@@ -92,20 +86,6 @@ export default function Account() {
 
     if (response.ok) {
       toast.success("Settings Applied!");
-
-      if (user.email !== account.email) {
-        update({
-          id: data?.user.id,
-        });
-
-        signOut();
-      } else if (
-        user.username !== account.username ||
-        user.name !== account.name
-      )
-        update({
-          id: data?.user.id,
-        });
     } else toast.error(response.data as string);
     setSubmitLoader(false);
   };
@@ -178,18 +158,14 @@ export default function Account() {
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
           <div className="flex flex-col gap-3">
             <div>
-              <p className="text-sm text-black dark:text-white mb-2">
-                Display Name
-              </p>
+              <p className="text-black dark:text-white mb-2">Display Name</p>
               <TextInput
                 value={user.name || ""}
                 onChange={(e) => setUser({ ...user, name: e.target.value })}
               />
             </div>
             <div>
-              <p className="text-sm text-black dark:text-white mb-2">
-                Username
-              </p>
+              <p className="text-black dark:text-white mb-2">Username</p>
               <TextInput
                 value={user.username || ""}
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
@@ -198,38 +174,37 @@ export default function Account() {
 
             {emailEnabled ? (
               <div>
-                <p className="text-sm text-black dark:text-white mb-2">Email</p>
+                <p className="text-black dark:text-white mb-2">Email</p>
+                {user.email !== account.email &&
+                process.env.NEXT_PUBLIC_STRIPE === "true" ? (
+                  <p className="text-gray-500 dark:text-gray-400 mb-2 text-sm">
+                    Updating this field will change your billing email as well
+                  </p>
+                ) : undefined}
                 <TextInput
                   value={user.email || ""}
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                 />
               </div>
             ) : undefined}
-
-            {user.email !== account.email ? (
-              <p className="text-gray-500 dark:text-gray-400">
-                You will need to log back in after you apply this Email.
-              </p>
-            ) : undefined}
           </div>
 
           <div className="sm:row-span-2 sm:justify-self-center mx-auto my-3">
-            <p className="text-sm text-black dark:text-white mb-2 text-center">
+            <p className="text-black dark:text-white mb-2 text-center">
               Profile Photo
             </p>
             <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
               <ProfilePhoto
                 priority={true}
-                src={user.profilePic}
+                src={user.image ? user.image : undefined}
                 className="h-auto border-none w-28"
-                status={handleProfileStatus}
               />
-              {profileStatus && (
+              {user.image && (
                 <div
                   onClick={() =>
                     setUser({
                       ...user,
-                      profilePic: "",
+                      image: "",
                     })
                   }
                   className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 border-slate-200 dark:border-neutral-700 rounded-full bg-white dark:bg-neutral-800 text-center select-none cursor-pointer duration-100 hover:text-red-500"
@@ -265,7 +240,7 @@ export default function Account() {
 
           <div className="flex gap-3 flex-col">
             <div>
-              <p className="text-sm text-black dark:text-white mb-2">
+              <p className="text-black dark:text-white mb-2">
                 Import your data from other platforms.
               </p>
               <div
@@ -294,7 +269,7 @@ export default function Account() {
                         title="JSON File"
                         className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
                       >
-                        Linkwarden...
+                        Linkwarden File...
                         <input
                           type="file"
                           name="photo"
@@ -330,7 +305,7 @@ export default function Account() {
             </div>
 
             <div>
-              <p className="text-sm text-black dark:text-white mb-2">
+              <p className="text-black dark:text-white mb-2">
                 Download your data instantly.
               </p>
               <Link className="w-fit" href="/api/v1/migration">
@@ -354,7 +329,6 @@ export default function Account() {
           <Checkbox
             label="Make profile private"
             state={user.isPrivate}
-            className="text-sm sm:text-base"
             onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
           />
 
@@ -364,7 +338,7 @@ export default function Account() {
 
           {user.isPrivate && (
             <div>
-              <p className="text-sm text-black dark:text-white mt-2">
+              <p className="text-black dark:text-white mt-2">
                 Whitelisted Users
               </p>
               <p className="text-gray-500 dark:text-gray-300 text-sm mb-3">
@@ -400,7 +374,7 @@ export default function Account() {
           <p>
             This will permanently delete ALL the Links, Collections, Tags, and
             archived data you own.{" "}
-            {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+            {process.env.NEXT_PUBLIC_STRIPE
               ? "It will also cancel your subscription. "
               : undefined}{" "}
             You will be prompted to enter your password before the deletion

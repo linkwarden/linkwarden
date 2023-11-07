@@ -32,7 +32,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`dark:bg-neutral-900 bg-white h-full w-64 overflow-y-auto border-solid border-white border dark:border-neutral-900 border-r-sky-100 dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${className}`}
+      className={`dark:bg-neutral-900 bg-white h-full w-64 overflow-y-auto border-solid border-white border dark:border-neutral-900 border-r-sky-100 dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${
+        className || ""
+      }`}
     >
       <div className="flex flex-col gap-1">
         <Link href="/settings/account">
@@ -111,7 +113,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE ? (
+        {process.env.NEXT_PUBLIC_STRIPE ? (
           <Link href="/settings/billing">
             <div
               className={`${

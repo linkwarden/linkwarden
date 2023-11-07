@@ -1,0 +1,1 @@
+ALTER TABLE "User" RENAME COLUMN "imagePath" TO "image";

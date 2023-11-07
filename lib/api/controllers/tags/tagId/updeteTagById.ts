@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { Tag } from "@prisma/client";
 
-export default async function updateTag(
+export default async function updeteTagById(
   userId: number,
   tagId: number,
   data: Tag
