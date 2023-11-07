@@ -32,56 +32,61 @@ export default async function deleteUserById(
   }
 
   // Delete the user and all related data within a transaction
-  await prisma.$transaction(async (prisma) => {
-    // Delete whitelisted users
-    await prisma.whitelistedUser.deleteMany({
-      where: { userId },
-    });
+  await prisma
+    .$transaction(
+      async (prisma) => {
+        // Delete whitelisted users
+        await prisma.whitelistedUser.deleteMany({
+          where: { userId },
+        });
 
-    // Delete links
-    await prisma.link.deleteMany({
-      where: { collection: { ownerId: userId } },
-    });
+        // Delete links
+        await prisma.link.deleteMany({
+          where: { collection: { ownerId: userId } },
+        });
 
-    // Delete tags
-    await prisma.tag.deleteMany({
-      where: { ownerId: userId },
-    });
+        // Delete tags
+        await prisma.tag.deleteMany({
+          where: { ownerId: userId },
+        });
 
-    // Find collections that the user owns
-    const collections = await prisma.collection.findMany({
-      where: { ownerId: userId },
-    });
+        // Find collections that the user owns
+        const collections = await prisma.collection.findMany({
+          where: { ownerId: userId },
+        });
 
-    for (const collection of collections) {
-      // Delete related users and collections relations
-      await prisma.usersAndCollections.deleteMany({
-        where: { collectionId: collection.id },
-      });
+        for (const collection of collections) {
+          // Delete related users and collections relations
+          await prisma.usersAndCollections.deleteMany({
+            where: { collectionId: collection.id },
+          });
 
-      // Delete archive folders
-      await removeFolder({ filePath: `archives/${collection.id}` });
-    }
+          // Delete archive folders
+          removeFolder({ filePath: `archives/${collection.id}` });
+        }
 
-    // Delete collections after cleaning up related data
-    await prisma.collection.deleteMany({
-      where: { ownerId: userId },
-    });
+        // Delete collections after cleaning up related data
+        await prisma.collection.deleteMany({
+          where: { ownerId: userId },
+        });
 
-    // Delete subscription
-    if (process.env.STRIPE_SECRET_KEY)
-      await prisma.subscription.delete({
-        where: { userId },
-      });
+        // Delete subscription
+        if (process.env.STRIPE_SECRET_KEY)
+          await prisma.subscription.delete({
+            where: { userId },
+          });
 
-    // Delete user's avatar
-    await removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
+        // Delete user's avatar
+        await removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
 
-    // Finally, delete the user
-    await prisma.user.delete({
-      where: { id: userId },
-    });
-  });
+        // Finally, delete the user
+        await prisma.user.delete({
+          where: { id: userId },
+        });
+      },
+      { timeout: 20000 }
+    )
+    .catch((err) => console.log(err));
 
   if (process.env.STRIPE_SECRET_KEY) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {

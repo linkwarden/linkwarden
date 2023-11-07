@@ -29,7 +29,7 @@ export interface Member {
 }
 
 export interface CollectionIncludingMembersAndLinkCount
-  extends Omit<Collection, "id" | "createdAt" | "ownerId"> {
+  extends Omit<Collection, "id" | "createdAt" | "ownerId" | "updatedAt"> {
   id?: number;
   ownerId?: number;
   createdAt?: string;
