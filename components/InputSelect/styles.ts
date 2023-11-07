@@ -36,10 +36,6 @@ export const styles: StylesConfig = {
     ...styles,
     cursor: "pointer",
   }),
-  clearIndicator: (styles) => ({
-    ...styles,
-    visibility: "hidden",
-  }),
   placeholder: (styles) => ({
     ...styles,
     borderColor: "black",

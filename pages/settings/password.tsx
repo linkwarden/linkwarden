@@ -1,7 +1,6 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useState } from "react";
 import useAccountStore from "@/store/account";
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
@@ -51,7 +50,7 @@ export default function Password() {
         should be at least 8 characters.
       </p>
       <div className="w-full flex flex-col gap-2 justify-between">
-        <p className="text-sm text-black dark:text-white">New Password</p>
+        <p className="text-black dark:text-white">New Password</p>
 
         <TextInput
           value={newPassword}
@@ -60,9 +59,7 @@ export default function Password() {
           type="password"
         />
 
-        <p className="text-sm text-black dark:text-white">
-          Confirm New Password
-        </p>
+        <p className="text-black dark:text-white">Confirm New Password</p>
 
         <TextInput
           value={newPassword2}

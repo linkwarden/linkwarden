@@ -96,7 +96,7 @@ export default function Register() {
   return (
     <CenteredForm
       text={
-        process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE
+        process.env.NEXT_PUBLIC_STRIPE
           ? `Unlock ${
               process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
             } days of Premium Service at no cost!`
@@ -196,7 +196,7 @@ export default function Register() {
               />
             </div>
 
-            {process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE ? (
+            {process.env.NEXT_PUBLIC_STRIPE ? (
               <div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   By signing up, you agree to our{" "}

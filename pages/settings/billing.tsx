@@ -6,8 +6,7 @@ export default function Billing() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE)
-      router.push("/settings/profile");
+    if (!process.env.NEXT_PUBLIC_STRIPE) router.push("/settings/profile");
   }, []);
 
   return (

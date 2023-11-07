@@ -23,7 +23,7 @@ export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();
-  const { tags, updateTag } = useTagStore();
+  const { tags, updateTag, removeTag } = useTagStore();
 
   const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -76,6 +76,25 @@ export default function Index() {
 
     if (response?.ok) {
       toast.success("Tag Renamed!");
+    } else toast.error(response?.data as string);
+    setSubmitLoader(false);
+    setRenameTag(false);
+  };
+
+  const remove = async () => {
+    setSubmitLoader(true);
+
+    const load = toast.loading("Applying...");
+
+    let response;
+
+    if (activeTag?.id) response = await removeTag(activeTag?.id);
+
+    toast.dismiss(load);
+
+    if (response?.ok) {
+      toast.success("Tag Removed.");
+      router.push("/links");
     } else toast.error(response?.data as string);
     setSubmitLoader(false);
     setRenameTag(false);
@@ -153,6 +172,13 @@ export default function Index() {
                               setExpandDropdown(false);
                             },
                           },
+                          {
+                            name: "Remove Tag",
+                            onClick: () => {
+                              remove();
+                              setExpandDropdown(false);
+                            },
+                          },
                         ]}
                         onClickOutside={(e: Event) => {
                           const target = e.target as HTMLInputElement;
@@ -191,9 +217,11 @@ export default function Index() {
           </div>
         </div>
         <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {links.map((e, i) => {
-            return <LinkCard key={i} link={e} count={i} />;
-          })}
+          {links
+            .filter((e) => e.tags.some((e) => e.id === Number(router.query.id)))
+            .map((e, i) => {
+              return <LinkCard key={i} link={e} count={i} />;
+            })}
         </div>
       </div>
     </MainLayout>

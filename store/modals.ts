@@ -9,17 +9,19 @@ type Modal =
       modal: "LINK";
       state: boolean;
       method: "CREATE";
-      isOwnerOrMod?: boolean;
       active?: LinkIncludingShortenedCollectionAndTags;
-      defaultIndex?: number;
     }
   | {
       modal: "LINK";
       state: boolean;
       method: "UPDATE";
-      isOwnerOrMod: boolean;
       active: LinkIncludingShortenedCollectionAndTags;
-      defaultIndex?: number;
+    }
+  | {
+      modal: "LINK";
+      state: boolean;
+      method: "FORMATS";
+      active: LinkIncludingShortenedCollectionAndTags;
     }
   | {
       modal: "COLLECTION";
