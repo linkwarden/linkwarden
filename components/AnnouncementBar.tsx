@@ -16,14 +16,17 @@ export default function AnnouncementBar({ toggleAnnouncementBar }: Props) {
           <Link
             href="https://blog.linkwarden.app/releases/v2.0"
             target="_blank"
-            className="underline"
+            className="underline hover:opacity-50 duration-100"
           >
             Linkwarden v2.0
           </Link>{" "}
           is now out! 🥳️
         </div>
 
-        <button className="fixed top-3 right-3" onClick={toggleAnnouncementBar}>
+        <button
+          className="fixed top-3 right-3 hover:opacity-50 duration-100"
+          onClick={toggleAnnouncementBar}
+        >
           <FontAwesomeIcon icon={faClose} className="w-4 h-4" />
         </button>
       </div>
