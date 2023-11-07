@@ -13,7 +13,11 @@ export default function AnnouncementBar({ toggleAnnouncementBar }: Props) {
       <div className="w-full h-10 rainbow flex items-center justify-center">
         <div className="w-fit font-semibold">
           🎉️{" "}
-          <Link href="" target="_blank" className="underline">
+          <Link
+            href="https://blog.linkwarden.app/releases/v2.0"
+            target="_blank"
+            className="underline"
+          >
             Linkwarden v2.0
           </Link>{" "}
           is now out! 🥳️
