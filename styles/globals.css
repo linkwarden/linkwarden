@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  scroll-behavior: smooth;
+}
+
 /* Hide scrollbar */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
@@ -129,72 +134,9 @@
 
 /* For the Link banner */
 .link-banner {
-  /* box-shadow: inset 0px 10px 20px 20px #ffffff; */
-  opacity: 25%;
   z-index: 0;
-}
-.link-banner .link-banner-inner {
-  /* box-shadow: inset 0px 10px 20px 20px #ffffff; */
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  -webkit-mask: linear-gradient(#fff, transparent);
-  mask: linear-gradient(#fff, transparent);
-}
-.link-banner::after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  bottom: 0;
-  left: 0;
-  pointer-events: none;
-  width: 100%;
-  height: 4rem;
-}
-.link-banner::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  width: 100%;
-  height: 4rem;
-}
-
-/* For light mode */
-.banner-light-mode .link-banner::after {
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 1) 90%
-  );
-}
-.banner-light-mode .link-banner::before {
-  background-image: linear-gradient(
-    to top,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 1) 90%
-  );
-}
-
-/* For dark mode */
-.banner-dark-mode .link-banner::after {
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0),
-    #171717 90%
-  );
-}
-.banner-dark-mode .link-banner::before {
-  background-image: linear-gradient(
-    to top,
-    rgba(255, 255, 255, 0),
-    #171717 90%
-  );
+  border-radius: 1rem;
+  height: fit-content;
 }
 
 /* Theme */
@@ -227,6 +169,12 @@
     @apply dark:text-white;
   }
 }
+.react-select__clear-indicator * {
+  display: none;
+  width: 0;
+  margin: 0;
+  padding: 0;
+}
 
 .sky-shadow {
   box-shadow: 0px 0px 3px #0ea5e9;
@@ -238,4 +186,96 @@
 
 .primary-btn-gradient:hover {
   box-shadow: inset 0px -15px 10px #059bf8;
+}
+
+.line-break * {
+  overflow-y: hidden;
+}
+
+/* Reader view custom stylings */
+.reader-view {
+  line-height: 3rem;
+}
+.reader-view h1 {
+  font-size: 2.2rem;
+}
+.reader-view h2 {
+  line-height: 4rem;
+  font-size: 1.9rem;
+}
+.reader-view h3 {
+  line-height: 3.5rem;
+  font-size: 1.6rem;
+}
+.reader-view h4 {
+  font-size: 1.3rem;
+}
+.reader-view h5 {
+  font-size: 1.1rem;
+}
+.reader-view li {
+  list-style: inside;
+  margin-left: 2rem;
+}
+.reader-view a {
+  text-decoration: underline;
+}
+.reader-view b {
+  font-weight: bolder;
+}
+.reader-view pre,
+.reader-view code {
+  font-family: "Courier New", Courier, monospace;
+}
+.reader-view blockquote {
+  opacity: 50%;
+  padding-left: 1.5rem;
+  border-left: solid 3px;
+}
+.reader-view img {
+  margin: auto;
+  border-radius: 10px;
+}
+.reader-view pre {
+  padding: 1rem;
+  line-height: normal;
+}
+.reader-view code {
+  padding: 0.15rem 0.4rem 0.15rem 0.4rem;
+}
+[class="dark"] .reader-view code,
+[class="dark"] .reader-view pre {
+  background-color: rgb(49, 49, 49);
+  border-radius: 8px;
+}
+[class="light"] .reader-view code,
+[class="light"] .reader-view pre {
+  background-color: rgb(230, 230, 230);
+  border-radius: 8px;
+}
+
+.rainbow {
+  background: linear-gradient(
+    45deg,
+    #ff00004b,
+    #ff99004b,
+    #33cc334b,
+    #0099cc4b,
+    #9900cc4b,
+    #ff33cc4b
+  );
+  background-size: 400% 400%;
+  animation: rainbow 30s linear infinite;
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

@@ -10,12 +10,7 @@ const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 export default async function updateUserById(
-  sessionUser: {
-    id: number;
-    username: string;
-    email: string;
-    isSubscriber: boolean;
-  },
+  userId: number,
   data: AccountSettings
 ) {
   if (emailEnabled && !data.email)
@@ -49,7 +44,7 @@ export default async function updateUserById(
 
   const userIsTaken = await prisma.user.findFirst({
     where: {
-      id: { not: sessionUser.id },
+      id: { not: userId },
       OR: emailEnabled
         ? [
             {
@@ -89,17 +84,15 @@ export default async function updateUserById(
 
   // Avatar Settings
 
-  const profilePic = data.profilePic;
-
-  if (profilePic.startsWith("data:image/jpeg;base64")) {
-    if (data.profilePic.length < 1572864) {
+  if (data.image?.startsWith("data:image/jpeg;base64")) {
+    if (data.image.length < 1572864) {
       try {
-        const base64Data = profilePic.replace(/^data:image\/jpeg;base64,/, "");
+        const base64Data = data.image.replace(/^data:image\/jpeg;base64,/, "");
 
         createFolder({ filePath: `uploads/avatar` });
 
         await createFile({
-          filePath: `uploads/avatar/${sessionUser.id}.jpg`,
+          filePath: `uploads/avatar/${userId}.jpg`,
           data: base64Data,
           isBase64: true,
         });
@@ -113,9 +106,13 @@ export default async function updateUserById(
         status: 400,
       };
     }
-  } else if (profilePic == "") {
-    removeFile({ filePath: `uploads/avatar/${sessionUser.id}.jpg` });
+  } else if (data.image == "") {
+    removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
   }
+
+  const previousEmail = (
+    await prisma.user.findUnique({ where: { id: userId } })
+  )?.email;
 
   // Other settings
 
@@ -124,13 +121,14 @@ export default async function updateUserById(
 
   const updatedUser = await prisma.user.update({
     where: {
-      id: sessionUser.id,
+      id: userId,
     },
     data: {
       name: data.name,
       username: data.username.toLowerCase().trim(),
       email: data.email?.toLowerCase().trim(),
       isPrivate: data.isPrivate,
+      image: data.image ? `uploads/avatar/${userId}.jpg` : "",
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
@@ -141,10 +139,12 @@ export default async function updateUserById(
     },
     include: {
       whitelistedUsers: true,
+      subscriptions: true,
     },
   });
 
-  const { whitelistedUsers, password, ...userInfo } = updatedUser;
+  const { whitelistedUsers, password, subscriptions, ...userInfo } =
+    updatedUser;
 
   // If user.whitelistedUsers is not provided, we will assume the whitelistedUsers should be removed
   const newWhitelistedUsernames: string[] = data.whitelistedUsers || [];
@@ -168,7 +168,7 @@ export default async function updateUserById(
   // Delete whitelistedUsers that are not present in the new list
   await prisma.whitelistedUser.deleteMany({
     where: {
-      userId: sessionUser.id,
+      userId: userId,
       username: {
         in: usernamesToDelete,
       },
@@ -180,24 +180,25 @@ export default async function updateUserById(
     await prisma.whitelistedUser.create({
       data: {
         username,
-        userId: sessionUser.id,
+        userId: userId,
       },
     });
   }
 
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
-  if (STRIPE_SECRET_KEY && emailEnabled && sessionUser.email !== data.email)
+  if (STRIPE_SECRET_KEY && emailEnabled && previousEmail !== data.email)
     await updateCustomerEmail(
       STRIPE_SECRET_KEY,
-      sessionUser.email,
+      previousEmail as string,
       data.email as string
     );
 
   const response: Omit<AccountSettings, "password"> = {
     ...userInfo,
     whitelistedUsers: newWhitelistedUsernames,
-    profilePic: `/api/v1/avatar/${userInfo.id}?${Date.now()}`,
+    image: userInfo.image ? `${userInfo.image}?${Date.now()}` : "",
+    subscription: { active: subscriptions?.active },
   };
 
   return { response, status: 200 };

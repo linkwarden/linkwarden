@@ -12,7 +12,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { useSession } from "next-auth/react";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import SortDropdown from "@/components/SortDropdown";
 import useModalStore from "@/store/modals";
@@ -30,8 +29,6 @@ export default function Index() {
 
   const { links } = useLinkStore();
   const { collections } = useCollectionStore();
-
-  const { data } = useSession();
 
   const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortDropdown, setSortDropdown] = useState(false);
@@ -82,7 +79,7 @@ export default function Index() {
             {activeCollection ? (
               <div
                 className={`min-w-[15rem] ${
-                  activeCollection.members[0] && "mr-3"
+                  activeCollection.members[1] && "mr-3"
                 }`}
               >
                 <div
@@ -104,8 +101,10 @@ export default function Index() {
                       return (
                         <ProfilePhoto
                           key={i}
-                          src={`/api/v1/avatar/${e.userId}?${Date.now()}`}
-                          className="-mr-3 border-[3px]"
+                          src={e.user.image ? e.user.image : undefined}
+                          className={`${
+                            activeCollection.members[1] && "-mr-3"
+                          } border-[3px]`}
                         />
                       );
                     })
@@ -220,7 +219,7 @@ export default function Index() {
                       if (target.id !== "expand-dropdown")
                         setExpandDropdown(false);
                     }}
-                    className="absolute top-8 right-0 z-10 w-40"
+                    className="absolute top-8 right-0 z-10 w-44"
                   />
                 ) : null}
               </div>
@@ -229,9 +228,11 @@ export default function Index() {
         </div>
         {links.some((e) => e.collectionId === Number(router.query.id)) ? (
           <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-            {links.map((e, i) => {
-              return <LinkCard key={i} link={e} count={i} />;
-            })}
+            {links
+              .filter((e) => e.collection.id === activeCollection?.id)
+              .map((e, i) => {
+                return <LinkCard key={i} link={e} count={i} />;
+              })}
           </div>
         ) : (
           <NoLinksFound />

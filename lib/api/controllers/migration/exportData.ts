@@ -18,7 +18,7 @@ export default async function exportData(userId: number) {
 
   if (!user) return { response: "User not found.", status: 404 };
 
-  const { password, id, image, ...userData } = user;
+  const { password, id, ...userData } = user;
 
   function redactIds(obj: any) {
     if (Array.isArray(obj)) {

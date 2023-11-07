@@ -83,7 +83,7 @@ export default function Navbar() {
             id="profile-dropdown"
           >
             <ProfilePhoto
-              src={account.profilePic}
+              src={account.image ? account.image : undefined}
               priority={true}
               className="sm:group-hover:h-8 sm:group-hover:w-8 duration-100 border-[3px]"
             />

@@ -9,17 +9,21 @@ export default function useInitialData() {
   const { setCollections } = useCollectionStore();
   const { setTags } = useTagStore();
   // const { setLinks } = useLinkStore();
-  const { setAccount } = useAccountStore();
+  const { account, setAccount } = useAccountStore();
 
+  // Get account info
   useEffect(() => {
-    if (
-      status === "authenticated" &&
-      (!process.env.NEXT_PUBLIC_STRIPE_IS_ACTIVE || data.user.isSubscriber)
-    ) {
+    if (status === "authenticated") {
+      setAccount(data?.user.id as number);
+    }
+  }, [status, data]);
+
+  // Get the rest of the data
+  useEffect(() => {
+    if (account.id && (!process.env.NEXT_PUBLIC_STRIPE || account.username)) {
       setCollections();
       setTags();
       // setLinks();
-      setAccount(data.user.id);
     }
-  }, [status]);
+  }, [account]);
 }

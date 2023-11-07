@@ -4,6 +4,8 @@ type Props = {
   children: ReactNode;
   onClickOutside: Function;
   className?: string;
+  style?: React.CSSProperties;
+  onMount?: (rect: DOMRect) => void;
 };
 
 function useOutsideAlerter(
@@ -30,12 +32,22 @@ export default function ClickAwayHandler({
   children,
   onClickOutside,
   className,
+  style,
+  onMount,
 }: Props) {
-  const wrapperRef = useRef(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
   useOutsideAlerter(wrapperRef, onClickOutside);
 
+  useEffect(() => {
+    if (wrapperRef.current && onMount) {
+      const rect = wrapperRef.current.getBoundingClientRect();
+      onMount(rect); // Pass the bounding rectangle to the parent
+    }
+  }, []);
+
   return (
-    <div ref={wrapperRef} className={className}>
+    <div ref={wrapperRef} className={className} style={style}>
       {children}
     </div>
   );

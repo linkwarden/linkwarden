@@ -5,7 +5,10 @@ type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
   Pick<T, TRequired>;
 
 export interface LinkIncludingShortenedCollectionAndTags
-  extends Omit<Link, "id" | "createdAt" | "collectionId"> {
+  extends Omit<
+    Link,
+    "id" | "createdAt" | "collectionId" | "updatedAt" | "lastPreserved"
+  > {
   id?: number;
   createdAt?: string;
   collectionId?: number;
@@ -18,15 +21,15 @@ export interface LinkIncludingShortenedCollectionAndTags
 
 export interface Member {
   collectionId?: number;
-  userId?: number;
+  userId: number;
   canCreate: boolean;
   canUpdate: boolean;
   canDelete: boolean;
-  user: OptionalExcluding<User, "username" | "name">;
+  user: OptionalExcluding<User, "username" | "name" | "id">;
 }
 
 export interface CollectionIncludingMembersAndLinkCount
-  extends Omit<Collection, "id" | "createdAt" | "ownerId"> {
+  extends Omit<Collection, "id" | "createdAt" | "ownerId" | "updatedAt"> {
   id?: number;
   ownerId?: number;
   createdAt?: string;
@@ -35,9 +38,11 @@ export interface CollectionIncludingMembersAndLinkCount
 }
 
 export interface AccountSettings extends User {
-  profilePic: string;
   newPassword?: string;
   whitelistedUsers: string[];
+  subscription?: {
+    active?: boolean;
+  };
 }
 
 interface LinksIncludingTags extends Link {
@@ -67,6 +72,7 @@ export type LinkRequestQuery = {
   searchByName?: boolean;
   searchByUrl?: boolean;
   searchByDescription?: boolean;
+  searchByTextContent?: boolean;
   searchByTags?: boolean;
 };
 
@@ -79,7 +85,7 @@ interface CollectionIncludingLinks extends Collection {
   links: LinksIncludingTags[];
 }
 
-export interface Backup extends Omit<User, "password" | "id" | "image"> {
+export interface Backup extends Omit<User, "password" | "id"> {
   collections: CollectionIncludingLinks[];
 }
 

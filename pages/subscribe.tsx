@@ -1,18 +1,16 @@
-import SubmitButton from "@/components/SubmitButton";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import { Plan } from "@/types/global";
 
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
+  const session = useSession();
 
   const [plan, setPlan] = useState<Plan>(1);
 
-  const { data, status } = useSession();
   const router = useRouter();
 
   async function submit() {
@@ -86,7 +84,7 @@ export default function Subscribe() {
           <p className="font-semibold">
             Billed {plan === Plan.monthly ? "Monthly" : "Yearly"}
           </p>
-          <fieldset className="w-full px-4 pb-4 pt-1 rounded-md border border-sky-100 dark:border-neutral-700">
+          <fieldset className="w-full flex-col flex justify-evenly px-4 pb-4 pt-1 rounded-md border border-sky-100 dark:border-neutral-700">
             <legend className="w-fit font-extralight px-2 border border-sky-100 dark:border-neutral-700 rounded-md text-xl">
               Total
             </legend>

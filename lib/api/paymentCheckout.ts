@@ -14,12 +14,12 @@ export default async function paymentCheckout(
     expand: ["data.subscriptions"],
   });
 
-  const isExistingCostomer = listByEmail?.data[0]?.id || undefined;
+  const isExistingCustomer = listByEmail?.data[0]?.id || undefined;
 
   const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =
     process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS;
   const session = await stripe.checkout.sessions.create({
-    customer: isExistingCostomer ? isExistingCostomer : undefined,
+    customer: isExistingCustomer ? isExistingCustomer : undefined,
     line_items: [
       {
         price: priceId,
@@ -27,7 +27,7 @@ export default async function paymentCheckout(
       },
     ],
     mode: "subscription",
-    customer_email: isExistingCostomer ? undefined : email.toLowerCase(),
+    customer_email: isExistingCustomer ? undefined : email.toLowerCase(),
     success_url: `${process.env.BASE_URL}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.BASE_URL}/login`,
     automatic_tax: {

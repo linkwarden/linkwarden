@@ -1,23 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/v1/auth/[...nextauth]";
-import updateTag from "@/lib/api/controllers/tags/tagId/updeteTagById";
+import updeteTagById from "@/lib/api/controllers/tags/tagId/updeteTagById";
+import verifyUser from "@/lib/api/verifyUser";
+import deleteTagById from "@/lib/api/controllers/tags/tagId/deleteTagById";
 
 export default async function tags(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, authOptions);
-
-  if (!session?.user?.username) {
-    return res.status(401).json({ response: "You must be logged in." });
-  } else if (session?.user?.isSubscriber === false)
-    res.status(401).json({
-      response:
-        "You are not a subscriber, feel free to reach out to us at support@linkwarden.app in case of any issues.",
-    });
+  const user = await verifyUser({ req, res });
+  if (!user) return;
 
   const tagId = Number(req.query.id);
 
   if (req.method === "PUT") {
-    const tags = await updateTag(session.user.id, tagId, req.body);
+    const tags = await updeteTagById(user.id, tagId, req.body);
+    return res.status(tags.status).json({ response: tags.response });
+  } else if (req.method === "DELETE") {
+    const tags = await deleteTagById(user.id, tagId);
     return res.status(tags.status).json({ response: tags.response });
   }
 }

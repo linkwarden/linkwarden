@@ -27,8 +27,6 @@ export default function ModalManagement() {
         <LinkModal
           toggleLinkModal={toggleModal}
           method={modal.method}
-          isOwnerOrMod={modal.isOwnerOrMod as boolean}
-          defaultIndex={modal.defaultIndex}
           activeLink={modal.active as LinkIncludingShortenedCollectionAndTags}
         />
       </Modal>
