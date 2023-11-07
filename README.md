@@ -37,22 +37,23 @@ We highly recommend that you don't use the old version because it is no longer m
 
 ## Features
 
-- 📸 Auto capture a screenshot and a PDF of each link.
+- 📸 Auto capture a screenshot, PDF, and readable view of each webpage.
 - 🏛️ Send your webpage to Wayback Machine ([archive.org](https://archive.org)) for a snapshot. (Optional)
 - 📂 Organize links by collection, name, description and multiple tags.
 - 👥 Collaborate on gathering links in a collection.
 - 🔐 Customize the permissions of each member.
 - 🌐 Share your collected links with the world.
 - 📌 Pin your favorite links to dashboard.
-- 🔍 Search, filter and sort by link details.
-- 📱 Responsive design and supports most browsers.
+- 🔍 Full text search, filter and sort for easy retrieval.
+- 📱 Responsive design and supports most modern browsers.
 - 🌓 Dark/Light mode support.
-- 🧩 Browser extension, managed by the community [check it out!](https://github.com/linkwarden/browser-extension)
+- 🧩 Browser extension, managed by the community. [Star it here!](https://github.com/linkwarden/browser-extension)
 - ⬇️ Import your bookmarks from other browsers.
+- ⚡️ Powerful API.
 
 ## Suggestions
 
-We usually go after the [popular suggestions](https://github.com/linkwarden/linkwarden/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc). Feel free to open a [new issue](https://github.com/linkwarden/linkwarden/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=) to suggest one - others might be interested too! :)
+We _usually_ go after the [popular suggestions](https://github.com/linkwarden/linkwarden/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc). Feel free to open a [new issue](https://github.com/linkwarden/linkwarden/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=) to suggest one - others might be interested too! :)
 
 ## Roadmap
 
