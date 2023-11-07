@@ -8,7 +8,7 @@ import verifyUser from "@/lib/api/verifyUser";
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: `${process.env.IMPORT_SIZE_LIMIT || "5"}mb`,
+      sizeLimit: "10mb",
     },
   },
 };
