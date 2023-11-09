@@ -16,6 +16,11 @@ declare global {
       BUCKET_NAME?: string;
       SPACES_REGION?: string;
 
+      NEXT_PUBLIC_KEYCLOAK_ENABLED?: string;
+      KEYCLOAK_ISSUER?: string;
+      KEYCLOAK_CLIENT_ID?: string;
+      KEYCLOAK_CLIENT_SECRET?: string;
+
       NEXT_PUBLIC_EMAIL_PROVIDER?: string;
       EMAIL_FROM?: string;
       EMAIL_SERVER?: string;
