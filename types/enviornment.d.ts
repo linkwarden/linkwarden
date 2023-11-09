@@ -13,8 +13,9 @@ declare global {
       SPACES_KEY?: string;
       SPACES_SECRET?: string;
       SPACES_ENDPOINT?: string;
-      BUCKET_NAME?: string;
+      SPACES_BUCKET_NAME?: string;
       SPACES_REGION?: string;
+      SPACES_FORCE_PATH_STYLE?: string;
 
       NEXT_PUBLIC_KEYCLOAK_ENABLED?: string;
       KEYCLOAK_ISSUER?: string;
