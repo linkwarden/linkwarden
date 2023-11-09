@@ -7,6 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Account {
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
 model User {
   id                      Int             @id @default(autoincrement())
   name                    String
@@ -17,7 +36,9 @@ model User {
   emailVerified           DateTime?
   image                   String?
 
-  password                String
+  accounts                Account[]
+
+  password                String?
 
   collections             Collection[]
   tags                    Tag[]
@@ -98,13 +119,13 @@ model Link {
   name              String
   url               String
   description       String     @default("")
-    
+
   pinnedBy          User[]
-    
+
   collection        Collection @relation(fields: [collectionId], references: [id])
   collectionId      Int
   tags              Tag[]
-    
+
   textContent       String?
 
   screenshotPath    String?
@@ -112,7 +133,7 @@ model Link {
   readabilityPath   String?
 
   lastPreserved     DateTime?
-    
+
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt @default(now())
 }
@@ -132,7 +153,7 @@ model Tag {
 
 model Subscription {
   id                   Int        @id @default(autoincrement())
-  active               Boolean    
+  active               Boolean
   stripeSubscriptionId String     @unique
   currentPeriodStart   DateTime
   currentPeriodEnd     DateTime
