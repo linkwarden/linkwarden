@@ -31,7 +31,7 @@ export default function Links() {
                 All Links
               </p>
 
-              <p className="capitalize text-black dark:text-white">
+              <p className="text-black dark:text-white">
                 Links from every Collections
               </p>
             </div>
