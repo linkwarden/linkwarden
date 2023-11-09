@@ -58,9 +58,9 @@ export default function MainLayout({ children }: Props) {
         </div>
 
         <div
-          className={`w-full flex flex-col min-h-screen lg:ml-64 xl:ml-80 ${
-            showAnnouncement ? "mt-10" : ""
-          }`}
+          className={`w-full flex flex-col min-h-${
+            showAnnouncement ? "full" : "screen"
+          } lg:ml-64 xl:ml-80 ${showAnnouncement ? "mt-10" : ""}`}
         >
           <Navbar />
           {children}
