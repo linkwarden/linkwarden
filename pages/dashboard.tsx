@@ -315,7 +315,7 @@ export default function Dashboard() {
           style={{ flex: "1 1 auto" }}
           className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
         >
-          {links[0] ? (
+          {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
               <div
                 className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}

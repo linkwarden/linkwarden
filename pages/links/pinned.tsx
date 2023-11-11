@@ -59,14 +59,26 @@ export default function PinnedLinks() {
             ) : null}
           </div>
         </div>
-        {links[0] ? (
+        {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
           <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5">
             {links.map((e, i) => {
               return <LinkCard key={i} link={e} count={i} />;
             })}
           </div>
         ) : (
-          <NoLinksFound text="You Haven't Created Any Links Yet" />
+          <div
+            style={{ flex: "1 1 auto" }}
+            className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+          >
+            <p className="text-center text-2xl text-black dark:text-white">
+              Pin Your Favorite Links Here!
+            </p>
+            <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">
+              You can Pin your favorite Links by clicking on the three dots on
+              each Link and clicking{" "}
+              <span className="font-semibold">Pin to Dashboard</span>.
+            </p>
+          </div>
         )}
       </div>
     </MainLayout>
