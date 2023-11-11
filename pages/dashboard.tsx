@@ -1,7 +1,6 @@
 import useCollectionStore from "@/store/collections";
 import {
   faChartSimple,
-  faChevronDown,
   faChevronRight,
   faClockRotateLeft,
   faFileImport,
@@ -36,14 +35,7 @@ export default function Dashboard() {
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
-  const [showRecents, setShowRecents] = useState(3);
-
-  const [linkPinDisclosure, setLinkPinDisclosure] = useState<boolean>(() => {
-    const storedValue =
-      typeof window !== "undefined" &&
-      localStorage.getItem("linkPinDisclosure");
-    return storedValue ? storedValue === "true" : true;
-  });
+  const [showLinks, setShowLinks] = useState(3);
 
   useLinks({ pinnedOnly: true, sort: 0 });
 
@@ -57,25 +49,18 @@ export default function Dashboard() {
     );
   }, [collections]);
 
-  useEffect(() => {
-    localStorage.setItem(
-      "linkPinDisclosure",
-      linkPinDisclosure ? "true" : "false"
-    );
-  }, [linkPinDisclosure]);
-
-  const handleNumberOfRecents = () => {
-    if (window.innerWidth > 1550) {
-      setShowRecents(6);
+  const handleNumberOfLinksToShow = () => {
+    if (window.innerWidth > 1535) {
+      setShowLinks(6);
     } else if (window.innerWidth > 1295) {
-      setShowRecents(4);
-    } else setShowRecents(3);
+      setShowLinks(4);
+    } else setShowLinks(3);
   };
 
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    handleNumberOfRecents();
+    handleNumberOfLinksToShow();
   }, [width]);
 
   const [importDropdown, setImportDropdown] = useState(false);
@@ -197,7 +182,7 @@ export default function Dashboard() {
               <div
                 className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
-                {links.slice(0, showRecents).map((e, i) => (
+                {links.slice(0, showLinks).map((e, i) => (
                   <LinkCard key={i} link={e} count={i} />
                 ))}
               </div>
@@ -314,38 +299,32 @@ export default function Dashboard() {
             />
             <p className="text-2xl text-black dark:text-white">Pinned Links</p>
           </div>
-          {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
-            <button
-              className="text-black dark:text-white flex items-center gap-2 cursor-pointer"
-              onClick={() => setLinkPinDisclosure(!linkPinDisclosure)}
-            >
-              {linkPinDisclosure ? "Show Less" : "Show More"}
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className={`w-4 h-4 text-black dark:text-white ${
-                  linkPinDisclosure ? "rotate-reverse" : "rotate"
-                }`}
-              />
-            </button>
-          ) : undefined}
+          <Link
+            href="/links/pinned"
+            className="text-black dark:text-white flex items-center gap-2 cursor-pointer"
+          >
+            View All
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              className={`w-4 h-4 text-black dark:text-white`}
+            />
+          </Link>
         </div>
 
         <div
-          style={{ flex: "1 1 auto" }}
+          style={{ flex: "0 1 auto" }}
           className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
         >
-          {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
+          {links[0] ? (
             <div className="w-full">
               <div
-                className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full ${
-                  linkPinDisclosure ? "h-full" : "max-h-[20rem]"
-                }`}
+                className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links
+
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
-                  .map((e, i) => (
-                    <LinkCard key={i} link={e} count={i} />
-                  ))}
+                  .map((e, i) => <LinkCard key={i} link={e} count={i} />)
+                  .slice(0, showLinks)}
               </div>
             </div>
           ) : (

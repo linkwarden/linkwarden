@@ -20,7 +20,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
-  const LINKWARDEN_VERSION = "v2.1.0";
+  const LINKWARDEN_VERSION = "v2.2.0";
 
   const { collections } = useCollectionStore();
 
@@ -43,9 +43,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/account`
-                ? "bg-sky-200 dark:bg-sky-800"
-                : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-sky-500"
+                : "hover:bg-slate-500"
+            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faUser}
@@ -62,9 +62,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/appearance`
-                ? "bg-sky-200 dark:bg-sky-800"
-                : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-sky-500"
+                : "hover:bg-slate-500"
+            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faPalette}
@@ -81,9 +81,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/archive`
-                ? "bg-sky-200 dark:bg-sky-800"
-                : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-sky-500"
+                : "hover:bg-slate-500"
+            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faBoxArchive}
@@ -100,9 +100,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/password`
-                ? "bg-sky-200 dark:bg-sky-800"
-                : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-sky-500"
+                : "hover:bg-slate-500"
+            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faKey}
@@ -120,9 +120,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             <div
               className={`${
                 active === `/settings/billing`
-                  ? "bg-sky-200 dark:bg-sky-800"
-                  : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-              } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                  ? "bg-sky-500"
+                  : "hover:bg-slate-500"
+              } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
               <FontAwesomeIcon
                 icon={faCreditCard}
@@ -147,7 +147,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
         </Link>
         <Link href="https://docs.linkwarden.app" target="_blank">
           <div
-            className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faCircleQuestion as any}
@@ -162,7 +162,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="https://github.com/linkwarden/linkwarden" target="_blank">
           <div
-            className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faGithub as any}
@@ -177,7 +177,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="https://twitter.com/LinkwardenHQ" target="_blank">
           <div
-            className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faXTwitter as any}
@@ -192,7 +192,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="https://fosstodon.org/@linkwarden" target="_blank">
           <div
-            className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faMastodon as any}
