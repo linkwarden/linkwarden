@@ -64,6 +64,7 @@ export default function Archive() {
           state={archiveAsScreenshot}
           onClick={() => setArchiveAsScreenshot(!archiveAsScreenshot)}
         />
+
         <Checkbox
           label="PDF"
           state={archiveAsPDF}

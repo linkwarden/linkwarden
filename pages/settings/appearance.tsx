@@ -13,6 +13,7 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 import SubmitButton from "@/components/SubmitButton";
 import React from "react";
 import Checkbox from "@/components/Checkbox";
+import LinkPreview from "@/components/LinkPreview";
 
 export default function Appearance() {
   const { theme, setTheme } = useTheme();
@@ -67,7 +68,7 @@ export default function Appearance() {
 
   return (
     <SettingsLayout>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-10">
         <div>
           <p className="mb-3">Select Theme</p>
           <div className="flex gap-3 w-full">
@@ -100,12 +101,36 @@ export default function Appearance() {
         </div>
 
         <div>
+          <div className="flex items-center gap-2 w-full rounded-md h-8">
+            <p className="text-black dark:text-white truncate w-full pr-7 text-3xl font-thin">
+              Link Card
+            </p>
+          </div>
+          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
           <Checkbox
-            label="Blurred Link Icons"
-            state={user.blurredFavicons}
+            label="Display Icons"
+            state={user.displayLinkIcons}
             onClick={() =>
-              setUser({ ...user, blurredFavicons: !user.blurredFavicons })
+              setUser({ ...user, displayLinkIcons: !user.displayLinkIcons })
             }
+          />
+          {user.displayLinkIcons ? (
+            <Checkbox
+              label="Blurred"
+              className="pl-5 mt-1"
+              state={user.blurredFavicons}
+              onClick={() =>
+                setUser({ ...user, blurredFavicons: !user.blurredFavicons })
+              }
+            />
+          ) : undefined}
+          <p className="my-3">Preview:</p>
+
+          <LinkPreview
+            settings={{
+              blurredFavicons: user.blurredFavicons,
+              displayLinkIcons: user.displayLinkIcons,
+            }}
           />
         </div>
 
