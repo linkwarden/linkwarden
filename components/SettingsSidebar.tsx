@@ -139,7 +139,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
       <div className="flex flex-col gap-1">
         <Link
-          href={`https://blog.linkwarden.app/tags/release`}
+          href={`https://github.com/linkwarden/linkwarden/releases`}
           target="_blank"
           className="dark:text-gray-300 text-gray-500 text-sm ml-2 hover:opacity-50 duration-100"
         >
