@@ -9,8 +9,8 @@ type Props = {
 
 export default function dashboardItem({ name, value, icon }: Props) {
   return (
-    <div className="flex gap-5 items-end">
-      <div className="p-4 h-full bg-sky-500 bg-opacity-20 dark:bg-opacity-10 rounded-xl select-none">
+    <div className="flex gap-4 items-end">
+      <div className="p-4 bg-sky-500 bg-opacity-20 dark:bg-opacity-10 rounded-xl select-none">
         <FontAwesomeIcon
           icon={icon}
           className="w-8 h-8 text-sky-500 dark:text-sky-500"
@@ -20,7 +20,7 @@ export default function dashboardItem({ name, value, icon }: Props) {
         <p className="text-gray-500 dark:text-gray-400 text-sm tracking-wider">
           {name}
         </p>
-        <p className="font-thin text-5xl text-sky-500 dark:text-sky-500">
+        <p className="font-thin text-6xl text-sky-500 dark:text-sky-500">
           {value}
         </p>
       </div>

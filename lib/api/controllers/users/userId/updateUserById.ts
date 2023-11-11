@@ -132,6 +132,7 @@ export default async function updateUserById(
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
+      blurredFavicons: data.blurredFavicons,
       password:
         data.newPassword && data.newPassword !== ""
           ? newHashedPassword
