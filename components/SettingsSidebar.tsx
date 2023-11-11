@@ -20,6 +20,8 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
+  const LINKWARDEN_VERSION = "v2.1.0";
+
   const { collections } = useCollectionStore();
 
   const router = useRouter();
@@ -136,6 +138,13 @@ export default function SettingsSidebar({ className }: { className?: string }) {
       </div>
 
       <div className="flex flex-col gap-1">
+        <Link
+          href={`https://github.com/linkwarden/linkwarden/releases/tag/${LINKWARDEN_VERSION}`}
+          target="_blank"
+          className="dark:text-gray-300 text-gray-500 text-sm ml-2 hover:opacity-50 duration-100"
+        >
+          Linkwarden {LINKWARDEN_VERSION}
+        </Link>
         <Link href="https://docs.linkwarden.app" target="_blank">
           <div
             className={`hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
