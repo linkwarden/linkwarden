@@ -5,6 +5,9 @@ import {
   faChevronRight,
   faClockRotateLeft,
   faFileImport,
+  faFolder,
+  faHashtag,
+  faLink,
   faThumbTack,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,6 +25,7 @@ import useModalStore from "@/store/modals";
 import { toast } from "react-hot-toast";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
+import DashboardItem from "@/components/DashboardItem";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
@@ -118,44 +122,47 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
-        <div className="flex gap-3 items-center">
-          <div className="flex gap-2">
-            <FontAwesomeIcon
-              icon={faChartSimple}
-              className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
-            />
-            <p className="sm:text-4xl text-3xl text-black dark:text-white font-thin">
+        <div className="flex items-center gap-3">
+          <FontAwesomeIcon
+            icon={faChartSimple}
+            className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
+          />
+          <div>
+            <p className="text-3xl capitalize text-black dark:text-white font-thin">
               Dashboard
+            </p>
+
+            <p className="text-black dark:text-white">
+              A brief overview of your data
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center gap-5">
-          <div className="sky-shadow flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
-            <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
-              {numberOfLinks}
-            </p>
-            <p className="text-black dark:text-white text-xl">
-              {numberOfLinks === 1 ? "Link" : "Links"}
-            </p>
-          </div>
+        <div>
+          <div className="flex justify-between flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-sky-100 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800">
+            <DashboardItem
+              name={numberOfLinks === 1 ? "Link" : "Links"}
+              value={numberOfLinks}
+              icon={faLink}
+            />
 
-          <div className="sky-shadow flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
-            <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
-              {collections.length}
-            </p>
-            <p className="text-black dark:text-white text-xl">
-              {collections.length === 1 ? "Collection" : "Collections"}
-            </p>
-          </div>
+            <hr className="border-sky-100 dark:border-neutral-700 md:hidden my-5" />
+            <div className="h-full border-1 border-l border-sky-100 dark:border-neutral-700 hidden md:block"></div>
 
-          <div className="sky-shadow flex flex-col justify-center items-center gap-2 md:w-full rounded-2xl p-10 border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800">
-            <p className="font-bold text-6xl text-sky-500 dark:text-sky-500">
-              {tags.length}
-            </p>
-            <p className="text-black dark:text-white text-xl">
-              {tags.length === 1 ? "Tag" : "Tags"}
-            </p>
+            <DashboardItem
+              name={collections.length === 1 ? "Collection" : "Collections"}
+              value={collections.length}
+              icon={faFolder}
+            />
+
+            <hr className="border-sky-100 dark:border-neutral-700 md:hidden my-5" />
+            <div className="h-full border-1 border-r border-sky-100 dark:border-neutral-700 hidden md:block"></div>
+
+            <DashboardItem
+              name={tags.length === 1 ? "Tag" : "Tags"}
+              value={tags.length}
+              icon={faHashtag}
+            />
           </div>
         </div>
 

@@ -44,7 +44,7 @@ export default function Collections() {
                   Your Collections
                 </p>
 
-                <p className="capitalize text-black dark:text-white">
+                <p className="text-black dark:text-white">
                   Collections you own
                 </p>
               </div>
@@ -150,7 +150,7 @@ export default function Collections() {
                   Other Collections
                 </p>
 
-                <p className="capitalize text-black dark:text-white">
+                <p className="text-black dark:text-white">
                   Shared collections you&apos;re a member of
                 </p>
               </div>
