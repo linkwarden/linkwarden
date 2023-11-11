@@ -16,7 +16,7 @@ export default function CenteredForm({ text, children }: Props) {
       <div className="m-auto flex flex-col gap-2 w-full">
         {theme ? (
           <Image
-            src={`/linkwarden_${theme === "dark" ? "dark" : "li"}.png`}
+            src={`/linkwarden_${theme === "dark" ? "dark" : "light"}.png`}
             width={640}
             height={136}
             alt="Linkwarden"
