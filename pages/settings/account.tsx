@@ -334,7 +334,7 @@ export default function Account() {
           </p>
 
           {user.isPrivate && (
-            <div className="pl-5 border-l">
+            <div className="pl-5">
               <p className="text-black dark:text-white mt-2">
                 Whitelisted Users
               </p>

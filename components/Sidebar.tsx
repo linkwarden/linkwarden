@@ -7,6 +7,7 @@ import {
   faChevronDown,
   faLink,
   faGlobe,
+  faThumbTack,
 } from "@fortawesome/free-solid-svg-icons";
 import useTagStore from "@/store/tags";
 import Link from "next/link";
@@ -55,59 +56,69 @@ export default function Sidebar({ className }: { className?: string }) {
         className || ""
       }`}
     >
-      <div className="flex justify-center gap-2 mt-2">
-        <Link
-          href="/dashboard"
-          className={`${
-            active === "/dashboard"
-              ? "bg-sky-200 dark:bg-sky-800"
-              : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-          } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
-        >
-          <FontAwesomeIcon
-            icon={faChartSimple}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-500`}
-          />
-
-          <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
-            Dashboard
-          </p>
+      <div className="flex flex-col gap-2 mt-2">
+        <Link href={`/dashboard`}>
+          <div
+            className={`${
+              active === `/dashboard` ? "bg-sky-500" : "hover:bg-slate-500"
+            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+          >
+            <FontAwesomeIcon
+              icon={faChartSimple}
+              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+            />
+            <p className="text-black dark:text-white truncate w-full">
+              Dashboard
+            </p>
+          </div>
         </Link>
 
-        <Link
-          href="/links"
-          className={`${
-            active === "/links"
-              ? "bg-sky-200 dark:bg-sky-800"
-              : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-          } outline-sky-100 outline-1 duration-100 py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
-        >
-          <FontAwesomeIcon
-            icon={faLink}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-500`}
-          />
-
-          <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
-            Links
-          </p>
+        <Link href={`/links`}>
+          <div
+            className={`${
+              active === `/links` ? "bg-sky-500" : "hover:bg-slate-500"
+            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+          >
+            <FontAwesomeIcon
+              icon={faLink}
+              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+            />
+            <p className="text-black dark:text-white truncate w-full">
+              All Links
+            </p>
+          </div>
         </Link>
 
-        <Link
-          href="/collections"
-          className={`${
-            active === "/collections"
-              ? "bg-sky-200 dark:bg-sky-800"
-              : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-          } outline-sky-100 outline-1 duration-100  py-1 px-2 rounded-md cursor-pointer flex justify-center flex-col items-center gap-1 w-full`}
-        >
-          <FontAwesomeIcon
-            icon={faFolder}
-            className={`w-8 h-8 drop-shadow text-sky-500 dark:text-sky-500`}
-          />
+        <Link href={`/collections`}>
+          <div
+            className={`${
+              active === `/collections` ? "bg-sky-500" : "hover:bg-slate-500"
+            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+          >
+            <FontAwesomeIcon
+              icon={faFolder}
+              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+            />
+            <p className="text-black dark:text-white truncate w-full">
+              All Collections
+            </p>
+          </div>
+        </Link>
 
-          <p className="text-black dark:text-white text-xs xl:text-sm font-semibold">
-            Collections
-          </p>
+        <Link href={`/links/pinned`}>
+          <div
+            className={`${
+              active === `/links/pinned` ? "bg-sky-500" : "hover:bg-slate-500"
+            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+          >
+            <FontAwesomeIcon
+              icon={faThumbTack}
+              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+            />
+            <p className="text-black dark:text-white truncate w-full">
+              Pinned Links
+            </p>
+          </div>
         </Link>
       </div>
 
@@ -145,9 +156,9 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/collections/${e.id}`
-                            ? "bg-sky-200 dark:bg-sky-800"
-                            : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+                            ? "bg-sky-500"
+                            : "hover:bg-slate-500"
+                        } duration-100 py-1 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
                         <FontAwesomeIcon
                           icon={faFolder}
@@ -212,9 +223,9 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/tags/${e.id}`
-                            ? "bg-sky-200 dark:bg-sky-800"
-                            : "hover:bg-slate-200 hover:dark:bg-neutral-700"
-                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                            ? "bg-sky-500"
+                            : "hover:bg-slate-500"
+                        } duration-100 py-1 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
                         <FontAwesomeIcon
                           icon={faHashtag}
