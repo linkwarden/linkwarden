@@ -134,7 +134,7 @@ export default function Password() {
         ) : undefined}
 
         <button
-          className={`mx-auto lg:mx-0 text-white flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit ${
+          className={`mx-auto text-white flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit ${
             submitLoader
               ? "bg-red-400 cursor-auto"
               : "bg-red-500 hover:bg-red-400 cursor-pointer"

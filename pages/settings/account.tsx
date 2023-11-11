@@ -9,7 +9,6 @@ import TextInput from "@/components/TextInput";
 import { resizeImage } from "@/lib/client/resizeImage";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import SubmitButton from "@/components/SubmitButton";
-import { useSession, signOut } from "next-auth/react";
 import React from "react";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import Link from "next/link";
@@ -17,8 +16,6 @@ import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Checkbox from "@/components/Checkbox";
 
 export default function Account() {
-  const { update, data } = useSession();
-
   const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -154,7 +151,7 @@ export default function Account() {
 
   return (
     <SettingsLayout>
-      <div className="flex flex-col gap-10 justify-between sm:w-[35rem] w-80 mx-auto lg:mx-0">
+      <div className="flex flex-col gap-10">
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
           <div className="flex flex-col gap-3">
             <div>
