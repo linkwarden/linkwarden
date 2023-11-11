@@ -33,6 +33,7 @@ model User {
 
   isPrivate               Boolean         @default(false)
 
+  displayLinkIcons        Boolean         @default(true)
   blurredFavicons         Boolean         @default(true)
 
   createdAt               DateTime        @default(now())

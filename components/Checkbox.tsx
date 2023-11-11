@@ -28,9 +28,7 @@ export default function Checkbox({ label, state, className, onClick }: Props) {
         icon={faSquare}
         className="w-5 h-5 text-sky-500 dark:text-sky-500 peer-checked:hidden block"
       />
-      <span className="text-black dark:text-white rounded select-none">
-        {label}
-      </span>
+      <span className="rounded select-none">{label}</span>
     </label>
   );
 }

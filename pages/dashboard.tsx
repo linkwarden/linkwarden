@@ -338,7 +338,7 @@ export default function Dashboard() {
             <div className="w-full">
               <div
                 className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full ${
-                  linkPinDisclosure ? "h-full" : "max-h-[22rem]"
+                  linkPinDisclosure ? "h-full" : "max-h-[20rem]"
                 }`}
               >
                 {links
