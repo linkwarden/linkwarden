@@ -124,7 +124,7 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <div className="flex justify-between flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-sky-100 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800">
+          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-sky-100 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800">
             <DashboardItem
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
@@ -132,7 +132,7 @@ export default function Dashboard() {
             />
 
             <hr className="border-sky-100 dark:border-neutral-700 md:hidden my-5" />
-            <div className="h-full border-1 border-l border-sky-100 dark:border-neutral-700 hidden md:block"></div>
+            <div className="h-24 border-1 border-l border-sky-100 dark:border-neutral-700 hidden md:block"></div>
 
             <DashboardItem
               name={collections.length === 1 ? "Collection" : "Collections"}
@@ -141,7 +141,7 @@ export default function Dashboard() {
             />
 
             <hr className="border-sky-100 dark:border-neutral-700 md:hidden my-5" />
-            <div className="h-full border-1 border-r border-sky-100 dark:border-neutral-700 hidden md:block"></div>
+            <div className="h-24 border-1 border-r border-sky-100 dark:border-neutral-700 hidden md:block"></div>
 
             <DashboardItem
               name={tags.length === 1 ? "Tag" : "Tags"}
@@ -312,7 +312,7 @@ export default function Dashboard() {
         </div>
 
         <div
-          style={{ flex: "0 1 auto" }}
+          style={{ flex: "1 1 auto" }}
           className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
         >
           {links[0] ? (
