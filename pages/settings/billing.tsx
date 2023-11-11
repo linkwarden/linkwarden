@@ -11,7 +11,7 @@ export default function Billing() {
 
   return (
     <SettingsLayout>
-      <div className=" w-full mx-auto flex flex-col gap-3 justify-between">
+      <div className="w-full mx-auto flex flex-col gap-3 justify-between">
         <p className="text-md text-black dark:text-white">
           To manage/cancel your subsciption, visit the{" "}
           <a

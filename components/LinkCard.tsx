@@ -165,7 +165,7 @@ export default function LinkCard({ link, count, className }: Props) {
           onClick={() => router.push("/links/" + link.id)}
           className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-5"
         >
-          {url && (
+          {url && account.blurredFavicons && (
             <Image
               src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
               width={64}
@@ -195,7 +195,7 @@ export default function LinkCard({ link, count, className }: Props) {
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                className="flex items-center gap-1 max-w-full w-fit my-3 hover:opacity-70 duration-100"
+                className="flex items-center gap-1 max-w-full w-fit my-1 hover:opacity-70 duration-100"
               >
                 <FontAwesomeIcon
                   icon={faFolder}

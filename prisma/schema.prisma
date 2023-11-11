@@ -33,6 +33,8 @@ model User {
 
   isPrivate               Boolean         @default(false)
 
+  blurredFavicons         Boolean         @default(true)
+
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt @default(now())
 }
