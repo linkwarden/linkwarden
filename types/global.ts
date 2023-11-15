@@ -37,6 +37,10 @@ export interface CollectionIncludingMembersAndLinkCount
   members: Member[];
 }
 
+export interface TagIncludingLinkCount extends Tag {
+  _count?: { links: number };
+}
+
 export interface AccountSettings extends User {
   newPassword?: string;
   whitelistedUsers: string[];

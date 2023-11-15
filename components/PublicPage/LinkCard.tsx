@@ -4,9 +4,10 @@ import Image from "next/image";
 import { Link as LinkType, Tag } from "@prisma/client";
 import isValidUrl from "@/lib/client/isValidUrl";
 import unescapeString from "@/lib/client/unescapeString";
+import { TagIncludingLinkCount } from "@/types/global";
 
 interface LinksIncludingTags extends LinkType {
-  tags: Tag[];
+  tags: TagIncludingLinkCount[];
 }
 
 type Props = {
