@@ -11,8 +11,6 @@ const getPublicCollectionData = async (
 
   const data = await res.json();
 
-  console.log(data);
-
   setData(data.response);
 
   return data;

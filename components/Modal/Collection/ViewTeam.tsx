@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import { toast } from "react-hot-toast";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 
 type Props = {
@@ -11,10 +10,6 @@ type Props = {
 };
 
 export default function ViewTeam({ collection }: Props) {
-  const currentURL = new URL(document.URL);
-
-  const publicCollectionURL = `${currentURL.origin}/public/collections/${collection.id}`;
-
   const [collectionOwner, setCollectionOwner] = useState({
     id: null,
     name: "",
