@@ -4,6 +4,7 @@ import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import TeamManagement from "./TeamManagement";
 import { useState } from "react";
 import DeleteCollection from "./DeleteCollection";
+import ViewTeam from "./ViewTeam";
 
 type Props =
   | {
@@ -18,6 +19,14 @@ type Props =
       toggleCollectionModal: Function;
       activeCollection?: CollectionIncludingMembersAndLinkCount;
       method: "CREATE";
+      isOwner: boolean;
+      className?: string;
+      defaultIndex?: number;
+    }
+  | {
+      toggleCollectionModal: Function;
+      activeCollection: CollectionIncludingMembersAndLinkCount;
+      method: "VIEW_TEAM";
       isOwner: boolean;
       className?: string;
       defaultIndex?: number;
@@ -46,14 +55,25 @@ export default function CollectionModal({
     <div className={className}>
       <Tab.Group defaultIndex={defaultIndex}>
         {method === "CREATE" && (
-          <p className="text-xl text-black dark:text-white text-center">
+          <p className="ml-10 mt-[0.1rem] text-xl mb-3 font-thin">
             New Collection
           </p>
         )}
-        <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-black dark:text-white">
-          {method === "UPDATE" && (
-            <>
-              {isOwner && (
+        {method !== "VIEW_TEAM" && (
+          <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-black dark:text-white">
+            {method === "UPDATE" && (
+              <>
+                {isOwner && (
+                  <Tab
+                    className={({ selected }) =>
+                      selected
+                        ? "px-2 py-1 bg-sky-200 dark:bg-sky-800 dark:text-white duration-100 rounded-md outline-none"
+                        : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 hover:dark:text-white rounded-md duration-100 outline-none"
+                    }
+                  >
+                    Collection Info
+                  </Tab>
+                )}
                 <Tab
                   className={({ selected }) =>
                     selected
@@ -61,30 +81,21 @@ export default function CollectionModal({
                       : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 hover:dark:text-white rounded-md duration-100 outline-none"
                   }
                 >
-                  Collection Info
+                  {isOwner ? "Share & Collaborate" : "View Team"}
                 </Tab>
-              )}
-              <Tab
-                className={({ selected }) =>
-                  selected
-                    ? "px-2 py-1 bg-sky-200 dark:bg-sky-800 dark:text-white duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 hover:dark:text-white rounded-md duration-100 outline-none"
-                }
-              >
-                {isOwner ? "Share & Collaborate" : "View Team"}
-              </Tab>
-              <Tab
-                className={({ selected }) =>
-                  selected
-                    ? "px-2 py-1 bg-sky-200 dark:bg-sky-800 dark:text-white duration-100 rounded-md outline-none"
-                    : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 hover:dark:text-white rounded-md duration-100 outline-none"
-                }
-              >
-                {isOwner ? "Delete Collection" : "Leave Collection"}
-              </Tab>
-            </>
-          )}
-        </Tab.List>
+                <Tab
+                  className={({ selected }) =>
+                    selected
+                      ? "px-2 py-1 bg-sky-200 dark:bg-sky-800 dark:text-white duration-100 rounded-md outline-none"
+                      : "px-2 py-1 hover:bg-slate-200 hover:dark:bg-neutral-700 hover:dark:text-white rounded-md duration-100 outline-none"
+                  }
+                >
+                  {isOwner ? "Delete Collection" : "Leave Collection"}
+                </Tab>
+              </>
+            )}
+          </Tab.List>
+        )}
         <Tab.Panels>
           {(isOwner || method === "CREATE") && (
             <Tab.Panel>
@@ -112,6 +123,14 @@ export default function CollectionModal({
                   toggleDeleteCollectionModal={toggleCollectionModal}
                   collection={collection}
                 />
+              </Tab.Panel>
+            </>
+          )}
+
+          {method === "VIEW_TEAM" && (
+            <>
+              <Tab.Panel>
+                <ViewTeam collection={collection} />
               </Tab.Panel>
             </>
           )}
