@@ -1,5 +1,5 @@
 "use client";
-import LinkCard from "@/components/PublicPage/LinkCard";
+import PublicLinkCard from "@/components/PublicPage/PublicLinkCard";
 import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
 import { CollectionIncludingMembersAndLinkCount, Sort } from "@/types/global";
 import { useRouter } from "next/router";
@@ -16,7 +16,7 @@ import { useTheme } from "next-themes";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";
-import PublicSearchBar from "@/components/PublicSearchBar";
+import PublicSearchBar from "@/components/PublicPage/PublicSearchBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSort } from "@fortawesome/free-solid-svg-icons";
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
@@ -129,7 +129,7 @@ export default function PublicCollections() {
           <p className="text-4xl font-thin mb-2 capitalize mt-10">
             {collection.name}
           </p>
-          <div className="flex gap-2 items-center mt-8">
+          <div className="flex gap-2 items-center mt-8 min-w-fit">
             <ToggleDarkMode className="w-8 h-8 flex" />
             <Link href="https://linkwarden.app/" target="_blank">
               <Image
@@ -157,7 +157,7 @@ export default function PublicCollections() {
                   defaultIndex: 0,
                 })
               }
-              className="hover:opacity-80 duration-100 flex justify-center sm:justify-end items-center w-fit cursor-pointer"
+              className="hover:opacity-80 duration-100 flex justify-center sm:justify-end items-start w-fit cursor-pointer"
             >
               {collectionOwner.id ? (
                 <ProfilePhoto
@@ -181,7 +181,7 @@ export default function PublicCollections() {
                 .slice(0, 3)}
               {collection?.members.length &&
               collection.members.length - 3 > 0 ? (
-                <div className="w-8 h-8 text-white flex items-center justify-center rounded-full border-2 bg-sky-600 dark:bg-sky-600 border-slate-200 dark:border-neutral-700">
+                <div className="w-8 h-8 min-w-[2rem] text-white text-sm flex items-center justify-center rounded-full border-2 bg-sky-600 dark:bg-sky-600 border-slate-200 dark:border-neutral-700">
                   +{collection?.members?.length - 3}
                 </div>
               ) : null}
@@ -263,7 +263,7 @@ export default function PublicCollections() {
                     viewport={{ once: true, amount: 0.8 }}
                   >
                     <motion.div variants={cardVariants}>
-                      <LinkCard link={e as any} count={i} />
+                      <PublicLinkCard link={e as any} count={i} />
                     </motion.div>
                   </motion.div>
                 );
