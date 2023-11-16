@@ -8,6 +8,9 @@ import { motion, Variants } from "framer-motion";
 import Head from "next/head";
 import useLinks from "@/hooks/useLinks";
 import useLinkStore from "@/store/links";
+import ProfilePhoto from "@/components/ProfilePhoto";
+import useModalStore from "@/store/modals";
+import ModalManagement from "@/components/ModalManagement";
 
 const cardVariants: Variants = {
   offscreen: {
@@ -25,6 +28,7 @@ const cardVariants: Variants = {
 
 export default function PublicCollections() {
   const { links } = useLinkStore();
+  const { setModal } = useModalStore();
 
   const router = useRouter();
 
@@ -73,7 +77,13 @@ export default function PublicCollections() {
   }, []);
 
   return collection ? (
-    <div className="max-w-4xl mx-auto p-5 bg">
+    <div
+      className="h-screen"
+      style={{
+        backgroundImage: `linear-gradient(${collection?.color}30 10%, #f3f4f6 30%, #f9fafb 100%)`,
+      }}
+    >
+      <ModalManagement />
       {collection ? (
         <Head>
           <title>{collection.name} | Linkwarden</title>
@@ -84,41 +94,80 @@ export default function PublicCollections() {
           />
         </Head>
       ) : undefined}
-      <div
-        className={`border border-solid border-sky-100 text-center bg-gradient-to-tr from-sky-100 from-10% via-gray-100 via-20% rounded-3xl shadow-lg p-5`}
-      >
-        <p className="text-5xl text-black mb-5 capitalize">{collection.name}</p>
+      <div className="max-w-4xl mx-auto p-5 bg">
+        <div className="flex items-center justify-between">
+          <p className="text-4xl text-black font-thin mb-5 capitalize mt-10">
+            {collection.name}
+          </p>
+          <div className="text-black">[Logo]</div>
+        </div>
 
-        {collection.description && (
-          <>
-            <hr className="mt-5 max-w-[30rem] mx-auto border-1 border-slate-400" />
-            <p className="mt-2 text-gray-500">{collection.description}</p>
-          </>
-        )}
-      </div>
+        <div>
+          <div className={`min-w-[15rem] ${collection.members[1] && "mr-3"}`}>
+            <div
+              onClick={() =>
+                setModal({
+                  modal: "COLLECTION",
+                  state: true,
+                  method: "VIEW_TEAM",
+                  isOwner: false,
+                  active: collection,
+                  defaultIndex: 0,
+                })
+              }
+              className="hover:opacity-80 duration-100 flex justify-center sm:justify-end items-center w-fit sm:mr-0 sm:ml-auto cursor-pointer"
+            >
+              {collection.members
+                .sort((a, b) => (a.userId as number) - (b.userId as number))
+                .map((e, i) => {
+                  return (
+                    <ProfilePhoto
+                      key={i}
+                      src={e.user.image ? e.user.image : undefined}
+                      className={`${
+                        collection.members[1] && "-mr-3"
+                      } border-[3px]`}
+                    />
+                  );
+                })
+                .slice(0, 4)}
+              {collection?.members.length &&
+              collection.members.length - 4 > 0 ? (
+                <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 dark:border-neutral-700 -mr-3">
+                  +{collection?.members?.length - 4}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
 
-      <div className="flex flex-col gap-5 my-8">
-        {links
-          ?.filter((e) => e.collectionId === Number(router.query.id))
-          .map((e, i) => {
-            return (
-              <motion.div
-                key={i}
-                initial="offscreen"
-                whileInView="onscreen"
-                viewport={{ once: true, amount: 0.8 }}
-              >
-                <motion.div variants={cardVariants}>
-                  <LinkCard link={e as any} count={i} />
+        <p className="mt-2 text-black">{collection.description}</p>
+
+        <hr className="mt-5 border-1 border-slate-400" />
+
+        <div className="flex flex-col gap-5 my-8">
+          {links
+            ?.filter((e) => e.collectionId === Number(router.query.id))
+            .map((e, i) => {
+              return (
+                <motion.div
+                  key={i}
+                  initial="offscreen"
+                  whileInView="onscreen"
+                  viewport={{ once: true, amount: 0.8 }}
+                >
+                  <motion.div variants={cardVariants}>
+                    <LinkCard link={e as any} count={i} />
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            );
-          })}
-      </div>
+              );
+            })}
+        </div>
 
-      {/* <p className="text-center font-bold text-gray-500">
-        List created with <span className="text-black">Linkwarden.</span>
-      </p> */}
+        {/* <p className="text-center text-gray-500">
+      List created with <span className="text-black">Linkwarden.</span>
+    </p> */}
+      </div>
     </div>
   ) : (
     <></>
