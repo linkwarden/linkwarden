@@ -186,7 +186,7 @@ export default function PublicCollections() {
                 </div>
               ) : null}
 
-              <p className="ml-2 text-gray-500 dark:text-gray-300">
+              <p className="ml-2 mt-1 text-gray-500 dark:text-gray-300">
                 By {collectionOwner.name} and {collection.members.length}{" "}
                 others.
               </p>
