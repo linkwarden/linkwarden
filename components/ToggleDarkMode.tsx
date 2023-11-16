@@ -2,7 +2,11 @@ import { useTheme } from "next-themes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 
-export default function ToggleDarkMode() {
+type Props = {
+  className?: string;
+};
+
+export default function ToggleDarkMode({ className }: Props) {
   const { theme, setTheme } = useTheme();
 
   const handleToggle = () => {
@@ -15,15 +19,13 @@ export default function ToggleDarkMode() {
 
   return (
     <div
-      className="flex gap-1 duration-100 h-10 rounded-full items-center w-fit cursor-pointer"
+      className={`cursor-pointer flex select-none border border-sky-600 items-center justify-center dark:bg-neutral-900 bg-white hover:border-sky-500 group duration-100 rounded-full text-white w-10 h-10 ${className}`}
       onClick={handleToggle}
     >
-      <div className="shadow bg-sky-700 dark:bg-sky-400 flex items-center justify-center rounded-full text-white w-10 h-10 duration-100">
-        <FontAwesomeIcon
-          icon={theme === "dark" ? faSun : faMoon}
-          className="w-1/2 h-1/2"
-        />
-      </div>
+      <FontAwesomeIcon
+        icon={theme === "dark" ? faSun : faMoon}
+        className="w-1/2 h-1/2 text-sky-600 group-hover:text-sky-500"
+      />
     </div>
   );
 }
