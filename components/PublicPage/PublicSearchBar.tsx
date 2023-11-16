@@ -6,17 +6,12 @@ import { toast } from "react-hot-toast";
 
 type Props = {
   placeHolder?: string;
-  className?: string;
 };
 
-export default function PublicSearchBar({ placeHolder, className }: Props) {
+export default function PublicSearchBar({ placeHolder }: Props) {
   const router = useRouter();
 
-  const routeQuery = router.query.q;
-
-  const [searchQuery, setSearchQuery] = useState(
-    routeQuery ? decodeURIComponent(routeQuery as string) : ""
-  );
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     console.log(router);
