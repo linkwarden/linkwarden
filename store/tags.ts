@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Tag } from "@prisma/client";
+import { TagIncludingLinkCount } from "@/types/global";
 
 type ResponseObject = {
   ok: boolean;
@@ -7,9 +7,9 @@ type ResponseObject = {
 };
 
 type TagStore = {
-  tags: Tag[];
+  tags: TagIncludingLinkCount[];
   setTags: () => void;
-  updateTag: (tag: Tag) => Promise<ResponseObject>;
+  updateTag: (tag: TagIncludingLinkCount) => Promise<ResponseObject>;
   removeTag: (tagId: number) => Promise<ResponseObject>;
 };
 

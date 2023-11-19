@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/api/db";
-import { Collection, Link, UsersAndCollections } from "@prisma/client";
+import { Collection, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 
 export default async function getLinkById(userId: number, linkId: number) {
@@ -27,7 +27,7 @@ export default async function getLinkById(userId: number, linkId: number) {
       status: 401,
     };
   else {
-    const updatedLink = await prisma.link.findUnique({
+    const link = await prisma.link.findUnique({
       where: {
         id: linkId,
       },
@@ -43,6 +43,6 @@ export default async function getLinkById(userId: number, linkId: number) {
       },
     });
 
-    return { response: updatedLink, status: 200 };
+    return { response: link, status: 200 };
   }
 }
