@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import {
+  ArchivedFormat,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@/types/global";
 import Image from "next/image";
 import ColorThief, { RGBColor } from "colorthief";
 import { useTheme } from "next-themes";
@@ -63,7 +66,9 @@ export default function Index() {
         link?.readabilityPath &&
         link?.readabilityPath !== "pending"
       ) {
-        const response = await fetch(`/api/v1/${link?.readabilityPath}`);
+        const response = await fetch(
+          `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}`
+        );
 
         const data = await response?.json();
 

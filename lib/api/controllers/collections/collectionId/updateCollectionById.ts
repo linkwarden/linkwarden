@@ -11,14 +11,10 @@ export default async function updateCollection(
   if (!collectionId)
     return { response: "Please choose a valid collection.", status: 401 };
 
-  const collectionIsAccessible = (await getPermission({
+  const collectionIsAccessible = await getPermission({
     userId,
     collectionId,
-  })) as
-    | (Collection & {
-        members: UsersAndCollections[];
-      })
-    | null;
+  });
 
   if (!(collectionIsAccessible?.ownerId === userId))
     return { response: "Collection is not accessible.", status: 401 };

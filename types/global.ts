@@ -115,3 +115,9 @@ export type DeleteUserBody = {
     feedback?: Stripe.SubscriptionCancelParams.CancellationDetails.Feedback;
   };
 };
+
+export enum ArchivedFormat {
+  screenshot,
+  pdf,
+  readability,
+}
