@@ -30,7 +30,7 @@ export default function ViewTeam({ collection }: Props) {
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       <p className="ml-10 text-xl font-thin">Team</p>
 
-      <p>Here's all the members that are collaborating in this collection.</p>
+      <p>Here are all the members who are collaborating on this collection.</p>
 
       <div
         className="relative border px-2 rounded-md border-sky-100 dark:border-neutral-700 flex min-h-[4rem] gap-2 justify-between"
