@@ -22,7 +22,10 @@ export default async function deleteUserById(
   }
 
   // Then, we check if the provided password matches the one stored in the database
-  const isPasswordValid = bcrypt.compareSync(body.password, user.password || "");
+  const isPasswordValid = bcrypt.compareSync(
+    body.password,
+    user.password || ""
+  );
 
   if (!isPasswordValid) {
     return {
