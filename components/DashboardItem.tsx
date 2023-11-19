@@ -20,7 +20,7 @@ export default function dashboardItem({ name, value, icon }: Props) {
         <p className="text-gray-500 dark:text-gray-400 text-sm tracking-wider">
           {name}
         </p>
-        <p className="font-thin text-6xl text-sky-500 dark:text-sky-500">
+        <p className="font-thin text-6xl text-sky-500 dark:text-sky-500 mt-2">
           {value}
         </p>
       </div>

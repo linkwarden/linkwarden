@@ -1,20 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getPermission from "@/lib/api/getPermission";
 import readFile from "@/lib/api/storage/readFile";
-import verifyUser from "@/lib/api/verifyUser";
+import { getToken } from "next-auth/jwt";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   if (!req.query.params)
     return res.status(401).json({ response: "Invalid parameters." });
 
-  const user = await verifyUser({ req, res });
-  if (!user) return;
+  const token = await getToken({ req });
+  const userId = token?.id;
 
   const collectionId = req.query.params[0];
   const linkId = req.query.params[1];
 
   const collectionIsAccessible = await getPermission({
-    userId: user.id,
+    userId,
     collectionId: Number(collectionId),
   });
 
