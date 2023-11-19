@@ -17,7 +17,7 @@ type LinkStore = {
   addLink: (
     body: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
-  getLink: (linkId: number) => Promise<ResponseObject>;
+  getLink: (linkId: number, publicRoute?: boolean) => Promise<ResponseObject>;
   updateLink: (
     link: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
@@ -66,8 +66,12 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     return { ok: response.ok, data: data.response };
   },
-  getLink: async (linkId) => {
-    const response = await fetch(`/api/v1/links/${linkId}`);
+  getLink: async (linkId, publicRoute) => {
+    const path = publicRoute
+      ? `/api/v1/public/links/${linkId}`
+      : `/api/v1/links/${linkId}`;
+
+    const response = await fetch(path);
 
     const data = await response.json();
 

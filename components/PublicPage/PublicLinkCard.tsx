@@ -5,6 +5,7 @@ import { Link as LinkType, Tag } from "@prisma/client";
 import isValidUrl from "@/lib/client/isValidUrl";
 import unescapeString from "@/lib/client/unescapeString";
 import { TagIncludingLinkCount } from "@/types/global";
+import Link from "next/link";
 
 interface LinksIncludingTags extends LinkType {
   tags: TagIncludingLinkCount[];
@@ -27,75 +28,69 @@ export default function LinkCard({ link, count }: Props) {
   });
 
   return (
-    <a href={link.url} target="_blank" rel="noreferrer" className="rounded-3xl">
-      <div className="border border-solid border-sky-100 bg-gradient-to-tr from-slate-200 from-10% to-gray-50 via-20% shadow-md sm:hover:shadow-none duration-100 rounded-3xl cursor-pointer p-5 flex items-start relative gap-5 sm:gap-10 group/item">
-        {url && (
-          <>
-            <Image
-              src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-              width={42}
-              height={42}
-              alt=""
-              className="select-none mt-3 z-10 rounded-md shadow border-[3px] border-white bg-white"
-              draggable="false"
-              onError={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.display = "none";
-              }}
-            />
-            <Image
-              src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-              width={80}
-              height={80}
-              alt=""
-              className="blur-sm absolute left-2 opacity-40 select-none hidden sm:block"
-              draggable="false"
-              onError={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.display = "none";
-              }}
-            />
-          </>
-        )}
-        <div className="flex justify-between items-center gap-5 w-full h-full z-0">
-          <div className="flex flex-col justify-between">
-            <div className="flex items-baseline gap-1">
-              <p className="text-xs text-gray-500">{count + 1}</p>
-              <p className="text-lg text-black">
-                {unescapeString(link.name || link.description)}
-              </p>
-            </div>
-
-            <p className="text-gray-500 text-sm font-medium">
-              {unescapeString(link.description)}
+    <div className="border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none duration-100 rounded-lg p-3 flex items-start relative gap-3 group/item">
+      <div className="flex justify-between items-end gap-5 w-full h-full z-0">
+        <div className="flex flex-col justify-between w-full">
+          <div className="flex items-center gap-2">
+            <p className="text-2xl">
+              {url && (
+                <Image
+                  src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
+                  width={30}
+                  height={30}
+                  alt=""
+                  className="select-none z-10 rounded-md shadow border-[1px] border-white bg-white float-left mr-2"
+                  draggable="false"
+                  onError={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.display = "none";
+                  }}
+                />
+              )}
+              {unescapeString(link.name || link.description)}
             </p>
-            <div className="flex gap-3 items-center flex-wrap my-3">
-              <div className="flex gap-1 items-center flex-wrap mt-1">
-                {link.tags.map((e, i) => (
-                  <p
-                    key={i}
-                    className="px-2 py-1 bg-sky-200 text-black text-xs rounded-3xl cursor-pointer truncate max-w-[10rem]"
-                  >
-                    {e.name}
-                  </p>
-                ))}
-              </div>
-            </div>
-            <div className="flex gap-2 items-center flex-wrap mt-2">
-              <p className="text-gray-500">{formattedDate}</p>
-              <div className="text-black flex items-center gap-1">
-                <p>{url ? url.host : link.url}</p>
-              </div>
+          </div>
+
+          <div className="flex gap-3 items-center flex-wrap my-2">
+            <div className="flex gap-1 items-center flex-wrap">
+              {link.tags.map((e, i) => (
+                <Link
+                  href={"/public/collections/20?q=" + e.name}
+                  key={i}
+                  className="px-2 text-xs rounded-md border border-black dark:border-white truncate max-w-[10rem] hover:opacity-50 duration-100"
+                >
+                  {e.name}
+                </Link>
+              ))}
             </div>
           </div>
-          <div className="hidden sm:group-hover/item:block duration-100 text-slate-500">
-            <FontAwesomeIcon
-              icon={faChevronRight}
-              className="w-7 h-7 slide-right-with-fade"
-            />
+          <div className="flex gap-1 items-center flex-wrap text-sm text-gray-500 dark:text-gray-300">
+            <p>{formattedDate}</p>
+            <p>·</p>
+            <Link
+              href={url ? url.href : link.url}
+              target="_blank"
+              className="hover:opacity-50 duration-100 truncate w-52 sm:w-fit"
+              title={url ? url.href : link.url}
+            >
+              {url ? url.host : link.url}
+            </Link>
+          </div>
+          <div className="w-full">
+            {unescapeString(link.description)}{" "}
+            <Link
+              href={`/public/links/${link.id}`}
+              className="flex gap-1 items-center flex-wrap text-sm text-gray-500 dark:text-gray-300 hover:opacity-50 duration-100 min-w-fit float-right mt-1 ml-2"
+            >
+              <p>Read</p>
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className="w-3 h-3 mt-[0.15rem]"
+              />
+            </Link>
           </div>
         </div>
       </div>
-    </a>
+    </div>
   );
 }

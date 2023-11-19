@@ -11,11 +11,13 @@ type Props = {
 export default function PublicSearchBar({ placeHolder }: Props) {
   const router = useRouter();
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
-    console.log(router);
-  });
+    router.query.q
+      ? setSearchQuery(decodeURIComponent(router.query.q as string))
+      : setSearchQuery("");
+  }, [router.query.q]);
 
   return (
     <div className="flex items-center relative group">
@@ -36,16 +38,21 @@ export default function PublicSearchBar({ placeHolder }: Props) {
             toast.error("The search query should not contain '%'.");
           setSearchQuery(e.target.value.replace("%", ""));
         }}
-        onKeyDown={(e) =>
-          e.key === "Enter" &&
-          router.push(
-            "/public/collections/" +
-              router.query.id +
-              "?q=" +
-              encodeURIComponent(searchQuery)
-          )
-        }
-        className="border text-sm border-sky-100 bg-white dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 rounded-md pl-7 py-1 pr-1 w-44 sm:w-60 dark:hover:border-neutral-600 md:focus:w-80 hover:border-sky-300 duration-100 outline-none dark:bg-neutral-800"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            if (!searchQuery) {
+              return router.push("/public/collections/" + router.query.id);
+            }
+
+            return router.push(
+              "/public/collections/" +
+                router.query.id +
+                "?q=" +
+                encodeURIComponent(searchQuery || "")
+            );
+          }
+        }}
+        className="border text-sm border-sky-100 bg-gray-50 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 rounded-md pl-8 py-2 pr-2 w-44 sm:w-60 dark:hover:border-neutral-600 md:focus:w-80 hover:border-sky-300 duration-100 outline-none dark:bg-neutral-800"
       />
     </div>
   );
