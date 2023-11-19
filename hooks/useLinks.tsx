@@ -50,13 +50,17 @@ export default function useLinks(
         .join("&");
     };
 
-    const queryString = buildQueryString(params);
+    let queryString = buildQueryString(params);
 
-    const response = await fetch(
-      `/api/v1/${
-        router.asPath === "/dashboard" ? "dashboard" : "links"
-      }?${queryString}`
-    );
+    let basePath;
+
+    if (router.pathname === "/dashboard") basePath = "/api/v1/dashboard";
+    else if (router.pathname.startsWith("/public/collections/[id]")) {
+      queryString = queryString + "&collectionId=" + router.query.id;
+      basePath = "/api/v1/public/collections/links";
+    } else basePath = "/api/v1/links";
+
+    const response = await fetch(`${basePath}?${queryString}`);
 
     const data = await response.json();
 

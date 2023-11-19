@@ -2,12 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import readFile from "@/lib/api/storage/readFile";
 import verifyUser from "@/lib/api/verifyUser";
+import { getToken } from "next-auth/jwt";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const queryId = Number(req.query.id);
-
-  const user = await verifyUser({ req, res });
-  if (!user) return;
 
   if (!queryId)
     return res
@@ -15,13 +13,32 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       .status(401)
       .send("Invalid parameters.");
 
-  if (user.id !== queryId) {
-    const targetUser = await prisma.user.findUnique({
+  const token = await getToken({ req });
+  const userId = token?.id;
+
+  const targetUser = await prisma.user.findUnique({
+    where: {
+      id: queryId,
+    },
+    include: {
+      whitelistedUsers: true,
+    },
+  });
+
+  if (targetUser?.isPrivate) {
+    if (!userId) {
+      return res
+        .setHeader("Content-Type", "text/plain")
+        .status(400)
+        .send("File inaccessible.");
+    }
+
+    const user = await prisma.user.findUnique({
       where: {
-        id: queryId,
+        id: userId,
       },
       include: {
-        whitelistedUsers: true,
+        subscriptions: true,
       },
     });
 
@@ -29,15 +46,18 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       (whitelistedUsername) => whitelistedUsername.username
     );
 
-    if (
-      targetUser?.isPrivate &&
-      user.username &&
-      !whitelistedUsernames?.includes(user.username)
-    ) {
+    if (!user?.username) {
       return res
         .setHeader("Content-Type", "text/plain")
         .status(400)
-        .send("File not found.");
+        .send("File inaccessible.");
+    }
+
+    if (user.username && !whitelistedUsernames?.includes(user.username)) {
+      return res
+        .setHeader("Content-Type", "text/plain")
+        .status(400)
+        .send("File inaccessible.");
     }
   }
 
