@@ -25,7 +25,7 @@ export default function Password() {
       },
     };
 
-    if (password == "") {
+    if (process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED !== "true" && password == "") {
       return toast.error("Please fill the required fields.");
     }
 
@@ -78,18 +78,20 @@ export default function Password() {
           . This action is irreversible!
         </p>
 
-        <div>
-          <p className="mb-2 text-black dark:text-white">
-            Confirm Your Password
-          </p>
+        {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED !== "true" ? (
+          <div>
+            <p className="mb-2 text-black dark:text-white">
+              Confirm Your Password
+            </p>
 
-          <TextInput
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••••••••"
-            type="password"
-          />
-        </div>
+            <TextInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••••••••"
+              type="password"
+            />
+          </div>
+        ) : undefined}
 
         {process.env.NEXT_PUBLIC_STRIPE ? (
           <fieldset className="border rounded-md p-2 border-sky-500">
