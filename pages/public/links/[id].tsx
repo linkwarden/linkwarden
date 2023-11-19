@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBoxesStacked, faFolder } from "@fortawesome/free-solid-svg-icons";
 import useModalStore from "@/store/modals";
 import { useSession } from "next-auth/react";
+import { isProbablyReaderable } from "@mozilla/readability";
 
 type LinkContent = {
   title: string;
@@ -45,7 +46,7 @@ export default function Index() {
   useEffect(() => {
     const fetchLink = async () => {
       if (router.query.id) {
-        await getLink(Number(router.query.id));
+        await getLink(Number(router.query.id), true);
       }
     };
 
@@ -81,7 +82,7 @@ export default function Index() {
       link?.pdfPath === "pending" ||
       link?.readabilityPath === "pending"
     ) {
-      interval = setInterval(() => getLink(link.id as number), 5000);
+      interval = setInterval(() => getLink(link.id as number, true), 5000);
     } else {
       if (interval) {
         clearInterval(interval);
@@ -214,19 +215,19 @@ export default function Index() {
 
               <div className="flex gap-1 items-center flex-wrap">
                 <Link
-                  href={`/collections/${link?.collection.id}`}
+                  href={`/collections/${link?.collection?.id}`}
                   className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
                 >
                   <FontAwesomeIcon
                     icon={faFolder}
                     className="w-5 h-5 drop-shadow"
-                    style={{ color: link?.collection.color }}
+                    style={{ color: link?.collection?.color }}
                   />
                   <p
-                    title={link?.collection.name}
+                    title={link?.collection?.name}
                     className="text-black dark:text-white text-lg truncate max-w-[12rem]"
                   >
-                    {link?.collection.name}
+                    {link?.collection?.name}
                   </p>
                 </Link>
                 {link?.tags.map((e, i) => (
@@ -264,11 +265,11 @@ export default function Index() {
                     There is no reader view for this webpage
                   </p>
                   <p className="text-center text-sm text-black dark:text-white">
-                    {link?.collection.ownerId === userId
+                    {link?.collection?.ownerId === userId
                       ? "You can update (refetch) the preserved formats by managing them below"
                       : "The collections owners can refetch the preserved formats"}
                   </p>
-                  {link?.collection.ownerId === userId ? (
+                  {link?.collection?.ownerId === userId ? (
                     <div
                       onClick={() =>
                         link

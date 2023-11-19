@@ -176,6 +176,9 @@ export default function Sidebar({ className }: { className?: string }) {
                             className="w-4 h-4 drop-shadow text-gray-500 dark:text-gray-300"
                           />
                         ) : undefined}
+                        <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
+                          {e._count?.links}
+                        </div>
                       </div>
                     </Link>
                   );
@@ -235,6 +238,9 @@ export default function Sidebar({ className }: { className?: string }) {
                         <p className="text-black dark:text-white truncate w-full pr-7">
                           {e.name}
                         </p>
+                        <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
+                          {e._count?.links}
+                        </div>
                       </div>
                     </Link>
                   );

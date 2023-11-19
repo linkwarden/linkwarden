@@ -6,12 +6,13 @@ import Dropdown from "@/components/Dropdown";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
-import Search from "@/components/Search";
+import SearchBar from "@/components/SearchBar";
 import useAccountStore from "@/store/account";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import useModalStore from "@/store/modals";
 import { useTheme } from "next-themes";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
+import ToggleDarkMode from "./ToggleDarkMode";
 
 export default function Navbar() {
   const { setModal } = useModalStore();
@@ -56,7 +57,7 @@ export default function Navbar() {
       >
         <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
       </div>
-      <Search />
+      <SearchBar />
       <div className="flex items-center gap-2">
         <div
           onClick={() => {
@@ -76,6 +77,9 @@ export default function Navbar() {
             New Link
           </span>
         </div>
+
+        <ToggleDarkMode className="sm:flex hidden" />
+
         <div className="relative">
           <div
             className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:dark:bg-neutral-700 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit cursor-pointer"

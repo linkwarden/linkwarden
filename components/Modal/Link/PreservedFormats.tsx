@@ -27,7 +27,14 @@ export default function PreservedFormats() {
   useEffect(() => {
     let interval: NodeJS.Timer | undefined;
     if (link?.screenshotPath === "pending" || link?.pdfPath === "pending") {
-      interval = setInterval(() => getLink(link.id as number), 5000);
+      let isPublicRoute = router.pathname.startsWith("/public")
+        ? true
+        : undefined;
+
+      interval = setInterval(
+        () => getLink(link.id as number, isPublicRoute),
+        5000
+      );
     } else {
       if (interval) {
         clearInterval(interval);
