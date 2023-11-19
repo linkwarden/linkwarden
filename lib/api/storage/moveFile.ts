@@ -5,7 +5,7 @@ import removeFile from "./removeFile";
 
 export default async function moveFile(from: string, to: string) {
   if (s3Client) {
-    const Bucket = process.env.BUCKET_NAME;
+    const Bucket = process.env.SPACES_BUCKET_NAME;
 
     const copyParams = {
       Bucket: Bucket,
