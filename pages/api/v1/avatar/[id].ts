@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import readFile from "@/lib/api/storage/readFile";
-import verifyUser from "@/lib/api/verifyUser";
 import { getToken } from "next-auth/jwt";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
@@ -16,57 +15,59 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const token = await getToken({ req });
   const userId = token?.id;
 
-  const targetUser = await prisma.user.findUnique({
-    where: {
-      id: queryId,
-    },
-    include: {
-      whitelistedUsers: true,
-    },
-  });
-
-  if (targetUser?.isPrivate) {
-    if (!userId) {
-      return res
-        .setHeader("Content-Type", "text/plain")
-        .status(400)
-        .send("File inaccessible.");
-    }
-
-    const user = await prisma.user.findUnique({
+  if (req.method === "GET") {
+    const targetUser = await prisma.user.findUnique({
       where: {
-        id: userId,
+        id: queryId,
       },
       include: {
-        subscriptions: true,
+        whitelistedUsers: true,
       },
     });
 
-    const whitelistedUsernames = targetUser?.whitelistedUsers.map(
-      (whitelistedUsername) => whitelistedUsername.username
+    if (targetUser?.isPrivate) {
+      if (!userId) {
+        return res
+          .setHeader("Content-Type", "text/plain")
+          .status(400)
+          .send("File inaccessible.");
+      }
+
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        include: {
+          subscriptions: true,
+        },
+      });
+
+      const whitelistedUsernames = targetUser?.whitelistedUsers.map(
+        (whitelistedUsername) => whitelistedUsername.username
+      );
+
+      if (!user?.username) {
+        return res
+          .setHeader("Content-Type", "text/plain")
+          .status(400)
+          .send("File inaccessible.");
+      }
+
+      if (user.username && !whitelistedUsernames?.includes(user.username)) {
+        return res
+          .setHeader("Content-Type", "text/plain")
+          .status(400)
+          .send("File inaccessible.");
+      }
+    }
+
+    const { file, contentType, status } = await readFile(
+      `uploads/avatar/${queryId}.jpg`
     );
 
-    if (!user?.username) {
-      return res
-        .setHeader("Content-Type", "text/plain")
-        .status(400)
-        .send("File inaccessible.");
-    }
-
-    if (user.username && !whitelistedUsernames?.includes(user.username)) {
-      return res
-        .setHeader("Content-Type", "text/plain")
-        .status(400)
-        .send("File inaccessible.");
-    }
+    return res
+      .setHeader("Content-Type", contentType)
+      .status(status as number)
+      .send(file);
   }
-
-  const { file, contentType, status } = await readFile(
-    `uploads/avatar/${queryId}.jpg`
-  );
-
-  return res
-    .setHeader("Content-Type", contentType)
-    .status(status as number)
-    .send(file);
 }
