@@ -21,17 +21,19 @@ export default async function deleteUserById(
     };
   }
 
-  // Then, we check if the provided password matches the one stored in the database
-  const isPasswordValid = bcrypt.compareSync(
-    body.password,
-    user.password || ""
-  );
+  // Then, we check if the provided password matches the one stored in the database (disabled in Keycloak integration)
+  if (!process.env.KEYCLOAK_CLIENT_SECRET) {
+    const isPasswordValid = bcrypt.compareSync(
+      body.password,
+      user.password as string
+    );
 
-  if (!isPasswordValid) {
-    return {
-      response: "Invalid credentials.",
-      status: 401, // Unauthorized
-    };
+    if (!isPasswordValid) {
+      return {
+        response: "Invalid credentials.",
+        status: 401, // Unauthorized
+      };
+    }
   }
 
   // Delete the user and all related data within a transaction
