@@ -1,7 +1,7 @@
 import getPublicCollection from "@/lib/api/controllers/public/collections/getPublicCollection";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function collections(
+export default async function collection(
   req: NextApiRequest,
   res: NextApiResponse
 ) {

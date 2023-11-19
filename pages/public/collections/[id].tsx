@@ -57,8 +57,6 @@ export default function PublicCollections() {
     image: "",
   });
 
-  useEffect(() => {}, []);
-
   const [searchFilter, setSearchFilter] = useState({
     name: true,
     url: true,
