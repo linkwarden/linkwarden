@@ -9,11 +9,7 @@ export default async function getLinkById(userId: number, linkId: number) {
       status: 401,
     };
 
-  const collectionIsAccessible = (await getPermission({ userId, linkId })) as
-    | (Collection & {
-        members: UsersAndCollections[];
-      })
-    | null;
+  const collectionIsAccessible = await getPermission({ userId, linkId });
 
   const memberHasAccess = collectionIsAccessible?.members.some(
     (e: UsersAndCollections) => e.userId === userId

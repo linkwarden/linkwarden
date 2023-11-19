@@ -1,4 +1,7 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import {
+  ArchivedFormat,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@/types/global";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -65,15 +68,16 @@ export default function PreservedFormats() {
     } else toast.error(data.response);
   };
 
-  const handleDownload = (format: "png" | "pdf") => {
-    const path = `/api/v1/archives/${link?.collection.id}/${link?.id}.${format}`;
+  const handleDownload = (format: ArchivedFormat) => {
+    const path = `/api/v1/archives/${link?.id}?format=${format}`;
     fetch(path)
       .then((response) => {
         if (response.ok) {
           // Create a temporary link and click it to trigger the download
           const link = document.createElement("a");
           link.href = path;
-          link.download = format === "pdf" ? "PDF" : "Screenshot";
+          link.download =
+            format === ArchivedFormat.screenshot ? "Screenshot" : "PDF";
           link.click();
         } else {
           console.error("Failed to download file");
@@ -98,7 +102,7 @@ export default function PreservedFormats() {
 
           <div className="flex text-black dark:text-white gap-1">
             <div
-              onClick={() => handleDownload("png")}
+              onClick={() => handleDownload(ArchivedFormat.screenshot)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
@@ -108,7 +112,7 @@ export default function PreservedFormats() {
             </div>
 
             <Link
-              href={`/api/v1/archives/${link.collectionId}/${link.id}.png`}
+              href={`/api/v1/archives/${link?.id}?format=${ArchivedFormat.screenshot}`}
               target="_blank"
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
@@ -133,7 +137,7 @@ export default function PreservedFormats() {
 
           <div className="flex text-black dark:text-white gap-1">
             <div
-              onClick={() => handleDownload("pdf")}
+              onClick={() => handleDownload(ArchivedFormat.pdf)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
@@ -143,7 +147,7 @@ export default function PreservedFormats() {
             </div>
 
             <Link
-              href={`/api/v1/archives/${link.collectionId}/${link.id}.pdf`}
+              href={`/api/v1/archives/${link?.id}?format=${ArchivedFormat.pdf}`}
               target="_blank"
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
