@@ -9,13 +9,12 @@ import { Adapter } from "next-auth/adapters";
 import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
 import { Provider } from "next-auth/providers";
 import verifySubscription from "@/lib/api/verifySubscription";
-import KeycloakProvider from 'next-auth/providers/keycloak';
+import KeycloakProvider from "next-auth/providers/keycloak";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
-const keycloakEnabled =
-  !!process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED;
+const keycloakEnabled = process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true";
 
 const adapter = PrismaAdapter(prisma);
 
@@ -81,8 +80,8 @@ if (emailEnabled) {
 if (keycloakEnabled) {
   providers.push(
     KeycloakProvider({
-      id: 'keycloak',
-      name: 'Keycloak',
+      id: "keycloak",
+      name: "Keycloak",
       clientId: process.env.KEYCLOAK_CLIENT_ID!,
       clientSecret: process.env.KEYCLOAK_CLIENT_SECRET!,
       issuer: process.env.KEYCLOAK_ISSUER,
@@ -95,11 +94,11 @@ if (keycloakEnabled) {
           image: profile.picture,
         };
       },
-    }),
+    })
   );
   const _linkAccount = adapter.linkAccount;
   adapter.linkAccount = (account) => {
-    const { 'not-before-policy': _, refresh_expires_in, ...data } = account;
+    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
     return _linkAccount ? _linkAccount(data) : undefined;
   };
 }
@@ -118,7 +117,8 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, trigger, user }) {
       token.sub = token.sub ? Number(token.sub) : undefined;
-      if (trigger === "signIn" || trigger === "signUp") token.id = user?.id as number;
+      if (trigger === "signIn" || trigger === "signUp")
+        token.id = user?.id as number;
 
       return token;
     },
