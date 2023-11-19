@@ -170,7 +170,7 @@ export default function PreservedFormats() {
             onClick={() => updateArchive()}
           >
             <p>Update Preserved Formats</p>
-            <p className="text-xs">(Refresh Formats)</p>
+            <p className="text-xs">(Refresh Link)</p>
           </div>
         ) : undefined}
         <Link

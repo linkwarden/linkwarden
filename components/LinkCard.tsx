@@ -256,7 +256,7 @@ export default function LinkCard({ link, count, className }: Props) {
               : undefined,
             permissions === true
               ? {
-                  name: "Refresh Formats",
+                  name: "Refresh Link",
                   onClick: updateArchive,
                 }
               : undefined,
