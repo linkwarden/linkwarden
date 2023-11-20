@@ -21,6 +21,9 @@
 
 Additionally, Linkwarden is designed with collaboration in mind, sharing links with the public and/or allowing multiple users to work together seamlessly.
 
+> [!TIP]  
+> Our official [Cloud](https://linkwarden.app/#pricing) offering provides the simplest way to begin using Linkwarden and it's the preferred choice for many due to its time-saving benefits. <br> Your subscription supports our hosting infrastructure and ongoing development. <br> Alternatively, if you prefer [self-hosting](https://docs.linkwarden.app/self-hosting/installation) Linkwarden, no problem! You'll still have access to all the premium features.
+
 <img src="./assets/dashboard.png" />
 
 <div align="center">
@@ -36,9 +39,6 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 
 <img src="./assets/light_mode.png" width="32%" />
 </div>
-
-> [!TIP]  
-> Our official [Cloud](https://linkwarden.app/#pricing) offering provides the simplest way to begin using Linkwarden and it's the preferred choice for many due to its time-saving benefits. <br> Your subscription supports our hosting infrastructure and ongoing development. <br> Alternatively, if you prefer [self-hosting](https://docs.linkwarden.app/self-hosting/installation) Linkwarden, no problem! You'll still have access to all the premium features.
 
 <details>
 <summary><b>A bit of a "history"</b></summary>
