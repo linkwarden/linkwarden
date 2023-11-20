@@ -11,7 +11,7 @@
 
 <div align='center'>
 
-[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
@@ -21,7 +21,21 @@
 
 Additionally, Linkwarden is designed with collaboration in mind, sharing links with the public and/or allowing multiple users to work together seamlessly.
 
-<img src="./assets/showcase_image.png" />
+<img src="./assets/dashboard.png" />
+
+<div align="center">
+<img src="./assets/view_links.png" width="32%" />
+
+<img src="./assets/view_collections.png" width="32%" />
+
+<img src="./assets/team_management.png" width="32%" />
+
+<img src="./assets/preserve_links.png" width="32%" />
+
+<img src="./assets/public_page.png" width="32%" />
+
+<img src="./assets/light_mode.png" width="32%" />
+</div>
 
 > [!TIP]  
 > Our official [Cloud](https://linkwarden.app/#pricing) offering provides the simplest way to begin using Linkwarden and it's the preferred choice for many due to its time-saving benefits. <br> Your subscription supports our hosting infrastructure and ongoing development. <br> Alternatively, if you prefer [self-hosting](https://docs.linkwarden.app/self-hosting/installation) Linkwarden, no problem! You'll still have access to all the premium features.
@@ -31,7 +45,7 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 Linkwarden has been completely rebuilt and redesigned from ground up, so pretty much the only thing it has in common with its predecessor is the idea behind it - bookmark management.
 
 **What happened to the old version?**
-We highly recommend that you don't use the old version because it is no longer maintained and has far fewer features. However, if you still want to check it out, we've forked the old version from the current repository into [this repo](https://github.com/linkwarden/linkwarden-old).
+We've forked the old version from the current repository into [this repo](https://github.com/linkwarden/linkwarden-old).
 
 </details>
 
@@ -50,6 +64,7 @@ We highly recommend that you don't use the old version because it is no longer m
 - 🧩 Browser extension, managed by the community. [Star it here!](https://github.com/linkwarden/browser-extension)
 - ⬇️ Import your bookmarks from other browsers.
 - ⚡️ Powerful API.
+- ✅ And many more changes!
 
 ## Suggestions
 
@@ -78,16 +93,6 @@ If you want to contribute, Thanks! Start by checking our [public roadmap](https:
 ## Security
 
 If you found a security vulnerability, please do **not** create a public issue, instead send an email to [security@linkwarden.app](mailto:security@linkwarden.app) stating the vulnerability. Thanks!
-
-## Screenshots
-
-<div align="center">
-<img src="./assets/collections.png" height="150" />
-
-<img src="./assets/collaborators.png" height="150" />
-
-<img src="./assets/link_details.png" height="150" />
-</div>
 
 ## Support ❤
 

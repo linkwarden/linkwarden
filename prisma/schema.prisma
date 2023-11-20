@@ -46,7 +46,7 @@ model User {
   archiveAsWaybackMachine Boolean         @default(false)
   isPrivate               Boolean         @default(false)
   displayLinkIcons        Boolean         @default(true)
-  blurredFavicons         Boolean         @default(true)
+  blurredFavicons         Boolean         @default(false)
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt @default(now())
 }
