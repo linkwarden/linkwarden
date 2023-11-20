@@ -30,7 +30,7 @@ export default async function postUser(
     ? !body.password || !body.name || !body.email
     : !body.username || !body.password || !body.name;
 
-  if (body.password.length < 8)
+  if (!body.password || body.password.length < 8)
     return res
       .status(400)
       .json({ response: "Password must be at least 8 characters." });
