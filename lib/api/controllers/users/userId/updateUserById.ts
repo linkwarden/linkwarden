@@ -23,6 +23,11 @@ export default async function updateUserById(
       response: "Username invalid.",
       status: 400,
     };
+  if (data.newPassword && data.newPassword?.length < 8)
+    return {
+      response: "Password must be at least 8 characters.",
+      status: 400,
+    };
 
   // Check email (if enabled)
   const checkEmail =
