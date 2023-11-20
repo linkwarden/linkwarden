@@ -31,13 +31,16 @@ export default async function getPublicUser(
 
   if (user?.isPrivate) {
     if (requestingId) {
-      const requestingUsername = (
-        await prisma.user.findUnique({ where: { id: requestingId } })
-      )?.username;
+      const requestingUser = await prisma.user.findUnique({
+        where: { id: requestingId },
+      });
 
       if (
-        !requestingUsername ||
-        !whitelistedUsernames.includes(requestingUsername?.toLowerCase())
+        requestingUser?.id !== requestingId &&
+        (!requestingUser?.username ||
+          !whitelistedUsernames.includes(
+            requestingUser.username?.toLowerCase()
+          ))
       ) {
         return {
           response: "User not found or profile is private.",

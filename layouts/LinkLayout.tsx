@@ -70,7 +70,7 @@ export default function LinkLayout({ children }: Props) {
 
   useEffect(() => {
     if (link)
-      setLinkCollection(collections.find((e) => e.id === link?.collection.id));
+      setLinkCollection(collections.find((e) => e.id === link?.collection?.id));
   }, [link, collections]);
 
   return (
