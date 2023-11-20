@@ -42,7 +42,7 @@ export default function LinkSidebar({ className, onClick }: Props) {
 
   useEffect(() => {
     if (link)
-      setLinkCollection(collections.find((e) => e.id === link?.collection.id));
+      setLinkCollection(collections.find((e) => e.id === link?.collection?.id));
   }, [link]);
 
   return (
