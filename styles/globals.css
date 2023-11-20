@@ -142,7 +142,7 @@ body {
 /* Theme */
 @layer base {
   body {
-    @apply dark:bg-neutral-900 bg-white dark:text-white;
+    @apply dark:bg-neutral-900 bg-white text-black dark:text-white;
   }
 }
 

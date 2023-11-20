@@ -5,8 +5,9 @@ import React, { useEffect, useState } from "react";
 import useAccountStore from "@/store/account";
 import { toast } from "react-hot-toast";
 import { AccountSettings } from "@/types/global";
+import TextInput from "@/components/TextInput";
 
-export default function Archive() {
+export default function Api() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { account, updateAccount } = useAccountStore();
   const [user, setUser] = useState<AccountSettings>(account);
@@ -39,55 +40,39 @@ export default function Archive() {
   }, [account]);
 
   const submit = async () => {
-    setSubmitLoader(true);
-
-    const load = toast.loading("Applying...");
-
-    const response = await updateAccount({
-      ...user,
-    });
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success("Settings Applied!");
-    } else toast.error(response.data as string);
-    setSubmitLoader(false);
+    // setSubmitLoader(true);
+    // const load = toast.loading("Applying...");
+    // const response = await updateAccount({
+    //   ...user,
+    // });
+    // toast.dismiss(load);
+    // if (response.ok) {
+    //   toast.success("Settings Applied!");
+    // } else toast.error(response.data as string);
+    // setSubmitLoader(false);
   };
 
   return (
     <SettingsLayout>
-      <p className="capitalize text-3xl font-thin inline">Archive Settings</p>
+      <p className="capitalize text-3xl font-thin inline">API Keys</p>
 
       <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
 
-      <p>Formats to Archive webpages:</p>
-      <div className="p-3">
-        <Checkbox
-          label="Screenshot"
-          state={archiveAsScreenshot}
-          onClick={() => setArchiveAsScreenshot(!archiveAsScreenshot)}
-        />
+      <div className="flex flex-col gap-3">
+        <div className="badge bg-yellow-300 text-black">
+          Status: Under Development
+        </div>
 
-        <Checkbox
-          label="PDF"
-          state={archiveAsPDF}
-          onClick={() => setArchiveAsPDF(!archiveAsPDF)}
-        />
+        <p>This page will be for creating and managing your API keys.</p>
 
-        <Checkbox
-          label="Archive.org Snapshot"
-          state={archiveAsWaybackMachine}
-          onClick={() => setArchiveAsWaybackMachine(!archiveAsWaybackMachine)}
-        />
+        <p>
+          For now, you can <i>temporarily</i> use your{" "}
+          <code className="text-xs whitespace-nowrap bg-gray-500/40 rounded-md px-2 py-1">
+            next-auth.session-token
+          </code>{" "}
+          in your browser cookies as the API key for your integrations.
+        </p>
       </div>
-
-      <SubmitButton
-        onClick={submit}
-        loading={submitLoader}
-        label="Save"
-        className="mt-2 mx-auto lg:mx-0"
-      />
     </SettingsLayout>
   );
 }

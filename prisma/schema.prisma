@@ -20,7 +20,6 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -29,45 +28,34 @@ model Account {
 model User {
   id                      Int             @id @default(autoincrement())
   name                    String
-
   username                String?         @unique
-
   email                   String?         @unique
   emailVerified           DateTime?
   image                   String?
-
   accounts                Account[]
-
   password                String?
-
   collections             Collection[]
   tags                    Tag[]
   pinnedLinks             Link[]
   collectionsJoined       UsersAndCollections[]
   whitelistedUsers        WhitelistedUser[]
-
+  apiKeys                 ApiKey[]
   subscriptions           Subscription?
-
   archiveAsScreenshot     Boolean         @default(true)
   archiveAsPDF            Boolean         @default(true)
   archiveAsWaybackMachine Boolean         @default(false)
-
   isPrivate               Boolean         @default(false)
-
   displayLinkIcons        Boolean         @default(true)
   blurredFavicons         Boolean         @default(true)
-
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt @default(now())
 }
 
 model WhitelistedUser {
   id             Int        @id @default(autoincrement())
-
   username       String     @default("")
   User           User?      @relation(fields: [userId], references: [id])
   userId         Int?
-
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt @default(now())
 }
@@ -76,7 +64,6 @@ model VerificationToken {
   identifier     String
   token          String     @unique
   expires        DateTime
-
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt @default(now())
 
@@ -89,13 +76,12 @@ model Collection {
   description String  @default("")
   color       String  @default("#0ea5e9")
   isPublic    Boolean @default(false)
-
-  owner     User                  @relation(fields: [ownerId], references: [id])
-  ownerId   Int
-  members   UsersAndCollections[]
-  links     Link[]
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt @default(now())
+  owner       User                  @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  members     UsersAndCollections[]
+  links       Link[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt @default(now())
 
   @@unique([name, ownerId])
 }
@@ -103,16 +89,13 @@ model Collection {
 model UsersAndCollections {
   user         User       @relation(fields: [userId], references: [id])
   userId       Int
-
   collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId Int
-
   canCreate    Boolean
   canUpdate    Boolean
   canDelete    Boolean
-
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt @default(now())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt @default(now())
 
   @@id([userId, collectionId])
 }
@@ -122,32 +105,25 @@ model Link {
   name              String
   url               String
   description       String     @default("")
-
   pinnedBy          User[]
-
   collection        Collection @relation(fields: [collectionId], references: [id])
   collectionId      Int
   tags              Tag[]
-
   textContent       String?
-
   screenshotPath    String?
   pdfPath           String?
   readabilityPath   String?
-
   lastPreserved     DateTime?
-
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt @default(now())
 }
 
 model Tag {
-  id      Int    @id @default(autoincrement())
-  name    String
-  links   Link[]
-  owner   User   @relation(fields: [ownerId], references: [id])
-  ownerId Int
-
+  id             Int    @id @default(autoincrement())
+  name           String
+  links          Link[]
+  owner          User   @relation(fields: [ownerId], references: [id])
+  ownerId        Int
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt @default(now())
 
@@ -160,10 +136,22 @@ model Subscription {
   stripeSubscriptionId String     @unique
   currentPeriodStart   DateTime
   currentPeriodEnd     DateTime
-
   user                 User       @relation(fields: [userId], references: [id])
   userId               Int        @unique
-
   createdAt            DateTime   @default(now())
   updatedAt            DateTime   @updatedAt @default(now())
+}
+
+model ApiKey {
+  id             Int        @id @default(autoincrement())
+  name           String
+  user           User       @relation(fields: [userId], references: [id])
+  userId         Int        
+  token          String     @unique
+  expires        DateTime
+  lastUsedAt     DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt @default(now())
+
+  @@unique([token, userId])
 }
