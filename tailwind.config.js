@@ -13,5 +13,7 @@ module.exports = {
     // For the "layouts" directory
     "./layouts/**/*.{js,ts,jsx,tsx}",
   ],
-  plugins: [require("daisyui")],
+  plugins: [
+    // require("daisyui")
+  ],
 };
