@@ -59,7 +59,7 @@ export default function Api() {
       <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
 
       <div className="flex flex-col gap-3">
-        <div className="badge bg-yellow-300 text-black">
+        <div className="badge bg-yellow-300 rounded-md border w-fit px-2 text-black">
           Status: Under Development
         </div>
 
