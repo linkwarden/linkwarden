@@ -68,6 +68,10 @@ export default function Appearance() {
 
   return (
     <SettingsLayout>
+      <p className="capitalize text-3xl font-thin inline">Appearance</p>
+
+      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+
       <div className="flex flex-col gap-10">
         <div>
           <p className="mb-3">Select Theme</p>

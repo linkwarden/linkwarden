@@ -151,6 +151,10 @@ export default function Account() {
 
   return (
     <SettingsLayout>
+      <p className="capitalize text-3xl font-thin inline">Account Settings</p>
+
+      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+
       <div className="flex flex-col gap-10">
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
           <div className="flex flex-col gap-3">

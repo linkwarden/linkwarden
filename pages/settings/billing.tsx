@@ -11,9 +11,13 @@ export default function Billing() {
 
   return (
     <SettingsLayout>
+      <p className="capitalize text-3xl font-thin inline">Billing Settings</p>
+
+      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+
       <div className="w-full mx-auto flex flex-col gap-3 justify-between">
         <p className="text-md text-black dark:text-white">
-          To manage/cancel your subsciption, visit the{" "}
+          To manage/cancel your subscription, visit the{" "}
           <a
             href={process.env.NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL}
             className="underline"

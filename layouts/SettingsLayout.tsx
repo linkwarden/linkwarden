@@ -49,8 +49,8 @@ export default function SettingsLayout({ children }: Props) {
           <SettingsSidebar />
         </div>
 
-        <div className="w-full flex flex-col min-h-screen p-5 lg:ml-64">
-          <div className="flex gap-3">
+        <div className="w-full min-h-screen p-5 lg:ml-64">
+          <div className="gap-2 inline-flex mr-3">
             <div
               onClick={toggleSidebar}
               className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
@@ -60,17 +60,11 @@ export default function SettingsLayout({ children }: Props) {
 
             <Link
               href="/dashboard"
-              className="inline-flex gap-1 items-center select-none cursor-pointer p-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
+              className="inline-flex w-fit gap-1 items-center select-none cursor-pointer p-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
             >
               <FontAwesomeIcon icon={faChevronLeft} className="w-5 h-5" />
             </Link>
-
-            <p className="capitalize text-3xl font-thin">
-              {router.asPath.split("/").pop()} Settings
-            </p>
           </div>
-
-          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
 
           {children}
 
