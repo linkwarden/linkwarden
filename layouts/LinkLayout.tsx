@@ -100,7 +100,7 @@ export default function LinkLayout({ children }: Props) {
                     }`
                   );
                 } else {
-                  router.push(`/collections/${linkCollection?.id}`);
+                  router.push(`/dashboard`);
                 }
               }}
               className="inline-flex gap-1 hover:opacity-60 items-center select-none cursor-pointer p-2 lg:p-0 lg:px-1 lg:my-2 text-gray-500 dark:text-gray-300 rounded-md duration-100"
@@ -110,7 +110,9 @@ export default function LinkLayout({ children }: Props) {
               <span className="hidden sm:inline-block">
                 to{" "}
                 <span className="capitalize">
-                  {linkCollection?.name || link?.collection?.name}
+                  {router.pathname.startsWith("/public")
+                    ? linkCollection?.name || link?.collection?.name
+                    : "Dashboard"}
                 </span>
               </span>
             </div>
