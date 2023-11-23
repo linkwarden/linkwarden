@@ -56,7 +56,7 @@ We've forked the old version from the current repository into [this repo](https:
 - 📂 Organize links by collection, name, description and multiple tags.
 - 👥 Collaborate on gathering links in a collection.
 - 🔐 Customize the permissions of each member.
-- 🌐 Share your collected links with the world.
+- 🌐 Share your collected links and preserved formats with the world.
 - 📌 Pin your favorite links to dashboard.
 - 🔍 Full text search, filter and sort for easy retrieval.
 - 📱 Responsive design and supports most modern browsers.
@@ -64,7 +64,8 @@ We've forked the old version from the current repository into [this repo](https:
 - 🧩 Browser extension, managed by the community. [Star it here!](https://github.com/linkwarden/browser-extension)
 - ⬇️ Import your bookmarks from other browsers.
 - ⚡️ Powerful API.
-- ✅ And many more changes!
+- 🔐 SSO and Keycloak integration. (Enterprise and Self-hosted users only)
+- ✅ And many more features!
 
 ## Suggestions
 
