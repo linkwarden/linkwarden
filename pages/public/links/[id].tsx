@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBoxesStacked, faFolder } from "@fortawesome/free-solid-svg-icons";
 import useModalStore from "@/store/modals";
 import { useSession } from "next-auth/react";
-import { isProbablyReaderable } from "@mozilla/readability";
 
 type LinkContent = {
   title: string;
