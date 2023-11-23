@@ -54,12 +54,12 @@ export default function Api() {
 
   return (
     <SettingsLayout>
-      <p className="capitalize text-3xl font-thin inline">API Keys</p>
+      <p className="capitalize text-3xl font-thin inline">API Keys (Soon)</p>
 
       <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
 
       <div className="flex flex-col gap-3">
-        <div className="badge bg-yellow-300 rounded-md border w-fit px-2 text-black">
+        <div className="badge bg-orange-500 rounded-md border border-black w-fit px-2 text-black">
           Status: Under Development
         </div>
 

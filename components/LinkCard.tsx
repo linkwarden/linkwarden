@@ -150,7 +150,7 @@ export default function LinkCard({ link, count, className }: Props) {
               setExpandDropdown({ x: e.clientX, y: e.clientY });
             }}
             id={"expand-dropdown" + link.id}
-            className="text-gray-500 dark:text-gray-300 inline-flex rounded-md cursor-pointer hover:bg-slate-200 dark:hover:bg-neutral-700 absolute right-5 top-5 z-10 duration-100 p-1"
+            className="text-gray-500 dark:text-gray-300 inline-flex rounded-md cursor-pointer hover:bg-slate-200 dark:hover:bg-neutral-700 absolute right-4 top-4 z-10 duration-100 p-1"
           >
             <FontAwesomeIcon
               icon={faEllipsis}
@@ -163,7 +163,7 @@ export default function LinkCard({ link, count, className }: Props) {
 
         <div
           onClick={() => router.push("/links/" + link.id)}
-          className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-5"
+          className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-4"
         >
           {url && account.displayLinkIcons && (
             <Image
@@ -173,7 +173,7 @@ export default function LinkCard({ link, count, className }: Props) {
               alt=""
               className={`${
                 account.blurredFavicons ? "blur-sm " : ""
-              }absolute w-16 group-hover:opacity-80 duration-100 rounded-2xl bottom-5 right-5 opacity-60 select-none`}
+              }absolute w-16 group-hover:opacity-80 duration-100 rounded-2xl bottom-5 right-5 opacity-60 select-none z-10`}
               draggable="false"
               onError={(e) => {
                 const target = e.target as HTMLElement;
@@ -208,6 +208,27 @@ export default function LinkCard({ link, count, className }: Props) {
                   {collection?.name}
                 </p>
               </Link>
+
+              {/* {link.tags[0] ? (
+                <div className="flex gap-3 items-center flex-wrap my-2 truncate relative">
+                  <div className="flex gap-1 items-center flex-nowrap">
+                    {link.tags.map((e, i) => (
+                      <Link
+                        href={"/tags/" + e.id}
+                        key={i}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        className="px-2 bg-sky-200 text-black dark:text-white dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                      >
+                        {e.name}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent to-slate-100 dark:to-neutral-800 to-35%"></div>
+                </div>
+              ) : undefined} */}
+
               <Link
                 href={link.url}
                 target="_blank"
