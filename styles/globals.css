@@ -9,15 +9,16 @@
 
 [data-theme="dark"] {
   --my-color: #000;
+  color-scheme: dark;
 }
 
 [data-theme="light"] {
   --my-color: #ffabc8;
+  color-scheme: light;
 }
 
 html,
 body {
-  color-scheme: dark;
   scroll-behavior: smooth;
 }
 
