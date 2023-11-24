@@ -65,8 +65,6 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    console.log(queryId);
-
     const { file, contentType, status } = await readFile(
       `uploads/avatar/${queryId}.jpg`
     );
