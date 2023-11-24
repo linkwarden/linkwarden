@@ -47,7 +47,7 @@ export default function CollectionCard({ collection, className }: Props) {
             settings.theme === "dark" ? "#262626" : "#f3f4f6"
           } 50%, ${settings.theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
         }}
-        className={`border border-solid border-sky-100 dark:border-neutral-700 self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${
+        className={`border border-solid border-neutral self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${
           className || ""
         }`}
       >
@@ -84,7 +84,7 @@ export default function CollectionCard({ collection, className }: Props) {
                 })
                 .slice(0, 4)}
               {collection.members.length - 4 > 0 ? (
-                <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 dark:border-neutral-700 -mr-3">
+                <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 -mr-3">
                   +{collection.members.length - 4}
                 </div>
               ) : null}

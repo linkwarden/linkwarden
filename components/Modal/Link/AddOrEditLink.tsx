@@ -186,7 +186,7 @@ export default function AddOrEditLink({
 
       {optionsExpanded ? (
         <div>
-          {/* <hr className="mb-3 border border-sky-100 dark:border-neutral-700" /> */}
+          {/* <hr className="mb-3 border border-neutral-content" /> */}
           <div className="grid sm:grid-cols-2 gap-3">
             <div className={`${method === "UPDATE" ? "sm:col-span-2" : ""}`}>
               <p className="mb-2">Name</p>
@@ -241,7 +241,7 @@ export default function AddOrEditLink({
                     ? "Will be auto generated if nothing is provided."
                     : ""
                 }
-                className="resize-none w-full rounded-md p-2 border-sky-100 bg-gray-50 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
+                className="resize-none w-full rounded-md p-2 border-neutral-content bg-gray-50 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
               />
             </div>
           </div>

@@ -107,7 +107,7 @@ export default function Index() {
             <div className="flex gap-2 items-end font-thin">
               <FontAwesomeIcon
                 icon={faHashtag}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-primary"
               />
               {renameTag ? (
                 <>
@@ -115,7 +115,7 @@ export default function Index() {
                     <input
                       type="text"
                       autoFocus
-                      className="sm:text-4xl text-3xl capitalize bg-transparent h-10 w-3/4 outline-none border-b border-b-sky-100 dark:border-b-neutral-700"
+                      className="sm:text-4xl text-3xl capitalize bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content dark:border-b-neutral-700"
                       value={newTagName}
                       onChange={(e) => setNewTagName(e.target.value)}
                     />

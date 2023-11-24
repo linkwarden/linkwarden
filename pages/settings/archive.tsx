@@ -59,7 +59,7 @@ export default function Archive() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">Archive Settings</p>
 
-      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+      <hr className="my-3 border-1 border-neutral-content" />
 
       <p>Formats to Archive webpages:</p>
       <div className="p-3">

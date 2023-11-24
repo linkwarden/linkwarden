@@ -23,7 +23,7 @@ export default function PublicSearchBar({ placeHolder }: Props) {
     <div className="flex items-center relative group">
       <label
         htmlFor="search-box"
-        className="inline-flex w-fit absolute left-2 pointer-events-none rounded-md text-sky-500 dark:text-sky-500"
+        className="inline-flex w-fit absolute left-2 pointer-events-none rounded-md text-primary"
       >
         <FontAwesomeIcon icon={faMagnifyingGlass} className="w-4 h-4" />
       </label>
@@ -52,7 +52,7 @@ export default function PublicSearchBar({ placeHolder }: Props) {
             );
           }
         }}
-        className="border text-sm border-sky-100 bg-gray-50 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 rounded-md pl-8 py-2 pr-2 w-44 sm:w-60 dark:hover:border-neutral-600 md:focus:w-80 hover:border-sky-300 duration-100 outline-none dark:bg-neutral-800"
+        className="border text-sm border-neutral-content bg-gray-50 focus:border-sky-300 dark:focus:border-sky-600 rounded-md pl-8 py-2 pr-2 w-44 sm:w-60 dark:hover:border-neutral-600 md:focus:w-80 hover:border-sky-300 duration-100 outline-none dark:bg-neutral-800"
       />
     </div>
   );

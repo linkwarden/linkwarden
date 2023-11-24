@@ -33,7 +33,7 @@ export default function ViewTeam({ collection }: Props) {
       <p>Here are all the members who are collaborating on this collection.</p>
 
       <div
-        className="relative border px-2 rounded-md border-sky-100 dark:border-neutral-700 flex min-h-[4rem] gap-2 justify-between"
+        className="relative border px-2 rounded-md border-neutral flex min-h-[4rem] gap-2 justify-between"
         title={`'@${collectionOwner.username}' is the owner of this collection.`}
       >
         <div className="flex items-center gap-2 w-full">
@@ -68,7 +68,7 @@ export default function ViewTeam({ collection }: Props) {
                 return (
                   <div
                     key={i}
-                    className="relative border p-2 rounded-md border-sky-100 dark:border-neutral-700 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
+                    className="relative border p-2 rounded-md border-neutral flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
                   >
                     <div className="flex items-center gap-2">
                       <ProfilePhoto

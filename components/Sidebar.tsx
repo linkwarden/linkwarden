@@ -52,7 +52,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-gray-100 dark:bg-neutral-800 h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-800 border-r-sky-100 dark:border-r-neutral-700 px-2 z-20 ${
+      className={`bg-base-200 dark:bg-neutral-800 h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-800 border-r-neutral-content dark:border-r-neutral-700 px-2 z-20 ${
         className || ""
       }`}
     >
@@ -60,12 +60,14 @@ export default function Sidebar({ className }: { className?: string }) {
         <Link href={`/dashboard`}>
           <div
             className={`${
-              active === `/dashboard` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              active === `/dashboard`
+                ? "bg-primary/20"
+                : "hover:bg-slate-500/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
               icon={faChartSimple}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 drop-shadow text-primary"
             />
             <p className="truncate w-full">Dashboard</p>
           </div>
@@ -74,12 +76,12 @@ export default function Sidebar({ className }: { className?: string }) {
         <Link href={`/links`}>
           <div
             className={`${
-              active === `/links` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              active === `/links` ? "bg-primary/20" : "hover:bg-slate-500/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
               icon={faLink}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 drop-shadow text-primary"
             />
             <p className="truncate w-full">All Links</p>
           </div>
@@ -88,12 +90,14 @@ export default function Sidebar({ className }: { className?: string }) {
         <Link href={`/collections`}>
           <div
             className={`${
-              active === `/collections` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              active === `/collections`
+                ? "bg-primary/20"
+                : "hover:bg-slate-500/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
               icon={faFolder}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 drop-shadow text-primary"
             />
             <p className="truncate w-full">All Collections</p>
           </div>
@@ -102,12 +106,14 @@ export default function Sidebar({ className }: { className?: string }) {
         <Link href={`/links/pinned`}>
           <div
             className={`${
-              active === `/links/pinned` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              active === `/links/pinned`
+                ? "bg-primary/20"
+                : "hover:bg-slate-500/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
               icon={faThumbTack}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 drop-shadow text-primary"
             />
             <p className="truncate w-full">Pinned Links</p>
           </div>
@@ -148,9 +154,9 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/collections/${e.id}`
-                            ? "bg-sky-500"
-                            : "hover:bg-slate-500"
-                        } duration-100 py-1 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+                            ? "bg-primary/20"
+                            : "hover:bg-slate-500/20"
+                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
                         <FontAwesomeIcon
                           icon={faFolder}
@@ -216,13 +222,13 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/tags/${e.id}`
-                            ? "bg-sky-500"
-                            : "hover:bg-slate-500"
-                        } duration-100 py-1 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                            ? "bg-primary/20"
+                            : "hover:bg-slate-500/20"
+                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
                         <FontAwesomeIcon
                           icon={faHashtag}
-                          className="w-4 h-4 text-sky-500 dark:text-sky-500 mt-1"
+                          className="w-4 h-4 text-primary mt-1"
                         />
 
                         <p className="truncate w-full pr-7">{e.name}</p>

@@ -104,7 +104,7 @@ export default function Register() {
       }
     >
       {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? (
-        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
           <p>
             Registration is disabled for this instance, please contact the admin
             in case of any issues.
@@ -112,12 +112,12 @@ export default function Register() {
         </div>
       ) : (
         <form onSubmit={registerUser}>
-          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
             <p className="text-3xl text-center font-extralight">
               Enter your details
             </p>
 
-            <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+            <hr className="border-1 border-neutral-content" />
 
             <div>
               <p className="text-sm w-fit font-semibold mb-1">Display Name</p>

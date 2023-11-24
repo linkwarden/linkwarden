@@ -110,7 +110,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-3">
           <FontAwesomeIcon
             icon={faChartSimple}
-            className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
+            className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
           />
           <div>
             <p className="text-3xl capitalize font-thin">Dashboard</p>
@@ -120,15 +120,15 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-sky-100 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800">
+          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200 dark:bg-neutral-800">
             <DashboardItem
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
               icon={faLink}
             />
 
-            <hr className="border-sky-100 dark:border-neutral-700 md:hidden my-5" />
-            <div className="h-24 border-1 border-l border-sky-100 dark:border-neutral-700 hidden md:block"></div>
+            <hr className="border-neutral-content md:hidden my-5" />
+            <div className="h-24 border-1 border-l border-neutral-content hidden md:block"></div>
 
             <DashboardItem
               name={collections.length === 1 ? "Collection" : "Collections"}
@@ -136,8 +136,8 @@ export default function Dashboard() {
               icon={faFolder}
             />
 
-            <hr className="border-sky-100 dark:border-neutral-700 md:hidden my-5" />
-            <div className="h-24 border-1 border-r border-sky-100 dark:border-neutral-700 hidden md:block"></div>
+            <hr className="border-neutral-content md:hidden my-5" />
+            <div className="h-24 border-1 border-r border-neutral-content hidden md:block"></div>
 
             <DashboardItem
               name={tags.length === 1 ? "Tag" : "Tags"}
@@ -151,7 +151,7 @@ export default function Dashboard() {
           <div className="flex gap-2 items-center">
             <FontAwesomeIcon
               icon={faClockRotateLeft}
-              className="w-5 h-5 text-sky-500 dark:text-sky-500 drop-shadow"
+              className="w-5 h-5 text-primary drop-shadow"
             />
             <p className="text-2xl">Recently Added Links</p>
           </div>
@@ -181,7 +181,7 @@ export default function Dashboard() {
           ) : (
             <div
               style={{ flex: "1 1 auto" }}
-              className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+              className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
             >
               <p className="text-center text-2xl">
                 View Your Recently Added Links Here!
@@ -215,7 +215,7 @@ export default function Dashboard() {
                   <div
                     onClick={() => setImportDropdown(!importDropdown)}
                     id="import-dropdown"
-                    className="flex gap-2 select-none text-sm cursor-pointer p-2 px-3 rounded-md border dark:hover:border-sky-600 text-black border-black dark:text-white dark:border-white hover:border-sky-500 hover:dark:border-sky-500 hover:text-sky-500 hover:dark:text-sky-500 duration-100 group"
+                    className="flex gap-2 select-none text-sm cursor-pointer p-2 px-3 rounded-md border dark:hover:border-sky-600 text-black border-black dark:text-white dark:border-white hover:border-primary hover:dark:border-primary hover:text-primary duration-100 group"
                   >
                     <FontAwesomeIcon
                       icon={faFileImport}
@@ -236,7 +236,7 @@ export default function Dashboard() {
                         if (target.id !== "import-dropdown")
                           setImportDropdown(false);
                       }}
-                      className={`absolute top-10 left-0 w-52 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+                      className={`absolute top-10 left-0 w-52 py-1 shadow-md border border-neutral-content bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
                     >
                       <div className="cursor-pointer rounded-md">
                         <label
@@ -286,7 +286,7 @@ export default function Dashboard() {
           <div className="flex gap-2 items-center">
             <FontAwesomeIcon
               icon={faThumbTack}
-              className="w-5 h-5 text-sky-500 dark:text-sky-500 drop-shadow"
+              className="w-5 h-5 text-primary drop-shadow"
             />
             <p className="text-2xl">Pinned Links</p>
           </div>
@@ -318,7 +318,7 @@ export default function Dashboard() {
           ) : (
             <div
               style={{ flex: "1 1 auto" }}
-              className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+              className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
             >
               <p className="text-center text-2xl">
                 Pin Your Favorite Links Here!

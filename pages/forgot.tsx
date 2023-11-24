@@ -43,12 +43,12 @@ export default function Forgot() {
   return (
     <CenteredForm>
       <form onSubmit={sendConfirmation}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
             Password Recovery
           </p>
 
-          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+          <hr className="border-1 border-neutral-content" />
 
           <div>
             <p>

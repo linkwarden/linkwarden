@@ -91,7 +91,7 @@ export default function PreservedFormats() {
   return (
     <div className={`flex flex-col gap-3 sm:w-[35rem] w-80 pt-3`}>
       {link?.screenshotPath && link?.screenshotPath !== "pending" ? (
-        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
+        <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
             <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
@@ -126,7 +126,7 @@ export default function PreservedFormats() {
       ) : undefined}
 
       {link?.pdfPath && link.pdfPath !== "pending" ? (
-        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
+        <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
             <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />

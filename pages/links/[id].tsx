@@ -152,7 +152,7 @@ export default function Index() {
       >
         <div
           id="link-banner"
-          className="link-banner p-5 mb-4 relative bg-opacity-10 border border-solid border-sky-100 dark:border-neutral-700 shadow-md"
+          className="link-banner p-5 mb-4 relative bg-opacity-10 border border-solid border-neutral-content shadow-md"
         >
           <div id="link-banner-inner" className="link-banner-inner"></div>
 
@@ -259,7 +259,7 @@ export default function Index() {
               }}
             ></div>
           ) : (
-            <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
+            <div className="border border-solid border-neutral-content w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
               {link?.readabilityPath === "pending" ? (
                 <p className="text-center">
                   Generating readable format, please wait...
