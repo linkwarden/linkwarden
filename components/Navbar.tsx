@@ -12,9 +12,12 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 import useModalStore from "@/store/modals";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import ToggleDarkMode from "./ToggleDarkMode";
+import useLocalSettingsStore from "@/store/localSettings";
 
 export default function Navbar() {
   const { setModal } = useModalStore();
+
+  const { settings, updateSettings } = useLocalSettingsStore();
 
   const { account } = useAccountStore();
 
@@ -25,6 +28,14 @@ export default function Navbar() {
   const [sidebar, setSidebar] = useState(false);
 
   const { width } = useWindowDimensions();
+
+  const handleToggle = () => {
+    if (settings.theme === "dark") {
+      updateSettings({ theme: "light" });
+    } else {
+      updateSettings({ theme: "dark" });
+    }
+  };
 
   useEffect(() => {
     setSidebar(false);
@@ -95,9 +106,12 @@ export default function Navbar() {
                   href: "/settings/account",
                 },
                 {
-                  name: `Switch to ${"light" ? "Dark" : "Light"}`,
+                  name: `Switch to ${
+                    settings.theme === "light" ? "Dark" : "Light"
+                  }`,
                   onClick: () => {
                     setProfileDropdown(!profileDropdown);
+                    handleToggle();
                   },
                 },
                 {

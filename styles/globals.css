@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --my-color: #fff;
+  /* or any other variables/style */
+}
+
+[data-theme="dark"] {
+  --my-color: #000;
+}
+
+[data-theme="light"] {
+  --my-color: #ffabc8;
+}
+
 html,
 body {
+  color-scheme: dark;
   scroll-behavior: smooth;
 }
 
@@ -140,11 +154,6 @@ body {
 }
 
 /* Theme */
-@layer base {
-  body {
-    @apply dark:bg-neutral-900 bg-white text-black dark:text-white;
-  }
-}
 
 /* react-select */
 @layer components {

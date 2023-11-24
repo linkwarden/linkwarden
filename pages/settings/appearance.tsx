@@ -13,8 +13,10 @@ import SubmitButton from "@/components/SubmitButton";
 import React from "react";
 import Checkbox from "@/components/Checkbox";
 import LinkPreview from "@/components/LinkPreview";
+import useLocalSettingsStore from "@/store/localSettings";
 
 export default function Appearance() {
+  const { settings, updateSettings } = useLocalSettingsStore();
   const submit = async () => {
     setSubmitLoader(true);
 
@@ -75,8 +77,11 @@ export default function Appearance() {
           <div className="flex gap-3 w-full">
             <div
               className={`w-full text-center outline-solid outline-sky-100 outline dark:outline-neutral-700 h-40 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
-                "dark" ? "dark:outline-sky-500 text-sky-500" : "text-white"
+                localStorage.getItem("theme") === "dark"
+                  ? "dark:outline-sky-500 text-sky-500"
+                  : "text-white"
               }`}
+              onClick={() => updateSettings({ theme: "dark" })}
             >
               <FontAwesomeIcon icon={faMoon} className="w-1/2 h-1/2" />
               <p className="text-2xl">Dark Theme</p>
@@ -85,8 +90,11 @@ export default function Appearance() {
             </div>
             <div
               className={`w-full text-center outline-solid outline-sky-100 outline dark:outline-neutral-700 h-40 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
-                "light" ? "outline-sky-500 text-sky-500" : "text-black"
+                localStorage.getItem("theme") === "light"
+                  ? "outline-sky-500 text-sky-500"
+                  : "text-black"
               }`}
+              onClick={() => updateSettings({ theme: "light" })}
             >
               <FontAwesomeIcon icon={faSun} className="w-1/2 h-1/2" />
               <p className="text-2xl">Light Theme</p>
