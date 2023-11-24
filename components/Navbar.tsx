@@ -10,7 +10,6 @@ import SearchBar from "@/components/SearchBar";
 import useAccountStore from "@/store/account";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import useModalStore from "@/store/modals";
-import { useTheme } from "next-themes";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import ToggleDarkMode from "./ToggleDarkMode";
 
@@ -22,16 +21,6 @@ export default function Navbar() {
   const [profileDropdown, setProfileDropdown] = useState(false);
 
   const router = useRouter();
-
-  const { theme, setTheme } = useTheme();
-
-  const handleToggle = () => {
-    if (theme === "dark") {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
-  };
 
   const [sidebar, setSidebar] = useState(false);
 
@@ -106,9 +95,8 @@ export default function Navbar() {
                   href: "/settings/account",
                 },
                 {
-                  name: `Switch to ${theme === "light" ? "Dark" : "Light"}`,
+                  name: `Switch to ${"light" ? "Dark" : "Light"}`,
                   onClick: () => {
-                    handleToggle();
                     setProfileDropdown(!profileDropdown);
                   },
                 },

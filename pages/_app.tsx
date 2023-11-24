@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
@@ -6,7 +6,6 @@ import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
 import { Toaster } from "react-hot-toast";
 import { Session } from "next-auth";
-import { ThemeProvider } from "next-themes";
 
 export default function App({
   Component,
@@ -14,11 +13,20 @@ export default function App({
 }: AppProps<{
   session: Session;
 }>) {
-  const defaultTheme: "light" | "dark" = "dark";
+  const [theme, setTheme] = useState("");
 
   useEffect(() => {
-    if (!localStorage.getItem("theme"))
-      localStorage.setItem("theme", defaultTheme);
+    setTheme(
+      localStorage.getItem("theme")
+        ? (localStorage.getItem("theme") as string)
+        : "light"
+    );
+
+    if (theme) localStorage.setItem("theme", theme as string);
+    const localTheme = localStorage.getItem("theme");
+    document
+      .querySelector("html")
+      ?.setAttribute("data-theme", localTheme || "");
   }, []);
 
   return (
@@ -50,17 +58,15 @@ export default function App({
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <AuthRedirect>
-        <ThemeProvider attribute="class">
-          <Toaster
-            position="top-center"
-            reverseOrder={false}
-            toastOptions={{
-              className:
-                "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white",
-            }}
-          />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          toastOptions={{
+            className:
+              "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white",
+          }}
+        />
+        <Component {...pageProps} />
       </AuthRedirect>
     </SessionProvider>
   );
