@@ -4,17 +4,18 @@
 
 :root {
   --my-color: #fff;
-  /* or any other variables/style */
 }
 
 [data-theme="dark"] {
   --my-color: #000;
   color-scheme: dark;
+  color: white;
 }
 
 [data-theme="light"] {
   --my-color: #ffabc8;
   color-scheme: light;
+  color: black;
 }
 
 html,
