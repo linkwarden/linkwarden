@@ -18,14 +18,11 @@ import useModalStore from "@/store/modals";
 import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
-import { useTheme } from "next-themes";
 
 export default function Index() {
   const { setModal } = useModalStore();
 
   const router = useRouter();
-
-  const { theme } = useTheme();
 
   const { links } = useLinkStore();
   const { collections } = useCollectionStore();
@@ -54,8 +51,8 @@ export default function Index() {
           style={{
             backgroundImage: `linear-gradient(-45deg, ${
               activeCollection?.color
-            }30 10%, ${theme === "dark" ? "#262626" : "#f3f4f6"} 50%, ${
-              theme === "dark" ? "#262626" : "#f9fafb"
+            }30 10%, ${"dark" ? "#262626" : "#f3f4f6"} 50%, ${
+              "dark" ? "#262626" : "#f9fafb"
             } 100%)`,
           }}
           className="border border-solid border-sky-100 dark:border-neutral-700 rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between"

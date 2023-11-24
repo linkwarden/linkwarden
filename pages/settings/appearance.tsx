@@ -1,5 +1,4 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
-import { useTheme } from "next-themes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
@@ -16,8 +15,6 @@ import Checkbox from "@/components/Checkbox";
 import LinkPreview from "@/components/LinkPreview";
 
 export default function Appearance() {
-  const { theme, setTheme } = useTheme();
-
   const submit = async () => {
     setSubmitLoader(true);
 
@@ -78,11 +75,8 @@ export default function Appearance() {
           <div className="flex gap-3 w-full">
             <div
               className={`w-full text-center outline-solid outline-sky-100 outline dark:outline-neutral-700 h-40 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
-                theme === "dark"
-                  ? "dark:outline-sky-500 text-sky-500"
-                  : "text-white"
+                "dark" ? "dark:outline-sky-500 text-sky-500" : "text-white"
               }`}
-              onClick={() => setTheme("dark")}
             >
               <FontAwesomeIcon icon={faMoon} className="w-1/2 h-1/2" />
               <p className="text-2xl">Dark Theme</p>
@@ -91,11 +85,8 @@ export default function Appearance() {
             </div>
             <div
               className={`w-full text-center outline-solid outline-sky-100 outline dark:outline-neutral-700 h-40 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
-                theme === "light"
-                  ? "outline-sky-500 text-sky-500"
-                  : "text-black"
+                "light" ? "outline-sky-500 text-sky-500" : "text-black"
               }`}
-              onClick={() => setTheme("light")}
             >
               <FontAwesomeIcon icon={faSun} className="w-1/2 h-1/2" />
               <p className="text-2xl">Light Theme</p>
