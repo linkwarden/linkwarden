@@ -66,7 +66,7 @@ export default function CollectionCard({ collection, className }: Props) {
           href={`/collections/${collection.id}`}
           className="flex flex-col gap-2 justify-between min-h-[12rem] h-full select-none p-5"
         >
-          <p className="text-2xl capitalize text-black dark:text-white break-words line-clamp-3 w-4/5">
+          <p className="text-2xl capitalize break-words line-clamp-3 w-4/5">
             {collection.name}
           </p>
           <div className="flex justify-between items-center">
@@ -90,7 +90,7 @@ export default function CollectionCard({ collection, className }: Props) {
               ) : null}
             </div>
             <div className="text-right w-40">
-              <div className="text-black dark:text-white font-bold text-sm flex justify-end gap-1 items-center">
+              <div className="font-bold text-sm flex justify-end gap-1 items-center">
                 {collection.isPublic ? (
                   <FontAwesomeIcon
                     icon={faGlobe}

@@ -230,7 +230,7 @@ export default function Index() {
                   />
                   <p
                     title={link?.collection?.name}
-                    className="text-black dark:text-white text-lg truncate max-w-[12rem]"
+                    className="text-lg truncate max-w-[12rem]"
                   >
                     {link?.collection?.name}
                   </p>
@@ -239,7 +239,7 @@ export default function Index() {
                   <Link key={i} href={`/tags/${e.id}`} className="z-10">
                     <p
                       title={e.name}
-                      className="px-2 py-1 bg-sky-200 text-black dark:text-white dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                      className="px-2 py-1 bg-sky-200 dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
                     >
                       {e.name}
                     </p>
@@ -266,10 +266,10 @@ export default function Index() {
                 </p>
               ) : (
                 <>
-                  <p className="text-center text-2xl text-black dark:text-white">
+                  <p className="text-center text-2xl">
                     There is no reader view for this webpage
                   </p>
-                  <p className="text-center text-sm text-black dark:text-white">
+                  <p className="text-center text-sm">
                     {link?.collection?.ownerId === userId
                       ? "You can update (refetch) the preserved formats by managing them below"
                       : "The collections owners can refetch the preserved formats"}

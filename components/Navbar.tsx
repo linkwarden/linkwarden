@@ -93,7 +93,7 @@ export default function Navbar() {
             />
             <p
               id="profile-dropdown"
-              className="text-black dark:text-white leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
+              className="leading-3 hidden sm:block select-none truncate max-w-[8rem] py-1"
             >
               {account.name}
             </p>

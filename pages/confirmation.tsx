@@ -5,7 +5,7 @@ import React from "react";
 export default function EmailConfirmaion() {
   return (
     <CenteredForm>
-      <div className="p-4 max-w-[30rem] min-w-80 w-full rounded-2xl shadow-md mx-auto border border-sky-100 dark:border-neutral-700 bg-slate-50 text-black dark:text-white dark:bg-neutral-800">
+      <div className="p-4 max-w-[30rem] min-w-80 w-full rounded-2xl shadow-md mx-auto border border-sky-100 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-800">
         <p className="text-center text-2xl sm:text-3xl font-extralight mb-2 ">
           Please check your Email
         </p>

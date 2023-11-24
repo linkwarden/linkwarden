@@ -54,7 +54,7 @@ export default function Password() {
         should be at least 8 characters.
       </p>
       <div className="w-full flex flex-col gap-2 justify-between">
-        <p className="text-black dark:text-white">New Password</p>
+        <p>New Password</p>
 
         <TextInput
           value={newPassword}
@@ -63,7 +63,7 @@ export default function Password() {
           type="password"
         />
 
-        <p className="text-black dark:text-white">Confirm New Password</p>
+        <p>Confirm New Password</p>
 
         <TextInput
           value={newPassword2}

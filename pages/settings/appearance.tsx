@@ -105,9 +105,7 @@ export default function Appearance() {
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="text-black dark:text-white truncate w-full pr-7 text-3xl font-thin">
-              Link Card
-            </p>
+            <p className="truncate w-full pr-7 text-3xl font-thin">Link Card</p>
           </div>
           <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
           <Checkbox

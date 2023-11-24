@@ -27,9 +27,7 @@ export default function FilterSearchDropdown({
       }}
       className="absolute top-8 right-0 border border-sky-100 dark:border-neutral-700 shadow-md bg-gray-50 dark:bg-neutral-800 rounded-md p-2 z-20 w-40"
     >
-      <p className="mb-2 text-black dark:text-white text-center font-semibold">
-        Filter by
-      </p>
+      <p className="mb-2 text-center font-semibold">Filter by</p>
       <div className="flex flex-col gap-2">
         <Checkbox
           label="Name"

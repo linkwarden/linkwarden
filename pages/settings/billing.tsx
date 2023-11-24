@@ -16,7 +16,7 @@ export default function Billing() {
       <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
 
       <div className="w-full mx-auto flex flex-col gap-3 justify-between">
-        <p className="text-md text-black dark:text-white">
+        <p className="text-md">
           To manage/cancel your subscription, visit the{" "}
           <a
             href={process.env.NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL}
@@ -27,7 +27,7 @@ export default function Billing() {
           .
         </p>
 
-        <p className="text-md text-black dark:text-white">
+        <p className="text-md">
           If you still need help or encountered any issues, feel free to reach
           out to us at:{" "}
           <a

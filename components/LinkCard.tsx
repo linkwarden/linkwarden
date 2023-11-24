@@ -188,7 +188,7 @@ export default function LinkCard({ link, count, className }: Props) {
                 <p className="text-sm text-gray-500 dark:text-gray-300">
                   {count + 1}
                 </p>
-                <p className="text-lg text-black dark:text-white truncate capitalize w-full pr-8">
+                <p className="text-lg truncate capitalize w-full pr-8">
                   {unescapeString(link.name || link.description)}
                 </p>
               </div>
@@ -204,9 +204,7 @@ export default function LinkCard({ link, count, className }: Props) {
                   className="w-4 h-4 mt-1 drop-shadow"
                   style={{ color: collection?.color }}
                 />
-                <p className="text-black dark:text-white truncate capitalize w-full">
-                  {collection?.name}
-                </p>
+                <p className="truncate capitalize w-full">{collection?.name}</p>
               </Link>
 
               {/* {link.tags[0] ? (
@@ -219,7 +217,7 @@ export default function LinkCard({ link, count, className }: Props) {
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
-                        className="px-2 bg-sky-200 text-black dark:text-white dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                        className="px-2 bg-sky-200 dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
                       >
                         {e.name}
                       </Link>

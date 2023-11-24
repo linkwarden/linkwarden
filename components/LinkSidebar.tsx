@@ -76,9 +76,7 @@ export default function LinkSidebar({ className, onClick }: Props) {
               className="w-6 h-6 text-gray-500 dark:text-gray-300"
             />
 
-            <p className="text-black dark:text-white truncate w-full lg:hidden">
-              Edit
-            </p>
+            <p className="truncate w-full lg:hidden">Edit</p>
           </div>
         ) : undefined}
 
@@ -102,9 +100,7 @@ export default function LinkSidebar({ className, onClick }: Props) {
             className="w-6 h-6 text-gray-500 dark:text-gray-300"
           />
 
-          <p className="text-black dark:text-white truncate w-full lg:hidden">
-            Preserved Formats
-          </p>
+          <p className="truncate w-full lg:hidden">Preserved Formats</p>
         </div>
 
         {link?.collection.ownerId === userId ||
@@ -127,9 +123,7 @@ export default function LinkSidebar({ className, onClick }: Props) {
               className="w-6 h-6 text-gray-500 dark:text-gray-300"
             />
 
-            <p className="text-black dark:text-white truncate w-full lg:hidden">
-              Delete
-            </p>
+            <p className="truncate w-full lg:hidden">Delete</p>
           </div>
         ) : undefined}
       </div>
