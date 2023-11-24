@@ -245,13 +245,14 @@ body {
 .reader-view code {
   padding: 0.15rem 0.4rem 0.15rem 0.4rem;
 }
-[class="dark"] .reader-view code,
-[class="dark"] .reader-view pre {
+
+[data-theme="dark"] .reader-view code,
+[data-theme="dark"] .reader-view pre {
   background-color: rgb(49, 49, 49);
   border-radius: 8px;
 }
-[class="light"] .reader-view code,
-[class="light"] .reader-view pre {
+[data-theme="light"] .reader-view code,
+[data-theme="light"] .reader-view pre {
   background-color: rgb(230, 230, 230);
   border-radius: 8px;
 }

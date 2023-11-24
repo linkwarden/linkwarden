@@ -1,4 +1,3 @@
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
 import React, { ReactNode } from "react";
@@ -9,14 +8,12 @@ interface Props {
 }
 
 export default function CenteredForm({ text, children }: Props) {
-  const { theme } = useTheme();
-
   return (
     <div className="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center p-5">
       <div className="m-auto flex flex-col gap-2 w-full">
-        {theme ? (
+        {true ? (
           <Image
-            src={`/linkwarden_${theme === "dark" ? "dark" : "light"}.png`}
+            src={`/linkwarden_${"dark" ? "dark" : "light"}.png`}
             width={640}
             height={136}
             alt="Linkwarden"

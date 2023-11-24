@@ -12,7 +12,6 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 import useModalStore from "@/store/modals";
 import ModalManagement from "@/components/ModalManagement";
 import ToggleDarkMode from "@/components/ToggleDarkMode";
-import { useTheme } from "next-themes";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,8 +44,6 @@ export default function PublicCollections() {
       ? (document.body.style.overflow = "hidden")
       : (document.body.style.overflow = "auto");
   }, [modal]);
-
-  const { theme } = useTheme();
 
   const router = useRouter();
 
@@ -106,8 +103,8 @@ export default function PublicCollections() {
       className="h-screen"
       style={{
         backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-          theme === "dark" ? "#262626" : "#f3f4f6"
-        } 50%, ${theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          "dark" ? "#262626" : "#f3f4f6"
+        } 50%, ${"dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
       <ModalManagement />

@@ -9,7 +9,6 @@ import {
 } from "@/types/global";
 import Image from "next/image";
 import ColorThief, { RGBColor } from "colorthief";
-import { useTheme } from "next-themes";
 import unescapeString from "@/lib/client/unescapeString";
 import isValidUrl from "@/lib/client/isValidUrl";
 import DOMPurify from "dompurify";
@@ -31,7 +30,6 @@ type LinkContent = {
 };
 
 export default function Index() {
-  const { theme } = useTheme();
   const { links, getLink } = useLinkStore();
   const { setModal } = useModalStore();
 
@@ -140,13 +138,13 @@ export default function Index() {
         )})30`;
       }
     }
-  }, [colorPalette, theme]);
+  }, [colorPalette]);
 
   return (
     <LinkLayout>
       <div
         className={`flex flex-col max-w-screen-md h-full ${
-          theme === "dark" ? "banner-dark-mode" : "banner-light-mode"
+          "dark" ? "banner-dark-mode" : "banner-light-mode"
         }`}
       >
         <div
