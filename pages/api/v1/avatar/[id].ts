@@ -53,7 +53,11 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
           .send("File inaccessible.");
       }
 
-      if (user.username && !whitelistedUsernames?.includes(user.username)) {
+      if (
+        user.username &&
+        !whitelistedUsernames?.includes(user.username) &&
+        targetUser.id !== user.id
+      ) {
         return res
           .setHeader("Content-Type", "text/plain")
           .status(400)
