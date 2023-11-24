@@ -159,14 +159,14 @@ export default function Account() {
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
           <div className="flex flex-col gap-3">
             <div>
-              <p className="text-black dark:text-white mb-2">Display Name</p>
+              <p className="mb-2">Display Name</p>
               <TextInput
                 value={user.name || ""}
                 onChange={(e) => setUser({ ...user, name: e.target.value })}
               />
             </div>
             <div>
-              <p className="text-black dark:text-white mb-2">Username</p>
+              <p className="mb-2">Username</p>
               <TextInput
                 value={user.username || ""}
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
@@ -175,7 +175,7 @@ export default function Account() {
 
             {emailEnabled ? (
               <div>
-                <p className="text-black dark:text-white mb-2">Email</p>
+                <p className="mb-2">Email</p>
                 {user.email !== account.email &&
                 process.env.NEXT_PUBLIC_STRIPE === "true" ? (
                   <p className="text-gray-500 dark:text-gray-400 mb-2 text-sm">
@@ -191,9 +191,7 @@ export default function Account() {
           </div>
 
           <div className="sm:row-span-2 sm:justify-self-center mx-auto my-3">
-            <p className="text-black dark:text-white mb-2 text-center">
-              Profile Photo
-            </p>
+            <p className="mb-2 text-center">Profile Photo</p>
             <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
               <ProfilePhoto
                 priority={true}
@@ -232,7 +230,7 @@ export default function Account() {
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="text-black dark:text-white truncate w-full pr-7 text-3xl font-thin">
+            <p className="truncate w-full pr-7 text-3xl font-thin">
               Import & Export
             </p>
           </div>
@@ -241,9 +239,7 @@ export default function Account() {
 
           <div className="flex gap-3 flex-col">
             <div>
-              <p className="text-black dark:text-white mb-2">
-                Import your data from other platforms.
-              </p>
+              <p className="mb-2">Import your data from other platforms.</p>
               <div
                 onClick={() => setImportDropdown(true)}
                 className="w-fit relative"
@@ -306,9 +302,7 @@ export default function Account() {
             </div>
 
             <div>
-              <p className="text-black dark:text-white mb-2">
-                Download your data instantly.
-              </p>
+              <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
                 <div className="border w-fit border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
                   Export Data
@@ -320,7 +314,7 @@ export default function Account() {
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="text-black dark:text-white truncate w-full pr-7 text-3xl font-thin">
+            <p className="truncate w-full pr-7 text-3xl font-thin">
               Profile Visibility
             </p>
           </div>
@@ -339,9 +333,7 @@ export default function Account() {
 
           {user.isPrivate && (
             <div className="pl-5">
-              <p className="text-black dark:text-white mt-2">
-                Whitelisted Users
-              </p>
+              <p className="mt-2">Whitelisted Users</p>
               <p className="text-gray-500 dark:text-gray-300 text-sm mb-3">
                 Please provide the Username of the users you wish to grant
                 visibility to your profile. Separated by comma.

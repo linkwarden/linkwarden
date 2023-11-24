@@ -44,14 +44,14 @@ export default function Forgot() {
     <CenteredForm>
       <form onSubmit={sendConfirmation}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
-          <p className="text-3xl text-center text-black dark:text-white font-extralight">
+          <p className="text-3xl text-center font-extralight">
             Password Recovery
           </p>
 
           <hr className="border-1 border-sky-100 dark:border-neutral-700" />
 
           <div>
-            <p className="text-black dark:text-white">
+            <p>
               Enter your email so we can send you a link to recover your
               account. Make sure to change your password in the profile settings
               afterwards.
@@ -61,9 +61,7 @@ export default function Forgot() {
             </p>
           </div>
           <div>
-            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-              Email
-            </p>
+            <p className="text-sm w-fit font-semibold mb-1">Email</p>
 
             <TextInput
               autoFocus
@@ -82,10 +80,7 @@ export default function Forgot() {
             loading={submitLoader}
           />
           <div className="flex items-baseline gap-1 justify-center">
-            <Link
-              href={"/login"}
-              className="block text-black dark:text-white font-bold"
-            >
+            <Link href={"/login"} className="block font-bold">
               Go back
             </Link>
           </div>

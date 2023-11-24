@@ -50,7 +50,7 @@ export default function Subscribe() {
         <div className="flex text-white dark:text-black gap-3 border border-solid border-sky-100 dark:border-neutral-700 w-4/5 mx-auto p-1 rounded-xl relative">
           <button
             onClick={() => setPlan(Plan.monthly)}
-            className={`w-full text-black dark:text-white duration-100 text-sm rounded-lg p-1 ${
+            className={`w-full duration-100 text-sm rounded-lg p-1 ${
               plan === Plan.monthly
                 ? "text-white bg-sky-700 dark:bg-sky-700"
                 : "hover:opacity-80"
@@ -61,7 +61,7 @@ export default function Subscribe() {
 
           <button
             onClick={() => setPlan(Plan.yearly)}
-            className={`w-full text-black dark:text-white duration-100 text-sm rounded-lg p-1 ${
+            className={`w-full duration-100 text-sm rounded-lg p-1 ${
               plan === Plan.yearly
                 ? "text-white bg-sky-700 dark:bg-sky-700"
                 : "hover:opacity-80"

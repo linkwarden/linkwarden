@@ -102,7 +102,7 @@ export default function TeamManagement({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {permissions === true && (
         <>
-          <p className="text-black dark:text-white">Make Public</p>
+          <p>Make Public</p>
 
           <Checkbox
             label="Make this a public collection."
@@ -120,9 +120,7 @@ export default function TeamManagement({
 
       {collection.isPublic ? (
         <div>
-          <p className="text-black dark:text-white mb-2">
-            Public Link (Click to copy)
-          </p>
+          <p className="mb-2">Public Link (Click to copy)</p>
           <div
             onClick={() => {
               try {
@@ -146,7 +144,7 @@ export default function TeamManagement({
 
       {permissions === true && (
         <>
-          <p className="text-black dark:text-white">Member Management</p>
+          <p>Member Management</p>
 
           <div className="flex items-center gap-2">
             <TextInput
@@ -219,9 +217,7 @@ export default function TeamManagement({
                         className="border-[3px]"
                       />
                       <div>
-                        <p className="text-sm font-bold text-black dark:text-white">
-                          {e.user.name}
-                        </p>
+                        <p className="text-sm font-bold">{e.user.name}</p>
                         <p className="text-gray-500 dark:text-gray-300">
                           @{e.user.username}
                         </p>
@@ -230,7 +226,7 @@ export default function TeamManagement({
                     <div className="flex sm:block items-center justify-between gap-5 min-w-[10rem]">
                       <div>
                         <p
-                          className={`font-bold text-sm text-black dark:text-white ${
+                          className={`font-bold text-sm ${
                             permissions === true ? "" : "mb-2"
                           }`}
                         >
@@ -287,7 +283,7 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
+                              className={`peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
                                   ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100"
                                   : ""
@@ -332,7 +328,7 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
+                              className={`peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
                                   ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100"
                                   : ""
@@ -377,7 +373,7 @@ export default function TeamManagement({
                               }}
                             />
                             <span
-                              className={`text-black dark:text-white peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
+                              className={`peer-checked:bg-sky-200 dark:peer-checked:bg-sky-600 text-sm ${
                                 permissions === true
                                   ? "hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100"
                                   : ""
@@ -407,9 +403,7 @@ export default function TeamManagement({
           />
           <div>
             <div className="flex items-center gap-1">
-              <p className="text-sm font-bold text-black dark:text-white">
-                {collectionOwner.name}
-              </p>
+              <p className="text-sm font-bold">{collectionOwner.name}</p>
               <FontAwesomeIcon
                 icon={faCrown}
                 className="w-3 h-3 text-yellow-500"
@@ -421,7 +415,7 @@ export default function TeamManagement({
           </div>
         </div>
 
-        <div className="flex flex-col justify-center min-w-[10rem] text-black dark:text-white">
+        <div className="flex flex-col justify-center min-w-[10rem]">
           <p className={`font-bold text-sm`}>Permissions</p>
           <p>Full Access (Owner)</p>
         </div>

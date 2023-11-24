@@ -75,7 +75,7 @@ export default function LinkPreview({ link, className, settings }: Props) {
             <div className="flex flex-col justify-between w-full">
               <div className="flex items-baseline gap-1">
                 <p className="text-sm text-gray-500 dark:text-gray-300">{1}</p>
-                <p className="text-lg text-black dark:text-white truncate capitalize w-full pr-8">
+                <p className="text-lg truncate capitalize w-full pr-8">
                   {unescapeString(link.name as string)}
                 </p>
               </div>
@@ -84,9 +84,7 @@ export default function LinkPreview({ link, className, settings }: Props) {
                   icon={faFolder}
                   className="w-4 h-4 mt-1 drop-shadow text-sky-400"
                 />
-                <p className="text-black dark:text-white truncate capitalize w-full">
-                  Landing Pages ⚡️
-                </p>
+                <p className="truncate capitalize w-full">Landing Pages ⚡️</p>
               </div>
               <A
                 href={link.url as string}

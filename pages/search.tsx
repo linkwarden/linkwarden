@@ -47,7 +47,7 @@ export default function Search() {
                 icon={faSearch}
                 className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-thin">
+              <p className="sm:text-4xl text-3xl capitalize font-thin">
                 Search Results
               </p>
             </div>
@@ -106,7 +106,7 @@ export default function Search() {
             })}
           </div>
         ) : (
-          <p className="text-black dark:text-white">
+          <p>
             Nothing found.{" "}
             <span className="font-bold text-xl" title="Shruggie">
               ¯\_(ツ)_/¯

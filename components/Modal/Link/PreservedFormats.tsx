@@ -97,10 +97,10 @@ export default function PreservedFormats() {
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
             </div>
 
-            <p className="text-black dark:text-white">Screenshot</p>
+            <p>Screenshot</p>
           </div>
 
-          <div className="flex text-black dark:text-white gap-1">
+          <div className="flex gap-1">
             <div
               onClick={() => handleDownload(ArchivedFormat.screenshot)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
@@ -132,10 +132,10 @@ export default function PreservedFormats() {
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
             </div>
 
-            <p className="text-black dark:text-white">PDF</p>
+            <p>PDF</p>
           </div>
 
-          <div className="flex text-black dark:text-white gap-1">
+          <div className="flex gap-1">
             <div
               onClick={() => handleDownload(ArchivedFormat.pdf)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"

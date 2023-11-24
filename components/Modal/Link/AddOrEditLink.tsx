@@ -151,7 +151,7 @@ export default function AddOrEditLink({
       {method === "CREATE" ? (
         <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
           <div className="sm:col-span-3 col-span-5">
-            <p className="text-black dark:text-white mb-2">Address (URL)</p>
+            <p className="mb-2">Address (URL)</p>
             <TextInput
               value={link.url}
               onChange={(e) => setLink({ ...link, url: e.target.value })}
@@ -159,7 +159,7 @@ export default function AddOrEditLink({
             />
           </div>
           <div className="sm:col-span-2 col-span-5">
-            <p className="text-black dark:text-white mb-2">Collection</p>
+            <p className="mb-2">Collection</p>
             {link.collection.name ? (
               <CollectionSelection
                 onChange={setCollection}
@@ -189,7 +189,7 @@ export default function AddOrEditLink({
           {/* <hr className="mb-3 border border-sky-100 dark:border-neutral-700" /> */}
           <div className="grid sm:grid-cols-2 gap-3">
             <div className={`${method === "UPDATE" ? "sm:col-span-2" : ""}`}>
-              <p className="text-black dark:text-white mb-2">Name</p>
+              <p className="mb-2">Name</p>
               <TextInput
                 value={link.name}
                 onChange={(e) => setLink({ ...link, name: e.target.value })}
@@ -199,7 +199,7 @@ export default function AddOrEditLink({
 
             {method === "UPDATE" ? (
               <div>
-                <p className="text-black dark:text-white mb-2">Collection</p>
+                <p className="mb-2">Collection</p>
                 {link.collection.name ? (
                   <CollectionSelection
                     onChange={setCollection}
@@ -220,7 +220,7 @@ export default function AddOrEditLink({
             ) : undefined}
 
             <div>
-              <p className="text-black dark:text-white mb-2">Tags</p>
+              <p className="mb-2">Tags</p>
               <TagSelection
                 onChange={setTags}
                 defaultValue={link.tags.map((e) => {
@@ -230,7 +230,7 @@ export default function AddOrEditLink({
             </div>
 
             <div className="sm:col-span-2">
-              <p className="text-black dark:text-white mb-2">Description</p>
+              <p className="mb-2">Description</p>
               <textarea
                 value={unescapeString(link.description) as string}
                 onChange={(e) =>

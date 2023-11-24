@@ -53,9 +53,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Account
-            </p>
+            <p className="truncate w-full pr-7">Account</p>
           </div>
         </Link>
 
@@ -72,9 +70,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Appearance
-            </p>
+            <p className="truncate w-full pr-7">Appearance</p>
           </div>
         </Link>
 
@@ -91,9 +87,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Archive
-            </p>
+            <p className="truncate w-full pr-7">Archive</p>
           </div>
         </Link>
 
@@ -108,9 +102,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              API Keys
-            </p>
+            <p className="truncate w-full pr-7">API Keys</p>
           </div>
         </Link>
 
@@ -127,9 +119,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Password
-            </p>
+            <p className="truncate w-full pr-7">Password</p>
           </div>
         </Link>
 
@@ -147,9 +137,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 className="w-6 h-6 text-sky-500 dark:text-sky-500"
               />
 
-              <p className="text-black dark:text-white truncate w-full pr-7">
-                Billing
-              </p>
+              <p className="truncate w-full pr-7">Billing</p>
             </div>
           </Link>
         ) : undefined}
@@ -172,9 +160,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Help
-            </p>
+            <p className="truncate w-full pr-7">Help</p>
           </div>
         </Link>
 
@@ -187,9 +173,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              GitHub
-            </p>
+            <p className="truncate w-full pr-7">GitHub</p>
           </div>
         </Link>
 
@@ -202,9 +186,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Twitter
-            </p>
+            <p className="truncate w-full pr-7">Twitter</p>
           </div>
         </Link>
 
@@ -217,9 +199,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Mastodon
-            </p>
+            <p className="truncate w-full pr-7">Mastodon</p>
           </div>
         </Link>
       </div>

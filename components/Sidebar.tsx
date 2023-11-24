@@ -67,9 +67,7 @@ export default function Sidebar({ className }: { className?: string }) {
               icon={faChartSimple}
               className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
             />
-            <p className="text-black dark:text-white truncate w-full">
-              Dashboard
-            </p>
+            <p className="truncate w-full">Dashboard</p>
           </div>
         </Link>
 
@@ -83,9 +81,7 @@ export default function Sidebar({ className }: { className?: string }) {
               icon={faLink}
               className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
             />
-            <p className="text-black dark:text-white truncate w-full">
-              All Links
-            </p>
+            <p className="truncate w-full">All Links</p>
           </div>
         </Link>
 
@@ -99,9 +95,7 @@ export default function Sidebar({ className }: { className?: string }) {
               icon={faFolder}
               className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
             />
-            <p className="text-black dark:text-white truncate w-full">
-              All Collections
-            </p>
+            <p className="truncate w-full">All Collections</p>
           </div>
         </Link>
 
@@ -115,9 +109,7 @@ export default function Sidebar({ className }: { className?: string }) {
               icon={faThumbTack}
               className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
             />
-            <p className="text-black dark:text-white truncate w-full">
-              Pinned Links
-            </p>
+            <p className="truncate w-full">Pinned Links</p>
           </div>
         </Link>
       </div>
@@ -165,9 +157,7 @@ export default function Sidebar({ className }: { className?: string }) {
                           className="w-6 h-6 drop-shadow"
                           style={{ color: e.color }}
                         />
-                        <p className="text-black dark:text-white truncate w-full">
-                          {e.name}
-                        </p>
+                        <p className="truncate w-full">{e.name}</p>
 
                         {e.isPublic ? (
                           <FontAwesomeIcon
@@ -235,9 +225,7 @@ export default function Sidebar({ className }: { className?: string }) {
                           className="w-4 h-4 text-sky-500 dark:text-sky-500 mt-1"
                         />
 
-                        <p className="text-black dark:text-white truncate w-full pr-7">
-                          {e.name}
-                        </p>
+                        <p className="truncate w-full pr-7">{e.name}</p>
                         <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
                           {e._count?.links}
                         </div>

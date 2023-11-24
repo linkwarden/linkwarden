@@ -80,9 +80,7 @@ export default function Password() {
 
         {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED !== "true" ? (
           <div>
-            <p className="mb-2 text-black dark:text-white">
-              Confirm Your Password
-            </p>
+            <p className="mb-2">Confirm Your Password</p>
 
             <TextInput
               value={password}
@@ -120,7 +118,7 @@ export default function Password() {
               </select>
             </label>
             <div>
-              <p className="text-sm mb-2 text-black dark:text-white">
+              <p className="text-sm mb-2">
                 More information (the more details, the more helpful it&apos;d
                 be)
               </p>

@@ -43,9 +43,7 @@ export default function ViewTeam({ collection }: Props) {
           />
           <div className="w-full">
             <div className="flex items-center gap-1 w-full justify-between">
-              <p className="text-sm font-bold text-black dark:text-white">
-                {collectionOwner.name}
-              </p>
+              <p className="text-sm font-bold">{collectionOwner.name}</p>
               <div className="flex text-xs gap-1 items-center">
                 <FontAwesomeIcon
                   icon={faCrown}
@@ -78,9 +76,7 @@ export default function ViewTeam({ collection }: Props) {
                         className="border-[3px]"
                       />
                       <div>
-                        <p className="text-sm font-bold text-black dark:text-white">
-                          {e.user.name}
-                        </p>
+                        <p className="text-sm font-bold">{e.user.name}</p>
                         <p className="text-gray-500 dark:text-gray-300">
                           @{e.user.username}
                         </p>

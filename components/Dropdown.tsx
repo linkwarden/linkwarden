@@ -84,7 +84,7 @@ export default function Dropdown({
         const inner = e && (
           <div className="cursor-pointer rounded-md">
             <div className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 dark:hover:bg-neutral-700 duration-100">
-              <p className="text-black dark:text-white select-none">{e.name}</p>
+              <p className="select-none">{e.name}</p>
             </div>
           </div>
         );
