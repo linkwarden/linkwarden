@@ -20,7 +20,7 @@ export default async function readFile(filePath: string) {
 
   if (s3Client) {
     const bucketParams: GetObjectCommandInput = {
-      Bucket: process.env.BUCKET_NAME,
+      Bucket: process.env.SPACES_BUCKET_NAME,
       Key: filePath,
     };
 

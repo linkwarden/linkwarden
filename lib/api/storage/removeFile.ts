@@ -6,7 +6,7 @@ import { PutObjectCommandInput, DeleteObjectCommand } from "@aws-sdk/client-s3";
 export default async function removeFile({ filePath }: { filePath: string }) {
   if (s3Client) {
     const bucketParams: PutObjectCommandInput = {
-      Bucket: process.env.BUCKET_NAME,
+      Bucket: process.env.SPACES_BUCKET_NAME,
       Key: filePath,
     };
 

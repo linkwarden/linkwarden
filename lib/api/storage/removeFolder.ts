@@ -40,7 +40,7 @@ async function emptyS3Directory(bucket: string, dir: string) {
 export default async function removeFolder({ filePath }: { filePath: string }) {
   if (s3Client) {
     try {
-      await emptyS3Directory(process.env.BUCKET_NAME as string, filePath);
+      await emptyS3Directory(process.env.SPACES_BUCKET_NAME as string, filePath);
     } catch (err) {
       console.log("Error", err);
     }

@@ -57,6 +57,10 @@ export default function Archive() {
 
   return (
     <SettingsLayout>
+      <p className="capitalize text-3xl font-thin inline">Archive Settings</p>
+
+      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+
       <p>Formats to Archive webpages:</p>
       <div className="p-3">
         <Checkbox

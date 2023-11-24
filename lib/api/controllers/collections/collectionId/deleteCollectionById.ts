@@ -10,14 +10,10 @@ export default async function deleteCollection(
   if (!collectionId)
     return { response: "Please choose a valid collection.", status: 401 };
 
-  const collectionIsAccessible = (await getPermission({
+  const collectionIsAccessible = await getPermission({
     userId,
     collectionId,
-  })) as
-    | (Collection & {
-        members: UsersAndCollections[];
-      })
-    | null;
+  });
 
   const memberHasAccess = collectionIsAccessible?.members.some(
     (e: UsersAndCollections) => e.userId === userId
