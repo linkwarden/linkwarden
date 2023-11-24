@@ -131,7 +131,7 @@ export default function TeamManagement({
                 console.log(err);
               }
             }}
-            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 dark:bg-neutral-950 border-sky-100 dark:border-neutral-700 border-solid border outline-none hover:border-sky-300 dark:hover:border-sky-600 duration-100 cursor-text"
+            className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 dark:bg-neutral-950 border-neutral-content border-solid border outline-none hover:border-sky-300 dark:hover:border-sky-600 duration-100 cursor-text"
           >
             {publicCollectionURL}
           </div>
@@ -139,7 +139,7 @@ export default function TeamManagement({
       ) : null}
 
       {permissions !== true && collection.isPublic && (
-        <hr className="mb-3 border border-sky-100 dark:border-neutral-700" />
+        <hr className="mb-3 border border-neutral-content" />
       )}
 
       {permissions === true && (
@@ -191,7 +191,7 @@ export default function TeamManagement({
                 return (
                   <div
                     key={i}
-                    className="relative border p-2 rounded-md border-sky-100 dark:border-neutral-700 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
+                    className="relative border p-2 rounded-md border-neutral flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
                   >
                     {permissions === true && (
                       <FontAwesomeIcon
@@ -393,7 +393,7 @@ export default function TeamManagement({
       )}
 
       <div
-        className="relative border px-2 rounded-md border-sky-100 dark:border-neutral-700 flex min-h-[7rem] sm:min-h-[5rem] gap-2 justify-between"
+        className="relative border px-2 rounded-md border-neutral-content flex min-h-[7rem] sm:min-h-[5rem] gap-2 justify-between"
         title={`'@${collectionOwner.username}' is the owner of this collection.`}
       >
         <div className="flex items-center gap-2">

@@ -45,7 +45,7 @@ export default function Search() {
             <div className="flex gap-2">
               <FontAwesomeIcon
                 icon={faSearch}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-primary drop-shadow"
               />
               <p className="sm:text-4xl text-3xl capitalize font-thin">
                 Search Results

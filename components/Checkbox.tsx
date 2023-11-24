@@ -22,11 +22,11 @@ export default function Checkbox({ label, state, className, onClick }: Props) {
       />
       <FontAwesomeIcon
         icon={faSquareCheck}
-        className="w-5 h-5 text-sky-500 dark:text-sky-500 peer-checked:block hidden"
+        className="w-5 h-5 text-primary peer-checked:block hidden"
       />
       <FontAwesomeIcon
         icon={faSquare}
-        className="w-5 h-5 text-sky-500 dark:text-sky-500 peer-checked:hidden block"
+        className="w-5 h-5 text-primary peer-checked:hidden block"
       />
       <span className="rounded select-none">{label}</span>
     </label>

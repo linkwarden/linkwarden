@@ -30,12 +30,12 @@ export default function Subscribe() {
         process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
       }-day free trial, cancel anytime!`}
     >
-      <div className="p-4 mx-auto flex flex-col gap-3 justify-between dark:border-neutral-700 max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
+      <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
         <p className="sm:text-3xl text-2xl text-center font-extralight">
           Subscribe to Linkwarden!
         </p>
 
-        <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+        <hr className="border-1 border-neutral-content" />
 
         <div>
           <p>
@@ -47,7 +47,7 @@ export default function Subscribe() {
           </p>
         </div>
 
-        <div className="flex text-white dark:text-black gap-3 border border-solid border-sky-100 dark:border-neutral-700 w-4/5 mx-auto p-1 rounded-xl relative">
+        <div className="flex text-white dark:text-black gap-3 border border-solid border-neutral-content w-4/5 mx-auto p-1 rounded-xl relative">
           <button
             onClick={() => setPlan(Plan.monthly)}
             className={`w-full duration-100 text-sm rounded-lg p-1 ${
@@ -84,8 +84,8 @@ export default function Subscribe() {
           <p className="font-semibold">
             Billed {plan === Plan.monthly ? "Monthly" : "Yearly"}
           </p>
-          <fieldset className="w-full flex-col flex justify-evenly px-4 pb-4 pt-1 rounded-md border border-sky-100 dark:border-neutral-700">
-            <legend className="w-fit font-extralight px-2 border border-sky-100 dark:border-neutral-700 rounded-md text-xl">
+          <fieldset className="w-full flex-col flex justify-evenly px-4 pb-4 pt-1 rounded-md border border-neutral-content">
+            <legend className="w-fit font-extralight px-2 border border-neutral rounded-md text-xl">
               Total
             </legend>
 

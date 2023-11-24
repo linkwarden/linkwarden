@@ -16,7 +16,7 @@ export default function Modal({ toggleModal, className, children }: Props) {
         onClickOutside={toggleModal}
         className={`m-auto ${className || ""}`}
       >
-        <div className="slide-up relative border-sky-100 dark:border-neutral-700 rounded-2xl border-solid border shadow-lg p-5 bg-white dark:bg-neutral-900">
+        <div className="slide-up relative border-neutral-content rounded-2xl border-solid border shadow-lg p-5 bg-white dark:bg-neutral-900">
           <div
             onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
             className="absolute top-5 left-5 inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 z-20 p-2"

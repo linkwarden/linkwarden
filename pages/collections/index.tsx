@@ -37,7 +37,7 @@ export default function Collections() {
             <div className="flex items-center gap-3">
               <FontAwesomeIcon
                 icon={faFolder}
-                className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
+                className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
               />
               <div>
                 <p className="text-3xl capitalize font-thin">
@@ -117,7 +117,7 @@ export default function Collections() {
             })}
 
           <div
-            className="p-5 bg-gray-50 dark:bg-neutral-800 self-stretch border border-solid border-sky-100 dark:border-neutral-700 min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
+            className="p-5 bg-gray-50 dark:bg-neutral-800 self-stretch border border-solid border-neutral-content min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
             onClick={() => {
               setModal({
                 modal: "COLLECTION",
@@ -129,7 +129,7 @@ export default function Collections() {
             <p className="group-hover:opacity-0 duration-100">New Collection</p>
             <FontAwesomeIcon
               icon={faPlus}
-              className="w-8 h-8 text-sky-500 dark:text-sky-500 group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
+              className="w-8 h-8 text-primary group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
             />
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function Collections() {
             <div className="flex items-center gap-3 my-5">
               <FontAwesomeIcon
                 icon={faFolder}
-                className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
+                className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
               />
               <div>
                 <p className="text-3xl capitalize font-thin">

@@ -153,7 +153,7 @@ export default function Account() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">Account Settings</p>
 
-      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+      <hr className="my-3 border-1 border-neutral-content" />
 
       <div className="flex flex-col gap-10">
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
@@ -206,13 +206,13 @@ export default function Account() {
                       image: "",
                     })
                   }
-                  className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 border-slate-200 dark:border-neutral-700 rounded-full bg-white dark:bg-neutral-800 text-center select-none cursor-pointer duration-100 hover:text-red-500"
+                  className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 border-slate-200 rounded-full bg-white dark:bg-neutral-800 text-center select-none cursor-pointer duration-100 hover:text-red-500"
                 >
                   <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
                 </div>
               )}
               <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
-                <label className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
+                <label className="border border-slate-200 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
                   Browse...
                   <input
                     type="file"
@@ -235,7 +235,7 @@ export default function Account() {
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+          <hr className="my-3 border-1 border-neutral-content" />
 
           <div className="flex gap-3 flex-col">
             <div>
@@ -247,7 +247,7 @@ export default function Account() {
               >
                 <div
                   id="import-dropdown"
-                  className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600"
+                  className="border border-slate-200 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600"
                 >
                   Import From
                 </div>
@@ -258,7 +258,7 @@ export default function Account() {
                       if (target.id !== "import-dropdown")
                         setImportDropdown(false);
                     }}
-                    className={`absolute top-7 left-0 w-52 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+                    className={`absolute top-7 left-0 w-52 py-1 shadow-md border border-neutral-content bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
                   >
                     <div className="cursor-pointer rounded-md">
                       <label
@@ -304,7 +304,7 @@ export default function Account() {
             <div>
               <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
-                <div className="border w-fit border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
+                <div className="border w-fit border-slate-200 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
                   Export Data
                 </div>
               </Link>
@@ -319,7 +319,7 @@ export default function Account() {
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+          <hr className="my-3 border-1 border-neutral-content" />
 
           <Checkbox
             label="Make profile private"
@@ -339,7 +339,7 @@ export default function Account() {
                 visibility to your profile. Separated by comma.
               </p>
               <textarea
-                className="w-full resize-none border rounded-md duration-100 bg-gray-50 dark:bg-neutral-950 p-2 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
+                className="w-full resize-none border rounded-md duration-100 bg-gray-50 dark:bg-neutral-950 p-2 outline-none border-neutral-content focus:border-sky-300 dark:focus:border-sky-600"
                 placeholder="Your profile is hidden from everyone right now..."
                 value={whitelistedUsersTextbox}
                 onChange={(e) => setWhiteListedUsersTextbox(e.target.value)}
@@ -362,7 +362,7 @@ export default function Account() {
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+          <hr className="my-3 border-1 border-neutral-content" />
 
           <p>
             This will permanently delete ALL the Links, Collections, Tags, and
