@@ -185,8 +185,11 @@ export default function PublicCollections() {
               ) : null}
 
               <p className="ml-2 mt-1 text-gray-500 dark:text-gray-300">
-                By {collectionOwner.name} and {collection.members.length}{" "}
-                others.
+                By {collectionOwner.name}
+                {collection.members.length > 0
+                  ? ` and ${collection.members.length} others`
+                  : undefined}
+                .
               </p>
             </div>
           </div>
