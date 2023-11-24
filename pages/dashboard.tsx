@@ -106,8 +106,6 @@ export default function Dashboard() {
 
   return (
     <MainLayout>
-      <button className="btn btn-primary">Primary</button>
-      <button className=" dark:bg-red-500">Primary</button>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
         <div className="flex items-center gap-3">
           <FontAwesomeIcon

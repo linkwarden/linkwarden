@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSort } from "@fortawesome/free-solid-svg-icons";
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import SortDropdown from "@/components/SortDropdown";
+import useLocalSettingsStore from "@/store/localSettings";
 
 const cardVariants: Variants = {
   offscreen: {
@@ -38,6 +39,8 @@ const cardVariants: Variants = {
 export default function PublicCollections() {
   const { links } = useLinkStore();
   const { modal, setModal } = useModalStore();
+
+  const { settings } = useLocalSettingsStore();
 
   useEffect(() => {
     modal
@@ -103,8 +106,8 @@ export default function PublicCollections() {
       className="h-screen"
       style={{
         backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-          "dark" ? "#262626" : "#f3f4f6"
-        } 50%, ${"dark" ? "#171717" : "#ffffff"} 100%)`,
+          settings.theme === "dark" ? "#262626" : "#f3f4f6"
+        } 50%, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
       <ModalManagement />
