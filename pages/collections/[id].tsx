@@ -18,9 +18,12 @@ import useModalStore from "@/store/modals";
 import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
+import useLocalSettingsStore from "@/store/localSettings";
 
 export default function Index() {
   const { setModal } = useModalStore();
+
+  const { settings } = useLocalSettingsStore();
 
   const router = useRouter();
 
@@ -51,9 +54,9 @@ export default function Index() {
           style={{
             backgroundImage: `linear-gradient(-45deg, ${
               activeCollection?.color
-            }30 10%, ${"dark" ? "#262626" : "#f3f4f6"} 50%, ${
-              "dark" ? "#262626" : "#f9fafb"
-            } 100%)`,
+            }30 10%, ${
+              settings.theme === "dark" ? "#262626" : "#f3f4f6"
+            } 50%, ${settings.theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
           }}
           className="border border-solid border-sky-100 dark:border-neutral-700 rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between"
         >

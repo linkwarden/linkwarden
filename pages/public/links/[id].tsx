@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBoxesStacked, faFolder } from "@fortawesome/free-solid-svg-icons";
 import useModalStore from "@/store/modals";
 import { useSession } from "next-auth/react";
+import useLocalSettingsStore from "@/store/localSettings";
 
 type LinkContent = {
   title: string;
@@ -32,6 +33,8 @@ type LinkContent = {
 export default function Index() {
   const { links, getLink } = useLinkStore();
   const { setModal } = useModalStore();
+
+  const { settings } = useLocalSettingsStore();
 
   const session = useSession();
   const userId = session.data?.user.id;
@@ -144,7 +147,7 @@ export default function Index() {
     <LinkLayout>
       <div
         className={`flex flex-col max-w-screen-md h-full ${
-          "dark" ? "banner-dark-mode" : "banner-light-mode"
+          settings.theme === "dark" ? "banner-dark-mode" : "banner-light-mode"
         }`}
       >
         <div

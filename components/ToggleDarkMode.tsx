@@ -1,3 +1,4 @@
+import useLocalSettingsStore from "@/store/localSettings";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -5,9 +6,9 @@ type Props = {
 };
 
 export default function ToggleDarkMode({ className }: Props) {
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-  );
+  const { updateSettings } = useLocalSettingsStore();
+
+  const [theme, setTheme] = useState(localStorage.getItem("theme"));
 
   const handleToggle = (e: any) => {
     if (e.target.checked) {
@@ -18,11 +19,7 @@ export default function ToggleDarkMode({ className }: Props) {
   };
 
   useEffect(() => {
-    localStorage.setItem("theme", theme || "");
-    const localTheme = localStorage.getItem("theme");
-    document
-      .querySelector("html")
-      ?.setAttribute("data-theme", localTheme || "");
+    updateSettings({ theme: theme as string });
   }, [theme]);
 
   return (
@@ -31,7 +28,7 @@ export default function ToggleDarkMode({ className }: Props) {
         type="checkbox"
         onChange={handleToggle}
         className="theme-controller"
-        checked={theme === "light" ? false : true}
+        checked={localStorage.getItem("theme") === "light" ? false : true}
       />
 
       {/* sun icon */}

@@ -8,6 +8,7 @@ import ProfilePhoto from "./ProfilePhoto";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import useModalStore from "@/store/modals";
 import usePermissions from "@/hooks/usePermissions";
+import useLocalSettingsStore from "@/store/localSettings";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
@@ -23,6 +24,7 @@ type DropdownTrigger =
 
 export default function CollectionCard({ collection, className }: Props) {
   const { setModal } = useModalStore();
+  const { settings } = useLocalSettingsStore();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",
@@ -42,8 +44,8 @@ export default function CollectionCard({ collection, className }: Props) {
       <div
         style={{
           backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
-            "dark" ? "#262626" : "#f3f4f6"
-          } 50%, ${"dark" ? "#262626" : "#f9fafb"} 100%)`,
+            settings.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 50%, ${settings.theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
         }}
         className={`border border-solid border-sky-100 dark:border-neutral-700 self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${
           className || ""

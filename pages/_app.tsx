@@ -6,6 +6,7 @@ import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
 import { Toaster } from "react-hot-toast";
 import { Session } from "next-auth";
+import useLocalSettingsStore from "@/store/localSettings";
 
 export default function App({
   Component,
@@ -13,20 +14,10 @@ export default function App({
 }: AppProps<{
   session: Session;
 }>) {
-  const [theme, setTheme] = useState("");
+  const { setSettings } = useLocalSettingsStore();
 
   useEffect(() => {
-    setTheme(
-      localStorage.getItem("theme")
-        ? (localStorage.getItem("theme") as string)
-        : "light"
-    );
-
-    if (theme) localStorage.setItem("theme", theme as string);
-    const localTheme = localStorage.getItem("theme");
-    document
-      .querySelector("html")
-      ?.setAttribute("data-theme", localTheme || "");
+    setSettings();
   }, []);
 
   return (
