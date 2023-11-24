@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import {
+  ArchivedFormat,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@/types/global";
 import Image from "next/image";
 import ColorThief, { RGBColor } from "colorthief";
 import { useTheme } from "next-themes";
@@ -63,7 +66,9 @@ export default function Index() {
         link?.readabilityPath &&
         link?.readabilityPath !== "pending"
       ) {
-        const response = await fetch(`/api/v1/${link?.readabilityPath}`);
+        const response = await fetch(
+          `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}`
+        );
 
         const data = await response?.json();
 
@@ -146,7 +151,7 @@ export default function Index() {
       >
         <div
           id="link-banner"
-          className="link-banner p-3 mb-6 relative bg-opacity-10 border border-solid border-sky-100 dark:border-neutral-700 shadow-md"
+          className="link-banner p-5 mb-4 relative bg-opacity-10 border border-solid border-sky-100 dark:border-neutral-700 shadow-md"
         >
           <div id="link-banner-inner" className="link-banner-inner"></div>
 
@@ -233,7 +238,7 @@ export default function Index() {
                   <Link key={i} href={`/tags/${e.id}`} className="z-10">
                     <p
                       title={e.name}
-                      className="px-2 py-1 bg-sky-200 text-black dark:text-white dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                      className="px-2 bg-sky-200 text-black dark:text-white dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
                     >
                       {e.name}
                     </p>

@@ -56,7 +56,7 @@ export default function FilterSearchDropdown({
           }
         />
         <Checkbox
-          label="Text Content"
+          label="Full Content"
           state={searchFilter.textContent}
           onClick={() =>
             setSearchFilter({

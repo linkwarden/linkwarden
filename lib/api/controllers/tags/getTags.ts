@@ -30,6 +30,11 @@ export default async function getTags(userId: number) {
         },
       ],
     },
+    include: {
+      _count: {
+        select: { links: true },
+      },
+    },
     // orderBy: {
     //   links: {
     //     _count: "desc",

@@ -27,10 +27,8 @@ export default async function getPermission({
   } else if (collectionId) {
     const check = await prisma.collection.findFirst({
       where: {
-        AND: {
-          id: collectionId,
-          OR: [{ ownerId: userId }, { members: { some: { userId } } }],
-        },
+        id: collectionId,
+        OR: [{ ownerId: userId }, { members: { some: { userId } } }],
       },
       include: { members: true },
     });

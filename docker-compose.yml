@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   postgres:
-    image: postgres
+    image: postgres:16-alpine
     env_file: .env
     restart: always
     volumes:

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import getTitle from "@/lib/api/getTitle";
 import archive from "@/lib/api/archive";
-import { Collection, UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import createFolder from "@/lib/api/storage/createFolder";
 
@@ -27,14 +27,10 @@ export default async function postLink(
   link.collection.name = link.collection.name.trim();
 
   if (link.collection.id) {
-    const collectionIsAccessible = (await getPermission({
+    const collectionIsAccessible = await getPermission({
       userId,
       collectionId: link.collection.id,
-    })) as
-      | (Collection & {
-          members: UsersAndCollections[];
-        })
-      | null;
+    });
 
     const memberHasAccess = collectionIsAccessible?.members.some(
       (e: UsersAndCollections) => e.userId === userId && e.canCreate

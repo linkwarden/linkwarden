@@ -11,10 +11,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { Tag } from "@prisma/client";
 import useTagStore from "@/store/tags";
 import SortDropdown from "@/components/SortDropdown";
-import { Sort } from "@/types/global";
+import { Sort, TagIncludingLinkCount } from "@/types/global";
 import useLinks from "@/hooks/useLinks";
 import Dropdown from "@/components/Dropdown";
 import { toast } from "react-hot-toast";
@@ -33,7 +32,7 @@ export default function Index() {
   const [renameTag, setRenameTag] = useState(false);
   const [newTagName, setNewTagName] = useState<string>();
 
-  const [activeTag, setActiveTag] = useState<Tag>();
+  const [activeTag, setActiveTag] = useState<TagIncludingLinkCount>();
 
   useLinks({ tagId: Number(router.query.id), sort: sortBy });
 

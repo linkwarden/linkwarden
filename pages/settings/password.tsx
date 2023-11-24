@@ -45,6 +45,10 @@ export default function Password() {
 
   return (
     <SettingsLayout>
+      <p className="capitalize text-3xl font-thin inline">Change Password</p>
+
+      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+
       <p className="mb-3">
         To change your password, please fill out the following. Your password
         should be at least 8 characters.
