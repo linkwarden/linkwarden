@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function getPublicUserById(
+export default async function getPublicUser(
   targetId: number | string,
   isId: boolean,
   requestingId?: number
@@ -31,13 +31,16 @@ export default async function getPublicUserById(
 
   if (user?.isPrivate) {
     if (requestingId) {
-      const requestingUsername = (
-        await prisma.user.findUnique({ where: { id: requestingId } })
-      )?.username;
+      const requestingUser = await prisma.user.findUnique({
+        where: { id: requestingId },
+      });
 
       if (
-        !requestingUsername ||
-        !whitelistedUsernames.includes(requestingUsername?.toLowerCase())
+        requestingUser?.id !== requestingId &&
+        (!requestingUser?.username ||
+          !whitelistedUsernames.includes(
+            requestingUser.username?.toLowerCase()
+          ))
       ) {
         return {
           response: "User not found or profile is private.",

@@ -14,7 +14,7 @@ export default async function createFile({
 }) {
   if (s3Client) {
     const bucketParams: PutObjectCommandInput = {
-      Bucket: process.env.BUCKET_NAME,
+      Bucket: process.env.SPACES_BUCKET_NAME,
       Key: filePath,
       Body: isBase64 ? Buffer.from(data as string, "base64") : data,
     };

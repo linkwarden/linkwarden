@@ -12,6 +12,7 @@ interface FormData {
 }
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+const keycloakEnabled = process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED;
 
 export default function Login() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -45,6 +46,18 @@ export default function Login() {
     } else {
       toast.error("Please fill out all the fields.");
     }
+  }
+
+  async function loginUserKeycloak() {
+    setSubmitLoader(true);
+
+    const load = toast.loading("Authenticating...");
+
+    const res = await signIn("keycloak", {});
+
+    toast.dismiss(load);
+
+    setSubmitLoader(false);
   }
 
   return (
@@ -102,6 +115,15 @@ export default function Login() {
             className=" w-full text-center"
             loading={submitLoader}
           />
+          {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true" ? (
+            <SubmitButton
+              type="button"
+              onClick={loginUserKeycloak}
+              label="Sign in with Keycloak"
+              className=" w-full text-center"
+              loading={submitLoader}
+            />
+          ) : undefined}
           {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION ===
           "true" ? undefined : (
             <div className="flex items-baseline gap-1 justify-center">

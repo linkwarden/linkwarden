@@ -18,7 +18,7 @@ type Props = {
     SetStateAction<CollectionIncludingMembersAndLinkCount>
   >;
   collection: CollectionIncludingMembersAndLinkCount;
-  method: "CREATE" | "UPDATE";
+  method: "CREATE" | "UPDATE" | "VIEW_TEAM";
 };
 
 export default function CollectionInfo({

@@ -1,18 +1,18 @@
-import getCollection from "@/lib/api/controllers/public/getCollection";
+import getPublicCollection from "@/lib/api/controllers/public/collections/getPublicCollection";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function collections(
+export default async function collection(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (!req?.query?.body) {
+  if (!req?.query?.id) {
     return res
       .status(401)
       .json({ response: "Please choose a valid collection." });
   }
 
   if (req.method === "GET") {
-    const collection = await getCollection(req?.query?.body as string);
+    const collection = await getPublicCollection(Number(req?.query?.id));
     return res
       .status(collection.status)
       .json({ response: collection.response });

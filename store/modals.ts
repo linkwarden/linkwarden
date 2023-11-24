@@ -39,6 +39,14 @@ type Modal =
       active?: CollectionIncludingMembersAndLinkCount;
       defaultIndex?: number;
     }
+  | {
+      modal: "COLLECTION";
+      state: boolean;
+      method: "VIEW_TEAM";
+      isOwner?: boolean;
+      active?: CollectionIncludingMembersAndLinkCount;
+      defaultIndex?: number;
+    }
   | null;
 
 type ModalsStore = {
@@ -46,11 +54,11 @@ type ModalsStore = {
   setModal: (modal: Modal) => void;
 };
 
-const useLocalSettingsStore = create<ModalsStore>((set) => ({
+const useModalStore = create<ModalsStore>((set) => ({
   modal: null,
   setModal: (modal: Modal) => {
     set({ modal });
   },
 }));
 
-export default useLocalSettingsStore;
+export default useModalStore;

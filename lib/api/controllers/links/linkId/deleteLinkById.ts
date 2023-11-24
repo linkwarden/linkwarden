@@ -6,11 +6,7 @@ import removeFile from "@/lib/api/storage/removeFile";
 export default async function deleteLink(userId: number, linkId: number) {
   if (!linkId) return { response: "Please choose a valid link.", status: 401 };
 
-  const collectionIsAccessible = (await getPermission({ userId, linkId })) as
-    | (Collection & {
-        members: UsersAndCollections[];
-      })
-    | null;
+  const collectionIsAccessible = await getPermission({ userId, linkId });
 
   const memberHasAccess = collectionIsAccessible?.members.some(
     (e: UsersAndCollections) => e.userId === userId && e.canDelete

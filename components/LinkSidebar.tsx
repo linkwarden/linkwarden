@@ -20,7 +20,7 @@ type Props = {
   onClick?: Function;
 };
 
-export default function SettingsSidebar({ className, onClick }: Props) {
+export default function LinkSidebar({ className, onClick }: Props) {
   const session = useSession();
   const userId = session.data?.user.id;
 
@@ -42,7 +42,7 @@ export default function SettingsSidebar({ className, onClick }: Props) {
 
   useEffect(() => {
     if (link)
-      setLinkCollection(collections.find((e) => e.id === link?.collection.id));
+      setLinkCollection(collections.find((e) => e.id === link?.collection?.id));
   }, [link]);
 
   return (

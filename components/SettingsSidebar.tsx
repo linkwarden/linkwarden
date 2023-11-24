@@ -5,6 +5,7 @@ import {
   faPalette,
   faBoxArchive,
   faKey,
+  faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -20,7 +21,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
-  const LINKWARDEN_VERSION = "v2.2.1";
+  const LINKWARDEN_VERSION = "v2.3.0";
 
   const { collections } = useCollectionStore();
 
@@ -96,6 +97,23 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
+        <Link href="/settings/api">
+          <div
+            className={`${
+              active === `/settings/api` ? "bg-sky-500" : "hover:bg-slate-500"
+            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+          >
+            <FontAwesomeIcon
+              icon={faKey}
+              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+            />
+
+            <p className="text-black dark:text-white truncate w-full pr-7">
+              API Keys
+            </p>
+          </div>
+        </Link>
+
         <Link href="/settings/password">
           <div
             className={`${
@@ -105,7 +123,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
-              icon={faKey}
+              icon={faLock}
               className="w-6 h-6 text-sky-500 dark:text-sky-500"
             />
 
