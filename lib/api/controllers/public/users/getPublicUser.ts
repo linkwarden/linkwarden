@@ -29,7 +29,23 @@ export default async function getPublicUser(
     (usernames) => usernames.username
   );
 
-  if (user?.isPrivate) {
+  const isInAPublicCollection = await prisma.collection.findFirst({
+    where: {
+      ["OR"]: [
+        { ownerId: user.id },
+        {
+          members: {
+            some: {
+              userId: user.id,
+            },
+          },
+        },
+      ],
+      isPublic: true,
+    },
+  });
+
+  if (user?.isPrivate && !isInAPublicCollection) {
     if (requestingId) {
       const requestingUser = await prisma.user.findUnique({
         where: { id: requestingId },
