@@ -24,7 +24,7 @@ export default function Links() {
           <div className="flex items-center gap-3">
             <FontAwesomeIcon
               icon={faLink}
-              className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
+              className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
             />
             <div>
               <p className="text-3xl capitalize font-thin">All Links</p>

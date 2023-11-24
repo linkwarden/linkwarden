@@ -179,7 +179,7 @@ export default function PublicCollections() {
                 .slice(0, 3)}
               {collection?.members.length &&
               collection.members.length - 3 > 0 ? (
-                <div className="w-8 h-8 min-w-[2rem] text-white text-sm flex items-center justify-center rounded-full border-2 bg-sky-600 dark:bg-sky-600 border-slate-200 dark:border-neutral-700">
+                <div className="w-8 h-8 min-w-[2rem] text-white text-sm flex items-center justify-center rounded-full border-2 bg-sky-600 dark:bg-sky-600 border-slate-200">
                   +{collection?.members?.length - 3}
                 </div>
               ) : null}

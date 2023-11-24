@@ -35,7 +35,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`dark:bg-neutral-900 bg-white h-full w-64 overflow-y-auto border-solid border-white border dark:border-neutral-900 border-r-sky-100 dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${
+      className={`dark:bg-neutral-900 bg-white h-full w-64 overflow-y-auto border-solid border-white border dark:border-neutral-900 border-r-neutral-content dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${
         className || ""
       }`}
     >
@@ -44,14 +44,11 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/account`
-                ? "bg-sky-500"
+                ? "bg-primary"
                 : "hover:bg-slate-500"
             } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faUser}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
+            <FontAwesomeIcon icon={faUser} className="w-6 h-6 text-primary" />
 
             <p className="truncate w-full pr-7">Account</p>
           </div>
@@ -61,13 +58,13 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/appearance`
-                ? "bg-sky-500"
+                ? "bg-primary"
                 : "hover:bg-slate-500"
             } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faPalette}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
             <p className="truncate w-full pr-7">Appearance</p>
@@ -78,13 +75,13 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/archive`
-                ? "bg-sky-500"
+                ? "bg-primary"
                 : "hover:bg-slate-500"
             } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faBoxArchive}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
             <p className="truncate w-full pr-7">Archive</p>
@@ -94,13 +91,10 @@ export default function SettingsSidebar({ className }: { className?: string }) {
         <Link href="/settings/api">
           <div
             className={`${
-              active === `/settings/api` ? "bg-sky-500" : "hover:bg-slate-500"
+              active === `/settings/api` ? "bg-primary" : "hover:bg-slate-500"
             } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faKey}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
+            <FontAwesomeIcon icon={faKey} className="w-6 h-6 text-primary" />
 
             <p className="truncate w-full pr-7">API Keys</p>
           </div>
@@ -110,14 +104,11 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/password`
-                ? "bg-sky-500"
+                ? "bg-primary"
                 : "hover:bg-slate-500"
             } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faLock}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
+            <FontAwesomeIcon icon={faLock} className="w-6 h-6 text-primary" />
 
             <p className="truncate w-full pr-7">Password</p>
           </div>
@@ -128,13 +119,13 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             <div
               className={`${
                 active === `/settings/billing`
-                  ? "bg-sky-500"
+                  ? "bg-primary"
                   : "hover:bg-slate-500"
               } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
               <FontAwesomeIcon
                 icon={faCreditCard}
-                className="w-6 h-6 text-sky-500 dark:text-sky-500"
+                className="w-6 h-6 text-primary"
               />
 
               <p className="truncate w-full pr-7">Billing</p>
@@ -157,7 +148,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           >
             <FontAwesomeIcon
               icon={faCircleQuestion as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
             <p className="truncate w-full pr-7">Help</p>
@@ -170,7 +161,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           >
             <FontAwesomeIcon
               icon={faGithub as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
             <p className="truncate w-full pr-7">GitHub</p>
@@ -183,7 +174,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           >
             <FontAwesomeIcon
               icon={faXTwitter as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
             <p className="truncate w-full pr-7">Twitter</p>
@@ -196,7 +187,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           >
             <FontAwesomeIcon
               icon={faMastodon as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
             <p className="truncate w-full pr-7">Mastodon</p>

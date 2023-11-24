@@ -63,12 +63,12 @@ export default function Login() {
   return (
     <CenteredForm text="Sign in to your account">
       <form onSubmit={loginUser}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
             Enter your credentials
           </p>
 
-          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+          <hr className="border-1 border-neutral-content" />
 
           <div>
             <p className="text-sm w-fit font-semibold mb-1">

@@ -47,7 +47,7 @@ export default function LinkSidebar({ className, onClick }: Props) {
 
   return (
     <div
-      className={`dark:bg-neutral-900 bg-white h-full lg:w-10 w-62 overflow-y-auto lg:p-0 p-5 border-solid border-white border dark:border-neutral-900 dark:lg:border-r-neutral-900 lg:border-r-white border-r-sky-100 dark:border-r-neutral-700 z-20 flex flex-col gap-5 lg:justify-center justify-start ${
+      className={`dark:bg-neutral-900 bg-white h-full lg:w-10 w-62 overflow-y-auto lg:p-0 p-5 border-solid border-white border dark:border-neutral-900 dark:lg:border-r-neutral-900 lg:border-r-white border-r-neutral-content dark:border-r-neutral-700 z-20 flex flex-col gap-5 lg:justify-center justify-start ${
         className || ""
       }`}
     >

@@ -160,15 +160,15 @@ body {
 /* react-select */
 @layer components {
   .react-select-container .react-select__control {
-    @apply dark:bg-neutral-950 bg-gray-50 dark:border-neutral-700 dark:hover:border-neutral-500;
-  }
-
-  .react-select-container {
-    @apply dark:border-neutral-700;
+    @apply dark:bg-neutral-950 bg-gray-50 dark:hover:border-neutral-500;
   }
 
   .react-select-container .react-select__menu {
     @apply dark:bg-neutral-900 dark:border-neutral-700 border;
+  }
+
+  .react-select-container .react-select__menu {
+    @apply dark:bg-neutral-900 border;
   }
 
   .react-select-container .react-select__option {

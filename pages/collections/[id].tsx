@@ -58,7 +58,7 @@ export default function Index() {
               settings.theme === "dark" ? "#262626" : "#f3f4f6"
             } 50%, ${settings.theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
           }}
-          className="border border-solid border-sky-100 dark:border-neutral-700 rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between"
+          className="border border-solid border-neutral-content rounded-2xl shadow min-h-[10rem] p-5 flex gap-5 flex-col justify-between"
         >
           <div className="flex flex-col sm:flex-row gap-3 justify-between sm:items-start">
             {activeCollection && (
@@ -111,7 +111,7 @@ export default function Index() {
                     .slice(0, 4)}
                   {activeCollection?.members.length &&
                   activeCollection.members.length - 4 > 0 ? (
-                    <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 dark:border-neutral-700 -mr-3">
+                    <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 -mr-3">
                       +{activeCollection?.members?.length - 4}
                     </div>
                   ) : null}
