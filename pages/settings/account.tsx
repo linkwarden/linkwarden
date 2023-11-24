@@ -328,7 +328,7 @@ export default function Account() {
           />
 
           <p className="text-gray-500 dark:text-gray-300 text-sm">
-            This will limit who can find and add you to other Collections.
+            This will limit who can find and add you to new Collections.
           </p>
 
           {user.isPrivate && (
