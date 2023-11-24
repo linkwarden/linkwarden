@@ -42,7 +42,7 @@ export default function CenteredForm({ text, children }: Props) {
           />
         )} */}
         {text ? (
-          <p className="text-lg max-w-[30rem] min-w-80 w-full mx-auto font-semibold text-black dark:text-white px-2 text-center">
+          <p className="text-lg max-w-[30rem] min-w-80 w-full mx-auto font-semibold px-2 text-center">
             {text}
           </p>
         ) : undefined}

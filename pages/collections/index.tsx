@@ -40,13 +40,11 @@ export default function Collections() {
                 className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
               />
               <div>
-                <p className="text-3xl capitalize text-black dark:text-white font-thin">
+                <p className="text-3xl capitalize font-thin">
                   Your Collections
                 </p>
 
-                <p className="text-black dark:text-white">
-                  Collections you own
-                </p>
+                <p>Collections you own</p>
               </div>
             </div>
             <div className="relative mt-2">
@@ -128,9 +126,7 @@ export default function Collections() {
               });
             }}
           >
-            <p className="text-black dark:text-white group-hover:opacity-0 duration-100">
-              New Collection
-            </p>
+            <p className="group-hover:opacity-0 duration-100">New Collection</p>
             <FontAwesomeIcon
               icon={faPlus}
               className="w-8 h-8 text-sky-500 dark:text-sky-500 group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
@@ -146,13 +142,11 @@ export default function Collections() {
                 className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
               />
               <div>
-                <p className="text-3xl capitalize text-black dark:text-white font-thin">
+                <p className="text-3xl capitalize font-thin">
                   Other Collections
                 </p>
 
-                <p className="text-black dark:text-white">
-                  Shared collections you&apos;re a member of
-                </p>
+                <p>Shared collections you&apos;re a member of</p>
               </div>
             </div>
 

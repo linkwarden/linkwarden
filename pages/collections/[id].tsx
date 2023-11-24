@@ -69,7 +69,7 @@ export default function Index() {
                     style={{ color: activeCollection?.color }}
                     className="sm:w-8 sm:h-8 w-6 h-6 mt-3 drop-shadow"
                   />
-                  <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white w-full py-1 break-words hyphens-auto font-thin">
+                  <p className="sm:text-4xl text-3xl capitalize w-full py-1 break-words hyphens-auto font-thin">
                     {activeCollection?.name}
                   </p>
                 </div>
@@ -120,7 +120,7 @@ export default function Index() {
             ) : null}
           </div>
 
-          <div className="text-black dark:text-white flex justify-between items-end gap-5">
+          <div className="flex justify-between items-end gap-5">
             <p>{activeCollection?.description}</p>
             <div className="flex items-center gap-2">
               <div className="relative">

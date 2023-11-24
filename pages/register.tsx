@@ -113,16 +113,14 @@ export default function Register() {
       ) : (
         <form onSubmit={registerUser}>
           <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
-            <p className="text-3xl text-black dark:text-white text-center font-extralight">
+            <p className="text-3xl text-center font-extralight">
               Enter your details
             </p>
 
             <hr className="border-1 border-sky-100 dark:border-neutral-700" />
 
             <div>
-              <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-                Display Name
-              </p>
+              <p className="text-sm w-fit font-semibold mb-1">Display Name</p>
 
               <TextInput
                 autoFocus={true}
@@ -135,9 +133,7 @@ export default function Register() {
 
             {emailEnabled ? undefined : (
               <div>
-                <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-                  Username
-                </p>
+                <p className="text-sm w-fit font-semibold mb-1">Username</p>
 
                 <TextInput
                   placeholder="john"
@@ -152,9 +148,7 @@ export default function Register() {
 
             {emailEnabled ? (
               <div>
-                <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-                  Email
-                </p>
+                <p className="text-sm w-fit font-semibold mb-1">Email</p>
 
                 <TextInput
                   type="email"
@@ -167,9 +161,7 @@ export default function Register() {
             ) : undefined}
 
             <div className="w-full">
-              <p className="text-sm text-black dark:text-white w-fit font-semibold  mb-1">
-                Password
-              </p>
+              <p className="text-sm w-fit font-semibold  mb-1">Password</p>
 
               <TextInput
                 type="password"
@@ -181,7 +173,7 @@ export default function Register() {
             </div>
 
             <div className="w-full">
-              <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+              <p className="text-sm w-fit font-semibold mb-1">
                 Confirm Password
               </p>
 
@@ -238,10 +230,7 @@ export default function Register() {
               <p className="w-fit text-gray-500 dark:text-gray-400">
                 Already have an account?
               </p>
-              <Link
-                href={"/login"}
-                className="block text-black dark:text-white font-bold"
-              >
+              <Link href={"/login"} className="block font-bold">
                 Login
               </Link>
             </div>

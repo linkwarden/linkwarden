@@ -27,13 +27,9 @@ export default function PinnedLinks() {
               className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
             />
             <div>
-              <p className="text-3xl capitalize text-black dark:text-white font-thin">
-                Pinned Links
-              </p>
+              <p className="text-3xl capitalize font-thin">Pinned Links</p>
 
-              <p className="text-black dark:text-white">
-                Pinned Links from your Collections
-              </p>
+              <p>Pinned Links from your Collections</p>
             </div>
           </div>
 
@@ -70,7 +66,7 @@ export default function PinnedLinks() {
             style={{ flex: "1 1 auto" }}
             className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
           >
-            <p className="text-center text-2xl text-black dark:text-white">
+            <p className="text-center text-2xl">
               Pin Your Favorite Links Here!
             </p>
             <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">

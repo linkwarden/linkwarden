@@ -113,13 +113,9 @@ export default function Dashboard() {
             className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
           />
           <div>
-            <p className="text-3xl capitalize text-black dark:text-white font-thin">
-              Dashboard
-            </p>
+            <p className="text-3xl capitalize font-thin">Dashboard</p>
 
-            <p className="text-black dark:text-white">
-              A brief overview of your data
-            </p>
+            <p>A brief overview of your data</p>
           </div>
         </div>
 
@@ -157,19 +153,14 @@ export default function Dashboard() {
               icon={faClockRotateLeft}
               className="w-5 h-5 text-sky-500 dark:text-sky-500 drop-shadow"
             />
-            <p className="text-2xl text-black dark:text-white">
-              Recently Added Links
-            </p>
+            <p className="text-2xl">Recently Added Links</p>
           </div>
           <Link
             href="/links"
-            className="text-black dark:text-white flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer"
           >
             View All
-            <FontAwesomeIcon
-              icon={faChevronRight}
-              className={`w-4 h-4 text-black dark:text-white`}
-            />
+            <FontAwesomeIcon icon={faChevronRight} className={`w-4 h-4`} />
           </Link>
         </div>
 
@@ -192,7 +183,7 @@ export default function Dashboard() {
               style={{ flex: "1 1 auto" }}
               className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
             >
-              <p className="text-center text-2xl text-black dark:text-white">
+              <p className="text-center text-2xl">
                 View Your Recently Added Links Here!
               </p>
               <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">
@@ -200,7 +191,7 @@ export default function Dashboard() {
                 Collections you have access to.
               </p>
 
-              <div className="text-center text-black dark:text-white w-full mt-4 flex flex-wrap gap-4 justify-center">
+              <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
                 <div
                   onClick={() => {
                     setModal({
@@ -245,7 +236,7 @@ export default function Dashboard() {
                         if (target.id !== "import-dropdown")
                           setImportDropdown(false);
                       }}
-                      className={`absolute text-black dark:text-white top-10 left-0 w-52 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+                      className={`absolute top-10 left-0 w-52 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
                     >
                       <div className="cursor-pointer rounded-md">
                         <label
@@ -297,17 +288,14 @@ export default function Dashboard() {
               icon={faThumbTack}
               className="w-5 h-5 text-sky-500 dark:text-sky-500 drop-shadow"
             />
-            <p className="text-2xl text-black dark:text-white">Pinned Links</p>
+            <p className="text-2xl">Pinned Links</p>
           </div>
           <Link
             href="/links/pinned"
-            className="text-black dark:text-white flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-2 cursor-pointer"
           >
             View All
-            <FontAwesomeIcon
-              icon={faChevronRight}
-              className={`w-4 h-4 text-black dark:text-white`}
-            />
+            <FontAwesomeIcon icon={faChevronRight} className={`w-4 h-4`} />
           </Link>
         </div>
 
@@ -332,7 +320,7 @@ export default function Dashboard() {
               style={{ flex: "1 1 auto" }}
               className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
             >
-              <p className="text-center text-2xl text-black dark:text-white">
+              <p className="text-center text-2xl">
                 Pin Your Favorite Links Here!
               </p>
               <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">

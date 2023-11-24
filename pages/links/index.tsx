@@ -27,13 +27,9 @@ export default function Links() {
               className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
             />
             <div>
-              <p className="text-3xl capitalize text-black dark:text-white font-thin">
-                All Links
-              </p>
+              <p className="text-3xl capitalize font-thin">All Links</p>
 
-              <p className="text-black dark:text-white">
-                Links from every Collections
-              </p>
+              <p>Links from every Collections</p>
             </div>
           </div>
 

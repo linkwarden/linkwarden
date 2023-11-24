@@ -64,14 +64,14 @@ export default function Login() {
     <CenteredForm text="Sign in to your account">
       <form onSubmit={loginUser}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
-          <p className="text-3xl text-black dark:text-white text-center font-extralight">
+          <p className="text-3xl text-center font-extralight">
             Enter your credentials
           </p>
 
           <hr className="border-1 border-sky-100 dark:border-neutral-700" />
 
           <div>
-            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+            <p className="text-sm w-fit font-semibold mb-1">
               Username
               {emailEnabled ? " or Email" : undefined}
             </p>
@@ -86,9 +86,7 @@ export default function Login() {
           </div>
 
           <div className="w-full">
-            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-              Password
-            </p>
+            <p className="text-sm w-fit font-semibold mb-1">Password</p>
 
             <TextInput
               type="password"
@@ -130,10 +128,7 @@ export default function Login() {
               <p className="w-fit text-gray-500 dark:text-gray-400">
                 New here?
               </p>
-              <Link
-                href={"/register"}
-                className="block text-black dark:text-white font-semibold"
-              >
+              <Link href={"/register"} className="block font-semibold">
                 Sign Up
               </Link>
             </div>
