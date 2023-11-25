@@ -259,7 +259,7 @@ export default function Index() {
               }}
             ></div>
           ) : (
-            <div className="border border-solid border-neutral-content w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
+            <div className="border border-solid border-neutral-content w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-base-200">
               {link?.readabilityPath === "pending" ? (
                 <p className="text-center">
                   Generating readable format, please wait...

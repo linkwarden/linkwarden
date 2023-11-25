@@ -64,7 +64,7 @@ export default function PinnedLinks() {
         ) : (
           <div
             style={{ flex: "1 1 auto" }}
-            className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+            className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200"
           >
             <p className="text-center text-2xl">
               Pin Your Favorite Links Here!

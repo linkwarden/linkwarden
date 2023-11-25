@@ -11,7 +11,7 @@ export default function NoLinksFound({ text }: Props) {
   const { setModal } = useModalStore();
 
   return (
-    <div className="border border-solid border-neutral-content w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
+    <div className="border border-solid border-neutral-content w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-base-200">
       <p className="text-center text-2xl">
         {text || "You haven't created any Links Here"}
       </p>

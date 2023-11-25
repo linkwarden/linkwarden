@@ -11,7 +11,7 @@ type Props = {
 
 export default function Modal({ toggleModal, className, children }: Props) {
   return (
-    <div className="overflow-y-auto py-2 fixed top-0 bottom-0 right-0 left-0 bg-gray-500 bg-opacity-10 backdrop-blur-sm flex justify-center items-center fade-in z-30">
+    <div className="overflow-y-auto py-2 fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex justify-center items-center fade-in z-30">
       <ClickAwayHandler
         onClickOutside={toggleModal}
         className={`m-auto ${className || ""}`}
