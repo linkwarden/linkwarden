@@ -117,7 +117,7 @@ export default function Collections() {
             })}
 
           <div
-            className="p-5 bg-gray-50 dark:bg-neutral-800 self-stretch border border-solid border-neutral-content min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
+            className="p-5 bg-base-200 self-stretch border border-solid border-neutral-content min-h-[12rem] rounded-2xl cursor-pointer shadow duration-100 hover:shadow-none flex flex-col gap-4 justify-center items-center group"
             onClick={() => {
               setModal({
                 modal: "COLLECTION",

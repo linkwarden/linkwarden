@@ -78,7 +78,7 @@ export default function Dropdown({
       onClickOutside={onClickOutside}
       className={`${
         className || ""
-      } py-1 shadow-md border border-neutral-content bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+      } py-1 shadow-md border border-neutral-content bg-base-200 rounded-md flex flex-col z-20`}
     >
       {items.map((e, i) => {
         const inner = e && (

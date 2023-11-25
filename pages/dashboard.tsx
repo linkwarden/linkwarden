@@ -181,7 +181,7 @@ export default function Dashboard() {
           ) : (
             <div
               style={{ flex: "1 1 auto" }}
-              className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+              className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200"
             >
               <p className="text-center text-2xl">
                 View Your Recently Added Links Here!
@@ -236,7 +236,7 @@ export default function Dashboard() {
                         if (target.id !== "import-dropdown")
                           setImportDropdown(false);
                       }}
-                      className={`absolute top-10 left-0 w-52 py-1 shadow-md border border-neutral-content bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+                      className={`absolute top-10 left-0 w-52 py-1 shadow-md border border-neutral-content bg-base-200 rounded-md flex flex-col z-20`}
                     >
                       <div className="cursor-pointer rounded-md">
                         <label
@@ -318,7 +318,7 @@ export default function Dashboard() {
           ) : (
             <div
               style={{ flex: "1 1 auto" }}
-              className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+              className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200"
             >
               <p className="text-center text-2xl">
                 Pin Your Favorite Links Here!
