@@ -24,7 +24,7 @@ export default function ProfilePhoto({ src, className, priority }: Props) {
 
   return !image ? (
     <div
-      className={`bg-sky-600 dark:bg-sky-600 text-white h-10 w-10 aspect-square shadow rounded-full border border-slate-200 flex items-center justify-center ${
+      className={`bg-sky-600 dark:bg-sky-600 text-white h-10 w-10 aspect-square shadow rounded-full border border-neutral-content flex items-center justify-center ${
         className || ""
       }`}
     >
@@ -39,7 +39,7 @@ export default function ProfilePhoto({ src, className, priority }: Props) {
       priority={priority}
       draggable={false}
       onError={() => setImage("")}
-      className={`h-10 w-10 bg-sky-600 dark:bg-sky-600 shadow rounded-full aspect-square border border-slate-200 ${
+      className={`h-10 w-10 bg-sky-600 dark:bg-sky-600 shadow rounded-full aspect-square border border-neutral-content ${
         className || ""
       }`}
     />
