@@ -6,7 +6,7 @@ import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 
-export default async function archive(
+export default async function urlHandler(
   linkId: number,
   url: string,
   userId: number

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import archive from "@/lib/api/archive";
+import urlHandler from "@/lib/api/urlHandler";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 
@@ -41,7 +41,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         } minutes or create a new one.`,
       });
 
-    archive(link.id, link.url, user.id);
+    urlHandler(link.id, link.url, user.id);
     return res.status(200).json({
       response: "Link is being archived.",
     });
