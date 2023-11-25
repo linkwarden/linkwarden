@@ -185,7 +185,7 @@ export default function Index() {
                 />
               )}
 
-              <div className="flex gap-2 text-sm text-gray-500 dark:text-gray-300">
+              <div className="flex gap-2 text-sm text-neutral">
                 <p className=" min-w-fit">
                   {link?.createdAt
                     ? new Date(link?.createdAt).toLocaleString("en-US", {

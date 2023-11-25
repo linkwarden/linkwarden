@@ -60,7 +60,7 @@ export default function ChooseUsername() {
             />
           </div>
           <div>
-            <p className="text-md text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-md text-neutral mt-1">
               Feel free to reach out to us at{" "}
               <a
                 className="font-semibold underline"
@@ -81,7 +81,7 @@ export default function ChooseUsername() {
 
           <div
             onClick={() => signOut()}
-            className="w-fit mx-auto cursor-pointer text-gray-500 dark:text-gray-400 font-semibold "
+            className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
           >
             Sign Out
           </div>

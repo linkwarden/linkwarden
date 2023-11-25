@@ -186,7 +186,7 @@ export default function Dashboard() {
               <p className="text-center text-2xl">
                 View Your Recently Added Links Here!
               </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
                 This section will view your latest added Links across every
                 Collections you have access to.
               </p>
@@ -323,7 +323,7 @@ export default function Dashboard() {
               <p className="text-center text-2xl">
                 Pin Your Favorite Links Here!
               </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
                 You can Pin your favorite Links by clicking on the three dots on
                 each Link and clicking{" "}
                 <span className="font-semibold">Pin to Dashboard</span>.

@@ -42,7 +42,7 @@ export default function PinnedLinks() {
               <FontAwesomeIcon
                 icon={faSort}
                 id="sort-dropdown"
-                className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 text-neutral"
               />
             </div>
 
@@ -69,7 +69,7 @@ export default function PinnedLinks() {
             <p className="text-center text-2xl">
               Pin Your Favorite Links Here!
             </p>
-            <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">
+            <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
               You can Pin your favorite Links by clicking on the three dots on
               each Link and clicking{" "}
               <span className="font-semibold">Pin to Dashboard</span>.

@@ -125,7 +125,7 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setCollectionDisclosure(!collectionDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-gray-300 mt-5"
+          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
           <p>Collections</p>
 
@@ -169,10 +169,10 @@ export default function Sidebar({ className }: { className?: string }) {
                           <FontAwesomeIcon
                             icon={faGlobe}
                             title="This collection is being shared publicly."
-                            className="w-4 h-4 drop-shadow text-gray-500 dark:text-gray-300"
+                            className="w-4 h-4 drop-shadow text-neutral"
                           />
                         ) : undefined}
-                        <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
+                        <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}
                         </div>
                       </div>
@@ -183,7 +183,7 @@ export default function Sidebar({ className }: { className?: string }) {
               <div
                 className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
               >
-                <p className="text-gray-500 dark:text-gray-300 text-xs font-semibold truncate w-full pr-7">
+                <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
                   You Have No Collections...
                 </p>
               </div>
@@ -196,7 +196,7 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setTagDisclosure(!tagDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-gray-300 mt-5"
+          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
           <p>Tags</p>
           <FontAwesomeIcon
@@ -232,7 +232,7 @@ export default function Sidebar({ className }: { className?: string }) {
                         />
 
                         <p className="truncate w-full pr-7">{e.name}</p>
-                        <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
+                        <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}
                         </div>
                       </div>
@@ -243,7 +243,7 @@ export default function Sidebar({ className }: { className?: string }) {
               <div
                 className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
               >
-                <p className="text-gray-500 dark:text-gray-300 text-xs font-semibold truncate w-full pr-7">
+                <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
                   You Have No Tags...
                 </p>
               </div>

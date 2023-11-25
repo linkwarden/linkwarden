@@ -56,7 +56,7 @@ export default function Forgot() {
               account. Make sure to change your password in the profile settings
               afterwards.
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-neutral">
               You wont get logged in if you haven&apos;t created an account yet.
             </p>
           </div>

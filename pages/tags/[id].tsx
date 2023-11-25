@@ -127,7 +127,7 @@ export default function Index() {
                       <FontAwesomeIcon
                         icon={faCheck}
                         id="expand-dropdown"
-                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                        className="w-5 h-5 text-neutral"
                       />
                     </div>
                     <div
@@ -138,7 +138,7 @@ export default function Index() {
                       <FontAwesomeIcon
                         icon={faXmark}
                         id="expand-dropdown"
-                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                        className="w-5 h-5 text-neutral"
                       />
                     </div>
                   </form>
@@ -157,7 +157,7 @@ export default function Index() {
                       <FontAwesomeIcon
                         icon={faEllipsis}
                         id="expand-dropdown"
-                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                        className="w-5 h-5 text-neutral"
                       />
                     </div>
 
@@ -202,7 +202,7 @@ export default function Index() {
               <FontAwesomeIcon
                 icon={faSort}
                 id="sort-dropdown"
-                className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 text-neutral"
               />
             </div>
 
