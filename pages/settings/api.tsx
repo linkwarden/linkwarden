@@ -67,7 +67,7 @@ export default function Api() {
 
         <p>
           For now, you can <i>temporarily</i> use your{" "}
-          <code className="text-xs whitespace-nowrap bg-gray-500/40 rounded-md px-2 py-1">
+          <code className="text-xs whitespace-nowrap bg-black/40 rounded-md px-2 py-1">
             next-auth.session-token
           </code>{" "}
           in your browser cookies as the API key for your integrations.

@@ -258,7 +258,7 @@ export default function Account() {
                       if (target.id !== "import-dropdown")
                         setImportDropdown(false);
                     }}
-                    className={`absolute top-7 left-0 w-52 py-1 shadow-md border border-neutral-content bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+                    className={`absolute top-7 left-0 w-52 py-1 shadow-md border border-neutral-content bg-base-200 rounded-md flex flex-col z-20`}
                   >
                     <div className="cursor-pointer rounded-md">
                       <label

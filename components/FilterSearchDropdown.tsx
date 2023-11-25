@@ -25,7 +25,7 @@ export default function FilterSearchDropdown({
         const target = e.target as HTMLInputElement;
         if (target.id !== "filter-dropdown") setFilterDropdown(false);
       }}
-      className="absolute top-8 right-0 border border-neutral shadow-md bg-gray-50 dark:bg-neutral-800 rounded-md p-2 z-20 w-40"
+      className="absolute top-8 right-0 border border-neutral shadow-md bg-base-200 rounded-md p-2 z-20 w-40"
     >
       <p className="mb-2 text-center font-semibold">Filter by</p>
       <div className="flex flex-col gap-2">
