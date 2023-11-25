@@ -71,10 +71,7 @@ export default function LinkSidebar({ className, onClick }: Props) {
             }}
             className={`hover:opacity-60 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faPen}
-              className="w-6 h-6 text-gray-500 dark:text-gray-300"
-            />
+            <FontAwesomeIcon icon={faPen} className="w-6 h-6 text-neutral" />
 
             <p className="truncate w-full lg:hidden">Edit</p>
           </div>
@@ -97,7 +94,7 @@ export default function LinkSidebar({ className, onClick }: Props) {
         >
           <FontAwesomeIcon
             icon={faBoxesStacked}
-            className="w-6 h-6 text-gray-500 dark:text-gray-300"
+            className="w-6 h-6 text-neutral"
           />
 
           <p className="truncate w-full lg:hidden">Preserved Formats</p>
@@ -120,7 +117,7 @@ export default function LinkSidebar({ className, onClick }: Props) {
           >
             <FontAwesomeIcon
               icon={faTrashCan}
-              className="w-6 h-6 text-gray-500 dark:text-gray-300"
+              className="w-6 h-6 text-neutral"
             />
 
             <p className="truncate w-full lg:hidden">Delete</p>

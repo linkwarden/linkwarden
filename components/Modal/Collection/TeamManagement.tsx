@@ -112,7 +112,7 @@ export default function TeamManagement({
             }
           />
 
-          <p className="text-gray-500 dark:text-gray-300 text-sm">
+          <p className="text-neutral text-sm">
             This will let <b>Anyone</b> to view this collection.
           </p>
         </>
@@ -181,7 +181,7 @@ export default function TeamManagement({
 
       {collection?.members[0]?.user && (
         <>
-          <p className="text-center text-gray-500 dark:text-gray-300 text-xs sm:text-sm">
+          <p className="text-center text-neutral text-xs sm:text-sm">
             (All Members have <b>Read</b> access to this collection.)
           </p>
           <div className="flex flex-col gap-3 rounded-md">
@@ -196,7 +196,7 @@ export default function TeamManagement({
                     {permissions === true && (
                       <FontAwesomeIcon
                         icon={faClose}
-                        className="absolute right-2 top-2 text-gray-500 dark:text-gray-300 h-4 hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"
+                        className="absolute right-2 top-2 text-neutral h-4 hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"
                         title="Remove Member"
                         onClick={() => {
                           const updatedMembers = collection.members.filter(
@@ -218,9 +218,7 @@ export default function TeamManagement({
                       />
                       <div>
                         <p className="text-sm font-bold">{e.user.name}</p>
-                        <p className="text-gray-500 dark:text-gray-300">
-                          @{e.user.username}
-                        </p>
+                        <p className="text-neutral">@{e.user.username}</p>
                       </div>
                     </div>
                     <div className="flex sm:block items-center justify-between gap-5 min-w-[10rem]">
@@ -233,7 +231,7 @@ export default function TeamManagement({
                           Permissions
                         </p>
                         {permissions === true && (
-                          <p className="text-xs text-gray-500 dark:text-gray-300 mb-2">
+                          <p className="text-xs text-neutral mb-2">
                             (Click to toggle.)
                           </p>
                         )}
@@ -243,7 +241,7 @@ export default function TeamManagement({
                       !e.canCreate &&
                       !e.canUpdate &&
                       !e.canDelete ? (
-                        <p className="text-sm text-gray-500 dark:text-gray-300">
+                        <p className="text-sm text-neutral">
                           Has no permissions.
                         </p>
                       ) : (
@@ -409,9 +407,7 @@ export default function TeamManagement({
                 className="w-3 h-3 text-yellow-500"
               />
             </div>
-            <p className="text-gray-500 dark:text-gray-300">
-              @{collectionOwner.username}
-            </p>
+            <p className="text-neutral">@{collectionOwner.username}</p>
           </div>
         </div>
 

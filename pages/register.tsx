@@ -190,7 +190,7 @@ export default function Register() {
 
             {process.env.NEXT_PUBLIC_STRIPE ? (
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-neutral">
                   By signing up, you agree to our{" "}
                   <Link
                     href="https://linkwarden.app/tos"
@@ -207,7 +207,7 @@ export default function Register() {
                   </Link>
                   .
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-neutral">
                   Need help?{" "}
                   <Link
                     href="mailto:support@linkwarden.app"
@@ -227,9 +227,7 @@ export default function Register() {
               <p className="text-center w-full font-bold">Sign Up</p>
             </button>
             <div className="flex items-baseline gap-1 justify-center">
-              <p className="w-fit text-gray-500 dark:text-gray-400">
-                Already have an account?
-              </p>
+              <p className="w-fit text-neutral">Already have an account?</p>
               <Link href={"/login"} className="block font-bold">
                 Login
               </Link>

@@ -64,7 +64,7 @@ export default function LinkCard({ link, count }: Props) {
               ))}
             </div>
           </div>
-          <div className="flex gap-1 items-center flex-wrap text-sm text-gray-500 dark:text-gray-300">
+          <div className="flex gap-1 items-center flex-wrap text-sm text-neutral">
             <p>{formattedDate}</p>
             <p>·</p>
             <Link
@@ -80,7 +80,7 @@ export default function LinkCard({ link, count }: Props) {
             {unescapeString(link.description)}{" "}
             <Link
               href={`/public/links/${link.id}`}
-              className="flex gap-1 items-center flex-wrap text-sm text-gray-500 dark:text-gray-300 hover:opacity-50 duration-100 min-w-fit float-right mt-1 ml-2"
+              className="flex gap-1 items-center flex-wrap text-sm text-neutral hover:opacity-50 duration-100 min-w-fit float-right mt-1 ml-2"
             >
               <p>Read</p>
               <FontAwesomeIcon

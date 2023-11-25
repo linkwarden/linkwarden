@@ -138,7 +138,7 @@ export default function AddOrEditLink({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {method === "UPDATE" ? (
         <div
-          className="text-gray-500 dark:text-gray-300 break-all w-full flex gap-2"
+          className="text-neutral break-all w-full flex gap-2"
           title={link.url}
         >
           <FontAwesomeIcon icon={faLink} className="w-6 h-6" />

@@ -184,7 +184,7 @@ export default function PublicCollections() {
                 </div>
               ) : null}
 
-              <p className="ml-2 mt-1 text-gray-500 dark:text-gray-300">
+              <p className="ml-2 mt-1 text-neutral">
                 By {collectionOwner.name}
                 {collection.members.length > 0
                   ? ` and ${collection.members.length} others`
@@ -215,7 +215,7 @@ export default function PublicCollections() {
                   <FontAwesomeIcon
                     icon={faFilter}
                     id="filter-dropdown"
-                    className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                    className="w-5 h-5 text-neutral"
                   />
                 </div>
 
@@ -237,7 +237,7 @@ export default function PublicCollections() {
                   <FontAwesomeIcon
                     icon={faSort}
                     id="sort-dropdown"
-                    className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                    className="w-5 h-5 text-neutral"
                   />
                 </div>
 
