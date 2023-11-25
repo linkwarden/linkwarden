@@ -97,10 +97,7 @@ export default function Login() {
             />
             {emailEnabled && (
               <div className="w-fit ml-auto mt-1">
-                <Link
-                  href={"/forgot"}
-                  className="text-gray-500 dark:text-gray-400 font-semibold"
-                >
+                <Link href={"/forgot"} className="text-neutral font-semibold">
                   Forgot Password?
                 </Link>
               </div>
@@ -125,9 +122,7 @@ export default function Login() {
           {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION ===
           "true" ? undefined : (
             <div className="flex items-baseline gap-1 justify-center">
-              <p className="w-fit text-gray-500 dark:text-gray-400">
-                New here?
-              </p>
+              <p className="w-fit text-neutral">New here?</p>
               <Link href={"/register"} className="block font-semibold">
                 Sign Up
               </Link>

@@ -74,7 +74,7 @@ export default function LinkPreview({ link, className, settings }: Props) {
           <div className="flex justify-between gap-5 w-full h-full z-0">
             <div className="flex flex-col justify-between w-full">
               <div className="flex items-baseline gap-1">
-                <p className="text-sm text-gray-500 dark:text-gray-300">{1}</p>
+                <p className="text-sm text-neutral">{1}</p>
                 <p className="text-lg truncate capitalize w-full pr-8">
                   {unescapeString(link.name as string)}
                 </p>
@@ -92,12 +92,12 @@ export default function LinkPreview({ link, className, settings }: Props) {
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                className="flex items-center gap-1 max-w-full w-fit text-gray-500 dark:text-gray-300 hover:opacity-70 duration-100"
+                className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
               >
                 <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
                 <p className="truncate w-full">{shortendURL}</p>
               </A>
-              <div className="flex items-center gap-1 text-gray-500 dark:text-gray-300">
+              <div className="flex items-center gap-1 text-neutral">
                 <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
                 <p>{formattedDate}</p>
               </div>

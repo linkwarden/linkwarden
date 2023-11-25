@@ -107,7 +107,7 @@ export default function PreservedFormats() {
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 cursor-pointer text-neutral"
               />
             </div>
 
@@ -118,7 +118,7 @@ export default function PreservedFormats() {
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 text-neutral"
               />
             </Link>
           </div>
@@ -142,7 +142,7 @@ export default function PreservedFormats() {
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 cursor-pointer text-neutral"
               />
             </div>
 
@@ -153,7 +153,7 @@ export default function PreservedFormats() {
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 text-neutral"
               />
             </Link>
           </div>
@@ -183,7 +183,7 @@ export default function PreservedFormats() {
             ""
           )}`}
           target="_blank"
-          className={`text-gray-500 dark:text-gray-300 duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm ${
+          className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm ${
             link?.pdfPath &&
             link?.screenshotPath &&
             link?.pdfPath !== "pending" &&

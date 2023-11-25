@@ -77,9 +77,7 @@ export default function Subscribe() {
         <div className="flex flex-col gap-2 justify-center items-center">
           <p className="text-3xl">
             ${plan === Plan.monthly ? "4" : "3"}
-            <span className="text-base text-gray-500 dark:text-gray-400">
-              /mo
-            </span>
+            <span className="text-base text-neutral">/mo</span>
           </p>
           <p className="font-semibold">
             Billed {plan === Plan.monthly ? "Monthly" : "Yearly"}
@@ -108,7 +106,7 @@ export default function Subscribe() {
 
         <div
           onClick={() => signOut()}
-          className="w-fit mx-auto cursor-pointer text-gray-500 dark:text-gray-400 font-semibold "
+          className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
         >
           Sign Out
         </div>

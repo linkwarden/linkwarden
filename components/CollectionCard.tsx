@@ -59,7 +59,7 @@ export default function CollectionCard({ collection, className }: Props) {
           <FontAwesomeIcon
             icon={faEllipsis}
             id={"expand-dropdown" + collection.id}
-            className="w-5 h-5 text-gray-500 dark:text-gray-300"
+            className="w-5 h-5 text-neutral"
           />
         </div>
         <Link
@@ -95,16 +95,16 @@ export default function CollectionCard({ collection, className }: Props) {
                   <FontAwesomeIcon
                     icon={faGlobe}
                     title="This collection is being shared publicly."
-                    className="w-4 h-4 drop-shadow text-gray-500 dark:text-gray-300"
+                    className="w-4 h-4 drop-shadow text-neutral"
                   />
                 ) : undefined}
                 <FontAwesomeIcon
                   icon={faLink}
-                  className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                  className="w-5 h-5 text-neutral"
                 />
                 {collection._count && collection._count.links}
               </div>
-              <div className="flex items-center justify-end gap-1 text-gray-500 dark:text-gray-300">
+              <div className="flex items-center justify-end gap-1 text-neutral">
                 <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
                 <p className="font-bold text-xs">{formattedDate}</p>
               </div>

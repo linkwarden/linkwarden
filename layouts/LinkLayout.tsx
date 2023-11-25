@@ -86,7 +86,7 @@ export default function LinkLayout({ children }: Props) {
           <div className="flex gap-3 mb-5 duration-100 items-center justify-between">
             {/* <div
               onClick={toggleSidebar}
-              className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
+              className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-2 text-neutral rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
             >
               <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
             </div> */}
@@ -103,7 +103,7 @@ export default function LinkLayout({ children }: Props) {
                   router.push(`/dashboard`);
                 }
               }}
-              className="inline-flex gap-1 hover:opacity-60 items-center select-none cursor-pointer p-2 lg:p-0 lg:px-1 lg:my-2 text-gray-500 dark:text-gray-300 rounded-md duration-100"
+              className="inline-flex gap-1 hover:opacity-60 items-center select-none cursor-pointer p-2 lg:p-0 lg:px-1 lg:my-2 text-neutral rounded-md duration-100"
             >
               <FontAwesomeIcon icon={faChevronLeft} className="w-4 h-4" />
               Back{" "}
@@ -138,7 +138,7 @@ export default function LinkLayout({ children }: Props) {
                 >
                   <FontAwesomeIcon
                     icon={faPen}
-                    className="w-6 h-6 text-gray-500 dark:text-gray-300"
+                    className="w-6 h-6 text-neutral"
                   />
                 </div>
               ) : undefined}
@@ -159,7 +159,7 @@ export default function LinkLayout({ children }: Props) {
               >
                 <FontAwesomeIcon
                   icon={faBoxesStacked}
-                  className="w-6 h-6 text-gray-500 dark:text-gray-300"
+                  className="w-6 h-6 text-neutral"
                 />
               </div>
 
@@ -179,7 +179,7 @@ export default function LinkLayout({ children }: Props) {
                 >
                   <FontAwesomeIcon
                     icon={faTrashCan}
-                    className="w-6 h-6 text-gray-500 dark:text-gray-300"
+                    className="w-6 h-6 text-neutral"
                   />
                 </div>
               ) : undefined}

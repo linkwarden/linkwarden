@@ -178,7 +178,7 @@ export default function Account() {
                 <p className="mb-2">Email</p>
                 {user.email !== account.email &&
                 process.env.NEXT_PUBLIC_STRIPE === "true" ? (
-                  <p className="text-gray-500 dark:text-gray-400 mb-2 text-sm">
+                  <p className="text-neutral mb-2 text-sm">
                     Updating this field will change your billing email as well
                   </p>
                 ) : undefined}
@@ -327,14 +327,14 @@ export default function Account() {
             onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
           />
 
-          <p className="text-gray-500 dark:text-gray-300 text-sm">
+          <p className="text-neutral text-sm">
             This will limit who can find and add you to new Collections.
           </p>
 
           {user.isPrivate && (
             <div className="pl-5">
               <p className="mt-2">Whitelisted Users</p>
-              <p className="text-gray-500 dark:text-gray-300 text-sm mb-3">
+              <p className="text-neutral text-sm mb-3">
                 Please provide the Username of the users you wish to grant
                 visibility to your profile. Separated by comma.
               </p>

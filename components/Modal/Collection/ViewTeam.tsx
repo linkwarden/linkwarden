@@ -52,9 +52,7 @@ export default function ViewTeam({ collection }: Props) {
                 Admin
               </div>
             </div>
-            <p className="text-gray-500 dark:text-gray-300">
-              @{collectionOwner.username}
-            </p>
+            <p className="text-neutral">@{collectionOwner.username}</p>
           </div>
         </div>
       </div>
@@ -77,9 +75,7 @@ export default function ViewTeam({ collection }: Props) {
                       />
                       <div>
                         <p className="text-sm font-bold">{e.user.name}</p>
-                        <p className="text-gray-500 dark:text-gray-300">
-                          @{e.user.username}
-                        </p>
+                        <p className="text-neutral">@{e.user.username}</p>
                       </div>
                     </div>
                   </div>

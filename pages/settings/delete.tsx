@@ -57,7 +57,7 @@ export default function Password() {
       <div className="p-4 mx-auto relative flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
         <Link
           href="/settings/account"
-          className="absolute top-4 left-4 gap-1 items-center select-none cursor-pointer p-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
+          className="absolute top-4 left-4 gap-1 items-center select-none cursor-pointer p-2 text-neutral rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
         >
           <FontAwesomeIcon icon={faChevronLeft} className="w-5 h-5" />
         </Link>

@@ -14,9 +14,7 @@ export default function dashboardItem({ name, value, icon }: Props) {
         <FontAwesomeIcon icon={icon} className="w-8 h-8 text-primary" />
       </div>
       <div className="flex flex-col justify-center">
-        <p className="text-gray-500 dark:text-gray-400 text-sm tracking-wider">
-          {name}
-        </p>
+        <p className="text-neutral text-sm tracking-wider">{name}</p>
         <p className="font-thin text-6xl text-primary mt-2">{value}</p>
       </div>
     </div>
