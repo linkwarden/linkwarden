@@ -11,7 +11,7 @@ import Image from "next/image";
 import ColorThief, { RGBColor } from "colorthief";
 import { useTheme } from "next-themes";
 import unescapeString from "@/lib/client/unescapeString";
-import isValidUrl from "@/lib/client/isValidUrl";
+import isValidUrl from "@/lib/shared/isValidUrl";
 import DOMPurify from "dompurify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBoxesStacked, faFolder } from "@fortawesome/free-solid-svg-icons";

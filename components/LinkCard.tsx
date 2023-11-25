@@ -18,7 +18,7 @@ import useModalStore from "@/store/modals";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
-import isValidUrl from "@/lib/client/isValidUrl";
+import isValidUrl from "@/lib/shared/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import { useRouter } from "next/router";
@@ -54,7 +54,7 @@ export default function LinkCard({ link, count, className }: Props) {
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url).host.toLowerCase();
+    shortendURL = new URL(link.url || "").host.toLowerCase();
   } catch (error) {
     console.log(error);
   }
@@ -124,7 +124,8 @@ export default function LinkCard({ link, count, className }: Props) {
     setExpandDropdown(false);
   };
 
-  const url = isValidUrl(link.url) ? new URL(link.url) : undefined;
+  const url =
+    isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
 
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
     "en-US",
@@ -230,7 +231,7 @@ export default function LinkCard({ link, count, className }: Props) {
               ) : undefined} */}
 
               <Link
-                href={link.url}
+                href={link.url || ""}
                 target="_blank"
                 onClick={(e) => {
                   e.stopPropagation();
