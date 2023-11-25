@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import urlHandler from "@/lib/api/urlHandler";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
+import isValidUrl from "@/lib/shared/isValidUrl";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
@@ -41,7 +42,13 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         } minutes or create a new one.`,
       });
 
-    urlHandler(link.id, link.url, user.id);
+    if (link.url && isValidUrl(link.url)) {
+      urlHandler(link.id, link.url, user.id);
+      return res.status(200).json({
+        response: "Link is not a webpage to be archived.",
+      });
+    }
+
     return res.status(200).json({
       response: "Link is being archived.",
     });
