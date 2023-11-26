@@ -104,7 +104,7 @@ export default function Register() {
       }
     >
       {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? (
-        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
+        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           <p>
             Registration is disabled for this instance, please contact the admin
             in case of any issues.
@@ -112,7 +112,7 @@ export default function Register() {
         </div>
       ) : (
         <form onSubmit={registerUser}>
-          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
+          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-base-200 rounded-2xl shadow-md border border-neutral-content">
             <p className="text-3xl text-center font-extralight">
               Enter your details
             </p>
@@ -126,7 +126,7 @@ export default function Register() {
                 autoFocus={true}
                 placeholder="Johnny"
                 value={form.name}
-                className="bg-white"
+                className="bg-base-100"
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
             </div>
@@ -138,7 +138,7 @@ export default function Register() {
                 <TextInput
                   placeholder="john"
                   value={form.username}
-                  className="bg-white"
+                  className="bg-base-100"
                   onChange={(e) =>
                     setForm({ ...form, username: e.target.value })
                   }
@@ -154,7 +154,7 @@ export default function Register() {
                   type="email"
                   placeholder="johnny@example.com"
                   value={form.email}
-                  className="bg-white"
+                  className="bg-base-100"
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
@@ -167,7 +167,7 @@ export default function Register() {
                 type="password"
                 placeholder="••••••••••••••"
                 value={form.password}
-                className="bg-white"
+                className="bg-base-100"
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
             </div>
@@ -181,7 +181,7 @@ export default function Register() {
                 type="password"
                 placeholder="••••••••••••••"
                 value={form.passwordConfirmation}
-                className="bg-white"
+                className="bg-base-100"
                 onChange={(e) =>
                   setForm({ ...form, passwordConfirmation: e.target.value })
                 }

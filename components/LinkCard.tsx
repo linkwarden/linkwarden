@@ -138,7 +138,7 @@ export default function LinkCard({ link, count, className }: Props) {
   return (
     <>
       <div
-        className={`h-fit border border-solid border-neutral-content bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none duration-100 rounded-2xl relative group ${
+        className={`h-fit border border-solid border-neutral-content bg-base-200 shadow hover:shadow-none duration-100 rounded-2xl relative group ${
           className || ""
         }`}
       >
@@ -150,7 +150,7 @@ export default function LinkCard({ link, count, className }: Props) {
               setExpandDropdown({ x: e.clientX, y: e.clientY });
             }}
             id={"expand-dropdown" + link.id}
-            className="text-neutral-content dark:text-gray-300 inline-flex rounded-md cursor-pointer btn btn-ghost btn-sm btn-square dark:hover:bg-neutral-700 absolute right-4 top-4 z-10 duration-100"
+            className="btn btn-ghost btn-sm btn-square absolute right-4 top-4 z-10"
           >
             <FontAwesomeIcon
               icon={faEllipsis}
@@ -221,7 +221,7 @@ export default function LinkCard({ link, count, className }: Props) {
                       </Link>
                     ))}
                   </div>
-                  <div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent to-slate-100 dark:to-neutral-800 to-35%"></div>
+                  <div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent dark:to-base-200 to-35%"></div>
                 </div>
               ) : undefined} */}
 

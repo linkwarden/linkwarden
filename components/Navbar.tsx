@@ -50,10 +50,10 @@ export default function Navbar() {
   };
 
   return (
-    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-neutral-content dark:border-b-neutral-700 border-b h-16">
+    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-neutral-content border-b h-16">
       <div
         onClick={toggleSidebar}
-        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-neutral rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
+        className="inline-flex lg:hidden gap-1 items-center select-none cursor-pointer p-[0.687rem] text-neutral rounded-md duration-100 hover:bg-neutral-content"
       >
         <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
       </div>
@@ -82,7 +82,7 @@ export default function Navbar() {
 
         <div className="relative">
           <div
-            className="flex gap-1 group sm:hover:bg-slate-200 sm:hover:dark:bg-neutral-700 sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit cursor-pointer"
+            className="flex gap-1 group sm:hover:bg-neutral-content sm:hover:p-1 sm:hover:pr-2 duration-100 h-10 rounded-full items-center w-fit cursor-pointer"
             onClick={() => setProfileDropdown(!profileDropdown)}
             id="profile-dropdown"
           >

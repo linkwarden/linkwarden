@@ -9,7 +9,7 @@ type Props = {
 
 export default function AnnouncementBar({ toggleAnnouncementBar }: Props) {
   return (
-    <div className="fixed w-full z-20 dark:bg-neutral-900 bg-white">
+    <div className="fixed w-full z-20 bg-base-200">
       <div className="w-full h-10 rainbow flex items-center justify-center">
         <div className="w-fit font-semibold">
           🎉️{" "}

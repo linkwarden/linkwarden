@@ -197,7 +197,7 @@ export default function PublicCollections() {
 
         <p className="mt-5">{collection.description}</p>
 
-        <hr className="mt-5 border-1 border-neutral-500" />
+        <hr className="mt-5 border-1 border-neutral" />
 
         <div className="flex mb-5 mt-10 flex-col gap-5">
           <div className="flex justify-between">
@@ -210,7 +210,7 @@ export default function PublicCollections() {
                 <div
                   onClick={() => setFilterDropdown(!filterDropdown)}
                   id="filter-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-neutral-500 hover:bg-opacity-40 duration-100 p-1"
+                  className="btn btn-ghost btn-square btn-sm"
                 >
                   <FontAwesomeIcon
                     icon={faFilter}
@@ -232,7 +232,7 @@ export default function PublicCollections() {
                 <div
                   onClick={() => setSortDropdown(!sortDropdown)}
                   id="sort-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-neutral-500 hover:bg-opacity-40 duration-100 p-1"
+                  className="btn btn-ghost btn-square btn-sm"
                 >
                   <FontAwesomeIcon
                     icon={faSort}
@@ -271,7 +271,7 @@ export default function PublicCollections() {
               })}
           </div>
 
-          {/* <p className="text-center text-gray-500">
+          {/* <p className="text-center text-neutral">
         List created with <span className="text-black">Linkwarden.</span>
         </p> */}
         </div>

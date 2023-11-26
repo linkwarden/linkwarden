@@ -47,19 +47,22 @@ export default function CollectionCard({ collection, className }: Props) {
             settings.theme === "dark" ? "#262626" : "#f3f4f6"
           } 50%, ${settings.theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
         }}
-        className={`border border-solid border-neutral self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${
+        className={`border border-solid border-neutral-content self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${
           className || ""
         }`}
       >
         <div
-          onClick={(e) => setExpandDropdown({ x: e.clientX, y: e.clientY })}
+          onClick={(e) => {
+            setExpandDropdown({ x: e.clientX, y: e.clientY });
+          }}
           id={"expand-dropdown" + collection.id}
-          className="inline-flex absolute top-5 right-5 rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+          className="btn btn-ghost btn-sm btn-square absolute right-4 top-4 z-10"
         >
           <FontAwesomeIcon
             icon={faEllipsis}
+            title="More"
+            className="w-5 h-5"
             id={"expand-dropdown" + collection.id}
-            className="w-5 h-5 text-neutral"
           />
         </div>
         <Link
