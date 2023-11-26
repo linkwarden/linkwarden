@@ -52,7 +52,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-base-200 dark:bg-neutral-800 h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-800 border-r-neutral-content dark:border-r-neutral-700 px-2 z-20 ${
+      className={`bg-base-200 h-full w-64 xl:w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content px-2 z-20 ${
         className || ""
       }`}
     >

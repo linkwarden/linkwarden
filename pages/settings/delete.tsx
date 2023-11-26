@@ -54,12 +54,15 @@ export default function Password() {
 
   return (
     <CenteredForm>
-      <div className="p-4 mx-auto relative flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
+      <div className="p-4 mx-auto relative flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 bg-base-200 rounded-2xl shadow-md border border-neutral-content">
         <Link
           href="/settings/account"
-          className="absolute top-4 left-4 gap-1 items-center select-none cursor-pointer p-2 text-neutral rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
+          className="absolute top-4 left-4 btn btn-ghost btn-square btn-sm"
         >
-          <FontAwesomeIcon icon={faChevronLeft} className="w-5 h-5" />
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            className="w-5 h-5 text-neutral"
+          />
         </Link>
         <div className="flex items-center gap-2 w-full rounded-md h-8">
           <p className="text-red-500 dark:text-red-500 truncate w-full text-3xl text-center">
@@ -86,6 +89,7 @@ export default function Password() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••••"
+              className="bg-base-100"
               type="password"
             />
           </div>
@@ -102,7 +106,7 @@ export default function Password() {
             <label className="w-full flex min-[430px]:items-center items-start gap-2 mb-3 min-[430px]:flex-row flex-col">
               <p className="text-sm">Reason for cancellation:</p>
               <select
-                className="rounded-md p-1 border-neutral-content bg-gray-50 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
+                className="rounded-md p-1 outline-none"
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
               >
@@ -127,7 +131,7 @@ export default function Password() {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="e.g. I needed a feature that..."
-                className="resize-none w-full rounded-md p-2 border-neutral-content bg-gray-50 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
+                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-100 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
               />
             </div>
           </fieldset>

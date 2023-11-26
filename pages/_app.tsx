@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
@@ -6,7 +6,6 @@ import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
 import { Toaster } from "react-hot-toast";
 import { Session } from "next-auth";
-import useLocalSettingsStore from "@/store/localSettings";
 
 export default function App({
   Component,
@@ -14,12 +13,6 @@ export default function App({
 }: AppProps<{
   session: Session;
 }>) {
-  const { setSettings } = useLocalSettingsStore();
-
-  useEffect(() => {
-    setSettings();
-  }, []);
-
   return (
     <SessionProvider
       session={pageProps.session}
@@ -54,7 +47,7 @@ export default function App({
           reverseOrder={false}
           toastOptions={{
             className:
-              "border border-neutral-content dark:bg-neutral-900 dark:text-white",
+              "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white",
           }}
         />
         <Component {...pageProps} />

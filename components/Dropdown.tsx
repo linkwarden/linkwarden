@@ -83,7 +83,7 @@ export default function Dropdown({
       {items.map((e, i) => {
         const inner = e && (
           <div className="cursor-pointer rounded-md">
-            <div className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 dark:hover:bg-neutral-700 duration-100">
+            <div className="flex items-center gap-2 py-1 px-2 hover:bg-base-100 duration-100">
               <p className="select-none">{e.name}</p>
             </div>
           </div>

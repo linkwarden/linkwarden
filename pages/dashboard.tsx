@@ -120,7 +120,7 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200 dark:bg-neutral-800">
+          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
@@ -242,7 +242,7 @@ export default function Dashboard() {
                         <label
                           htmlFor="import-linkwarden-file"
                           title="JSON File"
-                          className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
+                          className="flex items-center gap-2 py-1 px-2 hover:bg-base-100  duration-100 cursor-pointer"
                         >
                           Linkwarden File...
                           <input
@@ -259,7 +259,7 @@ export default function Dashboard() {
                         <label
                           htmlFor="import-html-file"
                           title="HTML File"
-                          className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
+                          className="flex items-center gap-2 py-1 px-2 hover:bg-base-100  duration-100 cursor-pointer"
                         >
                           Bookmarks HTML file...
                           <input

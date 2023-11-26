@@ -115,14 +115,14 @@ export default function Index() {
                     <input
                       type="text"
                       autoFocus
-                      className="sm:text-4xl text-3xl capitalize bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content dark:border-b-neutral-700"
+                      className="sm:text-4xl text-3xl capitalize bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
                       value={newTagName}
                       onChange={(e) => setNewTagName(e.target.value)}
                     />
                     <div
                       onClick={() => submit()}
                       id="expand-dropdown"
-                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                      className="btn btn-ghost btn-square btn-sm"
                     >
                       <FontAwesomeIcon
                         icon={faCheck}
@@ -133,7 +133,7 @@ export default function Index() {
                     <div
                       onClick={() => cancelUpdateTag()}
                       id="expand-dropdown"
-                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                      className="btn btn-ghost btn-square btn-sm"
                     >
                       <FontAwesomeIcon
                         icon={faXmark}
@@ -152,7 +152,7 @@ export default function Index() {
                     <div
                       onClick={() => setExpandDropdown(!expandDropdown)}
                       id="expand-dropdown"
-                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                      className="btn btn-ghost btn-square btn-sm"
                     >
                       <FontAwesomeIcon
                         icon={faEllipsis}
@@ -197,7 +197,7 @@ export default function Index() {
             <div
               onClick={() => setSortDropdown(!sortDropdown)}
               id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+              className="btn btn-ghost btn-square btn-sm"
             >
               <FontAwesomeIcon
                 icon={faSort}
