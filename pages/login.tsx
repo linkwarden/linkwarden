@@ -63,7 +63,7 @@ export default function Login() {
   return (
     <CenteredForm text="Sign in to your account">
       <form onSubmit={loginUser}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-neutral-content">
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
             Enter your credentials
           </p>
@@ -80,7 +80,7 @@ export default function Login() {
               autoFocus={true}
               placeholder="johnny"
               value={form.username}
-              className="bg-white"
+              className="bg-base-100"
               onChange={(e) => setForm({ ...form, username: e.target.value })}
             />
           </div>
@@ -92,7 +92,7 @@ export default function Login() {
               type="password"
               placeholder="••••••••••••••"
               value={form.password}
-              className="bg-white"
+              className="bg-base-100"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
             {emailEnabled && (

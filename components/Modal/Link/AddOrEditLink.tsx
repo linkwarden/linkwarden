@@ -241,7 +241,7 @@ export default function AddOrEditLink({
                     ? "Will be auto generated if nothing is provided."
                     : ""
                 }
-                className="resize-none w-full rounded-md p-2 border-neutral-content bg-gray-50 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
+                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
               />
             </div>
           </div>
@@ -253,7 +253,7 @@ export default function AddOrEditLink({
           onClick={() => setOptionsExpanded(!optionsExpanded)}
           className={`${
             method === "UPDATE" ? "hidden" : ""
-          } rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 flex items-center px-2 w-fit text-sm`}
+          } rounded-md cursor-pointer btn btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
         >
           <p>{optionsExpanded ? "Hide" : "More"} Options</p>
         </div>

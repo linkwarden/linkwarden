@@ -79,7 +79,7 @@ export default function CollectionInfo({
                   />
                 </div>
                 <div
-                  className="py-1 px-2 rounded-md text-xs font-semibold cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100"
+                  className="btn btn-ghost btn-xs"
                   onClick={() =>
                     setCollection({ ...collection, color: "#0ea5e9" })
                   }
@@ -98,7 +98,7 @@ export default function CollectionInfo({
         <div className="w-full">
           <p className="mb-2">Description</p>
           <textarea
-            className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-gray-50 dark:bg-neutral-950 p-2 outline-none border-neutral-content focus:border-sky-300 dark:focus:border-sky-600"
+            className="w-full h-[11.4rem] resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-sky-300 dark:focus:border-sky-600"
             placeholder="The purpose of this Collection..."
             value={collection.description}
             onChange={(e) =>

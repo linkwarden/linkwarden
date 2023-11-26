@@ -21,11 +21,9 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     ) {
       localStorage.setItem("theme", newSettings.theme);
 
-      const localTheme = localStorage.getItem("theme");
+      const localTheme = localStorage.getItem("theme") || "";
 
-      document
-        .querySelector("html")
-        ?.setAttribute("data-theme", localTheme || "");
+      document.querySelector("html")?.setAttribute("data-theme", localTheme);
     }
 
     set((state) => ({ settings: { ...state.settings, ...newSettings } }));
@@ -35,10 +33,13 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       localStorage.setItem("theme", "dark");
     }
 
-    const localTheme = localStorage.getItem("theme");
-    document
-      .querySelector("html")
-      ?.setAttribute("data-theme", localTheme || "");
+    const localTheme = localStorage.getItem("theme") || "";
+
+    set((state) => ({
+      settings: { ...state.settings, theme: localTheme },
+    }));
+
+    document.querySelector("html")?.setAttribute("data-theme", localTheme);
   },
 }));
 

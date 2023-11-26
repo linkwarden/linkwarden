@@ -28,7 +28,7 @@ export default function LinkCard({ link, count }: Props) {
   });
 
   return (
-    <div className="border border-solid border-neutral-content bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none duration-100 rounded-lg p-3 flex items-start relative gap-3 group/item">
+    <div className="border border-solid border-neutral-content bg-base-200 shadow hover:shadow-none duration-100 rounded-lg p-3 flex items-start relative gap-3 group/item">
       <div className="flex justify-between items-end gap-5 w-full h-full z-0">
         <div className="flex flex-col justify-between w-full">
           <div className="flex items-center gap-2">

@@ -127,7 +127,7 @@ export default function Index() {
                 <div
                   onClick={() => setSortDropdown(!sortDropdown)}
                   id="sort-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-black hover:dark:bg-white hover:bg-opacity-10 hover:dark:bg-opacity-10 duration-100 p-1"
+                  className="btn btn-ghost btn-square btn-sm"
                 >
                   <FontAwesomeIcon
                     icon={faSort}
@@ -148,7 +148,7 @@ export default function Index() {
                 <div
                   onClick={() => setExpandDropdown(!expandDropdown)}
                   id="expand-dropdown"
-                  className="inline-flex rounded-md cursor-pointer hover:bg-black hover:dark:bg-white hover:bg-opacity-10 hover:dark:bg-opacity-10 duration-100 p-1"
+                  className="btn btn-ghost btn-square btn-sm"
                 >
                   <FontAwesomeIcon
                     icon={faEllipsis}

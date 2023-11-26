@@ -49,7 +49,7 @@ export default function LinkPreview({ link, className, settings }: Props) {
   return (
     <>
       <div
-        className={`h-fit border border-solid border-neutral-content bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none duration-100 rounded-2xl relative group ${
+        className={`h-fit border border-solid border-neutral-content bg-base-200 shadow hover:shadow-none duration-100 rounded-2xl relative group ${
           className || ""
         }`}
       >

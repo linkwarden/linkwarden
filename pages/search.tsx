@@ -58,7 +58,7 @@ export default function Search() {
               <div
                 onClick={() => setFilterDropdown(!filterDropdown)}
                 id="filter-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                className="btn btn-ghost btn-square btn-sm"
               >
                 <FontAwesomeIcon
                   icon={faFilter}
@@ -80,7 +80,7 @@ export default function Search() {
               <div
                 onClick={() => setSortDropdown(!sortDropdown)}
                 id="sort-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                className="btn btn-ghost btn-square btn-sm"
               >
                 <FontAwesomeIcon
                   icon={faSort}

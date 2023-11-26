@@ -35,7 +35,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`dark:bg-neutral-900 bg-white h-full w-64 overflow-y-auto border-solid border-white border dark:border-neutral-900 border-r-neutral-content dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${
+      className={`bg-base-100 h-full w-64 overflow-y-auto border-solid border border-base-100 border-r-neutral-content p-5 z-20 flex flex-col gap-5 justify-between ${
         className || ""
       }`}
     >
@@ -138,7 +138,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
         <Link
           href={`https://github.com/linkwarden/linkwarden/releases`}
           target="_blank"
-          className="dark:text-gray-300 text-gray-500 text-sm ml-2 hover:opacity-50 duration-100"
+          className="text-neutral text-sm ml-2 hover:opacity-50 duration-100"
         >
           Linkwarden {LINKWARDEN_VERSION}
         </Link>

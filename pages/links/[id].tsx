@@ -165,7 +165,7 @@ export default function Index() {
                   height={42}
                   alt=""
                   id={"favicon-" + link.id}
-                  className="select-none mt-2 w-10 rounded-md shadow border-[3px] border-white dark:border-neutral-900 bg-white dark:bg-neutral-900 aspect-square"
+                  className="select-none mt-2 w-10 rounded-md shadow border-[3px] border-base-100 bg-base-100 aspect-square"
                   draggable="false"
                   onLoad={(e) => {
                     try {
