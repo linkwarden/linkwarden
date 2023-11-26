@@ -13,6 +13,7 @@ interface FormData {
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 const keycloakEnabled = process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED;
+const authentikEnabled = process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED;
 
 export default function Login() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -60,10 +61,25 @@ export default function Login() {
     setSubmitLoader(false);
   }
 
+  async function loginUserAuthentik() {
+    setSubmitLoader(true);
+
+    const load = toast.loading("Authenticating...");
+
+    const res = await signIn("authentik", {});
+
+    toast.dismiss(load);
+
+    setSubmitLoader(false);
+  }
+
   return (
     <CenteredForm text="Sign in to your account">
       <form onSubmit={loginUser}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+          
+          {process.env.NEXT_PUBLIC_DISABLE_LOGIN !== "true" ? (
+          <div>
           <p className="text-3xl text-black dark:text-white text-center font-extralight">
             Enter your credentials
           </p>
@@ -115,11 +131,22 @@ export default function Login() {
             className=" w-full text-center"
             loading={submitLoader}
           />
+          </div>
+          ) : undefined}
           {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true" ? (
             <SubmitButton
               type="button"
               onClick={loginUserKeycloak}
               label="Sign in with Keycloak"
+              className=" w-full text-center"
+              loading={submitLoader}
+            />
+          ) : undefined}
+          {process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true" ? (
+            <SubmitButton
+              type="button"
+              onClick={loginUserAuthentik}
+              label="Sign in with Authentiks"
               className=" w-full text-center"
               loading={submitLoader}
             />
