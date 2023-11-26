@@ -10,11 +10,13 @@ import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
 import { Provider } from "next-auth/providers";
 import verifySubscription from "@/lib/api/verifySubscription";
 import KeycloakProvider from "next-auth/providers/keycloak";
+import AuthentikProvider from "next-auth/providers/authentik";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 const keycloakEnabled = process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true";
+const authentikEnabled = process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true";
 
 const adapter = PrismaAdapter(prisma);
 
@@ -86,6 +88,34 @@ if (keycloakEnabled) {
       clientSecret: process.env.KEYCLOAK_CLIENT_SECRET!,
       issuer: process.env.KEYCLOAK_ISSUER,
       profile: (profile) => {
+        return {
+          id: profile.sub,
+          username: profile.preferred_username,
+          name: profile.name ?? profile.preferred_username,
+          email: profile.email,
+          image: profile.picture,
+        };
+      },
+    })
+  );
+  const _linkAccount = adapter.linkAccount;
+  adapter.linkAccount = (account) => {
+    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
+    return _linkAccount ? _linkAccount(data) : undefined;
+  };
+}
+
+if (authentikEnabled) {
+  console.log(authentikEnabled)
+  providers.push(
+    AuthentikProvider({
+      id: "authentik",
+      name: "Authentik",
+      clientId: process.env.AUTHENTIK_CLIENT_ID!,
+      clientSecret: process.env.AUTHENTIK_CLIENT_SECRET!,
+      issuer: process.env.AUTHENTIK_ISSUER,
+      profile: (profile) => {
+        console.log(profile)
         return {
           id: profile.sub,
           username: profile.preferred_username,
