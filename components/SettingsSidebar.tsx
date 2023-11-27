@@ -44,9 +44,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/account`
-                ? "bg-primary"
-                : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-secondary/30"
+                : "hover:bg-neutral/20"
+            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon icon={faUser} className="w-6 h-6 text-primary" />
 
@@ -58,9 +58,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/appearance`
-                ? "bg-primary"
-                : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-secondary/30"
+                : "hover:bg-neutral/20"
+            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faPalette}
@@ -75,9 +75,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/archive`
-                ? "bg-primary"
-                : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-secondary/30"
+                : "hover:bg-neutral/20"
+            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faBoxArchive}
@@ -91,8 +91,10 @@ export default function SettingsSidebar({ className }: { className?: string }) {
         <Link href="/settings/api">
           <div
             className={`${
-              active === `/settings/api` ? "bg-primary" : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+              active === `/settings/api`
+                ? "bg-secondary/30"
+                : "hover:bg-neutral/20"
+            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon icon={faKey} className="w-6 h-6 text-primary" />
 
@@ -104,9 +106,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/password`
-                ? "bg-primary"
-                : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-secondary/30"
+                : "hover:bg-neutral/20"
+            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon icon={faLock} className="w-6 h-6 text-primary" />
 
@@ -119,9 +121,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             <div
               className={`${
                 active === `/settings/billing`
-                  ? "bg-primary"
-                  : "hover:bg-slate-500"
-              } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                  ? "bg-secondary/30"
+                  : "hover:bg-neutral/20"
+              } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
               <FontAwesomeIcon
                 icon={faCreditCard}
@@ -144,7 +146,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
         </Link>
         <Link href="https://docs.linkwarden.app" target="_blank">
           <div
-            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faCircleQuestion as any}
@@ -157,7 +159,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="https://github.com/linkwarden/linkwarden" target="_blank">
           <div
-            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faGithub as any}
@@ -170,7 +172,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="https://twitter.com/LinkwardenHQ" target="_blank">
           <div
-            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faXTwitter as any}
@@ -183,7 +185,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="https://fosstodon.org/@linkwarden" target="_blank">
           <div
-            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faMastodon as any}

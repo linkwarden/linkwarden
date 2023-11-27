@@ -155,7 +155,6 @@ body {
 
 /* Theme */
 
-/* react-select */
 @layer components {
   .react-select-container .react-select__control {
     @apply bg-base-200 dark:hover:border-neutral-500 border-red-500 border;

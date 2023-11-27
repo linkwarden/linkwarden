@@ -82,7 +82,7 @@ export default function LinkPreview({ link, className, settings }: Props) {
               <div className="flex items-center gap-1 max-w-full w-fit my-1 hover:opacity-70 duration-100">
                 <FontAwesomeIcon
                   icon={faFolder}
-                  className="w-4 h-4 mt-1 drop-shadow text-sky-400"
+                  className="w-4 h-4 mt-1 drop-shadow text-primary"
                 />
                 <p className="truncate capitalize w-full">Landing Pages ⚡️</p>
               </div>
