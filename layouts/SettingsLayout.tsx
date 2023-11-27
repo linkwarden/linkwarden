@@ -53,14 +53,14 @@ export default function SettingsLayout({ children }: Props) {
           <div className="gap-2 inline-flex mr-3">
             <div
               onClick={toggleSidebar}
-              className="text-neutral btn btn-square btn-ghost"
+              className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"
             >
               <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
             </div>
 
             <Link
               href="/dashboard"
-              className="text-neutral btn btn-square btn-ghost"
+              className="text-neutral btn btn-square btn-sm btn-ghost"
             >
               <FontAwesomeIcon icon={faChevronLeft} className="w-5 h-5" />
             </Link>

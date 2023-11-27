@@ -10,7 +10,7 @@ type Props = {
 export default function dashboardItem({ name, value, icon }: Props) {
   return (
     <div className="flex gap-4 items-end">
-      <div className="p-4 bg-primary bg-opacity-20 dark:bg-opacity-10 rounded-xl select-none">
+      <div className="p-4 bg-secondary/30 rounded-xl select-none">
         <FontAwesomeIcon icon={icon} className="w-8 h-8 text-primary" />
       </div>
       <div className="flex flex-col justify-center">

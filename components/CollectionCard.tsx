@@ -2,29 +2,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis, faGlobe, faLink } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
-import Dropdown from "./Dropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import useModalStore from "@/store/modals";
 import usePermissions from "@/hooks/usePermissions";
 import useLocalSettingsStore from "@/store/localSettings";
+import getPublicUserData from "@/lib/client/getPublicUserData";
+import useAccountStore from "@/store/account";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
   className?: string;
 };
 
-type DropdownTrigger =
-  | {
-      x: number;
-      y: number;
-    }
-  | false;
-
 export default function CollectionCard({ collection, className }: Props) {
   const { setModal } = useModalStore();
   const { settings } = useLocalSettingsStore();
+  const { account } = useAccountStore();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",
@@ -35,28 +30,40 @@ export default function CollectionCard({ collection, className }: Props) {
     }
   );
 
-  const [expandDropdown, setExpandDropdown] = useState<DropdownTrigger>(false);
-
   const permissions = usePermissions(collection.id as number);
 
+  const [collectionOwner, setCollectionOwner] = useState({
+    id: null as unknown as number,
+    name: "",
+    username: "",
+    image: "",
+  });
+
+  useEffect(() => {
+    const fetchOwner = async () => {
+      if (collection && collection.ownerId !== account.id) {
+        const owner = await getPublicUserData(collection.ownerId as number);
+        setCollectionOwner(owner);
+      } else if (collection && collection.ownerId === account.id) {
+        setCollectionOwner({
+          id: account.id as number,
+          name: account.name,
+          username: account.username as string,
+          image: account.image as string,
+        });
+      }
+    };
+
+    fetchOwner();
+  }, [collection]);
+
   return (
-    <>
-      <div
-        style={{
-          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 50%, ${settings.theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
-        }}
-        className={`border border-solid border-neutral-content self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${
-          className || ""
-        }`}
-      >
+    <div className="relative">
+      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-10">
         <div
-          onClick={(e) => {
-            setExpandDropdown({ x: e.clientX, y: e.clientY });
-          }}
-          id={"expand-dropdown" + collection.id}
-          className="btn btn-ghost btn-sm btn-square absolute right-4 top-4 z-10"
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost btn-sm btn-square text-neutral"
         >
           <FontAwesomeIcon
             icon={faEllipsis}
@@ -65,15 +72,94 @@ export default function CollectionCard({ collection, className }: Props) {
             id={"expand-dropdown" + collection.id}
           />
         </div>
-        <Link
-          href={`/collections/${collection.id}`}
-          className="flex flex-col gap-2 justify-between min-h-[12rem] h-full select-none p-5"
-        >
-          <p className="text-2xl capitalize break-words line-clamp-3 w-4/5">
-            {collection.name}
-          </p>
+        <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52">
+          {permissions === true ? (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() =>
+                  collection &&
+                  setModal({
+                    modal: "COLLECTION",
+                    state: true,
+                    method: "UPDATE",
+                    isOwner: permissions === true,
+                    active: collection,
+                  })
+                }
+              >
+                Edit Collection Info
+              </div>
+            </li>
+          ) : undefined}
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() =>
+                collection &&
+                setModal({
+                  modal: "COLLECTION",
+                  state: true,
+                  method: "UPDATE",
+                  isOwner: permissions === true,
+                  active: collection,
+                  defaultIndex: permissions === true ? 1 : 0,
+                })
+              }
+            >
+              {permissions === true ? "Share and Collaborate" : "View Team"}
+            </div>
+          </li>
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() =>
+                collection &&
+                setModal({
+                  modal: "COLLECTION",
+                  state: true,
+                  method: "UPDATE",
+                  isOwner: permissions === true,
+                  active: collection,
+                  defaultIndex: permissions === true ? 2 : 1,
+                })
+              }
+            >
+              {permissions === true ? "Delete Collection" : "Leave Collection"}
+            </div>
+          </li>
+        </ul>
+      </div>
+      <Link
+        href={`/collections/${collection.id}`}
+        style={{
+          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
+            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+          } 50%, ${
+            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+          } 100%)`,
+        }}
+        className="card card-compact shadow-xl hover:shadow-none duration-200 border border-neutral-content relative"
+      >
+        <div className="card-body flex flex-col justify-between min-h-[12rem]">
+          <div className="flex justify-between">
+            <p className="card-title break-words line-clamp-2 w-full">
+              {collection.name}
+            </p>
+            <div className="w-8 h-8 ml-10"></div>
+          </div>
+
           <div className="flex justify-between items-center">
             <div className="flex items-center w-full">
+              {collectionOwner.id ? (
+                <ProfilePhoto
+                  src={collectionOwner.image || undefined}
+                  className="w-7 h-7 -mr-3"
+                />
+              ) : undefined}
               {collection.members
                 .sort((a, b) => (a.userId as number) - (b.userId as number))
                 .map((e, i) => {
@@ -81,14 +167,16 @@ export default function CollectionCard({ collection, className }: Props) {
                     <ProfilePhoto
                       key={i}
                       src={e.user.image ? e.user.image : undefined}
-                      className="-mr-3 border-[3px]"
+                      className="-mr-3"
                     />
                   );
                 })
-                .slice(0, 4)}
-              {collection.members.length - 4 > 0 ? (
-                <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 -mr-3">
-                  +{collection.members.length - 4}
+                .slice(0, 3)}
+              {collection.members.length - 3 > 0 ? (
+                <div className={`avatar placeholder -mr-3`}>
+                  <div className="bg-base-100 text-base-content rounded-full w-8 h-8 ring-2 ring-base-content">
+                    <span>+{collection.members.length - 3}</span>
+                  </div>
                 </div>
               ) : null}
             </div>
@@ -107,75 +195,14 @@ export default function CollectionCard({ collection, className }: Props) {
                 />
                 {collection._count && collection._count.links}
               </div>
-              <div className="flex items-center justify-end gap-1 text-neutral">
+              <div className="flex items-center justify-end gap-1 text-neutral w-full">
                 <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
-                <p className="font-bold text-xs">{formattedDate}</p>
+                <p className="font-bold text-xs w-full">{formattedDate}</p>
               </div>
             </div>
           </div>
-        </Link>
-      </div>
-      {expandDropdown ? (
-        <Dropdown
-          points={{ x: expandDropdown.x, y: expandDropdown.y }}
-          items={[
-            permissions === true
-              ? {
-                  name: "Edit Collection Info",
-                  onClick: () => {
-                    collection &&
-                      setModal({
-                        modal: "COLLECTION",
-                        state: true,
-                        method: "UPDATE",
-                        isOwner: permissions === true,
-                        active: collection,
-                      });
-                    setExpandDropdown(false);
-                  },
-                }
-              : undefined,
-            {
-              name: permissions === true ? "Share/Collaborate" : "View Team",
-              onClick: () => {
-                collection &&
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "UPDATE",
-                    isOwner: permissions === true,
-                    active: collection,
-                    defaultIndex: permissions === true ? 1 : 0,
-                  });
-                setExpandDropdown(false);
-              },
-            },
-
-            {
-              name:
-                permissions === true ? "Delete Collection" : "Leave Collection",
-              onClick: () => {
-                collection &&
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "UPDATE",
-                    isOwner: permissions === true,
-                    active: collection,
-                    defaultIndex: permissions === true ? 2 : 1,
-                  });
-                setExpandDropdown(false);
-              },
-            },
-          ]}
-          onClickOutside={(e: Event) => {
-            const target = e.target as HTMLInputElement;
-            if (target.id !== "expand-dropdown" + collection.id)
-              setExpandDropdown(false);
-          }}
-          className="w-fit"
-        />
-      ) : null}
-    </>
+        </div>
+      </Link>
+    </div>
   );
 }

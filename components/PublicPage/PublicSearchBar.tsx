@@ -52,7 +52,7 @@ export default function PublicSearchBar({ placeHolder }: Props) {
             );
           }
         }}
-        className="border text-sm border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 rounded-md pl-8 py-2 pr-2 w-44 sm:w-60 md:focus:w-80 duration-100 outline-none"
+        className="border text-sm border-neutral-content bg-base-200 focus:border-primary rounded-md pl-8 py-2 pr-2 w-44 sm:w-60 md:focus:w-80 duration-100 outline-none"
       />
     </div>
   );
