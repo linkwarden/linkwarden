@@ -6,11 +6,16 @@ import Image from "next/image";
 type Props = {
   src?: string;
   className?: string;
-  emptyImage?: boolean;
   priority?: boolean;
+  name?: string;
 };
 
-export default function ProfilePhoto({ src, className, priority }: Props) {
+export default function ProfilePhoto({
+  src,
+  className,
+  priority,
+  name,
+}: Props) {
   const [image, setImage] = useState("");
 
   useEffect(() => {
@@ -23,25 +28,32 @@ export default function ProfilePhoto({ src, className, priority }: Props) {
   }, [src]);
 
   return !image ? (
-    <div
-      className={`bg-sky-600 dark:bg-sky-600 text-white h-10 w-10 aspect-square shadow rounded-full border border-neutral-content flex items-center justify-center ${
-        className || ""
-      }`}
-    >
-      <FontAwesomeIcon icon={faUser} className="w-1/2 h-1/2 aspect-square" />
+    <div className={`avatar w-8 h-8 placeholder ${className || ""}`}>
+      <div className="bg-base-100 text-base-content rounded-full w-full h-full ring-2 ring-base-content">
+        {name ? (
+          <span className="text-2xl capitalize">{name.slice(0, 1)}</span>
+        ) : (
+          <FontAwesomeIcon
+            icon={faUser}
+            className="w-1/2 h-1/2 aspect-square"
+          />
+        )}
+      </div>
     </div>
   ) : (
-    <Image
-      alt=""
-      src={image}
-      height={112}
-      width={112}
-      priority={priority}
-      draggable={false}
-      onError={() => setImage("")}
-      className={`h-10 w-10 bg-sky-600 dark:bg-sky-600 shadow rounded-full aspect-square border border-neutral-content ${
-        className || ""
-      }`}
-    />
+    <div className={`avatar w-8 h-8 drop-shadow-md ${className || ""}`}>
+      <div className="rounded-full w-full h-full ring-2 ring-base-content">
+        <Image
+          alt=""
+          src={image}
+          height={112}
+          width={112}
+          priority={priority}
+          draggable={false}
+          onError={() => setImage("")}
+          className="aspect-square rounded-full"
+        />
+      </div>
+    </div>
   );
 }

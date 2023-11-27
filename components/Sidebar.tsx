@@ -61,8 +61,8 @@ export default function Sidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/dashboard`
-                ? "bg-primary/20"
-                : "hover:bg-slate-500/20"
+                ? "bg-secondary/30"
+                : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
@@ -76,7 +76,7 @@ export default function Sidebar({ className }: { className?: string }) {
         <Link href={`/links`}>
           <div
             className={`${
-              active === `/links` ? "bg-primary/20" : "hover:bg-slate-500/20"
+              active === `/links` ? "bg-secondary/30" : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
@@ -91,8 +91,8 @@ export default function Sidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/collections`
-                ? "bg-primary/20"
-                : "hover:bg-slate-500/20"
+                ? "bg-secondary/30"
+                : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
@@ -107,8 +107,8 @@ export default function Sidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/links/pinned`
-                ? "bg-primary/20"
-                : "hover:bg-slate-500/20"
+                ? "bg-secondary/30"
+                : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
@@ -154,8 +154,8 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/collections/${e.id}`
-                            ? "bg-primary/20"
-                            : "hover:bg-slate-500/20"
+                            ? "bg-secondary/30"
+                            : "hover:bg-neutral/20"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
                         <FontAwesomeIcon
@@ -222,8 +222,8 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/tags/${e.id}`
-                            ? "bg-primary/20"
-                            : "hover:bg-slate-500/20"
+                            ? "bg-secondary/30"
+                            : "hover:bg-neutral/20"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
                         <FontAwesomeIcon

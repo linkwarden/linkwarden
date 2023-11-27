@@ -7,8 +7,8 @@ module.exports = {
       {
         light: {
           primary: "#0ea5e9",
-          secondary: "#22d3ee",
-          accent: "#4f46e5",
+          secondary: "#06b6d4",
+          accent: "#6366f1",
           neutral: "#6b7280",
           "neutral-content": "#d1d5db",
           "base-100": "#ffffff",
@@ -22,9 +22,9 @@ module.exports = {
       },
       {
         dark: {
-          primary: "#38bdf8",
-          secondary: "#0284c7",
-          accent: "#818cf8",
+          primary: "#0ea5e9",
+          secondary: "#0e7490",
+          accent: "#6366f1",
           neutral: "#9ca3af",
           "neutral-content": "#404040",
           "base-100": "#171717",

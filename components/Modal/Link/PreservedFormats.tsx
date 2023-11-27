@@ -93,7 +93,7 @@ export default function PreservedFormats() {
       {link?.screenshotPath && link?.screenshotPath !== "pending" ? (
         <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
-            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
+            <div className="text-white bg-secondary p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
             </div>
 
@@ -128,7 +128,7 @@ export default function PreservedFormats() {
       {link?.pdfPath && link.pdfPath !== "pending" ? (
         <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
-            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
+            <div className="text-white bg-secondary p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
             </div>
 

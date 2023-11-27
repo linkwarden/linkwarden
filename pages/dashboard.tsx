@@ -23,7 +23,6 @@ import React from "react";
 import useModalStore from "@/store/modals";
 import { toast } from "react-hot-toast";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
-import ClickAwayHandler from "@/components/ClickAwayHandler";
 import DashboardItem from "@/components/DashboardItem";
 
 export default function Dashboard() {
@@ -63,8 +62,6 @@ export default function Dashboard() {
     handleNumberOfLinksToShow();
   }, [width]);
 
-  const [importDropdown, setImportDropdown] = useState(false);
-
   const importBookmarks = async (e: any, format: MigrationFormat) => {
     const file: File = e.target.files[0];
 
@@ -91,8 +88,6 @@ export default function Dashboard() {
         toast.dismiss(load);
 
         toast.success("Imported the Bookmarks! Reloading the page...");
-
-        setImportDropdown(false);
 
         setTimeout(() => {
           location.reload();
@@ -200,83 +195,65 @@ export default function Dashboard() {
                       method: "CREATE",
                     });
                   }}
-                  className="inline-flex gap-1 relative w-[11.4rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-md dark:hover:bg-sky-600 text-white bg-sky-700 hover:bg-sky-600 duration-100 group"
+                  className="inline-flex gap-1 relative w-[11rem] items-center btn btn-accent text-white group"
                 >
                   <FontAwesomeIcon
                     icon={faPlus}
-                    className="w-5 h-5 group-hover:ml-[4.325rem] absolute duration-100"
+                    className="w-5 h-5 left-4 group-hover:ml-[4rem] absolute duration-100"
                   />
                   <span className="group-hover:opacity-0 text-right w-full duration-100">
-                    Create New Link
+                    Create New Item
                   </span>
                 </div>
 
-                <div className="relative">
-                  <div
-                    onClick={() => setImportDropdown(!importDropdown)}
-                    id="import-dropdown"
-                    className="flex gap-2 select-none text-sm cursor-pointer p-2 px-3 rounded-md border dark:hover:border-sky-600 text-black border-black dark:text-white dark:border-white hover:border-primary hover:dark:border-primary hover:text-primary duration-100 group"
-                  >
+                <details className="dropdown">
+                  <summary className="flex gap-2 text-sm btn btn-outline group">
                     <FontAwesomeIcon
                       icon={faFileImport}
                       className="w-5 h-5 duration-100"
                       id="import-dropdown"
                     />
-                    <span
-                      className="text-right w-full duration-100"
-                      id="import-dropdown"
-                    >
+                    <span className="duration-100" id="import-dropdown">
                       Import Your Bookmarks
                     </span>
-                  </div>
-                  {importDropdown ? (
-                    <ClickAwayHandler
-                      onClickOutside={(e: Event) => {
-                        const target = e.target as HTMLInputElement;
-                        if (target.id !== "import-dropdown")
-                          setImportDropdown(false);
-                      }}
-                      className={`absolute top-10 left-0 w-52 py-1 shadow-md border border-neutral-content bg-base-200 rounded-md flex flex-col z-20`}
-                    >
-                      <div className="cursor-pointer rounded-md">
-                        <label
-                          htmlFor="import-linkwarden-file"
-                          title="JSON File"
-                          className="flex items-center gap-2 py-1 px-2 hover:bg-base-100  duration-100 cursor-pointer"
-                        >
-                          Linkwarden File...
-                          <input
-                            type="file"
-                            name="photo"
-                            id="import-linkwarden-file"
-                            accept=".json"
-                            className="hidden"
-                            onChange={(e) =>
-                              importBookmarks(e, MigrationFormat.linkwarden)
-                            }
-                          />
-                        </label>
-                        <label
-                          htmlFor="import-html-file"
-                          title="HTML File"
-                          className="flex items-center gap-2 py-1 px-2 hover:bg-base-100  duration-100 cursor-pointer"
-                        >
-                          Bookmarks HTML file...
-                          <input
-                            type="file"
-                            name="photo"
-                            id="import-html-file"
-                            accept=".html"
-                            className="hidden"
-                            onChange={(e) =>
-                              importBookmarks(e, MigrationFormat.htmlFile)
-                            }
-                          />
-                        </label>
-                      </div>
-                    </ClickAwayHandler>
-                  ) : null}
-                </div>
+                  </summary>
+                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box w-60">
+                    <li>
+                      <label htmlFor="import-linkwarden-file" title="JSON File">
+                        From Linkwarden
+                        <input
+                          type="file"
+                          name="photo"
+                          id="import-linkwarden-file"
+                          accept=".json"
+                          className="hidden"
+                          onChange={(e) =>
+                            importBookmarks(e, MigrationFormat.linkwarden)
+                          }
+                        />
+                      </label>
+                    </li>
+                    <li>
+                      <label
+                        htmlFor="import-html-file"
+                        title="HTML File"
+                        className="w-full"
+                      >
+                        From Bookmarks HTML file
+                        <input
+                          type="file"
+                          name="photo"
+                          id="import-html-file"
+                          accept=".html"
+                          className="hidden"
+                          onChange={(e) =>
+                            importBookmarks(e, MigrationFormat.htmlFile)
+                          }
+                        />
+                      </label>
+                    </li>
+                  </ul>
+                </details>
               </div>
             </div>
           )}

@@ -128,7 +128,7 @@ export default function PublicCollections() {
             {collection.name}
           </p>
           <div className="flex gap-2 items-center mt-8 min-w-fit">
-            <ToggleDarkMode className="w-8 h-8 flex" />
+            <ToggleDarkMode />
             <Link href="https://linkwarden.app/" target="_blank">
               <Image
                 src={`/icon.png`}
@@ -136,33 +136,19 @@ export default function PublicCollections() {
                 height={551}
                 alt="Linkwarden"
                 title="Linkwarden"
-                className="h-8 w-fit mx-auto"
+                className="h-8 w-fit mx-auto rounded"
               />
             </Link>
           </div>
         </div>
 
-        <div>
+        <div className="mt-3">
           <div className={`min-w-[15rem]`}>
-            <div
-              onClick={() =>
-                setModal({
-                  modal: "COLLECTION",
-                  state: true,
-                  method: "VIEW_TEAM",
-                  isOwner: false,
-                  active: collection,
-                  defaultIndex: 0,
-                })
-              }
-              className="hover:opacity-80 duration-100 flex justify-center sm:justify-end items-start w-fit cursor-pointer"
-            >
+            <div className="flex justify-center sm:justify-end items-start w-fit">
               {collectionOwner.id ? (
                 <ProfilePhoto
-                  src={
-                    collectionOwner.image ? collectionOwner.image : undefined
-                  }
-                  className={`w-8 h-8 border-2`}
+                  src={collectionOwner.image || undefined}
+                  className="w-7 h-7"
                 />
               ) : undefined}
               {collection.members
@@ -172,24 +158,40 @@ export default function PublicCollections() {
                     <ProfilePhoto
                       key={i}
                       src={e.user.image ? e.user.image : undefined}
-                      className={`w-8 h-8 border-2`}
+                      className="w-7 h-7"
                     />
                   );
                 })
-                .slice(0, 3)}
+                .slice(0, 4)}
               {collection?.members.length &&
               collection.members.length - 3 > 0 ? (
-                <div className="w-8 h-8 min-w-[2rem] text-white text-sm flex items-center justify-center rounded-full border-2 bg-sky-600 dark:bg-sky-600 border-slate-200">
-                  +{collection?.members?.length - 3}
+                <div className={`avatar placeholder`}>
+                  <div className="bg-base-100 text-base-content rounded-full w-8 h-8 ring-2 ring-base-content">
+                    <span>+{collection.members.length - 3}</span>
+                  </div>
                 </div>
               ) : null}
 
-              <p className="ml-2 mt-1 text-neutral">
-                By {collectionOwner.name}
-                {collection.members.length > 0
-                  ? ` and ${collection.members.length} others`
-                  : undefined}
-                .
+              <p className="ml-3 mt-1 text-neutral text-xs">
+                By
+                <span
+                  className="btn btn-ghost btn-xs p-1"
+                  onClick={() =>
+                    setModal({
+                      modal: "COLLECTION",
+                      state: true,
+                      method: "VIEW_TEAM",
+                      isOwner: false,
+                      active: collection,
+                      defaultIndex: 0,
+                    })
+                  }
+                >
+                  {collectionOwner.name}
+                  {collection.members.length > 0
+                    ? ` and ${collection.members.length} others`
+                    : undefined}
+                </span>
               </p>
             </div>
           </div>
