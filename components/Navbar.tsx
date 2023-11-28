@@ -13,6 +13,7 @@ import useModalStore from "@/store/modals";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import ToggleDarkMode from "./ToggleDarkMode";
 import useLocalSettingsStore from "@/store/localSettings";
+import New from "./Modals/New";
 
 export default function Navbar() {
   const { setModal } = useModalStore();
@@ -61,7 +62,7 @@ export default function Navbar() {
       <div className="flex items-center gap-2">
         <ToggleDarkMode className="sm:inline-grid hidden" />
 
-        <button
+        {/* <button
           onClick={() => {
             setModal({
               modal: "LINK",
@@ -70,6 +71,21 @@ export default function Navbar() {
             });
           }}
           className="inline-flex sm:gap-1 relative sm:w-[5rem] items-center duration-100 group btn btn-accent text-white btn-sm"
+        >
+          <FontAwesomeIcon
+            icon={faPlus}
+            className="w-5 h-5 sm:group-hover:ml-5 sm:absolute duration-100 left-2"
+          />
+          <span className="hidden sm:block group-hover:opacity-0 text-right w-full duration-100">
+            New
+          </span>
+        </button> */}
+
+        <button
+          className="inline-flex sm:gap-1 relative sm:w-[5rem] items-center duration-100 group btn btn-accent text-white btn-sm"
+          onClick={() =>
+            (document.getElementById("new-link-modal") as any).showModal()
+          }
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -138,6 +154,7 @@ export default function Navbar() {
           ) : null}
         </div>
       </div>
+      <New />
     </div>
   );
 }
