@@ -156,6 +156,7 @@ export default function AddOrEditLink({
               value={link.url}
               onChange={(e) => setLink({ ...link, url: e.target.value })}
               placeholder="e.g. http://example.com/"
+              className="bg-base-200"
             />
           </div>
           <div className="sm:col-span-2 col-span-5">
@@ -194,6 +195,7 @@ export default function AddOrEditLink({
                 value={link.name}
                 onChange={(e) => setLink({ ...link, name: e.target.value })}
                 placeholder="e.g. Example Link"
+                className="bg-base-200"
               />
             </div>
 
