@@ -29,7 +29,7 @@ export default function ProfilePhoto({
 
   return !image ? (
     <div className={`avatar w-8 h-8 placeholder ${className || ""}`}>
-      <div className="bg-base-100 text-base-content rounded-full w-full h-full ring-2 ring-base-content">
+      <div className="bg-base-100 text-neutral rounded-full w-full h-full ring-2 ring-neutral-content">
         {name ? (
           <span className="text-2xl capitalize">{name.slice(0, 1)}</span>
         ) : (
@@ -42,7 +42,7 @@ export default function ProfilePhoto({
     </div>
   ) : (
     <div className={`avatar w-8 h-8 drop-shadow-md ${className || ""}`}>
-      <div className="rounded-full w-full h-full ring-2 ring-base-content">
+      <div className="rounded-full w-full h-full ring-2 ring-neutral-content">
         <Image
           alt=""
           src={image}
