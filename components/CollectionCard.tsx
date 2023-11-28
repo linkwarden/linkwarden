@@ -59,7 +59,7 @@ export default function CollectionCard({ collection, className }: Props) {
 
   return (
     <div className="relative">
-      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-10">
+      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-20">
         <div
           tabIndex={0}
           role="button"
@@ -133,6 +133,46 @@ export default function CollectionCard({ collection, className }: Props) {
           </li>
         </ul>
       </div>
+      <div
+        className="flex items-center absolute bottom-3 left-3 z-10 btn px-2 btn-ghost rounded-full"
+        onClick={() =>
+          collection &&
+          setModal({
+            modal: "COLLECTION",
+            state: true,
+            method: "UPDATE",
+            isOwner: permissions === true,
+            active: collection,
+            defaultIndex: permissions === true ? 1 : 0,
+          })
+        }
+      >
+        {collectionOwner.id ? (
+          <ProfilePhoto
+            src={collectionOwner.image || undefined}
+            className="w-7 h-7"
+          />
+        ) : undefined}
+        {collection.members
+          .sort((a, b) => (a.userId as number) - (b.userId as number))
+          .map((e, i) => {
+            return (
+              <ProfilePhoto
+                key={i}
+                src={e.user.image ? e.user.image : undefined}
+                className="-ml-3"
+              />
+            );
+          })
+          .slice(0, 3)}
+        {collection.members.length - 3 > 0 ? (
+          <div className={`avatar placeholder -ml-3`}>
+            <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
+              <span>+{collection.members.length - 3}</span>
+            </div>
+          </div>
+        ) : null}
+      </div>
       <Link
         href={`/collections/${collection.id}`}
         style={{
@@ -142,7 +182,7 @@ export default function CollectionCard({ collection, className }: Props) {
             settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
           } 100%)`,
         }}
-        className="card card-compact shadow-xl hover:shadow-none duration-200 border border-neutral-content relative"
+        className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
       >
         <div className="card-body flex flex-col justify-between min-h-[12rem]">
           <div className="flex justify-between">
@@ -152,35 +192,8 @@ export default function CollectionCard({ collection, className }: Props) {
             <div className="w-8 h-8 ml-10"></div>
           </div>
 
-          <div className="flex justify-between items-center">
-            <div className="flex items-center w-full">
-              {collectionOwner.id ? (
-                <ProfilePhoto
-                  src={collectionOwner.image || undefined}
-                  className="w-7 h-7 -mr-3"
-                />
-              ) : undefined}
-              {collection.members
-                .sort((a, b) => (a.userId as number) - (b.userId as number))
-                .map((e, i) => {
-                  return (
-                    <ProfilePhoto
-                      key={i}
-                      src={e.user.image ? e.user.image : undefined}
-                      className="-mr-3"
-                    />
-                  );
-                })
-                .slice(0, 3)}
-              {collection.members.length - 3 > 0 ? (
-                <div className={`avatar placeholder -mr-3`}>
-                  <div className="bg-base-100 text-base-content rounded-full w-8 h-8 ring-2 ring-base-content">
-                    <span>+{collection.members.length - 3}</span>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-            <div className="text-right w-40">
+          <div className="flex justify-end items-center">
+            <div className="text-right">
               <div className="font-bold text-sm flex justify-end gap-1 items-center">
                 {collection.isPublic ? (
                   <FontAwesomeIcon
@@ -195,9 +208,11 @@ export default function CollectionCard({ collection, className }: Props) {
                 />
                 {collection._count && collection._count.links}
               </div>
-              <div className="flex items-center justify-end gap-1 text-neutral w-full">
-                <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
-                <p className="font-bold text-xs w-full">{formattedDate}</p>
+              <div className="flex items-center justify-end gap-1 text-neutral">
+                <p className="font-bold text-xs flex gap-1 items-center">
+                  <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />{" "}
+                  {formattedDate}
+                </p>
               </div>
             </div>
           </div>
