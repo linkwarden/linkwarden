@@ -157,24 +157,16 @@ body {
 
 @layer components {
   .react-select-container .react-select__control {
-    @apply bg-base-200 dark:hover:border-neutral-500 border-red-500 border;
+    @apply bg-base-200 hover:border-neutral-content;
   }
 
   .react-select-container .react-select__menu {
-    @apply dark:bg-neutral-900 dark:border-neutral-700 border;
-  }
-
-  .react-select-container .react-select__menu {
-    @apply dark:bg-neutral-900 border;
-  }
-
-  .react-select-container .react-select__option {
-    @apply dark:hover:bg-neutral-800;
+    @apply bg-base-100 border-neutral-content border absolute;
   }
 
   .react-select-container .react-select__input-container,
   .react-select-container .react-select__single-value {
-    @apply dark:text-white;
+    @apply text-base-content;
   }
 }
 .react-select__clear-indicator * {
