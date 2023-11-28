@@ -161,19 +161,17 @@ body {
   }
 
   .react-select-container .react-select__menu {
-    @apply bg-base-100 border-neutral-content border absolute;
+    @apply bg-base-100 border-neutral-content border rounded-md;
   }
+  /* 
+  .react-select-container .react-select__menu-list {
+    @apply h-20;
+  } */
 
   .react-select-container .react-select__input-container,
   .react-select-container .react-select__single-value {
     @apply text-base-content;
   }
-}
-.react-select__clear-indicator * {
-  display: none;
-  width: 0;
-  margin: 0;
-  padding: 0;
 }
 
 .primary-btn-gradient {
