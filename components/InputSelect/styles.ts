@@ -65,4 +65,5 @@ export const styles: StylesConfig = {
       backgroundColor: "#38bdf8",
     },
   }),
+  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 };
