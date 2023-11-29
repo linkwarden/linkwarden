@@ -15,7 +15,7 @@ import useModalStore from "@/store/modals";
 import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
 import useSort from "@/hooks/useSort";
-import New from "@/components/Modals/New";
+import NewCollectionModal from "@/components/Modals/NewCollectionModal";
 
 export default function Collections() {
   const { collections } = useCollectionStore();
@@ -121,7 +121,7 @@ export default function Collections() {
             })}
 
           <div
-            className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-2xl cursor-pointer flex flex-col gap-4 justify-center items-center group"
+            className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-2xl cursor-pointer flex flex-col gap-4 justify-center items-center group btn"
             onClick={() => setNewModalIsOpen(true)}
           >
             <p className="group-hover:opacity-0 duration-100">New Collection</p>
@@ -158,11 +158,10 @@ export default function Collections() {
           </>
         ) : undefined}
       </div>
-      <New
-        index={1}
+      <NewCollectionModal
         isOpen={newModalIsOpen}
         onClose={closeNewModal}
-        modalId="new-modal-1"
+        modalId="new-collection-modal-1"
       />
     </MainLayout>
   );
