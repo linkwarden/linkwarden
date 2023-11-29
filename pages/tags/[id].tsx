@@ -4,7 +4,6 @@ import {
   faCheck,
   faEllipsis,
   faHashtag,
-  faSort,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,7 +23,6 @@ export default function Index() {
   const { links } = useLinkStore();
   const { tags, updateTag, removeTag } = useTagStore();
 
-  const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   const [expandDropdown, setExpandDropdown] = useState(false);
@@ -194,25 +192,7 @@ export default function Index() {
           </div>
 
           <div className="relative">
-            <div
-              onClick={() => setSortDropdown(!sortDropdown)}
-              id="sort-dropdown"
-              className="btn btn-ghost btn-square btn-sm"
-            >
-              <FontAwesomeIcon
-                icon={faSort}
-                id="sort-dropdown"
-                className="w-5 h-5 text-neutral"
-              />
-            </div>
-
-            {sortDropdown ? (
-              <SortDropdown
-                sortBy={sortBy}
-                setSort={setSortBy}
-                toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
-              />
-            ) : null}
+            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
           </div>
         </div>
         <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">

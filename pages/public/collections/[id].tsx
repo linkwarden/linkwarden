@@ -17,7 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import PublicSearchBar from "@/components/PublicPage/PublicSearchBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faSort } from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import SortDropdown from "@/components/SortDropdown";
 import useLocalSettingsStore from "@/store/localSettings";
@@ -66,7 +66,6 @@ export default function PublicCollections() {
   });
 
   const [filterDropdown, setFilterDropdown] = useState(false);
-  const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({
@@ -129,13 +128,14 @@ export default function PublicCollections() {
           </p>
           <div className="flex gap-2 items-center mt-8 min-w-fit">
             <ToggleDarkMode />
+
             <Link href="https://linkwarden.app/" target="_blank">
               <Image
                 src={`/icon.png`}
                 width={551}
                 height={551}
                 alt="Linkwarden"
-                title="Linkwarden"
+                title="Created with Linkwarden"
                 className="h-8 w-fit mx-auto rounded"
               />
             </Link>
@@ -230,25 +230,7 @@ export default function PublicCollections() {
               </div>
 
               <div className="relative">
-                <div
-                  onClick={() => setSortDropdown(!sortDropdown)}
-                  id="sort-dropdown"
-                  className="btn btn-ghost btn-square btn-sm"
-                >
-                  <FontAwesomeIcon
-                    icon={faSort}
-                    id="sort-dropdown"
-                    className="w-5 h-5 text-neutral"
-                  />
-                </div>
-
-                {sortDropdown ? (
-                  <SortDropdown
-                    sortBy={sortBy}
-                    setSort={setSortBy}
-                    toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
-                  />
-                ) : null}
+                <SortDropdown sortBy={sortBy} setSort={setSortBy} />
               </div>
             </div>
           </div>

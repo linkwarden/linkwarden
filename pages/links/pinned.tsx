@@ -1,18 +1,16 @@
 import LinkCard from "@/components/LinkCard";
-import NoLinksFound from "@/components/NoLinksFound";
 import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import { Sort } from "@/types/global";
-import { faSort, faThumbTack } from "@fortawesome/free-solid-svg-icons";
+import { faThumbTack } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 export default function PinnedLinks() {
   const { links } = useLinkStore();
 
-  const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({ sort: sortBy, pinnedOnly: true });
@@ -34,25 +32,7 @@ export default function PinnedLinks() {
           </div>
 
           <div className="relative mt-2">
-            <div
-              onClick={() => setSortDropdown(!sortDropdown)}
-              id="sort-dropdown"
-              className="btn btn-ghost btn-square btn-sm"
-            >
-              <FontAwesomeIcon
-                icon={faSort}
-                id="sort-dropdown"
-                className="w-5 h-5 text-neutral"
-              />
-            </div>
-
-            {sortDropdown ? (
-              <SortDropdown
-                sortBy={sortBy}
-                setSort={setSortBy}
-                toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
-              />
-            ) : null}
+            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
           </div>
         </div>
         {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (

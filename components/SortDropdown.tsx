@@ -1,66 +1,131 @@
 import React, { Dispatch, SetStateAction } from "react";
-import ClickAwayHandler from "./ClickAwayHandler";
-import RadioButton from "./RadioButton";
 import { Sort } from "@/types/global";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSort } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   sortBy: Sort;
   setSort: Dispatch<SetStateAction<Sort>>;
-
-  toggleSortDropdown: Function;
 };
 
-export default function SortDropdown({
-  sortBy,
-  toggleSortDropdown,
-  setSort,
-}: Props) {
+export default function SortDropdown({ sortBy, setSort }: Props) {
   return (
-    <ClickAwayHandler
-      onClickOutside={(e: Event) => {
-        const target = e.target as HTMLInputElement;
-        if (target.id !== "sort-dropdown") toggleSortDropdown();
-      }}
-      className="absolute top-8 right-0 border border-neutral-content shadow-md bg-base-200 rounded-md p-2 z-20 w-52"
-    >
-      <p className="mb-2 text-center font-semibold">Sort by</p>
-      <div className="flex flex-col gap-2">
-        <RadioButton
-          label="Date (Newest First)"
-          state={sortBy === Sort.DateNewestFirst}
-          onClick={() => setSort(Sort.DateNewestFirst)}
-        />
-
-        <RadioButton
-          label="Date (Oldest First)"
-          state={sortBy === Sort.DateOldestFirst}
-          onClick={() => setSort(Sort.DateOldestFirst)}
-        />
-
-        <RadioButton
-          label="Name (A-Z)"
-          state={sortBy === Sort.NameAZ}
-          onClick={() => setSort(Sort.NameAZ)}
-        />
-
-        <RadioButton
-          label="Name (Z-A)"
-          state={sortBy === Sort.NameZA}
-          onClick={() => setSort(Sort.NameZA)}
-        />
-
-        <RadioButton
-          label="Description (A-Z)"
-          state={sortBy === Sort.DescriptionAZ}
-          onClick={() => setSort(Sort.DescriptionAZ)}
-        />
-
-        <RadioButton
-          label="Description (Z-A)"
-          state={sortBy === Sort.DescriptionZA}
-          onClick={() => setSort(Sort.DescriptionZA)}
+    <div className="dropdown dropdown-bottom dropdown-end">
+      <div
+        tabIndex={0}
+        role="button"
+        className="btn btn-sm btn-square btn-ghost m-1"
+      >
+        <FontAwesomeIcon
+          icon={faSort}
+          id="sort-dropdown"
+          className="w-5 h-5 text-neutral"
         />
       </div>
-    </ClickAwayHandler>
+      <ul className="dropdown-content z-[20] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52">
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="radio"
+              name="sort-radio"
+              className="radio checked:bg-primary"
+              value="Date (Newest First)"
+              checked={sortBy === Sort.DateNewestFirst}
+              onChange={() => setSort(Sort.DateNewestFirst)}
+            />
+            <span className="label-text">Date (Newest First)</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="radio"
+              name="sort-radio"
+              className="radio checked:bg-primary"
+              value="Date (Oldest First)"
+              checked={sortBy === Sort.DateOldestFirst}
+              onChange={() => setSort(Sort.DateOldestFirst)}
+            />
+            <span className="label-text">Date (Oldest First)</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="radio"
+              name="sort-radio"
+              className="radio checked:bg-primary"
+              value="Name (A-Z)"
+              checked={sortBy === Sort.NameAZ}
+              onChange={() => setSort(Sort.NameAZ)}
+            />
+            <span className="label-text">Name (A-Z)</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="radio"
+              name="sort-radio"
+              className="radio checked:bg-primary"
+              value="Name (Z-A)"
+              checked={sortBy === Sort.NameZA}
+              onChange={() => setSort(Sort.NameZA)}
+            />
+            <span className="label-text">Name (Z-A)</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="radio"
+              name="sort-radio"
+              className="radio checked:bg-primary"
+              value="Description (A-Z)"
+              checked={sortBy === Sort.DescriptionAZ}
+              onChange={() => setSort(Sort.DescriptionAZ)}
+            />
+            <span className="label-text">Description (A-Z)</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="radio"
+              name="sort-radio"
+              className="radio checked:bg-primary"
+              value="Description (Z-A)"
+              checked={sortBy === Sort.DescriptionZA}
+              onChange={() => setSort(Sort.DescriptionZA)}
+            />
+            <span className="label-text">Description (Z-A)</span>
+          </label>
+        </li>
+      </ul>
+    </div>
   );
 }
