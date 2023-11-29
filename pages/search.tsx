@@ -24,7 +24,6 @@ export default function Search() {
   });
 
   const [filterDropdown, setFilterDropdown] = useState(false);
-  const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({
@@ -77,25 +76,7 @@ export default function Search() {
             </div>
 
             <div className="relative">
-              <div
-                onClick={() => setSortDropdown(!sortDropdown)}
-                id="sort-dropdown"
-                className="btn btn-ghost btn-square btn-sm"
-              >
-                <FontAwesomeIcon
-                  icon={faSort}
-                  id="sort-dropdown"
-                  className="w-5 h-5 text-neutral"
-                />
-              </div>
-
-              {sortDropdown ? (
-                <SortDropdown
-                  sortBy={sortBy}
-                  setSort={setSortBy}
-                  toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
-                />
-              ) : null}
+              <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             </div>
           </div>
         </div>

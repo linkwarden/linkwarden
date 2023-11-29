@@ -59,7 +59,7 @@ export default function CollectionCard({ collection, className }: Props) {
 
   return (
     <div className="relative">
-      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-20">
+      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-10">
         <div
           tabIndex={0}
           role="button"
@@ -72,7 +72,7 @@ export default function CollectionCard({ collection, className }: Props) {
             id={"expand-dropdown" + collection.id}
           />
         </div>
-        <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52">
+        <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
           {permissions === true ? (
             <li>
               <div

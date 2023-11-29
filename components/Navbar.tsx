@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut } from "next-auth/react";
 import { faPlus, faBars, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import Dropdown from "@/components/Dropdown";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
@@ -14,13 +13,12 @@ import ToggleDarkMode from "./ToggleDarkMode";
 import useLocalSettingsStore from "@/store/localSettings";
 import NewLinkModal from "./Modals/NewLink";
 import NewCollectionModal from "./Modals/NewCollectionModal";
+import Link from "next/link";
 
 export default function Navbar() {
   const { settings, updateSettings } = useLocalSettingsStore();
 
   const { account } = useAccountStore();
-
-  const [profileDropdown, setProfileDropdown] = useState(false);
 
   const router = useRouter();
 
@@ -71,13 +69,13 @@ export default function Navbar() {
             <div
               tabIndex={0}
               role="button"
-              className="flex items-center group btn btn-accent text-white btn-sm"
+              className="flex items-center group btn btn-accent text-white btn-sm px-2"
             >
               <FontAwesomeIcon icon={faPlus} className="w-5 h-5" />
               <FontAwesomeIcon icon={faCaretDown} className="w-3 h-3" />
             </div>
           </div>
-          <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52">
+          <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
             <li>
               <div
                 onClick={() => setNewLinkModalIsOpen(true)}
@@ -99,64 +97,42 @@ export default function Navbar() {
           </ul>
         </div>
 
-        <div className="relative">
-          <div
-            className="btn btn-circle btn-ghost"
-            onClick={() => setProfileDropdown(!profileDropdown)}
-            id="profile-dropdown"
-          >
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="btn btn-circle btn-ghost">
             <ProfilePhoto
               src={account.image ? account.image : undefined}
               priority={true}
               className=""
             />
           </div>
-          {profileDropdown ? (
-            <Dropdown
-              items={[
-                {
-                  name: "Settings",
-                  href: "/settings/account",
-                },
-                {
-                  name: `Switch to ${
-                    settings.theme === "light" ? "Dark" : "Light"
-                  }`,
-                  onClick: () => {
-                    setProfileDropdown(!profileDropdown);
-                    handleToggle();
-                  },
-                },
-                {
-                  name: "Logout",
-                  onClick: () => {
-                    signOut();
-                    setProfileDropdown(!profileDropdown);
-                  },
-                },
-              ]}
-              onClickOutside={(e: Event) => {
-                const target = e.target as HTMLInputElement;
-                if (target.id !== "profile-dropdown") setProfileDropdown(false);
-              }}
-              className="absolute top-11 right-0 z-20 w-36"
-            />
-          ) : null}
-
-          {sidebar ? (
-            <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-30">
-              <ClickAwayHandler
-                className="h-full"
-                onClickOutside={toggleSidebar}
-              >
-                <div className="slide-right h-full shadow-lg">
-                  <Sidebar />
-                </div>
-              </ClickAwayHandler>
-            </div>
-          ) : null}
+          <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+            <li>
+              <Link href="/settings/account" tabIndex={0} role="button">
+                Settings
+              </Link>
+            </li>
+            <li>
+              <div onClick={handleToggle} tabIndex={0} role="button">
+                Switch to {settings.theme === "light" ? "Dark" : "Light"}
+              </div>
+            </li>
+            <li>
+              <div onClick={() => signOut()} tabIndex={0} role="button">
+                Logout
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
+      {sidebar ? (
+        <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-30">
+          <ClickAwayHandler className="h-full" onClickOutside={toggleSidebar}>
+            <div className="slide-right h-full shadow-lg">
+              <Sidebar />
+            </div>
+          </ClickAwayHandler>
+        </div>
+      ) : null}
       <NewLinkModal
         isOpen={newLinkModalIsOpen}
         onClose={closeNewLinkModal}

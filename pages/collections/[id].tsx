@@ -3,11 +3,7 @@ import LinkCard from "@/components/LinkCard";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import { CollectionIncludingMembersAndLinkCount, Sort } from "@/types/global";
-import {
-  faEllipsis,
-  faFolder,
-  faSort,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faFolder } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -31,7 +27,6 @@ export default function Index() {
   const { collections } = useCollectionStore();
 
   const [expandDropdown, setExpandDropdown] = useState(false);
-  const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   const [activeCollection, setActiveCollection] =
@@ -124,25 +119,7 @@ export default function Index() {
             <p>{activeCollection?.description}</p>
             <div className="flex items-center gap-2">
               <div className="relative">
-                <div
-                  onClick={() => setSortDropdown(!sortDropdown)}
-                  id="sort-dropdown"
-                  className="btn btn-ghost btn-square btn-sm"
-                >
-                  <FontAwesomeIcon
-                    icon={faSort}
-                    id="sort-dropdown"
-                    className="w-5 h-5 text-neutral"
-                  />
-                </div>
-
-                {sortDropdown ? (
-                  <SortDropdown
-                    sortBy={sortBy}
-                    setSort={setSortBy}
-                    toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
-                  />
-                ) : null}
+                <SortDropdown sortBy={sortBy} setSort={setSortBy} />
               </div>
               <div className="relative">
                 <div
