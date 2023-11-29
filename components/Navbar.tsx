@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut } from "next-auth/react";
-import { faPlus, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faBars, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import Dropdown from "@/components/Dropdown";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
@@ -12,7 +12,8 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import ToggleDarkMode from "./ToggleDarkMode";
 import useLocalSettingsStore from "@/store/localSettings";
-import New from "./Modals/New";
+import NewLinkModal from "./Modals/NewLink";
+import NewCollectionModal from "./Modals/NewCollectionModal";
 
 export default function Navbar() {
   const { settings, updateSettings } = useLocalSettingsStore();
@@ -47,8 +48,11 @@ export default function Navbar() {
     setSidebar(!sidebar);
   };
 
-  const [newModalIsOpen, setNewModalIsOpen] = useState(false);
-  const closeNewModal = () => setNewModalIsOpen(false);
+  const [newLinkModalIsOpen, setNewLinkModalIsOpen] = useState(false);
+  const closeNewLinkModal = () => setNewLinkModalIsOpen(false);
+  const [newCollectionModalIsOpen, setNewCollectionModalIsOpen] =
+    useState(false);
+  const closeNewCollectionModal = () => setNewCollectionModalIsOpen(false);
 
   return (
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-neutral-content border-b">
@@ -62,18 +66,38 @@ export default function Navbar() {
       <div className="flex items-center gap-2">
         <ToggleDarkMode className="sm:inline-grid hidden" />
 
-        <button
-          className="inline-flex sm:gap-1 relative sm:w-[5rem] items-center duration-100 group btn btn-accent text-white btn-sm"
-          onClick={() => setNewModalIsOpen(true)}
-        >
-          <FontAwesomeIcon
-            icon={faPlus}
-            className="w-5 h-5 sm:group-hover:ml-5 sm:absolute duration-100 left-2"
-          />
-          <span className="hidden sm:block group-hover:opacity-0 text-right w-full duration-100">
-            New
-          </span>
-        </button>
+        <div className="dropdown dropdown-end">
+          <div className="tooltip tooltip-bottom" data-tip="Create New...">
+            <div
+              tabIndex={0}
+              role="button"
+              className="flex items-center group btn btn-accent text-white btn-sm"
+            >
+              <FontAwesomeIcon icon={faPlus} className="w-5 h-5" />
+              <FontAwesomeIcon icon={faCaretDown} className="w-3 h-3" />
+            </div>
+          </div>
+          <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52">
+            <li>
+              <div
+                onClick={() => setNewLinkModalIsOpen(true)}
+                tabIndex={0}
+                role="button"
+              >
+                New Link
+              </div>
+            </li>
+            <li>
+              <div
+                onClick={() => setNewCollectionModalIsOpen(true)}
+                tabIndex={0}
+                role="button"
+              >
+                New Collection
+              </div>
+            </li>
+          </ul>
+        </div>
 
         <div className="relative">
           <div
@@ -133,11 +157,15 @@ export default function Navbar() {
           ) : null}
         </div>
       </div>
-      <New
-        index={0}
-        isOpen={newModalIsOpen}
-        onClose={closeNewModal}
-        modalId="new-modal-0"
+      <NewLinkModal
+        isOpen={newLinkModalIsOpen}
+        onClose={closeNewLinkModal}
+        modalId="new-link-modal"
+      />
+      <NewCollectionModal
+        isOpen={newCollectionModalIsOpen}
+        onClose={closeNewCollectionModal}
+        modalId="new-collection-modal"
       />
     </div>
   );
