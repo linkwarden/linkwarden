@@ -15,6 +15,7 @@ import useModalStore from "@/store/modals";
 import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
 import useSort from "@/hooks/useSort";
+import New from "@/components/Modals/New";
 
 export default function Collections() {
   const { collections } = useCollectionStore();
@@ -28,6 +29,9 @@ export default function Collections() {
   const { setModal } = useModalStore();
 
   useSort({ sortBy, setData: setSortedCollections, data: collections });
+
+  const [newModalIsOpen, setNewModalIsOpen] = useState(false);
+  const closeNewModal = () => setNewModalIsOpen(false);
 
   return (
     <MainLayout>
@@ -118,13 +122,7 @@ export default function Collections() {
 
           <div
             className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-2xl cursor-pointer flex flex-col gap-4 justify-center items-center group"
-            onClick={() => {
-              setModal({
-                modal: "COLLECTION",
-                state: true,
-                method: "CREATE",
-              });
-            }}
+            onClick={() => setNewModalIsOpen(true)}
           >
             <p className="group-hover:opacity-0 duration-100">New Collection</p>
             <FontAwesomeIcon
@@ -160,6 +158,12 @@ export default function Collections() {
           </>
         ) : undefined}
       </div>
+      <New
+        index={1}
+        isOpen={newModalIsOpen}
+        onClose={closeNewModal}
+        modalId="new-modal-1"
+      />
     </MainLayout>
   );
 }

@@ -10,8 +10,12 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-export default function NewLink() {
-  const newModal = document.getElementById("new-modal");
+type Props = {
+  isOpen: boolean;
+  modalId: string;
+};
+
+export default function NewLink({ isOpen, modalId }: Props) {
   const { data } = useSession();
 
   const initial = {
@@ -58,49 +62,35 @@ export default function NewLink() {
   };
 
   useEffect(() => {
-    const resetModal = () => {
-      setLink(initial);
+    setOptionsExpanded(false);
+    if (router.query.id) {
+      const currentCollection = collections.find(
+        (e) => e.id == Number(router.query.id)
+      );
 
-      if (router.query.id) {
-        const currentCollection = collections.find(
-          (e) => e.id == Number(router.query.id)
-        );
-
-        if (
-          currentCollection &&
-          currentCollection.ownerId &&
-          router.asPath.startsWith("/collections/")
-        )
-          setLink({
-            ...link,
-            collection: {
-              id: currentCollection.id,
-              name: currentCollection.name,
-              ownerId: currentCollection.ownerId,
-            },
-          });
-      } else
+      if (
+        currentCollection &&
+        currentCollection.ownerId &&
+        router.asPath.startsWith("/collections/")
+      )
         setLink({
-          ...link,
+          ...initial,
           collection: {
-            // id: ,
-            name: "Unorganized",
-            ownerId: data?.user.id as number,
+            id: currentCollection.id,
+            name: currentCollection.name,
+            ownerId: currentCollection.ownerId,
           },
         });
-    };
-    resetModal();
-
-    newModal?.addEventListener("close", () => {
-      resetModal();
-    });
-
-    return () => {
-      newModal?.addEventListener("close", () => {
-        resetModal();
+    } else
+      setLink({
+        ...initial,
+        collection: {
+          // id: ,
+          name: "Unorganized",
+          ownerId: data?.user.id as number,
+        },
       });
-    };
-  }, []);
+  }, [isOpen]);
 
   const submit = async () => {
     if (!submitLoader) {
@@ -116,9 +106,7 @@ export default function NewLink() {
 
       if (response.ok) {
         toast.success(`Created!`);
-        (newModal as any).close();
-
-        setLink(initial);
+        (document.getElementById(modalId) as any).close();
       } else toast.error(response.data as string);
 
       setSubmitLoader(false);
