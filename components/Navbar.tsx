@@ -47,6 +47,9 @@ export default function Navbar() {
     setSidebar(!sidebar);
   };
 
+  const [newModalIsOpen, setNewModalIsOpen] = useState(false);
+  const closeNewModal = () => setNewModalIsOpen(false);
+
   return (
     <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-neutral-content border-b">
       <div
@@ -61,9 +64,7 @@ export default function Navbar() {
 
         <button
           className="inline-flex sm:gap-1 relative sm:w-[5rem] items-center duration-100 group btn btn-accent text-white btn-sm"
-          onClick={() =>
-            (document.getElementById("new-modal") as any).showModal()
-          }
+          onClick={() => setNewModalIsOpen(true)}
         >
           <FontAwesomeIcon
             icon={faPlus}
@@ -132,7 +133,12 @@ export default function Navbar() {
           ) : null}
         </div>
       </div>
-      <New />
+      <New
+        index={0}
+        isOpen={newModalIsOpen}
+        onClose={closeNewModal}
+        modalId="new-modal-0"
+      />
     </div>
   );
 }
