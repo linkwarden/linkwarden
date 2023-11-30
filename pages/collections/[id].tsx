@@ -14,6 +14,8 @@ import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
 import useLocalSettingsStore from "@/store/localSettings";
+import useAccountStore from "@/store/account";
+import getPublicUserData from "@/lib/client/getPublicUserData";
 
 export default function Index() {
   const { setModal } = useModalStore();
@@ -39,6 +41,35 @@ export default function Index() {
       collections.find((e) => e.id === Number(router.query.id))
     );
   }, [router, collections]);
+
+  const { account } = useAccountStore();
+
+  const [collectionOwner, setCollectionOwner] = useState({
+    id: null as unknown as number,
+    name: "",
+    username: "",
+    image: "",
+  });
+
+  useEffect(() => {
+    const fetchOwner = async () => {
+      if (activeCollection && activeCollection.ownerId !== account.id) {
+        const owner = await getPublicUserData(
+          activeCollection.ownerId as number
+        );
+        setCollectionOwner(owner);
+      } else if (activeCollection && activeCollection.ownerId === account.id) {
+        setCollectionOwner({
+          id: account.id as number,
+          name: account.name,
+          username: account.username as string,
+          image: account.image as string,
+        });
+      }
+    };
+
+    fetchOwner();
+  }, [activeCollection]);
 
   return (
     <MainLayout>
@@ -71,46 +102,46 @@ export default function Index() {
 
             {activeCollection ? (
               <div
-                className={`min-w-[15rem] ${
-                  activeCollection.members[1] && "mr-3"
-                }`}
+                className="flex items-center btn px-2 btn-ghost rounded-full w-fit"
+                onClick={() =>
+                  activeCollection &&
+                  setModal({
+                    modal: "COLLECTION",
+                    state: true,
+                    method: "UPDATE",
+                    isOwner: permissions === true,
+                    active: activeCollection,
+                    defaultIndex: permissions === true ? 1 : 0,
+                  })
+                }
               >
-                <div
-                  onClick={() =>
-                    setModal({
-                      modal: "COLLECTION",
-                      state: true,
-                      method: "UPDATE",
-                      isOwner: permissions === true,
-                      active: activeCollection,
-                      defaultIndex: permissions === true ? 1 : 0,
-                    })
-                  }
-                  className="hover:opacity-80 duration-100 flex justify-center sm:justify-end items-center w-fit sm:mr-0 sm:ml-auto cursor-pointer"
-                >
-                  {activeCollection?.members
-                    .sort((a, b) => (a.userId as number) - (b.userId as number))
-                    .map((e, i) => {
-                      return (
-                        <ProfilePhoto
-                          key={i}
-                          src={e.user.image ? e.user.image : undefined}
-                          className={`${
-                            activeCollection.members[1] && "-mr-3"
-                          } border-[3px]`}
-                        />
-                      );
-                    })
-                    .slice(0, 4)}
-                  {activeCollection?.members.length &&
-                  activeCollection.members.length - 4 > 0 ? (
-                    <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 -mr-3">
-                      +{activeCollection?.members?.length - 4}
+                {collectionOwner.id ? (
+                  <ProfilePhoto
+                    src={collectionOwner.image || undefined}
+                    className="w-7 h-7"
+                  />
+                ) : undefined}
+                {activeCollection.members
+                  .sort((a, b) => (a.userId as number) - (b.userId as number))
+                  .map((e, i) => {
+                    return (
+                      <ProfilePhoto
+                        key={i}
+                        src={e.user.image ? e.user.image : undefined}
+                        className="-ml-3"
+                      />
+                    );
+                  })
+                  .slice(0, 3)}
+                {activeCollection.members.length - 3 > 0 ? (
+                  <div className={`avatar placeholder -ml-3`}>
+                    <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
+                      <span>+{activeCollection.members.length - 3}</span>
                     </div>
-                  ) : null}
-                </div>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
+            ) : undefined}
           </div>
 
           <div className="flex justify-between items-end gap-5">
