@@ -159,7 +159,7 @@ export default function Index() {
         <hr className="border-1 border-neutral" />
 
         <div className="flex justify-between items-end gap-5">
-          <p>Listing {activeCollection?._count?.links} Bookmarks</p>
+          <p>Showing {activeCollection?._count?.links} results</p>
           <div className="flex items-center gap-2">
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <div className="relative">
