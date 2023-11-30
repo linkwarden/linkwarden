@@ -217,9 +217,13 @@ export default function Dashboard() {
                       Import Your Bookmarks
                     </span>
                   </summary>
-                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box w-60">
+                  <ul className="shadow menu dropdown-content z-[1] p-1 bg-base-200 border border-neutral-content rounded-xl mt-1 w-60">
                     <li>
-                      <label htmlFor="import-linkwarden-file" title="JSON File">
+                      <label
+                        className="px-2 py-1 rounded-lg"
+                        htmlFor="import-linkwarden-file"
+                        title="JSON File"
+                      >
                         From Linkwarden
                         <input
                           type="file"
@@ -235,9 +239,9 @@ export default function Dashboard() {
                     </li>
                     <li>
                       <label
+                        className="px-2 py-1 rounded-lg"
                         htmlFor="import-html-file"
                         title="HTML File"
-                        className="w-full"
                       >
                         From Bookmarks HTML file
                         <input

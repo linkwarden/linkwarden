@@ -75,10 +75,14 @@ export default function Navbar() {
               <FontAwesomeIcon icon={faCaretDown} className="w-3 h-3" />
             </div>
           </div>
-          <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
+          <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-32 mt-1">
             <li>
               <div
-                onClick={() => setNewLinkModalIsOpen(true)}
+                className="px-2 py-1 rounded-lg"
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setNewLinkModalIsOpen(true);
+                }}
                 tabIndex={0}
                 role="button"
               >
@@ -87,7 +91,11 @@ export default function Navbar() {
             </li>
             <li>
               <div
-                onClick={() => setNewCollectionModalIsOpen(true)}
+                className="px-2 py-1 rounded-lg"
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setNewCollectionModalIsOpen(true);
+                }}
                 tabIndex={0}
                 role="button"
               >
@@ -105,19 +113,41 @@ export default function Navbar() {
               className=""
             />
           </div>
-          <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+          <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-40 mt-1">
             <li>
-              <Link href="/settings/account" tabIndex={0} role="button">
+              <Link
+                className="px-2 py-1 rounded-lg"
+                href="/settings/account"
+                onClick={() => (document?.activeElement as HTMLElement)?.blur()}
+                tabIndex={0}
+                role="button"
+              >
                 Settings
               </Link>
             </li>
             <li>
-              <div onClick={handleToggle} tabIndex={0} role="button">
+              <div
+                className="px-2 py-1 rounded-lg"
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  handleToggle();
+                }}
+                tabIndex={0}
+                role="button"
+              >
                 Switch to {settings.theme === "light" ? "Dark" : "Light"}
               </div>
             </li>
             <li>
-              <div onClick={() => signOut()} tabIndex={0} role="button">
+              <div
+                className="px-2 py-1 rounded-lg"
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  signOut();
+                }}
+                tabIndex={0}
+                role="button"
+              >
                 Logout
               </div>
             </li>

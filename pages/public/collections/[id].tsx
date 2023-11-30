@@ -16,8 +16,6 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";
 import PublicSearchBar from "@/components/PublicPage/PublicSearchBar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import SortDropdown from "@/components/SortDropdown";
 import useLocalSettingsStore from "@/store/localSettings";
@@ -206,27 +204,12 @@ export default function PublicCollections() {
               placeHolder={`Search ${collection._count?.links} Links`}
             />
 
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-2 items-center">
               <div className="relative">
-                <div
-                  onClick={() => setFilterDropdown(!filterDropdown)}
-                  id="filter-dropdown"
-                  className="btn btn-ghost btn-square btn-sm"
-                >
-                  <FontAwesomeIcon
-                    icon={faFilter}
-                    id="filter-dropdown"
-                    className="w-5 h-5 text-neutral"
-                  />
-                </div>
-
-                {filterDropdown ? (
-                  <FilterSearchDropdown
-                    setFilterDropdown={setFilterDropdown}
-                    searchFilter={searchFilter}
-                    setSearchFilter={setSearchFilter}
-                  />
-                ) : null}
+                <FilterSearchDropdown
+                  searchFilter={searchFilter}
+                  setSearchFilter={setSearchFilter}
+                />
               </div>
 
               <div className="relative">
