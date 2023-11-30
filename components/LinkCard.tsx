@@ -142,24 +142,94 @@ export default function LinkCard({ link, count, className }: Props) {
           className || ""
         }`}
       >
-        {(permissions === true ||
-          permissions?.canUpdate ||
-          permissions?.canDelete) && (
-          <div
-            onClick={(e) => {
-              setExpandDropdown({ x: e.clientX, y: e.clientY });
-            }}
-            id={"expand-dropdown" + link.id}
-            className="btn btn-ghost btn-sm btn-square absolute right-4 top-4 z-10"
-          >
-            <FontAwesomeIcon
-              icon={faEllipsis}
-              title="More"
-              className="w-5 h-5"
-              id={"expand-dropdown" + link.id}
-            />
+        {permissions === true ||
+        permissions?.canUpdate ||
+        permissions?.canDelete ? (
+          <div className="dropdown dropdown-left dropdown-start absolute top-3 right-3 z-20">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-sm btn-square text-neutral"
+            >
+              <FontAwesomeIcon
+                icon={faEllipsis}
+                title="More"
+                className="w-5 h-5"
+                id={"expand-dropdown" + collection.id}
+              />
+            </div>
+            <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-40 mr-1">
+              {permissions === true ? (
+                <li>
+                  <div
+                    role="button"
+                    className="px-2 py-1 rounded-lg"
+                    tabIndex={0}
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      pinLink();
+                    }}
+                  >
+                    {link?.pinnedBy && link.pinnedBy[0]
+                      ? "Unpin"
+                      : "Pin to Dashboard"}
+                  </div>
+                </li>
+              ) : undefined}
+              {permissions === true || permissions?.canUpdate ? (
+                <li>
+                  <div
+                    role="button"
+                    className="px-2 py-1 rounded-lg"
+                    tabIndex={0}
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      collection &&
+                        setModal({
+                          modal: "LINK",
+                          state: true,
+                          method: "UPDATE",
+                          active: link,
+                        });
+                    }}
+                  >
+                    Edit
+                  </div>
+                </li>
+              ) : undefined}
+              {permissions === true ? (
+                <li>
+                  <div
+                    role="button"
+                    className="px-2 py-1 rounded-lg"
+                    tabIndex={0}
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      updateArchive();
+                    }}
+                  >
+                    Refresh Link
+                  </div>
+                </li>
+              ) : undefined}
+              {permissions === true || permissions?.canDelete ? (
+                <li>
+                  <div
+                    role="button"
+                    className="px-2 py-1 rounded-lg"
+                    tabIndex={0}
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      deleteLink();
+                    }}
+                  >
+                    Delete
+                  </div>
+                </li>
+              ) : undefined}
+            </ul>
           </div>
-        )}
+        ) : undefined}
 
         <div
           onClick={() => router.push("/links/" + link.id)}
@@ -244,54 +314,6 @@ export default function LinkCard({ link, count, className }: Props) {
           </div>
         </div>
       </div>
-      {expandDropdown ? (
-        <Dropdown
-          points={{ x: expandDropdown.x, y: expandDropdown.y }}
-          items={[
-            permissions === true
-              ? {
-                  name:
-                    link?.pinnedBy && link.pinnedBy[0]
-                      ? "Unpin"
-                      : "Pin to Dashboard",
-                  onClick: pinLink,
-                }
-              : undefined,
-            permissions === true || permissions?.canUpdate
-              ? {
-                  name: "Edit",
-                  onClick: () => {
-                    setModal({
-                      modal: "LINK",
-                      state: true,
-                      method: "UPDATE",
-                      active: link,
-                    });
-                    setExpandDropdown(false);
-                  },
-                }
-              : undefined,
-            permissions === true
-              ? {
-                  name: "Refresh Link",
-                  onClick: updateArchive,
-                }
-              : undefined,
-            permissions === true || permissions?.canDelete
-              ? {
-                  name: "Delete",
-                  onClick: deleteLink,
-                }
-              : undefined,
-          ]}
-          onClickOutside={(e: Event) => {
-            const target = e.target as HTMLInputElement;
-            if (target.id !== "expand-dropdown" + link.id)
-              setExpandDropdown(false);
-          }}
-          className="w-40"
-        />
-      ) : null}
     </>
   );
 }

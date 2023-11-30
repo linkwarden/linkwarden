@@ -1,9 +1,8 @@
-import React, { SetStateAction } from "react";
-import ClickAwayHandler from "./ClickAwayHandler";
-import Checkbox from "./Checkbox";
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
-  setFilterDropdown: (value: SetStateAction<boolean>) => void;
   setSearchFilter: Function;
   searchFilter: {
     name: boolean;
@@ -15,62 +14,123 @@ type Props = {
 };
 
 export default function FilterSearchDropdown({
-  setFilterDropdown,
   setSearchFilter,
   searchFilter,
 }: Props) {
   return (
-    <ClickAwayHandler
-      onClickOutside={(e: Event) => {
-        const target = e.target as HTMLInputElement;
-        if (target.id !== "filter-dropdown") setFilterDropdown(false);
-      }}
-      className="absolute top-8 right-0 border border-neutral-content shadow-md bg-base-200 rounded-md p-2 z-20 w-40"
-    >
-      <p className="mb-2 text-center font-semibold">Filter by</p>
-      <div className="flex flex-col gap-2">
-        <Checkbox
-          label="Name"
-          state={searchFilter.name}
-          onClick={() =>
-            setSearchFilter({ ...searchFilter, name: !searchFilter.name })
-          }
-        />
-        <Checkbox
-          label="Link"
-          state={searchFilter.url}
-          onClick={() =>
-            setSearchFilter({ ...searchFilter, url: !searchFilter.url })
-          }
-        />
-        <Checkbox
-          label="Description"
-          state={searchFilter.description}
-          onClick={() =>
-            setSearchFilter({
-              ...searchFilter,
-              description: !searchFilter.description,
-            })
-          }
-        />
-        <Checkbox
-          label="Full Content"
-          state={searchFilter.textContent}
-          onClick={() =>
-            setSearchFilter({
-              ...searchFilter,
-              textContent: !searchFilter.textContent,
-            })
-          }
-        />
-        <Checkbox
-          label="Tags"
-          state={searchFilter.tags}
-          onClick={() =>
-            setSearchFilter({ ...searchFilter, tags: !searchFilter.tags })
-          }
+    <div className="dropdown dropdown-bottom dropdown-end">
+      <div
+        tabIndex={0}
+        role="button"
+        className="btn btn-sm btn-square btn-ghost"
+      >
+        <FontAwesomeIcon
+          icon={faFilter}
+          id="sort-dropdown"
+          className="w-5 h-5 text-neutral"
         />
       </div>
-    </ClickAwayHandler>
+      <ul className="dropdown-content z-[30] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="checkbox"
+              name="search-filter-checkbox"
+              className="checkbox checkbox-primary [--chkfg:white]"
+              checked={searchFilter.name}
+              onChange={() => {
+                setSearchFilter({ ...searchFilter, name: !searchFilter.name });
+              }}
+            />
+            <span className="label-text">Name</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="checkbox"
+              name="search-filter-checkbox"
+              className="checkbox checkbox-primary [--chkfg:white]"
+              checked={searchFilter.url}
+              onChange={() => {
+                setSearchFilter({ ...searchFilter, url: !searchFilter.url });
+              }}
+            />
+            <span className="label-text">Link</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="checkbox"
+              name="search-filter-checkbox"
+              className="checkbox checkbox-primary [--chkfg:white]"
+              checked={searchFilter.description}
+              onChange={() => {
+                setSearchFilter({
+                  ...searchFilter,
+                  description: !searchFilter.description,
+                });
+              }}
+            />
+            <span className="label-text">Description</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="checkbox"
+              name="search-filter-checkbox"
+              className="checkbox checkbox-primary [--chkfg:white]"
+              checked={searchFilter.textContent}
+              onChange={() => {
+                setSearchFilter({
+                  ...searchFilter,
+                  textContent: !searchFilter.textContent,
+                });
+              }}
+            />
+            <span className="label-text">Full Content</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="checkbox"
+              name="search-filter-checkbox"
+              className="checkbox checkbox-primary [--chkfg:white]"
+              checked={searchFilter.tags}
+              onChange={() => {
+                setSearchFilter({
+                  ...searchFilter,
+                  tags: !searchFilter.tags,
+                });
+              }}
+            />
+            <span className="label-text">Tags</span>
+          </label>
+        </li>
+      </ul>
+    </div>
   );
 }

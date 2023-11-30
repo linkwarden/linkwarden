@@ -50,41 +50,38 @@ export default function Collections() {
               </div>
             </div>
             <div className="relative mt-2">
-              <div
-                onClick={() => setExpandDropdown(!expandDropdown)}
-                id="expand-dropdown"
-                className="btn btn-ghost btn-square btn-sm"
-              >
-                <FontAwesomeIcon
-                  icon={faEllipsis}
-                  id="expand-dropdown"
-                  className="w-5 h-5 text-neutral"
-                />
-              </div>
-
-              {expandDropdown ? (
-                <Dropdown
-                  items={[
-                    {
-                      name: "New Collection",
-                      onClick: () => {
+              <div className="dropdown dropdown-bottom">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-sm btn-square text-neutral"
+                >
+                  <FontAwesomeIcon
+                    icon={faEllipsis}
+                    title="More"
+                    className="w-5 h-5"
+                  />
+                </div>
+                <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-40 mt-1">
+                  <li>
+                    <div
+                      className="px-2 py-1 rounded-lg"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        (document?.activeElement as HTMLElement)?.blur();
                         setModal({
                           modal: "COLLECTION",
                           state: true,
                           method: "CREATE",
                         });
-                        setExpandDropdown(false);
-                      },
-                    },
-                  ]}
-                  onClickOutside={(e: Event) => {
-                    const target = e.target as HTMLInputElement;
-                    if (target.id !== "expand-dropdown")
-                      setExpandDropdown(false);
-                  }}
-                  className="absolute top-8 sm:left-0 right-0 sm:right-auto w-36"
-                />
-              ) : null}
+                      }}
+                    >
+                      New Collection
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
 

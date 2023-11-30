@@ -65,29 +65,26 @@ export default function CollectionCard({ collection, className }: Props) {
           role="button"
           className="btn btn-ghost btn-sm btn-square text-neutral"
         >
-          <FontAwesomeIcon
-            icon={faEllipsis}
-            title="More"
-            className="w-5 h-5"
-            id={"expand-dropdown" + collection.id}
-          />
+          <FontAwesomeIcon icon={faEllipsis} title="More" className="w-5 h-5" />
         </div>
-        <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+        <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-44 mt-1">
           {permissions === true ? (
             <li>
               <div
+                className="px-2 py-1 rounded-lg"
                 role="button"
                 tabIndex={0}
-                onClick={() =>
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
                   collection &&
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "UPDATE",
-                    isOwner: permissions === true,
-                    active: collection,
-                  })
-                }
+                    setModal({
+                      modal: "COLLECTION",
+                      state: true,
+                      method: "UPDATE",
+                      isOwner: permissions === true,
+                      active: collection,
+                    });
+                }}
               >
                 Edit Collection Info
               </div>
@@ -95,38 +92,42 @@ export default function CollectionCard({ collection, className }: Props) {
           ) : undefined}
           <li>
             <div
+              className="px-2 py-1 rounded-lg"
               role="button"
               tabIndex={0}
-              onClick={() =>
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
                 collection &&
-                setModal({
-                  modal: "COLLECTION",
-                  state: true,
-                  method: "UPDATE",
-                  isOwner: permissions === true,
-                  active: collection,
-                  defaultIndex: permissions === true ? 1 : 0,
-                })
-              }
+                  setModal({
+                    modal: "COLLECTION",
+                    state: true,
+                    method: "UPDATE",
+                    isOwner: permissions === true,
+                    active: collection,
+                    defaultIndex: permissions === true ? 1 : 0,
+                  });
+              }}
             >
               {permissions === true ? "Share and Collaborate" : "View Team"}
             </div>
           </li>
           <li>
             <div
+              className="px-2 py-1 rounded-lg"
               role="button"
               tabIndex={0}
-              onClick={() =>
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
                 collection &&
-                setModal({
-                  modal: "COLLECTION",
-                  state: true,
-                  method: "UPDATE",
-                  isOwner: permissions === true,
-                  active: collection,
-                  defaultIndex: permissions === true ? 2 : 1,
-                })
-              }
+                  setModal({
+                    modal: "COLLECTION",
+                    state: true,
+                    method: "UPDATE",
+                    isOwner: permissions === true,
+                    active: collection,
+                    defaultIndex: permissions === true ? 2 : 1,
+                  });
+              }}
             >
               {permissions === true ? "Delete Collection" : "Leave Collection"}
             </div>
