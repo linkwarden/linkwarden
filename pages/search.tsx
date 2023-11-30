@@ -52,27 +52,12 @@ export default function Search() {
             </div>
           </div>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-2 items-center">
             <div className="relative">
-              <div
-                onClick={() => setFilterDropdown(!filterDropdown)}
-                id="filter-dropdown"
-                className="btn btn-ghost btn-square btn-sm"
-              >
-                <FontAwesomeIcon
-                  icon={faFilter}
-                  id="filter-dropdown"
-                  className="w-5 h-5 text-neutral"
-                />
-              </div>
-
-              {filterDropdown ? (
-                <FilterSearchDropdown
-                  setFilterDropdown={setFilterDropdown}
-                  searchFilter={searchFilter}
-                  setSearchFilter={setSearchFilter}
-                />
-              ) : null}
+              <FilterSearchDropdown
+                searchFilter={searchFilter}
+                setSearchFilter={setSearchFilter}
+              />
             </div>
 
             <div className="relative">

@@ -1,4 +1,3 @@
-import Dropdown from "@/components/Dropdown";
 import LinkCard from "@/components/LinkCard";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
@@ -26,7 +25,6 @@ export default function Index() {
   const { links } = useLinkStore();
   const { collections } = useCollectionStore();
 
-  const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   const [activeCollection, setActiveCollection] =
@@ -118,47 +116,50 @@ export default function Index() {
           <div className="flex justify-between items-end gap-5">
             <p>{activeCollection?.description}</p>
             <div className="flex items-center gap-2">
+              <SortDropdown sortBy={sortBy} setSort={setSortBy} />
               <div className="relative">
-                <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-              </div>
-              <div className="relative">
-                <div
-                  onClick={() => setExpandDropdown(!expandDropdown)}
-                  id="expand-dropdown"
-                  className="btn btn-ghost btn-square btn-sm"
-                >
-                  <FontAwesomeIcon
-                    icon={faEllipsis}
-                    id="expand-dropdown"
-                    title="More"
-                    className="w-5 h-5 text-neutral"
-                  />
-                </div>
-                {expandDropdown ? (
-                  <Dropdown
-                    items={[
-                      permissions === true
-                        ? {
-                            name: "Edit Collection Info",
-                            onClick: () => {
-                              activeCollection &&
-                                setModal({
-                                  modal: "COLLECTION",
-                                  state: true,
-                                  method: "UPDATE",
-                                  isOwner: permissions === true,
-                                  active: activeCollection,
-                                });
-                              setExpandDropdown(false);
-                            },
-                          }
-                        : undefined,
-                      {
-                        name:
-                          permissions === true
-                            ? "Share/Collaborate"
-                            : "View Team",
-                        onClick: () => {
+                <div className="dropdown dropdown-bottom dropdown-end">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-ghost btn-sm btn-square text-neutral"
+                  >
+                    <FontAwesomeIcon
+                      icon={faEllipsis}
+                      title="More"
+                      className="w-5 h-5"
+                    />
+                  </div>
+                  <ul className="dropdown-content z-[30] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-44 mt-1">
+                    {permissions === true ? (
+                      <li>
+                        <div
+                          className="px-2 py-1 rounded-lg"
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => {
+                            (document?.activeElement as HTMLElement)?.blur();
+                            activeCollection &&
+                              setModal({
+                                modal: "COLLECTION",
+                                state: true,
+                                method: "UPDATE",
+                                isOwner: permissions === true,
+                                active: activeCollection,
+                              });
+                          }}
+                        >
+                          Edit Collection Info
+                        </div>
+                      </li>
+                    ) : undefined}
+                    <li>
+                      <div
+                        className="px-2 py-1 rounded-lg"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          (document?.activeElement as HTMLElement)?.blur();
                           activeCollection &&
                             setModal({
                               modal: "COLLECTION",
@@ -168,16 +169,20 @@ export default function Index() {
                               active: activeCollection,
                               defaultIndex: permissions === true ? 1 : 0,
                             });
-                          setExpandDropdown(false);
-                        },
-                      },
-
-                      {
-                        name:
-                          permissions === true
-                            ? "Delete Collection"
-                            : "Leave Collection",
-                        onClick: () => {
+                        }}
+                      >
+                        {permissions === true
+                          ? "Share and Collaborate"
+                          : "View Team"}
+                      </div>
+                    </li>
+                    <li>
+                      <div
+                        className="px-2 py-1 rounded-lg"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          (document?.activeElement as HTMLElement)?.blur();
                           activeCollection &&
                             setModal({
                               modal: "COLLECTION",
@@ -187,18 +192,15 @@ export default function Index() {
                               active: activeCollection,
                               defaultIndex: permissions === true ? 2 : 1,
                             });
-                          setExpandDropdown(false);
-                        },
-                      },
-                    ]}
-                    onClickOutside={(e: Event) => {
-                      const target = e.target as HTMLInputElement;
-                      if (target.id !== "expand-dropdown")
-                        setExpandDropdown(false);
-                    }}
-                    className="absolute top-8 right-0 z-10 w-44"
-                  />
-                ) : null}
+                        }}
+                      >
+                        {permissions === true
+                          ? "Delete Collection"
+                          : "Leave Collection"}
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

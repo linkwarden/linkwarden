@@ -14,7 +14,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
       <div
         tabIndex={0}
         role="button"
-        className="btn btn-sm btn-square btn-ghost m-1"
+        className="btn btn-sm btn-square btn-ghost"
       >
         <FontAwesomeIcon
           icon={faSort}
@@ -22,10 +22,10 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
           className="w-5 h-5 text-neutral"
         />
       </div>
-      <ul className="dropdown-content z-[20] menu p-2 shadow bg-base-200 border border-neutral-content rounded-box w-52">
+      <ul className="dropdown-content z-[30] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
         <li>
           <label
-            className="label cursor-pointer flex justify-start"
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
             tabIndex={0}
             role="button"
           >
@@ -35,14 +35,16 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               className="radio checked:bg-primary"
               value="Date (Newest First)"
               checked={sortBy === Sort.DateNewestFirst}
-              onChange={() => setSort(Sort.DateNewestFirst)}
+              onChange={() => {
+                setSort(Sort.DateNewestFirst);
+              }}
             />
             <span className="label-text">Date (Newest First)</span>
           </label>
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start"
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
             tabIndex={0}
             role="button"
           >
@@ -59,7 +61,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start"
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
             tabIndex={0}
             role="button"
           >
@@ -76,7 +78,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start"
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
             tabIndex={0}
             role="button"
           >
@@ -93,7 +95,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start"
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
             tabIndex={0}
             role="button"
           >
@@ -110,7 +112,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start"
+            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
             tabIndex={0}
             role="button"
           >
