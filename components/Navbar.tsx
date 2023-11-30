@@ -53,7 +53,7 @@ export default function Navbar() {
   const closeNewCollectionModal = () => setNewCollectionModalIsOpen(false);
 
   return (
-    <div className="flex justify-between gap-2 items-center px-5 py-2 border-solid border-b-neutral-content border-b">
+    <div className="flex justify-between gap-2 items-center px-4 py-2 border-solid border-b-neutral-content border-b">
       <div
         onClick={toggleSidebar}
         className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"

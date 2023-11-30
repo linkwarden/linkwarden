@@ -15,10 +15,10 @@ import ToggleDarkMode from "@/components/ToggleDarkMode";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";
-import PublicSearchBar from "@/components/PublicPage/PublicSearchBar";
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import SortDropdown from "@/components/SortDropdown";
 import useLocalSettingsStore from "@/store/localSettings";
+import SearchBar from "@/components/SearchBar";
 
 const cardVariants: Variants = {
   offscreen: {
@@ -63,7 +63,6 @@ export default function PublicCollections() {
     tags: true,
   });
 
-  const [filterDropdown, setFilterDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({
@@ -200,8 +199,8 @@ export default function PublicCollections() {
 
         <div className="flex mb-5 mt-10 flex-col gap-5">
           <div className="flex justify-between">
-            <PublicSearchBar
-              placeHolder={`Search ${collection._count?.links} Links`}
+            <SearchBar
+              placeholder={`Search ${collection._count?.links} Links`}
             />
 
             <div className="flex gap-2 items-center">
