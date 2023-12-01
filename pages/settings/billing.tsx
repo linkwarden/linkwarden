@@ -13,7 +13,7 @@ export default function Billing() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">Billing Settings</p>
 
-      <hr className="my-3 border-1 border-neutral-content" />
+      <div className="divider my-3"></div>
 
       <div className="w-full mx-auto flex flex-col gap-3 justify-between">
         <p className="text-md">

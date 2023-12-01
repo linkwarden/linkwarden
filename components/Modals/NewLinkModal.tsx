@@ -18,7 +18,7 @@ type Props = {
 };
 
 export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
-  const newModal = document.getElementById(modalId);
+  const modal = document.getElementById(modalId);
 
   const { data } = useSession();
 
@@ -95,12 +95,12 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
         },
       });
 
-    newModal?.addEventListener("close", () => {
+    modal?.addEventListener("close", () => {
       onClose();
     });
 
     return () => {
-      newModal?.addEventListener("close", () => {
+      modal?.addEventListener("close", () => {
         onClose();
       });
     };

@@ -16,6 +16,8 @@ import NoLinksFound from "@/components/NoLinksFound";
 import useLocalSettingsStore from "@/store/localSettings";
 import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
+import EditCollectionModal from "@/components/Modals/EditCollectionModal";
+import EditCollectionSharingModal from "@/components/Modals/EditCollectionSharingModal";
 
 export default function Index() {
   const { setModal } = useModalStore();
@@ -71,13 +73,17 @@ export default function Index() {
     fetchOwner();
   }, [activeCollection]);
 
+  const [editCollectionModal, setEditCollectionModal] = useState(false);
+  const [editCollectionSharingModal, setEditCollectionSharingModal] =
+    useState(false);
+
   return (
     <MainLayout>
       <div
         style={{
           backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
             settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 50%, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          } 14rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
         className="h-full p-5 flex gap-3 flex-col"
       >
@@ -103,17 +109,7 @@ export default function Index() {
             <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
               <div
                 className="flex items-center btn px-2 btn-ghost rounded-full w-fit"
-                onClick={() =>
-                  activeCollection &&
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "UPDATE",
-                    isOwner: permissions === true,
-                    active: activeCollection,
-                    defaultIndex: permissions === true ? 1 : 0,
-                  })
-                }
+                onClick={() => setEditCollectionSharingModal(true)}
               >
                 {collectionOwner.id ? (
                   <ProfilePhoto
@@ -156,7 +152,7 @@ export default function Index() {
           <p>{activeCollection?.description}</p>
         ) : undefined}
 
-        <hr className="border-1 border-neutral" />
+        <div className="divider my-0"></div>
 
         <div className="flex justify-between items-end gap-5">
           <p>Showing {activeCollection?._count?.links} results</p>
@@ -184,14 +180,7 @@ export default function Index() {
                         tabIndex={0}
                         onClick={() => {
                           (document?.activeElement as HTMLElement)?.blur();
-                          activeCollection &&
-                            setModal({
-                              modal: "COLLECTION",
-                              state: true,
-                              method: "UPDATE",
-                              isOwner: permissions === true,
-                              active: activeCollection,
-                            });
+                          setEditCollectionModal(true);
                         }}
                       >
                         Edit Collection Info
@@ -205,15 +194,7 @@ export default function Index() {
                       tabIndex={0}
                       onClick={() => {
                         (document?.activeElement as HTMLElement)?.blur();
-                        activeCollection &&
-                          setModal({
-                            modal: "COLLECTION",
-                            state: true,
-                            method: "UPDATE",
-                            isOwner: permissions === true,
-                            active: activeCollection,
-                            defaultIndex: permissions === true ? 1 : 0,
-                          });
+                        setEditCollectionSharingModal(true);
                       }}
                     >
                       {permissions === true
@@ -262,6 +243,22 @@ export default function Index() {
           <NoLinksFound />
         )}
       </div>
+      {activeCollection ? (
+        <>
+          <EditCollectionModal
+            isOpen={editCollectionModal}
+            onClose={() => setEditCollectionModal(false)}
+            modalId={"edit-collection-modal" + activeCollection.id}
+            activeCollection={activeCollection}
+          />
+          <EditCollectionSharingModal
+            isOpen={editCollectionSharingModal}
+            onClose={() => setEditCollectionSharingModal(false)}
+            modalId={"edit-collection-sharing-modal" + activeCollection.id}
+            activeCollection={activeCollection}
+          />
+        </>
+      ) : undefined}
     </MainLayout>
   );
 }

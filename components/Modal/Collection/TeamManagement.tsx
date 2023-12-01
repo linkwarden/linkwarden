@@ -139,7 +139,7 @@ export default function TeamManagement({
       ) : null}
 
       {permissions !== true && collection.isPublic && (
-        <hr className="mb-3 border border-neutral-content" />
+        <div className="divider mb-3 mt-0"></div>
       )}
 
       {permissions === true && (

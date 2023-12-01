@@ -22,6 +22,7 @@ import isValidUrl from "@/lib/client/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import { useRouter } from "next/router";
+import EditLinkModal from "./Modals/EditLinkModal";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -135,147 +136,142 @@ export default function LinkCard({ link, count, className }: Props) {
     }
   );
 
+  const [newLinkModal, setNewLinkModal] = useState(false);
+
   return (
-    <>
+    <div
+      className={`h-fit border border-solid border-neutral-content bg-base-200 shadow hover:shadow-none duration-100 rounded-2xl relative group ${
+        className || ""
+      }`}
+    >
+      {permissions === true ||
+      permissions?.canUpdate ||
+      permissions?.canDelete ? (
+        <div className="dropdown dropdown-left dropdown-start absolute top-3 right-3 z-20">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-sm btn-square text-neutral"
+          >
+            <FontAwesomeIcon
+              icon={faEllipsis}
+              title="More"
+              className="w-5 h-5"
+              id={"expand-dropdown" + collection.id}
+            />
+          </div>
+          <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-40 mr-1">
+            {permissions === true ? (
+              <li>
+                <div
+                  role="button"
+                  className="px-2 py-1 rounded-lg"
+                  tabIndex={0}
+                  onClick={() => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    pinLink();
+                  }}
+                >
+                  {link?.pinnedBy && link.pinnedBy[0]
+                    ? "Unpin"
+                    : "Pin to Dashboard"}
+                </div>
+              </li>
+            ) : undefined}
+            {permissions === true || permissions?.canUpdate ? (
+              <li>
+                <div
+                  role="button"
+                  className="px-2 py-1 rounded-lg"
+                  tabIndex={0}
+                  onClick={() => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    setNewLinkModal(true);
+                  }}
+                >
+                  Edit
+                </div>
+              </li>
+            ) : undefined}
+            {permissions === true ? (
+              <li>
+                <div
+                  role="button"
+                  className="px-2 py-1 rounded-lg"
+                  tabIndex={0}
+                  onClick={() => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    updateArchive();
+                  }}
+                >
+                  Refresh Link
+                </div>
+              </li>
+            ) : undefined}
+            {permissions === true || permissions?.canDelete ? (
+              <li>
+                <div
+                  role="button"
+                  className="px-2 py-1 rounded-lg"
+                  tabIndex={0}
+                  onClick={() => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    deleteLink();
+                  }}
+                >
+                  Delete
+                </div>
+              </li>
+            ) : undefined}
+          </ul>
+        </div>
+      ) : undefined}
+
       <div
-        className={`h-fit border border-solid border-neutral-content bg-base-200 shadow hover:shadow-none duration-100 rounded-2xl relative group ${
-          className || ""
-        }`}
+        onClick={() => router.push("/links/" + link.id)}
+        className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-4"
       >
-        {permissions === true ||
-        permissions?.canUpdate ||
-        permissions?.canDelete ? (
-          <div className="dropdown dropdown-left dropdown-start absolute top-3 right-3 z-20">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-sm btn-square text-neutral"
+        {url && account.displayLinkIcons && (
+          <Image
+            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
+            width={64}
+            height={64}
+            alt=""
+            className={`${
+              account.blurredFavicons ? "blur-sm " : ""
+            }absolute w-16 group-hover:opacity-80 duration-100 rounded-2xl bottom-5 right-5 opacity-60 select-none z-10`}
+            draggable="false"
+            onError={(e) => {
+              const target = e.target as HTMLElement;
+              target.style.display = "none";
+            }}
+          />
+        )}
+
+        <div className="flex justify-between gap-5 w-full h-full z-0">
+          <div className="flex flex-col justify-between w-full">
+            <div className="flex items-baseline gap-1">
+              <p className="text-sm text-neutral">{count + 1}</p>
+              <p className="text-lg truncate capitalize w-full pr-8">
+                {unescapeString(link.name || link.description)}
+              </p>
+            </div>
+            <Link
+              href={`/collections/${link.collection.id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="flex items-center gap-1 max-w-full w-fit my-1 hover:opacity-70 duration-100"
             >
               <FontAwesomeIcon
-                icon={faEllipsis}
-                title="More"
-                className="w-5 h-5"
-                id={"expand-dropdown" + collection.id}
+                icon={faFolder}
+                className="w-4 h-4 mt-1 drop-shadow"
+                style={{ color: collection?.color }}
               />
-            </div>
-            <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-40 mr-1">
-              {permissions === true ? (
-                <li>
-                  <div
-                    role="button"
-                    className="px-2 py-1 rounded-lg"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      pinLink();
-                    }}
-                  >
-                    {link?.pinnedBy && link.pinnedBy[0]
-                      ? "Unpin"
-                      : "Pin to Dashboard"}
-                  </div>
-                </li>
-              ) : undefined}
-              {permissions === true || permissions?.canUpdate ? (
-                <li>
-                  <div
-                    role="button"
-                    className="px-2 py-1 rounded-lg"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      collection &&
-                        setModal({
-                          modal: "LINK",
-                          state: true,
-                          method: "UPDATE",
-                          active: link,
-                        });
-                    }}
-                  >
-                    Edit
-                  </div>
-                </li>
-              ) : undefined}
-              {permissions === true ? (
-                <li>
-                  <div
-                    role="button"
-                    className="px-2 py-1 rounded-lg"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      updateArchive();
-                    }}
-                  >
-                    Refresh Link
-                  </div>
-                </li>
-              ) : undefined}
-              {permissions === true || permissions?.canDelete ? (
-                <li>
-                  <div
-                    role="button"
-                    className="px-2 py-1 rounded-lg"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      deleteLink();
-                    }}
-                  >
-                    Delete
-                  </div>
-                </li>
-              ) : undefined}
-            </ul>
-          </div>
-        ) : undefined}
+              <p className="truncate capitalize w-full">{collection?.name}</p>
+            </Link>
 
-        <div
-          onClick={() => router.push("/links/" + link.id)}
-          className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-4"
-        >
-          {url && account.displayLinkIcons && (
-            <Image
-              src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
-              width={64}
-              height={64}
-              alt=""
-              className={`${
-                account.blurredFavicons ? "blur-sm " : ""
-              }absolute w-16 group-hover:opacity-80 duration-100 rounded-2xl bottom-5 right-5 opacity-60 select-none z-10`}
-              draggable="false"
-              onError={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.display = "none";
-              }}
-            />
-          )}
-
-          <div className="flex justify-between gap-5 w-full h-full z-0">
-            <div className="flex flex-col justify-between w-full">
-              <div className="flex items-baseline gap-1">
-                <p className="text-sm text-neutral">{count + 1}</p>
-                <p className="text-lg truncate capitalize w-full pr-8">
-                  {unescapeString(link.name || link.description)}
-                </p>
-              </div>
-              <Link
-                href={`/collections/${link.collection.id}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                className="flex items-center gap-1 max-w-full w-fit my-1 hover:opacity-70 duration-100"
-              >
-                <FontAwesomeIcon
-                  icon={faFolder}
-                  className="w-4 h-4 mt-1 drop-shadow"
-                  style={{ color: collection?.color }}
-                />
-                <p className="truncate capitalize w-full">{collection?.name}</p>
-              </Link>
-
-              {/* {link.tags[0] ? (
+            {/* {link.tags[0] ? (
                 <div className="flex gap-3 items-center flex-wrap my-2 truncate relative">
                   <div className="flex gap-1 items-center flex-nowrap">
                     {link.tags.map((e, i) => (
@@ -295,25 +291,30 @@ export default function LinkCard({ link, count, className }: Props) {
                 </div>
               ) : undefined} */}
 
-              <Link
-                href={link.url}
-                target="_blank"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
-              >
-                <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
-                <p className="truncate w-full">{shortendURL}</p>
-              </Link>
-              <div className="flex items-center gap-1 text-neutral">
-                <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
-                <p>{formattedDate}</p>
-              </div>
+            <Link
+              href={link.url}
+              target="_blank"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
+            >
+              <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
+              <p className="truncate w-full">{shortendURL}</p>
+            </Link>
+            <div className="flex items-center gap-1 text-neutral">
+              <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
+              <p>{formattedDate}</p>
             </div>
           </div>
         </div>
       </div>
-    </>
+      <EditLinkModal
+        isOpen={newLinkModal}
+        onClose={() => setNewLinkModal(false)}
+        modalId={"edit-link-modal" + link.id}
+        activeLink={link}
+      />
+    </div>
   );
 }

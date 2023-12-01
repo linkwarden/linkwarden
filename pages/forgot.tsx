@@ -48,7 +48,7 @@ export default function Forgot() {
             Password Recovery
           </p>
 
-          <hr className="border-1 border-neutral-content" />
+          <div className="divider my-0"></div>
 
           <div>
             <p>

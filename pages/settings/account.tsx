@@ -153,7 +153,7 @@ export default function Account() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">Account Settings</p>
 
-      <hr className="my-3 border-1 border-neutral-content" />
+      <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-10">
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
@@ -235,7 +235,7 @@ export default function Account() {
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-neutral-content" />
+          <div className="divider my-3"></div>
 
           <div className="flex gap-3 flex-col">
             <div>
@@ -319,7 +319,7 @@ export default function Account() {
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-neutral-content" />
+          <div className="divider my-3"></div>
 
           <Checkbox
             label="Make profile private"
@@ -362,7 +362,7 @@ export default function Account() {
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-neutral-content" />
+          <div className="divider my-3"></div>
 
           <p>
             This will permanently delete ALL the Links, Collections, Tags, and

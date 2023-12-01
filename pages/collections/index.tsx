@@ -6,7 +6,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CollectionCard from "@/components/CollectionCard";
-import Dropdown from "@/components/Dropdown";
 import { useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
@@ -28,8 +27,7 @@ export default function Collections() {
 
   useSort({ sortBy, setData: setSortedCollections, data: collections });
 
-  const [newModalIsOpen, setNewModalIsOpen] = useState(false);
-  const closeNewModal = () => setNewModalIsOpen(false);
+  const [newCollectionModal, setNewCollectionModal] = useState(false);
 
   return (
     <MainLayout>
@@ -99,7 +97,7 @@ export default function Collections() {
 
           <div
             className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-2xl cursor-pointer flex flex-col gap-4 justify-center items-center group btn"
-            onClick={() => setNewModalIsOpen(true)}
+            onClick={() => setNewCollectionModal(true)}
           >
             <p className="group-hover:opacity-0 duration-100">New Collection</p>
             <FontAwesomeIcon
@@ -136,8 +134,8 @@ export default function Collections() {
         ) : undefined}
       </div>
       <NewCollectionModal
-        isOpen={newModalIsOpen}
-        onClose={closeNewModal}
+        isOpen={newCollectionModal}
+        onClose={() => setNewCollectionModal(false)}
         modalId="new-collection-modal-1"
       />
     </MainLayout>
