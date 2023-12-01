@@ -8,6 +8,7 @@ type Props = {
   className?: string;
   priority?: boolean;
   name?: string;
+  dimensionClass?: string;
 };
 
 export default function ProfilePhoto({
@@ -15,6 +16,7 @@ export default function ProfilePhoto({
   className,
   priority,
   name,
+  dimensionClass,
 }: Props) {
   const [image, setImage] = useState("");
 
@@ -28,7 +30,11 @@ export default function ProfilePhoto({
   }, [src]);
 
   return !image ? (
-    <div className={`avatar w-8 h-8 placeholder ${className || ""}`}>
+    <div
+      className={`avatar placeholder ${className || ""} ${
+        dimensionClass || "w-8 h-8 "
+      }`}
+    >
       <div className="bg-base-100 text-neutral rounded-full w-full h-full ring-2 ring-neutral-content">
         {name ? (
           <span className="text-2xl capitalize">{name.slice(0, 1)}</span>
@@ -41,7 +47,11 @@ export default function ProfilePhoto({
       </div>
     </div>
   ) : (
-    <div className={`avatar w-8 h-8 drop-shadow-md ${className || ""}`}>
+    <div
+      className={`avatar drop-shadow-md ${className || ""} ${
+        dimensionClass || "w-8 h-8 "
+      }`}
+    >
       <div className="rounded-full w-full h-full ring-2 ring-neutral-content">
         <Image
           alt=""

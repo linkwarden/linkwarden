@@ -5,11 +5,8 @@ import toast, { Toaster } from "react-hot-toast";
 import {
   faClose,
   faCrown,
-  faFolder,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { HexColorPicker } from "react-colorful";
-import { Collection } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserData from "@/lib/client/getPublicUserData";
