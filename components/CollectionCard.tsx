@@ -12,6 +12,7 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import useAccountStore from "@/store/account";
 import EditCollectionModal from "./Modals/EditCollectionModal";
 import EditCollectionSharingModal from "./Modals/EditCollectionSharingModal";
+import DeleteCollectionModal from "./Modals/DeleteCollectionModal";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
@@ -62,6 +63,7 @@ export default function CollectionCard({ collection, className }: Props) {
   const [editCollectionModal, setEditCollectionModal] = useState(false);
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
+  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
 
   return (
     <div className="relative">
@@ -109,15 +111,7 @@ export default function CollectionCard({ collection, className }: Props) {
               tabIndex={0}
               onClick={() => {
                 (document?.activeElement as HTMLElement)?.blur();
-                collection &&
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "UPDATE",
-                    isOwner: permissions === true,
-                    active: collection,
-                    defaultIndex: permissions === true ? 2 : 1,
-                  });
+                setDeleteCollectionModal(true);
               }}
             >
               {permissions === true ? "Delete Collection" : "Leave Collection"}
@@ -132,7 +126,7 @@ export default function CollectionCard({ collection, className }: Props) {
         {collectionOwner.id ? (
           <ProfilePhoto
             src={collectionOwner.image || undefined}
-            className="w-7 h-7"
+            dimensionClass="w-7 h-7"
           />
         ) : undefined}
         {collection.members
@@ -210,6 +204,12 @@ export default function CollectionCard({ collection, className }: Props) {
         isOpen={editCollectionSharingModal}
         onClose={() => setEditCollectionSharingModal(false)}
         modalId={"edit-collection-sharing-modal" + collection.id}
+        activeCollection={collection}
+      />
+      <DeleteCollectionModal
+        isOpen={deleteCollectionModal}
+        onClose={() => setDeleteCollectionModal(false)}
+        modalId={"delete-collection-modal" + collection.id}
         activeCollection={collection}
       />
     </div>

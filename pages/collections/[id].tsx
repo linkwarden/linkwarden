@@ -112,10 +112,7 @@ export default function Index() {
                 onClick={() => setEditCollectionSharingModal(true)}
               >
                 {collectionOwner.id ? (
-                  <ProfilePhoto
-                    src={collectionOwner.image || undefined}
-                    className="w-7 h-7"
-                  />
+                  <ProfilePhoto src={collectionOwner.image || undefined} />
                 ) : undefined}
                 {activeCollection.members
                   .sort((a, b) => (a.userId as number) - (b.userId as number))
