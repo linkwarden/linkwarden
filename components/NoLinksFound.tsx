@@ -1,7 +1,7 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
-import NewLinkModal from "./Modals/NewLinkModal";
+import NewLinkModal from "./ModalContent/NewLinkModal";
 
 type Props = {
   text?: string;

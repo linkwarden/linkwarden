@@ -15,9 +15,9 @@ import NoLinksFound from "@/components/NoLinksFound";
 import useLocalSettingsStore from "@/store/localSettings";
 import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
-import EditCollectionModal from "@/components/Modals/EditCollectionModal";
-import EditCollectionSharingModal from "@/components/Modals/EditCollectionSharingModal";
-import DeleteCollectionModal from "@/components/Modals/DeleteCollectionModal";
+import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
+import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
+import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
