@@ -2,7 +2,7 @@ import { Tab } from "@headlessui/react";
 import CollectionInfo from "./CollectionInfo";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import TeamManagement from "./TeamManagement";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteCollection from "./DeleteCollection";
 import ViewTeam from "./ViewTeam";
 

@@ -315,11 +315,9 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-      <NewLinkModal
-        isOpen={newLinkModal}
-        onClose={() => setNewLinkModal(false)}
-        modalId="new-link-modal"
-      />
+      {newLinkModal ? (
+        <NewLinkModal onClose={() => setNewLinkModal(false)} />
+      ) : undefined}
     </MainLayout>
   );
 }
