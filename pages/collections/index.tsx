@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
 import useSort from "@/hooks/useSort";
-import NewCollectionModal from "@/components/Modals/NewCollectionModal";
+import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 
 export default function Collections() {
   const { collections } = useCollectionStore();

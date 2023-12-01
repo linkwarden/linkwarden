@@ -9,9 +9,9 @@ import usePermissions from "@/hooks/usePermissions";
 import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import useAccountStore from "@/store/account";
-import EditCollectionModal from "./Modals/EditCollectionModal";
-import EditCollectionSharingModal from "./Modals/EditCollectionSharingModal";
-import DeleteCollectionModal from "./Modals/DeleteCollectionModal";
+import EditCollectionModal from "./ModalContent/EditCollectionModal";
+import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
+import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;

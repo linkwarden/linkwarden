@@ -20,7 +20,7 @@ import isValidUrl from "@/lib/client/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import { useRouter } from "next/router";
-import EditLinkModal from "./Modals/EditLinkModal";
+import EditLinkModal from "./ModalContent/EditLinkModal";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;

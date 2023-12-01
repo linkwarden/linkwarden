@@ -24,7 +24,7 @@ import useModalStore from "@/store/modals";
 import { toast } from "react-hot-toast";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
-import NewLinkModal from "@/components/Modals/NewLinkModal";
+import NewLinkModal from "@/components/ModalContent/NewLinkModal";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
