@@ -18,7 +18,7 @@ import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import SortDropdown from "@/components/SortDropdown";
 import useLocalSettingsStore from "@/store/localSettings";
 import SearchBar from "@/components/SearchBar";
-import EditCollectionSharingModal from "@/components/Modals/EditCollectionSharingModal";
+import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 
 const cardVariants: Variants = {
   offscreen: {

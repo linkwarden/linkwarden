@@ -11,8 +11,8 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import ToggleDarkMode from "./ToggleDarkMode";
 import useLocalSettingsStore from "@/store/localSettings";
-import NewLinkModal from "./Modals/NewLinkModal";
-import NewCollectionModal from "./Modals/NewCollectionModal";
+import NewLinkModal from "./ModalContent/NewLinkModal";
+import NewCollectionModal from "./ModalContent/NewCollectionModal";
 import Link from "next/link";
 
 export default function Navbar() {
