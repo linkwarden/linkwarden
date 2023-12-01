@@ -11,7 +11,7 @@ import ProfilePhoto from "@/components/ProfilePhoto";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import ToggleDarkMode from "./ToggleDarkMode";
 import useLocalSettingsStore from "@/store/localSettings";
-import NewLinkModal from "./Modals/NewLink";
+import NewLinkModal from "./Modals/NewLinkModal";
 import NewCollectionModal from "./Modals/NewCollectionModal";
 import Link from "next/link";
 
@@ -46,11 +46,8 @@ export default function Navbar() {
     setSidebar(!sidebar);
   };
 
-  const [newLinkModalIsOpen, setNewLinkModalIsOpen] = useState(false);
-  const closeNewLinkModal = () => setNewLinkModalIsOpen(false);
-  const [newCollectionModalIsOpen, setNewCollectionModalIsOpen] =
-    useState(false);
-  const closeNewCollectionModal = () => setNewCollectionModalIsOpen(false);
+  const [newLinkModal, setNewLinkModal] = useState(false);
+  const [newCollectionModal, setNewCollectionModal] = useState(false);
 
   return (
     <div className="flex justify-between gap-2 items-center px-4 py-2 border-solid border-b-neutral-content border-b">
@@ -72,7 +69,10 @@ export default function Navbar() {
               className="flex items-center group btn btn-accent text-white btn-sm px-2"
             >
               <FontAwesomeIcon icon={faPlus} className="w-5 h-5" />
-              <FontAwesomeIcon icon={faCaretDown} className="w-3 h-3" />
+              <FontAwesomeIcon
+                icon={faCaretDown}
+                className="w-2 h-2 sm:w-3 sm:h-3"
+              />
             </div>
           </div>
           <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-32 mt-1">
@@ -81,7 +81,7 @@ export default function Navbar() {
                 className="px-2 py-1 rounded-lg"
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  setNewLinkModalIsOpen(true);
+                  setNewLinkModal(true);
                 }}
                 tabIndex={0}
                 role="button"
@@ -94,7 +94,7 @@ export default function Navbar() {
                 className="px-2 py-1 rounded-lg"
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  setNewCollectionModalIsOpen(true);
+                  setNewCollectionModal(true);
                 }}
                 tabIndex={0}
                 role="button"
@@ -164,13 +164,13 @@ export default function Navbar() {
         </div>
       ) : null}
       <NewLinkModal
-        isOpen={newLinkModalIsOpen}
-        onClose={closeNewLinkModal}
+        isOpen={newLinkModal}
+        onClose={() => setNewLinkModal(false)}
         modalId="new-link-modal"
       />
       <NewCollectionModal
-        isOpen={newCollectionModalIsOpen}
-        onClose={closeNewCollectionModal}
+        isOpen={newCollectionModal}
+        onClose={() => setNewCollectionModal(false)}
         modalId="new-collection-modal"
       />
     </div>

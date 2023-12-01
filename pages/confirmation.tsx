@@ -10,7 +10,7 @@ export default function EmailConfirmaion() {
           Please check your Email
         </p>
 
-        <hr className="border-1 border-neutral my-3" />
+        <div className="divider my-3"></div>
 
         <p>A sign in link has been sent to your email address.</p>
 

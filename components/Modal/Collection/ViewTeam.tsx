@@ -34,7 +34,7 @@ export default function ViewTeam({ collection }: Props) {
 
       <div
         className="relative border px-2 rounded-md border-neutral flex min-h-[4rem] gap-2 justify-between"
-        title={`'@${collectionOwner.username}' is the owner of this collection.`}
+        title={`@${collectionOwner.username} is the owner of this collection.`}
       >
         <div className="flex items-center gap-2 w-full">
           <ProfilePhoto

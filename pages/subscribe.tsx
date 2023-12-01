@@ -35,7 +35,7 @@ export default function Subscribe() {
           Subscribe to Linkwarden!
         </p>
 
-        <hr className="border-1 border-neutral-content" />
+        <div className="divider my-0"></div>
 
         <div>
           <p>

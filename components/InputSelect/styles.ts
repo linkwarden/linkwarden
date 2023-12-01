@@ -24,7 +24,7 @@ export const styles: StylesConfig = {
       ? "1px solid oklch(var(--p))"
       : "1px solid oklch(var(--nc))",
     boxShadow: "none",
-    height: "2.6rem",
+    minHeight: "2.6rem",
   }),
   container: (styles, state) => ({
     ...styles,

@@ -122,8 +122,7 @@ export default function Dashboard() {
               icon={faLink}
             />
 
-            <hr className="border-neutral-content md:hidden my-5" />
-            <div className="h-24 border-1 border-l border-neutral-content hidden md:block"></div>
+            <div className="divider md:divider-horizontal"></div>
 
             <DashboardItem
               name={collections.length === 1 ? "Collection" : "Collections"}
@@ -131,8 +130,7 @@ export default function Dashboard() {
               icon={faFolder}
             />
 
-            <hr className="border-neutral-content md:hidden my-5" />
-            <div className="h-24 border-1 border-r border-neutral-content hidden md:block"></div>
+            <div className="divider md:divider-horizontal"></div>
 
             <DashboardItem
               name={tags.length === 1 ? "Tag" : "Tags"}

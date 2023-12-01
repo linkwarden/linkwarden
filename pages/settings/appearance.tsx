@@ -69,7 +69,7 @@ export default function Appearance() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">Appearance</p>
 
-      <hr className="my-3 border-1 border-neutral-content" />
+      <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-10">
         <div>
@@ -107,7 +107,9 @@ export default function Appearance() {
           <div className="flex items-center gap-2 w-full rounded-md h-8">
             <p className="truncate w-full pr-7 text-3xl font-thin">Link Card</p>
           </div>
-          <hr className="my-3 border-1 border-neutral-content" />
+
+          <div className="divider my-3"></div>
+
           <Checkbox
             label="Display Icons"
             state={user.displayLinkIcons}
