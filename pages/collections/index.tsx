@@ -126,11 +126,9 @@ export default function Collections() {
           </>
         ) : undefined}
       </div>
-      <NewCollectionModal
-        isOpen={newCollectionModal}
-        onClose={() => setNewCollectionModal(false)}
-        modalId="new-collection-modal-1"
-      />
+      {newCollectionModal ? (
+        <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
+      ) : undefined}
     </MainLayout>
   );
 }

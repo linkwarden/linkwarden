@@ -118,7 +118,7 @@ export default function LinkCard({ link, count, className }: Props) {
     }
   );
 
-  const [newLinkModal, setNewLinkModal] = useState(false);
+  const [editLinkModal, setEditLinkModal] = useState(false);
 
   return (
     <div
@@ -168,7 +168,7 @@ export default function LinkCard({ link, count, className }: Props) {
                   tabIndex={0}
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
-                    setNewLinkModal(true);
+                    setEditLinkModal(true);
                   }}
                 >
                   Edit
@@ -291,12 +291,12 @@ export default function LinkCard({ link, count, className }: Props) {
           </div>
         </div>
       </div>
-      <EditLinkModal
-        isOpen={newLinkModal}
-        onClose={() => setNewLinkModal(false)}
-        modalId={"edit-link-modal" + link.id}
-        activeLink={link}
-      />
+      {editLinkModal ? (
+        <EditLinkModal
+          onClose={() => setEditLinkModal(false)}
+          activeLink={link}
+        />
+      ) : undefined}
     </div>
   );
 }

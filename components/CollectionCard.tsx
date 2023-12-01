@@ -192,24 +192,24 @@ export default function CollectionCard({ collection, className }: Props) {
           </div>
         </div>
       </Link>
-      <EditCollectionModal
-        isOpen={editCollectionModal}
-        onClose={() => setEditCollectionModal(false)}
-        modalId={"edit-collection-modal" + collection.id}
-        activeCollection={collection}
-      />
-      <EditCollectionSharingModal
-        isOpen={editCollectionSharingModal}
-        onClose={() => setEditCollectionSharingModal(false)}
-        modalId={"edit-collection-sharing-modal" + collection.id}
-        activeCollection={collection}
-      />
-      <DeleteCollectionModal
-        isOpen={deleteCollectionModal}
-        onClose={() => setDeleteCollectionModal(false)}
-        modalId={"delete-collection-modal" + collection.id}
-        activeCollection={collection}
-      />
+      {editCollectionModal ? (
+        <EditCollectionModal
+          onClose={() => setEditCollectionModal(false)}
+          activeCollection={collection}
+        />
+      ) : undefined}
+      {editCollectionSharingModal ? (
+        <EditCollectionSharingModal
+          onClose={() => setEditCollectionSharingModal(false)}
+          activeCollection={collection}
+        />
+      ) : undefined}
+      {deleteCollectionModal ? (
+        <DeleteCollectionModal
+          onClose={() => setDeleteCollectionModal(false)}
+          activeCollection={collection}
+        />
+      ) : undefined}
     </div>
   );
 }

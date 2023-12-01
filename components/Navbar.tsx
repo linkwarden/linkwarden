@@ -162,16 +162,12 @@ export default function Navbar() {
           </ClickAwayHandler>
         </div>
       ) : null}
-      <NewLinkModal
-        isOpen={newLinkModal}
-        onClose={() => setNewLinkModal(false)}
-        modalId="new-link-modal-nav"
-      />
-      <NewCollectionModal
-        isOpen={newCollectionModal}
-        onClose={() => setNewCollectionModal(false)}
-        modalId="new-collection-modal-nav"
-      />
+      {newLinkModal ? (
+        <NewLinkModal onClose={() => setNewLinkModal(false)} />
+      ) : undefined}
+      {newCollectionModal ? (
+        <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
+      ) : undefined}
     </div>
   );
 }

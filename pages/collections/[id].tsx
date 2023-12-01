@@ -233,24 +233,24 @@ export default function Index() {
       </div>
       {activeCollection ? (
         <>
-          <EditCollectionModal
-            isOpen={editCollectionModal}
-            onClose={() => setEditCollectionModal(false)}
-            modalId={"edit-collection-modal" + activeCollection.id}
-            activeCollection={activeCollection}
-          />
-          <EditCollectionSharingModal
-            isOpen={editCollectionSharingModal}
-            onClose={() => setEditCollectionSharingModal(false)}
-            modalId={"edit-collection-sharing-modal" + activeCollection.id}
-            activeCollection={activeCollection}
-          />
-          <DeleteCollectionModal
-            isOpen={deleteCollectionModal}
-            onClose={() => setDeleteCollectionModal(false)}
-            modalId={"delete-collection-modal" + activeCollection.id}
-            activeCollection={activeCollection}
-          />
+          {editCollectionModal ? (
+            <EditCollectionModal
+              onClose={() => setEditCollectionModal(false)}
+              activeCollection={activeCollection}
+            />
+          ) : undefined}
+          {editCollectionSharingModal ? (
+            <EditCollectionSharingModal
+              onClose={() => setEditCollectionSharingModal(false)}
+              activeCollection={activeCollection}
+            />
+          ) : undefined}
+          {deleteCollectionModal ? (
+            <DeleteCollectionModal
+              onClose={() => setDeleteCollectionModal(false)}
+              activeCollection={activeCollection}
+            />
+          ) : undefined}
         </>
       ) : undefined}
     </MainLayout>
