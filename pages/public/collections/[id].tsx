@@ -153,7 +153,7 @@ export default function PublicCollections() {
                 {collectionOwner.id ? (
                   <ProfilePhoto
                     src={collectionOwner.image || undefined}
-                    className="w-7 h-7"
+                    dimensionClass="w-7 h-7"
                   />
                 ) : undefined}
                 {collection.members

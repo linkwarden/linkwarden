@@ -2,13 +2,9 @@ import SettingsLayout from "@/layouts/SettingsLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
-import TextInput from "@/components/TextInput";
-import { resizeImage } from "@/lib/client/resizeImage";
-import ProfilePhoto from "@/components/ProfilePhoto";
 import SubmitButton from "@/components/SubmitButton";
 import React from "react";
 import Checkbox from "@/components/Checkbox";
@@ -16,7 +12,7 @@ import LinkPreview from "@/components/LinkPreview";
 import useLocalSettingsStore from "@/store/localSettings";
 
 export default function Appearance() {
-  const { settings, updateSettings } = useLocalSettingsStore();
+  const { updateSettings } = useLocalSettingsStore();
   const submit = async () => {
     setSubmitLoader(true);
 

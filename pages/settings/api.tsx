@@ -59,7 +59,7 @@ export default function Api() {
       <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-3">
-        <div className="badge bg-orange-500 rounded-md border border-black w-fit px-2 text-black">
+        <div className="badge badge-warning rounded-md w-fit p-4">
           Status: Under Development
         </div>
 

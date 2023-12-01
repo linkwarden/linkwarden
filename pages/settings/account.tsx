@@ -162,6 +162,7 @@ export default function Account() {
               <p className="mb-2">Display Name</p>
               <TextInput
                 value={user.name || ""}
+                className="bg-base-200"
                 onChange={(e) => setUser({ ...user, name: e.target.value })}
               />
             </div>
@@ -169,6 +170,7 @@ export default function Account() {
               <p className="mb-2">Username</p>
               <TextInput
                 value={user.username || ""}
+                className="bg-base-200"
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
               />
             </div>
@@ -184,6 +186,7 @@ export default function Account() {
                 ) : undefined}
                 <TextInput
                   value={user.email || ""}
+                  className="bg-base-200"
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                 />
               </div>
@@ -196,7 +199,7 @@ export default function Account() {
               <ProfilePhoto
                 priority={true}
                 src={user.image ? user.image : undefined}
-                className="h-auto border-none w-28"
+                dimensionClass="w-28 h-28"
               />
               {user.image && (
                 <div
@@ -206,13 +209,13 @@ export default function Account() {
                       image: "",
                     })
                   }
-                  className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 border-slate-200 rounded-full bg-base-200 text-center select-none cursor-pointer duration-100 hover:text-red-500"
+                  className="absolute top-1 left-1 btn btn-xs btn-circle btn-neutral btn-outline bg-base-100"
                 >
                   <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
                 </div>
               )}
               <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
-                <label className="border border-slate-200 rounded-md bg-base-200 px-2 text-center select-none cursor-pointer duration-100 hover:border-primary">
+                <label className="btn btn-xs btn-secondary btn-outline bg-base-100">
                   Browse...
                   <input
                     type="file"
@@ -240,71 +243,60 @@ export default function Account() {
           <div className="flex gap-3 flex-col">
             <div>
               <p className="mb-2">Import your data from other platforms.</p>
-              <div
-                onClick={() => setImportDropdown(true)}
-                className="w-fit relative"
-                id="import-dropdown"
-              >
-                <div
+              <details className="dropdown">
+                <summary
+                  className="flex gap-2 text-sm btn btn-outline btn-secondary btn-xs"
                   id="import-dropdown"
-                  className="border border-slate-200 rounded-md bg-base-200 px-2 text-center select-none cursor-pointer duration-100 hover:border-primary"
                 >
                   Import From
-                </div>
-                {importDropdown ? (
-                  <ClickAwayHandler
-                    onClickOutside={(e: Event) => {
-                      const target = e.target as HTMLInputElement;
-                      if (target.id !== "import-dropdown")
-                        setImportDropdown(false);
-                    }}
-                    className={`absolute top-7 left-0 w-52 py-1 shadow-md border border-neutral-content bg-base-200 rounded-md flex flex-col z-20`}
-                  >
-                    <div className="cursor-pointer rounded-md">
-                      <label
-                        htmlFor="import-linkwarden-file"
-                        title="JSON File"
-                        className="flex items-center gap-2 py-1 px-2 hover:bg-neutral-content duration-100 cursor-pointer"
-                      >
-                        Linkwarden File...
-                        <input
-                          type="file"
-                          name="photo"
-                          id="import-linkwarden-file"
-                          accept=".json"
-                          className="hidden"
-                          onChange={(e) =>
-                            importBookmarks(e, MigrationFormat.linkwarden)
-                          }
-                        />
-                      </label>
-                      <label
-                        htmlFor="import-html-file"
-                        title="HTML File"
-                        className="flex items-center gap-2 py-1 px-2 hover:bg-neutral-content  duration-100 cursor-pointer"
-                      >
-                        Bookmarks HTML file...
-                        <input
-                          type="file"
-                          name="photo"
-                          id="import-html-file"
-                          accept=".html"
-                          className="hidden"
-                          onChange={(e) =>
-                            importBookmarks(e, MigrationFormat.htmlFile)
-                          }
-                        />
-                      </label>
-                    </div>
-                  </ClickAwayHandler>
-                ) : null}
-              </div>
+                </summary>
+                <ul className="shadow menu dropdown-content z-[1] p-1 bg-base-200 border border-neutral-content rounded-xl mt-1 w-60">
+                  <li>
+                    <label
+                      className="px-2 py-1 rounded-lg"
+                      htmlFor="import-linkwarden-file"
+                      title="JSON File"
+                    >
+                      From Linkwarden
+                      <input
+                        type="file"
+                        name="photo"
+                        id="import-linkwarden-file"
+                        accept=".json"
+                        className="hidden"
+                        onChange={(e) =>
+                          importBookmarks(e, MigrationFormat.linkwarden)
+                        }
+                      />
+                    </label>
+                  </li>
+                  <li>
+                    <label
+                      className="px-2 py-1 rounded-lg"
+                      htmlFor="import-html-file"
+                      title="HTML File"
+                    >
+                      From Bookmarks HTML file
+                      <input
+                        type="file"
+                        name="photo"
+                        id="import-html-file"
+                        accept=".html"
+                        className="hidden"
+                        onChange={(e) =>
+                          importBookmarks(e, MigrationFormat.htmlFile)
+                        }
+                      />
+                    </label>
+                  </li>
+                </ul>
+              </details>
             </div>
 
             <div>
               <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
-                <div className="border w-fit border-slate-200 rounded-md bg-base-200 px-2 text-center select-none cursor-pointer duration-100 hover:border-primary">
+                <div className="btn btn-outline btn-secondary btn-xs">
                   Export Data
                 </div>
               </Link>
@@ -339,7 +331,7 @@ export default function Account() {
                 visibility to your profile. Separated by comma.
               </p>
               <textarea
-                className="w-full resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-sky-300 dark:focus:border-sky-600"
+                className="w-full resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
                 placeholder="Your profile is hidden from everyone right now..."
                 value={whitelistedUsersTextbox}
                 onChange={(e) => setWhiteListedUsersTextbox(e.target.value)}

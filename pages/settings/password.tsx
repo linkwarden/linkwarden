@@ -58,6 +58,7 @@ export default function Password() {
 
         <TextInput
           value={newPassword}
+          className="bg-base-200"
           onChange={(e) => setNewPassword1(e.target.value)}
           placeholder="••••••••••••••"
           type="password"
@@ -67,6 +68,7 @@ export default function Password() {
 
         <TextInput
           value={newPassword2}
+          className="bg-base-200"
           onChange={(e) => setNewPassword2(e.target.value)}
           placeholder="••••••••••••••"
           type="password"

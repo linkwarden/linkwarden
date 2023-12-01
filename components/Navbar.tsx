@@ -110,7 +110,6 @@ export default function Navbar() {
             <ProfilePhoto
               src={account.image ? account.image : undefined}
               priority={true}
-              className=""
             />
           </div>
           <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-40 mt-1">

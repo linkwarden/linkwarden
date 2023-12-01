@@ -4,7 +4,6 @@ import useCollectionStore from "@/store/collections";
 import toast, { Toaster } from "react-hot-toast";
 import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import { HexColorPicker } from "react-colorful";
-import { Collection } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 
