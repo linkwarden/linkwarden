@@ -4,16 +4,27 @@
 
 :root {
   --my-color: #fff;
+  --selection-color: #fff;
+  --selection-bg-color: #fff;
 }
 
 [data-theme="dark"] {
   --my-color: #000;
   color-scheme: dark;
+  --selection-color: #000000;
+  --selection-bg-color: #ffffff;
 }
 
 [data-theme="light"] {
   --my-color: #ffabc8;
   color-scheme: light;
+  --selection-color: #ffffff;
+  --selection-bg-color: #000000;
+}
+
+::selection {
+  background-color: var(--selection-bg-color);
+  color: var(--selection-color);
 }
 
 html,
@@ -28,11 +39,6 @@ body {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-::selection {
-  background-color: #0ea4e93c;
-  color: white;
 }
 
 .hyphens {
