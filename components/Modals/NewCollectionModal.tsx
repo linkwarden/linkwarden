@@ -20,18 +20,6 @@ export default function NewCollectionModal({
 }: Props) {
   const modal = document.getElementById(modalId);
 
-  useEffect(() => {
-    modal?.addEventListener("close", () => {
-      onClose();
-    });
-
-    return () => {
-      modal?.addEventListener("close", () => {
-        onClose();
-      });
-    };
-  }, [isOpen]);
-
   const initial = {
     name: "",
     description: "",
@@ -41,7 +29,19 @@ export default function NewCollectionModal({
   const [collection, setCollection] = useState<Partial<Collection>>(initial);
 
   useEffect(() => {
+    modal?.scrollTo(0, 0);
+
+    modal?.addEventListener("close", () => {
+      onClose();
+    });
+
     setCollection(initial);
+
+    return () => {
+      modal?.addEventListener("close", () => {
+        onClose();
+      });
+    };
   }, [isOpen]);
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -74,7 +74,7 @@ export default function NewCollectionModal({
   return (
     <dialog
       id={modalId}
-      className="modal backdrop-blur-sm overflow-y-auto"
+      className="modal backdrop-blur-sm overflow-y-auto p-5"
       open={isOpen}
     >
       <Toaster

@@ -10,11 +10,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Dropdown from "./Dropdown";
 import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import useAccountStore from "@/store/account";
-import useModalStore from "@/store/modals";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
@@ -30,21 +28,10 @@ type Props = {
   className?: string;
 };
 
-type DropdownTrigger =
-  | {
-      x: number;
-      y: number;
-    }
-  | false;
-
 export default function LinkCard({ link, count, className }: Props) {
-  const { setModal } = useModalStore();
-
   const router = useRouter();
 
   const permissions = usePermissions(link.collection.id as number);
-
-  const [expandDropdown, setExpandDropdown] = useState<DropdownTrigger>(false);
 
   const { collections } = useCollectionStore();
 
@@ -82,8 +69,6 @@ export default function LinkCard({ link, count, className }: Props) {
 
     const load = toast.loading("Applying...");
 
-    setExpandDropdown(false);
-
     const response = await updateLink({
       ...link,
       pinnedBy: isAlreadyPinned ? undefined : [{ id: account.id }],
@@ -97,8 +82,6 @@ export default function LinkCard({ link, count, className }: Props) {
 
   const updateArchive = async () => {
     const load = toast.loading("Sending request...");
-
-    setExpandDropdown(false);
 
     const response = await fetch(`/api/v1/links/${link.id}/archive`, {
       method: "PUT",
@@ -122,7 +105,6 @@ export default function LinkCard({ link, count, className }: Props) {
     toast.dismiss(load);
 
     response.ok && toast.success(`Link Deleted.`);
-    setExpandDropdown(false);
   };
 
   const url = isValidUrl(link.url) ? new URL(link.url) : undefined;

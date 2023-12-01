@@ -236,10 +236,14 @@ export default function Index() {
                   </p>
                 </Link>
                 {link?.tags.map((e, i) => (
-                  <Link key={i} href={`/tags/${e.id}`} className="z-10">
+                  <Link
+                    key={i}
+                    href={"/public/collections/20?q=" + e.name}
+                    className="z-10"
+                  >
                     <p
                       title={e.name}
-                      className="px-2 py-1 bg-sky-200 dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                      className="btn btn-xs btn-outline truncate max-w-[19rem]"
                     >
                       {e.name}
                     </p>

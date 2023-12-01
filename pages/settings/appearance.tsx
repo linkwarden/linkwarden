@@ -67,7 +67,7 @@ export default function Appearance() {
 
       <div className="divider my-3"></div>
 
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-5">
         <div>
           <p className="mb-3">Select Theme</p>
           <div className="flex gap-3 w-full">

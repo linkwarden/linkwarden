@@ -9,7 +9,6 @@ import Head from "next/head";
 import useLinks from "@/hooks/useLinks";
 import useLinkStore from "@/store/links";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import useModalStore from "@/store/modals";
 import ModalManagement from "@/components/ModalManagement";
 import ToggleDarkMode from "@/components/ToggleDarkMode";
 import getPublicUserData from "@/lib/client/getPublicUserData";
@@ -37,15 +36,8 @@ const cardVariants: Variants = {
 
 export default function PublicCollections() {
   const { links } = useLinkStore();
-  const { modal, setModal } = useModalStore();
 
   const { settings } = useLocalSettingsStore();
-
-  useEffect(() => {
-    modal
-      ? (document.body.style.overflow = "hidden")
-      : (document.body.style.overflow = "auto");
-  }, [modal]);
 
   const router = useRouter();
 

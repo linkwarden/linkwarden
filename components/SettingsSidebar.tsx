@@ -44,7 +44,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/account`
-                ? "bg-secondary/30"
+                ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
@@ -58,7 +58,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/appearance`
-                ? "bg-secondary/30"
+                ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
@@ -75,7 +75,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/archive`
-                ? "bg-secondary/30"
+                ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
@@ -92,7 +92,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/api`
-                ? "bg-secondary/30"
+                ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
@@ -106,7 +106,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/password`
-                ? "bg-secondary/30"
+                ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
@@ -121,7 +121,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             <div
               className={`${
                 active === `/settings/billing`
-                  ? "bg-secondary/30"
+                  ? "bg-primary/20"
                   : "hover:bg-neutral/20"
               } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >

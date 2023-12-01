@@ -57,7 +57,7 @@ export default function LinkCard({ link, count }: Props) {
                 <Link
                   href={"/public/collections/20?q=" + e.name}
                   key={i}
-                  className="px-2 bg-secondary text-white text-xs rounded-md cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                  className="btn btn-xs btn-outline truncate max-w-[19rem]"
                 >
                   {e.name}
                 </Link>
