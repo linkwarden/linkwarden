@@ -69,7 +69,7 @@ body {
 }
 
 .slide-up {
-  animation: slide-up-animation 70ms;
+  animation: slide-up-animation 200ms;
 }
 
 .slide-down {

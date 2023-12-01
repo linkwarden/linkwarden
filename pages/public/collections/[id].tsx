@@ -228,12 +228,12 @@ export default function PublicCollections() {
         </p> */}
         </div>
       </div>
-      <EditCollectionSharingModal
-        isOpen={editCollectionSharingModal}
-        onClose={() => setEditCollectionSharingModal(false)}
-        modalId={"edit-collection-sharing-modal" + collection.id}
-        activeCollection={collection}
-      />
+      {editCollectionSharingModal ? (
+        <EditCollectionSharingModal
+          onClose={() => setEditCollectionSharingModal(false)}
+          activeCollection={collection}
+        />
+      ) : undefined}
     </div>
   ) : (
     <></>

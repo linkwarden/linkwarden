@@ -10,16 +10,13 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
+import Modal from "../Modal";
 
 type Props = {
-  modalId: string;
-  isOpen: boolean;
   onClose: Function;
 };
 
-export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
-  const modal = document.getElementById(modalId);
-
+export default function NewLinkModal({ onClose }: Props) {
   const { data } = useSession();
 
   const initial = {
@@ -71,7 +68,6 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
     setResetCollectionSelection(Date.now().toString());
     console.log(link);
 
-    modal?.scrollTo(0, 0);
     setOptionsExpanded(false);
     if (router.query.id) {
       const currentCollection = collections.find(
@@ -99,17 +95,7 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
           ownerId: data?.user.id as number,
         },
       });
-
-    modal?.addEventListener("close", () => {
-      onClose();
-    });
-
-    return () => {
-      modal?.addEventListener("close", () => {
-        onClose();
-      });
-    };
-  }, [isOpen]);
+  }, []);
 
   const submit = async () => {
     if (!submitLoader) {
@@ -125,7 +111,7 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
 
       if (response.ok) {
         toast.success(`Created!`);
-        (document?.getElementById(modalId) as any)?.close();
+        onClose();
       } else toast.error(response.data as string);
 
       setSubmitLoader(false);
@@ -135,107 +121,84 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
   };
 
   return (
-    <dialog
-      id={modalId}
-      className="modal backdrop-blur-sm overflow-y-auto p-5"
-      open={isOpen}
-    >
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        toastOptions={{
-          className:
-            "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white",
-        }}
-      />
-      <div className="modal-box max-h-full overflow-y-visible border border-neutral-content w-11/12 max-w-2xl">
-        <form method="dialog">
-          <button className="btn btn-sm outline-none btn-circle btn-ghost absolute right-3 top-3">
-            ✕
-          </button>
-        </form>
-
-        <p className="text-xl mb-5 font-thin">Create a New Link</p>
-        <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
-          <div className="sm:col-span-3 col-span-5">
-            <p className="mb-2">Link</p>
-            <TextInput
-              value={link.url}
-              onChange={(e) => setLink({ ...link, url: e.target.value })}
-              placeholder="e.g. http://example.com/"
-              className="bg-base-200"
-            />
-          </div>
-          <div className="sm:col-span-2 col-span-5">
-            <p className="mb-2">Collection</p>
-            {link.collection.name ? (
-              <CollectionSelection
-                onChange={setCollection}
-                defaultValue={{
-                  label: link.collection.name,
-                  value: link.collection.id,
-                }}
-                id={resetCollectionSelection}
-              />
-            ) : null}
-          </div>
+    <Modal toggleModal={onClose}>
+      <p className="text-xl mb-5 font-thin">Create a New Link</p>
+      <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
+        <div className="sm:col-span-3 col-span-5">
+          <p className="mb-2">Link</p>
+          <TextInput
+            value={link.url}
+            onChange={(e) => setLink({ ...link, url: e.target.value })}
+            placeholder="e.g. http://example.com/"
+            className="bg-base-200"
+          />
         </div>
-
-        {optionsExpanded ? (
-          <div className="mt-5">
-            {/* <hr className="mb-3 border border-neutral-content" /> */}
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <p className="mb-2">Name</p>
-                <TextInput
-                  value={link.name}
-                  onChange={(e) => setLink({ ...link, name: e.target.value })}
-                  placeholder="e.g. Example Link"
-                  className="bg-base-200"
-                />
-              </div>
-
-              <div>
-                <p className="mb-2">Tags</p>
-                <TagSelection
-                  onChange={setTags}
-                  defaultValue={link.tags.map((e) => {
-                    return { label: e.name, value: e.id };
-                  })}
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <p className="mb-2">Description</p>
-                <textarea
-                  value={unescapeString(link.description) as string}
-                  onChange={(e) =>
-                    setLink({ ...link, description: e.target.value })
-                  }
-                  placeholder="Will be auto generated if nothing is provided."
-                  className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
-                />
-              </div>
-            </div>
-          </div>
-        ) : undefined}
-
-        <div className="flex justify-between items-center mt-5">
-          <div
-            onClick={() => setOptionsExpanded(!optionsExpanded)}
-            className={`rounded-md cursor-pointer btn btn-sm btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
-          >
-            <p>{optionsExpanded ? "Hide" : "More"} Options</p>
-          </div>
-
-          <button className="btn btn-accent" onClick={submit}>
-            Create Link
-          </button>
+        <div className="sm:col-span-2 col-span-5">
+          <p className="mb-2">Collection</p>
+          {link.collection.name ? (
+            <CollectionSelection
+              onChange={setCollection}
+              defaultValue={{
+                label: link.collection.name,
+                value: link.collection.id,
+              }}
+              id={resetCollectionSelection}
+            />
+          ) : null}
         </div>
       </div>
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
+
+      {optionsExpanded ? (
+        <div className="mt-5">
+          {/* <hr className="mb-3 border border-neutral-content" /> */}
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div>
+              <p className="mb-2">Name</p>
+              <TextInput
+                value={link.name}
+                onChange={(e) => setLink({ ...link, name: e.target.value })}
+                placeholder="e.g. Example Link"
+                className="bg-base-200"
+              />
+            </div>
+
+            <div>
+              <p className="mb-2">Tags</p>
+              <TagSelection
+                onChange={setTags}
+                defaultValue={link.tags.map((e) => {
+                  return { label: e.name, value: e.id };
+                })}
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <p className="mb-2">Description</p>
+              <textarea
+                value={unescapeString(link.description) as string}
+                onChange={(e) =>
+                  setLink({ ...link, description: e.target.value })
+                }
+                placeholder="Will be auto generated if nothing is provided."
+                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
+              />
+            </div>
+          </div>
+        </div>
+      ) : undefined}
+
+      <div className="flex justify-between items-center mt-5">
+        <div
+          onClick={() => setOptionsExpanded(!optionsExpanded)}
+          className={`rounded-md cursor-pointer btn btn-sm btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
+        >
+          <p>{optionsExpanded ? "Hide" : "More"} Options</p>
+        </div>
+
+        <button className="btn btn-accent" onClick={submit}>
+          Create Link
+        </button>
+      </div>
+    </Modal>
   );
 }
