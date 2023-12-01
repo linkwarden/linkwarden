@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import SortDropdown from "@/components/SortDropdown";
-import useModalStore from "@/store/modals";
 import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
@@ -18,10 +17,9 @@ import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/Modals/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/Modals/EditCollectionSharingModal";
+import DeleteCollectionModal from "@/components/Modals/DeleteCollectionModal";
 
 export default function Index() {
-  const { setModal } = useModalStore();
-
   const { settings } = useLocalSettingsStore();
 
   const router = useRouter();
@@ -76,6 +74,7 @@ export default function Index() {
   const [editCollectionModal, setEditCollectionModal] = useState(false);
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
+  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
 
   return (
     <MainLayout>
@@ -206,15 +205,7 @@ export default function Index() {
                       tabIndex={0}
                       onClick={() => {
                         (document?.activeElement as HTMLElement)?.blur();
-                        activeCollection &&
-                          setModal({
-                            modal: "COLLECTION",
-                            state: true,
-                            method: "UPDATE",
-                            isOwner: permissions === true,
-                            active: activeCollection,
-                            defaultIndex: permissions === true ? 2 : 1,
-                          });
+                        setDeleteCollectionModal(true);
                       }}
                     >
                       {permissions === true
@@ -252,6 +243,12 @@ export default function Index() {
             isOpen={editCollectionSharingModal}
             onClose={() => setEditCollectionSharingModal(false)}
             modalId={"edit-collection-sharing-modal" + activeCollection.id}
+            activeCollection={activeCollection}
+          />
+          <DeleteCollectionModal
+            isOpen={deleteCollectionModal}
+            onClose={() => setDeleteCollectionModal(false)}
+            modalId={"delete-collection-modal" + activeCollection.id}
             activeCollection={activeCollection}
           />
         </>

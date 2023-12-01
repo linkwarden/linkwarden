@@ -155,7 +155,7 @@ export default function Account() {
 
       <div className="divider my-3"></div>
 
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-5">
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
           <div className="flex flex-col gap-3">
             <div>
@@ -215,7 +215,7 @@ export default function Account() {
                 </div>
               )}
               <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
-                <label className="btn btn-xs btn-secondary btn-outline bg-base-100">
+                <label className="btn btn-xs btn-neutral btn-outline bg-base-100">
                   Browse...
                   <input
                     type="file"
@@ -243,16 +243,20 @@ export default function Account() {
           <div className="flex gap-3 flex-col">
             <div>
               <p className="mb-2">Import your data from other platforms.</p>
-              <details className="dropdown">
-                <summary
-                  className="flex gap-2 text-sm btn btn-outline btn-secondary btn-xs"
+              <div className="dropdown dropdown-bottom">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="flex gap-2 text-sm btn btn-outline btn-neutral btn-xs"
                   id="import-dropdown"
                 >
                   Import From
-                </summary>
+                </div>
                 <ul className="shadow menu dropdown-content z-[1] p-1 bg-base-200 border border-neutral-content rounded-xl mt-1 w-60">
                   <li>
                     <label
+                      tabIndex={0}
+                      role="button"
                       className="px-2 py-1 rounded-lg"
                       htmlFor="import-linkwarden-file"
                       title="JSON File"
@@ -272,6 +276,8 @@ export default function Account() {
                   </li>
                   <li>
                     <label
+                      tabIndex={0}
+                      role="button"
                       className="px-2 py-1 rounded-lg"
                       htmlFor="import-html-file"
                       title="HTML File"
@@ -290,13 +296,13 @@ export default function Account() {
                     </label>
                   </li>
                 </ul>
-              </details>
+              </div>
             </div>
 
             <div>
               <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
-                <div className="btn btn-outline btn-secondary btn-xs">
+                <div className="btn btn-outline btn-neutral btn-xs">
                   Export Data
                 </div>
               </Link>
@@ -365,14 +371,14 @@ export default function Account() {
             You will be prompted to enter your password before the deletion
             process.
           </p>
-
-          <Link
-            href="/settings/delete"
-            className="mx-auto lg:mx-0 text-white mt-3 flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit bg-red-500 hover:bg-red-400 cursor-pointer"
-          >
-            <p className="text-center w-full">Delete Your Account</p>
-          </Link>
         </div>
+
+        <Link
+          href="/settings/delete"
+          className="mx-auto lg:mx-0 text-white flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit bg-red-500 hover:bg-red-400 cursor-pointer"
+        >
+          <p className="text-center w-full">Delete Your Account</p>
+        </Link>
       </div>
     </SettingsLayout>
   );

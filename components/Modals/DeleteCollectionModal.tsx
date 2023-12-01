@@ -28,7 +28,15 @@ export default function DeleteCollectionModal({
 }: Props) {
   const modal = document.getElementById(modalId);
 
+  const [collection, setCollection] =
+    useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
+
   useEffect(() => {
+    modal?.scrollTo(0, 0);
+
+    setCollection(activeCollection);
+    setInputField("");
+
     modal?.addEventListener("close", () => {
       onClose();
     });
@@ -38,14 +46,6 @@ export default function DeleteCollectionModal({
         onClose();
       });
     };
-  }, [isOpen]);
-
-  const [collection, setCollection] =
-    useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
-
-  useEffect(() => {
-    setCollection(activeCollection);
-    setInputField("");
   }, [isOpen]);
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -85,7 +85,7 @@ export default function DeleteCollectionModal({
   return (
     <dialog
       id={modalId}
-      className="modal backdrop-blur-sm overflow-y-auto"
+      className="modal backdrop-blur-sm overflow-y-auto p-5"
       open={isOpen}
     >
       <Toaster

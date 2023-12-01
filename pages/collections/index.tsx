@@ -9,7 +9,6 @@ import CollectionCard from "@/components/CollectionCard";
 import { useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
-import useModalStore from "@/store/modals";
 import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
 import useSort from "@/hooks/useSort";
@@ -22,8 +21,6 @@ export default function Collections() {
   const [sortedCollections, setSortedCollections] = useState(collections);
 
   const { data } = useSession();
-
-  const { setModal } = useModalStore();
 
   useSort({ sortBy, setData: setSortedCollections, data: collections });
 
@@ -68,11 +65,7 @@ export default function Collections() {
                       tabIndex={0}
                       onClick={() => {
                         (document?.activeElement as HTMLElement)?.blur();
-                        setModal({
-                          modal: "COLLECTION",
-                          state: true,
-                          method: "CREATE",
-                        });
+                        setNewCollectionModal(true);
                       }}
                     >
                       New Collection

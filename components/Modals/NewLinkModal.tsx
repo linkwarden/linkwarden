@@ -43,6 +43,8 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
   const { addLink } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
 
+  const [resetCollectionSelection, setResetCollectionSelection] = useState("");
+
   const [optionsExpanded, setOptionsExpanded] = useState(false);
 
   const router = useRouter();
@@ -66,6 +68,10 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
   };
 
   useEffect(() => {
+    setResetCollectionSelection(Date.now().toString());
+    console.log(link);
+
+    modal?.scrollTo(0, 0);
     setOptionsExpanded(false);
     if (router.query.id) {
       const currentCollection = collections.find(
@@ -89,7 +95,6 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
       setLink({
         ...initial,
         collection: {
-          // id: ,
           name: "Unorganized",
           ownerId: data?.user.id as number,
         },
@@ -120,7 +125,7 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
 
       if (response.ok) {
         toast.success(`Created!`);
-        (document.getElementById(modalId) as any).close();
+        (document?.getElementById(modalId) as any)?.close();
       } else toast.error(response.data as string);
 
       setSubmitLoader(false);
@@ -132,7 +137,7 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
   return (
     <dialog
       id={modalId}
-      className="modal backdrop-blur-sm overflow-y-auto"
+      className="modal backdrop-blur-sm overflow-y-auto p-5"
       open={isOpen}
     >
       <Toaster
@@ -166,21 +171,11 @@ export default function NewLinkModal({ modalId, isOpen, onClose }: Props) {
             {link.collection.name ? (
               <CollectionSelection
                 onChange={setCollection}
-                // defaultValue={{
-                //   label: link.collection.name,
-                //   value: link.collection.id,
-                // }}
-                defaultValue={
-                  link.collection.id
-                    ? {
-                        value: link.collection.id,
-                        label: link.collection.name,
-                      }
-                    : {
-                        value: null as unknown as number,
-                        label: "Unorganized",
-                      }
-                }
+                defaultValue={{
+                  label: link.collection.name,
+                  value: link.collection.id,
+                }}
+                id={resetCollectionSelection}
               />
             ) : null}
           </div>

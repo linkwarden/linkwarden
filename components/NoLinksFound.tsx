@@ -1,14 +1,14 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import useModalStore from "@/store/modals";
+import React, { useState } from "react";
+import NewLinkModal from "./Modals/NewLinkModal";
 
 type Props = {
   text?: string;
 };
 
 export default function NoLinksFound({ text }: Props) {
-  const { setModal } = useModalStore();
+  const [newLinkModal, setNewLinkModal] = useState(false);
 
   return (
     <div className="border border-solid border-neutral-content w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-base-200">
@@ -18,23 +18,24 @@ export default function NoLinksFound({ text }: Props) {
       <div className="text-center w-full mt-4">
         <div
           onClick={() => {
-            setModal({
-              modal: "LINK",
-              state: true,
-              method: "CREATE",
-            });
+            setNewLinkModal(true);
           }}
-          className="inline-flex gap-1 relative w-[11.4rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-full dark:hover:bg-sky-600 text-white bg-sky-700 hover:bg-sky-600 duration-100 group"
+          className="inline-flex gap-1 relative w-[11rem] items-center btn btn-accent text-white group"
         >
           <FontAwesomeIcon
             icon={faPlus}
-            className="w-5 h-5 group-hover:ml-[4.325rem] absolute duration-100"
+            className="w-5 h-5 left-4 group-hover:ml-[4rem] absolute duration-100"
           />
           <span className="group-hover:opacity-0 text-right w-full duration-100">
             Create New Link
           </span>
         </div>
       </div>
+      <NewLinkModal
+        isOpen={newLinkModal}
+        onClose={() => setNewLinkModal(false)}
+        modalId="new-link-modal"
+      />
     </div>
   );
 }

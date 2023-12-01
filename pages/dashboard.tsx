@@ -24,6 +24,7 @@ import useModalStore from "@/store/modals";
 import { toast } from "react-hot-toast";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
+import NewLinkModal from "@/components/Modals/NewLinkModal";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
@@ -98,6 +99,8 @@ export default function Dashboard() {
       };
     }
   };
+
+  const [newLinkModal, setNewLinkModal] = useState(false);
 
   return (
     <MainLayout>
@@ -187,11 +190,7 @@ export default function Dashboard() {
               <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
                 <div
                   onClick={() => {
-                    setModal({
-                      modal: "LINK",
-                      state: true,
-                      method: "CREATE",
-                    });
+                    setNewLinkModal(true);
                   }}
                   className="inline-flex gap-1 relative w-[11rem] items-center btn btn-accent text-white group"
                 >
@@ -200,24 +199,28 @@ export default function Dashboard() {
                     className="w-5 h-5 left-4 group-hover:ml-[4rem] absolute duration-100"
                   />
                   <span className="group-hover:opacity-0 text-right w-full duration-100">
-                    Create New Item
+                    Create New Link
                   </span>
                 </div>
 
-                <details className="dropdown">
-                  <summary className="flex gap-2 text-sm btn btn-outline group">
+                <div className="dropdown dropdown-bottom">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="flex gap-2 text-sm btn btn-outline btn-neutral group"
+                    id="import-dropdown"
+                  >
                     <FontAwesomeIcon
                       icon={faFileImport}
                       className="w-5 h-5 duration-100"
-                      id="import-dropdown"
                     />
-                    <span className="duration-100" id="import-dropdown">
-                      Import Your Bookmarks
-                    </span>
-                  </summary>
+                    <p>Import From</p>
+                  </div>
                   <ul className="shadow menu dropdown-content z-[1] p-1 bg-base-200 border border-neutral-content rounded-xl mt-1 w-60">
                     <li>
                       <label
+                        tabIndex={0}
+                        role="button"
                         className="px-2 py-1 rounded-lg"
                         htmlFor="import-linkwarden-file"
                         title="JSON File"
@@ -237,6 +240,8 @@ export default function Dashboard() {
                     </li>
                     <li>
                       <label
+                        tabIndex={0}
+                        role="button"
                         className="px-2 py-1 rounded-lg"
                         htmlFor="import-html-file"
                         title="HTML File"
@@ -255,7 +260,7 @@ export default function Dashboard() {
                       </label>
                     </li>
                   </ul>
-                </details>
+                </div>
               </div>
             </div>
           )}
@@ -288,7 +293,6 @@ export default function Dashboard() {
                 className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links
-
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
                   .map((e, i) => <LinkCard key={i} link={e} count={i} />)
                   .slice(0, showLinks)}
@@ -311,6 +315,11 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+      <NewLinkModal
+        isOpen={newLinkModal}
+        onClose={() => setNewLinkModal(false)}
+        modalId="new-link-modal"
+      />
     </MainLayout>
   );
 }

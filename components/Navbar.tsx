@@ -165,12 +165,12 @@ export default function Navbar() {
       <NewLinkModal
         isOpen={newLinkModal}
         onClose={() => setNewLinkModal(false)}
-        modalId="new-link-modal"
+        modalId="new-link-modal-nav"
       />
       <NewCollectionModal
         isOpen={newCollectionModal}
         onClose={() => setNewCollectionModal(false)}
-        modalId="new-collection-modal"
+        modalId="new-collection-modal-nav"
       />
     </div>
   );

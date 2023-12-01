@@ -60,9 +60,7 @@ export default function Sidebar({ className }: { className?: string }) {
         <Link href={`/dashboard`}>
           <div
             className={`${
-              active === `/dashboard`
-                ? "bg-secondary/30"
-                : "hover:bg-neutral/20"
+              active === `/dashboard` ? "bg-primary/20" : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
@@ -76,7 +74,7 @@ export default function Sidebar({ className }: { className?: string }) {
         <Link href={`/links`}>
           <div
             className={`${
-              active === `/links` ? "bg-secondary/30" : "hover:bg-neutral/20"
+              active === `/links` ? "bg-primary/20" : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
@@ -91,7 +89,7 @@ export default function Sidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/collections`
-                ? "bg-secondary/30"
+                ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
@@ -107,7 +105,7 @@ export default function Sidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/links/pinned`
-                ? "bg-secondary/30"
+                ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
@@ -154,7 +152,7 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/collections/${e.id}`
-                            ? "bg-secondary/30"
+                            ? "bg-primary/20"
                             : "hover:bg-neutral/20"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
@@ -222,7 +220,7 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/tags/${e.id}`
-                            ? "bg-secondary/30"
+                            ? "bg-primary/20"
                             : "hover:bg-neutral/20"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
