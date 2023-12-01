@@ -58,6 +58,8 @@ export default function EditLinkModal({
   };
 
   useEffect(() => {
+    modal?.scrollTo(0, 0);
+
     setLink(activeLink);
 
     modal?.addEventListener("close", () => {
@@ -97,7 +99,7 @@ export default function EditLinkModal({
   return (
     <dialog
       id={modalId}
-      className="modal backdrop-blur-sm overflow-y-auto"
+      className="modal backdrop-blur-sm overflow-y-auto p-5"
       open={isOpen}
     >
       <Toaster

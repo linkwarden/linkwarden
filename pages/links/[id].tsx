@@ -239,7 +239,7 @@ export default function Index() {
                   <Link key={i} href={`/tags/${e.id}`} className="z-10">
                     <p
                       title={e.name}
-                      className="px-2 bg-sky-200 dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                      className="btn btn-xs btn-outline truncate max-w-[19rem]"
                     >
                       {e.name}
                     </p>

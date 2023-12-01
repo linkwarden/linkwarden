@@ -5,7 +5,6 @@ import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import useModalStore from "@/store/modals";
 import usePermissions from "@/hooks/usePermissions";
 import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
@@ -20,7 +19,6 @@ type Props = {
 };
 
 export default function CollectionCard({ collection, className }: Props) {
-  const { setModal } = useModalStore();
   const { settings } = useLocalSettingsStore();
   const { account } = useAccountStore();
 

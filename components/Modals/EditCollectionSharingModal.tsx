@@ -31,6 +31,16 @@ export default function EditCollectionSharingModal({
   const modal = document.getElementById(modalId);
 
   useEffect(() => {
+    const fetchOwner = async () => {
+      const owner = await getPublicUserData(collection.ownerId as number);
+      setCollectionOwner(owner);
+    };
+
+    fetchOwner();
+
+    modal?.scrollTo(0, 0);
+    setCollection(activeCollection);
+
     modal?.addEventListener("close", () => {
       onClose();
     });
@@ -44,10 +54,6 @@ export default function EditCollectionSharingModal({
 
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
-
-  useEffect(() => {
-    setCollection(activeCollection);
-  }, [isOpen]);
 
   const [submitLoader, setSubmitLoader] = useState(false);
   const { updateCollection } = useCollectionStore();
@@ -92,15 +98,6 @@ export default function EditCollectionSharingModal({
     image: "",
   });
 
-  useEffect(() => {
-    const fetchOwner = async () => {
-      const owner = await getPublicUserData(collection.ownerId as number);
-      setCollectionOwner(owner);
-    };
-
-    fetchOwner();
-  }, []);
-
   const setMemberState = (newMember: Member) => {
     if (!collection) return null;
 
@@ -115,7 +112,7 @@ export default function EditCollectionSharingModal({
   return (
     <dialog
       id={modalId}
-      className="modal backdrop-blur-sm overflow-y-auto"
+      className="modal backdrop-blur-sm overflow-y-auto p-5"
       open={isOpen}
     >
       <Toaster

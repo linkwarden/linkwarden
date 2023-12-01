@@ -1,6 +1,6 @@
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 
@@ -11,11 +11,13 @@ type Props = {
 export default function SearchBar({ placeholder }: Props) {
   const router = useRouter();
 
-  const routeQuery = router.query.q;
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [searchQuery, setSearchQuery] = useState(
-    routeQuery ? decodeURIComponent(routeQuery as string) : ""
-  );
+  useEffect(() => {
+    router.query.q
+      ? setSearchQuery(decodeURIComponent(router.query.q as string))
+      : setSearchQuery("");
+  }, [router.query.q]);
 
   return (
     <div className="flex items-center relative group">

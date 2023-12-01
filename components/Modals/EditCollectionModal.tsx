@@ -23,6 +23,9 @@ export default function EditCollectionModal({
   const modal = document.getElementById(modalId);
 
   useEffect(() => {
+    modal?.scrollTo(0, 0);
+    setCollection(activeCollection);
+
     modal?.addEventListener("close", () => {
       onClose();
     });
@@ -36,10 +39,6 @@ export default function EditCollectionModal({
 
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
-
-  useEffect(() => {
-    setCollection(activeCollection);
-  }, [isOpen]);
 
   const [submitLoader, setSubmitLoader] = useState(false);
   const { updateCollection } = useCollectionStore();
@@ -71,7 +70,7 @@ export default function EditCollectionModal({
   return (
     <dialog
       id={modalId}
-      className="modal backdrop-blur-sm overflow-y-auto"
+      className="modal backdrop-blur-sm overflow-y-auto p-5"
       open={isOpen}
     >
       <Toaster
