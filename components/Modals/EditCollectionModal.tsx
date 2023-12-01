@@ -6,17 +6,20 @@ import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import { HexColorPicker } from "react-colorful";
 import { Collection } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 
 type Props = {
   modalId: string;
   isOpen: boolean;
   onClose: Function;
+  activeCollection: CollectionIncludingMembersAndLinkCount;
 };
 
-export default function NewCollectionModal({
+export default function EditCollectionModal({
   modalId,
   isOpen,
   onClose,
+  activeCollection,
 }: Props) {
   const modal = document.getElementById(modalId);
 
@@ -32,20 +35,15 @@ export default function NewCollectionModal({
     };
   }, [isOpen]);
 
-  const initial = {
-    name: "",
-    description: "",
-    color: "#0ea5e9",
-  };
-
-  const [collection, setCollection] = useState<Partial<Collection>>(initial);
+  const [collection, setCollection] =
+    useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
   useEffect(() => {
-    setCollection(initial);
+    setCollection(activeCollection);
   }, [isOpen]);
 
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { addCollection } = useCollectionStore();
+  const { updateCollection } = useCollectionStore();
 
   const submit = async () => {
     if (!submitLoader) {
@@ -54,16 +52,16 @@ export default function NewCollectionModal({
 
       setSubmitLoader(true);
 
-      const load = toast.loading("Creating...");
+      const load = toast.loading("Updating...");
 
       let response;
 
-      response = await addCollection(collection as any);
+      response = await updateCollection(collection as any);
 
       toast.dismiss(load);
 
       if (response.ok) {
-        toast.success("Created!");
+        toast.success(`Updated!`);
         (document.getElementById(modalId) as any).close();
       } else toast.error(response.data as string);
 
@@ -92,7 +90,7 @@ export default function NewCollectionModal({
           </button>
         </form>
 
-        <p className="text-xl mb-5 font-thin">Create a New Collection</p>
+        <p className="text-xl mb-5 font-thin">Edit Collection Info</p>
 
         <div className="flex flex-col gap-3">
           <div className="flex flex-col sm:flex-row gap-3">
@@ -154,7 +152,7 @@ export default function NewCollectionModal({
           </div>
 
           <button className="btn btn-accent w-fit ml-auto" onClick={submit}>
-            Create Collection
+            Save
           </button>
         </div>
       </div>

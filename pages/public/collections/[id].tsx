@@ -103,7 +103,7 @@ export default function PublicCollections() {
       style={{
         backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
           settings.theme === "dark" ? "#262626" : "#f3f4f6"
-        } 50%, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+        } 18rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
       <ModalManagement />
@@ -195,7 +195,7 @@ export default function PublicCollections() {
 
         <p className="mt-5">{collection.description}</p>
 
-        <hr className="mt-5 border-1 border-neutral" />
+        <div className="divider mt-5 mb-0"></div>
 
         <div className="flex mb-5 mt-10 flex-col gap-5">
           <div className="flex justify-between">

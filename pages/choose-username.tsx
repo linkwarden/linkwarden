@@ -46,7 +46,7 @@ export default function ChooseUsername() {
             Choose a Username
           </p>
 
-          <hr className="border-1 border-neutral-content" />
+          <div className="divider my-0"></div>
 
           <div>
             <p className="text-sm w-fit font-semibold mb-1">Username</p>

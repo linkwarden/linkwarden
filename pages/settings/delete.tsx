@@ -7,7 +7,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
-export default function Password() {
+export default function Delete() {
   const [password, setPassword] = useState("");
   const [comment, setComment] = useState<string>();
   const [feedback, setFeedback] = useState<string>();
@@ -70,7 +70,7 @@ export default function Password() {
           </p>
         </div>
 
-        <hr className="border-1 border-neutral-content" />
+        <div className="divider my-0"></div>
 
         <p>
           This will permanently delete all the Links, Collections, Tags, and

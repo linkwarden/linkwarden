@@ -10,6 +10,8 @@ import usePermissions from "@/hooks/usePermissions";
 import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import useAccountStore from "@/store/account";
+import EditCollectionModal from "./Modals/EditCollectionModal";
+import EditCollectionSharingModal from "./Modals/EditCollectionSharingModal";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
@@ -57,6 +59,10 @@ export default function CollectionCard({ collection, className }: Props) {
     fetchOwner();
   }, [collection]);
 
+  const [editCollectionModal, setEditCollectionModal] = useState(false);
+  const [editCollectionSharingModal, setEditCollectionSharingModal] =
+    useState(false);
+
   return (
     <div className="relative">
       <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-10">
@@ -71,19 +77,12 @@ export default function CollectionCard({ collection, className }: Props) {
           {permissions === true ? (
             <li>
               <div
-                className="px-2 py-1 rounded-lg"
                 role="button"
+                className="px-2 py-1 rounded-lg"
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  collection &&
-                    setModal({
-                      modal: "COLLECTION",
-                      state: true,
-                      method: "UPDATE",
-                      isOwner: permissions === true,
-                      active: collection,
-                    });
+                  setEditCollectionModal(true);
                 }}
               >
                 Edit Collection Info
@@ -97,15 +96,7 @@ export default function CollectionCard({ collection, className }: Props) {
               tabIndex={0}
               onClick={() => {
                 (document?.activeElement as HTMLElement)?.blur();
-                collection &&
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "UPDATE",
-                    isOwner: permissions === true,
-                    active: collection,
-                    defaultIndex: permissions === true ? 1 : 0,
-                  });
+                setEditCollectionSharingModal(true);
               }}
             >
               {permissions === true ? "Share and Collaborate" : "View Team"}
@@ -136,17 +127,7 @@ export default function CollectionCard({ collection, className }: Props) {
       </div>
       <div
         className="flex items-center absolute bottom-3 left-3 z-10 btn px-2 btn-ghost rounded-full"
-        onClick={() =>
-          collection &&
-          setModal({
-            modal: "COLLECTION",
-            state: true,
-            method: "UPDATE",
-            isOwner: permissions === true,
-            active: collection,
-            defaultIndex: permissions === true ? 1 : 0,
-          })
-        }
+        onClick={() => setEditCollectionSharingModal(true)}
       >
         {collectionOwner.id ? (
           <ProfilePhoto
@@ -219,6 +200,18 @@ export default function CollectionCard({ collection, className }: Props) {
           </div>
         </div>
       </Link>
+      <EditCollectionModal
+        isOpen={editCollectionModal}
+        onClose={() => setEditCollectionModal(false)}
+        modalId={"edit-collection-modal" + collection.id}
+        activeCollection={collection}
+      />
+      <EditCollectionSharingModal
+        isOpen={editCollectionSharingModal}
+        onClose={() => setEditCollectionSharingModal(false)}
+        modalId={"edit-collection-sharing-modal" + collection.id}
+        activeCollection={collection}
+      />
     </div>
   );
 }
