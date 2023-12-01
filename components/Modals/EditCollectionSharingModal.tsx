@@ -17,7 +17,6 @@ import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import ProfilePhoto from "../ProfilePhoto";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
-import Checkbox from "../Checkbox";
 
 type Props = {
   modalId: string;
@@ -171,8 +170,8 @@ export default function EditCollectionSharingModal({
           )}
 
           {collection.isPublic ? (
-            <div className="pl-5">
-              <p className="mb-2">Public Link (Click to copy)</p>
+            <div className={permissions === true ? "pl-5" : ""}>
+              <p className="mb-2">Sharable Link (Click to copy)</p>
               <div
                 onClick={() => {
                   try {
