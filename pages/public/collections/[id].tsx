@@ -19,6 +19,7 @@ import FilterSearchDropdown from "@/components/FilterSearchDropdown";
 import SortDropdown from "@/components/SortDropdown";
 import useLocalSettingsStore from "@/store/localSettings";
 import SearchBar from "@/components/SearchBar";
+import EditCollectionSharingModal from "@/components/Modals/EditCollectionSharingModal";
 
 const cardVariants: Variants = {
   offscreen: {
@@ -97,6 +98,9 @@ export default function PublicCollections() {
     fetchOwner();
   }, [collection]);
 
+  const [editCollectionSharingModal, setEditCollectionSharingModal] =
+    useState(false);
+
   return collection ? (
     <div
       className="h-screen"
@@ -144,16 +148,7 @@ export default function PublicCollections() {
             <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
               <div
                 className="flex items-center btn px-2 btn-ghost rounded-full"
-                onClick={() =>
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "VIEW_TEAM",
-                    isOwner: false,
-                    active: collection,
-                    defaultIndex: 0,
-                  })
-                }
+                onClick={() => setEditCollectionSharingModal(true)}
               >
                 {collectionOwner.id ? (
                   <ProfilePhoto
@@ -241,6 +236,12 @@ export default function PublicCollections() {
         </p> */}
         </div>
       </div>
+      <EditCollectionSharingModal
+        isOpen={editCollectionSharingModal}
+        onClose={() => setEditCollectionSharingModal(false)}
+        modalId={"edit-collection-sharing-modal" + collection.id}
+        activeCollection={collection}
+      />
     </div>
   ) : (
     <></>
