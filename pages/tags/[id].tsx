@@ -4,7 +4,6 @@ import {
   faCheck,
   faEllipsis,
   faHashtag,
-  faSort,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,7 +23,6 @@ export default function Index() {
   const { links } = useLinkStore();
   const { tags, updateTag, removeTag } = useTagStore();
 
-  const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   const [expandDropdown, setExpandDropdown] = useState(false);
@@ -107,7 +105,7 @@ export default function Index() {
             <div className="flex gap-2 items-end font-thin">
               <FontAwesomeIcon
                 icon={faHashtag}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-primary"
               />
               {renameTag ? (
                 <>
@@ -115,50 +113,78 @@ export default function Index() {
                     <input
                       type="text"
                       autoFocus
-                      className="sm:text-4xl text-3xl capitalize text-black dark:text-white bg-transparent h-10 w-3/4 outline-none border-b border-b-sky-100 dark:border-b-neutral-700"
+                      className="sm:text-4xl text-3xl capitalize bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
                       value={newTagName}
                       onChange={(e) => setNewTagName(e.target.value)}
                     />
                     <div
                       onClick={() => submit()}
                       id="expand-dropdown"
-                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                      className="btn btn-ghost btn-square btn-sm"
                     >
                       <FontAwesomeIcon
                         icon={faCheck}
                         id="expand-dropdown"
-                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                        className="w-5 h-5 text-neutral"
                       />
                     </div>
                     <div
                       onClick={() => cancelUpdateTag()}
                       id="expand-dropdown"
-                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
+                      className="btn btn-ghost btn-square btn-sm"
                     >
                       <FontAwesomeIcon
                         icon={faXmark}
                         id="expand-dropdown"
-                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                        className="w-5 h-5 text-neutral"
                       />
                     </div>
                   </form>
                 </>
               ) : (
                 <>
-                  <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white">
+                  <p className="sm:text-4xl text-3xl capitalize">
                     {activeTag?.name}
                   </p>
                   <div className="relative">
-                    <div
-                      onClick={() => setExpandDropdown(!expandDropdown)}
-                      id="expand-dropdown"
-                      className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
-                    >
-                      <FontAwesomeIcon
-                        icon={faEllipsis}
-                        id="expand-dropdown"
-                        className="w-5 h-5 text-gray-500 dark:text-gray-300"
-                      />
+                    <div className="dropdown dropdown-bottom font-normal">
+                      <div
+                        tabIndex={0}
+                        role="button"
+                        className="btn btn-ghost btn-sm btn-square text-neutral"
+                      >
+                        <FontAwesomeIcon
+                          icon={faEllipsis}
+                          title="More"
+                          className="w-5 h-5"
+                        />
+                      </div>
+                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-36 mt-1">
+                        <li>
+                          <div
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => {
+                              (document?.activeElement as HTMLElement)?.blur();
+                              setRenameTag(true);
+                            }}
+                          >
+                            Rename Tag
+                          </div>
+                        </li>
+                        <li>
+                          <div
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => {
+                              (document?.activeElement as HTMLElement)?.blur();
+                              remove();
+                            }}
+                          >
+                            Remove Tag
+                          </div>
+                        </li>
+                      </ul>
                     </div>
 
                     {expandDropdown ? (
@@ -194,25 +220,7 @@ export default function Index() {
           </div>
 
           <div className="relative">
-            <div
-              onClick={() => setSortDropdown(!sortDropdown)}
-              id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
-            >
-              <FontAwesomeIcon
-                icon={faSort}
-                id="sort-dropdown"
-                className="w-5 h-5 text-gray-500 dark:text-gray-300"
-              />
-            </div>
-
-            {sortDropdown ? (
-              <SortDropdown
-                sortBy={sortBy}
-                setSort={setSortBy}
-                toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
-              />
-            ) : null}
+            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
           </div>
         </div>
         <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">

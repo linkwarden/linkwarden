@@ -1,9 +1,9 @@
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import Select from "react-select";
 import { styles } from "./styles";
 import { Options } from "./types";
+import CreatableSelect from "react-select/creatable";
 
 type Props = {
   onChange: any;
@@ -13,9 +13,14 @@ type Props = {
         value?: number;
       }
     | undefined;
+  id?: string;
 };
 
-export default function CollectionSelection({ onChange, defaultValue }: Props) {
+export default function CollectionSelection({
+  onChange,
+  defaultValue,
+  id,
+}: Props) {
   const { collections } = useCollectionStore();
   const router = useRouter();
 
@@ -43,8 +48,9 @@ export default function CollectionSelection({ onChange, defaultValue }: Props) {
   }, [collections]);
 
   return (
-    <Select
-      isClearable
+    <CreatableSelect
+      key={id || "key"}
+      isClearable={false}
       className="react-select-container"
       classNamePrefix="react-select"
       onChange={onChange}

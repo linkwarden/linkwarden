@@ -6,11 +6,18 @@ import Image from "next/image";
 type Props = {
   src?: string;
   className?: string;
-  emptyImage?: boolean;
   priority?: boolean;
+  name?: string;
+  dimensionClass?: string;
 };
 
-export default function ProfilePhoto({ src, className, priority }: Props) {
+export default function ProfilePhoto({
+  src,
+  className,
+  priority,
+  name,
+  dimensionClass,
+}: Props) {
   const [image, setImage] = useState("");
 
   useEffect(() => {
@@ -24,24 +31,39 @@ export default function ProfilePhoto({ src, className, priority }: Props) {
 
   return !image ? (
     <div
-      className={`bg-sky-600 dark:bg-sky-600 text-white h-10 w-10 aspect-square shadow rounded-full border border-slate-200 dark:border-neutral-700 flex items-center justify-center ${
-        className || ""
+      className={`avatar placeholder ${className || ""} ${
+        dimensionClass || "w-8 h-8 "
       }`}
     >
-      <FontAwesomeIcon icon={faUser} className="w-1/2 h-1/2 aspect-square" />
+      <div className="bg-base-100 text-neutral rounded-full w-full h-full ring-2 ring-neutral-content">
+        {name ? (
+          <span className="text-2xl capitalize">{name.slice(0, 1)}</span>
+        ) : (
+          <FontAwesomeIcon
+            icon={faUser}
+            className="w-1/2 h-1/2 aspect-square"
+          />
+        )}
+      </div>
     </div>
   ) : (
-    <Image
-      alt=""
-      src={image}
-      height={112}
-      width={112}
-      priority={priority}
-      draggable={false}
-      onError={() => setImage("")}
-      className={`h-10 w-10 bg-sky-600 dark:bg-sky-600 shadow rounded-full aspect-square border border-slate-200 dark:border-neutral-700 ${
-        className || ""
+    <div
+      className={`avatar drop-shadow-md ${className || ""} ${
+        dimensionClass || "w-8 h-8 "
       }`}
-    />
+    >
+      <div className="rounded-full w-full h-full ring-2 ring-neutral-content">
+        <Image
+          alt=""
+          src={image}
+          height={112}
+          width={112}
+          priority={priority}
+          draggable={false}
+          onError={() => setImage("")}
+          className="aspect-square rounded-full"
+        />
+      </div>
+    </div>
   );
 }
