@@ -2,7 +2,7 @@ import { Tab } from "@headlessui/react";
 import CollectionInfo from "./CollectionInfo";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import TeamManagement from "./TeamManagement";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteCollection from "./DeleteCollection";
 import ViewTeam from "./ViewTeam";
 
@@ -60,7 +60,7 @@ export default function CollectionModal({
           </p>
         )}
         {method !== "VIEW_TEAM" && (
-          <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5 text-black dark:text-white">
+          <Tab.List className="flex justify-center flex-col max-w-[15rem] sm:max-w-[30rem] mx-auto sm:flex-row gap-2 sm:gap-3 mb-5">
             {method === "UPDATE" && (
               <>
                 {isOwner && (

@@ -47,26 +47,28 @@ export default function Password() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">Change Password</p>
 
-      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+      <div className="divider my-3"></div>
 
       <p className="mb-3">
         To change your password, please fill out the following. Your password
         should be at least 8 characters.
       </p>
       <div className="w-full flex flex-col gap-2 justify-between">
-        <p className="text-black dark:text-white">New Password</p>
+        <p>New Password</p>
 
         <TextInput
           value={newPassword}
+          className="bg-base-200"
           onChange={(e) => setNewPassword1(e.target.value)}
           placeholder="••••••••••••••"
           type="password"
         />
 
-        <p className="text-black dark:text-white">Confirm New Password</p>
+        <p>Confirm New Password</p>
 
         <TextInput
           value={newPassword2}
+          className="bg-base-200"
           onChange={(e) => setNewPassword2(e.target.value)}
           placeholder="••••••••••••••"
           type="password"

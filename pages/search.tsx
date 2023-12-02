@@ -24,7 +24,6 @@ export default function Search() {
   });
 
   const [filterDropdown, setFilterDropdown] = useState(false);
-  const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({
@@ -45,57 +44,24 @@ export default function Search() {
             <div className="flex gap-2">
               <FontAwesomeIcon
                 icon={faSearch}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-sky-500 dark:text-sky-500 drop-shadow"
+                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-primary drop-shadow"
               />
-              <p className="sm:text-4xl text-3xl capitalize text-black dark:text-white font-thin">
+              <p className="sm:text-4xl text-3xl capitalize font-thin">
                 Search Results
               </p>
             </div>
           </div>
 
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-2 items-center">
             <div className="relative">
-              <div
-                onClick={() => setFilterDropdown(!filterDropdown)}
-                id="filter-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
-              >
-                <FontAwesomeIcon
-                  icon={faFilter}
-                  id="filter-dropdown"
-                  className="w-5 h-5 text-gray-500 dark:text-gray-300"
-                />
-              </div>
-
-              {filterDropdown ? (
-                <FilterSearchDropdown
-                  setFilterDropdown={setFilterDropdown}
-                  searchFilter={searchFilter}
-                  setSearchFilter={setSearchFilter}
-                />
-              ) : null}
+              <FilterSearchDropdown
+                searchFilter={searchFilter}
+                setSearchFilter={setSearchFilter}
+              />
             </div>
 
             <div className="relative">
-              <div
-                onClick={() => setSortDropdown(!sortDropdown)}
-                id="sort-dropdown"
-                className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
-              >
-                <FontAwesomeIcon
-                  icon={faSort}
-                  id="sort-dropdown"
-                  className="w-5 h-5 text-gray-500 dark:text-gray-300"
-                />
-              </div>
-
-              {sortDropdown ? (
-                <SortDropdown
-                  sortBy={sortBy}
-                  setSort={setSortBy}
-                  toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
-                />
-              ) : null}
+              <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             </div>
           </div>
         </div>
@@ -106,7 +72,7 @@ export default function Search() {
             })}
           </div>
         ) : (
-          <p className="text-black dark:text-white">
+          <p>
             Nothing found.{" "}
             <span className="font-bold text-xl" title="Shruggie">
               ¯\_(ツ)_/¯
