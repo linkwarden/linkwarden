@@ -99,46 +99,12 @@ export default function Appearance() {
           </div>
         </div>
 
-        <div>
-          <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="truncate w-full pr-7 text-3xl font-thin">Link Card</p>
-          </div>
-
-          <div className="divider my-3"></div>
-
-          <Checkbox
-            label="Display Icons"
-            state={user.displayLinkIcons}
-            onClick={() =>
-              setUser({ ...user, displayLinkIcons: !user.displayLinkIcons })
-            }
-          />
-          {user.displayLinkIcons ? (
-            <Checkbox
-              label="Blurred"
-              className="pl-5 mt-1"
-              state={user.blurredFavicons}
-              onClick={() =>
-                setUser({ ...user, blurredFavicons: !user.blurredFavicons })
-              }
-            />
-          ) : undefined}
-          <p className="my-3">Preview:</p>
-
-          <LinkPreview
-            settings={{
-              blurredFavicons: user.blurredFavicons,
-              displayLinkIcons: user.displayLinkIcons,
-            }}
-          />
-        </div>
-
-        <SubmitButton
+        {/* <SubmitButton
           onClick={submit}
           loading={submitLoader}
           label="Save"
           className="mt-2 mx-auto lg:mx-0"
-        />
+        /> */}
       </div>
     </SettingsLayout>
   );
