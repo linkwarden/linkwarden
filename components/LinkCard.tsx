@@ -212,15 +212,13 @@ export default function LinkCard({ link, count, className }: Props) {
         onClick={() => router.push("/links/" + link.id)}
         className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-4"
       >
-        {url && account.displayLinkIcons && (
+        {url && (
           <Image
             src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
             width={64}
             height={64}
             alt=""
-            className={`${
-              account.blurredFavicons ? "blur-sm " : ""
-            } absolute w-12 duration-100 bg-white rounded-md p-1 bottom-5 right-5 select-none z-10`}
+            className={`absolute w-12 duration-100 bg-white rounded-md p-1 bottom-5 right-5 select-none z-10`}
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
