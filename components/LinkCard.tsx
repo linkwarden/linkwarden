@@ -219,7 +219,7 @@ export default function LinkCard({ link, count, className }: Props) {
             alt=""
             className={`${
               account.blurredFavicons ? "blur-sm " : ""
-            } absolute w-10 duration-100 rounded-2xl bottom-5 right-5 select-none z-10`}
+            } absolute w-12 duration-100 bg-white rounded-md p-1 bottom-5 right-5 select-none z-10`}
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
