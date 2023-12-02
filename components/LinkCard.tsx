@@ -21,6 +21,7 @@ import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import { useRouter } from "next/router";
 import EditLinkModal from "./ModalContent/EditLinkModal";
+import DeleteLinkModal from "./ModalContent/DeleteLinkModal";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -119,6 +120,7 @@ export default function LinkCard({ link, count, className }: Props) {
   );
 
   const [editLinkModal, setEditLinkModal] = useState(false);
+  const [deleteLinkModal, setDeleteLinkModal] = useState(false);
 
   return (
     <div
@@ -129,7 +131,7 @@ export default function LinkCard({ link, count, className }: Props) {
       {permissions === true ||
       permissions?.canUpdate ||
       permissions?.canDelete ? (
-        <div className="dropdown dropdown-left dropdown-start absolute top-3 right-3 z-20">
+        <div className="dropdown dropdown-left absolute top-3 right-3 z-20">
           <div
             tabIndex={0}
             role="button"
@@ -142,12 +144,11 @@ export default function LinkCard({ link, count, className }: Props) {
               id={"expand-dropdown" + collection.id}
             />
           </div>
-          <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-40 mr-1">
+          <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1">
             {permissions === true ? (
               <li>
                 <div
                   role="button"
-                  className="px-2 py-1 rounded-lg"
                   tabIndex={0}
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
@@ -164,7 +165,6 @@ export default function LinkCard({ link, count, className }: Props) {
               <li>
                 <div
                   role="button"
-                  className="px-2 py-1 rounded-lg"
                   tabIndex={0}
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
@@ -179,7 +179,6 @@ export default function LinkCard({ link, count, className }: Props) {
               <li>
                 <div
                   role="button"
-                  className="px-2 py-1 rounded-lg"
                   tabIndex={0}
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
@@ -194,11 +193,10 @@ export default function LinkCard({ link, count, className }: Props) {
               <li>
                 <div
                   role="button"
-                  className="px-2 py-1 rounded-lg"
                   tabIndex={0}
-                  onClick={() => {
+                  onClick={(e) => {
                     (document?.activeElement as HTMLElement)?.blur();
-                    deleteLink();
+                    e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
                   }}
                 >
                   Delete
@@ -294,6 +292,12 @@ export default function LinkCard({ link, count, className }: Props) {
       {editLinkModal ? (
         <EditLinkModal
           onClose={() => setEditLinkModal(false)}
+          activeLink={link}
+        />
+      ) : undefined}
+      {deleteLinkModal ? (
+        <DeleteLinkModal
+          onClose={() => setDeleteLinkModal(false)}
           activeLink={link}
         />
       ) : undefined}

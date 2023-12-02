@@ -22,10 +22,10 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
           className="w-5 h-5 text-neutral"
         />
       </div>
-      <ul className="dropdown-content z-[30] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
+      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
         <li>
           <label
-            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            className="label cursor-pointer flex justify-start"
             tabIndex={0}
             role="button"
           >
@@ -44,7 +44,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            className="label cursor-pointer flex justify-start"
             tabIndex={0}
             role="button"
           >
@@ -61,7 +61,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            className="label cursor-pointer flex justify-start"
             tabIndex={0}
             role="button"
           >
@@ -78,7 +78,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            className="label cursor-pointer flex justify-start"
             tabIndex={0}
             role="button"
           >
@@ -95,7 +95,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            className="label cursor-pointer flex justify-start"
             tabIndex={0}
             role="button"
           >
@@ -112,7 +112,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         </li>
         <li>
           <label
-            className="label cursor-pointer flex justify-start px-2 py-1 rounded-lg"
+            className="label cursor-pointer flex justify-start"
             tabIndex={0}
             role="button"
           >

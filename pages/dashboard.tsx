@@ -167,7 +167,7 @@ export default function Dashboard() {
           {links[0] ? (
             <div className="w-full">
               <div
-                className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
+                className={`grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links.slice(0, showLinks).map((e, i) => (
                   <LinkCard key={i} link={e} count={i} />
@@ -216,12 +216,11 @@ export default function Dashboard() {
                     />
                     <p>Import From</p>
                   </div>
-                  <ul className="shadow menu dropdown-content z-[1] p-1 bg-base-200 border border-neutral-content rounded-xl mt-1 w-60">
+                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
                     <li>
                       <label
                         tabIndex={0}
                         role="button"
-                        className="px-2 py-1 rounded-lg"
                         htmlFor="import-linkwarden-file"
                         title="JSON File"
                       >
@@ -242,7 +241,6 @@ export default function Dashboard() {
                       <label
                         tabIndex={0}
                         role="button"
-                        className="px-2 py-1 rounded-lg"
                         htmlFor="import-html-file"
                         title="HTML File"
                       >
@@ -290,7 +288,7 @@ export default function Dashboard() {
           {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
               <div
-                className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
+                className={`grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
