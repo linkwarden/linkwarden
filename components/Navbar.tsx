@@ -75,10 +75,9 @@ export default function Navbar() {
               />
             </div>
           </div>
-          <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-32 mt-1">
+          <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
             <li>
               <div
-                className="px-2 py-1 rounded-lg"
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
                   setNewLinkModal(true);
@@ -91,7 +90,6 @@ export default function Navbar() {
             </li>
             <li>
               <div
-                className="px-2 py-1 rounded-lg"
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
                   setNewCollectionModal(true);
@@ -112,10 +110,9 @@ export default function Navbar() {
               priority={true}
             />
           </div>
-          <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-40 mt-1">
+          <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
             <li>
               <Link
-                className="px-2 py-1 rounded-lg"
                 href="/settings/account"
                 onClick={() => (document?.activeElement as HTMLElement)?.blur()}
                 tabIndex={0}
@@ -126,7 +123,6 @@ export default function Navbar() {
             </li>
             <li>
               <div
-                className="px-2 py-1 rounded-lg"
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
                   handleToggle();
@@ -139,7 +135,6 @@ export default function Navbar() {
             </li>
             <li>
               <div
-                className="px-2 py-1 rounded-lg"
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
                   signOut();

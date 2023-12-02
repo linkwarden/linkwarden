@@ -159,10 +159,9 @@ export default function Index() {
                           className="w-5 h-5"
                         />
                       </div>
-                      <ul className="dropdown-content z-[30] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-36 mt-1">
+                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-36 mt-1">
                         <li>
                           <div
-                            className="px-2 py-1 rounded-lg"
                             role="button"
                             tabIndex={0}
                             onClick={() => {
@@ -175,7 +174,6 @@ export default function Index() {
                         </li>
                         <li>
                           <div
-                            className="px-2 py-1 rounded-lg"
                             role="button"
                             tabIndex={0}
                             onClick={() => {

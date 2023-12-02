@@ -252,12 +252,11 @@ export default function Account() {
                 >
                   Import From
                 </div>
-                <ul className="shadow menu dropdown-content z-[1] p-1 bg-base-200 border border-neutral-content rounded-xl mt-1 w-60">
+                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
                   <li>
                     <label
                       tabIndex={0}
                       role="button"
-                      className="px-2 py-1 rounded-lg"
                       htmlFor="import-linkwarden-file"
                       title="JSON File"
                     >
@@ -278,7 +277,6 @@ export default function Account() {
                     <label
                       tabIndex={0}
                       role="button"
-                      className="px-2 py-1 rounded-lg"
                       htmlFor="import-html-file"
                       title="HTML File"
                     >
