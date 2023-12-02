@@ -23,6 +23,7 @@ export default function NewLinkModal({ onClose }: Props) {
     name: "",
     url: "",
     description: "",
+    type: "url",
     tags: [],
     screenshotPath: "",
     pdfPath: "",
@@ -32,7 +33,7 @@ export default function NewLinkModal({ onClose }: Props) {
       name: "",
       ownerId: data?.user.id as number,
     },
-  };
+  } as LinkIncludingShortenedCollectionAndTags;
 
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(initial);
@@ -127,7 +128,7 @@ export default function NewLinkModal({ onClose }: Props) {
         <div className="sm:col-span-3 col-span-5">
           <p className="mb-2">Link</p>
           <TextInput
-            value={link.url}
+            value={link.url || ""}
             onChange={(e) => setLink({ ...link, url: e.target.value })}
             placeholder="e.g. http://example.com/"
             className="bg-base-200"
