@@ -33,8 +33,8 @@ export default function ViewTeam({ collection }: Props) {
       <p>Here are all the members who are collaborating on this collection.</p>
 
       <div
-        className="relative border px-2 rounded-md border-sky-100 dark:border-neutral-700 flex min-h-[4rem] gap-2 justify-between"
-        title={`'@${collectionOwner.username}' is the owner of this collection.`}
+        className="relative border px-2 rounded-md border-neutral flex min-h-[4rem] gap-2 justify-between"
+        title={`@${collectionOwner.username} is the owner of this collection.`}
       >
         <div className="flex items-center gap-2 w-full">
           <ProfilePhoto
@@ -43,9 +43,7 @@ export default function ViewTeam({ collection }: Props) {
           />
           <div className="w-full">
             <div className="flex items-center gap-1 w-full justify-between">
-              <p className="text-sm font-bold text-black dark:text-white">
-                {collectionOwner.name}
-              </p>
+              <p className="text-sm font-bold">{collectionOwner.name}</p>
               <div className="flex text-xs gap-1 items-center">
                 <FontAwesomeIcon
                   icon={faCrown}
@@ -54,9 +52,7 @@ export default function ViewTeam({ collection }: Props) {
                 Admin
               </div>
             </div>
-            <p className="text-gray-500 dark:text-gray-300">
-              @{collectionOwner.username}
-            </p>
+            <p className="text-neutral">@{collectionOwner.username}</p>
           </div>
         </div>
       </div>
@@ -70,7 +66,7 @@ export default function ViewTeam({ collection }: Props) {
                 return (
                   <div
                     key={i}
-                    className="relative border p-2 rounded-md border-sky-100 dark:border-neutral-700 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
+                    className="relative border p-2 rounded-md border-neutral flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
                   >
                     <div className="flex items-center gap-2">
                       <ProfilePhoto
@@ -78,12 +74,8 @@ export default function ViewTeam({ collection }: Props) {
                         className="border-[3px]"
                       />
                       <div>
-                        <p className="text-sm font-bold text-black dark:text-white">
-                          {e.user.name}
-                        </p>
-                        <p className="text-gray-500 dark:text-gray-300">
-                          @{e.user.username}
-                        </p>
+                        <p className="text-sm font-bold">{e.user.name}</p>
+                        <p className="text-neutral">@{e.user.username}</p>
                       </div>
                     </div>
                   </div>

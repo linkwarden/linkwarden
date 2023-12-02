@@ -78,13 +78,13 @@ export default function Dropdown({
       onClickOutside={onClickOutside}
       className={`${
         className || ""
-      } py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
+      } py-1 shadow-md border border-neutral-content bg-base-200 rounded-md flex flex-col z-20`}
     >
       {items.map((e, i) => {
         const inner = e && (
           <div className="cursor-pointer rounded-md">
-            <div className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 dark:hover:bg-neutral-700 duration-100">
-              <p className="text-black dark:text-white select-none">{e.name}</p>
+            <div className="flex items-center gap-2 py-1 px-2 hover:bg-base-100 duration-100">
+              <p className="select-none">{e.name}</p>
             </div>
           </div>
         );
