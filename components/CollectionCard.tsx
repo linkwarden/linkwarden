@@ -2,30 +2,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis, faGlobe, faLink } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
-import Dropdown from "./Dropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import useModalStore from "@/store/modals";
 import usePermissions from "@/hooks/usePermissions";
-import { useTheme } from "next-themes";
+import useLocalSettingsStore from "@/store/localSettings";
+import getPublicUserData from "@/lib/client/getPublicUserData";
+import useAccountStore from "@/store/account";
+import EditCollectionModal from "./ModalContent/EditCollectionModal";
+import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
+import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
   className?: string;
 };
 
-type DropdownTrigger =
-  | {
-      x: number;
-      y: number;
-    }
-  | false;
-
 export default function CollectionCard({ collection, className }: Props) {
-  const { setModal } = useModalStore();
-
-  const { theme } = useTheme();
+  const { settings } = useLocalSettingsStore();
+  const { account } = useAccountStore();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",
@@ -36,144 +31,182 @@ export default function CollectionCard({ collection, className }: Props) {
     }
   );
 
-  const [expandDropdown, setExpandDropdown] = useState<DropdownTrigger>(false);
-
   const permissions = usePermissions(collection.id as number);
 
+  const [collectionOwner, setCollectionOwner] = useState({
+    id: null as unknown as number,
+    name: "",
+    username: "",
+    image: "",
+  });
+
+  useEffect(() => {
+    const fetchOwner = async () => {
+      if (collection && collection.ownerId !== account.id) {
+        const owner = await getPublicUserData(collection.ownerId as number);
+        setCollectionOwner(owner);
+      } else if (collection && collection.ownerId === account.id) {
+        setCollectionOwner({
+          id: account.id as number,
+          name: account.name,
+          username: account.username as string,
+          image: account.image as string,
+        });
+      }
+    };
+
+    fetchOwner();
+  }, [collection]);
+
+  const [editCollectionModal, setEditCollectionModal] = useState(false);
+  const [editCollectionSharingModal, setEditCollectionSharingModal] =
+    useState(false);
+  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
+
   return (
-    <>
+    <div className="relative">
+      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-10">
+        <div
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost btn-sm btn-square text-neutral"
+        >
+          <FontAwesomeIcon icon={faEllipsis} title="More" className="w-5 h-5" />
+        </div>
+        <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+          {permissions === true ? (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setEditCollectionModal(true);
+                }}
+              >
+                Edit Collection Info
+              </div>
+            </li>
+          ) : undefined}
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                setEditCollectionSharingModal(true);
+              }}
+            >
+              {permissions === true ? "Share and Collaborate" : "View Team"}
+            </div>
+          </li>
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                setDeleteCollectionModal(true);
+              }}
+            >
+              {permissions === true ? "Delete Collection" : "Leave Collection"}
+            </div>
+          </li>
+        </ul>
+      </div>
       <div
+        className="flex items-center absolute bottom-3 left-3 z-10 btn px-2 btn-ghost rounded-full"
+        onClick={() => setEditCollectionSharingModal(true)}
+      >
+        {collectionOwner.id ? (
+          <ProfilePhoto
+            src={collectionOwner.image || undefined}
+            dimensionClass="w-7 h-7"
+          />
+        ) : undefined}
+        {collection.members
+          .sort((a, b) => (a.userId as number) - (b.userId as number))
+          .map((e, i) => {
+            return (
+              <ProfilePhoto
+                key={i}
+                src={e.user.image ? e.user.image : undefined}
+                className="-ml-3"
+              />
+            );
+          })
+          .slice(0, 3)}
+        {collection.members.length - 3 > 0 ? (
+          <div className={`avatar placeholder -ml-3`}>
+            <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
+              <span>+{collection.members.length - 3}</span>
+            </div>
+          </div>
+        ) : null}
+      </div>
+      <Link
+        href={`/collections/${collection.id}`}
         style={{
           backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
-            theme === "dark" ? "#262626" : "#f3f4f6"
-          } 50%, ${theme === "dark" ? "#262626" : "#f9fafb"} 100%)`,
+            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+          } 50%, ${
+            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+          } 100%)`,
         }}
-        className={`border border-solid border-sky-100 dark:border-neutral-700 self-stretch min-h-[12rem] rounded-2xl shadow duration-100 hover:shadow-none hover:opacity-80 group relative ${
-          className || ""
-        }`}
+        className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
       >
-        <div
-          onClick={(e) => setExpandDropdown({ x: e.clientX, y: e.clientY })}
-          id={"expand-dropdown" + collection.id}
-          className="inline-flex absolute top-5 right-5 rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
-        >
-          <FontAwesomeIcon
-            icon={faEllipsis}
-            id={"expand-dropdown" + collection.id}
-            className="w-5 h-5 text-gray-500 dark:text-gray-300"
-          />
-        </div>
-        <Link
-          href={`/collections/${collection.id}`}
-          className="flex flex-col gap-2 justify-between min-h-[12rem] h-full select-none p-5"
-        >
-          <p className="text-2xl capitalize text-black dark:text-white break-words line-clamp-3 w-4/5">
-            {collection.name}
-          </p>
-          <div className="flex justify-between items-center">
-            <div className="flex items-center w-full">
-              {collection.members
-                .sort((a, b) => (a.userId as number) - (b.userId as number))
-                .map((e, i) => {
-                  return (
-                    <ProfilePhoto
-                      key={i}
-                      src={e.user.image ? e.user.image : undefined}
-                      className="-mr-3 border-[3px]"
-                    />
-                  );
-                })
-                .slice(0, 4)}
-              {collection.members.length - 4 > 0 ? (
-                <div className="h-10 w-10 text-white flex items-center justify-center rounded-full border-[3px] bg-sky-600 dark:bg-sky-600 border-slate-200 dark:border-neutral-700 -mr-3">
-                  +{collection.members.length - 4}
-                </div>
-              ) : null}
-            </div>
-            <div className="text-right w-40">
-              <div className="text-black dark:text-white font-bold text-sm flex justify-end gap-1 items-center">
+        <div className="card-body flex flex-col justify-between min-h-[12rem]">
+          <div className="flex justify-between">
+            <p className="card-title break-words line-clamp-2 w-full">
+              {collection.name}
+            </p>
+            <div className="w-8 h-8 ml-10"></div>
+          </div>
+
+          <div className="flex justify-end items-center">
+            <div className="text-right">
+              <div className="font-bold text-sm flex justify-end gap-1 items-center">
                 {collection.isPublic ? (
                   <FontAwesomeIcon
                     icon={faGlobe}
                     title="This collection is being shared publicly."
-                    className="w-4 h-4 drop-shadow text-gray-500 dark:text-gray-300"
+                    className="w-4 h-4 drop-shadow text-neutral"
                   />
                 ) : undefined}
                 <FontAwesomeIcon
                   icon={faLink}
-                  className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                  className="w-5 h-5 text-neutral"
                 />
                 {collection._count && collection._count.links}
               </div>
-              <div className="flex items-center justify-end gap-1 text-gray-500 dark:text-gray-300">
-                <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
-                <p className="font-bold text-xs">{formattedDate}</p>
+              <div className="flex items-center justify-end gap-1 text-neutral">
+                <p className="font-bold text-xs flex gap-1 items-center">
+                  <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />{" "}
+                  {formattedDate}
+                </p>
               </div>
             </div>
           </div>
-        </Link>
-      </div>
-      {expandDropdown ? (
-        <Dropdown
-          points={{ x: expandDropdown.x, y: expandDropdown.y }}
-          items={[
-            permissions === true
-              ? {
-                  name: "Edit Collection Info",
-                  onClick: () => {
-                    collection &&
-                      setModal({
-                        modal: "COLLECTION",
-                        state: true,
-                        method: "UPDATE",
-                        isOwner: permissions === true,
-                        active: collection,
-                      });
-                    setExpandDropdown(false);
-                  },
-                }
-              : undefined,
-            {
-              name: permissions === true ? "Share/Collaborate" : "View Team",
-              onClick: () => {
-                collection &&
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "UPDATE",
-                    isOwner: permissions === true,
-                    active: collection,
-                    defaultIndex: permissions === true ? 1 : 0,
-                  });
-                setExpandDropdown(false);
-              },
-            },
-
-            {
-              name:
-                permissions === true ? "Delete Collection" : "Leave Collection",
-              onClick: () => {
-                collection &&
-                  setModal({
-                    modal: "COLLECTION",
-                    state: true,
-                    method: "UPDATE",
-                    isOwner: permissions === true,
-                    active: collection,
-                    defaultIndex: permissions === true ? 2 : 1,
-                  });
-                setExpandDropdown(false);
-              },
-            },
-          ]}
-          onClickOutside={(e: Event) => {
-            const target = e.target as HTMLInputElement;
-            if (target.id !== "expand-dropdown" + collection.id)
-              setExpandDropdown(false);
-          }}
-          className="w-fit"
+        </div>
+      </Link>
+      {editCollectionModal ? (
+        <EditCollectionModal
+          onClose={() => setEditCollectionModal(false)}
+          activeCollection={collection}
         />
-      ) : null}
-    </>
+      ) : undefined}
+      {editCollectionSharingModal ? (
+        <EditCollectionSharingModal
+          onClose={() => setEditCollectionSharingModal(false)}
+          activeCollection={collection}
+        />
+      ) : undefined}
+      {deleteCollectionModal ? (
+        <DeleteCollectionModal
+          onClose={() => setDeleteCollectionModal(false)}
+          activeCollection={collection}
+        />
+      ) : undefined}
+    </div>
   );
 }

@@ -9,7 +9,6 @@ import {
 } from "@/types/global";
 import Image from "next/image";
 import ColorThief, { RGBColor } from "colorthief";
-import { useTheme } from "next-themes";
 import unescapeString from "@/lib/client/unescapeString";
 import isValidUrl from "@/lib/client/isValidUrl";
 import DOMPurify from "dompurify";
@@ -17,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBoxesStacked, faFolder } from "@fortawesome/free-solid-svg-icons";
 import useModalStore from "@/store/modals";
 import { useSession } from "next-auth/react";
+import useLocalSettingsStore from "@/store/localSettings";
 
 type LinkContent = {
   title: string;
@@ -31,9 +31,10 @@ type LinkContent = {
 };
 
 export default function Index() {
-  const { theme } = useTheme();
   const { links, getLink } = useLinkStore();
   const { setModal } = useModalStore();
+
+  const { settings } = useLocalSettingsStore();
 
   const session = useSession();
   const userId = session.data?.user.id;
@@ -140,18 +141,18 @@ export default function Index() {
         )})30`;
       }
     }
-  }, [colorPalette, theme]);
+  }, [colorPalette]);
 
   return (
     <LinkLayout>
       <div
         className={`flex flex-col max-w-screen-md h-full ${
-          theme === "dark" ? "banner-dark-mode" : "banner-light-mode"
+          settings.theme === "dark" ? "banner-dark-mode" : "banner-light-mode"
         }`}
       >
         <div
           id="link-banner"
-          className="link-banner p-5 mb-4 relative bg-opacity-10 border border-solid border-sky-100 dark:border-neutral-700 shadow-md"
+          className="link-banner p-5 mb-4 relative bg-opacity-10 border border-solid border-neutral-content shadow-md"
         >
           <div id="link-banner-inner" className="link-banner-inner"></div>
 
@@ -164,7 +165,7 @@ export default function Index() {
                   height={42}
                   alt=""
                   id={"favicon-" + link.id}
-                  className="select-none mt-2 w-10 rounded-md shadow border-[3px] border-white dark:border-neutral-900 bg-white dark:bg-neutral-900 aspect-square"
+                  className="select-none mt-2 w-10 rounded-md shadow border-[3px] border-base-100 bg-base-100 aspect-square"
                   draggable="false"
                   onLoad={(e) => {
                     try {
@@ -184,7 +185,7 @@ export default function Index() {
                 />
               )}
 
-              <div className="flex gap-2 text-sm text-gray-500 dark:text-gray-300">
+              <div className="flex gap-2 text-sm text-neutral">
                 <p className=" min-w-fit">
                   {link?.createdAt
                     ? new Date(link?.createdAt).toLocaleString("en-US", {
@@ -229,16 +230,20 @@ export default function Index() {
                   />
                   <p
                     title={link?.collection?.name}
-                    className="text-black dark:text-white text-lg truncate max-w-[12rem]"
+                    className="text-lg truncate max-w-[12rem]"
                   >
                     {link?.collection?.name}
                   </p>
                 </Link>
                 {link?.tags.map((e, i) => (
-                  <Link key={i} href={`/tags/${e.id}`} className="z-10">
+                  <Link
+                    key={i}
+                    href={"/public/collections/20?q=" + e.name}
+                    className="z-10"
+                  >
                     <p
                       title={e.name}
-                      className="px-2 py-1 bg-sky-200 text-black dark:text-white dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
+                      className="btn btn-xs btn-outline truncate max-w-[19rem]"
                     >
                       {e.name}
                     </p>
@@ -258,17 +263,17 @@ export default function Index() {
               }}
             ></div>
           ) : (
-            <div className="border border-solid border-sky-100 dark:border-neutral-700 w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800">
+            <div className="border border-solid border-neutral-content w-full h-full flex flex-col justify-center p-10 rounded-2xl bg-base-200">
               {link?.readabilityPath === "pending" ? (
                 <p className="text-center">
                   Generating readable format, please wait...
                 </p>
               ) : (
                 <>
-                  <p className="text-center text-2xl text-black dark:text-white">
+                  <p className="text-center text-2xl">
                     There is no reader view for this webpage
                   </p>
-                  <p className="text-center text-sm text-black dark:text-white">
+                  <p className="text-center text-sm">
                     {link?.collection?.ownerId === userId
                       ? "You can update (refetch) the preserved formats by managing them below"
                       : "The collections owners can refetch the preserved formats"}

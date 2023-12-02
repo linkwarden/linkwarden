@@ -35,7 +35,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`dark:bg-neutral-900 bg-white h-full w-64 overflow-y-auto border-solid border-white border dark:border-neutral-900 border-r-sky-100 dark:border-r-neutral-700 p-5 z-20 flex flex-col gap-5 justify-between ${
+      className={`bg-base-100 h-full w-64 overflow-y-auto border-solid border border-base-100 border-r-neutral-content p-5 z-20 flex flex-col gap-5 justify-between ${
         className || ""
       }`}
     >
@@ -44,18 +44,13 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/account`
-                ? "bg-sky-500"
-                : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faUser}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
+            <FontAwesomeIcon icon={faUser} className="w-7 h-7 text-primary" />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Account
-            </p>
+            <p className="truncate w-full pr-7">Account</p>
           </div>
         </Link>
 
@@ -63,18 +58,16 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/appearance`
-                ? "bg-sky-500"
-                : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faPalette}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 text-primary"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Appearance
-            </p>
+            <p className="truncate w-full pr-7">Appearance</p>
           </div>
         </Link>
 
@@ -82,35 +75,30 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/archive`
-                ? "bg-sky-500"
-                : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faBoxArchive}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 text-primary"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Archive
-            </p>
+            <p className="truncate w-full pr-7">Archive</p>
           </div>
         </Link>
 
         <Link href="/settings/api">
           <div
             className={`${
-              active === `/settings/api` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+              active === `/settings/api`
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faKey}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
+            <FontAwesomeIcon icon={faKey} className="w-7 h-7 text-primary" />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              API Keys
-            </p>
+            <p className="truncate w-full pr-7">API Keys</p>
           </div>
         </Link>
 
@@ -118,18 +106,13 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`${
               active === `/settings/password`
-                ? "bg-sky-500"
-                : "hover:bg-slate-500"
-            } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faLock}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
-            />
+            <FontAwesomeIcon icon={faLock} className="w-7 h-7 text-primary" />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Password
-            </p>
+            <p className="truncate w-full pr-7">Password</p>
           </div>
         </Link>
 
@@ -138,18 +121,16 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             <div
               className={`${
                 active === `/settings/billing`
-                  ? "bg-sky-500"
-                  : "hover:bg-slate-500"
-              } duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                  ? "bg-primary/20"
+                  : "hover:bg-neutral/20"
+              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
               <FontAwesomeIcon
                 icon={faCreditCard}
-                className="w-6 h-6 text-sky-500 dark:text-sky-500"
+                className="w-7 h-7 text-primary"
               />
 
-              <p className="text-black dark:text-white truncate w-full pr-7">
-                Billing
-              </p>
+              <p className="truncate w-full pr-7">Billing</p>
             </div>
           </Link>
         ) : undefined}
@@ -159,67 +140,59 @@ export default function SettingsSidebar({ className }: { className?: string }) {
         <Link
           href={`https://github.com/linkwarden/linkwarden/releases`}
           target="_blank"
-          className="dark:text-gray-300 text-gray-500 text-sm ml-2 hover:opacity-50 duration-100"
+          className="text-neutral text-sm ml-2 hover:opacity-50 duration-100"
         >
           Linkwarden {LINKWARDEN_VERSION}
         </Link>
         <Link href="https://docs.linkwarden.app" target="_blank">
           <div
-            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faCircleQuestion as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Help
-            </p>
+            <p className="truncate w-full pr-7">Help</p>
           </div>
         </Link>
 
         <Link href="https://github.com/linkwarden/linkwarden" target="_blank">
           <div
-            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faGithub as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              GitHub
-            </p>
+            <p className="truncate w-full pr-7">GitHub</p>
           </div>
         </Link>
 
         <Link href="https://twitter.com/LinkwardenHQ" target="_blank">
           <div
-            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faXTwitter as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Twitter
-            </p>
+            <p className="truncate w-full pr-7">Twitter</p>
           </div>
         </Link>
 
         <Link href="https://fosstodon.org/@linkwarden" target="_blank">
           <div
-            className={`hover:bg-slate-500 duration-100 py-2 px-2 hover:bg-opacity-20 bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faMastodon as any}
-              className="w-6 h-6 text-sky-500 dark:text-sky-500"
+              className="w-6 h-6 text-primary"
             />
 
-            <p className="text-black dark:text-white truncate w-full pr-7">
-              Mastodon
-            </p>
+            <p className="truncate w-full pr-7">Mastodon</p>
           </div>
         </Link>
       </div>
