@@ -44,6 +44,7 @@ export default function AddOrEditLink({
     activeLink || {
       name: "",
       url: "",
+      type: "",
       description: "",
       tags: [],
       screenshotPath: "",
@@ -139,10 +140,10 @@ export default function AddOrEditLink({
       {method === "UPDATE" ? (
         <div
           className="text-neutral break-all w-full flex gap-2"
-          title={link.url}
+          title={link.url || ""}
         >
           <FontAwesomeIcon icon={faLink} className="w-6 h-6" />
-          <Link href={link.url} target="_blank" className="w-full">
+          <Link href={link.url || ""} target="_blank" className="w-full">
             {link.url}
           </Link>
         </div>
@@ -153,7 +154,7 @@ export default function AddOrEditLink({
           <div className="sm:col-span-3 col-span-5">
             <p className="mb-2">Address (URL)</p>
             <TextInput
-              value={link.url}
+              value={link.url || ""}
               onChange={(e) => setLink({ ...link, url: e.target.value })}
               placeholder="e.g. http://example.com/"
               className="bg-base-200"

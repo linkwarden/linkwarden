@@ -97,7 +97,7 @@ export default async function readFile(filePath: string) {
       return {
         file: "File not found.",
         contentType: "text/plain",
-        status: 400,
+        status: 404,
       };
     else {
       const file = fs.readFileSync(creationPath);
