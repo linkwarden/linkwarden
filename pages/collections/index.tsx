@@ -57,10 +57,9 @@ export default function Collections() {
                     className="w-5 h-5"
                   />
                 </div>
-                <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-36 mt-1">
+                <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
                   <li>
                     <div
-                      className="px-2 py-1 rounded-lg"
                       role="button"
                       tabIndex={0}
                       onClick={() => {

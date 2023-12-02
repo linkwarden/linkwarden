@@ -73,12 +73,11 @@ export default function CollectionCard({ collection, className }: Props) {
         >
           <FontAwesomeIcon icon={faEllipsis} title="More" className="w-5 h-5" />
         </div>
-        <ul className="dropdown-content z-[1] menu p-1 shadow bg-base-200 border border-neutral-content rounded-xl w-44 mt-1">
+        <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
           {permissions === true ? (
             <li>
               <div
                 role="button"
-                className="px-2 py-1 rounded-lg"
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
@@ -91,7 +90,6 @@ export default function CollectionCard({ collection, className }: Props) {
           ) : undefined}
           <li>
             <div
-              className="px-2 py-1 rounded-lg"
               role="button"
               tabIndex={0}
               onClick={() => {
@@ -104,7 +102,6 @@ export default function CollectionCard({ collection, className }: Props) {
           </li>
           <li>
             <div
-              className="px-2 py-1 rounded-lg"
               role="button"
               tabIndex={0}
               onClick={() => {
