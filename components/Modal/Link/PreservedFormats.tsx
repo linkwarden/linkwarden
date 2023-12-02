@@ -76,8 +76,7 @@ export default function PreservedFormats() {
           // Create a temporary link and click it to trigger the download
           const link = document.createElement("a");
           link.href = path;
-          link.download =
-            format === ArchivedFormat.screenshot ? "Screenshot" : "PDF";
+          link.download = format === ArchivedFormat.png ? "Screenshot" : "PDF";
           link.click();
         } else {
           console.error("Failed to download file");
@@ -102,7 +101,7 @@ export default function PreservedFormats() {
 
           <div className="flex gap-1">
             <div
-              onClick={() => handleDownload(ArchivedFormat.screenshot)}
+              onClick={() => handleDownload(ArchivedFormat.png)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
@@ -112,7 +111,11 @@ export default function PreservedFormats() {
             </div>
 
             <Link
-              href={`/api/v1/archives/${link?.id}?format=${ArchivedFormat.screenshot}`}
+              href={`/api/v1/archives/${link?.id}?format=${
+                link.screenshotPath.endsWith("png")
+                  ? ArchivedFormat.png
+                  : ArchivedFormat.jpeg
+              }`}
               target="_blank"
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >

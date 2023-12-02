@@ -2,7 +2,7 @@ import { faFolder, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import isValidUrl from "@/lib/client/isValidUrl";
+import isValidUrl from "@/lib/shared/isValidUrl";
 import A from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import { Link } from "@prisma/client";
