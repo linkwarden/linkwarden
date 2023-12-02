@@ -124,7 +124,7 @@ export default function LinkCard({ link, count, className }: Props) {
 
   return (
     <div
-      className={`h-fit border border-solid border-neutral-content bg-base-200 shadow hover:shadow-none duration-100 rounded-2xl relative group ${
+      className={`h-fit border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative ${
         className || ""
       }`}
     >
@@ -219,7 +219,7 @@ export default function LinkCard({ link, count, className }: Props) {
             alt=""
             className={`${
               account.blurredFavicons ? "blur-sm " : ""
-            }absolute w-16 group-hover:opacity-80 duration-100 rounded-2xl bottom-5 right-5 opacity-60 select-none z-10`}
+            } absolute w-10 duration-100 rounded-2xl bottom-5 right-5 select-none z-10`}
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
@@ -252,24 +252,24 @@ export default function LinkCard({ link, count, className }: Props) {
             </Link>
 
             {/* {link.tags[0] ? (
-                <div className="flex gap-3 items-center flex-wrap my-2 truncate relative">
-                  <div className="flex gap-1 items-center flex-nowrap">
-                    {link.tags.map((e, i) => (
-                      <Link
-                        href={"/tags/" + e.id}
-                        key={i}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                        className="px-2 bg-sky-200 dark:bg-sky-900 text-xs rounded-3xl cursor-pointer hover:opacity-60 duration-100 truncate max-w-[19rem]"
-                      >
-                        {e.name}
-                      </Link>
-                    ))}
-                  </div>
-                  <div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent dark:to-base-200 to-35%"></div>
+              <div className="flex gap-3 items-center flex-wrap my-2 truncate relative">
+                <div className="flex gap-1 items-center flex-nowrap">
+                  {link.tags.map((e, i) => (
+                    <Link
+                      href={"/tags/" + e.id}
+                      key={i}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="btn btn-xs btn-outline truncate max-w-[19rem]"
+                    >
+                      {e.name}
+                    </Link>
+                  ))}
                 </div>
-              ) : undefined} */}
+                <div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent to-base-200 to-35%"></div>
+              </div>
+            ) : undefined} */}
 
             <Link
               href={link.url}
