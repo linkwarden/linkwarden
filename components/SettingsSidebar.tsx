@@ -46,9 +46,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               active === `/settings/account`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon icon={faUser} className="w-6 h-6 text-primary" />
+            <FontAwesomeIcon icon={faUser} className="w-7 h-7 text-primary" />
 
             <p className="truncate w-full pr-7">Account</p>
           </div>
@@ -60,11 +60,11 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               active === `/settings/appearance`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faPalette}
-              className="w-6 h-6 text-primary"
+              className="w-7 h-7 text-primary"
             />
 
             <p className="truncate w-full pr-7">Appearance</p>
@@ -77,11 +77,11 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               active === `/settings/archive`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <FontAwesomeIcon
               icon={faBoxArchive}
-              className="w-6 h-6 text-primary"
+              className="w-7 h-7 text-primary"
             />
 
             <p className="truncate w-full pr-7">Archive</p>
@@ -94,9 +94,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               active === `/settings/api`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon icon={faKey} className="w-6 h-6 text-primary" />
+            <FontAwesomeIcon icon={faKey} className="w-7 h-7 text-primary" />
 
             <p className="truncate w-full pr-7">API Keys</p>
           </div>
@@ -108,9 +108,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
               active === `/settings/password`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
-            } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon icon={faLock} className="w-6 h-6 text-primary" />
+            <FontAwesomeIcon icon={faLock} className="w-7 h-7 text-primary" />
 
             <p className="truncate w-full pr-7">Password</p>
           </div>
@@ -123,11 +123,11 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 active === `/settings/billing`
                   ? "bg-primary/20"
                   : "hover:bg-neutral/20"
-              } duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
               <FontAwesomeIcon
                 icon={faCreditCard}
-                className="w-6 h-6 text-primary"
+                className="w-7 h-7 text-primary"
               />
 
               <p className="truncate w-full pr-7">Billing</p>
