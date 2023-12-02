@@ -1,17 +1,20 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import getTitle from "@/lib/api/getTitle";
-import archive from "@/lib/api/archive";
+import urlHandler from "@/lib/api/urlHandler";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import createFolder from "@/lib/api/storage/createFolder";
+import pdfHandler from "../../pdfHandler";
+import validateUrlSize from "../../validateUrlSize";
+import imageHandler from "../../imageHandler";
 
 export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
   try {
-    new URL(link.url);
+    if (link.url) new URL(link.url);
   } catch (error) {
     return {
       response:
@@ -45,13 +48,33 @@ export default async function postLink(
   const description =
     link.description && link.description !== ""
       ? link.description
-      : await getTitle(link.url);
+      : link.url
+      ? await getTitle(link.url)
+      : undefined;
+
+  const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
+
+  if (validatedUrl === null)
+    return { response: "File is too large to be stored.", status: 400 };
+
+  const contentType = validatedUrl?.get("content-type");
+  let linkType = "url";
+  let imageExtension = "png";
+
+  if (!link.url) linkType = link.type;
+  else if (contentType === "application/pdf") linkType = "pdf";
+  else if (contentType?.startsWith("image")) {
+    linkType = "image";
+    if (contentType === "image/jpeg") imageExtension = "jpeg";
+    else if (contentType === "image/png") imageExtension = "png";
+  }
 
   const newLink = await prisma.link.create({
     data: {
       url: link.url,
       name: link.name,
       description,
+      type: linkType,
       readabilityPath: "pending",
       collection: {
         connectOrCreate: {
@@ -91,7 +114,15 @@ export default async function postLink(
 
   createFolder({ filePath: `archives/${newLink.collectionId}` });
 
-  archive(newLink.id, newLink.url, userId);
+  newLink.url && linkType === "url"
+    ? urlHandler(newLink.id, newLink.url, userId)
+    : undefined;
+
+  linkType === "pdf" ? pdfHandler(newLink.id, newLink.url) : undefined;
+
+  linkType === "image"
+    ? imageHandler(newLink.id, newLink.url, imageExtension)
+    : undefined;
 
   return { response: newLink, status: 200 };
 }

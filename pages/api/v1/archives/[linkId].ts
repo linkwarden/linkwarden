@@ -10,7 +10,8 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
   let suffix;
 
-  if (format === ArchivedFormat.screenshot) suffix = ".png";
+  if (format === ArchivedFormat.png) suffix = ".png";
+  else if (format === ArchivedFormat.jpeg) suffix = ".jpeg";
   else if (format === ArchivedFormat.pdf) suffix = ".pdf";
   else if (format === ArchivedFormat.readability) suffix = "_readability.json";
 
@@ -43,6 +44,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const { file, contentType, status } = await readFile(
     `archives/${collectionIsAccessible.id}/${linkId + suffix}`
   );
+
   res.setHeader("Content-Type", contentType).status(status as number);
 
   return res.send(file);

@@ -117,7 +117,14 @@ export type DeleteUserBody = {
 };
 
 export enum ArchivedFormat {
-  screenshot,
+  png,
+  jpeg,
   pdf,
   readability,
+}
+
+export enum LinkType {
+  url,
+  pdf,
+  image,
 }

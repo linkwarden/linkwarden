@@ -103,12 +103,13 @@ model UsersAndCollections {
 model Link {
   id                Int        @id @default(autoincrement())
   name              String
-  url               String
+  type              String     @default("url")
   description       String     @default("")
   pinnedBy          User[]
   collection        Collection @relation(fields: [collectionId], references: [id])
   collectionId      Int
   tags              Tag[]
+  url               String?
   textContent       String?
   screenshotPath    String?
   pdfPath           String?

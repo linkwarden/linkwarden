@@ -2,7 +2,7 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { Link as LinkType, Tag } from "@prisma/client";
-import isValidUrl from "@/lib/client/isValidUrl";
+import isValidUrl from "@/lib/shared/isValidUrl";
 import unescapeString from "@/lib/client/unescapeString";
 import { TagIncludingLinkCount } from "@/types/global";
 import Link from "next/link";
@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function LinkCard({ link, count }: Props) {
-  const url = isValidUrl(link.url) ? new URL(link.url) : undefined;
+  const url = link.url && isValidUrl(link.url) ? new URL(link.url) : undefined;
 
   const formattedDate = new Date(
     link.createdAt as unknown as string
@@ -68,10 +68,10 @@ export default function LinkCard({ link, count }: Props) {
             <p>{formattedDate}</p>
             <p>·</p>
             <Link
-              href={url ? url.href : link.url}
+              href={url ? url.href : link.url || ""}
               target="_blank"
               className="hover:opacity-50 duration-100 truncate w-52 sm:w-fit"
-              title={url ? url.href : link.url}
+              title={url ? url.href : link.url || ""}
             >
               {url ? url.host : link.url}
             </Link>
