@@ -5,14 +5,13 @@ import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import { Sort } from "@/types/global";
-import { faLink, faSort } from "@fortawesome/free-solid-svg-icons";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 export default function Links() {
   const { links } = useLinkStore();
 
-  const [sortDropdown, setSortDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({ sort: sortBy });
@@ -24,39 +23,17 @@ export default function Links() {
           <div className="flex items-center gap-3">
             <FontAwesomeIcon
               icon={faLink}
-              className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
+              className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
             />
             <div>
-              <p className="text-3xl capitalize text-black dark:text-white font-thin">
-                All Links
-              </p>
+              <p className="text-3xl capitalize font-thin">All Links</p>
 
-              <p className="text-black dark:text-white">
-                Links from every Collections
-              </p>
+              <p>Links from every Collections</p>
             </div>
           </div>
 
           <div className="relative mt-2">
-            <div
-              onClick={() => setSortDropdown(!sortDropdown)}
-              id="sort-dropdown"
-              className="inline-flex rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 p-1"
-            >
-              <FontAwesomeIcon
-                icon={faSort}
-                id="sort-dropdown"
-                className="w-5 h-5 text-gray-500 dark:text-gray-300"
-              />
-            </div>
-
-            {sortDropdown ? (
-              <SortDropdown
-                sortBy={sortBy}
-                setSort={setSortBy}
-                toggleSortDropdown={() => setSortDropdown(!sortDropdown)}
-              />
-            ) : null}
+            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
           </div>
         </div>
         {links[0] ? (

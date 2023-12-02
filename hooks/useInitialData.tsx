@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import useTagStore from "@/store/tags";
 import useAccountStore from "@/store/account";
+import useLocalSettingsStore from "@/store/localSettings";
 
 export default function useInitialData() {
   const { status, data } = useSession();
@@ -10,10 +11,12 @@ export default function useInitialData() {
   const { setTags } = useTagStore();
   // const { setLinks } = useLinkStore();
   const { account, setAccount } = useAccountStore();
+  const { setSettings } = useLocalSettingsStore();
 
-  // Get account info
   useEffect(() => {
+    setSettings();
     if (status === "authenticated") {
+      // Get account info
       setAccount(data?.user.id as number);
     }
   }, [status, data]);
