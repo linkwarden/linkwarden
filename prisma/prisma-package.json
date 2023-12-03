@@ -1,0 +1,10 @@
+{
+  "name": "linkwarden-prismamigrate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "@prisma/client": "^4.16.2",
+    "prisma": "^5.1.0"
+  }
+}
