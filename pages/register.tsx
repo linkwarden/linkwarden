@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
-import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
 
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
 
 type FormData = {
   name: string;
