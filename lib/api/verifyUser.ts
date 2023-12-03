@@ -31,13 +31,18 @@ export default async function verifyUser({
       subscriptions: true,
     },
   });
+  const ssoUser = await prisma.account.findFirst({
+    where: {
+      userId: userId,
+    },
+  });
 
   if (!user) {
     res.status(404).json({ response: "User not found." });
     return null;
   }
 
-  if (!user.username) {
+  if (!user.username && !ssoUser) { // SSO users don't need a username
     res.status(401).json({
       response: "Username not found.",
     });
