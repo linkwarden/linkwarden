@@ -179,7 +179,7 @@ declare global {
 
             // Google
             NEXT_PUBLIC_GOOGLE_ENABLED?: string;
-            NEXT_PUBLIC_GOOGLE_CUSTOM_NAME?: string;
+            GOOGLE_CUSTOM_NAME?: string;
             GOOGLE_CLIENT_ID?: string;
             GOOGLE_CLIENT_SECRET?: string;
 
