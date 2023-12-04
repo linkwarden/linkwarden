@@ -169,7 +169,7 @@ export default function PublicCollections() {
                 ) : null}
               </div>
 
-              <p className="text-neutral text-xs">
+              <p className="text-neutral text-sm font-semibold">
                 By {collectionOwner.name}
                 {collection.members.length > 0
                   ? ` and ${collection.members.length} others`

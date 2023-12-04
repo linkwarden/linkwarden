@@ -133,7 +133,7 @@ export default function Index() {
                   </div>
                 ) : null}
               </div>
-              <p className="text-neutral text-xs">
+              <p className="text-neutral text-sm font-semibold">
                 By {collectionOwner.name}
                 {activeCollection.members.length > 0
                   ? ` and ${activeCollection.members.length} others`

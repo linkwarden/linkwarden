@@ -110,7 +110,10 @@ export default function EditCollectionModal({
           </div>
         </div>
 
-        <button className="btn btn-accent w-fit ml-auto" onClick={submit}>
+        <button
+          className="btn btn-accent text-white w-fit ml-auto"
+          onClick={submit}
+        >
           Save
         </button>
       </div>

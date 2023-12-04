@@ -193,7 +193,7 @@ export default function NewLinkModal({ onClose }: Props) {
           <p>{optionsExpanded ? "Hide" : "More"} Options</p>
         </div>
 
-        <button className="btn btn-accent" onClick={submit}>
+        <button className="btn btn-accent text-white" onClick={submit}>
           Create Link
         </button>
       </div>

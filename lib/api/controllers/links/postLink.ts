@@ -75,7 +75,6 @@ export default async function postLink(
       name: link.name,
       description,
       type: linkType,
-      readabilityPath: "pending",
       collection: {
         connectOrCreate: {
           where: {
@@ -118,10 +117,32 @@ export default async function postLink(
     ? urlHandler(newLink.id, newLink.url, userId)
     : undefined;
 
-  linkType === "pdf" ? pdfHandler(newLink.id, newLink.url) : undefined;
+  newLink.url && linkType === "pdf"
+    ? pdfHandler(newLink.id, newLink.url)
+    : undefined;
 
-  linkType === "image"
+  newLink.url && linkType === "image"
     ? imageHandler(newLink.id, newLink.url, imageExtension)
+    : undefined;
+
+  !newLink.url && linkType === "pdf"
+    ? await prisma.link.update({
+        where: { id: newLink.id },
+        data: {
+          pdfPath: "pending",
+          lastPreserved: new Date().toISOString(),
+        },
+      })
+    : undefined;
+
+  !newLink.url && linkType === "image"
+    ? await prisma.link.update({
+        where: { id: newLink.id },
+        data: {
+          screenshotPath: "pending",
+          lastPreserved: new Date().toISOString(),
+        },
+      })
     : undefined;
 
   return { response: newLink, status: 200 };
