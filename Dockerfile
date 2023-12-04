@@ -48,7 +48,7 @@ RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/stadockertic
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Add Prisma; needed for prisma migrate deploy
 COPY --from=deps --chown=nextjs:nodejs /prismabase/node_modules ./node_modules
