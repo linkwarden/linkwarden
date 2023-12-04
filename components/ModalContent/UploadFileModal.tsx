@@ -126,7 +126,6 @@ export default function UploadFileModal({ onClose }: Props) {
           const formBody = new FormData();
           file && formBody.append("file", file);
 
-          console.log(formBody.get("file"));
           await fetch(
             `/api/v1/archives/${
               (response.data as LinkIncludingShortenedCollectionAndTags).id
