@@ -159,7 +159,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
       </div>
 
       <div className="flex justify-end items-center mt-5">
-        <button className="btn btn-accent" onClick={submit}>
+        <button className="btn btn-accent text-white" onClick={submit}>
           Save
         </button>
       </div>

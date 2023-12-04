@@ -218,7 +218,7 @@ export default function LinkCard({ link, count, className }: Props) {
             width={64}
             height={64}
             alt=""
-            className={`absolute w-12 duration-100 bg-white rounded-md p-1 bottom-5 right-5 select-none z-10`}
+            className={`absolute w-12 duration-100 bg-white shadow rounded-md p-1 bottom-5 right-5 select-none z-10`}
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;

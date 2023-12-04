@@ -180,7 +180,7 @@ export default function EditCollectionSharingModal({
                     setMemberState
                   )
                 }
-                className="btn btn-primary btn-square btn-sm h-10 w-10"
+                className="btn btn-accent text-white btn-square btn-sm h-10 w-10"
               >
                 <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
               </div>
@@ -436,7 +436,7 @@ export default function EditCollectionSharingModal({
 
         {permissions === true && (
           <button
-            className="btn btn-accent w-fit ml-auto mt-3"
+            className="btn btn-accent text-white w-fit ml-auto mt-3"
             onClick={submit}
           >
             Save

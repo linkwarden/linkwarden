@@ -110,7 +110,6 @@ export default function UploadFileModal({ onClose }: Props) {
       else if (file.type === "image/png") fileType = ArchivedFormat.png;
       else if (file.type === "application/pdf") fileType = ArchivedFormat.pdf;
 
-      console.log(fileType);
       if (fileType !== null) {
         setSubmitLoader(true);
 
@@ -227,7 +226,7 @@ export default function UploadFileModal({ onClose }: Props) {
           <p>{optionsExpanded ? "Hide" : "More"} Options</p>
         </div>
 
-        <button className="btn btn-accent" onClick={submit}>
+        <button className="btn btn-accent text-white" onClick={submit}>
           Create Link
         </button>
       </div>

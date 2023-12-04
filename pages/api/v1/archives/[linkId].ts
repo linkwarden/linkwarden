@@ -89,8 +89,6 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
     });
 
     form.parse(req, async (err, fields, files) => {
-      console.log(files);
-
       const allowedMIMETypes = [
         "application/pdf",
         "image/png",
@@ -109,16 +107,30 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
           response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${MAX_UPLOAD_SIZE}MB.`,
         });
       } else {
-        console.log(files.file[0].mimetype);
-
         const fileBuffer = fs.readFileSync(files.file[0].filepath);
 
-        console.log(fileBuffer);
-
-        await createFile({
-          filePath: `archives/${collectionPermissions?.id}/${linkId + suffix}`,
-          data: fileBuffer,
+        const linkStillExists = await prisma.link.findUnique({
+          where: { id: linkId },
         });
+
+        if (linkStillExists) {
+          await createFile({
+            filePath: `archives/${collectionPermissions?.id}/${
+              linkId + suffix
+            }`,
+            data: fileBuffer,
+          });
+
+          await prisma.link.update({
+            where: { id: linkId },
+            data: {
+              screenshotPath: `archives/${collectionPermissions?.id}/${
+                linkId + suffix
+              }`,
+              lastPreserved: new Date().toISOString(),
+            },
+          });
+        }
 
         fs.unlinkSync(files.file[0].filepath);
       }
