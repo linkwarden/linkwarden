@@ -21,14 +21,6 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
 
-  let shortendURL;
-
-  try {
-    shortendURL = new URL(link.url).host.toLowerCase();
-  } catch (error) {
-    console.log(error);
-  }
-
   const { removeLink } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
 
@@ -50,7 +42,10 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl mb-5 font-thin text-red-500">Delete Link</p>
+      <p className="text-xl font-thin text-red-500">Delete Link</p>
+
+      <div className="divider my-3"></div>
+
       <div className="flex flex-col gap-3">
         <p>Are you sure you want to delete this Link?</p>
 

@@ -64,9 +64,11 @@ export default function DeleteCollectionModal({
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl mb-5 font-thin text-red-500">
+      <p className="text-xl font-thin text-red-500">
         {permissions === true ? "Delete" : "Leave"} Collection
       </p>
+
+      <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-3">
         {permissions === true ? (
