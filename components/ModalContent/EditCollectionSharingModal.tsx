@@ -95,9 +95,11 @@ export default function EditCollectionSharingModal({
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin mb-5">
+      <p className="text-xl font-thin">
         {permissions === true ? "Share and Collaborate" : "Team"}
       </p>
+
+      <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-3">
         {permissions === true && (
@@ -178,7 +180,7 @@ export default function EditCollectionSharingModal({
                     setMemberState
                   )
                 }
-                className="btn btn-primary text-white btn-square"
+                className="btn btn-primary btn-square btn-sm h-10 w-10"
               >
                 <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
               </div>
@@ -323,7 +325,7 @@ export default function EditCollectionSharingModal({
                                 }}
                               />
                               <span
-                                className={`peer-checked:bg-primary text-sm ${
+                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
                                   permissions === true
                                     ? "hover:bg-neutral-content duration-100"
                                     : ""
@@ -368,7 +370,7 @@ export default function EditCollectionSharingModal({
                                 }}
                               />
                               <span
-                                className={`peer-checked:bg-primary text-sm ${
+                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
                                   permissions === true
                                     ? "hover:bg-neutral-content duration-100"
                                     : ""
@@ -413,7 +415,7 @@ export default function EditCollectionSharingModal({
                                 }}
                               />
                               <span
-                                className={`peer-checked:bg-primary text-sm ${
+                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
                                   permissions === true
                                     ? "hover:bg-neutral-content duration-100"
                                     : ""

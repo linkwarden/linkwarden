@@ -24,7 +24,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url).host.toLowerCase();
+    shortendURL = new URL(link.url || "").host.toLowerCase();
   } catch (error) {
     console.log(error);
   }
@@ -78,20 +78,24 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl mb-5 font-thin">Edit Link</p>
+      <p className="text-xl font-thin">Edit Link</p>
 
-      <Link
-        href={link.url}
-        className="truncate text-neutral flex gap-2 mb-5 w-fit max-w-full"
-        title={link.url}
-        target="_blank"
-      >
-        <FontAwesomeIcon
-          icon={faLink}
-          className="mt-1 w-5 h-5 min-w-[1.25rem]"
-        />
-        <p>{shortendURL}</p>
-      </Link>
+      <div className="divider my-3"></div>
+
+      {link.url ? (
+        <Link
+          href={link.url}
+          className="truncate text-neutral flex gap-2 mb-5 w-fit max-w-full"
+          title={link.url}
+          target="_blank"
+        >
+          <FontAwesomeIcon
+            icon={faLink}
+            className="mt-1 w-5 h-5 min-w-[1.25rem]"
+          />
+          <p>{shortendURL}</p>
+        </Link>
+      ) : undefined}
 
       <div className="w-full">
         <p className="mb-2">Name</p>
