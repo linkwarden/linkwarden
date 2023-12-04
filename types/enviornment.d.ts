@@ -9,6 +9,7 @@ declare global {
       STORAGE_FOLDER?: string;
       AUTOSCROLL_TIMEOUT?: string;
       RE_ARCHIVE_LIMIT?: string;
+      NEXT_PUBLIC_MAX_UPLOAD_SIZE?: string;
 
       SPACES_KEY?: string;
       SPACES_SECRET?: string;

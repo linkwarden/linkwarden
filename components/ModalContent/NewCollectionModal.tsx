@@ -54,7 +54,9 @@ export default function NewCollectionModal({ onClose }: Props) {
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl mb-5 font-thin">Create a New Collection</p>
+      <p className="text-xl font-thin">Create a New Collection</p>
+
+      <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
