@@ -165,7 +165,7 @@ export default function Index() {
                   height={42}
                   alt=""
                   id={"favicon-" + link.id}
-                  className="select-none mt-2 w-10 rounded-md shadow border-[3px] border-base-100 bg-base-100 aspect-square"
+                  className="bg-white shadow rounded-md p-1 bottom-5 right-5 select-none"
                   draggable="false"
                   onLoad={(e) => {
                     try {
@@ -239,9 +239,9 @@ export default function Index() {
                   <Link key={i} href={`/tags/${e.id}`} className="z-10">
                     <p
                       title={e.name}
-                      className="btn btn-xs btn-outline truncate max-w-[19rem]"
+                      className="btn btn-xs btn-ghost truncate max-w-[19rem]"
                     >
-                      {e.name}
+                      #{e.name}
                     </p>
                   </Link>
                 ))}

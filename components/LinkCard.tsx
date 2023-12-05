@@ -218,7 +218,7 @@ export default function LinkCard({ link, count, className }: Props) {
             width={64}
             height={64}
             alt=""
-            className={`absolute w-12 duration-100 bg-white shadow rounded-md p-1 bottom-5 right-5 select-none z-10`}
+            className={`absolute w-12 bg-white shadow rounded-md p-1 bottom-5 right-5 select-none z-10`}
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
@@ -250,7 +250,7 @@ export default function LinkCard({ link, count, className }: Props) {
               <p className="truncate capitalize w-full">{collection?.name}</p>
             </Link>
 
-            {/* {link.tags[0] ? (
+            {link.tags[0] ? (
               <div className="flex gap-3 items-center flex-wrap my-2 truncate relative">
                 <div className="flex gap-1 items-center flex-nowrap">
                   {link.tags.map((e, i) => (
@@ -260,15 +260,17 @@ export default function LinkCard({ link, count, className }: Props) {
                       onClick={(e) => {
                         e.stopPropagation();
                       }}
-                      className="btn btn-xs btn-outline truncate max-w-[19rem]"
+                      className="btn btn-xs btn-ghost truncate max-w-[19rem]"
                     >
-                      {e.name}
+                      #{e.name}
                     </Link>
                   ))}
                 </div>
                 <div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent to-base-200 to-35%"></div>
               </div>
-            ) : undefined} */}
+            ) : (
+              <p className="text-xs my-2 p-1 font-semibold italic">No Tags</p>
+            )}
 
             <Link
               href={link.url || ""}
