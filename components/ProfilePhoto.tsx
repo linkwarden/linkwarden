@@ -31,7 +31,7 @@ export default function ProfilePhoto({
 
   return !image ? (
     <div
-      className={`avatar placeholder ${className || ""} ${
+      className={`avatar drop-shadow-md placeholder ${className || ""} ${
         dimensionClass || "w-8 h-8 "
       }`}
     >

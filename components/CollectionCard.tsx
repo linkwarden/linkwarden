@@ -121,7 +121,7 @@ export default function CollectionCard({ collection, className }: Props) {
         {collectionOwner.id ? (
           <ProfilePhoto
             src={collectionOwner.image || undefined}
-            dimensionClass="w-7 h-7"
+            name={collectionOwner.name}
           />
         ) : undefined}
         {collection.members
@@ -131,13 +131,14 @@ export default function CollectionCard({ collection, className }: Props) {
               <ProfilePhoto
                 key={i}
                 src={e.user.image ? e.user.image : undefined}
+                name={e.user.name}
                 className="-ml-3"
               />
             );
           })
           .slice(0, 3)}
         {collection.members.length - 3 > 0 ? (
-          <div className={`avatar placeholder -ml-3`}>
+          <div className={`avatar drop-shadow-md placeholder -ml-3`}>
             <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
               <span>+{collection.members.length - 3}</span>
             </div>
