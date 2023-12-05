@@ -44,7 +44,7 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin text-red-500">Delete Link</p>
 
-      <div className="divider my-3"></div>
+      <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
         <p>Are you sure you want to delete this Link?</p>

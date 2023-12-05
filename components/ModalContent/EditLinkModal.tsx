@@ -80,7 +80,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">Edit Link</p>
 
-      <div className="divider my-3"></div>
+      <div className="divider mb-3 mt-1"></div>
 
       {link.url ? (
         <Link

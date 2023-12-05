@@ -104,20 +104,31 @@ export default function UploadFileModal({ onClose }: Props) {
   const submit = async () => {
     if (!submitLoader && file) {
       let fileType: ArchivedFormat | null = null;
+      let linkType: "url" | "image" | "pdf" | null = null;
 
-      if (file?.type === "image/jpg" || file.type === "image/jpeg")
+      if (file?.type === "image/jpg" || file.type === "image/jpeg") {
         fileType = ArchivedFormat.jpeg;
-      else if (file.type === "image/png") fileType = ArchivedFormat.png;
-      else if (file.type === "application/pdf") fileType = ArchivedFormat.pdf;
+        linkType = "image";
+      } else if (file.type === "image/png") {
+        fileType = ArchivedFormat.png;
+        linkType = "image";
+      } else if (file.type === "application/pdf") {
+        fileType = ArchivedFormat.pdf;
+        linkType = "pdf";
+      }
 
-      if (fileType !== null) {
+      if (fileType !== null && linkType !== null) {
         setSubmitLoader(true);
 
         let response;
 
         const load = toast.loading("Creating...");
 
-        response = await addLink(link);
+        response = await addLink({
+          ...link,
+          type: linkType,
+          name: link.name ? link.name : file.name.replace(/\.[^/.]+$/, ""),
+        });
 
         toast.dismiss(load);
 
@@ -150,7 +161,7 @@ export default function UploadFileModal({ onClose }: Props) {
       <div className="flex gap-2 items-start">
         <p className="text-xl font-thin">Upload File</p>
       </div>
-      <div className="divider my-3"></div>
+      <div className="divider mb-3 mt-1"></div>
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">
           <p className="mb-2">File</p>
