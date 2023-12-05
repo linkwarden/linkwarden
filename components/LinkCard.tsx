@@ -257,10 +257,7 @@ export default function LinkCard({ link, count, className }: Props) {
             }}
             className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
           >
-            <FontAwesomeIcon
-              icon={faLink}
-              className="mt-1 w-4 h-4 text-primary"
-            />
+            <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
             <p className="truncate w-full">{shortendURL}</p>
           </Link>
         ) : (
