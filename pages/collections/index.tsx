@@ -57,7 +57,7 @@ export default function Collections() {
                     className="w-5 h-5"
                   />
                 </div>
-                <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
+                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
                   <li>
                     <div
                       role="button"

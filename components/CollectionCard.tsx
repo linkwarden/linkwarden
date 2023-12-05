@@ -65,7 +65,7 @@ export default function CollectionCard({ collection, className }: Props) {
 
   return (
     <div className="relative">
-      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-10">
+      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-20">
         <div
           tabIndex={0}
           role="button"

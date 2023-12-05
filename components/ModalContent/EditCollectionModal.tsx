@@ -51,7 +51,7 @@ export default function EditCollectionModal({
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">Edit Collection Info</p>
 
-      <div className="divider my-3"></div>
+      <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
