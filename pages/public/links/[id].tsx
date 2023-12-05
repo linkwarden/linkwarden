@@ -239,14 +239,10 @@ export default function Index() {
                   <Link
                     key={i}
                     href={"/public/collections/20?q=" + e.name}
-                    className="z-10"
+                    title={e.name}
+                    className="z-10 btn btn-xs btn-ghost truncate max-w-[19rem]"
                   >
-                    <p
-                      title={e.name}
-                      className="btn btn-xs btn-outline truncate max-w-[19rem]"
-                    >
-                      {e.name}
-                    </p>
+                    #{e.name}
                   </Link>
                 ))}
               </div>
