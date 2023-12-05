@@ -120,7 +120,7 @@ export default function NewLinkModal({ onClose }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">Create a New Link</p>
 
-      <div className="divider my-3"></div>
+      <div className="divider mb-3 mt-1"></div>
 
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">

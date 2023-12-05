@@ -99,7 +99,7 @@ export default function EditCollectionSharingModal({
         {permissions === true ? "Share and Collaborate" : "Team"}
       </p>
 
-      <div className="divider my-3"></div>
+      <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
         {permissions === true && (
@@ -203,7 +203,7 @@ export default function EditCollectionSharingModal({
 
             <div className="flex flex-col gap-3 rounded-md">
               <div
-                className="relative border px-2 rounded-xl border-neutral-content bg-base-200 flex min-h-[7rem] sm:min-h-[5rem] gap-2 justify-between"
+                className="relative border px-2 rounded-xl border-neutral-content bg-base-200 flex min-h-[6rem] sm:min-h-[4.1rem] gap-2 justify-between"
                 title={`@${collectionOwner.username} is the owner of this collection.`}
               >
                 <div className="flex items-center gap-2 w-full">

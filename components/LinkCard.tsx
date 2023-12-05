@@ -13,7 +13,11 @@ import Image from "next/image";
 import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import useAccountStore from "@/store/account";
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
+import {
+  faCalendarDays,
+  faFileImage,
+  faFilePdf,
+} from "@fortawesome/free-regular-svg-icons";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
 import isValidUrl from "@/lib/shared/isValidUrl";
@@ -210,62 +214,79 @@ export default function LinkCard({ link, count, className }: Props) {
 
       <div
         onClick={() => router.push("/links/" + link.id)}
-        className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-4"
+        className="flex flex-col justify-between cursor-pointer h-full w-full gap-1 p-3"
       >
-        {url && (
+        {link.url && url ? (
           <Image
             src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
             width={64}
             height={64}
             alt=""
-            className={`absolute w-12 bg-white shadow rounded-md p-1 bottom-5 right-5 select-none z-10`}
+            className={`absolute w-12 bg-white shadow rounded-md p-1 bottom-3 right-3 select-none z-10`}
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
               target.style.display = "none";
             }}
           />
+        ) : link.type === "pdf" ? (
+          <FontAwesomeIcon
+            icon={faFilePdf}
+            className="absolute h-12 w-12 bg-primary text-primary-content shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
+          />
+        ) : link.type === "image" ? (
+          <FontAwesomeIcon
+            icon={faFileImage}
+            className="absolute h-12 w-12 bg-primary text-primary-content shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
+          />
+        ) : undefined}
+
+        <div className="flex items-baseline gap-1">
+          <p className="text-sm text-neutral">{count + 1}</p>
+          <p className="text-lg truncate w-full pr-8">
+            {unescapeString(link.name || link.description) || shortendURL}
+          </p>
+        </div>
+
+        {link.type === "url" ? (
+          <Link
+            href={link.url || ""}
+            target="_blank"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
+          >
+            <FontAwesomeIcon
+              icon={faLink}
+              className="mt-1 w-4 h-4 text-primary"
+            />
+            <p className="truncate w-full">{shortendURL}</p>
+          </Link>
+        ) : (
+          <div className="badge badge-primary badge-sm my-1">{link.type}</div>
         )}
 
-        <div className="flex justify-between gap-5 w-full h-full z-0">
-          <div className="flex flex-col justify-between w-full">
-            <div className="flex items-baseline gap-1">
-              <p className="text-sm text-neutral">{count + 1}</p>
-              <p className="text-lg truncate capitalize w-full pr-8">
-                {unescapeString(link.name || link.description)}
-              </p>
-            </div>
-            <Link
-              href={`/collections/${link.collection.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="flex items-center gap-1 max-w-full w-fit my-1 hover:opacity-70 duration-100"
-            >
-              <FontAwesomeIcon
-                icon={faFolder}
-                className="w-4 h-4 mt-1 drop-shadow"
-                style={{ color: collection?.color }}
-              />
-              <p className="truncate capitalize w-full">{collection?.name}</p>
-            </Link>
+        <Link
+          href={`/collections/${link.collection.id}`}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
+        >
+          <FontAwesomeIcon
+            icon={faFolder}
+            className="w-4 h-4 mt-1 drop-shadow"
+            style={{ color: collection?.color }}
+          />
+          <p className="truncate capitalize w-full">{collection?.name}</p>
+        </Link>
 
-            <Link
-              href={link.url || ""}
-              target="_blank"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
-            >
-              <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
-              <p className="truncate w-full">{shortendURL}</p>
-            </Link>
-            <div className="flex items-center gap-1 text-neutral">
-              <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
-              <p>{formattedDate}</p>
-            </div>
-            {link.tags[0] ? (
+        <div className="flex items-center gap-1 text-neutral">
+          <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
+          <p>{formattedDate}</p>
+        </div>
+        {/* {link.tags[0] ? (
               <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
                 <div className="flex gap-1 items-center flex-nowrap">
                   {link.tags.map((e, i) => (
@@ -285,9 +306,7 @@ export default function LinkCard({ link, count, className }: Props) {
               </div>
             ) : (
               <p className="text-xs mt-2 p-1 font-semibold italic">No Tags</p>
-            )}
-          </div>
-        </div>
+            )} */}
       </div>
       {editLinkModal ? (
         <EditLinkModal

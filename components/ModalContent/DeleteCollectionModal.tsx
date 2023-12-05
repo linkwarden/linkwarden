@@ -68,7 +68,7 @@ export default function DeleteCollectionModal({
         {permissions === true ? "Delete" : "Leave"} Collection
       </p>
 
-      <div className="divider my-3"></div>
+      <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
         {permissions === true ? (
