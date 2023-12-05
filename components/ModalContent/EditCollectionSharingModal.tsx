@@ -211,6 +211,7 @@ export default function EditCollectionSharingModal({
                     src={
                       collectionOwner.image ? collectionOwner.image : undefined
                     }
+                    name={collectionOwner.name}
                   />
                   <div className="w-full">
                     <div className="flex items-center gap-1 w-full justify-between">
@@ -259,6 +260,7 @@ export default function EditCollectionSharingModal({
                       <div className="flex items-center gap-2">
                         <ProfilePhoto
                           src={e.user.image ? e.user.image : undefined}
+                          name={e.user.name}
                         />
                         <div>
                           <p className="text-sm font-bold">{e.user.name}</p>

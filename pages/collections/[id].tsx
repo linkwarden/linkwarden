@@ -111,7 +111,10 @@ export default function Index() {
                 onClick={() => setEditCollectionSharingModal(true)}
               >
                 {collectionOwner.id ? (
-                  <ProfilePhoto src={collectionOwner.image || undefined} />
+                  <ProfilePhoto
+                    src={collectionOwner.image || undefined}
+                    name={collectionOwner.name}
+                  />
                 ) : undefined}
                 {activeCollection.members
                   .sort((a, b) => (a.userId as number) - (b.userId as number))
@@ -121,12 +124,13 @@ export default function Index() {
                         key={i}
                         src={e.user.image ? e.user.image : undefined}
                         className="-ml-3"
+                        name={e.user.name}
                       />
                     );
                   })
                   .slice(0, 3)}
                 {activeCollection.members.length - 3 > 0 ? (
-                  <div className={`avatar placeholder -ml-3`}>
+                  <div className={`avatar drop-shadow-md placeholder -ml-3`}>
                     <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
                       <span>+{activeCollection.members.length - 3}</span>
                     </div>

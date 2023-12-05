@@ -250,8 +250,23 @@ export default function LinkCard({ link, count, className }: Props) {
               <p className="truncate capitalize w-full">{collection?.name}</p>
             </Link>
 
+            <Link
+              href={link.url || ""}
+              target="_blank"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
+            >
+              <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
+              <p className="truncate w-full">{shortendURL}</p>
+            </Link>
+            <div className="flex items-center gap-1 text-neutral">
+              <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
+              <p>{formattedDate}</p>
+            </div>
             {link.tags[0] ? (
-              <div className="flex gap-3 items-center flex-wrap my-2 truncate relative">
+              <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
                 <div className="flex gap-1 items-center flex-nowrap">
                   {link.tags.map((e, i) => (
                     <Link
@@ -269,24 +284,8 @@ export default function LinkCard({ link, count, className }: Props) {
                 <div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent to-base-200 to-35%"></div>
               </div>
             ) : (
-              <p className="text-xs my-2 p-1 font-semibold italic">No Tags</p>
+              <p className="text-xs mt-2 p-1 font-semibold italic">No Tags</p>
             )}
-
-            <Link
-              href={link.url || ""}
-              target="_blank"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
-            >
-              <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
-              <p className="truncate w-full">{shortendURL}</p>
-            </Link>
-            <div className="flex items-center gap-1 text-neutral">
-              <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
-              <p>{formattedDate}</p>
-            </div>
           </div>
         </div>
       </div>
