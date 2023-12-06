@@ -26,6 +26,8 @@ import unescapeString from "@/lib/client/unescapeString";
 import { useRouter } from "next/router";
 import EditLinkModal from "./ModalContent/EditLinkModal";
 import DeleteLinkModal from "./ModalContent/DeleteLinkModal";
+import ExpandedLink from "./ModalContent/ExpandedLink";
+import PreservedFormatsModal from "./ModalContent/PreservedFormatsModal";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -126,6 +128,8 @@ export default function LinkCard({ link, count, className }: Props) {
 
   const [editLinkModal, setEditLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
+  const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
+  const [expandedLink, setExpandedLink] = useState(false);
 
   return (
     <div
@@ -187,10 +191,11 @@ export default function LinkCard({ link, count, className }: Props) {
                   tabIndex={0}
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
-                    updateArchive();
+                    setPreservedFormatsModal(true);
+                    // updateArchive();
                   }}
                 >
-                  Refresh Link
+                  Preserved Formats
                 </div>
               </li>
             ) : undefined}
@@ -212,8 +217,12 @@ export default function LinkCard({ link, count, className }: Props) {
         </div>
       ) : undefined}
 
-      <div
-        onClick={() => router.push("/links/" + link.id)}
+      <Link
+        href={"/links/" + link.id}
+        // onClick={
+        //   () => router.push("/links/" + link.id)
+        //   // setExpandedLink(true)
+        // }
         className="flex flex-col justify-between cursor-pointer h-full w-full gap-1 p-3"
       >
         {link.url && url ? (
@@ -232,12 +241,12 @@ export default function LinkCard({ link, count, className }: Props) {
         ) : link.type === "pdf" ? (
           <FontAwesomeIcon
             icon={faFilePdf}
-            className="absolute h-12 w-12 bg-primary text-primary-content shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
+            className="absolute h-12 w-12 bg-primary/20 text-primary shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
           />
         ) : link.type === "image" ? (
           <FontAwesomeIcon
             icon={faFileImage}
-            className="absolute h-12 w-12 bg-primary text-primary-content shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
+            className="absolute h-12 w-12 bg-primary/20 text-primary shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
           />
         ) : undefined}
 
@@ -248,14 +257,14 @@ export default function LinkCard({ link, count, className }: Props) {
           </p>
         </div>
 
-        {link.type === "url" ? (
+        {link.url ? (
           <Link
             href={link.url || ""}
             target="_blank"
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
+            className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-60 duration-100"
           >
             <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
             <p className="truncate w-full">{shortendURL}</p>
@@ -304,7 +313,7 @@ export default function LinkCard({ link, count, className }: Props) {
             ) : (
               <p className="text-xs mt-2 p-1 font-semibold italic">No Tags</p>
             )} */}
-      </div>
+      </Link>
       {editLinkModal ? (
         <EditLinkModal
           onClose={() => setEditLinkModal(false)}
@@ -317,6 +326,15 @@ export default function LinkCard({ link, count, className }: Props) {
           activeLink={link}
         />
       ) : undefined}
+      {preservedFormatsModal ? (
+        <PreservedFormatsModal
+          onClose={() => setPreservedFormatsModal(false)}
+          activeLink={link}
+        />
+      ) : undefined}
+      {/* {expandedLink ? (
+        <ExpandedLink onClose={() => setExpandedLink(false)} link={link} />
+      ) : undefined} */}
     </div>
   );
 }

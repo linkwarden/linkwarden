@@ -64,7 +64,6 @@ export default function NewLinkModal({ onClose }: Props) {
   };
 
   useEffect(() => {
-    setOptionsExpanded(false);
     if (router.query.id) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)

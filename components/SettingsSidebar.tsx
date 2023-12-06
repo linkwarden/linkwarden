@@ -21,7 +21,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
-  const LINKWARDEN_VERSION = "v2.3.0";
+  const LINKWARDEN_VERSION = "v2.4.0";
 
   const { collections } = useCollectionStore();
 
