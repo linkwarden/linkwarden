@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import getTitle from "@/lib/api/getTitle";
+import getTitle from "@/lib/shared/getTitle";
 import urlHandler from "@/lib/api/urlHandler";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
