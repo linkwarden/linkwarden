@@ -13,7 +13,11 @@ import unescapeString from "@/lib/client/unescapeString";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import DOMPurify from "dompurify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBoxesStacked, faFolder } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBoxesStacked,
+  faFolder,
+  faLink,
+} from "@fortawesome/free-solid-svg-icons";
 import useModalStore from "@/store/modals";
 import { useSession } from "next-auth/react";
 import useLocalSettingsStore from "@/store/localSettings";
@@ -118,19 +122,19 @@ export default function Index() {
 
     if (colorPalette && banner && bannerInner) {
       if (colorPalette[0] && colorPalette[1]) {
-        banner.style.background = `linear-gradient(to right, ${rgbToHex(
+        banner.style.background = `linear-gradient(to bottom, ${rgbToHex(
           colorPalette[0][0],
           colorPalette[0][1],
           colorPalette[0][2]
-        )}30, ${rgbToHex(
+        )}20, ${rgbToHex(
           colorPalette[1][0],
           colorPalette[1][1],
           colorPalette[1][2]
-        )}30)`;
+        )}20)`;
       }
 
       if (colorPalette[2] && colorPalette[3]) {
-        bannerInner.style.background = `linear-gradient(to left, ${rgbToHex(
+        bannerInner.style.background = `linear-gradient(to bottom, ${rgbToHex(
           colorPalette[2][0],
           colorPalette[2][1],
           colorPalette[2][2]
@@ -145,19 +149,15 @@ export default function Index() {
 
   return (
     <LinkLayout>
-      <div
-        className={`flex flex-col max-w-screen-md h-full ${
-          settings.theme === "dark" ? "banner-dark-mode" : "banner-light-mode"
-        }`}
-      >
+      <div className={`flex flex-col max-w-screen-md h-full`}>
         <div
           id="link-banner"
-          className="link-banner p-5 mb-4 relative bg-opacity-10 border border-solid border-neutral-content shadow-md"
+          className="link-banner relative bg-opacity-10 border-neutral-content"
         >
-          <div id="link-banner-inner" className="link-banner-inner"></div>
+          {/* <div id="link-banner-inner" className="link-banner-inner"></div> */}
 
           <div className={`relative flex flex-col gap-3 items-start`}>
-            <div className="flex gap-3 items-end">
+            <div className="flex gap-3 items-start">
               {!imageError && link?.url && (
                 <Image
                   src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
@@ -165,7 +165,7 @@ export default function Index() {
                   height={42}
                   alt=""
                   id={"favicon-" + link.id}
-                  className="bg-white shadow rounded-md p-1 bottom-5 right-5 select-none"
+                  className="bg-white shadow rounded-md p-1 select-none mt-1"
                   draggable="false"
                   onLoad={(e) => {
                     try {
@@ -184,76 +184,76 @@ export default function Index() {
                   }}
                 />
               )}
-
-              <div className="flex gap-2 text-sm text-neutral">
-                <p className=" min-w-fit">
-                  {link?.createdAt
-                    ? new Date(link?.createdAt).toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                    : undefined}
+              <div className="flex flex-col">
+                <p className="text-xl">
+                  {unescapeString(link?.name || link?.description || "")}
                 </p>
                 {link?.url ? (
-                  <>
-                    <p>•</p>
-                    <Link
-                      href={link?.url || ""}
-                      title={link?.url}
-                      target="_blank"
-                      className="hover:opacity-60 duration-100 break-all"
-                    >
-                      {isValidUrl(link?.url || "")
-                        ? new URL(link?.url as string).host
-                        : undefined}
-                    </Link>
-                  </>
+                  <Link
+                    href={link?.url || ""}
+                    title={link?.url}
+                    target="_blank"
+                    className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
+                  >
+                    <FontAwesomeIcon icon={faLink} className="w-4 h-4" />
+
+                    {isValidUrl(link?.url || "")
+                      ? new URL(link?.url as string).host
+                      : undefined}
+                  </Link>
                 ) : undefined}
               </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <p className="capitalize text-2xl sm:text-3xl font-thin">
-                {unescapeString(link?.name || link?.description || "")}
-              </p>
-
-              <div className="flex gap-1 items-center flex-wrap">
-                <Link
-                  href={`/collections/${link?.collection.id}`}
-                  className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
+            <div className="flex gap-1 items-center flex-wrap">
+              <Link
+                href={`/collections/${link?.collection.id}`}
+                className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
+              >
+                <FontAwesomeIcon
+                  icon={faFolder}
+                  className="w-5 h-5 drop-shadow"
+                  style={{ color: link?.collection.color }}
+                />
+                <p
+                  title={link?.collection.name}
+                  className="text-lg truncate max-w-[12rem]"
                 >
-                  <FontAwesomeIcon
-                    icon={faFolder}
-                    className="w-5 h-5 drop-shadow"
-                    style={{ color: link?.collection.color }}
-                  />
+                  {link?.collection.name}
+                </p>
+              </Link>
+              {link?.tags.map((e, i) => (
+                <Link key={i} href={`/tags/${e.id}`} className="z-10">
                   <p
-                    title={link?.collection.name}
-                    className="text-lg truncate max-w-[12rem]"
+                    title={e.name}
+                    className="btn btn-xs btn-ghost truncate max-w-[19rem]"
                   >
-                    {link?.collection.name}
+                    #{e.name}
                   </p>
                 </Link>
-                {link?.tags.map((e, i) => (
-                  <Link key={i} href={`/tags/${e.id}`} className="z-10">
-                    <p
-                      title={e.name}
-                      className="btn btn-xs btn-ghost truncate max-w-[19rem]"
-                    >
-                      #{e.name}
-                    </p>
-                  </Link>
-                ))}
-              </div>
+              ))}
             </div>
+
+            <p className="min-w-fit text-sm text-neutral">
+              {link?.createdAt
+                ? new Date(link?.createdAt).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : undefined}
+            </p>
+
+            {link?.name ? <p>{link?.description}</p> : undefined}
           </div>
         </div>
+
+        <div className="divider"></div>
 
         <div className="flex flex-col gap-5 h-full">
           {link?.readabilityPath?.startsWith("archives") ? (
             <div
-              className="line-break px-3 reader-view"
+              className="line-break px-1 reader-view"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(linkContent?.content || "") || "",
               }}
