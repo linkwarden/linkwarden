@@ -93,6 +93,8 @@ const useLinkStore = create<LinkStore>()((set) => ({
           };
         }
       });
+
+      return data;
     }
 
     return { ok: response.ok, data: data.response };

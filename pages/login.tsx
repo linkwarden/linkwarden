@@ -76,18 +76,17 @@ export default function Login() {
   return (
     <CenteredForm text="Sign in to your account">
       <form onSubmit={loginUser}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
-          
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           {process.env.NEXT_PUBLIC_DISABLE_LOGIN !== "true" ? (
           <div>
-          <p className="text-3xl text-black dark:text-white text-center font-extralight">
+          <p className="text-3xl text-center font-extralight">
             Enter your credentials
           </p>
 
-          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+          <div className="divider my-0"></div>
 
           <div>
-            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+            <p className="text-sm w-fit font-semibold mb-1">
               Username
               {emailEnabled ? " or Email" : undefined}
             </p>
@@ -96,29 +95,24 @@ export default function Login() {
               autoFocus={true}
               placeholder="johnny"
               value={form.username}
-              className="bg-white"
+              className="bg-base-100"
               onChange={(e) => setForm({ ...form, username: e.target.value })}
             />
           </div>
 
           <div className="w-full">
-            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-              Password
-            </p>
+            <p className="text-sm w-fit font-semibold mb-1">Password</p>
 
             <TextInput
               type="password"
               placeholder="••••••••••••••"
               value={form.password}
-              className="bg-white"
+              className="bg-base-100"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
             {emailEnabled && (
               <div className="w-fit ml-auto mt-1">
-                <Link
-                  href={"/forgot"}
-                  className="text-gray-500 dark:text-gray-400 font-semibold"
-                >
+                <Link href={"/forgot"} className="text-neutral font-semibold">
                   Forgot Password?
                 </Link>
               </div>
@@ -154,13 +148,8 @@ export default function Login() {
           {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION ===
           "true" ? undefined : (
             <div className="flex items-baseline gap-1 justify-center">
-              <p className="w-fit text-gray-500 dark:text-gray-400">
-                New here?
-              </p>
-              <Link
-                href={"/register"}
-                className="block text-black dark:text-white font-semibold"
-              >
+              <p className="w-fit text-neutral">New here?</p>
+              <Link href={"/register"} className="block font-semibold">
                 Sign Up
               </Link>
             </div>
