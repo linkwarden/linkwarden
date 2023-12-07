@@ -78,54 +78,61 @@ export default function Login() {
       <form onSubmit={loginUser}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           {process.env.NEXT_PUBLIC_DISABLE_LOGIN !== "true" ? (
-          <div>
-          <p className="text-3xl text-center font-extralight">
-            Enter your credentials
-          </p>
+            <div>
+              <p className="text-3xl text-center font-extralight">
+                Enter your credentials
+              </p>
 
-          <div className="divider my-0"></div>
+              <div className="divider my-0"></div>
 
-          <div>
-            <p className="text-sm w-fit font-semibold mb-1">
-              Username
-              {emailEnabled ? " or Email" : undefined}
-            </p>
+              <div>
+                <p className="text-sm w-fit font-semibold mb-1">
+                  Username
+                  {emailEnabled ? " or Email" : undefined}
+                </p>
 
-            <TextInput
-              autoFocus={true}
-              placeholder="johnny"
-              value={form.username}
-              className="bg-base-100"
-              onChange={(e) => setForm({ ...form, username: e.target.value })}
-            />
-          </div>
-
-          <div className="w-full">
-            <p className="text-sm w-fit font-semibold mb-1">Password</p>
-
-            <TextInput
-              type="password"
-              placeholder="••••••••••••••"
-              value={form.password}
-              className="bg-base-100"
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-            />
-            {emailEnabled && (
-              <div className="w-fit ml-auto mt-1">
-                <Link href={"/forgot"} className="text-neutral font-semibold">
-                  Forgot Password?
-                </Link>
+                <TextInput
+                  autoFocus={true}
+                  placeholder="johnny"
+                  value={form.username}
+                  className="bg-base-100"
+                  onChange={(e) =>
+                    setForm({ ...form, username: e.target.value })
+                  }
+                />
               </div>
-            )}
-          </div>
 
-          <SubmitButton
-            type="submit"
-            label="Login"
-            className=" w-full text-center"
-            loading={submitLoader}
-          />
-          </div>
+              <div className="w-full">
+                <p className="text-sm w-fit font-semibold mb-1">Password</p>
+
+                <TextInput
+                  type="password"
+                  placeholder="••••••••••••••"
+                  value={form.password}
+                  className="bg-base-100"
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
+                />
+                {emailEnabled && (
+                  <div className="w-fit ml-auto mt-1">
+                    <Link
+                      href={"/forgot"}
+                      className="text-neutral font-semibold"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              <SubmitButton
+                type="submit"
+                label="Login"
+                className=" w-full text-center"
+                loading={submitLoader}
+              />
+            </div>
           ) : undefined}
           {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true" ? (
             <SubmitButton
