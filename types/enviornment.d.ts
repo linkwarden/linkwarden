@@ -200,7 +200,7 @@ declare global {
 
             // Kakao
             NEXT_PUBLIC_KAKAO_ENABLED?: string;
-            KAOKAO_CUSTOM_NAME?: string;
+            KAKAO_CUSTOM_NAME?: string;
             KAKAO_CLIENT_ID?: string;
             KAKAO_CLIENT_SECRET?: string;
 
