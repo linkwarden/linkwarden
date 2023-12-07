@@ -5,17 +5,22 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
+import { getLogins } from "./api/v1/logins";
+import { InferGetServerSidePropsType } from "next";
 
 interface FormData {
   username: string;
   password: string;
 }
 
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
-const keycloakEnabled = process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED;
-const authentikEnabled = process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED;
+export const getServerSideProps = () => {
+  const availableLogins = getLogins();
+  return { props: { availableLogins } };
+};
 
-export default function Login() {
+export default function Login({
+  availableLogins,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const [form, setForm] = useState<FormData>({
@@ -49,118 +54,123 @@ export default function Login() {
     }
   }
 
-  async function loginUserKeycloak() {
+  async function loginUserButton(method: string) {
     setSubmitLoader(true);
 
     const load = toast.loading("Authenticating...");
 
-    const res = await signIn("keycloak", {});
+    const res = await signIn(method, {});
 
     toast.dismiss(load);
 
     setSubmitLoader(false);
   }
 
-  async function loginUserAuthentik() {
-    setSubmitLoader(true);
+  function displayLoginCredential() {
+    if (availableLogins.credentialsEnabled === "true") {
+      return (
+        <>
+          <p className="text-3xl text-black dark:text-white text-center font-extralight">
+            Enter your credentials
+          </p>
+          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+          <div>
+            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+              Username
+              {availableLogins.emailEnabled === "true"
+                ? " or Email"
+                : undefined}
+            </p>
 
-    const load = toast.loading("Authenticating...");
+            <TextInput
+              autoFocus={true}
+              placeholder="johnny"
+              value={form.username}
+              className="bg-base-100"
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+            />
+          </div>
+          <div className="w-full">
+            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+              Password
+            </p>
 
-    const res = await signIn("authentik", {});
+            <TextInput
+              type="password"
+              placeholder="••••••••••••••"
+              value={form.password}
+              className="bg-base-100"
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            {availableLogins.emailEnabled === "true" && (
+              <div className="w-fit ml-auto mt-1">
+                <Link
+                  href={"/forgot"}
+                  className="text-gray-500 dark:text-gray-400 font-semibold"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+            )}
+          </div>
+          <AccentSubmitButton
+            type="submit"
+            label="Login"
+            className=" w-full text-center"
+            loading={submitLoader}
+          />
 
-    toast.dismiss(load);
+          {availableLogins.buttonAuths.length > 0 ? (
+            <div className="divider my-1">OR</div>
+          ) : undefined}
+        </>
+      );
+    }
+  }
+  function displayLoginExternalButton() {
+    const Buttons: any = [];
+    availableLogins.buttonAuths.forEach((value, index) => {
+      Buttons.push(
+        <>
+          {index !== 0 ? <div className="divider my-1">OR</div> : undefined}
 
-    setSubmitLoader(false);
+          <AccentSubmitButton
+            key={index}
+            type="button"
+            onClick={() => loginUserButton(value.method)}
+            label={`Sign in with ${value.name}`}
+            className=" w-full text-center"
+            loading={submitLoader}
+          />
+        </>
+      );
+    });
+    return Buttons;
+  }
+
+  function displayRegistration() {
+    if (availableLogins.registrationDisabled !== "true") {
+      return (
+        <div className="flex items-baseline gap-1 justify-center">
+          <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
+          <Link
+            href={"/register"}
+            className="block text-black dark:text-white font-semibold"
+          >
+            Sign Up
+          </Link>
+        </div>
+      );
+    }
   }
 
   return (
     <CenteredForm text="Sign in to your account">
       <form onSubmit={loginUser}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
-          {process.env.NEXT_PUBLIC_DISABLE_LOGIN !== "true" ? (
-            <>
-              <p className="text-3xl text-center font-extralight">
-                Enter your credentials
-              </p>
-
-              <div className="divider my-0"></div>
-
-              <div>
-                <p className="text-sm w-fit font-semibold mb-1">
-                  Username
-                  {emailEnabled ? " or Email" : undefined}
-                </p>
-
-                <TextInput
-                  autoFocus={true}
-                  placeholder="johnny"
-                  value={form.username}
-                  className="bg-base-100"
-                  onChange={(e) =>
-                    setForm({ ...form, username: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="w-full">
-                <p className="text-sm w-fit font-semibold mb-1">Password</p>
-
-                <TextInput
-                  type="password"
-                  placeholder="••••••••••••••"
-                  value={form.password}
-                  className="bg-base-100"
-                  onChange={(e) =>
-                    setForm({ ...form, password: e.target.value })
-                  }
-                />
-                {emailEnabled && (
-                  <div className="w-fit ml-auto mt-1">
-                    <Link
-                      href={"/forgot"}
-                      className="text-neutral font-semibold"
-                    >
-                      Forgot Password?
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              <AccentSubmitButton
-                type="submit"
-                label="Login"
-                className="w-full text-center"
-                loading={submitLoader}
-              />
-            </>
-          ) : undefined}
-          {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true" ? (
-            <AccentSubmitButton
-              type="button"
-              onClick={loginUserKeycloak}
-              label="Sign in with Keycloak"
-              className="w-full text-center"
-              loading={submitLoader}
-            />
-          ) : undefined}
-          {process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true" ? (
-            <AccentSubmitButton
-              type="button"
-              onClick={loginUserAuthentik}
-              label="Sign in with Authentiks"
-              className="w-full text-center"
-              loading={submitLoader}
-            />
-          ) : undefined}
-          {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION ===
-          "true" ? undefined : (
-            <div className="flex items-baseline gap-1 justify-center">
-              <p className="w-fit text-neutral">New here?</p>
-              <Link href={"/register"} className="block font-semibold">
-                Sign Up
-              </Link>
-            </div>
-          )}
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+          {displayLoginCredential()}
+          {displayLoginExternalButton()}
+          {displayRegistration()}
         </div>
       </form>
     </CenteredForm>
