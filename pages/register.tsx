@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
+import AccentSubmitButton from "@/components/AccentSubmitButton";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
 
@@ -219,12 +220,12 @@ export default function Register() {
               </div>
             ) : undefined}
 
-            <button
+            <AccentSubmitButton
               type="submit"
-              className={`border primary-btn-gradient select-none duration-100 bg-black border-[#0071B7] hover:border-[#059bf8] rounded-lg text-center px-4 py-2 text-slate-200 hover:text-white `}
-            >
-              <p className="text-center w-full font-bold">Sign Up</p>
-            </button>
+              label="Sign Up"
+              className="w-full"
+              loading={submitLoader}
+            />
             <div className="flex items-baseline gap-1 justify-center">
               <p className="w-fit text-neutral">Already have an account?</p>
               <Link href={"/login"} className="block font-bold">

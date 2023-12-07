@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/SubmitButton";
+import AccentSubmitButton from "@/components/AccentSubmitButton";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
