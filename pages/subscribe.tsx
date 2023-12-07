@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import { Plan } from "@/types/global";
+import AccentSubmitButton from "@/components/AccentSubmitButton";
 
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -47,7 +48,7 @@ export default function Subscribe() {
           </p>
         </div>
 
-        <div className="flex text-white dark:text-black gap-3 border border-solid border-neutral-content w-4/5 mx-auto p-1 rounded-xl relative">
+        <div className="flex gap-3 border border-solid border-neutral-content w-4/5 mx-auto p-1 rounded-xl relative">
           <button
             onClick={() => setPlan(Plan.monthly)}
             className={`w-full duration-100 text-sm rounded-lg p-1 ${
@@ -95,14 +96,13 @@ export default function Subscribe() {
           </fieldset>
         </div>
 
-        <button
-          className={`border primary-btn-gradient select-none duration-100 bg-black border-[#0071B7] hover:border-[#059bf8] rounded-lg text-center px-4 py-2 text-slate-200 hover:text-white `}
-          onClick={() => {
-            if (!submitLoader) submit();
-          }}
-        >
-          <p className="text-center w-full font-bold">Complete Subscription!</p>
-        </button>
+        <AccentSubmitButton
+          type="button"
+          label="Complete Subscription!"
+          className="w-full"
+          onClick={submit}
+          loading={submitLoader}
+        />
 
         <div
           onClick={() => signOut()}

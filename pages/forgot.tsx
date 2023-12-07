@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/SubmitButton";
+import AccentSubmitButton from "@/components/AccentSubmitButton";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
@@ -73,10 +73,10 @@ export default function Forgot() {
             />
           </div>
 
-          <SubmitButton
+          <AccentSubmitButton
             type="submit"
             label="Send Login Link"
-            className="mt-2 w-full text-center"
+            className="mt-2 w-full"
             loading={submitLoader}
           />
           <div className="flex items-baseline gap-1 justify-center">

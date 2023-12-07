@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClose,
+  faFileExport,
+  faFileImport,
+} from "@fortawesome/free-solid-svg-icons";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
@@ -247,10 +251,14 @@ export default function Account() {
                 <div
                   tabIndex={0}
                   role="button"
-                  className="flex gap-2 text-sm btn btn-outline btn-neutral btn-xs"
+                  className="flex gap-2 text-sm btn btn-outline btn-neutral group"
                   id="import-dropdown"
                 >
-                  Import From
+                  <FontAwesomeIcon
+                    icon={faFileImport}
+                    className="w-5 h-5 duration-100"
+                  />
+                  <p>Import From</p>
                 </div>
                 <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
                   <li>
@@ -300,8 +308,12 @@ export default function Account() {
             <div>
               <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
-                <div className="btn btn-outline btn-neutral btn-xs">
-                  Export Data
+                <div className="flex w-fit gap-2 text-sm btn btn-outline btn-neutral group">
+                  <FontAwesomeIcon
+                    icon={faFileExport}
+                    className="w-5 h-5 duration-100"
+                  />
+                  <p>Export Data</p>
                 </div>
               </Link>
             </div>
