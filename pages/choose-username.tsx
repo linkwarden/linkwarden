@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import useAccountStore from "@/store/account";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
+import AccentSubmitButton from "@/components/AccentSubmitButton";
 
 export default function ChooseUsername() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -72,10 +73,10 @@ export default function ChooseUsername() {
             </p>
           </div>
 
-          <SubmitButton
+          <AccentSubmitButton
             type="submit"
             label="Complete Registration"
-            className="mt-2 w-full text-center"
+            className="mt-2 w-full"
             loading={submitLoader}
           />
 

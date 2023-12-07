@@ -181,11 +181,11 @@ body {
 }
 
 .primary-btn-gradient {
-  box-shadow: inset 0px -10px 10px #0071b7;
+  box-shadow: inset 0px -9px 10px oklch(var(--p));
 }
 
 .primary-btn-gradient:hover {
-  box-shadow: inset 0px -15px 10px #059bf8;
+  box-shadow: inset 0px -20px 40px #00436c;
 }
 
 .line-break * {
