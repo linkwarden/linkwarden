@@ -438,7 +438,7 @@ export default function EditCollectionSharingModal({
 
         {permissions === true && (
           <button
-            className="btn btn-accent text-white w-fit ml-auto mt-3"
+            className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto mt-3"
             onClick={submit}
           >
             Save
