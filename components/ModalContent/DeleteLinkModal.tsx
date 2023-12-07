@@ -11,6 +11,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../Modal";
+import { useRouter } from "next/router";
 
 type Props = {
   onClose: Function;
@@ -24,6 +25,8 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
   const { removeLink } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
 
+  const router = useRouter();
+
   useEffect(() => {
     setLink(activeLink);
   }, []);
@@ -36,6 +39,10 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
     toast.dismiss(load);
 
     response.ok && toast.success(`Link Deleted.`);
+
+    if (router.pathname.startsWith("/links/[id]")) {
+      router.push("/dashboard");
+    }
 
     onClose();
   };

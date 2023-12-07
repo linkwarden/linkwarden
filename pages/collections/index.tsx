@@ -44,35 +44,6 @@ export default function Collections() {
                 <p>Collections you own</p>
               </div>
             </div>
-            <div className="relative mt-2">
-              <div className="dropdown dropdown-bottom">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost btn-sm btn-square text-neutral"
-                >
-                  <FontAwesomeIcon
-                    icon={faEllipsis}
-                    title="More"
-                    className="w-5 h-5"
-                  />
-                </div>
-                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        setNewCollectionModal(true);
-                      }}
-                    >
-                      New Collection
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
 
           <div className="relative mt-2">

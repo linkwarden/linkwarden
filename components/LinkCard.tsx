@@ -69,7 +69,7 @@ export default function LinkCard({ link, count, className }: Props) {
     );
   }, [collections, links]);
 
-  const { removeLink, updateLink, getLink } = useLinkStore();
+  const { removeLink, updateLink } = useLinkStore();
 
   const pinLink = async () => {
     const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0];
@@ -85,23 +85,6 @@ export default function LinkCard({ link, count, className }: Props) {
 
     response.ok &&
       toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
-  };
-
-  const updateArchive = async () => {
-    const load = toast.loading("Sending request...");
-
-    const response = await fetch(`/api/v1/links/${link.id}/archive`, {
-      method: "PUT",
-    });
-
-    const data = await response.json();
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(`Link is being archived...`);
-      getLink(link.id as number);
-    } else toast.error(data.response);
   };
 
   const deleteLink = async () => {
@@ -227,7 +210,7 @@ export default function LinkCard({ link, count, className }: Props) {
       >
         {link.url && url ? (
           <Image
-            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
+            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
             width={64}
             height={64}
             alt=""
@@ -258,25 +241,24 @@ export default function LinkCard({ link, count, className }: Props) {
         </div>
 
         {link.url ? (
-          <Link
-            href={link.url || ""}
-            target="_blank"
+          <div
             onClick={(e) => {
-              e.stopPropagation();
+              e.preventDefault();
+              window.open(link.url || "", "_blank");
             }}
             className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-60 duration-100"
           >
             <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
             <p className="truncate w-full">{shortendURL}</p>
-          </Link>
+          </div>
         ) : (
           <div className="badge badge-primary badge-sm my-1">{link.type}</div>
         )}
 
-        <Link
-          href={`/collections/${link.collection.id}`}
+        <div
           onClick={(e) => {
-            e.stopPropagation();
+            e.preventDefault();
+            router.push(`/collections/${link.collection.id}`);
           }}
           className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
         >
@@ -286,7 +268,7 @@ export default function LinkCard({ link, count, className }: Props) {
             style={{ color: collection?.color }}
           />
           <p className="truncate capitalize w-full">{collection?.name}</p>
-        </Link>
+        </div>
 
         <div className="flex items-center gap-1 text-neutral">
           <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
