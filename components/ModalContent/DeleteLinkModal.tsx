@@ -11,6 +11,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLink, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../Modal";
+import { useRouter } from "next/router";
 
 type Props = {
   onClose: Function;
@@ -21,16 +22,10 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
 
-  let shortendURL;
-
-  try {
-    shortendURL = new URL(link.url).host.toLowerCase();
-  } catch (error) {
-    console.log(error);
-  }
-
   const { removeLink } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     setLink(activeLink);
@@ -45,12 +40,19 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
 
     response.ok && toast.success(`Link Deleted.`);
 
+    if (router.pathname.startsWith("/links/[id]")) {
+      router.push("/dashboard");
+    }
+
     onClose();
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl mb-5 font-thin text-red-500">Delete Link</p>
+      <p className="text-xl font-thin text-red-500">Delete Link</p>
+
+      <div className="divider mb-3 mt-1"></div>
+
       <div className="flex flex-col gap-3">
         <p>Are you sure you want to delete this Link?</p>
 

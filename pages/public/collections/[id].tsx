@@ -145,7 +145,7 @@ export default function PublicCollections() {
                 {collectionOwner.id ? (
                   <ProfilePhoto
                     src={collectionOwner.image || undefined}
-                    dimensionClass="w-7 h-7"
+                    name={collectionOwner.name}
                   />
                 ) : undefined}
                 {collection.members
@@ -156,12 +156,13 @@ export default function PublicCollections() {
                         key={i}
                         src={e.user.image ? e.user.image : undefined}
                         className="-ml-3"
+                        name={e.user.name}
                       />
                     );
                   })
                   .slice(0, 3)}
                 {collection.members.length - 3 > 0 ? (
-                  <div className={`avatar placeholder -ml-3`}>
+                  <div className={`avatar drop-shadow-md placeholder -ml-3`}>
                     <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
                       <span>+{collection.members.length - 3}</span>
                     </div>
@@ -169,7 +170,7 @@ export default function PublicCollections() {
                 ) : null}
               </div>
 
-              <p className="text-neutral text-xs">
+              <p className="text-neutral text-sm font-semibold">
                 By {collectionOwner.name}
                 {collection.members.length > 0
                   ? ` and ${collection.members.length} others`

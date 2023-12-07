@@ -286,3 +286,7 @@ body {
     background-position: 0% 50%;
   }
 }
+
+.custom-file-input::file-selector-button {
+  cursor: pointer;
+}
