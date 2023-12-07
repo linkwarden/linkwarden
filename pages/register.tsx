@@ -7,7 +7,7 @@ import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
 import AccentSubmitButton from "@/components/AccentSubmitButton";
 
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
 
 type FormData = {
   name: string;
