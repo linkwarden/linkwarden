@@ -231,8 +231,8 @@ export function getLogins() {
     }
     return {
         credentialsEnabled: (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === 'true' || process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === undefined) ? "true" : "false",
-        emailEnabled: process.env.NEXT_PUBLIC_EMAIL_PROVIDER,
-        registrationDisabled: process.env.NEXT_PUBLIC_DISABLE_REGISTRATION,
+        emailEnabled: (process.env.NEXT_PUBLIC_EMAIL_PROVIDER === 'true' ? 'true' : 'false'),
+        registrationDisabled: (process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === 'true' ? 'true' : 'false'),
         buttonAuths: buttonAuths
     };
 }
