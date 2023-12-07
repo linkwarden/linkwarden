@@ -44,6 +44,7 @@ export default function AddOrEditLink({
     activeLink || {
       name: "",
       url: "",
+      type: "",
       description: "",
       tags: [],
       screenshotPath: "",
@@ -138,11 +139,11 @@ export default function AddOrEditLink({
     <div className="flex flex-col gap-3 sm:w-[35rem] w-80">
       {method === "UPDATE" ? (
         <div
-          className="text-gray-500 dark:text-gray-300 break-all w-full flex gap-2"
-          title={link.url}
+          className="text-neutral break-all w-full flex gap-2"
+          title={link.url || ""}
         >
           <FontAwesomeIcon icon={faLink} className="w-6 h-6" />
-          <Link href={link.url} target="_blank" className="w-full">
+          <Link href={link.url || ""} target="_blank" className="w-full">
             {link.url}
           </Link>
         </div>
@@ -151,15 +152,16 @@ export default function AddOrEditLink({
       {method === "CREATE" ? (
         <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
           <div className="sm:col-span-3 col-span-5">
-            <p className="text-black dark:text-white mb-2">Address (URL)</p>
+            <p className="mb-2">Address (URL)</p>
             <TextInput
-              value={link.url}
+              value={link.url || ""}
               onChange={(e) => setLink({ ...link, url: e.target.value })}
               placeholder="e.g. http://example.com/"
+              className="bg-base-200"
             />
           </div>
           <div className="sm:col-span-2 col-span-5">
-            <p className="text-black dark:text-white mb-2">Collection</p>
+            <p className="mb-2">Collection</p>
             {link.collection.name ? (
               <CollectionSelection
                 onChange={setCollection}
@@ -186,20 +188,21 @@ export default function AddOrEditLink({
 
       {optionsExpanded ? (
         <div>
-          {/* <hr className="mb-3 border border-sky-100 dark:border-neutral-700" /> */}
+          {/* <hr className="mb-3 border border-neutral-content" /> */}
           <div className="grid sm:grid-cols-2 gap-3">
             <div className={`${method === "UPDATE" ? "sm:col-span-2" : ""}`}>
-              <p className="text-black dark:text-white mb-2">Name</p>
+              <p className="mb-2">Name</p>
               <TextInput
                 value={link.name}
                 onChange={(e) => setLink({ ...link, name: e.target.value })}
                 placeholder="e.g. Example Link"
+                className="bg-base-200"
               />
             </div>
 
             {method === "UPDATE" ? (
               <div>
-                <p className="text-black dark:text-white mb-2">Collection</p>
+                <p className="mb-2">Collection</p>
                 {link.collection.name ? (
                   <CollectionSelection
                     onChange={setCollection}
@@ -220,7 +223,7 @@ export default function AddOrEditLink({
             ) : undefined}
 
             <div>
-              <p className="text-black dark:text-white mb-2">Tags</p>
+              <p className="mb-2">Tags</p>
               <TagSelection
                 onChange={setTags}
                 defaultValue={link.tags.map((e) => {
@@ -230,7 +233,7 @@ export default function AddOrEditLink({
             </div>
 
             <div className="sm:col-span-2">
-              <p className="text-black dark:text-white mb-2">Description</p>
+              <p className="mb-2">Description</p>
               <textarea
                 value={unescapeString(link.description) as string}
                 onChange={(e) =>
@@ -241,7 +244,7 @@ export default function AddOrEditLink({
                     ? "Will be auto generated if nothing is provided."
                     : ""
                 }
-                className="resize-none w-full rounded-md p-2 border-sky-100 bg-gray-50 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
+                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
               />
             </div>
           </div>
@@ -253,7 +256,7 @@ export default function AddOrEditLink({
           onClick={() => setOptionsExpanded(!optionsExpanded)}
           className={`${
             method === "UPDATE" ? "hidden" : ""
-          } rounded-md cursor-pointer hover:bg-slate-200 hover:dark:bg-neutral-700 duration-100 flex items-center px-2 w-fit text-sm`}
+          } rounded-md cursor-pointer btn btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
         >
           <p>{optionsExpanded ? "Hide" : "More"} Options</p>
         </div>

@@ -51,7 +51,7 @@ export default function DeleteCollection({
           <p className="text-red-500 font-bold text-center">Warning!</p>
 
           <div className="max-h-[20rem] overflow-y-auto">
-            <div className="text-black dark:text-white">
+            <div>
               <p>
                 Please note that deleting the collection will permanently remove
                 all its contents, including the following:
@@ -82,7 +82,7 @@ export default function DeleteCollection({
           </div>
 
           <div className="flex flex-col gap-3">
-            <p className="text-black dark:text-white text-center">
+            <p className="text-center">
               To confirm, type &quot;
               <span className="font-bold">{collection.name}</span>
               &quot; in the box below:
@@ -98,9 +98,7 @@ export default function DeleteCollection({
           </div>
         </>
       ) : (
-        <p className="text-black dark:text-white">
-          Click the button below to leave the current collection.
-        </p>
+        <p>Click the button below to leave the current collection.</p>
       )}
 
       <div

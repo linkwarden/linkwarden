@@ -6,7 +6,7 @@ import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 
-export default async function archive(
+export default async function urlHandler(
   linkId: number,
   url: string,
   userId: number
@@ -36,6 +36,23 @@ export default async function archive(
       await page.goto(url, { waitUntil: "domcontentloaded" });
 
       const content = await page.content();
+
+      // TODO
+      // const session = await page.context().newCDPSession(page);
+
+      // const doc = await session.send("Page.captureSnapshot", {
+      //   format: "mhtml",
+      // });
+
+      // const saveDocLocally = (doc: any) => {
+      //   console.log(doc);
+      //   return createFile({
+      //     data: doc,
+      //     filePath: `archives/${targetLink.collectionId}/${linkId}.mhtml`,
+      //   });
+      // };
+
+      // saveDocLocally(doc.data);
 
       // Readability
 

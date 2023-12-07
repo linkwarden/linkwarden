@@ -8,20 +8,27 @@ export const styles: StylesConfig = {
     ...styles,
     fontFamily: font,
     cursor: "pointer",
-    backgroundColor: state.isSelected ? "#0ea5e9" : "inherit",
+    backgroundColor: state.isSelected ? "oklch(var(--p))" : "inherit",
     "&:hover": {
-      backgroundColor: state.isSelected ? "#0ea5e9" : "#e2e8f0",
+      backgroundColor: state.isSelected
+        ? "oklch(var(--p))"
+        : "oklch(var(--nc))",
     },
     transition: "all 50ms",
   }),
-  control: (styles) => ({
+  control: (styles, state) => ({
     ...styles,
     fontFamily: font,
-    border: "none",
+    borderRadius: "0.375rem",
+    border: state.isFocused
+      ? "1px solid oklch(var(--p))"
+      : "1px solid oklch(var(--nc))",
+    boxShadow: "none",
+    minHeight: "2.6rem",
   }),
-  container: (styles) => ({
+  container: (styles, state) => ({
     ...styles,
-    border: "1px solid #e0f2fe",
+    height: "full",
     borderRadius: "0.375rem",
     lineHeight: "1.25rem",
     // "@media screen and (min-width: 1024px)": {
@@ -58,4 +65,5 @@ export const styles: StylesConfig = {
       backgroundColor: "#38bdf8",
     },
   }),
+  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
 };

@@ -52,7 +52,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-gray-100 dark:bg-neutral-800 h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-800 border-r-sky-100 dark:border-r-neutral-700 px-2 z-20 ${
+      className={`bg-base-200 h-full w-64 xl:w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content px-2 z-20 ${
         className || ""
       }`}
     >
@@ -60,64 +60,60 @@ export default function Sidebar({ className }: { className?: string }) {
         <Link href={`/dashboard`}>
           <div
             className={`${
-              active === `/dashboard` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              active === `/dashboard` ? "bg-primary/20" : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
               icon={faChartSimple}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 drop-shadow text-primary"
             />
-            <p className="text-black dark:text-white truncate w-full">
-              Dashboard
-            </p>
+            <p className="truncate w-full">Dashboard</p>
           </div>
         </Link>
 
         <Link href={`/links`}>
           <div
             className={`${
-              active === `/links` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              active === `/links` ? "bg-primary/20" : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
               icon={faLink}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 drop-shadow text-primary"
             />
-            <p className="text-black dark:text-white truncate w-full">
-              All Links
-            </p>
+            <p className="truncate w-full">All Links</p>
           </div>
         </Link>
 
         <Link href={`/collections`}>
           <div
             className={`${
-              active === `/collections` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              active === `/collections`
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
               icon={faFolder}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 drop-shadow text-primary"
             />
-            <p className="text-black dark:text-white truncate w-full">
-              All Collections
-            </p>
+            <p className="truncate w-full">All Collections</p>
           </div>
         </Link>
 
         <Link href={`/links/pinned`}>
           <div
             className={`${
-              active === `/links/pinned` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+              active === `/links/pinned`
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
             <FontAwesomeIcon
               icon={faThumbTack}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
+              className="w-7 h-7 drop-shadow text-primary"
             />
-            <p className="text-black dark:text-white truncate w-full">
-              Pinned Links
-            </p>
+            <p className="truncate w-full">Pinned Links</p>
           </div>
         </Link>
       </div>
@@ -127,7 +123,7 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setCollectionDisclosure(!collectionDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-gray-300 mt-5"
+          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
           <p>Collections</p>
 
@@ -156,27 +152,25 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/collections/${e.id}`
-                            ? "bg-sky-500"
-                            : "hover:bg-slate-500"
-                        } duration-100 py-1 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+                            ? "bg-primary/20"
+                            : "hover:bg-neutral/20"
+                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
                         <FontAwesomeIcon
                           icon={faFolder}
                           className="w-6 h-6 drop-shadow"
                           style={{ color: e.color }}
                         />
-                        <p className="text-black dark:text-white truncate w-full">
-                          {e.name}
-                        </p>
+                        <p className="truncate w-full">{e.name}</p>
 
                         {e.isPublic ? (
                           <FontAwesomeIcon
                             icon={faGlobe}
                             title="This collection is being shared publicly."
-                            className="w-4 h-4 drop-shadow text-gray-500 dark:text-gray-300"
+                            className="w-4 h-4 drop-shadow text-neutral"
                           />
                         ) : undefined}
-                        <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
+                        <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}
                         </div>
                       </div>
@@ -187,7 +181,7 @@ export default function Sidebar({ className }: { className?: string }) {
               <div
                 className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
               >
-                <p className="text-gray-500 dark:text-gray-300 text-xs font-semibold truncate w-full pr-7">
+                <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
                   You Have No Collections...
                 </p>
               </div>
@@ -200,7 +194,7 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setTagDisclosure(!tagDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-gray-300 mt-5"
+          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
           <p>Tags</p>
           <FontAwesomeIcon
@@ -226,19 +220,17 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/tags/${e.id}`
-                            ? "bg-sky-500"
-                            : "hover:bg-slate-500"
-                        } duration-100 py-1 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                            ? "bg-primary/20"
+                            : "hover:bg-neutral/20"
+                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
                         <FontAwesomeIcon
                           icon={faHashtag}
-                          className="w-4 h-4 text-sky-500 dark:text-sky-500 mt-1"
+                          className="w-4 h-4 text-primary mt-1"
                         />
 
-                        <p className="text-black dark:text-white truncate w-full pr-7">
-                          {e.name}
-                        </p>
-                        <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
+                        <p className="truncate w-full pr-7">{e.name}</p>
+                        <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}
                         </div>
                       </div>
@@ -249,7 +241,7 @@ export default function Sidebar({ className }: { className?: string }) {
               <div
                 className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
               >
-                <p className="text-gray-500 dark:text-gray-300 text-xs font-semibold truncate w-full pr-7">
+                <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
                   You Have No Tags...
                 </p>
               </div>

@@ -2,7 +2,7 @@ import { faFolder, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import isValidUrl from "@/lib/client/isValidUrl";
+import isValidUrl from "@/lib/shared/isValidUrl";
 import A from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import { Link } from "@prisma/client";
@@ -49,7 +49,7 @@ export default function LinkPreview({ link, className, settings }: Props) {
   return (
     <>
       <div
-        className={`h-fit border border-solid border-sky-100 dark:border-neutral-700 bg-gradient-to-tr from-slate-200 dark:from-neutral-800 from-10% to-gray-50 dark:to-[#303030] via-20% shadow hover:shadow-none duration-100 rounded-2xl relative group ${
+        className={`h-fit border border-solid border-neutral-content bg-base-200 shadow hover:shadow-none duration-100 rounded-2xl relative group ${
           className || ""
         }`}
       >
@@ -74,19 +74,17 @@ export default function LinkPreview({ link, className, settings }: Props) {
           <div className="flex justify-between gap-5 w-full h-full z-0">
             <div className="flex flex-col justify-between w-full">
               <div className="flex items-baseline gap-1">
-                <p className="text-sm text-gray-500 dark:text-gray-300">{1}</p>
-                <p className="text-lg text-black dark:text-white truncate capitalize w-full pr-8">
+                <p className="text-sm text-neutral">{1}</p>
+                <p className="text-lg truncate capitalize w-full pr-8">
                   {unescapeString(link.name as string)}
                 </p>
               </div>
               <div className="flex items-center gap-1 max-w-full w-fit my-1 hover:opacity-70 duration-100">
                 <FontAwesomeIcon
                   icon={faFolder}
-                  className="w-4 h-4 mt-1 drop-shadow text-sky-400"
+                  className="w-4 h-4 mt-1 drop-shadow text-primary"
                 />
-                <p className="text-black dark:text-white truncate capitalize w-full">
-                  Landing Pages ⚡️
-                </p>
+                <p className="truncate capitalize w-full">Landing Pages ⚡️</p>
               </div>
               <A
                 href={link.url as string}
@@ -94,12 +92,12 @@ export default function LinkPreview({ link, className, settings }: Props) {
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
-                className="flex items-center gap-1 max-w-full w-fit text-gray-500 dark:text-gray-300 hover:opacity-70 duration-100"
+                className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
               >
                 <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
                 <p className="truncate w-full">{shortendURL}</p>
               </A>
-              <div className="flex items-center gap-1 text-gray-500 dark:text-gray-300">
+              <div className="flex items-center gap-1 text-neutral">
                 <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
                 <p>{formattedDate}</p>
               </div>

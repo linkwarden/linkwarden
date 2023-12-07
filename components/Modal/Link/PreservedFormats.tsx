@@ -76,8 +76,7 @@ export default function PreservedFormats() {
           // Create a temporary link and click it to trigger the download
           const link = document.createElement("a");
           link.href = path;
-          link.download =
-            format === ArchivedFormat.screenshot ? "Screenshot" : "PDF";
+          link.download = format === ArchivedFormat.png ? "Screenshot" : "PDF";
           link.click();
         } else {
           console.error("Failed to download file");
@@ -91,34 +90,38 @@ export default function PreservedFormats() {
   return (
     <div className={`flex flex-col gap-3 sm:w-[35rem] w-80 pt-3`}>
       {link?.screenshotPath && link?.screenshotPath !== "pending" ? (
-        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
+        <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
-            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
+            <div className="bg-primary text-primary-content p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
             </div>
 
-            <p className="text-black dark:text-white">Screenshot</p>
+            <p>Screenshot</p>
           </div>
 
-          <div className="flex text-black dark:text-white gap-1">
+          <div className="flex gap-1">
             <div
-              onClick={() => handleDownload(ArchivedFormat.screenshot)}
+              onClick={() => handleDownload(ArchivedFormat.png)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 cursor-pointer text-neutral"
               />
             </div>
 
             <Link
-              href={`/api/v1/archives/${link?.id}?format=${ArchivedFormat.screenshot}`}
+              href={`/api/v1/archives/${link?.id}?format=${
+                link.screenshotPath.endsWith("png")
+                  ? ArchivedFormat.png
+                  : ArchivedFormat.jpeg
+              }`}
               target="_blank"
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 text-neutral"
               />
             </Link>
           </div>
@@ -126,23 +129,23 @@ export default function PreservedFormats() {
       ) : undefined}
 
       {link?.pdfPath && link.pdfPath !== "pending" ? (
-        <div className="flex justify-between items-center pr-1 border border-sky-100 dark:border-neutral-700 rounded-md">
+        <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
-            <div className="text-white bg-sky-300 dark:bg-sky-600 p-2 rounded-l-md">
+            <div className="bg-primary text-primary-content p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
             </div>
 
-            <p className="text-black dark:text-white">PDF</p>
+            <p>PDF</p>
           </div>
 
-          <div className="flex text-black dark:text-white gap-1">
+          <div className="flex gap-1">
             <div
               onClick={() => handleDownload(ArchivedFormat.pdf)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
               <FontAwesomeIcon
                 icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 cursor-pointer text-neutral"
               />
             </div>
 
@@ -153,7 +156,7 @@ export default function PreservedFormats() {
             >
               <FontAwesomeIcon
                 icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-gray-500 dark:text-gray-300"
+                className="w-5 h-5 text-neutral"
               />
             </Link>
           </div>
@@ -163,7 +166,7 @@ export default function PreservedFormats() {
       <div className="flex flex-col-reverse sm:flex-row gap-5 items-center justify-center">
         {link?.collection.ownerId === session.data?.user.id ? (
           <div
-            className={`w-full text-center bg-sky-700 p-1 rounded-md cursor-pointer select-none hover:bg-sky-600 duration-100 ${
+            className={`btn btn-accent text-white ${
               link?.pdfPath &&
               link?.screenshotPath &&
               link?.pdfPath !== "pending" &&
@@ -173,17 +176,19 @@ export default function PreservedFormats() {
             }`}
             onClick={() => updateArchive()}
           >
-            <p>Update Preserved Formats</p>
-            <p className="text-xs">(Refresh Link)</p>
+            <div>
+              <p>Update Preserved Formats</p>
+              <p className="text-xs">(Refresh Link)</p>
+            </div>
           </div>
         ) : undefined}
         <Link
-          href={`https://web.archive.org/web/${link?.url.replace(
+          href={`https://web.archive.org/web/${link?.url?.replace(
             /(^\w+:|^)\/\//,
             ""
           )}`}
           target="_blank"
-          className={`text-gray-500 dark:text-gray-300 duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm ${
+          className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm ${
             link?.pdfPath &&
             link?.screenshotPath &&
             link?.pdfPath !== "pending" &&
