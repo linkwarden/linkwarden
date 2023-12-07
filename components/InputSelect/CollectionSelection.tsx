@@ -13,14 +13,9 @@ type Props = {
         value?: number;
       }
     | undefined;
-  id?: string;
 };
 
-export default function CollectionSelection({
-  onChange,
-  defaultValue,
-  id,
-}: Props) {
+export default function CollectionSelection({ onChange, defaultValue }: Props) {
   const { collections } = useCollectionStore();
   const router = useRouter();
 
@@ -49,7 +44,6 @@ export default function CollectionSelection({
 
   return (
     <CreatableSelect
-      key={id || "key"}
       isClearable={false}
       className="react-select-container"
       classNamePrefix="react-select"

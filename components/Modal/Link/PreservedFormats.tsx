@@ -92,7 +92,7 @@ export default function PreservedFormats() {
       {link?.screenshotPath && link?.screenshotPath !== "pending" ? (
         <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
-            <div className="text-white bg-primary p-2 rounded-l-md">
+            <div className="bg-primary text-primary-content p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
             </div>
 
@@ -131,7 +131,7 @@ export default function PreservedFormats() {
       {link?.pdfPath && link.pdfPath !== "pending" ? (
         <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
-            <div className="text-white bg-primary p-2 rounded-l-md">
+            <div className="bg-primary text-primary-content p-2 rounded-l-md">
               <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
             </div>
 
@@ -166,7 +166,7 @@ export default function PreservedFormats() {
       <div className="flex flex-col-reverse sm:flex-row gap-5 items-center justify-center">
         {link?.collection.ownerId === session.data?.user.id ? (
           <div
-            className={`w-full text-center bg-sky-700 p-1 rounded-md cursor-pointer select-none hover:bg-sky-600 duration-100 ${
+            className={`btn btn-accent text-white ${
               link?.pdfPath &&
               link?.screenshotPath &&
               link?.pdfPath !== "pending" &&
@@ -176,12 +176,14 @@ export default function PreservedFormats() {
             }`}
             onClick={() => updateArchive()}
           >
-            <p>Update Preserved Formats</p>
-            <p className="text-xs">(Refresh Link)</p>
+            <div>
+              <p>Update Preserved Formats</p>
+              <p className="text-xs">(Refresh Link)</p>
+            </div>
           </div>
         ) : undefined}
         <Link
-          href={`https://web.archive.org/web/${link?.url.replace(
+          href={`https://web.archive.org/web/${link?.url?.replace(
             /(^\w+:|^)\/\//,
             ""
           )}`}

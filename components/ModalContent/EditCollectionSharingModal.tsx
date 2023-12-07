@@ -95,9 +95,11 @@ export default function EditCollectionSharingModal({
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin mb-5">
+      <p className="text-xl font-thin">
         {permissions === true ? "Share and Collaborate" : "Team"}
       </p>
+
+      <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
         {permissions === true && (
@@ -178,7 +180,7 @@ export default function EditCollectionSharingModal({
                     setMemberState
                   )
                 }
-                className="btn btn-primary text-white btn-square"
+                className="btn btn-accent text-white btn-square btn-sm h-10 w-10"
               >
                 <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
               </div>
@@ -201,7 +203,7 @@ export default function EditCollectionSharingModal({
 
             <div className="flex flex-col gap-3 rounded-md">
               <div
-                className="relative border px-2 rounded-xl border-neutral-content bg-base-200 flex min-h-[7rem] sm:min-h-[5rem] gap-2 justify-between"
+                className="relative border px-2 rounded-xl border-neutral-content bg-base-200 flex min-h-[6rem] sm:min-h-[4.1rem] gap-2 justify-between"
                 title={`@${collectionOwner.username} is the owner of this collection.`}
               >
                 <div className="flex items-center gap-2 w-full">
@@ -209,6 +211,7 @@ export default function EditCollectionSharingModal({
                     src={
                       collectionOwner.image ? collectionOwner.image : undefined
                     }
+                    name={collectionOwner.name}
                   />
                   <div className="w-full">
                     <div className="flex items-center gap-1 w-full justify-between">
@@ -257,6 +260,7 @@ export default function EditCollectionSharingModal({
                       <div className="flex items-center gap-2">
                         <ProfilePhoto
                           src={e.user.image ? e.user.image : undefined}
+                          name={e.user.name}
                         />
                         <div>
                           <p className="text-sm font-bold">{e.user.name}</p>
@@ -323,7 +327,7 @@ export default function EditCollectionSharingModal({
                                 }}
                               />
                               <span
-                                className={`peer-checked:bg-primary text-sm ${
+                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
                                   permissions === true
                                     ? "hover:bg-neutral-content duration-100"
                                     : ""
@@ -368,7 +372,7 @@ export default function EditCollectionSharingModal({
                                 }}
                               />
                               <span
-                                className={`peer-checked:bg-primary text-sm ${
+                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
                                   permissions === true
                                     ? "hover:bg-neutral-content duration-100"
                                     : ""
@@ -413,7 +417,7 @@ export default function EditCollectionSharingModal({
                                 }}
                               />
                               <span
-                                className={`peer-checked:bg-primary text-sm ${
+                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
                                   permissions === true
                                     ? "hover:bg-neutral-content duration-100"
                                     : ""
@@ -434,7 +438,7 @@ export default function EditCollectionSharingModal({
 
         {permissions === true && (
           <button
-            className="btn btn-accent w-fit ml-auto mt-3"
+            className="btn btn-accent text-white w-fit ml-auto mt-3"
             onClick={submit}
           >
             Save

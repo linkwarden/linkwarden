@@ -13,7 +13,11 @@ import Image from "next/image";
 import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import useAccountStore from "@/store/account";
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
+import {
+  faCalendarDays,
+  faFileImage,
+  faFilePdf,
+} from "@fortawesome/free-regular-svg-icons";
 import usePermissions from "@/hooks/usePermissions";
 import { toast } from "react-hot-toast";
 import isValidUrl from "@/lib/shared/isValidUrl";
@@ -22,6 +26,8 @@ import unescapeString from "@/lib/client/unescapeString";
 import { useRouter } from "next/router";
 import EditLinkModal from "./ModalContent/EditLinkModal";
 import DeleteLinkModal from "./ModalContent/DeleteLinkModal";
+import ExpandedLink from "./ModalContent/ExpandedLink";
+import PreservedFormatsModal from "./ModalContent/PreservedFormatsModal";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -63,7 +69,7 @@ export default function LinkCard({ link, count, className }: Props) {
     );
   }, [collections, links]);
 
-  const { removeLink, updateLink, getLink } = useLinkStore();
+  const { removeLink, updateLink } = useLinkStore();
 
   const pinLink = async () => {
     const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0];
@@ -79,23 +85,6 @@ export default function LinkCard({ link, count, className }: Props) {
 
     response.ok &&
       toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
-  };
-
-  const updateArchive = async () => {
-    const load = toast.loading("Sending request...");
-
-    const response = await fetch(`/api/v1/links/${link.id}/archive`, {
-      method: "PUT",
-    });
-
-    const data = await response.json();
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(`Link is being archived...`);
-      getLink(link.id as number);
-    } else toast.error(data.response);
   };
 
   const deleteLink = async () => {
@@ -122,6 +111,8 @@ export default function LinkCard({ link, count, className }: Props) {
 
   const [editLinkModal, setEditLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
+  const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
+  const [expandedLink, setExpandedLink] = useState(false);
 
   return (
     <div
@@ -183,10 +174,11 @@ export default function LinkCard({ link, count, className }: Props) {
                   tabIndex={0}
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
-                    updateArchive();
+                    setPreservedFormatsModal(true);
+                    // updateArchive();
                   }}
                 >
-                  Refresh Link
+                  Preserved Formats
                 </div>
               </li>
             ) : undefined}
@@ -208,52 +200,82 @@ export default function LinkCard({ link, count, className }: Props) {
         </div>
       ) : undefined}
 
-      <div
-        onClick={() => router.push("/links/" + link.id)}
-        className="flex items-start cursor-pointer gap-5 sm:gap-10 h-full w-full p-4"
+      <Link
+        href={"/links/" + link.id}
+        // onClick={
+        //   () => router.push("/links/" + link.id)
+        //   // setExpandedLink(true)
+        // }
+        className="flex flex-col justify-between cursor-pointer h-full w-full gap-1 p-3"
       >
-        {url && account.displayLinkIcons && (
+        {link.url && url ? (
           <Image
-            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${url.origin}&size=32`}
+            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
             width={64}
             height={64}
             alt=""
-            className={`${
-              account.blurredFavicons ? "blur-sm " : ""
-            } absolute w-12 duration-100 bg-white rounded-md p-1 bottom-5 right-5 select-none z-10`}
+            className={`absolute w-12 bg-white shadow rounded-md p-1 bottom-3 right-3 select-none z-10`}
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
               target.style.display = "none";
             }}
           />
+        ) : link.type === "pdf" ? (
+          <FontAwesomeIcon
+            icon={faFilePdf}
+            className="absolute h-12 w-12 bg-primary/20 text-primary shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
+          />
+        ) : link.type === "image" ? (
+          <FontAwesomeIcon
+            icon={faFileImage}
+            className="absolute h-12 w-12 bg-primary/20 text-primary shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
+          />
+        ) : undefined}
+
+        <div className="flex items-baseline gap-1">
+          <p className="text-sm text-neutral">{count + 1}</p>
+          <p className="text-lg truncate w-full pr-8">
+            {unescapeString(link.name || link.description) || shortendURL}
+          </p>
+        </div>
+
+        {link.url ? (
+          <div
+            onClick={(e) => {
+              e.preventDefault();
+              window.open(link.url || "", "_blank");
+            }}
+            className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-60 duration-100"
+          >
+            <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
+            <p className="truncate w-full">{shortendURL}</p>
+          </div>
+        ) : (
+          <div className="badge badge-primary badge-sm my-1">{link.type}</div>
         )}
 
-        <div className="flex justify-between gap-5 w-full h-full z-0">
-          <div className="flex flex-col justify-between w-full">
-            <div className="flex items-baseline gap-1">
-              <p className="text-sm text-neutral">{count + 1}</p>
-              <p className="text-lg truncate capitalize w-full pr-8">
-                {unescapeString(link.name || link.description)}
-              </p>
-            </div>
-            <Link
-              href={`/collections/${link.collection.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="flex items-center gap-1 max-w-full w-fit my-1 hover:opacity-70 duration-100"
-            >
-              <FontAwesomeIcon
-                icon={faFolder}
-                className="w-4 h-4 mt-1 drop-shadow"
-                style={{ color: collection?.color }}
-              />
-              <p className="truncate capitalize w-full">{collection?.name}</p>
-            </Link>
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            router.push(`/collections/${link.collection.id}`);
+          }}
+          className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
+        >
+          <FontAwesomeIcon
+            icon={faFolder}
+            className="w-4 h-4 mt-1 drop-shadow"
+            style={{ color: collection?.color }}
+          />
+          <p className="truncate capitalize w-full">{collection?.name}</p>
+        </div>
 
-            {/* {link.tags[0] ? (
-              <div className="flex gap-3 items-center flex-wrap my-2 truncate relative">
+        <div className="flex items-center gap-1 text-neutral">
+          <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
+          <p>{formattedDate}</p>
+        </div>
+        {/* {link.tags[0] ? (
+              <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
                 <div className="flex gap-1 items-center flex-nowrap">
                   {link.tags.map((e, i) => (
                     <Link
@@ -262,34 +284,18 @@ export default function LinkCard({ link, count, className }: Props) {
                       onClick={(e) => {
                         e.stopPropagation();
                       }}
-                      className="btn btn-xs btn-outline truncate max-w-[19rem]"
+                      className="btn btn-xs btn-ghost truncate max-w-[19rem]"
                     >
-                      {e.name}
+                      #{e.name}
                     </Link>
                   ))}
                 </div>
                 <div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent to-base-200 to-35%"></div>
               </div>
-            ) : undefined} */}
-
-            <Link
-              href={link.url || ""}
-              target="_blank"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-70 duration-100"
-            >
-              <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
-              <p className="truncate w-full">{shortendURL}</p>
-            </Link>
-            <div className="flex items-center gap-1 text-neutral">
-              <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
-              <p>{formattedDate}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+            ) : (
+              <p className="text-xs mt-2 p-1 font-semibold italic">No Tags</p>
+            )} */}
+      </Link>
       {editLinkModal ? (
         <EditLinkModal
           onClose={() => setEditLinkModal(false)}
@@ -302,6 +308,15 @@ export default function LinkCard({ link, count, className }: Props) {
           activeLink={link}
         />
       ) : undefined}
+      {preservedFormatsModal ? (
+        <PreservedFormatsModal
+          onClose={() => setPreservedFormatsModal(false)}
+          activeLink={link}
+        />
+      ) : undefined}
+      {/* {expandedLink ? (
+        <ExpandedLink onClose={() => setExpandedLink(false)} link={link} />
+      ) : undefined} */}
     </div>
   );
 }

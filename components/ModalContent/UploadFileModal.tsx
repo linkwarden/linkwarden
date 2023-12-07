@@ -6,17 +6,23 @@ import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import {
+  ArchivedFormat,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@/types/global";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 
 type Props = {
   onClose: Function;
 };
 
-export default function NewLinkModal({ onClose }: Props) {
+export default function UploadFileModal({ onClose }: Props) {
   const { data } = useSession();
 
   const initial = {
@@ -37,6 +43,8 @@ export default function NewLinkModal({ onClose }: Props) {
 
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(initial);
+
+  const [file, setFile] = useState<File>();
 
   const { addLink } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -64,6 +72,7 @@ export default function NewLinkModal({ onClose }: Props) {
   };
 
   useEffect(() => {
+    setOptionsExpanded(false);
     if (router.query.id) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
@@ -93,43 +102,81 @@ export default function NewLinkModal({ onClose }: Props) {
   }, []);
 
   const submit = async () => {
-    if (!submitLoader) {
-      setSubmitLoader(true);
+    if (!submitLoader && file) {
+      let fileType: ArchivedFormat | null = null;
+      let linkType: "url" | "image" | "pdf" | null = null;
 
-      let response;
+      if (file?.type === "image/jpg" || file.type === "image/jpeg") {
+        fileType = ArchivedFormat.jpeg;
+        linkType = "image";
+      } else if (file.type === "image/png") {
+        fileType = ArchivedFormat.png;
+        linkType = "image";
+      } else if (file.type === "application/pdf") {
+        fileType = ArchivedFormat.pdf;
+        linkType = "pdf";
+      }
 
-      const load = toast.loading("Creating...");
+      if (fileType !== null && linkType !== null) {
+        setSubmitLoader(true);
 
-      response = await addLink(link);
+        let response;
 
-      toast.dismiss(load);
+        const load = toast.loading("Creating...");
 
-      if (response.ok) {
-        toast.success(`Created!`);
-        onClose();
-      } else toast.error(response.data as string);
+        response = await addLink({
+          ...link,
+          type: linkType,
+          name: link.name ? link.name : file.name.replace(/\.[^/.]+$/, ""),
+        });
 
-      setSubmitLoader(false);
+        toast.dismiss(load);
 
-      return response;
+        if (response.ok) {
+          const formBody = new FormData();
+          file && formBody.append("file", file);
+
+          await fetch(
+            `/api/v1/archives/${
+              (response.data as LinkIncludingShortenedCollectionAndTags).id
+            }?format=${fileType}`,
+            {
+              body: formBody,
+              method: "POST",
+            }
+          );
+          toast.success(`Created!`);
+          onClose();
+        } else toast.error(response.data as string);
+
+        setSubmitLoader(false);
+
+        return response;
+      }
     }
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">Create a New Link</p>
-
+      <div className="flex gap-2 items-start">
+        <p className="text-xl font-thin">Upload File</p>
+      </div>
       <div className="divider mb-3 mt-1"></div>
-
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">
-          <p className="mb-2">Link</p>
-          <TextInput
-            value={link.url || ""}
-            onChange={(e) => setLink({ ...link, url: e.target.value })}
-            placeholder="e.g. http://example.com/"
-            className="bg-base-200"
-          />
+          <p className="mb-2">File</p>
+          <label className="btn h-10 btn-sm w-full border border-neutral-content hover:border-neutral-content flex justify-between">
+            <input
+              type="file"
+              accept=".pdf,.png,.jpg,.jpeg"
+              className="cursor-pointer custom-file-input"
+              onChange={(e) => e.target.files && setFile(e.target.files[0])}
+            />
+          </label>
+          <p className="text-xs font-semibold mt-2">
+            PDF, PNG, JPG (Up to {process.env.NEXT_PUBLIC_MAX_UPLOAD_SIZE || 30}
+            MB)
+          </p>
         </div>
         <div className="sm:col-span-2 col-span-5">
           <p className="mb-2">Collection</p>
@@ -144,7 +191,6 @@ export default function NewLinkModal({ onClose }: Props) {
           ) : null}
         </div>
       </div>
-
       {optionsExpanded ? (
         <div className="mt-5">
           {/* <hr className="mb-3 border border-neutral-content" /> */}
@@ -183,7 +229,6 @@ export default function NewLinkModal({ onClose }: Props) {
           </div>
         </div>
       ) : undefined}
-
       <div className="flex justify-between items-center mt-5">
         <div
           onClick={() => setOptionsExpanded(!optionsExpanded)}

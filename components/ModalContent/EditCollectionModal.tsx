@@ -49,7 +49,9 @@ export default function EditCollectionModal({
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl mb-5 font-thin">Edit Collection Info</p>
+      <p className="text-xl font-thin">Edit Collection Info</p>
+
+      <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row gap-3">
@@ -108,7 +110,10 @@ export default function EditCollectionModal({
           </div>
         </div>
 
-        <button className="btn btn-accent w-fit ml-auto" onClick={submit}>
+        <button
+          className="btn btn-accent text-white w-fit ml-auto"
+          onClick={submit}
+        >
           Save
         </button>
       </div>
