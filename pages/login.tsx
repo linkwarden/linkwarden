@@ -119,6 +119,10 @@ export default function Login({
             className=" w-full text-center"
             loading={submitLoader}
           />
+
+          {availableLogins.buttonAuths.length > 0 ? (
+            <div className="divider my-1">OR</div>
+          ) : undefined}
         </>
       );
     }
@@ -127,14 +131,18 @@ export default function Login({
     const Buttons: any = [];
     availableLogins.buttonAuths.forEach((value, index) => {
       Buttons.push(
-        <AccentSubmitButton
-          key={index}
-          type="button"
-          onClick={() => loginUserButton(value.method)}
-          label={`Sign in with ${value.name}`}
-          className=" w-full text-center"
-          loading={submitLoader}
-        />
+        <>
+          {index !== 0 ? <div className="divider my-1">OR</div> : undefined}
+
+          <AccentSubmitButton
+            key={index}
+            type="button"
+            onClick={() => loginUserButton(value.method)}
+            label={`Sign in with ${value.name}`}
+            className=" w-full text-center"
+            loading={submitLoader}
+          />
+        </>
       );
     });
     return Buttons;

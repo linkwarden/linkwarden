@@ -23,7 +23,8 @@ export default async function updateUserById(
       id: userId,
     },
   });
-  if (ssoUser) { // deny changes to SSO-defined properties
+  if (ssoUser) {
+    // deny changes to SSO-defined properties
     if (data.email !== user?.email) {
       return {
         response: "SSO users cannot change their email.",
@@ -54,8 +55,8 @@ export default async function updateUserById(
         status: 400,
       };
     }
-
-  } else { // verify only for non-SSO users
+  } else {
+    // verify only for non-SSO users
     // SSO users cannot change their email, password, name, username, or avatar
     if (emailEnabled && !data.email)
       return {
@@ -95,18 +96,18 @@ export default async function updateUserById(
         id: { not: userId },
         OR: emailEnabled
           ? [
-            {
-              username: data.username.toLowerCase(),
-            },
-            {
-              email: data.email?.toLowerCase(),
-            },
-          ]
+              {
+                username: data.username.toLowerCase(),
+              },
+              {
+                email: data.email?.toLowerCase(),
+              },
+            ]
           : [
-            {
-              username: data.username.toLowerCase(),
-            },
-          ],
+              {
+                username: data.username.toLowerCase(),
+              },
+            ],
       },
     });
 
@@ -135,7 +136,10 @@ export default async function updateUserById(
     if (data.image?.startsWith("data:image/jpeg;base64")) {
       if (data.image.length < 1572864) {
         try {
-          const base64Data = data.image.replace(/^data:image\/jpeg;base64,/, "");
+          const base64Data = data.image.replace(
+            /^data:image\/jpeg;base64,/,
+            ""
+          );
 
           createFolder({ filePath: `uploads/avatar` });
 
@@ -163,9 +167,6 @@ export default async function updateUserById(
     await prisma.user.findUnique({ where: { id: userId } })
   )?.email;
 
-
-
-
   // Other settings
 
   const saltRounds = 10;
@@ -184,8 +185,6 @@ export default async function updateUserById(
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
-      displayLinkIcons: data.displayLinkIcons,
-      blurredFavicons: data.blurredFavicons,
       password:
         data.newPassword && data.newPassword !== ""
           ? newHashedPassword
