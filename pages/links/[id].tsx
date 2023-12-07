@@ -244,7 +244,9 @@ export default function Index() {
                 : undefined}
             </p>
 
-            {link?.name ? <p>{link?.description}</p> : undefined}
+            {link?.name ? (
+              <p>{unescapeString(link?.description)}</p>
+            ) : undefined}
           </div>
         </div>
 

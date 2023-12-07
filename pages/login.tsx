@@ -1,4 +1,4 @@
-import SubmitButton from "@/components/SubmitButton";
+import AccentSubmitButton from "@/components/AccentSubmitButton";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
@@ -78,7 +78,7 @@ export default function Login() {
       <form onSubmit={loginUser}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           {process.env.NEXT_PUBLIC_DISABLE_LOGIN !== "true" ? (
-            <div>
+            <>
               <p className="text-3xl text-center font-extralight">
                 Enter your credentials
               </p>
@@ -126,29 +126,29 @@ export default function Login() {
                 )}
               </div>
 
-              <SubmitButton
+              <AccentSubmitButton
                 type="submit"
                 label="Login"
-                className=" w-full text-center"
+                className="w-full text-center"
                 loading={submitLoader}
               />
-            </div>
+            </>
           ) : undefined}
           {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true" ? (
-            <SubmitButton
+            <AccentSubmitButton
               type="button"
               onClick={loginUserKeycloak}
               label="Sign in with Keycloak"
-              className=" w-full text-center"
+              className="w-full text-center"
               loading={submitLoader}
             />
           ) : undefined}
           {process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true" ? (
-            <SubmitButton
+            <AccentSubmitButton
               type="button"
               onClick={loginUserAuthentik}
               label="Sign in with Authentiks"
-              className=" w-full text-center"
+              className="w-full text-center"
               loading={submitLoader}
             />
           ) : undefined}
