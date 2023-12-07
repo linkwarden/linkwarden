@@ -84,7 +84,7 @@ export default function Subscribe() {
             Billed {plan === Plan.monthly ? "Monthly" : "Yearly"}
           </p>
           <fieldset className="w-full flex-col flex justify-evenly px-4 pb-4 pt-1 rounded-md border border-neutral-content">
-            <legend className="w-fit font-extralight px-2 border border-neutral rounded-md text-xl">
+            <legend className="w-fit font-extralight px-2 border border-neutral-content rounded-md text-xl">
               Total
             </legend>
 
