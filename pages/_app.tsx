@@ -47,7 +47,7 @@ export default function App({
           reverseOrder={false}
           toastOptions={{
             className:
-              "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white",
+              "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white",
           }}
         />
         <Component {...pageProps} />

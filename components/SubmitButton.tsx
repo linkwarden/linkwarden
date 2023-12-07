@@ -21,7 +21,7 @@ export default function SubmitButton({
   return (
     <button
       type={type ? type : undefined}
-      className={`btn btn-primary text-white tracking-wider w-fit flex items-center gap-2 ${
+      className={`btn btn-accent text-white tracking-wider w-fit flex items-center gap-2 ${
         className || ""
       }`}
       onClick={() => {

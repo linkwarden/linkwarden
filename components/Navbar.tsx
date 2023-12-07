@@ -14,6 +14,7 @@ import useLocalSettingsStore from "@/store/localSettings";
 import NewLinkModal from "./ModalContent/NewLinkModal";
 import NewCollectionModal from "./ModalContent/NewCollectionModal";
 import Link from "next/link";
+import UploadFileModal from "./ModalContent/UploadFileModal";
 
 export default function Navbar() {
   const { settings, updateSettings } = useLocalSettingsStore();
@@ -48,6 +49,7 @@ export default function Navbar() {
 
   const [newLinkModal, setNewLinkModal] = useState(false);
   const [newCollectionModal, setNewCollectionModal] = useState(false);
+  const [uploadFileModal, setUploadFileModal] = useState(false);
 
   return (
     <div className="flex justify-between gap-2 items-center px-4 py-2 border-solid border-b-neutral-content border-b">
@@ -88,6 +90,18 @@ export default function Navbar() {
                 New Link
               </div>
             </li>
+            {/* <li>
+              <div
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setUploadFileModal(true);
+                }}
+                tabIndex={0}
+                role="button"
+              >
+                Upload File
+              </div>
+            </li> */}
             <li>
               <div
                 onClick={() => {
@@ -162,6 +176,9 @@ export default function Navbar() {
       ) : undefined}
       {newCollectionModal ? (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
+      ) : undefined}
+      {uploadFileModal ? (
+        <UploadFileModal onClose={() => setUploadFileModal(false)} />
       ) : undefined}
     </div>
   );
