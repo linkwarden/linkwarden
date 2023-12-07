@@ -5,21 +5,22 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
-import {getLogins} from './api/v1/logins'
-import {InferGetServerSidePropsType} from "next";
+import { getLogins } from "./api/v1/logins";
+import { InferGetServerSidePropsType } from "next";
 
 interface FormData {
   username: string;
   password: string;
 }
 
-export const getServerSideProps = (() => {
+export const getServerSideProps = () => {
   const availableLogins = getLogins();
-  return {props: {availableLogins}}
-});
+  return { props: { availableLogins } };
+};
 
-
-export default function Login({availableLogins} : InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Login({
+  availableLogins,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const [form, setForm] = useState<FormData>({
@@ -66,82 +67,91 @@ export default function Login({availableLogins} : InferGetServerSidePropsType<ty
   }
 
   function displayLoginCredential() {
-    if (availableLogins.credentialsEnabled === 'true') {
-      return (<><p className="text-3xl text-black dark:text-white text-center font-extralight">
-        Enter your credentials
-      </p>
-        <hr className="border-1 border-sky-100 dark:border-neutral-700"/>
-        <div>
-          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-            Username
-            {availableLogins.emailEnabled === 'true' ? " or Email" : undefined}
+    if (availableLogins.credentialsEnabled === "true") {
+      return (
+        <>
+          <p className="text-3xl text-black dark:text-white text-center font-extralight">
+            Enter your credentials
           </p>
+          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+          <div>
+            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+              Username
+              {availableLogins.emailEnabled === "true"
+                ? " or Email"
+                : undefined}
+            </p>
 
-          <TextInput
+            <TextInput
               autoFocus={true}
               placeholder="johnny"
               value={form.username}
-              className="bg-white"
-              onChange={(e) => setForm({...form, username: e.target.value})}/>
-        </div>
-        <div className="w-full">
-          <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-            Password
-          </p>
+              className="bg-base-100"
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+            />
+          </div>
+          <div className="w-full">
+            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+              Password
+            </p>
 
-          <TextInput
+            <TextInput
               type="password"
               placeholder="••••••••••••••"
               value={form.password}
-              className="bg-white"
-              onChange={(e) => setForm({...form, password: e.target.value})}/>
-          {availableLogins.emailEnabled === 'true' && (
+              className="bg-base-100"
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            {availableLogins.emailEnabled === "true" && (
               <div className="w-fit ml-auto mt-1">
                 <Link
-                    href={"/forgot"}
-                    className="text-gray-500 dark:text-gray-400 font-semibold"
+                  href={"/forgot"}
+                  className="text-gray-500 dark:text-gray-400 font-semibold"
                 >
                   Forgot Password?
                 </Link>
               </div>
-          )}
-        </div>
-        <SubmitButton
+            )}
+          </div>
+          <AccentSubmitButton
             type="submit"
             label="Login"
             className=" w-full text-center"
-            loading={submitLoader}/></>
-      )
+            loading={submitLoader}
+          />
+        </>
+      );
     }
   }
   function displayLoginExternalButton() {
     const Buttons: any = [];
     availableLogins.buttonAuths.forEach((value, index) => {
-      Buttons.push(<SubmitButton key={index}
+      Buttons.push(
+        <AccentSubmitButton
+          key={index}
           type="button"
           onClick={() => loginUserButton(value.method)}
           label={`Sign in with ${value.name}`}
           className=" w-full text-center"
           loading={submitLoader}
-      />);
+        />
+      );
     });
-    return (Buttons);
+    return Buttons;
   }
 
   function displayRegistration() {
-    if (availableLogins.registrationDisabled !== 'true') {
+    if (availableLogins.registrationDisabled !== "true") {
       return (
-          <div className="flex items-baseline gap-1 justify-center">
-            <p className="w-fit text-gray-500 dark:text-gray-400">
-              New here?
-            </p>
-            <Link
-                href={"/register"}
-                className="block text-black dark:text-white font-semibold"
-            >
-              Sign Up
-            </Link>
-          </div>
+        <div className="flex items-baseline gap-1 justify-center">
+          <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
+          <Link
+            href={"/register"}
+            className="block text-black dark:text-white font-semibold"
+          >
+            Sign Up
+          </Link>
+        </div>
       );
     }
   }
