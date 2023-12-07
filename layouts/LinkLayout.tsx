@@ -21,6 +21,9 @@ import { useSession } from "next-auth/react";
 import useCollectionStore from "@/store/collections";
 import EditLinkModal from "@/components/ModalContent/EditLinkModal";
 import Link from "next/link";
+import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsModal";
+import toast from "react-hot-toast";
+import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 
 interface Props {
   children: ReactNode;
@@ -75,7 +78,21 @@ export default function LinkLayout({ children }: Props) {
       setLinkCollection(collections.find((e) => e.id === link?.collection?.id));
   }, [link, collections]);
 
+  const deleteLink = async () => {
+    const load = toast.loading("Deleting...");
+
+    const response = await removeLink(link?.id as number);
+
+    toast.dismiss(load);
+
+    response.ok && toast.success(`Link Deleted.`);
+
+    router.push("/dashboard");
+  };
+
   const [editLinkModal, setEditLinkModal] = useState(false);
+  const [deleteLinkModal, setDeleteLinkModal] = useState(false);
+  const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
   return (
     <>
@@ -118,9 +135,7 @@ export default function LinkLayout({ children }: Props) {
               ) ? (
                 <div
                   title="Edit"
-                  onClick={() => {
-                    setEditLinkModal(true);
-                  }}
+                  onClick={() => setEditLinkModal(true)}
                   className={`btn btn-ghost btn-square btn-sm`}
                 >
                   <FontAwesomeIcon
@@ -131,22 +146,13 @@ export default function LinkLayout({ children }: Props) {
               ) : undefined}
 
               <div
-                onClick={() => {
-                  link
-                    ? setModal({
-                        modal: "LINK",
-                        state: true,
-                        active: link,
-                        method: "FORMATS",
-                      })
-                    : undefined;
-                }}
+                onClick={() => setPreservedFormatsModal(true)}
                 title="Preserved Formats"
-                className={`hover:opacity-60 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
+                className={`btn btn-ghost btn-square btn-sm`}
               >
                 <FontAwesomeIcon
                   icon={faBoxesStacked}
-                  className="w-6 h-6 text-neutral"
+                  className="w-4 h-4 text-neutral"
                 />
               </div>
 
@@ -155,18 +161,16 @@ export default function LinkLayout({ children }: Props) {
                 (e) => e.userId === userId && e.canDelete
               ) ? (
                 <div
-                  onClick={() => {
-                    if (link?.id) {
-                      removeLink(link.id);
-                      router.back();
-                    }
+                  onClick={(e) => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
                   }}
                   title="Delete"
-                  className={`hover:opacity-60 duration-100 py-2 px-2 cursor-pointer flex items-center gap-4 w-full rounded-md h-8`}
+                  className={`btn btn-ghost btn-square btn-sm`}
                 >
                   <FontAwesomeIcon
                     icon={faTrashCan}
-                    className="w-6 h-6 text-neutral"
+                    className="w-4 h-4 text-neutral"
                   />
                 </div>
               ) : undefined}
@@ -191,6 +195,18 @@ export default function LinkLayout({ children }: Props) {
         {link && editLinkModal ? (
           <EditLinkModal
             onClose={() => setEditLinkModal(false)}
+            activeLink={link}
+          />
+        ) : undefined}
+        {link && deleteLinkModal ? (
+          <DeleteLinkModal
+            onClose={() => setDeleteLinkModal(false)}
+            activeLink={link}
+          />
+        ) : undefined}
+        {link && preservedFormatsModal ? (
+          <PreservedFormatsModal
+            onClose={() => setPreservedFormatsModal(false)}
             activeLink={link}
           />
         ) : undefined}
