@@ -111,7 +111,7 @@ export function getLogins() {
     }
     // Kakao
     if (process.env.NEXT_PUBLIC_KAKAO_ENABLED === 'true') {
-        buttonAuths.push({method: 'kakao', name: process.env.KAOKAO_CUSTOM_NAME ?? 'Kakao'});
+        buttonAuths.push({method: 'kakao', name: process.env.KAKAO_CUSTOM_NAME ?? 'Kakao'});
     }
     // Keycloak
     if (process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === 'true') {
