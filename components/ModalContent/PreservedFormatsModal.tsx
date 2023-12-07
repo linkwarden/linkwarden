@@ -191,7 +191,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         <div className="flex flex-col-reverse sm:flex-row sm:gap-3 items-center justify-center">
           {link?.collection.ownerId === session.data?.user.id ? (
             <div
-              className={`btn btn-accent text-white ${
+              className={`btn btn-accent dark:border-violet-400 text-white ${
                 link?.pdfPath &&
                 link?.screenshotPath &&
                 link?.pdfPath !== "pending" &&

@@ -116,7 +116,7 @@ export default function NewCollectionModal({ onClose }: Props) {
         </div>
 
         <button
-          className="btn btn-accent text-white w-fit ml-auto"
+          className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto"
           onClick={submit}
         >
           Create Collection
