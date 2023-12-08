@@ -75,7 +75,7 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
 
         <p>
           Hold the <kbd className="kbd kbd-sm">Shift</kbd> key while clicking
-          'Delete' to bypass this confirmation in the future.
+          &apos;Delete&apos; to bypass this confirmation in the future.
         </p>
 
         <button

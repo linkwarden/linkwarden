@@ -122,7 +122,7 @@ export default function EditCollectionSharingModal({
             </label>
 
             <p className="text-neutral text-sm">
-              This will let <b>Anyone</b> to view this collection and it's
+              This will let <b>Anyone</b> to view this collection and it&apos;s
               users.
             </p>
           </div>
