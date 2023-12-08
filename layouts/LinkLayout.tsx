@@ -114,7 +114,7 @@ export default function LinkLayout({ children }: Props) {
               href={
                 router.pathname.startsWith("/public")
                   ? `/public/collections/${
-                      linkCollection?.id || link?.collection.id
+                      linkCollection?.id || link?.collection?.id
                     }`
                   : `/dashboard`
               }
