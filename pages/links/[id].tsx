@@ -85,7 +85,7 @@ export default function Index() {
   }, [link]);
 
   useEffect(() => {
-    let interval: NodeJS.Timer | undefined;
+    let interval: any;
     if (
       link?.screenshotPath === "pending" ||
       link?.pdfPath === "pending" ||
@@ -186,7 +186,9 @@ export default function Index() {
               )}
               <div className="flex flex-col">
                 <p className="text-xl">
-                  {unescapeString(link?.name || link?.description || "")}
+                  {unescapeString(
+                    link?.name || link?.description || link?.url || ""
+                  )}
                 </p>
                 {link?.url ? (
                   <Link

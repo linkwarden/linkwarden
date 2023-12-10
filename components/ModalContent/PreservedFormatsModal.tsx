@@ -50,7 +50,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       );
     })();
 
-    let interval: NodeJS.Timer | undefined;
+    let interval: any;
     if (link?.screenshotPath === "pending" || link?.pdfPath === "pending") {
       interval = setInterval(async () => {
         const data = await getLink(link.id as number, isPublicRoute);
@@ -191,7 +191,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         <div className="flex flex-col-reverse sm:flex-row sm:gap-3 items-center justify-center">
           {link?.collection.ownerId === session.data?.user.id ? (
             <div
-              className={`btn btn-accent dark:border-violet-400 text-white ${
+              className={`btn btn-accent w-1/2 dark:border-violet-400 text-white ${
                 link?.pdfPath &&
                 link?.screenshotPath &&
                 link?.pdfPath !== "pending" &&
@@ -213,7 +213,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
               ""
             )}`}
             target="_blank"
-            className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm ${
+            className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm ${
               link?.pdfPath &&
               link?.screenshotPath &&
               link?.pdfPath !== "pending" &&
