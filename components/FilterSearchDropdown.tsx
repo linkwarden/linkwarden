@@ -40,7 +40,7 @@ export default function FilterSearchDropdown({
             <input
               type="checkbox"
               name="search-filter-checkbox"
-              className="checkbox checkbox-primary [--chkfg:white]"
+              className="checkbox checkbox-primary"
               checked={searchFilter.name}
               onChange={() => {
                 setSearchFilter({ ...searchFilter, name: !searchFilter.name });
@@ -58,7 +58,7 @@ export default function FilterSearchDropdown({
             <input
               type="checkbox"
               name="search-filter-checkbox"
-              className="checkbox checkbox-primary [--chkfg:white]"
+              className="checkbox checkbox-primary"
               checked={searchFilter.url}
               onChange={() => {
                 setSearchFilter({ ...searchFilter, url: !searchFilter.url });
@@ -76,7 +76,7 @@ export default function FilterSearchDropdown({
             <input
               type="checkbox"
               name="search-filter-checkbox"
-              className="checkbox checkbox-primary [--chkfg:white]"
+              className="checkbox checkbox-primary"
               checked={searchFilter.description}
               onChange={() => {
                 setSearchFilter({
@@ -97,7 +97,7 @@ export default function FilterSearchDropdown({
             <input
               type="checkbox"
               name="search-filter-checkbox"
-              className="checkbox checkbox-primary [--chkfg:white]"
+              className="checkbox checkbox-primary"
               checked={searchFilter.textContent}
               onChange={() => {
                 setSearchFilter({
@@ -118,7 +118,7 @@ export default function FilterSearchDropdown({
             <input
               type="checkbox"
               name="search-filter-checkbox"
-              className="checkbox checkbox-primary [--chkfg:white]"
+              className="checkbox checkbox-primary"
               checked={searchFilter.tags}
               onChange={() => {
                 setSearchFilter({

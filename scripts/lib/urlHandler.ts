@@ -1,7 +1,7 @@
 import { chromium, devices } from "playwright";
-import { prisma } from "@/lib/api/db";
-import createFile from "@/lib/api/storage/createFile";
-import sendToWayback from "./sendToWayback";
+import { prisma } from "../../lib/api/db";
+import createFile from "../../lib/api/storage/createFile";
+import sendToWayback from "../../lib/api/sendToWayback";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
@@ -23,7 +23,7 @@ export default async function urlHandler(
     },
   });
 
-  // archive.org
+  // Archive.org
 
   if (user?.archiveAsWaybackMachine) sendToWayback(url);
 
@@ -82,13 +82,9 @@ export default async function urlHandler(
       // Screenshot/PDF
 
       let faulty = false;
-
       await page
         .evaluate(autoScroll, Number(process.env.AUTOSCROLL_TIMEOUT) || 30)
-        .catch((err) => {
-          console.log(err);
-          faulty = true;
-        });
+        .catch((e) => (faulty = true));
 
       const linkExists = await prisma.link.findUnique({
         where: { id: linkId },
