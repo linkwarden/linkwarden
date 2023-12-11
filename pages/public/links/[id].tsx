@@ -81,7 +81,7 @@ export default function Index() {
   }, [link]);
 
   useEffect(() => {
-    let interval: NodeJS.Timer | undefined;
+    let interval: any;
     if (
       link?.screenshotPath === "pending" ||
       link?.pdfPath === "pending" ||
