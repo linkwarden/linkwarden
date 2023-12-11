@@ -1,13 +1,20 @@
+import { Collection, Link, User } from "@prisma/client";
 import { prisma } from "../lib/api/db";
 import urlHandler from "./lib/urlHandler";
 
 const args = process.argv.slice(2).join(" ");
 
-const archiveTakeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 1;
+console.log(process.env.NEXTAUTH_URL);
 
-// Function to process links for a given user
-async function processLinksForUser() {
-  // Fetch the first 'maxLinksPerUser' links for the user
+const archiveTakeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
+
+type LinksAndCollectionAndOwner = Link & {
+  collection: Collection & {
+    owner: User;
+  };
+};
+
+async function processBatch() {
   const links = await prisma.link.findMany({
     where: {
       OR: [
@@ -22,61 +29,93 @@ async function processLinksForUser() {
         {
           collection: {
             owner: {
+              archiveAsScreenshot: true,
+            },
+          },
+          screenshotPath: "pending",
+        },
+        ///////////////////////
+        {
+          collection: {
+            owner: {
               archiveAsPDF: true,
             },
           },
           pdfPath: null,
         },
         {
+          collection: {
+            owner: {
+              archiveAsPDF: true,
+            },
+          },
+          pdfPath: "pending",
+        },
+        ///////////////////////
+        {
           readabilityPath: null,
         },
-      ],
-      collection: {
-        owner: {
-          archiveAsPDF: true,
-          archiveAsScreenshot: true,
+        {
+          readabilityPath: "pending",
         },
-      },
+      ],
     },
     take: archiveTakeCount,
     orderBy: { createdAt: "asc" },
     include: {
-      collection: true,
+      collection: {
+        include: {
+          owner: true,
+        },
+      },
     },
   });
 
-  // Process each link using the urlHandler function
-  for (const link of links) {
+  const archiveLink = async (link: LinksAndCollectionAndOwner) => {
     try {
       console.log(
-        `Processing link ${link.id} for user ${link.collection.ownerId}`
+        "\x1b[34m%s\x1b[0m",
+        `Processing link ${link.url} for user ${link.collection.ownerId}`
       );
 
-      await urlHandler(link.id, link.url || "", link.collection.ownerId);
+      await urlHandler(link);
+
+      console.log(
+        "\x1b[34m%s\x1b[0m",
+        `Succeeded processing link ${link.url} for user ${link.collection.ownerId}.`
+      );
     } catch (error) {
       console.error(
-        `Error processing link ${link.id} for user ${link.collection.ownerId}:`,
+        "\x1b[34m%s\x1b[0m",
+        `Error processing link ${link.url} for user ${link.collection.ownerId}:`,
         error
       );
     }
-  }
+  };
+
+  // Process each link in the batch concurrently
+  const processingPromises = links.map((e) => archiveLink(e));
+
+  await Promise.allSettled(processingPromises);
 }
 
-const intervalInMinutes = 10; // Set the interval for the worker to run
+const intervalInMinutes = Number(process.env.ARCHIVE_SCRIPT_INTERVAL) || 10;
 
-// Main function to iterate over all users and process their links
-async function processLinksForAllUsers() {
-  console.log("Starting the link processing task");
-  try {
-    const users = await prisma.user.findMany(); // Fetch all users
-    for (const user of users) {
-      await processLinksForUser(); // Process links for each user
+function delay(sec: number) {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
+async function init() {
+  console.log("\x1b[34m%s\x1b[0m", "Starting the link processing task");
+  while (true) {
+    try {
+      await processBatch();
+      await delay(intervalInMinutes);
+    } catch (error) {
+      console.error("\x1b[34m%s\x1b[0m", "Error processing links:", error);
+      await delay(intervalInMinutes);
     }
-  } catch (error) {
-    console.error("Error processing links for users:", error);
   }
-  setTimeout(processLinksForAllUsers, intervalInMinutes * 60000);
 }
 
-// Initial run
-processLinksForAllUsers();
+init();

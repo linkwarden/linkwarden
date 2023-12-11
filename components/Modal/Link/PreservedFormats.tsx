@@ -28,7 +28,7 @@ export default function PreservedFormats() {
   }, [links]);
 
   useEffect(() => {
-    let interval: NodeJS.Timer | undefined;
+    let interval: any;
     if (link?.screenshotPath === "pending" || link?.pdfPath === "pending") {
       let isPublicRoute = router.pathname.startsWith("/public")
         ? true
