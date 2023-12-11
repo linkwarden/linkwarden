@@ -5,35 +5,39 @@ import sendToWayback from "../../lib/api/sendToWayback";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
+import { Collection, Link, User } from "@prisma/client";
 
-export default async function urlHandler(
-  linkId: number,
-  url: string,
-  userId: number
-) {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+type LinksAndCollectionAndOwner = Link & {
+  collection: Collection & {
+    owner: User;
+  };
+};
+
+export default async function urlHandler(link: LinksAndCollectionAndOwner) {
+  const user = link.collection?.owner;
 
   const targetLink = await prisma.link.update({
-    where: { id: linkId },
+    where: { id: link.id },
     data: {
-      screenshotPath: user?.archiveAsScreenshot ? "pending" : null,
-      pdfPath: user?.archiveAsPDF ? "pending" : null,
+      screenshotPath: user.archiveAsScreenshot ? "pending" : null,
+      pdfPath: user.archiveAsPDF ? "pending" : null,
       readabilityPath: "pending",
       lastPreserved: new Date().toISOString(),
     },
   });
 
-  // Archive.org
+  // archive.org
 
-  if (user?.archiveAsWaybackMachine) sendToWayback(url);
+  if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
 
-  if (user?.archiveAsPDF || user?.archiveAsScreenshot) {
-    const browser = await chromium.launch();
+  if (user.archiveAsPDF || user.archiveAsScreenshot) {
+    const browser = await chromium.launch({ headless: false });
     const context = await browser.newContext(devices["Desktop Chrome"]);
     const page = await context.newPage();
 
     try {
-      await page.goto(url, { waitUntil: "domcontentloaded" });
+      link.url &&
+        (await page.goto(link.url, { waitUntil: "domcontentloaded" }));
 
       const content = await page.content();
 
@@ -48,7 +52,7 @@ export default async function urlHandler(
       //   console.log(doc);
       //   return createFile({
       //     data: doc,
-      //     filePath: `archives/${targetLink.collectionId}/${linkId}.mhtml`,
+      //     filePath: `archives/${targetLink.collectionId}/${link.id}.mhtml`,
       //   });
       // };
 
@@ -59,7 +63,7 @@ export default async function urlHandler(
       const window = new JSDOM("").window;
       const purify = DOMPurify(window);
       const cleanedUpContent = purify.sanitize(content);
-      const dom = new JSDOM(cleanedUpContent, { url: url });
+      const dom = new JSDOM(cleanedUpContent, { url: link.url || "" });
       const article = new Readability(dom.window.document).parse();
 
       const articleText = article?.textContent
@@ -68,13 +72,13 @@ export default async function urlHandler(
 
       await createFile({
         data: JSON.stringify(article),
-        filePath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
+        filePath: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
       });
 
       await prisma.link.update({
-        where: { id: linkId },
+        where: { id: link.id },
         data: {
-          readabilityPath: `archives/${targetLink.collectionId}/${linkId}_readability.json`,
+          readabilityPath: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
           textContent: articleText,
         },
       });
@@ -87,16 +91,20 @@ export default async function urlHandler(
         .catch((e) => (faulty = true));
 
       const linkExists = await prisma.link.findUnique({
-        where: { id: linkId },
+        where: { id: link.id },
       });
 
       if (linkExists && !faulty) {
+        const processingPromises = [];
+
         if (user.archiveAsScreenshot) {
           const screenshot = await page.screenshot({ fullPage: true });
-          await createFile({
-            data: screenshot,
-            filePath: `archives/${linkExists.collectionId}/${linkId}.png`,
-          });
+          processingPromises.push(
+            createFile({
+              data: screenshot,
+              filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
+            })
+          );
         }
 
         if (user.archiveAsPDF) {
@@ -106,27 +114,30 @@ export default async function urlHandler(
             printBackground: true,
             margin: { top: "15px", bottom: "15px" },
           });
-
-          await createFile({
-            data: pdf,
-            filePath: `archives/${linkExists.collectionId}/${linkId}.pdf`,
-          });
+          processingPromises.push(
+            createFile({
+              data: pdf,
+              filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
+            })
+          );
         }
 
+        await Promise.allSettled(processingPromises);
+
         await prisma.link.update({
-          where: { id: linkId },
+          where: { id: link.id },
           data: {
             screenshotPath: user.archiveAsScreenshot
-              ? `archives/${linkExists.collectionId}/${linkId}.png`
+              ? `archives/${linkExists.collectionId}/${link.id}.png`
               : null,
             pdfPath: user.archiveAsPDF
-              ? `archives/${linkExists.collectionId}/${linkId}.pdf`
+              ? `archives/${linkExists.collectionId}/${link.id}.pdf`
               : null,
           },
         });
       } else if (faulty) {
         await prisma.link.update({
-          where: { id: linkId },
+          where: { id: link.id },
           data: {
             screenshotPath: null,
             pdfPath: null,
