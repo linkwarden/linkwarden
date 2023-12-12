@@ -31,7 +31,7 @@ export default async function urlHandler(link: LinksAndCollectionAndOwner) {
   if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
 
   if (user.archiveAsPDF || user.archiveAsScreenshot) {
-    const browser = await chromium.launch({ headless: false });
+    const browser = await chromium.launch();
     const context = await browser.newContext(devices["Desktop Chrome"]);
     const page = await context.newPage();
 
