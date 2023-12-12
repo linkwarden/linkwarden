@@ -43,11 +43,9 @@ export default async function urlHandler(link: LinksAndCollectionAndOwner) {
 
       // TODO
       // const session = await page.context().newCDPSession(page);
-
       // const doc = await session.send("Page.captureSnapshot", {
       //   format: "mhtml",
       // });
-
       // const saveDocLocally = (doc: any) => {
       //   console.log(doc);
       //   return createFile({
@@ -55,7 +53,6 @@ export default async function urlHandler(link: LinksAndCollectionAndOwner) {
       //     filePath: `archives/${targetLink.collectionId}/${link.id}.mhtml`,
       //   });
       // };
-
       // saveDocLocally(doc.data);
 
       // Readability

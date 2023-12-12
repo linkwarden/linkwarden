@@ -99,7 +99,7 @@ async function processBatch() {
   await Promise.allSettled(processingPromises);
 }
 
-const intervalInMinutes = Number(process.env.ARCHIVE_SCRIPT_INTERVAL) || 10;
+const intervalInSeconds = Number(process.env.ARCHIVE_SCRIPT_INTERVAL) || 10;
 
 function delay(sec: number) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
@@ -110,10 +110,10 @@ async function init() {
   while (true) {
     try {
       await processBatch();
-      await delay(intervalInMinutes);
+      await delay(intervalInSeconds);
     } catch (error) {
       console.error("\x1b[34m%s\x1b[0m", "Error processing links:", error);
-      await delay(intervalInMinutes);
+      await delay(intervalInSeconds);
     }
   }
 }

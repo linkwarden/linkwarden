@@ -236,7 +236,7 @@ export default function LinkCard({ link, count, className }: Props) {
         <div className="flex items-baseline gap-1">
           <p className="text-sm text-neutral">{count + 1}</p>
           <p className="text-lg truncate w-full pr-8">
-            {unescapeString(link.name || link.description) || shortendURL}
+            {unescapeString(link.name || link.description) || link.url}
           </p>
         </div>
 
