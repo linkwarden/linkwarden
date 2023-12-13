@@ -17,6 +17,7 @@ import { faBoxesStacked, faFolder } from "@fortawesome/free-solid-svg-icons";
 import useModalStore from "@/store/modals";
 import { useSession } from "next-auth/react";
 import useLocalSettingsStore from "@/store/localSettings";
+import { readabilityAvailable } from "@/lib/shared/getArchiveValidity";
 
 type LinkContent = {
   title: string;
@@ -62,11 +63,7 @@ export default function Index() {
 
   useEffect(() => {
     const fetchLinkContent = async () => {
-      if (
-        router.query.id &&
-        link?.readabilityPath &&
-        link?.readabilityPath !== "pending"
-      ) {
+      if (router.query.id && readabilityAvailable(link)) {
         const response = await fetch(
           `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}`
         );
@@ -82,11 +79,7 @@ export default function Index() {
 
   useEffect(() => {
     let interval: any;
-    if (
-      link?.screenshotPath === "pending" ||
-      link?.pdfPath === "pending" ||
-      link?.readabilityPath === "pending"
-    ) {
+    if (link?.readabilityPath === "pending") {
       interval = setInterval(() => getLink(link.id as number, true), 5000);
     } else {
       if (interval) {

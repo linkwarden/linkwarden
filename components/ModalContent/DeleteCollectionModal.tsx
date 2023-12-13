@@ -103,12 +103,9 @@ export default function DeleteCollectionModal({
                 />
               </svg>
               <span>
-                <b>
-                  Warning: Deleting this collection will permanently erase all
-                  its contents
-                </b>
-                , and it will become inaccessible to everyone, including members
-                with previous access.
+                <b>Warning:</b> Deleting this collection will permanently erase
+                all its contents, and it will become inaccessible to everyone,
+                including members with previous access.
               </span>
             </div>
           </>
