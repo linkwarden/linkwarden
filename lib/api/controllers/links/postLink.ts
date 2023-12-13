@@ -1,13 +1,10 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import getTitle from "@/lib/shared/getTitle";
-import urlHandler from "@/lib/api/urlHandler";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import createFolder from "@/lib/api/storage/createFolder";
-import pdfHandler from "../../pdfHandler";
 import validateUrlSize from "../../validateUrlSize";
-import imageHandler from "../../imageHandler";
 
 export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
@@ -112,38 +109,6 @@ export default async function postLink(
   });
 
   createFolder({ filePath: `archives/${newLink.collectionId}` });
-
-  newLink.url && linkType === "url"
-    ? urlHandler(newLink.id, newLink.url, userId)
-    : undefined;
-
-  newLink.url && linkType === "pdf"
-    ? pdfHandler(newLink.id, newLink.url)
-    : undefined;
-
-  newLink.url && linkType === "image"
-    ? imageHandler(newLink.id, newLink.url, imageExtension)
-    : undefined;
-
-  !newLink.url && linkType === "pdf"
-    ? await prisma.link.update({
-        where: { id: newLink.id },
-        data: {
-          pdfPath: "pending",
-          lastPreserved: new Date().toISOString(),
-        },
-      })
-    : undefined;
-
-  !newLink.url && linkType === "image"
-    ? await prisma.link.update({
-        where: { id: newLink.id },
-        data: {
-          screenshotPath: "pending",
-          lastPreserved: new Date().toISOString(),
-        },
-      })
-    : undefined;
 
   return { response: newLink, status: 200 };
 }

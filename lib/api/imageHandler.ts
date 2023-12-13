@@ -9,9 +9,9 @@ export default async function imageHandler(
   extension: string,
   file?: string
 ) {
-  const pdf = await fetch(url as string).then((res) => res.blob());
+  const image = await fetch(url as string).then((res) => res.blob());
 
-  const buffer = Buffer.from(await pdf.arrayBuffer());
+  const buffer = Buffer.from(await image.arrayBuffer());
 
   const linkExists = await prisma.link.findUnique({
     where: { id: linkId },
