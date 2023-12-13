@@ -1,10 +1,8 @@
 import { Collection, Link, User } from "@prisma/client";
 import { prisma } from "../lib/api/db";
-import urlHandler from "./lib/urlHandler";
+import archiveHandler from "../lib/api/archiveHandler";
 
 const args = process.argv.slice(2).join(" ");
-
-console.log(process.env.NEXTAUTH_URL);
 
 const archiveTakeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
 
@@ -136,7 +134,7 @@ async function processBatch() {
         `Processing link ${link.url} for user ${link.collection.ownerId}`
       );
 
-      await urlHandler(link);
+      await archiveHandler(link);
 
       console.log(
         "\x1b[34m%s\x1b[0m",
@@ -152,9 +150,12 @@ async function processBatch() {
   };
 
   // Process each link in the batch concurrently
-  const processingPromises = [...linksOldToNew, ...linksNewToOld].map((e) =>
-    archiveLink(e)
-  );
+  const processingPromises = [...linksOldToNew, ...linksNewToOld]
+    // Make sure we don't process the same link twice
+    .filter((value, index, self) => {
+      return self.findIndex((item) => item.id === value.id) === index;
+    })
+    .map((e) => archiveLink(e));
 
   await Promise.allSettled(processingPromises);
 }

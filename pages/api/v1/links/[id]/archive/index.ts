@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import urlHandler from "@/lib/api/urlHandler";
+import urlHandler from "@/lib/api/archiveHandler";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
