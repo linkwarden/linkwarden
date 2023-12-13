@@ -174,7 +174,7 @@ export default function UploadFileModal({ onClose }: Props) {
             />
           </label>
           <p className="text-xs font-semibold mt-2">
-            PDF, PNG, JPG (Up to {process.env.NEXT_PUBLIC_MAX_UPLOAD_SIZE || 30}
+            PDF, PNG, JPG (Up to {process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 30}
             MB)
           </p>
         </div>

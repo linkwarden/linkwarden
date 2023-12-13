@@ -1,11 +1,9 @@
-import { Link } from "@prisma/client";
-
 export function screenshotAvailable(link: any) {
   return (
     link &&
     link.screenshotPath &&
     link.screenshotPath !== "pending" &&
-    link.screenshotPath !== "failed"
+    link.screenshotPath !== "unavailable"
   );
 }
 
@@ -14,7 +12,7 @@ export function pdfAvailable(link: any) {
     link &&
     link.pdfPath &&
     link.pdfPath !== "pending" &&
-    link.pdfPath !== "failed"
+    link.pdfPath !== "unavailable"
   );
 }
 
@@ -23,6 +21,6 @@ export function readabilityAvailable(link: any) {
     link &&
     link.readabilityPath &&
     link.readabilityPath !== "pending" &&
-    link.readabilityPath !== "failed"
+    link.readabilityPath !== "unavailable"
   );
 }
