@@ -14,6 +14,10 @@ import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import {
+  pdfAvailable,
+  screenshotAvailable,
+} from "@/lib/shared/getArchiveValidity";
 
 export default function PreservedFormats() {
   const session = useSession();
@@ -29,13 +33,13 @@ export default function PreservedFormats() {
 
   useEffect(() => {
     let interval: any;
-    if (link?.screenshotPath === "pending" || link?.pdfPath === "pending") {
+    if (screenshotAvailable(link) && pdfAvailable(link)) {
       let isPublicRoute = router.pathname.startsWith("/public")
         ? true
         : undefined;
 
       interval = setInterval(
-        () => getLink(link.id as number, isPublicRoute),
+        () => getLink(link?.id as number, isPublicRoute),
         5000
       );
     } else {
@@ -89,7 +93,7 @@ export default function PreservedFormats() {
 
   return (
     <div className={`flex flex-col gap-3 sm:w-[35rem] w-80 pt-3`}>
-      {link?.screenshotPath && link?.screenshotPath !== "pending" ? (
+      {screenshotAvailable(link) ? (
         <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
             <div className="bg-primary text-primary-content p-2 rounded-l-md">
@@ -112,7 +116,7 @@ export default function PreservedFormats() {
 
             <Link
               href={`/api/v1/archives/${link?.id}?format=${
-                link.screenshotPath.endsWith("png")
+                link?.screenshotPath?.endsWith("png")
                   ? ArchivedFormat.png
                   : ArchivedFormat.jpeg
               }`}
@@ -128,7 +132,7 @@ export default function PreservedFormats() {
         </div>
       ) : undefined}
 
-      {link?.pdfPath && link.pdfPath !== "pending" ? (
+      {pdfAvailable(link) ? (
         <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
             <div className="bg-primary text-primary-content p-2 rounded-l-md">
@@ -167,12 +171,7 @@ export default function PreservedFormats() {
         {link?.collection.ownerId === session.data?.user.id ? (
           <div
             className={`btn btn-accent dark:border-violet-400 text-white ${
-              link?.pdfPath &&
-              link?.screenshotPath &&
-              link?.pdfPath !== "pending" &&
-              link?.screenshotPath !== "pending"
-                ? "mt-3"
-                : ""
+              screenshotAvailable(link) && pdfAvailable(link) ? "mt-3" : ""
             }`}
             onClick={() => updateArchive()}
           >
@@ -189,12 +188,7 @@ export default function PreservedFormats() {
           )}`}
           target="_blank"
           className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-fit items-center text-sm ${
-            link?.pdfPath &&
-            link?.screenshotPath &&
-            link?.pdfPath !== "pending" &&
-            link?.screenshotPath !== "pending"
-              ? "sm:mt-3"
-              : ""
+            screenshotAvailable(link) && pdfAvailable(link) ? "sm:mt-3" : ""
           }`}
         >
           <FontAwesomeIcon
