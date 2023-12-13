@@ -68,7 +68,7 @@ export default function Navbar() {
             <div
               tabIndex={0}
               role="button"
-              className="flex items-center group btn btn-accent dark:border-violet-400 text-white btn-sm px-2"
+              className="flex min-w-[3.4rem] items-center group btn btn-accent dark:border-violet-400 text-white btn-sm px-2"
             >
               <FontAwesomeIcon icon={faPlus} className="w-5 h-5" />
               <FontAwesomeIcon

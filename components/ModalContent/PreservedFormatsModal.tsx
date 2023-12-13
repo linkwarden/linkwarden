@@ -1,9 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
-import CollectionSelection from "@/components/InputSelect/CollectionSelection";
-import TagSelection from "@/components/InputSelect/TagSelection";
-import TextInput from "@/components/TextInput";
-import unescapeString from "@/lib/client/unescapeString";
 import useLinkStore from "@/store/links";
 import {
   ArchivedFormat,
@@ -23,6 +18,10 @@ import Modal from "../Modal";
 import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import {
+  pdfAvailable,
+  screenshotAvailable,
+} from "@/lib/shared/getArchiveValidity";
 
 type Props = {
   onClose: Function;
@@ -114,7 +113,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       <div className="divider mb-3 mt-1"></div>
 
       <div className={`flex flex-col gap-3`}>
-        {link?.screenshotPath && link?.screenshotPath !== "pending" ? (
+        {screenshotAvailable(link) ? (
           <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
             <div className="flex gap-2 items-center">
               <div className="bg-primary text-primary-content p-2 rounded-l-md">
@@ -137,7 +136,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
               <Link
                 href={`/api/v1/archives/${link?.id}?format=${
-                  link.screenshotPath.endsWith("png")
+                  link.screenshotPath?.endsWith("png")
                     ? ArchivedFormat.png
                     : ArchivedFormat.jpeg
                 }`}
@@ -192,12 +191,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           {link?.collection.ownerId === session.data?.user.id ? (
             <div
               className={`btn btn-accent w-1/2 dark:border-violet-400 text-white ${
-                link?.pdfPath &&
-                link?.screenshotPath &&
-                link?.pdfPath !== "pending" &&
-                link?.screenshotPath !== "pending"
-                  ? "mt-3"
-                  : ""
+                screenshotAvailable(link) && pdfAvailable(link) ? "mt-3" : ""
               }`}
               onClick={() => updateArchive()}
             >
@@ -214,12 +208,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             )}`}
             target="_blank"
             className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm ${
-              link?.pdfPath &&
-              link?.screenshotPath &&
-              link?.pdfPath !== "pending" &&
-              link?.screenshotPath !== "pending"
-                ? "sm:mt-3"
-                : ""
+              screenshotAvailable(link) && pdfAvailable(link) ? "sm:mt-3" : ""
             }`}
           >
             <p className="whitespace-nowrap">

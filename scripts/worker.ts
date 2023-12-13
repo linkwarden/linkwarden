@@ -15,8 +15,9 @@ type LinksAndCollectionAndOwner = Link & {
 };
 
 async function processBatch() {
-  const links = await prisma.link.findMany({
+  const linksOldToNew = await prisma.link.findMany({
     where: {
+      url: { not: null },
       OR: [
         {
           collection: {
@@ -71,6 +72,63 @@ async function processBatch() {
     },
   });
 
+  const linksNewToOld = await prisma.link.findMany({
+    where: {
+      url: { not: null },
+      OR: [
+        {
+          collection: {
+            owner: {
+              archiveAsScreenshot: true,
+            },
+          },
+          screenshotPath: null,
+        },
+        {
+          collection: {
+            owner: {
+              archiveAsScreenshot: true,
+            },
+          },
+          screenshotPath: "pending",
+        },
+        ///////////////////////
+        {
+          collection: {
+            owner: {
+              archiveAsPDF: true,
+            },
+          },
+          pdfPath: null,
+        },
+        {
+          collection: {
+            owner: {
+              archiveAsPDF: true,
+            },
+          },
+          pdfPath: "pending",
+        },
+        ///////////////////////
+        {
+          readabilityPath: null,
+        },
+        {
+          readabilityPath: "pending",
+        },
+      ],
+    },
+    take: archiveTakeCount,
+    orderBy: { createdAt: "desc" },
+    include: {
+      collection: {
+        include: {
+          owner: true,
+        },
+      },
+    },
+  });
+
   const archiveLink = async (link: LinksAndCollectionAndOwner) => {
     try {
       console.log(
@@ -94,7 +152,9 @@ async function processBatch() {
   };
 
   // Process each link in the batch concurrently
-  const processingPromises = links.map((e) => archiveLink(e));
+  const processingPromises = [...linksOldToNew, ...linksNewToOld].map((e) =>
+    archiveLink(e)
+  );
 
   await Promise.allSettled(processingPromises);
 }
