@@ -14,7 +14,7 @@ export default function NoLinksFound({ text }: Props) {
     <div className="w-full h-full flex flex-col justify-center p-3">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="w-1/4 min-w-[7rem] max-w-[15rem] h-auto mx-auto mb-5"
+        className="w-1/4 min-w-[7rem] max-w-[15rem] h-auto mx-auto mb-5 text-primary drop-shadow"
         fill="currentColor"
         viewBox="0 0 16 16"
       >

@@ -15,11 +15,16 @@ import {
   faUpRightFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../Modal";
-import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
+import {
+  faFileImage,
+  faFileLines,
+  faFilePdf,
+} from "@fortawesome/free-regular-svg-icons";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import {
   pdfAvailable,
+  readabilityAvailable,
   screenshotAvailable,
 } from "@/lib/shared/getArchiveValidity";
 
@@ -30,7 +35,7 @@ type Props = {
 
 export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
   const session = useSession();
-  const { links, getLink } = useLinkStore();
+  const { getLink } = useLinkStore();
 
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
@@ -110,9 +115,54 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">Preserved Formats</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <div className="divider mb-2 mt-1"></div>
+
+      {screenshotAvailable(link) ||
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ? (
+        <p className="mb-3">
+          The following formats are available for this link:
+        </p>
+      ) : (
+        <p className="mb-3">No preserved formats available.</p>
+      )}
 
       <div className={`flex flex-col gap-3`}>
+        {readabilityAvailable(link) ? (
+          <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
+            <div className="flex gap-2 items-center">
+              <div className="bg-primary text-primary-content p-2 rounded-l-md">
+                <FontAwesomeIcon icon={faFileLines} className="w-6 h-6" />
+              </div>
+
+              <p>Readable</p>
+            </div>
+
+            <div className="flex gap-1">
+              {/* <div
+                onClick={() => handleDownload(ArchivedFormat.pdf)}
+                className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
+              >
+                <FontAwesomeIcon
+                  icon={faCloudArrowDown}
+                  className="w-5 h-5 cursor-pointer text-neutral"
+                />
+              </div> */}
+
+              <Link
+                href={`/preserved/${link?.id}?format=${ArchivedFormat.readability}`}
+                target="_blank"
+                className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
+              >
+                <FontAwesomeIcon
+                  icon={faArrowUpRightFromSquare}
+                  className="w-5 h-5 text-neutral"
+                />
+              </Link>
+            </div>
+          </div>
+        ) : undefined}
+
         {screenshotAvailable(link) ? (
           <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
             <div className="flex gap-2 items-center">
@@ -152,7 +202,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           </div>
         ) : undefined}
 
-        {link?.pdfPath && link.pdfPath !== "pending" ? (
+        {pdfAvailable(link) ? (
           <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
             <div className="flex gap-2 items-center">
               <div className="bg-primary text-primary-content p-2 rounded-l-md">
@@ -191,7 +241,11 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           {link?.collection.ownerId === session.data?.user.id ? (
             <div
               className={`btn btn-accent w-1/2 dark:border-violet-400 text-white ${
-                screenshotAvailable(link) && pdfAvailable(link) ? "mt-3" : ""
+                screenshotAvailable(link) &&
+                pdfAvailable(link) &&
+                readabilityAvailable(link)
+                  ? "mt-3"
+                  : ""
               }`}
               onClick={() => updateArchive()}
             >
@@ -208,11 +262,15 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             )}`}
             target="_blank"
             className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm ${
-              screenshotAvailable(link) && pdfAvailable(link) ? "sm:mt-3" : ""
+              screenshotAvailable(link) &&
+              pdfAvailable(link) &&
+              readabilityAvailable(link)
+                ? "sm:mt-3"
+                : ""
             }`}
           >
             <p className="whitespace-nowrap">
-              View Latest Snapshot on archive.org
+              View latest snapshot on archive.org
             </p>
             <FontAwesomeIcon
               icon={faArrowUpRightFromSquare}
