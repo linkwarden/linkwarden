@@ -7,11 +7,6 @@ import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
-import {
-  pdfAvailable,
-  readabilityAvailable,
-  screenshotAvailable,
-} from "../shared/getArchiveValidity";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -174,23 +169,15 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       await prisma.link.update({
         where: { id: link.id },
         data: {
-          readabilityPath:
-            !finalLink.textContent ||
-            finalLink.textContent === "" ||
-            !readabilityAvailable(finalLink) ||
-            finalLink.type !== "url"
-              ? "unavailable"
-              : undefined,
-          screenshotPath:
-            !screenshotAvailable(finalLink) ||
-            (finalLink.type !== "url" && finalLink.type !== "pdf")
-              ? "unavailable"
-              : undefined,
-          pdfPath:
-            !pdfAvailable(finalLink) ||
-            (finalLink.type !== "url" && finalLink.type !== "image")
-              ? "unavailable"
-              : undefined,
+          readabilityPath: !finalLink.readabilityPath?.startsWith("archives")
+            ? "unavailable"
+            : undefined,
+          screenshotPath: !finalLink.screenshotPath?.startsWith("archives")
+            ? "unavailable"
+            : undefined,
+          pdfPath: !finalLink.pdfPath?.startsWith("archives")
+            ? "unavailable"
+            : undefined,
         },
       });
 
