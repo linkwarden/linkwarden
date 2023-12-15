@@ -26,7 +26,6 @@ import unescapeString from "@/lib/client/unescapeString";
 import { useRouter } from "next/router";
 import EditLinkModal from "./ModalContent/EditLinkModal";
 import DeleteLinkModal from "./ModalContent/DeleteLinkModal";
-import ExpandedLink from "./ModalContent/ExpandedLink";
 import PreservedFormatsModal from "./ModalContent/PreservedFormatsModal";
 
 type Props = {
@@ -112,11 +111,10 @@ export default function LinkCard({ link, count, className }: Props) {
   const [editLinkModal, setEditLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
   const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
-  const [expandedLink, setExpandedLink] = useState(false);
 
   return (
     <div
-      className={`h-fit border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative ${
+      className={`h-fit hover:bg-base-300 hover:border-base-300 border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-200 rounded-2xl relative ${
         className || ""
       }`}
     >
@@ -200,12 +198,8 @@ export default function LinkCard({ link, count, className }: Props) {
         </div>
       ) : undefined}
 
-      <Link
-        href={"/links/" + link.id}
-        // onClick={
-        //   () => router.push("/links/" + link.id)
-        //   // setExpandedLink(true)
-        // }
+      <div
+        onClick={() => link.url && window.open(link.url || "", "_blank")}
         className="flex flex-col justify-between cursor-pointer h-full w-full gap-1 p-3"
       >
         {link.url && url ? (
@@ -241,13 +235,7 @@ export default function LinkCard({ link, count, className }: Props) {
         </div>
 
         {link.url ? (
-          <div
-            onClick={(e) => {
-              e.preventDefault();
-              window.open(link.url || "", "_blank");
-            }}
-            className="flex items-center gap-1 max-w-full w-fit text-neutral hover:opacity-60 duration-100"
-          >
+          <div className="flex items-center gap-1 max-w-full w-fit text-neutral">
             <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
             <p className="truncate w-full">{shortendURL}</p>
           </div>
@@ -257,7 +245,7 @@ export default function LinkCard({ link, count, className }: Props) {
 
         <div
           onClick={(e) => {
-            e.preventDefault();
+            e.stopPropagation();
             router.push(`/collections/${link.collection.id}`);
           }}
           className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
@@ -295,7 +283,7 @@ export default function LinkCard({ link, count, className }: Props) {
             ) : (
               <p className="text-xs mt-2 p-1 font-semibold italic">No Tags</p>
             )} */}
-      </Link>
+      </div>
       {editLinkModal ? (
         <EditLinkModal
           onClose={() => setEditLinkModal(false)}
@@ -314,9 +302,6 @@ export default function LinkCard({ link, count, className }: Props) {
           activeLink={link}
         />
       ) : undefined}
-      {/* {expandedLink ? (
-        <ExpandedLink onClose={() => setExpandedLink(false)} link={link} />
-      ) : undefined} */}
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function Modal({ toggleModal, className, children }: Props) {
         <div className="slide-up mt-auto sm:m-auto relative border-neutral-content rounded-t-2xl sm:rounded-2xl border-t sm:border shadow-2xl p-5 bg-base-100">
           <div
             onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
-            className="absolute top-3 right-3 btn btn-sm outline-none btn-circle btn-ghost"
+            className="absolute top-3 right-3 btn btn-sm outline-none btn-circle btn-ghost z-10"
           >
             <FontAwesomeIcon icon={faClose} className="w-4 h-4 text-neutral" />
           </div>
