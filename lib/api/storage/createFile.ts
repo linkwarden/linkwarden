@@ -31,9 +31,14 @@ export default async function createFile({
     const storagePath = process.env.STORAGE_FOLDER || "data";
     const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
 
-    fs.writeFile(creationPath, data, isBase64 ? "base64" : {}, function (err) {
-      if (err) console.log(err);
-    });
+    fs.promises
+      .mkdir(path.dirname(creationPath), { recursive: true })
+      .then((x) =>
+        fs.promises.writeFile(creationPath, data, isBase64 ? "base64" : {}),
+      )
+      .catch((err) => {
+        console.log(err);
+      });
 
     return true;
   }

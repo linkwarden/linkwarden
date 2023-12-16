@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import urlHandler from "@/lib/api/archiveHandler";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
+import archiveHandler from "@/lib/api/archiveHandler";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
@@ -14,7 +14,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     where: {
       id: Number(req.query.id),
     },
-    include: { collection: true },
+    include: { collection: { include: { owner: true } } },
   });
 
   if (!link)
@@ -37,13 +37,14 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         response: `This link is currently being saved or has already been preserved. Please retry in ${
           RE_ARCHIVE_LIMIT -
           Math.floor(
-            getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved)
+            getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved),
           )
         } minutes or create a new one.`,
       });
 
     if (link.url && isValidUrl(link.url)) {
-      urlHandler(link.id, link.url, user.id);
+      await archiveHandler(link);
+
       return res.status(200).json({
         response: "Link is not a webpage to be archived.",
       });
