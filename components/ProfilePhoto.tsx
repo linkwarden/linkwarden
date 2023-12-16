@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
 type Props = {
@@ -39,10 +37,7 @@ export default function ProfilePhoto({
         {name ? (
           <span className="text-2xl capitalize">{name.slice(0, 1)}</span>
         ) : (
-          <FontAwesomeIcon
-            icon={faUser}
-            className="w-1/2 h-1/2 aspect-square"
-          />
+          <i className="bi-person text-xl"></i>
         )}
       </div>
     </div>
