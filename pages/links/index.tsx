@@ -4,17 +4,30 @@ import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
-import { Sort } from "@/types/global";
+import { Sort, ViewMode } from "@/types/global";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import ViewDropdown from "@/components/ViewDropdown";
+import DefaultGridView from "@/components/LinkViews/DefaultGridView";
+import CompactGridView from "@/components/LinkViews/CompactGridView";
+import ListView from "@/components/LinkViews/ListView";
 
 export default function Links() {
   const { links } = useLinkStore();
 
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Default);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({ sort: sortBy });
+
+  const components = {
+    [ViewMode.Default]: DefaultGridView,
+    [ViewMode.Compact]: CompactGridView,
+    [ViewMode.List]: ListView,
+  };
+
+  const Component = components[viewMode];
 
   return (
     <MainLayout>
@@ -32,16 +45,13 @@ export default function Links() {
             </div>
           </div>
 
-          <div className="relative mt-2">
+          <div className="flex items-center mt-2">
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
         {links[0] ? (
-          <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5">
-            {links.map((e, i) => {
-              return <LinkCard key={i} link={e} count={i} />;
-            })}
-          </div>
+          <Component links={links} />
         ) : (
           <NoLinksFound text="You Haven't Created Any Links Yet" />
         )}
