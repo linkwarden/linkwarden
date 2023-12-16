@@ -5,7 +5,6 @@ import {
 import { useEffect, useState } from "react";
 import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
-import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -47,36 +46,31 @@ export default function LinkCardCompact({ link, count, className }: Props) {
   }, [collections, links]);
 
   return (
-    <div
-      className={`h-fit border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative ${
-        className || ""
-      }`}
-    >
-      <div className={"rounded-2xl overflow-clip"}>
-        <div className={"flex items-center"}>
-          <div className="shrink-0">
-              <LinkIcon link={link} />
-          </div>
+    <div className="border-b last:border-b-0 border-neutral-content relative">
+      <div
+        onClick={() => link.url && window.open(link.url || "", "_blank")}
+        className="flex items-center cursor-pointer p-3"
+      >
+        <div className="shrink-0">
+          <LinkIcon link={link} />
+        </div>
 
-          <Link
-            href={"/links/" + link.id}
-            className="flex flex-col justify-between cursor-pointer h-full w-full gap-1 p-3"
-          >
-            <div className={"flex items-center gap-2"}>
-              <div className="flex items-baseline gap-1">
-                <p className="text-sm text-neutral">{count + 1}</p>
-                <p className="text-lg truncate">
-                  {unescapeString(link.name || link.description) || link.url}
-                </p>
-              </div>
+        <div className="w-[calc(100%-56px)] ml-2">
+          <p className="line-clamp-1 mr-8">
+            {unescapeString(link.name || link.description) || link.url}
+          </p>
 
+          <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
+            <div className="flex items-center gap-2">
+              <LinkCollection link={link} collection={collection} />
+              &middot;
               {link.url ? (
                 <div
                   onClick={(e) => {
                     e.preventDefault();
                     window.open(link.url || "", "_blank");
                   }}
-                  className="flex items-center gap-1 max-w-full w-fit text-xs text-neutral hover:opacity-60 duration-100"
+                  className="flex items-center hover:opacity-60 cursor-pointer duration-100"
                 >
                   <p className="truncate w-full">{shortendURL}</p>
                 </div>
@@ -86,13 +80,9 @@ export default function LinkCardCompact({ link, count, className }: Props) {
                 </div>
               )}
             </div>
-
-            <div className={"flex items-center gap-2 text-xs"}>
-              <LinkCollection link={link} collection={collection} />
-              &middot;
-              <LinkDate link={link} />
-            </div>
-          </Link>
+            <span className="hidden sm:block">&middot;</span>
+            <LinkDate link={link} />
+          </div>
         </div>
       </div>
 
