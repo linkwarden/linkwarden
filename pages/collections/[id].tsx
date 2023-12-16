@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import { CollectionIncludingMembersAndLinkCount, Sort } from "@/types/global";

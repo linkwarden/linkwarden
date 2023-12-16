@@ -10,6 +10,7 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
+import Link from "next/link";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -17,7 +18,7 @@ type Props = {
   className?: string;
 };
 
-export default function LinkCardCompact({ link, count, className }: Props) {
+export default function LinkCardGrid({ link, count, className }: Props) {
   const { collections } = useCollectionStore();
 
   const { links } = useLinkStore();
@@ -33,20 +34,20 @@ export default function LinkCardCompact({ link, count, className }: Props) {
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
       collections.find(
-        (e) => e.id === link.collection.id,
-      ) as CollectionIncludingMembersAndLinkCount,
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
     );
 
   useEffect(() => {
     setCollection(
       collections.find(
-        (e) => e.id === link.collection.id,
-      ) as CollectionIncludingMembersAndLinkCount,
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
     );
   }, [collections, links]);
 
   return (
-    <div className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative">
+    <div className="w-full border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative">
       <div
         onClick={() => link.url && window.open(link.url || "", "_blank")}
         className="flex items-center cursor-pointer p-3"
@@ -83,6 +84,25 @@ export default function LinkCardCompact({ link, count, className }: Props) {
             <span className="hidden sm:block">&middot;</span>
             <LinkDate link={link} />
           </div>
+          <p>{unescapeString(link.description)}</p>
+          {link.tags[0] ? (
+            <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
+              <div className="flex gap-1 items-center flex-wrap">
+                {link.tags.map((e, i) => (
+                  <Link
+                    href={"/tags/" + e.id}
+                    key={i}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="btn btn-xs btn-ghost truncate max-w-[19rem]"
+                  >
+                    #{e.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : undefined}
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";

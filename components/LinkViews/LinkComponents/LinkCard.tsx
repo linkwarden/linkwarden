@@ -28,15 +28,15 @@ export default function LinkCard({ link, count, className }: Props) {
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
       collections.find(
-        (e) => e.id === link.collection.id,
-      ) as CollectionIncludingMembersAndLinkCount,
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
     );
 
   useEffect(() => {
     setCollection(
       collections.find(
-        (e) => e.id === link.collection.id,
-      ) as CollectionIncludingMembersAndLinkCount,
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
     );
   }, [collections, links]);
 
@@ -84,27 +84,6 @@ export default function LinkCard({ link, count, className }: Props) {
         <LinkCollection link={link} collection={collection} />
 
         <LinkDate link={link} />
-        {/* {link.tags[0] ? (
-<div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
-<div className="flex gap-1 items-center flex-nowrap">
-{link.tags.map((e, i) => (
-<Link
-  href={"/tags/" + e.id}
-  key={i}
-  onClick={(e) => {
-    e.stopPropagation();
-  }}
-  className="btn btn-xs btn-ghost truncate max-w-[19rem]"
->
-  #{e.name}
-</Link>
-))}
-</div>
-<div className="absolute w-1/2 top-0 bottom-0 right-0 bg-gradient-to-r from-transparent to-base-200 to-35%"></div>
-</div>
-) : (
-<p className="text-xs mt-2 p-1 font-semibold italic">No Tags</p>
-)} */}
       </div>
 
       <LinkActions link={link} collection={collection} />

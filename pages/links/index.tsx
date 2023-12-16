@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import NoLinksFound from "@/components/NoLinksFound";
 import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
@@ -9,21 +9,23 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import ViewDropdown from "@/components/ViewDropdown";
-import DefaultGridView from "@/components/LinkViews/DefaultGridView";
-import CompactGridView from "@/components/LinkViews/CompactGridView";
+import DefaultView from "@/components/LinkViews/DefaultView";
+import GridView from "@/components/LinkViews/GridView";
 import ListView from "@/components/LinkViews/ListView";
 
 export default function Links() {
   const { links } = useLinkStore();
 
-  const [viewMode, setViewMode] = useState<string>(localStorage.getItem('viewMode') || ViewMode.Default);
+  const [viewMode, setViewMode] = useState<string>(
+    localStorage.getItem("viewMode") || ViewMode.Default
+  );
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({ sort: sortBy });
 
   const components = {
-    [ViewMode.Default]: DefaultGridView,
-    [ViewMode.Compact]: CompactGridView,
+    [ViewMode.Default]: DefaultView,
+    // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };
 
