@@ -1,4 +1,4 @@
-import LinkRow from "@/components/LinkViews/LinkRow";
+import LinkRow from "@/components/LinkViews/LinkComponents/LinkRow";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
 export default function ListView({

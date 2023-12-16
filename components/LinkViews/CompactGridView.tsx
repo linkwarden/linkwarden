@@ -1,4 +1,4 @@
-import LinkCardCompact from "@/components/LinkViews/LinkCardCompact";
+import LinkCardCompact from "@/components/LinkViews/LinkComponents/LinkCardCompact";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
 export default function CompactGridView({
