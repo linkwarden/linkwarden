@@ -58,9 +58,9 @@ export interface PublicCollectionIncludingLinks extends Collection {
 }
 
 export enum ViewMode {
-  Default,
-  Compact,
-  List,
+  Default = "default",
+  Compact = "compact",
+  List = "list",
 }
 
 export enum Sort {
