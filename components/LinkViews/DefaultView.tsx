@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
 export default function DefaultGridView({

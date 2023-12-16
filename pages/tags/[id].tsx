@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import useLinkStore from "@/store/links";
 import {
   faCheck,

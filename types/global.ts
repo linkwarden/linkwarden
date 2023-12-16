@@ -59,7 +59,7 @@ export interface PublicCollectionIncludingLinks extends Collection {
 
 export enum ViewMode {
   Default = "default",
-  Compact = "compact",
+  Grid = "grid",
   List = "list",
 }
 

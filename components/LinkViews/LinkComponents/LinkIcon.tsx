@@ -13,7 +13,7 @@ export default function LinkIcon({
     isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
 
   const iconClasses: string =
-    "w-12 bg-primary/20 text-primary shadow rounded-md p-2 select-none z-10";
+    "w-12 bg-white text-primary shadow rounded-md p-1 select-none z-10";
 
   return (
     <div>

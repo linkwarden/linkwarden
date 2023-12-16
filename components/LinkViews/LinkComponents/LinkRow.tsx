@@ -33,60 +33,56 @@ export default function LinkCardCompact({ link, count, className }: Props) {
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
       collections.find(
-        (e) => e.id === link.collection.id,
-      ) as CollectionIncludingMembersAndLinkCount,
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
     );
 
   useEffect(() => {
     setCollection(
       collections.find(
-        (e) => e.id === link.collection.id,
-      ) as CollectionIncludingMembersAndLinkCount,
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
     );
   }, [collections, links]);
 
   return (
-    <div className="border-b last:border-b-0 border-neutral-content relative">
-      <div
-        onClick={() => link.url && window.open(link.url || "", "_blank")}
-        className="flex items-center cursor-pointer p-3"
-      >
-        <div className="shrink-0">
-          <LinkIcon link={link} />
-        </div>
+    <>
+      <div className="border-neutral-content relative hover:bg-base-200 duration-200 rounded-lg">
+        <div
+          onClick={() => link.url && window.open(link.url || "", "_blank")}
+          className="flex items-center cursor-pointer p-3"
+        >
+          <div className="shrink-0">
+            <LinkIcon link={link} />
+          </div>
 
-        <div className="w-[calc(100%-56px)] ml-2">
-          <p className="line-clamp-1 mr-8">
-            {unescapeString(link.name || link.description) || link.url}
-          </p>
+          <div className="w-[calc(100%-56px)] ml-2">
+            <p className="line-clamp-1 mr-8">
+              {unescapeString(link.name || link.description) || link.url}
+            </p>
 
-          <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
-            <div className="flex items-center gap-2">
-              <LinkCollection link={link} collection={collection} />
-              &middot;
-              {link.url ? (
-                <div
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.open(link.url || "", "_blank");
-                  }}
-                  className="flex items-center hover:opacity-60 cursor-pointer duration-100"
-                >
+            <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
+              <div className="flex items-center gap-2">
+                <LinkCollection link={link} collection={collection} />
+                &middot;
+                {link.url ? (
                   <p className="truncate w-full">{shortendURL}</p>
-                </div>
-              ) : (
-                <div className="badge badge-primary badge-sm my-1">
-                  {link.type}
-                </div>
-              )}
+                ) : (
+                  <div className="badge badge-primary badge-sm my-1">
+                    {link.type}
+                  </div>
+                )}
+              </div>
+              <span className="hidden sm:block">&middot;</span>
+              <LinkDate link={link} />
             </div>
-            <span className="hidden sm:block">&middot;</span>
-            <LinkDate link={link} />
           </div>
         </div>
+
+        <LinkActions link={link} collection={collection} />
       </div>
 
-      <LinkActions link={link} collection={collection} />
-    </div>
+      <div className="divider my-0 last:hidden h-[1px]"></div>
+    </>
   );
 }

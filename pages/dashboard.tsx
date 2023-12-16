@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import useTagStore from "@/store/tags";
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
