@@ -12,12 +12,6 @@ export default function ListView({
         {links.map((e, i) => {
           return <LinkRow key={i} link={e} count={i} />;
         })}
-        {links.map((e, i) => {
-          return <LinkRow key={i} link={e} count={i} />;
-        })}
-        {links.map((e, i) => {
-          return <LinkRow key={i} link={e} count={i} />;
-        })}
       </div>
     </div>
   );
