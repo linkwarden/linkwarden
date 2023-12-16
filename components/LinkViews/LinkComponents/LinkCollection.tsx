@@ -18,14 +18,14 @@ export default function LinkCollection({
   return (
     <div
       onClick={(e) => {
-        e.preventDefault();
+        e.stopPropagation();
         router.push(`/collections/${link.collection.id}`);
       }}
       className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
     >
       <FontAwesomeIcon
         icon={faFolder}
-        className="w-4 h-4"
+        className="w-4 h-4 shadow"
         style={{ color: collection?.color }}
       />
       <p className="truncate capitalize">{collection?.name}</p>
