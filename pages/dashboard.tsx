@@ -13,6 +13,7 @@ import { toast } from "react-hot-toast";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
 import NewLinkModal from "@/components/ModalContent/NewLinkModal";
+import PageHeader from "@/components/PageHeader";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
@@ -93,14 +94,7 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
-        <div className="flex items-center gap-3">
-          <i className="bi-house text-primary text-3xl sm:text-4xl drop-shadow"></i>
-          <div>
-            <p className="text-3xl capitalize font-thin">Dashboard</p>
-
-            <p>A brief overview of your data</p>
-          </div>
-        </div>
+        <PageHeader icon={'bi-house '} title={'Dashboard'} description={"A brief overview of your data"} />
 
         <div>
           <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
