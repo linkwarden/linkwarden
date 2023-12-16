@@ -17,6 +17,7 @@ import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
+import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 
 type Props = {
     link: LinkIncludingShortenedCollectionAndTags;
@@ -65,30 +66,9 @@ export default function LinkCard({link, count, className}: Props) {
                 onClick={() => link.url && window.open(link.url || "", "_blank")}
                 className="flex flex-col justify-between cursor-pointer h-full w-full gap-1 p-3"
             >
-                {link.url && url ? (
-                    <Image
-                        src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
-                        width={64}
-                        height={64}
-                        alt=""
-                        className={`absolute w-12 bg-white shadow rounded-md p-1 bottom-3 right-3 select-none z-10`}
-                        draggable="false"
-                        onError={(e) => {
-                            const target = e.target as HTMLElement;
-                            target.style.display = "none";
-                        }}
-                    />
-                ) : link.type === "pdf" ? (
-                    <FontAwesomeIcon
-                        icon={faFilePdf}
-                        className="absolute h-12 w-12 bg-primary/20 text-primary shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
-                    />
-                ) : link.type === "image" ? (
-                    <FontAwesomeIcon
-                        icon={faFileImage}
-                        className="absolute h-12 w-12 bg-primary/20 text-primary shadow rounded-md p-2 bottom-3 right-3 select-none z-10"
-                    />
-                ) : undefined}
+                <div className="absolute bottom-3 right-3">
+                    <LinkIcon link={link} />
+                </div>
 
                 <div className="flex items-baseline gap-1">
                     <p className="text-sm text-neutral">{count + 1}</p>
