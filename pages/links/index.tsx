@@ -5,9 +5,8 @@ import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import { Sort } from "@/types/global";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import React, { useState } from "react";
+import PageHeader from "@/components/PageHeader";
 
 export default function Links() {
   const { links } = useLinkStore();
@@ -19,23 +18,18 @@ export default function Links() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full h-full">
-        <div className="flex gap-3 justify-between">
-          <div className="flex items-center gap-3">
-            <FontAwesomeIcon
-              icon={faLink}
-              className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
-            />
-            <div>
-              <p className="text-3xl capitalize font-thin">All Links</p>
+        <PageHeader
+          icon={"bi-link-45deg"}
+          title={"All Links"}
+          description={"Links from every Collections"}
+        />
 
-              <p>Links from every Collections</p>
-            </div>
-          </div>
-
+        <div className="flex gap-3 justify-end">
           <div className="relative mt-2">
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
           </div>
         </div>
+
         {links[0] ? (
           <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5">
             {links.map((e, i) => {
