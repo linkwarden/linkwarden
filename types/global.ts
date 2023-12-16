@@ -57,6 +57,12 @@ export interface PublicCollectionIncludingLinks extends Collection {
   links: LinksIncludingTags[];
 }
 
+export enum ViewMode {
+  Default = "default",
+  Compact = "compact",
+  List = "list",
+}
+
 export enum Sort {
   DateNewestFirst,
   DateOldestFirst,
