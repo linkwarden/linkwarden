@@ -1,14 +1,4 @@
 import useCollectionStore from "@/store/collections";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFolder,
-  faHashtag,
-  faChartSimple,
-  faChevronDown,
-  faLink,
-  faGlobe,
-  faThumbTack,
-} from "@fortawesome/free-solid-svg-icons";
 import useTagStore from "@/store/tags";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -25,7 +15,7 @@ export default function Sidebar({ className }: { className?: string }) {
     () => {
       const storedValue = localStorage.getItem("collectionDisclosure");
       return storedValue ? storedValue === "true" : true;
-    }
+    },
   );
 
   const { collections } = useCollectionStore();
@@ -42,7 +32,7 @@ export default function Sidebar({ className }: { className?: string }) {
   useEffect(() => {
     localStorage.setItem(
       "collectionDisclosure",
-      collectionDisclosure ? "true" : "false"
+      collectionDisclosure ? "true" : "false",
     );
   }, [collectionDisclosure]);
 
@@ -52,21 +42,19 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <div
+      id="sidebar"
       className={`bg-base-200 h-full w-64 xl:w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content px-2 z-20 ${
         className || ""
       }`}
     >
-      <div className="flex flex-col gap-2 mt-2">
+      <div className="flex flex-col gap-1 mt-2">
         <Link href={`/dashboard`}>
           <div
             className={`${
               active === `/dashboard` ? "bg-primary/20" : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
-            <FontAwesomeIcon
-              icon={faChartSimple}
-              className="w-7 h-7 drop-shadow text-primary"
-            />
+            <i className="bi-house text-primary text-2xl drop-shadow"></i>
             <p className="truncate w-full">Dashboard</p>
           </div>
         </Link>
@@ -77,10 +65,7 @@ export default function Sidebar({ className }: { className?: string }) {
               active === `/links` ? "bg-primary/20" : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
-            <FontAwesomeIcon
-              icon={faLink}
-              className="w-7 h-7 drop-shadow text-primary"
-            />
+            <i className="bi-link-45deg text-primary text-2xl drop-shadow"></i>
             <p className="truncate w-full">All Links</p>
           </div>
         </Link>
@@ -93,10 +78,7 @@ export default function Sidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
-            <FontAwesomeIcon
-              icon={faFolder}
-              className="w-7 h-7 drop-shadow text-primary"
-            />
+            <i className="bi-folder2 text-primary text-2xl drop-shadow"></i>
             <p className="truncate w-full">All Collections</p>
           </div>
         </Link>
@@ -109,10 +91,7 @@ export default function Sidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
-            <FontAwesomeIcon
-              icon={faThumbTack}
-              className="w-7 h-7 drop-shadow text-primary"
-            />
+            <i className="bi-pin-angle text-primary text-2xl drop-shadow"></i>
             <p className="truncate w-full">Pinned Links</p>
           </div>
         </Link>
@@ -123,16 +102,14 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setCollectionDisclosure(!collectionDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
+          className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
-          <p>Collections</p>
-
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            className={`w-3 h-3 ${
+          <p className="text-sm ">Collections</p>
+          <i
+            className={`bi-chevron-down text-primary drop-shadow  ${
               collectionDisclosure ? "rotate-reverse" : "rotate"
             }`}
-          />
+          ></i>
         </Disclosure.Button>
         <Transition
           enter="transition duration-100 ease-out"
@@ -156,19 +133,17 @@ export default function Sidebar({ className }: { className?: string }) {
                             : "hover:bg-neutral/20"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
-                        <FontAwesomeIcon
-                          icon={faFolder}
-                          className="w-6 h-6 drop-shadow"
+                        <i
+                          className="bi-folder2 text-2xl drop-shadow"
                           style={{ color: e.color }}
-                        />
+                        ></i>
                         <p className="truncate w-full">{e.name}</p>
 
                         {e.isPublic ? (
-                          <FontAwesomeIcon
-                            icon={faGlobe}
+                          <i
+                            className="bi-globe-americas text-sm text-black/50 dark:text-white/50 drop-shadow"
                             title="This collection is being shared publicly."
-                            className="w-4 h-4 drop-shadow text-neutral"
-                          />
+                          ></i>
                         ) : undefined}
                         <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}
@@ -194,13 +169,14 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setTagDisclosure(!tagDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
+          className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
-          <p>Tags</p>
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            className={`w-3 h-3 ${tagDisclosure ? "rotate-reverse" : "rotate"}`}
-          />
+          <p className="text-sm">Tags</p>
+          <i
+            className={`bi-chevron-down text-primary drop-shadow  ${
+              collectionDisclosure ? "rotate-reverse" : "rotate"
+            }`}
+          ></i>
         </Disclosure.Button>
         <Transition
           enter="transition duration-100 ease-out"
@@ -224,11 +200,7 @@ export default function Sidebar({ className }: { className?: string }) {
                             : "hover:bg-neutral/20"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
-                        <FontAwesomeIcon
-                          icon={faHashtag}
-                          className="w-4 h-4 text-primary mt-1"
-                        />
-
+                        <i className="bi-hash text-2xl text-primary drop-shadow"></i>
                         <p className="truncate w-full pr-7">{e.name}</p>
                         <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}
