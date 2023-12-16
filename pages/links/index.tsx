@@ -16,7 +16,7 @@ import ListView from "@/components/LinkViews/ListView";
 export default function Links() {
   const { links } = useLinkStore();
 
-  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Default);
+  const [viewMode, setViewMode] = useState<string>(localStorage.getItem('viewMode') || ViewMode.Default);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({ sort: sortBy });
@@ -27,6 +27,7 @@ export default function Links() {
     [ViewMode.List]: ListView,
   };
 
+  // @ts-ignore
   const Component = components[viewMode];
 
   return (
