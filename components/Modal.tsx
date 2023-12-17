@@ -1,7 +1,5 @@
-import { MouseEventHandler, ReactNode, useEffect } from "react";
+import React, { MouseEventHandler, ReactNode } from "react";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   toggleModal: Function;
@@ -21,9 +19,11 @@ export default function Modal({ toggleModal, className, children }: Props) {
         <div className="slide-up mt-auto sm:m-auto relative border-neutral-content rounded-t-2xl sm:rounded-2xl border-t sm:border shadow-2xl p-5 bg-base-100">
           <div
             onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
-            className="absolute top-3 right-3 btn btn-sm outline-none btn-circle btn-ghost z-10"
+            className="absolute top-4 right-3 btn btn-sm outline-none btn-circle btn-ghost z-10"
           >
-            <FontAwesomeIcon icon={faClose} className="w-4 h-4 text-neutral" />
+            <i
+              className="bi-x text-neutral text-2xl"
+            ></i>
           </div>
           {children}
         </div>
