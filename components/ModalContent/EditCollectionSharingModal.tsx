@@ -182,7 +182,7 @@ export default function EditCollectionSharingModal({
                 }
                 className="btn btn-accent text-white btn-square btn-sm h-10 w-10"
               >
-                <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
+                  <i className="bi-person-add text-xl"></i>
               </div>
             </div>
           </>
