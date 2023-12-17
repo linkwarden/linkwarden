@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
@@ -6,13 +6,33 @@ import useLinkStore from "@/store/links";
 import { Sort } from "@/types/global";
 import React, { useState } from "react";
 import PageHeader from "@/components/PageHeader";
+import { Sort, ViewMode } from "@/types/global";
+import { faThumbTack } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+import ViewDropdown from "@/components/ViewDropdown";
+import DefaultView from "@/components/LinkViews/DefaultView";
+import GridView from "@/components/LinkViews/GridView";
+import ListView from "@/components/LinkViews/ListView";
 
 export default function PinnedLinks() {
   const { links } = useLinkStore();
 
+  const [viewMode, setViewMode] = useState<string>(
+    localStorage.getItem("viewMode") || ViewMode.Default
+  );
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({ sort: sortBy, pinnedOnly: true });
+
+  const linkView = {
+    [ViewMode.Default]: DefaultView,
+    // [ViewMode.Grid]: GridView,
+    [ViewMode.List]: ListView,
+  };
+
+  // @ts-ignore
+  const LinkComponent = linkView[viewMode];
 
   return (
     <MainLayout>
@@ -25,14 +45,11 @@ export default function PinnedLinks() {
         <div className="flex gap-3 justify-end">
           <div className="relative mt-2">
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
         {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
-          <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5">
-            {links.map((e, i) => {
-              return <LinkCard key={i} link={e} count={i} />;
-            })}
-          </div>
+          <LinkComponent links={links} />
         ) : (
           <div
             style={{ flex: "1 1 auto" }}

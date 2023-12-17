@@ -62,7 +62,9 @@ export default function Collections() {
                   Other Collections
                 </p>
 
-                <p>Shared collections you&apos;re a member of</p>
+                <p className="sm:text-sm text-xs">
+                  Shared collections you&apos;re a member of
+                </p>
               </div>
             </div>
 

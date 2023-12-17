@@ -3,6 +3,7 @@ import useCollectionStore from "@/store/collections";
 import useTagStore from "@/store/tags";
 import MainLayout from "@/layouts/MainLayout";
 import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
@@ -95,7 +96,6 @@ export default function Dashboard() {
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
         <PageHeader icon={'bi-house '} title={'Dashboard'} description={"A brief overview of your data"} />
-
         <div>
           <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
