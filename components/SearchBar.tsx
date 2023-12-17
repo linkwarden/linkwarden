@@ -1,5 +1,3 @@
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
@@ -23,9 +21,9 @@ export default function SearchBar({ placeholder }: Props) {
     <div className="flex items-center relative group">
       <label
         htmlFor="search-box"
-        className="inline-flex w-fit absolute left-1 pointer-events-none rounded-md p-1 text-primary"
+        className="inline-flex items-center w-fit absolute left-1 pointer-events-none rounded-md p-1 text-primary"
       >
-        <FontAwesomeIcon icon={faMagnifyingGlass} className="w-5 h-5" />
+        <i className="bi-search"></i>
       </label>
 
       <input
@@ -49,11 +47,11 @@ export default function SearchBar({ placeholder }: Props) {
                 "/public/collections/" +
                   router.query.id +
                   "?q=" +
-                  encodeURIComponent(searchQuery || "")
+                  encodeURIComponent(searchQuery || ""),
               );
             } else {
               return router.push(
-                "/search?q=" + encodeURIComponent(searchQuery)
+                "/search?q=" + encodeURIComponent(searchQuery),
               );
             }
           }
