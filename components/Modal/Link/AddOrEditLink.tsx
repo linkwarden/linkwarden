@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
-import { faLink, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useSession } from "next-auth/react";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
@@ -13,7 +11,6 @@ import { toast } from "react-hot-toast";
 import Link from "next/link";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props =
   | {
@@ -142,7 +139,7 @@ export default function AddOrEditLink({
           className="text-neutral break-all w-full flex gap-2"
           title={link.url || ""}
         >
-          <FontAwesomeIcon icon={faLink} className="w-6 h-6" />
+          <i className={"bi-link-45deg"}></i>
           <Link href={link.url || ""} target="_blank" className="w-full">
             {link.url}
           </Link>
@@ -264,7 +261,6 @@ export default function AddOrEditLink({
         <SubmitButton
           onClick={submit}
           label={method === "CREATE" ? "Add" : "Save"}
-          icon={method === "CREATE" ? faPlus : faPenToSquare}
           loading={submitLoader}
           className={`${method === "CREATE" ? "" : "mx-auto"}`}
         />

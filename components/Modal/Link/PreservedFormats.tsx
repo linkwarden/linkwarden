@@ -4,12 +4,6 @@ import {
 } from "@/types/global";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowUpRightFromSquare,
-  faCloudArrowDown,
-} from "@fortawesome/free-solid-svg-icons";
-import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
@@ -97,7 +91,6 @@ export default function PreservedFormats() {
         <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
             <div className="bg-primary text-primary-content p-2 rounded-l-md">
-              <FontAwesomeIcon icon={faFileImage} className="w-6 h-6" />
             </div>
 
             <p>Screenshot</p>
@@ -108,10 +101,6 @@ export default function PreservedFormats() {
               onClick={() => handleDownload(ArchivedFormat.png)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
-              <FontAwesomeIcon
-                icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-neutral"
-              />
             </div>
 
             <Link
@@ -123,10 +112,6 @@ export default function PreservedFormats() {
               target="_blank"
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-neutral"
-              />
             </Link>
           </div>
         </div>
@@ -136,7 +121,6 @@ export default function PreservedFormats() {
         <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
           <div className="flex gap-2 items-center">
             <div className="bg-primary text-primary-content p-2 rounded-l-md">
-              <FontAwesomeIcon icon={faFilePdf} className="w-6 h-6" />
             </div>
 
             <p>PDF</p>
@@ -147,10 +131,6 @@ export default function PreservedFormats() {
               onClick={() => handleDownload(ArchivedFormat.pdf)}
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
-              <FontAwesomeIcon
-                icon={faCloudArrowDown}
-                className="w-5 h-5 cursor-pointer text-neutral"
-              />
             </div>
 
             <Link
@@ -158,10 +138,6 @@ export default function PreservedFormats() {
               target="_blank"
               className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
             >
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="w-5 h-5 text-neutral"
-              />
             </Link>
           </div>
         </div>
@@ -191,10 +167,6 @@ export default function PreservedFormats() {
             screenshotAvailable(link) && pdfAvailable(link) ? "sm:mt-3" : ""
           }`}
         >
-          <FontAwesomeIcon
-            icon={faArrowUpRightFromSquare}
-            className="w-4 h-4"
-          />
           <p className="whitespace-nowrap">
             View Latest Snapshot on archive.org
           </p>

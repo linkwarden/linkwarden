@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
@@ -14,9 +13,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuestion } from "@fortawesome/free-solid-svg-icons";
-import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 
 type Props = {
   onClose: Function;
