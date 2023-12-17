@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
 import useCollectionStore from "@/store/collections";
-import toast, { Toaster } from "react-hot-toast";
-import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 import { HexColorPicker } from "react-colorful";
 import { Collection } from "@prisma/client";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../Modal";
 
 type Props = {
@@ -76,10 +74,6 @@ export default function NewCollectionModal({ onClose }: Props) {
                 <div className="color-picker flex justify-between">
                   <div className="flex flex-col gap-2 items-center w-32">
                     <div style={{ color: collection.color }}>
-                      <FontAwesomeIcon
-                        icon={faFolder}
-                        className="w-12 h-12 drop-shadow"
-                      />
                     </div>
                     <div
                       className="btn btn-ghost btn-xs"
