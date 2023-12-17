@@ -1979,6 +1979,11 @@ bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
+bootstrap-icons@^1.11.2:
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/bootstrap-icons/-/bootstrap-icons-1.11.2.tgz#e1c75daec154e25958db04c4eb3cbda6041e7118"
+  integrity sha512-TgdiPv+IM9tgDb+dsxrnGIyocsk85d2M7T0qIgkvPedZeoZfyeG/j+yiAE4uHCEayKef2RP05ahQ0/e9Sv75Wg==
+
 bowser@^2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.11.0.tgz#5ca3c35757a7aa5771500c70a73a9f91ef420a8f"
