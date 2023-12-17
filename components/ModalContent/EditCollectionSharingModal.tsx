@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
 import useCollectionStore from "@/store/collections";
-import toast, { Toaster } from "react-hot-toast";
-import {
-  faClose,
-  faCrown,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import toast from "react-hot-toast";
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import useAccountStore from "@/store/account";
@@ -219,10 +213,6 @@ export default function EditCollectionSharingModal({
                         {collectionOwner.name}
                       </p>
                       <div className="flex text-xs gap-1 items-center">
-                        <FontAwesomeIcon
-                          icon={faCrown}
-                          className="w-3 h-3 text-yellow-500"
-                        />
                         Admin
                       </div>
                     </div>
@@ -240,9 +230,8 @@ export default function EditCollectionSharingModal({
                       className="relative border p-2 rounded-xl border-neutral-content bg-base-200 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
                     >
                       {permissions === true && (
-                        <FontAwesomeIcon
-                          icon={faClose}
-                          className="absolute right-2 top-2 text-neutral h-4 hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"
+                        <i
+                          className={"bi-x text-xl absolute right-1 top-1 text-neutral hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"}
                           title="Remove Member"
                           onClick={() => {
                             const updatedMembers = collection.members.filter(

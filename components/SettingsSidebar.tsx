@@ -1,17 +1,7 @@
 import useCollectionStore from "@/store/collections";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import {
-  faCircleQuestion,
-  faCreditCard,
-} from "@fortawesome/free-regular-svg-icons";
-import {
-  faGithub,
-  faMastodon,
-  faXTwitter,
-} from "@fortawesome/free-brands-svg-icons";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
   const LINKWARDEN_VERSION = "v2.4.0";
