@@ -108,12 +108,12 @@ export default function Dashboard() {
         <div className="flex items-center gap-3">
           <FontAwesomeIcon
             icon={faChartSimple}
-            className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
+            className="sm:w-10 sm:h-10 w-8 h-8 text-primary drop-shadow"
           />
           <div>
             <p className="text-3xl capitalize font-thin">Dashboard</p>
 
-            <p>A brief overview of your data</p>
+            <p className="sm:text-sm text-xs">A brief overview of your data</p>
           </div>
         </div>
 
