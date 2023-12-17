@@ -1,5 +1,3 @@
-import { faCircle, faCircleCheck } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEventHandler } from "react";
 
 type Props = {
@@ -18,14 +16,14 @@ export default function RadioButton({ label, state, onClick }: Props) {
         checked={state}
         onChange={onClick}
       />
-      <FontAwesomeIcon
-        icon={faCircleCheck}
-        className="w-5 h-5 text-primary peer-checked:block hidden"
-      />
-      <FontAwesomeIcon
-        icon={faCircle}
-        className="w-5 h-5 text-primary peer-checked:hidden block"
-      />
+      {/*<FontAwesomeIcon*/}
+      {/*  icon={faCircleCheck}*/}
+      {/*  className="w-5 h-5 text-primary peer-checked:block hidden"*/}
+      {/*/>*/}
+      {/*<FontAwesomeIcon*/}
+      {/*  icon={faCircle}*/}
+      {/*  className="w-5 h-5 text-primary peer-checked:hidden block"*/}
+      {/*/>*/}
       <span className="rounded select-none">{label}</span>
     </label>
   );
