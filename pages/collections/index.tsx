@@ -1,10 +1,4 @@
 import useCollectionStore from "@/store/collections";
-import {
-  faEllipsis,
-  faFolder,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CollectionCard from "@/components/CollectionCard";
 import { useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
@@ -13,6 +7,7 @@ import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@/types/global";
 import useSort from "@/hooks/useSort";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
+import PageHeader from "@/components/PageHeader";
 
 export default function Collections() {
   const { collections } = useCollectionStore();
@@ -28,24 +23,14 @@ export default function Collections() {
 
   return (
     <MainLayout>
-      <div className="p-5">
-        <div className="flex gap-3 justify-between mb-5">
-          <div className="flex gap-3">
-            <div className="flex items-center gap-3">
-              <FontAwesomeIcon
-                icon={faFolder}
-                className="sm:w-10 sm:h-10 w-8 h-8 text-primary drop-shadow"
-              />
-              <div>
-                <p className="text-3xl capitalize font-thin">
-                  Your Collections
-                </p>
+      <div className="p-5 flex flex-col gap-5 w-full h-full">
+        <PageHeader
+          icon={"bi-folder2"}
+          title={"Collections"}
+          description={"Collections you own"}
+        />
 
-                <p className="sm:text-sm text-xs">Collections you own</p>
-              </div>
-            </div>
-          </div>
-
+        <div className="flex gap-3 justify-end">
           <div className="relative mt-2">
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
           </div>
@@ -63,20 +48,15 @@ export default function Collections() {
             onClick={() => setNewCollectionModal(true)}
           >
             <p className="group-hover:opacity-0 duration-100">New Collection</p>
-            <FontAwesomeIcon
-              icon={faPlus}
-              className="w-8 h-8 text-primary group-hover:w-12 group-hover:h-12 group-hover:-mt-10 duration-100"
-            />
+            <i className="bi-plus text-5xl group-hover:text-7xl group-hover:-mt-6 text-primary drop-shadow duration-100"></i>
           </div>
         </div>
 
         {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] ? (
           <>
             <div className="flex items-center gap-3 my-5">
-              <FontAwesomeIcon
-                icon={faFolder}
-                className="sm:w-10 sm:h-10 w-8 h-8 text-primary drop-shadow"
-              />
+              <i className="bi-folder2 text-3xl sm:text-2xl text-primary drop-shadow"></i>
+
               <div>
                 <p className="text-3xl capitalize font-thin">
                   Other Collections
