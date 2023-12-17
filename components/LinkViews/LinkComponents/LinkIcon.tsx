@@ -6,14 +6,18 @@ import isValidUrl from "@/lib/shared/isValidUrl";
 
 export default function LinkIcon({
   link,
+  className,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
+  className?: string;
 }) {
   const url =
     isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
 
   const iconClasses: string =
-    "w-12 bg-white text-primary shadow rounded-md p-1 select-none z-10";
+    "bg-white text-primary shadow rounded-md border-[2px] border-white select-none z-10" +
+      " " +
+      className || "";
 
   return (
     <div>
