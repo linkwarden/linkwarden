@@ -53,7 +53,7 @@ export default function LinkCardCompact({ link, count, className }: Props) {
           className="flex items-center cursor-pointer p-3"
         >
           <div className="shrink-0">
-            <LinkIcon link={link} />
+            <LinkIcon link={link} className="sm:w-12 w-8" />
           </div>
 
           <div className="w-[calc(100%-56px)] ml-2">
