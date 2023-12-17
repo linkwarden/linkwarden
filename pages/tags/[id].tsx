@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import useLinkStore from "@/store/links";
 import {
   faCheck,
@@ -12,10 +12,13 @@ import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import useTagStore from "@/store/tags";
 import SortDropdown from "@/components/SortDropdown";
-import { Sort, TagIncludingLinkCount } from "@/types/global";
+import { Sort, TagIncludingLinkCount, ViewMode } from "@/types/global";
 import useLinks from "@/hooks/useLinks";
-import Dropdown from "@/components/Dropdown";
 import { toast } from "react-hot-toast";
+import ViewDropdown from "@/components/ViewDropdown";
+import DefaultView from "@/components/LinkViews/DefaultView";
+import GridView from "@/components/LinkViews/GridView";
+import ListView from "@/components/LinkViews/ListView";
 
 export default function Index() {
   const router = useRouter();
@@ -24,8 +27,6 @@ export default function Index() {
   const { tags, updateTag, removeTag } = useTagStore();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
-
-  const [expandDropdown, setExpandDropdown] = useState(false);
 
   const [renameTag, setRenameTag] = useState(false);
   const [newTagName, setNewTagName] = useState<string>();
@@ -97,6 +98,19 @@ export default function Index() {
     setRenameTag(false);
   };
 
+  const [viewMode, setViewMode] = useState<string>(
+    localStorage.getItem("viewMode") || ViewMode.Default
+  );
+
+  const linkView = {
+    [ViewMode.Default]: DefaultView,
+    // [ViewMode.Grid]: GridView,
+    [ViewMode.List]: ListView,
+  };
+
+  // @ts-ignore
+  const LinkComponent = linkView[viewMode];
+
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
@@ -105,7 +119,7 @@ export default function Index() {
             <div className="flex gap-2 items-end font-thin">
               <FontAwesomeIcon
                 icon={faHashtag}
-                className="sm:w-8 sm:h-8 w-6 h-6 mt-2 text-primary"
+                className="sm:w-8 sm:h-8 w-8 h-8 mt-2 text-primary"
               />
               {renameTag ? (
                 <>
@@ -147,7 +161,13 @@ export default function Index() {
                     {activeTag?.name}
                   </p>
                   <div className="relative">
-                    <div className="dropdown dropdown-bottom font-normal">
+                    <div
+                      className={`dropdown dropdown-bottom font-normal ${
+                        activeTag?.name.length && activeTag?.name.length > 8
+                          ? "dropdown-end"
+                          : ""
+                      }`}
+                    >
                       <div
                         tabIndex={0}
                         role="button"
@@ -186,50 +206,22 @@ export default function Index() {
                         </li>
                       </ul>
                     </div>
-
-                    {expandDropdown ? (
-                      <Dropdown
-                        items={[
-                          {
-                            name: "Rename Tag",
-                            onClick: () => {
-                              setRenameTag(true);
-                              setExpandDropdown(false);
-                            },
-                          },
-                          {
-                            name: "Remove Tag",
-                            onClick: () => {
-                              remove();
-                              setExpandDropdown(false);
-                            },
-                          },
-                        ]}
-                        onClickOutside={(e: Event) => {
-                          const target = e.target as HTMLInputElement;
-                          if (target.id !== "expand-dropdown")
-                            setExpandDropdown(false);
-                        }}
-                        className="absolute top-8 left-0 w-36 font-normal"
-                      />
-                    ) : null}
                   </div>
                 </>
               )}
             </div>
           </div>
 
-          <div className="relative">
+          <div className="flex gap-2 items-center mt-2">
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
-        <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-          {links
-            .filter((e) => e.tags.some((e) => e.id === Number(router.query.id)))
-            .map((e, i) => {
-              return <LinkCard key={i} link={e} count={i} />;
-            })}
-        </div>
+        <LinkComponent
+          links={links.filter((e) =>
+            e.tags.some((e) => e.id === Number(router.query.id))
+          )}
+        />
       </div>
     </MainLayout>
   );
