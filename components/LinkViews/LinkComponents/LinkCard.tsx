@@ -62,7 +62,7 @@ export default function LinkCard({ link, count, className }: Props) {
         className="flex flex-col justify-between cursor-pointer h-full w-full gap-1 p-3"
       >
         <div className="absolute bottom-3 right-3">
-          <LinkIcon link={link} />
+          <LinkIcon link={link} className="w-12" />
         </div>
 
         <div className="flex items-baseline gap-1">
