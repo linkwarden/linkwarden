@@ -2,7 +2,6 @@ import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import useTagStore from "@/store/tags";
 import MainLayout from "@/layouts/MainLayout";
-import LinkCard from "@/components/LinkCard";
 import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
@@ -95,9 +94,10 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
-        <PageHeader icon={'bi-house '} title={'Dashboard'} description={"A brief overview of your data"} />
+        <PageHeader icon={'bi-house '} title={'Dashboard'} description={"A brief overview of your data"}/>
         <div>
-          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
+          <div
+            className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
@@ -140,13 +140,13 @@ export default function Dashboard() {
           style={{ flex: "0 1 auto" }}
           className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
         >
-          {false && links[0] ? (
+          {links[0] ? (
             <div className="w-full">
               <div
                 className={`grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links.slice(0, showLinks).map((e, i) => (
-                  <LinkCard key={i} link={e} count={i} />
+                  <LinkCard key={i} link={e} count={i}/>
                 ))}
               </div>
             </div>
@@ -186,7 +186,8 @@ export default function Dashboard() {
                     <i className="bi-cloud-upload text-xl duration-100"></i>
                     <p>Import From</p>
                   </div>
-                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                  <ul
+                    className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
                     <li>
                       <label
                         tabIndex={0}
@@ -259,7 +260,7 @@ export default function Dashboard() {
               >
                 {links
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
-                  .map((e, i) => <LinkCard key={i} link={e} count={i} />)
+                  .map((e, i) => <LinkCard key={i} link={e} count={i}/>)
                   .slice(0, showLinks)}
               </div>
             </div>
@@ -281,7 +282,7 @@ export default function Dashboard() {
         </div>
       </div>
       {newLinkModal ? (
-        <NewLinkModal onClose={() => setNewLinkModal(false)} />
+        <NewLinkModal onClose={() => setNewLinkModal(false)}/>
       ) : undefined}
     </MainLayout>
   );
