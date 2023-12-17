@@ -14,14 +14,9 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         role="button"
         className="btn btn-sm btn-square btn-ghost"
       >
-        <svg
-          className="w-5 h-5 text-neutral"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-        >
-          <path d="M3 6H12H21M6 12H18M9 18H15" stroke="currentColor"></path>
-        </svg>
+        <i
+          className="bi-filter text-neutral text-2xl"
+        ></i>
       </div>
       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
         <li>
