@@ -1,7 +1,11 @@
-import LinkCard from "@/components/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
-import { CollectionIncludingMembersAndLinkCount, Sort } from "@/types/global";
+import {
+  CollectionIncludingMembersAndLinkCount,
+  Sort,
+  ViewMode,
+} from "@/types/global";
 import { faEllipsis, faFolder } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -18,6 +22,10 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
+import ViewDropdown from "@/components/ViewDropdown";
+import DefaultView from "@/components/LinkViews/DefaultView";
+import GridView from "@/components/LinkViews/GridView";
+import ListView from "@/components/LinkViews/ListView";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
@@ -76,6 +84,19 @@ export default function Index() {
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
 
+  const [viewMode, setViewMode] = useState<string>(
+    localStorage.getItem("viewMode") || ViewMode.Default
+  );
+
+  const linkView = {
+    [ViewMode.Default]: DefaultView,
+    // [ViewMode.Grid]: GridView,
+    [ViewMode.List]: ListView,
+  };
+
+  // @ts-ignore
+  const LinkComponent = linkView[viewMode];
+
   return (
     <MainLayout>
       <div
@@ -86,22 +107,78 @@ export default function Index() {
         }}
         className="h-full p-5 flex gap-3 flex-col"
       >
-        <div className="flex flex-col sm:flex-row gap-3 justify-between sm:items-start">
-          {activeCollection && (
-            <div className="flex gap-3 items-center">
-              <div className="flex gap-2">
-                <FontAwesomeIcon
-                  icon={faFolder}
-                  style={{ color: activeCollection?.color }}
-                  className="sm:w-8 sm:h-8 w-6 h-6 mt-3 drop-shadow"
-                />
-                <p className="sm:text-4xl text-3xl capitalize w-full py-1 break-words hyphens-auto font-thin">
-                  {activeCollection?.name}
-                </p>
-              </div>
+        {activeCollection && (
+          <div className="flex gap-3 items-start justify-between">
+            <div className="flex gap-2">
+              <FontAwesomeIcon
+                icon={faFolder}
+                style={{ color: activeCollection?.color }}
+                className="sm:w-8 sm:h-8 w-8 h-8 mt-2 drop-shadow"
+              />
+              <p className="sm:text-4xl text-3xl capitalize w-full py-1 break-words hyphens-auto font-thin">
+                {activeCollection?.name}
+              </p>
             </div>
-          )}
-        </div>
+
+            <div className="dropdown dropdown-bottom dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-sm btn-square text-neutral"
+              >
+                <FontAwesomeIcon
+                  icon={faEllipsis}
+                  title="More"
+                  className="w-5 h-5"
+                />
+              </div>
+              <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+                {permissions === true ? (
+                  <li>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        (document?.activeElement as HTMLElement)?.blur();
+                        setEditCollectionModal(true);
+                      }}
+                    >
+                      Edit Collection Info
+                    </div>
+                  </li>
+                ) : undefined}
+                <li>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      setEditCollectionSharingModal(true);
+                    }}
+                  >
+                    {permissions === true
+                      ? "Share and Collaborate"
+                      : "View Team"}
+                  </div>
+                </li>
+                <li>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      setDeleteCollectionModal(true);
+                    }}
+                  >
+                    {permissions === true
+                      ? "Delete Collection"
+                      : "Leave Collection"}
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
 
         {activeCollection ? (
           <div className={`min-w-[15rem]`}>
@@ -158,76 +235,16 @@ export default function Index() {
           <p>Showing {activeCollection?._count?.links} results</p>
           <div className="flex items-center gap-2">
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-            <div className="relative">
-              <div className="dropdown dropdown-bottom dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost btn-sm btn-square text-neutral"
-                >
-                  <FontAwesomeIcon
-                    icon={faEllipsis}
-                    title="More"
-                    className="w-5 h-5"
-                  />
-                </div>
-                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
-                  {permissions === true ? (
-                    <li>
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          setEditCollectionModal(true);
-                        }}
-                      >
-                        Edit Collection Info
-                      </div>
-                    </li>
-                  ) : undefined}
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        setEditCollectionSharingModal(true);
-                      }}
-                    >
-                      {permissions === true
-                        ? "Share and Collaborate"
-                        : "View Team"}
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        setDeleteCollectionModal(true);
-                      }}
-                    >
-                      {permissions === true
-                        ? "Delete Collection"
-                        : "Leave Collection"}
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
 
         {links.some((e) => e.collectionId === Number(router.query.id)) ? (
-          <div className="grid grid-cols-1 2xl:grid-cols-3 xl:grid-cols-2 gap-5">
-            {links
-              .filter((e) => e.collection.id === activeCollection?.id)
-              .map((e, i) => {
-                return <LinkCard key={i} link={e} count={i} />;
-              })}
-          </div>
+          <LinkComponent
+            links={links.filter(
+              (e) => e.collection.id === activeCollection?.id
+            )}
+          />
         ) : (
           <NoLinksFound />
         )}
