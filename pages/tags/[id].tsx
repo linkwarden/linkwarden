@@ -1,12 +1,4 @@
-import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import useLinkStore from "@/store/links";
-import {
-  faCheck,
-  faEllipsis,
-  faHashtag,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
@@ -116,11 +108,9 @@ export default function Index() {
       <div className="p-5 flex flex-col gap-5 w-full">
         <div className="flex gap-3 items-center justify-between">
           <div className="flex gap-3 items-center">
-            <div className="flex gap-2 items-end font-thin">
-              <FontAwesomeIcon
-                icon={faHashtag}
-                className="sm:w-8 sm:h-8 w-8 h-8 mt-2 text-primary"
-              />
+            <div className="flex gap-2 items-center font-thin">
+              <i className={'bi-hash text-primary text-3xl'}/>
+
               {renameTag ? (
                 <>
                   <form onSubmit={submit} className="flex items-center gap-2">
@@ -136,27 +126,19 @@ export default function Index() {
                       id="expand-dropdown"
                       className="btn btn-ghost btn-square btn-sm"
                     >
-                      <FontAwesomeIcon
-                        icon={faCheck}
-                        id="expand-dropdown"
-                        className="w-5 h-5 text-neutral"
-                      />
+                      <i className={"bi-check text-neutral text-2xl"}></i>
                     </div>
                     <div
-                      onClick={() => cancelUpdateTag()}
-                      id="expand-dropdown"
-                      className="btn btn-ghost btn-square btn-sm"
-                    >
-                      <FontAwesomeIcon
-                        icon={faXmark}
+                        onClick={() => cancelUpdateTag()}
                         id="expand-dropdown"
-                        className="w-5 h-5 text-neutral"
-                      />
+                        className="btn btn-ghost btn-square btn-sm"
+                    >
+                      <i className={"bi-x text-neutral text-2xl"}></i>
                     </div>
                   </form>
                 </>
               ) : (
-                <>
+                  <>
                   <p className="sm:text-4xl text-3xl capitalize">
                     {activeTag?.name}
                   </p>
@@ -169,15 +151,11 @@ export default function Index() {
                       }`}
                     >
                       <div
-                        tabIndex={0}
-                        role="button"
-                        className="btn btn-ghost btn-sm btn-square text-neutral"
+                          tabIndex={0}
+                          role="button"
+                          className="btn btn-ghost btn-sm btn-square text-neutral"
                       >
-                        <FontAwesomeIcon
-                          icon={faEllipsis}
-                          title="More"
-                          className="w-5 h-5"
-                        />
+                        <i className={"bi-three-dots text-neutral text-2xl"}></i>
                       </div>
                       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-36 mt-1">
                         <li>
