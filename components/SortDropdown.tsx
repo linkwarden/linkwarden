@@ -1,7 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Sort } from "@/types/global";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSort } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   sortBy: Sort;
