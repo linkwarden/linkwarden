@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
 import useCollectionStore from "@/store/collections";
-import toast, { Toaster } from "react-hot-toast";
-import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import toast from "react-hot-toast";
 import { HexColorPicker } from "react-colorful";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Modal from "../Modal";
 
@@ -70,12 +68,7 @@ export default function EditCollectionModal({
                 <p className="w-full mb-2">Color</p>
                 <div className="color-picker flex justify-between">
                   <div className="flex flex-col gap-2 items-center w-32">
-                    <div style={{ color: collection.color }}>
-                      <FontAwesomeIcon
-                        icon={faFolder}
-                        className="w-12 h-12 drop-shadow"
-                      />
-                    </div>
+                    <i className="bi-folder2 text-5xl drop-shadow" style={{ color: collection.color }}></i>
                     <div
                       className="btn btn-ghost btn-xs"
                       onClick={() =>
