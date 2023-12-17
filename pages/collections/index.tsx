@@ -34,14 +34,14 @@ export default function Collections() {
             <div className="flex items-center gap-3">
               <FontAwesomeIcon
                 icon={faFolder}
-                className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
+                className="sm:w-10 sm:h-10 w-8 h-8 text-primary drop-shadow"
               />
               <div>
                 <p className="text-3xl capitalize font-thin">
                   Your Collections
                 </p>
 
-                <p>Collections you own</p>
+                <p className="sm:text-sm text-xs">Collections you own</p>
               </div>
             </div>
           </div>
@@ -75,14 +75,16 @@ export default function Collections() {
             <div className="flex items-center gap-3 my-5">
               <FontAwesomeIcon
                 icon={faFolder}
-                className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
+                className="sm:w-10 sm:h-10 w-8 h-8 text-primary drop-shadow"
               />
               <div>
                 <p className="text-3xl capitalize font-thin">
                   Other Collections
                 </p>
 
-                <p>Shared collections you&apos;re a member of</p>
+                <p className="sm:text-sm text-xs">
+                  Shared collections you&apos;re a member of
+                </p>
               </div>
             </div>
 

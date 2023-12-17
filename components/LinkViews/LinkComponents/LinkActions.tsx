@@ -16,9 +16,11 @@ import useAccountStore from "@/store/account";
 export default function LinkActions({
   link,
   collection,
+  position,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
+  position?: string;
 }) {
   const permissions = usePermissions(link.collection.id as number);
 
@@ -62,7 +64,11 @@ export default function LinkActions({
       {permissions === true ||
       permissions?.canUpdate ||
       permissions?.canDelete ? (
-        <div className="dropdown dropdown-left absolute top-3 right-3 z-20">
+        <div
+          className={`dropdown dropdown-left absolute ${
+            position || "top-3 right-3"
+          } z-20`}
+        >
           <div
             tabIndex={0}
             role="button"

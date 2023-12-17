@@ -23,14 +23,14 @@ export default function Links() {
 
   useLinks({ sort: sortBy });
 
-  const components = {
+  const linkView = {
     [ViewMode.Default]: DefaultView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };
 
   // @ts-ignore
-  const Component = components[viewMode];
+  const LinkComponent = linkView[viewMode];
 
   return (
     <MainLayout>
@@ -39,22 +39,22 @@ export default function Links() {
           <div className="flex items-center gap-3">
             <FontAwesomeIcon
               icon={faLink}
-              className="sm:w-10 sm:h-10 w-6 h-6 text-primary drop-shadow"
+              className="sm:w-10 sm:h-10 w-8 h-8 text-primary drop-shadow"
             />
             <div>
               <p className="text-3xl capitalize font-thin">All Links</p>
 
-              <p>Links from every Collections</p>
+              <p className="sm:text-sm text-xs">Links from every Collections</p>
             </div>
           </div>
 
-          <div className="flex items-center mt-2">
+          <div className="flex gap-2 items-center mt-2">
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
         {links[0] ? (
-          <Component links={links} />
+          <LinkComponent links={links} />
         ) : (
           <NoLinksFound text="You Haven't Created Any Links Yet" />
         )}
