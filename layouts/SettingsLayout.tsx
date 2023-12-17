@@ -1,11 +1,9 @@
 import SettingsSidebar from "@/components/SettingsSidebar";
-import { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import ModalManagement from "@/components/ModalManagement";
 import useModalStore from "@/store/modals";
 import { useRouter } from "next/router";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 
@@ -55,14 +53,18 @@ export default function SettingsLayout({ children }: Props) {
               onClick={toggleSidebar}
               className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"
             >
-              <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
+              <i
+                className="bi-list text-xl"
+              ></i>
             </div>
 
             <Link
               href="/dashboard"
               className="text-neutral btn btn-square btn-sm btn-ghost"
             >
-              <FontAwesomeIcon icon={faChevronLeft} className="w-5 h-5" />
+              <i
+                className="bi-chevron-left text-xl"
+              ></i>
             </Link>
           </div>
 
