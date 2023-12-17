@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
@@ -8,8 +7,6 @@ import useLinkStore from "@/store/links";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../Modal";
 
 type Props = {
@@ -89,10 +86,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
           title={link.url}
           target="_blank"
         >
-          <FontAwesomeIcon
-            icon={faLink}
-            className="mt-1 w-5 h-5 min-w-[1.25rem]"
-          />
+          <i className="bi-link-45deg text-xl"/>
           <p>{shortendURL}</p>
         </Link>
       ) : undefined}
@@ -122,13 +116,13 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
                 defaultValue={
                   link.collection.id
                     ? {
-                        value: link.collection.id,
-                        label: link.collection.name,
-                      }
+                      value: link.collection.id,
+                      label: link.collection.name,
+                    }
                     : {
-                        value: null as unknown as number,
-                        label: "Unorganized",
-                      }
+                      value: null as unknown as number,
+                      label: "Unorganized",
+                    }
                 }
               />
             ) : null}
