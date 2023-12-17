@@ -1,11 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
 export default function Delete() {
   const [password, setPassword] = useState("");
@@ -59,10 +57,9 @@ export default function Delete() {
           href="/settings/account"
           className="absolute top-4 left-4 btn btn-ghost btn-square btn-sm"
         >
-          <FontAwesomeIcon
-            icon={faChevronLeft}
-            className="w-5 h-5 text-neutral"
-          />
+          <i
+            className="bi-chevron-left  text-neutral text-xl"
+          ></i>
         </Link>
         <div className="flex items-center gap-2 w-full rounded-md h-8">
           <p className="text-red-500 dark:text-red-500 truncate w-full text-3xl text-center">
