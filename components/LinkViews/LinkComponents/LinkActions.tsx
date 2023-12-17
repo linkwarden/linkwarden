@@ -4,8 +4,6 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import usePermissions from "@/hooks/usePermissions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import EditLinkModal from "@/components/ModalContent/EditLinkModal";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsModal";
@@ -13,15 +11,13 @@ import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
 import useAccountStore from "@/store/account";
 
-export default function LinkActions({
-  link,
-  collection,
-  position,
-}: {
+type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
   position?: string;
-}) {
+}
+
+export default function LinkActions({ link, collection, position }: Props) {
   const permissions = usePermissions(link.collection.id as number);
 
   const [editLinkModal, setEditLinkModal] = useState(false);
@@ -46,7 +42,7 @@ export default function LinkActions({
     toast.dismiss(load);
 
     response.ok &&
-      toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
+    toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
   };
 
   const deleteLink = async () => {
@@ -74,14 +70,10 @@ export default function LinkActions({
             role="button"
             className="btn btn-ghost btn-sm btn-square text-neutral"
           >
-            <FontAwesomeIcon
-              icon={faEllipsis}
-              title="More"
-              className="w-5 h-5"
-              id={"expand-dropdown" + collection.id}
-            />
+            <i id={"expand-dropdown" + collection.id} title="More" className="bi-three-dots text-xl"/>
           </div>
-          <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1">
+          <ul
+            className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1">
             {permissions === true ? (
               <li>
                 <div
