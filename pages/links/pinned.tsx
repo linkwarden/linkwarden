@@ -36,12 +36,11 @@ export default function PinnedLinks() {
           title={"Pinned Links"}
           description={"Pinned Links from your Collections"}
         />
-        <div className="flex gap-3 justify-end">
-          <div className="relative mt-2">
-            <SortDropdown sortBy={sortBy} setSort={setSortBy}/>
-            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode}/>
-          </div>
+        <div className="mt-2 flex items-center justify-end gap-2">
+          <SortDropdown sortBy={sortBy} setSort={setSortBy}/>
+          <ViewDropdown viewMode={viewMode} setViewMode={setViewMode}/>
         </div>
+
         {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
           <LinkComponent links={links}/>
         ) : (
