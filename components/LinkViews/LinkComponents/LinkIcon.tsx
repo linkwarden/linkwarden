@@ -1,13 +1,9 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileImage, faFilePdf } from "@fortawesome/free-regular-svg-icons";
 import Image from "next/image";
 import isValidUrl from "@/lib/shared/isValidUrl";
+import React from "react";
 
-export default function LinkIcon({
-  link,
-  width,
-}: {
+export default function LinkIcon({ link, width }: {
   link: LinkIncludingShortenedCollectionAndTags;
   width?: string;
 }) {
@@ -35,9 +31,9 @@ export default function LinkIcon({
           }}
         />
       ) : link.type === "pdf" ? (
-        <FontAwesomeIcon icon={faFilePdf} className={iconClasses} />
+        <i className={`bi-file-earmark-pdf ${iconClasses}`}></i>
       ) : link.type === "image" ? (
-        <FontAwesomeIcon icon={faFileImage} className={iconClasses} />
+        <i className={`bi-file-earmark-image ${iconClasses}`}></i>
       ) : undefined}
     </div>
   );
