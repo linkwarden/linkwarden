@@ -68,7 +68,10 @@ export default function EditCollectionModal({
                 <p className="w-full mb-2">Color</p>
                 <div className="color-picker flex justify-between">
                   <div className="flex flex-col gap-2 items-center w-32">
-                    <i className="bi-folder2 text-5xl drop-shadow" style={{ color: collection.color }}></i>
+                    <i
+                      className="bi-folder-fill text-5xl drop-shadow"
+                      style={{ color: collection.color }}
+                    ></i>
                     <div
                       className="btn btn-ghost btn-xs"
                       onClick={() =>

@@ -67,31 +67,27 @@ export default function Appearance() {
           <p className="mb-3">Select Theme</p>
           <div className="flex gap-3 w-full">
             <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-28 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
+              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
                 localStorage.getItem("theme") === "dark"
                   ? "dark:outline-primary text-primary"
                   : "text-white"
               }`}
               onClick={() => updateSettings({ theme: "dark" })}
             >
-              <i
-                className="bi-moon text-6xl"
-              ></i>
+              <i className="bi-moon-fill text-6xl"></i>
               <p className="ml-2 text-2xl">Dark</p>
 
               {/* <hr className="my-3 outline-1 outline-neutral-content dark:outline-neutral-700" /> */}
             </div>
             <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-28 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
+              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
                 localStorage.getItem("theme") === "light"
                   ? "outline-primary text-primary"
                   : "text-black"
               }`}
               onClick={() => updateSettings({ theme: "light" })}
             >
-              <i
-                className="bi-sun text-6xl"
-              ></i>
+              <i className="bi-sun-fill text-6xl"></i>
               <p className="ml-2 text-2xl">Light</p>
               {/* <hr className="my-3 outline-1 outline-neutral-content dark:outline-neutral-700" /> */}
             </div>

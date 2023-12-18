@@ -32,8 +32,8 @@ export default function ToggleDarkMode({ className }: Props) {
           className="theme-controller"
           checked={localStorage.getItem("theme") === "light" ? false : true}
         />
-        <i className="bi-sun text-xl swap-on"></i>
-        <i className="bi-moon text-xl swap-off"></i>
+        <i className="bi-sun-fill text-xl swap-on"></i>
+        <i className="bi-moon-fill text-xl swap-off"></i>
       </label>
     </div>
   );

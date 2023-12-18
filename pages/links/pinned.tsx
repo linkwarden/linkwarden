@@ -31,18 +31,20 @@ export default function PinnedLinks() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full h-full">
-        <PageHeader
-          icon={"bi-pin-angle"}
-          title={"Pinned Links"}
-          description={"Pinned Links from your Collections"}
-        />
-        <div className="mt-2 flex items-center justify-end gap-2">
-          <SortDropdown sortBy={sortBy} setSort={setSortBy}/>
-          <ViewDropdown viewMode={viewMode} setViewMode={setViewMode}/>
+        <div className="flex justify-between">
+          <PageHeader
+            icon={"bi-pin-angle"}
+            title={"Pinned Links"}
+            description={"Pinned Links from your Collections"}
+          />
+          <div className="mt-2 flex items-center justify-end gap-2">
+            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
+          </div>
         </div>
 
         {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
-          <LinkComponent links={links}/>
+          <LinkComponent links={links} />
         ) : (
           <div
             style={{ flex: "1 1 auto" }}

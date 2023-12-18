@@ -54,18 +54,21 @@ export default function Search() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
-        <PageHeader icon={'bi-search'} title={'Search Results'}/>
+        <div className="flex justify-between">
+          <PageHeader icon={"bi-search"} title={"Search Results"} />
 
-        <div className="flex gap-3 items-center justify-end">
-          <div className="flex gap-2 items-center mt-2">
-            <FilterSearchDropdown
-              searchFilter={searchFilter}
-              setSearchFilter={setSearchFilter}
-            />
-            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
+          <div className="flex gap-3 items-center justify-end">
+            <div className="flex gap-2 items-center mt-2">
+              <FilterSearchDropdown
+                searchFilter={searchFilter}
+                setSearchFilter={setSearchFilter}
+              />
+              <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+              <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
+            </div>
           </div>
         </div>
+
         {links[0] ? (
           <LinkComponent links={links} />
         ) : (
