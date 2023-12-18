@@ -1,18 +1,12 @@
-import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
-import { Sort } from "@/types/global";
 import React, { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { Sort, ViewMode } from "@/types/global";
-import { faThumbTack } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
 import ViewDropdown from "@/components/ViewDropdown";
 import DefaultView from "@/components/LinkViews/DefaultView";
-import GridView from "@/components/LinkViews/GridView";
 import ListView from "@/components/LinkViews/ListView";
 
 export default function PinnedLinks() {
@@ -42,14 +36,13 @@ export default function PinnedLinks() {
           title={"Pinned Links"}
           description={"Pinned Links from your Collections"}
         />
-        <div className="flex gap-3 justify-end">
-          <div className="relative mt-2">
-            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
-          </div>
+        <div className="mt-2 flex items-center justify-end gap-2">
+          <SortDropdown sortBy={sortBy} setSort={setSortBy}/>
+          <ViewDropdown viewMode={viewMode} setViewMode={setViewMode}/>
         </div>
+
         {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
-          <LinkComponent links={links} />
+          <LinkComponent links={links}/>
         ) : (
           <div
             style={{ flex: "1 1 auto" }}

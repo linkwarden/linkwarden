@@ -1,24 +1,7 @@
 import useCollectionStore from "@/store/collections";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUser,
-  faPalette,
-  faBoxArchive,
-  faKey,
-  faLock,
-} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import {
-  faCircleQuestion,
-  faCreditCard,
-} from "@fortawesome/free-regular-svg-icons";
-import {
-  faGithub,
-  faMastodon,
-  faXTwitter,
-} from "@fortawesome/free-brands-svg-icons";
+import React, { useEffect, useState } from "react";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
   const LINKWARDEN_VERSION = "v2.4.0";
@@ -48,7 +31,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon icon={faUser} className="w-7 h-7 text-primary" />
+            <i
+              className="bi-person text-primary text-2xl"
+            ></i>
 
             <p className="truncate w-full pr-7">Account</p>
           </div>
@@ -62,10 +47,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faPalette}
-              className="w-7 h-7 text-primary"
-            />
+            <i
+              className="bi-palette text-primary text-2xl"
+            ></i>
 
             <p className="truncate w-full pr-7">Appearance</p>
           </div>
@@ -79,11 +63,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faBoxArchive}
-              className="w-7 h-7 text-primary"
-            />
-
+            <i
+              className="bi-archive text-primary text-2xl"
+            ></i>
             <p className="truncate w-full pr-7">Archive</p>
           </div>
         </Link>
@@ -96,8 +78,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon icon={faKey} className="w-7 h-7 text-primary" />
-
+            <i
+              className="bi-key text-primary text-2xl"
+            ></i>
             <p className="truncate w-full pr-7">API Keys</p>
           </div>
         </Link>
@@ -110,8 +93,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon icon={faLock} className="w-7 h-7 text-primary" />
-
+            <i
+              className="bi-lock text-primary text-2xl"
+            ></i>
             <p className="truncate w-full pr-7">Password</p>
           </div>
         </Link>
@@ -125,11 +109,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                   : "hover:bg-neutral/20"
               } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
-              <FontAwesomeIcon
-                icon={faCreditCard}
-                className="w-7 h-7 text-primary"
-              />
-
+              <i
+                className="bi-credit-card text-primary text-xl"
+              ></i>
               <p className="truncate w-full pr-7">Billing</p>
             </div>
           </Link>
@@ -148,10 +130,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faCircleQuestion as any}
-              className="w-6 h-6 text-primary"
-            />
+            <i
+              className="bi-question-circle text-primary text-xl"
+            ></i>
 
             <p className="truncate w-full pr-7">Help</p>
           </div>
@@ -161,11 +142,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faGithub as any}
-              className="w-6 h-6 text-primary"
-            />
-
+            <i
+              className="bi-github text-primary text-xl"
+            ></i>
             <p className="truncate w-full pr-7">GitHub</p>
           </div>
         </Link>
@@ -174,11 +153,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faXTwitter as any}
-              className="w-6 h-6 text-primary"
-            />
-
+            <i
+              className="bi-twitter-x text-primary text-xl"
+            ></i>
             <p className="truncate w-full pr-7">Twitter</p>
           </div>
         </Link>
@@ -187,11 +164,9 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <FontAwesomeIcon
-              icon={faMastodon as any}
-              className="w-6 h-6 text-primary"
-            />
-
+            <i
+              className="bi-mastodon text-primary text-xl"
+            ></i>
             <p className="truncate w-full pr-7">Mastodon</p>
           </div>
         </Link>

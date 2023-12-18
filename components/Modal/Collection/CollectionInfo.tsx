@@ -1,14 +1,8 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import {
-  faFolder,
-  faPenToSquare,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import SubmitButton from "@/components/SubmitButton";
 import { HexColorPicker } from "react-colorful";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
 
@@ -73,10 +67,7 @@ export default function CollectionInfo({
               <div className="flex flex-col justify-between items-center w-32">
                 <p className="w-full mb-2">Color</p>
                 <div style={{ color: collection.color }}>
-                  <FontAwesomeIcon
-                    icon={faFolder}
-                    className="w-12 h-12 drop-shadow"
-                  />
+                  <i className={"bi-folder2"}></i>
                 </div>
                 <div
                   className="btn btn-ghost btn-xs"
@@ -115,7 +106,6 @@ export default function CollectionInfo({
         onClick={submit}
         loading={submitLoader}
         label={method === "CREATE" ? "Add" : "Save"}
-        icon={method === "CREATE" ? faPlus : faPenToSquare}
         className="mx-auto mt-2"
       />
     </div>

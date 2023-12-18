@@ -1,10 +1,7 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
+import React from "react";
 
-export default function LinkDate({
-  link,
-}: {
+export default function LinkDate({ link }: {
   link: LinkIncludingShortenedCollectionAndTags;
 }) {
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
@@ -18,7 +15,7 @@ export default function LinkDate({
 
   return (
     <div className="flex items-center gap-1 text-neutral">
-      <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />
+      <i className="bi-calendar3 text-lg"></i>
       <p>{formattedDate}</p>
     </div>
   );

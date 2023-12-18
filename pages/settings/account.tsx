@@ -1,10 +1,4 @@
 import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClose,
-  faFileExport,
-  faFileImport,
-} from "@fortawesome/free-solid-svg-icons";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
@@ -215,7 +209,9 @@ export default function Account() {
                   }
                   className="absolute top-1 left-1 btn btn-xs btn-circle btn-neutral btn-outline bg-base-100"
                 >
-                  <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
+                  <i
+                    className="bi-x"
+                  ></i>
                 </div>
               )}
               <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
@@ -254,10 +250,9 @@ export default function Account() {
                   className="flex gap-2 text-sm btn btn-outline btn-neutral group"
                   id="import-dropdown"
                 >
-                  <FontAwesomeIcon
-                    icon={faFileImport}
-                    className="w-5 h-5 duration-100"
-                  />
+                  <i
+                    className="bi-cloud-upload text-xl duration-100"
+                  ></i>
                   <p>Import From</p>
                 </div>
                 <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
@@ -309,10 +304,9 @@ export default function Account() {
               <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
                 <div className="flex w-fit gap-2 text-sm btn btn-outline btn-neutral group">
-                  <FontAwesomeIcon
-                    icon={faFileExport}
-                    className="w-5 h-5 duration-100"
-                  />
+                  <i
+                    className="bi-cloud-download text-xl duration-100"
+                  ></i>
                   <p>Export Data</p>
                 </div>
               </Link>
