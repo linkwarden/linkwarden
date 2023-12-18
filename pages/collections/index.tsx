@@ -24,15 +24,17 @@ export default function Collections() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full h-full">
-        <PageHeader
-          icon={"bi-folder2"}
-          title={"Collections"}
-          description={"Collections you own"}
-        />
+        <div className="flex justify-between">
+          <PageHeader
+            icon={"bi-folder"}
+            title={"Collections"}
+            description={"Collections you own"}
+          />
 
-        <div className="flex gap-3 justify-end">
-          <div className="relative mt-2">
-            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+          <div className="flex gap-3 justify-end">
+            <div className="relative mt-2">
+              <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+            </div>
           </div>
         </div>
 
@@ -48,14 +50,14 @@ export default function Collections() {
             onClick={() => setNewCollectionModal(true)}
           >
             <p className="group-hover:opacity-0 duration-100">New Collection</p>
-            <i className="bi-plus text-5xl group-hover:text-7xl group-hover:-mt-6 text-primary drop-shadow duration-100"></i>
+            <i className="bi-plus-lg text-5xl group-hover:text-7xl group-hover:-mt-6 text-primary drop-shadow duration-100"></i>
           </div>
         </div>
 
         {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] ? (
           <>
             <div className="flex items-center gap-3 my-5">
-              <i className="bi-folder2 text-3xl sm:text-2xl text-primary drop-shadow"></i>
+              <i className="bi-folder text-3xl sm:text-2xl text-primary drop-shadow"></i>
 
               <div>
                 <p className="text-3xl capitalize font-thin">

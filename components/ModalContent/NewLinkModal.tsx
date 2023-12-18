@@ -146,14 +146,6 @@ export default function NewLinkModal({ onClose }: Props) {
       </div>
 
       <div className={"mt-2"}>
-        <div
-          onClick={() => setOptionsExpanded(!optionsExpanded)}
-          className={`cursor-pointer duration-100 flex items-center text-sm`}
-        >
-          <span>{optionsExpanded ? "Hide" : "More"} Options</span>
-          <i className={`ml-0.5 ${optionsExpanded ? 'bi-chevron-up' : 'bi-chevron-down'}`}></i>
-        </div>
-
         {optionsExpanded ? (
           <div className="mt-5">
             {/* <hr className="mb-3 border border-neutral-content" /> */}
@@ -194,7 +186,21 @@ export default function NewLinkModal({ onClose }: Props) {
         ) : undefined}
       </div>
 
-      <div className="flex items-center justify-end mt-5">
+      <div className="flex justify-between items-center mt-5">
+        <div
+          onClick={() => setOptionsExpanded(!optionsExpanded)}
+          className={`rounded-md cursor-pointer btn btn-sm btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
+        >
+          <p className="font-normal">
+            {optionsExpanded ? "Hide" : "More"} Options
+          </p>
+          <i
+            className={`${
+              optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
+            }`}
+          ></i>
+        </div>
+
         <button
           className="btn btn-accent dark:border-violet-400 text-white"
           onClick={submit}
