@@ -16,7 +16,7 @@ export default function PageHeader({
       ></i>
       <div>
         <p className="text-3xl capitalize font-thin">{title}</p>
-        <p>{description}</p>
+        <p className="text-xs sm:text-sm">{description}</p>
       </div>
     </div>
   );

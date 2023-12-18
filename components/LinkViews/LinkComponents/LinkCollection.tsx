@@ -5,7 +5,10 @@ import {
 import { useRouter } from "next/router";
 import React from "react";
 
-export default function LinkCollection({ link, collection }: {
+export default function LinkCollection({
+  link,
+  collection,
+}: {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
 }) {
@@ -19,7 +22,10 @@ export default function LinkCollection({ link, collection }: {
       }}
       className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
     >
-      <i className="bi-folder2 text-lg shadow" style={{ color: collection?.color }}></i>
+      <i
+        className="bi-folder-fill text-lg drop-shadow"
+        style={{ color: collection?.color }}
+      ></i>
       <p className="truncate capitalize">{collection?.name}</p>
     </div>
   );

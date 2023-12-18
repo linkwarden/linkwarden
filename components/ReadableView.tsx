@@ -172,9 +172,7 @@ export default function ReadableView({ link }: Props) {
                   target="_blank"
                   className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
                 >
-                  <i
-                    className="bi-link-45deg"
-                  ></i>
+                  <i className="bi-link-45deg"></i>
 
                   {isValidUrl(link?.url || "")
                     ? new URL(link?.url as string).host
@@ -190,7 +188,7 @@ export default function ReadableView({ link }: Props) {
               className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
             >
               <i
-                className="bi-folder2 drop-shadow text-2xl"
+                className="bi-folder-fill drop-shadow text-2xl"
                 style={{ color: link?.collection.color }}
               ></i>
               <p

@@ -109,7 +109,7 @@ export default function Index() {
           <div className="flex gap-3 items-start justify-between">
             <div className="flex items-center gap-2">
               <i
-                className="bi-folder2 text-3xl drop-shadow"
+                className="bi-folder-fill text-3xl drop-shadow"
                 style={{ color: activeCollection?.color }}
               ></i>
 
@@ -124,10 +124,7 @@ export default function Index() {
                 role="button"
                 className="btn btn-ghost btn-sm btn-square text-neutral"
               >
-                <i
-                  className="bi-three-dots text-xl"
-                  title="More"
-                ></i>
+                <i className="bi-three-dots text-xl" title="More"></i>
               </div>
               <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
                 {permissions === true ? (

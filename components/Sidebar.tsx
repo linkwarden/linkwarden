@@ -16,7 +16,7 @@ export default function Sidebar({ className }: { className?: string }) {
     () => {
       const storedValue = localStorage.getItem("collectionDisclosure");
       return storedValue ? storedValue === "true" : true;
-    },
+    }
   );
 
   const { collections } = useCollectionStore();
@@ -33,7 +33,7 @@ export default function Sidebar({ className }: { className?: string }) {
   useEffect(() => {
     localStorage.setItem(
       "collectionDisclosure",
-      collectionDisclosure ? "true" : "false",
+      collectionDisclosure ? "true" : "false"
     );
   }, [collectionDisclosure]);
 
@@ -78,9 +78,9 @@ export default function Sidebar({ className }: { className?: string }) {
           }}
           className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
-          <p className="text-sm ">Collections</p>
+          <p className="text-sm">Collections</p>
           <i
-            className={`bi-chevron-down text-primary drop-shadow  ${
+            className={`bi-chevron-down ${
               collectionDisclosure ? "rotate-reverse" : "rotate"
             }`}
           ></i>
@@ -108,14 +108,14 @@ export default function Sidebar({ className }: { className?: string }) {
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
                         <i
-                          className="bi-folder2 text-2xl drop-shadow"
+                          className="bi-folder-fill text-2xl drop-shadow"
                           style={{ color: e.color }}
                         ></i>
                         <p className="truncate w-full">{e.name}</p>
 
                         {e.isPublic ? (
                           <i
-                            className="bi-globe-americas text-sm text-black/50 dark:text-white/50 drop-shadow"
+                            className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
                             title="This collection is being shared publicly."
                           ></i>
                         ) : undefined}
@@ -147,8 +147,8 @@ export default function Sidebar({ className }: { className?: string }) {
         >
           <p className="text-sm">Tags</p>
           <i
-            className={`bi-chevron-down text-primary drop-shadow  ${
-              collectionDisclosure ? "rotate-reverse" : "rotate"
+            className={`bi-chevron-down  ${
+              tagDisclosure ? "rotate-reverse" : "rotate"
             }`}
           ></i>
         </Disclosure.Button>
