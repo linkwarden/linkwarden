@@ -1,5 +1,3 @@
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import NewLinkModal from "./ModalContent/NewLinkModal";
 
@@ -35,10 +33,7 @@ export default function NoLinksFound({ text }: Props) {
           }}
           className="inline-flex gap-1 relative w-[11rem] items-center btn btn-accent dark:border-violet-400 text-white group"
         >
-          <FontAwesomeIcon
-            icon={faPlus}
-            className="w-5 h-5 left-4 group-hover:ml-[4rem] absolute duration-100"
-          />
+          <i className="bi-plus-lg text-3xl left-2 group-hover:ml-[4rem] absolute duration-100"></i>
           <span className="group-hover:opacity-0 text-right w-full duration-100">
             Create New Link
           </span>

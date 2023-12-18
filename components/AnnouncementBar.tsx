@@ -1,5 +1,3 @@
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import React, { MouseEventHandler } from "react";
 
@@ -24,10 +22,12 @@ export default function AnnouncementBar({ toggleAnnouncementBar }: Props) {
         </div>
 
         <button
-          className="fixed top-3 right-3 hover:opacity-50 duration-100"
+          className="fixed right-3 hover:opacity-50 duration-100"
           onClick={toggleAnnouncementBar}
         >
-          <FontAwesomeIcon icon={faClose} className="w-4 h-4" />
+          <i
+            className="bi-x text-neutral text-2xl"
+          ></i>
         </button>
       </div>
     </div>

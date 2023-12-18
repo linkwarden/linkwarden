@@ -1,6 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   setSearchFilter: Function;
@@ -24,11 +22,9 @@ export default function FilterSearchDropdown({
         role="button"
         className="btn btn-sm btn-square btn-ghost"
       >
-        <FontAwesomeIcon
-          icon={faFilter}
-          id="sort-dropdown"
-          className="w-5 h-5 text-neutral"
-        />
+        <i
+          className="bi-funnel text-neutral text-2xl"
+        ></i>
       </div>
       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mt-1">
         <li>
