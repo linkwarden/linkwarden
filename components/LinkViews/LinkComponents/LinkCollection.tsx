@@ -2,9 +2,8 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
+import React from "react";
 
 export default function LinkCollection({
   link,
@@ -23,11 +22,10 @@ export default function LinkCollection({
       }}
       className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
     >
-      <FontAwesomeIcon
-        icon={faFolder}
-        className="w-4 h-4 shadow"
+      <i
+        className="bi-folder-fill text-lg drop-shadow"
         style={{ color: collection?.color }}
-      />
+      ></i>
       <p className="truncate capitalize">{collection?.name}</p>
     </div>
   );

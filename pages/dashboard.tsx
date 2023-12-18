@@ -1,30 +1,19 @@
-import useCollectionStore from "@/store/collections";
-import {
-  faChartSimple,
-  faChevronRight,
-  faClockRotateLeft,
-  faFileImport,
-  faFolder,
-  faHashtag,
-  faLink,
-  faThumbTack,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
+import useCollectionStore from "@/store/collections";
 import useTagStore from "@/store/tags";
+import MainLayout from "@/layouts/MainLayout";
 import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import useModalStore from "@/store/modals";
 import { toast } from "react-hot-toast";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
 import NewLinkModal from "@/components/ModalContent/NewLinkModal";
+import PageHeader from "@/components/PageHeader";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
@@ -105,24 +94,17 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
-        <div className="flex items-center gap-3">
-          <FontAwesomeIcon
-            icon={faChartSimple}
-            className="sm:w-10 sm:h-10 w-8 h-8 text-primary drop-shadow"
-          />
-          <div>
-            <p className="text-3xl capitalize font-thin">Dashboard</p>
-
-            <p className="sm:text-sm text-xs">A brief overview of your data</p>
-          </div>
-        </div>
-
+        <PageHeader
+          icon={"bi-house "}
+          title={"Dashboard"}
+          description={"A brief overview of your data"}
+        />
         <div>
           <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
-              icon={faLink}
+              icon={"bi-link-45deg"}
             />
 
             <div className="divider md:divider-horizontal"></div>
@@ -130,7 +112,7 @@ export default function Dashboard() {
             <DashboardItem
               name={collections.length === 1 ? "Collection" : "Collections"}
               value={collections.length}
-              icon={faFolder}
+              icon={"bi-folder"}
             />
 
             <div className="divider md:divider-horizontal"></div>
@@ -138,25 +120,22 @@ export default function Dashboard() {
             <DashboardItem
               name={tags.length === 1 ? "Tag" : "Tags"}
               value={tags.length}
-              icon={faHashtag}
+              icon={"bi-hash"}
             />
           </div>
         </div>
 
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
-            <FontAwesomeIcon
-              icon={faClockRotateLeft}
-              className="w-5 h-5 text-primary drop-shadow"
-            />
-            <p className="text-2xl">Recently Added Links</p>
+            <i className="bi-clock-history text-primary text-2xl drop-shadow"></i>
+            <p className="text-2xl">Recent</p>
           </div>
           <Link
             href="/links"
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
           >
             View All
-            <FontAwesomeIcon icon={faChevronRight} className={`w-4 h-4`} />
+            <i className="bi-chevron-right text-sm "></i>
           </Link>
         </div>
 
@@ -192,14 +171,11 @@ export default function Dashboard() {
                   onClick={() => {
                     setNewLinkModal(true);
                   }}
-                  className="inline-flex gap-1 relative w-[11rem] items-center btn btn-accent dark:border-violet-400 text-white group"
+                  className="inline-flex items-center gap-2 text-sm btn btn-accent dark:border-accent text-white"
                 >
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="w-5 h-5 left-4 group-hover:ml-[4rem] absolute duration-100"
-                  />
-                  <span className="group-hover:opacity-0 text-right w-full duration-100">
-                    Create New Link
+                  <i className="bi-plus-lg text-xl duration-100"></i>
+                  <span className="group-hover:opacity-0 text-right duration-100">
+                    Add New Link
                   </span>
                 </div>
 
@@ -207,13 +183,10 @@ export default function Dashboard() {
                   <div
                     tabIndex={0}
                     role="button"
-                    className="flex gap-2 text-sm btn btn-outline btn-neutral group"
+                    className="inline-flex items-center gap-2 text-sm btn btn-outline btn-neutral"
                     id="import-dropdown"
                   >
-                    <FontAwesomeIcon
-                      icon={faFileImport}
-                      className="w-5 h-5 duration-100"
-                    />
+                    <i className="bi-cloud-upload text-xl duration-100"></i>
                     <p>Import From</p>
                   </div>
                   <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
@@ -266,18 +239,15 @@ export default function Dashboard() {
 
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
-            <FontAwesomeIcon
-              icon={faThumbTack}
-              className="w-5 h-5 text-primary drop-shadow"
-            />
-            <p className="text-2xl">Pinned Links</p>
+            <i className="bi-pin-angle text-primary text-2xl drop-shadow"></i>
+            <p className="text-2xl">Pinned</p>
           </div>
           <Link
             href="/links/pinned"
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
           >
             View All
-            <FontAwesomeIcon icon={faChevronRight} className={`w-4 h-4`} />
+            <i className="bi-chevron-right text-sm "></i>
           </Link>
         </div>
 

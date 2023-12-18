@@ -1,21 +1,20 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-type Props = {
+export default function dashboardItem({
+  name,
+  value,
+  icon,
+}: {
   name: string;
   value: number;
-  icon: IconProp;
-};
-
-export default function dashboardItem({ name, value, icon }: Props) {
+  icon: string;
+}) {
   return (
-    <div className="flex gap-4 items-end">
-      <div className="p-4 bg-primary/20 rounded-xl select-none">
-        <FontAwesomeIcon icon={icon} className="w-8 h-8 text-primary" />
+    <div className="flex items-center">
+      <div className="w-20 aspect-square flex justify-center items-center bg-primary/20 rounded-xl select-none">
+        <i className={`${icon} text-primary text-4xl drop-shadow`}></i>
       </div>
-      <div className="flex flex-col justify-center">
-        <p className="text-neutral text-sm tracking-wider">{name}</p>
-        <p className="font-thin text-6xl text-primary mt-2">{value}</p>
+      <div className="ml-4 flex flex-col justify-center">
+        <p className="text-neutral text-xs tracking-wider">{name}</p>
+        <p className="font-thin text-6xl text-primary mt-0.5">{value}</p>
       </div>
     </div>
   );
