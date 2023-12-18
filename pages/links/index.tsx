@@ -1,19 +1,13 @@
-import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import NoLinksFound from "@/components/NoLinksFound";
 import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
-import { Sort } from "@/types/global";
 import React, { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { Sort, ViewMode } from "@/types/global";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
 import ViewDropdown from "@/components/ViewDropdown";
 import DefaultView from "@/components/LinkViews/DefaultView";
-import GridView from "@/components/LinkViews/GridView";
 import ListView from "@/components/LinkViews/ListView";
 
 
@@ -44,17 +38,16 @@ export default function Links() {
           title={"All Links"}
           description={"Links from every Collections"}
         />
-        <div className="flex gap-3 justify-end">
-          <div className="relative mt-2">
-            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
-          </div>
+
+        <div className="mt-2 flex items-center justify-end gap-2">
+          <SortDropdown sortBy={sortBy} setSort={setSortBy}/>
+          <ViewDropdown viewMode={viewMode} setViewMode={setViewMode}/>
         </div>
 
         {links[0] ? (
-          <LinkComponent links={links} />
+          <LinkComponent links={links}/>
         ) : (
-          <NoLinksFound text="You Haven't Created Any Links Yet" />
+          <NoLinksFound text="You Haven't Created Any Links Yet"/>
         )}
       </div>
     </MainLayout>

@@ -1,10 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis, faGlobe, faLink } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import usePermissions from "@/hooks/usePermissions";
 import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
@@ -71,9 +68,10 @@ export default function CollectionCard({ collection, className }: Props) {
           role="button"
           className="btn btn-ghost btn-sm btn-square text-neutral"
         >
-          <FontAwesomeIcon icon={faEllipsis} title="More" className="w-5 h-5" />
+          <i className="bi-three-dots text-xl" title="More"></i>
         </div>
-        <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+        <ul
+          className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
           {permissions === true ? (
             <li>
               <div
@@ -168,21 +166,17 @@ export default function CollectionCard({ collection, className }: Props) {
             <div className="text-right">
               <div className="font-bold text-sm flex justify-end gap-1 items-center">
                 {collection.isPublic ? (
-                  <FontAwesomeIcon
-                    icon={faGlobe}
-                    title="This collection is being shared publicly."
-                    className="w-4 h-4 drop-shadow text-neutral"
-                  />
+                  <i className="bi-globe-americas drop-shadow text-neutral"
+                     title="This collection is being shared publicly."></i>
                 ) : undefined}
-                <FontAwesomeIcon
-                  icon={faLink}
-                  className="w-5 h-5 text-neutral"
-                />
+                <i className="bi-link-45deg text-lg text-neutral"
+                   title="This collection is being shared publicly."></i>
                 {collection._count && collection._count.links}
               </div>
               <div className="flex items-center justify-end gap-1 text-neutral">
                 <p className="font-bold text-xs flex gap-1 items-center">
-                  <FontAwesomeIcon icon={faCalendarDays} className="w-4 h-4" />{" "}
+                  <i className="bi-calendar3 text-neutral"
+                     title="This collection is being shared publicly."></i>
                   {formattedDate}
                 </p>
               </div>

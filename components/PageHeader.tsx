@@ -6,7 +6,7 @@ export default function PageHeader({
   icon,
 }: {
   title: string;
-  description: string;
+  description?: string;
   icon: string;
 }) {
   return (
