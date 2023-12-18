@@ -44,30 +44,34 @@ export default function Sidebar({ className }: { className?: string }) {
   return (
     <div
       id="sidebar"
-      className={`bg-base-200 h-full w-64 xl:w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content px-2 z-20 ${
+      className={`bg-base-200 h-full w-64 xl:w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20 ${
         className || ""
       }`}
     >
-      <div className="grid grid-cols-2 gap-1 mt-2">
-        <SidebarHighlightLink title={"Dashboard"}
-                              href={`/dashboard`}
-                              icon={"bi-house"}
-                              active={active === `/dashboard`}
+      <div className="grid grid-cols-2 gap-2">
+        <SidebarHighlightLink
+          title={"Dashboard"}
+          href={`/dashboard`}
+          icon={"bi-house"}
+          active={active === `/dashboard`}
         />
-        <SidebarHighlightLink title={"Pinned"}
-                              href={`/links/pinned`}
-                              icon={"bi-pin-angle"}
-                              active={active === `/links/pinned`}
+        <SidebarHighlightLink
+          title={"Pinned"}
+          href={`/links/pinned`}
+          icon={"bi-pin-angle"}
+          active={active === `/links/pinned`}
         />
-        <SidebarHighlightLink title={"All Links"}
-                              href={`/links`}
-                              icon={"bi-link-45deg"}
-                              active={active === `/links`}
+        <SidebarHighlightLink
+          title={"All Links"}
+          href={`/links`}
+          icon={"bi-link-45deg"}
+          active={active === `/links`}
         />
-        <SidebarHighlightLink title={"All Collections"}
-                              href={`/collections`}
-                              icon={"bi-folder2"}
-                              active={active === `/collections`}
+        <SidebarHighlightLink
+          title={"All Collections"}
+          href={`/collections`}
+          icon={"bi-folder2"}
+          active={active === `/collections`}
         />
       </div>
 
