@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
+import SidebarHighlightLink from "@/components/SidebarHighlightLink";
 
 export default function Sidebar({ className }: { className?: string }) {
   const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
@@ -47,54 +48,27 @@ export default function Sidebar({ className }: { className?: string }) {
         className || ""
       }`}
     >
-      <div className="flex flex-col gap-1 mt-2">
-        <Link href={`/dashboard`}>
-          <div
-            className={`${
-              active === `/dashboard` ? "bg-primary/20" : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-          >
-            <i className="bi-house text-primary text-2xl drop-shadow"></i>
-            <p className="truncate w-full">Dashboard</p>
-          </div>
-        </Link>
-
-        <Link href={`/links`}>
-          <div
-            className={`${
-              active === `/links` ? "bg-primary/20" : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-          >
-            <i className="bi-link-45deg text-primary text-2xl drop-shadow"></i>
-            <p className="truncate w-full">All Links</p>
-          </div>
-        </Link>
-
-        <Link href={`/collections`}>
-          <div
-            className={`${
-              active === `/collections`
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-          >
-            <i className="bi-folder text-primary text-2xl drop-shadow"></i>
-            <p className="truncate w-full">All Collections</p>
-          </div>
-        </Link>
-
-        <Link href={`/links/pinned`}>
-          <div
-            className={`${
-              active === `/links/pinned`
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-          >
-            <i className="bi-pin-angle text-primary text-2xl drop-shadow"></i>
-            <p className="truncate w-full">Pinned Links</p>
-          </div>
-        </Link>
+      <div className="grid grid-cols-2 gap-1 mt-2">
+        <SidebarHighlightLink title={"Dashboard"}
+                              href={`/dashboard`}
+                              icon={"bi-house"}
+                              active={active === `/dashboard`}
+        />
+        <SidebarHighlightLink title={"Pinned"}
+                              href={`/links/pinned`}
+                              icon={"bi-pin-angle"}
+                              active={active === `/links/pinned`}
+        />
+        <SidebarHighlightLink title={"All Links"}
+                              href={`/links`}
+                              icon={"bi-link-45deg"}
+                              active={active === `/links`}
+        />
+        <SidebarHighlightLink title={"All Collections"}
+                              href={`/collections`}
+                              icon={"bi-folder2"}
+                              active={active === `/collections`}
+        />
       </div>
 
       <Disclosure defaultOpen={collectionDisclosure}>
