@@ -67,7 +67,7 @@ export default function CollectionInfo({
               <div className="flex flex-col justify-between items-center w-32">
                 <p className="w-full mb-2">Color</p>
                 <div style={{ color: collection.color }}>
-                  <i className={"bi-folder2"}></i>
+                  <i className={"bi-folder-fill"}></i>
                 </div>
                 <div
                   className="btn btn-ghost btn-xs"

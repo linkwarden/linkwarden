@@ -27,27 +27,22 @@ export default function NewCollectionModal({ onClose }: Props) {
   const { addCollection } = useCollectionStore();
 
   const submit = async () => {
-    if (!submitLoader) {
-      setSubmitLoader(true);
-      if (!collection) return null;
+    if (submitLoader) return;
+    if (!collection) return null;
 
-      setSubmitLoader(true);
+    setSubmitLoader(true);
 
-      const load = toast.loading("Creating...");
+    const load = toast.loading("Creating...");
 
-      let response;
+    let response = await addCollection(collection as any);
+    toast.dismiss(load);
 
-      response = await addCollection(collection as any);
+    if (response.ok) {
+      toast.success("Created!");
+      onClose();
+    } else toast.error(response.data as string);
 
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success("Created!");
-        onClose();
-      } else toast.error(response.data as string);
-
-      setSubmitLoader(false);
-    }
+    setSubmitLoader(false);
   };
 
   return (
@@ -73,8 +68,10 @@ export default function NewCollectionModal({ onClose }: Props) {
                 <p className="w-full mb-2">Color</p>
                 <div className="color-picker flex justify-between">
                   <div className="flex flex-col gap-2 items-center w-32">
-                    <div style={{ color: collection.color }}>
-                    </div>
+                    <i
+                      className={"bi-folder-fill text-5xl"}
+                      style={{ color: collection.color }}
+                    ></i>
                     <div
                       className="btn btn-ghost btn-xs"
                       onClick={() =>

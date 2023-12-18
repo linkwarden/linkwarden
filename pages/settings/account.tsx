@@ -197,7 +197,7 @@ export default function Account() {
               <ProfilePhoto
                 priority={true}
                 src={user.image ? user.image : undefined}
-                dimensionClass="w-28 h-28"
+                large={true}
               />
               {user.image && (
                 <div
@@ -209,9 +209,7 @@ export default function Account() {
                   }
                   className="absolute top-1 left-1 btn btn-xs btn-circle btn-neutral btn-outline bg-base-100"
                 >
-                  <i
-                    className="bi-x"
-                  ></i>
+                  <i className="bi-x"></i>
                 </div>
               )}
               <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
@@ -250,9 +248,7 @@ export default function Account() {
                   className="flex gap-2 text-sm btn btn-outline btn-neutral group"
                   id="import-dropdown"
                 >
-                  <i
-                    className="bi-cloud-upload text-xl duration-100"
-                  ></i>
+                  <i className="bi-cloud-upload text-xl duration-100"></i>
                   <p>Import From</p>
                 </div>
                 <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
@@ -304,9 +300,7 @@ export default function Account() {
               <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
                 <div className="flex w-fit gap-2 text-sm btn btn-outline btn-neutral group">
-                  <i
-                    className="bi-cloud-download text-xl duration-100"
-                  ></i>
+                  <i className="bi-cloud-download text-xl duration-100"></i>
                   <p>Export Data</p>
                 </div>
               </Link>
