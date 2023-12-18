@@ -33,9 +33,7 @@ export default function NoLinksFound({ text }: Props) {
           }}
           className="inline-flex gap-1 relative w-[11rem] items-center btn btn-accent dark:border-violet-400 text-white group"
         >
-          <i
-            className="bi-plus text-4xl left-2 group-hover:ml-[4rem] absolute duration-100"
-          ></i>
+          <i className="bi-plus-lg text-3xl left-2 group-hover:ml-[4rem] absolute duration-100"></i>
           <span className="group-hover:opacity-0 text-right w-full duration-100">
             Create New Link
           </span>

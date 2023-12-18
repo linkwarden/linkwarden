@@ -55,7 +55,7 @@ export default function Navbar() {
         onClick={toggleSidebar}
         className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"
       >
-        <i className="bi-list text-xl"></i>
+        <i className="bi-list text-2xl leading-none"></i>
       </div>
       <SearchBar />
       <div className="flex items-center gap-2">
@@ -66,13 +66,13 @@ export default function Navbar() {
             <div
               tabIndex={0}
               role="button"
-              className="flex min-w-[3.4rem] items-center group btn btn-accent dark:border-violet-400 text-white btn-sm px-2"
+              className="flex min-w-[3.4rem] items-center btn btn-accent dark:border-violet-400 text-white btn-sm max-h-[2rem] px-2 relative"
             >
               <span>
-                <i className="bi-plus text-xl"></i>
+                <i className="bi-plus text-4xl absolute -top-[0.3rem] left-0 pointer-events-none"></i>
               </span>
               <span>
-                <i className="bi-caret-down-fill text-xs"></i>
+                <i className="bi-caret-down-fill text-xs absolute top-2 right-[0.3rem] pointer-events-none"></i>
               </span>
             </div>
           </div>
