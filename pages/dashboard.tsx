@@ -33,8 +33,8 @@ export default function Dashboard() {
       collections.reduce(
         (accumulator, collection) =>
           accumulator + (collection._count as any).links,
-        0,
-      ),
+        0
+      )
     );
   }, [collections]);
 
@@ -94,10 +94,13 @@ export default function Dashboard() {
   return (
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
-        <PageHeader icon={'bi-house '} title={'Dashboard'} description={"A brief overview of your data"}/>
+        <PageHeader
+          icon={"bi-house "}
+          title={"Dashboard"}
+          description={"A brief overview of your data"}
+        />
         <div>
-          <div
-            className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
+          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
@@ -146,7 +149,7 @@ export default function Dashboard() {
                 className={`grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links.slice(0, showLinks).map((e, i) => (
-                  <LinkCard key={i} link={e} count={i}/>
+                  <LinkCard key={i} link={e} count={i} />
                 ))}
               </div>
             </div>
@@ -170,7 +173,7 @@ export default function Dashboard() {
                   }}
                   className="inline-flex items-center gap-2 text-sm btn btn-accent dark:border-accent text-white"
                 >
-                  <i className="bi-plus text-xl duration-100"></i>
+                  <i className="bi-plus-lg text-xl duration-100"></i>
                   <span className="group-hover:opacity-0 text-right duration-100">
                     Add New Link
                   </span>
@@ -186,8 +189,7 @@ export default function Dashboard() {
                     <i className="bi-cloud-upload text-xl duration-100"></i>
                     <p>Import From</p>
                   </div>
-                  <ul
-                    className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
                     <li>
                       <label
                         tabIndex={0}
@@ -260,7 +262,7 @@ export default function Dashboard() {
               >
                 {links
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
-                  .map((e, i) => <LinkCard key={i} link={e} count={i}/>)
+                  .map((e, i) => <LinkCard key={i} link={e} count={i} />)
                   .slice(0, showLinks)}
               </div>
             </div>
@@ -282,7 +284,7 @@ export default function Dashboard() {
         </div>
       </div>
       {newLinkModal ? (
-        <NewLinkModal onClose={() => setNewLinkModal(false)}/>
+        <NewLinkModal onClose={() => setNewLinkModal(false)} />
       ) : undefined}
     </MainLayout>
   );

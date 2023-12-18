@@ -14,9 +14,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         role="button"
         className="btn btn-sm btn-square btn-ghost"
       >
-        <i
-          className="bi-filter text-neutral text-2xl"
-        ></i>
+        <i className="bi-chevron-expand text-neutral text-2xl"></i>
       </div>
       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
         <li>
