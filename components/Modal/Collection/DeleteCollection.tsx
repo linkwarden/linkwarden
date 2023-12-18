@@ -1,9 +1,4 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faRightFromBracket,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
@@ -111,10 +106,7 @@ export default function DeleteCollection({
         }`}
         onClick={submit}
       >
-        <FontAwesomeIcon
-          icon={permissions === true ? faTrashCan : faRightFromBracket}
-          className="h-5"
-        />
+        <i className={`${ permissions === true ? 'bi-trash' : 'bi-arrow-right'}`}></i>
         {permissions === true ? "Delete" : "Leave"} Collection
       </div>
     </div>

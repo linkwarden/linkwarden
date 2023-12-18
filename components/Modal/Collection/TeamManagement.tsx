@@ -1,12 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClose,
-  faCrown,
-  faPenToSquare,
-  faPlus,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
@@ -173,7 +165,7 @@ export default function TeamManagement({
               }
               className="flex items-center justify-center bg-sky-700 hover:bg-sky-600 duration-100 text-white w-10 h-10 p-2 rounded-md cursor-pointer"
             >
-              <FontAwesomeIcon icon={faUserPlus} className="w-5 h-5" />
+              <i className="bi-person-add text-xl"></i>
             </div>
           </div>
         </>
@@ -194,9 +186,8 @@ export default function TeamManagement({
                     className="relative border p-2 rounded-md border-neutral flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
                   >
                     {permissions === true && (
-                      <FontAwesomeIcon
-                        icon={faClose}
-                        className="absolute right-2 top-2 text-neutral h-4 hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"
+                      <i
+                        className={"bi-x text-xl absolute right-1 top-1 text-neutral hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"}
                         title="Remove Member"
                         onClick={() => {
                           const updatedMembers = collection.members.filter(
@@ -402,10 +393,6 @@ export default function TeamManagement({
           <div>
             <div className="flex items-center gap-1">
               <p className="text-sm font-bold">{collectionOwner.name}</p>
-              <FontAwesomeIcon
-                icon={faCrown}
-                className="w-3 h-3 text-yellow-500"
-              />
             </div>
             <p className="text-neutral">@{collectionOwner.username}</p>
           </div>
@@ -422,7 +409,6 @@ export default function TeamManagement({
           onClick={submit}
           loading={submitLoader}
           label={method === "CREATE" ? "Add" : "Save"}
-          icon={method === "CREATE" ? faPlus : faPenToSquare}
           className="mx-auto mt-2"
         />
       )}

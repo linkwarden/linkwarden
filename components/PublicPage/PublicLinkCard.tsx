@@ -1,5 +1,3 @@
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { Link as LinkType, Tag } from "@prisma/client";
 import isValidUrl from "@/lib/shared/isValidUrl";
@@ -83,10 +81,7 @@ export default function LinkCard({ link, count }: Props) {
               className="flex gap-1 items-center flex-wrap text-sm text-neutral hover:opacity-50 duration-100 min-w-fit float-right mt-1 ml-2"
             >
               <p>Read</p>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className="w-3 h-3 mt-[0.15rem]"
-              />
+              <i className={"bi-chevron-right"}></i>
             </Link>
           </div>
         </div>

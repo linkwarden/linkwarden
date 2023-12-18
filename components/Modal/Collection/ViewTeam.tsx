@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import getPublicUserData from "@/lib/client/getPublicUserData";
@@ -45,10 +43,6 @@ export default function ViewTeam({ collection }: Props) {
             <div className="flex items-center gap-1 w-full justify-between">
               <p className="text-sm font-bold">{collectionOwner.name}</p>
               <div className="flex text-xs gap-1 items-center">
-                <FontAwesomeIcon
-                  icon={faCrown}
-                  className="w-3 h-3 text-yellow-500"
-                />
                 Admin
               </div>
             </div>
