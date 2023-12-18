@@ -146,7 +146,7 @@ export default function EditCollectionSharingModal({
 
         {permissions === true && (
           <>
-            <p>Member Management</p>
+            <p>Members</p>
 
             <div className="flex items-center gap-2">
               <TextInput
@@ -176,7 +176,7 @@ export default function EditCollectionSharingModal({
                 }
                 className="btn btn-accent text-white btn-square btn-sm h-10 w-10"
               >
-                  <i className="bi-person-add text-xl"></i>
+                <i className="bi-person-add text-xl"></i>
               </div>
             </div>
           </>
@@ -184,39 +184,29 @@ export default function EditCollectionSharingModal({
 
         {collection?.members[0]?.user && (
           <>
-            {permissions === true ? (
-              <p className="text-center text-neutral text-xs sm:text-sm">
-                (All Members have <b>Read</b> access to this collection.)
-              </p>
-            ) : (
-              <p>
-                Here are all the members who are collaborating on this
-                collection.
-              </p>
-            )}
-
-            <div className="flex flex-col gap-3 rounded-md">
+            <div
+              className="flex flex-col divide-y divide-neutral-content border border-neutral-content rounded-xl overflow-hidden ">
               <div
-                className="relative border px-2 rounded-xl border-neutral-content bg-base-200 flex min-h-[6rem] sm:min-h-[4.1rem] gap-2 justify-between"
+                className="relative p-3 bg-base-200 flex gap-2 justify-between"
                 title={`@${collectionOwner.username} is the owner of this collection.`}
               >
-                <div className="flex items-center gap-2 w-full">
-                  <ProfilePhoto
-                    src={
-                      collectionOwner.image ? collectionOwner.image : undefined
-                    }
-                    name={collectionOwner.name}
-                  />
-                  <div className="w-full">
-                    <div className="flex items-center gap-1 w-full justify-between">
-                      <p className="text-sm font-bold">
-                        {collectionOwner.name}
-                      </p>
-                      <div className="flex text-xs gap-1 items-center">
-                        Admin
-                      </div>
+                <div className={"flex items-center justify-between w-full"}>
+                  <div className={"flex items-center"}>
+                    <div className={"shrink-0"}>
+                      <ProfilePhoto
+                        src={collectionOwner.image ? collectionOwner.image : undefined}
+                        name={collectionOwner.name}
+                      />
                     </div>
-                    <p className="text-neutral">@{collectionOwner.username}</p>
+                    <div className={"grow ml-2"}>
+                      <p className="text-sm font-semibold">{collectionOwner.name}</p>
+                      <p className="text-xs text-neutral">@{collectionOwner.username}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-neutral">
+                      Owner
+                    </p>
                   </div>
                 </div>
               </div>
@@ -227,200 +217,96 @@ export default function EditCollectionSharingModal({
                   return (
                     <div
                       key={i}
-                      className="relative border p-2 rounded-xl border-neutral-content bg-base-200 flex flex-col sm:flex-row sm:items-center gap-2 justify-between"
+                      className="relative p-3 bg-base-200 flex gap-2 justify-between"
                     >
-                      {permissions === true && (
-                        <i
-                          className={"bi-x text-xl absolute right-1 top-1 text-neutral hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"}
-                          title="Remove Member"
-                          onClick={() => {
-                            const updatedMembers = collection.members.filter(
-                              (member) => {
-                                return member.user.username !== e.user.username;
-                              }
-                            );
-                            setCollection({
-                              ...collection,
-                              members: updatedMembers,
-                            });
-                          }}
-                        />
-                      )}
-                      <div className="flex items-center gap-2">
-                        <ProfilePhoto
-                          src={e.user.image ? e.user.image : undefined}
-                          name={e.user.name}
-                        />
-                        <div>
-                          <p className="text-sm font-bold">{e.user.name}</p>
-                          <p className="text-neutral">@{e.user.username}</p>
-                        </div>
-                      </div>
-                      <div className="flex sm:block items-center justify-between gap-5 min-w-[10rem]">
-                        <div>
-                          <p
-                            className={`font-bold text-sm ${
-                              permissions === true ? "" : "mb-2"
-                            }`}
-                          >
-                            Permissions
-                          </p>
-                          {permissions === true && (
-                            <p className="text-xs text-neutral mb-2">
-                              (Click to toggle.)
-                            </p>
-                          )}
-                        </div>
-
-                        {permissions !== true &&
-                        !e.canCreate &&
-                        !e.canUpdate &&
-                        !e.canDelete ? (
-                          <p className="text-sm text-neutral">
-                            Has no permissions.
-                          </p>
-                        ) : (
-                          <div>
-                            <label
-                              className={
-                                permissions === true
-                                  ? "cursor-pointer mr-1"
-                                  : "mr-1"
-                              }
-                            >
-                              <input
-                                type="checkbox"
-                                id="canCreate"
-                                className="peer sr-only"
-                                checked={e.canCreate}
-                                onChange={() => {
-                                  if (permissions === true) {
-                                    const updatedMembers =
-                                      collection.members.map((member) => {
-                                        if (
-                                          member.user.username ===
-                                          e.user.username
-                                        ) {
-                                          return {
-                                            ...member,
-                                            canCreate: !e.canCreate,
-                                          };
-                                        }
-                                        return member;
-                                      });
-                                    setCollection({
-                                      ...collection,
-                                      members: updatedMembers,
-                                    });
-                                  }
-                                }}
-                              />
-                              <span
-                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
-                                  permissions === true
-                                    ? "hover:bg-neutral-content duration-100"
-                                    : ""
-                                } rounded p-1 select-none`}
-                              >
-                                Create
-                              </span>
-                            </label>
-
-                            <label
-                              className={
-                                permissions === true
-                                  ? "cursor-pointer mr-1"
-                                  : "mr-1"
-                              }
-                            >
-                              <input
-                                type="checkbox"
-                                id="canUpdate"
-                                className="peer sr-only"
-                                checked={e.canUpdate}
-                                onChange={() => {
-                                  if (permissions === true) {
-                                    const updatedMembers =
-                                      collection.members.map((member) => {
-                                        if (
-                                          member.user.username ===
-                                          e.user.username
-                                        ) {
-                                          return {
-                                            ...member,
-                                            canUpdate: !e.canUpdate,
-                                          };
-                                        }
-                                        return member;
-                                      });
-                                    setCollection({
-                                      ...collection,
-                                      members: updatedMembers,
-                                    });
-                                  }
-                                }}
-                              />
-                              <span
-                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
-                                  permissions === true
-                                    ? "hover:bg-neutral-content duration-100"
-                                    : ""
-                                } rounded p-1 select-none`}
-                              >
-                                Update
-                              </span>
-                            </label>
-
-                            <label
-                              className={
-                                permissions === true
-                                  ? "cursor-pointer mr-1"
-                                  : "mr-1"
-                              }
-                            >
-                              <input
-                                type="checkbox"
-                                id="canDelete"
-                                className="peer sr-only"
-                                checked={e.canDelete}
-                                onChange={() => {
-                                  if (permissions === true) {
-                                    const updatedMembers =
-                                      collection.members.map((member) => {
-                                        if (
-                                          member.user.username ===
-                                          e.user.username
-                                        ) {
-                                          return {
-                                            ...member,
-                                            canDelete: !e.canDelete,
-                                          };
-                                        }
-                                        return member;
-                                      });
-                                    setCollection({
-                                      ...collection,
-                                      members: updatedMembers,
-                                    });
-                                  }
-                                }}
-                              />
-                              <span
-                                className={`peer-checked:bg-primary peer-checked:text-primary-content text-sm ${
-                                  permissions === true
-                                    ? "hover:bg-neutral-content duration-100"
-                                    : ""
-                                } rounded p-1 select-none`}
-                              >
-                                Delete
-                              </span>
-                            </label>
+                      <div className={"flex items-center justify-between w-full"}>
+                        <div className={"flex items-center"}>
+                          <div className={"shrink-0"}>
+                            <ProfilePhoto
+                              src={e.user.image ? e.user.image : undefined}
+                              name={e.user.name}
+                            />
                           </div>
-                        )}
+                          <div className={"grow ml-2"}>
+                            <p className="text-sm font-semibold">{e.user.name}</p>
+                            <p className="text-xs text-neutral">@{e.user.username}</p>
+                          </div>
+                        </div>
+
+                        <div className={"flex items-center gap-2"}>
+                          {permissions === true && (
+                            <i
+                              className={"bi-x text-xl btn btn-sm text-neutral hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"}
+                              title="Remove Member"
+                              onClick={() => {
+                                const updatedMembers = collection.members.filter(
+                                  (member) => {
+                                    return member.user.username !== e.user.username;
+                                  }
+                                );
+                                setCollection({
+                                  ...collection,
+                                  members: updatedMembers,
+                                });
+                              }}
+                            />
+                          )}
+
+                          <div>
+                            {permissions === true ? (
+                              <select
+                                onChange={(evt) => {
+                                  if (permissions !== true) return;
+
+                                  switch (evt.target.value) {
+                                    case 'admin':
+                                      collection.members[i].canCreate = true;
+                                      collection.members[i].canUpdate = true;
+                                      collection.members[i].canDelete = true;
+                                      break;
+                                    case 'contributor':
+                                      collection.members[i].canCreate = true;
+                                      collection.members[i].canUpdate = false;
+                                      collection.members[i].canDelete = false;
+                                      break;
+                                    default:
+                                      collection.members[i].canCreate = false;
+                                      collection.members[i].canUpdate = false;
+                                      collection.members[i].canDelete = false;
+                                      break;
+                                  }
+                                }}
+                                className="select select-bordered select-sm w-full max-w-xs">
+                                <option value={'viewer'}
+                                        selected={!e.canCreate && !e.canUpdate && !e.canDelete}>
+                                  Viewer
+                                </option>
+                                <option value={'contributor'}
+                                        selected={e.canCreate && !e.canUpdate && !e.canDelete}>
+                                  Contributor
+                                </option>
+                                <option value={'admin'} selected={e.canCreate && e.canUpdate && e.canDelete}>
+                                  Admin
+                                </option>
+                              </select>
+                            ) : (
+                              <p className="text-sm text-neutral">
+                                {
+                                  (e.canCreate && e.canUpdate && e.canDelete)
+                                    ? "Admin"
+                                    : (e.canCreate)
+                                      ? 'Contributor'
+                                      : 'Viewer'
+                                }
+                              </p>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
-                })}
+                })
+              }
             </div>
           </>
         )}
