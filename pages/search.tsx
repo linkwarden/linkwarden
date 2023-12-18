@@ -1,18 +1,16 @@
 import FilterSearchDropdown from "@/components/FilterSearchDropdown";
-import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import { Sort, ViewMode } from "@/types/global";
-import { faFilter, faSearch, faSort } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import React, { useState } from "react";
 import ViewDropdown from "@/components/ViewDropdown";
 import DefaultView from "@/components/LinkViews/DefaultView";
 import GridView from "@/components/LinkViews/GridView";
 import ListView from "@/components/LinkViews/ListView";
+import PageHeader from "@/components/PageHeader";
 
 export default function Search() {
   const { links } = useLinkStore();
@@ -56,28 +54,21 @@ export default function Search() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full">
-        <div className="flex gap-3 items-center justify-between">
-          <div className="flex gap-3 items-center">
-            <div className="flex items-center gap-2">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="sm:w-8 sm:h-8 w-8 h-8 text-primary drop-shadow"
+        <div className="flex justify-between">
+          <PageHeader icon={"bi-search"} title={"Search Results"} />
+
+          <div className="flex gap-3 items-center justify-end">
+            <div className="flex gap-2 items-center mt-2">
+              <FilterSearchDropdown
+                searchFilter={searchFilter}
+                setSearchFilter={setSearchFilter}
               />
-              <p className="sm:text-4xl text-3xl capitalize font-thin">
-                Search Results
-              </p>
+              <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+              <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
             </div>
           </div>
-
-          <div className="flex gap-2 items-center mt-2">
-            <FilterSearchDropdown
-              searchFilter={searchFilter}
-              setSearchFilter={setSearchFilter}
-            />
-            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
-          </div>
         </div>
+
         {links[0] ? (
           <LinkComponent links={links} />
         ) : (

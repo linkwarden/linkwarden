@@ -2,9 +2,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import isValidUrl from "@/lib/shared/isValidUrl";
@@ -62,7 +60,7 @@ export default function LinkCard({ link, count, className }: Props) {
         className="flex flex-col justify-between cursor-pointer h-full w-full gap-1 p-3"
       >
         <div className="absolute bottom-3 right-3">
-          <LinkIcon link={link} />
+          <LinkIcon link={link}/>
         </div>
 
         <div className="flex items-baseline gap-1">
@@ -74,19 +72,19 @@ export default function LinkCard({ link, count, className }: Props) {
 
         {link.url ? (
           <div className="flex items-center gap-1 max-w-full w-fit text-neutral">
-            <FontAwesomeIcon icon={faLink} className="mt-1 w-4 h-4" />
+            <i className="bi-link-45deg"/>
             <p className="truncate w-full">{shortendURL}</p>
           </div>
         ) : (
           <div className="badge badge-primary badge-sm my-1">{link.type}</div>
         )}
 
-        <LinkCollection link={link} collection={collection} />
+        <LinkCollection link={link} collection={collection}/>
 
-        <LinkDate link={link} />
+        <LinkDate link={link}/>
       </div>
 
-      <LinkActions link={link} collection={collection} />
+      <LinkActions link={link} collection={collection}/>
     </div>
   );
 }

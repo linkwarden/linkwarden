@@ -1,14 +1,9 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
-import SubmitButton from "@/components/SubmitButton";
 import React from "react";
-import Checkbox from "@/components/Checkbox";
-import LinkPreview from "@/components/LinkPreview";
 import useLocalSettingsStore from "@/store/localSettings";
 
 export default function Appearance() {
@@ -72,28 +67,28 @@ export default function Appearance() {
           <p className="mb-3">Select Theme</p>
           <div className="flex gap-3 w-full">
             <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-40 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
+              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
                 localStorage.getItem("theme") === "dark"
                   ? "dark:outline-primary text-primary"
                   : "text-white"
               }`}
               onClick={() => updateSettings({ theme: "dark" })}
             >
-              <FontAwesomeIcon icon={faMoon} className="w-1/2 h-1/2" />
-              <p className="text-2xl">Dark Theme</p>
+              <i className="bi-moon-fill text-6xl"></i>
+              <p className="ml-2 text-2xl">Dark</p>
 
               {/* <hr className="my-3 outline-1 outline-neutral-content dark:outline-neutral-700" /> */}
             </div>
             <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-40 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
+              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
                 localStorage.getItem("theme") === "light"
                   ? "outline-primary text-primary"
                   : "text-black"
               }`}
               onClick={() => updateSettings({ theme: "light" })}
             >
-              <FontAwesomeIcon icon={faSun} className="w-1/2 h-1/2" />
-              <p className="text-2xl">Light Theme</p>
+              <i className="bi-sun-fill text-6xl"></i>
+              <p className="ml-2 text-2xl">Light</p>
               {/* <hr className="my-3 outline-1 outline-neutral-content dark:outline-neutral-700" /> */}
             </div>
           </div>

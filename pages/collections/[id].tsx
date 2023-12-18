@@ -6,10 +6,8 @@ import {
   Sort,
   ViewMode,
 } from "@/types/global";
-import { faEllipsis, faFolder } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import SortDropdown from "@/components/SortDropdown";
@@ -109,12 +107,12 @@ export default function Index() {
       >
         {activeCollection && (
           <div className="flex gap-3 items-start justify-between">
-            <div className="flex gap-2">
-              <FontAwesomeIcon
-                icon={faFolder}
+            <div className="flex items-center gap-2">
+              <i
+                className="bi-folder-fill text-3xl drop-shadow"
                 style={{ color: activeCollection?.color }}
-                className="sm:w-8 sm:h-8 w-8 h-8 mt-2 drop-shadow"
-              />
+              ></i>
+
               <p className="sm:text-4xl text-3xl capitalize w-full py-1 break-words hyphens-auto font-thin">
                 {activeCollection?.name}
               </p>
@@ -126,11 +124,7 @@ export default function Index() {
                 role="button"
                 className="btn btn-ghost btn-sm btn-square text-neutral"
               >
-                <FontAwesomeIcon
-                  icon={faEllipsis}
-                  title="More"
-                  className="w-5 h-5"
-                />
+                <i className="bi-three-dots text-xl" title="More"></i>
               </div>
               <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
                 {permissions === true ? (

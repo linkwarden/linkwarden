@@ -145,51 +145,60 @@ export default function NewLinkModal({ onClose }: Props) {
         </div>
       </div>
 
-      {optionsExpanded ? (
-        <div className="mt-5">
-          {/* <hr className="mb-3 border border-neutral-content" /> */}
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div>
-              <p className="mb-2">Name</p>
-              <TextInput
-                value={link.name}
-                onChange={(e) => setLink({ ...link, name: e.target.value })}
-                placeholder="e.g. Example Link"
-                className="bg-base-200"
-              />
-            </div>
+      <div className={"mt-2"}>
+        {optionsExpanded ? (
+          <div className="mt-5">
+            {/* <hr className="mb-3 border border-neutral-content" /> */}
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div>
+                <p className="mb-2">Name</p>
+                <TextInput
+                  value={link.name}
+                  onChange={(e) => setLink({ ...link, name: e.target.value })}
+                  placeholder="e.g. Example Link"
+                  className="bg-base-200"
+                />
+              </div>
 
-            <div>
-              <p className="mb-2">Tags</p>
-              <TagSelection
-                onChange={setTags}
-                defaultValue={link.tags.map((e) => {
-                  return { label: e.name, value: e.id };
-                })}
-              />
-            </div>
+              <div>
+                <p className="mb-2">Tags</p>
+                <TagSelection
+                  onChange={setTags}
+                  defaultValue={link.tags.map((e) => {
+                    return { label: e.name, value: e.id };
+                  })}
+                />
+              </div>
 
-            <div className="sm:col-span-2">
-              <p className="mb-2">Description</p>
-              <textarea
-                value={unescapeString(link.description) as string}
-                onChange={(e) =>
-                  setLink({ ...link, description: e.target.value })
-                }
-                placeholder="Will be auto generated if nothing is provided."
-                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
-              />
+              <div className="sm:col-span-2">
+                <p className="mb-2">Description</p>
+                <textarea
+                  value={unescapeString(link.description) as string}
+                  onChange={(e) =>
+                    setLink({ ...link, description: e.target.value })
+                  }
+                  placeholder="Will be auto generated if nothing is provided."
+                  className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ) : undefined}
+        ) : undefined}
+      </div>
 
       <div className="flex justify-between items-center mt-5">
         <div
           onClick={() => setOptionsExpanded(!optionsExpanded)}
           className={`rounded-md cursor-pointer btn btn-sm btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
         >
-          <p>{optionsExpanded ? "Hide" : "More"} Options</p>
+          <p className="font-normal">
+            {optionsExpanded ? "Hide" : "More"} Options
+          </p>
+          <i
+            className={`${
+              optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
+            }`}
+          ></i>
         </div>
 
         <button

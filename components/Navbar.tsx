@@ -1,6 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut } from "next-auth/react";
-import { faPlus, faBars, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Sidebar from "@/components/Sidebar";
@@ -52,29 +50,30 @@ export default function Navbar() {
   const [uploadFileModal, setUploadFileModal] = useState(false);
 
   return (
-    <div className="flex justify-between gap-2 items-center px-4 py-2 border-solid border-b-neutral-content border-b">
+    <div className="flex justify-between gap-2 items-center pl-3 pr-4 py-2 border-solid border-b-neutral-content border-b">
       <div
         onClick={toggleSidebar}
         className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"
       >
-        <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
+        <i className="bi-list text-2xl leading-none"></i>
       </div>
       <SearchBar />
       <div className="flex items-center gap-2">
-        <ToggleDarkMode className="sm:inline-grid hidden" />
+        <ToggleDarkMode className="hidden sm:inline-grid" />
 
         <div className="dropdown dropdown-end">
           <div className="tooltip tooltip-bottom" data-tip="Create New...">
             <div
               tabIndex={0}
               role="button"
-              className="flex min-w-[3.4rem] items-center group btn btn-accent dark:border-violet-400 text-white btn-sm px-2"
+              className="flex min-w-[3.4rem] items-center btn btn-accent dark:border-violet-400 text-white btn-sm max-h-[2rem] px-2 relative"
             >
-              <FontAwesomeIcon icon={faPlus} className="w-5 h-5" />
-              <FontAwesomeIcon
-                icon={faCaretDown}
-                className="w-2 h-2 sm:w-3 sm:h-3"
-              />
+              <span>
+                <i className="bi-plus text-4xl absolute -top-[0.3rem] left-0 pointer-events-none"></i>
+              </span>
+              <span>
+                <i className="bi-caret-down-fill text-xs absolute top-2 right-[0.3rem] pointer-events-none"></i>
+              </span>
             </div>
           </div>
           <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">

@@ -1,9 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-
 type Props = {
   onClick?: Function;
-  icon?: IconProp;
   label: string;
   loading?: boolean;
   className?: string;
@@ -12,7 +8,6 @@ type Props = {
 
 export default function AccentSubmitButton({
   onClick,
-  icon,
   label,
   loading,
   className,
@@ -28,7 +23,6 @@ export default function AccentSubmitButton({
         if (loading !== undefined && !loading && onClick) onClick();
       }}
     >
-      {icon && <FontAwesomeIcon icon={icon} className="h-5" />}
       <p className="font-bold">{label}</p>
     </button>
   );

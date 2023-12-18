@@ -1,5 +1,6 @@
 import React from "react";
 import "@/styles/globals.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import Head from "next/head";

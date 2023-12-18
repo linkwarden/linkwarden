@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
 type Props = {
@@ -8,7 +6,7 @@ type Props = {
   className?: string;
   priority?: boolean;
   name?: string;
-  dimensionClass?: string;
+  large?: boolean;
 };
 
 export default function ProfilePhoto({
@@ -16,7 +14,7 @@ export default function ProfilePhoto({
   className,
   priority,
   name,
-  dimensionClass,
+  large,
 }: Props) {
   const [image, setImage] = useState("");
 
@@ -32,17 +30,14 @@ export default function ProfilePhoto({
   return !image ? (
     <div
       className={`avatar drop-shadow-md placeholder ${className || ""} ${
-        dimensionClass || "w-8 h-8 "
+        large ? "w-28 h-28" : "w-8 h-8"
       }`}
     >
       <div className="bg-base-100 text-neutral rounded-full w-full h-full ring-2 ring-neutral-content select-none">
         {name ? (
           <span className="text-2xl capitalize">{name.slice(0, 1)}</span>
         ) : (
-          <FontAwesomeIcon
-            icon={faUser}
-            className="w-1/2 h-1/2 aspect-square"
-          />
+          <i className={`bi-person ${large ? "text-5xl" : "text-xl"}`}></i>
         )}
       </div>
     </div>
@@ -50,7 +45,7 @@ export default function ProfilePhoto({
     <div
       className={`avatar skeleton rounded-full drop-shadow-md ${
         className || ""
-      } ${dimensionClass || "w-8 h-8 "}`}
+      } ${large || "w-8 h-8"}`}
     >
       <div className="rounded-full w-full h-full ring-2 ring-neutral-content">
         <Image
