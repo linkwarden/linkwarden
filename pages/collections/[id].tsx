@@ -98,12 +98,12 @@ export default function Index() {
   return (
     <MainLayout>
       <div
+        className="h-[60rem] p-5 flex gap-3 flex-col"
         style={{
           backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
             settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 14rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
-        className="h-full p-5 flex gap-3 flex-col"
       >
         {activeCollection && (
           <div className="flex gap-3 items-start justify-between">
