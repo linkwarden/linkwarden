@@ -1,7 +1,5 @@
 import SettingsSidebar from "@/components/SettingsSidebar";
 import React, { ReactNode, useEffect, useState } from "react";
-import ModalManagement from "@/components/ModalManagement";
-import useModalStore from "@/store/modals";
 import { useRouter } from "next/router";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Link from "next/link";
@@ -12,15 +10,7 @@ interface Props {
 }
 
 export default function SettingsLayout({ children }: Props) {
-  const { modal } = useModalStore();
-
   const router = useRouter();
-
-  useEffect(() => {
-    modal
-      ? (document.body.style.overflow = "hidden")
-      : (document.body.style.overflow = "auto");
-  }, [modal]);
 
   const [sidebar, setSidebar] = useState(false);
 
@@ -40,8 +30,6 @@ export default function SettingsLayout({ children }: Props) {
 
   return (
     <>
-      <ModalManagement />
-
       <div className="flex max-w-screen-md mx-auto">
         <div className="hidden lg:block fixed h-screen">
           <SettingsSidebar />

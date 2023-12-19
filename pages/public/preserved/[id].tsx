@@ -14,10 +14,12 @@ export default function Index() {
 
   const router = useRouter();
 
+  let isPublic = router.pathname.startsWith("/public") ? true : false;
+
   useEffect(() => {
     const fetchLink = async () => {
       if (router.query.id) {
-        await getLink(Number(router.query.id));
+        await getLink(Number(router.query.id), isPublic);
       }
     };
 

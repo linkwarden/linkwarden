@@ -6,6 +6,8 @@ import getPermission from "@/lib/api/getPermission";
 import createFolder from "@/lib/api/storage/createFolder";
 import validateUrlSize from "../../validateUrlSize";
 
+const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
+
 export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
@@ -23,6 +25,20 @@ export default async function postLink(
   if (!link.collection.name) {
     link.collection.name = "Unorganized";
   }
+
+  const numberOfLinksTheUserHas = await prisma.link.count({
+    where: {
+      collection: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (numberOfLinksTheUserHas + 1 > MAX_LINKS_PER_USER)
+    return {
+      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      status: 400,
+    };
 
   link.collection.name = link.collection.name.trim();
 

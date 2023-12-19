@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/api/db";
-import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
+
+const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
 export default async function importFromHTMLFile(
   userId: number,
@@ -9,6 +10,23 @@ export default async function importFromHTMLFile(
 ) {
   const dom = new JSDOM(rawData);
   const document = dom.window.document;
+
+  const bookmarks = document.querySelectorAll("A");
+  const totalImports = bookmarks.length;
+
+  const numberOfLinksTheUserHas = await prisma.link.count({
+    where: {
+      collection: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+    return {
+      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      status: 400,
+    };
 
   const folders = document.querySelectorAll("H3");
 

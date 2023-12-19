@@ -8,7 +8,6 @@ import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import React from "react";
-import useModalStore from "@/store/modals";
 import { toast } from "react-hot-toast";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
@@ -19,8 +18,6 @@ export default function Dashboard() {
   const { collections } = useCollectionStore();
   const { links } = useLinkStore();
   const { tags } = useTagStore();
-
-  const { setModal } = useModalStore();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
@@ -100,14 +97,14 @@ export default function Dashboard() {
           description={"A brief overview of your data"}
         />
         <div>
-          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
+          <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
               icon={"bi-link-45deg"}
             />
 
-            <div className="divider md:divider-horizontal"></div>
+            <div className="divider xl:divider-horizontal"></div>
 
             <DashboardItem
               name={collections.length === 1 ? "Collection" : "Collections"}
@@ -115,7 +112,7 @@ export default function Dashboard() {
               icon={"bi-folder"}
             />
 
-            <div className="divider md:divider-horizontal"></div>
+            <div className="divider xl:divider-horizontal"></div>
 
             <DashboardItem
               name={tags.length === 1 ? "Tag" : "Tags"}
@@ -127,15 +124,18 @@ export default function Dashboard() {
 
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
-            <i className="bi-clock-history text-primary text-2xl drop-shadow"></i>
-            <p className="text-2xl">Recent</p>
+            <PageHeader
+              icon={"bi-clock-history"}
+              title={"Recent"}
+              description={"Recently added Links"}
+            />
           </div>
           <Link
             href="/links"
             className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
           >
             View All
-            <i className="bi-chevron-right text-sm "></i>
+            <i className="bi-chevron-right text-sm"></i>
           </Link>
         </div>
 
@@ -171,7 +171,7 @@ export default function Dashboard() {
                   onClick={() => {
                     setNewLinkModal(true);
                   }}
-                  className="inline-flex items-center gap-2 text-sm btn btn-accent dark:border-accent text-white"
+                  className="inline-flex items-center gap-2 text-sm btn btn-accent dark:border-violet-400 text-white"
                 >
                   <i className="bi-plus-lg text-xl duration-100"></i>
                   <span className="group-hover:opacity-0 text-right duration-100">
@@ -239,8 +239,11 @@ export default function Dashboard() {
 
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
-            <i className="bi-pin-angle text-primary text-2xl drop-shadow"></i>
-            <p className="text-2xl">Pinned</p>
+            <PageHeader
+              icon={"bi-pin-angle"}
+              title={"Pinned"}
+              description={"Your pinned Links"}
+            />
           </div>
           <Link
             href="/links/pinned"
