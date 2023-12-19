@@ -75,7 +75,7 @@ export default async function getPublicUser(
     username: lessSensitiveInfo.username,
     image: lessSensitiveInfo.image,
     archiveAsScreenshot: lessSensitiveInfo.archiveAsScreenshot,
-    archiveAsPdf: lessSensitiveInfo.archiveAsPDF,
+    archiveAsPDF: lessSensitiveInfo.archiveAsPDF,
   };
 
   return { response: data, status: 200 };

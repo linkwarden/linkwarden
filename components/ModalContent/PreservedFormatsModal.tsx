@@ -34,6 +34,8 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   const router = useRouter();
 
+  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
+
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,
     name: "",
@@ -78,12 +80,8 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
   };
 
   useEffect(() => {
-    let isPublicRoute = router.pathname.startsWith("/public")
-      ? true
-      : undefined;
-
     (async () => {
-      const data = await getLink(link.id as number, isPublicRoute);
+      const data = await getLink(link.id as number, isPublic);
       setLink(
         (data as any).response as LinkIncludingShortenedCollectionAndTags
       );
@@ -93,7 +91,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
     if (!isReady()) {
       interval = setInterval(async () => {
-        const data = await getLink(link.id as number, isPublicRoute);
+        const data = await getLink(link.id as number, isPublic);
         setLink(
           (data as any).response as LinkIncludingShortenedCollectionAndTags
         );
@@ -123,8 +121,11 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     toast.dismiss(load);
 
     if (response.ok) {
+      const newLink = await getLink(link?.id as number);
+      setLink(
+        (newLink as any).response as LinkIncludingShortenedCollectionAndTags
+      );
       toast.success(`Link is being archived...`);
-      await getLink(link?.id as number);
     } else toast.error(data.response);
   };
 
@@ -148,20 +149,15 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       <div className={`flex flex-col gap-3`}>
         {isReady() ? (
           <>
-            {readabilityAvailable(link) ? (
-              <PreservedFormatRow
-                name={"Readable"}
-                icon={"bi-file-earmark-text"}
-                format={ArchivedFormat.readability}
-                activeLink={link}
-              />
-            ) : undefined}
-
             {screenshotAvailable(link) ? (
               <PreservedFormatRow
                 name={"Screenshot"}
                 icon={"bi-file-earmark-image"}
-                format={ArchivedFormat.png}
+                format={
+                  link?.screenshotPath?.endsWith("png")
+                    ? ArchivedFormat.png
+                    : ArchivedFormat.jpeg
+                }
                 activeLink={link}
                 downloadable={true}
               />
@@ -176,6 +172,15 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 downloadable={true}
               />
             ) : undefined}
+
+            {readabilityAvailable(link) ? (
+              <PreservedFormatRow
+                name={"Readable"}
+                icon={"bi-file-earmark-text"}
+                format={ArchivedFormat.readability}
+                activeLink={link}
+              />
+            ) : undefined}
           </>
         ) : (
           <div
@@ -183,7 +188,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           >
             <i className="bi-stack drop-shadow text-primary text-8xl mx-auto mb-5"></i>
             <p className="text-center text-2xl">
-              The Link preservation is in the queue
+              Link preservation is in the queue
             </p>
             <p className="text-center text-lg">
               Please check back later to see the result
