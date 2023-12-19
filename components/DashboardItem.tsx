@@ -9,7 +9,7 @@ export default function dashboardItem({
 }) {
   return (
     <div className="flex items-center">
-      <div className="w-20 aspect-square flex justify-center items-center bg-primary/20 rounded-xl select-none">
+      <div className="w-[4.7rem] aspect-square flex justify-center items-center bg-primary/20 rounded-xl select-none">
         <i className={`${icon} text-primary text-4xl drop-shadow`}></i>
       </div>
       <div className="ml-4 flex flex-col justify-center">
