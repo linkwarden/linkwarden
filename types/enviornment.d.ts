@@ -10,6 +10,7 @@ declare global {
       AUTOSCROLL_TIMEOUT?: string;
       RE_ARCHIVE_LIMIT?: string;
       NEXT_PUBLIC_MAX_FILE_SIZE?: string;
+      MAX_LINKS_PER_USER?: string;
 
       SPACES_KEY?: string;
       SPACES_SECRET?: string;
