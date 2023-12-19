@@ -26,7 +26,7 @@ const s3Client =
 async function checkFileExistence(path) {
   if (s3Client) {
     const bucketParams = {
-      Bucket: process.env.BUCKET_NAME,
+      Bucket: process.env.SPACES_BUCKET_NAME,
       Key: path,
     };
 

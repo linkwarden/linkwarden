@@ -28,9 +28,7 @@ export default function SidebarHighlightLink({
           <i className={`${icon} text-primary text-2xl drop-shadow`}></i>
         </div>
         <div className={"mt-1"}>
-          <p className="truncate w-full text-xs font-semibold xl:text-sm">
-            {title}
-          </p>
+          <p className="truncate w-full font-semibold text-sm">{title}</p>
         </div>
       </div>
     </Link>

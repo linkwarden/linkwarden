@@ -55,6 +55,8 @@ export default function Index() {
     name: "",
     username: "",
     image: "",
+    archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsPDF: undefined as unknown as boolean,
   });
 
   useEffect(() => {
@@ -70,6 +72,8 @@ export default function Index() {
           name: account.name,
           username: account.username as string,
           image: account.image as string,
+          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
+          archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }
     };
@@ -118,7 +122,7 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="dropdown dropdown-bottom dropdown-end">
+            <div className="dropdown dropdown-bottom dropdown-end mt-2">
               <div
                 tabIndex={0}
                 role="button"

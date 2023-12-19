@@ -15,7 +15,7 @@ type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
   position?: string;
-}
+};
 
 export default function LinkActions({ link, collection, position }: Props) {
   const permissions = usePermissions(link.collection.id as number);
@@ -23,7 +23,6 @@ export default function LinkActions({ link, collection, position }: Props) {
   const [editLinkModal, setEditLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
   const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
-  const [expandedLink, setExpandedLink] = useState(false);
 
   const { account } = useAccountStore();
 
@@ -42,7 +41,7 @@ export default function LinkActions({ link, collection, position }: Props) {
     toast.dismiss(load);
 
     response.ok &&
-    toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
+      toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
   };
 
   const deleteLink = async () => {
@@ -57,85 +56,82 @@ export default function LinkActions({ link, collection, position }: Props) {
 
   return (
     <div>
-      {permissions === true ||
-      permissions?.canUpdate ||
-      permissions?.canDelete ? (
+      <div
+        className={`dropdown dropdown-left absolute ${
+          position || "top-3 right-3"
+        } z-20`}
+      >
         <div
-          className={`dropdown dropdown-left absolute ${
-            position || "top-3 right-3"
-          } z-20`}
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost btn-sm btn-square text-neutral"
         >
-          <div
-            tabIndex={0}
-            role="button"
-            className="btn btn-ghost btn-sm btn-square text-neutral"
-          >
-            <i id={"expand-dropdown" + collection.id} title="More" className="bi-three-dots text-xl"/>
-          </div>
-          <ul
-            className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1">
-            {permissions === true ? (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    pinLink();
-                  }}
-                >
-                  {link?.pinnedBy && link.pinnedBy[0]
-                    ? "Unpin"
-                    : "Pin to Dashboard"}
-                </div>
-              </li>
-            ) : undefined}
-            {permissions === true || permissions?.canUpdate ? (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setEditLinkModal(true);
-                  }}
-                >
-                  Edit
-                </div>
-              </li>
-            ) : undefined}
-            {permissions === true ? (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setPreservedFormatsModal(true);
-                    // updateArchive();
-                  }}
-                >
-                  Preserved Formats
-                </div>
-              </li>
-            ) : undefined}
-            {permissions === true || permissions?.canDelete ? (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
-                  }}
-                >
-                  Delete
-                </div>
-              </li>
-            ) : undefined}
-          </ul>
+          <i
+            id={"expand-dropdown" + collection.id}
+            title="More"
+            className="bi-three-dots text-xl"
+          />
         </div>
-      ) : undefined}
+        <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1">
+          {permissions === true ? (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  pinLink();
+                }}
+              >
+                {link?.pinnedBy && link.pinnedBy[0]
+                  ? "Unpin"
+                  : "Pin to Dashboard"}
+              </div>
+            </li>
+          ) : undefined}
+          {permissions === true || permissions?.canUpdate ? (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setEditLinkModal(true);
+                }}
+              >
+                Edit
+              </div>
+            </li>
+          ) : undefined}
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                setPreservedFormatsModal(true);
+                // updateArchive();
+              }}
+            >
+              Preserved Formats
+            </div>
+          </li>
+          {permissions === true || permissions?.canDelete ? (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
+                }}
+              >
+                Delete
+              </div>
+            </li>
+          ) : undefined}
+        </ul>
+      </div>
 
       {editLinkModal ? (
         <EditLinkModal

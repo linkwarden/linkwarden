@@ -7,6 +7,7 @@ import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
+import removeFile from "./storage/removeFile";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -45,9 +46,18 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       where: { id: link.id },
       data: {
         type: linkType,
-        screenshotPath: user.archiveAsScreenshot ? "pending" : undefined,
-        pdfPath: user.archiveAsPDF ? "pending" : undefined,
-        readabilityPath: "pending",
+        screenshotPath:
+          user.archiveAsScreenshot &&
+          !link.screenshotPath?.startsWith("archive")
+            ? "pending"
+            : undefined,
+        pdfPath:
+          user.archiveAsPDF && !link.pdfPath?.startsWith("archive")
+            ? "pending"
+            : undefined,
+        readabilityPath: !link.readabilityPath?.startsWith("archive")
+          ? "pending"
+          : undefined,
         lastPreserved: new Date().toISOString(),
       },
     });
@@ -65,7 +75,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
       const content = await page.content();
 
-      // TODO Webarchive
+      // TODO single file
       // const session = await page.context().newCDPSession(page);
       // const doc = await session.send("Page.captureSnapshot", {
       //   format: "mhtml",
@@ -180,6 +190,13 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             : undefined,
         },
       });
+    else {
+      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.png` });
+      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
+      removeFile({
+        filePath: `archives/${link.collectionId}/${link.id}_readability.json`,
+      });
+    }
 
     await browser.close();
   }

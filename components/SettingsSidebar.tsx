@@ -31,9 +31,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-person text-primary text-2xl"
-            ></i>
+            <i className="bi-person text-primary text-2xl"></i>
 
             <p className="truncate w-full pr-7">Account</p>
           </div>
@@ -47,9 +45,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-palette text-primary text-2xl"
-            ></i>
+            <i className="bi-palette text-primary text-2xl"></i>
 
             <p className="truncate w-full pr-7">Appearance</p>
           </div>
@@ -63,9 +59,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-archive text-primary text-2xl"
-            ></i>
+            <i className="bi-archive text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">Archive</p>
           </div>
         </Link>
@@ -78,9 +72,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-key text-primary text-2xl"
-            ></i>
+            <i className="bi-key text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">API Keys</p>
           </div>
         </Link>
@@ -93,9 +85,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-lock text-primary text-2xl"
-            ></i>
+            <i className="bi-lock text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">Password</p>
           </div>
         </Link>
@@ -109,9 +99,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                   : "hover:bg-neutral/20"
               } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
-              <i
-                className="bi-credit-card text-primary text-xl"
-              ></i>
+              <i className="bi-credit-card text-primary text-xl"></i>
               <p className="truncate w-full pr-7">Billing</p>
             </div>
           </Link>
@@ -130,9 +118,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-question-circle text-primary text-xl"
-            ></i>
+            <i className="bi-question-circle text-primary text-xl"></i>
 
             <p className="truncate w-full pr-7">Help</p>
           </div>
@@ -142,9 +128,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-github text-primary text-xl"
-            ></i>
+            <i className="bi-github text-primary text-xl"></i>
             <p className="truncate w-full pr-7">GitHub</p>
           </div>
         </Link>
@@ -153,9 +137,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-twitter-x text-primary text-xl"
-            ></i>
+            <i className="bi-twitter-x text-primary text-xl"></i>
             <p className="truncate w-full pr-7">Twitter</p>
           </div>
         </Link>
@@ -164,9 +146,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i
-              className="bi-mastodon text-primary text-xl"
-            ></i>
+            <i className="bi-mastodon text-primary text-xl"></i>
             <p className="truncate w-full pr-7">Mastodon</p>
           </div>
         </Link>
