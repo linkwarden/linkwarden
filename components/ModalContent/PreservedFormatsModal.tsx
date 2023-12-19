@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
 import useLinkStore from "@/store/links";
-import { ArchivedFormat, LinkIncludingShortenedCollectionAndTags, } from "@/types/global";
+import {
+  ArchivedFormat,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@/types/global";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import Modal from "../Modal";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { pdfAvailable, readabilityAvailable, screenshotAvailable, } from "@/lib/shared/getArchiveValidity";
+import {
+  pdfAvailable,
+  readabilityAvailable,
+  screenshotAvailable,
+} from "@/lib/shared/getArchiveValidity";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
+import useAccountStore from "@/store/account";
+import getPublicUserData from "@/lib/client/getPublicUserData";
 
 type Props = {
   onClose: Function;
@@ -18,10 +27,55 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
   const session = useSession();
   const { getLink } = useLinkStore();
 
+  const { account } = useAccountStore();
+
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
 
   const router = useRouter();
+
+  const [collectionOwner, setCollectionOwner] = useState({
+    id: null as unknown as number,
+    name: "",
+    username: "",
+    image: "",
+    archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsPDF: undefined as unknown as boolean,
+  });
+
+  useEffect(() => {
+    const fetchOwner = async () => {
+      if (link.collection.ownerId !== account.id) {
+        const owner = await getPublicUserData(
+          link.collection.ownerId as number
+        );
+        setCollectionOwner(owner);
+      } else if (link.collection.ownerId === account.id) {
+        setCollectionOwner({
+          id: account.id as number,
+          name: account.name,
+          username: account.username as string,
+          image: account.image as string,
+          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
+          archiveAsPDF: account.archiveAsPDF as boolean,
+        });
+      }
+    };
+
+    fetchOwner();
+  }, [link.collection.ownerId]);
+
+  const isReady = () => {
+    return (
+      collectionOwner.archiveAsScreenshot ===
+        (link && link.pdfPath && link.pdfPath !== "pending") &&
+      collectionOwner.archiveAsPDF ===
+        (link && link.pdfPath && link.pdfPath !== "pending") &&
+      link &&
+      link.readabilityPath &&
+      link.readabilityPath !== "pending"
+    );
+  };
 
   useEffect(() => {
     let isPublicRoute = router.pathname.startsWith("/public")
@@ -36,7 +90,8 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     })();
 
     let interval: any;
-    if (link?.screenshotPath === "pending" || link?.pdfPath === "pending") {
+
+    if (!isReady()) {
       interval = setInterval(async () => {
         const data = await getLink(link.id as number, isPublicRoute);
         setLink(
@@ -69,7 +124,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
     if (response.ok) {
       toast.success(`Link is being archived...`);
-      getLink(link?.id as number);
+      await getLink(link?.id as number);
     } else toast.error(data.response);
   };
 
@@ -79,69 +134,94 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
       <div className="divider mb-2 mt-1"></div>
 
-      {screenshotAvailable(link) ||
-      pdfAvailable(link) ||
-      readabilityAvailable(link) ? (
+      {isReady() &&
+      (screenshotAvailable(link) ||
+        pdfAvailable(link) ||
+        readabilityAvailable(link)) ? (
         <p className="mb-3">
           The following formats are available for this link:
         </p>
       ) : (
-        <p className="mb-3">No preserved formats available.</p>
+        ""
       )}
 
       <div className={`flex flex-col gap-3`}>
-        {readabilityAvailable(link) ? (
-          <PreservedFormatRow name={'Readable'} icon={'bi-file-earmark-text'} format={ArchivedFormat.readability}
-                              activeLink={link}/>
-        ) : undefined}
+        {isReady() ? (
+          <>
+            {readabilityAvailable(link) ? (
+              <PreservedFormatRow
+                name={"Readable"}
+                icon={"bi-file-earmark-text"}
+                format={ArchivedFormat.readability}
+                activeLink={link}
+              />
+            ) : undefined}
 
-        {screenshotAvailable(link) ? (
-          <PreservedFormatRow name={'Screenshot'} icon={'bi-file-earmark-image'} format={ArchivedFormat.png}
-                              activeLink={link} downloadable={true}/>
-        ) : undefined}
+            {screenshotAvailable(link) ? (
+              <PreservedFormatRow
+                name={"Screenshot"}
+                icon={"bi-file-earmark-image"}
+                format={ArchivedFormat.png}
+                activeLink={link}
+                downloadable={true}
+              />
+            ) : undefined}
 
-        {pdfAvailable(link) ? (
-          <PreservedFormatRow name={'PDF'} icon={'bi-file-earmark-pdf'} format={ArchivedFormat.pdf}
-                              activeLink={link} downloadable={true}/>
-        ) : undefined}
+            {pdfAvailable(link) ? (
+              <PreservedFormatRow
+                name={"PDF"}
+                icon={"bi-file-earmark-pdf"}
+                format={ArchivedFormat.pdf}
+                activeLink={link}
+                downloadable={true}
+              />
+            ) : undefined}
+          </>
+        ) : (
+          <div
+            className={`w-full h-full flex flex-col justify-center p-10 skeleton bg-base-200`}
+          >
+            <i className="bi-stack drop-shadow text-primary text-8xl mx-auto mb-5"></i>
+            <p className="text-center text-2xl">
+              The Link preservation is in the queue
+            </p>
+            <p className="text-center text-lg">
+              Please check back later to see the result
+            </p>
+          </div>
+        )}
 
-        <div className="flex flex-col-reverse sm:flex-row sm:gap-3 items-center justify-center">
-          {link?.collection.ownerId === session.data?.user.id ? (
-            <div
-              className={`btn btn-accent w-1/2 dark:border-violet-400 text-white ${
-                screenshotAvailable(link) &&
-                pdfAvailable(link) &&
-                readabilityAvailable(link)
-                  ? "mt-3"
-                  : ""
-              }`}
-              onClick={() => updateArchive()}
-            >
-              <div>
-                <p>Update Preserved Formats</p>
-                <p className="text-xs">(Refresh Link)</p>
-              </div>
-            </div>
-          ) : undefined}
+        <div
+          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${
+            isReady() ? "sm:mt " : ""
+          }`}
+        >
           <Link
             href={`https://web.archive.org/web/${link?.url?.replace(
               /(^\w+:|^)\/\//,
               ""
             )}`}
             target="_blank"
-            className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm ${
-              screenshotAvailable(link) &&
-              pdfAvailable(link) &&
-              readabilityAvailable(link)
-                ? "sm:mt-3"
-                : ""
-            }`}
+            className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm`}
           >
             <p className="whitespace-nowrap">
               View latest snapshot on archive.org
             </p>
-            <i className="bi-box-arrow-up-right"/>
+            <i className="bi-box-arrow-up-right" />
           </Link>
+          {link?.collection.ownerId === session.data?.user.id ? (
+            <div
+              className={`btn w-1/2 btn-outline`}
+              onClick={() => updateArchive()}
+            >
+              <div>
+                <p>Refresh Preserved Formats</p>
+                <p className="text-xs">
+                  This deletes the current preservations
+                </p>
+              </div>
+            </div>
+          ) : undefined}
         </div>
       </div>
     </Modal>

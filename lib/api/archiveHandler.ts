@@ -45,9 +45,18 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       where: { id: link.id },
       data: {
         type: linkType,
-        screenshotPath: user.archiveAsScreenshot ? "pending" : undefined,
-        pdfPath: user.archiveAsPDF ? "pending" : undefined,
-        readabilityPath: "pending",
+        screenshotPath:
+          user.archiveAsScreenshot &&
+          !link.screenshotPath?.startsWith("archive")
+            ? "pending"
+            : undefined,
+        pdfPath:
+          user.archiveAsPDF && !link.pdfPath?.startsWith("archive")
+            ? "pending"
+            : undefined,
+        readabilityPath: !link.readabilityPath?.startsWith("archive")
+          ? "pending"
+          : undefined,
         lastPreserved: new Date().toISOString(),
       },
     });
