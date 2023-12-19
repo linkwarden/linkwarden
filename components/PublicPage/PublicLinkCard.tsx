@@ -4,6 +4,8 @@ import isValidUrl from "@/lib/shared/isValidUrl";
 import unescapeString from "@/lib/client/unescapeString";
 import { TagIncludingLinkCount } from "@/types/global";
 import Link from "next/link";
+import { useState } from "react";
+import PreservedFormatsModal from "../ModalContent/PreservedFormatsModal";
 
 interface LinksIncludingTags extends LinkType {
   tags: TagIncludingLinkCount[];
@@ -24,6 +26,8 @@ export default function LinkCard({ link, count }: Props) {
     month: "short",
     day: "numeric",
   });
+
+  const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
   return (
     <div className="border border-solid border-neutral-content bg-base-200 shadow hover:shadow-none duration-100 rounded-lg p-3 flex items-start relative gap-3 group/item">
@@ -77,15 +81,52 @@ export default function LinkCard({ link, count }: Props) {
           <div className="w-full">
             {unescapeString(link.description)}{" "}
             <Link
-              href={`/public/links/${link.id}`}
+              href={link.url || ""}
+              target="_blank"
               className="flex gap-1 items-center flex-wrap text-sm text-neutral hover:opacity-50 duration-100 min-w-fit float-right mt-1 ml-2"
             >
-              <p>Read</p>
+              <p>Visit</p>
               <i className={"bi-chevron-right"}></i>
             </Link>
           </div>
         </div>
       </div>
+      <div
+        className={`dropdown dropdown-left absolute ${"top-3 right-3"} z-20`}
+      >
+        <div
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost btn-sm btn-square text-neutral"
+        >
+          <i
+            id={"expand-dropdown" + link.id}
+            title="More"
+            className="bi-three-dots text-xl"
+          />
+        </div>
+        <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1">
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                setPreservedFormatsModal(true);
+                // updateArchive();
+              }}
+            >
+              Preserved Formats
+            </div>
+          </li>
+        </ul>
+      </div>
+      {preservedFormatsModal ? (
+        <PreservedFormatsModal
+          onClose={() => setPreservedFormatsModal(false)}
+          activeLink={link as any}
+        />
+      ) : undefined}
     </div>
   );
 }

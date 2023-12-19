@@ -19,17 +19,6 @@ export default function EditCollectionSharingModal({
   onClose,
   activeCollection,
 }: Props) {
-  useEffect(() => {
-    const fetchOwner = async () => {
-      const owner = await getPublicUserData(collection.ownerId as number);
-      setCollectionOwner(owner);
-    };
-
-    fetchOwner();
-
-    setCollection(activeCollection);
-  }, []);
-
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
@@ -70,11 +59,24 @@ export default function EditCollectionSharingModal({
   const [memberUsername, setMemberUsername] = useState("");
 
   const [collectionOwner, setCollectionOwner] = useState({
-    id: null,
+    id: null as unknown as number,
     name: "",
     username: "",
     image: "",
+    archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsPDF: undefined as unknown as boolean,
   });
+
+  useEffect(() => {
+    const fetchOwner = async () => {
+      const owner = await getPublicUserData(collection.ownerId as number);
+      setCollectionOwner(owner);
+    };
+
+    fetchOwner();
+
+    setCollection(activeCollection);
+  }, []);
 
   const setMemberState = (newMember: Member) => {
     if (!collection) return null;
@@ -174,7 +176,7 @@ export default function EditCollectionSharingModal({
                     setMemberState
                   )
                 }
-                className="btn btn-accent text-white btn-square btn-sm h-10 w-10"
+                className="btn btn-accent dark:border-violet-400 text-white btn-square btn-sm h-10 w-10"
               >
                 <i className="bi-person-add text-xl"></i>
               </div>

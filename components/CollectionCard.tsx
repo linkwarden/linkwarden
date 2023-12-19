@@ -35,6 +35,8 @@ export default function CollectionCard({ collection, className }: Props) {
     name: "",
     username: "",
     image: "",
+    archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsPDF: undefined as unknown as boolean,
   });
 
   useEffect(() => {
@@ -48,6 +50,8 @@ export default function CollectionCard({ collection, className }: Props) {
           name: account.name,
           username: account.username as string,
           image: account.image as string,
+          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
+          archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }
     };
@@ -70,8 +74,7 @@ export default function CollectionCard({ collection, className }: Props) {
         >
           <i className="bi-three-dots text-xl" title="More"></i>
         </div>
-        <ul
-          className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+        <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
           {permissions === true ? (
             <li>
               <div
@@ -166,17 +169,23 @@ export default function CollectionCard({ collection, className }: Props) {
             <div className="text-right">
               <div className="font-bold text-sm flex justify-end gap-1 items-center">
                 {collection.isPublic ? (
-                  <i className="bi-globe-americas drop-shadow text-neutral"
-                     title="This collection is being shared publicly."></i>
+                  <i
+                    className="bi-globe-americas drop-shadow text-neutral"
+                    title="This collection is being shared publicly."
+                  ></i>
                 ) : undefined}
-                <i className="bi-link-45deg text-lg text-neutral"
-                   title="This collection is being shared publicly."></i>
+                <i
+                  className="bi-link-45deg text-lg text-neutral"
+                  title="This collection is being shared publicly."
+                ></i>
                 {collection._count && collection._count.links}
               </div>
               <div className="flex items-center justify-end gap-1 text-neutral">
                 <p className="font-bold text-xs flex gap-1 items-center">
-                  <i className="bi-calendar3 text-neutral"
-                     title="This collection is being shared publicly."></i>
+                  <i
+                    className="bi-calendar3 text-neutral"
+                    title="This collection is being shared publicly."
+                  ></i>
                   {formattedDate}
                 </p>
               </div>

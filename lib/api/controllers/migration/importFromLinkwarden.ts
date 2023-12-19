@@ -2,8 +2,33 @@ import { prisma } from "@/lib/api/db";
 import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 
-export default async function getData(userId: number, rawData: string) {
+const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
+
+export default async function importFromLinkwarden(
+  userId: number,
+  rawData: string
+) {
   const data: Backup = JSON.parse(rawData);
+
+  let totalImports = 0;
+
+  data.collections.forEach((collection) => {
+    totalImports += collection.links.length;
+  });
+
+  const numberOfLinksTheUserHas = await prisma.link.count({
+    where: {
+      collection: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+    return {
+      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      status: 400,
+    };
 
   await prisma
     .$transaction(
