@@ -96,11 +96,11 @@ export default function PublicCollections() {
 
   return collection ? (
     <div
-      className="h-screen"
+      className="h-96"
       style={{
         backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
           settings.theme === "dark" ? "#262626" : "#f3f4f6"
-        } 18rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+        } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
       {collection ? (
@@ -208,6 +208,11 @@ export default function PublicCollections() {
             {links
               ?.filter((e) => e.collectionId === Number(router.query.id))
               .map((e, i) => {
+                const linkWithCollectionData = {
+                  ...e,
+                  collection: collection, // Append collection data
+                };
+
                 return (
                   <motion.div
                     key={i}
@@ -216,7 +221,10 @@ export default function PublicCollections() {
                     viewport={{ once: true, amount: 0.8 }}
                   >
                     <motion.div variants={cardVariants}>
-                      <PublicLinkCard link={e as any} count={i} />
+                      <PublicLinkCard
+                        link={linkWithCollectionData as any}
+                        count={i}
+                      />
                     </motion.div>
                   </motion.div>
                 );

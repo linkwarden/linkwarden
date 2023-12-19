@@ -7,6 +7,7 @@ import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
+import removeFile from "./storage/removeFile";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -74,7 +75,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
       const content = await page.content();
 
-      // TODO Webarchive
+      // TODO single file
       // const session = await page.context().newCDPSession(page);
       // const doc = await session.send("Page.captureSnapshot", {
       //   format: "mhtml",
@@ -189,6 +190,13 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             : undefined,
         },
       });
+    else {
+      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.png` });
+      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
+      removeFile({
+        filePath: `archives/${link.collectionId}/${link.id}_readability.json`,
+      });
+    }
 
     await browser.close();
   }

@@ -32,13 +32,11 @@ export default function PreservedFormatRow({
 
   const router = useRouter();
 
-  useEffect(() => {
-    let isPublicRoute = router.pathname.startsWith("/public")
-      ? true
-      : undefined;
+  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
+  useEffect(() => {
     (async () => {
-      const data = await getLink(link.id as number, isPublicRoute);
+      const data = await getLink(link.id as number, isPublic);
       setLink(
         (data as any).response as LinkIncludingShortenedCollectionAndTags
       );
@@ -47,7 +45,7 @@ export default function PreservedFormatRow({
     let interval: any;
     if (link?.screenshotPath === "pending" || link?.pdfPath === "pending") {
       interval = setInterval(async () => {
-        const data = await getLink(link.id as number, isPublicRoute);
+        const data = await getLink(link.id as number, isPublic);
         setLink(
           (data as any).response as LinkIncludingShortenedCollectionAndTags
         );
@@ -64,23 +62,6 @@ export default function PreservedFormatRow({
       }
     };
   }, [link?.screenshotPath, link?.pdfPath, link?.readabilityPath]);
-
-  const updateArchive = async () => {
-    const load = toast.loading("Sending request...");
-
-    const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
-      method: "PUT",
-    });
-
-    const data = await response.json();
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(`Link is being archived...`);
-      getLink(link?.id as number);
-    } else toast.error(data.response);
-  };
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;
@@ -121,7 +102,9 @@ export default function PreservedFormatRow({
         ) : undefined}
 
         <Link
-          href={`/preserved/${link?.id}?format=${format}`}
+          href={`${isPublic ? "/public" : ""}/preserved/${
+            link?.id
+          }?format=${format}`}
           target="_blank"
           className="btn btn-sm btn-square"
         >

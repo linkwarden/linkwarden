@@ -10,7 +10,6 @@ import SubmitButton from "@/components/SubmitButton";
 import React from "react";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import Link from "next/link";
-import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Checkbox from "@/components/Checkbox";
 
 export default function Account() {
@@ -85,9 +84,9 @@ export default function Account() {
     setSubmitLoader(false);
   };
 
-  const [importDropdown, setImportDropdown] = useState(false);
-
   const importBookmarks = async (e: any, format: MigrationFormat) => {
+    setSubmitLoader(true);
+
     const file: File = e.target.files[0];
 
     if (file) {
@@ -112,18 +111,19 @@ export default function Account() {
 
         toast.dismiss(load);
 
-        toast.success("Imported the Bookmarks! Reloading the page...");
-
-        setImportDropdown(false);
-
-        setTimeout(() => {
-          location.reload();
-        }, 2000);
+        if (response.ok) {
+          toast.success("Imported the Bookmarks! Reloading the page...");
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } else toast.error(data.response as string);
       };
       reader.onerror = function (e) {
         console.log("Error:", e);
       };
     }
+
+    setSubmitLoader(false);
   };
 
   const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState("");
