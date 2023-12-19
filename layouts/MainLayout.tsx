@@ -2,8 +2,6 @@ import Navbar from "@/components/Navbar";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode, useEffect, useState } from "react";
-import ModalManagement from "@/components/ModalManagement";
-import useModalStore from "@/store/modals";
 import getLatestVersion from "@/lib/client/getLatestVersion";
 
 interface Props {
@@ -11,14 +9,6 @@ interface Props {
 }
 
 export default function MainLayout({ children }: Props) {
-  const { modal } = useModalStore();
-
-  useEffect(() => {
-    modal
-      ? (document.body.style.overflow = "hidden")
-      : (document.body.style.overflow = "auto");
-  }, [modal]);
-
   const showAnnouncementBar = localStorage.getItem("showAnnouncementBar");
   const [showAnnouncement, setShowAnnouncement] = useState(
     showAnnouncementBar ? showAnnouncementBar === "true" : true
@@ -44,8 +34,6 @@ export default function MainLayout({ children }: Props) {
 
   return (
     <>
-      <ModalManagement />
-
       {showAnnouncement ? (
         <AnnouncementBar toggleAnnouncementBar={toggleAnnouncementBar} />
       ) : undefined}
@@ -60,7 +48,7 @@ export default function MainLayout({ children }: Props) {
         <div
           className={`w-full flex flex-col min-h-${
             showAnnouncement ? "full" : "screen"
-          } lg:ml-64 xl:ml-80 ${showAnnouncement ? "mt-10" : ""}`}
+          } lg:ml-80 ${showAnnouncement ? "mt-10" : ""}`}
         >
           <Navbar />
           {children}

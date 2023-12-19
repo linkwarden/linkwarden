@@ -44,7 +44,7 @@ export default function Sidebar({ className }: { className?: string }) {
   return (
     <div
       id="sidebar"
-      className={`bg-base-200 h-full w-64 xl:w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20 ${
+      className={`bg-base-200 h-full w-72 lg:w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20 ${
         className || ""
       }`}
     >
@@ -70,7 +70,7 @@ export default function Sidebar({ className }: { className?: string }) {
         <SidebarHighlightLink
           title={"All Collections"}
           href={`/collections`}
-          icon={"bi-folder2"}
+          icon={"bi-folder"}
           active={active === `/collections`}
         />
       </div>

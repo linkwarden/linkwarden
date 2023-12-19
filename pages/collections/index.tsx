@@ -56,19 +56,11 @@ export default function Collections() {
 
         {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] ? (
           <>
-            <div className="flex items-center gap-3 my-5">
-              <i className="bi-folder text-3xl sm:text-2xl text-primary drop-shadow"></i>
-
-              <div>
-                <p className="text-3xl capitalize font-thin">
-                  Other Collections
-                </p>
-
-                <p className="sm:text-sm text-xs">
-                  Shared collections you&apos;re a member of
-                </p>
-              </div>
-            </div>
+            <PageHeader
+              icon={"bi-folder"}
+              title={"Other Collections"}
+              description={"Shared collections you're a member of"}
+            />
 
             <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {sortedCollections

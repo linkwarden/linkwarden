@@ -10,14 +10,20 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
 type Props = {
-  name: string,
-  icon: string,
-  format: ArchivedFormat,
-  activeLink: LinkIncludingShortenedCollectionAndTags,
-  downloadable?: boolean,
+  name: string;
+  icon: string;
+  format: ArchivedFormat;
+  activeLink: LinkIncludingShortenedCollectionAndTags;
+  downloadable?: boolean;
 };
 
-export default function PreservedFormatRow({ name, icon, format, activeLink, downloadable }: Props) {
+export default function PreservedFormatRow({
+  name,
+  icon,
+  format,
+  activeLink,
+  downloadable,
+}: Props) {
   const session = useSession();
   const { getLink } = useLinkStore();
 
@@ -84,7 +90,7 @@ export default function PreservedFormatRow({ name, icon, format, activeLink, dow
           // Create a temporary link and click it to trigger the download
           const link = document.createElement("a");
           link.href = path;
-          link.download = format === ArchivedFormat.png ? "Screenshot" : "PDF";
+          link.download = format === ArchivedFormat.pdf ? "PDF" : "Screenshot";
           link.click();
         } else {
           console.error("Failed to download file");
@@ -99,7 +105,7 @@ export default function PreservedFormatRow({ name, icon, format, activeLink, dow
     <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
       <div className="flex gap-2 items-center">
         <div className="bg-primary text-primary-content p-2 rounded-l-md">
-          <i className={`${icon} text-2xl`}/>
+          <i className={`${icon} text-2xl`} />
         </div>
         <p>{name}</p>
       </div>
@@ -108,28 +114,18 @@ export default function PreservedFormatRow({ name, icon, format, activeLink, dow
         {downloadable || false ? (
           <div
             onClick={() => handleDownload()}
-            className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
+            className="btn btn-sm btn-square"
           >
-            <i className="bi-cloud-arrow-down text-xl text-neutral"/>
+            <i className="bi-cloud-arrow-down text-xl text-neutral" />
           </div>
         ) : undefined}
 
         <Link
-          href={
-            `${
-              format === ArchivedFormat.readability
-                ? `/preserved/${link?.id}?format=${format}`
-                : `/api/v1/archives/${link?.id}?format=${
-                  link.screenshotPath?.endsWith("png")
-                    ? ArchivedFormat.png
-                    : ArchivedFormat.jpeg
-                }`
-            }`
-          }
+          href={`/preserved/${link?.id}?format=${format}`}
           target="_blank"
-          className="cursor-pointer hover:opacity-60 duration-100 p-2 rounded-md"
+          className="btn btn-sm btn-square"
         >
-          <i className="bi-box-arrow-up-right text-xl text-neutral"/>
+          <i className="bi-box-arrow-up-right text-xl text-neutral" />
         </Link>
       </div>
     </div>
