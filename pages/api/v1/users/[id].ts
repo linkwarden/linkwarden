@@ -51,7 +51,6 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     const updated = await updateUserById(userId, req.body);
     return res.status(updated.status).json({ response: updated.response });
   } else if (req.method === "DELETE") {
-    console.log(req.body);
     const updated = await deleteUserById(userId, req.body);
     return res.status(updated.status).json({ response: updated.response });
   }
