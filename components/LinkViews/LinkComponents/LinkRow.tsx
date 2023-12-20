@@ -66,7 +66,10 @@ export default function LinkCardCompact({ link, count, className }: Props) {
                 <LinkCollection link={link} collection={collection} />
                 &middot;
                 {link.url ? (
-                  <p className="truncate w-full">{shortendURL}</p>
+                  <div className="flex items-center gap-1 max-w-full w-fit text-neutral">
+                    <i className="bi-link-45deg text-base" />
+                    <p className="truncate w-full">{shortendURL}</p>
+                  </div>
                 ) : (
                   <div className="badge badge-primary badge-sm my-1">
                     {link.type}
