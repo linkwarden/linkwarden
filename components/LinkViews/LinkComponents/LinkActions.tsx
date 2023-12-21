@@ -55,7 +55,7 @@ export default function LinkActions({ link, collection, position }: Props) {
   };
 
   return (
-    <div>
+    <>
       <div
         className={`dropdown dropdown-left absolute ${
           position || "top-3 right-3"
@@ -66,11 +66,7 @@ export default function LinkActions({ link, collection, position }: Props) {
           role="button"
           className="btn btn-ghost btn-sm btn-square text-neutral"
         >
-          <i
-            id={"expand-dropdown" + collection.id}
-            title="More"
-            className="bi-three-dots text-xl"
-          />
+          <i title="More" className="bi-three-dots text-xl" />
         </div>
         <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1">
           {permissions === true ? (
@@ -154,6 +150,6 @@ export default function LinkActions({ link, collection, position }: Props) {
       {/* {expandedLink ? (
                 <ExpandedLink onClose={() => setExpandedLink(false)} link={link} />
               ) : undefined} */}
-    </div>
+    </>
   );
 }

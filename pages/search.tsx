@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
-import GridView from "@/components/LinkViews/Layouts/GridView";
+// import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import PageHeader from "@/components/PageHeader";
 
@@ -28,7 +28,7 @@ export default function Search() {
   const [filterDropdown, setFilterDropdown] = useState(false);
 
   const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Default
+    localStorage.getItem("viewMode") || ViewMode.Card
   );
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
@@ -43,7 +43,7 @@ export default function Search() {
   });
 
   const linkView = {
-    [ViewMode.Default]: CardView,
+    [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };
