@@ -1,7 +1,7 @@
 import LinkGrid from "@/components/LinkViews/LinkGrid";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
-export default function CompactGridView({
+export default function GridView({
   links,
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
