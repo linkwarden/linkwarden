@@ -2,7 +2,7 @@ import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import useTagStore from "@/store/tags";
 import MainLayout from "@/layouts/MainLayout";
-import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkCard";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
