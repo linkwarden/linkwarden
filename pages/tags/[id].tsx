@@ -8,9 +8,9 @@ import { Sort, TagIncludingLinkCount, ViewMode } from "@/types/global";
 import useLinks from "@/hooks/useLinks";
 import { toast } from "react-hot-toast";
 import ViewDropdown from "@/components/ViewDropdown";
-import DefaultView from "@/components/LinkViews/DefaultView";
-import GridView from "@/components/LinkViews/GridView";
-import ListView from "@/components/LinkViews/ListView";
+import CardView from "@/components/LinkViews/Layouts/CardView";
+import GridView from "@/components/LinkViews/Layouts/GridView";
+import ListView from "@/components/LinkViews/Layouts/ListView";
 
 export default function Index() {
   const router = useRouter();
@@ -95,7 +95,7 @@ export default function Index() {
   );
 
   const linkView = {
-    [ViewMode.Default]: DefaultView,
+    [ViewMode.Default]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };
@@ -109,7 +109,7 @@ export default function Index() {
         <div className="flex gap-3 items-center justify-between">
           <div className="flex gap-3 items-center">
             <div className="flex gap-2 items-center font-thin">
-              <i className={'bi-hash text-primary text-3xl'}/>
+              <i className={"bi-hash text-primary text-3xl"} />
 
               {renameTag ? (
                 <>
@@ -129,16 +129,16 @@ export default function Index() {
                       <i className={"bi-check text-neutral text-2xl"}></i>
                     </div>
                     <div
-                        onClick={() => cancelUpdateTag()}
-                        id="expand-dropdown"
-                        className="btn btn-ghost btn-square btn-sm"
+                      onClick={() => cancelUpdateTag()}
+                      id="expand-dropdown"
+                      className="btn btn-ghost btn-square btn-sm"
                     >
                       <i className={"bi-x text-neutral text-2xl"}></i>
                     </div>
                   </form>
                 </>
               ) : (
-                  <>
+                <>
                   <p className="sm:text-4xl text-3xl capitalize">
                     {activeTag?.name}
                   </p>
@@ -151,11 +151,13 @@ export default function Index() {
                       }`}
                     >
                       <div
-                          tabIndex={0}
-                          role="button"
-                          className="btn btn-ghost btn-sm btn-square text-neutral"
+                        tabIndex={0}
+                        role="button"
+                        className="btn btn-ghost btn-sm btn-square text-neutral"
                       >
-                        <i className={"bi-three-dots text-neutral text-2xl"}></i>
+                        <i
+                          className={"bi-three-dots text-neutral text-2xl"}
+                        ></i>
                       </div>
                       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-36 mt-1">
                         <li>

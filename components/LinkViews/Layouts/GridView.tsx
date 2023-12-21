@@ -1,5 +1,5 @@
-import LinkCardGrid from "@/components/LinkViews/LinkComponents/LinkCardGrid";
-import {LinkIncludingShortenedCollectionAndTags} from "@/types/global";
+import LinkGrid from "@/components/LinkViews/LinkGrid";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
 export default function CompactGridView({
   links,
@@ -11,7 +11,7 @@ export default function CompactGridView({
       {links.map((e, i) => {
         return (
           <div key={i} className="break-inside-avoid mb-5">
-            <LinkCardGrid link={e} count={i}/>
+            <LinkGrid link={e} count={i} />
           </div>
         );
       })}
