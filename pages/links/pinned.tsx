@@ -8,19 +8,20 @@ import { Sort, ViewMode } from "@/types/global";
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
+// import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function PinnedLinks() {
   const { links } = useLinkStore();
 
   const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Default
+    localStorage.getItem("viewMode") || ViewMode.Card
   );
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({ sort: sortBy, pinnedOnly: true });
 
   const linkView = {
-    [ViewMode.Default]: CardView,
+    [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };
