@@ -9,6 +9,7 @@ import { Sort, ViewMode } from "@/types/global";
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
+// import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Links() {
   const { links } = useLinkStore();
