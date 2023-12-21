@@ -3,7 +3,10 @@ import Image from "next/image";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import React from "react";
 
-export default function LinkIcon({ link, width }: {
+export default function LinkIcon({
+  link,
+  width,
+}: {
   link: LinkIncludingShortenedCollectionAndTags;
   width?: string;
 }) {

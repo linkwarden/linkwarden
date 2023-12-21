@@ -47,63 +47,57 @@ export default function LinkGrid({ link, count, className }: Props) {
   }, [collections, links]);
 
   return (
-    <div className="w-full border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative">
+    <div className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative p-3">
       <div
         onClick={() => link.url && window.open(link.url || "", "_blank")}
-        className="flex items-center cursor-pointer p-3"
+        className="cursor-pointer"
       >
-        <div className="shrink-0">
-          <LinkIcon link={link} width="w-12" />
-        </div>
+        <LinkIcon link={link} width="w-12 mb-3" />
+        <p className="truncate w-full">
+          {unescapeString(link.name || link.description) || link.url}
+        </p>
 
-        <div className="w-[calc(100%-56px)] ml-2">
-          <p className="line-clamp-1 mr-8">
-            {unescapeString(link.name || link.description) || link.url}
-          </p>
-
-          <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
-            <div className="flex items-center gap-2">
-              <LinkCollection link={link} collection={collection} />
-              &middot;
-              {link.url ? (
-                <div
-                  onClick={(e) => {
-                    e.preventDefault();
-                    window.open(link.url || "", "_blank");
-                  }}
-                  className="flex items-center hover:opacity-60 cursor-pointer duration-100"
-                >
-                  <p className="truncate w-full">{shortendURL}</p>
-                </div>
-              ) : (
-                <div className="badge badge-primary badge-sm my-1">
-                  {link.type}
-                </div>
-              )}
-            </div>
-            <span className="hidden sm:block">&middot;</span>
-            <LinkDate link={link} />
-          </div>
-          <p>{unescapeString(link.description)}</p>
-          {link.tags[0] ? (
-            <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
-              <div className="flex gap-1 items-center flex-wrap">
-                {link.tags.map((e, i) => (
-                  <Link
-                    href={"/tags/" + e.id}
-                    key={i}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    className="btn btn-xs btn-ghost truncate max-w-[19rem]"
-                  >
-                    #{e.name}
-                  </Link>
-                ))}
+        <div className="mt-1 flex flex-col text-xs text-neutral">
+          <div className="flex items-center gap-2">
+            <LinkCollection link={link} collection={collection} />
+            &middot;
+            {link.url ? (
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open(link.url || "", "_blank");
+                }}
+                className="flex items-center hover:opacity-60 cursor-pointer duration-100"
+              >
+                <p className="truncate">{shortendURL}</p>
               </div>
-            </div>
-          ) : undefined}
+            ) : (
+              <div className="badge badge-primary badge-sm my-1">
+                {link.type}
+              </div>
+            )}
+          </div>
+          <LinkDate link={link} />
         </div>
+        <p className="truncate">{unescapeString(link.description)}</p>
+        {link.tags[0] ? (
+          <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
+            <div className="flex gap-1 items-center flex-wrap">
+              {link.tags.map((e, i) => (
+                <Link
+                  href={"/tags/" + e.id}
+                  key={i}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  className="btn btn-xs btn-ghost truncate max-w-[19rem]"
+                >
+                  #{e.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : undefined}
       </div>
 
       <LinkActions link={link} collection={collection} />
