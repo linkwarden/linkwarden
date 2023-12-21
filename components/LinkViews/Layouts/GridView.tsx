@@ -7,13 +7,9 @@ export default function GridView({
   links: LinkIncludingShortenedCollectionAndTags[];
 }) {
   return (
-    <div className="columns-1 xl:columns-2 2xl:columns-3 gap-5">
+    <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5">
       {links.map((e, i) => {
-        return (
-          <div key={i} className="break-inside-avoid mb-5">
-            <LinkGrid link={e} count={i} />
-          </div>
-        );
+        return <LinkGrid link={e} count={i} key={i} />;
       })}
     </div>
   );

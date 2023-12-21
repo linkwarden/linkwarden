@@ -15,14 +15,14 @@ export default function Links() {
   const { links } = useLinkStore();
 
   const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Default
+    localStorage.getItem("viewMode") || ViewMode.Card
   );
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   useLinks({ sort: sortBy });
 
   const linkView = {
-    [ViewMode.Default]: CardView,
+    [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };
