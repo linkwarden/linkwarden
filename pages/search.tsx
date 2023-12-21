@@ -7,9 +7,9 @@ import { Sort, ViewMode } from "@/types/global";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import ViewDropdown from "@/components/ViewDropdown";
-import DefaultView from "@/components/LinkViews/DefaultView";
-import GridView from "@/components/LinkViews/GridView";
-import ListView from "@/components/LinkViews/ListView";
+import CardView from "@/components/LinkViews/Layouts/CardView";
+import GridView from "@/components/LinkViews/Layouts/GridView";
+import ListView from "@/components/LinkViews/Layouts/ListView";
 import PageHeader from "@/components/PageHeader";
 
 export default function Search() {
@@ -43,7 +43,7 @@ export default function Search() {
   });
 
   const linkView = {
-    [ViewMode.Default]: DefaultView,
+    [ViewMode.Default]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };

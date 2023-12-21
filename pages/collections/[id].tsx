@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
+import LinkCard from "@/components/LinkViews/LinkCard";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import {
@@ -21,9 +21,9 @@ import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
 import ViewDropdown from "@/components/ViewDropdown";
-import DefaultView from "@/components/LinkViews/DefaultView";
-import GridView from "@/components/LinkViews/GridView";
-import ListView from "@/components/LinkViews/ListView";
+import CardView from "@/components/LinkViews/Layouts/CardView";
+import GridView from "@/components/LinkViews/Layouts/GridView";
+import ListView from "@/components/LinkViews/Layouts/ListView";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
@@ -91,7 +91,7 @@ export default function Index() {
   );
 
   const linkView = {
-    [ViewMode.Default]: DefaultView,
+    [ViewMode.Default]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };

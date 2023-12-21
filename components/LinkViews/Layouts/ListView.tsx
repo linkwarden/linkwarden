@@ -1,4 +1,4 @@
-import LinkRow from "@/components/LinkViews/LinkComponents/LinkRow";
+import LinkList from "@/components/LinkViews/LinkList";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
 export default function ListView({
@@ -9,7 +9,7 @@ export default function ListView({
   return (
     <div className="flex flex-col">
       {links.map((e, i) => {
-        return <LinkRow key={i} link={e} count={i} />;
+        return <LinkList key={i} link={e} count={i} />;
       })}
     </div>
   );

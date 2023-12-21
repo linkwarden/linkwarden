@@ -6,8 +6,8 @@ import React, { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { Sort, ViewMode } from "@/types/global";
 import ViewDropdown from "@/components/ViewDropdown";
-import DefaultView from "@/components/LinkViews/DefaultView";
-import ListView from "@/components/LinkViews/ListView";
+import CardView from "@/components/LinkViews/Layouts/CardView";
+import ListView from "@/components/LinkViews/Layouts/ListView";
 
 export default function PinnedLinks() {
   const { links } = useLinkStore();
@@ -20,7 +20,7 @@ export default function PinnedLinks() {
   useLinks({ sort: sortBy, pinnedOnly: true });
 
   const linkView = {
-    [ViewMode.Default]: DefaultView,
+    [ViewMode.Default]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };
