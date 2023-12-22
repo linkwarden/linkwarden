@@ -27,9 +27,10 @@ export default function UploadFileModal({ onClose }: Props) {
     description: "",
     type: "url",
     tags: [],
-    screenshotPath: "",
-    pdfPath: "",
-    readabilityPath: "",
+    preview: "",
+    image: "",
+    pdf: "",
+    readable: "",
     textContent: "",
     collection: {
       name: "",

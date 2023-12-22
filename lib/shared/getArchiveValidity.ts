@@ -1,26 +1,23 @@
 export function screenshotAvailable(link: any) {
   return (
     link &&
-    link.screenshotPath &&
-    link.screenshotPath !== "pending" &&
-    link.screenshotPath !== "unavailable"
+    link.image &&
+    link.image !== "pending" &&
+    link.image !== "unavailable"
   );
 }
 
 export function pdfAvailable(link: any) {
   return (
-    link &&
-    link.pdfPath &&
-    link.pdfPath !== "pending" &&
-    link.pdfPath !== "unavailable"
+    link && link.pdf && link.pdf !== "pending" && link.pdf !== "unavailable"
   );
 }
 
 export function readabilityAvailable(link: any) {
   return (
     link &&
-    link.readabilityPath &&
-    link.readabilityPath !== "pending" &&
-    link.readabilityPath !== "unavailable"
+    link.readable &&
+    link.readable !== "pending" &&
+    link.readable !== "unavailable"
   );
 }

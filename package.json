@@ -6,6 +6,9 @@
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
   "license": "AGPL-3.0",
   "private": true,
+  "prisma": {
+    "seed": "node ./prisma/seed.js"
+  },
   "scripts": {
     "dev": "next dev",
     "worker": "ts-node --skip-project scripts/worker.ts",

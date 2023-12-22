@@ -70,12 +70,12 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
   const isReady = () => {
     return (
       collectionOwner.archiveAsScreenshot ===
-        (link && link.pdfPath && link.pdfPath !== "pending") &&
+        (link && link.pdf && link.pdf !== "pending") &&
       collectionOwner.archiveAsPDF ===
-        (link && link.pdfPath && link.pdfPath !== "pending") &&
+        (link && link.pdf && link.pdf !== "pending") &&
       link &&
-      link.readabilityPath &&
-      link.readabilityPath !== "pending"
+      link.readable &&
+      link.readable !== "pending"
     );
   };
 
@@ -107,7 +107,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.screenshotPath, link?.pdfPath, link?.readabilityPath]);
+  }, [link?.image, link?.pdf, link?.readable]);
 
   const updateArchive = async () => {
     const load = toast.loading("Sending request...");
@@ -154,7 +154,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 name={"Screenshot"}
                 icon={"bi-file-earmark-image"}
                 format={
-                  link?.screenshotPath?.endsWith("png")
+                  link?.image?.endsWith("png")
                     ? ArchivedFormat.png
                     : ArchivedFormat.jpeg
                 }
