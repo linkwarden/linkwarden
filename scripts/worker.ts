@@ -23,7 +23,7 @@ async function processBatch() {
               archiveAsScreenshot: true,
             },
           },
-          screenshotPath: null,
+          image: null,
         },
         {
           collection: {
@@ -31,7 +31,7 @@ async function processBatch() {
               archiveAsScreenshot: true,
             },
           },
-          screenshotPath: "pending",
+          image: "pending",
         },
         ///////////////////////
         {
@@ -40,7 +40,7 @@ async function processBatch() {
               archiveAsPDF: true,
             },
           },
-          pdfPath: null,
+          pdf: null,
         },
         {
           collection: {
@@ -48,14 +48,14 @@ async function processBatch() {
               archiveAsPDF: true,
             },
           },
-          pdfPath: "pending",
+          pdf: "pending",
         },
         ///////////////////////
         {
-          readabilityPath: null,
+          readable: null,
         },
         {
-          readabilityPath: "pending",
+          readable: "pending",
         },
       ],
     },
@@ -80,7 +80,7 @@ async function processBatch() {
               archiveAsScreenshot: true,
             },
           },
-          screenshotPath: null,
+          image: null,
         },
         {
           collection: {
@@ -88,7 +88,7 @@ async function processBatch() {
               archiveAsScreenshot: true,
             },
           },
-          screenshotPath: "pending",
+          image: "pending",
         },
         ///////////////////////
         {
@@ -97,7 +97,7 @@ async function processBatch() {
               archiveAsPDF: true,
             },
           },
-          pdfPath: null,
+          pdf: null,
         },
         {
           collection: {
@@ -105,14 +105,14 @@ async function processBatch() {
               archiveAsPDF: true,
             },
           },
-          pdfPath: "pending",
+          pdf: "pending",
         },
         ///////////////////////
         {
-          readabilityPath: null,
+          readable: null,
         },
         {
-          readabilityPath: "pending",
+          readable: "pending",
         },
       ],
     },

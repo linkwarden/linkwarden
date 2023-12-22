@@ -62,12 +62,12 @@ export default function ReadableView({ link }: Props) {
     let interval: any;
     if (
       link &&
-      (link?.screenshotPath === "pending" ||
-        link?.pdfPath === "pending" ||
-        link?.readabilityPath === "pending" ||
-        !link?.screenshotPath ||
-        !link?.pdfPath ||
-        !link?.readabilityPath)
+      (link?.image === "pending" ||
+        link?.pdf === "pending" ||
+        link?.readable === "pending" ||
+        !link?.image ||
+        !link?.pdf ||
+        !link?.readable)
     ) {
       interval = setInterval(() => getLink(link.id as number), 5000);
     } else {
@@ -81,7 +81,7 @@ export default function ReadableView({ link }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.screenshotPath, link?.pdfPath, link?.readabilityPath]);
+  }, [link?.image, link?.pdf, link?.readable]);
 
   const rgbToHex = (r: number, g: number, b: number): string =>
     "#" +
@@ -225,7 +225,7 @@ export default function ReadableView({ link }: Props) {
       </div>
 
       <div className="flex flex-col gap-5 h-full">
-        {link?.readabilityPath?.startsWith("archives") ? (
+        {link?.readable?.startsWith("archives") ? (
           <div
             className="line-break px-1 reader-view"
             dangerouslySetInnerHTML={{
@@ -235,9 +235,7 @@ export default function ReadableView({ link }: Props) {
         ) : (
           <div
             className={`w-full h-full flex flex-col justify-center p-10 ${
-              link?.readabilityPath === "pending" || !link?.readabilityPath
-                ? "skeleton"
-                : ""
+              link?.readable === "pending" || !link?.readable ? "skeleton" : ""
             }`}
           >
             <svg
