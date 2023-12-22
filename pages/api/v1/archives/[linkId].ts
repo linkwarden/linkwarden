@@ -125,7 +125,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   //         await prisma.link.update({
   //           where: { id: linkId },
   //           data: {
-  //             screenshotPath: `archives/${collectionPermissions?.id}/${
+  //             image: `archives/${collectionPermissions?.id}/${
   //               linkId + suffix
   //             }`,
   //             lastPreserved: new Date().toISOString(),

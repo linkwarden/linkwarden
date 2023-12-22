@@ -43,7 +43,7 @@ export default function PreservedFormatRow({
     })();
 
     let interval: any;
-    if (link?.screenshotPath === "pending" || link?.pdfPath === "pending") {
+    if (link?.image === "pending" || link?.pdf === "pending") {
       interval = setInterval(async () => {
         const data = await getLink(link.id as number, isPublic);
         setLink(
@@ -61,7 +61,7 @@ export default function PreservedFormatRow({
         clearInterval(interval);
       }
     };
-  }, [link?.screenshotPath, link?.pdfPath, link?.readabilityPath]);
+  }, [link?.image, link?.pdf, link?.readable]);
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;

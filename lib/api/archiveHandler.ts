@@ -46,18 +46,15 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       where: { id: link.id },
       data: {
         type: linkType,
-        screenshotPath:
-          user.archiveAsScreenshot &&
-          !link.screenshotPath?.startsWith("archive")
+        image:
+          user.archiveAsScreenshot && !link.image?.startsWith("archive")
             ? "pending"
             : undefined,
-        pdfPath:
-          user.archiveAsPDF && !link.pdfPath?.startsWith("archive")
+        pdf:
+          user.archiveAsPDF && !link.pdf?.startsWith("archive")
             ? "pending"
             : undefined,
-        readabilityPath: !link.readabilityPath?.startsWith("archive")
-          ? "pending"
-          : undefined,
+        readable: !link.readable?.startsWith("archive") ? "pending" : undefined,
         lastPreserved: new Date().toISOString(),
       },
     });
@@ -107,7 +104,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         await prisma.link.update({
           where: { id: link.id },
           data: {
-            readabilityPath: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
+            readable: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
             textContent: articleText,
           },
         });
@@ -156,10 +153,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         await prisma.link.update({
           where: { id: link.id },
           data: {
-            screenshotPath: user.archiveAsScreenshot
+            image: user.archiveAsScreenshot
               ? `archives/${linkExists.collectionId}/${link.id}.png`
               : undefined,
-            pdfPath: user.archiveAsPDF
+            pdf: user.archiveAsPDF
               ? `archives/${linkExists.collectionId}/${link.id}.pdf`
               : undefined,
           },
@@ -179,13 +176,13 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       await prisma.link.update({
         where: { id: link.id },
         data: {
-          readabilityPath: !finalLink.readabilityPath?.startsWith("archives")
+          readable: !finalLink.readable?.startsWith("archives")
             ? "unavailable"
             : undefined,
-          screenshotPath: !finalLink.screenshotPath?.startsWith("archives")
+          image: !finalLink.image?.startsWith("archives")
             ? "unavailable"
             : undefined,
-          pdfPath: !finalLink.pdfPath?.startsWith("archives")
+          pdf: !finalLink.pdf?.startsWith("archives")
             ? "unavailable"
             : undefined,
         },
@@ -245,7 +242,7 @@ const imageHandler = async ({ url, id }: Link, extension: string) => {
     await prisma.link.update({
       where: { id },
       data: {
-        screenshotPath: `archives/${linkExists.collectionId}/${id}.${extension}`,
+        image: `archives/${linkExists.collectionId}/${id}.${extension}`,
       },
     });
   }
@@ -269,7 +266,7 @@ const pdfHandler = async ({ url, id }: Link) => {
     await prisma.link.update({
       where: { id },
       data: {
-        pdfPath: `archives/${linkExists.collectionId}/${id}.pdf`,
+        pdf: `archives/${linkExists.collectionId}/${id}.pdf`,
       },
     });
   }
