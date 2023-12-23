@@ -21,3 +21,12 @@ export function readabilityAvailable(link: any) {
     link.readable !== "unavailable"
   );
 }
+
+export function previewAvailable(link: any) {
+  return (
+    link &&
+    link.preview &&
+    link.preview !== "pending" &&
+    link.preview !== "unavailable"
+  );
+}

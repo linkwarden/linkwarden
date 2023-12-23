@@ -60,7 +60,7 @@ async function processBatch() {
       ],
     },
     take: archiveTakeCount,
-    orderBy: { createdAt: "asc" },
+    orderBy: { id: "asc" },
     include: {
       collection: {
         include: {
@@ -114,10 +114,17 @@ async function processBatch() {
         {
           readable: "pending",
         },
+        ///////////////////////
+        {
+          preview: null,
+        },
+        {
+          preview: "pending",
+        },
       ],
     },
     take: archiveTakeCount,
-    orderBy: { createdAt: "desc" },
+    orderBy: { id: "desc" },
     include: {
       collection: {
         include: {

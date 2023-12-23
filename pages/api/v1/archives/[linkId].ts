@@ -19,6 +19,7 @@ export const config = {
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const linkId = Number(req.query.linkId);
   const format = Number(req.query.format);
+  const isPreview = Boolean(req.query.preview);
 
   let suffix: string;
 
@@ -55,13 +56,23 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
         .status(401)
         .json({ response: "You don't have access to this collection." });
 
-    const { file, contentType, status } = await readFile(
-      `archives/${collectionIsAccessible.id}/${linkId + suffix}`
-    );
+    if (isPreview) {
+      const { file, contentType, status } = await readFile(
+        `archives/preview/${collectionIsAccessible.id}/${linkId}.jpeg`
+      );
 
-    res.setHeader("Content-Type", contentType).status(status as number);
+      res.setHeader("Content-Type", contentType).status(status as number);
 
-    return res.send(file);
+      return res.send(file);
+    } else {
+      const { file, contentType, status } = await readFile(
+        `archives/${collectionIsAccessible.id}/${linkId + suffix}`
+      );
+
+      res.setHeader("Content-Type", contentType).status(status as number);
+
+      return res.send(file);
+    }
   }
   // else if (req.method === "POST") {
   //   const user = await verifyUser({ req, res });
