@@ -8,6 +8,7 @@ import DOMPurify from "dompurify";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
 import removeFile from "./storage/removeFile";
+import Jimp from "jimp";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -55,6 +56,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             ? "pending"
             : undefined,
         readable: !link.readable?.startsWith("archive") ? "pending" : undefined,
+        preview: !link.readable?.startsWith("archive") ? "pending" : undefined,
         lastPreserved: new Date().toISOString(),
       },
     });
@@ -65,10 +67,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
     } else if (linkType === "pdf") {
       await pdfHandler(link); // archive pdf
       return;
-    } else if (user.archiveAsPDF || user.archiveAsScreenshot) {
+    } else if ((user.archiveAsPDF || user.archiveAsScreenshot) && link.url) {
       // archive url
-      link.url &&
-        (await page.goto(link.url, { waitUntil: "domcontentloaded" }));
+
+      await page.goto(link.url, { waitUntil: "domcontentloaded" });
 
       const content = await page.content();
 
@@ -110,11 +112,81 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         });
       }
 
+      // Preview
+
+      const ogImageUrl = await page.evaluate(() => {
+        const metaTag = document.querySelector('meta[property="og:image"]');
+        return metaTag ? (metaTag as any).content : null;
+      });
+
+      if (ogImageUrl) {
+        console.log("Found og:image URL:", ogImageUrl);
+
+        // Download the image
+        const imageResponse = await page.goto(ogImageUrl);
+
+        // Check if imageResponse is not null
+        if (imageResponse) {
+          const buffer = await imageResponse.body();
+
+          // Check if buffer is not null
+          if (buffer) {
+            // Load the image using Jimp
+            Jimp.read(buffer, async (err, image) => {
+              if (image) {
+                image?.resize(1280, Jimp.AUTO).quality(20);
+                await image?.writeAsync("og_image.jpg");
+                const processedBuffer = await image?.getBufferAsync(
+                  Jimp.MIME_JPEG
+                );
+
+                createFile({
+                  data: processedBuffer,
+                  filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                }).then(() => {
+                  return prisma.link.update({
+                    where: { id: link.id },
+                    data: {
+                      preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                    },
+                  });
+                });
+              }
+            }).catch((err) => {
+              console.error("Error processing the image:", err);
+            });
+          } else {
+            console.log("No image data found.");
+          }
+        } else {
+          console.log("Image response is null.");
+        }
+      } else {
+        console.log("No og:image found");
+        page
+          .screenshot({ type: "jpeg", quality: 20 })
+          .then((screenshot) => {
+            return createFile({
+              data: screenshot,
+              filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+            });
+          })
+          .then(() => {
+            return prisma.link.update({
+              where: { id: link.id },
+              data: {
+                preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+              },
+            });
+          });
+      }
+
       // Screenshot/PDF
       await page.evaluate(
         autoScroll,
         Number(process.env.AUTOSCROLL_TIMEOUT) || 30
       );
+
       // Check if the user hasn't deleted the link by the time we're done scrolling
       const linkExists = await prisma.link.findUnique({
         where: { id: link.id },
@@ -176,6 +248,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       await prisma.link.update({
         where: { id: link.id },
         data: {
+          lastPreserved: new Date().toISOString(),
           readable: !finalLink.readable?.startsWith("archives")
             ? "unavailable"
             : undefined,
@@ -185,6 +258,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           pdf: !finalLink.pdf?.startsWith("archives")
             ? "unavailable"
             : undefined,
+          preview: !finalLink.preview?.startsWith("archives")
+            ? "unavailable"
+            : undefined,
         },
       });
     else {
@@ -192,6 +268,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
       removeFile({
         filePath: `archives/${link.collectionId}/${link.id}_readability.json`,
+      });
+      removeFile({
+        filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
       });
     }
 
