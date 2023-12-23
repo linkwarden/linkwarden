@@ -38,7 +38,7 @@ export default function Collections() {
           </div>
         </div>
 
-        <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+        <div className="grid min-[1900px]:grid-cols-4 2xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
           {sortedCollections
             .filter((e) => e.ownerId === data?.user.id)
             .map((e, i) => {
@@ -62,7 +62,7 @@ export default function Collections() {
               description={"Shared collections you're a member of"}
             />
 
-            <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+            <div className="grid min-[1900px]:grid-cols-4 2xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {sortedCollections
                 .filter((e) => e.ownerId !== data?.user.id)
                 .map((e, i) => {

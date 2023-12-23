@@ -146,7 +146,7 @@ export default function Dashboard() {
           {links[0] ? (
             <div className="w-full">
               <div
-                className={`grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
+                className={`grid min-[1900px]:grid-cols-4 2xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links.slice(0, showLinks).map((e, i) => (
                   <LinkCard key={i} link={e} count={i} />
@@ -261,7 +261,7 @@ export default function Dashboard() {
           {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
               <div
-                className={`grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
+                className={`grid min-[1900px]:grid-cols-4 2xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])

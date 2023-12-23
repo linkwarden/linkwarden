@@ -40,6 +40,7 @@
     "eslint-config-next": "13.4.9",
     "formidable": "^3.5.1",
     "framer-motion": "^10.16.4",
+    "jimp": "^0.22.10",
     "jsdom": "^22.1.0",
     "lottie-web": "^5.12.2",
     "micro": "^10.0.1",
@@ -53,7 +54,6 @@
     "react-hot-toast": "^2.4.1",
     "react-image-file-resizer": "^0.4.8",
     "react-select": "^5.7.4",
-    "sharp": "^0.32.1",
     "stripe": "^12.13.0",
     "zustand": "^4.3.8"
   },
