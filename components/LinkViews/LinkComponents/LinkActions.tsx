@@ -101,7 +101,7 @@ export default function LinkActions({
                 toggleShowInfo();
               }}
             >
-              {!linkInfo ? "Show" : "Hide"} Link Info
+              {!linkInfo ? "Show" : "Hide"} Link Details
             </div>
           </li>
           {permissions === true || permissions?.canUpdate ? (
