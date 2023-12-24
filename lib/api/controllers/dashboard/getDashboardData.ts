@@ -46,7 +46,7 @@ export default async function getDashboardData(
   });
 
   const recentlyAddedLinks = await prisma.link.findMany({
-    take: 6,
+    take: 8,
     where: {
       collection: {
         OR: [

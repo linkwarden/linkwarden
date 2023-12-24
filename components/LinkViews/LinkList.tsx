@@ -53,7 +53,7 @@ export default function LinkCardCompact({ link, count, className }: Props) {
       <div className="border-neutral-content relative hover:bg-base-300 duration-200 rounded-lg">
         <div
           onClick={() => link.url && window.open(link.url || "", "_blank")}
-          className="flex items-center cursor-pointer py-3 sm:px-3"
+          className="flex items-center cursor-pointer py-3 px-3"
         >
           <div className="shrink-0">
             <LinkIcon link={link} width="sm:w-12 w-8" />
@@ -88,7 +88,7 @@ export default function LinkCardCompact({ link, count, className }: Props) {
         <LinkActions
           link={link}
           collection={collection}
-          position="top-3 right-0 sm:right-3"
+          position="top-3 right-3"
           toggleShowInfo={() => setShowInfo(!showInfo)}
           linkInfo={showInfo}
         />

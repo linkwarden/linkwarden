@@ -20,25 +20,29 @@ export default function LinkIcon({
 
   const [showFavicon, setShowFavicon] = React.useState<boolean>(true);
 
-  return link.url && url && showFavicon ? (
-    <Image
-      src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
-      width={64}
-      height={64}
-      alt=""
-      className={iconClasses}
-      draggable="false"
-      onError={() => {
-        setShowFavicon(false);
-      }}
-    />
-  ) : showFavicon === false ? (
-    <div className={iconClasses}>
-      <i className="bi-link-45deg text-4xl text-black"></i>
-    </div>
-  ) : link.type === "pdf" ? (
-    <i className={`bi-file-earmark-pdf ${iconClasses}`}></i>
-  ) : link.type === "image" ? (
-    <i className={`bi-file-earmark-image ${iconClasses}`}></i>
-  ) : undefined;
+  return (
+    <>
+      {link.url && url && showFavicon ? (
+        <Image
+          src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
+          width={64}
+          height={64}
+          alt=""
+          className={iconClasses}
+          draggable="false"
+          onError={() => {
+            setShowFavicon(false);
+          }}
+        />
+      ) : showFavicon === false ? (
+        <div className={iconClasses}>
+          <i className="bi-link-45deg text-4xl text-black"></i>
+        </div>
+      ) : link.type === "pdf" ? (
+        <i className={`bi-file-earmark-pdf ${iconClasses}`}></i>
+      ) : link.type === "image" ? (
+        <i className={`bi-file-earmark-image ${iconClasses}`}></i>
+      ) : undefined}
+    </>
+  );
 }
