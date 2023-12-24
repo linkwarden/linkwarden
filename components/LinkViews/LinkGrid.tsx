@@ -100,7 +100,12 @@ export default function LinkGrid({ link, count, className }: Props) {
         ) : undefined}
       </div>
 
-      <LinkActions link={link} collection={collection} />
+      <LinkActions
+        toggleShowInfo={() => {}}
+        linkInfo={false}
+        link={link}
+        collection={collection}
+      />
     </div>
   );
 }

@@ -10,9 +10,10 @@
     "seed": "node ./prisma/seed.js"
   },
   "scripts": {
-    "dev": "next dev",
-    "worker": "ts-node --skip-project scripts/worker.ts",
-    "start": "next start",
+    "dev": "concurrently -k \"next dev\" \"yarn worker:dev\"",
+    "worker:dev": "nodemon --skip-project scripts/worker.ts",
+    "worker:prod": "ts-node --transpile-only --skip-project scripts/worker.ts",
+    "start": "concurrently \"next start\" \"yarn worker:prod\"",
     "build": "next build",
     "lint": "next lint"
   },
@@ -33,6 +34,7 @@
     "bcrypt": "^5.1.0",
     "bootstrap-icons": "^1.11.2",
     "colorthief": "^2.4.0",
+    "concurrently": "^8.2.2",
     "crypto-js": "^4.2.0",
     "csstype": "^3.1.2",
     "dompurify": "^3.0.6",
@@ -65,6 +67,7 @@
     "@types/shelljs": "^0.8.15",
     "autoprefixer": "^10.4.14",
     "daisyui": "^4.4.2",
+    "nodemon": "^3.0.2",
     "postcss": "^8.4.26",
     "prisma": "^5.1.0",
     "tailwindcss": "^3.3.3",
