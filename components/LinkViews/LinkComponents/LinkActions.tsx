@@ -15,9 +15,16 @@ type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
   position?: string;
+  toggleShowInfo: () => void;
+  linkInfo: boolean;
 };
 
-export default function LinkActions({ link, collection, position }: Props) {
+export default function LinkActions({
+  link,
+  toggleShowInfo,
+  position,
+  linkInfo,
+}: Props) {
   const permissions = usePermissions(link.collection.id as number);
 
   const [editLinkModal, setEditLinkModal] = useState(false);
@@ -85,6 +92,18 @@ export default function LinkActions({ link, collection, position }: Props) {
               </div>
             </li>
           ) : undefined}
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                toggleShowInfo();
+              }}
+            >
+              {!linkInfo ? "Show" : "Hide"} Link Info
+            </div>
+          </li>
           {permissions === true || permissions?.canUpdate ? (
             <li>
               <div
@@ -106,7 +125,6 @@ export default function LinkActions({ link, collection, position }: Props) {
               onClick={() => {
                 (document?.activeElement as HTMLElement)?.blur();
                 setPreservedFormatsModal(true);
-                // updateArchive();
               }}
             >
               Preserved Formats
