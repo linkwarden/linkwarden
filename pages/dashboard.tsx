@@ -9,10 +9,14 @@ import Link from "next/link";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import React from "react";
 import { toast } from "react-hot-toast";
-import { MigrationFormat, MigrationRequest } from "@/types/global";
+import { MigrationFormat, MigrationRequest, ViewMode } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
 import NewLinkModal from "@/components/ModalContent/NewLinkModal";
 import PageHeader from "@/components/PageHeader";
+import CardView from "@/components/LinkViews/Layouts/CardView";
+import ListView from "@/components/LinkViews/Layouts/ListView";
+import ViewDropdown from "@/components/ViewDropdown";
+// import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
@@ -36,9 +40,11 @@ export default function Dashboard() {
   }, [collections]);
 
   const handleNumberOfLinksToShow = () => {
-    if (window.innerWidth > 1535) {
+    if (window.innerWidth > 1900) {
+      setShowLinks(8);
+    } else if (window.innerWidth > 1280) {
       setShowLinks(6);
-    } else if (window.innerWidth > 1295) {
+    } else if (window.innerWidth > 650) {
       setShowLinks(4);
     } else setShowLinks(3);
   };
@@ -88,14 +94,31 @@ export default function Dashboard() {
 
   const [newLinkModal, setNewLinkModal] = useState(false);
 
+  const [viewMode, setViewMode] = useState<string>(
+    localStorage.getItem("viewMode") || ViewMode.Card
+  );
+
+  const linkView = {
+    [ViewMode.Card]: CardView,
+    // [ViewMode.Grid]: GridView,
+    [ViewMode.List]: ListView,
+  };
+
+  // @ts-ignore
+  const LinkComponent = linkView[viewMode];
+
   return (
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
-        <PageHeader
-          icon={"bi-house "}
-          title={"Dashboard"}
-          description={"A brief overview of your data"}
-        />
+        <div className="flex items-center justify-between">
+          <PageHeader
+            icon={"bi-house "}
+            title={"Dashboard"}
+            description={"A brief overview of your data"}
+          />
+          <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
+        </div>
+
         <div>
           <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
@@ -145,13 +168,7 @@ export default function Dashboard() {
         >
           {links[0] ? (
             <div className="w-full">
-              <div
-                className={`grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 w-full`}
-              >
-                {links.slice(0, showLinks).map((e, i) => (
-                  <LinkCard key={i} link={e} count={i} />
-                ))}
-              </div>
+              <LinkComponent links={links.slice(0, showLinks)} />
             </div>
           ) : (
             <div

@@ -62,6 +62,8 @@ export default function LinkGrid({ link, count, className }: Props) {
       !link.preview?.startsWith("archives") &&
       link.preview !== "unavailable"
     ) {
+      getLink(link.id as number);
+
       interval = setInterval(async () => {
         getLink(link.id as number);
       }, 5000);
@@ -72,7 +74,7 @@ export default function LinkGrid({ link, count, className }: Props) {
         clearInterval(interval);
       }
     };
-  }, [isVisible]);
+  }, [isVisible, link.preview]);
 
   const [showInfo, setShowInfo] = useState(false);
 
@@ -88,7 +90,7 @@ export default function LinkGrid({ link, count, className }: Props) {
             width={1280}
             height={720}
             alt=""
-            className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow"
+            className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
             style={{ filter: "blur(2px)" }}
             draggable="false"
             onError={(e) => {
@@ -96,8 +98,10 @@ export default function LinkGrid({ link, count, className }: Props) {
               target.style.display = "none";
             }}
           />
+        ) : link.preview === "unavailable" ? (
+          <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
         ) : (
-          <div className="bg-gray-50 duration-100 h-40"></div>
+          <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
         )}
         <div
           style={
@@ -112,6 +116,8 @@ export default function LinkGrid({ link, count, className }: Props) {
         </div>
       </div>
 
+      <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+
       <div className="p-3 mt-1">
         <p className="truncate w-full pr-8 text-primary">
           {unescapeString(link.name || link.description) || link.url}
@@ -121,9 +127,9 @@ export default function LinkGrid({ link, count, className }: Props) {
           href={link.url || ""}
           target="_blank"
           title={link.url || ""}
-          className="w-fit hover:opacity-60 duration-100"
+          className="w-fit"
         >
-          <div className="flex gap-1 item-center select-none text-neutral mt-1">
+          <div className="flex gap-1 item-center select-none text-neutral mt-1 hover:opacity-60 duration-100">
             <i className="bi-link-45deg text-lg mt-[0.15rem] leading-none"></i>
             <p className="text-sm truncate">{shortendURL}</p>
           </div>

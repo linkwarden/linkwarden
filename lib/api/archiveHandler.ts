@@ -9,6 +9,7 @@ import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
 import removeFile from "./storage/removeFile";
 import Jimp from "jimp";
+import createFolder from "./storage/createFolder";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -123,6 +124,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         return metaTag ? (metaTag as any).content : null;
       });
 
+      createFolder({
+        filePath: `archives/preview/${link.collectionId}`,
+      });
+
       if (ogImageUrl) {
         console.log("Found og:image URL:", ogImageUrl);
 
@@ -161,8 +166,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           } else {
             console.log("No image data found.");
           }
-        } else {
-          console.log("Image response is null.");
         }
 
         await page.goBack();
