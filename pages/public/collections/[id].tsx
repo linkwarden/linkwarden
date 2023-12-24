@@ -133,7 +133,7 @@ export default function PublicCollections() {
           />
         </Head>
       ) : undefined}
-      <div className="max-w-4xl mx-auto p-5 bg">
+      <div className="lg:w-3/4 w-full mx-auto p-5 bg">
         <div className="flex items-center justify-between">
           <p className="text-4xl font-thin mb-2 capitalize mt-10">
             {collection.name}
