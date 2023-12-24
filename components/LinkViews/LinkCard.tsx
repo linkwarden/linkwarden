@@ -134,15 +134,16 @@ export default function LinkGrid({ link, count, className }: Props) {
             <p className="text-sm truncate">{shortendURL}</p>
           </div>
         </Link>
+      </div>
 
-        <hr className="divider my-2 -mx-3 last:hidden border-t border-neutral-content h-[1px]" />
-
-        <div className="flex justify-between text-xs text-neutral">
-          <div className="cursor-pointer w-fit">
+      <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+      <div className="flex justify-between text-xs text-neutral px-3 pb-1">
+        <div className="cursor-pointer w-fit">
+          {collection ? (
             <LinkCollection link={link} collection={collection} />
-          </div>
-          <LinkDate link={link} />
+          ) : undefined}
         </div>
+        <LinkDate link={link} />
       </div>
 
       {showInfo ? (
@@ -153,9 +154,24 @@ export default function LinkGrid({ link, count, className }: Props) {
           >
             <i className="bi-x text-neutral text-2xl"></i>
           </div>
-          <div className="pb-3 mt-1">
-            <p>{unescapeString(link.description)}</p>
-            {link.tags[0] ? (
+          <p className="text-neutral text-lg font-semibold">Description</p>
+
+          <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
+          <p>
+            {link.description ? (
+              unescapeString(link.description)
+            ) : (
+              <span className="text-neutral text-sm">
+                No description provided.
+              </span>
+            )}
+          </p>
+          {link.tags[0] ? (
+            <>
+              <p className="text-neutral text-lg mt-3 font-semibold">Tags</p>
+
+              <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
+
               <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
                 <div className="flex gap-1 items-center flex-wrap">
                   {link.tags.map((e, i) => (
@@ -172,8 +188,8 @@ export default function LinkGrid({ link, count, className }: Props) {
                   ))}
                 </div>
               </div>
-            ) : undefined}
-          </div>
+            </>
+          ) : undefined}
         </div>
       ) : undefined}
 
