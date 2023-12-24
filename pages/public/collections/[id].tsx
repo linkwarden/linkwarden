@@ -1,7 +1,10 @@
 "use client";
-import PublicLinkCard from "@/components/PublicPage/PublicLinkCard";
 import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
-import { CollectionIncludingMembersAndLinkCount, Sort } from "@/types/global";
+import {
+  CollectionIncludingMembersAndLinkCount,
+  Sort,
+  ViewMode,
+} from "@/types/global";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { motion, Variants } from "framer-motion";
@@ -18,6 +21,10 @@ import SortDropdown from "@/components/SortDropdown";
 import useLocalSettingsStore from "@/store/localSettings";
 import SearchBar from "@/components/SearchBar";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
+import ViewDropdown from "@/components/ViewDropdown";
+import CardView from "@/components/LinkViews/Layouts/CardView";
+import ListView from "@/components/LinkViews/Layouts/ListView";
+// import GridView from "@/components/LinkViews/Layouts/GridView";
 
 const cardVariants: Variants = {
   offscreen: {
@@ -93,6 +100,19 @@ export default function PublicCollections() {
 
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
+
+  const [viewMode, setViewMode] = useState<string>(
+    localStorage.getItem("viewMode") || ViewMode.Card
+  );
+
+  const linkView = {
+    [ViewMode.Card]: CardView,
+    // [ViewMode.Grid]: GridView,
+    [ViewMode.List]: ListView,
+  };
+
+  // @ts-ignore
+  const LinkComponent = linkView[viewMode];
 
   return collection ? (
     <div
@@ -185,51 +205,38 @@ export default function PublicCollections() {
         <div className="divider mt-5 mb-0"></div>
 
         <div className="flex mb-5 mt-10 flex-col gap-5">
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-3">
             <SearchBar
               placeholder={`Search ${collection._count?.links} Links`}
             />
 
-            <div className="flex gap-2 items-center">
-              <div className="relative">
-                <FilterSearchDropdown
-                  searchFilter={searchFilter}
-                  setSearchFilter={setSearchFilter}
-                />
-              </div>
+            <div className="flex gap-2 items-center w-fit">
+              <FilterSearchDropdown
+                searchFilter={searchFilter}
+                setSearchFilter={setSearchFilter}
+              />
 
-              <div className="relative">
-                <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-              </div>
+              <SortDropdown sortBy={sortBy} setSort={setSortBy} />
+
+              <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
             </div>
           </div>
 
-          <div className="flex flex-col gap-5">
-            {links
-              ?.filter((e) => e.collectionId === Number(router.query.id))
-              .map((e, i) => {
-                const linkWithCollectionData = {
-                  ...e,
-                  collection: collection, // Append collection data
-                };
-
-                return (
-                  <motion.div
-                    key={i}
-                    initial="offscreen"
-                    whileInView="onscreen"
-                    viewport={{ once: true, amount: 0.8 }}
-                  >
-                    <motion.div variants={cardVariants}>
-                      <PublicLinkCard
-                        link={linkWithCollectionData as any}
-                        count={i}
-                      />
-                    </motion.div>
-                  </motion.div>
-                );
-              })}
-          </div>
+          {links[0] ? (
+            <LinkComponent
+              links={links
+                .filter((e) => e.collectionId === Number(router.query.id))
+                .map((e, i) => {
+                  const linkWithCollectionData = {
+                    ...e,
+                    collection: collection, // Append collection data
+                  };
+                  return linkWithCollectionData;
+                })}
+            />
+          ) : (
+            <p>This collection is empty...</p>
+          )}
 
           {/* <p className="text-center text-neutral">
         List created with <span className="text-black">Linkwarden.</span>
