@@ -3,7 +3,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import unescapeString from "@/lib/client/unescapeString";
@@ -14,6 +14,8 @@ import Image from "next/image";
 import { previewAvailable } from "@/lib/shared/getArchiveValidity";
 import Link from "next/link";
 import LinkIcon from "./LinkComponents/LinkIcon";
+import LinkGroupedIconURL from "./LinkComponents/LinkGroupedIconURL";
+import useOnScreen from "@/hooks/useOnScreen";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -24,7 +26,7 @@ type Props = {
 export default function LinkGrid({ link, count, className }: Props) {
   const { collections } = useCollectionStore();
 
-  const { links } = useLinkStore();
+  const { links, getLink } = useLinkStore();
 
   let shortendURL;
 
@@ -49,79 +51,133 @@ export default function LinkGrid({ link, count, className }: Props) {
     );
   }, [collections, links]);
 
+  const ref = useRef<HTMLDivElement>(null);
+  const isVisible = useOnScreen(ref);
+
+  useEffect(() => {
+    let interval: any;
+
+    if (
+      isVisible &&
+      !link.preview?.startsWith("archives") &&
+      link.preview !== "unavailable"
+    ) {
+      interval = setInterval(async () => {
+        getLink(link.id as number);
+      }, 5000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isVisible]);
+
+  const [showInfo, setShowInfo] = useState(false);
+
   return (
-    <div className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative">
-      <div className="relative rounded-t-2xl h-52">
+    <div
+      ref={ref}
+      className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
+    >
+      <div className="relative rounded-t-2xl h-40 overflow-hidden">
         {previewAvailable(link) ? (
           <Image
             src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
             width={1280}
             height={720}
             alt=""
-            className="rounded-t-2xl select-none object-cover z-10 h-52 w-full shadow"
+            className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow"
+            style={{ filter: "blur(2px)" }}
             draggable="false"
             onError={(e) => {
               const target = e.target as HTMLElement;
               target.style.display = "none";
             }}
           />
-        ) : undefined}
+        ) : (
+          <div className="bg-gray-50 duration-100 h-40"></div>
+        )}
         <div
-          style={{
-            background: "radial-gradient(circle, #ffffff, transparent)",
-          }}
-          className="absolute top-0 left-0 right-0 rounded-t-2xl flex items-center justify-center h-52 shadow rounded-md"
+          style={
+            {
+              // background:
+              //   "radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent)",
+            }
+          }
+          className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md"
         >
-          <LinkIcon link={link} width="w-12" />
+          <LinkIcon link={link} />
         </div>
       </div>
 
-      <div className="p-3">
-        <p className="truncate w-full">
+      <div className="p-3 mt-1">
+        <p className="truncate w-full pr-8 text-primary">
           {unescapeString(link.name || link.description) || link.url}
         </p>
-        <div className="mt-1 flex flex-col text-xs text-neutral">
-          <div className="flex items-center gap-2">
+
+        <Link
+          href={link.url || ""}
+          target="_blank"
+          title={link.url || ""}
+          className="w-fit hover:opacity-60 duration-100"
+        >
+          <div className="flex gap-1 item-center select-none text-neutral mt-1">
+            <i className="bi-link-45deg text-lg mt-[0.15rem] leading-none"></i>
+            <p className="text-sm truncate">{shortendURL}</p>
+          </div>
+        </Link>
+
+        <hr className="divider my-2 -mx-3 last:hidden border-t border-neutral-content h-[1px]" />
+
+        <div className="flex justify-between text-xs text-neutral">
+          <div className="cursor-pointer w-fit">
             <LinkCollection link={link} collection={collection} />
-            &middot;
-            {link.url ? (
-              <Link
-                href={link.url}
-                target="_blank"
-                className="flex items-center hover:opacity-60 cursor-pointer duration-100"
-              >
-                <p className="truncate">{shortendURL}</p>
-              </Link>
-            ) : (
-              <div className="badge badge-primary badge-sm my-1">
-                {link.type}
-              </div>
-            )}
           </div>
           <LinkDate link={link} />
         </div>
-        {/* <p className="truncate">{unescapeString(link.description)}</p>
-        {link.tags[0] ? (
-          <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
-            <div className="flex gap-1 items-center flex-wrap">
-              {link.tags.map((e, i) => (
-                <Link
-                  href={"/tags/" + e.id}
-                  key={i}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  className="btn btn-xs btn-ghost truncate max-w-[19rem]"
-                >
-                  #{e.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ) : undefined} */}
       </div>
 
-      <LinkActions link={link} collection={collection} />
+      {showInfo ? (
+        <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-2xl fade-in overflow-y-auto">
+          <div
+            onClick={() => setShowInfo(!showInfo)}
+            className=" float-right btn btn-sm outline-none btn-circle btn-ghost z-10"
+          >
+            <i className="bi-x text-neutral text-2xl"></i>
+          </div>
+          <div className="pb-3 mt-1">
+            <p>{unescapeString(link.description)}</p>
+            {link.tags[0] ? (
+              <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
+                <div className="flex gap-1 items-center flex-wrap">
+                  {link.tags.map((e, i) => (
+                    <Link
+                      href={"/tags/" + e.id}
+                      key={i}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="btn btn-xs btn-ghost truncate max-w-[19rem]"
+                    >
+                      #{e.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : undefined}
+          </div>
+        </div>
+      ) : undefined}
+
+      <LinkActions
+        link={link}
+        collection={collection}
+        position="top-[10.75rem] right-3"
+        toggleShowInfo={() => setShowInfo(!showInfo)}
+        linkInfo={showInfo}
+      />
     </div>
   );
 }

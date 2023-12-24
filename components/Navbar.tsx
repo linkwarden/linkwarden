@@ -162,7 +162,7 @@ export default function Navbar() {
         </div>
       </div>
       {sidebar ? (
-        <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-30">
+        <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-40">
           <ClickAwayHandler className="h-full" onClickOutside={toggleSidebar}>
             <div className="slide-right h-full shadow-lg">
               <Sidebar />
