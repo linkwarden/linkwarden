@@ -61,13 +61,13 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       },
     });
 
-    if (linkType === "image") {
+    if (linkType === "image" && !link.image?.startsWith("archive")) {
       await imageHandler(link, imageExtension); // archive image (jpeg/png)
       return;
-    } else if (linkType === "pdf") {
+    } else if (linkType === "pdf" && !link.pdf?.startsWith("archive")) {
       await pdfHandler(link); // archive pdf
       return;
-    } else if ((user.archiveAsPDF || user.archiveAsScreenshot) && link.url) {
+    } else if (link.url) {
       // archive url
 
       await page.goto(link.url, { waitUntil: "domcontentloaded" });
@@ -97,7 +97,11 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       const articleText = article?.textContent
         .replace(/ +(?= )/g, "") // strip out multiple spaces
         .replace(/(\r\n|\n|\r)/gm, " "); // strip out line breaks
-      if (articleText && articleText !== "") {
+      if (
+        articleText &&
+        articleText !== "" &&
+        !link.readable?.startsWith("archive")
+      ) {
         await createFile({
           data: JSON.stringify(article),
           filePath: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
@@ -126,7 +130,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         const imageResponse = await page.goto(ogImageUrl);
 
         // Check if imageResponse is not null
-        if (imageResponse) {
+        if (imageResponse && !link.preview?.startsWith("archive")) {
           const buffer = await imageResponse.body();
 
           // Check if buffer is not null
@@ -135,7 +139,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             Jimp.read(buffer, async (err, image) => {
               if (image) {
                 image?.resize(1280, Jimp.AUTO).quality(20);
-                await image?.writeAsync("og_image.jpg");
                 const processedBuffer = await image?.getBufferAsync(
                   Jimp.MIME_JPEG
                 );
@@ -161,7 +164,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         } else {
           console.log("Image response is null.");
         }
-      } else {
+
+        await page.goBack();
+      } else if (!link.preview?.startsWith("archive")) {
         console.log("No og:image found");
         page
           .screenshot({ type: "jpeg", quality: 20 })
@@ -194,7 +199,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       if (linkExists) {
         const processingPromises = [];
 
-        if (user.archiveAsScreenshot) {
+        if (user.archiveAsScreenshot && !link.image?.startsWith("archive")) {
           processingPromises.push(
             page.screenshot({ fullPage: true }).then((screenshot) => {
               return createFile({
@@ -204,7 +209,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             })
           );
         }
-        if (user.archiveAsPDF) {
+        if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
           processingPromises.push(
             page
               .pdf({

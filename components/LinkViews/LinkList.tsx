@@ -10,6 +10,7 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
+import Link from "next/link";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -45,6 +46,8 @@ export default function LinkCardCompact({ link, count, className }: Props) {
     );
   }, [collections, links]);
 
+  const [showInfo, setShowInfo] = useState(false);
+
   return (
     <>
       <div className="border-neutral-content relative hover:bg-base-300 duration-200 rounded-lg">
@@ -57,7 +60,7 @@ export default function LinkCardCompact({ link, count, className }: Props) {
           </div>
 
           <div className="w-[calc(100%-56px)] ml-2">
-            <p className="line-clamp-1 mr-8">
+            <p className="line-clamp-1 mr-8 text-primary">
               {unescapeString(link.name || link.description) || link.url}
             </p>
 
@@ -86,7 +89,34 @@ export default function LinkCardCompact({ link, count, className }: Props) {
           link={link}
           collection={collection}
           position="top-3 right-0 sm:right-3"
+          toggleShowInfo={() => setShowInfo(!showInfo)}
+          linkInfo={showInfo}
         />
+        {showInfo ? (
+          <div className="pl-10">
+            <div className="pb-3 mt-1">
+              <p>{unescapeString(link.description)}</p>
+              {link.tags[0] ? (
+                <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
+                  <div className="flex gap-1 items-center flex-wrap">
+                    {link.tags.map((e, i) => (
+                      <Link
+                        href={"/tags/" + e.id}
+                        key={i}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        className="btn btn-xs btn-ghost truncate max-w-[19rem]"
+                      >
+                        #{e.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : undefined}
+            </div>
+          </div>
+        ) : undefined}
       </div>
 
       <div className="divider my-0 last:hidden h-[1px]"></div>

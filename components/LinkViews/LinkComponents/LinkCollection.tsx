@@ -21,6 +21,7 @@ export default function LinkCollection({
         router.push(`/collections/${link.collection.id}`);
       }}
       className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
+      title={collection?.name}
     >
       <i
         className="bi-folder-fill text-lg drop-shadow"
