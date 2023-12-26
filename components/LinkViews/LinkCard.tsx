@@ -62,8 +62,6 @@ export default function LinkGrid({ link, count, className }: Props) {
       !link.preview?.startsWith("archives") &&
       link.preview !== "unavailable"
     ) {
-      getLink(link.id as number);
-
       interval = setInterval(async () => {
         getLink(link.id as number);
       }, 5000);
