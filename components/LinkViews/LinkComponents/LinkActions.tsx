@@ -114,7 +114,7 @@ export default function LinkActions({
                   setEditLinkModal(true);
                 }}
               >
-                Edit
+                Edit Link
               </div>
             </li>
           ) : undefined}
