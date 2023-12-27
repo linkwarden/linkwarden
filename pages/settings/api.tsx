@@ -56,10 +56,10 @@ export default function Api() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">API Keys (Soon)</p>
 
-      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+      <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-3">
-        <div className="badge bg-orange-500 rounded-md border border-black w-fit px-2 text-black">
+        <div className="badge badge-warning rounded-md w-fit">
           Status: Under Development
         </div>
 
@@ -67,7 +67,7 @@ export default function Api() {
 
         <p>
           For now, you can <i>temporarily</i> use your{" "}
-          <code className="text-xs whitespace-nowrap bg-gray-500/40 rounded-md px-2 py-1">
+          <code className="text-xs whitespace-nowrap bg-black/40 rounded-md px-2 py-1">
             next-auth.session-token
           </code>{" "}
           in your browser cookies as the API key for your integrations.

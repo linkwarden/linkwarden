@@ -7,8 +7,8 @@ export default async function getLink(
   const POSTGRES_IS_ENABLED = process.env.DATABASE_URL.startsWith("postgresql");
 
   let order: any;
-  if (query.sort === Sort.DateNewestFirst) order = { createdAt: "desc" };
-  else if (query.sort === Sort.DateOldestFirst) order = { createdAt: "asc" };
+  if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
+  else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
   else if (query.sort === Sort.DescriptionAZ) order = { description: "asc" };
@@ -81,7 +81,7 @@ export default async function getLink(
     include: {
       tags: true,
     },
-    orderBy: order || { createdAt: "desc" },
+    orderBy: order || { id: "desc" },
   });
 
   return { response: links, status: 200 };

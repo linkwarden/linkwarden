@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
-import SubmitButton from "@/components/SubmitButton";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
+import AccentSubmitButton from "@/components/AccentSubmitButton";
 
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
 
 type FormData = {
   name: string;
@@ -104,7 +104,7 @@ export default function Register() {
       }
     >
       {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? (
-        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           <p>
             Registration is disabled for this instance, please contact the admin
             in case of any issues.
@@ -112,37 +112,33 @@ export default function Register() {
         </div>
       ) : (
         <form onSubmit={registerUser}>
-          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
-            <p className="text-3xl text-black dark:text-white text-center font-extralight">
+          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-base-200 rounded-2xl shadow-md border border-neutral-content">
+            <p className="text-3xl text-center font-extralight">
               Enter your details
             </p>
 
-            <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+            <div className="divider my-0"></div>
 
             <div>
-              <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-                Display Name
-              </p>
+              <p className="text-sm w-fit font-semibold mb-1">Display Name</p>
 
               <TextInput
                 autoFocus={true}
                 placeholder="Johnny"
                 value={form.name}
-                className="bg-white"
+                className="bg-base-100"
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
             </div>
 
             {emailEnabled ? undefined : (
               <div>
-                <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-                  Username
-                </p>
+                <p className="text-sm w-fit font-semibold mb-1">Username</p>
 
                 <TextInput
                   placeholder="john"
                   value={form.username}
-                  className="bg-white"
+                  className="bg-base-100"
                   onChange={(e) =>
                     setForm({ ...form, username: e.target.value })
                   }
@@ -152,36 +148,32 @@ export default function Register() {
 
             {emailEnabled ? (
               <div>
-                <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-                  Email
-                </p>
+                <p className="text-sm w-fit font-semibold mb-1">Email</p>
 
                 <TextInput
                   type="email"
                   placeholder="johnny@example.com"
                   value={form.email}
-                  className="bg-white"
+                  className="bg-base-100"
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
             ) : undefined}
 
             <div className="w-full">
-              <p className="text-sm text-black dark:text-white w-fit font-semibold  mb-1">
-                Password
-              </p>
+              <p className="text-sm w-fit font-semibold  mb-1">Password</p>
 
               <TextInput
                 type="password"
                 placeholder="••••••••••••••"
                 value={form.password}
-                className="bg-white"
+                className="bg-base-100"
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
             </div>
 
             <div className="w-full">
-              <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
+              <p className="text-sm w-fit font-semibold mb-1">
                 Confirm Password
               </p>
 
@@ -189,7 +181,7 @@ export default function Register() {
                 type="password"
                 placeholder="••••••••••••••"
                 value={form.passwordConfirmation}
-                className="bg-white"
+                className="bg-base-100"
                 onChange={(e) =>
                   setForm({ ...form, passwordConfirmation: e.target.value })
                 }
@@ -198,7 +190,7 @@ export default function Register() {
 
             {process.env.NEXT_PUBLIC_STRIPE ? (
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-neutral">
                   By signing up, you agree to our{" "}
                   <Link
                     href="https://linkwarden.app/tos"
@@ -215,7 +207,7 @@ export default function Register() {
                   </Link>
                   .
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-neutral">
                   Need help?{" "}
                   <Link
                     href="mailto:support@linkwarden.app"
@@ -228,20 +220,15 @@ export default function Register() {
               </div>
             ) : undefined}
 
-            <button
+            <AccentSubmitButton
               type="submit"
-              className={`border primary-btn-gradient select-none duration-100 bg-black border-[#0071B7] hover:border-[#059bf8] rounded-lg text-center px-4 py-2 text-slate-200 hover:text-white `}
-            >
-              <p className="text-center w-full font-bold">Sign Up</p>
-            </button>
+              label="Sign Up"
+              className="w-full"
+              loading={submitLoader}
+            />
             <div className="flex items-baseline gap-1 justify-center">
-              <p className="w-fit text-gray-500 dark:text-gray-400">
-                Already have an account?
-              </p>
-              <Link
-                href={"/login"}
-                className="block text-black dark:text-white font-bold"
-              >
+              <p className="w-fit text-neutral">Already have an account?</p>
+              <Link href={"/login"} className="block font-bold">
                 Login
               </Link>
             </div>

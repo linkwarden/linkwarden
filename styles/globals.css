@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --my-color: #fff;
+  --selection-color: #fff;
+  --selection-bg-color: #fff;
+}
+
+[data-theme="dark"] {
+  --my-color: #000;
+  color-scheme: dark;
+  --selection-color: #000000;
+  --selection-bg-color: #ffffff;
+}
+
+[data-theme="light"] {
+  --my-color: #ffabc8;
+  color-scheme: light;
+  --selection-color: #ffffff;
+  --selection-bg-color: #000000;
+}
+
+::selection {
+  background-color: var(--selection-bg-color);
+  color: var(--selection-color);
+}
+
 html,
 body {
   scroll-behavior: smooth;
@@ -14,11 +39,6 @@ body {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-
-::selection {
-  background-color: #0ea4e93c;
-  color: white;
 }
 
 .hyphens {
@@ -36,7 +56,7 @@ body {
 }
 
 .fade-in {
-  animation: fade-in-animation 100ms;
+  animation: fade-in-animation 200ms;
 }
 
 @keyframes fade-in-animation {
@@ -49,7 +69,7 @@ body {
 }
 
 .slide-up {
-  animation: slide-up-animation 70ms;
+  animation: slide-up-animation 200ms;
 }
 
 .slide-down {
@@ -69,7 +89,7 @@ body {
 
 @keyframes slide-up-animation {
   0% {
-    transform: translateY(15%);
+    transform: translateY(5%);
     opacity: 0;
   }
   100% {
@@ -134,54 +154,37 @@ body {
 
 /* For the Link banner */
 .link-banner {
-  z-index: 0;
   border-radius: 1rem;
   height: fit-content;
 }
 
 /* Theme */
-@layer base {
-  body {
-    @apply dark:bg-neutral-900 bg-white text-black dark:text-white;
-  }
-}
 
-/* react-select */
 @layer components {
   .react-select-container .react-select__control {
-    @apply dark:bg-neutral-950 bg-gray-50 dark:border-neutral-700 dark:hover:border-neutral-500;
-  }
-
-  .react-select-container {
-    @apply dark:border-neutral-700;
+    @apply bg-base-200 hover:border-neutral-content;
   }
 
   .react-select-container .react-select__menu {
-    @apply dark:bg-neutral-900 dark:border-neutral-700 border;
+    @apply bg-base-100 border-neutral-content border rounded-md;
   }
-
-  .react-select-container .react-select__option {
-    @apply dark:hover:bg-neutral-800;
-  }
+  /* 
+  .react-select-container .react-select__menu-list {
+    @apply h-20;
+  } */
 
   .react-select-container .react-select__input-container,
   .react-select-container .react-select__single-value {
-    @apply dark:text-white;
+    @apply text-base-content;
   }
-}
-.react-select__clear-indicator * {
-  display: none;
-  width: 0;
-  margin: 0;
-  padding: 0;
 }
 
 .primary-btn-gradient {
-  box-shadow: inset 0px -10px 10px #0071b7;
+  box-shadow: inset 0px -9px 10px oklch(var(--p));
 }
 
 .primary-btn-gradient:hover {
-  box-shadow: inset 0px -15px 10px #059bf8;
+  box-shadow: inset 0px -20px 40px #00436c;
 }
 
 .line-break * {
@@ -245,13 +248,14 @@ body {
 .reader-view code {
   padding: 0.15rem 0.4rem 0.15rem 0.4rem;
 }
-[class="dark"] .reader-view code,
-[class="dark"] .reader-view pre {
+
+[data-theme="dark"] .reader-view code,
+[data-theme="dark"] .reader-view pre {
   background-color: rgb(49, 49, 49);
   border-radius: 8px;
 }
-[class="light"] .reader-view code,
-[class="light"] .reader-view pre {
+[data-theme="light"] .reader-view code,
+[data-theme="light"] .reader-view pre {
   background-color: rgb(230, 230, 230);
   border-radius: 8px;
 }
@@ -280,4 +284,8 @@ body {
   100% {
     background-position: 0% 50%;
   }
+}
+
+.custom-file-input::file-selector-button {
+  cursor: pointer;
 }

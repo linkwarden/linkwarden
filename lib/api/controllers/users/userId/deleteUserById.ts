@@ -81,6 +81,12 @@ export default async function deleteUserById(
             where: { userId },
           });
 
+        await prisma.usersAndCollections.deleteMany({
+          where: {
+            OR: [{ userId: userId }, { collection: { ownerId: userId } }],
+          },
+        });
+
         // Delete user's avatar
         await removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
 

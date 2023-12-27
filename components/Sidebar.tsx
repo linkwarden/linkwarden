@@ -1,19 +1,10 @@
 import useCollectionStore from "@/store/collections";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFolder,
-  faHashtag,
-  faChartSimple,
-  faChevronDown,
-  faLink,
-  faGlobe,
-  faThumbTack,
-} from "@fortawesome/free-solid-svg-icons";
 import useTagStore from "@/store/tags";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
+import SidebarHighlightLink from "@/components/SidebarHighlightLink";
 
 export default function Sidebar({ className }: { className?: string }) {
   const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
@@ -52,74 +43,36 @@ export default function Sidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-gray-100 dark:bg-neutral-800 h-full w-64 xl:w-80 overflow-y-auto border-solid border dark:border-neutral-800 border-r-sky-100 dark:border-r-neutral-700 px-2 z-20 ${
+      id="sidebar"
+      className={`bg-base-200 h-full w-72 lg:w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20 ${
         className || ""
       }`}
     >
-      <div className="flex flex-col gap-2 mt-2">
-        <Link href={`/dashboard`}>
-          <div
-            className={`${
-              active === `/dashboard` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-          >
-            <FontAwesomeIcon
-              icon={faChartSimple}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
-            />
-            <p className="text-black dark:text-white truncate w-full">
-              Dashboard
-            </p>
-          </div>
-        </Link>
-
-        <Link href={`/links`}>
-          <div
-            className={`${
-              active === `/links` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-          >
-            <FontAwesomeIcon
-              icon={faLink}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
-            />
-            <p className="text-black dark:text-white truncate w-full">
-              All Links
-            </p>
-          </div>
-        </Link>
-
-        <Link href={`/collections`}>
-          <div
-            className={`${
-              active === `/collections` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-          >
-            <FontAwesomeIcon
-              icon={faFolder}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
-            />
-            <p className="text-black dark:text-white truncate w-full">
-              All Collections
-            </p>
-          </div>
-        </Link>
-
-        <Link href={`/links/pinned`}>
-          <div
-            className={`${
-              active === `/links/pinned` ? "bg-sky-500" : "hover:bg-slate-500"
-            } duration-100 py-5 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-          >
-            <FontAwesomeIcon
-              icon={faThumbTack}
-              className="w-7 h-7 drop-shadow text-sky-500 dark:text-sky-500"
-            />
-            <p className="text-black dark:text-white truncate w-full">
-              Pinned Links
-            </p>
-          </div>
-        </Link>
+      <div className="grid grid-cols-2 gap-2">
+        <SidebarHighlightLink
+          title={"Dashboard"}
+          href={`/dashboard`}
+          icon={"bi-house"}
+          active={active === `/dashboard`}
+        />
+        <SidebarHighlightLink
+          title={"Pinned"}
+          href={`/links/pinned`}
+          icon={"bi-pin-angle"}
+          active={active === `/links/pinned`}
+        />
+        <SidebarHighlightLink
+          title={"All Links"}
+          href={`/links`}
+          icon={"bi-link-45deg"}
+          active={active === `/links`}
+        />
+        <SidebarHighlightLink
+          title={"All Collections"}
+          href={`/collections`}
+          icon={"bi-folder"}
+          active={active === `/collections`}
+        />
       </div>
 
       <Disclosure defaultOpen={collectionDisclosure}>
@@ -127,16 +80,14 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setCollectionDisclosure(!collectionDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-gray-300 mt-5"
+          className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
-          <p>Collections</p>
-
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            className={`w-3 h-3 ${
+          <p className="text-sm">Collections</p>
+          <i
+            className={`bi-chevron-down ${
               collectionDisclosure ? "rotate-reverse" : "rotate"
             }`}
-          />
+          ></i>
         </Disclosure.Button>
         <Transition
           enter="transition duration-100 ease-out"
@@ -156,27 +107,23 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/collections/${e.id}`
-                            ? "bg-sky-500"
-                            : "hover:bg-slate-500"
-                        } duration-100 py-1 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+                            ? "bg-primary/20"
+                            : "hover:bg-neutral/20"
+                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
                       >
-                        <FontAwesomeIcon
-                          icon={faFolder}
-                          className="w-6 h-6 drop-shadow"
+                        <i
+                          className="bi-folder-fill text-2xl drop-shadow"
                           style={{ color: e.color }}
-                        />
-                        <p className="text-black dark:text-white truncate w-full">
-                          {e.name}
-                        </p>
+                        ></i>
+                        <p className="truncate w-full">{e.name}</p>
 
                         {e.isPublic ? (
-                          <FontAwesomeIcon
-                            icon={faGlobe}
+                          <i
+                            className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
                             title="This collection is being shared publicly."
-                            className="w-4 h-4 drop-shadow text-gray-500 dark:text-gray-300"
-                          />
+                          ></i>
                         ) : undefined}
-                        <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
+                        <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}
                         </div>
                       </div>
@@ -187,7 +134,7 @@ export default function Sidebar({ className }: { className?: string }) {
               <div
                 className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
               >
-                <p className="text-gray-500 dark:text-gray-300 text-xs font-semibold truncate w-full pr-7">
+                <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
                   You Have No Collections...
                 </p>
               </div>
@@ -200,13 +147,14 @@ export default function Sidebar({ className }: { className?: string }) {
           onClick={() => {
             setTagDisclosure(!tagDisclosure);
           }}
-          className="flex items-center justify-between text-sm w-full text-left mb-2 pl-2 font-bold text-gray-500 dark:text-gray-300 mt-5"
+          className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
         >
-          <p>Tags</p>
-          <FontAwesomeIcon
-            icon={faChevronDown}
-            className={`w-3 h-3 ${tagDisclosure ? "rotate-reverse" : "rotate"}`}
-          />
+          <p className="text-sm">Tags</p>
+          <i
+            className={`bi-chevron-down  ${
+              tagDisclosure ? "rotate-reverse" : "rotate"
+            }`}
+          ></i>
         </Disclosure.Button>
         <Transition
           enter="transition duration-100 ease-out"
@@ -226,19 +174,13 @@ export default function Sidebar({ className }: { className?: string }) {
                       <div
                         className={`${
                           active === `/tags/${e.id}`
-                            ? "bg-sky-500"
-                            : "hover:bg-slate-500"
-                        } duration-100 py-1 px-2 bg-opacity-20 hover:bg-opacity-20 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                            ? "bg-primary/20"
+                            : "hover:bg-neutral/20"
+                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
-                        <FontAwesomeIcon
-                          icon={faHashtag}
-                          className="w-4 h-4 text-sky-500 dark:text-sky-500 mt-1"
-                        />
-
-                        <p className="text-black dark:text-white truncate w-full pr-7">
-                          {e.name}
-                        </p>
-                        <div className="drop-shadow text-gray-500 dark:text-gray-300 text-xs">
+                        <i className="bi-hash text-2xl text-primary drop-shadow"></i>
+                        <p className="truncate w-full pr-7">{e.name}</p>
+                        <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}
                         </div>
                       </div>
@@ -249,7 +191,7 @@ export default function Sidebar({ className }: { className?: string }) {
               <div
                 className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
               >
-                <p className="text-gray-500 dark:text-gray-300 text-xs font-semibold truncate w-full pr-7">
+                <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
                   You Have No Tags...
                 </p>
               </div>

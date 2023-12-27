@@ -1,31 +1,40 @@
-import { useTheme } from "next-themes";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
+import useLocalSettingsStore from "@/store/localSettings";
+import { useEffect, useState } from "react";
 
 type Props = {
   className?: string;
 };
 
 export default function ToggleDarkMode({ className }: Props) {
-  const { theme, setTheme } = useTheme();
+  const { settings, updateSettings } = useLocalSettingsStore();
 
-  const handleToggle = () => {
-    if (theme === "dark") {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
+  const [theme, setTheme] = useState(localStorage.getItem("theme"));
+
+  const handleToggle = (e: any) => {
+    setTheme(e.target.checked ? "dark" : "light");
   };
+
+  useEffect(() => {
+    updateSettings({ theme: theme as string });
+  }, [theme]);
 
   return (
     <div
-      className={`cursor-pointer flex select-none border border-sky-600 items-center justify-center dark:bg-neutral-900 bg-white hover:border-sky-500 group duration-100 rounded-full text-white w-10 h-10 ${className}`}
-      onClick={handleToggle}
+      className="tooltip tooltip-bottom"
+      data-tip={`Switch to ${settings.theme === "light" ? "Dark" : "Light"}`}
     >
-      <FontAwesomeIcon
-        icon={theme === "dark" ? faSun : faMoon}
-        className="w-1/2 h-1/2 text-sky-600 group-hover:text-sky-500"
-      />
+      <label
+        className={`swap swap-rotate btn-square text-neutral btn btn-ghost btn-sm ${className}`}
+      >
+        <input
+          type="checkbox"
+          onChange={handleToggle}
+          className="theme-controller"
+          checked={localStorage.getItem("theme") === "light" ? false : true}
+        />
+        <i className="bi-sun-fill text-xl swap-on"></i>
+        <i className="bi-moon-fill text-xl swap-off"></i>
+      </label>
     </div>
   );
 }
