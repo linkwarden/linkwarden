@@ -1,7 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import archive from "@/lib/api/archive";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
+import isValidUrl from "@/lib/shared/isValidUrl";
+import removeFile from "@/lib/api/storage/removeFile";
+import { Collection, Link } from "@prisma/client";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
@@ -13,7 +15,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     where: {
       id: Number(req.query.id),
     },
-    include: { collection: true },
+    include: { collection: { include: { owner: true } } },
   });
 
   if (!link)
@@ -41,14 +43,17 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         } minutes or create a new one.`,
       });
 
-    archive(link.id, link.url, user.id);
+    if (!link.url || !isValidUrl(link.url))
+      return res.status(200).json({
+        response: "Invalid URL.",
+      });
+
+    await deleteArchivedFiles(link);
+
     return res.status(200).json({
       response: "Link is being archived.",
     });
   }
-
-  // TODO - Later?
-  // else if (req.method === "DELETE") {}
 }
 
 const getTimezoneDifferenceInMinutes = (future: Date, past: Date) => {
@@ -60,4 +65,31 @@ const getTimezoneDifferenceInMinutes = (future: Date, past: Date) => {
   const diffInMinutes = diffInMilliseconds / (1000 * 60);
 
   return diffInMinutes;
+};
+
+const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
+  await prisma.link.update({
+    where: {
+      id: link.id,
+    },
+    data: {
+      image: null,
+      pdf: null,
+      readable: null,
+      preview: null,
+    },
+  });
+
+  await removeFile({
+    filePath: `archives/${link.collection.id}/${link.id}.pdf`,
+  });
+  await removeFile({
+    filePath: `archives/${link.collection.id}/${link.id}.png`,
+  });
+  await removeFile({
+    filePath: `archives/${link.collection.id}/${link.id}_readability.json`,
+  });
+  await removeFile({
+    filePath: `archives/preview/${link.collection.id}/${link.id}.png`,
+  });
 };

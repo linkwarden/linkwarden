@@ -57,6 +57,12 @@ export interface PublicCollectionIncludingLinks extends Collection {
   links: LinksIncludingTags[];
 }
 
+export enum ViewMode {
+  Card = "card",
+  Grid = "grid",
+  List = "list",
+}
+
 export enum Sort {
   DateNewestFirst,
   DateOldestFirst,
@@ -117,7 +123,14 @@ export type DeleteUserBody = {
 };
 
 export enum ArchivedFormat {
-  screenshot,
+  png,
+  jpeg,
   pdf,
   readability,
+}
+
+export enum LinkType {
+  url,
+  pdf,
+  image,
 }

@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import useAccountStore from "@/store/account";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
+import AccentSubmitButton from "@/components/AccentSubmitButton";
 
 export default function ChooseUsername() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -41,28 +42,26 @@ export default function ChooseUsername() {
   return (
     <CenteredForm>
       <form onSubmit={submitUsername}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
-          <p className="text-3xl text-center text-black dark:text-white font-extralight">
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
+          <p className="text-3xl text-center font-extralight">
             Choose a Username
           </p>
 
-          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+          <div className="divider my-0"></div>
 
           <div>
-            <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-              Username
-            </p>
+            <p className="text-sm w-fit font-semibold mb-1">Username</p>
 
             <TextInput
               autoFocus
               placeholder="john"
               value={inputedUsername}
-              className="bg-white"
+              className="bg-base-100"
               onChange={(e) => setInputedUsername(e.target.value)}
             />
           </div>
           <div>
-            <p className="text-md text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-md text-neutral mt-1">
               Feel free to reach out to us at{" "}
               <a
                 className="font-semibold underline"
@@ -74,16 +73,16 @@ export default function ChooseUsername() {
             </p>
           </div>
 
-          <SubmitButton
+          <AccentSubmitButton
             type="submit"
             label="Complete Registration"
-            className="mt-2 w-full text-center"
+            className="mt-2 w-full"
             loading={submitLoader}
           />
 
           <div
             onClick={() => signOut()}
-            className="w-fit mx-auto cursor-pointer text-gray-500 dark:text-gray-400 font-semibold "
+            className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
           >
             Sign Out
           </div>

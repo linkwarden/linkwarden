@@ -1,17 +1,19 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import getTitle from "@/lib/api/getTitle";
-import archive from "@/lib/api/archive";
+import getTitle from "@/lib/shared/getTitle";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import createFolder from "@/lib/api/storage/createFolder";
+import validateUrlSize from "../../validateUrlSize";
+
+const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
 export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
   try {
-    new URL(link.url);
+    new URL(link.url || "");
   } catch (error) {
     return {
       response:
@@ -23,6 +25,20 @@ export default async function postLink(
   if (!link.collection.name) {
     link.collection.name = "Unorganized";
   }
+
+  const numberOfLinksTheUserHas = await prisma.link.count({
+    where: {
+      collection: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (numberOfLinksTheUserHas + 1 > MAX_LINKS_PER_USER)
+    return {
+      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      status: 400,
+    };
 
   link.collection.name = link.collection.name.trim();
 
@@ -45,14 +61,33 @@ export default async function postLink(
   const description =
     link.description && link.description !== ""
       ? link.description
-      : await getTitle(link.url);
+      : link.url
+      ? await getTitle(link.url)
+      : undefined;
+
+  const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
+
+  if (validatedUrl === null)
+    return { response: "File is too large to be stored.", status: 400 };
+
+  const contentType = validatedUrl?.get("content-type");
+  let linkType = "url";
+  let imageExtension = "png";
+
+  if (!link.url) linkType = link.type;
+  else if (contentType === "application/pdf") linkType = "pdf";
+  else if (contentType?.startsWith("image")) {
+    linkType = "image";
+    if (contentType === "image/jpeg") imageExtension = "jpeg";
+    else if (contentType === "image/png") imageExtension = "png";
+  }
 
   const newLink = await prisma.link.create({
     data: {
       url: link.url,
       name: link.name,
       description,
-      readabilityPath: "pending",
+      type: linkType,
       collection: {
         connectOrCreate: {
           where: {
@@ -90,8 +125,6 @@ export default async function postLink(
   });
 
   createFolder({ filePath: `archives/${newLink.collectionId}` });
-
-  archive(newLink.id, newLink.url, userId);
 
   return { response: newLink, status: 200 };
 }
