@@ -97,8 +97,8 @@ export default function LinkCardCompact({ link, count, className }: Props) {
           link={link}
           collection={collection}
           position="top-3 right-3"
-          toggleShowInfo={() => setShowInfo(!showInfo)}
-          linkInfo={showInfo}
+          // toggleShowInfo={() => setShowInfo(!showInfo)}
+          // linkInfo={showInfo}
         />
         {showInfo ? (
           <div>

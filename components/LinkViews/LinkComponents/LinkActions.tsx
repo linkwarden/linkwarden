@@ -15,8 +15,8 @@ type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
   position?: string;
-  toggleShowInfo: () => void;
-  linkInfo: boolean;
+  toggleShowInfo?: () => void;
+  linkInfo?: boolean;
 };
 
 export default function LinkActions({
@@ -92,18 +92,20 @@ export default function LinkActions({
               </div>
             </li>
           ) : undefined}
-          <li>
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => {
-                (document?.activeElement as HTMLElement)?.blur();
-                toggleShowInfo();
-              }}
-            >
-              {!linkInfo ? "Show" : "Hide"} Link Details
-            </div>
-          </li>
+          {linkInfo !== undefined && toggleShowInfo ? (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  toggleShowInfo();
+                }}
+              >
+                {!linkInfo ? "Show" : "Hide"} Link Details
+              </div>
+            </li>
+          ) : undefined}
           {permissions === true || permissions?.canUpdate ? (
             <li>
               <div
