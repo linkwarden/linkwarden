@@ -1,13 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
-export default function Password() {
+export default function Delete() {
   const [password, setPassword] = useState("");
   const [comment, setComment] = useState<string>();
   const [feedback, setFeedback] = useState<string>();
@@ -54,12 +52,14 @@ export default function Password() {
 
   return (
     <CenteredForm>
-      <div className="p-4 mx-auto relative flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100">
+      <div className="p-4 mx-auto relative flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 bg-base-200 rounded-2xl shadow-md border border-neutral-content">
         <Link
           href="/settings/account"
-          className="absolute top-4 left-4 gap-1 items-center select-none cursor-pointer p-2 text-gray-500 dark:text-gray-300 rounded-md duration-100 hover:bg-slate-200 dark:hover:bg-neutral-700"
+          className="absolute top-4 left-4 btn btn-ghost btn-square btn-sm"
         >
-          <FontAwesomeIcon icon={faChevronLeft} className="w-5 h-5" />
+          <i
+            className="bi-chevron-left  text-neutral text-xl"
+          ></i>
         </Link>
         <div className="flex items-center gap-2 w-full rounded-md h-8">
           <p className="text-red-500 dark:text-red-500 truncate w-full text-3xl text-center">
@@ -67,7 +67,7 @@ export default function Password() {
           </p>
         </div>
 
-        <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+        <div className="divider my-0"></div>
 
         <p>
           This will permanently delete all the Links, Collections, Tags, and
@@ -80,22 +80,21 @@ export default function Password() {
 
         {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED !== "true" ? (
           <div>
-            <p className="mb-2 text-black dark:text-white">
-              Confirm Your Password
-            </p>
+            <p className="mb-2">Confirm Your Password</p>
 
             <TextInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••••"
+              className="bg-base-100"
               type="password"
             />
           </div>
         ) : undefined}
 
         {process.env.NEXT_PUBLIC_STRIPE ? (
-          <fieldset className="border rounded-md p-2 border-sky-500">
-            <legend className="px-3 py-1 text-sm sm:text-base border rounded-md border-sky-500">
+          <fieldset className="border rounded-md p-2 border-primary">
+            <legend className="px-3 py-1 text-sm sm:text-base border rounded-md border-primary">
               <b>Optional</b>{" "}
               <i className="min-[390px]:text-sm text-xs">
                 (but it really helps us improve!)
@@ -104,7 +103,7 @@ export default function Password() {
             <label className="w-full flex min-[430px]:items-center items-start gap-2 mb-3 min-[430px]:flex-row flex-col">
               <p className="text-sm">Reason for cancellation:</p>
               <select
-                className="rounded-md p-1 border-sky-100 bg-gray-50 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
+                className="rounded-md p-1 outline-none"
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
               >
@@ -120,7 +119,7 @@ export default function Password() {
               </select>
             </label>
             <div>
-              <p className="text-sm mb-2 text-black dark:text-white">
+              <p className="text-sm mb-2">
                 More information (the more details, the more helpful it&apos;d
                 be)
               </p>
@@ -129,7 +128,7 @@ export default function Password() {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="e.g. I needed a feature that..."
-                className="resize-none w-full rounded-md p-2 border-sky-100 bg-gray-50 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100 dark:bg-neutral-950"
+                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-100 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
               />
             </div>
           </fieldset>

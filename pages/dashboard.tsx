@@ -1,37 +1,27 @@
-import useCollectionStore from "@/store/collections";
-import {
-  faChartSimple,
-  faChevronRight,
-  faClockRotateLeft,
-  faFileImport,
-  faFolder,
-  faHashtag,
-  faLink,
-  faThumbTack,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
+import useCollectionStore from "@/store/collections";
 import useTagStore from "@/store/tags";
-import LinkCard from "@/components/LinkCard";
+import MainLayout from "@/layouts/MainLayout";
+import LinkCard from "@/components/LinkViews/LinkCard";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import useModalStore from "@/store/modals";
 import { toast } from "react-hot-toast";
-import { MigrationFormat, MigrationRequest } from "@/types/global";
-import ClickAwayHandler from "@/components/ClickAwayHandler";
+import { MigrationFormat, MigrationRequest, ViewMode } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
+import NewLinkModal from "@/components/ModalContent/NewLinkModal";
+import PageHeader from "@/components/PageHeader";
+import CardView from "@/components/LinkViews/Layouts/CardView";
+import ListView from "@/components/LinkViews/Layouts/ListView";
+import ViewDropdown from "@/components/ViewDropdown";
+// import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
   const { links } = useLinkStore();
   const { tags } = useTagStore();
-
-  const { setModal } = useModalStore();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
@@ -50,9 +40,11 @@ export default function Dashboard() {
   }, [collections]);
 
   const handleNumberOfLinksToShow = () => {
-    if (window.innerWidth > 1535) {
+    if (window.innerWidth > 1900) {
+      setShowLinks(8);
+    } else if (window.innerWidth > 1280) {
       setShowLinks(6);
-    } else if (window.innerWidth > 1295) {
+    } else if (window.innerWidth > 650) {
       setShowLinks(4);
     } else setShowLinks(3);
   };
@@ -62,8 +54,6 @@ export default function Dashboard() {
   useEffect(() => {
     handleNumberOfLinksToShow();
   }, [width]);
-
-  const [importDropdown, setImportDropdown] = useState(false);
 
   const importBookmarks = async (e: any, format: MigrationFormat) => {
     const file: File = e.target.files[0];
@@ -92,8 +82,6 @@ export default function Dashboard() {
 
         toast.success("Imported the Bookmarks! Reloading the page...");
 
-        setImportDropdown(false);
-
         setTimeout(() => {
           location.reload();
         }, 2000);
@@ -104,72 +92,73 @@ export default function Dashboard() {
     }
   };
 
+  const [newLinkModal, setNewLinkModal] = useState(false);
+
+  const [viewMode, setViewMode] = useState<string>(
+    localStorage.getItem("viewMode") || ViewMode.Card
+  );
+
+  const linkView = {
+    [ViewMode.Card]: CardView,
+    // [ViewMode.Grid]: GridView,
+    [ViewMode.List]: ListView,
+  };
+
+  // @ts-ignore
+  const LinkComponent = linkView[viewMode];
+
   return (
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
-        <div className="flex items-center gap-3">
-          <FontAwesomeIcon
-            icon={faChartSimple}
-            className="sm:w-10 sm:h-10 w-6 h-6 text-sky-500 dark:text-sky-500 drop-shadow"
+        <div className="flex items-center justify-between">
+          <PageHeader
+            icon={"bi-house "}
+            title={"Dashboard"}
+            description={"A brief overview of your data"}
           />
-          <div>
-            <p className="text-3xl capitalize text-black dark:text-white font-thin">
-              Dashboard
-            </p>
-
-            <p className="text-black dark:text-white">
-              A brief overview of your data
-            </p>
-          </div>
+          <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
         </div>
 
         <div>
-          <div className="flex justify-evenly flex-col md:flex-row md:items-center gap-2 md:w-full h-full rounded-2xl p-8 border border-sky-100 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800">
+          <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
-              icon={faLink}
+              icon={"bi-link-45deg"}
             />
 
-            <hr className="border-sky-100 dark:border-neutral-700 md:hidden my-5" />
-            <div className="h-24 border-1 border-l border-sky-100 dark:border-neutral-700 hidden md:block"></div>
+            <div className="divider xl:divider-horizontal"></div>
 
             <DashboardItem
               name={collections.length === 1 ? "Collection" : "Collections"}
               value={collections.length}
-              icon={faFolder}
+              icon={"bi-folder"}
             />
 
-            <hr className="border-sky-100 dark:border-neutral-700 md:hidden my-5" />
-            <div className="h-24 border-1 border-r border-sky-100 dark:border-neutral-700 hidden md:block"></div>
+            <div className="divider xl:divider-horizontal"></div>
 
             <DashboardItem
               name={tags.length === 1 ? "Tag" : "Tags"}
               value={tags.length}
-              icon={faHashtag}
+              icon={"bi-hash"}
             />
           </div>
         </div>
 
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
-            <FontAwesomeIcon
-              icon={faClockRotateLeft}
-              className="w-5 h-5 text-sky-500 dark:text-sky-500 drop-shadow"
+            <PageHeader
+              icon={"bi-clock-history"}
+              title={"Recent"}
+              description={"Recently added Links"}
             />
-            <p className="text-2xl text-black dark:text-white">
-              Recently Added Links
-            </p>
           </div>
           <Link
             href="/links"
-            className="text-black dark:text-white flex items-center gap-2 cursor-pointer"
+            className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
           >
             View All
-            <FontAwesomeIcon
-              icon={faChevronRight}
-              className={`w-4 h-4 text-black dark:text-white`}
-            />
+            <i className="bi-chevron-right text-sm"></i>
           </Link>
         </div>
 
@@ -179,112 +168,86 @@ export default function Dashboard() {
         >
           {links[0] ? (
             <div className="w-full">
-              <div
-                className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
-              >
-                {links.slice(0, showLinks).map((e, i) => (
-                  <LinkCard key={i} link={e} count={i} />
-                ))}
-              </div>
+              <LinkComponent links={links.slice(0, showLinks)} />
             </div>
           ) : (
             <div
               style={{ flex: "1 1 auto" }}
-              className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+              className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200"
             >
-              <p className="text-center text-2xl text-black dark:text-white">
+              <p className="text-center text-2xl">
                 View Your Recently Added Links Here!
               </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
                 This section will view your latest added Links across every
                 Collections you have access to.
               </p>
 
-              <div className="text-center text-black dark:text-white w-full mt-4 flex flex-wrap gap-4 justify-center">
+              <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
                 <div
                   onClick={() => {
-                    setModal({
-                      modal: "LINK",
-                      state: true,
-                      method: "CREATE",
-                    });
+                    setNewLinkModal(true);
                   }}
-                  className="inline-flex gap-1 relative w-[11.4rem] items-center font-semibold select-none cursor-pointer p-2 px-3 rounded-md dark:hover:bg-sky-600 text-white bg-sky-700 hover:bg-sky-600 duration-100 group"
+                  className="inline-flex items-center gap-2 text-sm btn btn-accent dark:border-violet-400 text-white"
                 >
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="w-5 h-5 group-hover:ml-[4.325rem] absolute duration-100"
-                  />
-                  <span className="group-hover:opacity-0 text-right w-full duration-100">
-                    Create New Link
+                  <i className="bi-plus-lg text-xl duration-100"></i>
+                  <span className="group-hover:opacity-0 text-right duration-100">
+                    Add New Link
                   </span>
                 </div>
 
-                <div className="relative">
+                <div className="dropdown dropdown-bottom">
                   <div
-                    onClick={() => setImportDropdown(!importDropdown)}
+                    tabIndex={0}
+                    role="button"
+                    className="inline-flex items-center gap-2 text-sm btn btn-outline btn-neutral"
                     id="import-dropdown"
-                    className="flex gap-2 select-none text-sm cursor-pointer p-2 px-3 rounded-md border dark:hover:border-sky-600 text-black border-black dark:text-white dark:border-white hover:border-sky-500 hover:dark:border-sky-500 hover:text-sky-500 hover:dark:text-sky-500 duration-100 group"
                   >
-                    <FontAwesomeIcon
-                      icon={faFileImport}
-                      className="w-5 h-5 duration-100"
-                      id="import-dropdown"
-                    />
-                    <span
-                      className="text-right w-full duration-100"
-                      id="import-dropdown"
-                    >
-                      Import Your Bookmarks
-                    </span>
+                    <i className="bi-cloud-upload text-xl duration-100"></i>
+                    <p>Import From</p>
                   </div>
-                  {importDropdown ? (
-                    <ClickAwayHandler
-                      onClickOutside={(e: Event) => {
-                        const target = e.target as HTMLInputElement;
-                        if (target.id !== "import-dropdown")
-                          setImportDropdown(false);
-                      }}
-                      className={`absolute text-black dark:text-white top-10 left-0 w-52 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
-                    >
-                      <div className="cursor-pointer rounded-md">
-                        <label
-                          htmlFor="import-linkwarden-file"
-                          title="JSON File"
-                          className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
-                        >
-                          Linkwarden File...
-                          <input
-                            type="file"
-                            name="photo"
-                            id="import-linkwarden-file"
-                            accept=".json"
-                            className="hidden"
-                            onChange={(e) =>
-                              importBookmarks(e, MigrationFormat.linkwarden)
-                            }
-                          />
-                        </label>
-                        <label
-                          htmlFor="import-html-file"
-                          title="HTML File"
-                          className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
-                        >
-                          Bookmarks HTML file...
-                          <input
-                            type="file"
-                            name="photo"
-                            id="import-html-file"
-                            accept=".html"
-                            className="hidden"
-                            onChange={(e) =>
-                              importBookmarks(e, MigrationFormat.htmlFile)
-                            }
-                          />
-                        </label>
-                      </div>
-                    </ClickAwayHandler>
-                  ) : null}
+                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                    <li>
+                      <label
+                        tabIndex={0}
+                        role="button"
+                        htmlFor="import-linkwarden-file"
+                        title="JSON File"
+                      >
+                        From Linkwarden
+                        <input
+                          type="file"
+                          name="photo"
+                          id="import-linkwarden-file"
+                          accept=".json"
+                          className="hidden"
+                          onChange={(e) =>
+                            importBookmarks(e, MigrationFormat.linkwarden)
+                          }
+                        />
+                      </label>
+                    </li>
+                    <li>
+                      <label
+                        tabIndex={0}
+                        role="button"
+                        htmlFor="import-html-file"
+                        title="HTML File"
+                      >
+                        From Bookmarks HTML file
+                        <input
+                          type="file"
+                          name="photo"
+                          id="import-html-file"
+                          accept=".html"
+                          className="hidden"
+                          onChange={(e) =>
+                            importBookmarks(e, MigrationFormat.htmlFile)
+                          }
+                        />
+                      </label>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -293,21 +256,18 @@ export default function Dashboard() {
 
         <div className="flex justify-between items-center">
           <div className="flex gap-2 items-center">
-            <FontAwesomeIcon
-              icon={faThumbTack}
-              className="w-5 h-5 text-sky-500 dark:text-sky-500 drop-shadow"
+            <PageHeader
+              icon={"bi-pin-angle"}
+              title={"Pinned"}
+              description={"Your pinned Links"}
             />
-            <p className="text-2xl text-black dark:text-white">Pinned Links</p>
           </div>
           <Link
             href="/links/pinned"
-            className="text-black dark:text-white flex items-center gap-2 cursor-pointer"
+            className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
           >
             View All
-            <FontAwesomeIcon
-              icon={faChevronRight}
-              className={`w-4 h-4 text-black dark:text-white`}
-            />
+            <i className="bi-chevron-right text-sm "></i>
           </Link>
         </div>
 
@@ -318,10 +278,9 @@ export default function Dashboard() {
           {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
               <div
-                className={`grid overflow-hidden 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-5 w-full`}
+                className={`grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 w-full`}
               >
                 {links
-
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
                   .map((e, i) => <LinkCard key={i} link={e} count={i} />)
                   .slice(0, showLinks)}
@@ -330,12 +289,12 @@ export default function Dashboard() {
           ) : (
             <div
               style={{ flex: "1 1 auto" }}
-              className="sky-shadow flex flex-col justify-center h-full border border-solid border-sky-100 dark:border-neutral-700 w-full mx-auto p-10 rounded-2xl bg-gray-50 dark:bg-neutral-800"
+              className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200"
             >
-              <p className="text-center text-2xl text-black dark:text-white">
+              <p className="text-center text-2xl">
                 Pin Your Favorite Links Here!
               </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-gray-500 dark:text-gray-300 text-sm mt-2">
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
                 You can Pin your favorite Links by clicking on the three dots on
                 each Link and clicking{" "}
                 <span className="font-semibold">Pin to Dashboard</span>.
@@ -344,6 +303,9 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+      {newLinkModal ? (
+        <NewLinkModal onClose={() => setNewLinkModal(false)} />
+      ) : undefined}
     </MainLayout>
   );
 }

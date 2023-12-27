@@ -6,8 +6,8 @@ export default async function getDashboardData(
   query: LinkRequestQuery
 ) {
   let order: any;
-  if (query.sort === Sort.DateNewestFirst) order = { createdAt: "desc" };
-  else if (query.sort === Sort.DateOldestFirst) order = { createdAt: "asc" };
+  if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
+  else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
   else if (query.sort === Sort.DescriptionAZ) order = { description: "asc" };
@@ -42,11 +42,11 @@ export default async function getDashboardData(
         select: { id: true },
       },
     },
-    orderBy: order || { createdAt: "desc" },
+    orderBy: order || { id: "desc" },
   });
 
   const recentlyAddedLinks = await prisma.link.findMany({
-    take: 6,
+    take: 8,
     where: {
       collection: {
         OR: [
@@ -67,11 +67,11 @@ export default async function getDashboardData(
         select: { id: true },
       },
     },
-    orderBy: order || { createdAt: "desc" },
+    orderBy: order || { id: "desc" },
   });
 
   const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
-    (a, b) => (new Date(b.createdAt) as any) - (new Date(a.createdAt) as any)
+    (a, b) => (new Date(b.id) as any) - (new Date(a.id) as any)
   );
 
   return { response: links, status: 200 };

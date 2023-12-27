@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
@@ -12,7 +10,6 @@ import SubmitButton from "@/components/SubmitButton";
 import React from "react";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import Link from "next/link";
-import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Checkbox from "@/components/Checkbox";
 
 export default function Account() {
@@ -87,9 +84,9 @@ export default function Account() {
     setSubmitLoader(false);
   };
 
-  const [importDropdown, setImportDropdown] = useState(false);
-
   const importBookmarks = async (e: any, format: MigrationFormat) => {
+    setSubmitLoader(true);
+
     const file: File = e.target.files[0];
 
     if (file) {
@@ -114,18 +111,19 @@ export default function Account() {
 
         toast.dismiss(load);
 
-        toast.success("Imported the Bookmarks! Reloading the page...");
-
-        setImportDropdown(false);
-
-        setTimeout(() => {
-          location.reload();
-        }, 2000);
+        if (response.ok) {
+          toast.success("Imported the Bookmarks! Reloading the page...");
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } else toast.error(data.response as string);
       };
       reader.onerror = function (e) {
         console.log("Error:", e);
       };
     }
+
+    setSubmitLoader(false);
   };
 
   const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState("");
@@ -153,37 +151,40 @@ export default function Account() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">Account Settings</p>
 
-      <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+      <div className="divider my-3"></div>
 
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-5">
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
           <div className="flex flex-col gap-3">
             <div>
-              <p className="text-black dark:text-white mb-2">Display Name</p>
+              <p className="mb-2">Display Name</p>
               <TextInput
                 value={user.name || ""}
+                className="bg-base-200"
                 onChange={(e) => setUser({ ...user, name: e.target.value })}
               />
             </div>
             <div>
-              <p className="text-black dark:text-white mb-2">Username</p>
+              <p className="mb-2">Username</p>
               <TextInput
                 value={user.username || ""}
+                className="bg-base-200"
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
               />
             </div>
 
             {emailEnabled ? (
               <div>
-                <p className="text-black dark:text-white mb-2">Email</p>
+                <p className="mb-2">Email</p>
                 {user.email !== account.email &&
                 process.env.NEXT_PUBLIC_STRIPE === "true" ? (
-                  <p className="text-gray-500 dark:text-gray-400 mb-2 text-sm">
+                  <p className="text-neutral mb-2 text-sm">
                     Updating this field will change your billing email as well
                   </p>
                 ) : undefined}
                 <TextInput
                   value={user.email || ""}
+                  className="bg-base-200"
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                 />
               </div>
@@ -191,14 +192,12 @@ export default function Account() {
           </div>
 
           <div className="sm:row-span-2 sm:justify-self-center mx-auto my-3">
-            <p className="text-black dark:text-white mb-2 text-center">
-              Profile Photo
-            </p>
+            <p className="mb-2 text-center">Profile Photo</p>
             <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
               <ProfilePhoto
                 priority={true}
                 src={user.image ? user.image : undefined}
-                className="h-auto border-none w-28"
+                large={true}
               />
               {user.image && (
                 <div
@@ -208,13 +207,13 @@ export default function Account() {
                       image: "",
                     })
                   }
-                  className="absolute top-1 left-1 w-5 h-5 flex items-center justify-center border p-1 border-slate-200 dark:border-neutral-700 rounded-full bg-white dark:bg-neutral-800 text-center select-none cursor-pointer duration-100 hover:text-red-500"
+                  className="absolute top-1 left-1 btn btn-xs btn-circle btn-neutral btn-outline bg-base-100"
                 >
-                  <FontAwesomeIcon icon={faClose} className="w-3 h-3" />
+                  <i className="bi-x"></i>
                 </div>
               )}
               <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
-                <label className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
+                <label className="btn btn-xs btn-neutral btn-outline bg-base-100">
                   Browse...
                   <input
                     type="file"
@@ -232,86 +231,77 @@ export default function Account() {
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="text-black dark:text-white truncate w-full pr-7 text-3xl font-thin">
+            <p className="truncate w-full pr-7 text-3xl font-thin">
               Import & Export
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+          <div className="divider my-3"></div>
 
           <div className="flex gap-3 flex-col">
             <div>
-              <p className="text-black dark:text-white mb-2">
-                Import your data from other platforms.
-              </p>
-              <div
-                onClick={() => setImportDropdown(true)}
-                className="w-fit relative"
-                id="import-dropdown"
-              >
+              <p className="mb-2">Import your data from other platforms.</p>
+              <div className="dropdown dropdown-bottom">
                 <div
+                  tabIndex={0}
+                  role="button"
+                  className="flex gap-2 text-sm btn btn-outline btn-neutral group"
                   id="import-dropdown"
-                  className="border border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600"
                 >
-                  Import From
+                  <i className="bi-cloud-upload text-xl duration-100"></i>
+                  <p>Import From</p>
                 </div>
-                {importDropdown ? (
-                  <ClickAwayHandler
-                    onClickOutside={(e: Event) => {
-                      const target = e.target as HTMLInputElement;
-                      if (target.id !== "import-dropdown")
-                        setImportDropdown(false);
-                    }}
-                    className={`absolute top-7 left-0 w-52 py-1 shadow-md border border-sky-100 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 rounded-md flex flex-col z-20`}
-                  >
-                    <div className="cursor-pointer rounded-md">
-                      <label
-                        htmlFor="import-linkwarden-file"
-                        title="JSON File"
-                        className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
-                      >
-                        Linkwarden File...
-                        <input
-                          type="file"
-                          name="photo"
-                          id="import-linkwarden-file"
-                          accept=".json"
-                          className="hidden"
-                          onChange={(e) =>
-                            importBookmarks(e, MigrationFormat.linkwarden)
-                          }
-                        />
-                      </label>
-                      <label
-                        htmlFor="import-html-file"
-                        title="HTML File"
-                        className="flex items-center gap-2 py-1 px-2 hover:bg-slate-200 hover:dark:bg-neutral-700  duration-100 cursor-pointer"
-                      >
-                        Bookmarks HTML file...
-                        <input
-                          type="file"
-                          name="photo"
-                          id="import-html-file"
-                          accept=".html"
-                          className="hidden"
-                          onChange={(e) =>
-                            importBookmarks(e, MigrationFormat.htmlFile)
-                          }
-                        />
-                      </label>
-                    </div>
-                  </ClickAwayHandler>
-                ) : null}
+                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                  <li>
+                    <label
+                      tabIndex={0}
+                      role="button"
+                      htmlFor="import-linkwarden-file"
+                      title="JSON File"
+                    >
+                      From Linkwarden
+                      <input
+                        type="file"
+                        name="photo"
+                        id="import-linkwarden-file"
+                        accept=".json"
+                        className="hidden"
+                        onChange={(e) =>
+                          importBookmarks(e, MigrationFormat.linkwarden)
+                        }
+                      />
+                    </label>
+                  </li>
+                  <li>
+                    <label
+                      tabIndex={0}
+                      role="button"
+                      htmlFor="import-html-file"
+                      title="HTML File"
+                    >
+                      From Bookmarks HTML file
+                      <input
+                        type="file"
+                        name="photo"
+                        id="import-html-file"
+                        accept=".html"
+                        className="hidden"
+                        onChange={(e) =>
+                          importBookmarks(e, MigrationFormat.htmlFile)
+                        }
+                      />
+                    </label>
+                  </li>
+                </ul>
               </div>
             </div>
 
             <div>
-              <p className="text-black dark:text-white mb-2">
-                Download your data instantly.
-              </p>
+              <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
-                <div className="border w-fit border-slate-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-800 px-2 text-center select-none cursor-pointer duration-100 hover:border-sky-300 hover:dark:border-sky-600">
-                  Export Data
+                <div className="flex w-fit gap-2 text-sm btn btn-outline btn-neutral group">
+                  <i className="bi-cloud-download text-xl duration-100"></i>
+                  <p>Export Data</p>
                 </div>
               </Link>
             </div>
@@ -320,12 +310,12 @@ export default function Account() {
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="text-black dark:text-white truncate w-full pr-7 text-3xl font-thin">
+            <p className="truncate w-full pr-7 text-3xl font-thin">
               Profile Visibility
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+          <div className="divider my-3"></div>
 
           <Checkbox
             label="Make profile private"
@@ -333,21 +323,19 @@ export default function Account() {
             onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
           />
 
-          <p className="text-gray-500 dark:text-gray-300 text-sm">
+          <p className="text-neutral text-sm">
             This will limit who can find and add you to new Collections.
           </p>
 
           {user.isPrivate && (
             <div className="pl-5">
-              <p className="text-black dark:text-white mt-2">
-                Whitelisted Users
-              </p>
-              <p className="text-gray-500 dark:text-gray-300 text-sm mb-3">
+              <p className="mt-2">Whitelisted Users</p>
+              <p className="text-neutral text-sm mb-3">
                 Please provide the Username of the users you wish to grant
                 visibility to your profile. Separated by comma.
               </p>
               <textarea
-                className="w-full resize-none border rounded-md duration-100 bg-gray-50 dark:bg-neutral-950 p-2 outline-none border-sky-100 dark:border-neutral-700 focus:border-sky-300 dark:focus:border-sky-600"
+                className="w-full resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
                 placeholder="Your profile is hidden from everyone right now..."
                 value={whitelistedUsersTextbox}
                 onChange={(e) => setWhiteListedUsersTextbox(e.target.value)}
@@ -370,7 +358,7 @@ export default function Account() {
             </p>
           </div>
 
-          <hr className="my-3 border-1 border-sky-100 dark:border-neutral-700" />
+          <div className="divider my-3"></div>
 
           <p>
             This will permanently delete ALL the Links, Collections, Tags, and
@@ -381,14 +369,14 @@ export default function Account() {
             You will be prompted to enter your password before the deletion
             process.
           </p>
-
-          <Link
-            href="/settings/delete"
-            className="mx-auto lg:mx-0 text-white mt-3 flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit bg-red-500 hover:bg-red-400 cursor-pointer"
-          >
-            <p className="text-center w-full">Delete Your Account</p>
-          </Link>
         </div>
+
+        <Link
+          href="/settings/delete"
+          className="mx-auto lg:mx-0 text-white flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit bg-red-500 hover:bg-red-400 cursor-pointer"
+        >
+          <p className="text-center w-full">Delete Your Account</p>
+        </Link>
       </div>
     </SettingsLayout>
   );

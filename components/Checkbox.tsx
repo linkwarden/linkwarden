@@ -1,5 +1,3 @@
-import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEventHandler } from "react";
 
 type Props = {
@@ -12,23 +10,17 @@ type Props = {
 export default function Checkbox({ label, state, className, onClick }: Props) {
   return (
     <label
-      className={`cursor-pointer flex items-center gap-2 ${className || ""}`}
+      className={`label cursor-pointer flex gap-2 justify-start ${
+        className || ""
+      }`}
     >
       <input
         type="checkbox"
         checked={state}
         onChange={onClick}
-        className="peer sr-only"
+        className="checkbox checkbox-primary"
       />
-      <FontAwesomeIcon
-        icon={faSquareCheck}
-        className="w-5 h-5 text-sky-500 dark:text-sky-500 peer-checked:block hidden"
-      />
-      <FontAwesomeIcon
-        icon={faSquare}
-        className="w-5 h-5 text-sky-500 dark:text-sky-500 peer-checked:hidden block"
-      />
-      <span className="rounded select-none">{label}</span>
+      <span className="label-text">{label}</span>
     </label>
   );
 }
