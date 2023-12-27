@@ -2,8 +2,7 @@
   <img src="./assets/logo.png" width="100px" />
   <h1>Linkwarden</h1>
 
-<a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?style=flat&logo=discord&logoColor=white&color=%2350c728
-" alt="Discord"></a>
+<a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?logo=discord&style=flat" alt="Discord"></a>
 <a href="https://twitter.com/LinkwardenHQ"><img src="https://img.shields.io/twitter/follow/linkwarden" alt="Twitter"></a>
 
 <img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/linkwarden/linkwarden/latest/dev?style=for-the-badge&label=COMMITS%20SINCE%20LATEST%20RELEASE">
