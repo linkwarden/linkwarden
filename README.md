@@ -2,8 +2,10 @@
   <img src="./assets/logo.png" width="100px" />
   <h1>Linkwarden</h1>
 
-<a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?style=for-the-badge&logo=discord&logoColor=white&color=%2350c728
+<a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?style=flat&logo=discord&logoColor=white&color=%2350c728
 " alt="Discord"></a>
+<a href="https://twitter.com/LinkwardenHQ"><img src="https://img.shields.io/twitter/follow/linkwarden" alt="Twitter"></a>
+
 <img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/linkwarden/linkwarden/latest/dev?style=for-the-badge&label=COMMITS%20SINCE%20LATEST%20RELEASE">
 
 </div>
@@ -75,7 +77,9 @@ Join and follow us in the following platforms to stay up to date about the most 
 
 <a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?style=flat-square&logo=discord&logoColor=white&label=DISCORD&color=%2350c728
 " alt="Discord"></a>
+
 <a href="https://fosstodon.org/@linkwarden"><img src="https://img.shields.io/mastodon/follow/110748840237143200?domain=https%3A%2F%2Ffosstodon.org&style=flat-square&logo=mastodon&logoColor=white&label=MASTODON&color=%2350c728" alt="Mastodon"></a>
+
 <a href="https://twitter.com/LinkwardenHQ"><img src="https://img.shields.io/twitter/follow/linkwarden?label=TWITTER&style=flat-square&logo=x&logoColor=white&color=%2350c728" alt="Twitter"></a>
 
 ## Suggestions
