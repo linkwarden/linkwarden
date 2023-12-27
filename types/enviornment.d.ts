@@ -11,6 +11,7 @@ declare global {
       RE_ARCHIVE_LIMIT?: string;
       NEXT_PUBLIC_MAX_FILE_SIZE?: string;
       MAX_LINKS_PER_USER?: string;
+      ARCHIVE_TAKE_COUNT?: string;
 
       SPACES_KEY?: string;
       SPACES_SECRET?: string;
