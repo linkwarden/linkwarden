@@ -10,7 +10,7 @@ export default function AnnouncementBar({ toggleAnnouncementBar }: Props) {
     <div className="fixed w-full z-20 bg-base-200">
       <div className="w-full h-10 rainbow flex items-center justify-center">
         <div className="w-fit font-semibold">
-          🎉️ See what's new in{" "}
+          🎉️ See what&apos;s new in{" "}
           <Link
             href="https://blog.linkwarden.app/releases/v2.4"
             target="_blank"
