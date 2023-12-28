@@ -88,7 +88,7 @@ async function migrateToV2() {
     if (res) {
       await prisma.link.update({
         where: { id: link.id },
-        data: { pdfPath: path },
+        data: { pdf: path },
       });
       console.log(`${link.id}`);
     } else {
@@ -105,7 +105,7 @@ async function migrateToV2() {
     if (res) {
       await prisma.link.update({
         where: { id: link.id },
-        data: { screenshotPath: path },
+        data: { image: path },
       });
       console.log(`${link.id}`);
     } else {

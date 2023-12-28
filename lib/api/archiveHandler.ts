@@ -171,7 +171,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         await page.goBack();
       } else if (!link.preview?.startsWith("archive")) {
         console.log("No og:image found");
-        page
+        await page
           .screenshot({ type: "jpeg", quality: 20 })
           .then((screenshot) => {
             return createFile({
