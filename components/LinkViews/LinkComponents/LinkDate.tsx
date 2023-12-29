@@ -1,7 +1,9 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import React from "react";
 
-export default function LinkDate({ link }: {
+export default function LinkDate({
+  link,
+}: {
   link: LinkIncludingShortenedCollectionAndTags;
 }) {
   const formattedDate = new Date(link.createdAt as string).toLocaleString(
@@ -10,7 +12,7 @@ export default function LinkDate({ link }: {
       year: "numeric",
       month: "short",
       day: "numeric",
-    },
+    }
   );
 
   return (
