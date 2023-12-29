@@ -142,7 +142,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           if (buffer) {
             // Load the image using Jimp
             Jimp.read(buffer, async (err, image) => {
-              if (image) {
+              if (image && !err) {
                 image?.resize(1280, Jimp.AUTO).quality(20);
                 const processedBuffer = await image?.getBufferAsync(
                   Jimp.MIME_JPEG
