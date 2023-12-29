@@ -22,9 +22,7 @@ export default function FilterSearchDropdown({
         role="button"
         className="btn btn-sm btn-square btn-ghost"
       >
-        <i
-          className="bi-funnel text-neutral text-2xl"
-        ></i>
+        <i className="bi-funnel text-neutral text-2xl"></i>
       </div>
       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mt-1">
         <li>
