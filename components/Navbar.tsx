@@ -26,12 +26,12 @@ export default function Navbar() {
   const { width } = useWindowDimensions();
 
   const handleToggle = () => {
-    if (settings.theme === "dark") {
-      updateSettings({ theme: "light" });
-    } else {
-      updateSettings({ theme: "dark" });
-    }
+    const [colorTheme, mode] = (settings.theme || "default-light").split('-');
+    const newMode = mode === "dark" ? "light" : "dark";
+    const newTheme = `${colorTheme}-${newMode}`;
+    updateSettings({ theme: newTheme });
   };
+  
 
   useEffect(() => {
     setSidebar(false);
@@ -135,16 +135,16 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
-              <div
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  handleToggle();
-                }}
-                tabIndex={0}
-                role="button"
-              >
-                Switch to {settings.theme === "light" ? "Dark" : "Light"}
-              </div>
+                <div
+                    onClick={() => {
+                        (document?.activeElement as HTMLElement)?.blur();
+                        handleToggle();
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    >
+                    Switch to {(settings.theme || "default-light").endsWith("-dark") ? "Light" : "Dark"}
+                </div>
             </li>
             <li>
               <div
