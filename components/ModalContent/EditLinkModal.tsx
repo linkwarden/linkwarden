@@ -86,7 +86,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
           title={link.url}
           target="_blank"
         >
-          <i className="bi-link-45deg text-xl"/>
+          <i className="bi-link-45deg text-xl" />
           <p>{shortendURL}</p>
         </Link>
       ) : undefined}
@@ -116,13 +116,13 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
                 defaultValue={
                   link.collection.id
                     ? {
-                      value: link.collection.id,
-                      label: link.collection.name,
-                    }
+                        value: link.collection.id,
+                        label: link.collection.name,
+                      }
                     : {
-                      value: null as unknown as number,
-                      label: "Unorganized",
-                    }
+                        value: null as unknown as number,
+                        label: "Unorganized",
+                      }
                 }
               />
             ) : null}

@@ -57,9 +57,7 @@ export default function Delete() {
           href="/settings/account"
           className="absolute top-4 left-4 btn btn-ghost btn-square btn-sm"
         >
-          <i
-            className="bi-chevron-left  text-neutral text-xl"
-          ></i>
+          <i className="bi-chevron-left  text-neutral text-xl"></i>
         </Link>
         <div className="flex items-center gap-2 w-full rounded-md h-8">
           <p className="text-red-500 dark:text-red-500 truncate w-full text-3xl text-center">

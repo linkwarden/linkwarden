@@ -15,7 +15,8 @@
     "worker:prod": "ts-node --transpile-only --skip-project scripts/worker.ts",
     "start": "concurrently \"next start\" \"yarn worker:prod\"",
     "build": "next build",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.0.1",
@@ -69,6 +70,7 @@
     "daisyui": "^4.4.2",
     "nodemon": "^3.0.2",
     "postcss": "^8.4.26",
+    "prettier": "3.1.1",
     "prisma": "^5.1.0",
     "tailwindcss": "^3.3.3",
     "ts-node": "^10.9.2",

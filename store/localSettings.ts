@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import {ViewMode} from "@/types/global";
+import { ViewMode } from "@/types/global";
 
 type LocalSettings = {
   theme?: string;
-  viewMode?: string
+  viewMode?: string;
 };
 
 type LocalSettingsStore = {
