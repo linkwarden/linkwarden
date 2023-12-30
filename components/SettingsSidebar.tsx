@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
-  const LINKWARDEN_VERSION = "v2.4.0";
+  const LINKWARDEN_VERSION = "v2.4.4";
 
   const { collections } = useCollectionStore();
 
