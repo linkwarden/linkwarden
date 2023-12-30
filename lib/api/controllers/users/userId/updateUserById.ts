@@ -23,6 +23,7 @@ export default async function updateUserById(
       id: userId,
     },
   });
+
   if (ssoUser) {
     // deny changes to SSO-defined properties
     if (data.email !== user?.email) {
@@ -49,7 +50,7 @@ export default async function updateUserById(
         status: 400,
       };
     }
-    if (data.image !== "") {
+    if (data.image?.startsWith("data:image/jpeg;base64")) {
       return {
         response: "SSO Users cannot change their avatar.",
         status: 400,

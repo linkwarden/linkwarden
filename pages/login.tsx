@@ -3,7 +3,7 @@ import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useState, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import { getLogins } from "./api/v1/logins";
 import { InferGetServerSidePropsType } from "next";
@@ -131,18 +131,17 @@ export default function Login({
     const Buttons: any = [];
     availableLogins.buttonAuths.forEach((value, index) => {
       Buttons.push(
-        <>
+        <React.Fragment key={index}>
           {index !== 0 ? <div className="divider my-1">OR</div> : undefined}
 
           <AccentSubmitButton
-            key={index}
             type="button"
             onClick={() => loginUserButton(value.method)}
             label={`Sign in with ${value.name}`}
             className=" w-full text-center"
             loading={submitLoader}
           />
-        </>
+        </React.Fragment>
       );
     });
     return Buttons;
