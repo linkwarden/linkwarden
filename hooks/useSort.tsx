@@ -8,7 +8,7 @@ import { SetStateAction, useEffect } from "react";
 type Props<
   T extends
     | CollectionIncludingMembersAndLinkCount
-    | LinkIncludingShortenedCollectionAndTags
+    | LinkIncludingShortenedCollectionAndTags,
 > = {
   sortBy: Sort;
 
@@ -19,7 +19,7 @@ type Props<
 export default function useSort<
   T extends
     | CollectionIncludingMembersAndLinkCount
-    | LinkIncludingShortenedCollectionAndTags
+    | LinkIncludingShortenedCollectionAndTags,
 >({ sortBy, data, setData }: Props<T>) {
   useEffect(() => {
     const dataArray = [...data];

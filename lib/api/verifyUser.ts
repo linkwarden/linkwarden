@@ -42,7 +42,8 @@ export default async function verifyUser({
     return null;
   }
 
-  if (!user.username && !ssoUser) { // SSO users don't need a username
+  if (!user.username && !ssoUser) {
+    // SSO users don't need a username
     res.status(401).json({
       response: "Username not found.",
     });

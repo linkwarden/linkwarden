@@ -227,10 +227,10 @@ export default function EditCollectionSharingModal({
                     e.canCreate && e.canUpdate && e.canDelete
                       ? "Admin"
                       : e.canCreate && !e.canUpdate && !e.canDelete
-                      ? "Contributor"
-                      : !e.canCreate && !e.canUpdate && !e.canDelete
-                      ? "Viewer"
-                      : undefined;
+                        ? "Contributor"
+                        : !e.canCreate && !e.canUpdate && !e.canDelete
+                          ? "Viewer"
+                          : undefined;
 
                   return (
                     <>

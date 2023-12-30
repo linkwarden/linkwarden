@@ -17,232 +17,260 @@ type LinksAndCollectionAndOwner = Link & {
   };
 };
 
+const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
+
 export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ headless: false });
   const context = await browser.newContext(devices["Desktop Chrome"]);
   const page = await context.newPage();
 
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(
+      () =>
+        reject(
+          new Error(
+            `Browser has been open for more than ${BROWSER_TIMEOUT} minutes.`
+          )
+        ),
+      BROWSER_TIMEOUT * 60000
+    );
+  });
+
   try {
-    const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
+    await Promise.race([
+      (async () => {
+        const validatedUrl = link.url
+          ? await validateUrlSize(link.url)
+          : undefined;
 
-    if (validatedUrl === null) throw "File is too large to be stored.";
+        if (validatedUrl === null) throw "File is too large to be stored.";
 
-    const contentType = validatedUrl?.get("content-type");
-    let linkType = "url";
-    let imageExtension = "png";
+        const contentType = validatedUrl?.get("content-type");
+        let linkType = "url";
+        let imageExtension = "png";
 
-    if (!link.url) linkType = link.type;
-    else if (contentType === "application/pdf") linkType = "pdf";
-    else if (contentType?.startsWith("image")) {
-      linkType = "image";
-      if (contentType === "image/jpeg") imageExtension = "jpeg";
-      else if (contentType === "image/png") imageExtension = "png";
-    }
-
-    const user = link.collection?.owner;
-
-    // send to archive.org
-    if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
-
-    const targetLink = await prisma.link.update({
-      where: { id: link.id },
-      data: {
-        type: linkType,
-        image:
-          user.archiveAsScreenshot && !link.image?.startsWith("archive")
-            ? "pending"
-            : undefined,
-        pdf:
-          user.archiveAsPDF && !link.pdf?.startsWith("archive")
-            ? "pending"
-            : undefined,
-        readable: !link.readable?.startsWith("archive") ? "pending" : undefined,
-        preview: !link.readable?.startsWith("archive") ? "pending" : undefined,
-        lastPreserved: new Date().toISOString(),
-      },
-    });
-
-    if (linkType === "image" && !link.image?.startsWith("archive")) {
-      await imageHandler(link, imageExtension); // archive image (jpeg/png)
-      return;
-    } else if (linkType === "pdf" && !link.pdf?.startsWith("archive")) {
-      await pdfHandler(link); // archive pdf
-      return;
-    } else if (link.url) {
-      // archive url
-
-      await page.goto(link.url, { waitUntil: "domcontentloaded" });
-
-      const content = await page.content();
-
-      // TODO single file
-      // const session = await page.context().newCDPSession(page);
-      // const doc = await session.send("Page.captureSnapshot", {
-      //   format: "mhtml",
-      // });
-      // const saveDocLocally = (doc: any) => {
-      //   console.log(doc);
-      //   return createFile({
-      //     data: doc,
-      //     filePath: `archives/${targetLink.collectionId}/${link.id}.mhtml`,
-      //   });
-      // };
-      // saveDocLocally(doc.data);
-
-      // Readability
-      const window = new JSDOM("").window;
-      const purify = DOMPurify(window);
-      const cleanedUpContent = purify.sanitize(content);
-      const dom = new JSDOM(cleanedUpContent, { url: link.url || "" });
-      const article = new Readability(dom.window.document).parse();
-      const articleText = article?.textContent
-        .replace(/ +(?= )/g, "") // strip out multiple spaces
-        .replace(/(\r\n|\n|\r)/gm, " "); // strip out line breaks
-      if (
-        articleText &&
-        articleText !== "" &&
-        !link.readable?.startsWith("archive")
-      ) {
-        await createFile({
-          data: JSON.stringify(article),
-          filePath: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
-        });
-
-        await prisma.link.update({
-          where: { id: link.id },
-          data: {
-            readable: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
-            textContent: articleText,
-          },
-        });
-      }
-
-      // Preview
-
-      const ogImageUrl = await page.evaluate(() => {
-        const metaTag = document.querySelector('meta[property="og:image"]');
-        return metaTag ? (metaTag as any).content : null;
-      });
-
-      createFolder({
-        filePath: `archives/preview/${link.collectionId}`,
-      });
-
-      if (ogImageUrl) {
-        console.log("Found og:image URL:", ogImageUrl);
-
-        // Download the image
-        const imageResponse = await page.goto(ogImageUrl);
-
-        // Check if imageResponse is not null
-        if (imageResponse && !link.preview?.startsWith("archive")) {
-          const buffer = await imageResponse.body();
-
-          // Check if buffer is not null
-          if (buffer) {
-            // Load the image using Jimp
-            Jimp.read(buffer, async (err, image) => {
-              if (image && !err) {
-                image?.resize(1280, Jimp.AUTO).quality(20);
-                const processedBuffer = await image?.getBufferAsync(
-                  Jimp.MIME_JPEG
-                );
-
-                createFile({
-                  data: processedBuffer,
-                  filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                }).then(() => {
-                  return prisma.link.update({
-                    where: { id: link.id },
-                    data: {
-                      preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                    },
-                  });
-                });
-              }
-            }).catch((err) => {
-              console.error("Error processing the image:", err);
-            });
-          } else {
-            console.log("No image data found.");
-          }
+        if (!link.url) linkType = link.type;
+        else if (contentType === "application/pdf") linkType = "pdf";
+        else if (contentType?.startsWith("image")) {
+          linkType = "image";
+          if (contentType === "image/jpeg") imageExtension = "jpeg";
+          else if (contentType === "image/png") imageExtension = "png";
         }
 
-        await page.goBack();
-      } else if (!link.preview?.startsWith("archive")) {
-        console.log("No og:image found");
-        await page
-          .screenshot({ type: "jpeg", quality: 20 })
-          .then((screenshot) => {
-            return createFile({
-              data: screenshot,
-              filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+        const user = link.collection?.owner;
+
+        // send to archive.org
+        if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
+
+        const targetLink = await prisma.link.update({
+          where: { id: link.id },
+          data: {
+            type: linkType,
+            image:
+              user.archiveAsScreenshot && !link.image?.startsWith("archive")
+                ? "pending"
+                : undefined,
+            pdf:
+              user.archiveAsPDF && !link.pdf?.startsWith("archive")
+                ? "pending"
+                : undefined,
+            readable: !link.readable?.startsWith("archive")
+              ? "pending"
+              : undefined,
+            preview: !link.readable?.startsWith("archive")
+              ? "pending"
+              : undefined,
+            lastPreserved: new Date().toISOString(),
+          },
+        });
+
+        if (linkType === "image" && !link.image?.startsWith("archive")) {
+          await imageHandler(link, imageExtension); // archive image (jpeg/png)
+          return;
+        } else if (linkType === "pdf" && !link.pdf?.startsWith("archive")) {
+          await pdfHandler(link); // archive pdf
+          return;
+        } else if (link.url) {
+          // archive url
+
+          await page.goto(link.url, { waitUntil: "domcontentloaded" });
+
+          const content = await page.content();
+
+          // TODO single file
+          // const session = await page.context().newCDPSession(page);
+          // const doc = await session.send("Page.captureSnapshot", {
+          //   format: "mhtml",
+          // });
+          // const saveDocLocally = (doc: any) => {
+          //   console.log(doc);
+          //   return createFile({
+          //     data: doc,
+          //     filePath: `archives/${targetLink.collectionId}/${link.id}.mhtml`,
+          //   });
+          // };
+          // saveDocLocally(doc.data);
+
+          // Readability
+          const window = new JSDOM("").window;
+          const purify = DOMPurify(window);
+          const cleanedUpContent = purify.sanitize(content);
+          const dom = new JSDOM(cleanedUpContent, { url: link.url || "" });
+          const article = new Readability(dom.window.document).parse();
+          const articleText = article?.textContent
+            .replace(/ +(?= )/g, "") // strip out multiple spaces
+            .replace(/(\r\n|\n|\r)/gm, " "); // strip out line breaks
+          if (
+            articleText &&
+            articleText !== "" &&
+            !link.readable?.startsWith("archive")
+          ) {
+            await createFile({
+              data: JSON.stringify(article),
+              filePath: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
             });
-          })
-          .then(() => {
-            return prisma.link.update({
+
+            await prisma.link.update({
               where: { id: link.id },
               data: {
-                preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                readable: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
+                textContent: articleText,
               },
             });
+          }
+
+          // Preview
+
+          const ogImageUrl = await page.evaluate(() => {
+            const metaTag = document.querySelector('meta[property="og:image"]');
+            return metaTag ? (metaTag as any).content : null;
           });
-      }
 
-      // Screenshot/PDF
-      await page.evaluate(
-        autoScroll,
-        Number(process.env.AUTOSCROLL_TIMEOUT) || 30
-      );
+          createFolder({
+            filePath: `archives/preview/${link.collectionId}`,
+          });
 
-      // Check if the user hasn't deleted the link by the time we're done scrolling
-      const linkExists = await prisma.link.findUnique({
-        where: { id: link.id },
-      });
-      if (linkExists) {
-        const processingPromises = [];
+          if (ogImageUrl) {
+            console.log("Found og:image URL:", ogImageUrl);
 
-        if (user.archiveAsScreenshot && !link.image?.startsWith("archive")) {
-          processingPromises.push(
-            page.screenshot({ fullPage: true }).then((screenshot) => {
-              return createFile({
-                data: screenshot,
-                filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
-              });
-            })
-          );
-        }
-        if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
-          processingPromises.push(
-            page
-              .pdf({
-                width: "1366px",
-                height: "1931px",
-                printBackground: true,
-                margin: { top: "15px", bottom: "15px" },
-              })
-              .then((pdf) => {
+            // Download the image
+            const imageResponse = await page.goto(ogImageUrl);
+
+            // Check if imageResponse is not null
+            if (imageResponse && !link.preview?.startsWith("archive")) {
+              const buffer = await imageResponse.body();
+
+              // Check if buffer is not null
+              if (buffer) {
+                // Load the image using Jimp
+                Jimp.read(buffer, async (err, image) => {
+                  if (image && !err) {
+                    image?.resize(1280, Jimp.AUTO).quality(20);
+                    const processedBuffer = await image?.getBufferAsync(
+                      Jimp.MIME_JPEG
+                    );
+
+                    createFile({
+                      data: processedBuffer,
+                      filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                    }).then(() => {
+                      return prisma.link.update({
+                        where: { id: link.id },
+                        data: {
+                          preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                        },
+                      });
+                    });
+                  }
+                }).catch((err) => {
+                  console.error("Error processing the image:", err);
+                });
+              } else {
+                console.log("No image data found.");
+              }
+            }
+
+            await page.goBack();
+          } else if (!link.preview?.startsWith("archive")) {
+            console.log("No og:image found");
+            await page
+              .screenshot({ type: "jpeg", quality: 20 })
+              .then((screenshot) => {
                 return createFile({
-                  data: pdf,
-                  filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
+                  data: screenshot,
+                  filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
                 });
               })
+              .then(() => {
+                return prisma.link.update({
+                  where: { id: link.id },
+                  data: {
+                    preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                  },
+                });
+              });
+          }
+
+          // Screenshot/PDF
+          await page.evaluate(
+            autoScroll,
+            Number(process.env.AUTOSCROLL_TIMEOUT) || 30
           );
+
+          // Check if the user hasn't deleted the link by the time we're done scrolling
+          const linkExists = await prisma.link.findUnique({
+            where: { id: link.id },
+          });
+          if (linkExists) {
+            const processingPromises = [];
+
+            if (
+              user.archiveAsScreenshot &&
+              !link.image?.startsWith("archive")
+            ) {
+              processingPromises.push(
+                page.screenshot({ fullPage: true }).then((screenshot) => {
+                  return createFile({
+                    data: screenshot,
+                    filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
+                  });
+                })
+              );
+            }
+            if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
+              processingPromises.push(
+                page
+                  .pdf({
+                    width: "1366px",
+                    height: "1931px",
+                    printBackground: true,
+                    margin: { top: "15px", bottom: "15px" },
+                  })
+                  .then((pdf) => {
+                    return createFile({
+                      data: pdf,
+                      filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
+                    });
+                  })
+              );
+            }
+            await Promise.allSettled(processingPromises);
+            await prisma.link.update({
+              where: { id: link.id },
+              data: {
+                image: user.archiveAsScreenshot
+                  ? `archives/${linkExists.collectionId}/${link.id}.png`
+                  : undefined,
+                pdf: user.archiveAsPDF
+                  ? `archives/${linkExists.collectionId}/${link.id}.pdf`
+                  : undefined,
+              },
+            });
+          }
         }
-        await Promise.allSettled(processingPromises);
-        await prisma.link.update({
-          where: { id: link.id },
-          data: {
-            image: user.archiveAsScreenshot
-              ? `archives/${linkExists.collectionId}/${link.id}.png`
-              : undefined,
-            pdf: user.archiveAsPDF
-              ? `archives/${linkExists.collectionId}/${link.id}.pdf`
-              : undefined,
-          },
-        });
-      }
-    }
+      })(),
+      timeoutPromise,
+    ]);
   } catch (err) {
     console.log(err);
     console.log("Failed Link details:", link);
