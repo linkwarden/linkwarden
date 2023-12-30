@@ -62,8 +62,8 @@ export default async function postLink(
     link.description && link.description !== ""
       ? link.description
       : link.url
-      ? await getTitle(link.url)
-      : undefined;
+        ? await getTitle(link.url)
+        : undefined;
 
   const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
 

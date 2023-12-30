@@ -47,11 +47,11 @@ export default function SearchBar({ placeholder }: Props) {
                 "/public/collections/" +
                   router.query.id +
                   "?q=" +
-                  encodeURIComponent(searchQuery || ""),
+                  encodeURIComponent(searchQuery || "")
               );
             } else {
               return router.push(
-                "/search?q=" + encodeURIComponent(searchQuery),
+                "/search?q=" + encodeURIComponent(searchQuery)
               );
             }
           }
