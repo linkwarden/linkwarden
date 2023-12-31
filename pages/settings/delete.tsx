@@ -5,6 +5,9 @@ import CenteredForm from "@/layouts/CenteredForm";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
+const keycloakEnabled = process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true";
+const authentikEnabled = process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true";
+
 export default function Delete() {
   const [password, setPassword] = useState("");
   const [comment, setComment] = useState<string>();
@@ -23,7 +26,7 @@ export default function Delete() {
       },
     };
 
-    if (process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED !== "true" && password == "") {
+    if (!keycloakEnabled && !authentikEnabled && password == "") {
       return toast.error("Please fill the required fields.");
     }
 
