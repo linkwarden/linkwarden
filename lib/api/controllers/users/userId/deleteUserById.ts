@@ -5,6 +5,9 @@ import Stripe from "stripe";
 import { DeleteUserBody } from "@/types/global";
 import removeFile from "@/lib/api/storage/removeFile";
 
+const keycloakEnabled = process.env.KEYCLOAK_CLIENT_SECRET;
+const authentikEnabled = process.env.AUTHENTIK_CLIENT_SECRET;
+
 export default async function deleteUserById(
   userId: number,
   body: DeleteUserBody
@@ -22,7 +25,7 @@ export default async function deleteUserById(
   }
 
   // Then, we check if the provided password matches the one stored in the database (disabled in Keycloak integration)
-  if (!process.env.KEYCLOAK_CLIENT_SECRET) {
+  if (!keycloakEnabled && !authentikEnabled) {
     const isPasswordValid = bcrypt.compareSync(
       body.password,
       user.password as string

@@ -598,6 +598,7 @@ if (process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true") {
       },
     })
   );
+
   const _linkAccount = adapter.linkAccount;
   adapter.linkAccount = (account) => {
     const { "not-before-policy": _, refresh_expires_in, ...data } = account;
