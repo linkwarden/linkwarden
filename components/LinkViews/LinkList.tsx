@@ -55,8 +55,9 @@ export default function LinkCardCompact({ link, count, className }: Props) {
           !showInfo ? "hover:bg-base-300" : ""
         } duration-200 rounded-lg`}
       >
-        <div
-          onClick={() => link.url && window.open(link.url || "", "_blank")}
+        <Link
+          href={link.url || ""}
+          target="_blank"
           className="flex items-center cursor-pointer py-3 px-3"
         >
           <div className="shrink-0">
@@ -91,7 +92,7 @@ export default function LinkCardCompact({ link, count, className }: Props) {
               <LinkDate link={link} />
             </div>
           </div>
-        </div>
+        </Link>
 
         <LinkActions
           link={link}
