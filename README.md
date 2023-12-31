@@ -27,17 +27,21 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 <img src="./assets/dashboard.png" />
 
 <div align="center">
-<img src="./assets/all_links.png" width="32%" />
+<img src="./assets/all_links.jpg" width="20%" />
 
-<img src="./assets/all_collections.png" width="32%" />
+<img src="./assets/list_view.jpg" width="20%" />
 
-<img src="./assets/manage_team.png" width="32%" />
+<img src="./assets/all_collections.jpg" width="20%" />
 
-<img src="./assets/readable_view.png" width="32%" />
+<img src="./assets/manage_team.jpg" width="20%" />
 
-<img src="./assets/public_page.png" width="32%" />
+<img src="./assets/readable_view.jpg" width="20%" />
 
-<img src="./assets/light_mode.png" width="32%" />
+<img src="./assets/preserved_formats.jpg" width="20%" />
+
+<img src="./assets/public_page.jpg" width="20%" />
+
+<img src="./assets/light_dashboard.jpg" width="20%" />
 </div>
 
 <details>
