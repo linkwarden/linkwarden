@@ -12,7 +12,7 @@ declare global {
       NEXT_PUBLIC_MAX_FILE_SIZE?: string;
       MAX_LINKS_PER_USER?: string;
       ARCHIVE_TAKE_COUNT?: string;
-      NEXT_PUBLIC_MAX_FILE_SIZE?: string;
+      IGNORE_UNAUTHORIZED_CA?: string;
 
       SPACES_KEY?: string;
       SPACES_SECRET?: string;
