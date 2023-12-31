@@ -81,68 +81,75 @@ export default function LinkGrid({ link, count, className }: Props) {
       ref={ref}
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
-      <div className="relative rounded-t-2xl h-40 overflow-hidden">
-        {previewAvailable(link) ? (
-          <Image
-            src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
-            width={1280}
-            height={720}
-            alt=""
-            className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
-            style={{ filter: "blur(2px)" }}
-            draggable="false"
-            onError={(e) => {
-              const target = e.target as HTMLElement;
-              target.style.display = "none";
-            }}
-          />
-        ) : link.preview === "unavailable" ? (
-          <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
-        ) : (
-          <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
-        )}
-        <div
-          style={
-            {
-              // background:
-              //   "radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent)",
+      <Link
+        href={link.url || ""}
+        target="_blank"
+        className="rounded-2xl cursor-pointer"
+      >
+        <div className="relative rounded-t-2xl h-40 overflow-hidden">
+          {previewAvailable(link) ? (
+            <Image
+              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
+              width={1280}
+              height={720}
+              alt=""
+              className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
+              style={{ filter: "blur(2px)" }}
+              draggable="false"
+              onError={(e) => {
+                const target = e.target as HTMLElement;
+                target.style.display = "none";
+              }}
+            />
+          ) : link.preview === "unavailable" ? (
+            <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
+          ) : (
+            <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
+          )}
+          <div
+            style={
+              {
+                // background:
+                //   "radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent)",
+              }
             }
-          }
-          className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md"
-        >
-          <LinkIcon link={link} />
-        </div>
-      </div>
-
-      <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
-
-      <div className="p-3 mt-1">
-        <p className="truncate w-full pr-8 text-primary">
-          {unescapeString(link.name || link.description) || link.url}
-        </p>
-
-        <Link
-          href={link.url || ""}
-          target="_blank"
-          title={link.url || ""}
-          className="w-fit"
-        >
-          <div className="flex gap-1 item-center select-none text-neutral mt-1 hover:opacity-60 duration-100">
-            <i className="bi-link-45deg text-lg mt-[0.15rem] leading-none"></i>
-            <p className="text-sm truncate">{shortendURL}</p>
+            className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md"
+          >
+            <LinkIcon link={link} />
           </div>
-        </Link>
-      </div>
-
-      <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
-      <div className="flex justify-between text-xs text-neutral px-3 pb-1">
-        <div className="cursor-pointer w-fit">
-          {collection ? (
-            <LinkCollection link={link} collection={collection} />
-          ) : undefined}
         </div>
-        <LinkDate link={link} />
-      </div>
+
+        <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+
+        <div className="p-3 mt-1">
+          <p className="truncate w-full pr-8 text-primary">
+            {unescapeString(link.name || link.description) || link.url}
+          </p>
+
+          <Link
+            href={link.url || ""}
+            target="_blank"
+            title={link.url || ""}
+            className="w-fit"
+          >
+            <div className="flex gap-1 item-center select-none text-neutral mt-1">
+              <i className="bi-link-45deg text-lg mt-[0.15rem] leading-none"></i>
+              <p className="text-sm truncate">{shortendURL}</p>
+            </div>
+          </Link>
+        </div>
+
+        <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+
+        <div className="flex justify-between text-xs text-neutral px-3 pb-1">
+          <div className="cursor-pointer w-fit">
+            {collection ? (
+              <LinkCollection link={link} collection={collection} />
+            ) : undefined}
+          </div>
+          <LinkDate link={link} />
+        </div>
+      </Link>
 
       {showInfo ? (
         <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-2xl fade-in overflow-y-auto">

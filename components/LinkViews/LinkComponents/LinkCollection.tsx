@@ -17,7 +17,7 @@ export default function LinkCollection({
   return (
     <div
       onClick={(e) => {
-        e.stopPropagation();
+        e.preventDefault();
         router.push(`/collections/${link.collection.id}`);
       }}
       className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
