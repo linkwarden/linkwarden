@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Collection, Link, User } from "@prisma/client";
 import { prisma } from "../lib/api/db";
 import archiveHandler from "../lib/api/archiveHandler";
