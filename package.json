@@ -39,6 +39,7 @@
     "crypto-js": "^4.2.0",
     "csstype": "^3.1.2",
     "dompurify": "^3.0.6",
+    "dotenv": "^16.3.1",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.9",
     "formidable": "^3.5.1",
