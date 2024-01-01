@@ -50,11 +50,11 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         let imageExtension = "png";
 
         if (!link.url) linkType = link.type;
-        else if (contentType === "application/pdf") linkType = "pdf";
+        else if (contentType?.includes("application/pdf")) linkType = "pdf";
         else if (contentType?.startsWith("image")) {
           linkType = "image";
-          if (contentType === "image/jpeg") imageExtension = "jpeg";
-          else if (contentType === "image/png") imageExtension = "png";
+          if (contentType.includes("image/jpeg")) imageExtension = "jpeg";
+          else if (contentType.includes("image/png")) imageExtension = "png";
         }
 
         const user = link.collection?.owner;
