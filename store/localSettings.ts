@@ -18,34 +18,39 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     viewMode: "",
   },
   updateSettings: async (newSettings) => {
-    if (
-      newSettings.theme &&
-      newSettings.theme !== localStorage.getItem("theme")
-    ) {
+    if (newSettings.theme) {
       localStorage.setItem("theme", newSettings.theme);
-
-      const localTheme = localStorage.getItem("theme") || "";
-
-      document.querySelector("html")?.setAttribute("data-theme", localTheme);
+      document.documentElement.setAttribute('data-theme', newSettings.theme);
+      
+      if (newSettings.theme.endsWith("-dark")) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
 
-    if (
-      newSettings.viewMode &&
-      newSettings.viewMode !== localStorage.getItem("viewMode")
-    ) {
+    if (newSettings.viewMode) {
       localStorage.setItem("viewMode", newSettings.viewMode);
-
-      // const localTheme = localStorage.getItem("viewMode") || "";
     }
 
     set((state) => ({ settings: { ...state.settings, ...newSettings } }));
   },
   setSettings: async () => {
-    if (!localStorage.getItem("theme")) {
-      localStorage.setItem("theme", "dark");
+    let theme = localStorage.getItem("theme");
+    if (!theme || !theme.includes("-")) {
+      theme = "default-dark"; // Default theme
+      localStorage.setItem("theme", theme);
     }
 
-    const localTheme = localStorage.getItem("theme") || "";
+    const localTheme = theme;
+
+    document.documentElement.setAttribute('data-theme', localTheme);
+
+    if (localTheme.endsWith("-dark")) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
 
     set((state) => ({
       settings: { ...state.settings, theme: localTheme },
