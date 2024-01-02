@@ -9,7 +9,7 @@ WORKDIR /data
 COPY ./package.json ./yarn.lock ./playwright.config.ts ./
 
 # Increase timeout to pass github actions arm64 build
-RUN yarn install --network-timeout 10000000
+RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn yarn install --network-timeout 10000000
 
 RUN npx playwright install-deps && \
     apt-get clean && \
