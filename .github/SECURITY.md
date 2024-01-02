@@ -1,17 +1,19 @@
-# Security Policy
+# Security
 
-## Supported Versions
+The Linkwarden team and community take security bugs in Linkwarden seriously. We appreciate your efforts to responsibly disclose your findings, and will make every effort to acknowledge your contributions.
 
-| Version | Supported |
-| ------- | --------- |
-| 1.x.x   | ✅        |
+# Reporting Security Issues
 
-## Reporting a Vulnerability
+**Please do not report security vulnerabilities through public GitHub issues.**
 
-First off, we really appreciate the time you spent!
+Instead, please use the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/linkwarden/linkwarden/security/advisories/new) tab.
 
-If you found a vulnerability, these are the ways you can reach us:
+You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message:
+[security@linkwarden.app](mailto:security@linkwarden.app)
 
-Email: [security@linkwarden.app](mailto:security@linkwarden.app)
 
-Or you can directly DM me via Twitter: [@daniel31x13](https://twitter.com/Daniel31X13).
+After the initial reply to your report, the security team will keep you informed of the progress towards a fix and full announcement, and may ask for additional information or guidance.
+
+# Preferred Languages
+
+We prefer all communications to be in English.
