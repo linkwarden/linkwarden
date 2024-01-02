@@ -27,21 +27,20 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 <img src="./assets/dashboard.png" />
 
 <div align="center">
-<img src="./assets/all_links.jpg" width="23%" />
-
-<img src="./assets/list_view.jpg" width="23%" />
-
-<img src="./assets/all_collections.jpg" width="23%" />
-
-<img src="./assets/manage_team.jpg" width="23%" />
-
-<img src="./assets/readable_view.jpg" width="23%" />
-
-<img src="./assets/preserved_formats.jpg" width="23%" />
-
-<img src="./assets/public_page.jpg" width="23%" />
-
-<img src="./assets/light_dashboard.jpg" width="23%" />
+<table>
+  <tr>
+    <td><a href="https://raw.githubusercontent.com/linkwarden/linkwarden/main/assets/all_links.jpg" target="_blank"><img src="./assets/all_links.jpg" /></a></td>
+    <td><a href="https://raw.githubusercontent.com/linkwarden/linkwarden/main/assets/list_view.jpg" target="_blank"><img src="./assets/list_view.jpg" /></a></td>
+    <td><a href="https://raw.githubusercontent.com/linkwarden/linkwarden/main/assets/all_collections.jpg" target="_blank"><img src="./assets/all_collections.jpg" /></a></td>
+    <td><a href="https://raw.githubusercontent.com/linkwarden/linkwarden/main/assets/manage_team.jpg" target="_blank"><img src="./assets/manage_team.jpg" /></a></td>
+  </tr>
+  <tr>
+    <td><a href="https://raw.githubusercontent.com/linkwarden/linkwarden/main/assets/readable_view.jpg" target="_blank"><img src="./assets/readable_view.jpg" /></a></td>
+    <td><a href="https://raw.githubusercontent.com/linkwarden/linkwarden/main/assets/preserved_formats.jpg" target="_blank"><img src="./assets/preserved_formats.jpg" /></a></td>
+    <td><a href="https://raw.githubusercontent.com/linkwarden/linkwarden/main/assets/public_page.jpg" target="_blank"><img src="./assets/public_page.jpg" /></a></td>
+    <td><a href="https://raw.githubusercontent.com/linkwarden/linkwarden/main/assets/light_dashboard.jpg" target="_blank"><img src="./assets/light_dashboard.jpg" /></a></td>
+  </tr>
+</table>
 </div>
 
 <details>
