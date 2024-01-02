@@ -69,11 +69,13 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   const isReady = () => {
     return (
-      collectionOwner.archiveAsScreenshot ===
-        (link && link.pdf && link.pdf !== "pending") &&
-      collectionOwner.archiveAsPDF ===
-        (link && link.pdf && link.pdf !== "pending") &&
       link &&
+      (collectionOwner.archiveAsScreenshot === true
+        ? link.pdf && link.pdf !== "pending"
+        : true) &&
+      (collectionOwner.archiveAsPDF === true
+        ? link.pdf && link.pdf !== "pending"
+        : true) &&
       link.readable &&
       link.readable !== "pending"
     );
