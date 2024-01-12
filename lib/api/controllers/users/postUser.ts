@@ -82,7 +82,7 @@ export default async function postUser(
       },
     });
 
-    return res.status(201).json({ response: "User successfully created." });
+    return res.status(200).json({ response: "User successfully created." });
   } else if (checkIfUserExists) {
     return res.status(400).json({
       response: `${emailEnabled ? "Email" : "Username"} already exists.`,

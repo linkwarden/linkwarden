@@ -4,6 +4,7 @@ const nextConfig = {
   images: {
     domains: ["t2.gstatic.com"],
     minimumCacheTTL: 10,
+    unoptimized: true,
   },
 };
 
