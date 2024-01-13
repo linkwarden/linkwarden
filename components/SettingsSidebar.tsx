@@ -64,16 +64,16 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        <Link href="/settings/api">
+        <Link href="/settings/access-tokens">
           <div
             className={`${
-              active === `/settings/api`
+              active === `/settings/access-tokens`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <i className="bi-key text-primary text-2xl"></i>
-            <p className="truncate w-full pr-7">API Keys</p>
+            <p className="truncate w-full pr-7">Access Token</p>
           </div>
         </Link>
 
