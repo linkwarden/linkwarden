@@ -144,7 +144,7 @@ model Subscription {
 
 model ApiKey {
   id         Int       @id @default(autoincrement())
-  name       String
+  name       String    
   user       User      @relation(fields: [userId], references: [id])
   userId     Int
   token      String    @unique
@@ -153,5 +153,5 @@ model ApiKey {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now()) @updatedAt
 
-  @@unique([token, userId])
+  @@unique([name, userId])
 }
