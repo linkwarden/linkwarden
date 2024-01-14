@@ -97,19 +97,19 @@ if (
         const user = await prisma.user.findFirst({
           where: emailEnabled
             ? {
-                OR: [
-                  {
-                    username: username.toLowerCase(),
-                  },
-                  {
-                    email: username?.toLowerCase(),
-                  },
-                ],
-                emailVerified: { not: null },
-              }
+              OR: [
+                {
+                  username: username.toLowerCase(),
+                },
+                {
+                  email: username?.toLowerCase(),
+                },
+              ],
+              emailVerified: { not: null },
+            }
             : {
-                username: username.toLowerCase(),
-              },
+              username: username.toLowerCase(),
+            },
         });
 
         let passwordMatches: boolean = false;
@@ -230,6 +230,37 @@ if (process.env.NEXT_PUBLIC_AUTH0_ENABLED === "true") {
       clientSecret: process.env.AUTH0_CLIENT_SECRET!,
       issuer: process.env.AUTH0_ISSUER,
     })
+  );
+
+  const _linkAccount = adapter.linkAccount;
+  adapter.linkAccount = (account) => {
+    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
+    return _linkAccount ? _linkAccount(data) : undefined;
+  };
+}
+
+// Authelia
+if (process.env.NEXT_PUBLIC_AUTHELIA_ENABLED === "true") {
+  providers.push(
+    {
+      id: "authelia",
+      name: "Authelia",
+      type: "oauth",
+      clientId: process.env.AUTHELIA_CLIENT_ID!,
+      clientSecret: process.env.AUTHELIA_CLIENT_SECRET!,
+      wellKnown: process.env.AUTHELIA_WELLKNOWN_URL!,
+      authorization: { params: { scope: "openid email profile" } },
+      idToken: true,
+      checks: ["pkce", "state"],
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          username: profile.preferred_username,
+        }
+      },
+    }
   );
 
   const _linkAccount = adapter.linkAccount;
