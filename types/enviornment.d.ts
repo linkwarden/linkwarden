@@ -66,6 +66,13 @@ declare global {
       AUTH0_CLIENT_SECRET?: string;
       AUTH0_CLIENT_ID?: string;
 
+      // Authelia
+      NEXT_PUBLIC_AUTHELIA_ENABLED?: string;
+      AUTHELIA_CUSTOM_NAME?: string;
+      AUTHELIA_CLIENT_ID?: string;
+      AUTHELIA_CLIENT_SECRET?: string;
+      AUTHELIA_WELLKNOWN_URL?: string;
+
       // Authentik
       NEXT_PUBLIC_AUTHENTIK_ENABLED?: string;
       AUTHENTIK_CUSTOM_NAME?: string;
@@ -400,4 +407,4 @@ declare global {
   }
 }
 
-export {};
+export { };
