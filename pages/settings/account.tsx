@@ -11,6 +11,7 @@ import React from "react";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import Link from "next/link";
 import Checkbox from "@/components/Checkbox";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 export default function Account() {
   const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
@@ -245,6 +246,7 @@ export default function Account() {
                 <div
                   tabIndex={0}
                   role="button"
+                  onMouseDown={dropdownTriggerer}
                   className="flex gap-2 text-sm btn btn-outline btn-neutral group"
                   id="import-dropdown"
                 >

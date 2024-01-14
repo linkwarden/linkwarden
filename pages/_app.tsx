@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "@/styles/globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { SessionProvider } from "next-auth/react";
@@ -7,6 +7,7 @@ import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
 import { Toaster } from "react-hot-toast";
 import { Session } from "next-auth";
+import { isPWA } from "@/lib/client/utils";
 
 export default function App({
   Component,
@@ -14,6 +15,15 @@ export default function App({
 }: AppProps<{
   session: Session;
 }>) {
+  useEffect(() => {
+    if (isPWA()) {
+      const meta = document.createElement("meta");
+      meta.name = "viewport";
+      meta.content = "width=device-width, initial-scale=1, maximum-scale=1";
+      document.getElementsByTagName("head")[0].appendChild(meta);
+    }
+  }, []);
+
   return (
     <SessionProvider
       session={pageProps.session}
