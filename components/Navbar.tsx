@@ -14,7 +14,7 @@ import NewCollectionModal from "./ModalContent/NewCollectionModal";
 import Link from "next/link";
 import UploadFileModal from "./ModalContent/UploadFileModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
-import NewButtonMobile from "./NewButtonMobile";
+import MobileNavigation from "./MobileNavigation";
 
 export default function Navbar() {
   const { settings, updateSettings } = useLocalSettingsStore();
@@ -56,7 +56,7 @@ export default function Navbar() {
           setSidebar(true);
           document.body.style.overflow = "hidden";
         }}
-        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"
+        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden hidden sm:inline-flex"
       >
         <i className="bi-list text-2xl leading-none"></i>
       </div>
@@ -171,7 +171,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      <NewButtonMobile />
+      <MobileNavigation />
 
       {sidebar ? (
         <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-40">
