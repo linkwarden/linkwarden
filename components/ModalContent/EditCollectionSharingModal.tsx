@@ -9,6 +9,7 @@ import usePermissions from "@/hooks/usePermissions";
 import ProfilePhoto from "../ProfilePhoto";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Modal from "../Modal";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 type Props = {
   onClose: Function;
@@ -264,6 +265,7 @@ export default function EditCollectionSharingModal({
                                 <div
                                   tabIndex={0}
                                   role="button"
+                                  onMouseDown={dropdownTriggerer}
                                   className="btn btn-sm btn-primary font-normal"
                                 >
                                   {roleLabel}

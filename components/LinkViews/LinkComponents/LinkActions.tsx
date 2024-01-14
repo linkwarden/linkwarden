@@ -10,6 +10,7 @@ import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsMod
 import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
 import useAccountStore from "@/store/account";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -71,6 +72,7 @@ export default function LinkActions({
         <div
           tabIndex={0}
           role="button"
+          onMouseDown={dropdownTriggerer}
           className="btn btn-ghost btn-sm btn-square text-neutral"
         >
           <i title="More" className="bi-three-dots text-xl" />

@@ -11,7 +11,6 @@ import PageHeader from "@/components/PageHeader";
 
 export default function Collections() {
   const { collections } = useCollectionStore();
-  const [expandDropdown, setExpandDropdown] = useState(false);
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
   const [sortedCollections, setSortedCollections] = useState(collections);
 
