@@ -23,6 +23,7 @@ import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
@@ -125,6 +126,7 @@ export default function Index() {
               <div
                 tabIndex={0}
                 role="button"
+                onMouseDown={dropdownTriggerer}
                 className="btn btn-ghost btn-sm btn-square text-neutral"
               >
                 <i className="bi-three-dots text-xl" title="More"></i>

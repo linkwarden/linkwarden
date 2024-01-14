@@ -16,6 +16,7 @@ import PageHeader from "@/components/PageHeader";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import ViewDropdown from "@/components/ViewDropdown";
+import { dropdownTriggerer } from "@/lib/client/utils";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Dashboard() {
@@ -200,6 +201,7 @@ export default function Dashboard() {
                   <div
                     tabIndex={0}
                     role="button"
+                    onMouseDown={dropdownTriggerer}
                     className="inline-flex items-center gap-2 text-sm btn btn-outline btn-neutral"
                     id="import-dropdown"
                   >
