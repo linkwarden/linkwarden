@@ -11,6 +11,7 @@ import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import Link from "next/link";
+import { isPWA } from "@/lib/client/utils";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -52,16 +53,16 @@ export default function LinkCardCompact({ link, count, className }: Props) {
     <>
       <div
         className={`border-neutral-content relative ${
-          !showInfo ? "hover:bg-base-300" : ""
+          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
         } duration-200 rounded-lg`}
       >
         <Link
           href={link.url || ""}
           target="_blank"
-          className="flex items-center cursor-pointer py-3 px-3"
+          className="flex items-start cursor-pointer"
         >
           <div className="shrink-0">
-            <LinkIcon link={link} width="sm:w-12 w-8" />
+            <LinkIcon link={link} width="sm:w-12 w-8 mt-1 sm:mt-0" />
           </div>
 
           <div className="w-[calc(100%-56px)] ml-2">
@@ -70,16 +71,13 @@ export default function LinkCardCompact({ link, count, className }: Props) {
             </p>
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-x-3 w-fit text-neutral flex-wrap">
                 {collection ? (
-                  <>
-                    <LinkCollection link={link} collection={collection} />
-                    &middot;
-                  </>
+                  <LinkCollection link={link} collection={collection} />
                 ) : undefined}
                 {link.url ? (
-                  <div className="flex items-center gap-1 max-w-full w-fit text-neutral">
-                    <i className="bi-link-45deg text-base" />
+                  <div className="flex items-center gap-1 w-fit text-neutral truncate">
+                    <i className="bi-link-45deg text-lg" />
                     <p className="truncate w-full">{shortendURL}</p>
                   </div>
                 ) : (
@@ -87,9 +85,8 @@ export default function LinkCardCompact({ link, count, className }: Props) {
                     {link.type}
                   </div>
                 )}
+                <LinkDate link={link} />
               </div>
-              <span className="hidden sm:block">&middot;</span>
-              <LinkDate link={link} />
             </div>
           </div>
         </Link>
