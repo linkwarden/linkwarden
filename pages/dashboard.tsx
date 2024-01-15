@@ -2,7 +2,6 @@ import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import useTagStore from "@/store/tags";
 import MainLayout from "@/layouts/MainLayout";
-import LinkCard from "@/components/LinkViews/LinkCard";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
@@ -279,14 +278,11 @@ export default function Dashboard() {
         >
           {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
-              <div
-                className={`grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 w-full`}
-              >
-                {links
+              <LinkComponent
+                links={links
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
-                  .map((e, i) => <LinkCard key={i} link={e} count={i} />)
                   .slice(0, showLinks)}
-              </div>
+              />
             </div>
           ) : (
             <div

@@ -46,7 +46,7 @@ export default function MainLayout({ children }: Props) {
         </div>
 
         <div
-          className={`w-full flex flex-col min-h-${
+          className={`w-full pb-40 flex flex-col min-h-${
             showAnnouncement ? "full" : "screen"
           } lg:ml-80 ${showAnnouncement ? "mt-10" : ""}`}
         >
