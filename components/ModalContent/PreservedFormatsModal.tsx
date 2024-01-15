@@ -217,10 +217,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             <i className="bi-box-arrow-up-right" />
           </Link>
           {link?.collection.ownerId === session.data?.user.id ? (
-            <div
-              className={`btn w-1/2 btn-outline`}
-              onClick={() => updateArchive()}
-            >
+            <div className={`btn btn-outline`} onClick={() => updateArchive()}>
               <div>
                 <p>Refresh Preserved Formats</p>
                 <p className="text-xs">
