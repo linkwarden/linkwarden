@@ -67,12 +67,6 @@ export default async function postLink(
 
   const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
 
-  if (validatedUrl === null)
-    return {
-      response: "Something went wrong while retrieving the file size.",
-      status: 400,
-    };
-
   const contentType = validatedUrl?.get("content-type");
   let linkType = "url";
   let imageExtension = "png";
