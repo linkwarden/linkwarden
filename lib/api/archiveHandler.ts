@@ -43,7 +43,8 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           ? await validateUrlSize(link.url)
           : undefined;
 
-        if (validatedUrl === null) throw "File is too large to be stored.";
+        if (validatedUrl === null)
+          throw "Something went wrong while retrieving the file size.";
 
         const contentType = validatedUrl?.get("content-type");
         let linkType = "url";

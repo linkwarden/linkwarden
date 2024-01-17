@@ -172,7 +172,7 @@ export default function CollectionCard({ collection, className }: Props) {
               <div className="font-bold text-sm flex justify-end gap-1 items-center">
                 {collection.isPublic ? (
                   <i
-                    className="bi-globe-americas drop-shadow text-neutral"
+                    className="bi-globe2 drop-shadow text-neutral"
                     title="This collection is being shared publicly."
                   ></i>
                 ) : undefined}
