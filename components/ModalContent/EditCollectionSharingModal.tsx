@@ -445,7 +445,7 @@ export default function EditCollectionSharingModal({
             className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto mt-3"
             onClick={submit}
           >
-            Save
+            Save Changes
           </button>
         )}
       </div>

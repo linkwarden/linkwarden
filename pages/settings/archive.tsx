@@ -85,8 +85,8 @@ export default function Archive() {
       <SubmitButton
         onClick={submit}
         loading={submitLoader}
-        label="Save"
-        className="mt-2 mx-auto lg:mx-0"
+        label="Save Changes"
+        className="mt-2 w-full sm:w-fit"
       />
     </SettingsLayout>
   );
