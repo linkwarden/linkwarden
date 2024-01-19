@@ -65,7 +65,7 @@ export default function LinkActions({
   return (
     <>
       <div
-        className={`dropdown dropdown-left absolute ${
+        className={`dropdown dropdown-end dropdown-bottom absolute ${
           position || "top-3 right-3"
         } z-20`}
       >
