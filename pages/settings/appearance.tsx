@@ -97,7 +97,7 @@ export default function Appearance() {
         {/* <SubmitButton
           onClick={submit}
           loading={submitLoader}
-          label="Save"
+          label="Save Changes"
           className="mt-2 mx-auto lg:mx-0"
         /> */}
       </div>
