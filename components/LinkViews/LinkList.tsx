@@ -17,9 +17,15 @@ type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   count: number;
   className?: string;
+  flipDropdown?: boolean;
 };
 
-export default function LinkCardCompact({ link, count, className }: Props) {
+export default function LinkCardCompact({
+  link,
+  count,
+  className,
+  flipDropdown,
+}: Props) {
   const { collections } = useCollectionStore();
 
   const { links } = useLinkStore();
@@ -95,6 +101,7 @@ export default function LinkCardCompact({ link, count, className }: Props) {
           link={link}
           collection={collection}
           position="top-3 right-3"
+          flipDropdown={flipDropdown}
           // toggleShowInfo={() => setShowInfo(!showInfo)}
           // linkInfo={showInfo}
         />

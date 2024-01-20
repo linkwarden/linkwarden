@@ -9,7 +9,14 @@ export default function ListView({
   return (
     <div className="flex flex-col">
       {links.map((e, i) => {
-        return <LinkList key={i} link={e} count={i} />;
+        return (
+          <LinkList
+            key={i}
+            link={e}
+            count={i}
+            flipDropdown={i === links.length - 1}
+          />
+        );
       })}
     </div>
   );
