@@ -10,8 +10,10 @@ type Props = {
 export default function Modal({ toggleModal, className, children }: Props) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    document.body.style.position = "relative";
     return () => {
       document.body.style.overflow = "auto";
+      document.body.style.position = "";
     };
   });
 
