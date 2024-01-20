@@ -18,6 +18,7 @@ type Props = {
   position?: string;
   toggleShowInfo?: () => void;
   linkInfo?: boolean;
+  flipDropdown?: boolean;
 };
 
 export default function LinkActions({
@@ -25,6 +26,7 @@ export default function LinkActions({
   toggleShowInfo,
   position,
   linkInfo,
+  flipDropdown,
 }: Props) {
   const permissions = usePermissions(link.collection.id as number);
 
@@ -65,9 +67,9 @@ export default function LinkActions({
   return (
     <>
       <div
-        className={`dropdown dropdown-end dropdown-bottom absolute ${
-          position || "top-3 right-3"
-        } z-20`}
+        className={`dropdown dropdown-end dropdown-${
+          flipDropdown ? "top" : "bottom"
+        } absolute ${position || "top-3 right-3"} z-20`}
       >
         <div
           tabIndex={0}

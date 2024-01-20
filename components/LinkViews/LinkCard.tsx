@@ -21,9 +21,15 @@ type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   count: number;
   className?: string;
+  flipDropdown?: boolean;
 };
 
-export default function LinkGrid({ link, count, className }: Props) {
+export default function LinkGrid({
+  link,
+  count,
+  className,
+  flipDropdown,
+}: Props) {
   const { collections } = useCollectionStore();
 
   const { links, getLink } = useLinkStore();
@@ -199,6 +205,7 @@ export default function LinkGrid({ link, count, className }: Props) {
         position="top-[10.75rem] right-3"
         toggleShowInfo={() => setShowInfo(!showInfo)}
         linkInfo={showInfo}
+        flipDropdown={flipDropdown}
       />
     </div>
   );

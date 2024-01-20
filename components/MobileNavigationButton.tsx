@@ -1,3 +1,4 @@
+import { isPWA } from "@/lib/client/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -17,7 +18,19 @@ export default function MobileNavigationButton({
   }, [router]);
 
   return (
-    <Link href={href} className="w-full">
+    <Link
+      href={href}
+      className="w-full active:scale-[80%] duration-200 select-none"
+      draggable="false"
+      style={{ WebkitTouchCallout: "none" }}
+      onContextMenu={(e) => {
+        if (isPWA()) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        } else return null;
+      }}
+    >
       <div
         className={`py-2 cursor-pointer gap-2 w-full rounded-full capitalize flex items-center justify-center`}
       >
