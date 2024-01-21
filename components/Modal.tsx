@@ -9,6 +9,8 @@ type Props = {
 };
 
 export default function Modal({ toggleModal, className, children }: Props) {
+  const [drawerIsOpen, setDrawerIsOpen] = React.useState(true);
+
   useEffect(() => {
     if (window.innerWidth >= 640) {
       document.body.style.overflow = "hidden";
@@ -22,15 +24,21 @@ export default function Modal({ toggleModal, className, children }: Props) {
 
   if (window.innerWidth < 640) {
     return (
-      <Drawer.Root open onClose={() => setTimeout(() => toggleModal(), 100)}>
+      <Drawer.Root
+        open={drawerIsOpen}
+        onClose={() => setTimeout(() => toggleModal(), 100)}
+      >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <Drawer.Content className="flex flex-col rounded-t-2xl h-[90%] mt-24 fixed bottom-0 left-0 right-0 z-30">
-            <div className="p-4 pb-32 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto">
-              <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5" />
-              {children}
-            </div>
-          </Drawer.Content>
+          <ClickAwayHandler onClickOutside={() => setDrawerIsOpen(false)}>
+            <Drawer.Content className="flex flex-col rounded-t-2xl h-[90%] mt-24 fixed bottom-0 left-0 right-0 z-30">
+              <div className="p-4 pb-32 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto">
+                <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5" />
+
+                {children}
+              </div>
+            </Drawer.Content>
+          </ClickAwayHandler>
         </Drawer.Portal>
       </Drawer.Root>
     );
