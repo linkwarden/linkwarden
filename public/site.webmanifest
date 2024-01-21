@@ -1,4 +1,5 @@
 {
+  "id": "/dashboard",
   "name":"Linkwarden",
   "short_name":"Linkwarden",
   "icons":[
@@ -17,6 +18,27 @@
       "sizes": "196x196",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "share_target": {
+    "action": "/api/v1/links/",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "url": "link"
+    }
+  },
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "type": "image/png",
+      "sizes": "386x731"
+    },
+    {
+      "src": "/screenshots/screenshot2.png",
+      "type": "image/png",
+      "sizes": "1361x861",
+      "form_factor": "wide"
     }
   ],
   "theme_color":"#000000",
