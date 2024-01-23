@@ -59,7 +59,7 @@
     "react-image-file-resizer": "^0.4.8",
     "react-select": "^5.7.4",
     "stripe": "^12.13.0",
-    "vaul": "^0.8.0",
+    "vaul": "^0.8.8",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

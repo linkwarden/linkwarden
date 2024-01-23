@@ -27,11 +27,6 @@
   color: var(--selection-color);
 }
 
-html,
-body {
-  scroll-behavior: smooth;
-}
-
 /* Hide scrollbar */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
