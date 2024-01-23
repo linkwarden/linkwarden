@@ -5912,10 +5912,10 @@ v8-compile-cache-lib@^3.0.1:
   resolved "https://registry.yarnpkg.com/v8-compile-cache-lib/-/v8-compile-cache-lib-3.0.1.tgz#6336e8d71965cb3d35a1bbb7868445a7c05264bf"
   integrity sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==
 
-vaul@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/vaul/-/vaul-0.8.0.tgz#f2155dcb5561d33df4f0794603e91e35672a8d58"
-  integrity sha512-9nUU2jIObJvJZxeQU1oVr/syKo5XqbRoOMoTEt0hHlWify4QZFlqTh6QSN/yxoKzNrMeEQzxbc3XC/vkPLOIqw==
+vaul@^0.8.8:
+  version "0.8.8"
+  resolved "https://registry.yarnpkg.com/vaul/-/vaul-0.8.8.tgz#c5edc041825fdeaddf0a89e326abcc7ac7449a2d"
+  integrity sha512-Z9K2b90M/LtY/sRyM1yfA8Y4mHC/5WIqhO2u7Byr49r5LQXkLGdVXiehsnjtws9CL+DyknwTuRMJXlCOHTqg/g==
   dependencies:
     "@radix-ui/react-dialog" "^1.0.4"
 
