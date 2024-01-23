@@ -6,6 +6,10 @@ export function isPWA() {
   );
 }
 
+export function isIphone() {
+  return /iPhone/.test(navigator.userAgent) && !(window as any).MSStream;
+}
+
 export function dropdownTriggerer(e: any) {
   let targetEl = e.currentTarget;
   if (targetEl && targetEl.matches(":focus")) {

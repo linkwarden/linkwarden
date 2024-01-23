@@ -20,7 +20,7 @@ export default function Modal({ toggleModal, className, children }: Props) {
         document.body.style.position = "";
       };
     }
-  });
+  }, []);
 
   if (window.innerWidth < 640) {
     return (
