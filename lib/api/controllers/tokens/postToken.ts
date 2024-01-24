@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { KeyExpiry } from "@/types/global";
-import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { decode, encode, getToken } from "next-auth/jwt";
 
 export default async function postToken(
   body: {
@@ -34,44 +34,55 @@ export default async function postToken(
     };
   }
 
+  const now = Date.now();
   let expiryDate = new Date();
+  const oneDayInSeconds = 86400;
+  let expiryDateSecond = 7 * oneDayInSeconds;
 
-  switch (body.expires) {
-    case KeyExpiry.sevenDays:
-      expiryDate.setDate(expiryDate.getDate() + 7);
-      break;
-    case KeyExpiry.oneMonth:
-      expiryDate.setDate(expiryDate.getDate() + 30);
-      break;
-    case KeyExpiry.twoMonths:
-      expiryDate.setDate(expiryDate.getDate() + 60);
-      break;
-    case KeyExpiry.threeMonths:
-      expiryDate.setDate(expiryDate.getDate() + 90);
-      break;
-    case KeyExpiry.never:
-      expiryDate.setDate(expiryDate.getDate() + 73000); // 200 years (not really never)
-      break;
-    default:
-      expiryDate.setDate(expiryDate.getDate() + 7);
-      break;
+  if (body.expires === KeyExpiry.oneMonth) {
+    expiryDate.setDate(expiryDate.getDate() + 30);
+    expiryDateSecond = 30 * oneDayInSeconds;
+  } else if (body.expires === KeyExpiry.twoMonths) {
+    expiryDate.setDate(expiryDate.getDate() + 60);
+    expiryDateSecond = 60 * oneDayInSeconds;
+  } else if (body.expires === KeyExpiry.threeMonths) {
+    expiryDate.setDate(expiryDate.getDate() + 90);
+    expiryDateSecond = 90 * oneDayInSeconds;
+  } else if (body.expires === KeyExpiry.never) {
+    expiryDate.setDate(expiryDate.getDate() + 73000); // 200 years (not really never)
+    expiryDateSecond = 73050 * oneDayInSeconds;
+  } else {
+    expiryDate.setDate(expiryDate.getDate() + 7);
+    expiryDateSecond = 7 * oneDayInSeconds;
   }
 
-  const saltRounds = 10;
+  const token = await encode({
+    token: {
+      id: userId,
+      iat: now / 1000,
+      exp: (expiryDate as any) / 1000,
+      jti: crypto.randomUUID(),
+    },
+    maxAge: expiryDateSecond || 604800,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
-  const hashedKey = bcrypt.hashSync(crypto.randomUUID(), saltRounds);
+  const tokenBody = await decode({
+    token,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
   const createToken = await prisma.apiKey.create({
     data: {
       name: body.name,
       userId,
-      token: hashedKey,
+      token: tokenBody?.jti as string,
       expires: expiryDate,
     },
   });
 
   return {
-    response: createToken.token,
+    response: token,
     status: 200,
   };
 }
