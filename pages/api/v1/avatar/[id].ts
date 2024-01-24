@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import readFile from "@/lib/api/storage/readFile";
-import { getToken } from "next-auth/jwt";
+import verifyToken from "@/lib/api/verifyToken";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   const queryId = Number(req.query.id);
@@ -12,8 +12,8 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       .status(401)
       .send("Invalid parameters.");
 
-  const token = await getToken({ req });
-  const userId = token?.id;
+  const token = await verifyToken({ req });
+  const userId = typeof token === "string" ? undefined : token?.id;
 
   if (req.method === "GET") {
     const targetUser = await prisma.user.findUnique({
