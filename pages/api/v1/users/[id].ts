@@ -16,6 +16,12 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ response: "You must be logged in." });
   }
 
+  if (token.exp < Date.now() / 1000) {
+    return res
+      .status(401)
+      .json({ response: "Your session has expired, please log in again." });
+  }
+
   if (userId !== Number(req.query.id))
     return res.status(401).json({ response: "Permission denied." });
 

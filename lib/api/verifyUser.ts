@@ -23,6 +23,13 @@ export default async function verifyUser({
     return null;
   }
 
+  if (token.exp < Date.now() / 1000) {
+    res
+      .status(401)
+      .json({ response: "Your session has expired, please log in again." });
+    return null;
+  }
+
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
