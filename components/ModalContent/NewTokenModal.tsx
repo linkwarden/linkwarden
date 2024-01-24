@@ -1,25 +1,25 @@
 import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
-import { KeyExpiry } from "@/types/global";
-import { useSession } from "next-auth/react";
+import { TokenExpiry } from "@/types/global";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
+import useTokenStore from "@/store/tokens";
 
 type Props = {
   onClose: Function;
 };
 
-export default function NewKeyModal({ onClose }: Props) {
-  const { data } = useSession();
-
+export default function NewTokenModal({ onClose }: Props) {
   const [newToken, setNewToken] = useState("");
+
+  const { addToken } = useTokenStore();
 
   const initial = {
     name: "",
-    expires: 0 as KeyExpiry,
+    expires: 0 as TokenExpiry,
   };
 
-  const [key, setKey] = useState(initial as any);
+  const [token, setToken] = useState(initial as any);
 
   const [submitLoader, setSubmitLoader] = useState(false);
 
@@ -27,30 +27,18 @@ export default function NewKeyModal({ onClose }: Props) {
     if (!submitLoader) {
       setSubmitLoader(true);
 
-      let response;
-
       const load = toast.loading("Creating...");
 
-      response = await fetch("/api/v1/tokens", {
-        method: "POST",
-        body: JSON.stringify({
-          name: key.name,
-          expires: key.expires,
-        }),
-      });
-
-      const data = await response.json();
+      const { ok, data } = await addToken(token);
 
       toast.dismiss(load);
 
-      if (response.ok) {
+      if (ok) {
         toast.success(`Created!`);
-        setNewToken(data.response);
-      } else toast.error(data.response as string);
+        setNewToken((data as any).secretKey);
+      } else toast.error(data as string);
 
       setSubmitLoader(false);
-
-      return response;
     }
   };
 
@@ -90,8 +78,8 @@ export default function NewKeyModal({ onClose }: Props) {
               <p className="mb-2">Name</p>
 
               <TextInput
-                value={key.name}
-                onChange={(e) => setKey({ ...key, name: e.target.value })}
+                value={token.name}
+                onChange={(e) => setToken({ ...token, name: e.target.value })}
                 placeholder="e.g. For the iOS shortcut"
                 className="bg-base-200"
               />
@@ -106,11 +94,11 @@ export default function NewKeyModal({ onClose }: Props) {
                   role="button"
                   className="btn btn-outline w-36 flex items-center btn-sm h-10"
                 >
-                  {key.expires === KeyExpiry.sevenDays && "7 Days"}
-                  {key.expires === KeyExpiry.oneMonth && "30 Days"}
-                  {key.expires === KeyExpiry.twoMonths && "60 Days"}
-                  {key.expires === KeyExpiry.threeMonths && "90 Days"}
-                  {key.expires === KeyExpiry.never && "No Expiration"}
+                  {token.expires === TokenExpiry.sevenDays && "7 Days"}
+                  {token.expires === TokenExpiry.oneMonth && "30 Days"}
+                  {token.expires === TokenExpiry.twoMonths && "60 Days"}
+                  {token.expires === TokenExpiry.threeMonths && "90 Days"}
+                  {token.expires === TokenExpiry.never && "No Expiration"}
                 </div>
                 <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
                   <li>
@@ -123,10 +111,13 @@ export default function NewKeyModal({ onClose }: Props) {
                         type="radio"
                         name="sort-radio"
                         className="radio checked:bg-primary"
-                        checked={key.expires === KeyExpiry.sevenDays}
+                        checked={token.expires === TokenExpiry.sevenDays}
                         onChange={() => {
                           (document?.activeElement as HTMLElement)?.blur();
-                          setKey({ ...key, expires: KeyExpiry.sevenDays });
+                          setToken({
+                            ...token,
+                            expires: TokenExpiry.sevenDays,
+                          });
                         }}
                       />
                       <span className="label-text">7 Days</span>
@@ -142,10 +133,10 @@ export default function NewKeyModal({ onClose }: Props) {
                         type="radio"
                         name="sort-radio"
                         className="radio checked:bg-primary"
-                        checked={key.expires === KeyExpiry.oneMonth}
+                        checked={token.expires === TokenExpiry.oneMonth}
                         onChange={() => {
                           (document?.activeElement as HTMLElement)?.blur();
-                          setKey({ ...key, expires: KeyExpiry.oneMonth });
+                          setToken({ ...token, expires: TokenExpiry.oneMonth });
                         }}
                       />
                       <span className="label-text">30 Days</span>
@@ -161,10 +152,13 @@ export default function NewKeyModal({ onClose }: Props) {
                         type="radio"
                         name="sort-radio"
                         className="radio checked:bg-primary"
-                        checked={key.expires === KeyExpiry.twoMonths}
+                        checked={token.expires === TokenExpiry.twoMonths}
                         onChange={() => {
                           (document?.activeElement as HTMLElement)?.blur();
-                          setKey({ ...key, expires: KeyExpiry.twoMonths });
+                          setToken({
+                            ...token,
+                            expires: TokenExpiry.twoMonths,
+                          });
                         }}
                       />
                       <span className="label-text">60 Days</span>
@@ -180,10 +174,13 @@ export default function NewKeyModal({ onClose }: Props) {
                         type="radio"
                         name="sort-radio"
                         className="radio checked:bg-primary"
-                        checked={key.expires === KeyExpiry.threeMonths}
+                        checked={token.expires === TokenExpiry.threeMonths}
                         onChange={() => {
                           (document?.activeElement as HTMLElement)?.blur();
-                          setKey({ ...key, expires: KeyExpiry.threeMonths });
+                          setToken({
+                            ...token,
+                            expires: TokenExpiry.threeMonths,
+                          });
                         }}
                       />
                       <span className="label-text">90 Days</span>
@@ -199,10 +196,10 @@ export default function NewKeyModal({ onClose }: Props) {
                         type="radio"
                         name="sort-radio"
                         className="radio checked:bg-primary"
-                        checked={key.expires === KeyExpiry.never}
+                        checked={token.expires === TokenExpiry.never}
                         onChange={() => {
                           (document?.activeElement as HTMLElement)?.blur();
-                          setKey({ ...key, expires: KeyExpiry.never });
+                          setToken({ ...token, expires: TokenExpiry.never });
                         }}
                       />
                       <span className="label-text">No Expiration</span>

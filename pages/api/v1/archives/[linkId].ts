@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import readFile from "@/lib/api/storage/readFile";
-import { getToken } from "next-auth/jwt";
 import { prisma } from "@/lib/api/db";
 import { ArchivedFormat } from "@/types/global";
 import verifyUser from "@/lib/api/verifyUser";
@@ -9,6 +8,7 @@ import { UsersAndCollections } from "@prisma/client";
 import formidable from "formidable";
 import createFile from "@/lib/api/storage/createFile";
 import fs from "fs";
+import verifyToken from "@/lib/api/verifyToken";
 
 export const config = {
   api: {
@@ -33,8 +33,8 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ response: "Invalid parameters." });
 
   if (req.method === "GET") {
-    const token = await getToken({ req });
-    const userId = token?.id;
+    const token = await verifyToken({ req });
+    const userId = typeof token === "string" ? undefined : token?.id;
 
     const collectionIsAccessible = await prisma.collection.findFirst({
       where: {
