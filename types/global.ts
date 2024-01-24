@@ -134,3 +134,11 @@ export enum LinkType {
   pdf,
   image,
 }
+
+export enum TokenExpiry {
+  sevenDays,
+  oneMonth,
+  twoMonths,
+  threeMonths,
+  never,
+}
