@@ -1,16 +1,24 @@
 import { prisma } from "@/lib/api/db";
-import { KeyExpiry } from "@/types/global";
 
 export default async function deleteToken(userId: number, tokenId: number) {
   if (!tokenId)
     return { response: "Please choose a valid token.", status: 401 };
 
-  const deletedToken = await prisma.apiKey.delete({
+  const tokenExists = await prisma.accessToken.findFirst({
     where: {
       id: tokenId,
       userId,
     },
   });
 
-  return { response: deletedToken, status: 200 };
+  const revokedToken = await prisma.accessToken.update({
+    where: {
+      id: tokenExists?.id,
+    },
+    data: {
+      revoked: true,
+    },
+  });
+
+  return { response: revokedToken, status: 200 };
 }

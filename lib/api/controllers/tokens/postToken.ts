@@ -1,12 +1,12 @@
 import { prisma } from "@/lib/api/db";
-import { KeyExpiry } from "@/types/global";
+import { TokenExpiry } from "@/types/global";
 import crypto from "crypto";
-import { decode, encode, getToken } from "next-auth/jwt";
+import { decode, encode } from "next-auth/jwt";
 
 export default async function postToken(
   body: {
     name: string;
-    expires: KeyExpiry;
+    expires: TokenExpiry;
   },
   userId: number
 ) {
@@ -20,9 +20,10 @@ export default async function postToken(
       status: 400,
     };
 
-  const checkIfTokenExists = await prisma.apiKey.findFirst({
+  const checkIfTokenExists = await prisma.accessToken.findFirst({
     where: {
       name: body.name,
+      revoked: false,
       userId,
     },
   });
@@ -39,16 +40,16 @@ export default async function postToken(
   const oneDayInSeconds = 86400;
   let expiryDateSecond = 7 * oneDayInSeconds;
 
-  if (body.expires === KeyExpiry.oneMonth) {
+  if (body.expires === TokenExpiry.oneMonth) {
     expiryDate.setDate(expiryDate.getDate() + 30);
     expiryDateSecond = 30 * oneDayInSeconds;
-  } else if (body.expires === KeyExpiry.twoMonths) {
+  } else if (body.expires === TokenExpiry.twoMonths) {
     expiryDate.setDate(expiryDate.getDate() + 60);
     expiryDateSecond = 60 * oneDayInSeconds;
-  } else if (body.expires === KeyExpiry.threeMonths) {
+  } else if (body.expires === TokenExpiry.threeMonths) {
     expiryDate.setDate(expiryDate.getDate() + 90);
     expiryDateSecond = 90 * oneDayInSeconds;
-  } else if (body.expires === KeyExpiry.never) {
+  } else if (body.expires === TokenExpiry.never) {
     expiryDate.setDate(expiryDate.getDate() + 73000); // 200 years (not really never)
     expiryDateSecond = 73050 * oneDayInSeconds;
   } else {
@@ -72,7 +73,7 @@ export default async function postToken(
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const createToken = await prisma.apiKey.create({
+  const createToken = await prisma.accessToken.create({
     data: {
       name: body.name,
       userId,
@@ -82,7 +83,10 @@ export default async function postToken(
   });
 
   return {
-    response: token,
+    response: {
+      secretKey: token,
+      token: createToken,
+    },
     status: 200,
   };
 }

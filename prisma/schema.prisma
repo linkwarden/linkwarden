@@ -39,7 +39,7 @@ model User {
   pinnedLinks             Link[]
   collectionsJoined       UsersAndCollections[]
   whitelistedUsers        WhitelistedUser[]
-  apiKeys                 ApiKey[]
+  accessTokens            AccessToken[]
   subscriptions           Subscription?
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
@@ -142,16 +142,15 @@ model Subscription {
   updatedAt            DateTime @default(now()) @updatedAt
 }
 
-model ApiKey {
+model AccessToken {
   id         Int       @id @default(autoincrement())
   name       String    
   user       User      @relation(fields: [userId], references: [id])
   userId     Int
   token      String    @unique
+  revoked    Boolean   @default(false)
   expires    DateTime
   lastUsedAt DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now()) @updatedAt
-
-  @@unique([name, userId])
 }

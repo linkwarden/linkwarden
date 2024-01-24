@@ -135,7 +135,7 @@ export enum LinkType {
   image,
 }
 
-export enum KeyExpiry {
+export enum TokenExpiry {
   sevenDays,
   oneMonth,
   twoMonths,

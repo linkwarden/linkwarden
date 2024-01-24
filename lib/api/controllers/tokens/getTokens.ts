@@ -1,14 +1,13 @@
 import { prisma } from "@/lib/api/db";
-import { KeyExpiry } from "@/types/global";
-import bcrypt from "bcrypt";
-import crypto from "crypto";
 
 export default async function getToken(userId: number) {
-  const getTokens = await prisma.apiKey.findMany({
+  const getTokens = await prisma.accessToken.findMany({
     where: {
       userId,
+      revoked: false,
     },
     select: {
+      id: true,
       name: true,
       expires: true,
       createdAt: true,
