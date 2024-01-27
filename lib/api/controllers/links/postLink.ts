@@ -42,6 +42,21 @@ export default async function postLink(
 
   link.collection.name = link.collection.name.trim();
 
+  const existingLink = await prisma.link.findFirst({
+    where: {
+      url: link.url,
+      collection: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (existingLink)
+    return {
+      response: "Error: You have already added this link before.",
+      status: 409,
+    };
+
   if (link.collection.id) {
     const collectionIsAccessible = await getPermission({
       userId,

@@ -108,7 +108,13 @@ export default function NewLinkModal({ onClose }: Props) {
       if (response.ok) {
         toast.success(`Created!`);
         onClose();
-      } else toast.error(response.data as string);
+      } else {
+        if (response.status === 409) {
+          toast.error("Error: You have already added this link before.");
+        } else {
+          toast.error(response.data as string);
+        }
+      }
 
       setSubmitLoader(false);
 
