@@ -37,6 +37,8 @@ export default async function deleteCollection(
   }
 
   const deletedCollection = await prisma.$transaction(async () => {
+    await deleteSubCollections(collectionId);
+
     await prisma.usersAndCollections.deleteMany({
       where: {
         collection: {
@@ -53,7 +55,7 @@ export default async function deleteCollection(
       },
     });
 
-    removeFolder({ filePath: `archives/${collectionId}` });
+    await removeFolder({ filePath: `archives/${collectionId}` });
 
     return await prisma.collection.delete({
       where: {
@@ -63,4 +65,36 @@ export default async function deleteCollection(
   });
 
   return { response: deletedCollection, status: 200 };
+}
+
+async function deleteSubCollections(collectionId: number) {
+  const subCollections = await prisma.collection.findMany({
+    where: { parentId: collectionId },
+  });
+
+  for (const subCollection of subCollections) {
+    await deleteSubCollections(subCollection.id);
+
+    await prisma.usersAndCollections.deleteMany({
+      where: {
+        collection: {
+          id: subCollection.id,
+        },
+      },
+    });
+
+    await prisma.link.deleteMany({
+      where: {
+        collection: {
+          id: subCollection.id,
+        },
+      },
+    });
+
+    await prisma.collection.delete({
+      where: { id: subCollection.id },
+    });
+
+    await removeFolder({ filePath: `archives/${subCollection.id}` });
+  }
 }
