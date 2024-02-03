@@ -12,6 +12,26 @@ export default async function postCollection(
       status: 400,
     };
 
+  if (collection.parentId) {
+    const findParentCollection = await prisma.collection.findUnique({
+      where: {
+        id: collection.parentId,
+      },
+      select: {
+        ownerId: true,
+      },
+    });
+
+    if (
+      findParentCollection?.ownerId !== userId ||
+      typeof collection.parentId !== "number"
+    )
+      return {
+        response: "You are not authorized to create a sub-collection here.",
+        status: 403,
+      };
+  }
+
   const findCollection = await prisma.user.findUnique({
     where: {
       id: userId,
@@ -40,6 +60,13 @@ export default async function postCollection(
       name: collection.name.trim(),
       description: collection.description,
       color: collection.color,
+      parent: collection.parentId
+        ? {
+            connect: {
+              id: collection.parentId,
+            },
+          }
+        : undefined,
     },
     include: {
       _count: {
