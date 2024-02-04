@@ -3,8 +3,6 @@ import { Collection, Link, User } from "@prisma/client";
 import { prisma } from "../lib/api/db";
 import archiveHandler from "../lib/api/archiveHandler";
 
-const args = process.argv.slice(2).join(" ");
-
 const archiveTakeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
 
 type LinksAndCollectionAndOwner = Link & {
@@ -16,7 +14,6 @@ type LinksAndCollectionAndOwner = Link & {
 async function processBatch() {
   const linksOldToNew = await prisma.link.findMany({
     where: {
-      url: { not: null },
       OR: [
         {
           collection: {
@@ -73,7 +70,6 @@ async function processBatch() {
 
   const linksNewToOld = await prisma.link.findMany({
     where: {
-      url: { not: null },
       OR: [
         {
           collection: {
