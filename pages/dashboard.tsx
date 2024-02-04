@@ -121,19 +121,23 @@ export default function Dashboard() {
 
         <div>
           <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
-            <DashboardItem
-              name={numberOfLinks === 1 ? "Link" : "Links"}
-              value={numberOfLinks}
-              icon={"bi-link-45deg"}
-            />
+            <Link href={'/links'}>
+              <DashboardItem
+                name={numberOfLinks === 1 ? "Link" : "Links"}
+                value={numberOfLinks}
+                icon={"bi-link-45deg"}
+              />
+            </Link>
 
             <div className="divider xl:divider-horizontal"></div>
 
-            <DashboardItem
-              name={collections.length === 1 ? "Collection" : "Collections"}
-              value={collections.length}
-              icon={"bi-folder"}
-            />
+            <Link href={'/collections'}>
+              <DashboardItem
+                name={collections.length === 1 ? "Collection" : "Collections"}
+                value={collections.length}
+                icon={"bi-folder"}
+              />
+            </Link>
 
             <div className="divider xl:divider-horizontal"></div>
 
