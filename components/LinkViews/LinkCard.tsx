@@ -21,9 +21,15 @@ type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   count: number;
   className?: string;
+  flipDropdown?: boolean;
 };
 
-export default function LinkGrid({ link, count, className }: Props) {
+export default function LinkGrid({
+  link,
+  count,
+  className,
+  flipDropdown,
+}: Props) {
   const { collections } = useCollectionStore();
 
   const { links, getLink } = useLinkStore();
@@ -82,7 +88,7 @@ export default function LinkGrid({ link, count, className }: Props) {
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
       <Link
-        href={link.url}
+        href={link.url || ""}
         target="_blank"
         className="rounded-2xl cursor-pointer"
       >
@@ -126,17 +132,12 @@ export default function LinkGrid({ link, count, className }: Props) {
             {unescapeString(link.name || link.description) || link.url}
           </p>
 
-          <Link
-            href={link.url}
-            target="_blank"
-            title={link.url}
-            className="w-fit"
-          >
+          <div title={link.url || ""} className="w-fit">
             <div className="flex gap-1 item-center select-none text-neutral mt-1">
               <i className="bi-link-45deg text-lg mt-[0.15rem] leading-none"></i>
               <p className="text-sm truncate">{shortendURL}</p>
             </div>
-          </Link>
+          </div>
         </div>
 
         <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
@@ -204,6 +205,7 @@ export default function LinkGrid({ link, count, className }: Props) {
         position="top-[10.75rem] right-3"
         toggleShowInfo={() => setShowInfo(!showInfo)}
         linkInfo={showInfo}
+        flipDropdown={flipDropdown}
       />
     </div>
   );
