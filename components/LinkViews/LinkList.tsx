@@ -58,11 +58,12 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`border-neutral-content relative ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-          } duration-200 rounded-lg`}
+        className={`border-neutral-content relative ${
+          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+        } duration-200 rounded-lg`}
       >
         <Link
-          href={link.url || ""}
+          href={link.url}
           target="_blank"
           className="flex items-start cursor-pointer"
         >
@@ -101,8 +102,8 @@ export default function LinkCardCompact({
           collection={collection}
           position="top-3 right-3"
           flipDropdown={flipDropdown}
-        // toggleShowInfo={() => setShowInfo(!showInfo)}
-        // linkInfo={showInfo}
+          // toggleShowInfo={() => setShowInfo(!showInfo)}
+          // linkInfo={showInfo}
         />
         {showInfo ? (
           <div>
