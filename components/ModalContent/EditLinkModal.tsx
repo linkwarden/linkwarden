@@ -82,7 +82,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
       <div className="w-full">
         <p className="mb-2">Link</p>
         <TextInput
-          value={link.url || ""}
+          value={link.url}
           onChange={(e) => setLink({ ...link, url: e.target.value })}
           placeholder="e.g. Example Link"
           className="bg-base-200"

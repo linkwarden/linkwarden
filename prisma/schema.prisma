@@ -107,7 +107,7 @@ model Link {
   collection    Collection @relation(fields: [collectionId], references: [id])
   collectionId  Int
   tags          Tag[]
-  url           String?
+  url           String
   textContent   String?
   preview       String?
   image         String?
