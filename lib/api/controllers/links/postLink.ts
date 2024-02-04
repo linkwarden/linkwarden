@@ -13,7 +13,7 @@ export default async function postLink(
   userId: number
 ) {
   try {
-    new URL(link.url || "");
+    new URL(link.url);
   } catch (error) {
     return {
       response:

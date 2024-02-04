@@ -26,7 +26,7 @@ export default function LinkGrid({ link, count, className }: Props) {
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
+    shortendURL = new URL(link.url).host.toLowerCase();
   } catch (error) {
     console.log(error);
   }
@@ -49,7 +49,7 @@ export default function LinkGrid({ link, count, className }: Props) {
   return (
     <div className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative p-3">
       <div
-        onClick={() => link.url && window.open(link.url || "", "_blank")}
+        onClick={() => link.url && window.open(link.url, "_blank")}
         className="cursor-pointer"
       >
         <LinkIcon link={link} width="w-12 mb-3" />
@@ -65,7 +65,7 @@ export default function LinkGrid({ link, count, className }: Props) {
               <div
                 onClick={(e) => {
                   e.preventDefault();
-                  window.open(link.url || "", "_blank");
+                  window.open(link.url, "_blank");
                 }}
                 className="flex items-center hover:opacity-60 cursor-pointer duration-100"
               >
@@ -101,7 +101,7 @@ export default function LinkGrid({ link, count, className }: Props) {
       </div>
 
       <LinkActions
-        toggleShowInfo={() => {}}
+        toggleShowInfo={() => { }}
         linkInfo={false}
         link={link}
         collection={collection}

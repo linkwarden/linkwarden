@@ -162,19 +162,19 @@ export default function ReadableView({ link }: Props) {
             <div className="flex flex-col">
               <p className="text-xl">
                 {unescapeString(
-                  link?.name || link?.description || link?.url || ""
+                  link?.name || link?.description || link.url
                 )}
               </p>
               {link?.url ? (
                 <Link
-                  href={link?.url || ""}
+                  href={link.url}
                   title={link?.url}
                   target="_blank"
                   className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
                 >
                   <i className="bi-link-45deg"></i>
 
-                  {isValidUrl(link?.url || "")
+                  {isValidUrl(link.url)
                     ? new URL(link?.url as string).host
                     : undefined}
                 </Link>
@@ -213,10 +213,10 @@ export default function ReadableView({ link }: Props) {
           <p className="min-w-fit text-sm text-neutral">
             {link?.createdAt
               ? new Date(link?.createdAt).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
               : undefined}
           </p>
 
@@ -234,9 +234,8 @@ export default function ReadableView({ link }: Props) {
           ></div>
         ) : (
           <div
-            className={`w-full h-full flex flex-col justify-center p-10 ${
-              link?.readable === "pending" || !link?.readable ? "skeleton" : ""
-            }`}
+            className={`w-full h-full flex flex-col justify-center p-10 ${link?.readable === "pending" || !link?.readable ? "skeleton" : ""
+              }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

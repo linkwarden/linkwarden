@@ -126,7 +126,7 @@ export default function NewLinkModal({ onClose }: Props) {
         <div className="sm:col-span-3 col-span-5">
           <p className="mb-2">Link</p>
           <TextInput
-            value={link.url || ""}
+            value={link.url}
             onChange={(e) => setLink({ ...link, url: e.target.value })}
             placeholder="e.g. http://example.com/"
             className="bg-base-200"
@@ -196,9 +196,8 @@ export default function NewLinkModal({ onClose }: Props) {
             {optionsExpanded ? "Hide" : "More"} Options
           </p>
           <i
-            className={`${
-              optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
-            }`}
+            className={`${optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
+              }`}
           ></i>
         </div>
 

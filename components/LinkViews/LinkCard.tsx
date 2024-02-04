@@ -31,7 +31,7 @@ export default function LinkGrid({ link, count, className }: Props) {
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
+    shortendURL = new URL(link.url).host.toLowerCase();
   } catch (error) {
     console.log(error);
   }
@@ -82,7 +82,7 @@ export default function LinkGrid({ link, count, className }: Props) {
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
       <Link
-        href={link.url || ""}
+        href={link.url}
         target="_blank"
         className="rounded-2xl cursor-pointer"
       >
@@ -127,9 +127,9 @@ export default function LinkGrid({ link, count, className }: Props) {
           </p>
 
           <Link
-            href={link.url || ""}
+            href={link.url}
             target="_blank"
-            title={link.url || ""}
+            title={link.url}
             className="w-fit"
           >
             <div className="flex gap-1 item-center select-none text-neutral mt-1">

@@ -11,7 +11,7 @@ export default function LinkIcon({
   width?: string;
 }) {
   const url =
-    isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
+    isValidUrl(link.url) && link.url ? new URL(link.url) : undefined;
 
   const iconClasses: string =
     "bg-white shadow rounded-md border-[2px] flex item-center justify-center border-white select-none z-10" +

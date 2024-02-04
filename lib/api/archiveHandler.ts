@@ -116,7 +116,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           const window = new JSDOM("").window;
           const purify = DOMPurify(window);
           const cleanedUpContent = purify.sanitize(content);
-          const dom = new JSDOM(cleanedUpContent, { url: link.url || "" });
+          const dom = new JSDOM(cleanedUpContent, { url: link.url });
           const article = new Readability(dom.window.document).parse();
           const articleText = article?.textContent
             .replace(/ +(?= )/g, "") // strip out multiple spaces

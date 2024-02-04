@@ -21,7 +21,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
+    shortendURL = new URL(link.url).host.toLowerCase();
   } catch (error) {
     console.log(error);
   }

@@ -10,20 +10,20 @@ export default function LinkGroupedIconURL({
   link: LinkIncludingShortenedCollectionAndTags;
 }) {
   const url =
-    isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
+    isValidUrl(link.url) && link.url ? new URL(link.url) : undefined;
 
   const [showFavicon, setShowFavicon] = React.useState<boolean>(true);
 
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
+    shortendURL = new URL(link.url).host.toLowerCase();
   } catch (error) {
     console.log(error);
   }
 
   return (
-    <Link href={link.url || ""} target="_blank">
+    <Link href={link.url} target="_blank">
       <div className="bg-white shadow-md rounded-md border-[2px] flex gap-1 item-center justify-center border-white select-none z-10 max-w-full">
         {link.url && url && showFavicon ? (
           <Image

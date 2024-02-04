@@ -26,7 +26,7 @@ export default function LinkCardCompact({ link, count, className }: Props) {
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
+    shortendURL = new URL(link.url).host.toLowerCase();
   } catch (error) {
     console.log(error);
   }
@@ -51,12 +51,11 @@ export default function LinkCardCompact({ link, count, className }: Props) {
   return (
     <>
       <div
-        className={`border-neutral-content relative ${
-          !showInfo ? "hover:bg-base-300" : ""
-        } duration-200 rounded-lg`}
+        className={`border-neutral-content relative ${!showInfo ? "hover:bg-base-300" : ""
+          } duration-200 rounded-lg`}
       >
         <Link
-          href={link.url || ""}
+          href={link.url}
           target="_blank"
           className="flex items-center cursor-pointer py-3 px-3"
         >
@@ -98,8 +97,8 @@ export default function LinkCardCompact({ link, count, className }: Props) {
           link={link}
           collection={collection}
           position="top-3 right-3"
-          // toggleShowInfo={() => setShowInfo(!showInfo)}
-          // linkInfo={showInfo}
+        // toggleShowInfo={() => setShowInfo(!showInfo)}
+        // linkInfo={showInfo}
         />
         {showInfo ? (
           <div>
