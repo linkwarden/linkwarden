@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import { Collection, Link, UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import moveFile from "@/lib/api/storage/moveFile";
 
@@ -9,6 +9,16 @@ export default async function updateLinkById(
   linkId: number,
   data: LinkIncludingShortenedCollectionAndTags
 ) {
+  try {
+    new URL(data.url || "");
+  } catch (error) {
+    return {
+      response:
+        "Please enter a valid address for the Link. (It should start with http/https)",
+      status: 400,
+    };
+  }
+
   if (!data || !data.collection.id)
     return {
       response: "Please choose a valid link and collection.",
@@ -46,6 +56,7 @@ export default async function updateLinkById(
       },
       data: {
         name: data.name,
+        url: data.url,
         description: data.description,
         collection: {
           connect: {
@@ -81,9 +92,9 @@ export default async function updateLinkById(
         collection: true,
         pinnedBy: isCollectionOwner
           ? {
-              where: { id: userId },
-              select: { id: true },
-            }
+            where: { id: userId },
+            select: { id: true },
+          }
           : undefined,
       },
     });

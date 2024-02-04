@@ -79,19 +79,17 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
 
       <div className="divider mb-3 mt-1"></div>
 
-      {link.url ? (
-        <Link
-          href={link.url}
-          className="truncate text-neutral flex gap-2 mb-5 w-fit max-w-full"
-          title={link.url}
-          target="_blank"
-        >
-          <i className="bi-link-45deg text-xl" />
-          <p>{shortendURL}</p>
-        </Link>
-      ) : undefined}
-
       <div className="w-full">
+        <p className="mb-2">Link</p>
+        <TextInput
+          value={link.url || ""}
+          onChange={(e) => setLink({ ...link, url: e.target.value })}
+          placeholder="e.g. Example Link"
+          className="bg-base-200"
+        />
+      </div>
+
+      <div className="w-full mt-3">
         <p className="mb-2">Name</p>
         <TextInput
           value={link.name}
@@ -116,13 +114,13 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
                 defaultValue={
                   link.collection.id
                     ? {
-                        value: link.collection.id,
-                        label: link.collection.name,
-                      }
+                      value: link.collection.id,
+                      label: link.collection.name,
+                    }
                     : {
-                        value: null as unknown as number,
-                        label: "Unorganized",
-                      }
+                      value: null as unknown as number,
+                      label: "Unorganized",
+                    }
                 }
               />
             ) : null}
