@@ -21,6 +21,10 @@ export default async function updateLinkById(
     (e: UsersAndCollections) => e.userId === userId && e.canUpdate
   );
 
+  const canCreatePermission = collectionIsAccessible?.members.some(
+    (e: UsersAndCollections) => e.userId === userId && e.canCreate
+  );
+
   const isCollectionOwner =
     collectionIsAccessible?.ownerId === data.collection.ownerId &&
     data.collection.ownerId === userId;
@@ -34,6 +38,32 @@ export default async function updateLinkById(
       response: "You can't move a link to/from a collection you don't own.",
       status: 401,
     };
+
+  // If the user is able to create a link, they can pin it to their dashboard only.
+  if (canCreatePermission) {
+    const updatedLink = await prisma.link.update({
+      where: {
+        id: linkId,
+      },
+      data: {
+        pinnedBy: data?.pinnedBy && data.pinnedBy[0]
+          ? { connect: { id: userId } }
+          : { disconnect: { id: userId } },
+      },
+      include: {
+        collection: true,
+        pinnedBy: isCollectionOwner
+          ? {
+            where: { id: userId },
+            select: { id: true },
+          }
+          : undefined,
+      },
+    });
+
+    return { response: updatedLink, status: 200 };
+  }
+
   else if (collectionIsAccessible?.ownerId !== userId && !memberHasAccess)
     return {
       response: "Collection is not accessible.",
@@ -81,9 +111,9 @@ export default async function updateLinkById(
         collection: true,
         pinnedBy: isCollectionOwner
           ? {
-              where: { id: userId },
-              select: { id: true },
-            }
+            where: { id: userId },
+            select: { id: true },
+          }
           : undefined,
       },
     });
