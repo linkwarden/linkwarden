@@ -74,7 +74,7 @@ export default function NewTokenModal({ onClose }: Props) {
 
           <div className="divider mb-3 mt-1"></div>
 
-          <div className="flex gap-2 items-center">
+          <div className="flex sm:flex-row flex-col gap-2 items-center">
             <div className="w-full">
               <p className="mb-2">Name</p>
 
@@ -86,15 +86,15 @@ export default function NewTokenModal({ onClose }: Props) {
               />
             </div>
 
-            <div>
+            <div className="w-full sm:w-fit">
               <p className="mb-2">Expires in</p>
 
-              <div className="dropdown dropdown-bottom dropdown-end">
+              <div className="dropdown dropdown-bottom dropdown-end w-full">
                 <div
                   tabIndex={0}
                   role="button"
                   onMouseDown={dropdownTriggerer}
-                  className="btn btn-outline w-36 flex items-center btn-sm h-10"
+                  className="btn btn-outline w-full sm:w-36 flex items-center btn-sm h-10"
                 >
                   {token.expires === TokenExpiry.sevenDays && "7 Days"}
                   {token.expires === TokenExpiry.oneMonth && "30 Days"}
@@ -102,7 +102,7 @@ export default function NewTokenModal({ onClose }: Props) {
                   {token.expires === TokenExpiry.threeMonths && "90 Days"}
                   {token.expires === TokenExpiry.never && "No Expiration"}
                 </div>
-                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
+                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-full sm:w-52 mt-1">
                   <li>
                     <label
                       className="label cursor-pointer flex justify-start"
@@ -212,7 +212,7 @@ export default function NewTokenModal({ onClose }: Props) {
             </div>
           </div>
 
-          <div className="flex justify-between items-center mt-5">
+          <div className="flex justify-end items-center mt-5">
             <button
               className="btn btn-accent dark:border-violet-400 text-white"
               onClick={submit}
