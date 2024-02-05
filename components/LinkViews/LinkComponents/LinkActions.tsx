@@ -67,9 +67,8 @@ export default function LinkActions({
   return (
     <>
       <div
-        className={`dropdown dropdown-left dropdown-end absolute ${
-          position || "top-3 right-3"
-        } z-20`}
+        className={`dropdown dropdown-left dropdown-end absolute ${position || "top-3 right-3"
+          } z-20`}
       >
         <div
           tabIndex={0}
@@ -80,7 +79,7 @@ export default function LinkActions({
           <i title="More" className="bi-three-dots text-xl" />
         </div>
         <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 translate-y-10">
-          {permissions === true ? (
+          {permissions ? (
             <li>
               <div
                 role="button"
