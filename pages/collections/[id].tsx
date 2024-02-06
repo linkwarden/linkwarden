@@ -24,6 +24,8 @@ import CardView from "@/components/LinkViews/Layouts/CardView";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import Link from "next/link";
+import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
@@ -82,6 +84,7 @@ export default function Index() {
   }, [activeCollection]);
 
   const [editCollectionModal, setEditCollectionModal] = useState(false);
+  const [newCollectionModal, setNewCollectionModal] = useState(false);
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
@@ -160,6 +163,20 @@ export default function Index() {
                       : "View Team"}
                   </div>
                 </li>
+                {permissions === true ? (
+                  <li>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        (document?.activeElement as HTMLElement)?.blur();
+                        setNewCollectionModal(true);
+                      }}
+                    >
+                      Create Sub-Collection
+                    </div>
+                  </li>
+                ) : undefined}
                 <li>
                   <div
                     role="button"
@@ -228,6 +245,31 @@ export default function Index() {
           <p>{activeCollection?.description}</p>
         ) : undefined}
 
+        {/* {collections.some((e) => e.parentId === activeCollection.id) ? (
+          <fieldset className="border rounded-md p-2 border-neutral-content">
+            <legend className="text-sm ml-2">Sub-Collections</legend>
+            <div className="flex gap-3">
+              {collections
+                .filter((e) => e.parentId === activeCollection?.id)
+                .map((e, i) => {
+                  return (
+                    <Link
+                      key={i}
+                      className="flex gap-1 items-center btn btn-ghost btn-sm"
+                      href={`/collections/${e.id}`}
+                    >
+                      <i
+                        className="bi-folder-fill text-2xl drop-shadow"
+                        style={{ color: e.color }}
+                      ></i>
+                      <p className="text-xs">{e.name}</p>
+                    </Link>
+                  );
+                })}
+            </div>
+          </fieldset>
+        ) : undefined} */}
+
         <div className="divider my-0"></div>
 
         <div className="flex justify-between items-end gap-5">
@@ -260,6 +302,12 @@ export default function Index() {
             <EditCollectionSharingModal
               onClose={() => setEditCollectionSharingModal(false)}
               activeCollection={activeCollection}
+            />
+          ) : undefined}
+          {newCollectionModal ? (
+            <NewCollectionModal
+              onClose={() => setNewCollectionModal(false)}
+              parent={activeCollection}
             />
           ) : undefined}
           {deleteCollectionModal ? (
