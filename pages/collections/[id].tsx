@@ -124,8 +124,7 @@ export default function Index() {
                 </p>
               </div>
 
-              {activeCollection.subCollections &&
-              activeCollection.subCollections.length > 0 ? (
+              {collections.some((e) => e.parentId === activeCollection.id) ? (
                 <details className="mt-2 mb-2">
                   <summary className="text-sm cursor-pointer select-none">
                     View Sub-Collections
@@ -260,8 +259,7 @@ export default function Index() {
           <p>{activeCollection?.description}</p>
         ) : undefined}
 
-        {/* {activeCollection?.subCollections &&
-        activeCollection?.subCollections.length > 0 ? (
+        {/* {collections.some((e) => e.parentId === activeCollection.id) ? (
           <fieldset className="border rounded-md p-2 border-neutral-content">
             <legend className="text-sm ml-2">Sub-Collections</legend>
             <div className="flex gap-3">
