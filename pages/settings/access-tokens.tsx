@@ -38,7 +38,7 @@ export default function AccessTokens() {
         </p>
 
         <button
-          className={`btn btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
+          className={`btn ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
           onClick={() => {
             setNewTokenModal(true);
           }}
@@ -48,7 +48,7 @@ export default function AccessTokens() {
 
         {tokens.length > 0 ? (
           <>
-            <div className="divider"></div>
+            <div className="divider my-0"></div>
 
             <table className="table">
               {/* head */}
