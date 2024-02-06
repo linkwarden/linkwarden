@@ -60,8 +60,32 @@ const CollectionItem = ({
 
   const router = useRouter();
 
+  // Check if the current collection or any of its subcollections is active
+  const isActiveOrParentOfActive = React.useMemo(() => {
+    const isActive = active === `/collections/${collection.id}`;
+    if (isActive) return true;
+
+    const checkIfParentOfActive = (parentId: number): boolean => {
+      return collections.some((e) => {
+        if (e.id === parseInt(active.split("/collections/")[1])) {
+          if (e.parentId === parentId) return true;
+          if (e.parentId) return checkIfParentOfActive(e.parentId);
+        }
+        return false;
+      });
+    };
+
+    return checkIfParentOfActive(collection.id as number);
+  }, [active, collection.id, collections]);
+
+  const [isOpen, setIsOpen] = useState(isActiveOrParentOfActive);
+
+  useEffect(() => {
+    setIsOpen(isActiveOrParentOfActive);
+  }, [isActiveOrParentOfActive]);
+
   return hasChildren ? (
-    <details>
+    <details open={isOpen}>
       <summary
         className={`${
           active === `/collections/${collection.id}`
@@ -92,10 +116,8 @@ const CollectionItem = ({
         </Link>
       </summary>
 
-      {/* Nested Collections, make it recursively */}
-
       {hasChildren && (
-        <div className="pl-4">
+        <div className="ml-3 pl-1 border-l border-neutral-content">
           {collections
             .filter((e) => e.parentId === collection.id)
             .map((subCollection) => (
