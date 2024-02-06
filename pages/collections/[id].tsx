@@ -25,6 +25,7 @@ import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import Link from "next/link";
+import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
@@ -83,6 +84,7 @@ export default function Index() {
   }, [activeCollection]);
 
   const [editCollectionModal, setEditCollectionModal] = useState(false);
+  const [newCollectionModal, setNewCollectionModal] = useState(false);
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
@@ -112,45 +114,15 @@ export default function Index() {
       >
         {activeCollection && (
           <div className="flex gap-3 items-start justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <i
-                  className="bi-folder-fill text-3xl drop-shadow"
-                  style={{ color: activeCollection?.color }}
-                ></i>
+            <div className="flex items-center gap-2">
+              <i
+                className="bi-folder-fill text-3xl drop-shadow"
+                style={{ color: activeCollection?.color }}
+              ></i>
 
-                <p className="sm:text-4xl text-3xl capitalize w-full py-1 break-words hyphens-auto font-thin">
-                  {activeCollection?.name}
-                </p>
-              </div>
-
-              {collections.some((e) => e.parentId === activeCollection.id) ? (
-                <details className="mt-2 mb-2">
-                  <summary className="text-sm cursor-pointer select-none">
-                    View Sub-Collections
-                  </summary>
-
-                  <div className="flex gap-3 mt-1 pl-3 ml-1 border-l border-neutral-content">
-                    {collections
-                      .filter((e) => e.parentId === activeCollection?.id)
-                      .map((e, i) => {
-                        return (
-                          <Link
-                            key={i}
-                            className="flex gap-1 items-center btn btn-ghost btn-sm"
-                            href={`/collections/${e.id}`}
-                          >
-                            <i
-                              className="bi-folder-fill text-2xl drop-shadow"
-                              style={{ color: e.color }}
-                            ></i>
-                            <p className="text-xs">{e.name}</p>
-                          </Link>
-                        );
-                      })}
-                  </div>
-                </details>
-              ) : undefined}
+              <p className="sm:text-4xl text-3xl capitalize w-full py-1 break-words hyphens-auto font-thin">
+                {activeCollection?.name}
+              </p>
             </div>
 
             <div className="dropdown dropdown-bottom dropdown-end mt-2">
@@ -191,6 +163,20 @@ export default function Index() {
                       : "View Team"}
                   </div>
                 </li>
+                {permissions === true ? (
+                  <li>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        (document?.activeElement as HTMLElement)?.blur();
+                        setNewCollectionModal(true);
+                      }}
+                    >
+                      Create Sub-Collection
+                    </div>
+                  </li>
+                ) : undefined}
                 <li>
                   <div
                     role="button"
@@ -316,6 +302,12 @@ export default function Index() {
             <EditCollectionSharingModal
               onClose={() => setEditCollectionSharingModal(false)}
               activeCollection={activeCollection}
+            />
+          ) : undefined}
+          {newCollectionModal ? (
+            <NewCollectionModal
+              onClose={() => setNewCollectionModal(false)}
+              parent={activeCollection}
             />
           ) : undefined}
           {deleteCollectionModal ? (
