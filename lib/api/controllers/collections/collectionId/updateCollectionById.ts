@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import getPermission from "@/lib/api/getPermission";
-import { Collection, UsersAndCollections } from "@prisma/client";
 
 export default async function updateCollection(
   userId: number,
@@ -18,6 +17,26 @@ export default async function updateCollection(
 
   if (!(collectionIsAccessible?.ownerId === userId))
     return { response: "Collection is not accessible.", status: 401 };
+
+  if (data.parentId) {
+    const findParentCollection = await prisma.collection.findUnique({
+      where: {
+        id: data.parentId,
+      },
+      select: {
+        ownerId: true,
+      },
+    });
+
+    if (
+      findParentCollection?.ownerId !== userId ||
+      typeof data.parentId !== "number"
+    )
+      return {
+        response: "You are not authorized to create a sub-collection here.",
+        status: 403,
+      };
+  }
 
   const updatedCollection = await prisma.$transaction(async () => {
     await prisma.usersAndCollections.deleteMany({
@@ -38,6 +57,11 @@ export default async function updateCollection(
         description: data.description,
         color: data.color,
         isPublic: data.isPublic,
+        parent: {
+          connect: {
+            id: data.parentId || undefined,
+          },
+        },
         members: {
           create: data.members.map((e) => ({
             user: { connect: { id: e.user.id || e.userId } },
