@@ -75,7 +75,6 @@ export default async function updateCollection(
         _count: {
           select: { links: true },
         },
-        subCollections: true,
         members: {
           include: {
             user: {

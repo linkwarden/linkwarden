@@ -16,7 +16,6 @@ export default async function getCollectionById(
       _count: {
         select: { links: true },
       },
-      subCollections: true,
       members: {
         include: {
           user: {

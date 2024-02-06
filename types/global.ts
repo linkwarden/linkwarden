@@ -35,7 +35,6 @@ export interface CollectionIncludingMembersAndLinkCount
   createdAt?: string;
   _count?: { links: number };
   members: Member[];
-  subCollections: CollectionIncludingMembersAndLinkCount[];
 }
 
 export interface TagIncludingLinkCount extends Tag {

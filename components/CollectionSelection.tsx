@@ -55,8 +55,7 @@ const CollectionItem = ({
   active: string;
   collections: CollectionIncludingMembersAndLinkCount[];
 }) => {
-  const hasChildren =
-    collection.subCollections && collection.subCollections.length > 0;
+  const hasChildren = collections.some((e) => e.parentId === collection.id);
 
   const router = useRouter();
 
