@@ -48,7 +48,10 @@ export default async function postCollection(
   const checkIfCollectionExists = findCollection?.collections[0];
 
   if (checkIfCollectionExists)
-    return { response: "Collection already exists.", status: 400 };
+    return {
+      response: "Oops! There's already a Collection with that name.",
+      status: 400,
+    };
 
   const newCollection = await prisma.collection.create({
     data: {
