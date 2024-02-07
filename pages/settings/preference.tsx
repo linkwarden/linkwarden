@@ -5,9 +5,43 @@ import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
 import React from "react";
 import useLocalSettingsStore from "@/store/localSettings";
+import Checkbox from "@/components/Checkbox";
+import SubmitButton from "@/components/SubmitButton";
 
 export default function Appearance() {
   const { updateSettings } = useLocalSettingsStore();
+
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const { account, updateAccount } = useAccountStore();
+  const [user, setUser] = useState<AccountSettings>(account);
+
+  const [archiveAsScreenshot, setArchiveAsScreenshot] =
+    useState<boolean>(false);
+  const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(false);
+  const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    setUser({
+      ...account,
+      archiveAsScreenshot,
+      archiveAsPDF,
+      archiveAsWaybackMachine,
+    });
+  }, [account, archiveAsScreenshot, archiveAsPDF, archiveAsWaybackMachine]);
+
+  function objectIsEmpty(obj: object) {
+    return Object.keys(obj).length === 0;
+  }
+
+  useEffect(() => {
+    if (!objectIsEmpty(account)) {
+      setArchiveAsScreenshot(account.archiveAsScreenshot);
+      setArchiveAsPDF(account.archiveAsPDF);
+      setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
+    }
+  }, [account]);
+
   const submit = async () => {
     setSubmitLoader(true);
 
@@ -25,40 +59,9 @@ export default function Appearance() {
     setSubmitLoader(false);
   };
 
-  const [submitLoader, setSubmitLoader] = useState(false);
-
-  const { account, updateAccount } = useAccountStore();
-
-  const [user, setUser] = useState<AccountSettings>(
-    !objectIsEmpty(account)
-      ? account
-      : ({
-          // @ts-ignore
-          id: null,
-          name: "",
-          username: "",
-          email: "",
-          emailVerified: null,
-          blurredFavicons: null,
-          image: "",
-          isPrivate: true,
-          // @ts-ignore
-          createdAt: null,
-          whitelistedUsers: [],
-        } as unknown as AccountSettings)
-  );
-
-  function objectIsEmpty(obj: object) {
-    return Object.keys(obj).length === 0;
-  }
-
-  useEffect(() => {
-    if (!objectIsEmpty(account)) setUser({ ...account });
-  }, [account]);
-
   return (
     <SettingsLayout>
-      <p className="capitalize text-3xl font-thin inline">Appearance</p>
+      <p className="capitalize text-3xl font-thin inline">Preference</p>
 
       <div className="divider my-3"></div>
 
@@ -94,12 +97,51 @@ export default function Appearance() {
           </div>
         </div>
 
-        {/* <SubmitButton
+        <div>
+          <p className="capitalize text-3xl font-thin inline">
+            Archive Settings
+          </p>
+
+          <div className="divider my-3"></div>
+
+          <p>Formats to Archive/Preserve webpages:</p>
+          <div className="p-3">
+            <Checkbox
+              label="Screenshot"
+              state={archiveAsScreenshot}
+              onClick={() => setArchiveAsScreenshot(!archiveAsScreenshot)}
+            />
+
+            <Checkbox
+              label="PDF"
+              state={archiveAsPDF}
+              onClick={() => setArchiveAsPDF(!archiveAsPDF)}
+            />
+
+            <Checkbox
+              label="Archive.org Snapshot"
+              state={archiveAsWaybackMachine}
+              onClick={() =>
+                setArchiveAsWaybackMachine(!archiveAsWaybackMachine)
+              }
+            />
+          </div>
+        </div>
+
+        <div>
+          <p className="capitalize text-3xl font-thin inline">Link Settings</p>
+
+          <div className="divider my-3"></div>
+
+          <p>Clicking on Links should:</p>
+        </div>
+
+        <SubmitButton
           onClick={submit}
           loading={submitLoader}
           label="Save Changes"
-          className="mt-2 mx-auto lg:mx-0"
-        /> */}
+          className="mt-2 w-full sm:w-fit"
+        />
       </div>
     </SettingsLayout>
   );
