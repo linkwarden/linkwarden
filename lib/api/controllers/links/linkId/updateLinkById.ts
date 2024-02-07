@@ -28,6 +28,36 @@ export default async function updateLinkById(
   const unauthorizedSwitchCollection =
     !isCollectionOwner && collectionIsAccessible?.id !== data.collection.id;
 
+  const canPinPermission = collectionIsAccessible?.members.some(
+    (e: UsersAndCollections) => e.userId === userId
+  );
+
+  // If the user is able to create a link, they can pin it to their dashboard only.
+  if (canPinPermission) {
+    const updatedLink = await prisma.link.update({
+      where: {
+        id: linkId,
+      },
+      data: {
+        pinnedBy:
+          data?.pinnedBy && data.pinnedBy[0]
+            ? { connect: { id: userId } }
+            : { disconnect: { id: userId } },
+      },
+      include: {
+        collection: true,
+        pinnedBy: isCollectionOwner
+          ? {
+              where: { id: userId },
+              select: { id: true },
+            }
+          : undefined,
+      },
+    });
+
+    return { response: updatedLink, status: 200 };
+  }
+
   // Makes sure collection members (non-owners) cannot move a link to/from a collection.
   if (unauthorizedSwitchCollection)
     return {
