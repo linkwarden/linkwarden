@@ -80,22 +80,20 @@ export default function LinkActions({
           <i title="More" className="bi-three-dots text-xl" />
         </div>
         <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 translate-y-10">
-          {permissions === true ? (
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  pinLink();
-                }}
-              >
-                {link?.pinnedBy && link.pinnedBy[0]
-                  ? "Unpin"
-                  : "Pin to Dashboard"}
-              </div>
-            </li>
-          ) : undefined}
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                pinLink();
+              }}
+            >
+              {link?.pinnedBy && link.pinnedBy[0]
+                ? "Unpin"
+                : "Pin to Dashboard"}
+            </div>
+          </li>
           {linkInfo !== undefined && toggleShowInfo ? (
             <li>
               <div
