@@ -37,30 +37,17 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        <Link href="/settings/appearance">
+        <Link href="/settings/preference">
           <div
             className={`${
-              active === `/settings/appearance`
+              active === `/settings/preference`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i className="bi-palette text-primary text-2xl"></i>
+            <i className="bi-sliders text-primary text-2xl"></i>
 
-            <p className="truncate w-full pr-7">Appearance</p>
-          </div>
-        </Link>
-
-        <Link href="/settings/archive">
-          <div
-            className={`${
-              active === `/settings/archive`
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
-          >
-            <i className="bi-archive text-primary text-2xl"></i>
-            <p className="truncate w-full pr-7">Archive</p>
+            <p className="truncate w-full pr-7">Preference</p>
           </div>
         </Link>
 
