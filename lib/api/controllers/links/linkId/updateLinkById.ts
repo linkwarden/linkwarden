@@ -21,10 +21,6 @@ export default async function updateLinkById(
     (e: UsersAndCollections) => e.userId === userId && e.canUpdate
   );
 
-  const canCreatePermission = collectionIsAccessible?.members.some(
-    (e: UsersAndCollections) => e.userId === userId && e.canCreate
-  );
-
   const isCollectionOwner =
     collectionIsAccessible?.ownerId === data.collection.ownerId &&
     data.collection.ownerId === userId;
@@ -32,31 +28,29 @@ export default async function updateLinkById(
   const unauthorizedSwitchCollection =
     !isCollectionOwner && collectionIsAccessible?.id !== data.collection.id;
 
-  // Makes sure collection members (non-owners) cannot move a link to/from a collection.
-  if (unauthorizedSwitchCollection)
-    return {
-      response: "You can't move a link to/from a collection you don't own.",
-      status: 401,
-    };
+  const canPinPermission = collectionIsAccessible?.members.some(
+    (e: UsersAndCollections) => e.userId === userId
+  );
 
   // If the user is able to create a link, they can pin it to their dashboard only.
-  if (canCreatePermission) {
+  if (canPinPermission) {
     const updatedLink = await prisma.link.update({
       where: {
         id: linkId,
       },
       data: {
-        pinnedBy: data?.pinnedBy && data.pinnedBy[0]
-          ? { connect: { id: userId } }
-          : { disconnect: { id: userId } },
+        pinnedBy:
+          data?.pinnedBy && data.pinnedBy[0]
+            ? { connect: { id: userId } }
+            : { disconnect: { id: userId } },
       },
       include: {
         collection: true,
         pinnedBy: isCollectionOwner
           ? {
-            where: { id: userId },
-            select: { id: true },
-          }
+              where: { id: userId },
+              select: { id: true },
+            }
           : undefined,
       },
     });
@@ -64,6 +58,12 @@ export default async function updateLinkById(
     return { response: updatedLink, status: 200 };
   }
 
+  // Makes sure collection members (non-owners) cannot move a link to/from a collection.
+  if (unauthorizedSwitchCollection)
+    return {
+      response: "You can't move a link to/from a collection you don't own.",
+      status: 401,
+    };
   else if (collectionIsAccessible?.ownerId !== userId && !memberHasAccess)
     return {
       response: "Collection is not accessible.",
@@ -111,9 +111,9 @@ export default async function updateLinkById(
         collection: true,
         pinnedBy: isCollectionOwner
           ? {
-            where: { id: userId },
-            select: { id: true },
-          }
+              where: { id: userId },
+              select: { id: true },
+            }
           : undefined,
       },
     });
