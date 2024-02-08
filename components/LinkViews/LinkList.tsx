@@ -1,5 +1,4 @@
 import {
-  ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
@@ -13,7 +12,7 @@ import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import Link from "next/link";
 import { isPWA } from "@/lib/client/utils";
-import { generateLinkHrefBasedOnUserPreference } from "@/lib/client/generateHrefBasedOnUserPreference ";
+import { generateLinkHref } from "@/lib/client/generateLinkHref";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -61,7 +60,7 @@ export default function LinkCardCompact({
           } duration-200 rounded-lg`}
       >
         <Link
-          href={generateLinkHrefBasedOnUserPreference(link)}
+          href={generateLinkHref(link)}
           target="_blank"
           className="flex items-start cursor-pointer"
         >
