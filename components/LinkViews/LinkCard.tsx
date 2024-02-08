@@ -14,8 +14,8 @@ import Image from "next/image";
 import { previewAvailable } from "@/lib/shared/getArchiveValidity";
 import Link from "next/link";
 import LinkIcon from "./LinkComponents/LinkIcon";
-import LinkGroupedIconURL from "./LinkComponents/LinkGroupedIconURL";
 import useOnScreen from "@/hooks/useOnScreen";
+import { generateHrefBasedOnUserPreference } from "@/lib/client/generateHrefBasedOnUserPreference ";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -26,8 +26,6 @@ type Props = {
 
 export default function LinkGrid({
   link,
-  count,
-  className,
   flipDropdown,
 }: Props) {
   const { collections } = useCollectionStore();
@@ -88,7 +86,7 @@ export default function LinkGrid({
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
       <Link
-        href={link.url || ""}
+        href={generateHrefBasedOnUserPreference(link)}
         target="_blank"
         className="rounded-2xl cursor-pointer"
       >
