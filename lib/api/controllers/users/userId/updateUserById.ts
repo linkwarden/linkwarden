@@ -97,18 +97,18 @@ export default async function updateUserById(
         id: { not: userId },
         OR: emailEnabled
           ? [
-              {
-                username: data.username.toLowerCase(),
-              },
-              {
-                email: data.email?.toLowerCase(),
-              },
-            ]
+            {
+              username: data.username.toLowerCase(),
+            },
+            {
+              email: data.email?.toLowerCase(),
+            },
+          ]
           : [
-              {
-                username: data.username.toLowerCase(),
-              },
-            ],
+            {
+              username: data.username.toLowerCase(),
+            },
+          ],
       },
     });
 
@@ -186,6 +186,7 @@ export default async function updateUserById(
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
+      linksRouteTo: data.linksRouteTo,
       password:
         data.newPassword && data.newPassword !== ""
           ? newHashedPassword

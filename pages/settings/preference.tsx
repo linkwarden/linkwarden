@@ -7,6 +7,7 @@ import React from "react";
 import useLocalSettingsStore from "@/store/localSettings";
 import Checkbox from "@/components/Checkbox";
 import SubmitButton from "@/components/SubmitButton";
+import { LinksRouteTo } from "@prisma/client";
 
 export default function Appearance() {
   const { updateSettings } = useLocalSettingsStore();
@@ -20,6 +21,9 @@ export default function Appearance() {
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(false);
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
     useState<boolean>(false);
+  const [linksRouteTo, setLinksRouteTo] = useState<LinksRouteTo>(
+    user.linksRouteTo
+  );
 
   useEffect(() => {
     setUser({
@@ -27,8 +31,15 @@ export default function Appearance() {
       archiveAsScreenshot,
       archiveAsPDF,
       archiveAsWaybackMachine,
+      linksRouteTo,
     });
-  }, [account, archiveAsScreenshot, archiveAsPDF, archiveAsWaybackMachine]);
+  }, [
+    account,
+    archiveAsScreenshot,
+    archiveAsPDF,
+    archiveAsWaybackMachine,
+    linksRouteTo,
+  ]);
 
   function objectIsEmpty(obj: object) {
     return Object.keys(obj).length === 0;
@@ -39,6 +50,7 @@ export default function Appearance() {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
       setArchiveAsPDF(account.archiveAsPDF);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
+      setLinksRouteTo(account.linksRouteTo);
     }
   }, [account]);
 
@@ -134,6 +146,71 @@ export default function Appearance() {
           <div className="divider my-3"></div>
 
           <p>Clicking on Links should:</p>
+          <div className="p-3">
+            <label
+              className="label cursor-pointer flex gap-2 justify-start"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Original"
+                checked={linksRouteTo === LinksRouteTo.ORIGINAL}
+                onChange={() => setLinksRouteTo(LinksRouteTo.ORIGINAL)}
+              />
+              <span className="label-text">Open the original content</span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="PDF"
+                checked={linksRouteTo === LinksRouteTo.PDF}
+                onChange={() => setLinksRouteTo(LinksRouteTo.PDF)}
+              />
+              <span className="label-text">Open PDF, if available</span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Readable"
+                checked={linksRouteTo === LinksRouteTo.READABLE}
+                onChange={() => setLinksRouteTo(LinksRouteTo.READABLE)}
+              />
+              <span className="label-text">Open Readable, if available</span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Screenshot"
+                checked={linksRouteTo === LinksRouteTo.SCREENSHOT}
+                onChange={() => setLinksRouteTo(LinksRouteTo.SCREENSHOT)}
+              />
+              <span className="label-text">Open Screenshot, if available</span>
+            </label>
+          </div>
         </div>
 
         <SubmitButton
