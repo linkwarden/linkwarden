@@ -7,6 +7,7 @@ import React from "react";
 import useLocalSettingsStore from "@/store/localSettings";
 import Checkbox from "@/components/Checkbox";
 import SubmitButton from "@/components/SubmitButton";
+import { LinksRouteTo } from "@prisma/client";
 
 export default function Appearance() {
   const { updateSettings } = useLocalSettingsStore();
@@ -20,6 +21,7 @@ export default function Appearance() {
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(false);
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
     useState<boolean>(false);
+  const [linksRouteTo, setLinksRouteTo] = useState<LinksRouteTo>(user.linksRouteTo);
 
   useEffect(() => {
     setUser({
@@ -27,8 +29,9 @@ export default function Appearance() {
       archiveAsScreenshot,
       archiveAsPDF,
       archiveAsWaybackMachine,
+      linksRouteTo
     });
-  }, [account, archiveAsScreenshot, archiveAsPDF, archiveAsWaybackMachine]);
+  }, [account, archiveAsScreenshot, archiveAsPDF, archiveAsWaybackMachine, linksRouteTo]);
 
   function objectIsEmpty(obj: object) {
     return Object.keys(obj).length === 0;
@@ -39,6 +42,7 @@ export default function Appearance() {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
       setArchiveAsPDF(account.archiveAsPDF);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
+      setLinksRouteTo(account.linksRouteTo);
     }
   }, [account]);
 
@@ -70,11 +74,10 @@ export default function Appearance() {
           <p className="mb-3">Select Theme</p>
           <div className="flex gap-3 w-full">
             <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
-                localStorage.getItem("theme") === "dark"
-                  ? "dark:outline-primary text-primary"
-                  : "text-white"
-              }`}
+              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${localStorage.getItem("theme") === "dark"
+                ? "dark:outline-primary text-primary"
+                : "text-white"
+                }`}
               onClick={() => updateSettings({ theme: "dark" })}
             >
               <i className="bi-moon-fill text-6xl"></i>
@@ -83,11 +86,10 @@ export default function Appearance() {
               {/* <hr className="my-3 outline-1 outline-neutral-content dark:outline-neutral-700" /> */}
             </div>
             <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
-                localStorage.getItem("theme") === "light"
-                  ? "outline-primary text-primary"
-                  : "text-black"
-              }`}
+              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${localStorage.getItem("theme") === "light"
+                ? "outline-primary text-primary"
+                : "text-black"
+                }`}
               onClick={() => updateSettings({ theme: "light" })}
             >
               <i className="bi-sun-fill text-6xl"></i>
@@ -133,7 +135,32 @@ export default function Appearance() {
 
           <div className="divider my-3"></div>
 
-          <p>Clicking on Links should:</p>
+          <p>Clicking on Links should open:</p>
+          <div className="p-3">
+            <Checkbox
+              label="Original"
+              state={linksRouteTo === LinksRouteTo.ORIGINAL}
+              onClick={() => setLinksRouteTo(LinksRouteTo.ORIGINAL)}
+            />
+
+            <Checkbox
+              label="PDF"
+              state={linksRouteTo === LinksRouteTo.PDF}
+              onClick={() => setLinksRouteTo(LinksRouteTo.PDF)}
+            />
+
+            <Checkbox
+              label="Readable"
+              state={linksRouteTo === LinksRouteTo.READABLE}
+              onClick={() => setLinksRouteTo(LinksRouteTo.READABLE)}
+            />
+
+            <Checkbox
+              label="Screenshot"
+              state={linksRouteTo === LinksRouteTo.SCREENSHOT}
+              onClick={() => setLinksRouteTo(LinksRouteTo.SCREENSHOT)}
+            />
+          </div>
         </div>
 
         <SubmitButton
