@@ -21,7 +21,9 @@ export default function Appearance() {
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(false);
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
     useState<boolean>(false);
-  const [linksRouteTo, setLinksRouteTo] = useState<LinksRouteTo>(user.linksRouteTo);
+  const [linksRouteTo, setLinksRouteTo] = useState<LinksRouteTo>(
+    user.linksRouteTo
+  );
 
   useEffect(() => {
     setUser({
@@ -29,9 +31,15 @@ export default function Appearance() {
       archiveAsScreenshot,
       archiveAsPDF,
       archiveAsWaybackMachine,
-      linksRouteTo
+      linksRouteTo,
     });
-  }, [account, archiveAsScreenshot, archiveAsPDF, archiveAsWaybackMachine, linksRouteTo]);
+  }, [
+    account,
+    archiveAsScreenshot,
+    archiveAsPDF,
+    archiveAsWaybackMachine,
+    linksRouteTo,
+  ]);
 
   function objectIsEmpty(obj: object) {
     return Object.keys(obj).length === 0;
@@ -74,10 +82,11 @@ export default function Appearance() {
           <p className="mb-3">Select Theme</p>
           <div className="flex gap-3 w-full">
             <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${localStorage.getItem("theme") === "dark"
-                ? "dark:outline-primary text-primary"
-                : "text-white"
-                }`}
+              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
+                localStorage.getItem("theme") === "dark"
+                  ? "dark:outline-primary text-primary"
+                  : "text-white"
+              }`}
               onClick={() => updateSettings({ theme: "dark" })}
             >
               <i className="bi-moon-fill text-6xl"></i>
@@ -86,10 +95,11 @@ export default function Appearance() {
               {/* <hr className="my-3 outline-1 outline-neutral-content dark:outline-neutral-700" /> */}
             </div>
             <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${localStorage.getItem("theme") === "light"
-                ? "outline-primary text-primary"
-                : "text-black"
-                }`}
+              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
+                localStorage.getItem("theme") === "light"
+                  ? "outline-primary text-primary"
+                  : "text-black"
+              }`}
               onClick={() => updateSettings({ theme: "light" })}
             >
               <i className="bi-sun-fill text-6xl"></i>
@@ -135,31 +145,71 @@ export default function Appearance() {
 
           <div className="divider my-3"></div>
 
-          <p>Clicking on Links should open:</p>
+          <p>Clicking on Links should:</p>
           <div className="p-3">
-            <Checkbox
-              label="Original"
-              state={linksRouteTo === LinksRouteTo.ORIGINAL}
-              onClick={() => setLinksRouteTo(LinksRouteTo.ORIGINAL)}
-            />
+            <label
+              className="label cursor-pointer flex gap-2 justify-start"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Original"
+                checked={linksRouteTo === LinksRouteTo.ORIGINAL}
+                onChange={() => setLinksRouteTo(LinksRouteTo.ORIGINAL)}
+              />
+              <span className="label-text">Open the original content</span>
+            </label>
 
-            <Checkbox
-              label="PDF"
-              state={linksRouteTo === LinksRouteTo.PDF}
-              onClick={() => setLinksRouteTo(LinksRouteTo.PDF)}
-            />
+            <label
+              className="label cursor-pointer flex gap-2 justify-start"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="PDF"
+                checked={linksRouteTo === LinksRouteTo.PDF}
+                onChange={() => setLinksRouteTo(LinksRouteTo.PDF)}
+              />
+              <span className="label-text">Open PDF, if available</span>
+            </label>
 
-            <Checkbox
-              label="Readable"
-              state={linksRouteTo === LinksRouteTo.READABLE}
-              onClick={() => setLinksRouteTo(LinksRouteTo.READABLE)}
-            />
+            <label
+              className="label cursor-pointer flex gap-2 justify-start"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Readable"
+                checked={linksRouteTo === LinksRouteTo.READABLE}
+                onChange={() => setLinksRouteTo(LinksRouteTo.READABLE)}
+              />
+              <span className="label-text">Open Readable, if available</span>
+            </label>
 
-            <Checkbox
-              label="Screenshot"
-              state={linksRouteTo === LinksRouteTo.SCREENSHOT}
-              onClick={() => setLinksRouteTo(LinksRouteTo.SCREENSHOT)}
-            />
+            <label
+              className="label cursor-pointer flex gap-2 justify-start"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Screenshot"
+                checked={linksRouteTo === LinksRouteTo.SCREENSHOT}
+                onChange={() => setLinksRouteTo(LinksRouteTo.SCREENSHOT)}
+              />
+              <span className="label-text">Open Screenshot, if available</span>
+            </label>
           </div>
         </div>
 
