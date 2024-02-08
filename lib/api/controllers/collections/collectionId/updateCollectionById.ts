@@ -57,11 +57,7 @@ export default async function updateCollection(
         description: data.description,
         color: data.color,
         isPublic: data.isPublic,
-        parent: {
-          connect: {
-            id: data.parentId || undefined,
-          },
-        },
+        parent: data.parentId ? { connect: { id: data.parentId } } : undefined,
         members: {
           create: data.members.map((e) => ({
             user: { connect: { id: e.user.id || e.userId } },
