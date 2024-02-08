@@ -148,7 +148,7 @@ export default function Appearance() {
           <p>Clicking on Links should:</p>
           <div className="p-3">
             <label
-              className="label cursor-pointer flex gap-2 justify-start"
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
               tabIndex={0}
               role="button"
             >
@@ -164,7 +164,7 @@ export default function Appearance() {
             </label>
 
             <label
-              className="label cursor-pointer flex gap-2 justify-start"
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
               tabIndex={0}
               role="button"
             >
@@ -180,7 +180,7 @@ export default function Appearance() {
             </label>
 
             <label
-              className="label cursor-pointer flex gap-2 justify-start"
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
               tabIndex={0}
               role="button"
             >
@@ -196,7 +196,7 @@ export default function Appearance() {
             </label>
 
             <label
-              className="label cursor-pointer flex gap-2 justify-start"
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
               tabIndex={0}
               role="button"
             >
