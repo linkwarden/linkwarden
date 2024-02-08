@@ -15,7 +15,7 @@ import { previewAvailable } from "@/lib/shared/getArchiveValidity";
 import Link from "next/link";
 import LinkIcon from "./LinkComponents/LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
-import { generateHrefBasedOnUserPreference } from "@/lib/client/generateHrefBasedOnUserPreference ";
+import { generateLinkHref } from "@/lib/client/generateLinkHref";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -86,7 +86,7 @@ export default function LinkGrid({
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
       <Link
-        href={generateHrefBasedOnUserPreference(link)}
+        href={generateLinkHref(link)}
         target="_blank"
         className="rounded-2xl cursor-pointer"
       >

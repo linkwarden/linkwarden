@@ -2,7 +2,7 @@ import useAccountStore from "@/store/account";
 import { ArchivedFormat, LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { LinksRouteTo } from "@prisma/client";
 
-export const generateLinkHrefBasedOnUserPreference = (link: LinkIncludingShortenedCollectionAndTags): string => {
+export const generateLinkHref = (link: LinkIncludingShortenedCollectionAndTags): string => {
 	const { account } = useAccountStore();
 
 	switch (account.linksRouteTo) {
