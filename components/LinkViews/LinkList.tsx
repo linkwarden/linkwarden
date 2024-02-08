@@ -12,6 +12,7 @@ import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import Link from "next/link";
 import { isPWA } from "@/lib/client/utils";
+import { generateLinkHref } from "@/lib/client/generateLinkHref";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -22,12 +23,9 @@ type Props = {
 
 export default function LinkCardCompact({
   link,
-  count,
-  className,
   flipDropdown,
 }: Props) {
   const { collections } = useCollectionStore();
-
   const { links } = useLinkStore();
 
   let shortendURL;
@@ -58,12 +56,11 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`border-neutral-content relative ${
-          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-        } duration-200 rounded-lg`}
+        className={`border-neutral-content relative ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+          } duration-200 rounded-lg`}
       >
         <Link
-          href={link.url || ""}
+          href={generateLinkHref(link)}
           target="_blank"
           className="flex items-start cursor-pointer"
         >
@@ -102,8 +99,8 @@ export default function LinkCardCompact({
           collection={collection}
           position="top-3 right-3"
           flipDropdown={flipDropdown}
-          // toggleShowInfo={() => setShowInfo(!showInfo)}
-          // linkInfo={showInfo}
+        // toggleShowInfo={() => setShowInfo(!showInfo)}
+        // linkInfo={showInfo}
         />
         {showInfo ? (
           <div>
