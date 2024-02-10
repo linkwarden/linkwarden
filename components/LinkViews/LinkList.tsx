@@ -13,6 +13,7 @@ import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import Link from "next/link";
 import { isPWA } from "@/lib/client/utils";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
+import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -30,8 +31,12 @@ export default function LinkCardCompact({
   const { collections } = useCollectionStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
 
-  const handleCheckboxClick = (checkboxId: number) => {
-    setSelectedLinks((selectedLinks.includes(checkboxId) ? selectedLinks.filter((id) => id !== checkboxId) : [...selectedLinks, checkboxId]));
+  const handleCheckboxClick = (link: LinkIncludingShortenedCollectionAndTags) => {
+    if (selectedLinks.includes(link)) {
+      setSelectedLinks(selectedLinks.filter((e) => e !== link));
+    } else {
+      setSelectedLinks([...selectedLinks, link]);
+    }
   };
 
   let shortendURL;
@@ -57,6 +62,8 @@ export default function LinkCardCompact({
     );
   }, [collections, links]);
 
+  const permissions = usePermissions(collection.id as number);
+
   const [showInfo, setShowInfo] = useState(false);
 
   return (
@@ -65,12 +72,12 @@ export default function LinkCardCompact({
         className={`border-neutral-content relative items-center flex ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
           } duration-200 rounded-lg`}
       >
-        {showCheckbox &&
+        {showCheckbox && (permissions === true || permissions?.canCreate || permissions?.canDelete) &&
           <input
             type="checkbox"
             className="checkbox checkbox-primary my-auto mr-2"
-            checked={selectedLinks.includes(link.id)}
-            onChange={() => handleCheckboxClick(link.id)}
+            checked={selectedLinks.includes(link)}
+            onChange={() => handleCheckboxClick(link)}
           />
         }
         <Link

@@ -17,7 +17,7 @@ export default function BulkDeleteLinksModal({ onClose }: Props) {
 
 		toast.dismiss(load);
 
-		response.ok && toast.success(`Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""}!`);
+		response.ok && toast.success(`Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""}`);
 
 		setSelectedLinks([]);
 		onClose();
@@ -25,7 +25,7 @@ export default function BulkDeleteLinksModal({ onClose }: Props) {
 
 	return (
 		<Modal toggleModal={onClose}>
-			<p className="text-xl font-thin text-red-500">Delete {selectedLinks.length} Link{selectedLinks.length > 1 ? "s" : ""}!</p>
+			<p className="text-xl font-thin text-red-500">Delete {selectedLinks.length} Link{selectedLinks.length > 1 ? "s" : ""}</p>
 
 			<div className="divider mb-3 mt-1"></div>
 
