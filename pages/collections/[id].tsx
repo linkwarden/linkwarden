@@ -42,6 +42,7 @@ export default function Index() {
     useState<CollectionIncludingMembersAndLinkCount>();
 
   const permissions = usePermissions(activeCollection?.id as number);
+  console.log(permissions)
 
   useLinks({ collectionId: Number(router.query.id), sort: sortBy });
 
@@ -316,19 +317,21 @@ export default function Index() {
               </span>
             )}
           </div>
-          {selectedLinks.length > 0 && permissions &&
-            <div className="flex gap-3">
+          <div className="flex gap-3">
+            {selectedLinks.length > 0 && (permissions === true || permissions?.canUpdate) &&
               <button className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto">
-                Edit Links
+                Edit
               </button>
+            }
+            {selectedLinks.length > 0 && (permissions === true || permissions?.canDelete) &&
               <button onClick={(e) => {
                 (document?.activeElement as HTMLElement)?.blur();
                 e.shiftKey ? bulkDeleteLinks() : setBulkDeleteLinksModal(true);
               }} className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto">
                 Delete
               </button>
-            </div>
-          }
+            }
+          </div>
         </div>
 
         {links.some((e) => e.collectionId === Number(router.query.id)) ? (
