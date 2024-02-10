@@ -29,7 +29,6 @@ export default function BulkEditLinksModal({ onClose }: Props) {
 		if (!submitLoader) {
 			setSubmitLoader(true);
 
-
 			const load = toast.loading("Updating...");
 
 			const response = await updateLinks(selectedLinks, updatedValues);
