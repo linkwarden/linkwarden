@@ -4,18 +4,18 @@ import getPermission from "@/lib/api/getPermission";
 import removeFile from "@/lib/api/storage/removeFile";
 
 export default async function deleteLinksById(userId: number, linkIds: number[]) {
-	console.log("linkIds: ", linkIds);
 	if (!linkIds || linkIds.length === 0) {
 		return { response: "Please choose valid links.", status: 401 };
 	}
 
-	const deletedLinks = [];
+	const collectionIsAccessibleArray = [];
 
+	// Check if the user has access to the collection of each link
+	// if any of the links are not accessible, return an error
+	// if all links are accessible, continue with the deletion
+	// and add the collection to the collectionIsAccessibleArray
 	for (const linkId of linkIds) {
-		const collectionIsAccessible = await getPermission({
-			userId,
-			linkId,
-		});
+		const collectionIsAccessible = await getPermission({ userId, linkId });
 
 		const memberHasAccess = collectionIsAccessible?.members.some(
 			(e: UsersAndCollections) => e.userId === userId && e.canDelete
@@ -25,11 +25,20 @@ export default async function deleteLinksById(userId: number, linkIds: number[])
 			return { response: "Collection is not accessible.", status: 401 };
 		}
 
-		const deletedLink = await prisma.link.delete({
-			where: {
-				id: linkId,
-			},
-		});
+		collectionIsAccessibleArray.push(collectionIsAccessible);
+	}
+
+	const deletedLinks = await prisma.link.deleteMany({
+		where: {
+			id: { in: linkIds },
+		},
+	});
+
+	// Loop through each link and delete the associated files
+	// if the user has access to the collection
+	for (let i = 0; i < linkIds.length; i++) {
+		const linkId = linkIds[i];
+		const collectionIsAccessible = collectionIsAccessibleArray[i];
 
 		removeFile({
 			filePath: `archives/${collectionIsAccessible?.id}/${linkId}.pdf`,
@@ -40,8 +49,6 @@ export default async function deleteLinksById(userId: number, linkIds: number[])
 		removeFile({
 			filePath: `archives/${collectionIsAccessible?.id}/${linkId}_readability.json`,
 		});
-
-		deletedLinks.push(deletedLink);
 	}
 
 	return { response: deletedLinks, status: 200 };
