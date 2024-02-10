@@ -13,6 +13,7 @@ import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import Link from "next/link";
 import { isPWA } from "@/lib/client/utils";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
+import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
@@ -29,6 +30,7 @@ export default function LinkCardCompact({
   showCheckbox = true,
 }: Props) {
   const { collections } = useCollectionStore();
+  const { account } = useAccountStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
 
   const handleCheckboxClick = (link: LinkIncludingShortenedCollectionAndTags) => {
@@ -81,7 +83,7 @@ export default function LinkCardCompact({
           />
         }
         <Link
-          href={generateLinkHref(link)}
+          href={generateLinkHref(link, account)}
           target="_blank"
           className="flex items-center cursor-pointer"
         >
