@@ -24,7 +24,6 @@ import CardView from "@/components/LinkViews/Layouts/CardView";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
-import Link from "next/link";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 
 export default function Index() {
@@ -81,6 +80,9 @@ export default function Index() {
     };
 
     fetchOwner();
+
+    // When the collection changes, reset the selected links
+    setSelectedLinks([]);
   }, [activeCollection]);
 
   const [editCollectionModal, setEditCollectionModal] = useState(false);
@@ -294,9 +296,11 @@ export default function Index() {
               onChange={() => handleSelectAll()}
               checked={selectedLinks.length === links.length}
             />
-            {selectedLinks.length > 0 &&
-              <span>{selectedLinks.length} link selected</span>
-            }
+            {selectedLinks.length > 0 && (
+              <span>
+                {selectedLinks.length} {selectedLinks.length === 1 ? 'link' : 'links'} selected
+              </span>
+            )}
           </div>
           {selectedLinks.length > 0 && permissions &&
             <div className="flex gap-3">
