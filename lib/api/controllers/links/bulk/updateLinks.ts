@@ -4,13 +4,17 @@ import updateLinkById from "../linkId/updateLinkById";
 // Need to fix this
 export default async function updateLinks(userId: number, links: LinkIncludingShortenedCollectionAndTags[], newData: Pick<LinkIncludingShortenedCollectionAndTags, "tags" | "collectionId">) {
 	let allUpdatesSuccessful = true;
+	console.log(newData)
 
 	for (const link of links) {
 		const updatedData: LinkIncludingShortenedCollectionAndTags = {
 			...link,
 			tags: [...link.tags, ...(newData.tags ?? [])],
-			collectionId: newData.collectionId ?? link.collectionId,
-		}
+			collection: {
+				...link.collection,
+				id: newData.collectionId ?? link.collection.id,
+			}
+		};
 
 		const updatedLink = await updateLinkById(userId, link.id, updatedData);
 

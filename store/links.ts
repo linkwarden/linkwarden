@@ -23,6 +23,7 @@ type LinkStore = {
   updateLink: (
     link: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
+  updateLinks: (links: LinkIncludingShortenedCollectionAndTags[], newData: Pick<LinkIncludingShortenedCollectionAndTags, "tags" | "collectionId">) => Promise<ResponseObject>;
   removeLink: (linkId: number) => Promise<ResponseObject>;
   deleteLinksById: (linkIds: number[]) => Promise<ResponseObject>;
   resetLinks: () => void;
@@ -127,7 +128,31 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     return { ok: response.ok, data: data.response };
   },
+  updateLinks: async (links, newData) => {
+    const response = await fetch("/api/v1/links", {
+      body: JSON.stringify({ links, newData }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "PUT",
+    });
 
+    const data = await response.json();
+
+    if (response.ok) {
+      set((state) => ({
+        links: state.links.map((e) =>
+          links.some((link) => link.id === e.id)
+            ? { ...e, ...newData }
+            : e
+        ),
+      }));
+      useTagStore.getState().setTags();
+      useCollectionStore.getState().setCollections();
+    }
+
+    return { ok: response.ok, data: data.response };
+  },
   removeLink: async (linkId) => {
     const response = await fetch(`/api/v1/links/${linkId}`, {
       headers: {
