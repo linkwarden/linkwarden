@@ -25,13 +25,15 @@ import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
+import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
+import toast from "react-hot-toast";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
 
   const router = useRouter();
 
-  const { links, selectedLinks, setSelectedLinks } = useLinkStore();
+  const { links, selectedLinks, setSelectedLinks, deleteLinksById } = useLinkStore();
   const { collections } = useCollectionStore();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -90,6 +92,7 @@ export default function Index() {
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
+  const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
 
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
@@ -110,6 +113,16 @@ export default function Index() {
     } else {
       setSelectedLinks(links.map((e) => e.id));
     }
+  };
+
+  const bulkDeleteLinks = async () => {
+    const load = toast.loading(`Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""}...`);
+
+    const response = await deleteLinksById(selectedLinks);
+
+    toast.dismiss(load);
+
+    response.ok && toast.success(`Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""}!`);
   };
 
   return (
@@ -295,7 +308,7 @@ export default function Index() {
               type="checkbox"
               className="checkbox checkbox-primary"
               onChange={() => handleSelectAll()}
-              checked={selectedLinks.length === links.length}
+              checked={selectedLinks.length === links.length && links.length > 0}
             />
             {selectedLinks.length > 0 && (
               <span>
@@ -308,7 +321,10 @@ export default function Index() {
               <button className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto">
                 Edit Links
               </button>
-              <button className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto">
+              <button onClick={(e) => {
+                (document?.activeElement as HTMLElement)?.blur();
+                e.shiftKey ? bulkDeleteLinks() : setBulkDeleteLinksModal(true);
+              }} className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto">
                 Delete
               </button>
             </div>
@@ -325,34 +341,37 @@ export default function Index() {
           <NoLinksFound />
         )}
       </div>
-      {activeCollection ? (
+      {activeCollection && (
         <>
-          {editCollectionModal ? (
+          {editCollectionModal && (
             <EditCollectionModal
               onClose={() => setEditCollectionModal(false)}
               activeCollection={activeCollection}
             />
-          ) : undefined}
-          {editCollectionSharingModal ? (
+          )}
+          {editCollectionSharingModal && (
             <EditCollectionSharingModal
               onClose={() => setEditCollectionSharingModal(false)}
               activeCollection={activeCollection}
             />
-          ) : undefined}
-          {newCollectionModal ? (
+          )}
+          {newCollectionModal && (
             <NewCollectionModal
               onClose={() => setNewCollectionModal(false)}
               parent={activeCollection}
             />
-          ) : undefined}
-          {deleteCollectionModal ? (
+          )}
+          {deleteCollectionModal && (
             <DeleteCollectionModal
               onClose={() => setDeleteCollectionModal(false)}
               activeCollection={activeCollection}
             />
-          ) : undefined}
+          )}
+          {bulkDeleteLinksModal && (
+            <BulkDeleteLinksModal onClose={() => setBulkDeleteLinksModal(false)} />
+          )}
         </>
-      ) : undefined}
+      )}
     </MainLayout>
   );
 }

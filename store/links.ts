@@ -24,6 +24,7 @@ type LinkStore = {
     link: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
   removeLink: (linkId: number) => Promise<ResponseObject>;
+  deleteLinksById: (linkIds: number[]) => Promise<ResponseObject>;
   resetLinks: () => void;
 };
 
@@ -139,6 +140,27 @@ const useLinkStore = create<LinkStore>()((set) => ({
     if (response.ok) {
       set((state) => ({
         links: state.links.filter((e) => e.id !== linkId),
+      }));
+      useTagStore.getState().setTags();
+      useCollectionStore.getState().setCollections();
+    }
+
+    return { ok: response.ok, data: data.response };
+  },
+  deleteLinksById: async (linkIds: number[]) => {
+    const response = await fetch("/api/v1/links/bulk", {
+      body: JSON.stringify({ linkIds }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "DELETE",
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      set((state) => ({
+        links: state.links.filter((e) => !linkIds.includes(e.id)),
       }));
       useTagStore.getState().setTags();
       useCollectionStore.getState().setCollections();

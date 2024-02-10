@@ -16,6 +16,7 @@ import Link from "next/link";
 import LinkIcon from "./LinkComponents/LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
+import useAccountStore from "@/store/account";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -28,7 +29,7 @@ type Props = {
 export default function LinkCard({
   link,
   flipDropdown,
-  showCheckbox,
+  showCheckbox = true,
 }: Props) {
   const { collections } = useCollectionStore();
 
