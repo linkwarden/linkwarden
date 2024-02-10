@@ -15,7 +15,6 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
 
   const { removeLink } = useLinkStore();
-  const [submitLoader, setSubmitLoader] = useState(false);
 
   const router = useRouter();
 

@@ -25,7 +25,7 @@ type Props = {
 export default function LinkCardCompact({
   link,
   flipDropdown,
-  showCheckbox,
+  showCheckbox = true,
 }: Props) {
   const { collections } = useCollectionStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();

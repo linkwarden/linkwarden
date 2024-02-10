@@ -20,6 +20,7 @@ export default function NewLinkModal({ onClose }: Props) {
   const { data } = useSession();
 
   const initial = {
+    id: 0,
     name: "",
     url: "",
     description: "",
@@ -196,9 +197,8 @@ export default function NewLinkModal({ onClose }: Props) {
             {optionsExpanded ? "Hide" : "More"} Options
           </p>
           <i
-            className={`${
-              optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
-            }`}
+            className={`${optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
+              }`}
           ></i>
         </div>
 

@@ -3,8 +3,10 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
 export default function ListView({
   links,
+  showCheckbox = true
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
+  showCheckbox?: boolean;
 }) {
   return (
     <div className="flex flex-col">
@@ -14,6 +16,7 @@ export default function ListView({
             key={i}
             link={e}
             count={i}
+            showCheckbox={showCheckbox}
             flipDropdown={i === links.length - 1}
           />
         );
