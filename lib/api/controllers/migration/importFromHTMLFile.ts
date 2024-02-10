@@ -11,6 +11,8 @@ export default async function importFromHTMLFile(
   const dom = new JSDOM(rawData);
   const document = dom.window.document;
 
+  // console.log(document.querySelectorAll("A").length);
+
   const bookmarks = document.querySelectorAll("A");
   const totalImports = bookmarks.length;
 
@@ -29,49 +31,54 @@ export default async function importFromHTMLFile(
     };
 
   const folders = document.querySelectorAll("H3");
+  let unorganizedCollectionId: number | null = null;
+
+  if (folders.length === 0) {
+    const unorganizedCollection = await prisma.collection.findFirst({
+      where: {
+        name: "Imported",
+        ownerId: userId,
+      },
+    });
+
+    if (!unorganizedCollection) {
+      const newUnorganizedCollection = await prisma.collection.create({
+        data: {
+          name: "Imported",
+          description:
+            "Automatically created collection for imported bookmarks.",
+          ownerId: userId,
+        },
+      });
+      unorganizedCollectionId = newUnorganizedCollection.id;
+    } else {
+      unorganizedCollectionId = unorganizedCollection.id;
+    }
+
+    createFolder({ filePath: `archives/${unorganizedCollectionId}` });
+  }
 
   await prisma
     .$transaction(
       async () => {
-        // @ts-ignore
-        for (const folder of folders) {
-          const findCollection = await prisma.user.findUnique({
-            where: {
-              id: userId,
-            },
-            select: {
-              collections: {
-                where: {
-                  name: folder.textContent.trim(),
-                },
-              },
-            },
-          });
-
-          const checkIfCollectionExists = findCollection?.collections[0];
-
-          let collectionId = findCollection?.collections[0]?.id;
-
-          if (!checkIfCollectionExists || !collectionId) {
-            const newCollection = await prisma.collection.create({
-              data: {
-                name: folder.textContent.trim(),
-                description: "",
-                color: "#0ea5e9",
-                isPublic: false,
-                ownerId: userId,
-              },
-            });
-
-            createFolder({ filePath: `archives/${newCollection.id}` });
-
-            collectionId = newCollection.id;
-          }
-
-          createFolder({ filePath: `archives/${collectionId}` });
-
-          const bookmarks = folder.nextElementSibling.querySelectorAll("A");
+        if (unorganizedCollectionId) {
+          // @ts-ignore
           for (const bookmark of bookmarks) {
+            // Move up to the parent node (<DT>) and then find the next sibling
+            let parentDT = bookmark.parentNode;
+            let nextSibling = parentDT ? parentDT.nextSibling : null;
+            let description = "";
+
+            // Loop through siblings to skip any potential text nodes or whitespace
+            while (nextSibling && nextSibling.nodeType !== 1) {
+              nextSibling = nextSibling.nextSibling;
+            }
+
+            // Check if the next sibling element is a <DD> tag and use its content as the description
+            if (nextSibling && nextSibling.tagName === "DD") {
+              description = nextSibling.textContent.trim();
+            }
+
             await prisma.link.create({
               data: {
                 name: bookmark.textContent.trim(),
@@ -103,13 +110,102 @@ export default async function importFromHTMLFile(
                         ),
                     }
                   : undefined,
-                description: bookmark.getAttribute("DESCRIPTION")
-                  ? bookmark.getAttribute("DESCRIPTION")
-                  : "",
-                collectionId: collectionId,
-                createdAt: new Date(),
+                description: description,
+                collectionId: unorganizedCollectionId,
               },
             });
+          }
+        } else {
+          // @ts-ignore
+          for (const folder of folders) {
+            const findCollection = await prisma.user.findUnique({
+              where: {
+                id: userId,
+              },
+              select: {
+                collections: {
+                  where: {
+                    name: folder.textContent.trim(),
+                  },
+                },
+              },
+            });
+
+            const checkIfCollectionExists = findCollection?.collections[0];
+
+            let collectionId = findCollection?.collections[0]?.id;
+
+            if (!checkIfCollectionExists || !collectionId) {
+              const newCollection = await prisma.collection.create({
+                data: {
+                  name: folder.textContent.trim(),
+                  description: "",
+                  color: "#0ea5e9",
+                  isPublic: false,
+                  ownerId: userId,
+                },
+              });
+
+              createFolder({ filePath: `archives/${newCollection.id}` });
+
+              collectionId = newCollection.id;
+            }
+
+            createFolder({ filePath: `archives/${collectionId}` });
+
+            const bookmarks = folder.nextElementSibling.querySelectorAll("A");
+            for (const bookmark of bookmarks) {
+              // Move up to the parent node (<DT>) and then find the next sibling
+              let parentDT = bookmark.parentNode;
+              let nextSibling = parentDT ? parentDT.nextSibling : null;
+              let description = "";
+
+              // Loop through siblings to skip any potential text nodes or whitespace
+              while (nextSibling && nextSibling.nodeType !== 1) {
+                nextSibling = nextSibling.nextSibling;
+              }
+
+              // Check if the next sibling element is a <DD> tag and use its content as the description
+              if (nextSibling && nextSibling.tagName === "DD") {
+                description = nextSibling.textContent.trim();
+              }
+
+              await prisma.link.create({
+                data: {
+                  name: bookmark.textContent.trim(),
+                  url: bookmark.getAttribute("HREF"),
+                  tags: bookmark.getAttribute("TAGS")
+                    ? {
+                        connectOrCreate: bookmark
+                          .getAttribute("TAGS")
+                          .split(",")
+                          .map((tag: string) =>
+                            tag
+                              ? {
+                                  where: {
+                                    name_ownerId: {
+                                      name: tag.trim(),
+                                      ownerId: userId,
+                                    },
+                                  },
+                                  create: {
+                                    name: tag.trim(),
+                                    owner: {
+                                      connect: {
+                                        id: userId,
+                                      },
+                                    },
+                                  },
+                                }
+                              : undefined
+                          ),
+                      }
+                    : undefined,
+                  description: description,
+                  collectionId: collectionId,
+                },
+              });
+            }
           }
         }
       },
