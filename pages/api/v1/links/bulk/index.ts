@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import verifyUser from "@/lib/api/verifyUser";
 import deleteLinksById from "@/lib/api/controllers/links/bulk/deleteLinksById";
-import updateLinksById from "@/lib/api/controllers/links/bulk/updateLinksById";
+import updateLinksById from "@/lib/api/controllers/links/bulk/updateLinks";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
 	const user = await verifyUser({ req, res });

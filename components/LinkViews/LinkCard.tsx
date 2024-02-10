@@ -35,9 +35,15 @@ export default function LinkCard({
 
   const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
 
-  const handleCheckboxClick = (checkboxId: number) => {
-    setSelectedLinks((selectedLinks.includes(checkboxId) ? selectedLinks.filter((id) => id !== checkboxId) : [...selectedLinks, checkboxId]));
+  const handleCheckboxClick = (link: LinkIncludingShortenedCollectionAndTags) => {
+    if (selectedLinks.includes(link)) {
+      setSelectedLinks(selectedLinks.filter((e) => e !== link));
+    } else {
+      setSelectedLinks([...selectedLinks, link]);
+    }
   };
+
+  console.log(selectedLinks)
 
   let shortendURL;
 
@@ -96,8 +102,8 @@ export default function LinkCard({
         <input
           type="checkbox"
           className="checkbox checkbox-primary my-auto ml-3 mt-3 absolute z-20 bg-white dark:bg-base-200"
-          checked={selectedLinks.includes(link.id)}
-          onChange={() => handleCheckboxClick(link.id)}
+          checked={selectedLinks.includes(link)}
+          onChange={() => handleCheckboxClick(link)}
         />
       }
       <Link
