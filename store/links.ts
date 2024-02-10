@@ -186,7 +186,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     if (response.ok) {
       set((state) => ({
-        links: state.links.filter((e) => !linkIds.includes(e.id)),
+        links: state.links.filter((e) => !linkIds.includes(e.id as number)),
       }));
       useTagStore.getState().setTags();
       useCollectionStore.getState().setCollections();
