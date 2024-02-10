@@ -43,7 +43,6 @@ export default function Index() {
     useState<CollectionIncludingMembersAndLinkCount>();
 
   const permissions = usePermissions(activeCollection?.id as number);
-  console.log(permissions)
 
   useLinks({ collectionId: Number(router.query.id), sort: sortBy });
 
@@ -307,19 +306,21 @@ export default function Index() {
         </div>
 
         <div className="w-full flex justify-between items-center min-h-[32px]">
-          <div className="flex gap-3 ml-3">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-primary"
-              onChange={() => handleSelectAll()}
-              checked={selectedLinks.length === links.length && links.length > 0}
-            />
-            {selectedLinks.length > 0 && (
-              <span>
-                {selectedLinks.length} {selectedLinks.length === 1 ? 'link' : 'links'} selected
-              </span>
-            )}
-          </div>
+          {links.length > 0 && (
+            <div className="flex gap-3 ml-3">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary"
+                onChange={() => handleSelectAll()}
+                checked={selectedLinks.length === links.length && links.length > 0}
+              />
+              {selectedLinks.length > 0 && (
+                <span>
+                  {selectedLinks.length} {selectedLinks.length === 1 ? 'link' : 'links'} selected
+                </span>
+              )}
+            </div>
+          )}
           <div className="flex gap-3">
             {selectedLinks.length > 0 && (permissions === true || permissions?.canUpdate) &&
               <button onClick={() => setBulkEditLinksModal(true)} className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto">
