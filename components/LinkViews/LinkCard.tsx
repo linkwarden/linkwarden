@@ -70,7 +70,7 @@ export default function LinkCard({
 
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
-  const permissions = usePermissions(collection.id as number);
+  const permissions = usePermissions(collection?.id as number);
 
   useEffect(() => {
     let interval: any;

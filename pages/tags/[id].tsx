@@ -145,11 +145,10 @@ export default function Index() {
                   </p>
                   <div className="relative">
                     <div
-                      className={`dropdown dropdown-bottom font-normal ${
-                        activeTag?.name.length && activeTag?.name.length > 8
+                      className={`dropdown dropdown-bottom font-normal ${activeTag?.name.length && activeTag?.name.length > 8
                           ? "dropdown-end"
                           : ""
-                      }`}
+                        }`}
                     >
                       <div
                         tabIndex={0}
@@ -200,6 +199,7 @@ export default function Index() {
           </div>
         </div>
         <LinkComponent
+          showCheckbox={false}
           links={links.filter((e) =>
             e.tags.some((e) => e.id === Number(router.query.id))
           )}
