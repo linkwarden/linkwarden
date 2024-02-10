@@ -16,7 +16,7 @@ import Link from "next/link";
 import LinkIcon from "./LinkComponents/LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
-import useAccountStore from "@/store/account";
+import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -43,8 +43,6 @@ export default function LinkCard({
     }
   };
 
-  console.log(selectedLinks)
-
   let shortendURL;
 
   try {
@@ -70,6 +68,7 @@ export default function LinkCard({
 
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
+  const permissions = usePermissions(collection.id as number);
 
   useEffect(() => {
     let interval: any;
@@ -98,7 +97,7 @@ export default function LinkCard({
       ref={ref}
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
-      {showCheckbox &&
+      {showCheckbox && (permissions === true || permissions?.canCreate || permissions?.canDelete) &&
         <input
           type="checkbox"
           className="checkbox checkbox-primary my-auto ml-3 mt-3 absolute z-20 bg-white dark:bg-base-200"
