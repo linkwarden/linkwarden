@@ -27,6 +27,7 @@ import { dropdownTriggerer } from "@/lib/client/utils";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import toast from "react-hot-toast";
+import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
@@ -94,6 +95,8 @@ export default function Index() {
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
+  const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
+
 
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
@@ -319,7 +322,7 @@ export default function Index() {
           </div>
           <div className="flex gap-3">
             {selectedLinks.length > 0 && (permissions === true || permissions?.canUpdate) &&
-              <button className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto">
+              <button onClick={() => setBulkEditLinksModal(true)} className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto">
                 Edit
               </button>
             }
@@ -372,6 +375,9 @@ export default function Index() {
           )}
           {bulkDeleteLinksModal && (
             <BulkDeleteLinksModal onClose={() => setBulkDeleteLinksModal(false)} />
+          )}
+          {bulkEditLinksModal && (
+            <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
           )}
         </>
       )}

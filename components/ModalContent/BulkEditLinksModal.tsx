@@ -1,50 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
-import TextInput from "@/components/TextInput";
-import unescapeString from "@/lib/client/unescapeString";
 import useLinkStore from "@/store/links";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import toast from "react-hot-toast";
-import Link from "next/link";
 import Modal from "../Modal";
 
 type Props = {
 	onClose: Function;
 };
 
-// TODO: Make this work
-export default function EditLinkModal({ onClose }: Props) {
-	const { updateLink, updateLinksById } = useLinkStore();
+export default function BulkEditLinksModal({ onClose }: Props) {
+	const { updateLinks, selectedLinks, setSelectedLinks } = useLinkStore();
 	const [submitLoader, setSubmitLoader] = useState(false);
-	const [updatedValues, setUpdatedValues] = useState<Partial<LinkIncludingShortenedCollectionAndTags>>();
+	const [updatedValues, setUpdatedValues] = useState<Pick<LinkIncludingShortenedCollectionAndTags, "tags" | "collectionId">>({ tags: [] });
 
 	const setCollection = (e: any) => {
-		if (e?.__isNew__) e.value = null;
-
-		setUpdatedValues({
-			...updatedValues,
-			collection: { id: e?.value, name: e?.label, ownerId: e?.ownerId },
-		});
+		const collectionId = e?.value || null;
+		setUpdatedValues((prevValues) => ({ ...prevValues, collectionId }));
 	};
 
 	const setTags = (e: any) => {
-		const tagNames = e.map((e: any) => {
-			return { name: e.label };
-		});
-
-		setUpdatedValues({ ...updatedValues, tags: tagNames });
+		const tags = e.map((tag: any) => ({ name: tag.label }));
+		setUpdatedValues((prevValues) => ({ ...prevValues, tags }));
 	};
 
 	const submit = async () => {
 		if (!submitLoader) {
 			setSubmitLoader(true);
 
-			let response;
 
 			const load = toast.loading("Updating...");
 
-			response = await updateLinksById(user);
+			const response = await updateLinks(selectedLinks, updatedValues);
 
 			toast.dismiss(load);
 
@@ -53,8 +41,9 @@ export default function EditLinkModal({ onClose }: Props) {
 				onClose();
 			} else toast.error(response.data as string);
 
+			setSelectedLinks([]);
 			setSubmitLoader(false);
-
+			onClose();
 			return response;
 		}
 	};
@@ -62,78 +51,17 @@ export default function EditLinkModal({ onClose }: Props) {
 	return (
 		<Modal toggleModal={onClose}>
 			<p className="text-xl font-thin">Edit Link</p>
-
 			<div className="divider mb-3 mt-1"></div>
-
-			{link.url ? (
-				<Link
-					href={link.url}
-					className="truncate text-neutral flex gap-2 mb-5 w-fit max-w-full"
-					title={link.url}
-					target="_blank"
-				>
-					<i className="bi-link-45deg text-xl" />
-					<p>{shortendURL}</p>
-				</Link>
-			) : undefined}
-
-			<div className="w-full">
-				<p className="mb-2">Name</p>
-				<TextInput
-					value={link.name}
-					onChange={(e) => setLink({ ...link, name: e.target.value })}
-					placeholder="e.g. Example Link"
-					className="bg-base-200"
-				/>
-			</div>
-
 			<div className="mt-5">
-				{/* <hr className="mb-3 border border-neutral-content" /> */}
 				<div className="grid sm:grid-cols-2 gap-3">
 					<div>
 						<p className="mb-2">Collection</p>
-						{link.collection.name ? (
-							<CollectionSelection
-								onChange={setCollection}
-								// defaultValue={{
-								//   label: link.collection.name,
-								//   value: link.collection.id,
-								// }}
-								defaultValue={
-									link.collection.id
-										? {
-											value: link.collection.id,
-											label: link.collection.name,
-										}
-										: {
-											value: null as unknown as number,
-											label: "Unorganized",
-										}
-								}
-							/>
-						) : null}
+						<CollectionSelection onChange={setCollection} />
 					</div>
 
 					<div>
 						<p className="mb-2">Tags</p>
-						<TagSelection
-							onChange={setTags}
-							defaultValue={link.tags.map((e) => {
-								return { label: e.name, value: e.id };
-							})}
-						/>
-					</div>
-
-					<div className="sm:col-span-2">
-						<p className="mb-2">Description</p>
-						<textarea
-							value={unescapeString(link.description) as string}
-							onChange={(e) =>
-								setLink({ ...link, description: e.target.value })
-							}
-							placeholder="Will be auto generated if nothing is provided."
-							className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
-						/>
+						<TagSelection onChange={setTags} />
 					</div>
 				</div>
 			</div>
