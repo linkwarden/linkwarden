@@ -168,7 +168,7 @@ export default function Dashboard() {
         >
           {links[0] ? (
             <div className="w-full">
-              <LinkComponent links={links.slice(0, showLinks)} />
+              <LinkComponent links={links.slice(0, showLinks)} showCheckbox={false} />
             </div>
           ) : (
             <div
@@ -279,6 +279,7 @@ export default function Dashboard() {
           {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
               <LinkComponent
+                showCheckbox={false}
                 links={links
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
                   .slice(0, showLinks)}

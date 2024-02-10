@@ -22,11 +22,13 @@ type Props = {
   count: number;
   className?: string;
   flipDropdown?: boolean;
+  showCheckbox?: boolean;
 };
 
 export default function LinkCard({
   link,
   flipDropdown,
+  showCheckbox,
 }: Props) {
   const { collections } = useCollectionStore();
 
@@ -89,12 +91,14 @@ export default function LinkCard({
       ref={ref}
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
-      <input
-        type="checkbox"
-        className="checkbox checkbox-primary my-auto ml-3 mt-3 fixed z-50 bg-white"
-        checked={selectedLinks.includes(link.id)}
-        onChange={() => handleCheckboxClick(link.id)}
-      />
+      {showCheckbox &&
+        <input
+          type="checkbox"
+          className="checkbox checkbox-primary my-auto ml-3 mt-3 absolute z-20 bg-white"
+          checked={selectedLinks.includes(link.id)}
+          onChange={() => handleCheckboxClick(link.id)}
+        />
+      }
       <Link
         href={generateLinkHref(link)}
         target="_blank"

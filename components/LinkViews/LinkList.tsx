@@ -19,11 +19,13 @@ type Props = {
   count: number;
   className?: string;
   flipDropdown?: boolean;
+  showCheckbox?: boolean;
 };
 
 export default function LinkCardCompact({
   link,
   flipDropdown,
+  showCheckbox,
 }: Props) {
   const { collections } = useCollectionStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
@@ -63,12 +65,14 @@ export default function LinkCardCompact({
         className={`border-neutral-content relative items-center flex ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
           } duration-200 rounded-lg`}
       >
-        <input
-          type="checkbox"
-          className="checkbox checkbox-primary my-auto mr-2"
-          checked={selectedLinks.includes(link.id)}
-          onChange={() => handleCheckboxClick(link.id)}
-        />
+        {showCheckbox &&
+          <input
+            type="checkbox"
+            className="checkbox checkbox-primary my-auto mr-2"
+            checked={selectedLinks.includes(link.id)}
+            onChange={() => handleCheckboxClick(link.id)}
+          />
+        }
         <Link
           href={generateLinkHref(link)}
           target="_blank"
