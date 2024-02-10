@@ -7,12 +7,12 @@ import CreatableSelect from "react-select/creatable";
 
 type Props = {
   onChange: any;
-  defaultValue:
-    | {
-        label: string;
-        value?: number;
-      }
-    | undefined;
+  defaultValue?:
+  | {
+    label: string;
+    value?: number;
+  }
+  | undefined;
 };
 
 export default function CollectionSelection({ onChange, defaultValue }: Props) {
@@ -51,7 +51,7 @@ export default function CollectionSelection({ onChange, defaultValue }: Props) {
       options={options}
       styles={styles}
       defaultValue={defaultValue}
-      // menuPosition="fixed"
+    // menuPosition="fixed"
     />
   );
 }
