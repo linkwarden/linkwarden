@@ -32,7 +32,7 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { links } = useLinkStore();
+  const { links, selectedLinks, setSelectedLinks } = useLinkStore();
   const { collections } = useCollectionStore();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -102,14 +102,21 @@ export default function Index() {
   // @ts-ignore
   const LinkComponent = linkView[viewMode];
 
+  const handleSelectAll = () => {
+    if (selectedLinks.length === links.length) {
+      setSelectedLinks([]);
+    } else {
+      setSelectedLinks(links.map((e) => e.id));
+    }
+  };
+
   return (
     <MainLayout>
       <div
         className="h-[60rem] p-5 flex gap-3 flex-col"
         style={{
-          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
+            } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
@@ -278,6 +285,29 @@ export default function Index() {
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
+        </div>
+        <div className="w-full flex justify-between items-center min-h-[32px]">
+          <div className="flex gap-3 ml-3">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary"
+              onChange={() => handleSelectAll()}
+              checked={selectedLinks.length === links.length}
+            />
+            {selectedLinks.length > 0 &&
+              <span>{selectedLinks.length} link selected</span>
+            }
+          </div>
+          {selectedLinks.length > 0 && permissions &&
+            <div className="flex gap-3">
+              <button className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto">
+                Edit Links
+              </button>
+              <button className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto">
+                Delete
+              </button>
+            </div>
+          }
         </div>
 
         {links.some((e) => e.collectionId === Number(router.query.id)) ? (
