@@ -1,10 +1,8 @@
-import useAccountStore from "@/store/account";
-import { ArchivedFormat, LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { AccountSettings, ArchivedFormat, LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { LinksRouteTo } from "@prisma/client";
 import { pdfAvailable, readabilityAvailable, screenshotAvailable } from "../shared/getArchiveValidity";
 
-export const generateLinkHref = (link: LinkIncludingShortenedCollectionAndTags): string => {
-	const { account } = useAccountStore();
+export const generateLinkHref = (link: LinkIncludingShortenedCollectionAndTags, account: AccountSettings): string => {
 
 	// Return the links href based on the account's preference
 	// If the user's preference is not available, return the original link
