@@ -16,6 +16,7 @@ import Link from "next/link";
 import LinkIcon from "./LinkComponents/LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
+import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
@@ -32,6 +33,7 @@ export default function LinkCard({
   showCheckbox = true,
 }: Props) {
   const { collections } = useCollectionStore();
+  const { account } = useAccountStore();
 
   const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
 
@@ -106,7 +108,7 @@ export default function LinkCard({
         />
       }
       <Link
-        href={generateLinkHref(link)}
+        href={generateLinkHref(link, account)}
         target="_blank"
         className="rounded-2xl cursor-pointer"
       >
