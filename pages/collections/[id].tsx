@@ -288,6 +288,7 @@ export default function Index() {
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
+
         <div className="w-full flex justify-between items-center min-h-[32px]">
           <div className="flex gap-3 ml-3">
             <input
