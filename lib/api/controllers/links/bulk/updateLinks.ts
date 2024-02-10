@@ -16,7 +16,7 @@ export default async function updateLinks(userId: number, links: LinkIncludingSh
 			}
 		};
 
-		const updatedLink = await updateLinkById(userId, link.id, updatedData);
+		const updatedLink = await updateLinkById(userId, link.id as number, updatedData);
 
 		if (updatedLink.status !== 200) {
 			allUpdatesSuccessful = false;
