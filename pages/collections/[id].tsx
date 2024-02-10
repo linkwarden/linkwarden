@@ -111,14 +111,14 @@ export default function Index() {
     if (selectedLinks.length === links.length) {
       setSelectedLinks([]);
     } else {
-      setSelectedLinks(links.map((e) => e.id));
+      setSelectedLinks(links.map((link) => link));
     }
   };
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(`Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""}...`);
 
-    const response = await deleteLinksById(selectedLinks);
+    const response = await deleteLinksById(selectedLinks.map((link) => link.id));
 
     toast.dismiss(load);
 

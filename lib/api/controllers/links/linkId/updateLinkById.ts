@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import { Collection, Link, UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import moveFile from "@/lib/api/storage/moveFile";
 
@@ -48,9 +48,9 @@ export default async function updateLinkById(
         collection: true,
         pinnedBy: isCollectionOwner
           ? {
-              where: { id: userId },
-              select: { id: true },
-            }
+            where: { id: userId },
+            select: { id: true },
+          }
           : undefined,
       },
     });
@@ -111,9 +111,9 @@ export default async function updateLinkById(
         collection: true,
         pinnedBy: isCollectionOwner
           ? {
-              where: { id: userId },
-              select: { id: true },
-            }
+            where: { id: userId },
+            select: { id: true },
+          }
           : undefined,
       },
     });

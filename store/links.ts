@@ -10,12 +10,12 @@ type ResponseObject = {
 
 type LinkStore = {
   links: LinkIncludingShortenedCollectionAndTags[];
-  selectedLinks: number[];
+  selectedLinks: LinkIncludingShortenedCollectionAndTags[];
   setLinks: (
     data: LinkIncludingShortenedCollectionAndTags[],
     isInitialCall: boolean
   ) => void;
-  setSelectedLinks: (linkIds: number[]) => void;
+  setSelectedLinks: (links: LinkIncludingShortenedCollectionAndTags[]) => void;
   addLink: (
     body: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
@@ -23,7 +23,6 @@ type LinkStore = {
   updateLink: (
     link: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
-  updateLinksById: (linkIds: number[], data: Partial<LinkIncludingShortenedCollectionAndTags>) => Promise<ResponseObject>;
   removeLink: (linkId: number) => Promise<ResponseObject>;
   deleteLinksById: (linkIds: number[]) => Promise<ResponseObject>;
   resetLinks: () => void;
@@ -50,7 +49,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
       ),
     }));
   },
-  setSelectedLinks: (linkIds) => set({ selectedLinks: linkIds }),
+  setSelectedLinks: (links) => set({ selectedLinks: links }),
   addLink: async (body) => {
     const response = await fetch("/api/v1/links", {
       body: JSON.stringify(body),
@@ -128,29 +127,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     return { ok: response.ok, data: data.response };
   },
-  updateLinksById: async (linkIds, data) => {
-    const response = await fetch("/api/v1/links", {
-      body: JSON.stringify({ linkIds, data }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "PUT",
-    });
 
-    const responseData = await response.json();
-
-    if (response.ok) {
-      set((state) => ({
-        links: state.links.map((link) =>
-          linkIds.includes(link.id) ? { ...link, ...data } : link
-        ),
-      }));
-      useTagStore.getState().setTags();
-      useCollectionStore.getState().setCollections();
-    }
-
-    return { ok: response.ok, data: responseData.response };
-  },
   removeLink: async (linkId) => {
     const response = await fetch(`/api/v1/links/${linkId}`, {
       headers: {
