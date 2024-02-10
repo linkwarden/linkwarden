@@ -83,7 +83,7 @@ export default function LinkCardCompact({
         <Link
           href={generateLinkHref(link)}
           target="_blank"
-          className="flex items-start cursor-pointer"
+          className="flex items-center cursor-pointer"
         >
           <div className="shrink-0">
             <LinkIcon link={link} width="sm:w-12 w-8 mt-1 sm:mt-0" />
