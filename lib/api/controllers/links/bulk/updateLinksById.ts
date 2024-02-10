@@ -3,6 +3,7 @@ import { prisma } from "@/lib/api/db";
 import getPermission from "@/lib/api/getPermission";
 import { UsersAndCollections } from "@prisma/client";
 
+// Need to fix this
 export default async function updateLinksById(userId: number, linkIds: number[], data: LinkIncludingShortenedCollectionAndTags) {
 	if (!linkIds || linkIds.length === 0) {
 		return { response: "Please choose valid links.", status: 401 };

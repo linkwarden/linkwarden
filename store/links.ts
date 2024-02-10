@@ -129,7 +129,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     return { ok: response.ok, data: data.response };
   },
   updateLinksById: async (linkIds, data) => {
-    const response = await fetch("/api/v1/links/bulk", {
+    const response = await fetch("/api/v1/links", {
       body: JSON.stringify({ linkIds, data }),
       headers: {
         "Content-Type": "application/json",
@@ -172,7 +172,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     return { ok: response.ok, data: data.response };
   },
   deleteLinksById: async (linkIds: number[]) => {
-    const response = await fetch("/api/v1/links/bulk", {
+    const response = await fetch("/api/v1/links", {
       body: JSON.stringify({ linkIds }),
       headers: {
         "Content-Type": "application/json",

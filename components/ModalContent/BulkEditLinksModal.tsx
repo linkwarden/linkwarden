@@ -13,6 +13,7 @@ type Props = {
 	onClose: Function;
 };
 
+// TODO: Make this work
 export default function EditLinkModal({ onClose }: Props) {
 	const { updateLink, updateLinksById } = useLinkStore();
 	const [submitLoader, setSubmitLoader] = useState(false);
