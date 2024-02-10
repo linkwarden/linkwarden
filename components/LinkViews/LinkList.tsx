@@ -64,7 +64,7 @@ export default function LinkCardCompact({
     );
   }, [collections, links]);
 
-  const permissions = usePermissions(collection.id as number);
+  const permissions = usePermissions(collection?.id as number);
 
   const [showInfo, setShowInfo] = useState(false);
 
