@@ -9,7 +9,7 @@ export interface LinkIncludingShortenedCollectionAndTags
     Link,
     "id" | "createdAt" | "collectionId" | "updatedAt" | "lastPreserved"
   > {
-  id?: number;
+  id: number;
   createdAt?: string;
   collectionId?: number;
   tags: Tag[];
