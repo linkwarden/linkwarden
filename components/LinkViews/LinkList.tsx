@@ -26,7 +26,11 @@ export default function LinkCardCompact({
   flipDropdown,
 }: Props) {
   const { collections } = useCollectionStore();
-  const { links } = useLinkStore();
+  const { links, setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const handleCheckboxClick = (checkboxId: number) => {
+    setSelectedLinks((selectedLinks.includes(checkboxId) ? selectedLinks.filter((id) => id !== checkboxId) : [...selectedLinks, checkboxId]));
+  };
 
   let shortendURL;
 
@@ -56,9 +60,15 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`border-neutral-content relative ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+        className={`border-neutral-content relative items-center flex ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
           } duration-200 rounded-lg`}
       >
+        <input
+          type="checkbox"
+          className="checkbox checkbox-primary my-auto mr-2"
+          checked={selectedLinks.includes(link.id)}
+          onChange={() => handleCheckboxClick(link.id)}
+        />
         <Link
           href={generateLinkHref(link)}
           target="_blank"
