@@ -16,6 +16,7 @@ import Link from "next/link";
 import LinkIcon from "./LinkComponents/LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
+import useAccountStore from "@/store/account";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -29,6 +30,7 @@ export default function LinkGrid({
   flipDropdown,
 }: Props) {
   const { collections } = useCollectionStore();
+  const { account } = useAccountStore();
 
   const { links, getLink } = useLinkStore();
 
@@ -86,7 +88,7 @@ export default function LinkGrid({
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
       <Link
-        href={generateLinkHref(link)}
+        href={generateLinkHref(link, account)}
         target="_blank"
         className="rounded-2xl cursor-pointer"
       >
