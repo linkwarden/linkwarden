@@ -95,7 +95,7 @@ export default function LinkCard({
       {showCheckbox &&
         <input
           type="checkbox"
-          className="checkbox checkbox-primary my-auto ml-3 mt-3 absolute z-20 bg-white"
+          className="checkbox checkbox-primary my-auto ml-3 mt-3 absolute z-20 bg-white dark:bg-base-200"
           checked={selectedLinks.includes(link.id)}
           onChange={() => handleCheckboxClick(link.id)}
         />
