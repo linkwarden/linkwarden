@@ -9,17 +9,54 @@ import { Sort, ViewMode } from "@/types/global";
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
+import useCollectivePermissions from "@/hooks/useCollectivePermissions";
+import toast from "react-hot-toast";
+import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
+import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Links() {
-  const { links } = useLinkStore();
+  const { links, selectedLinks, deleteLinksById, setSelectedLinks } = useLinkStore();
 
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
   );
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
+
+  const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
+  const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const collectivePermissions = useCollectivePermissions(selectedLinks.map((link) => link.collectionId as number));
+
   useLinks({ sort: sortBy });
+
+  const handleSelectAll = () => {
+    if (selectedLinks.length === links.length) {
+      setSelectedLinks([]);
+    } else {
+      setSelectedLinks(links.map((link) => link));
+    }
+  };
+
+  const bulkDeleteLinks = async () => {
+    const load = toast.loading(
+      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      }...`
+    );
+
+    const response = await deleteLinksById(
+      selectedLinks.map((link) => link.id as number)
+    );
+
+    toast.dismiss(load);
+
+    response.ok &&
+      toast.success(
+        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        }!`
+      );
+  };
 
   const linkView = {
     [ViewMode.Card]: CardView,
@@ -41,17 +78,94 @@ export default function Links() {
           />
 
           <div className="mt-2 flex items-center justify-end gap-2">
+            <div
+              role="button"
+              onClick={() => {
+                setEditMode(!editMode)
+                setSelectedLinks([])
+              }}
+              className={`btn btn-square btn-sm btn-ghost ${editMode
+                ? "bg-primary/20 hover:bg-primary/20"
+                : "hover:bg-neutral/20"
+                }`}
+            >
+              <i className="bi-pencil-fill text-neutral text-xl"></i>
+            </div>
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
 
+        {editMode && (
+          <div className="w-full flex justify-between items-center min-h-[32px]">
+            {links.length > 0 && (
+              <div className="flex gap-3 ml-3">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary"
+                  onChange={() => handleSelectAll()}
+                  checked={
+                    selectedLinks.length === links.length && links.length > 0
+                  }
+                />
+                {selectedLinks.length > 0 ? (
+                  <span>
+                    {selectedLinks.length}{" "}
+                    {selectedLinks.length === 1 ? "link" : "links"} selected
+                  </span>
+                ) : (
+                  <span>Nothing selected</span>
+                )}
+              </div>
+            )}
+            <div className="flex gap-3">
+              {selectedLinks.length > 0 &&
+                (collectivePermissions === true || collectivePermissions?.canUpdate) && (
+                  <button
+                    onClick={() => setBulkEditLinksModal(true)}
+                    className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto"
+                  >
+                    Edit
+                  </button>
+                )}
+              {selectedLinks.length > 0 &&
+                (collectivePermissions === true || collectivePermissions?.canDelete) && (
+                  <button
+                    onClick={(e) => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      e.shiftKey
+                        ? bulkDeleteLinks()
+                        : setBulkDeleteLinksModal(true);
+                    }}
+                    className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                  >
+                    Delete
+                  </button>
+                )}
+            </div>
+          </div>
+        )}
+
         {links[0] ? (
-          <LinkComponent links={links} />
+          <LinkComponent editMode={editMode} links={links} />
         ) : (
           <NoLinksFound text="You Haven't Created Any Links Yet" />
         )}
       </div>
+      {bulkDeleteLinksModal && (
+        <BulkDeleteLinksModal
+          onClose={() => {
+            setBulkDeleteLinksModal(false);
+            setEditMode(false);
+          }}
+        />
+      )}
+      {bulkEditLinksModal && (
+        <BulkEditLinksModal onClose={() => {
+          setBulkEditLinksModal(false);
+          setEditMode(false);
+        }} />
+      )}
     </MainLayout>
   );
 }

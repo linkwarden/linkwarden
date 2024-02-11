@@ -374,7 +374,6 @@ export default function Index() {
           </div>
         )}
 
-
         {links.some((e) => e.collectionId === Number(router.query.id)) ? (
           <LinkComponent
             editMode={editMode}
