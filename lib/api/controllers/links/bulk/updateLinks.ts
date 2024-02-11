@@ -4,6 +4,7 @@ import updateLinkById from "../linkId/updateLinkById";
 export default async function updateLinks(
   userId: number,
   links: LinkIncludingShortenedCollectionAndTags[],
+  removePreviousTags: boolean,
   newData: Pick<
     LinkIncludingShortenedCollectionAndTags,
     "tags" | "collectionId"
@@ -14,9 +15,16 @@ export default async function updateLinks(
   // Have to use a loop here rather than updateMany, see the following:
   // https://github.com/prisma/prisma/issues/3143
   for (const link of links) {
+    let updatedTags = [...link.tags, ...(newData.tags ?? [])];
+
+    if (removePreviousTags) {
+      // If removePreviousTags is true, replace the existing tags with new tags
+      updatedTags = [...(newData.tags ?? [])];
+    }
+
     const updatedData: LinkIncludingShortenedCollectionAndTags = {
       ...link,
-      tags: [...link.tags, ...(newData.tags ?? [])],
+      tags: updatedTags,
       collection: {
         ...link.collection,
         id: newData.collectionId ?? link.collection.id,

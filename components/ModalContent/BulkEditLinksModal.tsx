@@ -13,6 +13,7 @@ type Props = {
 export default function BulkEditLinksModal({ onClose }: Props) {
   const { updateLinks, selectedLinks, setSelectedLinks } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
+  const [removePreviousTags, setRemovePreviousTags] = useState(false);
   const [updatedValues, setUpdatedValues] = useState<
     Pick<LinkIncludingShortenedCollectionAndTags, "tags" | "collectionId">
   >({ tags: [] });
@@ -33,7 +34,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
 
       const load = toast.loading("Updating...");
 
-      const response = await updateLinks(selectedLinks, updatedValues);
+      const response = await updateLinks(selectedLinks, removePreviousTags, updatedValues);
 
       toast.dismiss(load);
 
@@ -64,6 +65,18 @@ export default function BulkEditLinksModal({ onClose }: Props) {
             <p className="mb-2">Tags</p>
             <TagSelection onChange={setTags} />
           </div>
+        </div>
+        <div className="mt-3">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary"
+
+              checked={removePreviousTags}
+              onChange={(e) => setRemovePreviousTags(e.target.checked)}
+            />
+            Remove previous tags
+          </label>
         </div>
       </div>
 
