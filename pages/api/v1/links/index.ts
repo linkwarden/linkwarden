@@ -4,7 +4,6 @@ import postLink from "@/lib/api/controllers/links/postLink";
 import { LinkRequestQuery } from "@/types/global";
 import verifyUser from "@/lib/api/verifyUser";
 import deleteLinksById from "@/lib/api/controllers/links/bulk/deleteLinksById";
-import updateLinksById from "@/lib/api/controllers/links/bulk/updateLinks";
 import updateLinks from "@/lib/api/controllers/links/bulk/updateLinks";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
