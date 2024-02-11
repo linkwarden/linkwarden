@@ -135,12 +135,6 @@ export default function LinkCard({
                 <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
               )}
               <div
-                style={
-                  {
-                    // background:
-                    //   "radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent)",
-                  }
-                }
                 className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md"
               >
                 <LinkIcon link={link} />
