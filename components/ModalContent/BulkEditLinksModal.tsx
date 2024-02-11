@@ -34,7 +34,11 @@ export default function BulkEditLinksModal({ onClose }: Props) {
 
       const load = toast.loading("Updating...");
 
-      const response = await updateLinks(selectedLinks, removePreviousTags, updatedValues);
+      const response = await updateLinks(
+        selectedLinks,
+        removePreviousTags,
+        updatedValues
+      );
 
       toast.dismiss(load);
 
@@ -58,7 +62,10 @@ export default function BulkEditLinksModal({ onClose }: Props) {
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
             <p className="mb-2">Collection</p>
-            <CollectionSelection showDefaultValue={false} onChange={setCollection} />
+            <CollectionSelection
+              showDefaultValue={false}
+              onChange={setCollection}
+            />
           </div>
 
           <div>
@@ -71,7 +78,6 @@ export default function BulkEditLinksModal({ onClose }: Props) {
             <input
               type="checkbox"
               className="checkbox checkbox-primary"
-
               checked={removePreviousTags}
               onChange={(e) => setRemovePreviousTags(e.target.checked)}
             />

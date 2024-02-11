@@ -4,7 +4,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 export default function CardView({
   links,
   showCheckbox = true,
-  editMode
+  editMode,
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
   showCheckbox?: boolean;
