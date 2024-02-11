@@ -22,12 +22,14 @@ type Props = {
   className?: string;
   flipDropdown?: boolean;
   showCheckbox?: boolean;
+  editMode?: boolean;
 };
 
 export default function LinkCardCompact({
   link,
   flipDropdown,
   showCheckbox = true,
+  editMode,
 }: Props) {
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
@@ -73,11 +75,10 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`border-neutral-content relative items-center flex ${
-          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-        } duration-200 rounded-lg`}
+        className={`border-neutral-content relative items-center flex ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+          } duration-200 rounded-lg`}
       >
-        {showCheckbox &&
+        {showCheckbox && editMode &&
           (permissions === true ||
             permissions?.canCreate ||
             permissions?.canDelete) && (
@@ -128,8 +129,8 @@ export default function LinkCardCompact({
           collection={collection}
           position="top-3 right-3"
           flipDropdown={flipDropdown}
-          // toggleShowInfo={() => setShowInfo(!showInfo)}
-          // linkInfo={showInfo}
+        // toggleShowInfo={() => setShowInfo(!showInfo)}
+        // linkInfo={showInfo}
         />
         {showInfo ? (
           <div>

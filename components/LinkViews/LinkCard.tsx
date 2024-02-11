@@ -25,12 +25,14 @@ type Props = {
   className?: string;
   flipDropdown?: boolean;
   showCheckbox?: boolean;
+  editMode?: boolean;
 };
 
 export default function LinkCard({
   link,
   flipDropdown,
   showCheckbox = true,
+  editMode
 }: Props) {
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
@@ -101,7 +103,7 @@ export default function LinkCard({
       ref={ref}
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
-      {showCheckbox &&
+      {showCheckbox && editMode &&
         (permissions === true ||
           permissions?.canCreate ||
           permissions?.canDelete) && (
