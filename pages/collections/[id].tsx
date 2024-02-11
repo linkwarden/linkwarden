@@ -170,7 +170,7 @@ export default function Index() {
                 <i className="bi-three-dots text-xl" title="More"></i>
               </div>
               <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
-                {permissions === true ? (
+                {permissions === true && (
                   <li>
                     <div
                       role="button"
@@ -183,7 +183,7 @@ export default function Index() {
                       Edit Collection Info
                     </div>
                   </li>
-                ) : undefined}
+                )}
                 <li>
                   <div
                     role="button"
@@ -198,7 +198,7 @@ export default function Index() {
                       : "View Team"}
                   </div>
                 </li>
-                {permissions === true ? (
+                {permissions === true && (
                   <li>
                     <div
                       role="button"
@@ -211,7 +211,7 @@ export default function Index() {
                       Create Sub-Collection
                     </div>
                   </li>
-                ) : undefined}
+                )}
                 <li>
                   <div
                     role="button"
@@ -231,7 +231,7 @@ export default function Index() {
           </div>
         )}
 
-        {activeCollection ? (
+        {activeCollection && (
           <div className={`min-w-[15rem]`}>
             <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
               <div
@@ -267,18 +267,16 @@ export default function Index() {
               </div>
               <p className="text-neutral text-sm font-semibold">
                 By {collectionOwner.name}
-                {activeCollection.members.length > 0
-                  ? ` and ${activeCollection.members.length} others`
-                  : undefined}
-                .
+                {activeCollection.members.length > 0 &&
+                  ` and ${activeCollection.members.length} others`}.
               </p>
             </div>
           </div>
-        ) : undefined}
+        )}
 
-        {activeCollection?.description ? (
+        {activeCollection?.description && (
           <p>{activeCollection?.description}</p>
-        ) : undefined}
+        )}
 
         {/* {collections.some((e) => e.parentId === activeCollection.id) ? (
           <fieldset className="border rounded-md p-2 border-neutral-content">

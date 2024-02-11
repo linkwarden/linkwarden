@@ -18,7 +18,7 @@ export default function useLinks(
     searchByTextContent,
   }: LinkRequestQuery = { sort: 0 }
 ) {
-  const { links, setLinks, resetLinks } = useLinkStore();
+  const { links, setLinks, resetLinks, selectedLinks, setSelectedLinks } = useLinkStore();
   const router = useRouter();
 
   const { reachedBottom, setReachedBottom } = useDetectPageBottom();
@@ -68,8 +68,12 @@ export default function useLinks(
   };
 
   useEffect(() => {
+    // Save the selected links before resetting the links
+    // and then restore the selected links after resetting the links
+    const previouslySelected = selectedLinks
     resetLinks();
 
+    setSelectedLinks(previouslySelected);
     getLinks(true);
   }, [
     router,
