@@ -29,7 +29,7 @@ export default function PinnedLinks() {
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const collectivePermissions = useCollectivePermissions(
-    selectedLinks.map((link) => link.collectionId as number)
+    links.map((link) => link.collectionId as number)
   );
 
   useLinks({ sort: sortBy });
@@ -44,8 +44,7 @@ export default function PinnedLinks() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${
-        selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -57,8 +56,7 @@ export default function PinnedLinks() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${
-          selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -82,18 +80,17 @@ export default function PinnedLinks() {
             description={"Pinned Links from your Collections"}
           />
           <div className="mt-2 flex items-center justify-end gap-2">
-            {links.length > 0 && (
+            {!(links.length === 0) && (
               <div
                 role="button"
                 onClick={() => {
                   setEditMode(!editMode);
                   setSelectedLinks([]);
                 }}
-                className={`btn btn-square btn-sm btn-ghost ${
-                  editMode
-                    ? "bg-primary/20 hover:bg-primary/20"
-                    : "hover:bg-neutral/20"
-                }`}
+                className={`btn btn-square btn-sm btn-ghost ${editMode
+                  ? "bg-primary/20 hover:bg-primary/20"
+                  : "hover:bg-neutral/20"
+                  }`}
               >
                 <i className="bi-pencil-fill text-neutral text-xl"></i>
               </div>
@@ -103,57 +100,53 @@ export default function PinnedLinks() {
           </div>
         </div>
 
-        {editMode && (
-          <div className="w-full flex justify-between items-center min-h-[32px]">
-            {links.length > 0 && (
-              <div className="flex gap-3 ml-3">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-primary"
-                  onChange={() => handleSelectAll()}
-                  checked={
-                    selectedLinks.length === links.length && links.length > 0
-                  }
-                />
-                {selectedLinks.length > 0 ? (
-                  <span>
-                    {selectedLinks.length}{" "}
-                    {selectedLinks.length === 1 ? "link" : "links"} selected
-                  </span>
-                ) : (
-                  <span>Nothing selected</span>
-                )}
-              </div>
-            )}
-            <div className="flex gap-3">
-              {selectedLinks.length > 0 &&
-                (collectivePermissions === true ||
-                  collectivePermissions?.canUpdate) && (
-                  <button
-                    onClick={() => setBulkEditLinksModal(true)}
-                    className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto"
-                  >
-                    Edit
-                  </button>
-                )}
-              {selectedLinks.length > 0 &&
-                (collectivePermissions === true ||
-                  collectivePermissions?.canDelete) && (
-                  <button
-                    onClick={(e) => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      e.shiftKey
-                        ? bulkDeleteLinks()
-                        : setBulkDeleteLinksModal(true);
-                    }}
-                    className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
-                  >
-                    Delete
-                  </button>
-                )}
+        <div className={editMode ? "w-full flex justify-between items-center min-h-[32px]" : "w-full flex justify-end items-center min-h-[32px]"}>
+          {links.length > 0 && editMode && (
+            <div className="flex gap-3 ml-3">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary"
+                onChange={() => handleSelectAll()}
+                checked={
+                  selectedLinks.length === links.length && links.length > 0
+                }
+              />
+              {selectedLinks.length > 0 ? (
+                <span>
+                  {selectedLinks.length}{" "}
+                  {selectedLinks.length === 1 ? "link" : "links"} selected
+                </span>
+              ) : (
+                <span>Nothing selected</span>
+              )}
             </div>
+          )}
+          <div className="flex gap-3">
+            {(collectivePermissions === true || collectivePermissions?.canUpdate) && (
+              <button
+                onClick={() => setBulkEditLinksModal(true)}
+                className="btn btn-sm btn-accent  text-white w-fit ml-auto"
+                disabled={!editMode || selectedLinks.length === 0}
+              >
+                Edit
+              </button>
+            )}
+            {(collectivePermissions === true || collectivePermissions?.canDelete) && (
+              <button
+                onClick={(e) => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  e.shiftKey
+                    ? bulkDeleteLinks()
+                    : setBulkDeleteLinksModal(true);
+                }}
+                disabled={!editMode || selectedLinks.length === 0}
+                className="btn btn-sm bg-red-400 hover:bg-red-500 text-white w-fit ml-auto"
+              >
+                Delete
+              </button>
+            )}
           </div>
-        )}
+        </div>
 
         {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
           <LinkComponent editMode={editMode} links={links} />
