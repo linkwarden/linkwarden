@@ -45,6 +45,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     const updated = await updateLinks(
       user.id,
       req.body.links,
+      req.body.removePreviousTags,
       req.body.newData
     );
     return res.status(updated.status).json({
