@@ -37,7 +37,9 @@ export default function LinkCard({
 
   const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
 
-  const handleCheckboxClick = (link: LinkIncludingShortenedCollectionAndTags) => {
+  const handleCheckboxClick = (
+    link: LinkIncludingShortenedCollectionAndTags
+  ) => {
     if (selectedLinks.includes(link)) {
       setSelectedLinks(selectedLinks.filter((e) => e !== link));
     } else {
@@ -99,14 +101,17 @@ export default function LinkCard({
       ref={ref}
       className="border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative"
     >
-      {showCheckbox && (permissions === true || permissions?.canCreate || permissions?.canDelete) &&
-        <input
-          type="checkbox"
-          className="checkbox checkbox-primary my-auto ml-3 mt-3 absolute z-20 bg-white dark:bg-base-200"
-          checked={selectedLinks.includes(link)}
-          onChange={() => handleCheckboxClick(link)}
-        />
-      }
+      {showCheckbox &&
+        (permissions === true ||
+          permissions?.canCreate ||
+          permissions?.canDelete) && (
+          <input
+            type="checkbox"
+            className="checkbox checkbox-primary my-auto ml-3 mt-3 absolute z-20 bg-white dark:bg-base-200"
+            checked={selectedLinks.includes(link)}
+            onChange={() => handleCheckboxClick(link)}
+          />
+        )}
       <Link
         href={generateLinkHref(link, account)}
         target="_blank"

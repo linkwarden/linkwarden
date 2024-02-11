@@ -3,7 +3,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
 export default function ListView({
   links,
-  showCheckbox = true
+  showCheckbox = true,
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
   showCheckbox?: boolean;

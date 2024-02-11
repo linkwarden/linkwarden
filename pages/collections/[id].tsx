@@ -34,7 +34,8 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { links, selectedLinks, setSelectedLinks, deleteLinksById } = useLinkStore();
+  const { links, selectedLinks, setSelectedLinks, deleteLinksById } =
+    useLinkStore();
   const { collections } = useCollectionStore();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -96,7 +97,6 @@ export default function Index() {
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
 
-
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
   );
@@ -119,13 +119,24 @@ export default function Index() {
   };
 
   const bulkDeleteLinks = async () => {
-    const load = toast.loading(`Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""}...`);
+    const load = toast.loading(
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
+      }...`
+    );
 
-    const response = await deleteLinksById(selectedLinks.map((link) => link.id as number));
+    const response = await deleteLinksById(
+      selectedLinks.map((link) => link.id as number)
+    );
 
     toast.dismiss(load);
 
-    response.ok && toast.success(`Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""}!`);
+    response.ok &&
+      toast.success(
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
+        }!`
+      );
   };
 
   return (
@@ -133,8 +144,9 @@ export default function Index() {
       <div
         className="h-[60rem] p-5 flex gap-3 flex-col"
         style={{
-          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
-            } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
+            settings.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
@@ -312,29 +324,42 @@ export default function Index() {
                 type="checkbox"
                 className="checkbox checkbox-primary"
                 onChange={() => handleSelectAll()}
-                checked={selectedLinks.length === links.length && links.length > 0}
+                checked={
+                  selectedLinks.length === links.length && links.length > 0
+                }
               />
               {selectedLinks.length > 0 && (
                 <span>
-                  {selectedLinks.length} {selectedLinks.length === 1 ? 'link' : 'links'} selected
+                  {selectedLinks.length}{" "}
+                  {selectedLinks.length === 1 ? "link" : "links"} selected
                 </span>
               )}
             </div>
           )}
           <div className="flex gap-3">
-            {selectedLinks.length > 0 && (permissions === true || permissions?.canUpdate) &&
-              <button onClick={() => setBulkEditLinksModal(true)} className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto">
-                Edit
-              </button>
-            }
-            {selectedLinks.length > 0 && (permissions === true || permissions?.canDelete) &&
-              <button onClick={(e) => {
-                (document?.activeElement as HTMLElement)?.blur();
-                e.shiftKey ? bulkDeleteLinks() : setBulkDeleteLinksModal(true);
-              }} className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto">
-                Delete
-              </button>
-            }
+            {selectedLinks.length > 0 &&
+              (permissions === true || permissions?.canUpdate) && (
+                <button
+                  onClick={() => setBulkEditLinksModal(true)}
+                  className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto"
+                >
+                  Edit
+                </button>
+              )}
+            {selectedLinks.length > 0 &&
+              (permissions === true || permissions?.canDelete) && (
+                <button
+                  onClick={(e) => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    e.shiftKey
+                      ? bulkDeleteLinks()
+                      : setBulkDeleteLinksModal(true);
+                  }}
+                  className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                >
+                  Delete
+                </button>
+              )}
           </div>
         </div>
 
@@ -375,7 +400,9 @@ export default function Index() {
             />
           )}
           {bulkDeleteLinksModal && (
-            <BulkDeleteLinksModal onClose={() => setBulkDeleteLinksModal(false)} />
+            <BulkDeleteLinksModal
+              onClose={() => setBulkDeleteLinksModal(false)}
+            />
           )}
           {bulkEditLinksModal && (
             <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />

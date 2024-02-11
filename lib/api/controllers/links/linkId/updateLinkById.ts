@@ -48,9 +48,9 @@ export default async function updateLinkById(
         collection: true,
         pinnedBy: isCollectionOwner
           ? {
-            where: { id: userId },
-            select: { id: true },
-          }
+              where: { id: userId },
+              select: { id: true },
+            }
           : undefined,
       },
     });
@@ -111,9 +111,9 @@ export default async function updateLinkById(
         collection: true,
         pinnedBy: isCollectionOwner
           ? {
-            where: { id: userId },
-            select: { id: true },
-          }
+              where: { id: userId },
+              select: { id: true },
+            }
           : undefined,
       },
     });

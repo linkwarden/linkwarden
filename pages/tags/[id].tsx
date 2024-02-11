@@ -145,10 +145,11 @@ export default function Index() {
                   </p>
                   <div className="relative">
                     <div
-                      className={`dropdown dropdown-bottom font-normal ${activeTag?.name.length && activeTag?.name.length > 8
+                      className={`dropdown dropdown-bottom font-normal ${
+                        activeTag?.name.length && activeTag?.name.length > 8
                           ? "dropdown-end"
                           : ""
-                        }`}
+                      }`}
                     >
                       <div
                         tabIndex={0}

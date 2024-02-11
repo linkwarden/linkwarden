@@ -197,8 +197,9 @@ export default function NewLinkModal({ onClose }: Props) {
             {optionsExpanded ? "Hide" : "More"} Options
           </p>
           <i
-            className={`${optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
-              }`}
+            className={`${
+              optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
+            }`}
           ></i>
         </div>
 
