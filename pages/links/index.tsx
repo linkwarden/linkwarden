@@ -101,55 +101,57 @@ export default function Links() {
           </div>
         </div>
 
-        <div className={editMode ? "w-full flex justify-between items-center min-h-[32px]" : "w-full flex justify-end items-center min-h-[32px]"}>
-          {links.length > 0 && editMode && (
-            <div className="flex gap-3 ml-3">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-primary"
-                onChange={() => handleSelectAll()}
-                checked={
-                  selectedLinks.length === links.length && links.length > 0
-                }
-              />
-              {selectedLinks.length > 0 ? (
-                <span>
-                  {selectedLinks.length}{" "}
-                  {selectedLinks.length === 1 ? "link" : "links"} selected
-                </span>
-              ) : (
-                <span>Nothing selected</span>
-              )}
+        {editMode && (
+          <div className="w-full flex justify-between items-center min-h-[32px]">
+            {links.length > 0 && (
+              <div className="flex gap-3 ml-3">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary"
+                  onChange={() => handleSelectAll()}
+                  checked={
+                    selectedLinks.length === links.length && links.length > 0
+                  }
+                />
+                {selectedLinks.length > 0 ? (
+                  <span>
+                    {selectedLinks.length}{" "}
+                    {selectedLinks.length === 1 ? "link" : "links"} selected
+                  </span>
+                ) : (
+                  <span>Nothing selected</span>
+                )}
+              </div>
+            )}
+            <div className="flex gap-3">
+              {(collectivePermissions === true ||
+                collectivePermissions?.canUpdate) && (
+                  <button
+                    onClick={() => setBulkEditLinksModal(true)}
+                    className="btn btn-sm btn-accent text-white w-fit ml-auto"
+                    disabled={selectedLinks.length === 0}
+                  >
+                    Edit
+                  </button>
+                )}
+              {(collectivePermissions === true ||
+                collectivePermissions?.canDelete) && (
+                  <button
+                    onClick={(e) => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      e.shiftKey
+                        ? bulkDeleteLinks()
+                        : setBulkDeleteLinksModal(true);
+                    }}
+                    className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                    disabled={selectedLinks.length === 0}
+                  >
+                    Delete
+                  </button>
+                )}
             </div>
-          )}
-          <div className="flex gap-3">
-            {(collectivePermissions === true ||
-              collectivePermissions?.canUpdate) && (
-                <button
-                  onClick={() => setBulkEditLinksModal(true)}
-                  disabled={!editMode}
-                  className="btn btn-sm btn-accent text-white w-fit ml-auto"
-                >
-                  Edit
-                </button>
-              )}
-            {(collectivePermissions === true ||
-              collectivePermissions?.canDelete) && (
-                <button
-                  onClick={(e) => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    e.shiftKey
-                      ? bulkDeleteLinks()
-                      : setBulkDeleteLinksModal(true);
-                  }}
-                  disabled={!editMode}
-                  className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
-                >
-                  Delete
-                </button>
-              )}
           </div>
-        </div>
+        )}
 
         {links[0] ? (
           <LinkComponent editMode={editMode} links={links} />
