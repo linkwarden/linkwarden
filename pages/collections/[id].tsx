@@ -308,19 +308,21 @@ export default function Index() {
         <div className="flex justify-between items-center gap-5">
           <p>Showing {activeCollection?._count?.links} results</p>
           <div className="flex items-center gap-2">
-            <div
-              role="button"
-              onClick={() => {
-                setEditMode(!editMode)
-                setSelectedLinks([])
-              }}
-              className={`btn btn-square btn-sm btn-ghost ${editMode
-                ? "bg-primary/20 hover:bg-primary/20"
-                : "hover:bg-neutral/20"
-                }`}
-            >
-              <i className="bi-pencil-fill text-neutral text-xl"></i>
-            </div>
+            {links.length > 0 && (
+              <div
+                role="button"
+                onClick={() => {
+                  setEditMode(!editMode)
+                  setSelectedLinks([])
+                }}
+                className={`btn btn-square btn-sm btn-ghost ${editMode
+                  ? "bg-primary/20 hover:bg-primary/20"
+                  : "hover:bg-neutral/20"
+                  }`}
+              >
+                <i className="bi-pencil-fill text-neutral text-xl"></i>
+              </div>
+            )}
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
