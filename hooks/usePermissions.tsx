@@ -1,13 +1,15 @@
 import useAccountStore from "@/store/account";
 import useCollectionStore from "@/store/collections";
 import { Member } from "@/types/global";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 export default function usePermissions(collectionId: number) {
   const { collections } = useCollectionStore();
+
   const { account } = useAccountStore();
 
-  const permissions = useMemo(() => {
+  const [permissions, setPermissions] = useState<Member | true>();
+  useEffect(() => {
     const collection = collections.find((e) => e.id === collectionId);
 
     if (collection) {
@@ -19,11 +21,10 @@ export default function usePermissions(collectionId: number) {
         getPermission?.canCreate === false &&
         getPermission?.canUpdate === false &&
         getPermission?.canDelete === false
-      ) {
+      )
         getPermission = undefined;
-      }
 
-      return account.id === collection.ownerId || getPermission;
+      setPermissions(account.id === collection.ownerId || getPermission);
     }
   }, [account, collections, collectionId]);
 

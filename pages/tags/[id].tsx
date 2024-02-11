@@ -12,11 +12,14 @@ import CardView from "@/components/LinkViews/Layouts/CardView";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
+import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
+import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 
 export default function Index() {
   const router = useRouter();
 
-  const { links } = useLinkStore();
+  const { links, selectedLinks, deleteLinksById, setSelectedLinks } = useLinkStore();
   const { tags, updateTag, removeTag } = useTagStore();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -25,6 +28,11 @@ export default function Index() {
   const [newTagName, setNewTagName] = useState<string>();
 
   const [activeTag, setActiveTag] = useState<TagIncludingLinkCount>();
+
+  const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
+  const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const collectivePermissions = useCollectivePermissions(selectedLinks.map((link) => link.collectionId as number));
 
   useLinks({ tagId: Number(router.query.id), sort: sortBy });
 
@@ -91,6 +99,33 @@ export default function Index() {
     setRenameTag(false);
   };
 
+  const handleSelectAll = () => {
+    if (selectedLinks.length === links.length) {
+      setSelectedLinks([]);
+    } else {
+      setSelectedLinks(links.map((link) => link));
+    }
+  };
+
+  const bulkDeleteLinks = async () => {
+    const load = toast.loading(
+      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      }...`
+    );
+
+    const response = await deleteLinksById(
+      selectedLinks.map((link) => link.id as number)
+    );
+
+    toast.dismiss(load);
+
+    response.ok &&
+      toast.success(
+        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        }!`
+      );
+  };
+
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
   );
@@ -145,11 +180,10 @@ export default function Index() {
                   </p>
                   <div className="relative">
                     <div
-                      className={`dropdown dropdown-bottom font-normal ${
-                        activeTag?.name.length && activeTag?.name.length > 8
-                          ? "dropdown-end"
-                          : ""
-                      }`}
+                      className={`dropdown dropdown-bottom font-normal ${activeTag?.name.length && activeTag?.name.length > 8
+                        ? "dropdown-end"
+                        : ""
+                        }`}
                     >
                       <div
                         tabIndex={0}
@@ -195,17 +229,85 @@ export default function Index() {
           </div>
 
           <div className="flex gap-2 items-center mt-2">
+            <div
+              role="button"
+              onClick={() => {
+                setEditMode(!editMode)
+                setSelectedLinks([])
+              }}
+              className={`btn btn-square btn-sm btn-ghost ${editMode
+                ? "bg-primary/20 hover:bg-primary/20"
+                : "hover:bg-neutral/20"
+                }`}
+            >
+              <i className="bi-pencil-fill text-neutral text-xl"></i>
+            </div>
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
+        {editMode && (
+          <div className="w-full flex justify-between items-center min-h-[32px]">
+            {links.length > 0 && (
+              <div className="flex gap-3 ml-3">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary"
+                  onChange={() => handleSelectAll()}
+                  checked={
+                    selectedLinks.length === links.length && links.length > 0
+                  }
+                />
+                {selectedLinks.length > 0 && (
+                  <span>
+                    {selectedLinks.length}{" "}
+                    {selectedLinks.length === 1 ? "link" : "links"} selected
+                  </span>
+                )}
+              </div>
+            )}
+            <div className="flex gap-3">
+              {selectedLinks.length > 0 &&
+                (collectivePermissions === true || collectivePermissions?.canUpdate) && (
+                  <button
+                    onClick={() => setBulkEditLinksModal(true)}
+                    className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto"
+                  >
+                    Edit
+                  </button>
+                )}
+              {selectedLinks.length > 0 &&
+                (collectivePermissions === true || collectivePermissions?.canDelete) && (
+                  <button
+                    onClick={(e) => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      e.shiftKey
+                        ? bulkDeleteLinks()
+                        : setBulkDeleteLinksModal(true);
+                    }}
+                    className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                  >
+                    Delete
+                  </button>
+                )}
+            </div>
+          </div>
+        )}
         <LinkComponent
-          showCheckbox={false}
+          editMode={editMode}
           links={links.filter((e) =>
             e.tags.some((e) => e.id === Number(router.query.id))
           )}
         />
       </div>
+      {bulkDeleteLinksModal && (
+        <BulkDeleteLinksModal
+          onClose={() => setBulkDeleteLinksModal(false)}
+        />
+      )}
+      {bulkEditLinksModal && (
+        <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
+      )}
     </MainLayout>
   );
 }
