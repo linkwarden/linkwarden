@@ -20,7 +20,6 @@ export default function NewLinkModal({ onClose }: Props) {
   const { data } = useSession();
 
   const initial = {
-    id: 0,
     name: "",
     url: "",
     description: "",
