@@ -19,7 +19,8 @@ import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 export default function Index() {
   const router = useRouter();
 
-  const { links, selectedLinks, deleteLinksById, setSelectedLinks } = useLinkStore();
+  const { links, selectedLinks, deleteLinksById, setSelectedLinks } =
+    useLinkStore();
   const { tags, updateTag, removeTag } = useTagStore();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -32,7 +33,9 @@ export default function Index() {
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const collectivePermissions = useCollectivePermissions(selectedLinks.map((link) => link.collectionId as number));
+  const collectivePermissions = useCollectivePermissions(
+    selectedLinks.map((link) => link.collectionId as number)
+  );
 
   useLinks({ tagId: Number(router.query.id), sort: sortBy });
 
@@ -112,7 +115,8 @@ export default function Index() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -124,7 +128,8 @@ export default function Index() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -183,10 +188,11 @@ export default function Index() {
                   </p>
                   <div className="relative">
                     <div
-                      className={`dropdown dropdown-bottom font-normal ${activeTag?.name.length && activeTag?.name.length > 8
-                        ? "dropdown-end"
-                        : ""
-                        }`}
+                      className={`dropdown dropdown-bottom font-normal ${
+                        activeTag?.name.length && activeTag?.name.length > 8
+                          ? "dropdown-end"
+                          : ""
+                      }`}
                     >
                       <div
                         tabIndex={0}
@@ -235,13 +241,14 @@ export default function Index() {
             <div
               role="button"
               onClick={() => {
-                setEditMode(!editMode)
-                setSelectedLinks([])
+                setEditMode(!editMode);
+                setSelectedLinks([]);
               }}
-              className={`btn btn-square btn-sm btn-ghost ${editMode
-                ? "bg-primary/20 hover:bg-primary/20"
-                : "hover:bg-neutral/20"
-                }`}
+              className={`btn btn-square btn-sm btn-ghost ${
+                editMode
+                  ? "bg-primary/20 hover:bg-primary/20"
+                  : "hover:bg-neutral/20"
+              }`}
             >
               <i className="bi-pencil-fill text-neutral text-xl"></i>
             </div>
@@ -273,7 +280,8 @@ export default function Index() {
             )}
             <div className="flex gap-3">
               {selectedLinks.length > 0 &&
-                (collectivePermissions === true || collectivePermissions?.canUpdate) && (
+                (collectivePermissions === true ||
+                  collectivePermissions?.canUpdate) && (
                   <button
                     onClick={() => setBulkEditLinksModal(true)}
                     className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto"
@@ -282,7 +290,8 @@ export default function Index() {
                   </button>
                 )}
               {selectedLinks.length > 0 &&
-                (collectivePermissions === true || collectivePermissions?.canDelete) && (
+                (collectivePermissions === true ||
+                  collectivePermissions?.canDelete) && (
                   <button
                     onClick={(e) => {
                       (document?.activeElement as HTMLElement)?.blur();
@@ -314,10 +323,12 @@ export default function Index() {
         />
       )}
       {bulkEditLinksModal && (
-        <BulkEditLinksModal onClose={() => {
-          setBulkEditLinksModal(false);
-          setEditMode(false);
-        }} />
+        <BulkEditLinksModal
+          onClose={() => {
+            setBulkEditLinksModal(false);
+            setEditMode(false);
+          }}
+        />
       )}
     </MainLayout>
   );

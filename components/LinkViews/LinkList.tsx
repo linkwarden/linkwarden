@@ -35,8 +35,12 @@ export default function LinkCardCompact({
   const { account } = useAccountStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
 
-  const handleCheckboxClick = (link: LinkIncludingShortenedCollectionAndTags) => {
-    const linkIndex = selectedLinks.findIndex(selectedLink => selectedLink.id === link.id);
+  const handleCheckboxClick = (
+    link: LinkIncludingShortenedCollectionAndTags
+  ) => {
+    const linkIndex = selectedLinks.findIndex(
+      (selectedLink) => selectedLink.id === link.id
+    );
 
     if (linkIndex !== -1) {
       const updatedLinks = [...selectedLinks];
@@ -77,17 +81,21 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`border-neutral-content relative items-center flex ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-          } duration-200 rounded-lg`}
+        className={`border-neutral-content relative items-center flex ${
+          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+        } duration-200 rounded-lg`}
       >
-        {showCheckbox && editMode &&
+        {showCheckbox &&
+          editMode &&
           (permissions === true ||
             permissions?.canCreate ||
             permissions?.canDelete) && (
             <input
               type="checkbox"
               className="checkbox checkbox-primary my-auto mr-2"
-              checked={selectedLinks.some(selectedLink => selectedLink.id === link.id)}
+              checked={selectedLinks.some(
+                (selectedLink) => selectedLink.id === link.id
+              )}
               onChange={() => handleCheckboxClick(link)}
             />
           )}
@@ -131,8 +139,8 @@ export default function LinkCardCompact({
           collection={collection}
           position="top-3 right-3"
           flipDropdown={flipDropdown}
-        // toggleShowInfo={() => setShowInfo(!showInfo)}
-        // linkInfo={showInfo}
+          // toggleShowInfo={() => setShowInfo(!showInfo)}
+          // linkInfo={showInfo}
         />
         {showInfo ? (
           <div>

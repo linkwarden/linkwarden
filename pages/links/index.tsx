@@ -16,18 +16,20 @@ import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Links() {
-  const { links, selectedLinks, deleteLinksById, setSelectedLinks } = useLinkStore();
+  const { links, selectedLinks, deleteLinksById, setSelectedLinks } =
+    useLinkStore();
 
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
   );
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
-
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const collectivePermissions = useCollectivePermissions(selectedLinks.map((link) => link.collectionId as number));
+  const collectivePermissions = useCollectivePermissions(
+    selectedLinks.map((link) => link.collectionId as number)
+  );
 
   useLinks({ sort: sortBy });
 
@@ -41,7 +43,8 @@ export default function Links() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -53,7 +56,8 @@ export default function Links() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -82,13 +86,14 @@ export default function Links() {
               <div
                 role="button"
                 onClick={() => {
-                  setEditMode(!editMode)
-                  setSelectedLinks([])
+                  setEditMode(!editMode);
+                  setSelectedLinks([]);
                 }}
-                className={`btn btn-square btn-sm btn-ghost ${editMode
-                  ? "bg-primary/20 hover:bg-primary/20"
-                  : "hover:bg-neutral/20"
-                  }`}
+                className={`btn btn-square btn-sm btn-ghost ${
+                  editMode
+                    ? "bg-primary/20 hover:bg-primary/20"
+                    : "hover:bg-neutral/20"
+                }`}
               >
                 <i className="bi-pencil-fill text-neutral text-xl"></i>
               </div>
@@ -122,7 +127,8 @@ export default function Links() {
             )}
             <div className="flex gap-3">
               {selectedLinks.length > 0 &&
-                (collectivePermissions === true || collectivePermissions?.canUpdate) && (
+                (collectivePermissions === true ||
+                  collectivePermissions?.canUpdate) && (
                   <button
                     onClick={() => setBulkEditLinksModal(true)}
                     className="btn btn-sm btn-accent dark:border-violet-400 text-white w-fit ml-auto"
@@ -131,7 +137,8 @@ export default function Links() {
                   </button>
                 )}
               {selectedLinks.length > 0 &&
-                (collectivePermissions === true || collectivePermissions?.canDelete) && (
+                (collectivePermissions === true ||
+                  collectivePermissions?.canDelete) && (
                   <button
                     onClick={(e) => {
                       (document?.activeElement as HTMLElement)?.blur();
@@ -163,10 +170,12 @@ export default function Links() {
         />
       )}
       {bulkEditLinksModal && (
-        <BulkEditLinksModal onClose={() => {
-          setBulkEditLinksModal(false);
-          setEditMode(false);
-        }} />
+        <BulkEditLinksModal
+          onClose={() => {
+            setBulkEditLinksModal(false);
+            setEditMode(false);
+          }}
+        />
       )}
     </MainLayout>
   );

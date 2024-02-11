@@ -4,7 +4,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 export default function ListView({
   links,
   showCheckbox = true,
-  editMode
+  editMode,
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
   showCheckbox?: boolean;
@@ -21,7 +21,6 @@ export default function ListView({
             showCheckbox={showCheckbox}
             flipDropdown={i === links.length - 1}
             editMode={editMode}
-
           />
         );
       })}

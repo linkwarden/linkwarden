@@ -121,7 +121,8 @@ export default function Index() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -133,7 +134,8 @@ export default function Index() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -143,8 +145,9 @@ export default function Index() {
       <div
         className="h-[60rem] p-5 flex gap-3 flex-col"
         style={{
-          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
-            } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
+            settings.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
@@ -268,7 +271,8 @@ export default function Index() {
               <p className="text-neutral text-sm font-semibold">
                 By {collectionOwner.name}
                 {activeCollection.members.length > 0 &&
-                  ` and ${activeCollection.members.length} others`}.
+                  ` and ${activeCollection.members.length} others`}
+                .
               </p>
             </div>
           </div>
@@ -312,13 +316,14 @@ export default function Index() {
               <div
                 role="button"
                 onClick={() => {
-                  setEditMode(!editMode)
-                  setSelectedLinks([])
+                  setEditMode(!editMode);
+                  setSelectedLinks([]);
                 }}
-                className={`btn btn-square btn-sm btn-ghost ${editMode
-                  ? "bg-primary/20 hover:bg-primary/20"
-                  : "hover:bg-neutral/20"
-                  }`}
+                className={`btn btn-square btn-sm btn-ghost ${
+                  editMode
+                    ? "bg-primary/20 hover:bg-primary/20"
+                    : "hover:bg-neutral/20"
+                }`}
               >
                 <i className="bi-pencil-fill text-neutral text-xl"></i>
               </div>
@@ -416,17 +421,18 @@ export default function Index() {
           {bulkDeleteLinksModal && (
             <BulkDeleteLinksModal
               onClose={() => {
-                setBulkDeleteLinksModal(false)
-                setEditMode(false)
+                setBulkDeleteLinksModal(false);
+                setEditMode(false);
               }}
             />
           )}
           {bulkEditLinksModal && (
             <BulkEditLinksModal
               onClose={() => {
-                setBulkEditLinksModal(false)
-                setEditMode(false)
-              }} />
+                setBulkEditLinksModal(false);
+                setEditMode(false);
+              }}
+            />
           )}
         </>
       )}
