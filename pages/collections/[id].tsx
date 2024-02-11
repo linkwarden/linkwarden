@@ -312,7 +312,10 @@ export default function Index() {
           <div className="flex items-center gap-2">
             <div
               role="button"
-              onClick={() => setEditMode(!editMode)}
+              onClick={() => {
+                setEditMode(!editMode)
+                setSelectedLinks([])
+              }}
               className={`btn btn-square btn-sm btn-ghost ${editMode
                 ? "bg-primary/20 hover:bg-primary/20"
                 : "hover:bg-neutral/20"
@@ -371,7 +374,6 @@ export default function Index() {
                 )}
             </div>
           </div>
-
         )}
 
 
@@ -414,11 +416,18 @@ export default function Index() {
           )}
           {bulkDeleteLinksModal && (
             <BulkDeleteLinksModal
-              onClose={() => setBulkDeleteLinksModal(false)}
+              onClose={() => {
+                setBulkDeleteLinksModal(false)
+                setEditMode(false)
+              }}
             />
           )}
           {bulkEditLinksModal && (
-            <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
+            <BulkEditLinksModal
+              onClose={() => {
+                setBulkEditLinksModal(false)
+                setEditMode(false)
+              }} />
           )}
         </>
       )}
