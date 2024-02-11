@@ -35,11 +35,13 @@ export default function LinkCardCompact({
   const { account } = useAccountStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
 
-  const handleCheckboxClick = (
-    link: LinkIncludingShortenedCollectionAndTags
-  ) => {
-    if (selectedLinks.includes(link)) {
-      setSelectedLinks(selectedLinks.filter((e) => e !== link));
+  const handleCheckboxClick = (link: LinkIncludingShortenedCollectionAndTags) => {
+    const linkIndex = selectedLinks.findIndex(selectedLink => selectedLink.id === link.id);
+
+    if (linkIndex !== -1) {
+      const updatedLinks = [...selectedLinks];
+      updatedLinks.splice(linkIndex, 1);
+      setSelectedLinks(updatedLinks);
     } else {
       setSelectedLinks([...selectedLinks, link]);
     }
@@ -85,7 +87,7 @@ export default function LinkCardCompact({
             <input
               type="checkbox"
               className="checkbox checkbox-primary my-auto mr-2"
-              checked={selectedLinks.includes(link)}
+              checked={selectedLinks.some(selectedLink => selectedLink.id === link.id)}
               onChange={() => handleCheckboxClick(link)}
             />
           )}
