@@ -33,7 +33,9 @@ export default function LinkCardCompact({
   const { account } = useAccountStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
 
-  const handleCheckboxClick = (link: LinkIncludingShortenedCollectionAndTags) => {
+  const handleCheckboxClick = (
+    link: LinkIncludingShortenedCollectionAndTags
+  ) => {
     if (selectedLinks.includes(link)) {
       setSelectedLinks(selectedLinks.filter((e) => e !== link));
     } else {
@@ -71,17 +73,21 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`border-neutral-content relative items-center flex ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-          } duration-200 rounded-lg`}
+        className={`border-neutral-content relative items-center flex ${
+          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+        } duration-200 rounded-lg`}
       >
-        {showCheckbox && (permissions === true || permissions?.canCreate || permissions?.canDelete) &&
-          <input
-            type="checkbox"
-            className="checkbox checkbox-primary my-auto mr-2"
-            checked={selectedLinks.includes(link)}
-            onChange={() => handleCheckboxClick(link)}
-          />
-        }
+        {showCheckbox &&
+          (permissions === true ||
+            permissions?.canCreate ||
+            permissions?.canDelete) && (
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary my-auto mr-2"
+              checked={selectedLinks.includes(link)}
+              onChange={() => handleCheckboxClick(link)}
+            />
+          )}
         <Link
           href={generateLinkHref(link, account)}
           target="_blank"
@@ -122,8 +128,8 @@ export default function LinkCardCompact({
           collection={collection}
           position="top-3 right-3"
           flipDropdown={flipDropdown}
-        // toggleShowInfo={() => setShowInfo(!showInfo)}
-        // linkInfo={showInfo}
+          // toggleShowInfo={() => setShowInfo(!showInfo)}
+          // linkInfo={showInfo}
         />
         {showInfo ? (
           <div>

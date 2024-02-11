@@ -43,7 +43,11 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       response: newlink.response,
     });
   } else if (req.method === "PUT") {
-    const updated = await updateLinks(user.id, req.body.links, req.body.newData);
+    const updated = await updateLinks(
+      user.id,
+      req.body.links,
+      req.body.newData
+    );
     return res.status(updated.status).json({
       response: updated.response,
     });

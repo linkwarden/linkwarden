@@ -23,7 +23,13 @@ type LinkStore = {
   updateLink: (
     link: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
-  updateLinks: (links: LinkIncludingShortenedCollectionAndTags[], newData: Pick<LinkIncludingShortenedCollectionAndTags, "tags" | "collectionId">) => Promise<ResponseObject>;
+  updateLinks: (
+    links: LinkIncludingShortenedCollectionAndTags[],
+    newData: Pick<
+      LinkIncludingShortenedCollectionAndTags,
+      "tags" | "collectionId"
+    >
+  ) => Promise<ResponseObject>;
   removeLink: (linkId: number) => Promise<ResponseObject>;
   deleteLinksById: (linkIds: number[]) => Promise<ResponseObject>;
   resetLinks: () => void;
@@ -142,9 +148,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     if (response.ok) {
       set((state) => ({
         links: state.links.map((e) =>
-          links.some((link) => link.id === e.id)
-            ? { ...e, ...newData }
-            : e
+          links.some((link) => link.id === e.id) ? { ...e, ...newData } : e
         ),
       }));
       useTagStore.getState().setTags();
