@@ -151,11 +151,11 @@ const useLinkStore = create<LinkStore>()((set) => ({
         links: state.links.map((e) =>
           links.some((link) => link.id === e.id)
             ? {
-              ...e,
-              tags: removePreviousTags
-                ? [...(newData.tags ?? [])]
-                : [...e.tags, ...(newData.tags ?? [])],
-            }
+                ...e,
+                tags: removePreviousTags
+                  ? [...(newData.tags ?? [])]
+                  : [...e.tags, ...(newData.tags ?? [])],
+              }
             : e
         ),
       }));

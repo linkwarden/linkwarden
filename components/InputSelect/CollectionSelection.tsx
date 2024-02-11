@@ -9,14 +9,18 @@ type Props = {
   onChange: any;
   showDefaultValue?: boolean;
   defaultValue?:
-  | {
-    label: string;
-    value?: number;
-  }
-  | undefined;
+    | {
+        label: string;
+        value?: number;
+      }
+    | undefined;
 };
 
-export default function CollectionSelection({ onChange, defaultValue, showDefaultValue = true }: Props) {
+export default function CollectionSelection({
+  onChange,
+  defaultValue,
+  showDefaultValue = true,
+}: Props) {
   const { collections } = useCollectionStore();
   const router = useRouter();
 
@@ -52,7 +56,7 @@ export default function CollectionSelection({ onChange, defaultValue, showDefaul
       options={options}
       styles={styles}
       defaultValue={showDefaultValue ? defaultValue : null}
-    // menuPosition="fixed"
+      // menuPosition="fixed"
     />
   );
 }
