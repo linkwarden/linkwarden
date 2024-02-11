@@ -1,11 +1,11 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import updateLinkById from "../linkId/updateLinkById";
 
-// Need to fix this
 export default async function updateLinks(userId: number, links: LinkIncludingShortenedCollectionAndTags[], newData: Pick<LinkIncludingShortenedCollectionAndTags, "tags" | "collectionId">) {
 	let allUpdatesSuccessful = true;
-	console.log(newData)
 
+	// Have to use a loop here rather than updateMany, see the following:
+	// https://github.com/prisma/prisma/issues/3143
 	for (const link of links) {
 		const updatedData: LinkIncludingShortenedCollectionAndTags = {
 			...link,
