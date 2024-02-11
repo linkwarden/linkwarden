@@ -148,7 +148,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
     if (response.ok) {
       set((state) => ({
         links: state.links.map((e) =>
-          links.some((link) => link.id === e.id) ? { ...e, ...newData } : e
+          links.some((link) => link.id === e.id) ? { ...e, tags: [...e.tags, ...(newData.tags ?? [])] } : e
         ),
       }));
       useTagStore.getState().setTags();

@@ -258,11 +258,13 @@ export default function Index() {
                     selectedLinks.length === links.length && links.length > 0
                   }
                 />
-                {selectedLinks.length > 0 && (
+                {selectedLinks.length > 0 ? (
                   <span>
                     {selectedLinks.length}{" "}
                     {selectedLinks.length === 1 ? "link" : "links"} selected
                   </span>
+                ) : (
+                  <span>Nothing selected</span>
                 )}
               </div>
             )}
@@ -302,11 +304,17 @@ export default function Index() {
       </div>
       {bulkDeleteLinksModal && (
         <BulkDeleteLinksModal
-          onClose={() => setBulkDeleteLinksModal(false)}
+          onClose={() => {
+            setBulkDeleteLinksModal(false);
+            setEditMode(false);
+          }}
         />
       )}
       {bulkEditLinksModal && (
-        <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
+        <BulkEditLinksModal onClose={() => {
+          setBulkEditLinksModal(false);
+          setEditMode(false);
+        }} />
       )}
     </MainLayout>
   );

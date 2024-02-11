@@ -57,7 +57,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
             <p className="mb-2">Collection</p>
-            <CollectionSelection onChange={setCollection} />
+            <CollectionSelection showDefaultValue={false} onChange={setCollection} />
           </div>
 
           <div>

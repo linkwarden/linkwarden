@@ -7,15 +7,16 @@ import CreatableSelect from "react-select/creatable";
 
 type Props = {
   onChange: any;
+  showDefaultValue?: boolean;
   defaultValue?:
-    | {
-        label: string;
-        value?: number;
-      }
-    | undefined;
+  | {
+    label: string;
+    value?: number;
+  }
+  | undefined;
 };
 
-export default function CollectionSelection({ onChange, defaultValue }: Props) {
+export default function CollectionSelection({ onChange, defaultValue, showDefaultValue = true }: Props) {
   const { collections } = useCollectionStore();
   const router = useRouter();
 
@@ -50,8 +51,8 @@ export default function CollectionSelection({ onChange, defaultValue }: Props) {
       onChange={onChange}
       options={options}
       styles={styles}
-      defaultValue={defaultValue}
-      // menuPosition="fixed"
+      defaultValue={showDefaultValue ? defaultValue : null}
+    // menuPosition="fixed"
     />
   );
 }
