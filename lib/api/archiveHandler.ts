@@ -23,8 +23,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
   const browser = await chromium.launch();
   const context = await browser.newContext({
     ...devices["Desktop Chrome"],
-    ignoreHTTPSErrors:
-      process.env.IGNORE_HTTPS_ERRORS === "true",
+    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
   });
   const page = await context.newPage();
 

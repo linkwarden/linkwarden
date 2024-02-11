@@ -168,7 +168,10 @@ export default function Dashboard() {
         >
           {links[0] ? (
             <div className="w-full">
-              <LinkComponent links={links.slice(0, showLinks)} showCheckbox={false} />
+              <LinkComponent
+                links={links.slice(0, showLinks)}
+                showCheckbox={false}
+              />
             </div>
           ) : (
             <div
