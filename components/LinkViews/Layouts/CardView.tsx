@@ -19,7 +19,6 @@ export default function CardView({
             link={e}
             count={i}
             flipDropdown={i === links.length - 1}
-            showCheckbox={showCheckbox}
             editMode={editMode}
           />
         );

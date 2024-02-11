@@ -101,7 +101,7 @@ export default function Links() {
           </div>
         </div>
 
-        <div className={!editMode ? "w-full flex justify-end items-center min-h-[32px]" : "w-full flex justify-between items-center min-h-[32px]"}>
+        <div className={editMode ? "w-full flex justify-between items-center min-h-[32px]" : "w-full flex justify-end items-center min-h-[32px]"}>
           {links.length > 0 && editMode && (
             <div className="flex gap-3 ml-3">
               <input

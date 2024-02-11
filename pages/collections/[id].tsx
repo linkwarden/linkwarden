@@ -329,7 +329,7 @@ export default function Index() {
           </div>
         </div>
 
-        <div className={!editMode ? "w-full flex justify-end items-center min-h-[32px]" : "w-full flex justify-between items-center min-h-[32px]"}>
+        <div className={editMode ? "w-full flex justify-between items-center min-h-[32px]" : "w-full flex justify-end items-center min-h-[32px]"}>
           {links.length > 0 && editMode && (
             <div className="flex gap-3 ml-3">
               <input
@@ -355,7 +355,7 @@ export default function Index() {
               <button
                 onClick={() => setBulkEditLinksModal(true)}
                 className="btn btn-sm btn-accent  text-white w-fit ml-auto"
-                disabled={!editMode}
+                disabled={!editMode || selectedLinks.length === 0}
               >
                 Edit
               </button>
@@ -368,7 +368,7 @@ export default function Index() {
                     ? bulkDeleteLinks()
                     : setBulkDeleteLinksModal(true);
                 }}
-                disabled={!editMode}
+                disabled={!editMode || selectedLinks.length === 0}
                 className="btn btn-sm bg-red-400 hover:bg-red-500 text-white w-fit ml-auto"
               >
                 Delete
