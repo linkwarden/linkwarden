@@ -78,19 +78,21 @@ export default function Links() {
           />
 
           <div className="mt-2 flex items-center justify-end gap-2">
-            <div
-              role="button"
-              onClick={() => {
-                setEditMode(!editMode)
-                setSelectedLinks([])
-              }}
-              className={`btn btn-square btn-sm btn-ghost ${editMode
-                ? "bg-primary/20 hover:bg-primary/20"
-                : "hover:bg-neutral/20"
-                }`}
-            >
-              <i className="bi-pencil-fill text-neutral text-xl"></i>
-            </div>
+            {links.length > 0 && (
+              <div
+                role="button"
+                onClick={() => {
+                  setEditMode(!editMode)
+                  setSelectedLinks([])
+                }}
+                className={`btn btn-square btn-sm btn-ghost ${editMode
+                  ? "bg-primary/20 hover:bg-primary/20"
+                  : "hover:bg-neutral/20"
+                  }`}
+              >
+                <i className="bi-pencil-fill text-neutral text-xl"></i>
+              </div>
+            )}
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
