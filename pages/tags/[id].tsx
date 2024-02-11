@@ -1,6 +1,6 @@
 import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, use, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import useTagStore from "@/store/tags";
 import SortDropdown from "@/components/SortDropdown";
@@ -41,7 +41,11 @@ export default function Index() {
 
   useEffect(() => {
     const tag = tags.find((e) => e.id === Number(router.query.id));
-    if (!tag) router.push("/dashboard");
+
+    if (tags.length > 0 && !tag?.id) {
+      router.push("/dashboard");
+      return;
+    }
 
     setActiveTag(tag);
   }, [router, tags, Number(router.query.id), setActiveTag]);
