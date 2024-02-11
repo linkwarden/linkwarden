@@ -25,6 +25,7 @@ type LinkStore = {
   ) => Promise<ResponseObject>;
   updateLinks: (
     links: LinkIncludingShortenedCollectionAndTags[],
+    removePreviousTags: boolean,
     newData: Pick<
       LinkIncludingShortenedCollectionAndTags,
       "tags" | "collectionId"
@@ -134,9 +135,9 @@ const useLinkStore = create<LinkStore>()((set) => ({
 
     return { ok: response.ok, data: data.response };
   },
-  updateLinks: async (links, newData) => {
+  updateLinks: async (links, removePreviousTags, newData) => {
     const response = await fetch("/api/v1/links", {
-      body: JSON.stringify({ links, newData }),
+      body: JSON.stringify({ links, removePreviousTags, newData }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -148,7 +149,14 @@ const useLinkStore = create<LinkStore>()((set) => ({
     if (response.ok) {
       set((state) => ({
         links: state.links.map((e) =>
-          links.some((link) => link.id === e.id) ? { ...e, tags: [...e.tags, ...(newData.tags ?? [])] } : e
+          links.some((link) => link.id === e.id)
+            ? {
+              ...e,
+              tags: removePreviousTags
+                ? [...(newData.tags ?? [])]
+                : [...e.tags, ...(newData.tags ?? [])],
+            }
+            : e
         ),
       }));
       useTagStore.getState().setTags();
