@@ -37,8 +37,11 @@ export default function Index() {
   useLinks({ tagId: Number(router.query.id), sort: sortBy });
 
   useEffect(() => {
-    setActiveTag(tags.find((e) => e.id === Number(router.query.id)));
-  }, [router, tags]);
+    const tag = tags.find((e) => e.id === Number(router.query.id));
+    if (!tag) router.push("/dashboard");
+
+    setActiveTag(tag);
+  }, [router, tags, Number(router.query.id), setActiveTag]);
 
   useEffect(() => {
     setNewTagName(activeTag?.name);
