@@ -309,7 +309,7 @@ export default function Index() {
         <div className="flex justify-between items-center gap-5">
           <p>Showing {activeCollection?._count?.links} results</p>
           <div className="flex items-center gap-2">
-            {links.length > 0 && (
+            {links.length > 0 && (permissions === true || permissions?.canUpdate || permissions?.canDelete) && (
               <div
                 role="button"
                 onClick={() => {

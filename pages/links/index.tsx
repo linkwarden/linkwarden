@@ -81,7 +81,7 @@ export default function Links() {
           />
 
           <div className="mt-2 flex items-center justify-end gap-2">
-            {links.length > 0 && (
+            {links.length > 0 && (collectivePermissions === true || collectivePermissions?.canUpdate || collectivePermissions?.canDelete) && (
               <div
                 role="button"
                 onClick={() => {
