@@ -49,6 +49,7 @@ export default function LinkCardCompact({
     }
   };
 
+
   let shortendURL;
 
   try {
