@@ -27,11 +27,7 @@ type Props = {
   editMode?: boolean;
 };
 
-export default function LinkCard({
-  link,
-  flipDropdown,
-  editMode,
-}: Props) {
+export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
 
@@ -96,17 +92,21 @@ export default function LinkCard({
 
   const [showInfo, setShowInfo] = useState(false);
 
-  const selectedStyle = selectedLinks.some((selectedLink) => selectedLink.id === link.id) ? "border-primary bg-base-300" : "border-neutral-content";
-  const selectable = editMode && (permissions === true || permissions?.canCreate || permissions?.canDelete);
-  const hoverStyles = !selectable ? "cursor-not-allowed" : "cursor-pointer";
+  const selectedStyle = selectedLinks.some(
+    (selectedLink) => selectedLink.id === link.id
+  )
+    ? "border-primary bg-base-300"
+    : "border-neutral-content";
+  const selectable =
+    editMode &&
+    (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} ${hoverStyles} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative`}
+      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative`}
       onClick={() => selectable && handleCheckboxClick(link)}
     >
-
       {!editMode ? (
         <>
           <Link
@@ -134,9 +134,7 @@ export default function LinkCard({
               ) : (
                 <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
               )}
-              <div
-                className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md"
-              >
+              <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
                 <LinkIcon link={link} />
               </div>
             </div>
@@ -190,7 +188,9 @@ export default function LinkCard({
               </p>
               {link.tags[0] && (
                 <>
-                  <p className="text-neutral text-lg mt-3 font-semibold">Tags</p>
+                  <p className="text-neutral text-lg mt-3 font-semibold">
+                    Tags
+                  </p>
 
                   <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
 
@@ -226,9 +226,7 @@ export default function LinkCard({
         </>
       ) : (
         <>
-          <div
-            className="rounded-2xl cursor-pointer"
-          >
+          <div className="rounded-2xl cursor-pointer">
             <div className="relative rounded-t-2xl h-40 overflow-hidden">
               {previewAvailable(link) ? (
                 <Image
@@ -249,9 +247,7 @@ export default function LinkCard({
               ) : (
                 <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
               )}
-              <div
-                className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md"
-              >
+              <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
                 <LinkIcon link={link} />
               </div>
             </div>
@@ -305,7 +301,9 @@ export default function LinkCard({
               </p>
               {link.tags[0] && (
                 <>
-                  <p className="text-neutral text-lg mt-3 font-semibold">Tags</p>
+                  <p className="text-neutral text-lg mt-3 font-semibold">
+                    Tags
+                  </p>
 
                   <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
 

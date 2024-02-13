@@ -44,24 +44,25 @@ export default function BulkEditLinksModal({ onClose }: Props) {
 
       if (response.ok) {
         toast.success(`Updated!`);
+        setSelectedLinks([]);
         onClose();
       } else toast.error(response.data as string);
 
-      setSelectedLinks([]);
       setSubmitLoader(false);
-      onClose();
       return response;
     }
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">Edit Link</p>
+      <p className="text-xl font-thin">
+        Edit {selectedLinks.length} Link{selectedLinks.length > 1 ? "s" : ""}
+      </p>
       <div className="divider mb-3 mt-1"></div>
       <div className="mt-5">
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
-            <p className="mb-2">Collection</p>
+            <p className="mb-2">Move to Collection</p>
             <CollectionSelection
               showDefaultValue={false}
               onChange={setCollection}
@@ -69,12 +70,12 @@ export default function BulkEditLinksModal({ onClose }: Props) {
           </div>
 
           <div>
-            <p className="mb-2">Tags</p>
+            <p className="mb-2">Add Tags</p>
             <TagSelection onChange={setTags} />
           </div>
         </div>
-        <div className="mt-3">
-          <label className="flex items-center gap-2">
+        <div className="ml-auto w-1/2 p-3">
+          <label className="flex items-center gap-2 ">
             <input
               type="checkbox"
               className="checkbox checkbox-primary"

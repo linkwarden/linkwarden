@@ -121,7 +121,8 @@ export default function Index() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -133,7 +134,8 @@ export default function Index() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -143,8 +145,9 @@ export default function Index() {
       <div
         className="h-[60rem] p-5 flex gap-3 flex-col"
         style={{
-          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
-            } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
+            settings.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
@@ -309,21 +312,25 @@ export default function Index() {
         <div className="flex justify-between items-center gap-5">
           <p>Showing {activeCollection?._count?.links} results</p>
           <div className="flex items-center gap-2">
-            {links.length > 0 && (permissions === true || permissions?.canUpdate || permissions?.canDelete) && (
-              <div
-                role="button"
-                onClick={() => {
-                  setEditMode(!editMode);
-                  setSelectedLinks([]);
-                }}
-                className={`btn btn-square btn-sm btn-ghost ${editMode
-                  ? "bg-primary/20 hover:bg-primary/20"
-                  : "hover:bg-neutral/20"
+            {links.length > 0 &&
+              (permissions === true ||
+                permissions?.canUpdate ||
+                permissions?.canDelete) && (
+                <div
+                  role="button"
+                  onClick={() => {
+                    setEditMode(!editMode);
+                    setSelectedLinks([]);
+                  }}
+                  className={`btn btn-square btn-sm btn-ghost ${
+                    editMode
+                      ? "bg-primary/20 hover:bg-primary/20"
+                      : "hover:bg-neutral/20"
                   }`}
-              >
-                <i className="bi-pencil-fill text-neutral text-xl"></i>
-              </div>
-            )}
+                >
+                  <i className="bi-pencil-fill text-neutral text-xl"></i>
+                </div>
+              )}
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
@@ -352,31 +359,29 @@ export default function Index() {
               </div>
             )}
             <div className="flex gap-3">
-              {(permissions === true ||
-                permissions?.canUpdate) && (
-                  <button
-                    onClick={() => setBulkEditLinksModal(true)}
-                    className="btn btn-sm btn-accent text-white w-fit ml-auto"
-                    disabled={selectedLinks.length === 0}
-                  >
-                    Edit
-                  </button>
-                )}
-              {(permissions === true ||
-                permissions?.canDelete) && (
-                  <button
-                    onClick={(e) => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      e.shiftKey
-                        ? bulkDeleteLinks()
-                        : setBulkDeleteLinksModal(true);
-                    }}
-                    className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
-                    disabled={selectedLinks.length === 0}
-                  >
-                    Delete
-                  </button>
-                )}
+              {(permissions === true || permissions?.canUpdate) && (
+                <button
+                  onClick={() => setBulkEditLinksModal(true)}
+                  className="btn btn-sm btn-accent text-white w-fit ml-auto"
+                  disabled={selectedLinks.length === 0}
+                >
+                  Edit
+                </button>
+              )}
+              {(permissions === true || permissions?.canDelete) && (
+                <button
+                  onClick={(e) => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    e.shiftKey
+                      ? bulkDeleteLinks()
+                      : setBulkDeleteLinksModal(true);
+                  }}
+                  className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                  disabled={selectedLinks.length === 0}
+                >
+                  Delete
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -422,7 +427,6 @@ export default function Index() {
             <BulkDeleteLinksModal
               onClose={() => {
                 setBulkDeleteLinksModal(false);
-                setEditMode(false);
               }}
             />
           )}
@@ -430,7 +434,6 @@ export default function Index() {
             <BulkEditLinksModal
               onClose={() => {
                 setBulkEditLinksModal(false);
-                setEditMode(false);
               }}
             />
           )}
