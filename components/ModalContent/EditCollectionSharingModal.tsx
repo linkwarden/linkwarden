@@ -234,11 +234,8 @@ export default function EditCollectionSharingModal({
                           : undefined;
 
                   return (
-                    <>
-                      <div
-                        key={i}
-                        className="relative p-3 bg-base-200 rounded-xl flex gap-2 justify-between border-none"
-                      >
+                    <React.Fragment key={i}>
+                      <div className="relative p-3 bg-base-200 rounded-xl flex gap-2 justify-between border-none">
                         <div
                           className={"flex items-center justify-between w-full"}
                         >
@@ -433,7 +430,7 @@ export default function EditCollectionSharingModal({
                         </div>
                       </div>
                       <div className="divider my-0 last:hidden h-[3px]"></div>
-                    </>
+                    </React.Fragment>
                   );
                 })}
             </div>

@@ -97,6 +97,11 @@ export default function Index() {
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  useEffect(() => {
+    return () => {
+      setEditMode(false);
+    };
+  }, [router]);
 
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
@@ -359,29 +364,31 @@ export default function Index() {
               </div>
             )}
             <div className="flex gap-3">
-              {(permissions === true || permissions?.canUpdate) && (
-                <button
-                  onClick={() => setBulkEditLinksModal(true)}
-                  className="btn btn-sm btn-accent text-white w-fit ml-auto"
-                  disabled={selectedLinks.length === 0}
-                >
-                  Edit
-                </button>
-              )}
-              {(permissions === true || permissions?.canDelete) && (
-                <button
-                  onClick={(e) => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    e.shiftKey
-                      ? bulkDeleteLinks()
-                      : setBulkDeleteLinksModal(true);
-                  }}
-                  className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
-                  disabled={selectedLinks.length === 0}
-                >
-                  Delete
-                </button>
-              )}
+              <button
+                onClick={() => setBulkEditLinksModal(true)}
+                className="btn btn-sm btn-accent text-white w-fit ml-auto"
+                disabled={
+                  selectedLinks.length === 0 ||
+                  !(permissions === true || permissions?.canUpdate)
+                }
+              >
+                Edit
+              </button>
+              <button
+                onClick={(e) => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  e.shiftKey
+                    ? bulkDeleteLinks()
+                    : setBulkDeleteLinksModal(true);
+                }}
+                className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                disabled={
+                  selectedLinks.length === 0 ||
+                  !(permissions === true || permissions?.canDelete)
+                }
+              >
+                Delete
+              </button>
             </div>
           </div>
         )}

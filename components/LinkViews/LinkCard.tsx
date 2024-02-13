@@ -18,6 +18,7 @@ import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
+import toast from "react-hot-toast";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -97,15 +98,25 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   )
     ? "border-primary bg-base-300"
     : "border-neutral-content";
+
   const selectable =
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
+
+  // const unselectableStyle =
+  //   editMode && !selectable ? "pointer-events-none" : "";
 
   return (
     <div
       ref={ref}
       className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative`}
-      onClick={() => selectable && handleCheckboxClick(link)}
+      onClick={() =>
+        selectable
+          ? handleCheckboxClick(link)
+          : toast.error(
+              "You don't have permission to edit or delete this item."
+            )
+      }
     >
       {!editMode ? (
         <>
