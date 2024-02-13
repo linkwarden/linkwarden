@@ -103,9 +103,6 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
-  // const unselectableStyle =
-  //   editMode && !selectable ? "pointer-events-none" : "";
-
   return (
     <div
       ref={ref}
@@ -113,9 +110,11 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
-          : toast.error(
-              "You don't have permission to edit or delete this item."
-            )
+          : editMode
+            ? toast.error(
+                "You don't have permission to edit or delete this item."
+              )
+            : undefined
       }
     >
       {!editMode ? (
