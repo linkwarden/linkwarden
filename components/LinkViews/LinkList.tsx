@@ -15,6 +15,7 @@ import { isPWA } from "@/lib/client/utils";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
+import toast from "react-hot-toast";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -92,7 +93,15 @@ export default function LinkCardCompact({
         className={`${selectedStyle} border relative items-center flex ${
           !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
         } duration-200 rounded-lg`}
-        onClick={() => selectable && handleCheckboxClick(link)}
+        onClick={() =>
+          selectable
+            ? handleCheckboxClick(link)
+            : editMode
+              ? toast.error(
+                  "You don't have permission to edit or delete this item."
+                )
+              : undefined
+        }
       >
         {/* {showCheckbox &&
           editMode &&
