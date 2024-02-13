@@ -119,7 +119,8 @@ export default function Index() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -131,7 +132,8 @@ export default function Index() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -190,10 +192,11 @@ export default function Index() {
                   </p>
                   <div className="relative">
                     <div
-                      className={`dropdown dropdown-bottom font-normal ${activeTag?.name.length && activeTag?.name.length > 8
-                        ? "dropdown-end"
-                        : ""
-                        }`}
+                      className={`dropdown dropdown-bottom font-normal ${
+                        activeTag?.name.length && activeTag?.name.length > 8
+                          ? "dropdown-end"
+                          : ""
+                      }`}
                     >
                       <div
                         tabIndex={0}
@@ -239,21 +242,20 @@ export default function Index() {
           </div>
 
           <div className="flex gap-2 items-center mt-2">
-            {links.length > 0 && (collectivePermissions === true || collectivePermissions?.canUpdate || collectivePermissions?.canDelete) && (
-              <div
-                role="button"
-                onClick={() => {
-                  setEditMode(!editMode);
-                  setSelectedLinks([]);
-                }}
-                className={`btn btn-square btn-sm btn-ghost ${editMode
+            <div
+              role="button"
+              onClick={() => {
+                setEditMode(!editMode);
+                setSelectedLinks([]);
+              }}
+              className={`btn btn-square btn-sm btn-ghost ${
+                editMode
                   ? "bg-primary/20 hover:bg-primary/20"
                   : "hover:bg-neutral/20"
-                  }`}
-              >
-                <i className="bi-pencil-fill text-neutral text-xl"></i>
-              </div>
-            )}
+              }`}
+            >
+              <i className="bi-pencil-fill text-neutral text-xl"></i>
+            </div>
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
@@ -283,29 +285,29 @@ export default function Index() {
             <div className="flex gap-3">
               {(collectivePermissions === true ||
                 collectivePermissions?.canUpdate) && (
-                  <button
-                    onClick={() => setBulkEditLinksModal(true)}
-                    className="btn btn-sm btn-accent text-white w-fit ml-auto"
-                    disabled={selectedLinks.length === 0}
-                  >
-                    Edit
-                  </button>
-                )}
+                <button
+                  onClick={() => setBulkEditLinksModal(true)}
+                  className="btn btn-sm btn-accent text-white w-fit ml-auto"
+                  disabled={selectedLinks.length === 0}
+                >
+                  Edit
+                </button>
+              )}
               {(collectivePermissions === true ||
                 collectivePermissions?.canDelete) && (
-                  <button
-                    onClick={(e) => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      e.shiftKey
-                        ? bulkDeleteLinks()
-                        : setBulkDeleteLinksModal(true);
-                    }}
-                    className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
-                    disabled={selectedLinks.length === 0}
-                  >
-                    Delete
-                  </button>
-                )}
+                <button
+                  onClick={(e) => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    e.shiftKey
+                      ? bulkDeleteLinks()
+                      : setBulkDeleteLinksModal(true);
+                  }}
+                  className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                  disabled={selectedLinks.length === 0}
+                >
+                  Delete
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -320,7 +322,6 @@ export default function Index() {
         <BulkDeleteLinksModal
           onClose={() => {
             setBulkDeleteLinksModal(false);
-            setEditMode(false);
           }}
         />
       )}
@@ -328,7 +329,6 @@ export default function Index() {
         <BulkEditLinksModal
           onClose={() => {
             setBulkEditLinksModal(false);
-            setEditMode(false);
           }}
         />
       )}

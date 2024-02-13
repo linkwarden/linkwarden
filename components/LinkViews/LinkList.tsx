@@ -76,17 +76,21 @@ export default function LinkCardCompact({
 
   const [showInfo, setShowInfo] = useState(false);
 
-  const selectedStyle = selectedLinks.some((selectedLink) => selectedLink.id === link.id) ? "border border-primary bg-base-300" : "border-transparent";
-  const selectable = editMode && (permissions === true || permissions?.canCreate || permissions?.canDelete);
-  const hoverStyles = !selectable ? "cursor-not-allowed" : "cursor-pointer";
+  const selectedStyle = selectedLinks.some(
+    (selectedLink) => selectedLink.id === link.id
+  )
+    ? "border border-primary bg-base-300"
+    : "border-transparent";
+  const selectable =
+    editMode &&
+    (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
   return (
     <>
       <div
-        className={`${selectedStyle} ${hoverStyles} border relative items-center flex ${!showInfo && !isPWA()
-          ? "hover:bg-base-300 p-3"
-          : "py-3"
-          } duration-200 rounded-lg`}
+        className={`${selectedStyle} border relative items-center flex ${
+          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+        } duration-200 rounded-lg`}
         onClick={() => selectable && handleCheckboxClick(link)}
       >
         {/* {showCheckbox &&
@@ -144,13 +148,15 @@ export default function LinkCardCompact({
               collection={collection}
               position="top-3 right-3"
               flipDropdown={flipDropdown}
-            // toggleShowInfo={() => setShowInfo(!showInfo)}
-            // linkInfo={showInfo}
+              // toggleShowInfo={() => setShowInfo(!showInfo)}
+              // linkInfo={showInfo}
             />
             {showInfo && (
               <div>
                 <div className="pb-3 mt-1 px-3">
-                  <p className="text-neutral text-lg font-semibold">Description</p>
+                  <p className="text-neutral text-lg font-semibold">
+                    Description
+                  </p>
 
                   <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
                   <p>
@@ -192,51 +198,50 @@ export default function LinkCardCompact({
               </div>
             )}
           </>
-        ) :
-          (
-            <>
-              <div
-                className="flex items-center cursor-pointer"
-              >
-                <div className="shrink-0">
-                  <LinkIcon link={link} width="sm:w-12 w-8 mt-1 sm:mt-0" />
-                </div>
+        ) : (
+          <>
+            <div className="flex items-center cursor-pointer">
+              <div className="shrink-0">
+                <LinkIcon link={link} width="sm:w-12 w-8 mt-1 sm:mt-0" />
+              </div>
 
-                <div className="w-[calc(100%-56px)] ml-2">
-                  <p className="line-clamp-1 mr-8 text-primary select-none">
-                    {unescapeString(link.name || link.description) || link.url}
-                  </p>
+              <div className="w-[calc(100%-56px)] ml-2">
+                <p className="line-clamp-1 mr-8 text-primary select-none">
+                  {unescapeString(link.name || link.description) || link.url}
+                </p>
 
-                  <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
-                    <div className="flex items-center gap-x-3 w-fit text-neutral flex-wrap">
-                      {collection ? (
-                        <LinkCollection link={link} collection={collection} />
-                      ) : undefined}
-                      {link.url ? (
-                        <div className="flex items-center gap-1 w-fit text-neutral truncate">
-                          <i className="bi-link-45deg text-lg" />
-                          <p className="truncate w-full select-none">{shortendURL}</p>
-                        </div>
-                      ) : (
-                        <div className="badge badge-primary badge-sm my-1 select-none">
-                          {link.type}
-                        </div>
-                      )}
-                      <LinkDate link={link} />
-                    </div>
+                <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
+                  <div className="flex items-center gap-x-3 w-fit text-neutral flex-wrap">
+                    {collection ? (
+                      <LinkCollection link={link} collection={collection} />
+                    ) : undefined}
+                    {link.url ? (
+                      <div className="flex items-center gap-1 w-fit text-neutral truncate">
+                        <i className="bi-link-45deg text-lg" />
+                        <p className="truncate w-full select-none">
+                          {shortendURL}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="badge badge-primary badge-sm my-1 select-none">
+                        {link.type}
+                      </div>
+                    )}
+                    <LinkDate link={link} />
                   </div>
                 </div>
               </div>
-              <LinkActions
-                link={link}
-                collection={collection}
-                position="top-3 right-3"
-                flipDropdown={flipDropdown}
+            </div>
+            <LinkActions
+              link={link}
+              collection={collection}
+              position="top-3 right-3"
+              flipDropdown={flipDropdown}
               // toggleShowInfo={() => setShowInfo(!showInfo)}
               // linkInfo={showInfo}
-              />
-            </>
-          )}
+            />
+          </>
+        )}
       </div>
       <div className="divider my-0 last:hidden h-[1px]"></div>
     </>

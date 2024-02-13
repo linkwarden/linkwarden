@@ -23,15 +23,16 @@ export default function BulkDeleteLinksModal({ onClose }: Props) {
 
     toast.dismiss(load);
 
-    response.ok &&
+    if (response.ok) {
       toast.success(
         `Deleted ${selectedLinks.length} Link${
           selectedLinks.length > 1 ? "s" : ""
         }`
       );
 
-    setSelectedLinks([]);
-    onClose();
+      setSelectedLinks([]);
+      onClose();
+    } else toast.error(response.data as string);
   };
 
   return (
