@@ -49,7 +49,6 @@ export default function LinkCardCompact({
     }
   };
 
-
   let shortendURL;
 
   try {
@@ -82,6 +81,7 @@ export default function LinkCardCompact({
   )
     ? "border border-primary bg-base-300"
     : "border-transparent";
+
   const selectable =
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
