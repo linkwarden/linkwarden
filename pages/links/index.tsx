@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
+import { useRouter } from "next/router";
 
 export default function Links() {
   const { links, selectedLinks, deleteLinksById, setSelectedLinks } =
@@ -24,9 +25,17 @@ export default function Links() {
   );
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
+  const router = useRouter();
+
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  useEffect(() => {
+    return () => {
+      setEditMode(false);
+    };
+  }, [router]);
+
   const collectivePermissions = useCollectivePermissions(
     selectedLinks.map((link) => link.collectionId as number)
   );
@@ -71,7 +80,6 @@ export default function Links() {
   // @ts-ignore
   const LinkComponent = linkView[viewMode];
 
-  console.log(collectivePermissions);
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full h-full">
@@ -127,31 +135,37 @@ export default function Links() {
               </div>
             )}
             <div className="flex gap-3">
-              {(collectivePermissions === true ||
-                collectivePermissions?.canUpdate) && (
-                <button
-                  onClick={() => setBulkEditLinksModal(true)}
-                  className="btn btn-sm btn-accent text-white w-fit ml-auto"
-                  disabled={selectedLinks.length === 0}
-                >
-                  Edit
-                </button>
-              )}
-              {(collectivePermissions === true ||
-                collectivePermissions?.canDelete) && (
-                <button
-                  onClick={(e) => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    e.shiftKey
-                      ? bulkDeleteLinks()
-                      : setBulkDeleteLinksModal(true);
-                  }}
-                  className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
-                  disabled={selectedLinks.length === 0}
-                >
-                  Delete
-                </button>
-              )}
+              <button
+                onClick={() => setBulkEditLinksModal(true)}
+                className="btn btn-sm btn-accent text-white w-fit ml-auto"
+                disabled={
+                  selectedLinks.length === 0 ||
+                  !(
+                    collectivePermissions === true ||
+                    collectivePermissions?.canUpdate
+                  )
+                }
+              >
+                Edit
+              </button>
+              <button
+                onClick={(e) => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  e.shiftKey
+                    ? bulkDeleteLinks()
+                    : setBulkDeleteLinksModal(true);
+                }}
+                className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                disabled={
+                  selectedLinks.length === 0 ||
+                  !(
+                    collectivePermissions === true ||
+                    collectivePermissions?.canDelete
+                  )
+                }
+              >
+                Delete
+              </button>
             </div>
           </div>
         )}
