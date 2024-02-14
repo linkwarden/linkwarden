@@ -1,51 +1,54 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import useLinkStore from "@/store/links";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
-import { useRouter } from "next/router";
 
 type Props = {
   onClose: Function;
-  activeLink: LinkIncludingShortenedCollectionAndTags;
 };
 
-export default function DeleteLinkModal({ onClose, activeLink }: Props) {
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
-
-  const { removeLink } = useLinkStore();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    setLink(activeLink);
-  }, []);
+export default function BulkDeleteLinksModal({ onClose }: Props) {
+  const { selectedLinks, setSelectedLinks, deleteLinksById } = useLinkStore();
 
   const deleteLink = async () => {
-    const load = toast.loading("Deleting...");
+    const load = toast.loading(
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
+      }...`
+    );
 
-    const response = await removeLink(link.id as number);
+    const response = await deleteLinksById(
+      selectedLinks.map((link) => link.id as number)
+    );
 
     toast.dismiss(load);
 
-    response.ok && toast.success(`Link Deleted.`);
+    if (response.ok) {
+      toast.success(
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
+        }`
+      );
 
-    if (router.pathname.startsWith("/links/[id]")) {
-      router.push("/dashboard");
-    }
-
-    onClose();
+      setSelectedLinks([]);
+      onClose();
+    } else toast.error(response.data as string);
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin text-red-500">Delete Link</p>
+      <p className="text-xl font-thin text-red-500">
+        Delete {selectedLinks.length} Link{selectedLinks.length > 1 ? "s" : ""}
+      </p>
 
       <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
-        <p>Are you sure you want to delete this Link?</p>
+        {selectedLinks.length > 1 ? (
+          <p>Are you sure you want to delete {selectedLinks.length} links?</p>
+        ) : (
+          <p>Are you sure you want to delete this link?</p>
+        )}
 
         <div role="alert" className="alert alert-warning">
           <i className="bi-exclamation-triangle text-xl" />

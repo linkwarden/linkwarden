@@ -3,11 +3,13 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
 export default function ListView({
   links,
+  editMode,
 }: {
   links: LinkIncludingShortenedCollectionAndTags[];
+  editMode?: boolean;
 }) {
   return (
-    <div className="flex flex-col">
+    <div className="flex gap-1 flex-col">
       {links.map((e, i) => {
         return (
           <LinkList
@@ -15,6 +17,7 @@ export default function ListView({
             link={e}
             count={i}
             flipDropdown={i === links.length - 1}
+            editMode={editMode}
           />
         );
       })}

@@ -14,7 +14,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
         tabIndex={0}
         role="button"
         onMouseDown={dropdownTriggerer}
-        className="btn btn-sm btn-square btn-ghost"
+        className="btn btn-sm btn-square btn-ghost border-none"
       >
         <i className="bi-chevron-expand text-neutral text-2xl"></i>
       </div>
