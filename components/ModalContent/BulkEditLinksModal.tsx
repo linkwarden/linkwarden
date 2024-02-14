@@ -20,6 +20,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
 
   const setCollection = (e: any) => {
     const collectionId = e?.value || null;
+    console.log(updatedValues);
     setUpdatedValues((prevValues) => ({ ...prevValues, collectionId }));
   };
 
@@ -66,6 +67,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
             <CollectionSelection
               showDefaultValue={false}
               onChange={setCollection}
+              creatable={false}
             />
           </div>
 
@@ -74,7 +76,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
             <TagSelection onChange={setTags} />
           </div>
         </div>
-        <div className="ml-auto w-1/2 p-3">
+        <div className="sm:ml-auto w-1/2 p-3">
           <label className="flex items-center gap-2 ">
             <input
               type="checkbox"
