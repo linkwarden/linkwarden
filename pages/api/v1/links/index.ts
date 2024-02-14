@@ -3,6 +3,8 @@ import getLinks from "@/lib/api/controllers/links/getLinks";
 import postLink from "@/lib/api/controllers/links/postLink";
 import { LinkRequestQuery } from "@/types/global";
 import verifyUser from "@/lib/api/verifyUser";
+import deleteLinksById from "@/lib/api/controllers/links/bulk/deleteLinksById";
+import updateLinks from "@/lib/api/controllers/links/bulk/updateLinks";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
@@ -38,6 +40,21 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     const newlink = await postLink(req.body, user.id);
     return res.status(newlink.status).json({
       response: newlink.response,
+    });
+  } else if (req.method === "PUT") {
+    const updated = await updateLinks(
+      user.id,
+      req.body.links,
+      req.body.removePreviousTags,
+      req.body.newData
+    );
+    return res.status(updated.status).json({
+      response: updated.response,
+    });
+  } else if (req.method === "DELETE") {
+    const deleted = await deleteLinksById(user.id, req.body.linkIds);
+    return res.status(deleted.status).json({
+      response: deleted.response,
     });
   }
 }

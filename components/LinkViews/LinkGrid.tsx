@@ -101,7 +101,7 @@ export default function LinkGrid({ link }: Props) {
       </div>
 
       <LinkActions
-        toggleShowInfo={() => { }}
+        toggleShowInfo={() => {}}
         linkInfo={false}
         link={link}
         collection={collection}

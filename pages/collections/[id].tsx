@@ -24,15 +24,18 @@ import CardView from "@/components/LinkViews/Layouts/CardView";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
-import Link from "next/link";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
+import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
+import toast from "react-hot-toast";
+import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
 
   const router = useRouter();
 
-  const { links } = useLinkStore();
+  const { links, selectedLinks, setSelectedLinks, deleteLinksById } =
+    useLinkStore();
   const { collections } = useCollectionStore();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -81,6 +84,9 @@ export default function Index() {
     };
 
     fetchOwner();
+
+    // When the collection changes, reset the selected links
+    setSelectedLinks([]);
   }, [activeCollection]);
 
   const [editCollectionModal, setEditCollectionModal] = useState(false);
@@ -88,6 +94,14 @@ export default function Index() {
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
+  const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
+  const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  useEffect(() => {
+    return () => {
+      setEditMode(false);
+    };
+  }, [router]);
 
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
@@ -101,6 +115,35 @@ export default function Index() {
 
   // @ts-ignore
   const LinkComponent = linkView[viewMode];
+
+  const handleSelectAll = () => {
+    if (selectedLinks.length === links.length) {
+      setSelectedLinks([]);
+    } else {
+      setSelectedLinks(links.map((link) => link));
+    }
+  };
+
+  const bulkDeleteLinks = async () => {
+    const load = toast.loading(
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
+      }...`
+    );
+
+    const response = await deleteLinksById(
+      selectedLinks.map((link) => link.id as number)
+    );
+
+    toast.dismiss(load);
+
+    response.ok &&
+      toast.success(
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
+        }!`
+      );
+  };
 
   return (
     <MainLayout>
@@ -135,7 +178,7 @@ export default function Index() {
                 <i className="bi-three-dots text-xl" title="More"></i>
               </div>
               <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
-                {permissions === true ? (
+                {permissions === true && (
                   <li>
                     <div
                       role="button"
@@ -148,7 +191,7 @@ export default function Index() {
                       Edit Collection Info
                     </div>
                   </li>
-                ) : undefined}
+                )}
                 <li>
                   <div
                     role="button"
@@ -163,7 +206,7 @@ export default function Index() {
                       : "View Team"}
                   </div>
                 </li>
-                {permissions === true ? (
+                {permissions === true && (
                   <li>
                     <div
                       role="button"
@@ -176,7 +219,7 @@ export default function Index() {
                       Create Sub-Collection
                     </div>
                   </li>
-                ) : undefined}
+                )}
                 <li>
                   <div
                     role="button"
@@ -196,7 +239,7 @@ export default function Index() {
           </div>
         )}
 
-        {activeCollection ? (
+        {activeCollection && (
           <div className={`min-w-[15rem]`}>
             <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
               <div
@@ -232,18 +275,17 @@ export default function Index() {
               </div>
               <p className="text-neutral text-sm font-semibold">
                 By {collectionOwner.name}
-                {activeCollection.members.length > 0
-                  ? ` and ${activeCollection.members.length} others`
-                  : undefined}
+                {activeCollection.members.length > 0 &&
+                  ` and ${activeCollection.members.length} others`}
                 .
               </p>
             </div>
           </div>
-        ) : undefined}
+        )}
 
-        {activeCollection?.description ? (
+        {activeCollection?.description && (
           <p>{activeCollection?.description}</p>
-        ) : undefined}
+        )}
 
         {/* {collections.some((e) => e.parentId === activeCollection.id) ? (
           <fieldset className="border rounded-md p-2 border-neutral-content">
@@ -272,16 +314,88 @@ export default function Index() {
 
         <div className="divider my-0"></div>
 
-        <div className="flex justify-between items-end gap-5">
+        <div className="flex justify-between items-center gap-5">
           <p>Showing {activeCollection?._count?.links} results</p>
           <div className="flex items-center gap-2">
+            {links.length > 0 &&
+              (permissions === true ||
+                permissions?.canUpdate ||
+                permissions?.canDelete) && (
+                <div
+                  role="button"
+                  onClick={() => {
+                    setEditMode(!editMode);
+                    setSelectedLinks([]);
+                  }}
+                  className={`btn btn-square btn-sm btn-ghost ${
+                    editMode
+                      ? "bg-primary/20 hover:bg-primary/20"
+                      : "hover:bg-neutral/20"
+                  }`}
+                >
+                  <i className="bi-pencil-fill text-neutral text-xl"></i>
+                </div>
+              )}
             <SortDropdown sortBy={sortBy} setSort={setSortBy} />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
 
+        {editMode && (
+          <div className="w-full flex justify-between items-center min-h-[32px]">
+            {links.length > 0 && (
+              <div className="flex gap-3 ml-3">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary"
+                  onChange={() => handleSelectAll()}
+                  checked={
+                    selectedLinks.length === links.length && links.length > 0
+                  }
+                />
+                {selectedLinks.length > 0 ? (
+                  <span>
+                    {selectedLinks.length}{" "}
+                    {selectedLinks.length === 1 ? "link" : "links"} selected
+                  </span>
+                ) : (
+                  <span>Nothing selected</span>
+                )}
+              </div>
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setBulkEditLinksModal(true)}
+                className="btn btn-sm btn-accent text-white w-fit ml-auto"
+                disabled={
+                  selectedLinks.length === 0 ||
+                  !(permissions === true || permissions?.canUpdate)
+                }
+              >
+                Edit
+              </button>
+              <button
+                onClick={(e) => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  e.shiftKey
+                    ? bulkDeleteLinks()
+                    : setBulkDeleteLinksModal(true);
+                }}
+                className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                disabled={
+                  selectedLinks.length === 0 ||
+                  !(permissions === true || permissions?.canDelete)
+                }
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
+
         {links.some((e) => e.collectionId === Number(router.query.id)) ? (
           <LinkComponent
+            editMode={editMode}
             links={links.filter(
               (e) => e.collection.id === activeCollection?.id
             )}
@@ -290,34 +404,48 @@ export default function Index() {
           <NoLinksFound />
         )}
       </div>
-      {activeCollection ? (
+      {activeCollection && (
         <>
-          {editCollectionModal ? (
+          {editCollectionModal && (
             <EditCollectionModal
               onClose={() => setEditCollectionModal(false)}
               activeCollection={activeCollection}
             />
-          ) : undefined}
-          {editCollectionSharingModal ? (
+          )}
+          {editCollectionSharingModal && (
             <EditCollectionSharingModal
               onClose={() => setEditCollectionSharingModal(false)}
               activeCollection={activeCollection}
             />
-          ) : undefined}
-          {newCollectionModal ? (
+          )}
+          {newCollectionModal && (
             <NewCollectionModal
               onClose={() => setNewCollectionModal(false)}
               parent={activeCollection}
             />
-          ) : undefined}
-          {deleteCollectionModal ? (
+          )}
+          {deleteCollectionModal && (
             <DeleteCollectionModal
               onClose={() => setDeleteCollectionModal(false)}
               activeCollection={activeCollection}
             />
-          ) : undefined}
+          )}
+          {bulkDeleteLinksModal && (
+            <BulkDeleteLinksModal
+              onClose={() => {
+                setBulkDeleteLinksModal(false);
+              }}
+            />
+          )}
+          {bulkEditLinksModal && (
+            <BulkEditLinksModal
+              onClose={() => {
+                setBulkEditLinksModal(false);
+              }}
+            />
+          )}
         </>
-      ) : undefined}
+      )}
     </MainLayout>
   );
 }

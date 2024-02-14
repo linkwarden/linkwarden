@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import { Collection, Link, UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import moveFile from "@/lib/api/storage/moveFile";
 
@@ -16,6 +16,10 @@ export default async function updateLinkById(
     };
 
   const collectionIsAccessible = await getPermission({ userId, linkId });
+  const targetCollectionIsAccessible = await getPermission({
+    userId,
+    collectionId: data.collection.id,
+  });
 
   const memberHasAccess = collectionIsAccessible?.members.some(
     (e: UsersAndCollections) => e.userId === userId && e.canUpdate
@@ -24,6 +28,28 @@ export default async function updateLinkById(
   const isCollectionOwner =
     collectionIsAccessible?.ownerId === data.collection.ownerId &&
     data.collection.ownerId === userId;
+
+  const targetCollectionsAccessible =
+    targetCollectionIsAccessible?.ownerId === userId;
+
+  const targetCollectionMatchesData = data.collection.id
+    ? data.collection.id === targetCollectionIsAccessible?.id
+    : true && data.collection.name
+      ? data.collection.name === targetCollectionIsAccessible?.name
+      : true && data.collection.ownerId
+        ? data.collection.ownerId === targetCollectionIsAccessible?.ownerId
+        : true;
+
+  if (!targetCollectionsAccessible)
+    return {
+      response: "Target collection is not accessible.",
+      status: 401,
+    };
+  else if (!targetCollectionMatchesData)
+    return {
+      response: "Target collection does not match the data.",
+      status: 401,
+    };
 
   const unauthorizedSwitchCollection =
     !isCollectionOwner && collectionIsAccessible?.id !== data.collection.id;

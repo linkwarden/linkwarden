@@ -1,6 +1,8 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 
-export function screenshotAvailable(link: LinkIncludingShortenedCollectionAndTags) {
+export function screenshotAvailable(
+  link: LinkIncludingShortenedCollectionAndTags
+) {
   return (
     link &&
     link.image &&
@@ -15,7 +17,9 @@ export function pdfAvailable(link: LinkIncludingShortenedCollectionAndTags) {
   );
 }
 
-export function readabilityAvailable(link: LinkIncludingShortenedCollectionAndTags) {
+export function readabilityAvailable(
+  link: LinkIncludingShortenedCollectionAndTags
+) {
   return (
     link &&
     link.readable &&
