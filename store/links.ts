@@ -152,6 +152,11 @@ const useLinkStore = create<LinkStore>()((set) => ({
           links.some((link) => link.id === e.id)
             ? {
                 ...e,
+                collectionId: newData.collectionId ?? e.collectionId,
+                collection: {
+                  ...e.collection,
+                  id: newData.collectionId ?? e.collection.id,
+                },
                 tags: removePreviousTags
                   ? [...(newData.tags ?? [])]
                   : [...e.tags, ...(newData.tags ?? [])],

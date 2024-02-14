@@ -124,6 +124,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
                         label: "Unorganized",
                       }
                 }
+                creatable={false}
               />
             ) : null}
           </div>
