@@ -5,17 +5,20 @@ import toast from "react-hot-toast";
 import { HexColorPicker } from "react-colorful";
 import { Collection } from "@prisma/client";
 import Modal from "../Modal";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 
 type Props = {
   onClose: Function;
+  parent?: CollectionIncludingMembersAndLinkCount;
 };
 
-export default function NewCollectionModal({ onClose }: Props) {
+export default function NewCollectionModal({ onClose, parent }: Props) {
   const initial = {
+    parentId: parent?.id,
     name: "",
     description: "",
     color: "#0ea5e9",
-  };
+  } as Partial<Collection>;
 
   const [collection, setCollection] = useState<Partial<Collection>>(initial);
 
@@ -47,7 +50,14 @@ export default function NewCollectionModal({ onClose }: Props) {
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">Create a New Collection</p>
+      {parent?.id ? (
+        <>
+          <p className="text-xl font-thin">New Sub-Collection</p>
+          <p className="capitalize text-sm">For {parent.name}</p>
+        </>
+      ) : (
+        <p className="text-xl font-thin">Create a New Collection</p>
+      )}
 
       <div className="divider mb-3 mt-1"></div>
 

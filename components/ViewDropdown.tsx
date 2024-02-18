@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import useLocalSettingsStore from "@/store/localSettings";
 
 import { ViewMode } from "@/types/global";

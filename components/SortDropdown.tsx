@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Sort } from "@/types/global";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 type Props = {
   sortBy: Sort;
@@ -12,7 +13,8 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
       <div
         tabIndex={0}
         role="button"
-        className="btn btn-sm btn-square btn-ghost"
+        onMouseDown={dropdownTriggerer}
+        className="btn btn-sm btn-square btn-ghost border-none"
       >
         <i className="bi-chevron-expand text-neutral text-2xl"></i>
       </div>

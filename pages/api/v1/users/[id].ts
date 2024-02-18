@@ -2,19 +2,21 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import getUserById from "@/lib/api/controllers/users/userId/getUserById";
 import updateUserById from "@/lib/api/controllers/users/userId/updateUserById";
 import deleteUserById from "@/lib/api/controllers/users/userId/deleteUserById";
-import { getToken } from "next-auth/jwt";
 import { prisma } from "@/lib/api/db";
 import verifySubscription from "@/lib/api/verifySubscription";
+import verifyToken from "@/lib/api/verifyToken";
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
-  const token = await getToken({ req });
-  const userId = token?.id;
+  const token = await verifyToken({ req });
 
-  if (!userId) {
-    return res.status(401).json({ response: "You must be logged in." });
+  if (typeof token === "string") {
+    res.status(401).json({ response: token });
+    return null;
   }
+
+  const userId = token?.id;
 
   if (userId !== Number(req.query.id))
     return res.status(401).json({ response: "Permission denied." });

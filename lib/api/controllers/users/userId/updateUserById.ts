@@ -186,6 +186,7 @@ export default async function updateUserById(
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
+      linksRouteTo: data.linksRouteTo,
       password:
         data.newPassword && data.newPassword !== ""
           ? newHashedPassword

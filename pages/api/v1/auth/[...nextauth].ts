@@ -65,6 +65,7 @@ import ZitadelProvider from "next-auth/providers/zitadel";
 import ZohoProvider from "next-auth/providers/zoho";
 import ZoomProvider from "next-auth/providers/zoom";
 import * as process from "process";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
@@ -1059,60 +1060,60 @@ if (process.env.NEXT_PUBLIC_ZOOM_ENABLED_ENABLED === "true") {
   };
 }
 
-export const authOptions: AuthOptions = {
-  adapter: adapter as Adapter,
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  providers,
-  pages: {
-    signIn: "/login",
-    verifyRequest: "/confirmation",
-  },
-  callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      if (account?.provider !== "credentials") {
-        // registration via SSO can be separately disabled
-        const existingUser = await prisma.account.findFirst({
-          where: {
-            providerAccountId: account?.providerAccountId,
-          },
-        });
-        if (existingUser && newSsoUsersDisabled) {
-          return false;
+export default async function auth(req: NextApiRequest, res: NextApiResponse) {
+  return await NextAuth(req, res, {
+    adapter: adapter as Adapter,
+    session: {
+      strategy: "jwt",
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+    },
+    providers,
+    pages: {
+      signIn: "/login",
+      verifyRequest: "/confirmation",
+    },
+    callbacks: {
+      async signIn({ user, account, profile, email, credentials }) {
+        if (account?.provider !== "credentials") {
+          // registration via SSO can be separately disabled
+          const existingUser = await prisma.account.findFirst({
+            where: {
+              providerAccountId: account?.providerAccountId,
+            },
+          });
+          if (existingUser && newSsoUsersDisabled) {
+            return false;
+          }
         }
-      }
-      return true;
-    },
-    async jwt({ token, trigger, user }) {
-      token.sub = token.sub ? Number(token.sub) : undefined;
-      if (trigger === "signIn" || trigger === "signUp")
-        token.id = user?.id as number;
+        return true;
+      },
+      async jwt({ token, trigger, user }) {
+        token.sub = token.sub ? Number(token.sub) : undefined;
+        if (trigger === "signIn" || trigger === "signUp")
+          token.id = user?.id as number;
 
-      return token;
-    },
-    async session({ session, token }) {
-      session.user.id = token.id;
+        return token;
+      },
+      async session({ session, token }) {
+        session.user.id = token.id;
 
-      if (STRIPE_SECRET_KEY) {
-        const user = await prisma.user.findUnique({
-          where: {
-            id: token.id,
-          },
-          include: {
-            subscriptions: true,
-          },
-        });
+        if (STRIPE_SECRET_KEY) {
+          const user = await prisma.user.findUnique({
+            where: {
+              id: token.id,
+            },
+            include: {
+              subscriptions: true,
+            },
+          });
 
-        if (user) {
-          const subscribedUser = await verifySubscription(user);
+          if (user) {
+            const subscribedUser = await verifySubscription(user);
+          }
         }
-      }
 
-      return session;
+        return session;
+      },
     },
-  },
-};
-
-export default NextAuth(authOptions);
+  });
+}
