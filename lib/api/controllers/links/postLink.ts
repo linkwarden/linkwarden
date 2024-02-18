@@ -88,14 +88,11 @@ export default async function postLink(
       collection: {
         connectOrCreate: {
           where: {
-            name_ownerId: {
-              ownerId: link.collection.ownerId,
-              name: link.collection.name,
-            },
+            id: link.collection.id ?? 0,
           },
           create: {
             name: link.collection.name.trim(),
-            ownerId: userId,
+            ownerId: userId
           },
         },
       },

@@ -32,27 +32,6 @@ export default async function postCollection(
       };
   }
 
-  const findCollection = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-    select: {
-      collections: {
-        where: {
-          name: collection.name,
-        },
-      },
-    },
-  });
-
-  const checkIfCollectionExists = findCollection?.collections[0];
-
-  if (checkIfCollectionExists)
-    return {
-      response: "Oops! There's already a Collection with that name.",
-      status: 400,
-    };
-
   const newCollection = await prisma.collection.create({
     data: {
       owner: {
@@ -65,10 +44,10 @@ export default async function postCollection(
       color: collection.color,
       parent: collection.parentId
         ? {
-            connect: {
-              id: collection.parentId,
-            },
-          }
+          connect: {
+            id: collection.parentId,
+          },
+        }
         : undefined,
     },
     include: {
