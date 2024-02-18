@@ -396,6 +396,16 @@ declare global {
       ZOOM_CUSTOM_NAME?: string;
       ZOOM_CLIENT_ID?: string;
       ZOOM_CLIENT_SECRET?: string;
+
+      // Proxy settings
+      ARCHIVER_PROXY?: string;
+      ARCHIVER_PROXY_USERNAME?: string;
+      ARCHIVER_PROXY_PASSWORD?: string;
+      ARCHIVER_PROXY_BYPASS?: string;
+
+      // PDF archive settings
+      ARCHIVER_PDF_MARGIN_TOP?: string;
+      ARCHIVER_PDF_MARGIN_BOTTOM?: string;
     }
   }
 }
