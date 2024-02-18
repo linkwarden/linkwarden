@@ -36,8 +36,6 @@ export default async function importFromHTMLFile(
 
   const jsonData = parse(document.documentElement.outerHTML);
 
-  // console.log(jsonData);
-
   for (const item of jsonData) {
     console.log(item);
     await processBookmarks(userId, item as Element);
@@ -54,15 +52,13 @@ async function processBookmarks(
   if (data.type === "element") {
     for (const item of data.children) {
       if (item.type === "element" && item.tagName === "dt") {
+        // process collection or sub-collection
+
         let collectionId;
         const collectionName = item.children.find(
           (e) => e.type === "element" && e.tagName === "h3"
         ) as Element;
 
-        console.log("collection:", item);
-        console.log("collectionName:", collectionName);
-
-        // This is a collection or sub-collection
         if (collectionName) {
           collectionId = await createCollection(
             userId,
@@ -76,22 +72,15 @@ async function processBookmarks(
           collectionId || parentCollectionId
         );
       } else if (item.type === "element" && item.tagName === "a") {
-        // This is a link
+        // process link
 
-        // get link href
         const linkUrl = item?.attributes.find((e) => e.key === "href")?.value;
-
-        // get link name
         const linkName = (
           item?.children.find((e) => e.type === "text") as TextNode
         )?.content;
-
-        // get link tags
         const linkTags = item?.attributes
           .find((e) => e.key === "tags")
           ?.value.split(",");
-
-        console.log("link:", item);
 
         if (linkUrl && parentCollectionId) {
           await createLink(
@@ -118,11 +107,9 @@ async function processBookmarks(
 
         await processBookmarks(userId, item, parentCollectionId);
       } else {
-        // This could be anything else
+        // process anything else
         await processBookmarks(userId, item, parentCollectionId);
       }
-
-      // Add more conditions as necessary based on your JSON structure
     }
   }
 }
