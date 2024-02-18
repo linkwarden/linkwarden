@@ -67,45 +67,12 @@ export default async function importFromHTMLFile(
         } else {
           // @ts-ignore
           for (const folder of folders) {
-            const findCollection = await prisma.user.findUnique({
-              where: {
-                id: userId,
-              },
-              select: {
-                collections: {
-                  where: {
-                    name: folder.textContent.trim(),
-                  },
-                },
-              },
-            });
-
-            const checkIfCollectionExists = findCollection?.collections[0];
-
-            let collectionId = findCollection?.collections[0]?.id;
-
-            if (!checkIfCollectionExists || !collectionId) {
-              const newCollection = await prisma.collection.create({
-                data: {
-                  name: folder.textContent.trim(),
-                  description: "",
-                  color: "#0ea5e9",
-                  isPublic: false,
-                  ownerId: userId,
-                },
-              });
-
-              createFolder({ filePath: `archives/${newCollection.id}` });
-
-              collectionId = newCollection.id;
-            }
-
-            createFolder({ filePath: `archives/${collectionId}` });
-
-            const bookmarks = folder.nextElementSibling.querySelectorAll("A");
-            for (const bookmark of bookmarks) {
-              createBookmark(userId, bookmark, collectionId);
-            }
+            await createCollectionAndBookmarks(
+              userId,
+              folder,
+              folder.nextElementSibling,
+              null
+            );
           }
         }
       },
@@ -115,6 +82,52 @@ export default async function importFromHTMLFile(
 
   return { response: "Success.", status: 200 };
 }
+
+const createCollectionAndBookmarks = async (
+  userId: number,
+  folder: any,
+  folderContent: any,
+  parentId: number | null
+) => {
+  const findCollection = await prisma.collection.findFirst({
+    where: {
+      name: folder.textContent.trim(),
+      ownerId: userId,
+    },
+  });
+
+  const checkIfCollectionExists = findCollection;
+  let collectionId = findCollection?.id;
+
+  if (!checkIfCollectionExists || !collectionId) {
+    const newCollection = await prisma.collection.create({
+      data: {
+        name: folder.textContent.trim(),
+        description: "",
+        color: "#0ea5e9",
+        isPublic: false,
+        ownerId: userId,
+        parentId
+      },
+    });
+
+    createFolder({ filePath: `archives/${newCollection.id}` });
+
+    collectionId = newCollection.id;
+  }
+
+  createFolder({ filePath: `archives/${collectionId}` });
+
+  const bookmarks = folderContent.querySelectorAll("A");
+  for (const bookmark of bookmarks) {
+    createBookmark(userId, bookmark, collectionId);
+  }
+
+  const subfolders = folderContent.querySelectorAll("H3");
+  for (const subfolder of subfolders) {
+    await createCollectionAndBookmarks(userId, subfolder, subfolder.nextElementSibling, collectionId);
+  }
+};
 
 const createBookmark = async (
   userId: number,
@@ -136,39 +149,52 @@ const createBookmark = async (
     description = nextSibling.textContent.trim();
   }
 
-  await prisma.link.create({
-    data: {
-      name: bookmark.textContent.trim(),
-      url: bookmark.getAttribute("HREF"),
-      tags: bookmark.getAttribute("TAGS")
-        ? {
+  const linkName = bookmark.textContent.trim();
+  const linkURL = bookmark.getAttribute("HREF");
+
+  const existingLink = await prisma.link.findFirst({
+    where: {
+      url: linkURL,
+      collectionId
+    },
+  });
+
+  // Create the link only if it doesn't already exist
+  if (!existingLink) {
+    await prisma.link.create({
+      data: {
+        name: linkName,
+        url: linkURL,
+        tags: bookmark.getAttribute("TAGS")
+          ? {
             connectOrCreate: bookmark
               .getAttribute("TAGS")
               .split(",")
               .map((tag: string) =>
                 tag
                   ? {
-                      where: {
-                        name_ownerId: {
-                          name: tag.trim(),
-                          ownerId: userId,
-                        },
-                      },
-                      create: {
+                    where: {
+                      data: {
                         name: tag.trim(),
-                        owner: {
-                          connect: {
-                            id: userId,
-                          },
+                        ownerId: userId,
+                      },
+                    },
+                    create: {
+                      name: tag.trim(),
+                      owner: {
+                        connect: {
+                          id: userId,
                         },
                       },
-                    }
+                    },
+                  }
                   : undefined
               ),
           }
-        : undefined,
-      description,
-      collectionId,
-    },
-  });
+          : undefined,
+        description,
+        collectionId,
+      },
+    });
+  }
 };
