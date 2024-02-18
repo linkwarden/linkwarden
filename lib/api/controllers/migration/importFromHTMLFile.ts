@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
+import { parse, Node, Element, TextNode } from "himalaya";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
@@ -10,6 +11,11 @@ export default async function importFromHTMLFile(
 ) {
   const dom = new JSDOM(rawData);
   const document = dom.window.document;
+
+  // remove bad tags
+  document.querySelectorAll("meta").forEach((e) => (e.outerHTML = e.innerHTML));
+  document.querySelectorAll("META").forEach((e) => (e.outerHTML = e.innerHTML));
+  document.querySelectorAll("P").forEach((e) => (e.outerHTML = e.innerHTML));
 
   const bookmarks = document.querySelectorAll("A");
   const totalImports = bookmarks.length;
@@ -28,153 +34,161 @@ export default async function importFromHTMLFile(
       status: 400,
     };
 
-  const folders = document.querySelectorAll("H3");
-  let unorganizedCollectionId: number | null = null;
+  const jsonData = parse(document.documentElement.outerHTML);
 
-  if (folders.length === 0) {
-    const unorganizedCollection = await prisma.collection.findFirst({
-      where: {
-        name: "Imported",
-        ownerId: userId,
-      },
-    });
+  // console.log(jsonData);
 
-    if (!unorganizedCollection) {
-      const newUnorganizedCollection = await prisma.collection.create({
-        data: {
-          name: "Imported",
-          description:
-            "Automatically created collection for imported bookmarks.",
-          ownerId: userId,
-        },
-      });
-      unorganizedCollectionId = newUnorganizedCollection.id;
-    } else {
-      unorganizedCollectionId = unorganizedCollection.id;
-    }
-
-    createFolder({ filePath: `archives/${unorganizedCollectionId}` });
+  for (const item of jsonData) {
+    console.log(item);
+    await processBookmarks(userId, item as Element);
   }
-
-  await prisma
-    .$transaction(
-      async () => {
-        if (unorganizedCollectionId) {
-          // @ts-ignore
-          for (const bookmark of bookmarks) {
-            createBookmark(userId, bookmark, unorganizedCollectionId);
-          }
-        } else {
-          // @ts-ignore
-          for (const folder of folders) {
-            await createCollectionAndBookmarks(
-              userId,
-              folder,
-              folder.nextElementSibling,
-              null
-            );
-          }
-        }
-      },
-      { timeout: 30000 }
-    )
-    .catch((err) => console.log(err));
 
   return { response: "Success.", status: 200 };
 }
 
-const createCollectionAndBookmarks = async (
+async function processBookmarks(
   userId: number,
-  folder: any,
-  folderContent: any,
-  parentId: number | null
+  data: Node,
+  parentCollectionId?: number
+) {
+  if (data.type === "element") {
+    for (const item of data.children) {
+      if (item.type === "element" && item.tagName === "dt") {
+        let collectionId;
+        const collectionName = item.children.find(
+          (e) => e.type === "element" && e.tagName === "h3"
+        ) as Element;
+
+        console.log("collection:", item);
+        console.log("collectionName:", collectionName);
+
+        // This is a collection or sub-collection
+        if (collectionName) {
+          collectionId = await createCollection(
+            userId,
+            (collectionName.children[0] as TextNode).content,
+            parentCollectionId
+          );
+        }
+        await processBookmarks(
+          userId,
+          item,
+          collectionId || parentCollectionId
+        );
+      } else if (item.type === "element" && item.tagName === "a") {
+        // This is a link
+
+        // get link href
+        const linkUrl = item?.attributes.find((e) => e.key === "href")?.value;
+
+        // get link name
+        const linkName = (
+          item?.children.find((e) => e.type === "text") as TextNode
+        )?.content;
+
+        // get link tags
+        const linkTags = item?.attributes
+          .find((e) => e.key === "tags")
+          ?.value.split(",");
+
+        console.log("link:", item);
+
+        if (linkUrl && parentCollectionId) {
+          await createLink(
+            userId,
+            linkUrl,
+            parentCollectionId,
+            linkName,
+            "",
+            linkTags
+          );
+        } else if (linkUrl) {
+          // create a collection named "Imported Bookmarks" and add the link to it
+          const collectionId = await createCollection(userId, "Imports");
+
+          await createLink(
+            userId,
+            linkUrl,
+            collectionId,
+            linkName,
+            "",
+            linkTags
+          );
+        }
+
+        await processBookmarks(userId, item, parentCollectionId);
+      } else {
+        // This could be anything else
+        await processBookmarks(userId, item, parentCollectionId);
+      }
+
+      // Add more conditions as necessary based on your JSON structure
+    }
+  }
+}
+
+const createCollection = async (
+  userId: number,
+  collectionName: string,
+  parentId?: number
 ) => {
   const findCollection = await prisma.collection.findFirst({
     where: {
-      name: folder.textContent.trim(),
+      parentId,
+      name: collectionName,
       ownerId: userId,
     },
   });
 
-  const checkIfCollectionExists = findCollection;
-  let collectionId = findCollection?.id;
+  if (findCollection) {
+    return findCollection.id;
+  }
 
-  if (!checkIfCollectionExists || !collectionId) {
-    const newCollection = await prisma.collection.create({
-      data: {
-        name: folder.textContent.trim(),
-        description: "",
-        color: "#0ea5e9",
-        isPublic: false,
-        ownerId: userId,
-        parentId
+  const collectionId = await prisma.collection.create({
+    data: {
+      name: collectionName,
+      parent: parentId
+        ? {
+            connect: {
+              id: parentId,
+            },
+          }
+        : undefined,
+      owner: {
+        connect: {
+          id: userId,
+        },
       },
-    });
-
-    createFolder({ filePath: `archives/${newCollection.id}` });
-
-    collectionId = newCollection.id;
-  }
-
-  createFolder({ filePath: `archives/${collectionId}` });
-
-  const bookmarks = folderContent.querySelectorAll("A");
-  for (const bookmark of bookmarks) {
-    createBookmark(userId, bookmark, collectionId);
-  }
-
-  const subfolders = folderContent.querySelectorAll("H3");
-  for (const subfolder of subfolders) {
-    await createCollectionAndBookmarks(userId, subfolder, subfolder.nextElementSibling, collectionId);
-  }
-};
-
-const createBookmark = async (
-  userId: number,
-  bookmark: any,
-  collectionId: number
-) => {
-  // Move up to the parent node (<DT>) and then find the next sibling
-  let parentDT = bookmark.parentNode;
-  let nextSibling = parentDT ? parentDT.nextSibling : null;
-  let description = "";
-
-  // Loop through siblings to skip any potential text nodes or whitespace
-  while (nextSibling && nextSibling.nodeType !== 1) {
-    nextSibling = nextSibling.nextSibling;
-  }
-
-  // Check if the next sibling element is a <DD> tag and use its content as the description
-  if (nextSibling && nextSibling.tagName === "DD") {
-    description = nextSibling.textContent.trim();
-  }
-
-  const linkName = bookmark.textContent.trim();
-  const linkURL = bookmark.getAttribute("HREF");
-
-  const existingLink = await prisma.link.findFirst({
-    where: {
-      url: linkURL,
-      collectionId
     },
   });
 
-  // Create the link only if it doesn't already exist
-  if (!existingLink) {
-    await prisma.link.create({
-      data: {
-        name: linkName,
-        url: linkURL,
-        tags: bookmark.getAttribute("TAGS")
+  createFolder({ filePath: `archives/${collectionId.id}` });
+
+  return collectionId.id;
+};
+
+const createLink = async (
+  userId: number,
+  url: string,
+  collectionId: number,
+  name?: string,
+  description?: string,
+  tags?: string[]
+) => {
+  await prisma.link.create({
+    data: {
+      name: name || "",
+      url,
+      description,
+      collectionId,
+      tags:
+        tags && tags[0]
           ? {
-            connectOrCreate: bookmark
-              .getAttribute("TAGS")
-              .split(",")
-              .map((tag: string) =>
-                tag
-                  ? {
+              connectOrCreate: tags.map((tag: string) => {
+                return (
+                  {
                     where: {
-                      data: {
+                      name_ownerId: {
                         name: tag.trim(),
                         ownerId: userId,
                       },
@@ -187,14 +201,11 @@ const createBookmark = async (
                         },
                       },
                     },
-                  }
-                  : undefined
-              ),
-          }
+                  } || undefined
+                );
+              }),
+            }
           : undefined,
-        description,
-        collectionId,
-      },
-    });
-  }
+    },
+  });
 };
