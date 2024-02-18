@@ -9,6 +9,7 @@ import usePermissions from "@/hooks/usePermissions";
 import ProfilePhoto from "../ProfilePhoto";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Modal from "../Modal";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 type Props = {
   onClose: Function;
@@ -233,11 +234,8 @@ export default function EditCollectionSharingModal({
                           : undefined;
 
                   return (
-                    <>
-                      <div
-                        key={i}
-                        className="relative p-3 bg-base-200 rounded-xl flex gap-2 justify-between border-none"
-                      >
+                    <React.Fragment key={i}>
+                      <div className="relative p-3 bg-base-200 rounded-xl flex gap-2 justify-between border-none">
                         <div
                           className={"flex items-center justify-between w-full"}
                         >
@@ -264,6 +262,7 @@ export default function EditCollectionSharingModal({
                                 <div
                                   tabIndex={0}
                                   role="button"
+                                  onMouseDown={dropdownTriggerer}
                                   className="btn btn-sm btn-primary font-normal"
                                 >
                                   {roleLabel}
@@ -431,7 +430,7 @@ export default function EditCollectionSharingModal({
                         </div>
                       </div>
                       <div className="divider my-0 last:hidden h-[3px]"></div>
-                    </>
+                    </React.Fragment>
                   );
                 })}
             </div>
@@ -443,7 +442,7 @@ export default function EditCollectionSharingModal({
             className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto mt-3"
             onClick={submit}
           >
-            Save
+            Save Changes
           </button>
         )}
       </div>

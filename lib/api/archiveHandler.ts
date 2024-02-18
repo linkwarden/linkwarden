@@ -32,7 +32,11 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
   }
 
   const browser = await chromium.launch(browserOptions);
-  const context = await browser.newContext(devices["Desktop Chrome"]);
+  const context = await browser.newContext({
+    ...devices["Desktop Chrome"],
+    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
+  });
+
   const page = await context.newPage();
 
   const timeoutPromise = new Promise((_, reject) => {
