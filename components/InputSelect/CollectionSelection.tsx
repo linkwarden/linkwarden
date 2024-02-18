@@ -4,18 +4,26 @@ import { useEffect, useState } from "react";
 import { styles } from "./styles";
 import { Options } from "./types";
 import CreatableSelect from "react-select/creatable";
+import Select from "react-select";
 
 type Props = {
   onChange: any;
-  defaultValue:
+  showDefaultValue?: boolean;
+  defaultValue?:
     | {
         label: string;
         value?: number;
       }
     | undefined;
+  creatable?: boolean;
 };
 
-export default function CollectionSelection({ onChange, defaultValue }: Props) {
+export default function CollectionSelection({
+  onChange,
+  defaultValue,
+  showDefaultValue = true,
+  creatable = true,
+}: Props) {
   const { collections } = useCollectionStore();
   const router = useRouter();
 
@@ -42,16 +50,31 @@ export default function CollectionSelection({ onChange, defaultValue }: Props) {
     setOptions(formatedCollections);
   }, [collections]);
 
-  return (
-    <CreatableSelect
-      isClearable={false}
-      className="react-select-container"
-      classNamePrefix="react-select"
-      onChange={onChange}
-      options={options}
-      styles={styles}
-      defaultValue={defaultValue}
-      // menuPosition="fixed"
-    />
-  );
+  if (creatable) {
+    return (
+      <CreatableSelect
+        isClearable={false}
+        className="react-select-container"
+        classNamePrefix="react-select"
+        onChange={onChange}
+        options={options}
+        styles={styles}
+        defaultValue={showDefaultValue ? defaultValue : null}
+        // menuPosition="fixed"
+      />
+    );
+  } else {
+    return (
+      <Select
+        isClearable={false}
+        className="react-select-container"
+        classNamePrefix="react-select"
+        onChange={onChange}
+        options={options}
+        styles={styles}
+        defaultValue={showDefaultValue ? defaultValue : null}
+        // menuPosition="fixed"
+      />
+    );
+  }
 }

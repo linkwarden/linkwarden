@@ -13,6 +13,8 @@ import NewLinkModal from "./ModalContent/NewLinkModal";
 import NewCollectionModal from "./ModalContent/NewCollectionModal";
 import Link from "next/link";
 import UploadFileModal from "./ModalContent/UploadFileModal";
+import { dropdownTriggerer } from "@/lib/client/utils";
+import MobileNavigation from "./MobileNavigation";
 
 export default function Navbar() {
   const { settings, updateSettings } = useLocalSettingsStore();
@@ -35,14 +37,12 @@ export default function Navbar() {
 
   useEffect(() => {
     setSidebar(false);
-  }, [width]);
-
-  useEffect(() => {
-    setSidebar(false);
-  }, [router]);
+    document.body.style.overflow = "auto";
+  }, [width, router]);
 
   const toggleSidebar = () => {
-    setSidebar(!sidebar);
+    setSidebar(false);
+    document.body.style.overflow = "auto";
   };
 
   const [newLinkModal, setNewLinkModal] = useState(false);
@@ -52,8 +52,11 @@ export default function Navbar() {
   return (
     <div className="flex justify-between gap-2 items-center pl-3 pr-4 py-2 border-solid border-b-neutral-content border-b">
       <div
-        onClick={toggleSidebar}
-        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"
+        onClick={() => {
+          setSidebar(true);
+          document.body.style.overflow = "hidden";
+        }}
+        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden hidden sm:inline-flex"
       >
         <i className="bi-list text-2xl leading-none"></i>
       </div>
@@ -61,11 +64,12 @@ export default function Navbar() {
       <div className="flex items-center gap-2">
         <ToggleDarkMode className="hidden sm:inline-grid" />
 
-        <div className="dropdown dropdown-end">
+        <div className="dropdown dropdown-end sm:inline-block hidden">
           <div className="tooltip tooltip-bottom" data-tip="Create New...">
             <div
               tabIndex={0}
               role="button"
+              onMouseDown={dropdownTriggerer}
               className="flex min-w-[3.4rem] items-center btn btn-accent dark:border-violet-400 text-white btn-sm max-h-[2rem] px-2 relative"
             >
               <span>
@@ -117,7 +121,12 @@ export default function Navbar() {
         </div>
 
         <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className="btn btn-circle btn-ghost">
+          <div
+            tabIndex={0}
+            role="button"
+            onMouseDown={dropdownTriggerer}
+            className="btn btn-circle btn-ghost"
+          >
             <ProfilePhoto
               src={account.image ? account.image : undefined}
               priority={true}
@@ -134,7 +143,7 @@ export default function Navbar() {
                 Settings
               </Link>
             </li>
-            <li>
+            <li className="block sm:hidden">
               <div
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
@@ -161,6 +170,9 @@ export default function Navbar() {
           </ul>
         </div>
       </div>
+
+      <MobileNavigation />
+
       {sidebar ? (
         <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-40">
           <ClickAwayHandler className="h-full" onClickOutside={toggleSidebar}>

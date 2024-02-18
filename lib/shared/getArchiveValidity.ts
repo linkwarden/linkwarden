@@ -1,4 +1,8 @@
-export function screenshotAvailable(link: any) {
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+
+export function screenshotAvailable(
+  link: LinkIncludingShortenedCollectionAndTags
+) {
   return (
     link &&
     link.image &&
@@ -7,13 +11,15 @@ export function screenshotAvailable(link: any) {
   );
 }
 
-export function pdfAvailable(link: any) {
+export function pdfAvailable(link: LinkIncludingShortenedCollectionAndTags) {
   return (
     link && link.pdf && link.pdf !== "pending" && link.pdf !== "unavailable"
   );
 }
 
-export function readabilityAvailable(link: any) {
+export function readabilityAvailable(
+  link: LinkIncludingShortenedCollectionAndTags
+) {
   return (
     link &&
     link.readable &&

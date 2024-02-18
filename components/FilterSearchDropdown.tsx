@@ -1,3 +1,4 @@
+import { dropdownTriggerer } from "@/lib/client/utils";
 import React from "react";
 
 type Props = {
@@ -20,6 +21,7 @@ export default function FilterSearchDropdown({
       <div
         tabIndex={0}
         role="button"
+        onMouseDown={dropdownTriggerer}
         className="btn btn-sm btn-square btn-ghost"
       >
         <i className="bi-funnel text-neutral text-2xl"></i>
