@@ -91,8 +91,6 @@ model Collection {
   links           Link[]
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @default(now()) @updatedAt
-
-  @@unique([name, ownerId])
 }
 
 model UsersAndCollections {
