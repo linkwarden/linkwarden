@@ -22,8 +22,69 @@ export default async function postLink(
     };
   }
 
-  if (!link.collection.name) {
+  if (!link.collection.id && link.collection.name) {
+    link.collection.name = link.collection.name.trim();
+
+    // find the collection with the name and the user's id
+    const findCollection = await prisma.collection.findFirst({
+      where: {
+        name: link.collection.name,
+        ownerId: userId,
+        parentId: link.collection.parentId,
+      },
+    });
+
+    if (findCollection) {
+      const collectionIsAccessible = await getPermission({
+        userId,
+        collectionId: findCollection.id,
+      });
+
+      const memberHasAccess = collectionIsAccessible?.members.some(
+        (e: UsersAndCollections) => e.userId === userId && e.canCreate
+      );
+
+      if (!(collectionIsAccessible?.ownerId === userId || memberHasAccess))
+        return { response: "Collection is not accessible.", status: 401 };
+
+      link.collection.id = findCollection.id;
+    } else {
+      const collection = await prisma.collection.create({
+        data: {
+          name: link.collection.name,
+          ownerId: userId,
+        },
+      });
+
+      link.collection.id = collection.id;
+    }
+  } else if (link.collection.id) {
+    const collectionIsAccessible = await getPermission({
+      userId,
+      collectionId: link.collection.id,
+    });
+
+    const memberHasAccess = collectionIsAccessible?.members.some(
+      (e: UsersAndCollections) => e.userId === userId && e.canCreate
+    );
+
+    if (!(collectionIsAccessible?.ownerId === userId || memberHasAccess))
+      return { response: "Collection is not accessible.", status: 401 };
+  } else if (!link.collection.id) {
     link.collection.name = "Unorganized";
+    link.collection.parentId = null;
+
+    // find the collection with the name "Unorganized" and the user's id
+    const unorganizedCollection = await prisma.collection.findFirst({
+      where: {
+        name: "Unorganized",
+        ownerId: userId,
+      },
+    });
+
+    link.collection.id = unorganizedCollection?.id;
+  } else {
+    return { response: "Uncaught error.", status: 500 };
   }
 
   const numberOfLinksTheUserHas = await prisma.link.count({
@@ -41,22 +102,6 @@ export default async function postLink(
     };
 
   link.collection.name = link.collection.name.trim();
-
-  if (link.collection.id) {
-    const collectionIsAccessible = await getPermission({
-      userId,
-      collectionId: link.collection.id,
-    });
-
-    const memberHasAccess = collectionIsAccessible?.members.some(
-      (e: UsersAndCollections) => e.userId === userId && e.canCreate
-    );
-
-    if (!(collectionIsAccessible?.ownerId === userId || memberHasAccess))
-      return { response: "Collection is not accessible.", status: 401 };
-  } else {
-    link.collection.ownerId = userId;
-  }
 
   const description =
     link.description && link.description !== ""
@@ -86,14 +131,8 @@ export default async function postLink(
       description,
       type: linkType,
       collection: {
-        connectOrCreate: {
-          where: {
-            id: link.collection.id ?? 0,
-          },
-          create: {
-            name: link.collection.name.trim(),
-            ownerId: userId
-          },
+        connect: {
+          id: link.collection.id,
         },
       },
       tags: {
