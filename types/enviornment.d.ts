@@ -36,6 +36,16 @@ declare global {
       NEXT_PUBLIC_TRIAL_PERIOD_DAYS?: string;
       BASE_URL?: string;
 
+      // Proxy settings
+      PROXY?: string;
+      PROXY_USERNAME?: string;
+      PROXY_PASSWORD?: string;
+      PROXY_BYPASS?: string;
+
+      // PDF archive settings
+      PDF_MARGIN_TOP?: string;
+      PDF_MARGIN_BOTTOM?: string;
+
       //
       // SSO Providers
       //
