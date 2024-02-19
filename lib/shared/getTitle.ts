@@ -14,13 +14,13 @@ export default async function getTitle(url: string) {
       agent: httpsAgent,
     };
 
-    if (process.env.ARCHIVER_PROXY) {
+    if (process.env.PROXY) {
       // parse proxy url
-      let proxy = new URL(process.env.ARCHIVER_PROXY)
+      let proxy = new URL(process.env.PROXY);
       // if authentication set, apply to proxy URL
-      if (process.env.ARCHIVER_PROXY_USERNAME) {
-        proxy.username = process.env.ARCHIVER_PROXY_USERNAME;
-        proxy.password = process.env.ARCHIVER_PROXY_PASSWORD || "";
+      if (process.env.PROXY_USERNAME) {
+        proxy.username = process.env.PROXY_USERNAME;
+        proxy.password = process.env.PROXY_PASSWORD || "";
       }
 
       // add socks5 proxy to fetchOpts

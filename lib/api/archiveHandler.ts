@@ -22,13 +22,13 @@ const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
   // allow user to configure a proxy
   let browserOptions: LaunchOptions = {};
-  if (process.env.ARCHIVER_PROXY) {
+  if (process.env.PROXY) {
     browserOptions.proxy = {
-      server: process.env.ARCHIVER_PROXY,
-      bypass: process.env.ARCHIVER_PROXY_BYPASS,
-      username: process.env.ARCHIVER_PROXY_USERNAME,
-      password: process.env.ARCHIVER_PROXY_PASSWORD,
-    }
+      server: process.env.PROXY,
+      bypass: process.env.PROXY_BYPASS,
+      username: process.env.PROXY_USERNAME,
+      password: process.env.PROXY_PASSWORD,
+    };
   }
 
   const browser = await chromium.launch(browserOptions);
@@ -255,12 +255,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             }
 
             // apply administrator's defined pdf margins or default to 15px
-            const margins = { top: "15px", bottom: "15px" };
-            if (process.env.ARCHIVER_PDF_MARGIN_TOP) {
-              margins.top = process.env.ARCHIVER_PDF_MARGIN_TOP;
-            } else if (process.env.ARCHIVER_PDF_MARGIN_BOTTOM) {
-              margins.bottom = process.env.ARCHIVER_PDF_MARGIN_BOTTOM;
-            }
+            const margins = {
+              top: process.env.PDF_MARGIN_TOP || "15px",
+              bottom: process.env.PDF_MARGIN_BOTTOM || "15px",
+            };
 
             if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
               processingPromises.push(
