@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
 import SidebarHighlightLink from "@/components/SidebarHighlightLink";
-import CollectionSelection from "@/components/CollectionSelection";
+import CollectionListing from "@/components/CollectionListing";
 
 export default function Sidebar({ className }: { className?: string }) {
   const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
@@ -99,7 +99,7 @@ export default function Sidebar({ className }: { className?: string }) {
           leaveTo="transform opacity-0 -translate-y-3"
         >
           <Disclosure.Panel>
-            <CollectionSelection links={true} />
+            <CollectionListing links={true} />
           </Disclosure.Panel>
         </Transition>
       </Disclosure>
