@@ -84,14 +84,24 @@ const CollectionItem = ({
   }, [isActiveOrParentOfActive]);
 
   return hasChildren ? (
-    <details open={isOpen}>
-      <summary
+    <>
+      <div
         className={`${
           active === `/collections/${collection.id}`
             ? "bg-primary/20"
             : "hover:bg-neutral/20"
-        } duration-100 rounded-md flex w-full items-center cursor-pointer mb-1 px-2`}
+        } duration-100 rounded-md flex w-full items-center cursor-pointer mb-1 px-2 gap-1`}
       >
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center"
+        >
+          <i
+            className={`bi-chevron-down ${
+              isOpen ? "rotate-reverse" : "rotate"
+            }`}
+          ></i>
+        </button>
         <Link href={`/collections/${collection.id}`} className="w-full">
           <div
             className={`py-1 cursor-pointer flex items-center gap-2 w-full h-8 capitalize`}
@@ -113,10 +123,9 @@ const CollectionItem = ({
             </div>
           </div>
         </Link>
-      </summary>
-
-      {hasChildren && (
-        <div className="ml-3 pl-1 border-l border-neutral-content">
+      </div>
+      {isOpen && hasChildren && (
+        <div className="ml-4 pl-1 border-l border-neutral-content">
           {collections
             .filter((e) => e.parentId === collection.id)
             .map((subCollection) => (
@@ -129,7 +138,7 @@ const CollectionItem = ({
             ))}
         </div>
       )}
-    </details>
+    </>
   ) : (
     <Link href={`/collections/${collection.id}`} className="w-full">
       <div
