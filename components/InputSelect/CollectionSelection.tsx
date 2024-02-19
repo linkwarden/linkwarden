@@ -44,11 +44,55 @@ export default function CollectionSelection({
 
   useEffect(() => {
     const formatedCollections = collections.map((e) => {
-      return { value: e.id, label: e.name, ownerId: e.ownerId };
+      return {
+        value: e.id,
+        label: e.name,
+        ownerId: e.ownerId,
+        count: e._count,
+        parentId: e.parentId,
+      };
     });
 
     setOptions(formatedCollections);
   }, [collections]);
+
+  const getParentNames = (parentId: number): string[] => {
+    const parentNames = [];
+    const parent = collections.find((e) => e.id === parentId);
+
+    if (parent) {
+      parentNames.push(parent.name);
+      if (parent.parentId) {
+        parentNames.push(...getParentNames(parent.parentId));
+      }
+    }
+
+    // Have the top level parent at beginning
+    return parentNames.reverse();
+  };
+
+  const customOption = ({ data, innerProps }: any) => {
+    return (
+      <div
+        {...innerProps}
+        className="px-2 py-2 last:border-0 border-b border-neutral-content hover:bg-neutral-content cursor-pointer"
+      >
+        <div className="flex w-full justify-between items-center">
+          <span>{data.label}</span>
+          <span className="text-sm text-neutral">{data.count?.links}</span>
+        </div>
+        <div className="text-xs text-gray-600 dark:text-gray-300">
+          {getParentNames(data?.parentId).length > 0 ? (
+            <>
+              {getParentNames(data.parentId).join(" > ")} {">"} {data.label}
+            </>
+          ) : (
+            data.label
+          )}
+        </div>
+      </div>
+    );
+  };
 
   if (creatable) {
     return (
@@ -60,6 +104,9 @@ export default function CollectionSelection({
         options={options}
         styles={styles}
         defaultValue={showDefaultValue ? defaultValue : null}
+        components={{
+          Option: customOption,
+        }}
         // menuPosition="fixed"
       />
     );
@@ -73,6 +120,9 @@ export default function CollectionSelection({
         options={options}
         styles={styles}
         defaultValue={showDefaultValue ? defaultValue : null}
+        components={{
+          Option: customOption,
+        }}
         // menuPosition="fixed"
       />
     );
