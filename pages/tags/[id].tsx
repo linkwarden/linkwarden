@@ -125,8 +125,7 @@ export default function Index() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${
-        selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -138,8 +137,7 @@ export default function Index() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${
-          selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -198,11 +196,10 @@ export default function Index() {
                   </p>
                   <div className="relative">
                     <div
-                      className={`dropdown dropdown-bottom font-normal ${
-                        activeTag?.name.length && activeTag?.name.length > 8
-                          ? "dropdown-end"
-                          : ""
-                      }`}
+                      className={`dropdown dropdown-bottom font-normal ${activeTag?.name.length && activeTag?.name.length > 8
+                        ? "dropdown-end"
+                        : ""
+                        }`}
                     >
                       <div
                         tabIndex={0}
@@ -254,11 +251,10 @@ export default function Index() {
                 setEditMode(!editMode);
                 setSelectedLinks([]);
               }}
-              className={`btn btn-square btn-sm btn-ghost ${
-                editMode
-                  ? "bg-primary/20 hover:bg-primary/20"
-                  : "hover:bg-neutral/20"
-              }`}
+              className={`btn btn-square btn-sm btn-ghost ${editMode
+                ? "bg-primary/20 hover:bg-primary/20"
+                : "hover:bg-neutral/20"
+                }`}
             >
               <i className="bi-pencil-fill text-neutral text-xl"></i>
             </div>
@@ -266,7 +262,7 @@ export default function Index() {
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
-        {editMode && (
+        {(editMode && links.length > 0) && (
           <div className="w-full flex justify-between items-center min-h-[32px]">
             {links.length > 0 && (
               <div className="flex gap-3 ml-3">
