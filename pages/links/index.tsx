@@ -52,7 +52,8 @@ export default function Links() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -64,7 +65,8 @@ export default function Links() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -96,10 +98,11 @@ export default function Links() {
                   setEditMode(!editMode);
                   setSelectedLinks([]);
                 }}
-                className={`btn btn-square btn-sm btn-ghost ${editMode
-                  ? "bg-primary/20 hover:bg-primary/20"
-                  : "hover:bg-neutral/20"
-                  }`}
+                className={`btn btn-square btn-sm btn-ghost ${
+                  editMode
+                    ? "bg-primary/20 hover:bg-primary/20"
+                    : "hover:bg-neutral/20"
+                }`}
               >
                 <i className="bi-pencil-fill text-neutral text-xl"></i>
               </div>
@@ -109,7 +112,7 @@ export default function Links() {
           </div>
         </div>
 
-        {(editMode && links.length > 0) && (
+        {editMode && links.length > 0 && (
           <div className="w-full flex justify-between items-center min-h-[32px]">
             {links.length > 0 && (
               <div className="flex gap-3 ml-3">
