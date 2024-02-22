@@ -1,8 +1,10 @@
+import useAccountStore from "@/store/account";
 import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 type Props = {
   links: boolean;
@@ -10,37 +12,76 @@ type Props = {
 
 const CollectionSelection = ({ links }: Props) => {
   const { collections } = useCollectionStore();
+  const { account, updateAccount } = useAccountStore();
   const [active, setActive] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     setActive(router.asPath);
+
+    if (account.collectionOrder?.length === 0) {
+      updateAccount({
+        ...account,
+        collectionOrder: collections
+          .filter((e) => e.parentId === null) // Filter out collections with non-null parentId
+          .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
+      });
+    }
   }, [router, collections]);
 
   return (
-    <div>
-      {collections[0] ? (
-        collections
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .filter((e) => e.parentId === null)
-          .map((e, i) => (
-            <CollectionItem
-              key={i}
-              collection={e}
-              active={active}
-              collections={collections}
-            />
-          ))
-      ) : (
-        <div
-          className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-        >
-          <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
-            You Have No Collections...
-          </p>
-        </div>
-      )}
-    </div>
+    <DragDropContext
+      onDragEnd={(result) => {
+        if (!result.destination) {
+          return; // Dragged outside the droppable area, do nothing
+        }
+
+        const updatedCollectionOrder = [...account.collectionOrder];
+        const [movedCollectionId] = updatedCollectionOrder.splice(result.source.index, 1);
+        updatedCollectionOrder.splice(result.destination.index, 0, movedCollectionId);
+
+        // Update account with the new collection order
+        updateAccount({
+          ...account,
+          collectionOrder: updatedCollectionOrder,
+        });
+      }}
+    >
+      <Droppable droppableId="collections">
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            {account.collectionOrder?.map((collectionId, index) => {
+              const collection = collections.find((c) => c.id === collectionId);
+
+              if (collection) {
+                return (
+                  <Draggable
+                    key={collection.id}
+                    draggableId={`collection-${collection.id}`}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <CollectionItem
+                        innerRef={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        key={index}
+                        collection={collection}
+                        active={active}
+                        collections={collections}
+                      />
+                    )}
+                  </Draggable>
+                );
+              }
+
+              return null; // Collection not found
+            })}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 };
 
@@ -50,14 +91,15 @@ const CollectionItem = ({
   collection,
   active,
   collections,
+  innerRef,
+  ...props
 }: {
   collection: CollectionIncludingMembersAndLinkCount;
   active: string;
   collections: CollectionIncludingMembersAndLinkCount[];
+  innerRef?: any;
 }) => {
   const hasChildren = collections.some((e) => e.parentId === collection.id);
-
-  const router = useRouter();
 
   // Check if the current collection or any of its subcollections is active
   const isActiveOrParentOfActive = React.useMemo(() => {
@@ -86,20 +128,20 @@ const CollectionItem = ({
   return hasChildren ? (
     <>
       <div
-        className={`${
-          active === `/collections/${collection.id}`
-            ? "bg-primary/20"
-            : "hover:bg-neutral/20"
-        } duration-100 rounded-md flex w-full items-center cursor-pointer mb-1 px-2 gap-1`}
+        ref={innerRef}
+        {...props}
+        className={`${active === `/collections/${collection.id}`
+          ? "bg-primary/20"
+          : "hover:bg-neutral/20"
+          } duration-100 rounded-md flex w-full items-center cursor-pointer mb-1 px-2 gap-1`}
       >
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center"
         >
           <i
-            className={`bi-chevron-down ${
-              isOpen ? "rotate-reverse" : "rotate"
-            }`}
+            className={`bi-chevron-down ${isOpen ? "rotate-reverse" : "rotate"
+              }`}
           ></i>
         </button>
         <Link href={`/collections/${collection.id}`} className="w-full">
@@ -140,13 +182,12 @@ const CollectionItem = ({
       )}
     </>
   ) : (
-    <Link href={`/collections/${collection.id}`} className="w-full">
+    <Link ref={innerRef} {...props} href={`/collections/${collection.id}`} className="w-full">
       <div
-        className={`${
-          active === `/collections/${collection.id}`
-            ? "bg-primary/20"
-            : "hover:bg-neutral/20"
-        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize mb-1`}
+        className={`${active === `/collections/${collection.id}`
+          ? "bg-primary/20"
+          : "hover:bg-neutral/20"
+          } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize mb-1`}
       >
         <i
           className="bi-folder-fill text-2xl drop-shadow"
