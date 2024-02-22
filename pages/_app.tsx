@@ -54,6 +54,7 @@ export default function App({
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <AuthRedirect>
+
         <Toaster
           position="top-center"
           reverseOrder={false}
