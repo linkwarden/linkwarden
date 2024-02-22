@@ -186,29 +186,31 @@ const CollectionItem = ({
       )}
     </>
   ) : (
-    <Link ref={innerRef} {...props} href={`/collections/${collection.id}`} className="w-full">
-      <div
-        className={`${active === `/collections/${collection.id}`
-          ? "bg-primary/20"
-          : "hover:bg-neutral/20"
-          } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize mb-1`}
-      >
-        <i
-          className="bi-folder-fill text-2xl drop-shadow"
-          style={{ color: collection.color }}
-        ></i>
-        <p className="truncate w-full">{collection.name}</p>
-
-        {collection.isPublic ? (
+    <div ref={innerRef} {...props}>
+      <Link href={`/collections/${collection.id}`} className="w-full">
+        <div
+          className={`${active === `/collections/${collection.id}`
+            ? "bg-primary/20"
+            : "hover:bg-neutral/20"
+            } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize mb-1`}
+        >
           <i
-            className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
-            title="This collection is being shared publicly."
+            className="bi-folder-fill text-2xl drop-shadow"
+            style={{ color: collection.color }}
           ></i>
-        ) : undefined}
-        <div className="drop-shadow text-neutral text-xs">
-          {collection._count?.links}
+          <p className="truncate w-full">{collection.name}</p>
+
+          {collection.isPublic ? (
+            <i
+              className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
+              title="This collection is being shared publicly."
+            ></i>
+          ) : undefined}
+          <div className="drop-shadow text-neutral text-xs">
+            {collection._count?.links}
+          </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 };
