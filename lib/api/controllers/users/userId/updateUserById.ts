@@ -97,18 +97,18 @@ export default async function updateUserById(
         id: { not: userId },
         OR: emailEnabled
           ? [
-              {
-                username: data.username.toLowerCase(),
-              },
-              {
-                email: data.email?.toLowerCase(),
-              },
-            ]
+            {
+              username: data.username.toLowerCase(),
+            },
+            {
+              email: data.email?.toLowerCase(),
+            },
+          ]
           : [
-              {
-                username: data.username.toLowerCase(),
-              },
-            ],
+            {
+              username: data.username.toLowerCase(),
+            },
+          ],
       },
     });
 
@@ -183,6 +183,7 @@ export default async function updateUserById(
       email: data.email?.toLowerCase().trim(),
       isPrivate: data.isPrivate,
       image: data.image ? `uploads/avatar/${userId}.jpg` : "",
+      collectionOrder: data.collectionOrder,
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,

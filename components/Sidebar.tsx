@@ -22,10 +22,9 @@ export default function Sidebar({ className }: { className?: string }) {
 
   const { collections } = useCollectionStore();
   const { tags } = useTagStore();
+  const [active, setActive] = useState("");
 
   const router = useRouter();
-
-  const [active, setActive] = useState("");
 
   useEffect(() => {
     localStorage.setItem("tagDisclosure", tagDisclosure ? "true" : "false");
@@ -42,12 +41,12 @@ export default function Sidebar({ className }: { className?: string }) {
     setActive(router.asPath);
   }, [router, collections]);
 
+
   return (
     <div
       id="sidebar"
-      className={`bg-base-200 h-full w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20 ${
-        className || ""
-      }`}
+      className={`bg-base-200 h-full w-80 overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20 ${className || ""
+        }`}
     >
       <div className="grid grid-cols-2 gap-2">
         <SidebarHighlightLink
@@ -85,9 +84,8 @@ export default function Sidebar({ className }: { className?: string }) {
         >
           <p className="text-sm">Collections</p>
           <i
-            className={`bi-chevron-down ${
-              collectionDisclosure ? "rotate-reverse" : "rotate"
-            }`}
+            className={`bi-chevron-down ${collectionDisclosure ? "rotate-reverse" : "rotate"
+              }`}
           ></i>
         </Disclosure.Button>
         <Transition
@@ -112,9 +110,8 @@ export default function Sidebar({ className }: { className?: string }) {
         >
           <p className="text-sm">Tags</p>
           <i
-            className={`bi-chevron-down  ${
-              tagDisclosure ? "rotate-reverse" : "rotate"
-            }`}
+            className={`bi-chevron-down  ${tagDisclosure ? "rotate-reverse" : "rotate"
+              }`}
           ></i>
         </Disclosure.Button>
         <Transition
@@ -133,11 +130,10 @@ export default function Sidebar({ className }: { className?: string }) {
                   return (
                     <Link key={i} href={`/tags/${e.id}`}>
                       <div
-                        className={`${
-                          active === `/tags/${e.id}`
-                            ? "bg-primary/20"
-                            : "hover:bg-neutral/20"
-                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+                        className={`${active === `/tags/${e.id}`
+                          ? "bg-primary/20"
+                          : "hover:bg-neutral/20"
+                          } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
                         <i className="bi-hash text-2xl text-primary drop-shadow"></i>
                         <p className="truncate w-full pr-7">{e.name}</p>
