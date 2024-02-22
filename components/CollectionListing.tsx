@@ -3,7 +3,7 @@ import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { ForwardedRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Draggable, DraggableProvided, Droppable } from "react-beautiful-dnd";
 
 type Props = {
@@ -14,24 +14,23 @@ const CollectionSelection = ({ links }: Props) => {
   const { collections } = useCollectionStore();
   const { account, updateAccount } = useAccountStore();
   // Use local state to store the collection order so we don't have to wait for a response from the API to update the UI
-  const [localCollectionOrder, setLocalCollectionOrder] = useState(account.collectionOrder || []);
+  const [localCollectionOrder, setLocalCollectionOrder] = useState<number[] | []>([]);
   const [active, setActive] = useState("");
   const router = useRouter();
 
   useEffect(() => {
     setActive(router.asPath);
+    setLocalCollectionOrder(account.collectionOrder || []);
 
-    if (account.collectionOrder?.length === 0) {
+    if (!account.collectionOrder || account.collectionOrder.length === 0) {
       updateAccount({
         ...account,
         collectionOrder: collections
           .filter((e) => e.parentId === null) // Filter out collections with non-null parentId
           .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
       });
-
-      setLocalCollectionOrder(collections.filter((e) => e.parentId === null).map((e) => e.id as number));
     }
-  }, [router, collections]);
+  }, [router, collections, account]);
 
   return (
     <DragDropContext

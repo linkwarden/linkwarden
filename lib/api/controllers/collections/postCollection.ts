@@ -67,6 +67,18 @@ export default async function postCollection(
     },
   });
 
+  await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      collectionOrder: {
+        push: newCollection.id,
+      },
+    },
+  });
+
+
   createFolder({ filePath: `archives/${newCollection.id}` });
 
   return { response: newCollection, status: 200 };
