@@ -4,7 +4,12 @@ import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { DragDropContext, Draggable, DraggableProvided, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Draggable,
+  DraggableProvided,
+  Droppable,
+} from "react-beautiful-dnd";
 
 type Props = {
   links: boolean;
@@ -14,7 +19,9 @@ const CollectionSelection = ({ links }: Props) => {
   const { collections } = useCollectionStore();
   const { account, updateAccount } = useAccountStore();
   // Use local state to store the collection order so we don't have to wait for a response from the API to update the UI
-  const [localCollectionOrder, setLocalCollectionOrder] = useState<number[] | []>([]);
+  const [localCollectionOrder, setLocalCollectionOrder] = useState<
+    number[] | []
+  >([]);
   const [active, setActive] = useState("");
   const router = useRouter();
 
@@ -40,8 +47,15 @@ const CollectionSelection = ({ links }: Props) => {
         }
 
         const updatedCollectionOrder = [...account.collectionOrder];
-        const [movedCollectionId] = updatedCollectionOrder.splice(result.source.index, 1);
-        updatedCollectionOrder.splice(result.destination.index, 0, movedCollectionId);
+        const [movedCollectionId] = updatedCollectionOrder.splice(
+          result.source.index,
+          1
+        );
+        updatedCollectionOrder.splice(
+          result.destination.index,
+          0,
+          movedCollectionId
+        );
 
         // Update local state with the new collection order
         setLocalCollectionOrder(updatedCollectionOrder);
@@ -134,18 +148,20 @@ const CollectionItem = ({
       <div
         ref={innerRef}
         {...props}
-        className={`${active === `/collections/${collection.id}`
-          ? "bg-primary/20"
-          : "hover:bg-neutral/20"
-          } duration-100 rounded-md flex w-full items-center cursor-pointer mb-1 px-2 gap-1`}
+        className={`${
+          active === `/collections/${collection.id}`
+            ? "bg-primary/20"
+            : "hover:bg-neutral/20"
+        } duration-100 rounded-md flex w-full items-center cursor-pointer mb-1 px-2 gap-1`}
       >
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center"
         >
           <i
-            className={`bi-chevron-down ${isOpen ? "rotate-reverse" : "rotate"
-              }`}
+            className={`bi-chevron-down ${
+              isOpen ? "rotate-reverse" : "rotate"
+            }`}
           ></i>
         </button>
         <Link href={`/collections/${collection.id}`} className="w-full">
@@ -189,10 +205,11 @@ const CollectionItem = ({
     <div ref={innerRef} {...props}>
       <Link href={`/collections/${collection.id}`} className="w-full">
         <div
-          className={`${active === `/collections/${collection.id}`
-            ? "bg-primary/20"
-            : "hover:bg-neutral/20"
-            } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize mb-1`}
+          className={`${
+            active === `/collections/${collection.id}`
+              ? "bg-primary/20"
+              : "hover:bg-neutral/20"
+          } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize mb-1`}
         >
           <i
             className="bi-folder-fill text-2xl drop-shadow"

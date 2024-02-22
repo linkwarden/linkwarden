@@ -44,10 +44,10 @@ export default async function postCollection(
       color: collection.color,
       parent: collection.parentId
         ? {
-          connect: {
-            id: collection.parentId,
-          },
-        }
+            connect: {
+              id: collection.parentId,
+            },
+          }
         : undefined,
     },
     include: {
@@ -77,7 +77,6 @@ export default async function postCollection(
       },
     },
   });
-
 
   createFolder({ filePath: `archives/${newCollection.id}` });
 
