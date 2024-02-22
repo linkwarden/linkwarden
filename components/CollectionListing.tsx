@@ -3,8 +3,8 @@ import useCollectionStore from "@/store/collections";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import React, { ForwardedRef, useEffect, useState } from "react";
+import { DragDropContext, Draggable, DraggableProvided, Droppable } from "react-beautiful-dnd";
 
 type Props = {
   links: boolean;
@@ -13,6 +13,8 @@ type Props = {
 const CollectionSelection = ({ links }: Props) => {
   const { collections } = useCollectionStore();
   const { account, updateAccount } = useAccountStore();
+  // Use local state to store the collection order so we don't have to wait for a response from the API to update the UI
+  const [localCollectionOrder, setLocalCollectionOrder] = useState(account.collectionOrder || []);
   const [active, setActive] = useState("");
   const router = useRouter();
 
@@ -26,6 +28,8 @@ const CollectionSelection = ({ links }: Props) => {
           .filter((e) => e.parentId === null) // Filter out collections with non-null parentId
           .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
       });
+
+      setLocalCollectionOrder(collections.filter((e) => e.parentId === null).map((e) => e.id as number));
     }
   }, [router, collections]);
 
@@ -40,6 +44,9 @@ const CollectionSelection = ({ links }: Props) => {
         const [movedCollectionId] = updatedCollectionOrder.splice(result.source.index, 1);
         updatedCollectionOrder.splice(result.destination.index, 0, movedCollectionId);
 
+        // Update local state with the new collection order
+        setLocalCollectionOrder(updatedCollectionOrder);
+
         // Update account with the new collection order
         updateAccount({
           ...account,
@@ -50,7 +57,7 @@ const CollectionSelection = ({ links }: Props) => {
       <Droppable droppableId="collections">
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
-            {account.collectionOrder?.map((collectionId, index) => {
+            {localCollectionOrder?.map((collectionId, index) => {
               const collection = collections.find((c) => c.id === collectionId);
 
               if (collection) {
@@ -74,8 +81,6 @@ const CollectionSelection = ({ links }: Props) => {
                   </Draggable>
                 );
               }
-
-              return null; // Collection not found
             })}
             {provided.placeholder}
           </div>
@@ -97,7 +102,7 @@ const CollectionItem = ({
   collection: CollectionIncludingMembersAndLinkCount;
   active: string;
   collections: CollectionIncludingMembersAndLinkCount[];
-  innerRef?: any;
+  innerRef?: DraggableProvided["innerRef"];
 }) => {
   const hasChildren = collections.some((e) => e.parentId === collection.id);
 
