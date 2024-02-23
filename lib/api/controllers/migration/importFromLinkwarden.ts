@@ -37,41 +37,20 @@ export default async function importFromLinkwarden(
         for (const e of data.collections) {
           e.name = e.name.trim();
 
-          const findCollection = await prisma.user.findUnique({
-            where: {
-              id: userId,
-            },
-            select: {
-              collections: {
-                where: {
-                  name: e.name,
+          const newCollection = await prisma.collection.create({
+            data: {
+              owner: {
+                connect: {
+                  id: userId,
                 },
               },
+              name: e.name,
+              description: e.description,
+              color: e.color,
             },
           });
 
-          const checkIfCollectionExists = findCollection?.collections[0];
-
-          let collectionId = findCollection?.collections[0]?.id;
-
-          if (!checkIfCollectionExists) {
-            const newCollection = await prisma.collection.create({
-              data: {
-                owner: {
-                  connect: {
-                    id: userId,
-                  },
-                },
-                name: e.name,
-                description: e.description,
-                color: e.color,
-              },
-            });
-
-            createFolder({ filePath: `archives/${newCollection.id}` });
-
-            collectionId = newCollection.id;
-          }
+          createFolder({ filePath: `archives/${newCollection.id}` });
 
           // Import Links
           for (const link of e.links) {
@@ -82,7 +61,7 @@ export default async function importFromLinkwarden(
                 description: link.description,
                 collection: {
                   connect: {
-                    id: collectionId,
+                    id: newCollection.id,
                   },
                 },
                 // Import Tags
