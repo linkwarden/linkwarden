@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import {
   pdfAvailable,
+  epubAvailable,
   readabilityAvailable,
   screenshotAvailable,
 } from "@/lib/shared/getArchiveValidity";
@@ -43,6 +44,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
+    archiveAsEpub: undefined as unknown as boolean,
   });
 
   useEffect(() => {
@@ -60,6 +62,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
+          archiveAsEpub: account.archiveAsEpub as boolean,
         });
       }
     };
@@ -75,6 +78,9 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         : true) &&
       (collectionOwner.archiveAsPDF === true
         ? link.pdf && link.pdf !== "pending"
+        : true) &&
+      (collectionOwner.archiveAsEpub === true
+        ? link.epub && link.epub !== "pending"
         : true) &&
       link.readable &&
       link.readable !== "pending"
@@ -109,7 +115,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link?.image, link?.pdf, link?.epub, link?.readable]);
 
   const updateArchive = async () => {
     const load = toast.loading("Sending request...");
@@ -140,6 +146,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       {isReady() &&
       (screenshotAvailable(link) ||
         pdfAvailable(link) ||
+        epubAvailable(link) ||
         readabilityAvailable(link)) ? (
         <p className="mb-3">
           The following formats are available for this link:
@@ -162,6 +169,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 }
                 activeLink={link}
                 downloadable={true}
+                showOpenLink={true}
               />
             ) : undefined}
 
@@ -170,6 +178,17 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 name={"PDF"}
                 icon={"bi-file-earmark-pdf"}
                 format={ArchivedFormat.pdf}
+                activeLink={link}
+                downloadable={true}
+                showOpenLink={true}
+              />
+            ) : undefined}
+
+            {epubAvailable(link) ? (
+              <PreservedFormatRow
+                name={"EPUB"}
+                icon={"bi-book"}
+                format={ArchivedFormat.epub}
                 activeLink={link}
                 downloadable={true}
               />
@@ -181,6 +200,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 icon={"bi-file-earmark-text"}
                 format={ArchivedFormat.readability}
                 activeLink={link}
+                showOpenLink={true}
               />
             ) : undefined}
           </>

@@ -64,9 +64,11 @@ export default function ReadableView({ link }: Props) {
       link &&
       (link?.image === "pending" ||
         link?.pdf === "pending" ||
+        link?.epub === "pending" ||
         link?.readable === "pending" ||
         !link?.image ||
         !link?.pdf ||
+        !link?.epub ||
         !link?.readable)
     ) {
       interval = setInterval(() => getLink(link.id as number), 5000);
@@ -81,7 +83,7 @@ export default function ReadableView({ link }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link?.image, link?.pdf, link?.epub, link?.readable]);
 
   const rgbToHex = (r: number, g: number, b: number): string =>
     "#" +

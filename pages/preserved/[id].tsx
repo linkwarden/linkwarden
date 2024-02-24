@@ -42,6 +42,12 @@ export default function Index() {
           className="w-full h-screen border-none"
         ></iframe>
       )}
+      {link && Number(router.query.format) === ArchivedFormat.epub && (
+        <iframe
+          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.epub}`}
+          className="w-full h-screen border-none"
+        ></iframe>
+      )}
       {link && Number(router.query.format) === ArchivedFormat.png && (
         <img
           alt=""

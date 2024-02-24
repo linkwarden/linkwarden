@@ -17,6 +17,12 @@ export function pdfAvailable(link: LinkIncludingShortenedCollectionAndTags) {
   );
 }
 
+export function epubAvailable(link: LinkIncludingShortenedCollectionAndTags) {
+  return (
+    link && link.epub && link.epub !== "pending" && link.epub !== "unavailable"
+  );
+}
+
 export function readabilityAvailable(
   link: LinkIncludingShortenedCollectionAndTags
 ) {

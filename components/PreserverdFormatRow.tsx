@@ -15,6 +15,7 @@ type Props = {
   format: ArchivedFormat;
   activeLink: LinkIncludingShortenedCollectionAndTags;
   downloadable?: boolean;
+  showOpenLink?: boolean;
 };
 
 export default function PreservedFormatRow({
@@ -23,6 +24,7 @@ export default function PreservedFormatRow({
   format,
   activeLink,
   downloadable,
+  showOpenLink,
 }: Props) {
   const session = useSession();
   const { getLink } = useLinkStore();
@@ -43,7 +45,7 @@ export default function PreservedFormatRow({
     })();
 
     let interval: any;
-    if (link?.image === "pending" || link?.pdf === "pending") {
+    if (link?.image === "pending" || link?.pdf === "pending" || link?.epub === "pending") {
       interval = setInterval(async () => {
         const data = await getLink(link.id as number, isPublic);
         setLink(
@@ -61,7 +63,7 @@ export default function PreservedFormatRow({
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link?.image, link?.pdf, link?.epub, link?.readable]);
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;
@@ -71,7 +73,7 @@ export default function PreservedFormatRow({
           // Create a temporary link and click it to trigger the download
           const link = document.createElement("a");
           link.href = path;
-          link.download = format === ArchivedFormat.pdf ? "PDF" : "Screenshot";
+          link.download = format === ArchivedFormat.pdf ? "PDF" : ArchivedFormat.epub ? "Epub" : "Screenshot";
           link.click();
         } else {
           console.error("Failed to download file");
@@ -101,15 +103,17 @@ export default function PreservedFormatRow({
           </div>
         ) : undefined}
 
-        <Link
-          href={`${
-            isPublic ? "/public" : ""
-          }/preserved/${link?.id}?format=${format}`}
-          target="_blank"
-          className="btn btn-sm btn-square"
-        >
-          <i className="bi-box-arrow-up-right text-xl text-neutral" />
-        </Link>
+        {showOpenLink || false ? (
+          <Link
+            href={`${
+              isPublic ? "/public" : ""
+            }/preserved/${link?.id}?format=${format}`}
+            target="_blank"
+            className="btn btn-sm btn-square"
+          >
+            <i className="bi-box-arrow-up-right text-xl text-neutral" />
+          </Link>
+        ) : undefined}
       </div>
     </div>
   );

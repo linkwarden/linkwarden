@@ -40,6 +40,8 @@ export default function LinkIcon({
         </div>
       ) : link.type === "pdf" ? (
         <i className={`bi-file-earmark-pdf ${iconClasses}`}></i>
+      ) : link.type === "epub" ? (
+        <i className={`bi-book ${iconClasses}`}></i>
       ) : link.type === "image" ? (
         <i className={`bi-file-earmark-image ${iconClasses}`}></i>
       ) : undefined}

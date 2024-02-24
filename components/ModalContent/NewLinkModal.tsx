@@ -28,6 +28,7 @@ export default function NewLinkModal({ onClose }: Props) {
     preview: "",
     image: "",
     pdf: "",
+    epub: "",
     readable: "",
     textContent: "",
     collection: {

@@ -163,6 +163,7 @@ export default async function postLink(
 
   if (!link.url) linkType = link.type;
   else if (contentType === "application/pdf") linkType = "pdf";
+  else if (contentType === "application/epub+zip") linkType = "epub";
   else if (contentType?.startsWith("image")) {
     linkType = "image";
     if (contentType === "image/jpeg") imageExtension = "jpeg";

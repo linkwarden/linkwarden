@@ -33,6 +33,23 @@ async function processBatch() {
         },
         ///////////////////////
         {
+          collection: {
+            owner: {
+              archiveAsEpub: true,
+            },
+          },
+          epub: null,
+        },
+        {
+          collection: {
+            owner: {
+              archiveAsEpub: true,
+            },
+          },
+          epub: "pending",
+        },
+        ///////////////////////
+        {
           readable: null,
         },
         {
@@ -67,6 +84,23 @@ async function processBatch() {
         },
         {
           pdf: "pending",
+        },
+        ///////////////////////
+        {
+          collection: {
+            owner: {
+              archiveAsEpub: true,
+            },
+          },
+          epub: null,
+        },
+        {
+          collection: {
+            owner: {
+              archiveAsEpub: true,
+            },
+          },
+          epub: "pending",
         },
         ///////////////////////
         {

@@ -6,6 +6,7 @@ import {
 import { LinksRouteTo } from "@prisma/client";
 import {
   pdfAvailable,
+  epubAvailable,
   readabilityAvailable,
   screenshotAvailable,
 } from "../shared/getArchiveValidity";
@@ -23,6 +24,10 @@ export const generateLinkHref = (
       if (!pdfAvailable(link)) return link.url || "";
 
       return `/preserved/${link?.id}?format=${ArchivedFormat.pdf}`;
+    case LinksRouteTo.EPUB:
+      if (!epubAvailable(link)) return link.url || "";
+
+      return `/preserved/${link?.id}?format=${ArchivedFormat.epub}`;
     case LinksRouteTo.READABLE:
       if (!readabilityAvailable(link)) return link.url || "";
 

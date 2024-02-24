@@ -25,6 +25,9 @@ export default async function deleteLink(userId: number, linkId: number) {
     filePath: `archives/${collectionIsAccessible?.id}/${linkId}.pdf`,
   });
   removeFile({
+    filePath: `archives/${collectionIsAccessible?.id}/${linkId}.epub`,
+  });
+  removeFile({
     filePath: `archives/${collectionIsAccessible?.id}/${linkId}.png`,
   });
   removeFile({

@@ -41,6 +41,8 @@ export default function LinkGroupedIconURL({
           <i className="bi-link-45deg text-xl leading-none text-black"></i>
         ) : link.type === "pdf" ? (
           <i className={`bi-file-earmark-pdf`}></i>
+        ) : link.type === "epub" ? (
+          <i className={`bi-book`}></i>
         ) : link.type === "image" ? (
           <i className={`bi-file-earmark-image`}></i>
         ) : undefined}

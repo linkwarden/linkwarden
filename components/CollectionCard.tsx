@@ -38,6 +38,7 @@ export default function CollectionCard({ collection, className }: Props) {
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
+    archiveAsEpub: undefined as unknown as boolean,
   });
 
   useEffect(() => {
@@ -53,6 +54,7 @@ export default function CollectionCard({ collection, className }: Props) {
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
+          archiveAsEpub: account.archiveAsEpub as boolean,
         });
       }
     };

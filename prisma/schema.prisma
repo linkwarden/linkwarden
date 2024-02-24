@@ -46,6 +46,7 @@ model User {
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
+  archiveAsEpub           Boolean               @default(false)
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
   createdAt               DateTime              @default(now())
@@ -55,6 +56,7 @@ model User {
 enum LinksRouteTo {
   ORIGINAL
   PDF
+  EPUB
   READABLE
   SCREENSHOT
 }
@@ -123,6 +125,7 @@ model Link {
   preview       String?
   image         String?
   pdf           String?
+  epub          String?
   readable      String?
   lastPreserved DateTime?
   createdAt     DateTime   @default(now())

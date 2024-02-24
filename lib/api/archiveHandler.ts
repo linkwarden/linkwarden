@@ -10,6 +10,7 @@ import validateUrlSize from "./validateUrlSize";
 import removeFile from "./storage/removeFile";
 import Jimp from "jimp";
 import createFolder from "./storage/createFolder";
+import epubGen from "epub-gen-memory";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -67,6 +68,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
         if (!link.url) linkType = link.type;
         else if (contentType?.includes("application/pdf")) linkType = "pdf";
+        else if (contentType?.includes("application/epub+zip")) linkType = "epub";
         else if (contentType?.startsWith("image")) {
           linkType = "image";
           if (contentType.includes("image/jpeg")) imageExtension = "jpeg";
@@ -90,6 +92,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
               user.archiveAsPDF && !link.pdf?.startsWith("archive")
                 ? "pending"
                 : "unavailable",
+            epub:
+              user.archiveAsEpub && !link.epub?.startsWith("archive")
+                ? "pending"
+                : "unavailable",
             readable: !link.readable?.startsWith("archive")
               ? "pending"
               : undefined,
@@ -105,6 +111,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           return;
         } else if (linkType === "pdf" && !link.pdf?.startsWith("archive")) {
           await pdfHandler(link); // archive pdf
+          return;
+        } else if (linkType === "epub" && !link.epub?.startsWith("archive")) {
+          await epubHandler(link); // archive epub
           return;
         } else if (link.url) {
           // archive url
@@ -277,6 +286,29 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
                   })
               );
             }
+            if (user.archiveAsEpub && !link.epub?.startsWith("archive")) {
+              const options = {
+                title: link.name,
+                description: article?.excerpt ?? link.description,
+                author: article?.byline ?? "anonymous",
+                cover: ogImageUrl,
+                lang: article?.lang ?? "en",
+              };
+              const content = [{
+                title: link.name,
+                content: article?.content ?? dom.window.document.body.innerHTML,
+                url: link.url,
+              }];
+              processingPromises.push(
+                epubGen(options, content)
+                  .then((data) => {
+                    return createFile({
+                      data: data,
+                      filePath: `archives/${linkExists.collectionId}/${link.id}.epub`,
+                    });
+                  })
+              );
+            }
             await Promise.allSettled(processingPromises);
             await prisma.link.update({
               where: { id: link.id },
@@ -286,6 +318,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
                   : undefined,
                 pdf: user.archiveAsPDF
                   ? `archives/${linkExists.collectionId}/${link.id}.pdf`
+                  : undefined,
+                epub: user.archiveAsEpub
+                  ? `archives/${linkExists.collectionId}/${link.id}.epub`
                   : undefined,
               },
             });
@@ -317,6 +352,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           pdf: !finalLink.pdf?.startsWith("archives")
             ? "unavailable"
             : undefined,
+          epub: !finalLink.epub?.startsWith("archives")
+            ? "unavailable"
+            : undefined,
           preview: !finalLink.preview?.startsWith("archives")
             ? "unavailable"
             : undefined,
@@ -325,6 +363,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
     else {
       removeFile({ filePath: `archives/${link.collectionId}/${link.id}.png` });
       removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
+      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.epub` });
       removeFile({
         filePath: `archives/${link.collectionId}/${link.id}_readability.json`,
       });
@@ -405,6 +444,30 @@ const pdfHandler = async ({ url, id }: Link) => {
       where: { id },
       data: {
         pdf: `archives/${linkExists.collectionId}/${id}.pdf`,
+      },
+    });
+  }
+};
+
+const epubHandler = async ({ url, id }: Link) => {
+  const epub = await fetch(url as string).then((res) => res.blob());
+
+  const buffer = Buffer.from(await epub.arrayBuffer());
+
+  const linkExists = await prisma.link.findUnique({
+    where: { id },
+  });
+
+  if (linkExists) {
+    await createFile({
+      data: buffer,
+      filePath: `archives/${linkExists.collectionId}/${id}.epub`,
+    });
+
+    await prisma.link.update({
+      where: { id },
+      data: {
+        epub: `archives/${linkExists.collectionId}/${id}.epub`,
       },
     });
   }

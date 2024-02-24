@@ -188,6 +188,7 @@ export default async function updateUserById(
       ),
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
+      archiveAsEpub: data.archiveAsEpub,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,
       preventDuplicateLinks: data.preventDuplicateLinks,
