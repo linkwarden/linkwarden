@@ -8,8 +8,8 @@ import {
   DragDropContext,
   Draggable,
   DraggableProvided,
-  Droppable,
 } from "react-beautiful-dnd";
+import { StrictModeDroppable as Droppable } from "./StrictModeDroppable";
 
 type Props = {
   links: boolean;
