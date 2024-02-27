@@ -19,9 +19,9 @@ const CollectionSelection = ({ links }: Props) => {
   const { collections } = useCollectionStore();
   const { account, updateAccount } = useAccountStore();
   // Use local state to store the collection order so we don't have to wait for a response from the API to update the UI
-  const [localCollectionOrder, setLocalCollectionOrder] = useState<
-    number[] | []
-  >([]);
+  const [localCollectionOrder, setLocalCollectionOrder] = useState<number[]>(
+    []
+  );
   const [active, setActive] = useState("");
   const router = useRouter();
 
@@ -37,6 +37,22 @@ const CollectionSelection = ({ links }: Props) => {
           .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
       });
     }
+
+    // if a collection wasn't in the collectionOrder, add it to the end
+    collections.forEach((collection) => {
+      if (
+        !account.collectionOrder.includes(collection.id as number) &&
+        (!collection.parentId || collection.ownerId !== account.id)
+      ) {
+        updateAccount({
+          ...account,
+          collectionOrder: [
+            ...account.collectionOrder,
+            collection.id as number,
+          ],
+        });
+      }
+    });
   }, [router, collections, account]);
 
   return (
