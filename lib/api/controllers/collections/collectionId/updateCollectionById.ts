@@ -47,6 +47,17 @@ export default async function updateCollection(
       },
     });
 
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        collectionOrder: {
+          push: collectionId,
+        },
+      },
+    });
+
     return await prisma.collection.update({
       where: {
         id: collectionId,
