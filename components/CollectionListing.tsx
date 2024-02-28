@@ -15,7 +15,7 @@ type Props = {
   links: boolean;
 };
 
-const CollectionSelection = ({ links }: Props) => {
+const CollectionListing = ({ links }: Props) => {
   const { collections } = useCollectionStore();
   const { account, updateAccount } = useAccountStore();
   // Use local state to store the collection order so we don't have to wait for a response from the API to update the UI
@@ -29,30 +29,38 @@ const CollectionSelection = ({ links }: Props) => {
     setActive(router.asPath);
     setLocalCollectionOrder(account.collectionOrder || []);
 
-    if (!account.collectionOrder || account.collectionOrder.length === 0) {
-      updateAccount({
-        ...account,
-        collectionOrder: collections
-          .filter((e) => e.parentId === null) // Filter out collections with non-null parentId
-          .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
-      });
-    }
-
     // if a collection wasn't in the collectionOrder, add it to the end
-    collections.forEach((collection) => {
-      if (
-        !account.collectionOrder.includes(collection.id as number) &&
-        (!collection.parentId || collection.ownerId !== account.id)
-      ) {
+    if (account.username) {
+      if (!account.collectionOrder || account.collectionOrder.length === 0)
         updateAccount({
           ...account,
-          collectionOrder: [
-            ...account.collectionOrder,
-            collection.id as number,
-          ],
+          collectionOrder: collections
+            .filter((e) => e.parentId === null) // Filter out collections with non-null parentId
+            .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
         });
+      else {
+        const newCollectionOrder: number[] = [
+          ...(account.collectionOrder || []),
+        ];
+
+        collections?.forEach((collection) => {
+          if (
+            account.username &&
+            !newCollectionOrder.includes(collection.id as number) &&
+            (!collection.parentId || collection.ownerId !== account.id)
+          ) {
+            newCollectionOrder.push(collection.id as number);
+          }
+        });
+
+        if (newCollectionOrder.length > account.collectionOrder.length) {
+          updateAccount({
+            ...account,
+            collectionOrder: newCollectionOrder,
+          });
+        }
       }
-    });
+    }
   }, [router, collections, account]);
 
   return (
@@ -119,7 +127,7 @@ const CollectionSelection = ({ links }: Props) => {
   );
 };
 
-export default CollectionSelection;
+export default CollectionListing;
 
 const CollectionItem = ({
   collection,
@@ -166,7 +174,7 @@ const CollectionItem = ({
         {...props}
         className={`${
           active === `/collections/${collection.id}`
-            ? "bg-primary/20"
+            ? "bg-primary/20 is-active"
             : "hover:bg-neutral/20"
         } duration-100 rounded-md flex w-full items-center cursor-pointer mb-1 px-2 gap-1`}
       >
