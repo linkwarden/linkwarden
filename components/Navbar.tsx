@@ -56,7 +56,7 @@ export default function Navbar() {
           setSidebar(true);
           document.body.style.overflow = "hidden";
         }}
-        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden hidden sm:inline-flex"
+        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden sm:inline-flex"
       >
         <i className="bi-list text-2xl leading-none"></i>
       </div>
