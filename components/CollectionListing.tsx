@@ -1,257 +1,359 @@
-import useAccountStore from "@/store/account";
-import useCollectionStore from "@/store/collections";
+import React, { Component, useCallback, useEffect, useState } from "react";
+import Tree, {
+  mutateTree,
+  moveItemOnTree,
+  RenderItemParams,
+  TreeItem,
+  TreeData,
+  ItemId,
+  TreeSourcePosition,
+  TreeDestinationPosition,
+} from "@atlaskit/tree";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import {
-  DragDropContext,
-  Draggable,
-  DraggableProvided,
-} from "react-beautiful-dnd";
-import { StrictModeDroppable as Droppable } from "./StrictModeDroppable";
+import useCollectionStore from "@/store/collections";
 
-type Props = {
-  links: boolean;
-};
+const collections = [
+  {
+    id: 262,
+    name: "dasd",
+    description: "",
+    color: "#0ea5e9",
+    parentId: null,
+    isPublic: false,
+    ownerId: 1,
+    createdAt: "2024-02-18T23:40:44.043Z",
+    updatedAt: "2024-02-19T19:16:14.873Z",
+    parent: null,
+    members: [
+      {
+        userId: 17,
+        collectionId: 262,
+        canCreate: true,
+        canUpdate: false,
+        canDelete: false,
+        createdAt: "2024-02-19T19:16:14.873Z",
+        updatedAt: "2024-02-19T19:16:14.873Z",
+        user: { username: "test", name: "ben", image: "" },
+      },
+    ],
+    _count: { links: 0 },
+  },
+  {
+    id: 268,
+    name: "ab",
+    description: "",
+    color: "#0ea5e9",
+    parentId: 267,
+    isPublic: false,
+    ownerId: 17,
+    createdAt: "2024-02-19T21:06:52.545Z",
+    updatedAt: "2024-02-19T21:06:52.545Z",
+    parent: { id: 267, name: "a" },
+    members: [],
+    _count: { links: 0 },
+  },
+  {
+    id: 269,
+    name: "abc",
+    description: "",
+    color: "#0ea5e9",
+    parentId: 268,
+    isPublic: false,
+    ownerId: 17,
+    createdAt: "2024-02-19T21:07:08.565Z",
+    updatedAt: "2024-02-19T21:07:08.565Z",
+    parent: { id: 268, name: "ab" },
+    members: [],
+    _count: { links: 0 },
+  },
+  {
+    id: 267,
+    name: "a",
+    description: "",
+    color: "#0ea5e9",
+    parentId: null,
+    isPublic: false,
+    ownerId: 17,
+    createdAt: "2024-02-19T21:06:45.402Z",
+    updatedAt: "2024-02-26T16:59:20.312Z",
+    parent: null,
+    members: [],
+    _count: { links: 0 },
+  },
+  {
+    id: 80,
+    name: "abc",
+    description: "s",
+    color: "#0ea5e9",
+    parentId: 79,
+    isPublic: false,
+    ownerId: 1,
+    createdAt: "2024-02-05T07:00:46.881Z",
+    updatedAt: "2024-02-27T06:11:46.358Z",
+    parent: { id: 79, name: "ab" },
+    members: [
+      {
+        userId: 17,
+        collectionId: 80,
+        canCreate: false,
+        canUpdate: false,
+        canDelete: false,
+        createdAt: "2024-02-27T06:11:46.358Z",
+        updatedAt: "2024-02-27T06:11:46.358Z",
+        user: { username: "test", name: "ben", image: "" },
+      },
+      {
+        userId: 2,
+        collectionId: 80,
+        canCreate: false,
+        canUpdate: false,
+        canDelete: false,
+        createdAt: "2024-02-27T06:11:46.358Z",
+        updatedAt: "2024-02-27T06:11:46.358Z",
+        user: {
+          username: "sarah_connor",
+          name: "Sarah Smith",
+          image: "uploads/avatar/2.jpg",
+        },
+      },
+    ],
+    _count: { links: 0 },
+  },
+];
 
-const CollectionListing = ({ links }: Props) => {
-  const { collections } = useCollectionStore();
-  const { account, updateAccount } = useAccountStore();
-  // Use local state to store the collection order so we don't have to wait for a response from the API to update the UI
-  const [localCollectionOrder, setLocalCollectionOrder] = useState<number[]>(
-    []
-  );
-  const [active, setActive] = useState("");
-  const router = useRouter();
+const DragDropWithNestingTree = () => {
+  const buildTreeFromCollections = (collections) => {
+    // Step 1: Map Collections to TreeItems
+    const items = collections.reduce((acc, collection) => {
+      acc[collection.id] = {
+        id: collection.id.toString(),
+        children: [],
+        hasChildren: false, // Initially assume no children, adjust in Step 2
+        isExpanded: false,
+        data: {
+          title: collection.name,
+          description: collection.description,
+          color: collection.color,
+          isPublic: collection.isPublic,
+          ownerId: collection.ownerId,
+          createdAt: collection.createdAt,
+          updatedAt: collection.updatedAt,
+        },
+      };
+      return acc;
+    }, {});
 
-  useEffect(() => {
-    setActive(router.asPath);
-    setLocalCollectionOrder(account.collectionOrder || []);
-
-    // if a collection wasn't in the collectionOrder, add it to the end
-    if (account.username) {
-      if (!account.collectionOrder || account.collectionOrder.length === 0)
-        updateAccount({
-          ...account,
-          collectionOrder: collections
-            .filter((e) => e.parentId === null) // Filter out collections with non-null parentId
-            .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
-        });
-      else {
-        const newCollectionOrder: number[] = [
-          ...(account.collectionOrder || []),
-        ];
-
-        collections?.forEach((collection) => {
-          if (
-            account.username &&
-            !newCollectionOrder.includes(collection.id as number) &&
-            (!collection.parentId || collection.ownerId !== account.id)
-          ) {
-            newCollectionOrder.push(collection.id as number);
-          }
-        });
-
-        if (newCollectionOrder.length > account.collectionOrder.length) {
-          updateAccount({
-            ...account,
-            collectionOrder: newCollectionOrder,
-          });
-        }
+    // Step 2: Build Hierarchy
+    collections.forEach((collection) => {
+      const parentId = collection.parentId;
+      if (parentId !== null && items[parentId]) {
+        items[parentId].children.push(collection.id.toString());
+        items[parentId].hasChildren = true;
       }
-    }
-  }, [router, collections, account]);
+    });
 
-  return (
-    <DragDropContext
-      onDragEnd={(result) => {
-        if (!result.destination) {
-          return; // Dragged outside the droppable area, do nothing
-        }
-
-        const updatedCollectionOrder = [...account.collectionOrder];
-        const [movedCollectionId] = updatedCollectionOrder.splice(
-          result.source.index,
-          1
-        );
-        updatedCollectionOrder.splice(
-          result.destination.index,
-          0,
-          movedCollectionId
-        );
-
-        // Update local state with the new collection order
-        setLocalCollectionOrder(updatedCollectionOrder);
-
-        // Update account with the new collection order
-        updateAccount({
-          ...account,
-          collectionOrder: updatedCollectionOrder,
-        });
-      }}
-    >
-      <Droppable droppableId="collections">
-        {(provided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
-            {localCollectionOrder?.map((collectionId, index) => {
-              const collection = collections.find((c) => c.id === collectionId);
-
-              if (collection) {
-                return (
-                  <Draggable
-                    key={collection.id}
-                    draggableId={`collection-${collection.id}`}
-                    index={index}
-                  >
-                    {(provided) => (
-                      <CollectionItem
-                        innerRef={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        key={index}
-                        collection={collection}
-                        active={active}
-                        collections={collections}
-                      />
-                    )}
-                  </Draggable>
-                );
-              }
-            })}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
-  );
-};
-
-export default CollectionListing;
-
-const CollectionItem = ({
-  collection,
-  active,
-  collections,
-  innerRef,
-  ...props
-}: {
-  collection: CollectionIncludingMembersAndLinkCount;
-  active: string;
-  collections: CollectionIncludingMembersAndLinkCount[];
-  innerRef?: DraggableProvided["innerRef"];
-}) => {
-  const hasChildren = collections.some((e) => e.parentId === collection.id);
-
-  // Check if the current collection or any of its subcollections is active
-  const isActiveOrParentOfActive = React.useMemo(() => {
-    const isActive = active === `/collections/${collection.id}`;
-    if (isActive) return true;
-
-    const checkIfParentOfActive = (parentId: number): boolean => {
-      return collections.some((e) => {
-        if (e.id === parseInt(active.split("/collections/")[1])) {
-          if (e.parentId === parentId) return true;
-          if (e.parentId) return checkIfParentOfActive(e.parentId);
-        }
-        return false;
-      });
+    // Define a root item to act as the top-level node of your tree if needed
+    const rootId = "root";
+    items[rootId] = {
+      id: rootId,
+      children: collections
+        .filter((c) => c.parentId === null)
+        .map((c) => c.id.toString()),
+      hasChildren: true,
+      isExpanded: true,
+      data: { title: "Root" },
     };
 
-    return checkIfParentOfActive(collection.id as number);
-  }, [active, collection.id, collections]);
+    return { rootId, items };
+  };
 
-  const [isOpen, setIsOpen] = useState(isActiveOrParentOfActive);
+  const [tree, setTree] = useState<TreeData>();
+
+  const { collections } = useCollectionStore();
 
   useEffect(() => {
-    setIsOpen(isActiveOrParentOfActive);
-  }, [isActiveOrParentOfActive]);
+    const initialTree = buildTreeFromCollections(collections);
+    collections[0] && setTree(initialTree);
+  }, [collections]);
 
-  return hasChildren ? (
-    <>
-      <div
-        ref={innerRef}
-        {...props}
-        className={`${
-          active === `/collections/${collection.id}`
-            ? "bg-primary/20 is-active"
-            : "hover:bg-neutral/20"
-        } duration-100 rounded-md flex w-full items-center cursor-pointer mb-1 px-2 gap-1`}
-      >
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center"
-        >
-          <i
-            className={`bi-chevron-down ${
-              isOpen ? "rotate-reverse" : "rotate"
-            }`}
-          ></i>
+  const getIcon = useCallback((item, onExpand, onCollapse) => {
+    if (item.children && item.children.length > 0) {
+      return item.isExpanded ? (
+        <button onClick={() => onCollapse(item.id)}>
+          <div className="bi-chevron-down"></div>
         </button>
-        <Link href={`/collections/${collection.id}`} className="w-full">
+      ) : (
+        <button onClick={() => onExpand(item.id)}>
+          <div className="bi-chevron-right"></div>
+        </button>
+      );
+    }
+    return <span>&bull;</span>;
+  }, []);
+
+  const renderItem = useCallback(
+    ({ item, onExpand, onCollapse, provided }: RenderItemParams) => {
+      return (
+        <div ref={provided.innerRef} {...provided.draggableProps}>
           <div
-            className={`py-1 cursor-pointer flex items-center gap-2 w-full h-8 capitalize`}
+            className="flex gap-1 items-center"
+            {...provided.dragHandleProps}
           >
-            <i
-              className="bi-folder-fill text-2xl drop-shadow"
-              style={{ color: collection.color }}
-            ></i>
-            <p className="truncate w-full">{collection.name}</p>
-
-            {collection.isPublic ? (
-              <i
-                className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
-                title="This collection is being shared publicly."
-              ></i>
-            ) : undefined}
-            <div className="drop-shadow text-neutral text-xs">
-              {collection._count?.links}
-            </div>
-          </div>
-        </Link>
-      </div>
-      {isOpen && hasChildren && (
-        <div className="ml-4 pl-1 border-l border-neutral-content">
-          {collections
-            .filter((e) => e.parentId === collection.id)
-            .map((subCollection) => (
-              <CollectionItem
-                key={subCollection.id}
-                collection={subCollection}
-                active={active}
-                collections={collections}
-              />
-            ))}
-        </div>
-      )}
-    </>
-  ) : (
-    <div ref={innerRef} {...props}>
-      <Link href={`/collections/${collection.id}`} className="w-full">
-        <div
-          className={`${
-            active === `/collections/${collection.id}`
-              ? "bg-primary/20"
-              : "hover:bg-neutral/20"
-          } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize mb-1`}
-        >
-          <i
-            className="bi-folder-fill text-2xl drop-shadow"
-            style={{ color: collection.color }}
-          ></i>
-          <p className="truncate w-full">{collection.name}</p>
-
-          {collection.isPublic ? (
-            <i
-              className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
-              title="This collection is being shared publicly."
-            ></i>
-          ) : undefined}
-          <div className="drop-shadow text-neutral text-xs">
-            {collection._count?.links}
+            {getIcon(item, onExpand, onCollapse)}
+            {item.data ? item.data.title : ""}
           </div>
         </div>
-      </Link>
-    </div>
+      );
+    },
+    [getIcon]
+  );
+
+  const onExpand = useCallback(
+    (itemId: ItemId) => {
+      if (tree) {
+        setTree((currentTree) =>
+          mutateTree(currentTree, itemId, { isExpanded: true })
+        );
+      }
+    },
+    [tree]
+  );
+
+  const onCollapse = useCallback(
+    (itemId: ItemId) => {
+      if (tree) {
+        setTree((currentTree) =>
+          mutateTree(currentTree, itemId, { isExpanded: false })
+        );
+      }
+    },
+    [tree]
+  );
+
+  const onDragEnd = useCallback(
+    (source: TreeSourcePosition, destination?: TreeDestinationPosition) => {
+      if (!destination || !tree) {
+        return;
+      }
+
+      setTree((currentTree) =>
+        moveItemOnTree(currentTree, source, destination)
+      );
+    },
+    [tree]
+  );
+
+  if (!tree) {
+    return <div>Loading...</div>; // or any other loading state representation
+  }
+
+  return (
+    <Tree
+      tree={tree}
+      renderItem={renderItem}
+      onExpand={onExpand}
+      onCollapse={onCollapse}
+      onDragEnd={onDragEnd}
+      isDragEnabled
+      isNestingEnabled
+    />
   );
 };
+
+export default DragDropWithNestingTree;
+
+class TreeBuilder {
+  rootId: ItemId;
+
+  items: Record<ItemId, TreeItem>;
+
+  constructor(rootId: ItemId) {
+    const rootItem = this._createItem(`${rootId}`);
+    this.rootId = rootItem.id;
+    this.items = {
+      [rootItem.id]: rootItem,
+    };
+  }
+
+  withLeaf(id: number) {
+    const leafItem = this._createItem(`${this.rootId}-${id}`);
+    this._addItemToRoot(leafItem.id);
+    this.items[leafItem.id] = leafItem;
+    return this;
+  }
+
+  withSubTree(tree: TreeBuilder) {
+    const subTree = tree.build();
+    this._addItemToRoot(`${this.rootId}-${subTree.rootId}`);
+
+    Object.keys(subTree.items).forEach((itemId) => {
+      const finalId = `${this.rootId}-${itemId}`;
+      this.items[finalId] = {
+        ...subTree.items[itemId],
+        id: finalId,
+        children: subTree.items[itemId].children.map(
+          (i) => `${this.rootId}-${i}`
+        ),
+      };
+    });
+
+    return this;
+  }
+
+  build() {
+    return {
+      rootId: this.rootId,
+      items: this.items,
+    };
+  }
+
+  _addItemToRoot(id: string) {
+    const rootItem = this.items[this.rootId];
+    rootItem.children.push(id);
+    rootItem.isExpanded = true;
+    rootItem.hasChildren = true;
+  }
+
+  _createItem = (id: string) => {
+    return {
+      id: `${id}`,
+      children: [],
+      hasChildren: false,
+      isExpanded: false,
+      isChildrenLoading: false,
+      data: {
+        title: `Title ${id}`,
+      },
+    };
+  };
+}
+
+const complexTree: TreeData = new TreeBuilder(1)
+  .withLeaf(0) // 0
+  .withLeaf(1) // 1
+  .withSubTree(
+    new TreeBuilder(2) // 2
+      .withLeaf(0) // 3
+      .withLeaf(1) // 4
+      .withLeaf(2) // 5
+      .withLeaf(3) // 6
+  )
+  .withLeaf(3) // 7
+  .withLeaf(4) // 8
+  .withLeaf(5) // 9
+  .withSubTree(
+    new TreeBuilder(6) // 10
+      .withLeaf(0) // 11
+      .withLeaf(1) // 12
+      .withSubTree(
+        new TreeBuilder(2) // 13
+          .withLeaf(0) // 14
+          .withLeaf(1) // 15
+          .withLeaf(2) // 16
+      )
+      .withLeaf(3) // 17
+      .withLeaf(4) // 18
+  )
+  .withLeaf(7) // 19
+  .withLeaf(8) // 20
+  .build();
