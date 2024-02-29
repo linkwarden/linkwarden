@@ -19,6 +19,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
+    "@atlaskit/tree": "^8.8.7",
     "@auth/prisma-adapter": "^1.0.1",
     "@aws-sdk/client-s3": "^3.379.1",
     "@headlessui/react": "^1.7.15",
