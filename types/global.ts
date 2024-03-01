@@ -33,6 +33,7 @@ export interface CollectionIncludingMembersAndLinkCount
   id?: number;
   ownerId?: number;
   createdAt?: string;
+  updatedAt?: string;
   _count?: { links: number };
   members: Member[];
 }
