@@ -13,18 +13,23 @@ import useCollectionStore from "@/store/collections";
 import { Collection } from "@prisma/client";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import { useRouter } from "next/router";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
 }
 
-const DragDropWithNestingTree = () => {
+const CollectionListing = () => {
   const [tree, setTree] = useState<TreeData>();
 
   const { collections } = useCollectionStore();
 
+  const router = useRouter();
+
+  const currentPath = router.asPath;
+
   useEffect(() => {
-    const initialTree = buildTreeFromCollections(collections);
+    const initialTree = buildTreeFromCollections(collections, router);
     collections[0] && setTree(initialTree);
   }, [collections]);
 
@@ -55,65 +60,66 @@ const DragDropWithNestingTree = () => {
   };
 
   if (!tree) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <Tree
-      tree={tree}
-      renderItem={renderItem}
-      onExpand={onExpand}
-      onCollapse={onCollapse}
-      onDragEnd={onDragEnd}
-      isDragEnabled
-      isNestingEnabled
-    />
-  );
+    return <></>;
+  } else
+    return (
+      <Tree
+        tree={tree}
+        renderItem={(itemProps) => renderItem({ ...itemProps }, currentPath)}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+        onDragEnd={onDragEnd}
+        isDragEnabled
+        isNestingEnabled
+      />
+    );
 };
 
-export default DragDropWithNestingTree;
+export default CollectionListing;
 
-const renderItem = ({
-  item,
-  onExpand,
-  onCollapse,
-  provided,
-}: RenderItemParams) => {
+const renderItem = (
+  { item, onExpand, onCollapse, provided }: RenderItemParams,
+  currentPath: string
+) => {
   const collection = item.data;
 
   return (
-    <div
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      className="flex gap-2 items-center ml-2"
-    >
-      {Icon(item as ExtendedTreeItem, onExpand, onCollapse)}
-
-      <Link
-        href={`/collections/${collection.id}`}
-        className="w-full"
-        {...provided.dragHandleProps}
+    <div ref={provided.innerRef} {...provided.draggableProps} className="mb-1">
+      <div
+        className={`${
+          currentPath === `/collections/${collection.id}`
+            ? "bg-primary/20 is-active"
+            : "hover:bg-neutral/20"
+        } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
       >
-        <div
-          className={`duration-100 py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-        >
-          <i
-            className="bi-folder-fill text-2xl drop-shadow"
-            style={{ color: collection.color }}
-          ></i>
-          <p className="truncate w-full">{collection.name}</p>
+        {Icon(item as ExtendedTreeItem, onExpand, onCollapse)}
 
-          {collection.isPublic ? (
+        <Link
+          href={`/collections/${collection.id}`}
+          className="w-full"
+          {...provided.dragHandleProps}
+        >
+          <div
+            className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+          >
             <i
-              className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
-              title="This collection is being shared publicly."
+              className="bi-folder-fill text-2xl drop-shadow"
+              style={{ color: collection.color }}
             ></i>
-          ) : undefined}
-          <div className="drop-shadow text-neutral text-xs">
-            {collection._count?.links}
+            <p className="truncate w-full">{collection.name}</p>
+
+            {collection.isPublic ? (
+              <i
+                className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
+                title="This collection is being shared publicly."
+              ></i>
+            ) : undefined}
+            <div className="drop-shadow text-neutral text-xs">
+              {collection._count?.links}
+            </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+      </div>
     </div>
   );
 };
@@ -126,20 +132,21 @@ const Icon = (
   if (item.children && item.children.length > 0) {
     return item.isExpanded ? (
       <button onClick={() => onCollapse(item.id)}>
-        <div className="bi-chevron-down"></div>
+        <div className="bi-caret-down-fill opacity-50 hover:opacity-100 duration-200"></div>
       </button>
     ) : (
       <button onClick={() => onExpand(item.id)}>
-        <div className="bi-chevron-right"></div>
+        <div className="bi-caret-right-fill opacity-40 hover:opacity-100 duration-200"></div>
       </button>
     );
   }
   // return <span>&bull;</span>;
-  return <></>;
+  return <div className="pl-1"></div>;
 };
 
 const buildTreeFromCollections = (
-  collections: CollectionIncludingMembersAndLinkCount[]
+  collections: CollectionIncludingMembersAndLinkCount[],
+  router: ReturnType<typeof useRouter>
 ): TreeData => {
   const items: { [key: string]: ExtendedTreeItem } = collections.reduce(
     (acc: any, collection) => {
@@ -150,6 +157,7 @@ const buildTreeFromCollections = (
         isExpanded: false,
         data: {
           id: collection.id,
+          parentId: collection.parentId,
           name: collection.name,
           description: collection.description,
           color: collection.color,
@@ -166,6 +174,24 @@ const buildTreeFromCollections = (
     },
     {}
   );
+
+  console.log("items:", items);
+
+  const activeCollectionId = Number(router.asPath.split("/collections/")[1]);
+
+  if (activeCollectionId) {
+    for (const item in items) {
+      const collection = items[item];
+      if (Number(item) === activeCollectionId && collection.data.parentId) {
+        // get all the parents of the active collection recursively until root and set isExpanded to true
+        let parentId = collection.data.parentId || null;
+        while (parentId) {
+          items[parentId].isExpanded = true;
+          parentId = items[parentId].data.parentId;
+        }
+      }
+    }
+  }
 
   collections.forEach((collection) => {
     const parentId = collection.parentId;
