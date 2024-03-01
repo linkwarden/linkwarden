@@ -27,6 +27,7 @@ const DragDropWithNestingTree = () => {
           hasChildren: false,
           isExpanded: false,
           data: {
+            id: collection.id,
             name: collection.name,
             description: collection.description,
             color: collection.color,
@@ -72,70 +73,6 @@ const DragDropWithNestingTree = () => {
     collections[0] && setTree(initialTree);
   }, [collections]);
 
-  const getIcon = (
-    item: ExtendedTreeItem,
-    onExpand: (id: ItemId) => void,
-    onCollapse: (id: ItemId) => void
-  ) => {
-    if (item.children && item.children.length > 0) {
-      return item.isExpanded ? (
-        <button onClick={() => onCollapse(item.id)}>
-          <div className="bi-chevron-down"></div>
-        </button>
-      ) : (
-        <button onClick={() => onExpand(item.id)}>
-          <div className="bi-chevron-right"></div>
-        </button>
-      );
-    }
-    // return <span>&bull;</span>;
-  };
-
-  const renderItem = ({
-    item,
-    onExpand,
-    onCollapse,
-    provided,
-  }: RenderItemParams) => {
-    const collection = item.data;
-
-    return (
-      <div
-        ref={provided.innerRef}
-        {...provided.draggableProps}
-        className="flex gap-1 items-center ml-2"
-      >
-        {getIcon(item as ExtendedTreeItem, onExpand, onCollapse)}
-
-        <Link
-          href={`/collections/${collection.id}`}
-          className="w-full"
-          {...provided.dragHandleProps}
-        >
-          <div
-            className={`duration-100 py-1 pr-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize mb-1`}
-          >
-            <i
-              className="bi-folder-fill text-2xl drop-shadow"
-              style={{ color: collection.color }}
-            ></i>
-            <p className="truncate w-full">{collection.name}</p>
-
-            {collection.isPublic ? (
-              <i
-                className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
-                title="This collection is being shared publicly."
-              ></i>
-            ) : undefined}
-            <div className="drop-shadow text-neutral text-xs">
-              {collection._count?.links}
-            </div>
-          </div>
-        </Link>
-      </div>
-    );
-  };
-
   const onExpand = (itemId: ItemId) => {
     if (tree) {
       setTree((currentTree) =>
@@ -180,3 +117,68 @@ const DragDropWithNestingTree = () => {
 };
 
 export default DragDropWithNestingTree;
+
+const renderItem = ({
+  item,
+  onExpand,
+  onCollapse,
+  provided,
+}: RenderItemParams) => {
+  const collection = item.data;
+
+  return (
+    <div
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      className="flex gap-2 items-center ml-2"
+    >
+      {Icon(item as ExtendedTreeItem, onExpand, onCollapse)}
+
+      <Link
+        href={`/collections/${collection.id}`}
+        className="w-full"
+        {...provided.dragHandleProps}
+      >
+        <div
+          className={`duration-100 py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+        >
+          <i
+            className="bi-folder-fill text-2xl drop-shadow"
+            style={{ color: collection.color }}
+          ></i>
+          <p className="truncate w-full">{collection.name}</p>
+
+          {collection.isPublic ? (
+            <i
+              className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
+              title="This collection is being shared publicly."
+            ></i>
+          ) : undefined}
+          <div className="drop-shadow text-neutral text-xs">
+            {collection._count?.links}
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
+};
+
+const Icon = (
+  item: ExtendedTreeItem,
+  onExpand: (id: ItemId) => void,
+  onCollapse: (id: ItemId) => void
+) => {
+  if (item.children && item.children.length > 0) {
+    return item.isExpanded ? (
+      <button onClick={() => onCollapse(item.id)}>
+        <div className="bi-chevron-down"></div>
+      </button>
+    ) : (
+      <button onClick={() => onExpand(item.id)}>
+        <div className="bi-chevron-right"></div>
+      </button>
+    );
+  }
+  // return <span>&bull;</span>;
+  return <></>;
+};
