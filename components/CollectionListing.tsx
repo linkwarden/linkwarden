@@ -12,64 +12,19 @@ import Tree, {
 import useCollectionStore from "@/store/collections";
 import { Collection } from "@prisma/client";
 import Link from "next/link";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
 }
 
 const DragDropWithNestingTree = () => {
-  const buildTreeFromCollections = (collections: Collection[]): TreeData => {
-    const items: { [key: string]: ExtendedTreeItem } = collections.reduce(
-      (acc: any, collection) => {
-        acc[collection.id] = {
-          id: collection.id,
-          children: [],
-          hasChildren: false,
-          isExpanded: false,
-          data: {
-            id: collection.id,
-            name: collection.name,
-            description: collection.description,
-            color: collection.color,
-            isPublic: collection.isPublic,
-            ownerId: collection.ownerId,
-            createdAt: collection.createdAt,
-            updatedAt: collection.updatedAt,
-          },
-        };
-        return acc;
-      },
-      {}
-    );
-
-    collections.forEach((collection) => {
-      const parentId = collection.parentId;
-      if (parentId && items[parentId]) {
-        items[parentId].children.push(collection.id);
-        items[parentId].hasChildren = true;
-      }
-    });
-
-    const rootId = "root";
-    items[rootId] = {
-      id: rootId,
-      children: collections.filter((c) => c.parentId === null).map((c) => c.id),
-      hasChildren: true,
-      isExpanded: true,
-      data: { name: "Root" } as Collection,
-    };
-
-    return { rootId, items };
-  };
-
   const [tree, setTree] = useState<TreeData>();
 
   const { collections } = useCollectionStore();
 
   useEffect(() => {
-    const initialTree = buildTreeFromCollections(
-      collections as unknown as Collection[]
-    );
+    const initialTree = buildTreeFromCollections(collections);
     collections[0] && setTree(initialTree);
   }, [collections]);
 
@@ -181,4 +136,55 @@ const Icon = (
   }
   // return <span>&bull;</span>;
   return <></>;
+};
+
+const buildTreeFromCollections = (
+  collections: CollectionIncludingMembersAndLinkCount[]
+): TreeData => {
+  const items: { [key: string]: ExtendedTreeItem } = collections.reduce(
+    (acc: any, collection) => {
+      acc[collection.id as number] = {
+        id: collection.id,
+        children: [],
+        hasChildren: false,
+        isExpanded: false,
+        data: {
+          id: collection.id,
+          name: collection.name,
+          description: collection.description,
+          color: collection.color,
+          isPublic: collection.isPublic,
+          ownerId: collection.ownerId,
+          createdAt: collection.createdAt,
+          updatedAt: collection.updatedAt,
+          _count: {
+            links: collection._count?.links,
+          },
+        },
+      };
+      return acc;
+    },
+    {}
+  );
+
+  collections.forEach((collection) => {
+    const parentId = collection.parentId;
+    if (parentId && items[parentId] && collection.id) {
+      items[parentId].children.push(collection.id);
+      items[parentId].hasChildren = true;
+    }
+  });
+
+  const rootId = "root";
+  items[rootId] = {
+    id: rootId,
+    children: (collections
+      .filter((c) => c.parentId === null)
+      .map((c) => c.id) || "") as unknown as string[],
+    hasChildren: true,
+    isExpanded: true,
+    data: { name: "Root" } as Collection,
+  };
+
+  return { rootId, items };
 };
