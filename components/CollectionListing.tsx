@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Tree, {
   mutateTree,
   moveItemOnTree,
@@ -20,33 +20,35 @@ interface ExtendedTreeItem extends TreeItem {
 }
 
 const CollectionListing = () => {
-  const [tree, setTree] = useState<TreeData>();
-
   const { collections } = useCollectionStore();
 
   const router = useRouter();
 
   const currentPath = router.asPath;
 
+  const initialTree = useMemo(() => {
+    if (collections.length > 0) {
+      return buildTreeFromCollections(collections, router);
+    }
+    return undefined;
+  }, [collections, router]);
+
+  const [tree, setTree] = useState(initialTree);
+
   useEffect(() => {
-    const initialTree = buildTreeFromCollections(collections, router);
-    collections[0] && setTree(initialTree);
-  }, [collections]);
+    setTree(initialTree);
+  }, [initialTree]);
 
   const onExpand = (itemId: ItemId) => {
-    if (tree) {
-      setTree((currentTree) =>
-        mutateTree(currentTree!, itemId, { isExpanded: true })
-      );
-    }
+    setTree((currentTree) =>
+      mutateTree(currentTree!, itemId, { isExpanded: true })
+    );
   };
 
   const onCollapse = (itemId: ItemId) => {
-    if (tree) {
-      setTree((currentTree) =>
-        mutateTree(currentTree as TreeData, itemId, { isExpanded: false })
-      );
-    }
+    setTree((currentTree) =>
+      mutateTree(currentTree as TreeData, itemId, { isExpanded: false })
+    );
   };
 
   const onDragEnd = (
