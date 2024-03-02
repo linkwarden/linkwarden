@@ -98,7 +98,7 @@ export default function Sidebar({ className }: { className?: string }) {
           leaveTo="transform opacity-0 -translate-y-3"
         >
           <Disclosure.Panel>
-            <CollectionListing links={true} />
+            <CollectionListing />
           </Disclosure.Panel>
         </Transition>
       </Disclosure>
