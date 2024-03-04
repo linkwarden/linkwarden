@@ -38,6 +38,7 @@ model User {
   tags                    Tag[]
   pinnedLinks             Link[]
   collectionsJoined       UsersAndCollections[]
+  collectionOrder         Int[]                @default([])
   whitelistedUsers        WhitelistedUser[]
   accessTokens            AccessToken[]
   subscriptions           Subscription?

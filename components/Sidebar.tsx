@@ -22,10 +22,9 @@ export default function Sidebar({ className }: { className?: string }) {
 
   const { collections } = useCollectionStore();
   const { tags } = useTagStore();
+  const [active, setActive] = useState("");
 
   const router = useRouter();
-
-  const [active, setActive] = useState("");
 
   useEffect(() => {
     localStorage.setItem("tagDisclosure", tagDisclosure ? "true" : "false");
@@ -99,7 +98,7 @@ export default function Sidebar({ className }: { className?: string }) {
           leaveTo="transform opacity-0 -translate-y-3"
         >
           <Disclosure.Panel>
-            <CollectionListing links={true} />
+            <CollectionListing />
           </Disclosure.Panel>
         </Transition>
       </Disclosure>
