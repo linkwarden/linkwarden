@@ -56,7 +56,7 @@ export default function Navbar() {
           setSidebar(true);
           document.body.style.overflow = "hidden";
         }}
-        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden hidden sm:inline-flex"
+        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden sm:inline-flex"
       >
         <i className="bi-list text-2xl leading-none"></i>
       </div>
@@ -65,7 +65,7 @@ export default function Navbar() {
         <ToggleDarkMode className="hidden sm:inline-grid" />
 
         <div className="dropdown dropdown-end sm:inline-block hidden">
-          <div className="tooltip tooltip-bottom" data-tip="Create New...">
+          <div className="tooltip tooltip-bottom z-10" data-tip="Create New...">
             <div
               tabIndex={0}
               role="button"
