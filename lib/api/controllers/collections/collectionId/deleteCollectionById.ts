@@ -31,6 +31,8 @@ export default async function deleteCollection(
         },
       });
 
+    await removeFromOrders(userId, collectionId);
+
     return { response: deletedUsersAndCollectionsRelation, status: 200 };
   } else if (collectionIsAccessible?.ownerId !== userId) {
     return { response: "Collection is not accessible.", status: 401 };
@@ -56,6 +58,8 @@ export default async function deleteCollection(
     });
 
     await removeFolder({ filePath: `archives/${collectionId}` });
+
+    await removeFromOrders(userId, collectionId);
 
     return await prisma.collection.delete({
       where: {
@@ -97,4 +101,29 @@ async function deleteSubCollections(collectionId: number) {
 
     await removeFolder({ filePath: `archives/${subCollection.id}` });
   }
+}
+
+async function removeFromOrders(userId: number, collectionId: number) {
+  const userCollectionOrder = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      collectionOrder: true,
+    },
+  });
+
+  if (userCollectionOrder)
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        collectionOrder: {
+          set: userCollectionOrder.collectionOrder.filter(
+            (e: number) => e !== collectionId
+          ),
+        },
+      },
+    });
 }

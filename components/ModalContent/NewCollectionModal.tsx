@@ -6,6 +6,8 @@ import { HexColorPicker } from "react-colorful";
 import { Collection } from "@prisma/client";
 import Modal from "../Modal";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import useAccountStore from "@/store/account";
+import { useSession } from "next-auth/react";
 
 type Props = {
   onClose: Function;
@@ -21,6 +23,8 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
   } as Partial<Collection>;
 
   const [collection, setCollection] = useState<Partial<Collection>>(initial);
+  const { setAccount } = useAccountStore();
+  const { data } = useSession();
 
   useEffect(() => {
     setCollection(initial);
@@ -42,7 +46,11 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
 
     if (response.ok) {
       toast.success("Created!");
-      onClose();
+      if (response.data) {
+        // If the collection was created successfully, we need to get the new collection order
+        setAccount(data?.user.id as number);
+        onClose();
+      }
     } else toast.error(response.data as string);
 
     setSubmitLoader(false);
