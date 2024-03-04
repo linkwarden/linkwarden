@@ -14,21 +14,27 @@ import { Collection } from "@prisma/client";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useRouter } from "next/router";
+import useAccountStore from "@/store/account";
+import toast from "react-hot-toast";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
 }
 
 const CollectionListing = () => {
-  const { collections } = useCollectionStore();
+  const { collections, updateCollection } = useCollectionStore();
+  const { account, updateAccount } = useAccountStore();
 
   const router = useRouter();
-
   const currentPath = router.asPath;
 
   const initialTree = useMemo(() => {
     if (collections.length > 0) {
-      return buildTreeFromCollections(collections, router);
+      return buildTreeFromCollections(
+        collections,
+        router,
+        account.collectionOrder
+      );
     }
     return undefined;
   }, [collections, router]);
@@ -39,26 +45,155 @@ const CollectionListing = () => {
     setTree(initialTree);
   }, [initialTree]);
 
-  const onExpand = (itemId: ItemId) => {
+  useEffect(() => {
+    if (account.username) {
+      if (!account.collectionOrder || account.collectionOrder.length === 0)
+        updateAccount({
+          ...account,
+          collectionOrder: collections
+            .filter((e) => e.parentId === null) // Filter out collections with non-null parentId
+            .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
+        });
+      else {
+        // const collectionsIds = collections.map((c) => c.id);
+        // const orderIds = [...account.collectionOrder];
+        // const missingInOrder = collectionsIds.filter(
+        //   (id) => !orderIds.includes(id)
+        // );
+        // if (missingInOrder.length > 0) {
+        //   updateAccount({
+        //     ...account,
+        //     collectionOrder: [...account.collectionOrder, ...missingInOrder],
+        //   });
+        // }
+      }
+    }
+  }, [account, collections]);
+
+  const onExpand = (movedCollectionId: ItemId) => {
     setTree((currentTree) =>
-      mutateTree(currentTree!, itemId, { isExpanded: true })
+      mutateTree(currentTree!, movedCollectionId, { isExpanded: true })
     );
   };
 
-  const onCollapse = (itemId: ItemId) => {
+  const onCollapse = (movedCollectionId: ItemId) => {
     setTree((currentTree) =>
-      mutateTree(currentTree as TreeData, itemId, { isExpanded: false })
+      mutateTree(currentTree as TreeData, movedCollectionId, {
+        isExpanded: false,
+      })
     );
   };
 
-  const onDragEnd = (
+  const onDragEnd = async (
     source: TreeSourcePosition,
     destination: TreeDestinationPosition | undefined
   ) => {
     if (!destination || !tree) {
       return;
     }
+
+    if (
+      source.index === destination.index &&
+      source.parentId === destination.parentId
+    ) {
+      return;
+    }
+
+    const movedCollectionId = Number(
+      tree.items[source.parentId].children[source.index]
+    );
+
+    const movedCollection = collections.find((c) => c.id === movedCollectionId);
+
+    const destinationCollection = collections.find(
+      (c) => c.id === Number(destination.parentId)
+    );
+
+    console.log(
+      "Moved:",
+      movedCollection,
+      "Destination:",
+      destinationCollection
+    );
+    if (
+      (movedCollection?.ownerId !== account.id &&
+        destination.parentId !== source.parentId) ||
+      (destinationCollection?.ownerId !== account.id &&
+        destination.parentId !== "root")
+    ) {
+      return toast.error(
+        "You can't make change to a collection you don't own."
+      );
+    }
+
+    console.log("source:", source, "destination:", destination);
     setTree((currentTree) => moveItemOnTree(currentTree!, source, destination));
+
+    const updatedCollectionOrder = [...account.collectionOrder];
+
+    if (source.parentId !== destination.parentId) {
+      await updateCollection({
+        ...movedCollection,
+        parentId:
+          destination.parentId && destination.parentId !== "root"
+            ? Number(destination.parentId)
+            : destination.parentId === "root"
+              ? "root"
+              : null,
+      } as any);
+    }
+
+    if (
+      destination.index !== undefined &&
+      destination.parentId === source.parentId &&
+      source.parentId === "root"
+    ) {
+      updatedCollectionOrder.splice(source.index, 1);
+
+      console.log("Order1", updatedCollectionOrder);
+
+      updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
+
+      console.log("Order2", updatedCollectionOrder);
+
+      console.log("Moved id:", movedCollectionId);
+      console.log("Order:", updatedCollectionOrder);
+
+      await updateAccount({
+        ...account,
+        collectionOrder: updatedCollectionOrder,
+      });
+    } else if (
+      destination.index !== undefined &&
+      destination.parentId === "root"
+    ) {
+      console.log("Order1", updatedCollectionOrder);
+
+      updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
+
+      console.log("Order2", updatedCollectionOrder);
+
+      console.log("Moved id:", movedCollectionId);
+      console.log("Order:", updatedCollectionOrder);
+
+      await updateAccount({
+        ...account,
+        collectionOrder: updatedCollectionOrder,
+      });
+    } else if (
+      source.parentId === "root" &&
+      destination.parentId &&
+      destination.parentId !== "root"
+    ) {
+      updatedCollectionOrder.splice(source.index, 1);
+
+      console.log("Order", updatedCollectionOrder);
+
+      await updateAccount({
+        ...account,
+        collectionOrder: updatedCollectionOrder,
+      });
+    }
   };
 
   if (!tree) {
@@ -148,8 +283,15 @@ const Icon = (
 
 const buildTreeFromCollections = (
   collections: CollectionIncludingMembersAndLinkCount[],
-  router: ReturnType<typeof useRouter>
+  router: ReturnType<typeof useRouter>,
+  order?: number[]
 ): TreeData => {
+  if (order) {
+    collections.sort((a: any, b: any) => {
+      return order.indexOf(a.id) - order.indexOf(b.id);
+    });
+  }
+
   const items: { [key: string]: ExtendedTreeItem } = collections.reduce(
     (acc: any, collection) => {
       acc[collection.id as number] = {
@@ -176,8 +318,6 @@ const buildTreeFromCollections = (
     },
     {}
   );
-
-  console.log("items:", items);
 
   const activeCollectionId = Number(router.asPath.split("/collections/")[1]);
 

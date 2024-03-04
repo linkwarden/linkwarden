@@ -18,24 +18,30 @@ export default async function updateCollection(
   if (!(collectionIsAccessible?.ownerId === userId))
     return { response: "Collection is not accessible.", status: 401 };
 
-  if (data.parentId) {
-    const findParentCollection = await prisma.collection.findUnique({
-      where: {
-        id: data.parentId,
-      },
-      select: {
-        ownerId: true,
-      },
-    });
+  console.log(data);
 
-    if (
-      findParentCollection?.ownerId !== userId ||
-      typeof data.parentId !== "number"
-    )
-      return {
-        response: "You are not authorized to create a sub-collection here.",
-        status: 403,
-      };
+  if (data.parentId) {
+    if (data.parentId !== ("root" as any)) {
+      const findParentCollection = await prisma.collection.findUnique({
+        where: {
+          id: data.parentId,
+        },
+        select: {
+          ownerId: true,
+          parentId: true,
+        },
+      });
+
+      if (
+        findParentCollection?.ownerId !== userId ||
+        typeof data.parentId !== "number" ||
+        findParentCollection?.parentId === data.parentId
+      )
+        return {
+          response: "You are not authorized to create a sub-collection here.",
+          status: 403,
+        };
+    }
   }
 
   const updatedCollection = await prisma.$transaction(async () => {
@@ -43,17 +49,6 @@ export default async function updateCollection(
       where: {
         collection: {
           id: collectionId,
-        },
-      },
-    });
-
-    await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        collectionOrder: {
-          push: collectionId,
         },
       },
     });
@@ -67,13 +62,18 @@ export default async function updateCollection(
         description: data.description,
         color: data.color,
         isPublic: data.isPublic,
-        parent: data.parentId
-          ? {
-              connect: {
-                id: data.parentId,
-              },
-            }
-          : undefined,
+        parent:
+          data.parentId && data.parentId !== ("root" as any)
+            ? {
+                connect: {
+                  id: data.parentId,
+                },
+              }
+            : data.parentId === ("root" as any)
+              ? {
+                  disconnect: true,
+                }
+              : undefined,
         members: {
           create: data.members.map((e) => ({
             user: { connect: { id: e.user.id || e.userId } },
