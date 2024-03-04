@@ -183,7 +183,9 @@ export default async function updateUserById(
       email: data.email?.toLowerCase().trim(),
       isPrivate: data.isPrivate,
       image: data.image ? `uploads/avatar/${userId}.jpg` : "",
-      collectionOrder: data.collectionOrder,
+      collectionOrder: data.collectionOrder.filter(
+        (value, index, self) => self.indexOf(value) === index
+      ),
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
