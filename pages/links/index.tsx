@@ -112,7 +112,7 @@ export default function Links() {
           </div>
         </div>
 
-        {editMode && (
+        {editMode && links.length > 0 && (
           <div className="w-full flex justify-between items-center min-h-[32px]">
             {links.length > 0 && (
               <div className="flex gap-3 ml-3">
