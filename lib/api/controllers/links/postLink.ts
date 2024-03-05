@@ -57,6 +57,17 @@ export default async function postLink(
       });
 
       link.collection.id = collection.id;
+
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          collectionOrder: {
+            push: link.collection.id,
+          },
+        },
+      });
     }
   } else if (link.collection.id) {
     const collectionIsAccessible = await getPermission({
@@ -83,6 +94,17 @@ export default async function postLink(
     });
 
     link.collection.id = unorganizedCollection?.id;
+
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        collectionOrder: {
+          push: link.collection.id,
+        },
+      },
+    });
   } else {
     return { response: "Uncaught error.", status: 500 };
   }
