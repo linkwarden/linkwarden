@@ -170,6 +170,13 @@ export default function Login({
           {displayLoginCredential()}
           {displayLoginExternalButton()}
           {displayRegistration()}
+          <Link
+            href="https://docs.linkwarden.app/getting-started/pwa-installation"
+            className="underline text-center"
+            target="_blank"
+          >
+            You can install Linkwarden onto your device
+          </Link>
         </div>
       </form>
     </CenteredForm>

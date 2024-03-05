@@ -1,4 +1,4 @@
-import { chromium, devices } from "playwright";
+import { LaunchOptions, chromium, devices } from "playwright";
 import { prisma } from "./db";
 import createFile from "./storage/createFile";
 import sendToWayback from "./sendToWayback";
@@ -20,8 +20,23 @@ type LinksAndCollectionAndOwner = Link & {
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 
 export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
-  const browser = await chromium.launch();
-  const context = await browser.newContext(devices["Desktop Chrome"]);
+  // allow user to configure a proxy
+  let browserOptions: LaunchOptions = {};
+  if (process.env.PROXY) {
+    browserOptions.proxy = {
+      server: process.env.PROXY,
+      bypass: process.env.PROXY_BYPASS,
+      username: process.env.PROXY_USERNAME,
+      password: process.env.PROXY_PASSWORD,
+    };
+  }
+
+  const browser = await chromium.launch(browserOptions);
+  const context = await browser.newContext({
+    ...devices["Desktop Chrome"],
+    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
+  });
+
   const page = await context.newPage();
 
   const timeoutPromise = new Promise((_, reject) => {
@@ -238,6 +253,13 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
                 })
               );
             }
+
+            // apply administrator's defined pdf margins or default to 15px
+            const margins = {
+              top: process.env.PDF_MARGIN_TOP || "15px",
+              bottom: process.env.PDF_MARGIN_BOTTOM || "15px",
+            };
+
             if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
               processingPromises.push(
                 page
@@ -245,7 +267,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
                     width: "1366px",
                     height: "1931px",
                     printBackground: true,
-                    margin: { top: "15px", bottom: "15px" },
+                    margin: margins,
                   })
                   .then((pdf) => {
                     return createFile({

@@ -18,7 +18,7 @@ type Props = {
   className?: string;
 };
 
-export default function LinkGrid({ link, count, className }: Props) {
+export default function LinkGrid({ link }: Props) {
   const { collections } = useCollectionStore();
 
   const { links } = useLinkStore();

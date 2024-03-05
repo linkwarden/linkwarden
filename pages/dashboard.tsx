@@ -2,7 +2,6 @@ import useLinkStore from "@/store/links";
 import useCollectionStore from "@/store/collections";
 import useTagStore from "@/store/tags";
 import MainLayout from "@/layouts/MainLayout";
-import LinkCard from "@/components/LinkViews/LinkCard";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
@@ -16,6 +15,7 @@ import PageHeader from "@/components/PageHeader";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import ViewDropdown from "@/components/ViewDropdown";
+import { dropdownTriggerer } from "@/lib/client/utils";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Dashboard() {
@@ -168,7 +168,10 @@ export default function Dashboard() {
         >
           {links[0] ? (
             <div className="w-full">
-              <LinkComponent links={links.slice(0, showLinks)} />
+              <LinkComponent
+                links={links.slice(0, showLinks)}
+                showCheckbox={false}
+              />
             </div>
           ) : (
             <div
@@ -200,6 +203,7 @@ export default function Dashboard() {
                   <div
                     tabIndex={0}
                     role="button"
+                    onMouseDown={dropdownTriggerer}
                     className="inline-flex items-center gap-2 text-sm btn btn-outline btn-neutral"
                     id="import-dropdown"
                   >
@@ -277,14 +281,12 @@ export default function Dashboard() {
         >
           {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
-              <div
-                className={`grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 w-full`}
-              >
-                {links
+              <LinkComponent
+                showCheckbox={false}
+                links={links
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
-                  .map((e, i) => <LinkCard key={i} link={e} count={i} />)
                   .slice(0, showLinks)}
-              </div>
+              />
             </div>
           ) : (
             <div

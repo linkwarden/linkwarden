@@ -45,7 +45,7 @@ export default function ProfilePhoto({
     <div
       className={`avatar skeleton rounded-full drop-shadow-md ${
         className || ""
-      } ${large || "w-8 h-8"}`}
+      } ${large ? "w-28 h-28" : "w-8 h-8"}`}
     >
       <div className="rounded-full w-full h-full ring-2 ring-neutral-content">
         <Image

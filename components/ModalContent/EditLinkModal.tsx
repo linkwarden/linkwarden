@@ -124,6 +124,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
                         label: "Unorganized",
                       }
                 }
+                creatable={false}
               />
             ) : null}
           </div>
@@ -157,7 +158,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
           className="btn btn-accent dark:border-violet-400 text-white"
           onClick={submit}
         >
-          Save
+          Save Changes
         </button>
       </div>
     </Modal>

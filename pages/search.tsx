@@ -25,8 +25,6 @@ export default function Search() {
     tags: true,
   });
 
-  const [filterDropdown, setFilterDropdown] = useState(false);
-
   const [viewMode, setViewMode] = useState<string>(
     localStorage.getItem("viewMode") || ViewMode.Card
   );

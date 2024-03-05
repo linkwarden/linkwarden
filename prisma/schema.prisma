@@ -38,15 +38,25 @@ model User {
   tags                    Tag[]
   pinnedLinks             Link[]
   collectionsJoined       UsersAndCollections[]
+  collectionOrder         Int[]                @default([])
   whitelistedUsers        WhitelistedUser[]
-  apiKeys                 ApiKey[]
+  accessTokens            AccessToken[]
   subscriptions           Subscription?
+  linksRouteTo            LinksRouteTo          @default(ORIGINAL)
+  preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
+}
+
+enum LinksRouteTo {
+  ORIGINAL
+  PDF
+  READABLE
+  SCREENSHOT
 }
 
 model WhitelistedUser {
@@ -69,19 +79,20 @@ model VerificationToken {
 }
 
 model Collection {
-  id          Int                   @id @default(autoincrement())
-  name        String
-  description String                @default("")
-  color       String                @default("#0ea5e9")
-  isPublic    Boolean               @default(false)
-  owner       User                  @relation(fields: [ownerId], references: [id])
-  ownerId     Int
-  members     UsersAndCollections[]
-  links       Link[]
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @default(now()) @updatedAt
-
-  @@unique([name, ownerId])
+  id              Int                   @id @default(autoincrement())
+  name            String
+  description     String                @default("")
+  color           String                @default("#0ea5e9")
+  parentId        Int?
+  parent          Collection?           @relation("SubCollections", fields: [parentId], references: [id])
+  subCollections  Collection[]          @relation("SubCollections")
+  isPublic        Boolean               @default(false)
+  owner           User                  @relation(fields: [ownerId], references: [id])
+  ownerId         Int
+  members         UsersAndCollections[]
+  links           Link[]
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @default(now()) @updatedAt
 }
 
 model UsersAndCollections {
@@ -142,16 +153,15 @@ model Subscription {
   updatedAt            DateTime @default(now()) @updatedAt
 }
 
-model ApiKey {
+model AccessToken {
   id         Int       @id @default(autoincrement())
-  name       String
+  name       String    
   user       User      @relation(fields: [userId], references: [id])
   userId     Int
   token      String    @unique
+  revoked    Boolean   @default(false)
   expires    DateTime
   lastUsedAt DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now()) @updatedAt
-
-  @@unique([token, userId])
 }

@@ -9,6 +9,7 @@ import useAccountStore from "@/store/account";
 import EditCollectionModal from "./ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
@@ -70,6 +71,7 @@ export default function CollectionCard({ collection, className }: Props) {
         <div
           tabIndex={0}
           role="button"
+          onMouseDown={dropdownTriggerer}
           className="btn btn-ghost btn-sm btn-square text-neutral"
         >
           <i className="bi-three-dots text-xl" title="More"></i>
@@ -170,7 +172,7 @@ export default function CollectionCard({ collection, className }: Props) {
               <div className="font-bold text-sm flex justify-end gap-1 items-center">
                 {collection.isPublic ? (
                   <i
-                    className="bi-globe-americas drop-shadow text-neutral"
+                    className="bi-globe2 drop-shadow text-neutral"
                     title="This collection is being shared publicly."
                   ></i>
                 ) : undefined}

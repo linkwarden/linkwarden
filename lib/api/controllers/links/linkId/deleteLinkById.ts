@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/api/db";
-import { Collection, Link, UsersAndCollections } from "@prisma/client";
+import { Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import removeFile from "@/lib/api/storage/removeFile";
 

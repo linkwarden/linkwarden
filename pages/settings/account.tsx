@@ -11,6 +11,7 @@ import React from "react";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import Link from "next/link";
 import Checkbox from "@/components/Checkbox";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 export default function Account() {
   const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
@@ -191,8 +192,8 @@ export default function Account() {
             ) : undefined}
           </div>
 
-          <div className="sm:row-span-2 sm:justify-self-center mx-auto my-3">
-            <p className="mb-2 text-center">Profile Photo</p>
+          <div className="sm:row-span-2 sm:justify-self-center my-3">
+            <p className="mb-2 sm:text-center">Profile Photo</p>
             <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
               <ProfilePhoto
                 priority={true}
@@ -245,6 +246,7 @@ export default function Account() {
                 <div
                   tabIndex={0}
                   role="button"
+                  onMouseDown={dropdownTriggerer}
                   className="flex gap-2 text-sm btn btn-outline btn-neutral group"
                   id="import-dropdown"
                 >
@@ -347,8 +349,8 @@ export default function Account() {
         <SubmitButton
           onClick={submit}
           loading={submitLoader}
-          label="Save"
-          className="mt-2 mx-auto lg:mx-0"
+          label="Save Changes"
+          className="mt-2 w-full sm:w-fit"
         />
 
         <div>
@@ -373,7 +375,7 @@ export default function Account() {
 
         <Link
           href="/settings/delete"
-          className="mx-auto lg:mx-0 text-white flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit bg-red-500 hover:bg-red-400 cursor-pointer"
+          className="text-white w-full sm:w-fit flex items-center gap-2 py-2 px-4 rounded-md text-lg tracking-wide select-none font-semibold duration-100 bg-red-500 hover:bg-red-400 cursor-pointer"
         >
           <p className="text-center w-full">Delete Your Account</p>
         </Link>
