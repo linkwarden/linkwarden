@@ -10,6 +10,7 @@ import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsMod
 import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
 import useAccountStore from "@/store/account";
+import { dropdownTriggerer } from "@/lib/client/utils";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -17,6 +18,7 @@ type Props = {
   position?: string;
   toggleShowInfo?: () => void;
   linkInfo?: boolean;
+  flipDropdown?: boolean;
 };
 
 export default function LinkActions({
@@ -24,6 +26,7 @@ export default function LinkActions({
   toggleShowInfo,
   position,
   linkInfo,
+  flipDropdown,
 }: Props) {
   const permissions = usePermissions(link.collection.id as number);
 
@@ -64,34 +67,33 @@ export default function LinkActions({
   return (
     <>
       <div
-        className={`dropdown dropdown-left absolute ${
+        className={`dropdown dropdown-left dropdown-end absolute ${
           position || "top-3 right-3"
         } z-20`}
       >
         <div
           tabIndex={0}
           role="button"
+          onMouseDown={dropdownTriggerer}
           className="btn btn-ghost btn-sm btn-square text-neutral"
         >
           <i title="More" className="bi-three-dots text-xl" />
         </div>
-        <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1">
-          {permissions === true ? (
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  pinLink();
-                }}
-              >
-                {link?.pinnedBy && link.pinnedBy[0]
-                  ? "Unpin"
-                  : "Pin to Dashboard"}
-              </div>
-            </li>
-          ) : undefined}
+        <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 translate-y-10">
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                pinLink();
+              }}
+            >
+              {link?.pinnedBy && link.pinnedBy[0]
+                ? "Unpin"
+                : "Pin to Dashboard"}
+            </div>
+          </li>
           {linkInfo !== undefined && toggleShowInfo ? (
             <li>
               <div

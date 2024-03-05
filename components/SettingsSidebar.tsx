@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
-  const LINKWARDEN_VERSION = "v2.4.9";
+  const LINKWARDEN_VERSION = "v2.5.0";
 
   const { collections } = useCollectionStore();
 
@@ -37,43 +37,30 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        <Link href="/settings/appearance">
+        <Link href="/settings/preference">
           <div
             className={`${
-              active === `/settings/appearance`
+              active === `/settings/preference`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i className="bi-palette text-primary text-2xl"></i>
+            <i className="bi-sliders text-primary text-2xl"></i>
 
-            <p className="truncate w-full pr-7">Appearance</p>
+            <p className="truncate w-full pr-7">Preference</p>
           </div>
         </Link>
 
-        <Link href="/settings/archive">
+        <Link href="/settings/access-tokens">
           <div
             className={`${
-              active === `/settings/archive`
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
-          >
-            <i className="bi-archive text-primary text-2xl"></i>
-            <p className="truncate w-full pr-7">Archive</p>
-          </div>
-        </Link>
-
-        <Link href="/settings/api">
-          <div
-            className={`${
-              active === `/settings/api`
+              active === `/settings/access-tokens`
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <i className="bi-key text-primary text-2xl"></i>
-            <p className="truncate w-full pr-7">API Keys</p>
+            <p className="truncate w-full pr-7">Access Tokens</p>
           </div>
         </Link>
 

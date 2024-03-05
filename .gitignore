@@ -47,3 +47,4 @@ prisma/dev.db
 
 # docker
 pgdata
+certificates

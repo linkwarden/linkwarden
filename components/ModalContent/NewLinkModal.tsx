@@ -109,7 +109,6 @@ export default function NewLinkModal({ onClose }: Props) {
         toast.success(`Created!`);
         onClose();
       } else toast.error(response.data as string);
-
       setSubmitLoader(false);
 
       return response;
@@ -179,7 +178,7 @@ export default function NewLinkModal({ onClose }: Props) {
                     setLink({ ...link, description: e.target.value })
                   }
                   placeholder="Will be auto generated if nothing is provided."
-                  className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
+                  className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
                 />
               </div>
             </div>
