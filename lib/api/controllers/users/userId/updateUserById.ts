@@ -190,7 +190,7 @@ export default async function updateUserById(
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,
-      mergeDuplicateLinks: data.mergeDuplicateLinks,
+      preventDuplicateLinks: data.preventDuplicateLinks,
       password:
         data.newPassword && data.newPassword !== ""
           ? newHashedPassword

@@ -93,20 +93,21 @@ export default async function postLink(
     },
   });
 
-  const existingLink = await prisma.link.findFirst({
-    where: {
-      url: link.url,
-      collection: {
-        ownerId: userId,
+  if (user?.preventDuplicateLinks) {
+    const existingLink = await prisma.link.findFirst({
+      where: {
+        url: link.url?.trim(),
+        collection: {
+          ownerId: userId,
+        },
       },
-    },
-  });
+    });
 
-  if (existingLink && user?.mergeDuplicateLinks) {
-    return {
-      response: "Link already exists",
-      status: 409,
-    };
+    if (existingLink)
+      return {
+        response: "Link already exists",
+        status: 409,
+      };
   }
 
   const numberOfLinksTheUserHas = await prisma.link.count({
@@ -148,7 +149,7 @@ export default async function postLink(
 
   const newLink = await prisma.link.create({
     data: {
-      url: link.url,
+      url: link.url?.trim(),
       name: link.name,
       description,
       type: linkType,
