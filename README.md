@@ -59,7 +59,7 @@ We've forked the old version from the current repository into [this repo](https:
 
 - 📸 Auto capture a screenshot, PDF, and readable view of each webpage.
 - 🏛️ Send your webpage to Wayback Machine ([archive.org](https://archive.org)) for a snapshot. (Optional)
-- 📂 Organize links by collection, name, description and multiple tags.
+- 📂 Organize links by collection, sub-collection, name, description and multiple tags.
 - 👥 Collaborate on gathering links in a collection.
 - 🎛️ Customize the permissions of each member.
 - 🌐 Share your collected links and preserved formats with the world.
@@ -70,6 +70,10 @@ We've forked the old version from the current repository into [this repo](https:
 - 🧩 Browser extension, managed by the community. [Star it here!](https://github.com/linkwarden/browser-extension)
 - ⬇️ Import and export your bookmarks.
 - 🔐 SSO integration. (Enterprise and Self-hosted users only)
+- 📦 Installable Progressive Web App (PWA).
+- 🍎 iOS Shortcut to save links to Linkwarden.
+- 🔑 API keys.
+- ✅ Bulk actions.
 - ✨ And so many more features!
 
 ## Like what we're doing? Give us a Star ⭐
