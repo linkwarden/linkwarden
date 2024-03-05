@@ -19,36 +19,16 @@ async function processBatch() {
       url: { not: null },
       OR: [
         {
-          collection: {
-            owner: {
-              archiveAsScreenshot: true,
-            },
-          },
           image: null,
         },
         {
-          collection: {
-            owner: {
-              archiveAsScreenshot: true,
-            },
-          },
           image: "pending",
         },
         ///////////////////////
         {
-          collection: {
-            owner: {
-              archiveAsPDF: true,
-            },
-          },
           pdf: null,
         },
         {
-          collection: {
-            owner: {
-              archiveAsPDF: true,
-            },
-          },
           pdf: "pending",
         },
         ///////////////////////
@@ -76,36 +56,16 @@ async function processBatch() {
       url: { not: null },
       OR: [
         {
-          collection: {
-            owner: {
-              archiveAsScreenshot: true,
-            },
-          },
           image: null,
         },
         {
-          collection: {
-            owner: {
-              archiveAsScreenshot: true,
-            },
-          },
           image: "pending",
         },
         ///////////////////////
         {
-          collection: {
-            owner: {
-              archiveAsPDF: true,
-            },
-          },
           pdf: null,
         },
         {
-          collection: {
-            owner: {
-              archiveAsPDF: true,
-            },
-          },
           pdf: "pending",
         },
         ///////////////////////
@@ -114,13 +74,6 @@ async function processBatch() {
         },
         {
           readable: "pending",
-        },
-        ///////////////////////
-        {
-          preview: null,
-        },
-        {
-          preview: "pending",
         },
       ],
     },
