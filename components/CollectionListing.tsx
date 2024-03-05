@@ -223,11 +223,10 @@ const renderItem = (
   return (
     <div ref={provided.innerRef} {...provided.draggableProps} className="mb-1">
       <div
-        className={`${
-          currentPath === `/collections/${collection.id}`
+        className={`${currentPath === `/collections/${collection.id}`
             ? "bg-primary/20 is-active"
             : "hover:bg-neutral/20"
-        } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
+          } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
       >
         {Icon(item as ExtendedTreeItem, onExpand, onCollapse)}
 

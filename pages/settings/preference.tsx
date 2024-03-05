@@ -16,6 +16,8 @@ export default function Appearance() {
   const { account, updateAccount } = useAccountStore();
   const [user, setUser] = useState<AccountSettings>(account);
 
+  const [mergeDuplicateLinks, setMergeDuplicateLinks] =
+    useState<boolean>(false);
   const [archiveAsScreenshot, setArchiveAsScreenshot] =
     useState<boolean>(false);
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(false);
@@ -32,6 +34,7 @@ export default function Appearance() {
       archiveAsPDF,
       archiveAsWaybackMachine,
       linksRouteTo,
+      mergeDuplicateLinks,
     });
   }, [
     account,
@@ -39,6 +42,7 @@ export default function Appearance() {
     archiveAsPDF,
     archiveAsWaybackMachine,
     linksRouteTo,
+    mergeDuplicateLinks,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -51,6 +55,7 @@ export default function Appearance() {
       setArchiveAsPDF(account.archiveAsPDF);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
+      setMergeDuplicateLinks(account.mergeDuplicateLinks);
     }
   }, [account]);
 
@@ -144,6 +149,13 @@ export default function Appearance() {
           <p className="capitalize text-3xl font-thin inline">Link Settings</p>
 
           <div className="divider my-3"></div>
+          <div className="mb-3">
+            <Checkbox
+              label="Merge duplicate links"
+              state={mergeDuplicateLinks}
+              onClick={() => setMergeDuplicateLinks(!mergeDuplicateLinks)}
+            />
+          </div>
 
           <p>Clicking on Links should:</p>
           <div className="p-3">
