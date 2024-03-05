@@ -85,11 +85,11 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             image:
               user.archiveAsScreenshot && !link.image?.startsWith("archive")
                 ? "pending"
-                : undefined,
+                : "unavailable",
             pdf:
               user.archiveAsPDF && !link.pdf?.startsWith("archive")
                 ? "pending"
-                : undefined,
+                : "unavailable",
             readable: !link.readable?.startsWith("archive")
               ? "pending"
               : undefined,
