@@ -78,7 +78,11 @@ const useCollectionStore = create<CollectionStore>()((set) => ({
 
     if (response.ok) {
       set((state) => ({
-        collections: state.collections.filter((e) => e.id !== collectionId),
+        collections: state.collections.filter(
+          (collection) =>
+            collection.id !== collectionId &&
+            collection.parentId !== collectionId
+        ),
       }));
       useTagStore.getState().setTags();
     }

@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getPublicUser from "@/lib/api/controllers/public/users/getPublicUser";
-import { getToken } from "next-auth/jwt";
+import verifyToken from "@/lib/api/verifyToken";
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
-  const token = await getToken({ req });
-  const requestingId = token?.id;
+  const token = await verifyToken({ req });
+  const requestingId = typeof token === "string" ? undefined : token?.id;
 
   const lookupId = req.query.id as string;
 

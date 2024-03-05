@@ -5,19 +5,26 @@ import toast from "react-hot-toast";
 import { HexColorPicker } from "react-colorful";
 import { Collection } from "@prisma/client";
 import Modal from "../Modal";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import useAccountStore from "@/store/account";
+import { useSession } from "next-auth/react";
 
 type Props = {
   onClose: Function;
+  parent?: CollectionIncludingMembersAndLinkCount;
 };
 
-export default function NewCollectionModal({ onClose }: Props) {
+export default function NewCollectionModal({ onClose, parent }: Props) {
   const initial = {
+    parentId: parent?.id,
     name: "",
     description: "",
     color: "#0ea5e9",
-  };
+  } as Partial<Collection>;
 
   const [collection, setCollection] = useState<Partial<Collection>>(initial);
+  const { setAccount } = useAccountStore();
+  const { data } = useSession();
 
   useEffect(() => {
     setCollection(initial);
@@ -39,7 +46,11 @@ export default function NewCollectionModal({ onClose }: Props) {
 
     if (response.ok) {
       toast.success("Created!");
-      onClose();
+      if (response.data) {
+        // If the collection was created successfully, we need to get the new collection order
+        setAccount(data?.user.id as number);
+        onClose();
+      }
     } else toast.error(response.data as string);
 
     setSubmitLoader(false);
@@ -47,7 +58,14 @@ export default function NewCollectionModal({ onClose }: Props) {
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">Create a New Collection</p>
+      {parent?.id ? (
+        <>
+          <p className="text-xl font-thin">New Sub-Collection</p>
+          <p className="capitalize text-sm">For {parent.name}</p>
+        </>
+      ) : (
+        <p className="text-xl font-thin">Create a New Collection</p>
+      )}
 
       <div className="divider mb-3 mt-1"></div>
 

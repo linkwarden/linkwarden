@@ -1,1 +1,49 @@
-{"name":"Linkwarden","short_name":"Linkwarden","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "id": "/dashboard",
+  "name":"Linkwarden",
+  "short_name":"Linkwarden",
+  "icons":[
+    {
+      "src":"/android-chrome-192x192.png",
+      "sizes":"192x192",
+      "type":"image/png"
+    },
+    {
+      "src":"/android-chrome-512x512.png",
+      "sizes":"512x512",
+      "type":"image/png"
+    },
+    {
+      "src": "/logo_maskable.png",
+      "sizes": "196x196",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "share_target": {
+    "action": "/api/v1/links/",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "url": "link"
+    }
+  },
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "type": "image/png",
+      "sizes": "386x731"
+    },
+    {
+      "src": "/screenshots/screenshot2.png",
+      "type": "image/png",
+      "sizes": "1361x861",
+      "form_factor": "wide"
+    }
+  ],
+  "theme_color":"#000000",
+  "background_color":"#000000",
+  "display":"standalone",
+  "orientation": "portrait",
+  "start_url": "/dashboard"
+}

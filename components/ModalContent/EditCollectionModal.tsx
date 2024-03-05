@@ -110,7 +110,7 @@ export default function EditCollectionModal({
           className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto"
           onClick={submit}
         >
-          Save
+          Save Changes
         </button>
       </div>
     </Modal>

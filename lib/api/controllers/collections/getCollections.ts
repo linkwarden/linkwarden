@@ -12,6 +12,12 @@ export default async function getCollection(userId: number) {
       _count: {
         select: { links: true },
       },
+      parent: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       members: {
         include: {
           user: {
