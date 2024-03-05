@@ -51,24 +51,49 @@ const CollectionListing = () => {
         updateAccount({
           ...account,
           collectionOrder: collections
-            .filter((e) => e.parentId === null) // Filter out collections with non-null parentId
+            .filter(
+              (e) =>
+                e.parentId === null ||
+                !collections.find((i) => i.id === e.parentId)
+            ) // Filter out collections with non-null parentId
             .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
         });
       else {
-        // const collectionsIds = collections.map((c) => c.id);
-        // const orderIds = [...account.collectionOrder];
-        // const missingInOrder = collectionsIds.filter(
-        //   (id) => !orderIds.includes(id)
-        // );
-        // if (missingInOrder.length > 0) {
-        //   updateAccount({
-        //     ...account,
-        //     collectionOrder: [...account.collectionOrder, ...missingInOrder],
-        //   });
-        // }
+        const newCollectionOrder: number[] = [
+          ...(account.collectionOrder || []),
+        ];
+
+        // Start with collections that are in both account.collectionOrder and collections
+        const existingCollectionIds = collections.map((c) => c.id as number);
+        const filteredCollectionOrder = account.collectionOrder.filter((id) =>
+          existingCollectionIds.includes(id)
+        );
+
+        console.log(existingCollectionIds);
+
+        // Add new collections that are not in account.collectionOrder and meet the specific conditions
+        collections.forEach((collection) => {
+          if (
+            !filteredCollectionOrder.includes(collection.id as number) &&
+            (!collection.parentId || collection.ownerId === account.id)
+          ) {
+            filteredCollectionOrder.push(collection.id as number);
+          }
+        });
+
+        // check if the newCollectionOrder is the same as the old one
+        if (
+          JSON.stringify(newCollectionOrder) !==
+          JSON.stringify(account.collectionOrder)
+        ) {
+          updateAccount({
+            ...account,
+            collectionOrder: newCollectionOrder,
+          });
+        }
       }
     }
-  }, [account, collections]);
+  }, [collections]);
 
   const onExpand = (movedCollectionId: ItemId) => {
     setTree((currentTree) =>
@@ -109,12 +134,6 @@ const CollectionListing = () => {
       (c) => c.id === Number(destination.parentId)
     );
 
-    console.log(
-      "Moved:",
-      movedCollection,
-      "Destination:",
-      destinationCollection
-    );
     if (
       (movedCollection?.ownerId !== account.id &&
         destination.parentId !== source.parentId) ||
@@ -126,7 +145,6 @@ const CollectionListing = () => {
       );
     }
 
-    console.log("source:", source, "destination:", destination);
     setTree((currentTree) => moveItemOnTree(currentTree!, source, destination));
 
     const updatedCollectionOrder = [...account.collectionOrder];
@@ -148,16 +166,10 @@ const CollectionListing = () => {
       destination.parentId === source.parentId &&
       source.parentId === "root"
     ) {
-      updatedCollectionOrder.splice(source.index, 1);
-
-      console.log("Order1", updatedCollectionOrder);
+      updatedCollectionOrder.includes(movedCollectionId) &&
+        updatedCollectionOrder.splice(source.index, 1);
 
       updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
-
-      console.log("Order2", updatedCollectionOrder);
-
-      console.log("Moved id:", movedCollectionId);
-      console.log("Order:", updatedCollectionOrder);
 
       await updateAccount({
         ...account,
@@ -167,14 +179,7 @@ const CollectionListing = () => {
       destination.index !== undefined &&
       destination.parentId === "root"
     ) {
-      console.log("Order1", updatedCollectionOrder);
-
       updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
-
-      console.log("Order2", updatedCollectionOrder);
-
-      console.log("Moved id:", movedCollectionId);
-      console.log("Order:", updatedCollectionOrder);
 
       await updateAccount({
         ...account,
@@ -186,8 +191,6 @@ const CollectionListing = () => {
       destination.parentId !== "root"
     ) {
       updatedCollectionOrder.splice(source.index, 1);
-
-      console.log("Order", updatedCollectionOrder);
 
       await updateAccount({
         ...account,
@@ -278,7 +281,7 @@ const Icon = (
     );
   }
   // return <span>&bull;</span>;
-  return <div className="pl-1"></div>;
+  return <div></div>;
 };
 
 const buildTreeFromCollections = (
@@ -327,7 +330,7 @@ const buildTreeFromCollections = (
       if (Number(item) === activeCollectionId && collection.data.parentId) {
         // get all the parents of the active collection recursively until root and set isExpanded to true
         let parentId = collection.data.parentId || null;
-        while (parentId) {
+        while (parentId && items[parentId]) {
           items[parentId].isExpanded = true;
           parentId = items[parentId].data.parentId;
         }
@@ -347,7 +350,10 @@ const buildTreeFromCollections = (
   items[rootId] = {
     id: rootId,
     children: (collections
-      .filter((c) => c.parentId === null)
+      .filter(
+        (c) =>
+          c.parentId === null || !collections.find((i) => i.id === c.parentId)
+      )
       .map((c) => c.id) || "") as unknown as string[],
     hasChildren: true,
     isExpanded: true,
