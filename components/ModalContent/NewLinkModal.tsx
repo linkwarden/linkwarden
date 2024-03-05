@@ -109,7 +109,6 @@ export default function NewLinkModal({ onClose }: Props) {
         toast.success(`Created!`);
         onClose();
       } else toast.error(response.data as string);
-
       setSubmitLoader(false);
 
       return response;
