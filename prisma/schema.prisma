@@ -43,6 +43,7 @@ model User {
   accessTokens            AccessToken[]
   subscriptions           Subscription?
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
+  mergeDuplicateLinks     Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
   archiveAsWaybackMachine Boolean               @default(false)

@@ -87,6 +87,28 @@ export default async function postLink(
     return { response: "Uncaught error.", status: 500 };
   }
 
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  const existingLink = await prisma.link.findFirst({
+    where: {
+      url: link.url,
+      collection: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (existingLink && user?.mergeDuplicateLinks) {
+    return {
+      response: "Link already exists",
+      status: 409,
+    };
+  }
+
   const numberOfLinksTheUserHas = await prisma.link.count({
     where: {
       collection: {
