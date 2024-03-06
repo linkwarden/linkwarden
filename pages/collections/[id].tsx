@@ -97,10 +97,9 @@ export default function Index() {
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
+
   useEffect(() => {
-    return () => {
-      setEditMode(false);
-    };
+    if (editMode) return setEditMode(false);
   }, [router]);
 
   const [viewMode, setViewMode] = useState<string>(
