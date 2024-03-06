@@ -12,11 +12,11 @@ export default function AnnouncementBar({ toggleAnnouncementBar }: Props) {
         <div className="w-fit font-semibold">
           🎉️ See what&apos;s new in{" "}
           <Link
-            href="https://blog.linkwarden.app/releases/v2.4"
+            href="https://blog.linkwarden.app/releases/v2.5"
             target="_blank"
             className="underline hover:opacity-50 duration-100"
           >
-            Linkwarden v2.4
+            Linkwarden v2.5
           </Link>
           ! 🥳️
         </div>
