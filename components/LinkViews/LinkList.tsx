@@ -144,10 +144,18 @@ export default function LinkCardCompact({
                   <LinkCollection link={link} collection={collection} />
                 ) : undefined}
                 {link.url ? (
-                  <div className="flex items-center gap-1 w-fit text-neutral truncate">
-                    <i className="bi-link-45deg text-lg" />
-                    <p className="truncate w-full select-none">{shortendURL}</p>
-                  </div>
+                  <Link
+                    href={link.url || ""}
+                    target="_blank"
+                    title={link.url || ""}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="flex gap-1 item-center select-none text-neutral mt-1 hover:opacity-70 duration-100"
+                  >
+                    <i className="bi-link-45deg text-lg mt-[0.1rem] leading-none"></i>
+                    <p className="text-sm truncate">{shortendURL}</p>
+                  </Link>
                 ) : (
                   <div className="badge badge-primary badge-sm my-1 select-none">
                     {link.type}
