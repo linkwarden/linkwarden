@@ -162,12 +162,18 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
             {unescapeString(link.name || link.description) || link.url}
           </p>
 
-          <div title={link.url || ""} className="w-fit">
-            <div className="flex gap-1 item-center select-none text-neutral mt-1">
-              <i className="bi-link-45deg text-lg mt-[0.15rem] leading-none"></i>
-              <p className="text-sm truncate">{shortendURL}</p>
-            </div>
-          </div>
+          <Link
+            href={link.url || ""}
+            target="_blank"
+            title={link.url || ""}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="flex gap-1 item-center select-none text-neutral mt-1 hover:opacity-70 duration-100"
+          >
+            <i className="bi-link-45deg text-lg mt-[0.10rem] leading-none"></i>
+            <p className="text-sm truncate">{shortendURL}</p>
+          </Link>
         </div>
 
         <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
