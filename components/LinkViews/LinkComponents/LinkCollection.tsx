@@ -2,6 +2,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -15,12 +16,12 @@ export default function LinkCollection({
   const router = useRouter();
 
   return (
-    <div
+    <Link
+      href={`/collections/${link.collection.id}`}
       onClick={(e) => {
-        e.preventDefault();
-        router.push(`/collections/${link.collection.id}`);
+        e.stopPropagation();
       }}
-      className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100"
+      className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100 select-none"
       title={collection?.name}
     >
       <i
@@ -28,6 +29,6 @@ export default function LinkCollection({
         style={{ color: collection?.color }}
       ></i>
       <p className="truncate capitalize">{collection?.name}</p>
-    </div>
+    </Link>
   );
 }
