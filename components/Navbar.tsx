@@ -65,7 +65,7 @@ export default function Navbar() {
         <ToggleDarkMode className="hidden sm:inline-grid" />
 
         <div className="dropdown dropdown-end sm:inline-block hidden">
-          <div className="tooltip tooltip-bottom z-10" data-tip="Create New...">
+          <div className="tooltip tooltip-bottom" data-tip="Create New...">
             <div
               tabIndex={0}
               role="button"
