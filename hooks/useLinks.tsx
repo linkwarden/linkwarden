@@ -1,5 +1,5 @@
 import { LinkRequestQuery } from "@/types/global";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useDetectPageBottom from "./useDetectPageBottom";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
@@ -21,6 +21,8 @@ export default function useLinks(
   const { links, setLinks, resetLinks, selectedLinks, setSelectedLinks } =
     useLinkStore();
   const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const { reachedBottom, setReachedBottom } = useDetectPageBottom();
 
@@ -61,9 +63,13 @@ export default function useLinks(
       basePath = "/api/v1/public/collections/links";
     } else basePath = "/api/v1/links";
 
+    setIsLoading(true);
+
     const response = await fetch(`${basePath}?${queryString}`);
 
     const data = await response.json();
+
+    setIsLoading(false);
 
     if (response.ok) setLinks(data.response, isInitialCall);
   };
@@ -92,4 +98,6 @@ export default function useLinks(
 
     setReachedBottom(false);
   }, [reachedBottom]);
+
+  return { isLoading };
 }

@@ -60,8 +60,8 @@ export default function PublicCollections() {
     name: true,
     url: true,
     description: true,
-    textContent: true,
     tags: true,
+    textContent: false,
   });
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
