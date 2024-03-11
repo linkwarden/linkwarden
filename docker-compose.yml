@@ -16,6 +16,6 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./data:/data/data
+      - ./data:/data
     depends_on:
       - postgres
