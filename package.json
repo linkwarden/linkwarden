@@ -13,7 +13,7 @@
     "dev": "concurrently -k -P \"next dev {@}\" \"yarn worker:dev\" --",
     "worker:dev": "nodemon --skip-project scripts/worker.ts",
     "worker:prod": "ts-node --transpile-only --skip-project scripts/worker.ts",
-    "start": "concurrently \"next start\" \"yarn worker:prod\"",
+    "start": "concurrently -k -P \"next start {@}\" \"yarn worker:prod\" --",
     "build": "next build",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
