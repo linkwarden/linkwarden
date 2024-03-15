@@ -187,6 +187,7 @@ export default async function updateUserById(
         (value, index, self) => self.indexOf(value) === index
       ),
       archiveAsScreenshot: data.archiveAsScreenshot,
+      archiveAsSinglefile: data.archiveAsSinglefile,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,

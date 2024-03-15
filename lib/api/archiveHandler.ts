@@ -9,6 +9,9 @@ import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
 import removeFile from "./storage/removeFile";
 import Jimp from "jimp";
+import { execSync } from "child_process";
+import axios from "axios";
+import { Agent } from "http";
 import createFolder from "./storage/createFolder";
 
 type LinksAndCollectionAndOwner = Link & {
@@ -93,6 +96,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             readable: !link.readable?.startsWith("archive")
               ? "pending"
               : undefined,
+            singlefile: !link.singlefile?.startsWith("archive")
+              ? "pending"
+              : undefined,
             preview: !link.readable?.startsWith("archive")
               ? "pending"
               : undefined,
@@ -113,19 +119,46 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
           const content = await page.content();
 
-          // TODO single file
-          // const session = await page.context().newCDPSession(page);
-          // const doc = await session.send("Page.captureSnapshot", {
-          //   format: "mhtml",
-          // });
-          // const saveDocLocally = (doc: any) => {
-          //   console.log(doc);
-          //   return createFile({
-          //     data: doc,
-          //     filePath: `archives/${targetLink.collectionId}/${link.id}.mhtml`,
-          //   });
-          // };
-          // saveDocLocally(doc.data);
+          // Singlefile
+          if (user.archiveAsSinglefile && !link.singlefile?.startsWith("archive")) {
+            let command = process.env.SINGLEFILE_ARCHIVE_COMMAND;
+            let httpApi = process.env.SINGLEFILE_ARCHIVE_HTTP_API;
+            if (command) {
+              if (command.includes("{{URL}}")) {
+                try {
+                  let html = execSync(command.replace("{{URL}}", link.url), {
+                    timeout: 60000,
+                    maxBuffer: 1024 * 1024 * 100,
+                  });
+                  await createFile({
+                    data: html,
+                    filePath: `archives/${targetLink.collectionId}/${link.id}.html`,
+                  });
+                } catch (err) {
+                  console.error("Error running SINGLEFILE_ARCHIVE_COMMAND:", err);
+                }
+              } else {
+                console.error("Invalid SINGLEFILE_ARCHIVE_COMMAND. Missing {{URL}}");
+              }
+            } else if (httpApi) {
+              try {
+                let html = await axios.post(httpApi, { url: link.url }, {
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  httpAgent: new Agent({ keepAlive: false }),
+                });
+                await createFile({
+                  data: html.data,
+                  filePath: `archives/${targetLink.collectionId}/${link.id}.html`,
+                });
+              } catch (err) {
+                console.error("Error fetching Singlefile using SINGLEFILE_ARCHIVE_HTTP_API:", err);
+              }
+            } else {
+              console.error("No SINGLEFILE_ARCHIVE_COMMAND or SINGLEFILE_ARCHIVE_HTTP_API defined.");
+            }
+          }
 
           // Readability
           const window = new JSDOM("").window;
@@ -284,6 +317,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
                 image: user.archiveAsScreenshot
                   ? `archives/${linkExists.collectionId}/${link.id}.png`
                   : undefined,
+                singlefile: user.archiveAsSinglefile
+                  ? `archives/${linkExists.collectionId}/${link.id}.html`
+                  : undefined,
                 pdf: user.archiveAsPDF
                   ? `archives/${linkExists.collectionId}/${link.id}.pdf`
                   : undefined,
@@ -314,6 +350,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           image: !finalLink.image?.startsWith("archives")
             ? "unavailable"
             : undefined,
+          singlefile: !finalLink.singlefile?.startsWith("archives")
+            ? "unavailable"
+            : undefined,
           pdf: !finalLink.pdf?.startsWith("archives")
             ? "unavailable"
             : undefined,
@@ -324,6 +363,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       });
     else {
       removeFile({ filePath: `archives/${link.collectionId}/${link.id}.png` });
+      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.html` });
       removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
       removeFile({
         filePath: `archives/${link.collectionId}/${link.id}_readability.json`,

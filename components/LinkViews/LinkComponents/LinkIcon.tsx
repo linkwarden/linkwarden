@@ -42,6 +42,8 @@ export default function LinkIcon({
         <i className={`bi-file-earmark-pdf ${iconClasses}`}></i>
       ) : link.type === "image" ? (
         <i className={`bi-file-earmark-image ${iconClasses}`}></i>
+      ) : link.type === "singlefile" ? (
+        <i className={`bi-filetype-html ${iconClasses}`}></i>
       ) : undefined}
     </>
   );
