@@ -28,6 +28,17 @@ export function readabilityAvailable(
   );
 }
 
+export function singlefileAvailable(
+  link: LinkIncludingShortenedCollectionAndTags
+) {
+  return (
+    link &&
+    link.singlefile &&
+    link.singlefile !== "pending" &&
+    link.singlefile !== "unavailable"
+  );
+}
+
 export function previewAvailable(link: any) {
   return (
     link &&

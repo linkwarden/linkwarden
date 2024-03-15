@@ -61,6 +61,7 @@ export default function Index() {
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsSinglefile: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 
@@ -78,6 +79,7 @@ export default function Index() {
           username: account.username as string,
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
+          archiveAsSinglefile: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }
