@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import {
   pdfAvailable,
   readabilityAvailable,
+  singlefileAvailable,
   screenshotAvailable,
 } from "@/lib/shared/getArchiveValidity";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
@@ -42,6 +43,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsSinglefile: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 
@@ -59,6 +61,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           username: account.username as string,
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
+          archiveAsSinglefile: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }
@@ -72,6 +75,9 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       link &&
       (collectionOwner.archiveAsScreenshot === true
         ? link.pdf && link.pdf !== "pending"
+        : true) &&
+      (collectionOwner.archiveAsSinglefile === true
+        ? link.singlefile && link.singlefile !== "pending"
         : true) &&
       (collectionOwner.archiveAsPDF === true
         ? link.pdf && link.pdf !== "pending"
@@ -109,7 +115,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link?.image, link?.pdf, link?.readable, link?.singlefile]);
 
   const updateArchive = async () => {
     const load = toast.loading("Sending request...");
@@ -140,7 +146,8 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       {isReady() &&
       (screenshotAvailable(link) ||
         pdfAvailable(link) ||
-        readabilityAvailable(link)) ? (
+        readabilityAvailable(link) ||
+        singlefileAvailable(link)) ? (
         <p className="mb-3">
           The following formats are available for this link:
         </p>
@@ -181,6 +188,16 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 icon={"bi-file-earmark-text"}
                 format={ArchivedFormat.readability}
                 activeLink={link}
+              />
+            ) : undefined}
+
+            {singlefileAvailable(link) ? (
+              <PreservedFormatRow
+                name={"Singlefile"}
+                icon={"bi-filetype-html"}
+                format={ArchivedFormat.singlefile}
+                activeLink={link}
+                downloadable={true}
               />
             ) : undefined}
           </>

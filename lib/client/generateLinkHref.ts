@@ -7,6 +7,7 @@ import { LinksRouteTo } from "@prisma/client";
 import {
   pdfAvailable,
   readabilityAvailable,
+  singlefileAvailable,
   screenshotAvailable,
 } from "../shared/getArchiveValidity";
 
@@ -27,6 +28,10 @@ export const generateLinkHref = (
       if (!readabilityAvailable(link)) return link.url || "";
 
       return `/preserved/${link?.id}?format=${ArchivedFormat.readability}`;
+    case LinksRouteTo.SINGLEFILE:
+      if (!singlefileAvailable(link)) return link.url || "";
+
+      return `/preserved/${link?.id}?format=${ArchivedFormat.singlefile}`;
     case LinksRouteTo.SCREENSHOT:
       if (!screenshotAvailable(link)) return link.url || "";
 

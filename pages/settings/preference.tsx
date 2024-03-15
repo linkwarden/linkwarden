@@ -20,6 +20,8 @@ export default function Appearance() {
     useState<boolean>(false);
   const [archiveAsScreenshot, setArchiveAsScreenshot] =
     useState<boolean>(false);
+  const [archiveAsSinglefile, setArchiveAsSinglefile] =
+    useState<boolean>(false);
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(false);
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
     useState<boolean>(false);
@@ -31,6 +33,7 @@ export default function Appearance() {
     setUser({
       ...account,
       archiveAsScreenshot,
+      archiveAsSinglefile,
       archiveAsPDF,
       archiveAsWaybackMachine,
       linksRouteTo,
@@ -39,6 +42,7 @@ export default function Appearance() {
   }, [
     account,
     archiveAsScreenshot,
+    archiveAsSinglefile,
     archiveAsPDF,
     archiveAsWaybackMachine,
     linksRouteTo,
@@ -52,6 +56,7 @@ export default function Appearance() {
   useEffect(() => {
     if (!objectIsEmpty(account)) {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
+      setArchiveAsSinglefile(account.archiveAsSinglefile);
       setArchiveAsPDF(account.archiveAsPDF);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
@@ -130,6 +135,12 @@ export default function Appearance() {
             />
 
             <Checkbox
+              label="Singlefile"
+              state={archiveAsSinglefile}
+              onClick={() => setArchiveAsSinglefile(!archiveAsSinglefile)}
+            />
+
+            <Checkbox
               label="PDF"
               state={archiveAsPDF}
               onClick={() => setArchiveAsPDF(!archiveAsPDF)}
@@ -205,6 +216,22 @@ export default function Appearance() {
                 onChange={() => setLinksRouteTo(LinksRouteTo.READABLE)}
               />
               <span className="label-text">Open Readable, if available</span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Singlefile"
+                checked={linksRouteTo === LinksRouteTo.SINGLEFILE}
+                onChange={() => setLinksRouteTo(LinksRouteTo.SINGLEFILE)}
+              />
+              <span className="label-text">Open Singlefile, if available</span>
             </label>
 
             <label
