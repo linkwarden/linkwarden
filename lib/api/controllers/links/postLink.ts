@@ -48,6 +48,7 @@ export default async function postLink(
         return { response: "Collection is not accessible.", status: 401 };
 
       link.collection.id = findCollection.id;
+      link.collection.ownerId = findCollection.ownerId;
     } else {
       const collection = await prisma.collection.create({
         data: {
