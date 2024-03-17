@@ -5,12 +5,15 @@ import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import { Plan } from "@/types/global";
 import AccentSubmitButton from "@/components/AccentSubmitButton";
+import useAccountStore from "@/store/account";
 
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const session = useSession();
 
   const [plan, setPlan] = useState<Plan>(1);
+
+  const { account } = useAccountStore();
 
   const router = useRouter();
 
@@ -37,7 +40,6 @@ export default function Subscribe() {
         </p>
 
         <div className="divider my-0"></div>
-
         <div>
           <p>
             You will be redirected to Stripe, feel free to reach out to us at{" "}
@@ -47,7 +49,6 @@ export default function Subscribe() {
             in case of any issue.
           </p>
         </div>
-
         <div className="flex gap-3 border border-solid border-neutral-content w-4/5 mx-auto p-1 rounded-xl relative">
           <button
             onClick={() => setPlan(Plan.monthly)}
@@ -74,7 +75,6 @@ export default function Subscribe() {
             25% Off
           </div>
         </div>
-
         <div className="flex flex-col gap-2 justify-center items-center">
           <p className="text-3xl">
             ${plan === Plan.monthly ? "4" : "3"}
@@ -89,13 +89,14 @@ export default function Subscribe() {
             </legend>
 
             <p className="text-sm">
-              {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS}-day free trial, then $
-              {plan === Plan.monthly ? "4 per month" : "36 annually"}
+              {account.username
+                ? ""
+                : `${process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS}-day free trial, then `}
+              ${plan === Plan.monthly ? "4 per month" : "36 annually"}
             </p>
             <p className="text-sm">+ VAT if applicable</p>
           </fieldset>
         </div>
-
         <AccentSubmitButton
           type="button"
           label="Complete Subscription!"
@@ -103,7 +104,6 @@ export default function Subscribe() {
           onClick={submit}
           loading={submitLoader}
         />
-
         <div
           onClick={() => signOut()}
           className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
