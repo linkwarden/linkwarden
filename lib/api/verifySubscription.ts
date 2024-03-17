@@ -17,15 +17,7 @@ export default async function verifySubscription(
 
   const currentDate = new Date();
 
-  if (
-    subscription &&
-    currentDate > subscription.currentPeriodEnd &&
-    !subscription.active
-  ) {
-    return null;
-  }
-
-  if (!subscription || currentDate > subscription.currentPeriodEnd) {
+  if (!subscription?.active || currentDate > subscription.currentPeriodEnd) {
     const {
       active,
       stripeSubscriptionId,
@@ -59,15 +51,21 @@ export default async function verifySubscription(
           },
         })
         .catch((err) => console.log(err));
-    }
+    } else if (!active) {
+      const subscription = await prisma.subscription.findFirst({
+        where: {
+          userId: user.id,
+        },
+      });
 
-    if (!active) {
-      if (user.username)
-        // await prisma.user.update({
-        //   where: { id: user.id },
-        //   data: { username: null },
-        // });
-        return null;
+      if (subscription)
+        await prisma.subscription.delete({
+          where: {
+            userId: user.id,
+          },
+        });
+
+      return null;
     }
   }
 

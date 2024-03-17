@@ -32,11 +32,12 @@ export default async function checkSubscriptionByEmail(email: string) {
     customer.subscriptions?.data.some((subscription) => {
       subscription.current_period_end;
 
-      active = subscription.items.data.some(
-        (e) =>
-          (e.price.id === MONTHLY_PRICE_ID && e.price.active === true) ||
-          (e.price.id === YEARLY_PRICE_ID && e.price.active === true)
-      );
+      active =
+        subscription.items.data.some(
+          (e) =>
+            (e.price.id === MONTHLY_PRICE_ID && e.price.active === true) ||
+            (e.price.id === YEARLY_PRICE_ID && e.price.active === true)
+        ) || false;
       stripeSubscriptionId = subscription.id;
       currentPeriodStart = subscription.current_period_start * 1000;
       currentPeriodEnd = subscription.current_period_end * 1000;
@@ -44,7 +45,7 @@ export default async function checkSubscriptionByEmail(email: string) {
   });
 
   return {
-    active,
+    active: active || false,
     stripeSubscriptionId,
     currentPeriodStart,
     currentPeriodEnd,
