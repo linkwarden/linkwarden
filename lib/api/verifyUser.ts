@@ -52,7 +52,7 @@ export default async function verifyUser({
   }
 
   if (STRIPE_SECRET_KEY) {
-    const subscribedUser = verifySubscription(user);
+    const subscribedUser = await verifySubscription(user);
 
     if (!subscribedUser) {
       res.status(401).json({
