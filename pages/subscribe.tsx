@@ -30,9 +30,13 @@ export default function Subscribe() {
 
   return (
     <CenteredForm
-      text={`Start with a ${
-        process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
-      }-day free trial, cancel anytime!`}
+      text={
+        account.username
+          ? ""
+          : `Start with a ${
+              process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
+            }-day free trial, cancel anytime!`
+      }
     >
       <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
         <p className="sm:text-3xl text-2xl text-center font-extralight">
@@ -96,6 +100,12 @@ export default function Subscribe() {
             </p>
             <p className="text-sm">+ VAT if applicable</p>
           </fieldset>
+
+          <p className="text-sm mb-5">
+            {account.username
+              ? "Please note that since your trial has been previously ended, your subscription will start immediately. You can cancel anytime."
+              : ""}
+          </p>
         </div>
         <AccentSubmitButton
           type="button"
