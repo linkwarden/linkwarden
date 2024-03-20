@@ -73,83 +73,80 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
       return res.send(file);
     }
+  } else if (req.method === "POST") {
+    const user = await verifyUser({ req, res });
+    if (!user) return;
+
+    const collectionPermissions = await getPermission({
+      userId: user.id,
+      linkId,
+    });
+
+    const memberHasAccess = collectionPermissions?.members.some(
+      (e: UsersAndCollections) => e.userId === user.id && e.canCreate
+    );
+
+    if (!(collectionPermissions?.ownerId === user.id || memberHasAccess))
+      return { response: "Collection is not accessible.", status: 401 };
+
+    // await uploadHandler(linkId, )
+
+    const MAX_UPLOAD_SIZE = Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE);
+
+    const form = formidable({
+      maxFields: 1,
+      maxFiles: 1,
+      maxFileSize: MAX_UPLOAD_SIZE || 30 * 1048576,
+    });
+
+    form.parse(req, async (err, fields, files) => {
+      const allowedMIMETypes = [
+        "application/pdf",
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+      ];
+
+      if (
+        err ||
+        !files.file ||
+        !files.file[0] ||
+        !allowedMIMETypes.includes(files.file[0].mimetype || "")
+      ) {
+        // Handle parsing error
+        return res.status(500).json({
+          response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${MAX_UPLOAD_SIZE}MB.`,
+        });
+      } else {
+        const fileBuffer = fs.readFileSync(files.file[0].filepath);
+
+        const linkStillExists = await prisma.link.findUnique({
+          where: { id: linkId },
+        });
+
+        if (linkStillExists) {
+          await createFile({
+            filePath: `archives/${collectionPermissions?.id}/${
+              linkId + suffix
+            }`,
+            data: fileBuffer,
+          });
+
+          await prisma.link.update({
+            where: { id: linkId },
+            data: {
+              image: `archives/${collectionPermissions?.id}/${linkId + suffix}`,
+              lastPreserved: new Date().toISOString(),
+            },
+          });
+        }
+
+        fs.unlinkSync(files.file[0].filepath);
+      }
+
+      return res.status(200).json({
+        response: files,
+      });
+    });
   }
-  // else if (req.method === "POST") {
-  //   const user = await verifyUser({ req, res });
-  //   if (!user) return;
-
-  //   const collectionPermissions = await getPermission({
-  //     userId: user.id,
-  //     linkId,
-  //   });
-
-  //   const memberHasAccess = collectionPermissions?.members.some(
-  //     (e: UsersAndCollections) => e.userId === user.id && e.canCreate
-  //   );
-
-  //   if (!(collectionPermissions?.ownerId === user.id || memberHasAccess))
-  //     return { response: "Collection is not accessible.", status: 401 };
-
-  //   // await uploadHandler(linkId, )
-
-  //   const MAX_UPLOAD_SIZE = Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE);
-
-  //   const form = formidable({
-  //     maxFields: 1,
-  //     maxFiles: 1,
-  //     maxFileSize: MAX_UPLOAD_SIZE || 30 * 1048576,
-  //   });
-
-  //   form.parse(req, async (err, fields, files) => {
-  //     const allowedMIMETypes = [
-  //       "application/pdf",
-  //       "image/png",
-  //       "image/jpg",
-  //       "image/jpeg",
-  //     ];
-
-  //     if (
-  //       err ||
-  //       !files.file ||
-  //       !files.file[0] ||
-  //       !allowedMIMETypes.includes(files.file[0].mimetype || "")
-  //     ) {
-  //       // Handle parsing error
-  //       return res.status(500).json({
-  //         response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${MAX_UPLOAD_SIZE}MB.`,
-  //       });
-  //     } else {
-  //       const fileBuffer = fs.readFileSync(files.file[0].filepath);
-
-  //       const linkStillExists = await prisma.link.findUnique({
-  //         where: { id: linkId },
-  //       });
-
-  //       if (linkStillExists) {
-  //         await createFile({
-  //           filePath: `archives/${collectionPermissions?.id}/${
-  //             linkId + suffix
-  //           }`,
-  //           data: fileBuffer,
-  //         });
-
-  //         await prisma.link.update({
-  //           where: { id: linkId },
-  //           data: {
-  //             image: `archives/${collectionPermissions?.id}/${
-  //               linkId + suffix
-  //             }`,
-  //             lastPreserved: new Date().toISOString(),
-  //           },
-  //         });
-  //       }
-
-  //       fs.unlinkSync(files.file[0].filepath);
-  //     }
-
-  //     return res.status(200).json({
-  //       response: files,
-  //     });
-  //   });
-  // }
 }
