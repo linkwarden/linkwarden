@@ -74,7 +74,7 @@ async function processBookmarks(
       } else if (item.type === "element" && item.tagName === "a") {
         // process link
 
-        const linkUrl = item?.attributes.find((e) => e.key === "href")?.value;
+        const linkUrl = item?.attributes.find((e) => e.key.toLowerCase() === "href")?.value;
         const linkName = (
           item?.children.find((e) => e.type === "text") as TextNode
         )?.content;
@@ -82,14 +82,41 @@ async function processBookmarks(
           .find((e) => e.key === "tags")
           ?.value.split(",");
 
+        // set date if available
+        const linkDateValue = item?.attributes.find((e) => e.key.toLowerCase() === "add_date")?.value;
+        let linkDate = Date.now();
+        if (linkDateValue) {
+          try {
+            linkDate = Number.parseInt(linkDateValue);
+            // use the year 2000 as an arbitrary cutoff to determine if a link is in seconds or milliseconds
+            const year2000ms = 946684800000;
+            if ((linkDate > 0) && (linkDate < year2000ms)) {
+              linkDate = linkDate * 1000; // turn epoch seconds into milliseconds
+            }
+          } catch (error) {
+            // just ignore the error if it happens
+          }
+        }
+
+        let linkDesc = "";
+        const descNode = data.children.find((e) => (e as Element).tagName?.toLowerCase() === "dd") as Element;
+        if (descNode && descNode.children.length > 0) {
+          try {
+            linkDesc = (descNode.children[0] as TextNode).content;
+          } catch (error) {
+            // just ignore the error if it happens
+          }
+        }
+
         if (linkUrl && parentCollectionId) {
           await createLink(
             userId,
             linkUrl,
             parentCollectionId,
             linkName,
-            "",
-            linkTags
+            linkDesc,
+            linkTags,
+            linkDate
           );
         } else if (linkUrl) {
           // create a collection named "Imported Bookmarks" and add the link to it
@@ -100,8 +127,9 @@ async function processBookmarks(
             linkUrl,
             collectionId,
             linkName,
-            "",
-            linkTags
+            linkDesc,
+            linkTags,
+            linkDate
           );
         }
 
@@ -136,10 +164,10 @@ const createCollection = async (
       name: collectionName,
       parent: parentId
         ? {
-            connect: {
-              id: parentId,
-            },
-          }
+          connect: {
+            id: parentId,
+          },
+        }
         : undefined,
       owner: {
         connect: {
@@ -160,39 +188,41 @@ const createLink = async (
   collectionId: number,
   name?: string,
   description?: string,
-  tags?: string[]
+  tags?: string[],
+  createdAt?: number,
 ) => {
   await prisma.link.create({
     data: {
       name: name || "",
-      url,
-      description,
-      collectionId,
+      type: url,
+      description: description,
+      collectionId: collectionId,
       tags:
         tags && tags[0]
           ? {
-              connectOrCreate: tags.map((tag: string) => {
-                return (
-                  {
-                    where: {
-                      name_ownerId: {
-                        name: tag.trim(),
-                        ownerId: userId,
-                      },
-                    },
-                    create: {
+            connectOrCreate: tags.map((tag: string) => {
+              return (
+                {
+                  where: {
+                    name_ownerId: {
                       name: tag.trim(),
-                      owner: {
-                        connect: {
-                          id: userId,
-                        },
+                      ownerId: userId,
+                    },
+                  },
+                  create: {
+                    name: tag.trim(),
+                    owner: {
+                      connect: {
+                        id: userId,
                       },
                     },
-                  } || undefined
-                );
-              }),
-            }
+                  },
+                } || undefined
+              );
+            }),
+          }
           : undefined,
+      createdAt: createdAt
     },
   });
 };
