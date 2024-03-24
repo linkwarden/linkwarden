@@ -29,6 +29,7 @@ export default function NewLinkModal({ onClose }: Props) {
     image: "",
     pdf: "",
     readable: "",
+    singlefile: "",
     textContent: "",
     collection: {
       name: "",

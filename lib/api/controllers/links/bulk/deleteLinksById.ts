@@ -52,6 +52,9 @@ export default async function deleteLinksById(
     removeFile({
       filePath: `archives/${collectionIsAccessible?.id}/${linkId}_readability.json`,
     });
+    removeFile({
+      filePath: `archives/${collectionIsAccessible?.id}/${linkId}.html`,
+    });
   }
 
   return { response: deletedLinks, status: 200 };

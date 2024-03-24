@@ -128,12 +128,14 @@ export enum ArchivedFormat {
   jpeg,
   pdf,
   readability,
+  singlefile,
 }
 
 export enum LinkType {
   url,
   pdf,
   image,
+  singlefile,
 }
 
 export enum TokenExpiry {

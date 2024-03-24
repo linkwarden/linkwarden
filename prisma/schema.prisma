@@ -45,6 +45,7 @@ model User {
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
+  archiveAsSinglefile     Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
@@ -56,6 +57,7 @@ enum LinksRouteTo {
   ORIGINAL
   PDF
   READABLE
+  SINGLEFILE
   SCREENSHOT
 }
 
@@ -127,6 +129,7 @@ model Link {
   image         String?
   pdf           String?
   readable      String?
+  singlefile    String?
   lastPreserved DateTime?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @default(now()) @updatedAt
