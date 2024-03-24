@@ -120,7 +120,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           const content = await page.content();
 
           // Singlefile
-          if (user.archiveAsSinglefile && !link.singlefile?.startsWith("archive")) {
+          if (
+            user.archiveAsSinglefile &&
+            !link.singlefile?.startsWith("archive")
+          ) {
             let command = process.env.SINGLEFILE_ARCHIVE_COMMAND;
             let httpApi = process.env.SINGLEFILE_ARCHIVE_HTTP_API;
             if (command) {
@@ -135,28 +138,42 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
                     filePath: `archives/${targetLink.collectionId}/${link.id}.html`,
                   });
                 } catch (err) {
-                  console.error("Error running SINGLEFILE_ARCHIVE_COMMAND:", err);
+                  console.error(
+                    "Error running SINGLEFILE_ARCHIVE_COMMAND:",
+                    err
+                  );
                 }
               } else {
-                console.error("Invalid SINGLEFILE_ARCHIVE_COMMAND. Missing {{URL}}");
+                console.error(
+                  "Invalid SINGLEFILE_ARCHIVE_COMMAND. Missing {{URL}}"
+                );
               }
             } else if (httpApi) {
               try {
-                let html = await axios.post(httpApi, { url: link.url }, {
-                  headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                  },
-                  httpAgent: new Agent({ keepAlive: false }),
-                });
+                let html = await axios.post(
+                  httpApi,
+                  { url: link.url },
+                  {
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    httpAgent: new Agent({ keepAlive: false }),
+                  }
+                );
                 await createFile({
                   data: html.data,
                   filePath: `archives/${targetLink.collectionId}/${link.id}.html`,
                 });
               } catch (err) {
-                console.error("Error fetching Singlefile using SINGLEFILE_ARCHIVE_HTTP_API:", err);
+                console.error(
+                  "Error fetching Singlefile using SINGLEFILE_ARCHIVE_HTTP_API:",
+                  err
+                );
               }
             } else {
-              console.error("No SINGLEFILE_ARCHIVE_COMMAND or SINGLEFILE_ARCHIVE_HTTP_API defined.");
+              console.error(
+                "No SINGLEFILE_ARCHIVE_COMMAND or SINGLEFILE_ARCHIVE_HTTP_API defined."
+              );
             }
           }
 
