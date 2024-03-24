@@ -43,6 +43,8 @@ export default function LinkGroupedIconURL({
           <i className={`bi-file-earmark-pdf`}></i>
         ) : link.type === "image" ? (
           <i className={`bi-file-earmark-image`}></i>
+        ) : link.type === "singlefile" ? (
+          <i className={`bi-filetype-html`}></i>
         ) : undefined}
         <p className="truncate bg-white text-black mr-1">
           <p className="text-sm">{shortendURL}</p>

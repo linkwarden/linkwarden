@@ -46,6 +46,10 @@ declare global {
       PDF_MARGIN_TOP?: string;
       PDF_MARGIN_BOTTOM?: string;
 
+      // PDF archive settings
+      SINGLEFILE_ARCHIVE_COMMAND?: string;
+      SINGLEFILE_ARCHIVE_HTTP_API?: string;
+
       //
       // SSO Providers
       //

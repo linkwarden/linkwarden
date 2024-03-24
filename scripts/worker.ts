@@ -38,6 +38,13 @@ async function processBatch() {
         {
           readable: "pending",
         },
+        ///////////////////////
+        {
+          singlefile: null,
+        },
+        {
+          singlefile: "pending",
+        },
       ],
     },
     take: archiveTakeCount,
@@ -74,6 +81,13 @@ async function processBatch() {
         },
         {
           readable: "pending",
+        },
+        ///////////////////////
+        {
+          singlefile: null,
+        },
+        {
+          singlefile: "pending",
         },
       ],
     },

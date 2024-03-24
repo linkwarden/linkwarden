@@ -27,6 +27,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   else if (format === ArchivedFormat.jpeg) suffix = ".jpeg";
   else if (format === ArchivedFormat.pdf) suffix = ".pdf";
   else if (format === ArchivedFormat.readability) suffix = "_readability.json";
+  else if (format === ArchivedFormat.singlefile) suffix = ".html";
 
   //@ts-ignore
   if (!linkId || !suffix)
