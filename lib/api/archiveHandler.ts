@@ -334,9 +334,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
                 image: user.archiveAsScreenshot
                   ? `archives/${linkExists.collectionId}/${link.id}.png`
                   : undefined,
-                singlefile: user.archiveAsSinglefile
-                  ? `archives/${linkExists.collectionId}/${link.id}.html`
-                  : undefined,
                 pdf: user.archiveAsPDF
                   ? `archives/${linkExists.collectionId}/${link.id}.pdf`
                   : undefined,
