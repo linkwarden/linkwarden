@@ -36,6 +36,12 @@ export default function Index() {
       {link && Number(router.query.format) === ArchivedFormat.readability && (
         <ReadableView link={link} />
       )}
+      {link && Number(router.query.format) === ArchivedFormat.singlefile && (
+        <iframe
+          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.singlefile}`}
+          className="w-full h-screen border-none"
+        ></iframe>
+      )}
       {link && Number(router.query.format) === ArchivedFormat.pdf && (
         <iframe
           src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}`}

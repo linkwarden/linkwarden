@@ -160,6 +160,11 @@ export default async function updateLinkById(
         `archives/${collectionIsAccessible?.id}/${linkId}_readability.json`,
         `archives/${data.collection.id}/${linkId}_readability.json`
       );
+
+      await moveFile(
+        `archives/${collectionIsAccessible?.id}/${linkId}.html`,
+        `archives/${data.collection.id}/${linkId}.html`
+      );
     }
 
     return { response: updatedLink, status: 200 };
