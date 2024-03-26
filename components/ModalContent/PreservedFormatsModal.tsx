@@ -18,6 +18,7 @@ import {
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
+import { BeatLoader } from "react-spinners";
 
 type Props = {
   onClose: Function;
@@ -87,6 +88,15 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     );
   };
 
+  const atLeastOneFormatAvailable = () => {
+    return (
+      screenshotAvailable(link) ||
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ||
+      singlefileAvailable(link)
+    );
+  };
+
   useEffect(() => {
     (async () => {
       const data = await getLink(link.id as number, isPublic);
@@ -143,11 +153,10 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
       <div className="divider mb-2 mt-1"></div>
 
-      {isReady() &&
-      (screenshotAvailable(link) ||
-        pdfAvailable(link) ||
-        readabilityAvailable(link) ||
-        singlefileAvailable(link)) ? (
+      {screenshotAvailable(link) ||
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ||
+      singlefileAvailable(link) ? (
         <p className="mb-3">
           The following formats are available for this link:
         </p>
@@ -156,56 +165,57 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       )}
 
       <div className={`flex flex-col gap-3`}>
-        {isReady() ? (
-          <>
-            {screenshotAvailable(link) ? (
-              <PreservedFormatRow
-                name={"Screenshot"}
-                icon={"bi-file-earmark-image"}
-                format={
-                  link?.image?.endsWith("png")
-                    ? ArchivedFormat.png
-                    : ArchivedFormat.jpeg
-                }
-                activeLink={link}
-                downloadable={true}
-              />
-            ) : undefined}
+        {screenshotAvailable(link) ? (
+          <PreservedFormatRow
+            name={"Screenshot"}
+            icon={"bi-file-earmark-image"}
+            format={
+              link?.image?.endsWith("png")
+                ? ArchivedFormat.png
+                : ArchivedFormat.jpeg
+            }
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
 
-            {pdfAvailable(link) ? (
-              <PreservedFormatRow
-                name={"PDF"}
-                icon={"bi-file-earmark-pdf"}
-                format={ArchivedFormat.pdf}
-                activeLink={link}
-                downloadable={true}
-              />
-            ) : undefined}
+        {pdfAvailable(link) ? (
+          <PreservedFormatRow
+            name={"PDF"}
+            icon={"bi-file-earmark-pdf"}
+            format={ArchivedFormat.pdf}
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
 
-            {readabilityAvailable(link) ? (
-              <PreservedFormatRow
-                name={"Readable"}
-                icon={"bi-file-earmark-text"}
-                format={ArchivedFormat.readability}
-                activeLink={link}
-              />
-            ) : undefined}
+        {singlefileAvailable(link) ? (
+          <PreservedFormatRow
+            name={"SingleFile (Full Copy)"}
+            icon={"bi-filetype-html"}
+            format={ArchivedFormat.singlefile}
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
 
-            {singlefileAvailable(link) ? (
-              <PreservedFormatRow
-                name={"Singlefile"}
-                icon={"bi-filetype-html"}
-                format={ArchivedFormat.singlefile}
-                activeLink={link}
-                downloadable={true}
-              />
-            ) : undefined}
-          </>
-        ) : (
-          <div
-            className={`w-full h-full flex flex-col justify-center p-10 skeleton bg-base-200`}
-          >
-            <i className="bi-stack drop-shadow text-primary text-8xl mx-auto mb-5"></i>
+        {readabilityAvailable(link) ? (
+          <PreservedFormatRow
+            name={"Readable"}
+            icon={"bi-file-earmark-text"}
+            format={ArchivedFormat.readability}
+            activeLink={link}
+          />
+        ) : undefined}
+
+        {!isReady() && !atLeastOneFormatAvailable() ? (
+          <div className={`w-full h-full flex flex-col justify-center p-10`}>
+            <BeatLoader
+              color="oklch(var(--p))"
+              className="mx-auto mb-3"
+              size={30}
+            />
+
             <p className="text-center text-2xl">
               Link preservation is in the queue
             </p>
@@ -213,7 +223,22 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
               Please check back later to see the result
             </p>
           </div>
-        )}
+        ) : !isReady() && atLeastOneFormatAvailable() ? (
+          <div className={`w-full h-full flex flex-col justify-center p-5`}>
+            <BeatLoader
+              color="oklch(var(--p))"
+              className="mx-auto mb-3"
+              size={20}
+            />
+
+            <p className="text-center">
+              There are more preserved formats in the queue
+            </p>
+            <p className="text-center text-sm">
+              Please check back later to see the result
+            </p>
+          </div>
+        ) : undefined}
 
         <div
           className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${

@@ -1,18 +1,14 @@
 import { LaunchOptions, chromium, devices } from "playwright";
 import { prisma } from "./db";
 import createFile from "./storage/createFile";
-import sendToWayback from "./sendToWayback";
-import { Readability } from "@mozilla/readability";
-import { JSDOM } from "jsdom";
-import DOMPurify from "dompurify";
+import sendToWayback from "./preservationScheme/sendToWayback";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
 import removeFile from "./storage/removeFile";
 import Jimp from "jimp";
-import { execSync } from "child_process";
-import axios from "axios";
-import { Agent } from "http";
 import createFolder from "./storage/createFolder";
+import archiveAsSinglefile from "./preservationScheme/archiveAsSinglefile";
+import archiveAsReadability from "./preservationScheme/archiveAsReadablility";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -23,25 +19,6 @@ type LinksAndCollectionAndOwner = Link & {
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 
 export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
-  // allow user to configure a proxy
-  let browserOptions: LaunchOptions = {};
-  if (process.env.PROXY) {
-    browserOptions.proxy = {
-      server: process.env.PROXY,
-      bypass: process.env.PROXY_BYPASS,
-      username: process.env.PROXY_USERNAME,
-      password: process.env.PROXY_PASSWORD,
-    };
-  }
-
-  const browser = await chromium.launch(browserOptions);
-  const context = await browser.newContext({
-    ...devices["Desktop Chrome"],
-    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
-  });
-
-  const page = await context.newPage();
-
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(
       () =>
@@ -54,9 +31,24 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
     );
   });
 
+  // allow user to configure a proxy
+  let browserOptions: LaunchOptions = {};
+  if (process.env.PROXY) {
+    browserOptions.proxy = {
+      server: process.env.PROXY,
+      bypass: process.env.PROXY_BYPASS,
+      username: process.env.PROXY_USERNAME,
+      password: process.env.PROXY_PASSWORD,
+    };
+  }
+
+  const browser = await chromium.launch(browserOptions);
+
   try {
     await Promise.race([
       (async () => {
+        const user = link.collection?.owner;
+
         const validatedUrl = link.url
           ? await validateUrlSize(link.url)
           : undefined;
@@ -76,12 +68,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           else if (contentType.includes("image/png")) imageExtension = "png";
         }
 
-        const user = link.collection?.owner;
-
-        // send to archive.org
-        if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
-
-        const targetLink = await prisma.link.update({
+        await prisma.link.update({
           where: { id: link.id },
           data: {
             type: linkType,
@@ -106,6 +93,18 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           },
         });
 
+        // SingleFile
+        if (
+          !link.singlefile?.startsWith("archive") &&
+          !link.singlefile?.startsWith("unavailable") &&
+          user.archiveAsSinglefile &&
+          link.url
+        )
+          await archiveAsSinglefile(link);
+
+        // send to archive.org
+        if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
+
         if (linkType === "image" && !link.image?.startsWith("archive")) {
           await imageHandler(link, imageExtension); // archive image (jpeg/png)
           return;
@@ -115,230 +114,172 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         } else if (link.url) {
           // archive url
 
+          const context = await browser.newContext({
+            ...devices["Desktop Chrome"],
+            ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
+          });
+
+          const page = await context.newPage();
+
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
 
           const content = await page.content();
 
-          // Singlefile
-          if (
-            user.archiveAsSinglefile &&
-            !link.singlefile?.startsWith("archive")
-          ) {
-            let command = process.env.SINGLEFILE_ARCHIVE_COMMAND;
-            let httpApi = process.env.SINGLEFILE_ARCHIVE_HTTP_API;
-            if (command) {
-              if (command.includes("{{URL}}")) {
-                try {
-                  let html = execSync(command.replace("{{URL}}", link.url), {
-                    timeout: 60000,
-                    maxBuffer: 1024 * 1024 * 100,
-                  });
-                  await createFile({
-                    data: html,
-                    filePath: `archives/${targetLink.collectionId}/${link.id}.html`,
-                  });
-                } catch (err) {
-                  console.error(
-                    "Error running SINGLEFILE_ARCHIVE_COMMAND:",
-                    err
-                  );
-                }
-              } else {
-                console.error(
-                  "Invalid SINGLEFILE_ARCHIVE_COMMAND. Missing {{URL}}"
-                );
-              }
-            } else if (httpApi) {
-              try {
-                let html = await axios.post(
-                  httpApi,
-                  { url: link.url },
-                  {
-                    headers: {
-                      "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    httpAgent: new Agent({ keepAlive: false }),
-                  }
-                );
-                await createFile({
-                  data: html.data,
-                  filePath: `archives/${targetLink.collectionId}/${link.id}.html`,
-                });
-              } catch (err) {
-                console.error(
-                  "Error fetching Singlefile using SINGLEFILE_ARCHIVE_HTTP_API:",
-                  err
-                );
-              }
-            } else {
-              console.error(
-                "No SINGLEFILE_ARCHIVE_COMMAND or SINGLEFILE_ARCHIVE_HTTP_API defined."
-              );
-            }
-          }
-
           // Readability
-          const window = new JSDOM("").window;
-          const purify = DOMPurify(window);
-          const cleanedUpContent = purify.sanitize(content);
-          const dom = new JSDOM(cleanedUpContent, { url: link.url || "" });
-          const article = new Readability(dom.window.document).parse();
-          const articleText = article?.textContent
-            .replace(/ +(?= )/g, "") // strip out multiple spaces
-            .replace(/(\r\n|\n|\r)/gm, " "); // strip out line breaks
           if (
-            articleText &&
-            articleText !== "" &&
-            !link.readable?.startsWith("archive")
-          ) {
-            await createFile({
-              data: JSON.stringify(article),
-              filePath: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
-            });
-
-            await prisma.link.update({
-              where: { id: link.id },
-              data: {
-                readable: `archives/${targetLink.collectionId}/${link.id}_readability.json`,
-                textContent: articleText,
-              },
-            });
-          }
+            !link.readable?.startsWith("archives") &&
+            !link.readable?.startsWith("unavailable")
+          )
+            await archiveAsReadability(content, link);
 
           // Preview
 
-          const ogImageUrl = await page.evaluate(() => {
-            const metaTag = document.querySelector('meta[property="og:image"]');
-            return metaTag ? (metaTag as any).content : null;
-          });
+          if (
+            !link.preview?.startsWith("archives") &&
+            !link.preview?.startsWith("unavailable")
+          ) {
+            const ogImageUrl = await page.evaluate(() => {
+              const metaTag = document.querySelector(
+                'meta[property="og:image"]'
+              );
+              return metaTag ? (metaTag as any).content : null;
+            });
 
-          createFolder({
-            filePath: `archives/preview/${link.collectionId}`,
-          });
+            createFolder({
+              filePath: `archives/preview/${link.collectionId}`,
+            });
 
-          if (ogImageUrl) {
-            console.log("Found og:image URL:", ogImageUrl);
+            if (ogImageUrl) {
+              console.log("Found og:image URL:", ogImageUrl);
 
-            // Download the image
-            const imageResponse = await page.goto(ogImageUrl);
+              // Download the image
+              const imageResponse = await page.goto(ogImageUrl);
 
-            // Check if imageResponse is not null
-            if (imageResponse && !link.preview?.startsWith("archive")) {
-              const buffer = await imageResponse.body();
+              // Check if imageResponse is not null
+              if (imageResponse && !link.preview?.startsWith("archive")) {
+                const buffer = await imageResponse.body();
 
-              // Check if buffer is not null
-              if (buffer) {
-                // Load the image using Jimp
-                Jimp.read(buffer, async (err, image) => {
-                  if (image && !err) {
-                    image?.resize(1280, Jimp.AUTO).quality(20);
-                    const processedBuffer = await image?.getBufferAsync(
-                      Jimp.MIME_JPEG
-                    );
+                // Check if buffer is not null
+                if (buffer) {
+                  // Load the image using Jimp
+                  Jimp.read(buffer, async (err, image) => {
+                    if (image && !err) {
+                      image?.resize(1280, Jimp.AUTO).quality(20);
+                      const processedBuffer = await image?.getBufferAsync(
+                        Jimp.MIME_JPEG
+                      );
 
-                    createFile({
-                      data: processedBuffer,
-                      filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                    }).then(() => {
-                      return prisma.link.update({
-                        where: { id: link.id },
-                        data: {
-                          preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                        },
+                      createFile({
+                        data: processedBuffer,
+                        filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                      }).then(() => {
+                        return prisma.link.update({
+                          where: { id: link.id },
+                          data: {
+                            preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                          },
+                        });
                       });
-                    });
-                  }
-                }).catch((err) => {
-                  console.error("Error processing the image:", err);
-                });
-              } else {
-                console.log("No image data found.");
+                    }
+                  }).catch((err) => {
+                    console.error("Error processing the image:", err);
+                  });
+                } else {
+                  console.log("No image data found.");
+                }
               }
-            }
 
-            await page.goBack();
-          } else if (!link.preview?.startsWith("archive")) {
-            console.log("No og:image found");
-            await page
-              .screenshot({ type: "jpeg", quality: 20 })
-              .then((screenshot) => {
-                return createFile({
-                  data: screenshot,
-                  filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                });
-              })
-              .then(() => {
-                return prisma.link.update({
-                  where: { id: link.id },
-                  data: {
-                    preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                  },
-                });
-              });
-          }
-
-          // Screenshot/PDF
-          await page.evaluate(
-            autoScroll,
-            Number(process.env.AUTOSCROLL_TIMEOUT) || 30
-          );
-
-          // Check if the user hasn't deleted the link by the time we're done scrolling
-          const linkExists = await prisma.link.findUnique({
-            where: { id: link.id },
-          });
-          if (linkExists) {
-            const processingPromises = [];
-
-            if (
-              user.archiveAsScreenshot &&
-              !link.image?.startsWith("archive")
-            ) {
-              processingPromises.push(
-                page.screenshot({ fullPage: true }).then((screenshot) => {
+              await page.goBack();
+            } else if (!link.preview?.startsWith("archive")) {
+              console.log("No og:image found");
+              await page
+                .screenshot({ type: "jpeg", quality: 20 })
+                .then((screenshot) => {
                   return createFile({
                     data: screenshot,
-                    filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
+                    filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
                   });
                 })
-              );
+                .then(() => {
+                  return prisma.link.update({
+                    where: { id: link.id },
+                    data: {
+                      preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                    },
+                  });
+                });
             }
+          }
 
-            // apply administrator's defined pdf margins or default to 15px
-            const margins = {
-              top: process.env.PDF_MARGIN_TOP || "15px",
-              bottom: process.env.PDF_MARGIN_BOTTOM || "15px",
-            };
+          if (
+            (!link.image?.startsWith("archives") &&
+              !link.image?.startsWith("unavailable")) ||
+            (!link.pdf?.startsWith("archives") &&
+              !link.pdf?.startsWith("unavailable"))
+          ) {
+            // Screenshot/PDF
+            await page.evaluate(
+              autoScroll,
+              Number(process.env.AUTOSCROLL_TIMEOUT) || 30
+            );
 
-            if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
-              processingPromises.push(
-                page
-                  .pdf({
-                    width: "1366px",
-                    height: "1931px",
-                    printBackground: true,
-                    margin: margins,
-                  })
-                  .then((pdf) => {
+            // Check if the user hasn't deleted the link by the time we're done scrolling
+            const linkExists = await prisma.link.findUnique({
+              where: { id: link.id },
+            });
+            if (linkExists) {
+              const processingPromises = [];
+
+              if (
+                user.archiveAsScreenshot &&
+                !link.image?.startsWith("archive")
+              ) {
+                processingPromises.push(
+                  page.screenshot({ fullPage: true }).then((screenshot) => {
                     return createFile({
-                      data: pdf,
-                      filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
+                      data: screenshot,
+                      filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
                     });
                   })
-              );
+                );
+              }
+
+              // apply administrator's defined pdf margins or default to 15px
+              const margins = {
+                top: process.env.PDF_MARGIN_TOP || "15px",
+                bottom: process.env.PDF_MARGIN_BOTTOM || "15px",
+              };
+
+              if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
+                processingPromises.push(
+                  page
+                    .pdf({
+                      width: "1366px",
+                      height: "1931px",
+                      printBackground: true,
+                      margin: margins,
+                    })
+                    .then((pdf) => {
+                      return createFile({
+                        data: pdf,
+                        filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
+                      });
+                    })
+                );
+              }
+              await Promise.allSettled(processingPromises);
+              await prisma.link.update({
+                where: { id: link.id },
+                data: {
+                  image: user.archiveAsScreenshot
+                    ? `archives/${linkExists.collectionId}/${link.id}.png`
+                    : undefined,
+                  pdf: user.archiveAsPDF
+                    ? `archives/${linkExists.collectionId}/${link.id}.pdf`
+                    : undefined,
+                },
+              });
             }
-            await Promise.allSettled(processingPromises);
-            await prisma.link.update({
-              where: { id: link.id },
-              data: {
-                image: user.archiveAsScreenshot
-                  ? `archives/${linkExists.collectionId}/${link.id}.png`
-                  : undefined,
-                pdf: user.archiveAsPDF
-                  ? `archives/${linkExists.collectionId}/${link.id}.pdf`
-                  : undefined,
-              },
-            });
           }
         }
       })(),
