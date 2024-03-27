@@ -2,6 +2,7 @@ import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
 import { parse, Node, Element, TextNode } from "himalaya";
+import { writeFileSync } from "fs";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
@@ -36,7 +37,9 @@ export default async function importFromHTMLFile(
 
   const jsonData = parse(document.documentElement.outerHTML);
 
-  for (const item of jsonData) {
+  const processedArray = processNodes(jsonData);
+
+  for (const item of processedArray) {
     console.log(item);
     await processBookmarks(userId, item as Element);
   }
@@ -74,7 +77,9 @@ async function processBookmarks(
       } else if (item.type === "element" && item.tagName === "a") {
         // process link
 
-        const linkUrl = item?.attributes.find((e) => e.key.toLowerCase() === "href")?.value;
+        const linkUrl = item?.attributes.find(
+          (e) => e.key.toLowerCase() === "href"
+        )?.value;
         const linkName = (
           item?.children.find((e) => e.type === "text") as TextNode
         )?.content;
@@ -83,30 +88,22 @@ async function processBookmarks(
           ?.value.split(",");
 
         // set date if available
-        const linkDateValue = item?.attributes.find((e) => e.key.toLowerCase() === "add_date")?.value;
-        let linkDate = Date.now();
-        if (linkDateValue) {
-          try {
-            linkDate = Number.parseInt(linkDateValue);
-            // use the year 2000 as an arbitrary cutoff to determine if a link is in seconds or milliseconds
-            const year2000ms = 946684800000;
-            if ((linkDate > 0) && (linkDate < year2000ms)) {
-              linkDate = linkDate * 1000; // turn epoch seconds into milliseconds
-            }
-          } catch (error) {
-            // just ignore the error if it happens
-          }
-        }
+        const linkDateValue = item?.attributes.find(
+          (e) => e.key.toLowerCase() === "add_date"
+        )?.value;
 
-        let linkDesc = "";
-        const descNode = data.children.find((e) => (e as Element).tagName?.toLowerCase() === "dd") as Element;
-        if (descNode && descNode.children.length > 0) {
-          try {
-            linkDesc = (descNode.children[0] as TextNode).content;
-          } catch (error) {
-            // just ignore the error if it happens
-          }
-        }
+        const linkDate = linkDateValue
+          ? new Date(Number(linkDateValue) * 1000)
+          : undefined;
+
+        let linkDesc =
+          (
+            (
+              item?.children?.find(
+                (e) => e.type === "element" && e.tagName === "dd"
+              ) as Element
+            )?.children[0] as TextNode
+          )?.content || "";
 
         if (linkUrl && parentCollectionId) {
           await createLink(
@@ -164,10 +161,10 @@ const createCollection = async (
       name: collectionName,
       parent: parentId
         ? {
-          connect: {
-            id: parentId,
-          },
-        }
+            connect: {
+              id: parentId,
+            },
+          }
         : undefined,
       owner: {
         connect: {
@@ -189,40 +186,81 @@ const createLink = async (
   name?: string,
   description?: string,
   tags?: string[],
-  createdAt?: number,
+  importDate?: Date
 ) => {
   await prisma.link.create({
     data: {
       name: name || "",
-      type: url,
-      description: description,
-      collectionId: collectionId,
+      url,
+      description,
+      collectionId,
       tags:
         tags && tags[0]
           ? {
-            connectOrCreate: tags.map((tag: string) => {
-              return (
-                {
-                  where: {
-                    name_ownerId: {
-                      name: tag.trim(),
-                      ownerId: userId,
-                    },
-                  },
-                  create: {
-                    name: tag.trim(),
-                    owner: {
-                      connect: {
-                        id: userId,
+              connectOrCreate: tags.map((tag: string) => {
+                return (
+                  {
+                    where: {
+                      name_ownerId: {
+                        name: tag.trim(),
+                        ownerId: userId,
                       },
                     },
-                  },
-                } || undefined
-              );
-            }),
-          }
+                    create: {
+                      name: tag.trim(),
+                      owner: {
+                        connect: {
+                          id: userId,
+                        },
+                      },
+                    },
+                  } || undefined
+                );
+              }),
+            }
           : undefined,
-      createdAt: createdAt
+      importDate: importDate || undefined,
     },
   });
 };
+
+function processNodes(nodes: Node[]) {
+  const findAndProcessDL = (node: Node) => {
+    if (node.type === "element" && node.tagName === "dl") {
+      processDLChildren(node);
+    } else if (
+      node.type === "element" &&
+      node.children &&
+      node.children.length
+    ) {
+      node.children.forEach((child) => findAndProcessDL(child));
+    }
+  };
+
+  const processDLChildren = (dlNode: Element) => {
+    dlNode.children.forEach((child, i) => {
+      if (child.type === "element" && child.tagName === "dt") {
+        const nextSibling = dlNode.children[i + 1];
+        if (
+          nextSibling &&
+          nextSibling.type === "element" &&
+          nextSibling.tagName === "dd"
+        ) {
+          const aElement = child.children.find(
+            (el) => el.type === "element" && el.tagName === "a"
+          );
+          if (aElement && aElement.type === "element") {
+            // Add the 'dd' element as a child of the 'a' element
+            aElement.children.push(nextSibling);
+            // Remove the 'dd' from the parent 'dl' to avoid duplicate processing
+            dlNode.children.splice(i + 1, 1);
+            // Adjust the loop counter due to the removal
+          }
+        }
+      }
+    });
+  };
+
+  nodes.forEach(findAndProcessDL);
+  return nodes;
+}
