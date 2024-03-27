@@ -391,10 +391,17 @@ export function getLogins() {
       name: process.env.ZOOM_CUSTOM_NAME ?? "Zoom",
     });
   }
+  // Authelia
+  if (process.env.NEXT_PUBLIC_AUTHELIA_ENABLED === "true") {
+    buttonAuths.push({
+      method: "authelia",
+      name: process.env.AUTHELIA_CUSTOM_NAME ?? "Authelia",
+    });
+  }
   return {
     credentialsEnabled:
       process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === "true" ||
-      process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === undefined
+        process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === undefined
         ? "true"
         : "false",
     emailEnabled:
