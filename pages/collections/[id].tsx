@@ -62,6 +62,7 @@ export default function Index() {
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
+    archiveAsEpub: undefined as unknown as boolean,
   });
 
   useEffect(() => {
@@ -79,6 +80,7 @@ export default function Index() {
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
+          archiveAsEpub: account.archiveAsEpub as boolean,
         });
       }
     };

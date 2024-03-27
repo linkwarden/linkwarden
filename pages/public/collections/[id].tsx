@@ -54,6 +54,7 @@ export default function PublicCollections() {
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
+    archiveAsEpub: undefined as unknown as boolean,
   });
 
   const [searchFilter, setSearchFilter] = useState({

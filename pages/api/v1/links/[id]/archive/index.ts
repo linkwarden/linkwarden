@@ -75,6 +75,7 @@ const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
     data: {
       image: null,
       pdf: null,
+      epub: null,
       readable: null,
       preview: null,
     },
@@ -82,6 +83,9 @@ const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
 
   await removeFile({
     filePath: `archives/${link.collection.id}/${link.id}.pdf`,
+  });
+  await removeFile({
+    filePath: `archives/${link.collection.id}/${link.id}.epub`,
   });
   await removeFile({
     filePath: `archives/${link.collection.id}/${link.id}.png`,

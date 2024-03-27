@@ -13,6 +13,7 @@ type ReturnContentTypes =
   | "image/jpeg"
   | "image/png"
   | "application/pdf"
+  | "application/epub+zip"
   | "application/json";
 
 export default async function readFile(filePath: string) {
@@ -57,6 +58,8 @@ export default async function readFile(filePath: string) {
 
         if (filePath.endsWith(".pdf")) {
           contentType = "application/pdf";
+        } else if (filePath.endsWith(".epub")) {
+          contentType = "application/epub+zip";
         } else if (filePath.endsWith(".png")) {
           contentType = "image/png";
         } else if (filePath.endsWith("_readability.json")) {
@@ -84,6 +87,8 @@ export default async function readFile(filePath: string) {
 
     if (filePath.endsWith(".pdf")) {
       contentType = "application/pdf";
+    } else if (filePath.endsWith(".epub")) {
+      contentType = "application/epub+zip";
     } else if (filePath.endsWith(".png")) {
       contentType = "image/png";
     } else if (filePath.endsWith("_readability.json")) {

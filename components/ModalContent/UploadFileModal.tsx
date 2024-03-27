@@ -30,6 +30,7 @@ export default function UploadFileModal({ onClose }: Props) {
     preview: "",
     image: "",
     pdf: "",
+    epub: "",
     readable: "",
     textContent: "",
     collection: {
@@ -101,7 +102,7 @@ export default function UploadFileModal({ onClose }: Props) {
   const submit = async () => {
     if (!submitLoader && file) {
       let fileType: ArchivedFormat | null = null;
-      let linkType: "url" | "image" | "pdf" | null = null;
+      let linkType: "url" | "image" | "pdf" | "epub" | null = null;
 
       if (file?.type === "image/jpg" || file.type === "image/jpeg") {
         fileType = ArchivedFormat.jpeg;
@@ -112,6 +113,9 @@ export default function UploadFileModal({ onClose }: Props) {
       } else if (file.type === "application/pdf") {
         fileType = ArchivedFormat.pdf;
         linkType = "pdf";
+      } else if (file.type === "application/epub+zip") {
+        fileType = ArchivedFormat.epub;
+        linkType = "epub";
       }
 
       if (fileType !== null && linkType !== null) {
@@ -165,13 +169,13 @@ export default function UploadFileModal({ onClose }: Props) {
           <label className="btn h-10 btn-sm w-full border border-neutral-content hover:border-neutral-content flex justify-between">
             <input
               type="file"
-              accept=".pdf,.png,.jpg,.jpeg"
+              accept=".pdf,.epub,.png,.jpg,.jpeg"
               className="cursor-pointer custom-file-input"
               onChange={(e) => e.target.files && setFile(e.target.files[0])}
             />
           </label>
           <p className="text-xs font-semibold mt-2">
-            PDF, PNG, JPG (Up to {process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 30}
+            PDF, EPUB, PNG, JPG (Up to {process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 30}
             MB)
           </p>
         </div>

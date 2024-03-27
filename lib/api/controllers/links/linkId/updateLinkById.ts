@@ -152,6 +152,11 @@ export default async function updateLinkById(
       );
 
       await moveFile(
+        `archives/${collectionIsAccessible?.id}/${linkId}.epub`,
+        `archives/${data.collection.id}/${linkId}.epub`
+      );
+
+      await moveFile(
         `archives/${collectionIsAccessible?.id}/${linkId}.png`,
         `archives/${data.collection.id}/${linkId}.png`
       );

@@ -66,6 +66,7 @@ export default function EditCollectionSharingModal({
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
+    archiveAsEpub: undefined as unknown as boolean,
   });
 
   useEffect(() => {

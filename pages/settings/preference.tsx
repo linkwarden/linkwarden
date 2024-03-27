@@ -21,6 +21,7 @@ export default function Appearance() {
   const [archiveAsScreenshot, setArchiveAsScreenshot] =
     useState<boolean>(false);
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(false);
+  const [archiveAsEpub, setArchiveAsEpub] = useState<boolean>(false);
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
     useState<boolean>(false);
   const [linksRouteTo, setLinksRouteTo] = useState<LinksRouteTo>(
@@ -32,6 +33,7 @@ export default function Appearance() {
       ...account,
       archiveAsScreenshot,
       archiveAsPDF,
+      archiveAsEpub,
       archiveAsWaybackMachine,
       linksRouteTo,
       preventDuplicateLinks,
@@ -40,6 +42,7 @@ export default function Appearance() {
     account,
     archiveAsScreenshot,
     archiveAsPDF,
+    archiveAsEpub,
     archiveAsWaybackMachine,
     linksRouteTo,
     preventDuplicateLinks,
@@ -53,6 +56,7 @@ export default function Appearance() {
     if (!objectIsEmpty(account)) {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
       setArchiveAsPDF(account.archiveAsPDF);
+      setArchiveAsEpub(account.archiveAsEpub);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
       setPreventDuplicateLinks(account.preventDuplicateLinks);
@@ -136,6 +140,12 @@ export default function Appearance() {
             />
 
             <Checkbox
+              label="Epub"
+              state={archiveAsEpub}
+              onClick={() => setArchiveAsEpub(!archiveAsEpub)}
+            />
+
+            <Checkbox
               label="Archive.org Snapshot"
               state={archiveAsWaybackMachine}
               onClick={() =>
@@ -189,6 +199,22 @@ export default function Appearance() {
                 onChange={() => setLinksRouteTo(LinksRouteTo.PDF)}
               />
               <span className="label-text">Open PDF, if available</span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="EPUB"
+                checked={linksRouteTo === LinksRouteTo.EPUB}
+                onChange={() => setLinksRouteTo(LinksRouteTo.EPUB)}
+              />
+              <span className="label-text">Open Epub, if available</span>
             </label>
 
             <label
