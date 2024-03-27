@@ -2,6 +2,7 @@ import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
 import { parse, Node, Element, TextNode } from "himalaya";
+import { writeFileSync } from "fs";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
@@ -36,7 +37,9 @@ export default async function importFromHTMLFile(
 
   const jsonData = parse(document.documentElement.outerHTML);
 
-  for (const item of jsonData) {
+  const processedArray = processNodes(jsonData);
+
+  for (const item of processedArray) {
     console.log(item);
     await processBookmarks(userId, item as Element);
   }
@@ -74,7 +77,9 @@ async function processBookmarks(
       } else if (item.type === "element" && item.tagName === "a") {
         // process link
 
-        const linkUrl = item?.attributes.find((e) => e.key === "href")?.value;
+        const linkUrl = item?.attributes.find(
+          (e) => e.key.toLowerCase() === "href"
+        )?.value;
         const linkName = (
           item?.children.find((e) => e.type === "text") as TextNode
         )?.content;
@@ -82,14 +87,33 @@ async function processBookmarks(
           .find((e) => e.key === "tags")
           ?.value.split(",");
 
+        // set date if available
+        const linkDateValue = item?.attributes.find(
+          (e) => e.key.toLowerCase() === "add_date"
+        )?.value;
+
+        const linkDate = linkDateValue
+          ? new Date(Number(linkDateValue) * 1000)
+          : undefined;
+
+        let linkDesc =
+          (
+            (
+              item?.children?.find(
+                (e) => e.type === "element" && e.tagName === "dd"
+              ) as Element
+            )?.children[0] as TextNode
+          )?.content || "";
+
         if (linkUrl && parentCollectionId) {
           await createLink(
             userId,
             linkUrl,
             parentCollectionId,
             linkName,
-            "",
-            linkTags
+            linkDesc,
+            linkTags,
+            linkDate
           );
         } else if (linkUrl) {
           // create a collection named "Imported Bookmarks" and add the link to it
@@ -100,8 +124,9 @@ async function processBookmarks(
             linkUrl,
             collectionId,
             linkName,
-            "",
-            linkTags
+            linkDesc,
+            linkTags,
+            linkDate
           );
         }
 
@@ -160,7 +185,8 @@ const createLink = async (
   collectionId: number,
   name?: string,
   description?: string,
-  tags?: string[]
+  tags?: string[],
+  importDate?: Date
 ) => {
   await prisma.link.create({
     data: {
@@ -193,6 +219,48 @@ const createLink = async (
               }),
             }
           : undefined,
+      importDate: importDate || undefined,
     },
   });
 };
+
+function processNodes(nodes: Node[]) {
+  const findAndProcessDL = (node: Node) => {
+    if (node.type === "element" && node.tagName === "dl") {
+      processDLChildren(node);
+    } else if (
+      node.type === "element" &&
+      node.children &&
+      node.children.length
+    ) {
+      node.children.forEach((child) => findAndProcessDL(child));
+    }
+  };
+
+  const processDLChildren = (dlNode: Element) => {
+    dlNode.children.forEach((child, i) => {
+      if (child.type === "element" && child.tagName === "dt") {
+        const nextSibling = dlNode.children[i + 1];
+        if (
+          nextSibling &&
+          nextSibling.type === "element" &&
+          nextSibling.tagName === "dd"
+        ) {
+          const aElement = child.children.find(
+            (el) => el.type === "element" && el.tagName === "a"
+          );
+          if (aElement && aElement.type === "element") {
+            // Add the 'dd' element as a child of the 'a' element
+            aElement.children.push(nextSibling);
+            // Remove the 'dd' from the parent 'dl' to avoid duplicate processing
+            dlNode.children.splice(i + 1, 1);
+            // Adjust the loop counter due to the removal
+          }
+        }
+      }
+    });
+  };
+
+  nodes.forEach(findAndProcessDL);
+  return nodes;
+}
