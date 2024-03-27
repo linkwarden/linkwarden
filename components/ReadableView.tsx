@@ -34,6 +34,8 @@ export default function ReadableView({ link }: Props) {
   const [imageError, setImageError] = useState<boolean>(false);
   const [colorPalette, setColorPalette] = useState<RGBColor[]>();
 
+  const [date, setDate] = useState<Date | string>();
+
   const colorThief = new ColorThief();
 
   const router = useRouter();
@@ -54,6 +56,8 @@ export default function ReadableView({ link }: Props) {
     };
 
     fetchLinkContent();
+
+    setDate(link.importDate || link.createdAt);
   }, [link]);
 
   useEffect(() => {
@@ -211,8 +215,8 @@ export default function ReadableView({ link }: Props) {
           </div>
 
           <p className="min-w-fit text-sm text-neutral">
-            {link?.createdAt
-              ? new Date(link?.createdAt).toLocaleString("en-US", {
+            {date
+              ? new Date(date).toLocaleString("en-US", {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
