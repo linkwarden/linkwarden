@@ -7,10 +7,16 @@ type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
 export interface LinkIncludingShortenedCollectionAndTags
   extends Omit<
     Link,
-    "id" | "createdAt" | "collectionId" | "updatedAt" | "lastPreserved"
+    | "id"
+    | "createdAt"
+    | "collectionId"
+    | "updatedAt"
+    | "lastPreserved"
+    | "importDate"
   > {
   id?: number;
   createdAt?: string;
+  importDate?: string;
   collectionId?: number;
   tags: Tag[];
   pinnedBy?: {
