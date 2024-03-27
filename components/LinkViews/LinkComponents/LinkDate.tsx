@@ -6,14 +6,13 @@ export default function LinkDate({
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
 }) {
-  const formattedDate = new Date(link.createdAt as string).toLocaleString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }
-  );
+  const formattedDate = new Date(
+    (link.importDate || link.createdAt) as string
+  ).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 
   return (
     <div className="flex items-center gap-1 text-neutral">
