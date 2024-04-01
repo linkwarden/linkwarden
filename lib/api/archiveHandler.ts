@@ -10,6 +10,7 @@ import validateUrlSize from "./validateUrlSize";
 import removeFile from "./storage/removeFile";
 import Jimp from "jimp";
 import createFolder from "./storage/createFolder";
+import generatePreview from "./generatePreview";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -175,35 +176,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             // Check if imageResponse is not null
             if (imageResponse && !link.preview?.startsWith("archive")) {
               const buffer = await imageResponse.body();
-
-              // Check if buffer is not null
-              if (buffer) {
-                // Load the image using Jimp
-                Jimp.read(buffer, async (err, image) => {
-                  if (image && !err) {
-                    image?.resize(1280, Jimp.AUTO).quality(20);
-                    const processedBuffer = await image?.getBufferAsync(
-                      Jimp.MIME_JPEG
-                    );
-
-                    createFile({
-                      data: processedBuffer,
-                      filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                    }).then(() => {
-                      return prisma.link.update({
-                        where: { id: link.id },
-                        data: {
-                          preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                        },
-                      });
-                    });
-                  }
-                }).catch((err) => {
-                  console.error("Error processing the image:", err);
-                });
-              } else {
-                console.log("No image data found.");
-              }
+              await generatePreview(buffer, link.collectionId, link.id);
             }
 
             await page.goBack();
