@@ -122,18 +122,20 @@ export default function LinkActions({
               </div>
             </li>
           ) : undefined}
-          <li>
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => {
-                (document?.activeElement as HTMLElement)?.blur();
-                setPreservedFormatsModal(true);
-              }}
-            >
-              Preserved Formats
-            </div>
-          </li>
+          {link.type === "url" && (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setPreservedFormatsModal(true);
+                }}
+              >
+                Preserved Formats
+              </div>
+            </li>
+          )}
           {permissions === true || permissions?.canDelete ? (
             <li>
               <div

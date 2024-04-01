@@ -9,6 +9,8 @@ import formidable from "formidable";
 import createFile from "@/lib/api/storage/createFile";
 import fs from "fs";
 import verifyToken from "@/lib/api/verifyToken";
+import Jimp from "jimp";
+import generatePreview from "@/lib/api/generatePreview";
 
 export const config = {
   api: {
@@ -124,6 +126,14 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
           where: { id: linkId },
         });
 
+        if (linkStillExists && files.file[0].mimetype?.includes("image")) {
+          generatePreview(
+            fileBuffer,
+            collectionPermissions?.id as number,
+            linkId
+          );
+        }
+
         if (linkStillExists) {
           await createFile({
             filePath: `archives/${collectionPermissions?.id}/${
@@ -135,7 +145,15 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
           await prisma.link.update({
             where: { id: linkId },
             data: {
-              image: `archives/${collectionPermissions?.id}/${linkId + suffix}`,
+              preview: files.file[0].mimetype?.includes("pdf")
+                ? "unavailable"
+                : undefined,
+              image: files.file[0].mimetype?.includes("image")
+                ? `archives/${collectionPermissions?.id}/${linkId + suffix}`
+                : null,
+              pdf: files.file[0].mimetype?.includes("pdf")
+                ? `archives/${collectionPermissions?.id}/${linkId + suffix}`
+                : null,
               lastPreserved: new Date().toISOString(),
             },
           });
