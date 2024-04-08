@@ -7,10 +7,9 @@ import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
-import removeFile from "./storage/removeFile";
-import Jimp from "jimp";
 import createFolder from "./storage/createFolder";
 import generatePreview from "./generatePreview";
+import { removeFiles } from "./manageLinkFiles";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -50,6 +49,14 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         ),
       BROWSER_TIMEOUT * 60000
     );
+  });
+
+  createFolder({
+    filePath: `archives/preview/${link.collectionId}`,
+  });
+
+  createFolder({
+    filePath: `archives/${link.collectionId}`,
   });
 
   try {
@@ -161,10 +168,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           const ogImageUrl = await page.evaluate(() => {
             const metaTag = document.querySelector('meta[property="og:image"]');
             return metaTag ? (metaTag as any).content : null;
-          });
-
-          createFolder({
-            filePath: `archives/preview/${link.collectionId}`,
           });
 
           if (ogImageUrl) {
@@ -296,14 +299,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         },
       });
     else {
-      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.png` });
-      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
-      removeFile({
-        filePath: `archives/${link.collectionId}/${link.id}_readability.json`,
-      });
-      removeFile({
-        filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-      });
+      await removeFiles(link.id, link.collectionId);
     }
 
     await browser.close();
