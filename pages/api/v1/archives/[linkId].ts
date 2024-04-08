@@ -11,6 +11,7 @@ import fs from "fs";
 import verifyToken from "@/lib/api/verifyToken";
 import Jimp from "jimp";
 import generatePreview from "@/lib/api/generatePreview";
+import createFolder from "@/lib/api/storage/createFolder";
 
 export const config = {
   api: {
@@ -127,11 +128,12 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
         });
 
         if (linkStillExists && files.file[0].mimetype?.includes("image")) {
-          generatePreview(
-            fileBuffer,
-            collectionPermissions?.id as number,
-            linkId
-          );
+          const collectionId = collectionPermissions?.id as number;
+          createFolder({
+            filePath: `archives/preview/${collectionId}`,
+          });
+
+          generatePreview(fileBuffer, collectionId, linkId);
         }
 
         if (linkStillExists) {

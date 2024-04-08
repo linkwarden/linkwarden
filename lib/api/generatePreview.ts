@@ -1,6 +1,7 @@
 import Jimp from "jimp";
 import { prisma } from "./db";
 import createFile from "./storage/createFile";
+import createFolder from "./storage/createFolder";
 
 const generatePreview = async (
   buffer: Buffer,
