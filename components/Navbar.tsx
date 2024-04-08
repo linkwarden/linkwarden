@@ -93,7 +93,7 @@ export default function Navbar() {
                 New Link
               </div>
             </li>
-            {/* <li>
+            <li>
               <div
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
@@ -104,7 +104,7 @@ export default function Navbar() {
               >
                 Upload File
               </div>
-            </li> */}
+            </li>
             <li>
               <div
                 onClick={() => {
