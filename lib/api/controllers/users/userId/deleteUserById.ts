@@ -71,6 +71,10 @@ export default async function deleteUserById(
 
           // Delete archive folders
           removeFolder({ filePath: `archives/${collection.id}` });
+
+          await removeFolder({
+            filePath: `archives/preview/${collection.id}`,
+          });
         }
 
         // Delete collections after cleaning up related data

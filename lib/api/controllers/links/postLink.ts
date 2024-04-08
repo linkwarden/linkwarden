@@ -12,14 +12,16 @@ export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
-  try {
-    new URL(link.url || "");
-  } catch (error) {
-    return {
-      response:
-        "Please enter a valid Address for the Link. (It should start with http/https)",
-      status: 400,
-    };
+  if (link.url || link.type === "url") {
+    try {
+      new URL(link.url || "");
+    } catch (error) {
+      return {
+        response:
+          "Please enter a valid Address for the Link. (It should start with http/https)",
+        status: 400,
+      };
+    }
   }
 
   if (!link.collection.id && link.collection.name) {
@@ -172,7 +174,7 @@ export default async function postLink(
 
   const newLink = await prisma.link.create({
     data: {
-      url: link.url?.trim(),
+      url: link.url?.trim() || null,
       name: link.name,
       description,
       type: linkType,
