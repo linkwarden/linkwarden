@@ -9,7 +9,6 @@ import formidable from "formidable";
 import createFile from "@/lib/api/storage/createFile";
 import fs from "fs";
 import verifyToken from "@/lib/api/verifyToken";
-import Jimp from "jimp";
 import generatePreview from "@/lib/api/generatePreview";
 import createFolder from "@/lib/api/storage/createFolder";
 
