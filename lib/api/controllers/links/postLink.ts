@@ -12,14 +12,16 @@ export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
-  try {
-    new URL(link.url || "");
-  } catch (error) {
-    return {
-      response:
-        "Please enter a valid Address for the Link. (It should start with http/https)",
-      status: 400,
-    };
+  if (link.url || link.type === "url") {
+    try {
+      new URL(link.url || "");
+    } catch (error) {
+      return {
+        response:
+          "Please enter a valid Address for the Link. (It should start with http/https)",
+        status: 400,
+      };
+    }
   }
 
   if (!link.collection.id && link.collection.name) {
@@ -48,6 +50,7 @@ export default async function postLink(
         return { response: "Collection is not accessible.", status: 401 };
 
       link.collection.id = findCollection.id;
+      link.collection.ownerId = findCollection.ownerId;
     } else {
       const collection = await prisma.collection.create({
         data: {
@@ -180,7 +183,7 @@ export default async function postLink(
 
   const newLink = await prisma.link.create({
     data: {
-      url: link.url?.trim().replace(/\/+$/, ""),
+      url: link.url?.trim().replace(/\/+$/, "") || null,
       name: link.name,
       description,
       type: linkType,

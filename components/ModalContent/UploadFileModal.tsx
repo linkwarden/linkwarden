@@ -43,7 +43,7 @@ export default function UploadFileModal({ onClose }: Props) {
 
   const [file, setFile] = useState<File>();
 
-  const { addLink } = useLinkStore();
+  const { uploadFile } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const [optionsExpanded, setOptionsExpanded] = useState(false);
@@ -100,56 +100,22 @@ export default function UploadFileModal({ onClose }: Props) {
 
   const submit = async () => {
     if (!submitLoader && file) {
-      let fileType: ArchivedFormat | null = null;
-      let linkType: "url" | "image" | "pdf" | null = null;
+      setSubmitLoader(true);
 
-      if (file?.type === "image/jpg" || file.type === "image/jpeg") {
-        fileType = ArchivedFormat.jpeg;
-        linkType = "image";
-      } else if (file.type === "image/png") {
-        fileType = ArchivedFormat.png;
-        linkType = "image";
-      } else if (file.type === "application/pdf") {
-        fileType = ArchivedFormat.pdf;
-        linkType = "pdf";
-      }
+      const load = toast.loading("Creating...");
 
-      if (fileType !== null && linkType !== null) {
-        setSubmitLoader(true);
+      const response = await uploadFile(link, file);
 
-        let response;
+      toast.dismiss(load);
 
-        const load = toast.loading("Creating...");
+      if (response.ok) {
+        toast.success(`Created!`);
+        onClose();
+      } else toast.error(response.data as string);
 
-        response = await addLink({
-          ...link,
-          type: linkType,
-          name: link.name ? link.name : file.name.replace(/\.[^/.]+$/, ""),
-        });
+      setSubmitLoader(false);
 
-        toast.dismiss(load);
-
-        if (response.ok) {
-          const formBody = new FormData();
-          file && formBody.append("file", file);
-
-          await fetch(
-            `/api/v1/archives/${
-              (response.data as LinkIncludingShortenedCollectionAndTags).id
-            }?format=${fileType}`,
-            {
-              body: formBody,
-              method: "POST",
-            }
-          );
-          toast.success(`Created!`);
-          onClose();
-        } else toast.error(response.data as string);
-
-        setSubmitLoader(false);
-
-        return response;
-      }
+      return response;
     }
   };
 
@@ -238,7 +204,7 @@ export default function UploadFileModal({ onClose }: Props) {
           className="btn btn-accent dark:border-violet-400 text-white"
           onClick={submit}
         >
-          Create Link
+          Upload File
         </button>
       </div>
     </Modal>

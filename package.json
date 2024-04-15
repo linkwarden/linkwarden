@@ -1,6 +1,6 @@
 {
   "name": "linkwarden",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "main": "index.js",
   "repository": "https://github.com/linkwarden/linkwarden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
@@ -10,10 +10,10 @@
     "seed": "node ./prisma/seed.js"
   },
   "scripts": {
-    "dev": "concurrently -k \"next dev\" \"yarn worker:dev\"",
+    "dev": "concurrently -k -P \"next dev {@}\" \"yarn worker:dev\" --",
     "worker:dev": "nodemon --skip-project scripts/worker.ts",
     "worker:prod": "ts-node --transpile-only --skip-project scripts/worker.ts",
-    "start": "concurrently \"next start\" \"yarn worker:prod\"",
+    "start": "concurrently -P \"next start {@}\" \"yarn worker:prod\" --",
     "build": "next build",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
@@ -61,6 +61,7 @@
     "react-hot-toast": "^2.4.1",
     "react-image-file-resizer": "^0.4.8",
     "react-select": "^5.7.4",
+    "react-spinners": "^0.13.8",
     "socks-proxy-agent": "^8.0.2",
     "stripe": "^12.13.0",
     "vaul": "^0.8.8",
@@ -78,7 +79,7 @@
     "nodemon": "^3.0.2",
     "postcss": "^8.4.26",
     "prettier": "3.1.1",
-    "prisma": "^5.1.0",
+    "prisma": "^4.16.2",
     "tailwindcss": "^3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "4.9.4"

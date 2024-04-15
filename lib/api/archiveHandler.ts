@@ -7,9 +7,9 @@ import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
-import removeFile from "./storage/removeFile";
-import Jimp from "jimp";
 import createFolder from "./storage/createFolder";
+import generatePreview from "./generatePreview";
+import { removeFiles } from "./manageLinkFiles";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -49,6 +49,14 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         ),
       BROWSER_TIMEOUT * 60000
     );
+  });
+
+  createFolder({
+    filePath: `archives/preview/${link.collectionId}`,
+  });
+
+  createFolder({
+    filePath: `archives/${link.collectionId}`,
   });
 
   try {
@@ -162,10 +170,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             return metaTag ? (metaTag as any).content : null;
           });
 
-          createFolder({
-            filePath: `archives/preview/${link.collectionId}`,
-          });
-
           if (ogImageUrl) {
             console.log("Found og:image URL:", ogImageUrl);
 
@@ -175,35 +179,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             // Check if imageResponse is not null
             if (imageResponse && !link.preview?.startsWith("archive")) {
               const buffer = await imageResponse.body();
-
-              // Check if buffer is not null
-              if (buffer) {
-                // Load the image using Jimp
-                Jimp.read(buffer, async (err, image) => {
-                  if (image && !err) {
-                    image?.resize(1280, Jimp.AUTO).quality(20);
-                    const processedBuffer = await image?.getBufferAsync(
-                      Jimp.MIME_JPEG
-                    );
-
-                    createFile({
-                      data: processedBuffer,
-                      filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                    }).then(() => {
-                      return prisma.link.update({
-                        where: { id: link.id },
-                        data: {
-                          preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                        },
-                      });
-                    });
-                  }
-                }).catch((err) => {
-                  console.error("Error processing the image:", err);
-                });
-              } else {
-                console.log("No image data found.");
-              }
+              await generatePreview(buffer, link.collectionId, link.id);
             }
 
             await page.goBack();
@@ -323,14 +299,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         },
       });
     else {
-      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.png` });
-      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
-      removeFile({
-        filePath: `archives/${link.collectionId}/${link.id}_readability.json`,
-      });
-      removeFile({
-        filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-      });
+      await removeFiles(link.id, link.collectionId);
     }
 
     await browser.close();
