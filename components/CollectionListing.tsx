@@ -47,7 +47,10 @@ const CollectionListing = () => {
 
   useEffect(() => {
     if (account.username) {
-      if (!account.collectionOrder || account.collectionOrder.length === 0)
+      if (
+        (!account.collectionOrder || account.collectionOrder.length === 0) &&
+        collections.length > 0
+      )
         updateAccount({
           ...account,
           collectionOrder: collections
