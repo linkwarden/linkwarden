@@ -116,23 +116,23 @@ export default async function postLink(
   });
 
   if (user?.preventDuplicateLinks) {
-    const trimmedUrl = link.url?.trim();
-    const wwwPrefix = 'www.';
-    const hasWwwPrefix = trimmedUrl?.includes(`://${wwwPrefix}`);
-    const urlWithoutWww = hasWwwPrefix ? trimmedUrl?.replace(`://${wwwPrefix}`, '://') : trimmedUrl;
-    const urlWithWww = hasWwwPrefix ? trimmedUrl : trimmedUrl?.replace('://', `://${wwwPrefix}`);
+    const url = link.url?.trim().replace(/\/+$/, ""); // trim and remove trailing slashes from the URL
+    const hasWwwPrefix = url?.includes(`://www.`);
+    const urlWithoutWww = hasWwwPrefix ? url?.replace(`://www.`, "://") : url;
+    const urlWithWww = hasWwwPrefix ? url : url?.replace("://", `://www.`);
+
+    console.log(url, urlWithoutWww, urlWithWww);
 
     const existingLink = await prisma.link.findFirst({
       where: {
-        OR: [
-          { url: trimmedUrl },
-          { url: hasWwwPrefix ? urlWithoutWww : urlWithWww }, // Toggling "www."
-        ],
+        OR: [{ url: urlWithWww }, { url: urlWithoutWww }],
         collection: {
           ownerId: userId,
         },
       },
     });
+
+    console.log(url, urlWithoutWww, urlWithWww, "DONE!");
 
     if (existingLink)
       return {
@@ -180,7 +180,7 @@ export default async function postLink(
 
   const newLink = await prisma.link.create({
     data: {
-      url: link.url?.trim(),
+      url: link.url?.trim().replace(/\/+$/, ""),
       name: link.name,
       description,
       type: linkType,
