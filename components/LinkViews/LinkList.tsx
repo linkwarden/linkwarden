@@ -16,6 +16,7 @@ import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
+import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -55,14 +56,6 @@ export default function LinkCardCompact({
       setSelectedLinks([...selectedLinks, link]);
     }
   };
-
-  let shortendURL;
-
-  try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
-  } catch (error) {
-    console.log(error);
-  }
 
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
@@ -130,7 +123,11 @@ export default function LinkCardCompact({
           }
         >
           <div className="shrink-0">
-            <LinkIcon link={link} width="sm:w-12 w-8 mt-1 sm:mt-0" />
+            <LinkIcon
+              link={link}
+              width="sm:w-12 w-8"
+              className="mt-1 sm:mt-0"
+            />
           </div>
 
           <div className="w-[calc(100%-56px)] ml-2">
@@ -143,16 +140,7 @@ export default function LinkCardCompact({
                 {collection ? (
                   <LinkCollection link={link} collection={collection} />
                 ) : undefined}
-                {link.url ? (
-                  <div className="flex items-center gap-1 w-fit text-neutral truncate">
-                    <i className="bi-link-45deg text-lg" />
-                    <p className="truncate w-full select-none">{shortendURL}</p>
-                  </div>
-                ) : (
-                  <div className="badge badge-primary badge-sm my-1 select-none">
-                    {link.type}
-                  </div>
-                )}
+                <LinkTypeBadge link={link} />
                 <LinkDate link={link} />
               </div>
             </div>

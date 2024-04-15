@@ -19,6 +19,7 @@ import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
+import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -53,7 +54,9 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
+    if (link.url) {
+      shortendURL = new URL(link.url).host.toLowerCase();
+    }
   } catch (error) {
     console.log(error);
   }
@@ -109,7 +112,6 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
-  // window.open ('www.yourdomain.com', '_ blank');
   return (
     <div
       ref={ref}
@@ -162,12 +164,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
             {unescapeString(link.name || link.description) || link.url}
           </p>
 
-          <div title={link.url || ""} className="w-fit">
-            <div className="flex gap-1 item-center select-none text-neutral mt-1">
-              <i className="bi-link-45deg text-lg mt-[0.15rem] leading-none"></i>
-              <p className="text-sm truncate">{shortendURL}</p>
-            </div>
-          </div>
+          <LinkTypeBadge link={link} />
         </div>
 
         <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />

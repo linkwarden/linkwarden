@@ -93,6 +93,8 @@ model Collection {
   links           Link[]
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @default(now()) @updatedAt
+  
+  @@index([ownerId])
 }
 
 model UsersAndCollections {
@@ -107,6 +109,7 @@ model UsersAndCollections {
   updatedAt    DateTime   @default(now()) @updatedAt
 
   @@id([userId, collectionId])
+  @@index([userId])
 }
 
 model Link {
@@ -125,6 +128,7 @@ model Link {
   pdf           String?
   readable      String?
   lastPreserved DateTime?
+  importDate    DateTime?
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @default(now()) @updatedAt
 }
@@ -139,6 +143,7 @@ model Tag {
   updatedAt DateTime @default(now()) @updatedAt
 
   @@unique([name, ownerId])
+  @@index([ownerId])
 }
 
 model Subscription {
