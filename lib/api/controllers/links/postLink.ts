@@ -119,14 +119,23 @@ export default async function postLink(
   });
 
   if (user?.preventDuplicateLinks) {
+    const url = link.url?.trim().replace(/\/+$/, ""); // trim and remove trailing slashes from the URL
+    const hasWwwPrefix = url?.includes(`://www.`);
+    const urlWithoutWww = hasWwwPrefix ? url?.replace(`://www.`, "://") : url;
+    const urlWithWww = hasWwwPrefix ? url : url?.replace("://", `://www.`);
+
+    console.log(url, urlWithoutWww, urlWithWww);
+
     const existingLink = await prisma.link.findFirst({
       where: {
-        url: link.url?.trim(),
+        OR: [{ url: urlWithWww }, { url: urlWithoutWww }],
         collection: {
           ownerId: userId,
         },
       },
     });
+
+    console.log(url, urlWithoutWww, urlWithWww, "DONE!");
 
     if (existingLink)
       return {
@@ -174,7 +183,7 @@ export default async function postLink(
 
   const newLink = await prisma.link.create({
     data: {
-      url: link.url?.trim() || null,
+      url: link.url?.trim().replace(/\/+$/, "") || null,
       name: link.name,
       description,
       type: linkType,
