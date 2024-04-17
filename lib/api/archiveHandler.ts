@@ -58,7 +58,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           ? await validateUrlSize(link.url)
           : undefined;
 
-        if (validatedUrl === null)
+        if (
+          validatedUrl === null &&
+          process.env.IGNORE_URL_SIZE_LIMIT !== "true"
+        )
           throw "Something went wrong while retrieving the file size.";
 
         const contentType = validatedUrl?.get("content-type");
