@@ -69,7 +69,7 @@ export default function Login({
   function displayLoginCredential() {
     if (availableLogins.credentialsEnabled === "true") {
       return (
-        <>
+        <div data-testid="login-form">
           <p className="text-3xl text-black dark:text-white text-center font-extralight">
             Enter your credentials
           </p>
@@ -87,6 +87,7 @@ export default function Login({
               placeholder="johnny"
               value={form.username}
               className="bg-base-100"
+              data-testid="username-input"
               onChange={(e) => setForm({ ...form, username: e.target.value })}
             />
           </div>
@@ -100,6 +101,7 @@ export default function Login({
               placeholder="••••••••••••••"
               value={form.password}
               className="bg-base-100"
+              data-testid="password-input"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
             {availableLogins.emailEnabled === "true" && (
@@ -107,6 +109,7 @@ export default function Login({
                 <Link
                   href={"/forgot"}
                   className="text-gray-500 dark:text-gray-400 font-semibold"
+                  data-testid="forgot-password-link"
                 >
                   Forgot Password?
                 </Link>
@@ -117,13 +120,14 @@ export default function Login({
             type="submit"
             label="Login"
             className=" w-full text-center"
+            data-testid="submit-login-button"
             loading={submitLoader}
           />
 
           {availableLogins.buttonAuths.length > 0 ? (
             <div className="divider my-1">OR</div>
           ) : undefined}
-        </>
+        </div>
       );
     }
   }
@@ -155,6 +159,7 @@ export default function Login({
           <Link
             href={"/register"}
             className="block text-black dark:text-white font-semibold"
+            data-testid="register-link"
           >
             Sign Up
           </Link>
