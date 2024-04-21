@@ -42,8 +42,10 @@ prisma/dev.db
 # tests
 /tests
 /test-results/
+/blob-report/
 /playwright-report/
 /playwright/.cache/
+/playwright/.auth/
 
 # docker
 pgdata
