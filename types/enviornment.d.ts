@@ -14,6 +14,7 @@ declare global {
       ARCHIVE_TAKE_COUNT?: string;
       IGNORE_UNAUTHORIZED_CA?: string;
       IGNORE_URL_SIZE_LIMIT?: string;
+      ADMINISTRATOR?: string;
 
       SPACES_KEY?: string;
       SPACES_SECRET?: string;
@@ -418,4 +419,4 @@ declare global {
   }
 }
 
-export { };
+export {};
