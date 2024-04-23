@@ -16,6 +16,7 @@
     "start": "concurrently -P \"next start {@}\" \"yarn worker:prod\" --",
     "build": "next build",
     "lint": "next lint",
+    "e2e": "playwright test e2e",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
