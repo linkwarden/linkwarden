@@ -1,0 +1,95 @@
+name: Linkwarden Playwright Tests
+
+on:
+  push:
+    branches:
+      - main
+      - qacomet/**
+  pull_request:
+  workflow_dispatch:
+
+env:
+  PGHOST: localhost
+  PGPORT: 5432
+  PGUSER: postgres
+  PGPASSWORD: password
+  PGDATABASE: postgres
+
+  TEST_POSTGRES_USER: test_linkwarden_user
+  TEST_POSTGRES_PASSWORD: password
+  TEST_POSTGRES_DATABASE: test_linkwarden_db
+  TEST_POSTGRES_DATABASE_TEMPLATE: test_linkwarden_db_template
+  TEST_POSTGRES_HOST: localhost
+  TEST_POSTGREST_PORT: 5432
+  PRODUCTION_POSTGRES_DATABASE: linkwarden_db
+
+  NEXTAUTH_SECRET: very_sensitive_secret
+  NEXTAUTH_URL: http://localhost:3000/api/v1/auth
+
+  # Manual installation database settings
+  DATABASE_URL: postgresql://test_linkwarden_user:password@localhost:5432/test_linkwarden_db
+
+  # Docker installation database settings
+  POSTGRES_PASSWORD: password
+
+  TEST_USERNAME: test-user
+  TEST_PASSWORD: password
+
+jobs:
+  playwright-test-runner:
+    timeout-minutes: 20
+    runs-on:
+      - ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Initialize PostgreSQL
+        run: |
+          echo "Initializing Databases"
+          psql -h localhost -U postgres -d postgres -c "CREATE USER ${{ env.TEST_POSTGRES_USER }} WITH PASSWORD '${{ env.TEST_POSTGRES_PASSWORD }}';"
+          psql -h localhost -U postgres -d postgres -c "CREATE DATABASE ${{ env.TEST_POSTGRES_DATABASE }} OWNER ${{ env.TEST_POSTGRES_USER }};"
+
+      - name: Install packages
+        run: yarn install -y
+
+      - name: Install playwright
+        run: yarn playwright install --with-deps
+
+      - name: Setup project
+        run: |
+          yarn prisma generate
+          yarn build
+          yarn prisma migrate deploy
+
+      - name: Start linkwarden server and worker
+        run: yarn start &
+
+      - name: Run Tests
+        run: yarn e2e
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: test-results
+          retention-days: 30
