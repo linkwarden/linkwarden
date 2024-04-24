@@ -4,6 +4,7 @@ import isValidUrl from "@/lib/shared/isValidUrl";
 import useLinkStore from "@/store/links";
 import {
   ArchivedFormat,
+  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import ColorThief, { RGBColor } from "colorthief";
@@ -11,7 +12,9 @@ import DOMPurify from "dompurify";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import LinkActions from "./LinkViews/LinkComponents/LinkActions";
+import useCollectionStore from "@/store/collections";
 
 type LinkContent = {
   title: string;
@@ -41,6 +44,13 @@ export default function ReadableView({ link }: Props) {
   const router = useRouter();
 
   const { links, getLink } = useLinkStore();
+  const { collections } = useCollectionStore();
+
+  const collection = useMemo(() => {
+    return collections.find(
+      (e) => e.id === link.collection.id
+    ) as CollectionIncludingMembersAndLinkCount;
+  }, [collections, link]);
 
   useEffect(() => {
     const fetchLinkContent = async () => {
@@ -131,7 +141,7 @@ export default function ReadableView({ link }: Props) {
     <div className={`flex flex-col max-w-screen-md h-full mx-auto py-5`}>
       <div
         id="link-banner"
-        className="link-banner bg-opacity-10 border-neutral-content p-3 border mb-3"
+        className="link-banner relative bg-opacity-10 border-neutral-content p-3 border mb-3"
       >
         <div id="link-banner-inner" className="link-banner-inner"></div>
 
@@ -226,6 +236,13 @@ export default function ReadableView({ link }: Props) {
 
           {link?.name ? <p>{unescapeString(link?.description)}</p> : undefined}
         </div>
+
+        <LinkActions
+          link={link}
+          collection={collection}
+          position="top-3 right-3"
+          alignToTop
+        />
       </div>
 
       <div className="flex flex-col gap-5 h-full">
