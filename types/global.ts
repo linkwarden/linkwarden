@@ -68,6 +68,7 @@ export enum ViewMode {
   Card = "card",
   Grid = "grid",
   List = "list",
+  Masonry = "masonry",
 }
 
 export enum Sort {
