@@ -16,6 +16,7 @@ import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import ViewDropdown from "@/components/ViewDropdown";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Dashboard() {
@@ -102,6 +103,7 @@ export default function Dashboard() {
     [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore

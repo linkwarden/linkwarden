@@ -60,6 +60,7 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-image-file-resizer": "^0.4.8",
+    "react-masonry-css": "^1.0.16",
     "react-select": "^5.7.4",
     "react-spinners": "^0.13.8",
     "socks-proxy-agent": "^8.0.2",
