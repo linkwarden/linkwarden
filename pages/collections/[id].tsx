@@ -28,6 +28,7 @@ import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import toast from "react-hot-toast";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
@@ -110,6 +111,7 @@ export default function Index() {
     [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore

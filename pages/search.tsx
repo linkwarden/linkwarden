@@ -16,6 +16,7 @@ import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import toast from "react-hot-toast";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 
 export default function Search() {
   const { links, selectedLinks, setSelectedLinks, deleteLinksById } = useLinkStore();
@@ -93,6 +94,7 @@ export default function Search() {
     [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore
