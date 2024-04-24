@@ -24,6 +24,7 @@ import EditCollectionSharingModal from "@/components/ModalContent/EditCollection
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 
 const cardVariants: Variants = {
@@ -109,6 +110,7 @@ export default function PublicCollections() {
     [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore
@@ -118,9 +120,8 @@ export default function PublicCollections() {
     <div
       className="h-96"
       style={{
-        backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-          settings.theme === "dark" ? "#262626" : "#f3f4f6"
-        } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+        backgroundImage: `linear-gradient(${collection?.color}30 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
       {collection ? (
