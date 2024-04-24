@@ -15,6 +15,7 @@ import { dropdownTriggerer } from "@/lib/client/utils";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 import useCollectivePermissions from "@/hooks/useCollectivePermissions";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 
 export default function Index() {
   const router = useRouter();
@@ -151,6 +152,7 @@ export default function Index() {
     [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore
