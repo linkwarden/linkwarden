@@ -18,6 +18,7 @@ type Props = {
   position?: string;
   toggleShowInfo?: () => void;
   linkInfo?: boolean;
+  alignToTop?: boolean;
   flipDropdown?: boolean;
 };
 
@@ -26,6 +27,7 @@ export default function LinkActions({
   toggleShowInfo,
   position,
   linkInfo,
+  alignToTop,
   flipDropdown,
 }: Props) {
   const permissions = usePermissions(link.collection.id as number);
@@ -67,9 +69,9 @@ export default function LinkActions({
   return (
     <>
       <div
-        className={`dropdown dropdown-left dropdown-end absolute ${
+        className={`dropdown dropdown-left absolute ${
           position || "top-3 right-3"
-        } z-20`}
+        } ${alignToTop ? "" : "dropdown-end"} z-20`}
       >
         <div
           tabIndex={0}
@@ -79,7 +81,11 @@ export default function LinkActions({
         >
           <i title="More" className="bi-three-dots text-xl" />
         </div>
-        <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 translate-y-10">
+        <ul
+          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 ${
+            alignToTop ? "" : "translate-y-10"
+          }`}
+        >
           <li>
             <div
               role="button"
