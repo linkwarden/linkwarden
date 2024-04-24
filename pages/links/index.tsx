@@ -15,6 +15,7 @@ import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 import { useRouter } from "next/router";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 
 export default function Links() {
   const { links, selectedLinks, deleteLinksById, setSelectedLinks } =
@@ -51,8 +52,7 @@ export default function Links() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${
-        selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -64,8 +64,7 @@ export default function Links() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${
-          selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -74,6 +73,7 @@ export default function Links() {
     [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore
@@ -97,11 +97,10 @@ export default function Links() {
                   setEditMode(!editMode);
                   setSelectedLinks([]);
                 }}
-                className={`btn btn-square btn-sm btn-ghost ${
-                  editMode
+                className={`btn btn-square btn-sm btn-ghost ${editMode
                     ? "bg-primary/20 hover:bg-primary/20"
                     : "hover:bg-neutral/20"
-                }`}
+                  }`}
               >
                 <i className="bi-pencil-fill text-neutral text-xl"></i>
               </div>

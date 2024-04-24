@@ -30,6 +30,7 @@ type Props = {
 };
 
 export default function LinkCard({ link, flipDropdown, editMode }: Props) {
+  const viewMode = localStorage.getItem("viewMode") || "card";
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
 
@@ -121,8 +122,8 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
           ? handleCheckboxClick(link)
           : editMode
             ? toast.error(
-                "You don't have permission to edit or delete this item."
-              )
+              "You don't have permission to edit or delete this item."
+            )
             : undefined
       }
     >
@@ -132,32 +133,36 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
           !editMode && window.open(generateLinkHref(link, account), "_blank")
         }
       >
-        <div className="relative rounded-t-2xl h-40 overflow-hidden">
-          {previewAvailable(link) ? (
-            <Image
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
-              width={1280}
-              height={720}
-              alt=""
-              className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
-              style={{ filter: "blur(2px)" }}
-              draggable="false"
-              onError={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.display = "none";
-              }}
-            />
-          ) : link.preview === "unavailable" ? (
-            <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
-          ) : (
-            <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
-          )}
-          <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
-            <LinkIcon link={link} />
-          </div>
-        </div>
+        {viewMode === 'masonry' && !(previewAvailable(link)) ? null : (
+          <>
+            <div className="relative rounded-t-2xl h-40 overflow-hidden">
+              {previewAvailable(link) ? (
+                <Image
+                  src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
+                  width={1280}
+                  height={720}
+                  alt=""
+                  className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
+                  style={{ filter: "blur(2px)" }}
+                  draggable="false"
+                  onError={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.display = "none";
+                  }}
+                />
+              ) : link.preview === "unavailable" ? (
+                <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
+              ) : (
+                <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
+              )}
+              <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+                <LinkIcon link={link} />
+              </div>
+            </div>
 
-        <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+            <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+          </>
+        )}
 
         <div className="p-3 mt-1">
           <p className="truncate w-full pr-8 text-primary">
@@ -229,7 +234,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       <LinkActions
         link={link}
         collection={collection}
-        position="top-[10.75rem] right-3"
+        position={!(previewAvailable(link)) && viewMode === 'masonry' ? "top-[.75rem] right-3" : "top-[10.75rem] right-3"}
         toggleShowInfo={() => setShowInfo(!showInfo)}
         linkInfo={showInfo}
         flipDropdown={flipDropdown}

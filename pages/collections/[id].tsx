@@ -28,6 +28,7 @@ import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import toast from "react-hot-toast";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 
 export default function Index() {
   const { settings } = useLocalSettingsStore();
@@ -110,6 +111,7 @@ export default function Index() {
     [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore
@@ -125,8 +127,7 @@ export default function Index() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${
-        selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -138,8 +139,7 @@ export default function Index() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${
-          selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -149,9 +149,8 @@ export default function Index() {
       <div
         className="h-[60rem] p-5 flex gap-3 flex-col"
         style={{
-          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
+            } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
@@ -326,11 +325,10 @@ export default function Index() {
                     setEditMode(!editMode);
                     setSelectedLinks([]);
                   }}
-                  className={`btn btn-square btn-sm btn-ghost ${
-                    editMode
+                  className={`btn btn-square btn-sm btn-ghost ${editMode
                       ? "bg-primary/20 hover:bg-primary/20"
                       : "hover:bg-neutral/20"
-                  }`}
+                    }`}
                 >
                   <i className="bi-pencil-fill text-neutral text-xl"></i>
                 </div>
