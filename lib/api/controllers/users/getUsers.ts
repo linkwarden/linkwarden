@@ -14,7 +14,6 @@ export default async function getUsers() {
         },
       },
       createdAt: true,
-      updatedAt: true,
     },
   });
 
