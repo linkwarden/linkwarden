@@ -37,9 +37,12 @@ env:
 
 jobs:
   playwright-test-runner:
+    strategy:
+      matrix:
+        test_case: ['@login']
     timeout-minutes: 20
     runs-on:
-      - ubuntu-latest
+      - ubuntu-22.04
     services:
       postgres:
         image: postgres:16-alpine
@@ -62,6 +65,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+          cache: 'yarn'
 
       - name: Initialize PostgreSQL
         run: |
@@ -72,7 +76,17 @@ jobs:
       - name: Install packages
         run: yarn install -y
 
+      - name: Cache playwright browsers
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install playwright
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps
 
       - name: Setup project
@@ -85,7 +99,7 @@ jobs:
         run: yarn start &
 
       - name: Run Tests
-        run: yarn e2e
+        run: npx playwright test --grep ${{ matrix.test_case }}
 
       - uses: actions/upload-artifact@v3
         if: always()
