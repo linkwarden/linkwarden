@@ -12,6 +12,7 @@ import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import PageHeader from "@/components/PageHeader";
 import { GridLoader, PropagateLoader } from "react-spinners";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 
 export default function Search() {
   const { links } = useLinkStore();
@@ -49,6 +50,7 @@ export default function Search() {
     [ViewMode.Card]: CardView,
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore
