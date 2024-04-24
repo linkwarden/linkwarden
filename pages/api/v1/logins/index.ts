@@ -401,7 +401,7 @@ export function getLogins() {
   return {
     credentialsEnabled:
       process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === "true" ||
-        process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === undefined
+      process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === undefined
         ? "true"
         : "false",
     emailEnabled:

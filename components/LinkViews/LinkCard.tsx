@@ -122,8 +122,8 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
           ? handleCheckboxClick(link)
           : editMode
             ? toast.error(
-              "You don't have permission to edit or delete this item."
-            )
+                "You don't have permission to edit or delete this item."
+              )
             : undefined
       }
     >
@@ -133,7 +133,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
           !editMode && window.open(generateLinkHref(link, account), "_blank")
         }
       >
-        {viewMode === 'masonry' && !(previewAvailable(link)) ? null : (
+        {viewMode === "masonry" && !previewAvailable(link) ? null : (
           <>
             <div className="relative rounded-t-2xl h-40 overflow-hidden">
               {previewAvailable(link) ? (
@@ -234,7 +234,11 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       <LinkActions
         link={link}
         collection={collection}
-        position={!(previewAvailable(link)) && viewMode === 'masonry' ? "top-[.75rem] right-3" : "top-[10.75rem] right-3"}
+        position={
+          !previewAvailable(link) && viewMode === "masonry"
+            ? "top-[.75rem] right-3"
+            : "top-[10.75rem] right-3"
+        }
         toggleShowInfo={() => setShowInfo(!showInfo)}
         linkInfo={showInfo}
         flipDropdown={flipDropdown}
