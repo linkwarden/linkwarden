@@ -12,7 +12,6 @@ import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import toast from "react-hot-toast";
-// import GridView from "@/components/LinkViews/Layouts/GridView";
 import { useRouter } from "next/router";
 import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 
@@ -71,7 +70,6 @@ export default function PinnedLinks() {
 
   const linkView = {
     [ViewMode.Card]: CardView,
-    // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
     [ViewMode.Masonry]: MasonryView,
   };
