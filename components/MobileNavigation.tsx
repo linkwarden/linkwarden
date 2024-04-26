@@ -1,4 +1,4 @@
-import { dropdownTriggerer, isIphone } from "@/lib/client/utils";
+import { dropdownTriggerer, isIphone, isPWA } from "@/lib/client/utils";
 import React from "react";
 import { useState } from "react";
 import NewLinkModal from "./ModalContent/NewLinkModal";
@@ -20,7 +20,7 @@ export default function MobileNavigation({}: Props) {
       >
         <div
           className={`w-full flex bg-base-100 ${
-            isIphone() ? "pb-5" : ""
+            isIphone() && isPWA() ? "pb-5" : ""
           } border-solid border-t-neutral-content border-t`}
         >
           <MobileNavigationButton href={`/dashboard`} icon={"bi-house"} />
