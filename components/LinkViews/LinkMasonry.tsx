@@ -29,7 +29,7 @@ type Props = {
   editMode?: boolean;
 };
 
-export default function LinkCard({ link, flipDropdown, editMode }: Props) {
+export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
   const viewMode = localStorage.getItem("viewMode") || "card";
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
@@ -133,7 +133,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
           !editMode && window.open(generateLinkHref(link, account), "_blank")
         }
       >
-        <div className="relative rounded-t-2xl h-40 overflow-hidden">
+        <div className="relative rounded-t-2xl overflow-hidden">
           {previewAvailable(link) ? (
             <Image
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
@@ -148,9 +148,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
                 target.style.display = "none";
               }}
             />
-          ) : link.preview === "unavailable" ? (
-            <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
-          ) : (
+          ) : link.preview === "unavailable" ? null : (
             <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
           )}
           <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
@@ -158,7 +156,9 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
           </div>
         </div>
 
-        <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+        {link.preview !== "unavailable" && (
+          <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+        )}
 
         <div className="p-3 mt-1">
           <p className="truncate w-full pr-8 text-primary">
@@ -230,7 +230,11 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       <LinkActions
         link={link}
         collection={collection}
-        position="top-[10.75rem] right-3"
+        position={
+          link.preview !== "unavailable"
+            ? "top-[10.75rem] right-3"
+            : "top-[.75rem] right-3"
+        }
         toggleShowInfo={() => setShowInfo(!showInfo)}
         linkInfo={showInfo}
         flipDropdown={flipDropdown}

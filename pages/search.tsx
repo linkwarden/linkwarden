@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
-// import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import PageHeader from "@/components/PageHeader";
 import { GridLoader } from "react-spinners";
@@ -19,7 +18,8 @@ import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 
 export default function Search() {
-  const { links, selectedLinks, setSelectedLinks, deleteLinksById } = useLinkStore();
+  const { links, selectedLinks, setSelectedLinks, deleteLinksById } =
+    useLinkStore();
 
   const router = useRouter();
 
@@ -59,7 +59,8 @@ export default function Search() {
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+      `Deleting ${selectedLinks.length} Link${
+        selectedLinks.length > 1 ? "s" : ""
       }...`
     );
 
@@ -71,7 +72,8 @@ export default function Search() {
 
     response.ok &&
       toast.success(
-        `Deleted ${selectedLinks.length} Link${selectedLinks.length > 1 ? "s" : ""
+        `Deleted ${selectedLinks.length} Link${
+          selectedLinks.length > 1 ? "s" : ""
         }!`
       );
   };
@@ -92,7 +94,6 @@ export default function Search() {
 
   const linkView = {
     [ViewMode.Card]: CardView,
-    // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
     [ViewMode.Masonry]: MasonryView,
   };
@@ -115,10 +116,11 @@ export default function Search() {
                     setEditMode(!editMode);
                     setSelectedLinks([]);
                   }}
-                  className={`btn btn-square btn-sm btn-ghost ${editMode
-                    ? "bg-primary/20 hover:bg-primary/20"
-                    : "hover:bg-neutral/20"
-                    }`}
+                  className={`btn btn-square btn-sm btn-ghost ${
+                    editMode
+                      ? "bg-primary/20 hover:bg-primary/20"
+                      : "hover:bg-neutral/20"
+                  }`}
                 >
                   <i className="bi-pencil-fill text-neutral text-xl"></i>
                 </div>
@@ -199,7 +201,11 @@ export default function Search() {
             </span>
           </p>
         ) : links[0] ? (
-          <LinkComponent editMode={editMode} links={links} isLoading={isLoading} />
+          <LinkComponent
+            editMode={editMode}
+            links={links}
+            isLoading={isLoading}
+          />
         ) : (
           isLoading && (
             <GridLoader
