@@ -2,6 +2,9 @@ import LinkCard from "@/components/LinkViews/LinkCard";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { GridLoader } from "react-spinners";
 import Masonry from "react-masonry-css";
+import resolveConfig from "tailwindcss/resolveConfig";
+import tailwindConfig from "../../../tailwind.config.js";
+import { useMemo } from "react";
 
 export default function MasonryView({
   links,
@@ -12,11 +15,23 @@ export default function MasonryView({
   editMode?: boolean;
   isLoading?: boolean;
 }) {
+  const fullConfig = resolveConfig(tailwindConfig as any);
+
+  const breakpointColumnsObj = useMemo(() => {
+    return {
+      default: 4,
+      1900: 3,
+      [fullConfig.theme.screens.xl]: 2,
+      [fullConfig.theme.screens.sm]: 1,
+    };
+  }, []);
+
   return (
     <Masonry
-      breakpointCols={4}
-      columnClassName="!w-full flex flex-col gap-5"
-      className="grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5"
+      breakpointCols={breakpointColumnsObj}
+      columnClassName="flex flex-col gap-5 !w-full"
+      // className="grid gap-5 grid-cols-3"
+      className="grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 pb-5"
     >
       {links.map((e, i) => {
         return (
