@@ -17,7 +17,6 @@ import ListView from "@/components/LinkViews/Layouts/ListView";
 import ViewDropdown from "@/components/ViewDropdown";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
-// import GridView from "@/components/LinkViews/Layouts/GridView";
 
 export default function Dashboard() {
   const { collections } = useCollectionStore();
@@ -101,7 +100,7 @@ export default function Dashboard() {
 
   const linkView = {
     [ViewMode.Card]: CardView,
-    // [ViewMode.Grid]: GridView,
+    // [ViewMode.Grid]: ,
     [ViewMode.List]: ListView,
     [ViewMode.Masonry]: MasonryView,
   };

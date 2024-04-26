@@ -21,7 +21,6 @@ import EditCollectionSharingModal from "@/components/ModalContent/EditCollection
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
-// import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
@@ -109,7 +108,6 @@ export default function Index() {
 
   const linkView = {
     [ViewMode.Card]: CardView,
-    // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
     [ViewMode.Masonry]: MasonryView,
   };

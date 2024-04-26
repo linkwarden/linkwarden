@@ -9,7 +9,6 @@ import useLinks from "@/hooks/useLinks";
 import { toast } from "react-hot-toast";
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
-// import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
@@ -150,7 +149,6 @@ export default function Index() {
 
   const linkView = {
     [ViewMode.Card]: CardView,
-    // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
     [ViewMode.Masonry]: MasonryView,
   };

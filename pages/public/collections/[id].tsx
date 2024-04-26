@@ -25,7 +25,6 @@ import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
-// import GridView from "@/components/LinkViews/Layouts/GridView";
 
 const cardVariants: Variants = {
   offscreen: {
@@ -108,7 +107,6 @@ export default function PublicCollections() {
 
   const linkView = {
     [ViewMode.Card]: CardView,
-    // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
     [ViewMode.Masonry]: MasonryView,
   };

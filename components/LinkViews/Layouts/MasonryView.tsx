@@ -1,4 +1,4 @@
-import LinkCard from "@/components/LinkViews/LinkCard";
+import LinkMasonry from "@/components/LinkViews/LinkMasonry";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { GridLoader } from "react-spinners";
 import Masonry from "react-masonry-css";
@@ -30,12 +30,11 @@ export default function MasonryView({
     <Masonry
       breakpointCols={breakpointColumnsObj}
       columnClassName="flex flex-col gap-5 !w-full"
-      // className="grid gap-5 grid-cols-3"
       className="grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 pb-5"
     >
       {links.map((e, i) => {
         return (
-          <LinkCard
+          <LinkMasonry
             key={i}
             link={e}
             count={i}
