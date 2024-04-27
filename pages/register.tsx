@@ -102,6 +102,7 @@ export default function Register() {
             } days of Premium Service at no cost!`
           : "Create a new account"
       }
+      data-testid="registration-form"
     >
       {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? (
         <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
@@ -127,6 +128,7 @@ export default function Register() {
                 placeholder="Johnny"
                 value={form.name}
                 className="bg-base-100"
+                data-testid="display-name-input"
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
             </div>
@@ -139,6 +141,7 @@ export default function Register() {
                   placeholder="john"
                   value={form.username}
                   className="bg-base-100"
+                  data-testid="username-input"
                   onChange={(e) =>
                     setForm({ ...form, username: e.target.value })
                   }
@@ -155,6 +158,7 @@ export default function Register() {
                   placeholder="johnny@example.com"
                   value={form.email}
                   className="bg-base-100"
+                  data-testid="email-input"
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
@@ -168,6 +172,7 @@ export default function Register() {
                 placeholder="••••••••••••••"
                 value={form.password}
                 className="bg-base-100"
+                data-testid="password-input"
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
             </div>
@@ -182,6 +187,7 @@ export default function Register() {
                 placeholder="••••••••••••••"
                 value={form.passwordConfirmation}
                 className="bg-base-100"
+                data-testid="password-confirm-input"
                 onChange={(e) =>
                   setForm({ ...form, passwordConfirmation: e.target.value })
                 }
@@ -195,6 +201,7 @@ export default function Register() {
                   <Link
                     href="https://linkwarden.app/tos"
                     className="font-semibold underline"
+                    data-testid="terms-of-service-link"
                   >
                     Terms of Service
                   </Link>{" "}
@@ -202,6 +209,7 @@ export default function Register() {
                   <Link
                     href="https://linkwarden.app/privacy-policy"
                     className="font-semibold underline"
+                    data-testid="privacy-policy-link"
                   >
                     Privacy Policy
                   </Link>
@@ -212,6 +220,7 @@ export default function Register() {
                   <Link
                     href="mailto:support@linkwarden.app"
                     className="font-semibold underline"
+                    data-testid="support-link"
                   >
                     Get in touch
                   </Link>
@@ -225,10 +234,15 @@ export default function Register() {
               label="Sign Up"
               className="w-full"
               loading={submitLoader}
+              data-testid="register-button"
             />
             <div className="flex items-baseline gap-1 justify-center">
               <p className="w-fit text-neutral">Already have an account?</p>
-              <Link href={"/login"} className="block font-bold">
+              <Link
+                href={"/login"}
+                className="block font-bold"
+                data-testid="login-link"
+              >
                 Login
               </Link>
             </div>
