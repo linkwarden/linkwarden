@@ -160,12 +160,33 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
           <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
         )}
 
-        <div className="p-3 mt-1">
-          <p className="truncate w-full pr-8 text-primary">
-            {unescapeString(link.name || link.description) || link.url}
-          </p>
+        <div className="p-3 mt-1 flex flex-col gap-2">
+          <div className="w-full pr-8">
+            <p className="text-primary">{unescapeString(link.name)}</p>
 
-          <LinkTypeBadge link={link} />
+            <LinkTypeBadge link={link} />
+          </div>
+
+          {link.description && (
+            <p className="text-sm">{unescapeString(link.description)}</p>
+          )}
+
+          {link.tags[0] && (
+            <div className="flex gap-1 items-center flex-wrap">
+              {link.tags.map((e, i) => (
+                <Link
+                  href={"/tags/" + e.id}
+                  key={i}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  className="btn btn-xs btn-ghost truncate max-w-[19rem]"
+                >
+                  #{e.name}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
