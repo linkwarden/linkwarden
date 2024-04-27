@@ -16,6 +16,7 @@
     "start": "concurrently -P \"next start {@}\" \"yarn worker:prod\" --",
     "build": "next build",
     "lint": "next lint",
+    "e2e": "playwright test e2e",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
   },
   "dependencies": {
@@ -54,7 +55,7 @@
     "next-auth": "^4.22.1",
     "node-fetch": "^2.7.0",
     "nodemailer": "^6.9.3",
-    "playwright": "^1.35.1",
+    "playwright": "^1.43.1",
     "react": "18.2.0",
     "react-colorful": "^5.6.1",
     "react-dom": "18.2.0",
@@ -69,7 +70,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@playwright/test": "^1.35.1",
+    "@playwright/test": "^1.43.1",
     "@types/bcrypt": "^5.0.0",
     "@types/dompurify": "^3.0.4",
     "@types/jsdom": "^21.1.3",
