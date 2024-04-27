@@ -5,22 +5,34 @@ import React from "react";
 
 export default function LinkIcon({
   link,
-  width,
   className,
+  size,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
-  width?: string;
   className?: string;
+  size?: "small" | "medium";
 }) {
+  let iconClasses: string =
+    "bg-white shadow rounded-md border-[2px] flex item-center justify-center border-white select-none z-10 " +
+    (className || "");
+
+  let dimension;
+
+  switch (size) {
+    case "small":
+      dimension = " w-8 h-8";
+      break;
+    case "medium":
+      dimension = " w-12 h-12";
+      break;
+    default:
+      size = "medium";
+      dimension = " w-12 h-12";
+      break;
+  }
+
   const url =
     isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
-
-  const iconClasses: string =
-    "bg-white shadow rounded-md border-[2px] flex item-center justify-center border-white select-none z-10" +
-    " " +
-    (width || "w-12") +
-    " " +
-    (className || "");
 
   const [showFavicon, setShowFavicon] = React.useState<boolean>(true);
 
@@ -33,23 +45,29 @@ export default function LinkIcon({
             width={64}
             height={64}
             alt=""
-            className={iconClasses}
+            className={iconClasses + dimension}
             draggable="false"
             onError={() => {
               setShowFavicon(false);
             }}
           />
         ) : (
-          <LinkPlaceholderIcon iconClasses={iconClasses} icon="bi-link-45deg" />
+          <LinkPlaceholderIcon
+            iconClasses={iconClasses + dimension}
+            size={size}
+            icon="bi-link-45deg"
+          />
         )
       ) : link.type === "pdf" ? (
         <LinkPlaceholderIcon
-          iconClasses={iconClasses}
+          iconClasses={iconClasses + dimension}
+          size={size}
           icon="bi-file-earmark-pdf"
         />
       ) : link.type === "image" ? (
         <LinkPlaceholderIcon
-          iconClasses={iconClasses}
+          iconClasses={iconClasses + dimension}
+          size={size}
           icon="bi-file-earmark-image"
         />
       ) : undefined}
@@ -59,13 +77,19 @@ export default function LinkIcon({
 
 const LinkPlaceholderIcon = ({
   iconClasses,
+  size,
   icon,
 }: {
   iconClasses: string;
+  size?: "small" | "medium";
   icon: string;
 }) => {
   return (
-    <div className={`text-4xl text-black aspect-square ${iconClasses}`}>
+    <div
+      className={`${
+        size === "small" ? "text-2xl" : "text-4xl"
+      } text-black aspect-square ${iconClasses}`}
+    >
       <i className={`${icon} m-auto`}></i>
     </div>
   );
