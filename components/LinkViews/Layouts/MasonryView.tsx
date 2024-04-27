@@ -19,10 +19,11 @@ export default function MasonryView({
 
   const breakpointColumnsObj = useMemo(() => {
     return {
-      default: 4,
-      1900: 3,
-      [fullConfig.theme.screens.xl]: 2,
-      [fullConfig.theme.screens.sm]: 1,
+      default: 5,
+      1900: 4,
+      1500: 3,
+      880: 2,
+      550: 1,
     };
   }, []);
 
@@ -30,7 +31,7 @@ export default function MasonryView({
     <Masonry
       breakpointCols={breakpointColumnsObj}
       columnClassName="flex flex-col gap-5 !w-full"
-      className="grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5 pb-5"
+      className="grid min-[1901px]:grid-cols-5 min-[1501px]:grid-cols-4 min-[881px]:grid-cols-3 min-[551px]:grid-cols-2 grid-cols-1 gap-5 pb-5"
     >
       {links.map((e, i) => {
         return (

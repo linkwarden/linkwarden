@@ -125,8 +125,7 @@ export default function LinkCardCompact({
           <div className="shrink-0">
             <LinkIcon
               link={link}
-              width="sm:w-12 w-8"
-              className="mt-1 sm:mt-0"
+              className="mt-1 sm:mt-0 sm:w-12 w-8 sm:h-12 h-8 text-xl sm:text-4xl"
             />
           </div>
 

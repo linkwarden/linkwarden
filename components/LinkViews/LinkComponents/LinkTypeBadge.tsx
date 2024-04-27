@@ -27,8 +27,8 @@ export default function LinkTypeBadge({
       }}
       className="flex gap-1 item-center select-none text-neutral mt-1 hover:opacity-70 duration-100"
     >
-      <i className="bi-link-45deg text-lg mt-[0.1rem] leading-none"></i>
-      <p className="text-sm truncate">{shortendURL}</p>
+      <i className="bi-link-45deg text-lg leading-none"></i>
+      <p className="text-xs truncate">{shortendURL}</p>
     </Link>
   ) : (
     <div className="badge badge-primary badge-sm my-1 select-none">
