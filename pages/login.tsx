@@ -69,7 +69,7 @@ export default function Login({
   function displayLoginCredential() {
     if (availableLogins.credentialsEnabled === "true") {
       return (
-        <div data-testid="login-form">
+        <>
           <p className="text-3xl text-black dark:text-white text-center font-extralight">
             Enter your credentials
           </p>
@@ -127,7 +127,7 @@ export default function Login({
           {availableLogins.buttonAuths.length > 0 ? (
             <div className="divider my-1">OR</div>
           ) : undefined}
-        </div>
+        </>
       );
     }
   }
@@ -171,7 +171,10 @@ export default function Login({
   return (
     <CenteredForm text="Sign in to your account">
       <form onSubmit={loginUser}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700">
+        <div
+          className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700"
+          data-testid="login-form"
+        >
           {displayLoginCredential()}
           {displayLoginExternalButton()}
           {displayRegistration()}
