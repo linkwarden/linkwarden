@@ -1,6 +1,8 @@
+import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
+import useUserStore from "@/store/admin/users";
 import { User as U } from "@prisma/client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 interface User extends U {
   subscriptions: {
@@ -8,11 +10,21 @@ interface User extends U {
   };
 }
 
+type UserModal = {
+  isOpen: boolean;
+  userId: number | null;
+};
+
 export default function Admin() {
-  const [users, setUsers] = useState<User[]>();
+  const { users, setUsers } = useUserStore();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>();
+
+  const [deleteUserModal, setDeleteUserModal] = useState<UserModal>({
+    isOpen: false,
+    userId: null,
+  });
 
   useEffect(() => {
     // fetch users
@@ -31,7 +43,7 @@ export default function Admin() {
           >
             <i className="bi-chevron-left text-xl"></i>
           </Link>
-          <p className="capitalize sm:text-3xl text-2xl font-thin inline">
+          <p className="capitalize text-3xl font-thin inline">
             User Administration
           </p>
         </div>
@@ -76,11 +88,11 @@ export default function Admin() {
       <div className="divider my-3"></div>
 
       {filteredUsers && filteredUsers.length > 0 && searchQuery !== "" ? (
-        UserLising(filteredUsers)
+        UserListing(filteredUsers, deleteUserModal, setDeleteUserModal)
       ) : searchQuery !== "" ? (
         <p>No users found with the given search query.</p>
       ) : users && users.length > 0 ? (
-        UserLising(users)
+        UserListing(users, deleteUserModal, setDeleteUserModal)
       ) : (
         <p>No users found.</p>
       )}
@@ -88,7 +100,11 @@ export default function Admin() {
   );
 }
 
-const UserLising = (users: User[]) => {
+const UserListing = (
+  users: User[],
+  deleteUserModal: UserModal,
+  setDeleteUserModal: Function
+) => {
   return (
     <div className="overflow-x-auto whitespace-nowrap w-full">
       <table className="table table-zebra w-full">
@@ -106,7 +122,7 @@ const UserLising = (users: User[]) => {
         </thead>
         <tbody>
           {users.map((user, index) => (
-            <tr key={user.id}>
+            <tr key={index}>
               <td className="rounded-tl">{index + 1}</td>
               <td>{user.username}</td>
               {process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true" && (
@@ -117,7 +133,12 @@ const UserLising = (users: User[]) => {
               )}
               <td>{new Date(user.createdAt).toLocaleString()}</td>
               <td>
-                <button className="btn btn-sm btn-ghost">
+                <button
+                  className="btn btn-sm btn-ghost"
+                  onClick={() =>
+                    setDeleteUserModal({ isOpen: true, userId: user.id })
+                  }
+                >
                   <i className="bi bi-trash"></i>
                 </button>
               </td>
@@ -125,6 +146,13 @@ const UserLising = (users: User[]) => {
           ))}
         </tbody>
       </table>
+
+      {deleteUserModal.isOpen && deleteUserModal.userId ? (
+        <DeleteUserModal
+          onClose={() => setDeleteUserModal({ isOpen: false, userId: null })}
+          userId={deleteUserModal.userId}
+        />
+      ) : null}
     </div>
   );
 };
