@@ -119,6 +119,14 @@ export default function NewUserModal({ onClose }: Props) {
           </div>
         </div>
 
+        <div role="note" className="alert alert-note mt-5">
+          <i className="bi-exclamation-triangle text-xl" />
+          <span>
+            <b>Note:</b> Please make sure you inform the user that they need to
+            change their password.
+          </span>
+        </div>
+
         <div className="flex justify-between items-center mt-5">
           <button
             className="btn btn-accent dark:border-violet-400 text-white ml-auto"
