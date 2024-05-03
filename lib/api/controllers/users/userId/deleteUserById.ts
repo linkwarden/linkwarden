@@ -10,7 +10,8 @@ const authentikEnabled = process.env.AUTHENTIK_CLIENT_SECRET;
 
 export default async function deleteUserById(
   userId: number,
-  body: DeleteUserBody
+  body: DeleteUserBody,
+  isServerAdmin?: boolean
 ) {
   // First, we retrieve the user from the database
   const user = await prisma.user.findUnique({
@@ -25,13 +26,13 @@ export default async function deleteUserById(
   }
 
   // Then, we check if the provided password matches the one stored in the database (disabled in Keycloak integration)
-  if (!keycloakEnabled && !authentikEnabled) {
+  if (!keycloakEnabled && !authentikEnabled && !isServerAdmin) {
     const isPasswordValid = bcrypt.compareSync(
       body.password,
       user.password as string
     );
 
-    if (!isPasswordValid) {
+    if (!isPasswordValid && !isServerAdmin) {
       return {
         response: "Invalid credentials.",
         status: 401, // Unauthorized
@@ -43,6 +44,11 @@ export default async function deleteUserById(
   await prisma
     .$transaction(
       async (prisma) => {
+        // Delete Access Tokens
+        await prisma.accessToken.deleteMany({
+          where: { userId },
+        });
+
         // Delete whitelisted users
         await prisma.whitelistedUser.deleteMany({
           where: { userId },
@@ -87,6 +93,7 @@ export default async function deleteUserById(
           await prisma.subscription.delete({
             where: { userId },
           });
+        // .catch((err) => console.log(err));
 
         await prisma.usersAndCollections.deleteMany({
           where: {
