@@ -1,4 +1,5 @@
 import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
+import NewUserModal from "@/components/ModalContent/NewUserModal";
 import useUserStore from "@/store/admin/users";
 import { User as U } from "@prisma/client";
 import Link from "next/link";
@@ -26,11 +27,10 @@ export default function Admin() {
     userId: null,
   });
 
+  const [newUserModal, setNewUserModal] = useState(false);
+
   useEffect(() => {
-    // fetch users
-    fetch("/api/v1/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data.response));
+    setUsers();
   }, []);
 
   return (
@@ -79,7 +79,10 @@ export default function Admin() {
             />
           </div>
 
-          <div className="flex items-center btn btn-accent dark:border-violet-400 text-white btn-sm px-2 aspect-square relative">
+          <div
+            onClick={() => setNewUserModal(true)}
+            className="flex items-center btn btn-accent dark:border-violet-400 text-white btn-sm px-2 aspect-square relative"
+          >
             <i className="bi-plus text-3xl absolute"></i>
           </div>
         </div>
@@ -96,6 +99,10 @@ export default function Admin() {
       ) : (
         <p>No users found.</p>
       )}
+
+      {newUserModal ? (
+        <NewUserModal onClose={() => setNewUserModal(false)} />
+      ) : null}
     </div>
   );
 }
@@ -107,7 +114,7 @@ const UserListing = (
 ) => {
   return (
     <div className="overflow-x-auto whitespace-nowrap w-full">
-      <table className="table table-zebra w-full">
+      <table className="table w-full">
         <thead>
           <tr>
             <th></th>
@@ -122,19 +129,28 @@ const UserListing = (
         </thead>
         <tbody>
           {users.map((user, index) => (
-            <tr key={index}>
-              <td className="rounded-tl">{index + 1}</td>
-              <td>{user.username}</td>
+            <tr
+              key={index}
+              className="group hover:bg-neutral-content hover:bg-opacity-30 duration-100"
+            >
+              <td className="text-primary">{index + 1}</td>
+              <td>{user.username ? user.username : <b>N/A</b>}</td>
               {process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true" && (
                 <td>{user.email}</td>
               )}
               {process.env.NEXT_PUBLIC_STRIPE === "true" && (
-                <td>{JSON.stringify(user.subscriptions.active)}</td>
+                <td>
+                  {user.subscriptions?.active ? (
+                    JSON.stringify(user.subscriptions?.active)
+                  ) : (
+                    <b>N/A</b>
+                  )}
+                </td>
               )}
               <td>{new Date(user.createdAt).toLocaleString()}</td>
-              <td>
+              <td className="relative">
                 <button
-                  className="btn btn-sm btn-ghost"
+                  className="btn btn-sm btn-ghost duration-100 hidden group-hover:block absolute z-20 right-[0.35rem] top-[0.35rem]"
                   onClick={() =>
                     setDeleteUserModal({ isOpen: true, userId: user.id })
                   }
