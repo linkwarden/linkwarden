@@ -1,9 +1,11 @@
 import { prisma } from "@/lib/api/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
+import verifyUser from "../../verifyUser";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
+const stripeEnabled = process.env.STRIPE_SECRET_KEY ? true : false;
 
 interface Data {
   response: string | object;
@@ -20,7 +22,15 @@ export default async function postUser(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  if (process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true") {
+  let isServerAdmin = false;
+
+  const user = await verifyUser({ req, res });
+  if (process.env.ADMINISTRATOR === user?.username) isServerAdmin = true;
+
+  if (
+    process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" &&
+    !isServerAdmin
+  ) {
     return res.status(400).json({ response: "Registration is disabled." });
   }
 
@@ -57,13 +67,16 @@ export default async function postUser(
     });
 
   const checkIfUserExists = await prisma.user.findFirst({
-    where: emailEnabled
-      ? {
+    where: {
+      OR: [
+        {
           email: body.email?.toLowerCase().trim(),
-        }
-      : {
+        },
+        {
           username: (body.username as string).toLowerCase().trim(),
         },
+      ],
+    },
   });
 
   if (!checkIfUserExists) {
@@ -71,21 +84,63 @@ export default async function postUser(
 
     const hashedPassword = bcrypt.hashSync(body.password, saltRounds);
 
-    await prisma.user.create({
-      data: {
-        name: body.name,
-        username: emailEnabled
-          ? undefined
-          : (body.username as string).toLowerCase().trim(),
-        email: emailEnabled ? body.email?.toLowerCase().trim() : undefined,
-        password: hashedPassword,
-      },
-    });
+    // Subscription dates
+    const currentPeriodStart = new Date();
+    const currentPeriodEnd = new Date();
+    currentPeriodEnd.setFullYear(currentPeriodEnd.getFullYear() + 1000); // end date is in 1000 years...
 
-    return res.status(201).json({ response: "User successfully created." });
+    if (isServerAdmin) {
+      const user = await prisma.user.create({
+        data: {
+          name: body.name,
+          username: (body.username as string).toLowerCase().trim(),
+          email: emailEnabled ? body.email?.toLowerCase().trim() : undefined,
+          password: hashedPassword,
+          emailVerified: new Date(),
+          subscriptions: stripeEnabled
+            ? {
+                create: {
+                  stripeSubscriptionId:
+                    "fake_sub_" + Math.round(Math.random() * 10000000000000),
+                  active: true,
+                  currentPeriodStart,
+                  currentPeriodEnd,
+                },
+              }
+            : undefined,
+        },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          emailVerified: true,
+          subscriptions: {
+            select: {
+              active: true,
+            },
+          },
+          createdAt: true,
+        },
+      });
+
+      return res.status(201).json({ response: user });
+    } else {
+      await prisma.user.create({
+        data: {
+          name: body.name,
+          username: emailEnabled
+            ? undefined
+            : (body.username as string).toLowerCase().trim(),
+          email: emailEnabled ? body.email?.toLowerCase().trim() : undefined,
+          password: hashedPassword,
+        },
+      });
+
+      return res.status(201).json({ response: "User successfully created." });
+    }
   } else if (checkIfUserExists) {
     return res.status(400).json({
-      response: `${emailEnabled ? "Email" : "Username"} already exists.`,
+      response: `Email or Username already exists.`,
     });
   }
 }
