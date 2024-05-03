@@ -43,7 +43,7 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
           onClick={deleteUser}
         >
           <i className="bi-trash text-xl" />
-          Delete, I know what I'm doing
+          Delete, I know what I&apos;m doing
         </button>
       </div>
     </Modal>
