@@ -14,8 +14,8 @@ type ResponseObject = {
 
 type UserStore = {
   users: User[];
-  setUsers: (users: User[]) => void;
-  addUser: () => Promise<ResponseObject>;
+  setUsers: () => void;
+  addUser: (body: Partial<U>) => Promise<ResponseObject>;
   removeUser: (userId: number) => Promise<ResponseObject>;
 };
 
@@ -27,10 +27,15 @@ const useUserStore = create<UserStore>((set) => ({
     const data = await response.json();
 
     if (response.ok) set({ users: data.response });
+    else if (response.status === 401) window.location.href = "/dashboard";
   },
-  addUser: async () => {
+  addUser: async (body) => {
     const response = await fetch("/api/v1/users", {
       method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     const data = await response.json();
