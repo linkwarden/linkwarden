@@ -11,7 +11,7 @@ const authentikEnabled = process.env.AUTHENTIK_CLIENT_SECRET;
 export default async function deleteUserById(
   userId: number,
   body: DeleteUserBody,
-  isServerAdmin: boolean
+  isServerAdmin?: boolean
 ) {
   // First, we retrieve the user from the database
   const user = await prisma.user.findUnique({
@@ -93,6 +93,7 @@ export default async function deleteUserById(
           await prisma.subscription.delete({
             where: { userId },
           });
+        // .catch((err) => console.log(err));
 
         await prisma.usersAndCollections.deleteMany({
           where: {
