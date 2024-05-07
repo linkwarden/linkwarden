@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
-import verifyUser from "../../verifyUser";
+import isServerAdmin from "../../isServerAdmin";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
@@ -9,6 +9,7 @@ const stripeEnabled = process.env.STRIPE_SECRET_KEY ? true : false;
 
 interface Data {
   response: string | object;
+  status: number;
 }
 
 interface User {
@@ -20,18 +21,12 @@ interface User {
 
 export default async function postUser(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
-  let isServerAdmin = false;
+  res: NextApiResponse
+): Promise<Data> {
+  let isAdmin = await isServerAdmin({ req });
 
-  const user = await verifyUser({ req, res });
-  if (process.env.ADMINISTRATOR === user?.username) isServerAdmin = true;
-
-  if (
-    process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" &&
-    !isServerAdmin
-  ) {
-    return res.status(400).json({ response: "Registration is disabled." });
+  if (process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" && !isAdmin) {
+    return { response: "Registration is disabled.", status: 400 };
   }
 
   const body: User = req.body;
@@ -41,39 +36,36 @@ export default async function postUser(
     : !body.username || !body.password || !body.name;
 
   if (!body.password || body.password.length < 8)
-    return res
-      .status(400)
-      .json({ response: "Password must be at least 8 characters." });
+    return { response: "Password must be at least 8 characters.", status: 400 };
 
   if (checkHasEmptyFields)
-    return res
-      .status(400)
-      .json({ response: "Please fill out all the fields." });
+    return { response: "Please fill out all the fields.", status: 400 };
 
   // Check email (if enabled)
   const checkEmail =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
   if (emailEnabled && !checkEmail.test(body.email?.toLowerCase() || ""))
-    return res.status(400).json({
-      response: "Please enter a valid email.",
-    });
+    return { response: "Please enter a valid email.", status: 400 };
 
   // Check username (if email was disabled)
   const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
   if (!emailEnabled && !checkUsername.test(body.username?.toLowerCase() || ""))
-    return res.status(400).json({
+    return {
       response:
         "Username has to be between 3-30 characters, no spaces and special characters are allowed.",
-    });
+      status: 400,
+    };
 
   const checkIfUserExists = await prisma.user.findFirst({
     where: {
       OR: [
         {
-          email: body.email?.toLowerCase().trim(),
+          email: body.email ? body.email.toLowerCase().trim() : undefined,
         },
         {
-          username: (body.username as string).toLowerCase().trim(),
+          username: body.username
+            ? body.username.toLowerCase().trim()
+            : undefined,
         },
       ],
     },
@@ -89,7 +81,7 @@ export default async function postUser(
     const currentPeriodEnd = new Date();
     currentPeriodEnd.setFullYear(currentPeriodEnd.getFullYear() + 1000); // end date is in 1000 years...
 
-    if (isServerAdmin) {
+    if (isAdmin) {
       const user = await prisma.user.create({
         data: {
           name: body.name,
@@ -123,7 +115,7 @@ export default async function postUser(
         },
       });
 
-      return res.status(201).json({ response: user });
+      return { response: user, status: 201 };
     } else {
       await prisma.user.create({
         data: {
@@ -136,11 +128,9 @@ export default async function postUser(
         },
       });
 
-      return res.status(201).json({ response: "User successfully created." });
+      return { response: "User successfully created.", status: 201 };
     }
-  } else if (checkIfUserExists) {
-    return res.status(400).json({
-      response: `Email or Username already exists.`,
-    });
+  } else {
+    return { response: "Email or Username already exists.", status: 400 };
   }
 }

@@ -201,7 +201,11 @@ const CollectionListing = () => {
   };
 
   if (!tree) {
-    return <></>;
+    return (
+      <p className="text-neutral text-xs font-semibold truncate w-full px-2 mt-5 mb-8">
+        You Have No Collections...
+      </p>
+    );
   } else
     return (
       <Tree
