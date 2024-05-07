@@ -27,7 +27,7 @@ export default async function deleteUserById(
 
   // Then, we check if the provided password matches the one stored in the database (disabled in SSO/OAuth integrations)
   if (user.password && !isServerAdmin) {
-    console.log("isServerAdmin", isServerAdmin);
+    console.log("isServerAdmin", isServerAdmin); // remove later
     console.log("isServerAdmin", body.password);
     const isPasswordValid = bcrypt.compareSync(
       body.password,
