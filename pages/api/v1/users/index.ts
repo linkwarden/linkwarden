@@ -6,7 +6,7 @@ import verifyUser from "@/lib/api/verifyUser";
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const response = await postUser(req, res);
-    return response;
+    return res.status(response.status).json({ response: response.response });
   } else if (req.method === "GET") {
     const user = await verifyUser({ req, res });
     if (!user || process.env.ADMINISTRATOR !== user.username)
