@@ -63,11 +63,21 @@ async function processBookmarks(
         ) as Element;
 
         if (collectionName) {
-          collectionId = await createCollection(
-            userId,
-            (collectionName.children[0] as TextNode).content,
-            parentCollectionId
-          );
+          const collectionNameContent = (collectionName.children[0] as TextNode)?.content;
+          if (collectionNameContent) {
+            collectionId = await createCollection(
+              userId,
+              collectionNameContent,
+              parentCollectionId
+            );
+          } else {
+            // Handle the case when the collection name is empty
+            collectionId = await createCollection(
+              userId,
+              "Untitled Collection",
+              parentCollectionId
+            );
+          }
         }
         await processBookmarks(
           userId,
@@ -264,3 +274,4 @@ function processNodes(nodes: Node[]) {
   nodes.forEach(findAndProcessDL);
   return nodes;
 }
+
