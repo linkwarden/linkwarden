@@ -25,4 +25,9 @@ export class RegistrationPage extends BasePage {
     this.passwordInput = page.getByTestId("password-input");
     this.usernameInput = page.getByTestId("username-input");
   }
+
+  async goto() {
+    await this.page.goto("/register");
+    await this.registrationForm.waitFor({ state: "visible" });
+  }
 }
