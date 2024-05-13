@@ -88,23 +88,28 @@ export default function NewUserModal({ onClose }: Props) {
 
           {emailEnabled ? (
             <div>
-              <p className="mb-2">Username</p>
+              <p className="mb-2">Email</p>
               <TextInput
-                placeholder="john"
+                placeholder="johnny@example.com"
                 className="bg-base-200"
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
-                value={form.username}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                value={form.email}
               />
             </div>
           ) : undefined}
 
           <div>
-            <p className="mb-2">Email</p>
+            <p className="mb-2">
+              Username{" "}
+              {emailEnabled && (
+                <span className="text-xs text-neutral">(Optional)</span>
+              )}
+            </p>
             <TextInput
-              placeholder="johnny@example.com"
+              placeholder="john"
               className="bg-base-200"
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              value={form.email}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              value={form.username}
             />
           </div>
 

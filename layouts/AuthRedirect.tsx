@@ -32,19 +32,6 @@ export default function AuthRedirect({ children }: Props) {
         router.push("/subscribe").then(() => {
           setRedirect(false);
         });
-      }
-      // Redirect to "/choose-username" if user is authenticated and is either a subscriber OR subscription is undefiend, and doesn't have a username
-      else if (
-        emailEnabled &&
-        status === "authenticated" &&
-        account.subscription?.active &&
-        stripeEnabled &&
-        account.id &&
-        !account.username
-      ) {
-        router.push("/choose-username").then(() => {
-          setRedirect(false);
-        });
       } else if (
         status === "authenticated" &&
         account.id &&
