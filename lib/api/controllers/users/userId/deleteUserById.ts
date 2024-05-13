@@ -25,16 +25,20 @@ export default async function deleteUserById(
     };
   }
 
-  // Then, we check if the provided password matches the one stored in the database (disabled in SSO/OAuth integrations)
-  if (user.password && !isServerAdmin) {
-    console.log("isServerAdmin", isServerAdmin);
-    console.log("isServerAdmin", body.password);
-    const isPasswordValid = bcrypt.compareSync(
-      body.password,
-      user.password as string
-    );
+  if (!isServerAdmin) {
+    if (user.password) {
+      const isPasswordValid = bcrypt.compareSync(
+        body.password,
+        user.password as string
+      );
 
-    if (!isPasswordValid && !isServerAdmin) {
+      if (!isPasswordValid && !isServerAdmin) {
+        return {
+          response: "Invalid credentials.",
+          status: 401, // Unauthorized
+        };
+      }
+    } else {
       return {
         response: "Invalid credentials.",
         status: 401, // Unauthorized
