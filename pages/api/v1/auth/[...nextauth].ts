@@ -119,7 +119,7 @@ if (
           passwordMatches = bcrypt.compareSync(password, user.password);
         }
 
-        if (passwordMatches) {
+        if (passwordMatches && user?.password) {
           return { id: user?.id };
         } else return null as any;
       },
