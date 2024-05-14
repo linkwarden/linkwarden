@@ -200,7 +200,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
               </span>
             )}
           </p>
-          {link.tags[0] && (
+          {link.tags && link.tags[0] && (
             <>
               <p className="text-neutral text-lg mt-3 font-semibold">Tags</p>
 
