@@ -43,7 +43,7 @@ export default function ReadableView({ link }: Props) {
 
   const router = useRouter();
 
-  const { links, getLink } = useLinkStore();
+  const { getLink } = useLinkStore();
   const { collections } = useCollectionStore();
 
   const collection = useMemo(() => {
@@ -138,7 +138,7 @@ export default function ReadableView({ link }: Props) {
   }, [colorPalette]);
 
   return (
-    <div className={`flex flex-col max-w-screen-md h-full mx-auto py-5`}>
+    <div className={`flex flex-col max-w-screen-md h-full mx-auto p-5`}>
       <div
         id="link-banner"
         className="link-banner relative bg-opacity-10 border-neutral-content p-3 border mb-3"
@@ -174,7 +174,7 @@ export default function ReadableView({ link }: Props) {
               />
             )}
             <div className="flex flex-col">
-              <p className="text-xl">
+              <p className="text-xl pr-10">
                 {unescapeString(
                   link?.name || link?.description || link?.url || ""
                 )}
@@ -212,7 +212,7 @@ export default function ReadableView({ link }: Props) {
                 {link?.collection.name}
               </p>
             </Link>
-            {link?.tags.map((e, i) => (
+            {link?.tags?.map((e, i) => (
               <Link key={i} href={`/tags/${e.id}`} className="z-10">
                 <p
                   title={e.name}
