@@ -26,10 +26,16 @@ export default function EmailChangeVerificationModal({
       <div className="flex flex-col gap-5">
         <p>
           Please confirm your password before changing your email address.{" "}
-          {process.env.NEXT_PUBLIC_STRIPE === "true"
-            ? "Updating this field will change your billing email on Stripe as well."
-            : undefined}
+          {process.env.NEXT_PUBLIC_STRIPE === "true" &&
+            "Updating this field will change your billing email on Stripe as well."}
         </p>
+
+        {process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true" && (
+          <p>
+            If you change your email address, any existing Google SSO
+            connections will be removed.
+          </p>
+        )}
 
         <div>
           <p>Old Email</p>
