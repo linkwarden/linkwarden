@@ -148,7 +148,11 @@ export default async function updateUserById(
       };
     }
 
-    sendChangeEmailVerificationRequest(user.email, data.email, data.name);
+    sendChangeEmailVerificationRequest(
+      user.email,
+      data.email,
+      data.name.trim()
+    );
   }
 
   // Other settings / Apply changes
@@ -161,7 +165,7 @@ export default async function updateUserById(
       id: userId,
     },
     data: {
-      name: data.name,
+      name: data.name.trim(),
       username: data.username?.toLowerCase().trim(),
       isPrivate: data.isPrivate,
       image:
