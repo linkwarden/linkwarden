@@ -12,9 +12,13 @@ import { MigrationFormat, MigrationRequest } from "@/types/global";
 import Link from "next/link";
 import Checkbox from "@/components/Checkbox";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import EmailChangeVerificationModal from "@/components/ModalContent/EmailChangeVerificationModal";
+
+const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
 export default function Account() {
-  const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+  const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
+    useState(false);
 
   const [submitLoader, setSubmitLoader] = useState(false);
 
@@ -30,6 +34,7 @@ export default function Account() {
           username: "",
           email: "",
           emailVerified: null,
+          password: undefined,
           image: "",
           isPrivate: true,
           // @ts-ignore
@@ -68,19 +73,29 @@ export default function Account() {
     }
   };
 
-  const submit = async () => {
+  const submit = async (password?: string) => {
     setSubmitLoader(true);
 
     const load = toast.loading("Applying...");
 
     const response = await updateAccount({
       ...user,
+      // @ts-ignore
+      password: password ? password : undefined,
     });
 
     toast.dismiss(load);
 
     if (response.ok) {
-      toast.success("Settings Applied!");
+      const emailChanged = account.email !== user.email;
+
+      if (emailChanged) {
+        toast.success("Settings Applied!");
+        toast.success(
+          "Email change request sent. Please verify the new email address."
+        );
+        setEmailChangeVerificationModal(false);
+      } else toast.success("Settings Applied!");
     } else toast.error(response.data as string);
     setSubmitLoader(false);
   };
@@ -177,12 +192,6 @@ export default function Account() {
             {emailEnabled ? (
               <div>
                 <p className="mb-2">Email</p>
-                {user.email !== account.email &&
-                process.env.NEXT_PUBLIC_STRIPE === "true" ? (
-                  <p className="text-neutral mb-2 text-sm">
-                    Updating this field will change your billing email as well
-                  </p>
-                ) : undefined}
                 <TextInput
                   value={user.email || ""}
                   className="bg-base-200"
@@ -229,6 +238,47 @@ export default function Account() {
             </div>
           </div>
         </div>
+
+        <div className="sm:-mt-3">
+          <Checkbox
+            label="Make profile private"
+            state={user.isPrivate}
+            onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
+          />
+
+          <p className="text-neutral text-sm">
+            This will limit who can find and add you to new Collections.
+          </p>
+
+          {user.isPrivate && (
+            <div className="pl-5">
+              <p className="mt-2">Whitelisted Users</p>
+              <p className="text-neutral text-sm mb-3">
+                Please provide the Username of the users you wish to grant
+                visibility to your profile. Separated by comma.
+              </p>
+              <textarea
+                className="w-full resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
+                placeholder="Your profile is hidden from everyone right now..."
+                value={whitelistedUsersTextbox}
+                onChange={(e) => setWhiteListedUsersTextbox(e.target.value)}
+              />
+            </div>
+          )}
+        </div>
+
+        <SubmitButton
+          onClick={() => {
+            if (account.email !== user.email) {
+              setEmailChangeVerificationModal(true);
+            } else {
+              submit();
+            }
+          }}
+          loading={submitLoader}
+          label="Save Changes"
+          className="mt-2 w-full sm:w-fit"
+        />
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">
@@ -312,49 +362,6 @@ export default function Account() {
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="truncate w-full pr-7 text-3xl font-thin">
-              Profile Visibility
-            </p>
-          </div>
-
-          <div className="divider my-3"></div>
-
-          <Checkbox
-            label="Make profile private"
-            state={user.isPrivate}
-            onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
-          />
-
-          <p className="text-neutral text-sm">
-            This will limit who can find and add you to new Collections.
-          </p>
-
-          {user.isPrivate && (
-            <div className="pl-5">
-              <p className="mt-2">Whitelisted Users</p>
-              <p className="text-neutral text-sm mb-3">
-                Please provide the Username of the users you wish to grant
-                visibility to your profile. Separated by comma.
-              </p>
-              <textarea
-                className="w-full resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
-                placeholder="Your profile is hidden from everyone right now..."
-                value={whitelistedUsersTextbox}
-                onChange={(e) => setWhiteListedUsersTextbox(e.target.value)}
-              />
-            </div>
-          )}
-        </div>
-
-        <SubmitButton
-          onClick={submit}
-          loading={submitLoader}
-          label="Save Changes"
-          className="mt-2 w-full sm:w-fit"
-        />
-
-        <div>
-          <div className="flex items-center gap-2 w-full rounded-md h-8">
             <p className="text-red-500 dark:text-red-500 truncate w-full pr-7 text-3xl font-thin">
               Delete Account
             </p>
@@ -380,6 +387,15 @@ export default function Account() {
           <p className="text-center w-full">Delete Your Account</p>
         </Link>
       </div>
+
+      {emailChangeVerificationModal ? (
+        <EmailChangeVerificationModal
+          onClose={() => setEmailChangeVerificationModal(false)}
+          onSubmit={submit}
+          oldEmail={account.email || ""}
+          newEmail={user.email || ""}
+        />
+      ) : undefined}
     </SettingsLayout>
   );
 }
