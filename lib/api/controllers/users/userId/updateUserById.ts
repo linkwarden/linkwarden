@@ -3,8 +3,8 @@ import { AccountSettings } from "@/types/global";
 import bcrypt from "bcrypt";
 import removeFile from "@/lib/api/storage/removeFile";
 import createFile from "@/lib/api/storage/createFile";
-import updateCustomerEmail from "@/lib/api/updateCustomerEmail";
 import createFolder from "@/lib/api/storage/createFolder";
+import sendChangeEmailVerificationRequest from "@/lib/api/sendChangeEmailVerificationRequest";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
@@ -13,17 +13,6 @@ export default async function updateUserById(
   userId: number,
   data: AccountSettings
 ) {
-  const ssoUser = await prisma.account.findFirst({
-    where: {
-      userId: userId,
-    },
-  });
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-
   if (emailEnabled && !data.email)
     return {
       response: "Email invalid.",
@@ -39,6 +28,7 @@ export default async function updateUserById(
       response: "Password must be at least 8 characters.",
       status: 400,
     };
+
   // Check email (if enabled)
   const checkEmail =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -126,11 +116,42 @@ export default async function updateUserById(
     removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
   }
 
-  const previousEmail = (
-    await prisma.user.findUnique({ where: { id: userId } })
-  )?.email;
+  // Email Settings
 
-  // Other settings
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, password: true },
+  });
+
+  if (user && user.email && data.email && data.email !== user.email) {
+    if (!data.password) {
+      return {
+        response: "Invalid password.",
+        status: 400,
+      };
+    }
+
+    // Verify password
+    if (!user.password) {
+      return {
+        response: "User has no password.",
+        status: 400,
+      };
+    }
+
+    const passwordMatch = bcrypt.compareSync(data.password, user.password);
+
+    if (!passwordMatch) {
+      return {
+        response: "Password is incorrect.",
+        status: 400,
+      };
+    }
+
+    sendChangeEmailVerificationRequest(user.email, data.email, data.name);
+  }
+
+  // Other settings / Apply changes
 
   const saltRounds = 10;
   const newHashedPassword = bcrypt.hashSync(data.newPassword || "", saltRounds);
@@ -142,7 +163,6 @@ export default async function updateUserById(
     data: {
       name: data.name,
       username: data.username?.toLowerCase().trim(),
-      email: data.email?.toLowerCase().trim(),
       isPrivate: data.isPrivate,
       image:
         data.image && data.image.startsWith("http")
@@ -210,15 +230,6 @@ export default async function updateUserById(
       },
     });
   }
-
-  const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-
-  if (STRIPE_SECRET_KEY && emailEnabled && previousEmail !== data.email)
-    await updateCustomerEmail(
-      STRIPE_SECRET_KEY,
-      previousEmail as string,
-      data.email as string
-    );
 
   const response: Omit<AccountSettings, "password"> = {
     ...userInfo,

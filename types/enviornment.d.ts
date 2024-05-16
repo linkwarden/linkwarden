@@ -30,13 +30,14 @@ declare global {
       EMAIL_FROM?: string;
       EMAIL_SERVER?: string;
 
+      BASE_URL?: string; // Used for email and stripe
+
       NEXT_PUBLIC_STRIPE?: string;
       STRIPE_SECRET_KEY?: string;
       MONTHLY_PRICE_ID?: string;
       YEARLY_PRICE_ID?: string;
       NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL?: string;
       NEXT_PUBLIC_TRIAL_PERIOD_DAYS?: string;
-      BASE_URL?: string;
 
       // Proxy settings
       PROXY?: string;
