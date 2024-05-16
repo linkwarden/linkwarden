@@ -1,3 +1,4 @@
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -18,7 +19,10 @@ const VerifyEmail = () => {
       method: "POST",
     }).then((res) => {
       if (res.ok) {
-        toast.success("Email verified. You can now login.");
+        toast.success("Email verified. Signing out..");
+        setTimeout(() => {
+          signOut();
+        }, 3000);
       } else {
         toast.error("Invalid token.");
       }
@@ -27,7 +31,7 @@ const VerifyEmail = () => {
     console.log(token);
   }, []);
 
-  return <div>Verify email...</div>;
+  return <></>;
 };
 
 export default VerifyEmail;
