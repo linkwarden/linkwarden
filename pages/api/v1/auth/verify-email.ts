@@ -112,5 +112,3 @@ export default async function verifyEmail(
     });
   }
 }
-
-// http://localhost:3000/api/v1/auth/verify-email?token=67b3d33491be1ba7b9ab60a8cb8caec5f248b72c0e890aafec979c0d33899279
