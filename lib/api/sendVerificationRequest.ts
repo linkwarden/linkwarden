@@ -20,7 +20,10 @@ export default async function sendVerificationRequest(
   const { host } = new URL(url);
   const result = await transporter.sendMail({
     to: identifier,
-    from: provider.from,
+    from: {
+      name: "Linkwarden",
+      address: provider.from as string,
+    },
     subject: `Please verify your email address`,
     text: text({ url, host }),
     html: emailTemplate({
