@@ -40,7 +40,10 @@ export default async function sendChangeEmailVerificationRequest(
   const emailTemplate = Handlebars.compile(templateFile);
 
   transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+    from: {
+      name: "Linkwarden",
+      address: process.env.EMAIL_FROM as string,
+    },
     to: newEmail,
     subject: "Verify your new Linkwarden email address",
     html: emailTemplate({
