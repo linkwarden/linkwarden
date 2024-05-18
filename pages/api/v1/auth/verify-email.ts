@@ -20,7 +20,7 @@ export default async function verifyEmail(
       where: {
         token,
         expires: {
-          gte: new Date(),
+          gt: new Date(),
         },
       },
     });
