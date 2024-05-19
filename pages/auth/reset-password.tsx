@@ -6,14 +6,16 @@ import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 
 interface FormData {
-  email: string;
+  password: string;
+  passwordConfirmation: string;
 }
 
-export default function Forgot() {
+export default function ResetPassword() {
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const [form, setForm] = useState<FormData>({
-    email: "",
+    password: "",
+    passwordConfirmation: "",
   });
 
   const [isEmailSent, setIsEmailSent] = useState(false);
@@ -40,7 +42,7 @@ export default function Forgot() {
   async function sendConfirmation(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (form.email !== "") {
+    if (form.password !== "") {
       setSubmitLoader(true);
 
       const load = toast.loading("Sending password recovery link...");
@@ -78,11 +80,13 @@ export default function Forgot() {
 
                 <TextInput
                   autoFocus
-                  type="email"
+                  type="password"
                   placeholder="johnny@example.com"
-                  value={form.email}
+                  value={form.password}
                   className="bg-base-100"
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
                 />
               </div>
 
