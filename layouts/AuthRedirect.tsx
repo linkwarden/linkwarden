@@ -1,8 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Loader from "../components/Loader";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import useInitialData from "@/hooks/useInitialData";
 import useAccountStore from "@/store/account";
 
@@ -10,62 +9,68 @@ interface Props {
   children: ReactNode;
 }
 
+const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
+const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
+
 export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
-  const { status, data } = useSession();
-  const [redirect, setRedirect] = useState(true);
+  const { status } = useSession();
+  const [shouldRenderChildren, setShouldRenderChildren] = useState(false);
   const { account } = useAccountStore();
-
-  const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
-  const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
 
   useInitialData();
 
   useEffect(() => {
-    if (!router.pathname.startsWith("/public")) {
-      if (
-        status === "authenticated" &&
-        account.id &&
-        !account.subscription?.active &&
-        stripeEnabled
-      ) {
-        router.push("/subscribe").then(() => {
-          setRedirect(false);
-        });
+    const isLoggedIn = status === "authenticated";
+    const isUnauthenticated = status === "unauthenticated";
+    const isPublicPage = router.pathname.startsWith("/public");
+    const hasInactiveSubscription =
+      account.id && !account.subscription?.active && stripeEnabled;
+    const routes = [
+      { path: "/login", isProtected: false },
+      { path: "/register", isProtected: false },
+      { path: "/confirmation", isProtected: false },
+      { path: "/forgot", isProtected: false },
+      { path: "/auth/reset-password", isProtected: false },
+      { path: "/", isProtected: false },
+      { path: "/subscribe", isProtected: true },
+      { path: "/dashboard", isProtected: true },
+      { path: "/settings", isProtected: true },
+      { path: "/collections", isProtected: true },
+      { path: "/links", isProtected: true },
+      { path: "/tags", isProtected: true },
+    ];
+
+    if (isPublicPage) {
+      setShouldRenderChildren(true);
+    } else {
+      if (isLoggedIn && hasInactiveSubscription) {
+        redirectTo("/subscribe");
       } else if (
-        status === "authenticated" &&
-        account.id &&
-        (router.pathname === "/login" ||
-          router.pathname === "/register" ||
-          router.pathname === "/confirmation" ||
-          router.pathname === "/subscribe" ||
-          router.pathname === "/choose-username" ||
-          router.pathname === "/forgot" ||
-          router.pathname === "/")
+        isLoggedIn &&
+        !routes.some((e) => router.pathname.startsWith(e.path) && e.isProtected)
       ) {
-        router.push("/dashboard").then(() => {
-          setRedirect(false);
-        });
+        redirectTo("/dashboard");
       } else if (
-        status === "unauthenticated" &&
-        !(
-          router.pathname === "/login" ||
-          router.pathname === "/register" ||
-          router.pathname === "/confirmation" ||
-          router.pathname === "/forgot"
+        isUnauthenticated &&
+        !routes.some(
+          (e) => router.pathname.startsWith(e.path) && !e.isProtected
         )
       ) {
-        router.push("/login").then(() => {
-          setRedirect(false);
-        });
-      } else if (status === "loading") setRedirect(true);
-      else setRedirect(false);
-    } else {
-      setRedirect(false);
+        redirectTo("/login");
+      } else {
+        setShouldRenderChildren(true);
+      }
     }
   }, [status, account, router.pathname]);
 
-  if (status !== "loading" && !redirect) return <>{children}</>;
-  else return <></>;
-  // return <>{children}</>;
+  function redirectTo(destination: string) {
+    router.push(destination).then(() => setShouldRenderChildren(true));
+  }
+
+  if (status !== "loading" && shouldRenderChildren) {
+    return <>{children}</>;
+  } else {
+    return <></>;
+  }
 }

@@ -2,52 +2,56 @@ import AccentSubmitButton from "@/components/AccentSubmitButton";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 
 interface FormData {
   password: string;
-  passwordConfirmation: string;
+  token: string;
 }
 
 export default function ResetPassword() {
   const [submitLoader, setSubmitLoader] = useState(false);
 
+  const router = useRouter();
+
   const [form, setForm] = useState<FormData>({
     password: "",
-    passwordConfirmation: "",
+    token: router.query.token as string,
   });
 
-  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
 
-  async function submitRequest() {
-    const response = await fetch("/api/v1/auth/forgot-password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      toast.success(data.response);
-      setIsEmailSent(true);
-    } else {
-      toast.error(data.response);
-    }
-  }
-
-  async function sendConfirmation(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (form.password !== "") {
+    if (
+      form.password !== "" &&
+      form.token !== "" &&
+      !requestSent &&
+      !submitLoader
+    ) {
       setSubmitLoader(true);
 
       const load = toast.loading("Sending password recovery link...");
 
-      await submitRequest();
+      const response = await fetch("/api/v1/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.response);
+        setRequestSent(true);
+      } else {
+        toast.error(data.response);
+      }
 
       toast.dismiss(load);
 
@@ -59,15 +63,15 @@ export default function ResetPassword() {
 
   return (
     <CenteredForm>
-      <form onSubmit={sendConfirmation}>
+      <form onSubmit={submit}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
-            {isEmailSent ? "Email Sent!" : "Forgot Password?"}
+            {requestSent ? "Password Updated!" : "Reset Password"}
           </p>
 
           <div className="divider my-0"></div>
 
-          {!isEmailSent ? (
+          {!requestSent ? (
             <>
               <div>
                 <p>
@@ -76,12 +80,12 @@ export default function ResetPassword() {
                 </p>
               </div>
               <div>
-                <p className="text-sm w-fit font-semibold mb-1">Email</p>
+                <p className="text-sm w-fit font-semibold mb-1">New Password</p>
 
                 <TextInput
                   autoFocus
                   type="password"
-                  placeholder="johnny@example.com"
+                  placeholder="••••••••••••••"
                   value={form.password}
                   className="bg-base-100"
                   onChange={(e) =>
@@ -92,23 +96,22 @@ export default function ResetPassword() {
 
               <AccentSubmitButton
                 type="submit"
-                label="Send Login Link"
+                label="Update Password"
                 className="mt-2 w-full"
                 loading={submitLoader}
               />
             </>
           ) : (
-            <p className="text-center">
-              Check your email for a link to reset your password. If it doesn’t
-              appear within a few minutes, check your spam folder.
-            </p>
-          )}
+            <>
+              <p>Your password has been successfully updated.</p>
 
-          <div className="flex items-baseline gap-1 justify-center">
-            <Link href={"/login"} className="block font-bold">
-              Go back
-            </Link>
-          </div>
+              <div className="mx-auto w-fit mt-3">
+                <Link className="font-semibold" href="/login">
+                  Back to Login
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </form>
     </CenteredForm>

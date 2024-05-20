@@ -34,11 +34,11 @@ export default async function sendPasswordResetRequest(
       address: process.env.EMAIL_FROM as string,
     },
     to: email,
-    subject: "Verify your new Linkwarden email address",
+    subject: "Linkwarden: Reset password instructions",
     html: emailTemplate({
       user,
       baseUrl: process.env.BASE_URL,
-      url: `${process.env.BASE_URL}/auth/password-reset?token=${token}`,
+      url: `${process.env.BASE_URL}/auth/reset-password?token=${token}`,
     }),
   });
 }

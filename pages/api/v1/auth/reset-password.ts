@@ -74,7 +74,7 @@ export default async function resetPassword(
     });
 
     return res.status(200).json({
-      response: "Password reset successfully.",
+      response: "Password has been reset successfully.",
     });
   }
 }
