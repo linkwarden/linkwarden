@@ -94,15 +94,15 @@ export default function Forgot() {
               />
             </>
           ) : (
-            <p className="text-center">
+            <p>
               Check your email for a link to reset your password. If it doesn’t
               appear within a few minutes, check your spam folder.
             </p>
           )}
 
-          <div className="flex items-baseline gap-1 justify-center">
-            <Link href={"/login"} className="block font-bold">
-              Go back
+          <div className="mx-auto w-fit mt-2">
+            <Link className="font-semibold" href="/login">
+              Back to Login
             </Link>
           </div>
         </div>

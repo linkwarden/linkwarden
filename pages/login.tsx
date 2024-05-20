@@ -47,7 +47,7 @@ export default function Login({
       setSubmitLoader(false);
 
       if (!res?.ok) {
-        toast.error("Invalid login.");
+        toast.error(res?.error || "Invalid credentials.");
       }
     } else {
       toast.error("Please fill out all the fields.");
@@ -108,7 +108,7 @@ export default function Login({
               <div className="w-fit ml-auto mt-1">
                 <Link
                   href={"/forgot"}
-                  className="text-gray-500 dark:text-gray-400 font-semibold"
+                  className="text-neutral font-semibold"
                   data-testid="forgot-password-link"
                 >
                   Forgot Password?
@@ -158,7 +158,7 @@ export default function Login({
           <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
           <Link
             href={"/register"}
-            className="block text-black dark:text-white font-semibold"
+            className="font-semibold"
             data-testid="register-link"
           >
             Sign Up

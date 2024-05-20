@@ -76,12 +76,17 @@ export default function Register() {
         setSubmitLoader(false);
 
         if (response.ok) {
-          if (form.email && emailEnabled)
+          if (form.email && emailEnabled) {
             await signIn("email", {
               email: form.email,
               callbackUrl: "/",
+              redirect: false,
             });
-          else if (!emailEnabled) router.push("/login");
+
+            router.push(
+              "/confirmation?email=" + encodeURIComponent(form.email)
+            );
+          } else if (!emailEnabled) router.push("/login");
 
           toast.success("User Created!");
         } else {

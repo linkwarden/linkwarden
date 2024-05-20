@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { Toaster, ToastBar } from "react-hot-toast";
 import { Session } from "next-auth";
 import { isPWA } from "@/lib/client/utils";
+import useInitialData from "@/hooks/useInitialData";
 
 export default function App({
   Component,
@@ -55,6 +56,7 @@ export default function App({
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <AuthRedirect>
+        {/* <GetData> */}
         <Toaster
           position="top-center"
           reverseOrder={false}
@@ -88,7 +90,17 @@ export default function App({
           )}
         </Toaster>
         <Component {...pageProps} />
+        {/* </GetData> */}
       </AuthRedirect>
     </SessionProvider>
   );
 }
+
+// function GetData({ children }: { children: React.ReactNode }) {
+//   const status = useInitialData();
+//   return typeof window !== "undefined" && status !== "loading" ? (
+//     children
+//   ) : (
+//     <></>
+//   );
+// }
