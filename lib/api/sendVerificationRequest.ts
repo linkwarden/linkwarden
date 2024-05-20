@@ -1,12 +1,21 @@
 import { readFileSync } from "fs";
-import { SendVerificationRequestParams } from "next-auth/providers";
 import path from "path";
 import Handlebars from "handlebars";
 import transporter from "./transporter";
 
-export default async function sendVerificationRequest(
-  params: SendVerificationRequestParams
-) {
+type Params = {
+  identifier: string;
+  url: string;
+  from: string;
+  token: string;
+};
+
+export default async function sendVerificationRequest({
+  identifier,
+  url,
+  from,
+  token,
+}: Params) {
   const emailsDir = path.resolve(process.cwd(), "templates");
 
   const templateFile = readFileSync(
@@ -16,13 +25,12 @@ export default async function sendVerificationRequest(
 
   const emailTemplate = Handlebars.compile(templateFile);
 
-  const { identifier, url, provider, token } = params;
   const { host } = new URL(url);
   const result = await transporter.sendMail({
     to: identifier,
     from: {
       name: "Linkwarden",
-      address: provider.from as string,
+      address: from as string,
     },
     subject: `Please verify your email address`,
     text: text({ url, host }),
