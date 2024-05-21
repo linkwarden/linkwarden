@@ -50,6 +50,7 @@ export interface TagIncludingLinkCount extends Tag {
 
 export interface AccountSettings extends User {
   newPassword?: string;
+  oldPassword?: string;
   whitelistedUsers: string[];
   subscription?: {
     active?: boolean;

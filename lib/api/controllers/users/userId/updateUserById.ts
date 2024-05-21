@@ -23,11 +23,6 @@ export default async function updateUserById(
       response: "Username invalid.",
       status: 400,
     };
-  if (data.newPassword && data.newPassword?.length < 8)
-    return {
-      response: "Password must be at least 8 characters.",
-      status: 400,
-    };
 
   // Check email (if enabled)
   const checkEmail =
@@ -153,6 +148,37 @@ export default async function updateUserById(
       data.email,
       data.name.trim()
     );
+  }
+
+  // Password Settings
+
+  if (data.newPassword || data.oldPassword) {
+    if (!data.oldPassword || !data.newPassword)
+      return {
+        response: "Please fill out all the fields.",
+        status: 400,
+      };
+    else if (!user?.password)
+      return {
+        response:
+          "User has no password. Please reset your password from the forgot password page.",
+        status: 400,
+      };
+    else if (!bcrypt.compareSync(data.oldPassword, user.password))
+      return {
+        response: "Old password is incorrect.",
+        status: 400,
+      };
+    else if (data.newPassword?.length < 8)
+      return {
+        response: "Password must be at least 8 characters.",
+        status: 400,
+      };
+    else if (data.newPassword === data.oldPassword)
+      return {
+        response: "New password must be different from the old password.",
+        status: 400,
+      };
   }
 
   // Other settings / Apply changes
