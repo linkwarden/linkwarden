@@ -1,6 +1,6 @@
 {
   "name": "linkwarden",
-  "version": "v2.5.4",
+  "version": "v2.6.0",
   "main": "index.js",
   "repository": "https://github.com/linkwarden/linkwarden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
@@ -36,6 +36,8 @@
     "axios": "^1.5.1",
     "bcrypt": "^5.1.0",
     "bootstrap-icons": "^1.11.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "colorthief": "^2.4.0",
     "concurrently": "^8.2.2",
     "crypto-js": "^4.2.0",
@@ -67,6 +69,7 @@
     "react-spinners": "^0.13.8",
     "socks-proxy-agent": "^8.0.2",
     "stripe": "^12.13.0",
+    "tailwind-merge": "^2.3.0",
     "vaul": "^0.8.8",
     "zustand": "^4.3.8"
   },

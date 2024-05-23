@@ -9,7 +9,6 @@ interface Props {
   children: ReactNode;
 }
 
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
 const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
 
 export default function AuthRedirect({ children }: Props) {
@@ -26,6 +25,8 @@ export default function AuthRedirect({ children }: Props) {
     const isPublicPage = router.pathname.startsWith("/public");
     const hasInactiveSubscription =
       account.id && !account.subscription?.active && stripeEnabled;
+
+    // There are better ways of doing this... but this one works for now
     const routes = [
       { path: "/login", isProtected: false },
       { path: "/register", isProtected: false },
@@ -53,9 +54,7 @@ export default function AuthRedirect({ children }: Props) {
         redirectTo("/dashboard");
       } else if (
         isUnauthenticated &&
-        !routes.some(
-          (e) => router.pathname.startsWith(e.path) && !e.isProtected
-        )
+        routes.some((e) => router.pathname.startsWith(e.path) && e.isProtected)
       ) {
         redirectTo("/login");
       } else {

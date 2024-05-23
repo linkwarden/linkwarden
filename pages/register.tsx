@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { useState, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
-import AccentSubmitButton from "@/components/AccentSubmitButton";
+import AccentSubmitButton from "@/components/ui/Button";
+import { getLogins } from "./api/v1/logins";
+import { InferGetServerSidePropsType } from "next";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
 
@@ -17,7 +19,14 @@ type FormData = {
   passwordConfirmation: string;
 };
 
-export default function Register() {
+export const getServerSideProps = () => {
+  const availableLogins = getLogins();
+  return { props: { availableLogins } };
+};
+
+export default function Register({
+  availableLogins,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [submitLoader, setSubmitLoader] = useState(false);
   const router = useRouter();
 
@@ -96,6 +105,44 @@ export default function Register() {
         toast.error("Please fill out all the fields.");
       }
     }
+  }
+
+  async function loginUserButton(method: string) {
+    setSubmitLoader(true);
+
+    const load = toast.loading("Authenticating...");
+
+    const res = await signIn(method, {});
+
+    toast.dismiss(load);
+
+    setSubmitLoader(false);
+  }
+
+  function displayLoginExternalButton() {
+    const Buttons: any = [];
+    availableLogins.buttonAuths.forEach((value, index) => {
+      Buttons.push(
+        <React.Fragment key={index}>
+          {index !== 0 ? <div className="divider my-1">Or</div> : undefined}
+
+          <AccentSubmitButton
+            type="button"
+            onClick={() => loginUserButton(value.method)}
+            size="full"
+            intent="secondary"
+            loading={submitLoader}
+          >
+            {value.name.toLowerCase() === "google" ||
+            value.name.toLowerCase() === "apple" ? (
+              <i className={"bi-" + value.name.toLowerCase()}></i>
+            ) : undefined}
+            {value.name}
+          </AccentSubmitButton>
+        </React.Fragment>
+      );
+    });
+    return Buttons;
   }
 
   return (
@@ -236,11 +283,19 @@ export default function Register() {
 
             <AccentSubmitButton
               type="submit"
-              label="Sign Up"
-              className="w-full"
               loading={submitLoader}
+              intent="accent"
+              size="full"
               data-testid="register-button"
-            />
+            >
+              Sign Up
+            </AccentSubmitButton>
+
+            {availableLogins.buttonAuths.length > 0 ? (
+              <div className="divider my-1">Or continue with</div>
+            ) : undefined}
+
+            {displayLoginExternalButton()}
             <div className="flex items-baseline gap-1 justify-center">
               <p className="w-fit text-neutral">Already have an account?</p>
               <Link

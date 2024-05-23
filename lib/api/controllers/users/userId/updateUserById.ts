@@ -129,7 +129,8 @@ export default async function updateUserById(
     // Verify password
     if (!user.password) {
       return {
-        response: "User has no password.",
+        response:
+          "User has no password. Please reset your password from the forgot password page.",
         status: 400,
       };
     }

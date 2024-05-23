@@ -1,4 +1,4 @@
-import AccentSubmitButton from "@/components/AccentSubmitButton";
+import AccentSubmitButton from "@/components/ui/Button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
@@ -7,6 +7,7 @@ import React, { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import { getLogins } from "./api/v1/logins";
 import { InferGetServerSidePropsType } from "next";
+import InstallApp from "@/components/InstallApp";
 
 interface FormData {
   username: string;
@@ -118,33 +119,42 @@ export default function Login({
           </div>
           <AccentSubmitButton
             type="submit"
-            label="Login"
-            className=" w-full text-center"
+            size="full"
+            intent="accent"
             data-testid="submit-login-button"
             loading={submitLoader}
-          />
+          >
+            Login
+          </AccentSubmitButton>
 
           {availableLogins.buttonAuths.length > 0 ? (
-            <div className="divider my-1">OR</div>
+            <div className="divider my-1">Or continue with</div>
           ) : undefined}
         </>
       );
     }
   }
+
   function displayLoginExternalButton() {
     const Buttons: any = [];
     availableLogins.buttonAuths.forEach((value, index) => {
       Buttons.push(
         <React.Fragment key={index}>
-          {index !== 0 ? <div className="divider my-1">OR</div> : undefined}
+          {index !== 0 ? <div className="divider my-1">Or</div> : undefined}
 
           <AccentSubmitButton
             type="button"
             onClick={() => loginUserButton(value.method)}
-            label={`Sign in with ${value.name}`}
-            className=" w-full text-center"
+            size="full"
+            intent="secondary"
             loading={submitLoader}
-          />
+          >
+            {value.name.toLowerCase() === "google" ||
+            value.name.toLowerCase() === "apple" ? (
+              <i className={"bi-" + value.name.toLowerCase()}></i>
+            ) : undefined}
+            {value.name}
+          </AccentSubmitButton>
         </React.Fragment>
       );
     });
@@ -178,15 +188,9 @@ export default function Login({
           {displayLoginCredential()}
           {displayLoginExternalButton()}
           {displayRegistration()}
-          <Link
-            href="https://docs.linkwarden.app/getting-started/pwa-installation"
-            className="underline text-center"
-            target="_blank"
-          >
-            You can install Linkwarden onto your device
-          </Link>
         </div>
       </form>
+      <InstallApp />
     </CenteredForm>
   );
 }
