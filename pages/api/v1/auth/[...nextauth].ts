@@ -608,6 +608,9 @@ if (process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true") {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -1162,20 +1165,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     callbacks: {
       async signIn({ user, account, profile, email, credentials }) {
-        // console.log(
-        //   "User sign in attempt...",
-        //   "User",
-        //   user,
-        //   "Account",
-        //   account,
-        //   "Profile",
-        //   profile,
-        //   "Email",
-        //   email,
-        //   "Credentials",
-        //   credentials
-        // );
-
         if (account?.provider !== "credentials") {
           // registration via SSO can be separately disabled
           const existingUser = await prisma.account.findFirst({
