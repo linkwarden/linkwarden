@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import { Plan } from "@/types/global";
-import AccentSubmitButton from "@/components/AccentSubmitButton";
+import AccentSubmitButton from "@/components/ui/Button";
 
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -70,7 +70,7 @@ export default function Subscribe() {
           >
             <p>Yearly</p>
           </button>
-          <div className="absolute -top-3 -right-4 px-1 bg-red-500 text-sm text-white rounded-md rotate-[22deg]">
+          <div className="absolute -top-3 -right-4 px-1 bg-red-600 text-sm text-white rounded-md rotate-[22deg]">
             25% Off
           </div>
         </div>
@@ -98,11 +98,13 @@ export default function Subscribe() {
 
         <AccentSubmitButton
           type="button"
-          label="Complete Subscription!"
-          className="w-full"
+          intent="accent"
+          size="full"
           onClick={submit}
           loading={submitLoader}
-        />
+        >
+          Complete Subscription!
+        </AccentSubmitButton>
 
         <div
           onClick={() => signOut()}

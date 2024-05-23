@@ -12,7 +12,7 @@ import Head from "next/head";
 import useLinks from "@/hooks/useLinks";
 import useLinkStore from "@/store/links";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import ToggleDarkMode from "@/components/ToggleDarkMode";
+import ToggleDarkMode from "@/components/ui/ToggleDarkMode";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";
@@ -118,8 +118,9 @@ export default function PublicCollections() {
     <div
       className="h-96"
       style={{
-        backgroundImage: `linear-gradient(${collection?.color}30 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+        backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
+          settings.theme === "dark" ? "#262626" : "#f3f4f6"
+        } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
       {collection ? (
