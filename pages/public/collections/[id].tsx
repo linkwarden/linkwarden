@@ -12,7 +12,7 @@ import Head from "next/head";
 import useLinks from "@/hooks/useLinks";
 import useLinkStore from "@/store/links";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import ToggleDarkMode from "@/components/ui/ToggleDarkMode";
+import ToggleDarkMode from "@/components/ToggleDarkMode";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";

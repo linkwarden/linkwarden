@@ -30,7 +30,6 @@ type Props = {
 };
 
 export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
-  const viewMode = localStorage.getItem("viewMode") || "card";
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
 
@@ -141,6 +140,9 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
               height={720}
               alt=""
               className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
+              style={
+                link.type !== "image" ? { filter: "blur(1px)" } : undefined
+              }
               draggable="false"
               onError={(e) => {
                 const target = e.target as HTMLElement;
@@ -150,28 +152,29 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
           ) : link.preview === "unavailable" ? null : (
             <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
           )}
+          {link.type !== "image" && (
+            <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+              <LinkIcon link={link} />
+            </div>
+          )}
         </div>
 
         {link.preview !== "unavailable" && (
           <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
         )}
 
-        <div className="p-3 mt-1 flex flex-col gap-2">
-          <div className="w-full pr-8">
-            <div
-              className={`rounded-t-2xl flex items-center justify-center shadow rounded-md float-left mr-2 ${
-                link.type === "url" ? "" : "hidden"
-              }`}
-            >
-              <LinkIcon link={link} size="small" className="mt-1" />
-            </div>
-            <p className="text-primary text-sm">{unescapeString(link.name)}</p>
+        <div className="p-3 flex flex-col gap-2">
+          <p className="hyphens-auto w-full pr-8 text-primary text-sm">
+            {unescapeString(link.name)}
+          </p>
 
-            {link.description && (
-              <p className="text-sm">{unescapeString(link.description)}</p>
-            )}
-            <LinkTypeBadge link={link} />
-          </div>
+          <LinkTypeBadge link={link} />
+
+          {link.description && (
+            <p className="hyphens-auto text-sm">
+              {unescapeString(link.description)}
+            </p>
+          )}
 
           {link.tags[0] && (
             <div className="flex gap-1 items-center flex-wrap">
@@ -193,12 +196,8 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
 
         <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
 
-        <div className="flex justify-between gap-1 text-xs text-neutral px-3 pb-1">
-          <div className="cursor-pointer w-fit truncate">
-            {collection && (
-              <LinkCollection link={link} collection={collection} />
-            )}
-          </div>
+        <div className="flex flex-wrap justify-between text-xs text-neutral px-3 pb-1 w-full gap-x-2">
+          {collection && <LinkCollection link={link} collection={collection} />}
           <LinkDate link={link} />
         </div>
       </div>

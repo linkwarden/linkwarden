@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import useUserStore from "@/store/admin/users";
+import Button from "../ui/Button";
 
 type Props = {
   onClose: Function;
@@ -38,13 +39,10 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
           </span>
         </div>
 
-        <button
-          className={`ml-auto btn w-fit text-white flex items-center gap-2 duration-100 bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer`}
-          onClick={deleteUser}
-        >
+        <Button className="ml-auto" intent="destructive" onClick={deleteUser}>
           <i className="bi-trash text-xl" />
           Delete, I know what I&apos;m doing
-        </button>
+        </Button>
       </div>
     </Modal>
   );

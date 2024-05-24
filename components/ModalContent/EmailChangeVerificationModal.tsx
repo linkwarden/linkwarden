@@ -30,12 +30,11 @@ export default function EmailChangeVerificationModal({
             "Updating this field will change your billing email on Stripe as well."}
         </p>
 
-        {process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true" && (
-          <p>
-            If you change your email address, any existing Google SSO
-            connections will be removed.
-          </p>
-        )}
+        <p>
+          If you change your email address, any existing{" "}
+          {process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true" && "Google"} SSO
+          connections will be removed.
+        </p>
 
         <div>
           <p>Old Email</p>

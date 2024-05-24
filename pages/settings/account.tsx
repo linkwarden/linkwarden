@@ -13,6 +13,7 @@ import Link from "next/link";
 import Checkbox from "@/components/Checkbox";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import EmailChangeVerificationModal from "@/components/ModalContent/EmailChangeVerificationModal";
+import Button from "@/components/ui/Button";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -203,37 +204,56 @@ export default function Account() {
 
           <div className="sm:row-span-2 sm:justify-self-center my-3">
             <p className="mb-2 sm:text-center">Profile Photo</p>
-            <div className="w-28 h-28 flex items-center justify-center rounded-full relative">
+            <div className="w-28 h-28 flex gap-3 sm:flex-col items-center">
               <ProfilePhoto
                 priority={true}
                 src={user.image ? user.image : undefined}
                 large={true}
               />
-              {user.image && (
-                <div
-                  onClick={() =>
-                    setUser({
-                      ...user,
-                      image: "",
-                    })
-                  }
-                  className="absolute top-1 left-1 btn btn-xs btn-circle btn-neutral btn-outline bg-base-100"
+
+              <div className="dropdown dropdown-bottom">
+                <Button
+                  tabIndex={0}
+                  role="button"
+                  size="small"
+                  intent="secondary"
+                  onMouseDown={dropdownTriggerer}
+                  className="text-sm"
                 >
-                  <i className="bi-x"></i>
-                </div>
-              )}
-              <div className="absolute -bottom-3 left-0 right-0 mx-auto w-fit text-center">
-                <label className="btn btn-xs btn-neutral btn-outline bg-base-100">
-                  Browse...
-                  <input
-                    type="file"
-                    name="photo"
-                    id="upload-photo"
-                    accept=".png, .jpeg, .jpg"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
-                </label>
+                  <i className="bi-pencil-square text-md duration-100"></i>
+                  Edit
+                </Button>
+                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                  <li>
+                    <label tabIndex={0} role="button">
+                      Upload a new photo...
+                      <input
+                        type="file"
+                        name="photo"
+                        id="upload-photo"
+                        accept=".png, .jpeg, .jpg"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                      />
+                    </label>
+                  </li>
+                  {user.image && (
+                    <li>
+                      <div
+                        tabIndex={0}
+                        role="button"
+                        onClick={() =>
+                          setUser({
+                            ...user,
+                            image: "",
+                          })
+                        }
+                      >
+                        Remove Photo
+                      </div>
+                    </li>
+                  )}
+                </ul>
               </div>
             </div>
           </div>
@@ -293,16 +313,18 @@ export default function Account() {
             <div>
               <p className="mb-2">Import your data from other platforms.</p>
               <div className="dropdown dropdown-bottom">
-                <div
+                <Button
                   tabIndex={0}
                   role="button"
+                  intent="secondary"
                   onMouseDown={dropdownTriggerer}
-                  className="flex gap-2 text-sm btn btn-outline btn-neutral group"
+                  className="text-sm"
                   id="import-dropdown"
                 >
                   <i className="bi-cloud-upload text-xl duration-100"></i>
-                  <p>Import From</p>
-                </div>
+                  Import From
+                </Button>
+
                 <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
                   <li>
                     <label
@@ -351,7 +373,7 @@ export default function Account() {
             <div>
               <p className="mb-2">Download your data instantly.</p>
               <Link className="w-fit" href="/api/v1/migration">
-                <div className="flex w-fit gap-2 text-sm btn btn-outline btn-neutral group">
+                <div className="select-none relative duration-200 rounded-lg text-sm text-center w-fit flex justify-center items-center gap-2 disabled:pointer-events-none disabled:opacity-50 bg-neutral-content text-secondary-foreground hover:bg-neutral-content/80 border border-neutral/30 h-10 px-4 py-2">
                   <i className="bi-cloud-download text-xl duration-100"></i>
                   <p>Export Data</p>
                 </div>
@@ -374,17 +396,12 @@ export default function Account() {
             archived data you own.{" "}
             {process.env.NEXT_PUBLIC_STRIPE
               ? "It will also cancel your subscription. "
-              : undefined}{" "}
-            You will be prompted to enter your password before the deletion
-            process.
+              : undefined}
           </p>
         </div>
 
-        <Link
-          href="/settings/delete"
-          className="text-white w-full sm:w-fit flex items-center gap-2 py-2 px-4 rounded-md text-lg tracking-wide select-none font-semibold duration-100 bg-red-500 hover:bg-red-400 cursor-pointer"
-        >
-          <p className="text-center w-full">Delete Your Account</p>
+        <Link href="/settings/delete" className="underline">
+          Account deletion page
         </Link>
       </div>
 

@@ -120,30 +120,28 @@ export default function Dashboard() {
           <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
         </div>
 
-        <div>
-          <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
-            <DashboardItem
-              name={numberOfLinks === 1 ? "Link" : "Links"}
-              value={numberOfLinks}
-              icon={"bi-link-45deg"}
-            />
+        <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-5 border border-neutral-content bg-base-200">
+          <DashboardItem
+            name={numberOfLinks === 1 ? "Link" : "Links"}
+            value={numberOfLinks}
+            icon={"bi-link-45deg"}
+          />
 
-            <div className="divider xl:divider-horizontal"></div>
+          <div className="divider xl:divider-horizontal"></div>
 
-            <DashboardItem
-              name={collections.length === 1 ? "Collection" : "Collections"}
-              value={collections.length}
-              icon={"bi-folder"}
-            />
+          <DashboardItem
+            name={collections.length === 1 ? "Collection" : "Collections"}
+            value={collections.length}
+            icon={"bi-folder"}
+          />
 
-            <div className="divider xl:divider-horizontal"></div>
+          <div className="divider xl:divider-horizontal"></div>
 
-            <DashboardItem
-              name={tags.length === 1 ? "Tag" : "Tags"}
-              value={tags.length}
-              icon={"bi-hash"}
-            />
-          </div>
+          <DashboardItem
+            name={tags.length === 1 ? "Tag" : "Tags"}
+            value={tags.length}
+            icon={"bi-hash"}
+          />
         </div>
 
         <div className="flex justify-between items-center">

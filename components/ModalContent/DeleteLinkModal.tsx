@@ -4,6 +4,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useRouter } from "next/router";
+import Button from "../ui/Button";
 
 type Props = {
   onClose: Function;
@@ -59,13 +60,10 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
           &apos;Delete&apos; to bypass this confirmation in the future.
         </p>
 
-        <button
-          className={`ml-auto btn w-fit text-white flex items-center gap-2 duration-100 bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer`}
-          onClick={deleteLink}
-        >
+        <Button className="ml-auto" intent="destructive" onClick={deleteLink}>
           <i className="bi-trash text-xl" />
           Delete
-        </button>
+        </Button>
       </div>
     </Modal>
   );

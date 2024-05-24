@@ -21,6 +21,7 @@ export default function Billing() {
           <a
             href={process.env.NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL}
             className="underline"
+            target="_blank"
           >
             Billing Portal
           </a>
@@ -30,10 +31,7 @@ export default function Billing() {
         <p className="text-md">
           If you still need help or encountered any issues, feel free to reach
           out to us at:{" "}
-          <a
-            className="font-semibold underline"
-            href="mailto:support@linkwarden.app"
-          >
+          <a className="font-semibold" href="mailto:support@linkwarden.app">
             support@linkwarden.app
           </a>
         </p>
