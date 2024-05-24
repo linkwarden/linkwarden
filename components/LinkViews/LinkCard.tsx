@@ -162,8 +162,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
               </div>
             )}
           </div>
-
-          <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+          <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
         </div>
 
         <div className="flex flex-col justify-between h-full">
@@ -191,7 +190,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       </div>
 
       {showInfo && (
-        <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-2xl fade-in overflow-y-auto">
+        <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-[0.9rem] fade-in overflow-y-auto">
           <div
             onClick={() => setShowInfo(!showInfo)}
             className=" float-right btn btn-sm outline-none btn-circle btn-ghost z-10"
@@ -200,7 +199,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
           </div>
           <p className="text-neutral text-lg font-semibold">Description</p>
 
-          <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
+          <hr className="divider my-2 border-t border-neutral-content h-[1px]" />
           <p>
             {link.description ? (
               unescapeString(link.description)
@@ -214,7 +213,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
             <>
               <p className="text-neutral text-lg mt-3 font-semibold">Tags</p>
 
-              <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
+              <hr className="divider my-2 border-t border-neutral-content h-[1px]" />
 
               <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
                 <div className="flex gap-1 items-center flex-wrap">
