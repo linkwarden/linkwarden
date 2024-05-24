@@ -5,6 +5,7 @@ import Modal from "../Modal";
 import { useRouter } from "next/router";
 import { AccessToken } from "@prisma/client";
 import useTokenStore from "@/store/tokens";
+import Button from "../ui/Button";
 
 type Props = {
   onClose: Function;
@@ -49,13 +50,10 @@ export default function DeleteTokenModal({ onClose, activeToken }: Props) {
           using it.
         </p>
 
-        <button
-          className={`ml-auto btn w-fit text-white flex items-center gap-2 duration-100 bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer`}
-          onClick={deleteLink}
-        >
+        <Button className="ml-auto" intent="destructive" onClick={deleteLink}>
           <i className="bi-trash text-xl" />
           Revoke
-        </button>
+        </Button>
       </div>
     </Modal>
   );
