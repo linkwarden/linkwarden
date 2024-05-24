@@ -14,7 +14,7 @@ export default async function getDashboardData(
   else if (query.sort === Sort.DescriptionZA) order = { description: "desc" };
 
   const pinnedLinks = await prisma.link.findMany({
-    take: 8,
+    take: 10,
     where: {
       AND: [
         {
@@ -46,7 +46,7 @@ export default async function getDashboardData(
   });
 
   const recentlyAddedLinks = await prisma.link.findMany({
-    take: 8,
+    take: 10,
     where: {
       collection: {
         OR: [
