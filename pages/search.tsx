@@ -178,7 +178,7 @@ export default function Search() {
                     ? bulkDeleteLinks()
                     : setBulkDeleteLinksModal(true);
                 }}
-                className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
+                className="btn btn-sm bg-red-500 hover:bg-red-400 text-white w-fit ml-auto"
                 disabled={
                   selectedLinks.length === 0 ||
                   !(

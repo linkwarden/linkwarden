@@ -91,7 +91,7 @@ export default function LinkCardCompact({
       <div
         className={`${selectedStyle} border relative items-center flex ${
           !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-        } duration-200 rounded-lg`}
+        } duration-200 rounded-lg w-full`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
@@ -117,29 +117,32 @@ export default function LinkCardCompact({
             />
           )} */}
         <div
-          className="flex items-center cursor-pointer"
+          className="flex items-center cursor-pointer w-full"
           onClick={() =>
             !editMode && window.open(generateLinkHref(link, account), "_blank")
           }
         >
           <div className="shrink-0">
-            <LinkIcon
-              link={link}
-              className="mt-1 sm:mt-0 sm:w-12 w-8 sm:h-12 h-8 text-xl sm:text-4xl"
-            />
+            <LinkIcon link={link} className="w-12 h-12 text-4xl" />
           </div>
 
           <div className="w-[calc(100%-56px)] ml-2">
             <p className="line-clamp-1 mr-8 text-primary select-none">
-              {unescapeString(link.name || link.description) || link.url}
+              {link.name ? (
+                unescapeString(link.name)
+              ) : (
+                <div className="mt-2">
+                  <LinkTypeBadge link={link} />
+                </div>
+              )}
             </p>
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
-              <div className="flex items-center gap-x-3 w-fit text-neutral flex-wrap">
+              <div className="flex items-center gap-x-3 text-neutral flex-wrap">
                 {collection ? (
                   <LinkCollection link={link} collection={collection} />
                 ) : undefined}
-                <LinkTypeBadge link={link} />
+                {link.name && <LinkTypeBadge link={link} />}
                 <LinkDate link={link} />
               </div>
             </div>

@@ -6,6 +6,7 @@ import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
 import Modal from "../Modal";
+import Button from "../ui/Button";
 
 type Props = {
   onClose: Function;
@@ -96,20 +97,15 @@ export default function DeleteCollectionModal({
           <p>Click the button below to leave the current collection.</p>
         )}
 
-        <button
+        <Button
           disabled={permissions === true && inputField !== collection.name}
-          className={`ml-auto btn w-fit text-white flex items-center gap-2 duration-100 ${
-            permissions === true
-              ? inputField === collection.name
-                ? "bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer"
-                : "cursor-not-allowed bg-red-300 dark:bg-red-900"
-              : "bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer"
-          }`}
           onClick={submit}
+          intent="destructive"
+          className="ml-auto"
         >
           <i className="bi-trash text-xl"></i>
           {permissions === true ? "Delete" : "Leave"} Collection
-        </button>
+        </Button>
       </div>
     </Modal>
   );
