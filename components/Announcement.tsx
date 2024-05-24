@@ -5,7 +5,7 @@ type Props = {
   toggleAnnouncementBar: MouseEventHandler<HTMLButtonElement>;
 };
 
-export default function AnnouncementBar({ toggleAnnouncementBar }: Props) {
+export default function Announcement({ toggleAnnouncementBar }: Props) {
   const announcementId = localStorage.getItem("announcementId");
 
   return (

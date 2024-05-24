@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import Announcement from "@/components/AnnouncementBar";
+import Announcement from "@/components/Announcement";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode, useEffect, useState } from "react";
 import getLatestVersion from "@/lib/client/getLatestVersion";

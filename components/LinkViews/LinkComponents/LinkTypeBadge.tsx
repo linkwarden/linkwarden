@@ -25,7 +25,7 @@ export default function LinkTypeBadge({
       onClick={(e) => {
         e.stopPropagation();
       }}
-      className="flex gap-1 item-center select-none text-neutral hover:opacity-70 duration-100"
+      className="flex gap-1 item-center select-none text-neutral hover:opacity-70 duration-100 max-w-full w-fit"
     >
       <i className="bi-link-45deg text-lg leading-none"></i>
       <p className="text-xs truncate">{shortendURL}</p>
