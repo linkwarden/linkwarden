@@ -40,6 +40,8 @@ export default function AuthRedirect({ children }: Props) {
       { path: "/collections", isProtected: true },
       { path: "/links", isProtected: true },
       { path: "/tags", isProtected: true },
+      { path: "/preserved", isProtected: true },
+      { path: "/admin", isProtected: true },
     ];
 
     if (isPublicPage) {

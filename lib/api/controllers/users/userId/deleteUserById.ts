@@ -94,10 +94,11 @@ export default async function deleteUserById(
 
         // Delete subscription
         if (process.env.STRIPE_SECRET_KEY)
-          await prisma.subscription.delete({
-            where: { userId },
-          });
-        // .catch((err) => console.log(err));
+          await prisma.subscription
+            .delete({
+              where: { userId },
+            })
+            .catch((err) => console.log(err));
 
         await prisma.usersAndCollections.deleteMany({
           where: {

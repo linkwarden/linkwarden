@@ -128,55 +128,65 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       }
     >
       <div
-        className="rounded-2xl cursor-pointer"
+        className="rounded-2xl cursor-pointer h-full flex flex-col justify-between"
         onClick={() =>
           !editMode && window.open(generateLinkHref(link, account), "_blank")
         }
       >
-        <div className="relative rounded-t-2xl h-40 overflow-hidden">
-          {previewAvailable(link) ? (
-            <Image
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
-              width={1280}
-              height={720}
-              alt=""
-              className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
-              style={{ filter: "blur(2px)" }}
-              draggable="false"
-              onError={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.display = "none";
-              }}
-            />
-          ) : link.preview === "unavailable" ? (
-            <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
-          ) : (
-            <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
-          )}
-          <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
-            <LinkIcon link={link} />
-          </div>
-        </div>
-
-        <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
-
-        <div className="p-3 mt-1">
-          <p className="truncate w-full pr-8 text-primary">
-            {unescapeString(link.name || link.description) || link.url}
-          </p>
-
-          <LinkTypeBadge link={link} />
-        </div>
-
-        <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
-
-        <div className="flex justify-between text-xs text-neutral px-3 pb-1">
-          <div className="cursor-pointer w-fit">
-            {collection && (
-              <LinkCollection link={link} collection={collection} />
+        <div>
+          <div className="relative rounded-t-2xl h-40 overflow-hidden">
+            {previewAvailable(link) ? (
+              <Image
+                src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
+                width={1280}
+                height={720}
+                alt=""
+                className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
+                style={
+                  link.type !== "image" ? { filter: "blur(1px)" } : undefined
+                }
+                draggable="false"
+                onError={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.display = "none";
+                }}
+              />
+            ) : link.preview === "unavailable" ? (
+              <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
+            ) : (
+              <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
+            )}
+            {link.type !== "image" && (
+              <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+                <LinkIcon link={link} />
+              </div>
             )}
           </div>
-          <LinkDate link={link} />
+
+          <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+        </div>
+
+        <div className="flex flex-col justify-between h-full">
+          <div className="p-3 flex flex-col gap-2">
+            <p className="truncate w-full pr-8 text-primary text-sm">
+              {unescapeString(link.name)}
+            </p>
+
+            <LinkTypeBadge link={link} />
+          </div>
+
+          <div>
+            <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+
+            <div className="flex justify-between text-xs text-neutral px-3 pb-1 gap-2">
+              <div className="cursor-pointer truncate">
+                {collection && (
+                  <LinkCollection link={link} collection={collection} />
+                )}
+              </div>
+              <LinkDate link={link} />
+            </div>
+          </div>
         </div>
       </div>
 

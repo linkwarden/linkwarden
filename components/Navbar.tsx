@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
 import SearchBar from "@/components/SearchBar";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
-import ToggleDarkMode from "./ui/ToggleDarkMode";
+import ToggleDarkMode from "./ToggleDarkMode";
 import NewLinkModal from "./ModalContent/NewLinkModal";
 import NewCollectionModal from "./ModalContent/NewCollectionModal";
 import UploadFileModal from "./ModalContent/UploadFileModal";
