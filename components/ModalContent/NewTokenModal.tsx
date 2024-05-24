@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Modal from "../Modal";
 import useTokenStore from "@/store/tokens";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import Button from "../ui/Button";
 
 type Props = {
   onClose: Function;
@@ -90,18 +91,19 @@ export default function NewTokenModal({ onClose }: Props) {
               <p className="mb-2">Expires in</p>
 
               <div className="dropdown dropdown-bottom dropdown-end w-full">
-                <div
+                <Button
                   tabIndex={0}
                   role="button"
+                  intent="secondary"
                   onMouseDown={dropdownTriggerer}
-                  className="btn btn-outline w-full sm:w-36 flex items-center btn-sm h-10"
+                  className="whitespace-nowrap w-32"
                 >
                   {token.expires === TokenExpiry.sevenDays && "7 Days"}
                   {token.expires === TokenExpiry.oneMonth && "30 Days"}
                   {token.expires === TokenExpiry.twoMonths && "60 Days"}
                   {token.expires === TokenExpiry.threeMonths && "90 Days"}
                   {token.expires === TokenExpiry.never && "No Expiration"}
-                </div>
+                </Button>
                 <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-full sm:w-52 mt-1">
                   <li>
                     <label

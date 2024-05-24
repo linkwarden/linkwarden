@@ -4,6 +4,7 @@ import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 const keycloakEnabled = process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true";
 const authentikEnabled = process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true";
@@ -135,20 +136,14 @@ export default function Delete() {
           </fieldset>
         ) : undefined}
 
-        <button
-          className={`mx-auto text-white flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit ${
-            submitLoader
-              ? "bg-red-400 cursor-auto"
-              : "bg-red-500 hover:bg-red-400 cursor-pointer"
-          }`}
-          onClick={() => {
-            if (!submitLoader) {
-              submit();
-            }
-          }}
+        <Button
+          className="mx-auto"
+          intent="destructive"
+          loading={submitLoader}
+          onClick={submit}
         >
           <p className="text-center w-full">Delete Your Account</p>
-        </button>
+        </Button>
       </div>
     </CenteredForm>
   );
