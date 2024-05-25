@@ -5,6 +5,8 @@
 
 // This script is meant to be run only once.
 
+// Run the script with `node scripts/migration/descriptionToName.js`
+
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -66,5 +68,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-// Run the script with `node scripts/migration/descriptionToName.js`
