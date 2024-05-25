@@ -123,7 +123,7 @@ model UsersAndCollections {
 
 model Link {
   id            Int        @id @default(autoincrement())
-  name          String
+  name          String     @default("")
   type          String     @default("url")
   description   String     @default("")
   pinnedBy      User[]
