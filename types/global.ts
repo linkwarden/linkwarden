@@ -116,6 +116,7 @@ export type MigrationRequest = {
 export enum MigrationFormat {
   linkwarden,
   htmlFile,
+  wallabag,
 }
 
 export enum Plan {
