@@ -160,12 +160,13 @@ export default async function postLink(
 
   link.collection.name = link.collection.name.trim();
 
-  const description =
-    link.description && link.description !== ""
-      ? link.description
-      : link.url
-        ? await getTitle(link.url)
-        : undefined;
+  const title =
+    !(link.name && link.name !== "") && link.url
+      ? await getTitle(link.url)
+      : "";
+
+  const name =
+    link.name && link.name !== "" ? link.name : link.url ? title : "";
 
   const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
 
@@ -184,8 +185,8 @@ export default async function postLink(
   const newLink = await prisma.link.create({
     data: {
       url: link.url?.trim().replace(/\/+$/, "") || null,
-      name: link.name,
-      description,
+      name,
+      description: link.description,
       type: linkType,
       collection: {
         connect: {
