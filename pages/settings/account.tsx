@@ -366,6 +366,26 @@ export default function Account() {
                       />
                     </label>
                   </li>
+                  <li>
+                    <label
+                      tabIndex={0}
+                      role="button"
+                      htmlFor="import-wallabag-file"
+                      title="Wallabag File"
+                    >
+                      From Wallabag (JSON file)
+                      <input
+                        type="file"
+                        name="photo"
+                        id="import-wallabag-file"
+                        accept=".json"
+                        className="hidden"
+                        onChange={(e) =>
+                          importBookmarks(e, MigrationFormat.wallabag)
+                        }
+                      />
+                    </label>
+                  </li>
                 </ul>
               </div>
             </div>
