@@ -373,6 +373,7 @@ if (process.env.NEXT_PUBLIC_AZURE_AD_ENABLED === "true") {
     const { "not-before-policy": _, refresh_expires_in, ...data } = account;
     return _linkAccount ? _linkAccount(data) : undefined;
   };
+}
 
 // Azure AD
 if (process.env.NEXT_PUBLIC_AZURE_AD_ENABLED === "true") {
