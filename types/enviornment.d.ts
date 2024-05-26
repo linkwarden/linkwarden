@@ -93,8 +93,18 @@ declare global {
       AUTHENTIK_CLIENT_ID?: string;
       AUTHENTIK_CLIENT_SECRET?: string;
 
-      // TODO: Azure AD B2C
-      // TODO: Azure AD
+      // Azure AD B2C
+      NEXT_PUBLIC_AZURE_AD_B2C_ENABLED?: string;
+      AZURE_AD_B2C_TENANT_NAME?: string;
+      AZURE_AD_B2C_CLIENT_ID?: string;
+      AZURE_AD_B2C_CLIENT_SECRET?: string;
+      AZURE_AD_B2C_PRIMARY_USER_FLOW?: string;
+
+      // Azure AD
+      NEXT_PUBLIC_AZURE_AD_ENABLED?: string;
+      AZURE_AD_CLIENT_ID?: string;
+      AZURE_AD_CLIENT_SECRET?: string;
+      AZURE_AD_TENANT_ID?: string;
 
       // Battle.net
       NEXT_PUBLIC_BATTLENET_ENABLED?: string;
