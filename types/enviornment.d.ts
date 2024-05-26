@@ -111,7 +111,7 @@ declare global {
       BATTLENET_CUSTOM_NAME?: string;
       BATTLENET_CLIENT_ID?: string;
       BATTLENET_CLIENT_SECRET?: string;
-      BATLLENET_ISSUER?: string;
+      BATTLENET_ISSUER?: string;
 
       // Box
       NEXT_PUBLIC_BOX_ENABLED?: string;
