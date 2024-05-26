@@ -1,8 +1,7 @@
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function EmailConfirmaion() {
@@ -38,8 +37,8 @@ export default function EmailConfirmaion() {
         <div className="divider my-3"></div>
 
         <p>
-          A sign in link has been sent to your email address. If you don't see
-          the email, check your spam folder.
+          A sign in link has been sent to your email address. If you don&apost
+          see the email, check your spam folder.
         </p>
 
         <div className="mx-auto w-fit mt-3">
