@@ -397,7 +397,7 @@ if (process.env.NEXT_PUBLIC_BATTLENET_ENABLED === "true") {
     BattleNetProvider({
       clientId: process.env.BATTLENET_CLIENT_ID!,
       clientSecret: process.env.BATTLENET_CLIENT_SECRET!,
-      issuer: process.env.BATLLENET_ISSUER as BattleNetIssuer,
+      issuer: process.env.BATTLENET_ISSUER as BattleNetIssuer,
     })
   );
 
