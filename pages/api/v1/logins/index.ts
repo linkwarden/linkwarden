@@ -59,13 +59,14 @@ export function getLogins() {
   if (process.env.NEXT_PUBLIC_AZURE_AD_B2C_ENABLED === "true") {
     buttonAuths.push({
       method: "azure-ad-b2c",
-      name: process.env.AUTHENTIK_CUSTOM_NAME ?? "Azure AD B2C",
+      name: process.env.AZURE_AD_B2C_CUSTOM_NAME ?? "Azure AD B2C",
     });
+  }
   // Azure AD
   if (process.env.NEXT_PUBLIC_AZURE_AD_ENABLED === "true") {
     buttonAuths.push({
       method: "azure-ad",
-      name: process.env.AUTHENTIK_CUSTOM_NAME ?? "Azure AD",
+      name: process.env.AZURE_AD_CUSTOM_NAME ?? "Azure AD",
     });
   }
   // Battle.net
