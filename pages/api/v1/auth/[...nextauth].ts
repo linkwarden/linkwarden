@@ -370,7 +370,15 @@ if (process.env.NEXT_PUBLIC_AZURE_AD_ENABLED === "true") {
 
   const _linkAccount = adapter.linkAccount;
   adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
+    const {
+      "not-before-policy": _,
+      refresh_expires_in,
+      refresh_token_expires_in,
+      not_before,
+      id_token_expires_in,
+      profile_info,
+      ...data
+    } = account;
     return _linkAccount ? _linkAccount(data) : undefined;
   };
 }
@@ -387,7 +395,15 @@ if (process.env.NEXT_PUBLIC_AZURE_AD_ENABLED === "true") {
 
   const _linkAccount = adapter.linkAccount;
   adapter.linkAccount = (account) => {
-    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
+    const {
+      "not-before-policy": _,
+      refresh_expires_in,
+      token_type,
+      expires_in,
+      ext_expires_in,
+      access_token,
+      ...data
+    } = account;
     return _linkAccount ? _linkAccount(data) : undefined;
   };
 }
