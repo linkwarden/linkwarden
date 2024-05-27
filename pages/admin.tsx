@@ -3,7 +3,12 @@ import NewUserModal from "@/components/ModalContent/NewUserModal";
 import useUserStore from "@/store/admin/users";
 import { User as U } from "@prisma/client";
 import Link from "next/link";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
+import { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from "next/router";
+import { i18n } from "next-i18next.config";
 
 interface User extends U {
   subscriptions: {
@@ -17,6 +22,10 @@ type UserModal = {
 };
 
 export default function Admin() {
+  const { t } = useTranslation();
+
+  const router = useRouter();
+
   const { users, setUsers } = useUserStore();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,6 +39,7 @@ export default function Admin() {
   const [newUserModal, setNewUserModal] = useState(false);
 
   useEffect(() => {
+    console.log(router);
     setUsers();
   }, []);
 
@@ -44,7 +54,7 @@ export default function Admin() {
             <i className="bi-chevron-left text-xl"></i>
           </Link>
           <p className="capitalize text-3xl font-thin inline">
-            User Administration
+            {t("user_administration")}
           </p>
         </div>
 
@@ -171,4 +181,52 @@ const UserListing = (
       ) : null}
     </div>
   );
+};
+
+// Take this into a separate file, it's for logged out users
+// For logged in users, we'll use their preferred language from the database (default: en)
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  console.log("CONTEXT", ctx);
+
+  const acceptLanguageHeader = ctx.req.headers["accept-language"];
+  const availableLanguages = i18n.locales;
+
+  console.log("ACCEPT LANGUAGE", acceptLanguageHeader);
+  console.log("AVAILABLE LANGUAGES", availableLanguages);
+
+  // Parse the accept-language header to get an array of languages
+  const acceptedLanguages = acceptLanguageHeader
+    ?.split(",")
+    .map((lang) => lang.split(";")[0]);
+
+  console.log(acceptedLanguages);
+
+  // Find the best match between the accepted languages and available languages
+  let bestMatch = acceptedLanguages?.find((lang) =>
+    availableLanguages.includes(lang)
+  );
+
+  console.log(bestMatch);
+
+  // If no direct match, find the best partial match
+  if (!bestMatch) {
+    acceptedLanguages?.some((acceptedLang) => {
+      const partialMatch = availableLanguages.find((lang) =>
+        lang.startsWith(acceptedLang)
+      );
+      if (partialMatch) {
+        bestMatch = partialMatch;
+        return true;
+      }
+      return false;
+    });
+  }
+
+  console.log("BEST MATCH", bestMatch);
+
+  return {
+    props: {
+      ...(await serverSideTranslations(bestMatch ?? "en", ["common"])),
+    },
+  };
 };

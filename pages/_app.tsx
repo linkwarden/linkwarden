@@ -9,9 +9,11 @@ import toast from "react-hot-toast";
 import { Toaster, ToastBar } from "react-hot-toast";
 import { Session } from "next-auth";
 import { isPWA } from "@/lib/client/utils";
-import useInitialData from "@/hooks/useInitialData";
+// import useInitialData from "@/hooks/useInitialData";
+import { appWithTranslation } from "next-i18next";
+import nextI18nextConfig from "../next-i18next.config";
 
-export default function App({
+function App({
   Component,
   pageProps,
 }: AppProps<{
@@ -95,6 +97,8 @@ export default function App({
     </SessionProvider>
   );
 }
+
+export default appWithTranslation(App);
 
 // function GetData({ children }: { children: React.ReactNode }) {
 //   const status = useInitialData();
