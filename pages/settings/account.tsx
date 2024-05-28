@@ -14,6 +14,7 @@ import Checkbox from "@/components/Checkbox";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import EmailChangeVerificationModal from "@/components/ModalContent/EmailChangeVerificationModal";
 import Button from "@/components/ui/Button";
+import { i18n } from "next-i18next.config";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -200,6 +201,28 @@ export default function Account() {
                 />
               </div>
             ) : undefined}
+
+            <div>
+              <p className="mb-2">Language</p>
+              <select
+                onChange={(e) => {
+                  setUser({ ...user, locale: e.target.value });
+                }}
+                className="select border border-neutral-content focus:outline-none focus:border-primary duration-100 w-full bg-base-200 rounded-[0.375rem] min-h-0 h-[2.625rem] leading-4 p-2"
+              >
+                {i18n.locales.map((locale) => (
+                  <option
+                    key={locale}
+                    value={locale}
+                    selected={user.locale === locale}
+                  >
+                    {new Intl.DisplayNames(locale, { type: "language" }).of(
+                      locale
+                    ) || ""}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="sm:row-span-2 sm:justify-self-center my-3">
