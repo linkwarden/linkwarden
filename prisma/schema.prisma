@@ -33,13 +33,14 @@ model User {
   emailVerified           DateTime?
   unverifiedNewEmail      String?
   image                   String?
-  accounts                Account[]
   password                String?
+  locale                  String                @default("en")
+  accounts                Account[]
   collections             Collection[]
   tags                    Tag[]
   pinnedLinks             Link[]
   collectionsJoined       UsersAndCollections[]
-  collectionOrder         Int[]                @default([])
+  collectionOrder         Int[]                 @default([])
   whitelistedUsers        WhitelistedUser[]
   accessTokens            AccessToken[]
   subscriptions           Subscription?
