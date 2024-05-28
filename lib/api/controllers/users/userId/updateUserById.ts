@@ -5,6 +5,7 @@ import removeFile from "@/lib/api/storage/removeFile";
 import createFile from "@/lib/api/storage/createFile";
 import createFolder from "@/lib/api/storage/createFolder";
 import sendChangeEmailVerificationRequest from "@/lib/api/sendChangeEmailVerificationRequest";
+import { i18n } from "next-i18next.config";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
@@ -204,6 +205,7 @@ export default async function updateUserById(
       collectionOrder: data.collectionOrder.filter(
         (value, index, self) => self.indexOf(value) === index
       ),
+      locale: i18n.locales.includes(data.locale) ? data.locale : "en",
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
