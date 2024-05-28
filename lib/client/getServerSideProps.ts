@@ -24,7 +24,7 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
     if (user) {
       return {
         props: {
-          ...(await serverSideTranslations(user.locale, ["common"])),
+          ...(await serverSideTranslations(user.locale ?? "en", ["common"])),
         },
       };
     }
