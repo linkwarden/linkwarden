@@ -29,7 +29,10 @@ export default function Navbar() {
     document.body.style.overflow = "auto";
   };
 
-  const [newLinkModal, setNewLinkModal] = useState(false);
+  // If the URL has a query parameter "link", open the new link modal
+  const shareUrl = new URL(window.location.href).searchParams.get("link");
+
+  const [newLinkModal, setNewLinkModal] = useState(!!shareUrl);
   const [newCollectionModal, setNewCollectionModal] = useState(false);
   const [uploadFileModal, setUploadFileModal] = useState(false);
 
