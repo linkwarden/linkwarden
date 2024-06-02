@@ -5,6 +5,13 @@ import { LinkRequestQuery } from "@/types/global";
 import verifyUser from "@/lib/api/verifyUser";
 import deleteLinksById from "@/lib/api/controllers/links/bulk/deleteLinksById";
 import updateLinks from "@/lib/api/controllers/links/bulk/updateLinks";
+import parseSharedLink from "@/lib/api/controllers/links/parseSharedLink";
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
@@ -37,7 +44,24 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     const links = await getLinks(user.id, convertedData);
     return res.status(links.status).json({ response: links.response });
   } else if (req.method === "POST") {
-    const newlink = await postLink(req.body, user.id);
+    const { title, link, error } = await parseSharedLink(req);
+    if (error) {
+      return res.status(400).json({
+        response: error.message,
+      });
+    }
+    const newlink = await postLink(
+      {
+        name: title || "",
+        description: title || "",
+        url: link,
+        type: "url",
+        collection: { id: 0, name: "", parentId: null },
+        tags: [],
+        // TODO: this should be changed so sharing to the pwa opens up a dialog
+      } as any,
+      user.id
+    );
     return res.status(newlink.status).json({
       response: newlink.response,
     });
