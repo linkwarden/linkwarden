@@ -21,11 +21,11 @@
     }
   ],
   "share_target": {
-    "action": "/api/v1/links/",
-    "method": "POST",
-    "enctype": "multipart/form-data",
+    "action": "/dashboard",
+    "description": "Save a link to Linkwarden",
     "params": {
-      "url": "link"
+      "title": "title",
+      "text": "link"
     }
   },
   "screenshots": [

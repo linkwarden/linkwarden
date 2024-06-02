@@ -19,10 +19,14 @@ type Props = {
 export default function NewLinkModal({ onClose }: Props) {
   const { data } = useSession();
 
+  // auto fill url and title if available. used for pwa sharing
+  const url = new URL(window.location.href).searchParams.get("link");
+  const title = new URL(window.location.href).searchParams.get("title");
+
   const initial = {
-    name: "",
-    url: "",
-    description: "",
+    name: title || "",
+    url: url || "",
+    description: title || "",
     type: "url",
     tags: [],
     preview: "",
