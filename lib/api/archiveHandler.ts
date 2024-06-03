@@ -127,6 +127,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           } else {
             console.warn(`Cookies file not found at path: ${cookiesFilePath}`);
           }
+          
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
 
           const content = await page.content();
