@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useTranslation } from "next-i18next";
 
 interface FormData {
   password: string;
@@ -12,8 +14,8 @@ interface FormData {
 }
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const [submitLoader, setSubmitLoader] = useState(false);
-
   const router = useRouter();
 
   const [form, setForm] = useState<FormData>({
@@ -34,7 +36,7 @@ export default function ResetPassword() {
     ) {
       setSubmitLoader(true);
 
-      const load = toast.loading("Sending password recovery link...");
+      const load = toast.loading(t("sending_password_recovery_link"));
 
       const response = await fetch("/api/v1/auth/reset-password", {
         method: "POST",
@@ -46,6 +48,7 @@ export default function ResetPassword() {
 
       const data = await response.json();
 
+      toast.dismiss(load);
       if (response.ok) {
         toast.success(data.response);
         setRequestSent(true);
@@ -53,11 +56,9 @@ export default function ResetPassword() {
         toast.error(data.response);
       }
 
-      toast.dismiss(load);
-
       setSubmitLoader(false);
     } else {
-      toast.error("Please fill out all the fields.");
+      toast.error(t("please_fill_all_fields"));
     }
   }
 
@@ -66,22 +67,18 @@ export default function ResetPassword() {
       <form onSubmit={submit}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
-            {requestSent ? "Password Updated!" : "Reset Password"}
+            {requestSent ? t("password_updated") : t("reset_password")}
           </p>
 
           <div className="divider my-0"></div>
 
           {!requestSent ? (
             <>
+              <p>{t("enter_email_for_new_password")}</p>
               <div>
-                <p>
-                  Enter your email so we can send you a link to create a new
-                  password.
+                <p className="text-sm w-fit font-semibold mb-1">
+                  {t("new_password")}
                 </p>
-              </div>
-              <div>
-                <p className="text-sm w-fit font-semibold mb-1">New Password</p>
-
                 <TextInput
                   autoFocus
                   type="password"
@@ -93,7 +90,6 @@ export default function ResetPassword() {
                   }
                 />
               </div>
-
               <AccentSubmitButton
                 type="submit"
                 intent="accent"
@@ -101,16 +97,15 @@ export default function ResetPassword() {
                 size="full"
                 loading={submitLoader}
               >
-                Update Password
+                {t("update_password")}
               </AccentSubmitButton>
             </>
           ) : (
             <>
-              <p>Your password has been successfully updated.</p>
-
+              <p>{t("password_successfully_updated")}</p>
               <div className="mx-auto w-fit mt-3">
                 <Link className="font-semibold" href="/login">
-                  Back to Login
+                  {t("back_to_login")}
                 </Link>
               </div>
             </>
@@ -120,3 +115,5 @@ export default function ResetPassword() {
     </CenteredForm>
   );
 }
+
+export { getServerSideProps };
