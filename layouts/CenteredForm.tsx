@@ -1,7 +1,7 @@
 import useLocalSettingsStore from "@/store/localSettings";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 
 interface Props {
   text?: string;
