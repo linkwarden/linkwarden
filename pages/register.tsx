@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
-import AccentSubmitButton from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import { getLogins } from "./api/v1/logins";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getToken } from "next-auth/jwt";
@@ -125,7 +125,7 @@ export default function Register({
     availableLogins.buttonAuths.forEach((value: any, index: any) => {
       Buttons.push(
         <React.Fragment key={index}>
-          <AccentSubmitButton
+          <Button
             type="button"
             onClick={() => loginUserButton(value.method)}
             size="full"
@@ -137,7 +137,7 @@ export default function Register({
               <i className={"bi-" + value.name.toLowerCase()}></i>
             ) : undefined}
             {value.name}
-          </AccentSubmitButton>
+          </Button>
         </React.Fragment>
       );
     });
@@ -270,7 +270,7 @@ export default function Register({
               </div>
             ) : undefined}
 
-            <AccentSubmitButton
+            <Button
               type="submit"
               loading={submitLoader}
               intent="accent"
@@ -278,7 +278,7 @@ export default function Register({
               data-testid="register-button"
             >
               {t("sign_up")}
-            </AccentSubmitButton>
+            </Button>
 
             {availableLogins.buttonAuths.length > 0 ? (
               <div className="divider my-1">{t("or_continue_with")}</div>

@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import { Plan } from "@/types/global";
-import AccentSubmitButton from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import useAccountStore from "@/store/account";
@@ -128,7 +128,7 @@ export default function Subscribe() {
           </fieldset>
         </div>
 
-        <AccentSubmitButton
+        <Button
           type="button"
           intent="accent"
           size="full"
@@ -136,7 +136,7 @@ export default function Subscribe() {
           loading={submitLoader}
         >
           {t("complete_subscription")}
-        </AccentSubmitButton>
+        </Button>
 
         <div
           onClick={() => signOut()}

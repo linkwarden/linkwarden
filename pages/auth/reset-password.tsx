@@ -1,4 +1,4 @@
-import AccentSubmitButton from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
@@ -90,7 +90,7 @@ export default function ResetPassword() {
                   }
                 />
               </div>
-              <AccentSubmitButton
+              <Button
                 type="submit"
                 intent="accent"
                 className="mt-2"
@@ -98,7 +98,7 @@ export default function ResetPassword() {
                 loading={submitLoader}
               >
                 {t("update_password")}
-              </AccentSubmitButton>
+              </Button>
             </>
           ) : (
             <>
