@@ -8,6 +8,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import Modal from "../Modal";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   onClose: Function;
@@ -15,13 +16,13 @@ type Props = {
 };
 
 export default function EditLinkModal({ onClose, activeLink }: Props) {
+  const { t } = useTranslation();
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
 
-  let shortendURL;
-
+  let shortenedURL;
   try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
+    shortenedURL = new URL(link.url || "").host.toLowerCase();
   } catch (error) {
     console.log(error);
   }
@@ -31,7 +32,6 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = null;
-
     setLink({
       ...link,
       collection: { id: e?.value, name: e?.label, ownerId: e?.ownerId },
@@ -39,10 +39,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
   };
 
   const setTags = (e: any) => {
-    const tagNames = e.map((e: any) => {
-      return { name: e.label };
-    });
-
+    const tagNames = e.map((e: any) => ({ name: e.label }));
     setLink({ ...link, tags: tagNames });
   };
 
@@ -53,29 +50,25 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
   const submit = async () => {
     if (!submitLoader) {
       setSubmitLoader(true);
-
-      let response;
-
-      const load = toast.loading("Updating...");
-
-      response = await updateLink(link);
-
+      const load = toast.loading(t("updating"));
+      let response = await updateLink(link);
       toast.dismiss(load);
 
       if (response.ok) {
-        toast.success(`Updated!`);
+        toast.success(t("updated"));
         onClose();
-      } else toast.error(response.data as string);
+      } else {
+        toast.error(response.data as string);
+      }
 
       setSubmitLoader(false);
-
       return response;
     }
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">Edit Link</p>
+      <p className="text-xl font-thin">{t("edit_link")}</p>
 
       <div className="divider mb-3 mt-1"></div>
 
@@ -87,42 +80,31 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
           target="_blank"
         >
           <i className="bi-link-45deg text-xl" />
-          <p>{shortendURL}</p>
+          <p>{shortenedURL}</p>
         </Link>
       ) : undefined}
 
       <div className="w-full">
-        <p className="mb-2">Name</p>
+        <p className="mb-2">{t("name")}</p>
         <TextInput
           value={link.name}
           onChange={(e) => setLink({ ...link, name: e.target.value })}
-          placeholder="e.g. Example Link"
+          placeholder={t("placeholder_example_link")}
           className="bg-base-200"
         />
       </div>
 
       <div className="mt-5">
-        {/* <hr className="mb-3 border border-neutral-content" /> */}
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
-            <p className="mb-2">Collection</p>
+            <p className="mb-2">{t("collection")}</p>
             {link.collection.name ? (
               <CollectionSelection
                 onChange={setCollection}
-                // defaultValue={{
-                //   label: link.collection.name,
-                //   value: link.collection.id,
-                // }}
                 defaultValue={
                   link.collection.id
-                    ? {
-                        value: link.collection.id,
-                        label: link.collection.name,
-                      }
-                    : {
-                        value: null as unknown as number,
-                        label: "Unorganized",
-                      }
+                    ? { value: link.collection.id, label: link.collection.name }
+                    : { value: null as unknown as number, label: "Unorganized" }
                 }
                 creatable={false}
               />
@@ -130,23 +112,24 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
           </div>
 
           <div>
-            <p className="mb-2">Tags</p>
+            <p className="mb-2">{t("tags")}</p>
             <TagSelection
               onChange={setTags}
-              defaultValue={link.tags.map((e) => {
-                return { label: e.name, value: e.id };
-              })}
+              defaultValue={link.tags.map((e) => ({
+                label: e.name,
+                value: e.id,
+              }))}
             />
           </div>
 
           <div className="sm:col-span-2">
-            <p className="mb-2">Description</p>
+            <p className="mb-2">{t("description")}</p>
             <textarea
               value={unescapeString(link.description) as string}
               onChange={(e) =>
                 setLink({ ...link, description: e.target.value })
               }
-              placeholder="Will be auto generated if nothing is provided."
+              placeholder={t("link_description_placeholder")}
               className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
             />
           </div>
@@ -158,7 +141,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
           className="btn btn-accent dark:border-violet-400 text-white"
           onClick={submit}
         >
-          Save Changes
+          {t("save_changes")}
         </button>
       </div>
     </Modal>

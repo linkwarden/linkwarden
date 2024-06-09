@@ -4,17 +4,16 @@ import ProfilePhoto from "./ProfilePhoto";
 import useAccountStore from "@/store/account";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useTranslation } from "next-i18next";
 
 export default function ProfileDropdown() {
+  const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
   const { account } = useAccountStore();
 
   const handleToggle = () => {
-    if (settings.theme === "dark") {
-      updateSettings({ theme: "light" });
-    } else {
-      updateSettings({ theme: "dark" });
-    }
+    const newTheme = settings.theme === "dark" ? "light" : "dark";
+    updateSettings({ theme: newTheme });
   };
 
   return (
@@ -38,7 +37,7 @@ export default function ProfileDropdown() {
             tabIndex={0}
             role="button"
           >
-            Settings
+            {t("settings")}
           </Link>
         </li>
         <li className="block sm:hidden">
@@ -50,7 +49,9 @@ export default function ProfileDropdown() {
             tabIndex={0}
             role="button"
           >
-            Switch to {settings.theme === "light" ? "Dark" : "Light"}
+            {t("switch_to", {
+              theme: settings.theme === "light" ? t("dark") : t("light"),
+            })}
           </div>
         </li>
         <li>
@@ -62,7 +63,7 @@ export default function ProfileDropdown() {
             tabIndex={0}
             role="button"
           >
-            Logout
+            {t("logout")}
           </div>
         </li>
       </ul>

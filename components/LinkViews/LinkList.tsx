@@ -10,13 +10,13 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
-import Link from "next/link";
 import { isPWA } from "@/lib/client/utils";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -31,6 +31,8 @@ export default function LinkCardCompact({
   flipDropdown,
   editMode,
 }: Props) {
+  const { t } = useTranslation();
+
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
@@ -96,9 +98,7 @@ export default function LinkCardCompact({
           selectable
             ? handleCheckboxClick(link)
             : editMode
-              ? toast.error(
-                  "You don't have permission to edit or delete this item."
-                )
+              ? toast.error(t("link_selection_error"))
               : undefined
         }
       >
