@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Loader from "../components/Loader";
 import useInitialData from "@/hooks/useInitialData";
 import useAccountStore from "@/store/account";
 

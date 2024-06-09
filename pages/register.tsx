@@ -258,16 +258,12 @@ export default function Register({
                         href="https://linkwarden.app/tos"
                         className="font-semibold"
                         data-testid="terms-of-service-link"
-                      >
-                        Terms of Services
-                      </Link>,
+                      />,
                       <Link
                         href="https://linkwarden.app/privacy-policy"
                         className="font-semibold"
                         data-testid="privacy-policy-link"
-                      >
-                        Privacy Policy
-                      </Link>,
+                      />,
                     ]}
                   />
                 </p>
