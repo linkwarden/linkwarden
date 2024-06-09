@@ -63,9 +63,8 @@ export default function Subscribe() {
                 <a
                   className="font-semibold"
                   href="mailto:support@linkwarden.app"
-                >
-                  support@linkwarden.app
-                </a>,
+                  key={0}
+                />,
               ]}
             />
           </p>
