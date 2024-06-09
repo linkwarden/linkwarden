@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useLinkStore from "@/store/links";
 import {
-  ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
+  ArchivedFormat,
 } from "@/types/global";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -17,6 +17,7 @@ import {
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   onClose: Function;
@@ -24,14 +25,12 @@ type Props = {
 };
 
 export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
+  const { t } = useTranslation();
   const session = useSession();
   const { getLink } = useLinkStore();
-
   const { account } = useAccountStore();
-
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
-
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
@@ -109,17 +108,16 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link, getLink]);
 
   const updateArchive = async () => {
-    const load = toast.loading("Sending request...");
+    const load = toast.loading(t("sending_request"));
 
     const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
       method: "PUT",
     });
 
     const data = await response.json();
-
     toast.dismiss(load);
 
     if (response.ok) {
@@ -127,33 +125,29 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       setLink(
         (newLink as any).response as LinkIncludingShortenedCollectionAndTags
       );
-      toast.success(`Link is being archived...`);
+      toast.success(t("link_being_archived"));
     } else toast.error(data.response);
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">Preserved Formats</p>
-
+      <p className="text-xl font-thin">{t("preserved_formats")}</p>
       <div className="divider mb-2 mt-1"></div>
-
       {isReady() &&
       (screenshotAvailable(link) ||
         pdfAvailable(link) ||
         readabilityAvailable(link)) ? (
-        <p className="mb-3">
-          The following formats are available for this link:
-        </p>
+        <p className="mb-3">{t("available_formats")}</p>
       ) : (
         ""
       )}
 
-      <div className={`flex flex-col gap-3`}>
+      <div className="flex flex-col gap-3">
         {isReady() ? (
           <>
             {screenshotAvailable(link) ? (
               <PreservedFormatRow
-                name={"Screenshot"}
+                name={t("screenshot")}
                 icon={"bi-file-earmark-image"}
                 format={
                   link?.image?.endsWith("png")
@@ -164,37 +158,29 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 downloadable={true}
               />
             ) : undefined}
-
             {pdfAvailable(link) ? (
               <PreservedFormatRow
-                name={"PDF"}
-                icon={"bi-file-earmark-pdf"}
+                name={t("pdf")}
+                icon="bi-file-earmark-pdf"
                 format={ArchivedFormat.pdf}
                 activeLink={link}
                 downloadable={true}
               />
             ) : undefined}
-
             {readabilityAvailable(link) ? (
               <PreservedFormatRow
-                name={"Readable"}
-                icon={"bi-file-earmark-text"}
+                name={t("readable")}
+                icon="bi-file-earmark-text"
                 format={ArchivedFormat.readability}
                 activeLink={link}
               />
             ) : undefined}
           </>
         ) : (
-          <div
-            className={`w-full h-full flex flex-col justify-center p-10 skeleton bg-base-200`}
-          >
+          <div className="w-full h-full flex flex-col justify-center p-10 skeleton bg-base-200">
             <i className="bi-stack drop-shadow text-primary text-8xl mx-auto mb-5"></i>
-            <p className="text-center text-2xl">
-              Link preservation is in the queue
-            </p>
-            <p className="text-center text-lg">
-              Please check back later to see the result
-            </p>
+            <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
+            <p className="text-center text-lg">{t("check_back_later")}</p>
           </div>
         )}
 
@@ -209,23 +195,21 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
               ""
             )}`}
             target="_blank"
-            className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm`}
+            className="text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm"
           >
-            <p className="whitespace-nowrap">
-              View latest snapshot on archive.org
-            </p>
+            <p className="whitespace-nowrap">{t("view_latest_snapshot")}</p>
             <i className="bi-box-arrow-up-right" />
           </Link>
-          {link?.collection.ownerId === session.data?.user.id ? (
-            <div className={`btn btn-outline`} onClick={() => updateArchive()}>
+          {link?.collection.ownerId === session.data?.user.id && (
+            <div className="btn btn-outline" onClick={updateArchive}>
               <div>
-                <p>Refresh Preserved Formats</p>
+                <p>{t("refresh_preserved_formats")}</p>
                 <p className="text-xs">
-                  This deletes the current preservations
+                  {t("this_deletes_current_preservations")}
                 </p>
               </div>
             </div>
-          ) : undefined}
+          )}
         </div>
       </div>
     </Modal>

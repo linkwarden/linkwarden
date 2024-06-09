@@ -20,6 +20,7 @@ import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -30,6 +31,8 @@ type Props = {
 };
 
 export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
+  const { t } = useTranslation();
+
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
 
@@ -120,9 +123,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
         selectable
           ? handleCheckboxClick(link)
           : editMode
-            ? toast.error(
-                "You don't have permission to edit or delete this item."
-              )
+            ? toast.error(t("link_selection_error"))
             : undefined
       }
     >
@@ -164,7 +165,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
         )}
 
         <div className="p-3 flex flex-col gap-2">
-          <p className="hyphens-auto w-full pr-8 text-primary text-sm">
+          <p className="hyphens-auto w-full pr-9 text-primary text-sm">
             {unescapeString(link.name)}
           </p>
 
@@ -210,7 +211,9 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
           >
             <i className="bi-x text-neutral text-2xl"></i>
           </div>
-          <p className="text-neutral text-lg font-semibold">Description</p>
+          <p className="text-neutral text-lg font-semibold">
+            {t("description")}
+          </p>
 
           <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
           <p>
@@ -218,13 +221,15 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
               unescapeString(link.description)
             ) : (
               <span className="text-neutral text-sm">
-                No description provided.
+                {t("no_description")}
               </span>
             )}
           </p>
           {link.tags[0] && (
             <>
-              <p className="text-neutral text-lg mt-3 font-semibold">Tags</p>
+              <p className="text-neutral text-lg mt-3 font-semibold">
+                {t("tags")}
+              </p>
 
               <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
 

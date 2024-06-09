@@ -1,5 +1,6 @@
 import { dropdownTriggerer } from "@/lib/client/utils";
 import React from "react";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   setSearchFilter: Function;
@@ -16,6 +17,8 @@ export default function FilterSearchDropdown({
   setSearchFilter,
   searchFilter,
 }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
       <div
@@ -38,11 +41,11 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.name}
-              onChange={() => {
-                setSearchFilter({ ...searchFilter, name: !searchFilter.name });
-              }}
+              onChange={() =>
+                setSearchFilter({ ...searchFilter, name: !searchFilter.name })
+              }
             />
-            <span className="label-text">Name</span>
+            <span className="label-text">{t("name")}</span>
           </label>
         </li>
         <li>
@@ -56,11 +59,11 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.url}
-              onChange={() => {
-                setSearchFilter({ ...searchFilter, url: !searchFilter.url });
-              }}
+              onChange={() =>
+                setSearchFilter({ ...searchFilter, url: !searchFilter.url })
+              }
             />
-            <span className="label-text">Link</span>
+            <span className="label-text">{t("link")}</span>
           </label>
         </li>
         <li>
@@ -74,14 +77,14 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.description}
-              onChange={() => {
+              onChange={() =>
                 setSearchFilter({
                   ...searchFilter,
                   description: !searchFilter.description,
-                });
-              }}
+                })
+              }
             />
-            <span className="label-text">Description</span>
+            <span className="label-text">{t("description")}</span>
           </label>
         </li>
         <li>
@@ -95,14 +98,11 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.tags}
-              onChange={() => {
-                setSearchFilter({
-                  ...searchFilter,
-                  tags: !searchFilter.tags,
-                });
-              }}
+              onChange={() =>
+                setSearchFilter({ ...searchFilter, tags: !searchFilter.tags })
+              }
             />
-            <span className="label-text">Tags</span>
+            <span className="label-text">{t("tags")}</span>
           </label>
         </li>
         <li>
@@ -116,16 +116,17 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.textContent}
-              onChange={() => {
+              onChange={() =>
                 setSearchFilter({
                   ...searchFilter,
                   textContent: !searchFilter.textContent,
-                });
-              }}
+                })
+              }
             />
-            <span className="label-text">Full Content</span>
-
-            <div className="ml-auto badge badge-sm badge-neutral">Slower</div>
+            <span className="label-text">{t("full_content")}</span>
+            <div className="ml-auto badge badge-sm badge-neutral">
+              {t("slower")}
+            </div>
           </label>
         </li>
       </ul>

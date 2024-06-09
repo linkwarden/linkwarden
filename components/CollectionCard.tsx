@@ -10,6 +10,7 @@ import EditCollectionModal from "./ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export default function CollectionCard({ collection, className }: Props) {
+  const { t } = useTranslation();
   const { settings } = useLocalSettingsStore();
   const { account } = useAccountStore();
 
@@ -76,8 +78,8 @@ export default function CollectionCard({ collection, className }: Props) {
         >
           <i className="bi-three-dots text-xl" title="More"></i>
         </div>
-        <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
-          {permissions === true ? (
+        <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+          {permissions === true && (
             <li>
               <div
                 role="button"
@@ -87,10 +89,10 @@ export default function CollectionCard({ collection, className }: Props) {
                   setEditCollectionModal(true);
                 }}
               >
-                Edit Collection Info
+                {t("edit_collection_info")}
               </div>
             </li>
-          ) : undefined}
+          )}
           <li>
             <div
               role="button"
@@ -100,7 +102,9 @@ export default function CollectionCard({ collection, className }: Props) {
                 setEditCollectionSharingModal(true);
               }}
             >
-              {permissions === true ? "Share and Collaborate" : "View Team"}
+              {permissions === true
+                ? t("share_and_collaborate")
+                : t("view_team")}
             </div>
           </li>
           <li>
@@ -112,7 +116,9 @@ export default function CollectionCard({ collection, className }: Props) {
                 setDeleteCollectionModal(true);
               }}
             >
-              {permissions === true ? "Delete Collection" : "Leave Collection"}
+              {permissions === true
+                ? t("delete_collection")
+                : t("leave_collection")}
             </div>
           </li>
         </ul>

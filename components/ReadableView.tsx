@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import LinkActions from "./LinkViews/LinkComponents/LinkActions";
 import useCollectionStore from "@/store/collections";
+import { useTranslation } from "next-i18next";
 
 type LinkContent = {
   title: string;
@@ -33,6 +34,7 @@ type Props = {
 };
 
 export default function ReadableView({ link }: Props) {
+  const { t } = useTranslation();
   const [linkContent, setLinkContent] = useState<LinkContent>();
   const [imageError, setImageError] = useState<boolean>(false);
   const [colorPalette, setColorPalette] = useState<RGBColor[]>();
@@ -271,11 +273,9 @@ export default function ReadableView({ link }: Props) {
               <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
             </svg>
             <p className="text-center text-2xl">
-              The Link preservation is currently in the queue
+              {t("link_preservation_in_queue")}
             </p>
-            <p className="text-center text-lg mt-2">
-              Please check back later to see the result
-            </p>
+            <p className="text-center text-lg mt-2">{t("check_back_later")}</p>
           </div>
         )}
       </div>

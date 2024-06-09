@@ -11,8 +11,10 @@ import UploadFileModal from "./ModalContent/UploadFileModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import MobileNavigation from "./MobileNavigation";
 import ProfileDropdown from "./ProfileDropdown";
+import { useTranslation } from "next-i18next";
 
 export default function Navbar() {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const [sidebar, setSidebar] = useState(false);
@@ -49,7 +51,7 @@ export default function Navbar() {
         <ToggleDarkMode className="hidden sm:inline-grid" />
 
         <div className="dropdown dropdown-end sm:inline-block hidden">
-          <div className="tooltip tooltip-bottom" data-tip="Create New...">
+          <div className="tooltip tooltip-bottom" data-tip={t("create_new")}>
             <div
               tabIndex={0}
               role="button"
@@ -74,7 +76,7 @@ export default function Navbar() {
                 tabIndex={0}
                 role="button"
               >
-                New Link
+                {t("new_link")}
               </div>
             </li>
             <li>
@@ -86,7 +88,7 @@ export default function Navbar() {
                 tabIndex={0}
                 role="button"
               >
-                Upload File
+                {t("upload_file")}
               </div>
             </li>
             <li>
@@ -98,7 +100,7 @@ export default function Navbar() {
                 tabIndex={0}
                 role="button"
               >
-                New Collection
+                {t("new_collection")}
               </div>
             </li>
           </ul>

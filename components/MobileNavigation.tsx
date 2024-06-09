@@ -5,10 +5,12 @@ import NewLinkModal from "./ModalContent/NewLinkModal";
 import NewCollectionModal from "./ModalContent/NewCollectionModal";
 import UploadFileModal from "./ModalContent/UploadFileModal";
 import MobileNavigationButton from "./MobileNavigationButton";
+import { useTranslation } from "next-i18next";
 
 type Props = {};
 
 export default function MobileNavigation({}: Props) {
+  const { t } = useTranslation();
   const [newLinkModal, setNewLinkModal] = useState(false);
   const [newCollectionModal, setNewCollectionModal] = useState(false);
   const [uploadFileModal, setUploadFileModal] = useState(false);
@@ -49,21 +51,21 @@ export default function MobileNavigation({}: Props) {
                   tabIndex={0}
                   role="button"
                 >
-                  New Link
+                  {t("new_link")}
                 </div>
               </li>
-              {/* <li>
-              <div
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  setUploadFileModal(true);
-                }}
-                tabIndex={0}
-                role="button"
-              >
-                Upload File
-              </div>
-            </li> */}
+              <li>
+                <div
+                  onClick={() => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    setUploadFileModal(true);
+                  }}
+                  tabIndex={0}
+                  role="button"
+                >
+                  {t("upload_file")}
+                </div>
+              </li>
               <li>
                 <div
                   onClick={() => {
@@ -73,7 +75,7 @@ export default function MobileNavigation({}: Props) {
                   tabIndex={0}
                   role="button"
                 >
-                  New Collection
+                  {t("new_collection")}
                 </div>
               </li>
             </ul>
