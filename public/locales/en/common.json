@@ -76,7 +76,7 @@
   "nothing_found": "Nothing found.",
   "redirecting_to_stripe": "Redirecting to Stripe...",
   "subscribe_title": "Subscribe to Linkwarden!",
-  "subscribe_desc": "You will be redirected to Stripe, feel free to reach out to us at <0/> in case of any issue.",
+  "subscribe_desc": "You will be redirected to Stripe, feel free to reach out to us at <0>support@linkwarden.app</0> in case of any issue.",
   "monthly": "Monthly",
   "yearly": "Yearly",
   "discount_percent": "{{percent}}% Off",

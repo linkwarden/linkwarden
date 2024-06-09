@@ -7,9 +7,9 @@ import { useTranslation } from "next-i18next";
 
 const VerifyEmail = () => {
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    const { t } = useTranslation();
     const token = router.query.token;
 
     if (!token || typeof token !== "string") {

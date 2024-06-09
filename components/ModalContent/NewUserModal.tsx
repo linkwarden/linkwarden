@@ -127,7 +127,10 @@ export default function NewUserModal({ onClose }: Props) {
         <div role="note" className="alert alert-note mt-5">
           <i className="bi-exclamation-triangle text-xl" />
           <span>
-            <Trans i18nKey="password_change_note" components={[<b />]} />
+            <Trans
+              i18nKey="password_change_note"
+              components={[<b key={0} />]}
+            />
           </span>
         </div>
 
