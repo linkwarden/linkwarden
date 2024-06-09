@@ -258,11 +258,13 @@ export default function Register({
                         href="https://linkwarden.app/tos"
                         className="font-semibold"
                         data-testid="terms-of-service-link"
+                        key={0}
                       />,
                       <Link
                         href="https://linkwarden.app/privacy-policy"
                         className="font-semibold"
                         data-testid="privacy-policy-link"
+                        key={1}
                       />,
                     ]}
                   />

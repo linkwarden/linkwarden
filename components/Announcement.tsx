@@ -22,6 +22,7 @@ export default function Announcement({ toggleAnnouncementBar }: Props) {
                 href={`https://blog.linkwarden.app/releases/${announcementId}`}
                 target="_blank"
                 className="underline"
+                key={0}
               />,
             ]}
           />
