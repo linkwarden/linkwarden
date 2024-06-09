@@ -1,4 +1,4 @@
-import AccentSubmitButton from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
@@ -133,7 +133,7 @@ export default function Login({
               </div>
             )}
           </div>
-          <AccentSubmitButton
+          <Button
             type="submit"
             size="full"
             intent="accent"
@@ -141,7 +141,7 @@ export default function Login({
             loading={submitLoader}
           >
             {t("login")}
-          </AccentSubmitButton>
+          </Button>
 
           {availableLogins.buttonAuths.length > 0 ? (
             <div className="divider my-1">{t("or_continue_with")}</div>
@@ -156,7 +156,7 @@ export default function Login({
     availableLogins.buttonAuths.forEach((value: any, index: any) => {
       Buttons.push(
         <React.Fragment key={index}>
-          <AccentSubmitButton
+          <Button
             type="button"
             onClick={() => loginUserButton(value.method)}
             size="full"
@@ -168,7 +168,7 @@ export default function Login({
               <i className={"bi-" + value.name.toLowerCase()}></i>
             ) : undefined}
             {value.name}
-          </AccentSubmitButton>
+          </Button>
         </React.Fragment>
       );
     });

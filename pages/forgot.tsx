@@ -1,4 +1,4 @@
-import AccentSubmitButton from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
@@ -86,7 +86,7 @@ export default function Forgot() {
                 />
               </div>
 
-              <AccentSubmitButton
+              <Button
                 type="submit"
                 intent="accent"
                 className="mt-2"
@@ -94,7 +94,7 @@ export default function Forgot() {
                 loading={submitLoader}
               >
                 {t("send_reset_link")}
-              </AccentSubmitButton>
+              </Button>
             </>
           ) : (
             <p>{t("reset_email_sent_desc")}</p>
