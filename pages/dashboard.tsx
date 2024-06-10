@@ -17,8 +17,11 @@ import ListView from "@/components/LinkViews/Layouts/ListView";
 import ViewDropdown from "@/components/ViewDropdown";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useTranslation } from "next-i18next";
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { collections } = useCollectionStore();
   const { links } = useLinkStore();
   const { tags } = useTagStore();
@@ -117,7 +120,7 @@ export default function Dashboard() {
           <PageHeader
             icon={"bi-house "}
             title={"Dashboard"}
-            description={"A brief overview of your data"}
+            description={t("dashboard_desc")}
           />
           <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
         </div>
@@ -125,7 +128,7 @@ export default function Dashboard() {
         <div>
           <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
-              name={numberOfLinks === 1 ? "Link" : "Links"}
+              name={numberOfLinks === 1 ? t("link") : t("links")}
               value={numberOfLinks}
               icon={"bi-link-45deg"}
             />
@@ -133,7 +136,9 @@ export default function Dashboard() {
             <div className="divider xl:divider-horizontal"></div>
 
             <DashboardItem
-              name={collections.length === 1 ? "Collection" : "Collections"}
+              name={
+                collections.length === 1 ? t("collection") : t("collections")
+              }
               value={collections.length}
               icon={"bi-folder"}
             />
@@ -141,7 +146,7 @@ export default function Dashboard() {
             <div className="divider xl:divider-horizontal"></div>
 
             <DashboardItem
-              name={tags.length === 1 ? "Tag" : "Tags"}
+              name={tags.length === 1 ? t("tag") : t("tags")}
               value={tags.length}
               icon={"bi-hash"}
             />
@@ -152,15 +157,15 @@ export default function Dashboard() {
           <div className="flex gap-2 items-center">
             <PageHeader
               icon={"bi-clock-history"}
-              title={"Recent"}
-              description={"Recently added Links"}
+              title={t("recent")}
+              description={t("recent_links_desc")}
             />
           </div>
           <Link
             href="/links"
             className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
           >
-            View All
+            {t("view_all")}
             <i className="bi-chevron-right text-sm"></i>
           </Link>
         </div>
@@ -176,11 +181,10 @@ export default function Dashboard() {
           ) : (
             <div className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200">
               <p className="text-center text-2xl">
-                View Your Recently Added Links Here!
+                {t("view_added_links_here")}
               </p>
               <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
-                This section will view your latest added Links across every
-                Collections you have access to.
+                {t("view_added_links_here_desc")}
               </p>
 
               <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
@@ -192,7 +196,7 @@ export default function Dashboard() {
                 >
                   <i className="bi-plus-lg text-xl"></i>
                   <span className="group-hover:opacity-0 text-right">
-                    Add New Link
+                    {t("add_link")}
                   </span>
                 </div>
 
@@ -205,7 +209,7 @@ export default function Dashboard() {
                     id="import-dropdown"
                   >
                     <i className="bi-cloud-upload text-xl duration-100"></i>
-                    <p>Import From</p>
+                    <p>{t("import_links")}</p>
                   </div>
                   <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
                     <li>
@@ -213,9 +217,9 @@ export default function Dashboard() {
                         tabIndex={0}
                         role="button"
                         htmlFor="import-linkwarden-file"
-                        title="JSON File"
+                        title={t("from_linkwarden")}
                       >
-                        From Linkwarden
+                        {t("from_linkwarden")}
                         <input
                           type="file"
                           name="photo"
@@ -233,9 +237,9 @@ export default function Dashboard() {
                         tabIndex={0}
                         role="button"
                         htmlFor="import-html-file"
-                        title="HTML File"
+                        title={t("from_html")}
                       >
-                        From Bookmarks HTML file
+                        {t("from_html")}
                         <input
                           type="file"
                           name="photo"
@@ -244,6 +248,26 @@ export default function Dashboard() {
                           className="hidden"
                           onChange={(e) =>
                             importBookmarks(e, MigrationFormat.htmlFile)
+                          }
+                        />
+                      </label>
+                    </li>
+                    <li>
+                      <label
+                        tabIndex={0}
+                        role="button"
+                        htmlFor="import-wallabag-file"
+                        title={t("from_wallabag")}
+                      >
+                        {t("from_wallabag")}
+                        <input
+                          type="file"
+                          name="photo"
+                          id="import-wallabag-file"
+                          accept=".json"
+                          className="hidden"
+                          onChange={(e) =>
+                            importBookmarks(e, MigrationFormat.wallabag)
                           }
                         />
                       </label>
@@ -259,15 +283,15 @@ export default function Dashboard() {
           <div className="flex gap-2 items-center">
             <PageHeader
               icon={"bi-pin-angle"}
-              title={"Pinned"}
-              description={"Your pinned Links"}
+              title={t("pinned")}
+              description={t("pinned_links_desc")}
             />
           </div>
           <Link
             href="/links/pinned"
             className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
           >
-            View All
+            {t("view_all")}
             <i className="bi-chevron-right text-sm "></i>
           </Link>
         </div>
@@ -291,12 +315,10 @@ export default function Dashboard() {
             >
               <i className="bi-pin mx-auto text-6xl text-primary"></i>
               <p className="text-center text-2xl">
-                Pin Your Favorite Links Here!
+                {t("pin_favorite_links_here")}
               </p>
               <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                You can Pin your favorite Links by clicking on the three dots on
-                each Link and clicking{" "}
-                <span className="font-semibold">Pin to Dashboard</span>.
+                {t("pin_favorite_links_here_desc")}
               </p>
             </div>
           )}
@@ -308,3 +330,5 @@ export default function Dashboard() {
     </MainLayout>
   );
 }
+
+export { getServerSideProps };

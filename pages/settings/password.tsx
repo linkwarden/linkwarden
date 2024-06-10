@@ -4,25 +4,26 @@ import useAccountStore from "@/store/account";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
+import { useTranslation } from "next-i18next";
+import getServerSideProps from "@/lib/client/getServerSideProps";
 
 export default function Password() {
+  const { t } = useTranslation();
+
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
   const [submitLoader, setSubmitLoader] = useState(false);
-
   const { account, updateAccount } = useAccountStore();
 
   const submit = async () => {
-    if (newPassword == "" || oldPassword == "") {
-      return toast.error("Please fill all the fields.");
+    if (newPassword === "" || oldPassword === "") {
+      return toast.error(t("fill_all_fields"));
     }
-    if (newPassword.length < 8)
-      return toast.error("Passwords must be at least 8 characters.");
+    if (newPassword.length < 8) return toast.error(t("password_length_error"));
 
     setSubmitLoader(true);
 
-    const load = toast.loading("Applying...");
+    const load = toast.loading(t("applying_changes"));
 
     const response = await updateAccount({
       ...account,
@@ -33,26 +34,27 @@ export default function Password() {
     toast.dismiss(load);
 
     if (response.ok) {
-      toast.success("Settings Applied!");
+      toast.success(t("settings_applied"));
       setNewPassword("");
       setOldPassword("");
-    } else toast.error(response.data as string);
+    } else {
+      toast.error(response.data as string);
+    }
 
     setSubmitLoader(false);
   };
 
   return (
     <SettingsLayout>
-      <p className="capitalize text-3xl font-thin inline">Change Password</p>
+      <p className="capitalize text-3xl font-thin inline">
+        {t("change_password")}
+      </p>
 
       <div className="divider my-3"></div>
 
-      <p className="mb-3">
-        To change your password, please fill out the following. Your password
-        should be at least 8 characters.
-      </p>
+      <p className="mb-3">{t("password_change_instructions")}</p>
       <div className="w-full flex flex-col gap-2 justify-between">
-        <p>Old Password</p>
+        <p>{t("old_password")}</p>
 
         <TextInput
           value={oldPassword}
@@ -62,7 +64,7 @@ export default function Password() {
           type="password"
         />
 
-        <p className="mt-3">New Password</p>
+        <p className="mt-3">{t("new_password")}</p>
 
         <TextInput
           value={newPassword}
@@ -75,10 +77,12 @@ export default function Password() {
         <SubmitButton
           onClick={submit}
           loading={submitLoader}
-          label="Save Changes"
+          label={t("save_changes")}
           className="mt-3 w-full sm:w-fit"
         />
       </div>
     </SettingsLayout>
   );
 }
+
+export { getServerSideProps };

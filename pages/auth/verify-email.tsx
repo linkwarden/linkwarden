@@ -2,9 +2,12 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useTranslation } from "next-i18next";
 
 const VerifyEmail = () => {
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const token = router.query.token;
@@ -19,12 +22,12 @@ const VerifyEmail = () => {
       method: "POST",
     }).then((res) => {
       if (res.ok) {
-        toast.success("Email verified. Signing out..");
+        toast.success(t("email_verified_signing_out"));
         setTimeout(() => {
           signOut();
         }, 3000);
       } else {
-        toast.error("Invalid token.");
+        toast.error(t("invalid_token"));
       }
     });
 
@@ -35,3 +38,5 @@ const VerifyEmail = () => {
 };
 
 export default VerifyEmail;
+
+export { getServerSideProps };

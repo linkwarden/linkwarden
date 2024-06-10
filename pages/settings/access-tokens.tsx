@@ -4,11 +4,14 @@ import NewTokenModal from "@/components/ModalContent/NewTokenModal";
 import RevokeTokenModal from "@/components/ModalContent/RevokeTokenModal";
 import { AccessToken } from "@prisma/client";
 import useTokenStore from "@/store/tokens";
+import { useTranslation } from "next-i18next";
+import getServerSideProps from "@/lib/client/getServerSideProps";
 
 export default function AccessTokens() {
   const [newTokenModal, setNewTokenModal] = useState(false);
   const [revokeTokenModal, setRevokeTokenModal] = useState(false);
   const [selectedToken, setSelectedToken] = useState<AccessToken | null>(null);
+  const { t } = useTranslation();
 
   const openRevokeModal = (token: AccessToken) => {
     setSelectedToken(token);
@@ -27,15 +30,14 @@ export default function AccessTokens() {
 
   return (
     <SettingsLayout>
-      <p className="capitalize text-3xl font-thin inline">Access Tokens</p>
+      <p className="capitalize text-3xl font-thin inline">
+        {t("access_tokens")}
+      </p>
 
       <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-3">
-        <p>
-          Access Tokens can be used to access Linkwarden from other apps and
-          services without giving away your Username and Password.
-        </p>
+        <p>{t("access_tokens_description")}</p>
 
         <button
           className={`btn ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
@@ -43,7 +45,7 @@ export default function AccessTokens() {
             setNewTokenModal(true);
           }}
         >
-          New Access Token
+          {t("new_token")}
         </button>
 
         {tokens.length > 0 ? (
@@ -51,13 +53,12 @@ export default function AccessTokens() {
             <div className="divider my-0"></div>
 
             <table className="table">
-              {/* head */}
               <thead>
                 <tr>
                   <th></th>
-                  <th>Name</th>
-                  <th>Created</th>
-                  <th>Expires</th>
+                  <th>{t("name")}</th>
+                  <th>{t("created")}</th>
+                  <th>{t("expires")}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -105,3 +106,5 @@ export default function AccessTokens() {
     </SettingsLayout>
   );
 }
+
+export { getServerSideProps };

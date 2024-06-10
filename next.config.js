@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const { version } = require("./package.json");
+const { i18n } = require("./next-i18next.config");
 
 const nextConfig = {
+  i18n,
   reactStrictMode: true,
   images: {
     // For fetching the favicons

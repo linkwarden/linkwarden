@@ -1,7 +1,8 @@
 import useLocalSettingsStore from "@/store/localSettings";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
+import { Trans } from "next-i18next";
 
 interface Props {
   text?: string;
@@ -40,11 +41,13 @@ export default function CenteredForm({
         ) : undefined}
         {children}
         <p className="text-center text-xs text-neutral mb-5">
-          © {new Date().getFullYear()}{" "}
-          <Link href="https://linkwarden.app" className="font-semibold">
-            Linkwarden
-          </Link>
-          . All rights reserved.
+          <Trans
+            values={{ date: new Date().getFullYear() }}
+            i18nKey="all_rights_reserved"
+            components={[
+              <Link href="https://linkwarden.app" className="font-semibold" />,
+            ]}
+          />
         </p>
       </div>
     </div>

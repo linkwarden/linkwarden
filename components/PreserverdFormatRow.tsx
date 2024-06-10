@@ -4,7 +4,6 @@ import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";

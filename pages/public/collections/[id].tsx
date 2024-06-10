@@ -7,7 +7,6 @@ import {
 } from "@/types/global";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { motion, Variants } from "framer-motion";
 import Head from "next/head";
 import useLinks from "@/hooks/useLinks";
 import useLinkStore from "@/store/links";
@@ -16,34 +15,24 @@ import ToggleDarkMode from "@/components/ToggleDarkMode";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";
-import FilterSearchDropdown from "@/components/FilterSearchDropdown";
-import SortDropdown from "@/components/SortDropdown";
 import useLocalSettingsStore from "@/store/localSettings";
 import SearchBar from "@/components/SearchBar";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
-import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
-
-const cardVariants: Variants = {
-  offscreen: {
-    y: 50,
-    opacity: 0,
-  },
-  onscreen: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.4,
-    },
-  },
-};
+import { useTranslation } from "next-i18next";
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import useCollectionStore from "@/store/collections";
+import LinkListOptions from "@/components/LinkListOptions";
 
 export default function PublicCollections() {
+  const { t } = useTranslation();
   const { links } = useLinkStore();
 
   const { settings } = useLocalSettingsStore();
+
+  const { collections } = useCollectionStore();
 
   const router = useRouter();
 
@@ -85,7 +74,7 @@ export default function PublicCollections() {
     if (router.query.id) {
       getPublicCollectionData(Number(router.query.id), setCollection);
     }
-  }, []);
+  }, [collections]);
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -147,7 +136,7 @@ export default function PublicCollections() {
                 width={551}
                 height={551}
                 alt="Linkwarden"
-                title="Created with Linkwarden"
+                title={t("list_created_with_linkwarden")}
                 className="h-8 w-fit mx-auto rounded"
               />
             </Link>
@@ -189,12 +178,22 @@ export default function PublicCollections() {
                 ) : null}
               </div>
 
-              <p className="text-neutral text-sm font-semibold">
-                By {collectionOwner.name}
-                {collection.members.length > 0
-                  ? ` and ${collection.members.length} others`
-                  : undefined}
-                .
+              <p className="text-neutral text-sm">
+                {collection.members.length > 0 &&
+                collection.members.length === 1
+                  ? t("by_author_and_other", {
+                      author: collectionOwner.name,
+                      count: collection.members.length,
+                    })
+                  : collection.members.length > 0 &&
+                      collection.members.length !== 1
+                    ? t("by_author_and_others", {
+                        author: collectionOwner.name,
+                        count: collection.members.length,
+                      })
+                    : t("by_author", {
+                        author: collectionOwner.name,
+                      })}
               </p>
             </div>
           </div>
@@ -205,22 +204,27 @@ export default function PublicCollections() {
         <div className="divider mt-5 mb-0"></div>
 
         <div className="flex mb-5 mt-10 flex-col gap-5">
-          <div className="flex justify-between gap-3">
+          <LinkListOptions
+            t={t}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            searchFilter={searchFilter}
+            setSearchFilter={setSearchFilter}
+          >
             <SearchBar
-              placeholder={`Search ${collection._count?.links} Links`}
+              placeholder={
+                collection._count?.links === 1
+                  ? t("search_count_link", {
+                      count: collection._count?.links,
+                    })
+                  : t("search_count_links", {
+                      count: collection._count?.links,
+                    })
+              }
             />
-
-            <div className="flex gap-2 items-center w-fit">
-              <FilterSearchDropdown
-                searchFilter={searchFilter}
-                setSearchFilter={setSearchFilter}
-              />
-
-              <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-
-              <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
-            </div>
-          </div>
+          </LinkListOptions>
 
           {links[0] ? (
             <LinkComponent
@@ -235,7 +239,7 @@ export default function PublicCollections() {
                 })}
             />
           ) : (
-            <p>This collection is empty...</p>
+            <p>{t("collection_is_empty")}</p>
           )}
 
           {/* <p className="text-center text-neutral">
@@ -254,3 +258,5 @@ export default function PublicCollections() {
     <></>
   );
 }
+
+export { getServerSideProps };

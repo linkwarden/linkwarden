@@ -1,4 +1,4 @@
-import AccentSubmitButton from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
@@ -6,22 +6,27 @@ import Link from "next/link";
 import React, { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import { getLogins } from "./api/v1/logins";
-import { InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import InstallApp from "@/components/InstallApp";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { i18n } from "next-i18next.config";
+import { getToken } from "next-auth/jwt";
+import { prisma } from "@/lib/api/db";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 
 interface FormData {
   username: string;
   password: string;
 }
 
-export const getServerSideProps = () => {
-  const availableLogins = getLogins();
-  return { props: { availableLogins } };
-};
-
 export default function Login({
   availableLogins,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { t } = useTranslation();
+
+  const router = useRouter();
+
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const [form, setForm] = useState<FormData>({
@@ -35,7 +40,7 @@ export default function Login({
     if (form.username !== "" && form.password !== "") {
       setSubmitLoader(true);
 
-      const load = toast.loading("Authenticating...");
+      const load = toast.loading(t("authenticating"));
 
       const res = await signIn("credentials", {
         username: form.username,
@@ -48,17 +53,29 @@ export default function Login({
       setSubmitLoader(false);
 
       if (!res?.ok) {
-        toast.error(res?.error || "Invalid credentials.");
+        toast.error(res?.error || t("invalid_credentials"));
+
+        if (res?.error === "Email not verified.") {
+          await signIn("email", {
+            email: form.username,
+            callbackUrl: "/",
+            redirect: false,
+          });
+
+          router.push(
+            `/confirmation?email=${encodeURIComponent(form.username)}`
+          );
+        }
       }
     } else {
-      toast.error("Please fill out all the fields.");
+      toast.error(t("fill_all_fields"));
     }
   }
 
   async function loginUserButton(method: string) {
     setSubmitLoader(true);
 
-    const load = toast.loading("Authenticating...");
+    const load = toast.loading(t("authenticating"));
 
     const res = await signIn(method, {});
 
@@ -72,15 +89,14 @@ export default function Login({
       return (
         <>
           <p className="text-3xl text-black dark:text-white text-center font-extralight">
-            Enter your credentials
+            {t("enter_credentials")}
           </p>
           <hr className="border-1 border-sky-100 dark:border-neutral-700" />
           <div>
             <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-              Username
               {availableLogins.emailEnabled === "true"
-                ? " or Email"
-                : undefined}
+                ? t("username_or_email")
+                : t("username")}
             </p>
 
             <TextInput
@@ -94,7 +110,7 @@ export default function Login({
           </div>
           <div className="w-full">
             <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
-              Password
+              {t("password")}
             </p>
 
             <TextInput
@@ -112,23 +128,23 @@ export default function Login({
                   className="text-neutral font-semibold"
                   data-testid="forgot-password-link"
                 >
-                  Forgot Password?
+                  {t("forgot_password")}
                 </Link>
               </div>
             )}
           </div>
-          <AccentSubmitButton
+          <Button
             type="submit"
             size="full"
             intent="accent"
             data-testid="submit-login-button"
             loading={submitLoader}
           >
-            Login
-          </AccentSubmitButton>
+            {t("login")}
+          </Button>
 
           {availableLogins.buttonAuths.length > 0 ? (
-            <div className="divider my-1">Or continue with</div>
+            <div className="divider my-1">{t("or_continue_with")}</div>
           ) : undefined}
         </>
       );
@@ -137,12 +153,10 @@ export default function Login({
 
   function displayLoginExternalButton() {
     const Buttons: any = [];
-    availableLogins.buttonAuths.forEach((value, index) => {
+    availableLogins.buttonAuths.forEach((value: any, index: any) => {
       Buttons.push(
         <React.Fragment key={index}>
-          {index !== 0 ? <div className="divider my-1">Or</div> : undefined}
-
-          <AccentSubmitButton
+          <Button
             type="button"
             onClick={() => loginUserButton(value.method)}
             size="full"
@@ -154,7 +168,7 @@ export default function Login({
               <i className={"bi-" + value.name.toLowerCase()}></i>
             ) : undefined}
             {value.name}
-          </AccentSubmitButton>
+          </Button>
         </React.Fragment>
       );
     });
@@ -165,13 +179,15 @@ export default function Login({
     if (availableLogins.registrationDisabled !== "true") {
       return (
         <div className="flex items-baseline gap-1 justify-center">
-          <p className="w-fit text-gray-500 dark:text-gray-400">New here?</p>
+          <p className="w-fit text-gray-500 dark:text-gray-400">
+            {t("new_here")}
+          </p>
           <Link
             href={"/register"}
             className="font-semibold"
             data-testid="register-link"
           >
-            Sign Up
+            {t("sign_up")}
           </Link>
         </div>
       );
@@ -179,7 +195,7 @@ export default function Login({
   }
 
   return (
-    <CenteredForm text="Sign in to your account">
+    <CenteredForm text={t("sign_in_to_your_account")}>
       <form onSubmit={loginUser}>
         <div
           className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700"
@@ -194,3 +210,59 @@ export default function Login({
     </CenteredForm>
   );
 }
+
+const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const availableLogins = getLogins();
+
+  const acceptLanguageHeader = ctx.req.headers["accept-language"];
+  const availableLanguages = i18n.locales;
+
+  const token = await getToken({ req: ctx.req });
+
+  if (token) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: token.id,
+      },
+    });
+
+    if (user) {
+      return {
+        props: {
+          availableLogins,
+          ...(await serverSideTranslations(user.locale ?? "en", ["common"])),
+        },
+      };
+    }
+  }
+
+  const acceptedLanguages = acceptLanguageHeader
+    ?.split(",")
+    .map((lang) => lang.split(";")[0]);
+
+  let bestMatch = acceptedLanguages?.find((lang) =>
+    availableLanguages.includes(lang)
+  );
+
+  if (!bestMatch) {
+    acceptedLanguages?.some((acceptedLang) => {
+      const partialMatch = availableLanguages.find((lang) =>
+        lang.startsWith(acceptedLang)
+      );
+      if (partialMatch) {
+        bestMatch = partialMatch;
+        return true;
+      }
+      return false;
+    });
+  }
+
+  return {
+    props: {
+      availableLogins,
+      ...(await serverSideTranslations(bestMatch ?? "en", ["common"])),
+    },
+  };
+};
+
+export { getServerSideProps };
