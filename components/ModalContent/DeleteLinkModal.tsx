@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useRouter } from "next/router";
 import Button from "../ui/Button";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   onClose: Function;
@@ -12,11 +13,10 @@ type Props = {
 };
 
 export default function DeleteLinkModal({ onClose, activeLink }: Props) {
+  const { t } = useTranslation();
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
-
   const { removeLink } = useLinkStore();
-
   const router = useRouter();
 
   useEffect(() => {
@@ -24,13 +24,13 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
   }, []);
 
   const deleteLink = async () => {
-    const load = toast.loading("Deleting...");
+    const load = toast.loading(t("deleting"));
 
     const response = await removeLink(link.id as number);
 
     toast.dismiss(load);
 
-    response.ok && toast.success(`Link Deleted.`);
+    response.ok && toast.success(t("deleted"));
 
     if (router.pathname.startsWith("/links/[id]")) {
       router.push("/dashboard");
@@ -41,28 +41,25 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin text-red-500">Delete Link</p>
+      <p className="text-xl font-thin text-red-500">{t("delete_link")}</p>
 
       <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
-        <p>Are you sure you want to delete this Link?</p>
+        <p>{t("link_deletion_confirmation_message")}</p>
 
         <div role="alert" className="alert alert-warning">
           <i className="bi-exclamation-triangle text-xl" />
           <span>
-            <b>Warning:</b> This action is irreversible!
+            <b>{t("warning")}:</b> {t("irreversible_warning")}
           </span>
         </div>
 
-        <p>
-          Hold the <kbd className="kbd kbd-sm">Shift</kbd> key while clicking
-          &apos;Delete&apos; to bypass this confirmation in the future.
-        </p>
+        <p>{t("shift_key_tip")}</p>
 
         <Button className="ml-auto" intent="destructive" onClick={deleteLink}>
           <i className="bi-trash text-xl" />
-          Delete
+          {t("delete")}
         </Button>
       </div>
     </Modal>

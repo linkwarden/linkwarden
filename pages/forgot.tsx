@@ -1,15 +1,18 @@
-import AccentSubmitButton from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useTranslation } from "next-i18next";
 
 interface FormData {
   email: string;
 }
 
 export default function Forgot() {
+  const { t } = useTranslation();
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const [form, setForm] = useState<FormData>({
@@ -43,7 +46,7 @@ export default function Forgot() {
     if (form.email !== "") {
       setSubmitLoader(true);
 
-      const load = toast.loading("Sending password recovery link...");
+      const load = toast.loading(t("sending_password_link"));
 
       await submitRequest();
 
@@ -51,7 +54,7 @@ export default function Forgot() {
 
       setSubmitLoader(false);
     } else {
-      toast.error("Please fill out all the fields.");
+      toast.error(t("fill_all_fields"));
     }
   }
 
@@ -60,7 +63,7 @@ export default function Forgot() {
       <form onSubmit={sendConfirmation}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
-            {isEmailSent ? "Email Sent!" : "Forgot Password?"}
+            {isEmailSent ? t("email_sent") : t("forgot_password")}
           </p>
 
           <div className="divider my-0"></div>
@@ -68,13 +71,10 @@ export default function Forgot() {
           {!isEmailSent ? (
             <>
               <div>
-                <p>
-                  Enter your email so we can send you a link to create a new
-                  password.
-                </p>
+                <p>{t("password_email_prompt")}</p>
               </div>
               <div>
-                <p className="text-sm w-fit font-semibold mb-1">Email</p>
+                <p className="text-sm w-fit font-semibold mb-1">{t("email")}</p>
 
                 <TextInput
                   autoFocus
@@ -86,26 +86,23 @@ export default function Forgot() {
                 />
               </div>
 
-              <AccentSubmitButton
+              <Button
                 type="submit"
                 intent="accent"
                 className="mt-2"
                 size="full"
                 loading={submitLoader}
               >
-                Send Login Link
-              </AccentSubmitButton>
+                {t("send_reset_link")}
+              </Button>
             </>
           ) : (
-            <p>
-              Check your email for a link to reset your password. If it doesn’t
-              appear within a few minutes, check your spam folder.
-            </p>
+            <p>{t("reset_email_sent_desc")}</p>
           )}
 
           <div className="mx-auto w-fit mt-2">
             <Link className="font-semibold" href="/login">
-              Back to Login
+              {t("back_to_login")}
             </Link>
           </div>
         </div>
@@ -113,3 +110,5 @@ export default function Forgot() {
     </CenteredForm>
   );
 }
+
+export { getServerSideProps };

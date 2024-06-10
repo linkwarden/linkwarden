@@ -114,44 +114,7 @@ if (
 
         if (!user) throw Error("Invalid credentials.");
         else if (!user?.emailVerified && emailEnabled) {
-          const identifier = user?.email as string;
-          const token = randomBytes(32).toString("hex");
-          const url = `${
-            process.env.NEXTAUTH_URL
-          }/callback/email?token=${token}&email=${encodeURIComponent(
-            identifier
-          )}`;
-          const from = process.env.EMAIL_FROM as string;
-
-          const recentVerificationRequestsCount =
-            await prisma.verificationToken.count({
-              where: {
-                identifier,
-                createdAt: {
-                  gt: new Date(new Date().getTime() - 1000 * 60 * 5), // 5 minutes
-                },
-              },
-            });
-
-          if (recentVerificationRequestsCount >= 4)
-            throw Error("Too many requests. Please try again later.");
-
-          sendVerificationRequest({
-            identifier,
-            url,
-            from,
-            token,
-          });
-
-          await prisma.verificationToken.create({
-            data: {
-              identifier,
-              token,
-              expires: new Date(Date.now() + 24 * 3600 * 1000), // 1 day
-            },
-          });
-
-          throw Error("Email not verified. Verification email sent.");
+          throw Error("Email not verified.");
         }
 
         let passwordMatches: boolean = false;

@@ -1,5 +1,6 @@
 import { isPWA } from "@/lib/client/utils";
 import React, { useState } from "react";
+import { Trans } from "next-i18next";
 
 type Props = {};
 
@@ -25,15 +26,17 @@ const InstallApp = (props: Props) => {
           />
         </svg>
         <p className="w-4/5 text-[0.92rem]">
-          Install Linkwarden to your home screen for a faster access and
-          enhanced experience.{" "}
-          <a
-            className="underline"
-            target="_blank"
-            href="https://docs.linkwarden.app/getting-started/pwa-installation"
-          >
-            Learn more
-          </a>
+          <Trans
+            i18nKey="pwa_install_prompt"
+            components={[
+              <a
+                className="underline"
+                target="_blank"
+                href="https://docs.linkwarden.app/getting-started/pwa-installation"
+                key={0}
+              />,
+            ]}
+          />
         </p>
         <button
           onClick={() => setIsOpen(false)}
