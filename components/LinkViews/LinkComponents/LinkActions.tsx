@@ -11,6 +11,7 @@ import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
 import useAccountStore from "@/store/account";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -30,6 +31,8 @@ export default function LinkActions({
   alignToTop,
   flipDropdown,
 }: Props) {
+  const { t } = useTranslation();
+
   const permissions = usePermissions(link.collection.id as number);
 
   const [editLinkModal, setEditLinkModal] = useState(false);
@@ -43,7 +46,7 @@ export default function LinkActions({
   const pinLink = async () => {
     const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0];
 
-    const load = toast.loading("Applying...");
+    const load = toast.loading(t("applying"));
 
     const response = await updateLink({
       ...link,
@@ -53,17 +56,17 @@ export default function LinkActions({
     toast.dismiss(load);
 
     response.ok &&
-      toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
+      toast.success(isAlreadyPinned ? t("link_unpinned") : t("link_unpinned"));
   };
 
   const deleteLink = async () => {
-    const load = toast.loading("Deleting...");
+    const load = toast.loading(t("deleting"));
 
     const response = await removeLink(link.id as number);
 
     toast.dismiss(load);
 
-    response.ok && toast.success(`Link Deleted.`);
+    response.ok && toast.success(t("deleted"));
   };
 
   return (
@@ -96,8 +99,8 @@ export default function LinkActions({
               }}
             >
               {link?.pinnedBy && link.pinnedBy[0]
-                ? "Unpin"
-                : "Pin to Dashboard"}
+                ? t("unpin")
+                : t("pin_to_dashboard")}
             </div>
           </li>
           {linkInfo !== undefined && toggleShowInfo ? (
@@ -110,7 +113,7 @@ export default function LinkActions({
                   toggleShowInfo();
                 }}
               >
-                {!linkInfo ? "Show" : "Hide"} Link Details
+                {!linkInfo ? t("show_link_details") : t("hide_link_details")}
               </div>
             </li>
           ) : undefined}
@@ -124,7 +127,7 @@ export default function LinkActions({
                   setEditLinkModal(true);
                 }}
               >
-                Edit Link
+                {t("edit_link")}
               </div>
             </li>
           ) : undefined}
@@ -138,7 +141,7 @@ export default function LinkActions({
                   setPreservedFormatsModal(true);
                 }}
               >
-                Preserved Formats
+                {t("preserved_formats")}
               </div>
             </li>
           )}
@@ -152,7 +155,7 @@ export default function LinkActions({
                   e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
                 }}
               >
-                Delete
+                {t("delete")}
               </div>
             </li>
           ) : undefined}

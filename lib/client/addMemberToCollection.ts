@@ -1,12 +1,14 @@
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserData from "./getPublicUserData";
 import { toast } from "react-hot-toast";
+import { TFunction } from "i18next";
 
 const addMemberToCollection = async (
   ownerUsername: string,
   memberUsername: string,
   collection: CollectionIncludingMembersAndLinkCount,
-  setMember: (newMember: Member) => null | undefined
+  setMember: (newMember: Member) => null | undefined,
+  t: TFunction<"translation", undefined>
 ) => {
   const checkIfMemberAlreadyExists = collection.members.find((e) => {
     const username = (e.user.username || "").toLowerCase();
@@ -39,9 +41,9 @@ const addMemberToCollection = async (
         },
       });
     }
-  } else if (checkIfMemberAlreadyExists) toast.error("User already exists.");
+  } else if (checkIfMemberAlreadyExists) toast.error(t("user_already_member"));
   else if (memberUsername.trim().toLowerCase() === ownerUsername.toLowerCase())
-    toast.error("You are already the collection owner.");
+    toast.error(t("you_are_already_collection_owner"));
 };
 
 export default addMemberToCollection;

@@ -1,11 +1,13 @@
 import useLocalSettingsStore from "@/store/localSettings";
 import { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   className?: string;
 };
 
 export default function ToggleDarkMode({ className }: Props) {
+  const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
 
   const [theme, setTheme] = useState(localStorage.getItem("theme"));
@@ -21,7 +23,9 @@ export default function ToggleDarkMode({ className }: Props) {
   return (
     <div
       className="tooltip tooltip-bottom"
-      data-tip={`Switch to ${settings.theme === "light" ? "Dark" : "Light"}`}
+      data-tip={t("switch_to", {
+        theme: settings.theme === "light" ? "Dark" : "Light",
+      })}
     >
       <label
         className={`swap swap-rotate btn-square text-neutral btn btn-ghost btn-sm ${className}`}
