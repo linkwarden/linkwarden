@@ -16,9 +16,17 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     return null;
   }
 
-  const userId = token?.id;
+  const user = await prisma.user.findUnique({
+    where: {
+      id: token?.id,
+    },
+  });
 
-  if (userId !== Number(req.query.id))
+  const isServerAdmin = process.env.ADMINISTRATOR === user?.username;
+
+  const userId = isServerAdmin ? Number(req.query.id) : token.id;
+
+  if (userId !== Number(req.query.id) && !isServerAdmin)
     return res.status(401).json({ response: "Permission denied." });
 
   if (req.method === "GET") {
@@ -53,7 +61,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     const updated = await updateUserById(userId, req.body);
     return res.status(updated.status).json({ response: updated.response });
   } else if (req.method === "DELETE") {
-    const updated = await deleteUserById(userId, req.body);
+    const updated = await deleteUserById(userId, req.body, isServerAdmin);
     return res.status(updated.status).json({ response: updated.response });
   }
 }

@@ -29,4 +29,6 @@ export default function useInitialData() {
       // setLinks();
     }
   }, [account]);
+
+  return status;
 }

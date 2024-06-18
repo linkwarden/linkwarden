@@ -13,6 +13,8 @@ declare global {
       MAX_LINKS_PER_USER?: string;
       ARCHIVE_TAKE_COUNT?: string;
       IGNORE_UNAUTHORIZED_CA?: string;
+      IGNORE_URL_SIZE_LIMIT?: string;
+      ADMINISTRATOR?: string;
 
       SPACES_KEY?: string;
       SPACES_SECRET?: string;
@@ -28,13 +30,14 @@ declare global {
       EMAIL_FROM?: string;
       EMAIL_SERVER?: string;
 
+      BASE_URL?: string; // Used for email and stripe
+
       NEXT_PUBLIC_STRIPE?: string;
       STRIPE_SECRET_KEY?: string;
       MONTHLY_PRICE_ID?: string;
       YEARLY_PRICE_ID?: string;
       NEXT_PUBLIC_STRIPE_BILLING_PORTAL_URL?: string;
       NEXT_PUBLIC_TRIAL_PERIOD_DAYS?: string;
-      BASE_URL?: string;
 
       // Proxy settings
       PROXY?: string;
@@ -79,6 +82,13 @@ declare global {
       AUTH0_ISSUER?: string;
       AUTH0_CLIENT_SECRET?: string;
       AUTH0_CLIENT_ID?: string;
+
+      // Authelia
+      NEXT_PUBLIC_AUTHELIA_ENABLED?: string;
+      AUTHELIA_CUSTOM_NAME?: string;
+      AUTHELIA_CLIENT_ID?: string;
+      AUTHELIA_CLIENT_SECRET?: string;
+      AUTHELIA_WELLKNOWN_URL?: string;
 
       // Authentik
       NEXT_PUBLIC_AUTHENTIK_ENABLED?: string;

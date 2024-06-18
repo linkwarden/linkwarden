@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { AuthOptions } from "next-auth";
 import bcrypt from "bcrypt";
 import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -66,6 +65,7 @@ import ZohoProvider from "next-auth/providers/zoho";
 import ZoomProvider from "next-auth/providers/zoom";
 import * as process from "process";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { randomBytes } from "crypto";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
@@ -106,12 +106,16 @@ if (
                     email: username?.toLowerCase(),
                   },
                 ],
-                emailVerified: { not: null },
               }
             : {
                 username: username.toLowerCase(),
               },
         });
+
+        if (!user) throw Error("Invalid credentials.");
+        else if (!user?.emailVerified && emailEnabled) {
+          throw Error("Email not verified.");
+        }
 
         let passwordMatches: boolean = false;
 
@@ -119,9 +123,9 @@ if (
           passwordMatches = bcrypt.compareSync(password, user.password);
         }
 
-        if (passwordMatches) {
+        if (passwordMatches && user?.password) {
           return { id: user?.id };
-        } else return null as any;
+        } else throw Error("Invalid credentials.");
       },
     })
   );
@@ -133,8 +137,26 @@ if (emailEnabled) {
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       maxAge: 1200,
-      sendVerificationRequest(params) {
-        sendVerificationRequest(params);
+      async sendVerificationRequest({ identifier, url, provider, token }) {
+        const recentVerificationRequestsCount =
+          await prisma.verificationToken.count({
+            where: {
+              identifier,
+              createdAt: {
+                gt: new Date(new Date().getTime() - 1000 * 60 * 5), // 5 minutes
+              },
+            },
+          });
+
+        if (recentVerificationRequestsCount >= 4)
+          throw Error("Too many requests. Please try again later.");
+
+        sendVerificationRequest({
+          identifier,
+          url,
+          from: provider.from as string,
+          token,
+        });
       },
     })
   );
@@ -232,6 +254,35 @@ if (process.env.NEXT_PUBLIC_AUTH0_ENABLED === "true") {
       issuer: process.env.AUTH0_ISSUER,
     })
   );
+
+  const _linkAccount = adapter.linkAccount;
+  adapter.linkAccount = (account) => {
+    const { "not-before-policy": _, refresh_expires_in, ...data } = account;
+    return _linkAccount ? _linkAccount(data) : undefined;
+  };
+}
+
+// Authelia
+if (process.env.NEXT_PUBLIC_AUTHELIA_ENABLED === "true") {
+  providers.push({
+    id: "authelia",
+    name: "Authelia",
+    type: "oauth",
+    clientId: process.env.AUTHELIA_CLIENT_ID!,
+    clientSecret: process.env.AUTHELIA_CLIENT_SECRET!,
+    wellKnown: process.env.AUTHELIA_WELLKNOWN_URL!,
+    authorization: { params: { scope: "openid email profile" } },
+    idToken: true,
+    checks: ["pkce", "state"],
+    profile(profile) {
+      return {
+        id: profile.sub,
+        name: profile.name,
+        email: profile.email,
+        username: profile.preferred_username,
+      };
+    },
+  });
 
   const _linkAccount = adapter.linkAccount;
   adapter.linkAccount = (account) => {
@@ -520,6 +571,9 @@ if (process.env.NEXT_PUBLIC_GOOGLE_ENABLED === "true") {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 

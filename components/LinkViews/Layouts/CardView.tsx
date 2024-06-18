@@ -13,7 +13,7 @@ export default function CardView({
   isLoading?: boolean;
 }) {
   return (
-    <div className="grid min-[1900px]:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+    <div className="grid min-[1901px]:grid-cols-5 min-[1501px]:grid-cols-4 min-[881px]:grid-cols-3 min-[551px]:grid-cols-2 grid-cols-1 gap-5 pb-5">
       {links.map((e, i) => {
         return (
           <LinkCard

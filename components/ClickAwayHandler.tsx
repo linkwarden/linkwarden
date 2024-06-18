@@ -8,19 +8,38 @@ type Props = {
   onMount?: (rect: DOMRect) => void;
 };
 
+function getZIndex(element: HTMLElement): number {
+  let zIndex = 0;
+  while (element) {
+    const zIndexStyle = window
+      .getComputedStyle(element)
+      .getPropertyValue("z-index");
+    const numericZIndex = Number(zIndexStyle);
+    if (zIndexStyle !== "auto" && !isNaN(numericZIndex)) {
+      zIndex = numericZIndex;
+      break;
+    }
+    element = element.parentElement as HTMLElement;
+  }
+  return zIndex;
+}
+
 function useOutsideAlerter(
   ref: RefObject<HTMLElement>,
   onClickOutside: Function
 ) {
   useEffect(() => {
-    function handleClickOutside(event: Event) {
-      if (
-        ref.current &&
-        !ref.current.contains(event.target as HTMLInputElement)
-      ) {
-        onClickOutside(event);
+    function handleClickOutside(event: MouseEvent) {
+      const clickedElement = event.target as HTMLElement;
+      if (ref.current && !ref.current.contains(clickedElement)) {
+        const refZIndex = getZIndex(ref.current);
+        const clickedZIndex = getZIndex(clickedElement);
+        if (clickedZIndex <= refZIndex) {
+          onClickOutside(event);
+        }
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);

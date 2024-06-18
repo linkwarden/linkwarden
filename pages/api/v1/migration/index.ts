@@ -4,6 +4,7 @@ import importFromHTMLFile from "@/lib/api/controllers/migration/importFromHTMLFi
 import importFromLinkwarden from "@/lib/api/controllers/migration/importFromLinkwarden";
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import verifyUser from "@/lib/api/verifyUser";
+import importFromWallabag from "@/lib/api/controllers/migration/importFromWallabag";
 
 export const config = {
   api: {
@@ -32,9 +33,10 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     let data;
     if (request.format === MigrationFormat.htmlFile)
       data = await importFromHTMLFile(user.id, request.data);
-
-    if (request.format === MigrationFormat.linkwarden)
+    else if (request.format === MigrationFormat.linkwarden)
       data = await importFromLinkwarden(user.id, request.data);
+    else if (request.format === MigrationFormat.wallabag)
+      data = await importFromWallabag(user.id, request.data);
 
     if (data) return res.status(data.status).json({ response: data.response });
   }

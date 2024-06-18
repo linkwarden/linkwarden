@@ -4,9 +4,9 @@ import createFile from "./storage/createFile";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
-import removeFile from "./storage/removeFile";
-import Jimp from "jimp";
 import createFolder from "./storage/createFolder";
+import generatePreview from "./generatePreview";
+import { removeFiles } from "./manageLinkFiles";
 import archiveAsSinglefile from "./preservationScheme/archiveAsSinglefile";
 import archiveAsReadability from "./preservationScheme/archiveAsReadablility";
 
@@ -43,6 +43,32 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
   }
 
   const browser = await chromium.launch(browserOptions);
+  const context = await browser.newContext({
+    ...devices["Desktop Chrome"],
+    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
+  });
+
+  const page = await context.newPage();
+
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(
+      () =>
+        reject(
+          new Error(
+            `Browser has been open for more than ${BROWSER_TIMEOUT} minutes.`
+          )
+        ),
+      BROWSER_TIMEOUT * 60000
+    );
+  });
+
+  createFolder({
+    filePath: `archives/preview/${link.collectionId}`,
+  });
+
+  createFolder({
+    filePath: `archives/${link.collectionId}`,
+  });
 
   try {
     await Promise.race([
@@ -53,7 +79,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           ? await validateUrlSize(link.url)
           : undefined;
 
-        if (validatedUrl === null)
+        if (
+          validatedUrl === null &&
+          process.env.IGNORE_URL_SIZE_LIMIT !== "true"
+        )
           throw "Something went wrong while retrieving the file size.";
 
         const contentType = validatedUrl?.get("content-type");
@@ -134,20 +163,10 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
           // Preview
 
-          if (
-            !link.preview?.startsWith("archives") &&
-            !link.preview?.startsWith("unavailable")
-          ) {
-            const ogImageUrl = await page.evaluate(() => {
-              const metaTag = document.querySelector(
-                'meta[property="og:image"]'
-              );
-              return metaTag ? (metaTag as any).content : null;
-            });
-
-            createFolder({
-              filePath: `archives/preview/${link.collectionId}`,
-            });
+          const ogImageUrl = await page.evaluate(() => {
+            const metaTag = document.querySelector('meta[property="og:image"]');
+            return metaTag ? (metaTag as any).content : null;
+          });
 
             if (ogImageUrl) {
               console.log("Found og:image URL:", ogImageUrl);
@@ -155,39 +174,40 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
               // Download the image
               const imageResponse = await page.goto(ogImageUrl);
 
-              // Check if imageResponse is not null
-              if (imageResponse && !link.preview?.startsWith("archive")) {
-                const buffer = await imageResponse.body();
+            // Check if imageResponse is not null
+            if (imageResponse && !link.preview?.startsWith("archive")) {
+              const buffer = await imageResponse.body();
+              await generatePreview(buffer, link.collectionId, link.id);
 
-                // Check if buffer is not null
-                if (buffer) {
-                  // Load the image using Jimp
-                  Jimp.read(buffer, async (err, image) => {
-                    if (image && !err) {
-                      image?.resize(1280, Jimp.AUTO).quality(20);
-                      const processedBuffer = await image?.getBufferAsync(
-                        Jimp.MIME_JPEG
-                      );
+              // Check if buffer is not null
+              if (buffer) {
+                // Load the image using Jimp
+                Jimp.read(buffer, async (err, image) => {
+                  if (image && !err) {
+                    image?.resize(1280, Jimp.AUTO).quality(20);
+                    const processedBuffer = await image?.getBufferAsync(
+                      Jimp.MIME_JPEG
+                    );
 
-                      createFile({
-                        data: processedBuffer,
-                        filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                      }).then(() => {
-                        return prisma.link.update({
-                          where: { id: link.id },
-                          data: {
-                            preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                          },
-                        });
+                    createFile({
+                      data: processedBuffer,
+                      filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                    }).then(() => {
+                      return prisma.link.update({
+                        where: { id: link.id },
+                        data: {
+                          preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                        },
                       });
-                    }
-                  }).catch((err) => {
-                    console.error("Error processing the image:", err);
-                  });
-                } else {
-                  console.log("No image data found.");
-                }
+                    });
+                  }
+                }).catch((err) => {
+                  console.error("Error processing the image:", err);
+                });
+              } else {
+                console.log("No image data found.");
               }
+            }
 
               await page.goBack();
             } else if (!link.preview?.startsWith("archive")) {
@@ -317,15 +337,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         },
       });
     else {
-      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.png` });
-      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.html` });
-      removeFile({ filePath: `archives/${link.collectionId}/${link.id}.pdf` });
-      removeFile({
-        filePath: `archives/${link.collectionId}/${link.id}_readability.json`,
-      });
-      removeFile({
-        filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-      });
+      await removeFiles(link.id, link.collectionId);
     }
 
     await browser.close();

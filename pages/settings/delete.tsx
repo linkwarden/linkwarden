@@ -4,18 +4,17 @@ import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-
-const keycloakEnabled = process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true";
-const authentikEnabled = process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true";
+import Button from "@/components/ui/Button";
+import { useTranslation } from "next-i18next";
+import getServerSideProps from "@/lib/client/getServerSideProps";
 
 export default function Delete() {
   const [password, setPassword] = useState("");
   const [comment, setComment] = useState<string>();
   const [feedback, setFeedback] = useState<string>();
-
   const [submitLoader, setSubmitLoader] = useState(false);
-
   const { data } = useSession();
+  const { t } = useTranslation();
 
   const submit = async () => {
     const body = {
@@ -26,13 +25,12 @@ export default function Delete() {
       },
     };
 
-    if (!keycloakEnabled && !authentikEnabled && password == "") {
-      return toast.error("Please fill the required fields.");
+    if (password === "") {
+      return toast.error(t("fill_required_fields"));
     }
 
     setSubmitLoader(true);
-
-    const load = toast.loading("Deleting everything, please wait...");
+    const load = toast.loading(t("deleting_message"));
 
     const response = await fetch(`/api/v1/users/${data?.user.id}`, {
       method: "DELETE",
@@ -48,7 +46,9 @@ export default function Delete() {
 
     if (response.ok) {
       signOut();
-    } else toast.error(message);
+    } else {
+      toast.error(message);
+    }
 
     setSubmitLoader(false);
   };
@@ -60,96 +60,82 @@ export default function Delete() {
           href="/settings/account"
           className="absolute top-4 left-4 btn btn-ghost btn-square btn-sm"
         >
-          <i className="bi-chevron-left  text-neutral text-xl"></i>
+          <i className="bi-chevron-left text-neutral text-xl"></i>
         </Link>
         <div className="flex items-center gap-2 w-full rounded-md h-8">
           <p className="text-red-500 dark:text-red-500 truncate w-full text-3xl text-center">
-            Delete Account
+            {t("delete_account")}
           </p>
         </div>
 
         <div className="divider my-0"></div>
 
-        <p>
-          This will permanently delete all the Links, Collections, Tags, and
-          archived data you own. It will also log you out
-          {process.env.NEXT_PUBLIC_STRIPE
-            ? " and cancel your subscription"
-            : undefined}
-          . This action is irreversible!
-        </p>
+        <p>{t("delete_warning")}</p>
 
-        {process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED !== "true" ? (
-          <div>
-            <p className="mb-2">Confirm Your Password</p>
-
-            <TextInput
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••••••"
-              className="bg-base-100"
-              type="password"
-            />
-          </div>
-        ) : undefined}
+        <div>
+          <p className="mb-2">{t("confirm_password")}</p>
+          <TextInput
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••••••••"
+            className="bg-base-100"
+            type="password"
+          />
+        </div>
 
         {process.env.NEXT_PUBLIC_STRIPE ? (
           <fieldset className="border rounded-md p-2 border-primary">
             <legend className="px-3 py-1 text-sm sm:text-base border rounded-md border-primary">
-              <b>Optional</b>{" "}
-              <i className="min-[390px]:text-sm text-xs">
-                (but it really helps us improve!)
-              </i>
+              <b>{t("optional")}</b> <i>{t("feedback_help")}</i>
             </legend>
             <label className="w-full flex min-[430px]:items-center items-start gap-2 mb-3 min-[430px]:flex-row flex-col">
-              <p className="text-sm">Reason for cancellation:</p>
+              <p className="text-sm">{t("reason_for_cancellation")}:</p>
               <select
                 className="rounded-md p-1 outline-none"
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
               >
-                <option value={undefined}>Please specify</option>
-                <option value="customer_service">Customer Service</option>
-                <option value="low_quality">Low Quality</option>
-                <option value="missing_features">Missing Features</option>
-                <option value="switched_service">Switched Service</option>
-                <option value="too_complex">Too Complex</option>
-                <option value="too_expensive">Too Expensive</option>
-                <option value="unused">Unused</option>
-                <option value="other">Other</option>
+                <option value={undefined}>{t("please_specify")}</option>
+                <option value="customer_service">
+                  {t("customer_service")}
+                </option>
+                <option value="low_quality">{t("low_quality")}</option>
+                <option value="missing_features">
+                  {t("missing_features")}
+                </option>
+                <option value="switched_service">
+                  {t("switched_service")}
+                </option>
+                <option value="too_complex">{t("too_complex")}</option>
+                <option value="too_expensive">{t("too_expensive")}</option>
+                <option value="unused">{t("unused")}</option>
+                <option value="other">{t("other")}</option>
               </select>
             </label>
             <div>
-              <p className="text-sm mb-2">
-                More information (the more details, the more helpful it&apos;d
-                be)
-              </p>
+              <p className="text-sm mb-2">{t("more_information")}</p>
 
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="e.g. I needed a feature that..."
+                placeholder={t("feedback_placeholder")}
                 className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-100 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
               />
             </div>
           </fieldset>
         ) : undefined}
 
-        <button
-          className={`mx-auto text-white flex items-center gap-2 py-1 px-3 rounded-md text-lg tracking-wide select-none font-semibold duration-100 w-fit ${
-            submitLoader
-              ? "bg-red-400 cursor-auto"
-              : "bg-red-500 hover:bg-red-400 cursor-pointer"
-          }`}
-          onClick={() => {
-            if (!submitLoader) {
-              submit();
-            }
-          }}
+        <Button
+          className="mx-auto"
+          intent="destructive"
+          loading={submitLoader}
+          onClick={submit}
         >
-          <p className="text-center w-full">Delete Your Account</p>
-        </button>
+          <p className="text-center w-full">{t("delete_your_account")}</p>
+        </Button>
       </div>
     </CenteredForm>
   );
 }
+
+export { getServerSideProps };

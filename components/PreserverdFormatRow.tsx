@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import useLinkStore from "@/store/links";
-import { ArchivedFormat, LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import {
+  ArchivedFormat,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@/types/global";
+import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -67,7 +71,12 @@ export default function PreservedFormatRow({
           // Create a temporary link and click it to trigger the download
           const anchorElement = document.createElement("a");
           anchorElement.href = path;
-          anchorElement.download = format === ArchivedFormat.singlefile ? (link.name ?? 'index') : format === ArchivedFormat.pdf ? "PDF" : "Screenshot";
+          anchorElement.download =
+            format === ArchivedFormat.singlefile
+              ? link.name ?? "index"
+              : format === ArchivedFormat.pdf
+                ? "PDF"
+                : "Screenshot";
           anchorElement.click();
         } else {
           console.error("Failed to download file");

@@ -19,7 +19,7 @@ export default function ProfilePhoto({
   const [image, setImage] = useState("");
 
   useEffect(() => {
-    if (src && !src?.includes("base64"))
+    if (src && !src?.includes("base64") && !src.startsWith("http"))
       setImage(`/api/v1/${src.replace("uploads/", "").replace(".jpg", "")}`);
     else if (!src) setImage("");
     else {
