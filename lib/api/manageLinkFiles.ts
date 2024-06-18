@@ -16,6 +16,10 @@ const removeFiles = async (linkId: number, collectionId: number) => {
   await removeFile({
     filePath: `archives/${collectionId}/${linkId}.jpg`,
   });
+  // HTML
+  await removeFile({
+    filePath: `archives/${collectionId}/${linkId}.html`,
+  });
   // Preview
   await removeFile({
     filePath: `archives/preview/${collectionId}/${linkId}.jpeg`,
@@ -45,6 +49,11 @@ const moveFiles = async (linkId: number, from: number, to: number) => {
   await moveFile(
     `archives/${from}/${linkId}.jpg`,
     `archives/${to}/${linkId}.jpg`
+  );
+
+  await moveFile(
+    `archives/${from}/${linkId}.html`,
+    `archives/${to}/${linkId}.html`
   );
 
   await moveFile(
