@@ -50,18 +50,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
   const page = await context.newPage();
 
-  const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(
-      () =>
-        reject(
-          new Error(
-            `Browser has been open for more than ${BROWSER_TIMEOUT} minutes.`
-          )
-        ),
-      BROWSER_TIMEOUT * 60000
-    );
-  });
-
   createFolder({
     filePath: `archives/preview/${link.collectionId}`,
   });
@@ -168,138 +156,108 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             return metaTag ? (metaTag as any).content : null;
           });
 
-            if (ogImageUrl) {
-              console.log("Found og:image URL:", ogImageUrl);
+          if (ogImageUrl) {
+            console.log("Found og:image URL:", ogImageUrl);
 
-              // Download the image
-              const imageResponse = await page.goto(ogImageUrl);
+            // Download the image
+            const imageResponse = await page.goto(ogImageUrl);
 
             // Check if imageResponse is not null
             if (imageResponse && !link.preview?.startsWith("archive")) {
               const buffer = await imageResponse.body();
               await generatePreview(buffer, link.collectionId, link.id);
-
-              // Check if buffer is not null
-              if (buffer) {
-                // Load the image using Jimp
-                Jimp.read(buffer, async (err, image) => {
-                  if (image && !err) {
-                    image?.resize(1280, Jimp.AUTO).quality(20);
-                    const processedBuffer = await image?.getBufferAsync(
-                      Jimp.MIME_JPEG
-                    );
-
-                    createFile({
-                      data: processedBuffer,
-                      filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                    }).then(() => {
-                      return prisma.link.update({
-                        where: { id: link.id },
-                        data: {
-                          preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                        },
-                      });
-                    });
-                  }
-                }).catch((err) => {
-                  console.error("Error processing the image:", err);
-                });
-              } else {
-                console.log("No image data found.");
-              }
             }
 
-              await page.goBack();
-            } else if (!link.preview?.startsWith("archive")) {
-              console.log("No og:image found");
-              await page
-                .screenshot({ type: "jpeg", quality: 20 })
-                .then((screenshot) => {
+            await page.goBack();
+          } else if (!link.preview?.startsWith("archive")) {
+            console.log("No og:image found");
+            await page
+              .screenshot({ type: "jpeg", quality: 20 })
+              .then((screenshot) => {
+                return createFile({
+                  data: screenshot,
+                  filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                });
+              })
+              .then(() => {
+                return prisma.link.update({
+                  where: { id: link.id },
+                  data: {
+                    preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                  },
+                });
+              });
+          }
+        }
+
+        if (
+          (!link.image?.startsWith("archives") &&
+            !link.image?.startsWith("unavailable")) ||
+          (!link.pdf?.startsWith("archives") &&
+            !link.pdf?.startsWith("unavailable"))
+        ) {
+          // Screenshot/PDF
+          await page.evaluate(
+            autoScroll,
+            Number(process.env.AUTOSCROLL_TIMEOUT) || 30
+          );
+
+          // Check if the user hasn't deleted the link by the time we're done scrolling
+          const linkExists = await prisma.link.findUnique({
+            where: { id: link.id },
+          });
+          if (linkExists) {
+            const processingPromises = [];
+
+            if (
+              user.archiveAsScreenshot &&
+              !link.image?.startsWith("archive")
+            ) {
+              processingPromises.push(
+                page.screenshot({ fullPage: true }).then((screenshot) => {
                   return createFile({
                     data: screenshot,
-                    filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
+                    filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
                   });
                 })
-                .then(() => {
-                  return prisma.link.update({
-                    where: { id: link.id },
-                    data: {
-                      preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-                    },
-                  });
-                });
+              );
             }
-          }
 
-          if (
-            (!link.image?.startsWith("archives") &&
-              !link.image?.startsWith("unavailable")) ||
-            (!link.pdf?.startsWith("archives") &&
-              !link.pdf?.startsWith("unavailable"))
-          ) {
-            // Screenshot/PDF
-            await page.evaluate(
-              autoScroll,
-              Number(process.env.AUTOSCROLL_TIMEOUT) || 30
-            );
+            // apply administrator's defined pdf margins or default to 15px
+            const margins = {
+              top: process.env.PDF_MARGIN_TOP || "15px",
+              bottom: process.env.PDF_MARGIN_BOTTOM || "15px",
+            };
 
-            // Check if the user hasn't deleted the link by the time we're done scrolling
-            const linkExists = await prisma.link.findUnique({
-              where: { id: link.id },
-            });
-            if (linkExists) {
-              const processingPromises = [];
-
-              if (
-                user.archiveAsScreenshot &&
-                !link.image?.startsWith("archive")
-              ) {
-                processingPromises.push(
-                  page.screenshot({ fullPage: true }).then((screenshot) => {
+            if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
+              processingPromises.push(
+                page
+                  .pdf({
+                    width: "1366px",
+                    height: "1931px",
+                    printBackground: true,
+                    margin: margins,
+                  })
+                  .then((pdf) => {
                     return createFile({
-                      data: screenshot,
-                      filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
+                      data: pdf,
+                      filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
                     });
                   })
-                );
-              }
-
-              // apply administrator's defined pdf margins or default to 15px
-              const margins = {
-                top: process.env.PDF_MARGIN_TOP || "15px",
-                bottom: process.env.PDF_MARGIN_BOTTOM || "15px",
-              };
-
-              if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
-                processingPromises.push(
-                  page
-                    .pdf({
-                      width: "1366px",
-                      height: "1931px",
-                      printBackground: true,
-                      margin: margins,
-                    })
-                    .then((pdf) => {
-                      return createFile({
-                        data: pdf,
-                        filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
-                      });
-                    })
-                );
-              }
-              await Promise.allSettled(processingPromises);
-              await prisma.link.update({
-                where: { id: link.id },
-                data: {
-                  image: user.archiveAsScreenshot
-                    ? `archives/${linkExists.collectionId}/${link.id}.png`
-                    : undefined,
-                  pdf: user.archiveAsPDF
-                    ? `archives/${linkExists.collectionId}/${link.id}.pdf`
-                    : undefined,
-                },
-              });
+              );
             }
+            await Promise.allSettled(processingPromises);
+            await prisma.link.update({
+              where: { id: link.id },
+              data: {
+                image: user.archiveAsScreenshot
+                  ? `archives/${linkExists.collectionId}/${link.id}.png`
+                  : undefined,
+                pdf: user.archiveAsPDF
+                  ? `archives/${linkExists.collectionId}/${link.id}.pdf`
+                  : undefined,
+              },
+            });
           }
         }
       })(),
