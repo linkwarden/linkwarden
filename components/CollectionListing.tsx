@@ -16,12 +16,14 @@ import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useRouter } from "next/router";
 import useAccountStore from "@/store/account";
 import toast from "react-hot-toast";
+import { useTranslation } from "next-i18next";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
 }
 
 const CollectionListing = () => {
+  const { t } = useTranslation();
   const { collections, updateCollection } = useCollectionStore();
   const { account, updateAccount } = useAccountStore();
 
@@ -141,9 +143,7 @@ const CollectionListing = () => {
       (destinationCollection?.ownerId !== account.id &&
         destination.parentId !== "root")
     ) {
-      return toast.error(
-        "You can't make change to a collection you don't own."
-      );
+      return toast.error(t("cant_change_collection_you_dont_own"));
     }
 
     setTree((currentTree) => moveItemOnTree(currentTree!, source, destination));
@@ -201,7 +201,11 @@ const CollectionListing = () => {
   };
 
   if (!tree) {
-    return <></>;
+    return (
+      <p className="text-neutral text-xs font-semibold truncate w-full px-2 mt-5 mb-8">
+        {t("you_have_no_collections")}
+      </p>
+    );
   } else
     return (
       <Tree

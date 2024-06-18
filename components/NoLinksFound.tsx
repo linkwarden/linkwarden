@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import NewLinkModal from "./ModalContent/NewLinkModal";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   text?: string;
 };
 
 export default function NoLinksFound({ text }: Props) {
+  const { t } = useTranslation();
   const [newLinkModal, setNewLinkModal] = useState(false);
 
   return (
@@ -23,9 +25,7 @@ export default function NoLinksFound({ text }: Props) {
       <p className="text-center text-xl sm:text-2xl">
         {text || "You haven't created any Links Here"}
       </p>
-      <p className="text-center text-sm sm:text-base">
-        Start your journey by creating a new Link!
-      </p>
+      <p className="text-center text-sm sm:text-base">{t("start_journey")}</p>
       <div className="text-center w-full mt-4">
         <div
           onClick={() => {
@@ -35,7 +35,7 @@ export default function NoLinksFound({ text }: Props) {
         >
           <i className="bi-plus-lg text-3xl left-2 group-hover:ml-[4rem] absolute duration-100"></i>
           <span className="group-hover:opacity-0 text-right w-full duration-100">
-            Create New Link
+            {t("create_new_link")}
           </span>
         </div>
       </div>

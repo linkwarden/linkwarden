@@ -2,8 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import removeFile from "@/lib/api/storage/removeFile";
 import { Collection, Link } from "@prisma/client";
+import { removeFiles } from "@/lib/api/manageLinkFiles";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
@@ -81,19 +81,5 @@ const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
     },
   });
 
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}.pdf`,
-  });
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}.png`,
-  });
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}_readability.json`,
-  });
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}.html`,
-  });
-  await removeFile({
-    filePath: `archives/preview/${link.collection.id}/${link.id}.png`,
-  });
+  await removeFiles(link.id, link.collection.id);
 };

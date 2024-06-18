@@ -5,20 +5,19 @@ import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
-import {
-  ArchivedFormat,
-  LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   onClose: Function;
 };
 
 export default function UploadFileModal({ onClose }: Props) {
+  const { t } = useTranslation();
   const { data } = useSession();
 
   const initial = {
@@ -41,14 +40,11 @@ export default function UploadFileModal({ onClose }: Props) {
 
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(initial);
-
   const [file, setFile] = useState<File>();
 
-  const { addLink } = useLinkStore();
+  const { uploadFile } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
-
   const [optionsExpanded, setOptionsExpanded] = useState(false);
-
   const router = useRouter();
   const { collections } = useCollectionStore();
 
@@ -75,7 +71,6 @@ export default function UploadFileModal({ onClose }: Props) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
       );
-
       if (
         currentCollection &&
         currentCollection.ownerId &&
@@ -92,12 +87,9 @@ export default function UploadFileModal({ onClose }: Props) {
     } else
       setLink({
         ...initial,
-        collection: {
-          name: "Unorganized",
-          ownerId: data?.user.id as number,
-        },
+        collection: { name: "Unorganized", ownerId: data?.user.id as number },
       });
-  }, []);
+  }, [router, collections]);
 
   const submit = async () => {
     if (!submitLoader && file) {
@@ -123,49 +115,32 @@ export default function UploadFileModal({ onClose }: Props) {
 
         let response;
 
-        const load = toast.loading("Creating...");
+        const load = toast.loading(t("creating"));
 
-        response = await addLink({
-          ...link,
-          type: linkType,
-          name: link.name ? link.name : file.name.replace(/\.[^/.]+$/, ""),
-        });
+      const response = await uploadFile(link, file);
 
-        toast.dismiss(load);
-
-        if (response.ok) {
-          const formBody = new FormData();
-          file && formBody.append("file", file);
-
-          await fetch(
-            `/api/v1/archives/${
-              (response.data as LinkIncludingShortenedCollectionAndTags).id
-            }?format=${fileType}`,
-            {
-              body: formBody,
-              method: "POST",
-            }
-          );
-          toast.success(`Created!`);
-          onClose();
-        } else toast.error(response.data as string);
-
-        setSubmitLoader(false);
-
-        return response;
+      toast.dismiss(load);
+      if (response.ok) {
+        toast.success(t("created"));
+        onClose();
+      } else {
+        toast.error(response.data as string);
       }
+
+      setSubmitLoader(false);
+      return response;
     }
   };
 
   return (
     <Modal toggleModal={onClose}>
       <div className="flex gap-2 items-start">
-        <p className="text-xl font-thin">Upload File</p>
+        <p className="text-xl font-thin">{t("upload_file")}</p>
       </div>
       <div className="divider mb-3 mt-1"></div>
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">
-          <p className="mb-2">File</p>
+          <p className="mb-2">{t("file")}</p>
           <label className="btn h-10 btn-sm w-full border border-neutral-content hover:border-neutral-content flex justify-between">
             <input
               type="file"
@@ -175,12 +150,13 @@ export default function UploadFileModal({ onClose }: Props) {
             />
           </label>
           <p className="text-xs font-semibold mt-2">
-            PDF, PNG, JPG, HTML (Up to {process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 30}
-            MB)
+          {t("file_types", {
+              size: process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 30,
+            })}
           </p>
         </div>
         <div className="sm:col-span-2 col-span-5">
-          <p className="mb-2">Collection</p>
+          <p className="mb-2">{t("collection")}</p>
           {link.collection.name ? (
             <CollectionSelection
               onChange={setCollection}
@@ -194,36 +170,34 @@ export default function UploadFileModal({ onClose }: Props) {
       </div>
       {optionsExpanded ? (
         <div className="mt-5">
-          {/* <hr className="mb-3 border border-neutral-content" /> */}
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
-              <p className="mb-2">Name</p>
+              <p className="mb-2">{t("name")}</p>
               <TextInput
                 value={link.name}
                 onChange={(e) => setLink({ ...link, name: e.target.value })}
-                placeholder="e.g. Example Link"
+                placeholder={t("example_link")}
                 className="bg-base-200"
               />
             </div>
-
             <div>
-              <p className="mb-2">Tags</p>
+              <p className="mb-2">{t("tags")}</p>
               <TagSelection
                 onChange={setTags}
-                defaultValue={link.tags.map((e) => {
-                  return { label: e.name, value: e.id };
-                })}
+                defaultValue={link.tags.map((e) => ({
+                  label: e.name,
+                  value: e.id,
+                }))}
               />
             </div>
-
             <div className="sm:col-span-2">
-              <p className="mb-2">Description</p>
+              <p className="mb-2">{t("description")}</p>
               <textarea
                 value={unescapeString(link.description) as string}
                 onChange={(e) =>
                   setLink({ ...link, description: e.target.value })
                 }
-                placeholder="Will be auto generated if nothing is provided."
+                placeholder={t("description_placeholder")}
                 className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
               />
             </div>
@@ -235,14 +209,15 @@ export default function UploadFileModal({ onClose }: Props) {
           onClick={() => setOptionsExpanded(!optionsExpanded)}
           className={`rounded-md cursor-pointer btn btn-sm btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
         >
-          <p>{optionsExpanded ? "Hide" : "More"} Options</p>
+          <p>
+            {optionsExpanded ? t("hide") : t("more")} {t("options")}
+          </p>
         </div>
-
         <button
           className="btn btn-accent dark:border-violet-400 text-white"
           onClick={submit}
         >
-          Create Link
+          {t("upload_file")}
         </button>
       </div>
     </Modal>

@@ -27,14 +27,25 @@ export default async function getTitle(url: string) {
       fetchOpts = { agent: new SocksProxyAgent(proxy.toString()) }; //TODO: add support for http/https proxies
     }
 
-    const response = await fetch(url, fetchOpts);
+    const responsePromise = fetch(url, fetchOpts);
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("Fetch title timeout"));
+      }, 10 * 1000); // Stop after 10 seconds
+    });
 
-    const text = await response.text();
+    const response = await Promise.race([responsePromise, timeoutPromise]);
 
-    // regular expression to find the <title> tag
-    let match = text.match(/<title.*>([^<]*)<\/title>/);
-    if (match) return match[1];
-    else return "";
+    if ((response as any)?.status) {
+      const text = await (response as any).text();
+
+      // regular expression to find the <title> tag
+      let match = text.match(/<title.*>([^<]*)<\/title>/);
+      if (match) return match[1];
+      else return "";
+    } else {
+      return "";
+    }
   } catch (err) {
     console.log(err);
   }

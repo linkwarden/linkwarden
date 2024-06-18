@@ -5,11 +5,15 @@ import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import AuthRedirect from "@/layouts/AuthRedirect";
-import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { Toaster, ToastBar } from "react-hot-toast";
 import { Session } from "next-auth";
 import { isPWA } from "@/lib/client/utils";
+// import useInitialData from "@/hooks/useInitialData";
+import { appWithTranslation } from "next-i18next";
+import nextI18nextConfig from "../next-i18next.config";
 
-export default function App({
+function App({
   Component,
   pageProps,
 }: AppProps<{
@@ -54,6 +58,7 @@ export default function App({
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <AuthRedirect>
+        {/* <GetData> */}
         <Toaster
           position="top-center"
           reverseOrder={false}
@@ -61,9 +66,45 @@ export default function App({
             className:
               "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white",
           }}
-        />
+        >
+          {(t) => (
+            <ToastBar toast={t}>
+              {({ icon, message }) => (
+                <div
+                  className="flex flex-row"
+                  data-testid="toast-message-container"
+                  data-type={t.type}
+                >
+                  {icon}
+                  <span data-testid="toast-message">{message}</span>
+                  {t.type !== "loading" && (
+                    <button
+                      className="btn btn-xs outline-none btn-circle btn-ghost"
+                      data-testid="close-toast-button"
+                      onClick={() => toast.dismiss(t.id)}
+                    >
+                      <i className="bi bi-x"></i>
+                    </button>
+                  )}
+                </div>
+              )}
+            </ToastBar>
+          )}
+        </Toaster>
         <Component {...pageProps} />
+        {/* </GetData> */}
       </AuthRedirect>
     </SessionProvider>
   );
 }
+
+export default appWithTranslation(App);
+
+// function GetData({ children }: { children: React.ReactNode }) {
+//   const status = useInitialData();
+//   return typeof window !== "undefined" && status !== "loading" ? (
+//     children
+//   ) : (
+//     <></>
+//   );
+// }
