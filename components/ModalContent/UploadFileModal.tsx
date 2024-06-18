@@ -5,7 +5,10 @@ import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  ArchivedFormat,
+} from "@/types/global";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -110,12 +113,8 @@ export default function UploadFileModal({ onClose }: Props) {
         linkType = "pdf";
       }
 
-      if (fileType !== null && linkType !== null) {
-        setSubmitLoader(true);
-
-        let response;
-
-        const load = toast.loading(t("creating"));
+      setSubmitLoader(true);
+      const load = toast.loading(t("creating"));
 
       const response = await uploadFile(link, file);
 
@@ -150,7 +149,7 @@ export default function UploadFileModal({ onClose }: Props) {
             />
           </label>
           <p className="text-xs font-semibold mt-2">
-          {t("file_types", {
+            {t("file_types", {
               size: process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 30,
             })}
           </p>
