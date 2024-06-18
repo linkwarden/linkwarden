@@ -54,7 +54,7 @@ export default async function importFromLinkwarden(
 
           // Import Links
           for (const link of e.links) {
-            const newLink = await prisma.link.create({
+            await prisma.link.create({
               data: {
                 url: link.url,
                 name: link.name,

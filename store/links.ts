@@ -1,5 +1,8 @@
 import { create } from "zustand";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import {
+  ArchivedFormat,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@/types/global";
 import useTagStore from "./tags";
 import useCollectionStore from "./collections";
 
@@ -18,6 +21,10 @@ type LinkStore = {
   setSelectedLinks: (links: LinkIncludingShortenedCollectionAndTags[]) => void;
   addLink: (
     body: LinkIncludingShortenedCollectionAndTags
+  ) => Promise<ResponseObject>;
+  uploadFile: (
+    link: LinkIncludingShortenedCollectionAndTags,
+    file: File
   ) => Promise<ResponseObject>;
   getLink: (linkId: number, publicRoute?: boolean) => Promise<ResponseObject>;
   updateLink: (
@@ -72,6 +79,82 @@ const useLinkStore = create<LinkStore>()((set) => ({
     if (response.ok) {
       set((state) => ({
         links: [data.response, ...state.links],
+      }));
+      useTagStore.getState().setTags();
+      useCollectionStore.getState().setCollections();
+    }
+
+    return { ok: response.ok, data: data.response };
+  },
+  uploadFile: async (link, file) => {
+    let fileType: ArchivedFormat | null = null;
+    let linkType: "url" | "image" | "pdf" | null = null;
+
+    if (file?.type === "image/jpg" || file.type === "image/jpeg") {
+      fileType = ArchivedFormat.jpeg;
+      linkType = "image";
+    } else if (file.type === "image/png") {
+      fileType = ArchivedFormat.png;
+      linkType = "image";
+    } else if (file.type === "application/pdf") {
+      fileType = ArchivedFormat.pdf;
+      linkType = "pdf";
+    } else {
+      return { ok: false, data: "Invalid file type." };
+    }
+
+    const response = await fetch("/api/v1/links", {
+      body: JSON.stringify({
+        ...link,
+        type: linkType,
+        name: link.name ? link.name : file.name,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+
+    const data = await response.json();
+
+    const createdLink: LinkIncludingShortenedCollectionAndTags = data.response;
+
+    console.log(data);
+
+    if (response.ok) {
+      const formBody = new FormData();
+      file && formBody.append("file", file);
+
+      await fetch(
+        `/api/v1/archives/${(data as any).response.id}?format=${fileType}`,
+        {
+          body: formBody,
+          method: "POST",
+        }
+      );
+
+      // get file extension
+      const extension = file.name.split(".").pop() || "";
+
+      set((state) => ({
+        links: [
+          {
+            ...createdLink,
+            image:
+              linkType === "image"
+                ? `archives/${createdLink.collectionId}/${
+                    createdLink.id + extension
+                  }`
+                : null,
+            pdf:
+              linkType === "pdf"
+                ? `archives/${createdLink.collectionId}/${
+                    createdLink.id + ".pdf"
+                  }`
+                : null,
+          },
+          ...state.links,
+        ],
       }));
       useTagStore.getState().setTags();
       useCollectionStore.getState().setCollections();

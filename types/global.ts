@@ -7,10 +7,16 @@ type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
 export interface LinkIncludingShortenedCollectionAndTags
   extends Omit<
     Link,
-    "id" | "createdAt" | "collectionId" | "updatedAt" | "lastPreserved"
+    | "id"
+    | "createdAt"
+    | "collectionId"
+    | "updatedAt"
+    | "lastPreserved"
+    | "importDate"
   > {
   id?: number;
   createdAt?: string;
+  importDate?: string;
   collectionId?: number;
   tags: Tag[];
   pinnedBy?: {
@@ -44,6 +50,7 @@ export interface TagIncludingLinkCount extends Tag {
 
 export interface AccountSettings extends User {
   newPassword?: string;
+  oldPassword?: string;
   whitelistedUsers: string[];
   subscription?: {
     active?: boolean;
@@ -62,6 +69,7 @@ export enum ViewMode {
   Card = "card",
   Grid = "grid",
   List = "list",
+  Masonry = "masonry",
 }
 
 export enum Sort {
@@ -108,6 +116,7 @@ export type MigrationRequest = {
 export enum MigrationFormat {
   linkwarden,
   htmlFile,
+  wallabag,
 }
 
 export enum Plan {

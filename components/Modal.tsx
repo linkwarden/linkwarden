@@ -6,9 +6,15 @@ type Props = {
   toggleModal: Function;
   children: ReactNode;
   className?: string;
+  dismissible?: boolean;
 };
 
-export default function Modal({ toggleModal, className, children }: Props) {
+export default function Modal({
+  toggleModal,
+  className,
+  children,
+  dismissible = true,
+}: Props) {
   const [drawerIsOpen, setDrawerIsOpen] = React.useState(true);
 
   useEffect(() => {
@@ -26,14 +32,23 @@ export default function Modal({ toggleModal, className, children }: Props) {
     return (
       <Drawer.Root
         open={drawerIsOpen}
-        onClose={() => setTimeout(() => toggleModal(), 100)}
+        onClose={() => dismissible && setTimeout(() => toggleModal(), 100)}
+        dismissible={dismissible}
       >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <ClickAwayHandler onClickOutside={() => setDrawerIsOpen(false)}>
-            <Drawer.Content className="flex flex-col rounded-t-2xl h-[90%] mt-24 fixed bottom-0 left-0 right-0 z-30">
-              <div className="p-4 pb-32 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto">
-                <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5" />
+          <ClickAwayHandler
+            onClickOutside={() => dismissible && setDrawerIsOpen(false)}
+          >
+            <Drawer.Content className="flex flex-col rounded-t-2xl min-h-max mt-24 fixed bottom-0 left-0 right-0 z-30">
+              <div
+                className="p-4 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto"
+                data-testid="mobile-modal-container"
+              >
+                <div
+                  className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5"
+                  data-testid="mobile-modal-slider"
+                />
 
                 {children}
               </div>
@@ -44,20 +59,31 @@ export default function Modal({ toggleModal, className, children }: Props) {
     );
   } else {
     return (
-      <div className="overflow-y-auto pt-2 sm:py-2 fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex justify-center items-center fade-in z-40">
+      <div
+        className="overflow-y-auto pt-2 sm:py-2 fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex justify-center items-center fade-in z-40"
+        data-testid="modal-outer"
+      >
         <ClickAwayHandler
-          onClickOutside={toggleModal}
+          onClickOutside={() => dismissible && toggleModal()}
           className={`w-full mt-auto sm:m-auto sm:w-11/12 sm:max-w-2xl ${
             className || ""
           }`}
         >
-          <div className="slide-up mt-auto sm:m-auto relative border-neutral-content rounded-t-2xl sm:rounded-2xl border-t sm:border shadow-2xl p-5 bg-base-100 overflow-y-auto sm:overflow-y-visible">
-            <div
-              onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
-              className="absolute top-4 right-3 btn btn-sm outline-none btn-circle btn-ghost z-10"
-            >
-              <i className="bi-x text-neutral text-2xl"></i>
-            </div>
+          <div
+            className="slide-up mt-auto sm:m-auto relative border-neutral-content rounded-t-2xl sm:rounded-2xl border-t sm:border shadow-2xl p-5 bg-base-100 overflow-y-auto sm:overflow-y-visible"
+            data-testid="modal-container"
+          >
+            {dismissible && (
+              <div
+                onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
+                className="absolute top-4 right-3 btn btn-sm outline-none btn-circle btn-ghost z-10"
+              >
+                <i
+                  className="bi-x text-neutral text-2xl"
+                  data-testid="close-modal-button"
+                ></i>
+              </div>
+            )}
             {children}
           </div>
         </ClickAwayHandler>

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import moveFile from "@/lib/api/storage/moveFile";
+import { moveFiles } from "@/lib/api/manageLinkFiles";
 
 export default async function updateLinkById(
   userId: number,
@@ -146,25 +146,7 @@ export default async function updateLinkById(
     });
 
     if (collectionIsAccessible?.id !== data.collection.id) {
-      await moveFile(
-        `archives/${collectionIsAccessible?.id}/${linkId}.pdf`,
-        `archives/${data.collection.id}/${linkId}.pdf`
-      );
-
-      await moveFile(
-        `archives/${collectionIsAccessible?.id}/${linkId}.png`,
-        `archives/${data.collection.id}/${linkId}.png`
-      );
-
-      await moveFile(
-        `archives/${collectionIsAccessible?.id}/${linkId}_readability.json`,
-        `archives/${data.collection.id}/${linkId}_readability.json`
-      );
-
-      await moveFile(
-        `archives/${collectionIsAccessible?.id}/${linkId}.html`,
-        `archives/${data.collection.id}/${linkId}.html`
-      );
+      await moveFiles(linkId, collectionIsAccessible?.id, data.collection.id);
     }
 
     return { response: updatedLink, status: 200 };

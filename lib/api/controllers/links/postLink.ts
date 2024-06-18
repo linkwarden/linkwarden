@@ -12,14 +12,16 @@ export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
-  try {
-    new URL(link.url || "");
-  } catch (error) {
-    return {
-      response:
-        "Please enter a valid Address for the Link. (It should start with http/https)",
-      status: 400,
-    };
+  if (link.url || link.type === "url") {
+    try {
+      new URL(link.url || "");
+    } catch (error) {
+      return {
+        response:
+          "Please enter a valid Address for the Link. (It should start with http/https)",
+        status: 400,
+      };
+    }
   }
 
   if (!link.collection.id && link.collection.name) {
@@ -117,14 +119,23 @@ export default async function postLink(
   });
 
   if (user?.preventDuplicateLinks) {
+    const url = link.url?.trim().replace(/\/+$/, ""); // trim and remove trailing slashes from the URL
+    const hasWwwPrefix = url?.includes(`://www.`);
+    const urlWithoutWww = hasWwwPrefix ? url?.replace(`://www.`, "://") : url;
+    const urlWithWww = hasWwwPrefix ? url : url?.replace("://", `://www.`);
+
+    console.log(url, urlWithoutWww, urlWithWww);
+
     const existingLink = await prisma.link.findFirst({
       where: {
-        url: link.url?.trim(),
+        OR: [{ url: urlWithWww }, { url: urlWithoutWww }],
         collection: {
           ownerId: userId,
         },
       },
     });
+
+    console.log(url, urlWithoutWww, urlWithWww, "DONE!");
 
     if (existingLink)
       return {
@@ -149,12 +160,13 @@ export default async function postLink(
 
   link.collection.name = link.collection.name.trim();
 
-  const description =
-    link.description && link.description !== ""
-      ? link.description
-      : link.url
-        ? await getTitle(link.url)
-        : undefined;
+  const title =
+    !(link.name && link.name !== "") && link.url
+      ? await getTitle(link.url)
+      : "";
+
+  const name =
+    link.name && link.name !== "" ? link.name : link.url ? title : "";
 
   const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
 
@@ -172,9 +184,9 @@ export default async function postLink(
 
   const newLink = await prisma.link.create({
     data: {
-      url: link.url?.trim(),
-      name: link.name,
-      description,
+      url: link.url?.trim().replace(/\/+$/, "") || null,
+      name,
+      description: link.description,
       type: linkType,
       collection: {
         connect: {
