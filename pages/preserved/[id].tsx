@@ -6,6 +6,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import ReadableView from "@/components/ReadableView";
+import getServerSideProps from "@/lib/client/getServerSideProps";
 
 export default function Index() {
   const { links, getLink } = useLinkStore();
@@ -65,3 +66,5 @@ export default function Index() {
     </div>
   );
 }
+
+export { getServerSideProps };
