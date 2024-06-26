@@ -14,11 +14,9 @@ const archiveAsReadablility = async (content: string, link: Link) => {
   const articleText = article?.textContent
     .replace(/ +(?= )/g, "") // strip out multiple spaces
     .replace(/(\r\n|\n|\r)/gm, " "); // strip out line breaks
-  if (
-    articleText &&
-    articleText !== "" &&
-    !link.readable?.startsWith("archive")
-  ) {
+
+  console.log(articleText);
+  if (articleText && articleText !== "") {
     const collectionId = (
       await prisma.link.findUnique({
         where: { id: link.id },

@@ -124,7 +124,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link, getLink, link?.singlefile]);
+  }, [link?.singlefile]);
 
   const updateArchive = async () => {
     const load = toast.loading(t("sending_request"));
@@ -210,10 +210,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
               className="mx-auto mb-3"
               size={20}
             />
-
-            <p className="text-center">
-              There are more preserved formats in the queue
-            </p>
+            <p className="text-center">{t("there_are_more_formats")}</p>
             <p className="text-center text-sm">{t("check_back_later")}</p>
           </div>
         ) : undefined}
