@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { LinkRequestQuery } from "@/types/global";
-import getDashboardData from "@/lib/api/controllers/dashboard/getDashboardData";
+import getDashboardDataV2 from "@/lib/api/controllers/dashboard/getDashboardDataV2";
 import verifyUser from "@/lib/api/verifyUser";
 
 export default async function dashboard(
@@ -16,7 +16,13 @@ export default async function dashboard(
       cursor: req.query.cursor ? Number(req.query.cursor as string) : undefined,
     };
 
-    const links = await getDashboardData(user.id, convertedData);
-    return res.status(links.status).json({ response: links.response });
+    const data = await getDashboardDataV2(user.id, convertedData);
+    return res.status(data.status).json({
+      data: {
+        links: data.data.links,
+        numberOfPinnedLinks: data.data.numberOfPinnedLinks,
+      },
+      message: data.message,
+    });
   }
 }
