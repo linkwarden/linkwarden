@@ -11,6 +11,8 @@ COPY ./package.json ./yarn.lock ./playwright.config.ts ./
 # Increase timeout to pass github actions arm64 build
 RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn yarn install --network-timeout 10000000
 
+# RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" && brew install monolith
+
 RUN npx playwright install-deps && \
     apt-get clean && \
     yarn cache clean
