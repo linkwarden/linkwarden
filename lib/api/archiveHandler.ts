@@ -7,9 +7,10 @@ import validateUrlSize from "./validateUrlSize";
 import createFolder from "./storage/createFolder";
 import generatePreview from "./generatePreview";
 import { removeFiles } from "./manageLinkFiles";
-import archiveAsSinglefile from "./preservationScheme/archiveAsSinglefile";
-import archiveAsReadability from "./preservationScheme/archiveAsReadablility";
-import shell from "shelljs";
+import handleMonolith from "./preservationScheme/handleMonolith";
+import handleReadablility from "./preservationScheme/handleReadablility";
+import handleArchivePreview from "./preservationScheme/handleArchivePreview";
+import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -50,26 +51,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
   });
 
   const page = await context.newPage();
-
-  // await page.goto("https://github.com", {
-  //   waitUntil: "domcontentloaded",
-  // });
-
-  // console.log("Opening page:", link.url);
-
-  // await page.evaluate(autoScroll, Number(process.env.AUTOSCROLL_TIMEOUT) || 30);
-
-  // const dom = await page.content();
-
-  // console.log("The content", dom);
-
-  // shell
-  //   .echo(dom)
-  //   .exec(
-  //     "monolith - -I -b https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi -j -F -o monolith.html"
-  //   );
-
-  // console.log("Monolith created!");
 
   createFolder({
     filePath: `archives/preview/${link.collectionId}`,
@@ -131,15 +112,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           },
         });
 
-        // SingleFile
-        // if (
-        //   !link.singlefile?.startsWith("archive") &&
-        //   !link.singlefile?.startsWith("unavailable") &&
-        //   user.archiveAsSinglefile &&
-        //   link.url
-        // )
-        //   await archiveAsSinglefile(link);
-
         // send to archive.org
         if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
 
@@ -156,19 +128,19 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
           const content = await page.content();
 
-          // Readability
-          if (
-            !link.readable?.startsWith("archives") &&
-            !link.readable?.startsWith("unavailable")
-          )
-            await archiveAsReadability(content, link);
-
           // Preview
           if (
             !link.preview?.startsWith("archives") &&
             !link.preview?.startsWith("unavailable")
           )
-            await getArchivePreview(link, page);
+            await handleArchivePreview(link, page);
+
+          // Readability
+          if (
+            !link.readable?.startsWith("archives") &&
+            !link.readable?.startsWith("unavailable")
+          )
+            await handleReadablility(content, link);
 
           // Screenshot/PDF
           if (
@@ -177,7 +149,16 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             (!link.pdf?.startsWith("archives") &&
               !link.pdf?.startsWith("unavailable"))
           )
-            await captureScreenshotAndPdf(link, page, user);
+            await handleScreenshotAndPdf(link, page, user);
+
+          // SingleFile
+          if (
+            !link.singlefile?.startsWith("archive") &&
+            !link.singlefile?.startsWith("unavailable") &&
+            user.archiveAsSinglefile &&
+            link.url
+          )
+            await handleMonolith(link, content);
         }
       })(),
       timeoutPromise,
@@ -267,134 +248,4 @@ const pdfHandler = async ({ url, id }: Link) => {
       },
     });
   }
-};
-
-const getArchivePreview = async (
-  link: LinksAndCollectionAndOwner,
-  page: Page
-) => {
-  const ogImageUrl = await page.evaluate(() => {
-    const metaTag = document.querySelector('meta[property="og:image"]');
-    return metaTag ? (metaTag as any).content : null;
-  });
-
-  if (ogImageUrl) {
-    console.log("Found og:image URL:", ogImageUrl);
-
-    // Download the image
-    const imageResponse = await page.goto(ogImageUrl);
-
-    // Check if imageResponse is not null
-    if (imageResponse && !link.preview?.startsWith("archive")) {
-      const buffer = await imageResponse.body();
-      generatePreview(buffer, link.collectionId, link.id);
-    }
-
-    await page.goBack();
-  } else if (!link.preview?.startsWith("archive")) {
-    console.log("No og:image found");
-    await page
-      .screenshot({ type: "jpeg", quality: 20 })
-      .then((screenshot) => {
-        return createFile({
-          data: screenshot,
-          filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-        });
-      })
-      .then(() => {
-        return prisma.link.update({
-          where: { id: link.id },
-          data: {
-            preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
-          },
-        });
-      });
-  }
-};
-
-const captureScreenshotAndPdf = async (
-  link: LinksAndCollectionAndOwner,
-  page: Page,
-  user: User
-) => {
-  await page.evaluate(autoScroll, Number(process.env.AUTOSCROLL_TIMEOUT) || 30);
-
-  // Check if the user hasn't deleted the link by the time we're done scrolling
-  const linkExists = await prisma.link.findUnique({
-    where: { id: link.id },
-  });
-  if (linkExists) {
-    const processingPromises = [];
-
-    if (user.archiveAsScreenshot && !link.image?.startsWith("archive")) {
-      processingPromises.push(
-        page.screenshot({ fullPage: true, type: "png" }).then((screenshot) => {
-          return createFile({
-            data: screenshot,
-            filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
-          });
-        })
-      );
-    }
-
-    const margins = {
-      top: process.env.PDF_MARGIN_TOP || "15px",
-      bottom: process.env.PDF_MARGIN_BOTTOM || "15px",
-    };
-
-    if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
-      processingPromises.push(
-        page
-          .pdf({
-            width: "1366px",
-            height: "1931px",
-            printBackground: true,
-            margin: margins,
-          })
-          .then((pdf) => {
-            return createFile({
-              data: pdf,
-              filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
-            });
-          })
-      );
-    }
-    await Promise.allSettled(processingPromises);
-    await prisma.link.update({
-      where: { id: link.id },
-      data: {
-        image: user.archiveAsScreenshot
-          ? `archives/${linkExists.collectionId}/${link.id}.png`
-          : undefined,
-        pdf: user.archiveAsPDF
-          ? `archives/${linkExists.collectionId}/${link.id}.pdf`
-          : undefined,
-      },
-    });
-  }
-};
-
-const autoScroll = async (AUTOSCROLL_TIMEOUT: number) => {
-  const timeoutPromise = new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, AUTOSCROLL_TIMEOUT * 1000);
-  });
-
-  const scrollingPromise = new Promise<void>((resolve) => {
-    let totalHeight = 0;
-    let distance = 100;
-    let scrollDown = setInterval(() => {
-      let scrollHeight = document.body.scrollHeight;
-      window.scrollBy(0, distance);
-      totalHeight += distance;
-      if (totalHeight >= scrollHeight) {
-        clearInterval(scrollDown);
-        window.scroll(0, 0);
-        resolve();
-      }
-    }, 100);
-  });
-
-  await Promise.race([scrollingPromise, timeoutPromise]);
 };

@@ -94,12 +94,14 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
     // await uploadHandler(linkId, )
 
-    const MAX_UPLOAD_SIZE = Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE);
+    const MAX_UPLOAD_SIZE = Number(
+      process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
+    );
 
     const form = formidable({
       maxFields: 1,
       maxFiles: 1,
-      maxFileSize: MAX_UPLOAD_SIZE || 30 * 1048576,
+      maxFileSize: MAX_UPLOAD_SIZE * 1048576,
     });
 
     form.parse(req, async (err, fields, files) => {
