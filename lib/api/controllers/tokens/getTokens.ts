@@ -9,6 +9,7 @@ export default async function getToken(userId: number) {
     select: {
       id: true,
       name: true,
+      isSession: true,
       expires: true,
       createdAt: true,
     },
