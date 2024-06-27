@@ -19,9 +19,3 @@ services:
       - ./data:/data/data
     depends_on:
       - postgres
-  # monolith:
-  #   image: ghcr.io/linkwarden/monolith:latest
-  #   container_name: monolith
-  # singlefile:
-  #   image: rutkai/single-file-web:latest
-  #   container_name: singlefile
