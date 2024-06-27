@@ -2,7 +2,8 @@ import { prisma } from "@/lib/api/db";
 import { LinkRequestQuery, Sort } from "@/types/global";
 
 export default async function getLink(userId: number, query: LinkRequestQuery) {
-  const POSTGRES_IS_ENABLED = process.env.DATABASE_URL.startsWith("postgresql");
+  const POSTGRES_IS_ENABLED =
+    process.env.DATABASE_URL?.startsWith("postgresql");
 
   let order: any;
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
