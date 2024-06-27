@@ -47,7 +47,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
     toast.dismiss(load);
 
     if (response.ok) {
-      toast.success(t("created"));
+      toast.success(t("created_success"));
       if (response.data) {
         setAccount(data?.user.id as number);
         onClose();
