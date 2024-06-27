@@ -159,6 +159,16 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       )}
 
       <div className={`flex flex-col gap-3`}>
+        {singlefileAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("webpage")}
+            icon={"bi-filetype-html"}
+            format={ArchivedFormat.singlefile}
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
+
         {screenshotAvailable(link) ? (
           <PreservedFormatRow
             name={t("screenshot")}

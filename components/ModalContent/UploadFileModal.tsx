@@ -150,7 +150,7 @@ export default function UploadFileModal({ onClose }: Props) {
           </label>
           <p className="text-xs font-semibold mt-2">
             {t("file_types", {
-              size: process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 30,
+              size: process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10,
             })}
           </p>
         </div>

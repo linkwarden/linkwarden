@@ -73,7 +73,7 @@ export default function PreservedFormatRow({
           anchorElement.href = path;
           anchorElement.download =
             format === ArchivedFormat.singlefile
-              ? link.name ?? "index"
+              ? "Webpage"
               : format === ArchivedFormat.pdf
                 ? "PDF"
                 : "Screenshot";

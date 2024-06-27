@@ -5,7 +5,7 @@ import { prisma } from "../db";
 import createFile from "../storage/createFile";
 import { Link } from "@prisma/client";
 
-const archiveAsReadablility = async (content: string, link: Link) => {
+const handleReadablility = async (content: string, link: Link) => {
   const window = new JSDOM("").window;
   const purify = DOMPurify(window);
   const cleanedUpContent = purify.sanitize(content);
@@ -38,4 +38,4 @@ const archiveAsReadablility = async (content: string, link: Link) => {
   }
 };
 
-export default archiveAsReadablility;
+export default handleReadablility;
