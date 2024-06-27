@@ -65,12 +65,12 @@ export default async function postToken(
       jti: crypto.randomUUID(),
     },
     maxAge: expiryDateSecond || 604800,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET as string,
   });
 
   const tokenBody = await decode({
     token,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET as string,
   });
 
   const createToken = await prisma.accessToken.create({
