@@ -120,7 +120,7 @@ export default function UploadFileModal({ onClose }: Props) {
 
       toast.dismiss(load);
       if (response.ok) {
-        toast.success(t("created"));
+        toast.success(t("created_success"));
         onClose();
       } else {
         toast.error(response.data as string);
