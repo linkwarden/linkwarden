@@ -120,7 +120,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
     const form = formidable({
       maxFields: 1,
       maxFiles: 1,
-      maxFileSize: NEXT_PUBLIC_MAX_FILE_BUFFER * 1048576,
+      maxFileSize: NEXT_PUBLIC_MAX_FILE_BUFFER * 1024 * 1024,
     });
 
     form.parse(req, async (err, fields, files) => {
@@ -138,11 +138,19 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
         !allowedMIMETypes.includes(files.file[0].mimetype || "")
       ) {
         // Handle parsing error
-        return res.status(500).json({
+        return res.status(400).json({
           response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`,
         });
       } else {
         const fileBuffer = fs.readFileSync(files.file[0].filepath);
+
+        if (
+          Buffer.byteLength(fileBuffer) >
+          1024 * 1024 * Number(NEXT_PUBLIC_MAX_FILE_BUFFER)
+        )
+          return res.status(400).json({
+            response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`,
+          });
 
         const linkStillExists = await prisma.link.findUnique({
           where: { id: linkId },
