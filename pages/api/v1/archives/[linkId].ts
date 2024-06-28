@@ -94,6 +94,22 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
     // await uploadHandler(linkId, )
 
+    const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER || 30000);
+
+    const numberOfLinksTheUserHas = await prisma.link.count({
+      where: {
+        collection: {
+          ownerId: user.id,
+        },
+      },
+    });
+
+    if (numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+      return {
+        response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+        status: 400,
+      };
+
     const MAX_UPLOAD_SIZE = Number(
       process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
     );
