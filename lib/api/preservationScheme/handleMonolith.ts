@@ -19,7 +19,7 @@ const handleMonolith = async (link: Link, content: string) => {
     );
 
     if (!html?.length) {
-      console.error("Error running SINGLEFILE_ARCHIVE_COMMAND: Empty buffer");
+      console.error("Error running MONOLITH: Empty buffer");
       return;
     }
 
@@ -30,12 +30,12 @@ const handleMonolith = async (link: Link, content: string) => {
       await prisma.link.update({
         where: { id: link.id },
         data: {
-          singlefile: `archives/${link.collectionId}/${link.id}.html`,
+          monolith: `archives/${link.collectionId}/${link.id}.html`,
         },
       });
     });
   } catch (err) {
-    console.error("Error running SINGLEFILE_ARCHIVE_COMMAND:", err);
+    console.error("Error running MONOLITH:", err);
   }
 };
 

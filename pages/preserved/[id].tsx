@@ -37,9 +37,9 @@ export default function Index() {
       {link && Number(router.query.format) === ArchivedFormat.readability && (
         <ReadableView link={link} />
       )}
-      {link && Number(router.query.format) === ArchivedFormat.singlefile && (
+      {link && Number(router.query.format) === ArchivedFormat.monolith && (
         <iframe
-          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.singlefile}`}
+          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}`}
           className="w-full h-screen border-none"
         ></iframe>
       )}

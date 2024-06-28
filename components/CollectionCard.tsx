@@ -39,7 +39,7 @@ export default function CollectionCard({ collection, className }: Props) {
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsSinglefile: undefined as unknown as boolean,
+    archiveAsMonolith: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 
@@ -55,7 +55,7 @@ export default function CollectionCard({ collection, className }: Props) {
           username: account.username as string,
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsSinglefile: account.archiveAsSinglefile as boolean,
+          archiveAsMonolith: account.archiveAsMonolith as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }

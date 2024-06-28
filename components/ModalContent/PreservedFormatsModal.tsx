@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import {
   pdfAvailable,
   readabilityAvailable,
-  singlefileAvailable,
+  monolithAvailable,
   screenshotAvailable,
 } from "@/lib/shared/getArchiveValidity";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
@@ -43,7 +43,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsSinglefile: undefined as unknown as boolean,
+    archiveAsMonolith: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 
@@ -61,7 +61,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           username: account.username as string,
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsSinglefile: account.archiveAsScreenshot as boolean,
+          archiveAsMonolith: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }
@@ -76,8 +76,8 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       (collectionOwner.archiveAsScreenshot === true
         ? link.pdf && link.pdf !== "pending"
         : true) &&
-      (collectionOwner.archiveAsSinglefile === true
-        ? link.singlefile && link.singlefile !== "pending"
+      (collectionOwner.archiveAsMonolith === true
+        ? link.monolith && link.monolith !== "pending"
         : true) &&
       (collectionOwner.archiveAsPDF === true
         ? link.pdf && link.pdf !== "pending"
@@ -92,7 +92,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       screenshotAvailable(link) ||
       pdfAvailable(link) ||
       readabilityAvailable(link) ||
-      singlefileAvailable(link)
+      monolithAvailable(link)
     );
   };
 
@@ -124,7 +124,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.singlefile]);
+  }, [link?.monolith]);
 
   const updateArchive = async () => {
     const load = toast.loading(t("sending_request"));
@@ -152,18 +152,18 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       {screenshotAvailable(link) ||
       pdfAvailable(link) ||
       readabilityAvailable(link) ||
-      singlefileAvailable(link) ? (
+      monolithAvailable(link) ? (
         <p className="mb-3">{t("available_formats")}</p>
       ) : (
         ""
       )}
 
       <div className={`flex flex-col gap-3`}>
-        {singlefileAvailable(link) ? (
+        {monolithAvailable(link) ? (
           <PreservedFormatRow
             name={t("webpage")}
             icon={"bi-filetype-html"}
-            format={ArchivedFormat.singlefile}
+            format={ArchivedFormat.monolith}
             activeLink={link}
             downloadable={true}
           />

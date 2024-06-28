@@ -26,8 +26,8 @@ export default function Appearance() {
     account.archiveAsPDF
   );
 
-  const [archiveAsSinglefile, setArchiveAsSinglefile] = useState<boolean>(
-    account.archiveAsSinglefile
+  const [archiveAsMonolith, setArchiveAsMonolith] = useState<boolean>(
+    account.archiveAsMonolith
   );
 
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
@@ -39,7 +39,7 @@ export default function Appearance() {
     setUser({
       ...account,
       archiveAsScreenshot,
-      archiveAsSinglefile,
+      archiveAsMonolith,
       archiveAsPDF,
       archiveAsWaybackMachine,
       linksRouteTo,
@@ -48,7 +48,7 @@ export default function Appearance() {
   }, [
     account,
     archiveAsScreenshot,
-    archiveAsSinglefile,
+    archiveAsMonolith,
     archiveAsPDF,
     archiveAsWaybackMachine,
     linksRouteTo,
@@ -62,7 +62,7 @@ export default function Appearance() {
   useEffect(() => {
     if (!objectIsEmpty(account)) {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
-      setArchiveAsSinglefile(account.archiveAsSinglefile);
+      setArchiveAsMonolith(account.archiveAsMonolith);
       setArchiveAsPDF(account.archiveAsPDF);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
@@ -136,9 +136,9 @@ export default function Appearance() {
             />
 
             <Checkbox
-              label="Singlefile"
-              state={archiveAsSinglefile}
-              onClick={() => setArchiveAsSinglefile(!archiveAsSinglefile)}
+              label={t("webpage")}
+              state={archiveAsMonolith}
+              onClick={() => setArchiveAsMonolith(!archiveAsMonolith)}
             />
 
             <Checkbox
@@ -229,27 +229,13 @@ export default function Appearance() {
                 type="radio"
                 name="link-preference-radio"
                 className="radio checked:bg-primary"
-                value="Singlefile"
-                checked={linksRouteTo === LinksRouteTo.SINGLEFILE}
-                onChange={() => setLinksRouteTo(LinksRouteTo.SINGLEFILE)}
+                value="Monolith"
+                checked={linksRouteTo === LinksRouteTo.MONOLITH}
+                onChange={() => setLinksRouteTo(LinksRouteTo.MONOLITH)}
               />
-              <span className="label-text">Open Singlefile, if available</span>
-            </label>
-
-            <label
-              className="label cursor-pointer flex gap-2 justify-start w-fit"
-              tabIndex={0}
-              role="button"
-            >
-              <input
-                type="radio"
-                name="link-preference-radio"
-                className="radio checked:bg-primary"
-                value="Singlefile"
-                checked={linksRouteTo === LinksRouteTo.SINGLEFILE}
-                onChange={() => setLinksRouteTo(LinksRouteTo.SINGLEFILE)}
-              />
-              <span className="label-text">Open Singlefile, if available</span>
+              <span className="label-text">
+                {t("open_webpage_if_available")}
+              </span>
             </label>
 
             <label

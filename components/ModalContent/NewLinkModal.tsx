@@ -30,7 +30,7 @@ export default function NewLinkModal({ onClose }: Props) {
     image: "",
     pdf: "",
     readable: "",
-    singlefile: "",
+    monolith: "",
     textContent: "",
     collection: {
       name: "",

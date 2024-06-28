@@ -76,7 +76,7 @@ const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
       image: null,
       pdf: null,
       readable: null,
-      singlefile: null,
+      monolith: null,
       preview: null,
     },
   });
