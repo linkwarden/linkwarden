@@ -23,5 +23,6 @@ export class LoginPage extends BasePage {
 
   async goto() {
     await this.page.goto("/login");
+    await this.loginForm.waitFor({ state: "visible" });
   }
 }
