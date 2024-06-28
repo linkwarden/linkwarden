@@ -33,7 +33,7 @@ export default function UploadFileModal({ onClose }: Props) {
     image: "",
     pdf: "",
     readable: "",
-    singlefile: "",
+    monolith: "",
     textContent: "",
     collection: {
       name: "",
@@ -97,7 +97,7 @@ export default function UploadFileModal({ onClose }: Props) {
   const submit = async () => {
     if (!submitLoader && file) {
       let fileType: ArchivedFormat | null = null;
-      let linkType: "url" | "image" | "singlefile" | "pdf" | null = null;
+      let linkType: "url" | "image" | "monolith" | "pdf" | null = null;
 
       if (file?.type === "image/jpg" || file.type === "image/jpeg") {
         fileType = ArchivedFormat.jpeg;
@@ -105,13 +105,14 @@ export default function UploadFileModal({ onClose }: Props) {
       } else if (file.type === "image/png") {
         fileType = ArchivedFormat.png;
         linkType = "image";
-      } else if (file.type === "text/html") {
-        fileType = ArchivedFormat.singlefile;
-        linkType = "singlefile";
       } else if (file.type === "application/pdf") {
         fileType = ArchivedFormat.pdf;
         linkType = "pdf";
       }
+      // else if (file.type === "text/html") {
+      //   fileType = ArchivedFormat.monolith;
+      //   linkType = "monolith";
+      // }
 
       setSubmitLoader(true);
       const load = toast.loading(t("creating"));
