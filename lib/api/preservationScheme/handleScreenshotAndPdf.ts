@@ -24,10 +24,10 @@ const handleScreenshotAndPdf = async (
 
     if (user.archiveAsScreenshot && !link.image?.startsWith("archive")) {
       processingPromises.push(
-        page.screenshot({ fullPage: true, type: "png" }).then((screenshot) => {
+        page.screenshot({ fullPage: true, type: "jpeg" }).then((screenshot) => {
           return createFile({
             data: screenshot,
-            filePath: `archives/${linkExists.collectionId}/${link.id}.png`,
+            filePath: `archives/${linkExists.collectionId}/${link.id}.jpeg`,
           });
         })
       );
@@ -60,7 +60,7 @@ const handleScreenshotAndPdf = async (
       where: { id: link.id },
       data: {
         image: user.archiveAsScreenshot
-          ? `archives/${linkExists.collectionId}/${link.id}.png`
+          ? `archives/${linkExists.collectionId}/${link.id}.jpeg`
           : undefined,
         pdf: user.archiveAsPDF
           ? `archives/${linkExists.collectionId}/${link.id}.pdf`
