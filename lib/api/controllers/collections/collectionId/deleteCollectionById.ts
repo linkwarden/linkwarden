@@ -58,6 +58,7 @@ export default async function deleteCollection(
     });
 
     await removeFolder({ filePath: `archives/${collectionId}` });
+    await removeFolder({ filePath: `archives/preview/${collectionId}` });
 
     await removeFromOrders(userId, collectionId);
 
@@ -100,6 +101,7 @@ async function deleteSubCollections(collectionId: number) {
     });
 
     await removeFolder({ filePath: `archives/${subCollection.id}` });
+    await removeFolder({ filePath: `archives/preview/${subCollection.id}` });
   }
 }
 
