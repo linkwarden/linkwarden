@@ -1,11 +1,10 @@
-import { LaunchOptions, Page, chromium, devices } from "playwright";
+import { LaunchOptions, chromium, devices } from "playwright";
 import { prisma } from "./db";
 import createFile from "./storage/createFile";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
 import createFolder from "./storage/createFolder";
-import generatePreview from "./generatePreview";
 import { removeFiles } from "./manageLinkFiles";
 import handleMonolith from "./preservationScheme/handleMonolith";
 import handleReadablility from "./preservationScheme/handleReadablility";
