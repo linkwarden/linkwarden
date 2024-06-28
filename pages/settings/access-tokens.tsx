@@ -49,45 +49,50 @@ export default function AccessTokens() {
         </button>
 
         {tokens.length > 0 ? (
-          <>
-            <div className="divider my-0"></div>
-
-            <table className="table">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>{t("name")}</th>
-                  <th>{t("created")}</th>
-                  <th>{t("expires")}</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {tokens.map((token, i) => (
-                  <React.Fragment key={i}>
-                    <tr>
-                      <th>{i + 1}</th>
-                      <td>{token.name}</td>
-                      <td>
-                        {new Date(token.createdAt || "").toLocaleDateString()}
-                      </td>
-                      <td>
-                        {new Date(token.expires || "").toLocaleDateString()}
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
-                          onClick={() => openRevokeModal(token as AccessToken)}
+          <table className="table mt-2 overflow-x-auto">
+            <thead>
+              <tr>
+                <th>{t("name")}</th>
+                <th>{t("created")}</th>
+                <th>{t("expires")}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tokens.map((token, i) => (
+                <React.Fragment key={i}>
+                  <tr>
+                    <td className={token.isSession ? "text-primary" : ""}>
+                      {token.isSession ? (
+                        <div
+                          className="tooltip tooltip-right text-left"
+                          data-tip="This is a permanent session"
                         >
-                          <i className="bi-x text-lg"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </>
+                          {token.name}
+                        </div>
+                      ) : (
+                        token.name
+                      )}
+                    </td>
+                    <td>
+                      {new Date(token.createdAt || "").toLocaleDateString()}
+                    </td>
+                    <td>
+                      {new Date(token.expires || "").toLocaleDateString()}
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
+                        onClick={() => openRevokeModal(token as AccessToken)}
+                      >
+                        <i className="bi-x text-lg"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
         ) : undefined}
       </div>
 
