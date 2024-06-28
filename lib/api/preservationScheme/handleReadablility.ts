@@ -23,8 +23,18 @@ const handleReadablility = async (content: string, link: Link) => {
       })
     )?.collectionId;
 
+    const data = JSON.stringify(article);
+
+    if (
+      Buffer.byteLength(data, "utf8") >
+      1024 * 1024 * Number(process.env.READABILITY_MAX_BUFFER || 1)
+    )
+      return console.error(
+        "Error archiving as Readability: Buffer size exceeded"
+      );
+
     await createFile({
-      data: JSON.stringify(article),
+      data,
       filePath: `archives/${collectionId}/${link.id}_readability.json`,
     });
 

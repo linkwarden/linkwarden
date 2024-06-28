@@ -9,7 +9,7 @@ const handleMonolith = async (link: Link, content: string) => {
   try {
     let html = execSync(
       `monolith - -I -b ${link.url} ${
-        process.env.MONOLITH_OPTIONS || "-j -F -s"
+        process.env.MONOLITH_CUSTOM_OPTIONS || "-j -F -s"
       } -o -`,
       {
         timeout: 120000,
@@ -18,10 +18,14 @@ const handleMonolith = async (link: Link, content: string) => {
       }
     );
 
-    if (!html?.length) {
-      console.error("Error running MONOLITH: Empty buffer");
-      return;
-    }
+    if (!html?.length)
+      return console.error("Error archiving as Monolith: Empty buffer");
+
+    if (
+      Buffer.byteLength(html) >
+      1024 * 1024 * Number(process.env.MONOLITH_MAX_BUFFER || 6)
+    )
+      return console.error("Error archiving as Monolith: Buffer size exceeded");
 
     await createFile({
       data: html,
@@ -35,7 +39,7 @@ const handleMonolith = async (link: Link, content: string) => {
       });
     });
   } catch (err) {
-    console.error("Error running MONOLITH:", err);
+    console.log("Error running MONOLITH:", err);
   }
 };
 
