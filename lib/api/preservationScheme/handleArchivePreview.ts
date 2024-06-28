@@ -36,14 +36,19 @@ const handleArchivePreview = async (
     console.log("No og:image found");
     await page
       .screenshot({ type: "jpeg", quality: 20 })
-      .then((screenshot) => {
-        return createFile({
+      .then(async (screenshot) => {
+        if (
+          Buffer.byteLength(screenshot) >
+          1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 0.1)
+        )
+          return console.log("Error generating preview: Buffer size exceeded");
+
+        await createFile({
           data: screenshot,
           filePath: `archives/preview/${link.collectionId}/${link.id}.jpeg`,
         });
-      })
-      .then(() => {
-        return prisma.link.update({
+
+        await prisma.link.update({
           where: { id: link.id },
           data: {
             preview: `archives/preview/${link.collectionId}/${link.id}.jpeg`,

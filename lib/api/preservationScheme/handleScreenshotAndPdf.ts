@@ -24,12 +24,30 @@ const handleScreenshotAndPdf = async (
 
     if (user.archiveAsScreenshot && !link.image?.startsWith("archive")) {
       processingPromises.push(
-        page.screenshot({ fullPage: true, type: "jpeg" }).then((screenshot) => {
-          return createFile({
-            data: screenshot,
-            filePath: `archives/${linkExists.collectionId}/${link.id}.jpeg`,
-          });
-        })
+        page
+          .screenshot({ fullPage: true, type: "jpeg" })
+          .then(async (screenshot) => {
+            if (
+              Buffer.byteLength(screenshot) >
+              1024 * 1024 * Number(process.env.SCREENSHOT_MAX_BUFFER || 2)
+            )
+              return console.log(
+                "Error archiving as Screenshot: Buffer size exceeded"
+              );
+
+            await createFile({
+              data: screenshot,
+              filePath: `archives/${linkExists.collectionId}/${link.id}.jpeg`,
+            });
+            await prisma.link.update({
+              where: { id: link.id },
+              data: {
+                image: user.archiveAsScreenshot
+                  ? `archives/${linkExists.collectionId}/${link.id}.jpeg`
+                  : undefined,
+              },
+            });
+          })
       );
     }
 
@@ -47,26 +65,32 @@ const handleScreenshotAndPdf = async (
             printBackground: true,
             margin: margins,
           })
-          .then((pdf) => {
-            return createFile({
+          .then(async (pdf) => {
+            if (
+              Buffer.byteLength(pdf) >
+              1024 * 1024 * Number(process.env.PDF_MAX_BUFFER || 2)
+            )
+              return console.log(
+                "Error archiving as PDF: Buffer size exceeded"
+              );
+
+            await createFile({
               data: pdf,
               filePath: `archives/${linkExists.collectionId}/${link.id}.pdf`,
+            });
+
+            await prisma.link.update({
+              where: { id: link.id },
+              data: {
+                pdf: user.archiveAsPDF
+                  ? `archives/${linkExists.collectionId}/${link.id}.pdf`
+                  : undefined,
+              },
             });
           })
       );
     }
     await Promise.allSettled(processingPromises);
-    await prisma.link.update({
-      where: { id: link.id },
-      data: {
-        image: user.archiveAsScreenshot
-          ? `archives/${linkExists.collectionId}/${link.id}.jpeg`
-          : undefined,
-        pdf: user.archiveAsPDF
-          ? `archives/${linkExists.collectionId}/${link.id}.pdf`
-          : undefined,
-      },
-    });
   }
 };
 

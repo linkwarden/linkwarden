@@ -14,16 +14,22 @@ const generatePreview = async (
         image?.resize(1280, Jimp.AUTO).quality(20);
         const processedBuffer = await image?.getBufferAsync(Jimp.MIME_JPEG);
 
-        createFile({
+        if (
+          Buffer.byteLength(processedBuffer) >
+          1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 0.1)
+        )
+          return console.log("Error generating preview: Buffer size exceeded");
+
+        await createFile({
           data: processedBuffer,
           filePath: `archives/preview/${collectionId}/${linkId}.jpeg`,
-        }).then(() => {
-          return prisma.link.update({
-            where: { id: linkId },
-            data: {
-              preview: `archives/preview/${collectionId}/${linkId}.jpeg`,
-            },
-          });
+        });
+
+        await prisma.link.update({
+          where: { id: linkId },
+          data: {
+            preview: `archives/preview/${collectionId}/${linkId}.jpeg`,
+          },
         });
       }
     }).catch((err) => {
