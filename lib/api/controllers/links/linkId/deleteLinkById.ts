@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import { Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import removeFile from "@/lib/api/storage/removeFile";
 import { removeFiles } from "@/lib/api/manageLinkFiles";
 
 export default async function deleteLink(userId: number, linkId: number) {
