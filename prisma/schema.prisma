@@ -47,7 +47,7 @@ model User {
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
-  archiveAsSinglefile     Boolean               @default(true)
+  archiveAsMonolith       Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
@@ -59,7 +59,7 @@ enum LinksRouteTo {
   ORIGINAL
   PDF
   READABLE
-  SINGLEFILE
+  MONOLITH
   SCREENSHOT
 }
 
