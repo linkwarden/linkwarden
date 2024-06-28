@@ -1,6 +1,5 @@
 import { LaunchOptions, chromium, devices } from "playwright";
 import { prisma } from "./db";
-import createFile from "./storage/createFile";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { Collection, Link, User } from "@prisma/client";
 import validateUrlSize from "./validateUrlSize";
@@ -10,6 +9,8 @@ import handleMonolith from "./preservationScheme/handleMonolith";
 import handleReadablility from "./preservationScheme/handleReadablility";
 import handleArchivePreview from "./preservationScheme/handleArchivePreview";
 import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf";
+import imageHandler from "./preservationScheme/imageHandler";
+import pdfHandler from "./preservationScheme/pdfHandler";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -200,51 +201,3 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
     await browser.close();
   }
 }
-
-const imageHandler = async ({ url, id }: Link, extension: string) => {
-  const image = await fetch(url as string).then((res) => res.blob());
-
-  const buffer = Buffer.from(await image.arrayBuffer());
-
-  const linkExists = await prisma.link.findUnique({
-    where: { id },
-  });
-
-  if (linkExists) {
-    await createFile({
-      data: buffer,
-      filePath: `archives/${linkExists.collectionId}/${id}.${extension}`,
-    });
-
-    await prisma.link.update({
-      where: { id },
-      data: {
-        image: `archives/${linkExists.collectionId}/${id}.${extension}`,
-      },
-    });
-  }
-};
-
-const pdfHandler = async ({ url, id }: Link) => {
-  const pdf = await fetch(url as string).then((res) => res.blob());
-
-  const buffer = Buffer.from(await pdf.arrayBuffer());
-
-  const linkExists = await prisma.link.findUnique({
-    where: { id },
-  });
-
-  if (linkExists) {
-    await createFile({
-      data: buffer,
-      filePath: `archives/${linkExists.collectionId}/${id}.pdf`,
-    });
-
-    await prisma.link.update({
-      where: { id },
-      data: {
-        pdf: `archives/${linkExists.collectionId}/${id}.pdf`,
-      },
-    });
-  }
-};
