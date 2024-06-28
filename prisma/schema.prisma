@@ -178,6 +178,7 @@ model AccessToken {
   userId     Int
   token      String    @unique
   revoked    Boolean   @default(false)
+  isSession  Boolean   @default(false)
   expires    DateTime
   lastUsedAt DateTime?
   createdAt  DateTime  @default(now())
