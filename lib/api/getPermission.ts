@@ -3,14 +3,12 @@ import { prisma } from "@/lib/api/db";
 type Props = {
   userId: number;
   collectionId?: number;
-  collectionName?: string;
   linkId?: number;
 };
 
 export default async function getPermission({
   userId,
   collectionId,
-  collectionName,
   linkId,
 }: Props) {
   if (linkId) {
@@ -26,11 +24,10 @@ export default async function getPermission({
     });
 
     return check;
-  } else if (collectionId || collectionName) {
+  } else if (collectionId) {
     const check = await prisma.collection.findFirst({
       where: {
-        id: collectionId || undefined,
-        name: collectionName || undefined,
+        id: collectionId,
         OR: [{ ownerId: userId }, { members: { some: { userId } } }],
       },
       include: { members: true },
