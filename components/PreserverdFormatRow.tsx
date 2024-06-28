@@ -61,7 +61,7 @@ export default function PreservedFormatRow({
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable, link?.singlefile]);
+  }, [link?.image, link?.pdf, link?.readable, link?.monolith]);
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;
@@ -72,7 +72,7 @@ export default function PreservedFormatRow({
           const anchorElement = document.createElement("a");
           anchorElement.href = path;
           anchorElement.download =
-            format === ArchivedFormat.singlefile
+            format === ArchivedFormat.monolith
               ? "Webpage"
               : format === ArchivedFormat.pdf
                 ? "PDF"

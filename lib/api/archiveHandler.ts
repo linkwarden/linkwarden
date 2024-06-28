@@ -102,7 +102,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             readable: !link.readable?.startsWith("archive")
               ? "pending"
               : undefined,
-            singlefile: !link.singlefile?.startsWith("archive")
+            monolith: !link.monolith?.startsWith("archive")
               ? "pending"
               : undefined,
             preview: !link.readable?.startsWith("archive")
@@ -151,11 +151,11 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           )
             await handleScreenshotAndPdf(link, page, user);
 
-          // SingleFile
+          // Monolith
           if (
-            !link.singlefile?.startsWith("archive") &&
-            !link.singlefile?.startsWith("unavailable") &&
-            user.archiveAsSinglefile &&
+            !link.monolith?.startsWith("archive") &&
+            !link.monolith?.startsWith("unavailable") &&
+            user.archiveAsMonolith &&
             link.url
           )
             await handleMonolith(link, content);
@@ -183,7 +183,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           image: !finalLink.image?.startsWith("archives")
             ? "unavailable"
             : undefined,
-          singlefile: !finalLink.singlefile?.startsWith("archives")
+          monolith: !finalLink.monolith?.startsWith("archives")
             ? "unavailable"
             : undefined,
           pdf: !finalLink.pdf?.startsWith("archives")

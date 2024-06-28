@@ -40,10 +40,10 @@ async function processBatch() {
         },
         ///////////////////////
         {
-          singlefile: null,
+          monolith: null,
         },
         {
-          singlefile: "pending",
+          monolith: "pending",
         },
       ],
     },
@@ -84,10 +84,10 @@ async function processBatch() {
         },
         ///////////////////////
         {
-          singlefile: null,
+          monolith: null,
         },
         {
-          singlefile: "pending",
+          monolith: "pending",
         },
       ],
     },

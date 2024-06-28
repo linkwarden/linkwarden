@@ -139,7 +139,7 @@ model Link {
   image         String?
   pdf           String?
   readable      String?
-  singlefile    String?
+  monolith      String?
   lastPreserved DateTime?
   importDate    DateTime?
   createdAt     DateTime   @default(now())

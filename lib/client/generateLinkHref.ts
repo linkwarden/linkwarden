@@ -8,7 +8,7 @@ import {
   pdfAvailable,
   readabilityAvailable,
   screenshotAvailable,
-  singlefileAvailable,
+  monolithAvailable,
 } from "../shared/getArchiveValidity";
 
 export const generateLinkHref = (
@@ -39,10 +39,10 @@ export const generateLinkHref = (
     return `/preserved/${link?.id}?format=${
       link?.image?.endsWith("png") ? ArchivedFormat.png : ArchivedFormat.jpeg
     }`;
-  } else if (account.linksRouteTo === LinksRouteTo.SINGLEFILE) {
-    if (!singlefileAvailable(link)) return link.url || "";
+  } else if (account.linksRouteTo === LinksRouteTo.MONOLITH) {
+    if (!monolithAvailable(link)) return link.url || "";
 
-    return `/preserved/${link?.id}?format=${ArchivedFormat.singlefile}`;
+    return `/preserved/${link?.id}?format=${ArchivedFormat.monolith}`;
   } else {
     return link.url || "";
   }

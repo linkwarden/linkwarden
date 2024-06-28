@@ -28,14 +28,14 @@ export function readabilityAvailable(
   );
 }
 
-export function singlefileAvailable(
+export function monolithAvailable(
   link: LinkIncludingShortenedCollectionAndTags
 ) {
   return (
     link &&
-    link.singlefile &&
-    link.singlefile !== "pending" &&
-    link.singlefile !== "unavailable"
+    link.monolith &&
+    link.monolith !== "pending" &&
+    link.monolith !== "unavailable"
   );
 }
 
