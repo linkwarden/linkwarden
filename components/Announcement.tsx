@@ -10,8 +10,8 @@ export default function Announcement({ toggleAnnouncementBar }: Props) {
   const announcementId = localStorage.getItem("announcementId");
 
   return (
-    <div className="fixed left-0 right-0 bottom-20 sm:bottom-10 w-full p-5 z-30">
-      <div className="mx-auto w-full p-2 flex justify-between gap-2 items-center border border-primary shadow-xl rounded-xl bg-base-300 backdrop-blur-sm bg-opacity-80 max-w-md">
+    <div className="fixed mx-auto bottom-20 sm:bottom-10 w-full pointer-events-none p-5 z-30">
+      <div className="mx-auto pointer-events-auto p-2 flex justify-between gap-2 items-center border border-primary shadow-xl rounded-xl bg-base-300 backdrop-blur-sm bg-opacity-80 max-w-md">
         <i className="bi-stars text-2xl text-yellow-600 dark:text-yellow-500"></i>
         <p className="w-4/5 text-center text-sm sm:text-base">
           <Trans

@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import https from "https";
 import { SocksProxyAgent } from "socks-proxy-agent";
 
-export default async function getTitle(url: string) {
+export default async function fetchTitleAndHeaders(url: string) {
   try {
     const httpsAgent = new https.Agent({
       rejectUnauthorized:
@@ -41,12 +41,16 @@ export default async function getTitle(url: string) {
 
       // regular expression to find the <title> tag
       let match = text.match(/<title.*>([^<]*)<\/title>/);
-      if (match) return match[1];
-      else return "";
+
+      const title = match[1] || "";
+      const headers = (response as Response)?.headers || null;
+
+      return { title, headers };
     } else {
-      return "";
+      return { title: "", headers: null };
     }
   } catch (err) {
     console.log(err);
+    return { title: "", headers: null };
   }
 }
