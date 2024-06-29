@@ -12,12 +12,14 @@ import { useSession } from "next-auth/react";
 import {
   pdfAvailable,
   readabilityAvailable,
+  monolithAvailable,
   screenshotAvailable,
 } from "@/lib/shared/getArchiveValidity";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
+import { BeatLoader } from "react-spinners";
 
 type Props = {
   onClose: Function;
@@ -41,6 +43,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsMonolith: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 
@@ -58,6 +61,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           username: account.username as string,
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
+          archiveAsMonolith: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }
@@ -72,11 +76,23 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       (collectionOwner.archiveAsScreenshot === true
         ? link.pdf && link.pdf !== "pending"
         : true) &&
+      (collectionOwner.archiveAsMonolith === true
+        ? link.monolith && link.monolith !== "pending"
+        : true) &&
       (collectionOwner.archiveAsPDF === true
         ? link.pdf && link.pdf !== "pending"
         : true) &&
       link.readable &&
       link.readable !== "pending"
+    );
+  };
+
+  const atLeastOneFormatAvailable = () => {
+    return (
+      screenshotAvailable(link) ||
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ||
+      monolithAvailable(link)
     );
   };
 
@@ -108,7 +124,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link, getLink]);
+  }, [link?.monolith]);
 
   const updateArchive = async () => {
     const load = toast.loading(t("sending_request"));
@@ -133,56 +149,81 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("preserved_formats")}</p>
       <div className="divider mb-2 mt-1"></div>
-      {isReady() &&
-      (screenshotAvailable(link) ||
-        pdfAvailable(link) ||
-        readabilityAvailable(link)) ? (
+      {screenshotAvailable(link) ||
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ||
+      monolithAvailable(link) ? (
         <p className="mb-3">{t("available_formats")}</p>
       ) : (
         ""
       )}
 
-      <div className="flex flex-col gap-3">
-        {isReady() ? (
-          <>
-            {screenshotAvailable(link) ? (
-              <PreservedFormatRow
-                name={t("screenshot")}
-                icon={"bi-file-earmark-image"}
-                format={
-                  link?.image?.endsWith("png")
-                    ? ArchivedFormat.png
-                    : ArchivedFormat.jpeg
-                }
-                activeLink={link}
-                downloadable={true}
-              />
-            ) : undefined}
-            {pdfAvailable(link) ? (
-              <PreservedFormatRow
-                name={t("pdf")}
-                icon="bi-file-earmark-pdf"
-                format={ArchivedFormat.pdf}
-                activeLink={link}
-                downloadable={true}
-              />
-            ) : undefined}
-            {readabilityAvailable(link) ? (
-              <PreservedFormatRow
-                name={t("readable")}
-                icon="bi-file-earmark-text"
-                format={ArchivedFormat.readability}
-                activeLink={link}
-              />
-            ) : undefined}
-          </>
-        ) : (
-          <div className="w-full h-full flex flex-col justify-center p-10 skeleton bg-base-200">
-            <i className="bi-stack drop-shadow text-primary text-8xl mx-auto mb-5"></i>
+      <div className={`flex flex-col gap-3`}>
+        {monolithAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("webpage")}
+            icon={"bi-filetype-html"}
+            format={ArchivedFormat.monolith}
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
+
+        {screenshotAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("screenshot")}
+            icon={"bi-file-earmark-image"}
+            format={
+              link?.image?.endsWith("png")
+                ? ArchivedFormat.png
+                : ArchivedFormat.jpeg
+            }
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
+
+        {pdfAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("pdf")}
+            icon={"bi-file-earmark-pdf"}
+            format={ArchivedFormat.pdf}
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
+
+        {readabilityAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("readable")}
+            icon={"bi-file-earmark-text"}
+            format={ArchivedFormat.readability}
+            activeLink={link}
+          />
+        ) : undefined}
+
+        {!isReady() && !atLeastOneFormatAvailable() ? (
+          <div className={`w-full h-full flex flex-col justify-center p-10`}>
+            <BeatLoader
+              color="oklch(var(--p))"
+              className="mx-auto mb-3"
+              size={30}
+            />
+
             <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
             <p className="text-center text-lg">{t("check_back_later")}</p>
           </div>
-        )}
+        ) : !isReady() && atLeastOneFormatAvailable() ? (
+          <div className={`w-full h-full flex flex-col justify-center p-5`}>
+            <BeatLoader
+              color="oklch(var(--p))"
+              className="mx-auto mb-3"
+              size={20}
+            />
+            <p className="text-center">{t("there_are_more_formats")}</p>
+            <p className="text-center text-sm">{t("check_back_later")}</p>
+          </div>
+        ) : undefined}
 
         <div
           className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${

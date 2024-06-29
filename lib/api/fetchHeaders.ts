@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import https from "https";
 import { SocksProxyAgent } from "socks-proxy-agent";
 
-export default async function validateUrlSize(url: string) {
+export default async function fetchHeaders(url: string) {
   if (process.env.IGNORE_URL_SIZE_LIMIT === "true") return null;
 
   try {
@@ -29,13 +29,17 @@ export default async function validateUrlSize(url: string) {
       };
     }
 
-    const response = await fetch(url, fetchOpts);
+    const responsePromise = fetch(url, fetchOpts);
 
-    const totalSizeMB =
-      Number(response.headers.get("content-length")) / Math.pow(1024, 2);
-    if (totalSizeMB > (Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE) || 30))
-      return null;
-    else return response.headers;
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("Fetch header timeout"));
+      }, 10 * 1000); // Stop after 10 seconds
+    });
+
+    const response = await Promise.race([responsePromise, timeoutPromise]);
+
+    return (response as Response)?.headers || null;
   } catch (err) {
     console.log(err);
     return null;

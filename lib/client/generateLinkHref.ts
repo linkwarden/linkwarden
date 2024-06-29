@@ -8,6 +8,7 @@ import {
   pdfAvailable,
   readabilityAvailable,
   screenshotAvailable,
+  monolithAvailable,
 } from "../shared/getArchiveValidity";
 
 export const generateLinkHref = (
@@ -33,12 +34,15 @@ export const generateLinkHref = (
     account.linksRouteTo === LinksRouteTo.SCREENSHOT ||
     link.type === "image"
   ) {
-    console.log(link);
     if (!screenshotAvailable(link)) return link.url || "";
 
     return `/preserved/${link?.id}?format=${
       link?.image?.endsWith("png") ? ArchivedFormat.png : ArchivedFormat.jpeg
     }`;
+  } else if (account.linksRouteTo === LinksRouteTo.MONOLITH) {
+    if (!monolithAvailable(link)) return link.url || "";
+
+    return `/preserved/${link?.id}?format=${ArchivedFormat.monolith}`;
   } else {
     return link.url || "";
   }

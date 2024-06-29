@@ -47,7 +47,7 @@ export default async function importFromWallabag(
 
   if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
     return {
-      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
       status: 400,
     };
 

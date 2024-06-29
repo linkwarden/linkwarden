@@ -81,9 +81,11 @@ export default function ReadableView({ link }: Props) {
       (link?.image === "pending" ||
         link?.pdf === "pending" ||
         link?.readable === "pending" ||
+        link?.monolith === "pending" ||
         !link?.image ||
         !link?.pdf ||
-        !link?.readable)
+        !link?.readable ||
+        !link?.monolith)
     ) {
       interval = setInterval(() => getLink(link.id as number), 5000);
     } else {
@@ -97,7 +99,7 @@ export default function ReadableView({ link }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link?.image, link?.pdf, link?.readable, link?.monolith]);
 
   const rgbToHex = (r: number, g: number, b: number): string =>
     "#" +
