@@ -1,8 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import getTitle from "@/lib/shared/getTitle";
+import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 import createFolder from "@/lib/api/storage/createFolder";
-import validateUrlSize from "../../validateUrlSize";
 import setLinkCollection from "../../setLinkCollection";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
@@ -70,17 +69,12 @@ export default async function postLink(
       status: 400,
     };
 
-  const title =
-    !(link.name && link.name !== "") && link.url
-      ? await getTitle(link.url)
-      : "";
+  const { title, headers } = await fetchTitleAndHeaders(link.url || "");
 
   const name =
     link.name && link.name !== "" ? link.name : link.url ? title : "";
 
-  const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
-
-  const contentType = validatedUrl?.get("content-type");
+  const contentType = headers?.get("content-type");
   let linkType = "url";
   let imageExtension = "png";
 
