@@ -70,7 +70,14 @@ export default function LinkIcon({
           size={size}
           icon="bi-file-earmark-image"
         />
-      ) : undefined}
+      ) : // : link.type === "monolith" ? (
+      //   <LinkPlaceholderIcon
+      //     iconClasses={iconClasses + dimension}
+      //     size={size}
+      //     icon="bi-filetype-html"
+      //   />
+      // )
+      undefined}
     </>
   );
 }

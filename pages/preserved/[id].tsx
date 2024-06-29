@@ -6,6 +6,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import ReadableView from "@/components/ReadableView";
+import getServerSideProps from "@/lib/client/getServerSideProps";
 
 export default function Index() {
   const { links, getLink } = useLinkStore();
@@ -36,6 +37,12 @@ export default function Index() {
       {link && Number(router.query.format) === ArchivedFormat.readability && (
         <ReadableView link={link} />
       )}
+      {link && Number(router.query.format) === ArchivedFormat.monolith && (
+        <iframe
+          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}`}
+          className="w-full h-screen border-none"
+        ></iframe>
+      )}
       {link && Number(router.query.format) === ArchivedFormat.pdf && (
         <iframe
           src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}`}
@@ -59,3 +66,5 @@ export default function Index() {
     </div>
   );
 }
+
+export { getServerSideProps };

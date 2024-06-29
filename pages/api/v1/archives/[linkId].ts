@@ -29,6 +29,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
   else if (format === ArchivedFormat.jpeg) suffix = ".jpeg";
   else if (format === ArchivedFormat.pdf) suffix = ".pdf";
   else if (format === ArchivedFormat.readability) suffix = "_readability.json";
+  else if (format === ArchivedFormat.monolith) suffix = ".html";
 
   //@ts-ignore
   if (!linkId || !suffix)
@@ -84,21 +85,42 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       linkId,
     });
 
-    const memberHasAccess = collectionPermissions?.members.some(
+    if (!collectionPermissions)
+      return { response: "Collection is not accessible.", status: 400 };
+
+    const memberHasAccess = collectionPermissions.members.some(
       (e: UsersAndCollections) => e.userId === user.id && e.canCreate
     );
 
-    if (!(collectionPermissions?.ownerId === user.id || memberHasAccess))
-      return { response: "Collection is not accessible.", status: 401 };
+    if (!(collectionPermissions.ownerId === user.id || memberHasAccess))
+      return { response: "Collection is not accessible.", status: 400 };
 
     // await uploadHandler(linkId, )
 
-    const MAX_UPLOAD_SIZE = Number(process.env.NEXT_PUBLIC_MAX_FILE_SIZE);
+    const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER || 30000);
+
+    const numberOfLinksTheUserHas = await prisma.link.count({
+      where: {
+        collection: {
+          ownerId: user.id,
+        },
+      },
+    });
+
+    if (numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+      return {
+        response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+        status: 400,
+      };
+
+    const NEXT_PUBLIC_MAX_FILE_BUFFER = Number(
+      process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
+    );
 
     const form = formidable({
       maxFields: 1,
       maxFiles: 1,
-      maxFileSize: MAX_UPLOAD_SIZE || 30 * 1048576,
+      maxFileSize: NEXT_PUBLIC_MAX_FILE_BUFFER * 1024 * 1024,
     });
 
     form.parse(req, async (err, fields, files) => {
@@ -116,18 +138,26 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
         !allowedMIMETypes.includes(files.file[0].mimetype || "")
       ) {
         // Handle parsing error
-        return res.status(500).json({
-          response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${MAX_UPLOAD_SIZE}MB.`,
+        return res.status(400).json({
+          response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`,
         });
       } else {
         const fileBuffer = fs.readFileSync(files.file[0].filepath);
+
+        if (
+          Buffer.byteLength(fileBuffer) >
+          1024 * 1024 * Number(NEXT_PUBLIC_MAX_FILE_BUFFER)
+        )
+          return res.status(400).json({
+            response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`,
+          });
 
         const linkStillExists = await prisma.link.findUnique({
           where: { id: linkId },
         });
 
         if (linkStillExists && files.file[0].mimetype?.includes("image")) {
-          const collectionId = collectionPermissions?.id as number;
+          const collectionId = collectionPermissions.id as number;
           createFolder({
             filePath: `archives/preview/${collectionId}`,
           });
@@ -137,9 +167,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
         if (linkStillExists) {
           await createFile({
-            filePath: `archives/${collectionPermissions?.id}/${
-              linkId + suffix
-            }`,
+            filePath: `archives/${collectionPermissions.id}/${linkId + suffix}`,
             data: fileBuffer,
           });
 
@@ -150,10 +178,10 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
                 ? "unavailable"
                 : undefined,
               image: files.file[0].mimetype?.includes("image")
-                ? `archives/${collectionPermissions?.id}/${linkId + suffix}`
+                ? `archives/${collectionPermissions.id}/${linkId + suffix}`
                 : null,
               pdf: files.file[0].mimetype?.includes("pdf")
-                ? `archives/${collectionPermissions?.id}/${linkId + suffix}`
+                ? `archives/${collectionPermissions.id}/${linkId + suffix}`
                 : null,
               lastPreserved: new Date().toISOString(),
             },

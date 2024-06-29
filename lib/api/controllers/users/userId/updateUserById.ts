@@ -207,6 +207,7 @@ export default async function updateUserById(
       ),
       locale: i18n.locales.includes(data.locale) ? data.locale : "en",
       archiveAsScreenshot: data.archiveAsScreenshot,
+      archiveAsMonolith: data.archiveAsMonolith,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,
