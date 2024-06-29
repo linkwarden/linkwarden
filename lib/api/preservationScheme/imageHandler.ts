@@ -1,6 +1,7 @@
 import { Link } from "@prisma/client";
 import { prisma } from "../db";
 import createFile from "../storage/createFile";
+import generatePreview from "../generatePreview";
 
 const imageHandler = async ({ url, id }: Link, extension: string) => {
   const image = await fetch(url as string).then((res) => res.blob());
@@ -18,6 +19,8 @@ const imageHandler = async ({ url, id }: Link, extension: string) => {
   });
 
   if (linkExists) {
+    await generatePreview(buffer, linkExists.collectionId, id);
+
     await createFile({
       data: buffer,
       filePath: `archives/${linkExists.collectionId}/${id}.${extension}`,

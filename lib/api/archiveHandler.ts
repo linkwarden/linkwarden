@@ -2,7 +2,7 @@ import { LaunchOptions, chromium, devices } from "playwright";
 import { prisma } from "./db";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { Collection, Link, User } from "@prisma/client";
-import validateUrlSize from "./validateUrlSize";
+import fetchHeaders from "./fetchHeaders";
 import createFolder from "./storage/createFolder";
 import { removeFiles } from "./manageLinkFiles";
 import handleMonolith from "./preservationScheme/handleMonolith";
@@ -65,17 +65,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       (async () => {
         const user = link.collection?.owner;
 
-        const validatedUrl = link.url
-          ? await validateUrlSize(link.url)
-          : undefined;
+        const header = link.url ? await fetchHeaders(link.url) : undefined;
 
-        if (
-          validatedUrl === null &&
-          process.env.IGNORE_URL_SIZE_LIMIT !== "true"
-        )
-          throw "Something went wrong while retrieving the file size.";
-
-        const contentType = validatedUrl?.get("content-type");
+        const contentType = header?.get("content-type");
         let linkType = "url";
         let imageExtension = "png";
 
