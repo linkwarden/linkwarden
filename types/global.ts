@@ -137,12 +137,14 @@ export enum ArchivedFormat {
   jpeg,
   pdf,
   readability,
+  monolith,
 }
 
 export enum LinkType {
   url,
   pdf,
   image,
+  monolith,
 }
 
 export enum TokenExpiry {

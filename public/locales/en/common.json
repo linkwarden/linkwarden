@@ -166,6 +166,7 @@
   "open_pdf_if_available": "Open PDF, if available",
   "open_readable_if_available": "Open Readable, if available",
   "open_screenshot_if_available": "Open Screenshot, if available",
+  "open_webpage_if_available": "Open Webpage copy, if available",
   "tag_renamed": "Tag renamed!",
   "tag_deleted": "Tag deleted!",
   "rename_tag": "Rename Tag",
@@ -221,8 +222,9 @@
   "github": "GitHub",
   "twitter": "Twitter",
   "mastodon": "Mastodon",
-  "link_preservation_in_queue": "LThe Link preservation is currently in the queue",
+  "link_preservation_in_queue": "The Link preservation is currently in the queue",
   "check_back_later": "Please check back later to see the result",
+  "there_are_more_formats": "There are more preserved formats in the queue",
   "settings": "Settings",
   "switch_to": "Switch to {{theme}}",
   "logout": "Logout",
@@ -360,5 +362,6 @@
   "show_link_details": "Show Link Details",
   "hide_link_details": "Hide Link Details",
   "link_pinned": "Link Pinned!",
-  "link_unpinned": "Link Unpinned!"
+  "link_unpinned": "Link Unpinned!",
+  "webpage": "Webpage"
 }

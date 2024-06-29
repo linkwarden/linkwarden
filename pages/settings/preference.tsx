@@ -25,14 +25,21 @@ export default function Appearance() {
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(
     account.archiveAsPDF
   );
+
+  const [archiveAsMonolith, setArchiveAsMonolith] = useState<boolean>(
+    account.archiveAsMonolith
+  );
+
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
     useState<boolean>(account.archiveAsWaybackMachine);
+
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
 
   useEffect(() => {
     setUser({
       ...account,
       archiveAsScreenshot,
+      archiveAsMonolith,
       archiveAsPDF,
       archiveAsWaybackMachine,
       linksRouteTo,
@@ -41,6 +48,7 @@ export default function Appearance() {
   }, [
     account,
     archiveAsScreenshot,
+    archiveAsMonolith,
     archiveAsPDF,
     archiveAsWaybackMachine,
     linksRouteTo,
@@ -54,6 +62,7 @@ export default function Appearance() {
   useEffect(() => {
     if (!objectIsEmpty(account)) {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
+      setArchiveAsMonolith(account.archiveAsMonolith);
       setArchiveAsPDF(account.archiveAsPDF);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
@@ -125,6 +134,13 @@ export default function Appearance() {
               state={archiveAsScreenshot}
               onClick={() => setArchiveAsScreenshot(!archiveAsScreenshot)}
             />
+
+            <Checkbox
+              label={t("webpage")}
+              state={archiveAsMonolith}
+              onClick={() => setArchiveAsMonolith(!archiveAsMonolith)}
+            />
+
             <Checkbox
               label={t("pdf")}
               state={archiveAsPDF}
@@ -201,6 +217,24 @@ export default function Appearance() {
               />
               <span className="label-text">
                 {t("open_readable_if_available")}
+              </span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Monolith"
+                checked={linksRouteTo === LinksRouteTo.MONOLITH}
+                onChange={() => setLinksRouteTo(LinksRouteTo.MONOLITH)}
+              />
+              <span className="label-text">
+                {t("open_webpage_if_available")}
               </span>
             </label>
 

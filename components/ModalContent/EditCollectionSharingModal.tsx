@@ -68,6 +68,7 @@ export default function EditCollectionSharingModal({
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsMonolith: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 

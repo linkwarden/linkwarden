@@ -4,7 +4,8 @@ import { LinkRequestQuery, Sort } from "@/types/global";
 export default async function getLink(
   query: Omit<LinkRequestQuery, "tagId" | "pinnedOnly">
 ) {
-  const POSTGRES_IS_ENABLED = process.env.DATABASE_URL.startsWith("postgresql");
+  const POSTGRES_IS_ENABLED =
+    process.env.DATABASE_URL?.startsWith("postgresql");
 
   let order: any;
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
