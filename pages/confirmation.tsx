@@ -1,7 +1,7 @@
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
