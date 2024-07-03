@@ -36,7 +36,7 @@ export default async function isServerAdmin({ req }: Props): Promise<boolean> {
     },
   });
 
-  if (findUser?.username === process.env.ADMINISTRATOR) {
+  if (findUser?.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1)) {
     return true;
   } else {
     return false;

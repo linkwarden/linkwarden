@@ -22,7 +22,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     },
   });
 
-  const isServerAdmin = process.env.ADMINISTRATOR === user?.username;
+  const isServerAdmin = user?.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
 
   const userId = isServerAdmin ? Number(req.query.id) : token.id;
 

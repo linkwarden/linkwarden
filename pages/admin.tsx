@@ -1,4 +1,3 @@
-import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
 import NewUserModal from "@/components/ModalContent/NewUserModal";
 import useUserStore from "@/store/admin/users";
 import { User as U } from "@prisma/client";

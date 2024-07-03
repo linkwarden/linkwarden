@@ -363,5 +363,6 @@
   "hide_link_details": "Hide Link Details",
   "link_pinned": "Link Pinned!",
   "link_unpinned": "Link Unpinned!",
-  "webpage": "Webpage"
+  "webpage": "Webpage",
+  "server_administration": "Server Administration"
 }
