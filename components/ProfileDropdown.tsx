@@ -11,6 +11,8 @@ export default function ProfileDropdown() {
   const { settings, updateSettings } = useLocalSettingsStore();
   const { account } = useAccountStore();
 
+  const isAdmin = account.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
+
   const handleToggle = () => {
     const newTheme = settings.theme === "dark" ? "light" : "dark";
     updateSettings({ theme: newTheme });
@@ -29,7 +31,11 @@ export default function ProfileDropdown() {
           priority={true}
         />
       </div>
-      <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
+      <ul
+        className={`dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box ${
+          isAdmin ? "w-48" : "w-40"
+        } mt-1`}
+      >
         <li>
           <Link
             href="/settings/account"
@@ -54,6 +60,18 @@ export default function ProfileDropdown() {
             })}
           </div>
         </li>
+        {isAdmin ? (
+          <li>
+            <Link
+              href="/admin"
+              onClick={() => (document?.activeElement as HTMLElement)?.blur()}
+              tabIndex={0}
+              role="button"
+            >
+              {t("server_administration")}
+            </Link>
+          </li>
+        ) : null}
         <li>
           <div
             onClick={() => {
