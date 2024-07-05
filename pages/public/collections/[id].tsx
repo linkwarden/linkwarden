@@ -44,6 +44,7 @@ const cardVariants: Variants = {
 
 export default function PublicCollections() {
   const { links } = useLinkStore();
+  const tagsInCollection = links.map(l => l.tags).flat();
 
   const { settings } = useLocalSettingsStore();
 
@@ -241,7 +242,7 @@ export default function PublicCollections() {
               <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
             </div>
           </div>
-{collection.tagsArePublic && tags[0] && (
+{collection.tagsArePublic && tagsInCollection[0] && (
             <div>
               <p className="text-sm">Browse by topic</p>
               <div className="flex gap-2 mt-2 mb-6">
@@ -257,7 +258,7 @@ export default function PublicCollections() {
                       </div>
                   </div>
                 </button>
-                {tags
+                {tagsInCollection
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((e, i) => {
                     const active = router.query.q === e.name;
@@ -274,7 +275,7 @@ export default function PublicCollections() {
                           <i className="bi-hash text-2xl text-primary drop-shadow"></i>
                           <p className="truncate pr-7">{e.name}</p>
                           <div className="drop-shadow text-neutral text-xs">
-                            {e._count?.links}
+                            {tags.find(t => t.id === e.id)?._count?.links}
                           </div>
                         </div>
                       </button>
