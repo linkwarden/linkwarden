@@ -62,6 +62,7 @@ export default async function updateCollection(
         description: data.description,
         color: data.color,
         isPublic: data.isPublic,
+        tagsArePublic: data.tagsArePublic,
         parent:
           data.parentId && data.parentId !== ("root" as any)
             ? {
