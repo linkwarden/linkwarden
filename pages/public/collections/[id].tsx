@@ -3,6 +3,7 @@ import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
 import {
   CollectionIncludingMembersAndLinkCount,
   Sort,
+  TagIncludingLinkCount,
   ViewMode,
 } from "@/types/global";
 import { useRouter } from "next/router";
@@ -24,6 +25,7 @@ import EditCollectionSharingModal from "@/components/ModalContent/EditCollection
 import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
+import useTagStore from "@/store/tags";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 
 const cardVariants: Variants = {
@@ -55,6 +57,24 @@ export default function PublicCollections() {
     archiveAsScreenshot: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
+
+  const { tags } = useTagStore();
+  const handleTagSelection = (tag: TagIncludingLinkCount  | undefined) => {
+    if (tag) {
+      Object.keys(searchFilter).forEach((v) => searchFilter[(v as keyof {name: boolean, url: boolean, description: boolean, tags: boolean, textContent: boolean})] = false)
+      searchFilter.tags = true;
+      return router.push(
+        "/public/collections/" +
+        router.query.id +
+        "?q=" +
+        encodeURIComponent(tag.name || "")
+      );
+    } else {
+      return router.push(
+        "/public/collections/" +
+        router.query.id)
+    }
+  }
 
   const [searchFilter, setSearchFilter] = useState({
     name: true,
@@ -221,7 +241,49 @@ export default function PublicCollections() {
               <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
             </div>
           </div>
-
+{collection.tagsArePublic && tags[0] && (
+            <div>
+              <p className="text-sm">Browse by topic</p>
+              <div className="flex gap-2 mt-2 mb-6">
+                <button onClick={() => handleTagSelection(undefined)}>
+                  <div
+                    className="
+                      bg-neutral-content/20 hover:bg-neutral/20 duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8"
+                    >
+                      <i className="text-primary bi-hash text-2xl text-primary drop-shadow"></i>
+                      <p className="truncate pr-7">All</p>
+                      <div className="text-neutral drop-shadow text-neutral text-xs">
+                        {collection._count?.links}
+                      </div>
+                  </div>
+                </button>
+                {tags
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((e, i) => {
+                    const active = router.query.q === e.name;
+                    return (
+                      <button key={i} onClick={() => handleTagSelection(e)}>
+                        <div
+                          className={`
+                            ${
+                            active
+                              ? "bg-primary/20"
+                              : "bg-neutral-content/20 hover:bg-neutral/20"
+                          } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
+                        >
+                          <i className="bi-hash text-2xl text-primary drop-shadow"></i>
+                          <p className="truncate pr-7">{e.name}</p>
+                          <div className="drop-shadow text-neutral text-xs">
+                            {e._count?.links}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })
+              }
+              </div>
+            </div>
+          )}
           {links[0] ? (
             <LinkComponent
               links={links
