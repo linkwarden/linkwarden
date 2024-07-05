@@ -9,7 +9,9 @@ import importFromWallabag from "@/lib/api/controllers/migration/importFromWallab
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: "10mb",
+      sizeLimit: process.env.IMPORT_LIMIT
+        ? process.env.IMPORT_LIMIT + "mb"
+        : "10mb",
     },
   },
 };
