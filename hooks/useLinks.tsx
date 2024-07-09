@@ -18,13 +18,41 @@ export default function useLinks(
     searchByTextContent,
   }: LinkRequestQuery = { sort: 0 }
 ) {
-  const { links, setLinks, resetLinks, selectedLinks, setSelectedLinks } =
+  const { links, setLinks, resetLinks, selectedLinks, setSelectedLinks, setAllLinksOfCollection } =
     useLinkStore();
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(true);
 
   const { reachedBottom, setReachedBottom } = useDetectPageBottom();
+
+  const getPath = (params?: LinkRequestQuery) => {
+   const buildQueryString = (params: LinkRequestQuery) => {
+     return Object.keys(params)
+       .filter((key) => params[key as keyof LinkRequestQuery] !== undefined)
+       .map(
+         (key) =>
+           `${encodeURIComponent(key)}=${encodeURIComponent(
+             params[key as keyof LinkRequestQuery] as string
+           )}`
+       )
+       .join("&");
+   };
+   let queryString = '';
+   if (params) {
+     queryString = buildQueryString(params);
+   }
+
+   let basePath;
+
+   if (router.pathname === "/dashboard") basePath = "/api/v1/dashboard";
+   else if (router.pathname.startsWith("/public/collections/[id]")) {
+     queryString = queryString + "&collectionId=" + router.query.id;
+     basePath = "/api/v1/public/collections/links";
+   } else basePath = "/api/v1/links";
+
+   return `${basePath}?${queryString}`;
+  }
 
   const getLinks = async (isInitialCall: boolean, cursor?: number) => {
     const params = {
@@ -40,38 +68,24 @@ export default function useLinks(
       searchByTags,
       searchByTextContent,
     };
-
-    const buildQueryString = (params: LinkRequestQuery) => {
-      return Object.keys(params)
-        .filter((key) => params[key as keyof LinkRequestQuery] !== undefined)
-        .map(
-          (key) =>
-            `${encodeURIComponent(key)}=${encodeURIComponent(
-              params[key as keyof LinkRequestQuery] as string
-            )}`
-        )
-        .join("&");
-    };
-
-    let queryString = buildQueryString(params);
-
-    let basePath;
-
-    if (router.pathname === "/dashboard") basePath = "/api/v1/dashboard";
-    else if (router.pathname.startsWith("/public/collections/[id]")) {
-      queryString = queryString + "&collectionId=" + router.query.id;
-      basePath = "/api/v1/public/collections/links";
-    } else basePath = "/api/v1/links";
-
+ 
     setIsLoading(true);
 
-    const response = await fetch(`${basePath}?${queryString}`);
+    const response = await fetch(getPath(params));
 
     const data = await response.json();
 
     setIsLoading(false);
 
     if (response.ok) setLinks(data.response, isInitialCall);
+  };
+
+  const getAllLinks = async () => {
+    const response = await fetch(getPath());
+
+    const data = await response.json();
+
+    if (response.ok) setAllLinksOfCollection(data.response);
   };
 
   useEffect(() => {
@@ -81,6 +95,7 @@ export default function useLinks(
     resetLinks();
 
     setSelectedLinks(previouslySelected);
+    getAllLinks();
     getLinks(true);
   }, [
     router,
