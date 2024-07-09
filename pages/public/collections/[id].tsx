@@ -26,6 +26,7 @@ import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import useTagStore from "@/store/tags";
+import { Disclosure, Transition } from "@headlessui/react";
 // import GridView from "@/components/LinkViews/Layouts/GridView";
 
 const cardVariants: Variants = {
@@ -43,9 +44,11 @@ const cardVariants: Variants = {
 };
 
 export default function PublicCollections() {
-  const { links } = useLinkStore();
-  const tagsInCollection = links.map(l => l.tags).flat();
-
+  const { links, allLinksOfCollection } = useLinkStore();
+  const tagsInCollection = allLinksOfCollection.map(l => l.tags).flat().filter((value, index, self) =>
+  index === self.findIndex((t) => (
+    t.name === value.name
+  )));
   const { settings } = useLocalSettingsStore();
 
   const router = useRouter();
@@ -101,7 +104,6 @@ export default function PublicCollections() {
 
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>();
-
   useEffect(() => {
     if (router.query.id) {
       getPublicCollectionData(Number(router.query.id), setCollection);
@@ -131,6 +133,14 @@ export default function PublicCollections() {
     // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
   };
+
+  const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
+    const storedValue = localStorage.getItem("tagDisclosureForPublicCollection" + collection?.id);
+    return storedValue ? storedValue === "true" : true;
+  });
+    useEffect(() => {
+    localStorage.setItem("tagDisclosureForPublicCollection" + collection?.id, tagDisclosure ? "true" : "false");
+  }, [tagDisclosure]);
 
   // @ts-ignore
   const LinkComponent = linkView[viewMode];
@@ -243,10 +253,31 @@ export default function PublicCollections() {
             </div>
           </div>
 {collection.tagsArePublic && tagsInCollection[0] && (
-            <div>
-              <p className="text-sm">Browse by topic</p>
-              <div className="flex gap-2 mt-2 mb-6">
-                <button onClick={() => handleTagSelection(undefined)}>
+<Disclosure defaultOpen={tagDisclosure}>
+        <Disclosure.Button
+          onClick={() => {
+            setTagDisclosure(!tagDisclosure);
+          }}
+          className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
+        >
+          <p className="text-sm">Browse by topic</p>
+          <i
+            className={`bi-chevron-down ${
+              tagDisclosure ? "rotate-reverse" : "rotate"
+            }`}
+          ></i>
+        </Disclosure.Button>
+        <Transition
+          enter="transition duration-100 ease-out"
+          enterFrom="transform opacity-0 -translate-y-3"
+          enterTo="transform opacity-100 translate-y-0"
+          leave="transition duration-100 ease-out"
+          leaveFrom="transform opacity-100 translate-y-0"
+          leaveTo="transform opacity-0 -translate-y-3"
+        >
+          <Disclosure.Panel>
+                          <div className="flex gap-2 mt-2 mb-6 flex-wrap">
+                <button className="max-w-full" onClick={() => handleTagSelection(undefined)}>
                   <div
                     className="
                       bg-neutral-content/20 hover:bg-neutral/20 duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8"
@@ -263,7 +294,7 @@ export default function PublicCollections() {
                   .map((e, i) => {
                     const active = router.query.q === e.name;
                     return (
-                      <button key={i} onClick={() => handleTagSelection(e)}>
+                      <button className="max-w-full" key={i} onClick={() => handleTagSelection(e)}>
                         <div
                           className={`
                             ${
@@ -283,8 +314,9 @@ export default function PublicCollections() {
                   })
               }
               </div>
-            </div>
-          )}
+          </Disclosure.Panel>
+        </Transition>
+      </Disclosure>)}
           {links[0] ? (
             <LinkComponent
               links={links
