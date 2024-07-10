@@ -11,13 +11,11 @@ type ResponseObject = {
 type LinkStore = {
   links: LinkIncludingShortenedCollectionAndTags[];
   selectedLinks: LinkIncludingShortenedCollectionAndTags[];
-  allLinksOfCollection: LinkIncludingShortenedCollectionAndTags[];
   setLinks: (
     data: LinkIncludingShortenedCollectionAndTags[],
     isInitialCall: boolean
   ) => void;
   setSelectedLinks: (links: LinkIncludingShortenedCollectionAndTags[]) => void;
-  setAllLinksOfCollection: (links: LinkIncludingShortenedCollectionAndTags[]) => void;
   addLink: (
     body: LinkIncludingShortenedCollectionAndTags
   ) => Promise<ResponseObject>;
@@ -41,7 +39,6 @@ type LinkStore = {
 const useLinkStore = create<LinkStore>()((set) => ({
   links: [],
   selectedLinks: [],
-  allLinksOfCollection: [],
   setLinks: async (data, isInitialCall) => {
     isInitialCall &&
       set(() => ({
@@ -61,7 +58,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
     }));
   },
   setSelectedLinks: (links) => set({ selectedLinks: links }),
-  setAllLinksOfCollection: (links) => set({allLinksOfCollection: links}),
   addLink: async (body) => {
     const response = await fetch("/api/v1/links", {
       body: JSON.stringify(body),

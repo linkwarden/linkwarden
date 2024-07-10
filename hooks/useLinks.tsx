@@ -18,7 +18,7 @@ export default function useLinks(
     searchByTextContent,
   }: LinkRequestQuery = { sort: 0 }
 ) {
-  const { links, setLinks, resetLinks, selectedLinks, setSelectedLinks, setAllLinksOfCollection } =
+  const { links, setLinks, resetLinks, selectedLinks, setSelectedLinks } =
     useLinkStore();
   const router = useRouter();
 
@@ -80,14 +80,6 @@ export default function useLinks(
     if (response.ok) setLinks(data.response, isInitialCall);
   };
 
-  const getAllLinks = async () => {
-    const response = await fetch(getPath());
-
-    const data = await response.json();
-
-    if (response.ok) setAllLinksOfCollection(data.response);
-  };
-
   useEffect(() => {
     // Save the selected links before resetting the links
     // and then restore the selected links after resetting the links
@@ -95,7 +87,6 @@ export default function useLinks(
     resetLinks();
 
     setSelectedLinks(previouslySelected);
-    getAllLinks();
     getLinks(true);
   }, [
     router,
