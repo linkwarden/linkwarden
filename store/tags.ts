@@ -8,15 +8,19 @@ type ResponseObject = {
 
 type TagStore = {
   tags: TagIncludingLinkCount[];
-  setTags: () => void;
+  setTags: (collectionId?: number) => void;
   updateTag: (tag: TagIncludingLinkCount) => Promise<ResponseObject>;
   removeTag: (tagId: number) => Promise<ResponseObject>;
 };
 
 const useTagStore = create<TagStore>()((set) => ({
   tags: [],
-  setTags: async () => {
-    const response = await fetch("/api/v1/tags");
+  setTags: async (collectionId?: number) => {
+    let path = "/api/v1/tags";
+    if (collectionId) {
+      path = "/api/v1/public/collections/tags?collectionId=" + encodeURIComponent(collectionId);
+    }
+    const response = await fetch(path);
 
     const data = await response.json();
 

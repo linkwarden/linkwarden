@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { LinkRequestQuery, Sort } from "@/types/global";
 
 export default async function getLink(
-  query: Omit<LinkRequestQuery, "tagId" | "pinnedOnly">
+  query: Omit<LinkRequestQuery, "tagId" | "pinnedOnly">, takeAll = false
 ) {
   const POSTGRES_IS_ENABLED = process.env.DATABASE_URL.startsWith("postgresql");
 
@@ -68,7 +68,7 @@ export default async function getLink(
   }
 
   const links = await prisma.link.findMany({
-    take: Number(process.env.PAGINATION_TAKE_COUNT) || 20,
+    take: !takeAll ? Number(process.env.PAGINATION_TAKE_COUNT) || 20 : undefined,
     skip: query.cursor ? 1 : undefined,
     cursor: query.cursor ? { id: query.cursor } : undefined,
     where: {

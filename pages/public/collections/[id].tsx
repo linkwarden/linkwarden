@@ -44,11 +44,7 @@ const cardVariants: Variants = {
 };
 
 export default function PublicCollections() {
-  const { links, allLinksOfCollection } = useLinkStore();
-  const tagsInCollection = allLinksOfCollection.map(l => l.tags).flat().filter((value, index, self) =>
-  index === self.findIndex((t) => (
-    t.name === value.name
-  )));
+  const { links } = useLinkStore();
   const { settings } = useLocalSettingsStore();
 
   const router = useRouter();
@@ -62,7 +58,7 @@ export default function PublicCollections() {
     archiveAsPDF: undefined as unknown as boolean,
   });
 
-  const { tags } = useTagStore();
+  const { tags, setTags } = useTagStore();
   const handleTagSelection = (tag: TagIncludingLinkCount  | undefined) => {
     if (tag) {
       Object.keys(searchFilter).forEach((v) => searchFilter[(v as keyof {name: boolean, url: boolean, description: boolean, tags: boolean, textContent: boolean})] = false)
@@ -107,6 +103,7 @@ export default function PublicCollections() {
   useEffect(() => {
     if (router.query.id) {
       getPublicCollectionData(Number(router.query.id), setCollection);
+      setTags(Number(router.query.id))
     }
   }, []);
 
@@ -252,7 +249,7 @@ export default function PublicCollections() {
               <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
             </div>
           </div>
-{collection.tagsArePublic && tagsInCollection[0] && (
+{collection.tagsArePublic && tags[0] && (
 <Disclosure defaultOpen={tagDisclosure}>
         <Disclosure.Button
           onClick={() => {
@@ -289,7 +286,7 @@ export default function PublicCollections() {
                       </div>
                   </div>
                 </button>
-                {tagsInCollection
+                {tags
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((e, i) => {
                     const active = router.query.q === e.name;
@@ -306,7 +303,7 @@ export default function PublicCollections() {
                           <i className="bi-hash text-2xl text-primary drop-shadow"></i>
                           <p className="truncate pr-7">{e.name}</p>
                           <div className="drop-shadow text-neutral text-xs">
-                            {tags.find(t => t.id === e.id)?._count?.links}
+                            {e._count?.links}
                           </div>
                         </div>
                       </button>
