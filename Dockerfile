@@ -10,19 +10,27 @@ COPY ./package.json ./yarn.lock ./playwright.config.ts ./
 
 RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn yarn install --network-timeout 10000000
 
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update
+
+RUN apt-get install -y \
     build-essential \
     curl \
     libssl-dev \
-    pkg-config && \
-    curl https://sh.rustup.rs -sSf | bash -s -- -y && \ 
-    PATH="/root/.cargo/bin:${PATH}" && \
-    cargo install monolith && \
-    npx playwright install-deps && \
+    pkg-config
+
+RUN apt-get update
+
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+RUN cargo install monolith
+
+RUN npx playwright install-deps && \
     apt-get clean && \
-    yarn cache clean && \
-    yarn playwright install
+    yarn cache clean
+
+RUN yarn playwright install
 
 COPY . .
 
