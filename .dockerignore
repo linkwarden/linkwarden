@@ -5,7 +5,3 @@ pgdata
 docker-compose.yml
 Dockerfile
 README.md
-•git
-•github
-•gitignore
-dist/**
