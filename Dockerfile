@@ -3,7 +3,8 @@ FROM node:18.18.2-alpine3.18 AS build
 
 WORKDIR /data
 
-COPY ./package.json ./yarn.lock ./playwright.config.ts ./
+COPY --chown=node ./package.json ./yarn.lock ./playwright.config.ts ./
+COPY --chown=node docker/local.conf /etc/fonts/local.conf
 
 RUN \
   --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
@@ -17,6 +18,8 @@ RUN \
     curl \
     gcc \
     chromium \
+    chromium-swiftshader \
+    font-noto-emoji \
     nss \
     freetype \
     ttf-freefont \
@@ -36,19 +39,22 @@ RUN \
 
 FROM node:18.18.2-alpine3.18
 
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-
 WORKDIR /data
 
-COPY --from=build /data .
+COPY --chown=node --from=build /data .
+COPY --chown=node docker/local.conf /etc/fonts/local.conf
 
 RUN \
   apk update && \
   apk add --no-cache \
     chromium \
+    chromium-swiftshader \
+    font-noto-emoji \
     nss \
     freetype \
     ttf-freefont && \
+  rm -fr /var/cache/* && \
+  fc-cache -f && \
   chown -R node:node /data
 
 USER node
