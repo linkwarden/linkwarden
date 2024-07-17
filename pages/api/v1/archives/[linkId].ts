@@ -77,6 +77,12 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       return res.send(file);
     }
   } else if (req.method === "POST") {
+    if (process.env.DEMO_MODE === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     const user = await verifyUser({ req, res });
     if (!user) return;
 
@@ -86,14 +92,18 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (!collectionPermissions)
-      return { response: "Collection is not accessible.", status: 400 };
+      return res.status(400).json({
+        response: "Collection is not accessible.",
+      });
 
     const memberHasAccess = collectionPermissions.members.some(
       (e: UsersAndCollections) => e.userId === user.id && e.canCreate
     );
 
     if (!(collectionPermissions.ownerId === user.id || memberHasAccess))
-      return { response: "Collection is not accessible.", status: 400 };
+      return res.status(400).json({
+        response: "Collection is not accessible.",
+      });
 
     // await uploadHandler(linkId, )
 
@@ -108,10 +118,10 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
-      return {
-        response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
-        status: 400,
-      };
+      return res.status(400).json({
+        response:
+          "Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.",
+      });
 
     const NEXT_PUBLIC_MAX_FILE_BUFFER = Number(
       process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10

@@ -12,7 +12,7 @@ export default function PageHeader({
   return (
     <div className="flex items-center gap-3">
       <i
-        className={`${icon} text-primary text-3xl sm:text-4xl drop-shadow`}
+        className={`${icon} text-primary sm:text-3xl text-2xl drop-shadow`}
       ></i>
       <div>
         <p className="text-3xl capitalize font-thin">{title}</p>

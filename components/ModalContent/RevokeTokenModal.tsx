@@ -30,6 +30,8 @@ export default function DeleteTokenModal({ onClose, activeToken }: Props) {
 
     if (response.ok) {
       toast.success(t("token_revoked"));
+    } else {
+      toast.error(response.data as string);
     }
 
     onClose();
