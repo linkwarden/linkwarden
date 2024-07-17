@@ -145,7 +145,7 @@ export default function Index() {
                     <input
                       type="text"
                       autoFocus
-                      className="sm:text-4xl text-3xl capitalize bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
+                      className="sm:text-3xl text-2xl capitalize bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
                       value={newTagName}
                       onChange={(e) => setNewTagName(e.target.value)}
                     />
@@ -167,7 +167,7 @@ export default function Index() {
                 </>
               ) : (
                 <>
-                  <p className="sm:text-4xl text-3xl capitalize">
+                  <p className="sm:text-3xl text-2xl capitalize">
                     {activeTag?.name}
                   </p>
                   <div className="relative">

@@ -20,7 +20,11 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
 
     toast.dismiss(load);
 
-    response.ok && toast.success(t("user_deleted"));
+    if (response.ok) {
+      toast.success(t("user_deleted"));
+    } else {
+      toast.error(response.data as string);
+    }
 
     onClose();
   };
