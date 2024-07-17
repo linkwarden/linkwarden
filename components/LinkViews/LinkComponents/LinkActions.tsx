@@ -55,8 +55,11 @@ export default function LinkActions({
 
     toast.dismiss(load);
 
-    response.ok &&
+    if (response.ok) {
       toast.success(isAlreadyPinned ? t("link_unpinned") : t("link_unpinned"));
+    } else {
+      toast.error(response.data as string);
+    }
   };
 
   const deleteLink = async () => {
@@ -66,7 +69,11 @@ export default function LinkActions({
 
     toast.dismiss(load);
 
-    response.ok && toast.success(t("deleted"));
+    if (response.ok) {
+      toast.success(t("deleted"));
+    } else {
+      toast.error(response.data as string);
+    }
   };
 
   return (

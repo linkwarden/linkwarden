@@ -157,7 +157,12 @@ export default function LinkCardCompact({
           // linkInfo={showInfo}
         />
       </div>
-      <div className="divider my-0 last:hidden h-[1px]"></div>
+      <div
+        className="last:hidden rounded-none"
+        style={{
+          borderTop: "1px solid var(--fallback-bc,oklch(var(--bc)/0.1))",
+        }}
+      ></div>
     </>
   );
 }

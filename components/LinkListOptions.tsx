@@ -81,12 +81,15 @@ const LinkListOptions = ({
 
     toast.dismiss(load);
 
-    response.ok &&
+    if (response.ok) {
       toast.success(
         selectedLinks.length === 1
           ? t("link_deleted")
           : t("links_deleted", { count: selectedLinks.length })
       );
+    } else {
+      toast.error(response.data as string);
+    }
   };
 
   return (
