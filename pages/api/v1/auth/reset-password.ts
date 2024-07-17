@@ -7,6 +7,12 @@ export default async function resetPassword(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
+    if (process.env.DEMO_MODE === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     const token = req.body.token;
     const password = req.body.password;
 
