@@ -29,6 +29,12 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     });
 
   if (req.method === "PUT") {
+    if (process.env.DEMO_MODE === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     if (
       link?.lastPreserved &&
       getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved) <

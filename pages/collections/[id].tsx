@@ -128,7 +128,7 @@ export default function Index() {
                 style={{ color: activeCollection?.color }}
               ></i>
 
-              <p className="sm:text-4xl text-3xl capitalize w-full py-1 break-words hyphens-auto font-thin">
+              <p className="sm:text-3xl text-2xl capitalize w-full py-1 break-words hyphens-auto font-thin">
                 {activeCollection?.name}
               </p>
             </div>
