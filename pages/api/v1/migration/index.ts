@@ -30,7 +30,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
         .status(data.status)
         .json(data.response);
   } else if (req.method === "POST") {
-    if (process.env.DEMO_MODE === "true")
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
       return res.status(400).json({
         response:
           "This action is disabled because this is a read-only demo of Linkwarden.",

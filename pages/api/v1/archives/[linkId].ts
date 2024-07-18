@@ -77,7 +77,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
       return res.send(file);
     }
   } else if (req.method === "POST") {
-    if (process.env.DEMO_MODE === "true")
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
       return res.status(400).json({
         response:
           "This action is disabled because this is a read-only demo of Linkwarden.",
