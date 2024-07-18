@@ -366,5 +366,9 @@
   "webpage": "Webpage",
   "server_administration": "Server Administration",
   "all_collections": "All Collections",
-  "dashboard": "Dashboard"
+  "dashboard": "Dashboard",
+  "demo_title": "Demo Only",
+  "demo_desc": "This is only a demo instance of Linkwarden and uploads are disabled.",
+  "demo_desc_2": "If you want to try out the full version, you can sign up for a free trial at:",
+  "demo_button": "Login as demo user"
 }

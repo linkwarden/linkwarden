@@ -112,16 +112,12 @@ export default function Login({
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>
-                    <p className="font-bold">Demo Only</p>
+                    <p className="font-bold">{t("demo_title")}</p>
                   </div>
-                  <div className="text-xs">
-                    This is only a demo instance of Linkwarden and uploads are
-                    disabled.
-                  </div>
+                  <div className="text-xs">{t("demo_desc")}</div>
 
                   <div className="text-xs">
-                    If you want to try out the full version, you can sign up for
-                    a free trial at:{" "}
+                    {t("demo_desc_2")}{" "}
                     <a
                       href="https://cloud.linkwarden.app"
                       target="_blank"
@@ -133,6 +129,8 @@ export default function Login({
                   <div
                     className="btn btn-sm btn-primary w-full"
                     onClick={async () => {
+                      const load = toast.loading(t("authenticating"));
+
                       setForm({
                         username: process.env
                           .NEXT_PUBLIC_DEMO_USERNAME as string,
@@ -144,9 +142,11 @@ export default function Login({
                         password: process.env.NEXT_PUBLIC_DEMO_PASSWORD,
                         redirect: false,
                       });
+
+                      toast.dismiss(load);
                     }}
                   >
-                    Login as demo user
+                    {t("demo_button")}
                   </div>
                 </div>
               </div>
