@@ -92,6 +92,66 @@ export default function Login({
             {t("enter_credentials")}
           </p>
           <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+
+          {process.env.NEXT_PUBLIC_DEMO === "true" &&
+            process.env.NEXT_PUBLIC_DEMO_USERNAME &&
+            process.env.NEXT_PUBLIC_DEMO_PASSWORD && (
+              <div className="p-3 shadow-lg border border-primary rounded-xl">
+                <div className="flex flex-col gap-2 items-center text-center w-full">
+                  <div className="flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      className="stroke-info h-6 w-6 shrink-0"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    <p className="font-bold">Demo Only</p>
+                  </div>
+                  <div className="text-xs">
+                    This is only a demo instance of Linkwarden and uploads are
+                    disabled.
+                  </div>
+
+                  <div className="text-xs">
+                    If you want to try out the full version, you can sign up for
+                    a free trial at:{" "}
+                    <a
+                      href="https://cloud.linkwarden.app"
+                      target="_blank"
+                      className="font-bold"
+                    >
+                      cloud.linkwarden.app
+                    </a>
+                  </div>
+                  <div
+                    className="btn btn-sm btn-primary w-full"
+                    onClick={async () => {
+                      setForm({
+                        username: process.env
+                          .NEXT_PUBLIC_DEMO_USERNAME as string,
+                        password: process.env
+                          .NEXT_PUBLIC_DEMO_PASSWORD as string,
+                      });
+                      await signIn("credentials", {
+                        username: process.env.NEXT_PUBLIC_DEMO_USERNAME,
+                        password: process.env.NEXT_PUBLIC_DEMO_PASSWORD,
+                        redirect: false,
+                      });
+                    }}
+                  >
+                    Login as demo user
+                  </div>
+                </div>
+              </div>
+            )}
+
           <div>
             <p className="text-sm text-black dark:text-white w-fit font-semibold mb-1">
               {availableLogins.emailEnabled === "true"
