@@ -48,7 +48,7 @@ export default async function updateLinkById(
       },
     });
 
-    return { response: updatedLink, status: 200 };
+    // return { response: updatedLink, status: 200 };
   }
 
   const targetCollectionIsAccessible = await getPermission({
@@ -60,9 +60,6 @@ export default async function updateLinkById(
     (e: UsersAndCollections) => e.userId === userId && e.canUpdate
   );
 
-  const targetCollectionsAccessible =
-    targetCollectionIsAccessible?.ownerId === userId;
-
   const targetCollectionMatchesData = data.collection.id
     ? data.collection.id === targetCollectionIsAccessible?.id
     : true && data.collection.name
@@ -71,12 +68,7 @@ export default async function updateLinkById(
         ? data.collection.ownerId === targetCollectionIsAccessible?.ownerId
         : true;
 
-  if (!targetCollectionsAccessible)
-    return {
-      response: "Target collection is not accessible.",
-      status: 401,
-    };
-  else if (!targetCollectionMatchesData)
+  if (!targetCollectionMatchesData)
     return {
       response: "Target collection does not match the data.",
       status: 401,
