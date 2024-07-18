@@ -58,7 +58,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (req.method === "PUT") {
-    if (process.env.DEMO_MODE === "true")
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
       return res.status(400).json({
         response:
           "This action is disabled because this is a read-only demo of Linkwarden.",
@@ -67,7 +67,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     const updated = await updateUserById(userId, req.body);
     return res.status(updated.status).json({ response: updated.response });
   } else if (req.method === "DELETE") {
-    if (process.env.DEMO_MODE === "true")
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
       return res.status(400).json({
         response:
           "This action is disabled because this is a read-only demo of Linkwarden.",
