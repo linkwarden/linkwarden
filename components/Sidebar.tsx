@@ -52,25 +52,25 @@ export default function Sidebar({ className }: { className?: string }) {
     >
       <div className="grid grid-cols-2 gap-2">
         <SidebarHighlightLink
-          title={"Dashboard"}
+          title={t("dashboard")}
           href={`/dashboard`}
           icon={"bi-house"}
           active={active === `/dashboard`}
         />
         <SidebarHighlightLink
-          title={"Pinned"}
+          title={t("pinned")}
           href={`/links/pinned`}
           icon={"bi-pin-angle"}
           active={active === `/links/pinned`}
         />
         <SidebarHighlightLink
-          title={"All Links"}
+          title={t("all_links")}
           href={`/links`}
           icon={"bi-link-45deg"}
           active={active === `/links`}
         />
         <SidebarHighlightLink
-          title={"All Collections"}
+          title={t("all_collections")}
           href={`/collections`}
           icon={"bi-folder"}
           active={active === `/collections`}
