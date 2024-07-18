@@ -364,5 +364,7 @@
   "link_pinned": "Link Fissato!",
   "link_unpinned": "Fissaggio Link Rimosso!",
   "webpage": "Pagina web",
-  "server_administration": "Amministrazione Server"
+  "server_administration": "Amministrazione Server",
+  "all_collections": "Tutte le Collezioni",
+  "dashboard": "Dashboard"
 }
