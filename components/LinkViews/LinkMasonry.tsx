@@ -177,7 +177,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
             </p>
           )}
 
-          {link.tags[0] && (
+          {link.tags && link.tags[0] && (
             <div className="flex gap-1 items-center flex-wrap">
               {link.tags.map((e, i) => (
                 <Link
@@ -225,7 +225,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
               </span>
             )}
           </p>
-          {link.tags[0] && (
+          {link.tags && link.tags[0] && (
             <>
               <p className="text-neutral text-lg mt-3 font-semibold">
                 {t("tags")}
