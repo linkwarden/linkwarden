@@ -364,5 +364,7 @@
   "link_pinned": "Link Pinned!",
   "link_unpinned": "Link Unpinned!",
   "webpage": "Webpage",
-  "server_administration": "Server Administration"
+  "server_administration": "Server Administration",
+  "all_collections": "All Collections",
+  "dashboard": "Dashboard"
 }
