@@ -10,12 +10,13 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
-import Link from "next/link";
 import { isPWA } from "@/lib/client/utils";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
+import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -30,6 +31,8 @@ export default function LinkCardCompact({
   flipDropdown,
   editMode,
 }: Props) {
+  const { t } = useTranslation();
+
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
@@ -55,14 +58,6 @@ export default function LinkCardCompact({
       setSelectedLinks([...selectedLinks, link]);
     }
   };
-
-  let shortendURL;
-
-  try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
-  } catch (error) {
-    console.log(error);
-  }
 
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
@@ -98,14 +93,12 @@ export default function LinkCardCompact({
       <div
         className={`${selectedStyle} border relative items-center flex ${
           !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-        } duration-200 rounded-lg`}
+        } duration-200 rounded-lg w-full`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
             : editMode
-              ? toast.error(
-                  "You don't have permission to edit or delete this item."
-                )
+              ? toast.error(t("link_selection_error"))
               : undefined
         }
       >
@@ -124,43 +117,32 @@ export default function LinkCardCompact({
             />
           )} */}
         <div
-          className="flex items-center cursor-pointer"
+          className="flex items-center cursor-pointer w-full"
           onClick={() =>
             !editMode && window.open(generateLinkHref(link, account), "_blank")
           }
         >
           <div className="shrink-0">
-            <LinkIcon link={link} width="sm:w-12 w-8 mt-1 sm:mt-0" />
+            <LinkIcon link={link} className="w-12 h-12 text-4xl" />
           </div>
 
           <div className="w-[calc(100%-56px)] ml-2">
             <p className="line-clamp-1 mr-8 text-primary select-none">
-              {unescapeString(link.name || link.description) || link.url}
+              {link.name ? (
+                unescapeString(link.name)
+              ) : (
+                <div className="mt-2">
+                  <LinkTypeBadge link={link} />
+                </div>
+              )}
             </p>
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
-              <div className="flex items-center gap-x-3 w-fit text-neutral flex-wrap">
+              <div className="flex items-center gap-x-3 text-neutral flex-wrap">
                 {collection ? (
                   <LinkCollection link={link} collection={collection} />
                 ) : undefined}
-                {link.url ? (
-                  <Link
-                    href={link.url || ""}
-                    target="_blank"
-                    title={link.url || ""}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    className="flex gap-1 item-center select-none text-neutral mt-1 hover:opacity-70 duration-100"
-                  >
-                    <i className="bi-link-45deg text-lg mt-[0.1rem] leading-none"></i>
-                    <p className="text-sm truncate">{shortendURL}</p>
-                  </Link>
-                ) : (
-                  <div className="badge badge-primary badge-sm my-1 select-none">
-                    {link.type}
-                  </div>
-                )}
+                {link.name && <LinkTypeBadge link={link} />}
                 <LinkDate link={link} />
               </div>
             </div>
@@ -175,7 +157,12 @@ export default function LinkCardCompact({
           // linkInfo={showInfo}
         />
       </div>
-      <div className="divider my-0 last:hidden h-[1px]"></div>
+      <div
+        className="last:hidden rounded-none"
+        style={{
+          borderTop: "1px solid var(--fallback-bc,oklch(var(--bc)/0.1))",
+        }}
+      ></div>
     </>
   );
 }

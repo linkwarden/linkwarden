@@ -36,6 +36,17 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
       </button>
 
       <button
+        onClick={(e) => onChangeViewMode(e, ViewMode.Masonry)}
+        className={`btn btn-square btn-sm btn-ghost ${
+          viewMode == ViewMode.Masonry
+            ? "bg-primary/20 hover:bg-primary/20"
+            : "hover:bg-neutral/20"
+        }`}
+      >
+        <i className="bi bi-columns-gap w-4 h-4 text-neutral"></i>
+      </button>
+
+      <button
         onClick={(e) => onChangeViewMode(e, ViewMode.List)}
         className={`btn btn-square btn-sm btn-ghost ${
           viewMode == ViewMode.List

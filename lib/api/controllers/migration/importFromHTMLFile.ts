@@ -31,7 +31,7 @@ export default async function importFromHTMLFile(
 
   if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
     return {
-      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
       status: 400,
     };
 
@@ -63,11 +63,21 @@ async function processBookmarks(
         ) as Element;
 
         if (collectionName) {
-          collectionId = await createCollection(
-            userId,
-            (collectionName.children[0] as TextNode).content,
-            parentCollectionId
-          );
+          const collectionNameContent = (collectionName.children[0] as TextNode)?.content;
+          if (collectionNameContent) {
+            collectionId = await createCollection(
+              userId,
+              collectionNameContent,
+              parentCollectionId
+            );
+          } else {
+            // Handle the case when the collection name is empty
+            collectionId = await createCollection(
+              userId,
+              "Untitled Collection",
+              parentCollectionId
+            );
+          }
         }
         await processBookmarks(
           userId,
@@ -264,3 +274,4 @@ function processNodes(nodes: Node[]) {
   nodes.forEach(findAndProcessDL);
   return nodes;
 }
+

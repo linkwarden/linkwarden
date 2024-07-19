@@ -1,13 +1,15 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Sort } from "@/types/global";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import { TFunction } from "i18next";
 
 type Props = {
   sortBy: Sort;
   setSort: Dispatch<SetStateAction<Sort>>;
+  t: TFunction<"translation", undefined>;
 };
 
-export default function SortDropdown({ sortBy, setSort }: Props) {
+export default function SortDropdown({ sortBy, setSort, t }: Props) {
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
       <div
@@ -29,13 +31,10 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Date (Newest First)"
               checked={sortBy === Sort.DateNewestFirst}
-              onChange={() => {
-                setSort(Sort.DateNewestFirst);
-              }}
+              onChange={() => setSort(Sort.DateNewestFirst)}
             />
-            <span className="label-text">Date (Newest First)</span>
+            <span className="label-text">{t("date_newest_first")}</span>
           </label>
         </li>
         <li>
@@ -48,11 +47,10 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Date (Oldest First)"
               checked={sortBy === Sort.DateOldestFirst}
               onChange={() => setSort(Sort.DateOldestFirst)}
             />
-            <span className="label-text">Date (Oldest First)</span>
+            <span className="label-text">{t("date_oldest_first")}</span>
           </label>
         </li>
         <li>
@@ -65,11 +63,10 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Name (A-Z)"
               checked={sortBy === Sort.NameAZ}
               onChange={() => setSort(Sort.NameAZ)}
             />
-            <span className="label-text">Name (A-Z)</span>
+            <span className="label-text">{t("name_az")}</span>
           </label>
         </li>
         <li>
@@ -82,11 +79,10 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Name (Z-A)"
               checked={sortBy === Sort.NameZA}
               onChange={() => setSort(Sort.NameZA)}
             />
-            <span className="label-text">Name (Z-A)</span>
+            <span className="label-text">{t("name_za")}</span>
           </label>
         </li>
         <li>
@@ -99,11 +95,10 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Description (A-Z)"
               checked={sortBy === Sort.DescriptionAZ}
               onChange={() => setSort(Sort.DescriptionAZ)}
             />
-            <span className="label-text">Description (A-Z)</span>
+            <span className="label-text">{t("description_az")}</span>
           </label>
         </li>
         <li>
@@ -116,11 +111,10 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Description (Z-A)"
               checked={sortBy === Sort.DescriptionZA}
               onChange={() => setSort(Sort.DescriptionZA)}
             />
-            <span className="label-text">Description (Z-A)</span>
+            <span className="label-text">{t("description_za")}</span>
           </label>
         </li>
       </ul>

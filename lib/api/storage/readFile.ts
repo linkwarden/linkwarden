@@ -10,6 +10,7 @@ import util from "util";
 
 type ReturnContentTypes =
   | "text/plain"
+  | "text/html"
   | "image/jpeg"
   | "image/png"
   | "application/pdf"
@@ -61,6 +62,8 @@ export default async function readFile(filePath: string) {
           contentType = "image/png";
         } else if (filePath.endsWith("_readability.json")) {
           contentType = "application/json";
+        } else if (filePath.endsWith(".html")) {
+          contentType = "text/html";
         } else {
           // if (filePath.endsWith(".jpg"))
           contentType = "image/jpeg";
@@ -88,6 +91,8 @@ export default async function readFile(filePath: string) {
       contentType = "image/png";
     } else if (filePath.endsWith("_readability.json")) {
       contentType = "application/json";
+    } else if (filePath.endsWith(".html")) {
+      contentType = "text/html";
     } else {
       // if (filePath.endsWith(".jpg"))
       contentType = "image/jpeg";

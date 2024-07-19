@@ -5,14 +5,16 @@ import toast from "react-hot-toast";
 import Modal from "../Modal";
 import useTokenStore from "@/store/tokens";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import Button from "../ui/Button";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   onClose: Function;
 };
 
 export default function NewTokenModal({ onClose }: Props) {
+  const { t } = useTranslation();
   const [newToken, setNewToken] = useState("");
-
   const { addToken } = useTokenStore();
 
   const initial = {
@@ -21,21 +23,19 @@ export default function NewTokenModal({ onClose }: Props) {
   };
 
   const [token, setToken] = useState(initial as any);
-
   const [submitLoader, setSubmitLoader] = useState(false);
 
   const submit = async () => {
     if (!submitLoader) {
       setSubmitLoader(true);
-
-      const load = toast.loading("Creating...");
+      const load = toast.loading(t("creating_token"));
 
       const { ok, data } = await addToken(token);
 
       toast.dismiss(load);
 
       if (ok) {
-        toast.success(`Created!`);
+        toast.success(t("token_created"));
         setNewToken((data as any).secretKey);
       } else toast.error(data as string);
 
@@ -43,15 +43,27 @@ export default function NewTokenModal({ onClose }: Props) {
     }
   };
 
+  const getLabel = (expiry: TokenExpiry) => {
+    switch (expiry) {
+      case TokenExpiry.sevenDays:
+        return t("7_days");
+      case TokenExpiry.oneMonth:
+        return t("30_days");
+      case TokenExpiry.twoMonths:
+        return t("60_days");
+      case TokenExpiry.threeMonths:
+        return t("90_days");
+      case TokenExpiry.never:
+        return t("no_expiration");
+    }
+  };
+
   return (
     <Modal toggleModal={onClose}>
       {newToken ? (
         <div className="flex flex-col justify-center space-y-4">
-          <p className="text-xl font-thin">Access Token Created</p>
-          <p>
-            Your new token has been created. Please copy it and store it
-            somewhere safe. You will not be able to see it again.
-          </p>
+          <p className="text-xl font-thin">{t("access_token_created")}</p>
+          <p>{t("token_creation_notice")}</p>
           <TextInput
             spellCheck={false}
             value={newToken}
@@ -61,47 +73,44 @@ export default function NewTokenModal({ onClose }: Props) {
           <button
             onClick={() => {
               navigator.clipboard.writeText(newToken);
-              toast.success("Copied to clipboard!");
+              toast.success(t("copied_to_clipboard"));
             }}
             className="btn btn-primary w-fit mx-auto"
           >
-            Copy to Clipboard
+            {t("copy_to_clipboard")}
           </button>
         </div>
       ) : (
         <>
-          <p className="text-xl font-thin">Create an Access Token</p>
+          <p className="text-xl font-thin">{t("create_access_token")}</p>
 
           <div className="divider mb-3 mt-1"></div>
 
           <div className="flex sm:flex-row flex-col gap-2 items-center">
             <div className="w-full">
-              <p className="mb-2">Name</p>
+              <p className="mb-2">{t("name")}</p>
 
               <TextInput
                 value={token.name}
                 onChange={(e) => setToken({ ...token, name: e.target.value })}
-                placeholder="e.g. For the iOS shortcut"
+                placeholder={t("token_name_placeholder")}
                 className="bg-base-200"
               />
             </div>
 
             <div className="w-full sm:w-fit">
-              <p className="mb-2">Expires in</p>
+              <p className="mb-2">{t("expires_in")}</p>
 
               <div className="dropdown dropdown-bottom dropdown-end w-full">
-                <div
+                <Button
                   tabIndex={0}
                   role="button"
+                  intent="secondary"
                   onMouseDown={dropdownTriggerer}
-                  className="btn btn-outline w-full sm:w-36 flex items-center btn-sm h-10"
+                  className="whitespace-nowrap w-32"
                 >
-                  {token.expires === TokenExpiry.sevenDays && "7 Days"}
-                  {token.expires === TokenExpiry.oneMonth && "30 Days"}
-                  {token.expires === TokenExpiry.twoMonths && "60 Days"}
-                  {token.expires === TokenExpiry.threeMonths && "90 Days"}
-                  {token.expires === TokenExpiry.never && "No Expiration"}
-                </div>
+                  {getLabel(token.expires)}
+                </Button>
                 <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-full sm:w-52 mt-1">
                   <li>
                     <label
@@ -122,7 +131,7 @@ export default function NewTokenModal({ onClose }: Props) {
                           });
                         }}
                       />
-                      <span className="label-text">7 Days</span>
+                      <span className="label-text">{t("7_days")}</span>
                     </label>
                   </li>
                   <li>
@@ -141,7 +150,7 @@ export default function NewTokenModal({ onClose }: Props) {
                           setToken({ ...token, expires: TokenExpiry.oneMonth });
                         }}
                       />
-                      <span className="label-text">30 Days</span>
+                      <span className="label-text">{t("30_days")}</span>
                     </label>
                   </li>
                   <li>
@@ -163,7 +172,7 @@ export default function NewTokenModal({ onClose }: Props) {
                           });
                         }}
                       />
-                      <span className="label-text">60 Days</span>
+                      <span className="label-text">{t("60_days")}</span>
                     </label>
                   </li>
                   <li>
@@ -185,7 +194,7 @@ export default function NewTokenModal({ onClose }: Props) {
                           });
                         }}
                       />
-                      <span className="label-text">90 Days</span>
+                      <span className="label-text">{t("90_days")}</span>
                     </label>
                   </li>
                   <li>
@@ -204,7 +213,7 @@ export default function NewTokenModal({ onClose }: Props) {
                           setToken({ ...token, expires: TokenExpiry.never });
                         }}
                       />
-                      <span className="label-text">No Expiration</span>
+                      <span className="label-text">{t("no_expiration")}</span>
                     </label>
                   </li>
                 </ul>
@@ -217,7 +226,7 @@ export default function NewTokenModal({ onClose }: Props) {
               className="btn btn-accent dark:border-violet-400 text-white"
               onClick={submit}
             >
-              Create Access Token
+              {t("create_token")}
             </button>
           </div>
         </>

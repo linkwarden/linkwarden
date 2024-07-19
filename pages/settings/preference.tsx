@@ -1,36 +1,45 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useState, useEffect } from "react";
 import useAccountStore from "@/store/account";
-import { AccountSettings } from "@/types/global";
-import { toast } from "react-hot-toast";
-import React from "react";
-import useLocalSettingsStore from "@/store/localSettings";
-import Checkbox from "@/components/Checkbox";
 import SubmitButton from "@/components/SubmitButton";
+import { toast } from "react-hot-toast";
+import Checkbox from "@/components/Checkbox";
+import useLocalSettingsStore from "@/store/localSettings";
+import { useTranslation } from "next-i18next";
+import getServerSideProps from "@/lib/client/getServerSideProps"; // Import getServerSideProps for server-side data fetching
 import { LinksRouteTo } from "@prisma/client";
 
 export default function Appearance() {
+  const { t } = useTranslation();
   const { updateSettings } = useLocalSettingsStore();
-
   const [submitLoader, setSubmitLoader] = useState(false);
   const { account, updateAccount } = useAccountStore();
-  const [user, setUser] = useState<AccountSettings>(account);
+  const [user, setUser] = useState(account);
 
-  const [preventDuplicateLinks, setPreventDuplicateLinks] =
-    useState<boolean>(false);
-  const [archiveAsScreenshot, setArchiveAsScreenshot] =
-    useState<boolean>(false);
-  const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(false);
-  const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
-    useState<boolean>(false);
-  const [linksRouteTo, setLinksRouteTo] = useState<LinksRouteTo>(
-    user.linksRouteTo
+  const [preventDuplicateLinks, setPreventDuplicateLinks] = useState<boolean>(
+    account.preventDuplicateLinks
   );
+  const [archiveAsScreenshot, setArchiveAsScreenshot] = useState<boolean>(
+    account.archiveAsScreenshot
+  );
+  const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(
+    account.archiveAsPDF
+  );
+
+  const [archiveAsMonolith, setArchiveAsMonolith] = useState<boolean>(
+    account.archiveAsMonolith
+  );
+
+  const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
+    useState<boolean>(account.archiveAsWaybackMachine);
+
+  const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
 
   useEffect(() => {
     setUser({
       ...account,
       archiveAsScreenshot,
+      archiveAsMonolith,
       archiveAsPDF,
       archiveAsWaybackMachine,
       linksRouteTo,
@@ -39,6 +48,7 @@ export default function Appearance() {
   }, [
     account,
     archiveAsScreenshot,
+    archiveAsMonolith,
     archiveAsPDF,
     archiveAsWaybackMachine,
     linksRouteTo,
@@ -52,6 +62,7 @@ export default function Appearance() {
   useEffect(() => {
     if (!objectIsEmpty(account)) {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
+      setArchiveAsMonolith(account.archiveAsMonolith);
       setArchiveAsPDF(account.archiveAsPDF);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
@@ -62,29 +73,29 @@ export default function Appearance() {
   const submit = async () => {
     setSubmitLoader(true);
 
-    const load = toast.loading("Applying...");
+    const load = toast.loading(t("applying_changes"));
 
-    const response = await updateAccount({
-      ...user,
-    });
+    const response = await updateAccount({ ...user });
 
     toast.dismiss(load);
 
     if (response.ok) {
-      toast.success("Settings Applied!");
-    } else toast.error(response.data as string);
+      toast.success(t("settings_applied"));
+    } else {
+      toast.error(response.data as string);
+    }
     setSubmitLoader(false);
   };
 
   return (
     <SettingsLayout>
-      <p className="capitalize text-3xl font-thin inline">Preference</p>
+      <p className="capitalize text-3xl font-thin inline">{t("preference")}</p>
 
       <div className="divider my-3"></div>
 
       <div className="flex flex-col gap-5">
         <div>
-          <p className="mb-3">Select Theme</p>
+          <p className="mb-3">{t("select_theme")}</p>
           <div className="flex gap-3 w-full">
             <div
               className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
@@ -95,9 +106,7 @@ export default function Appearance() {
               onClick={() => updateSettings({ theme: "dark" })}
             >
               <i className="bi-moon-fill text-6xl"></i>
-              <p className="ml-2 text-2xl">Dark</p>
-
-              {/* <hr className="my-3 outline-1 outline-neutral-content dark:outline-neutral-700" /> */}
+              <p className="ml-2 text-2xl">{t("dark")}</p>
             </div>
             <div
               className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
@@ -108,35 +117,37 @@ export default function Appearance() {
               onClick={() => updateSettings({ theme: "light" })}
             >
               <i className="bi-sun-fill text-6xl"></i>
-              <p className="ml-2 text-2xl">Light</p>
-              {/* <hr className="my-3 outline-1 outline-neutral-content dark:outline-neutral-700" /> */}
+              <p className="ml-2 text-2xl">{t("light")}</p>
             </div>
           </div>
         </div>
 
         <div>
           <p className="capitalize text-3xl font-thin inline">
-            Archive Settings
+            {t("archive_settings")}
           </p>
-
           <div className="divider my-3"></div>
-
-          <p>Formats to Archive/Preserve webpages:</p>
+          <p>{t("formats_to_archive")}</p>
           <div className="p-3">
             <Checkbox
-              label="Screenshot"
+              label={t("screenshot")}
               state={archiveAsScreenshot}
               onClick={() => setArchiveAsScreenshot(!archiveAsScreenshot)}
             />
 
             <Checkbox
-              label="PDF"
-              state={archiveAsPDF}
-              onClick={() => setArchiveAsPDF(!archiveAsPDF)}
+              label={t("webpage")}
+              state={archiveAsMonolith}
+              onClick={() => setArchiveAsMonolith(!archiveAsMonolith)}
             />
 
             <Checkbox
-              label="Archive.org Snapshot"
+              label={t("pdf")}
+              state={archiveAsPDF}
+              onClick={() => setArchiveAsPDF(!archiveAsPDF)}
+            />
+            <Checkbox
+              label={t("archive_org_snapshot")}
               state={archiveAsWaybackMachine}
               onClick={() =>
                 setArchiveAsWaybackMachine(!archiveAsWaybackMachine)
@@ -146,18 +157,18 @@ export default function Appearance() {
         </div>
 
         <div>
-          <p className="capitalize text-3xl font-thin inline">Link Settings</p>
-
+          <p className="capitalize text-3xl font-thin inline">
+            {t("link_settings")}
+          </p>
           <div className="divider my-3"></div>
           <div className="mb-3">
             <Checkbox
-              label="Prevent duplicate links"
+              label={t("prevent_duplicate_links")}
               state={preventDuplicateLinks}
               onClick={() => setPreventDuplicateLinks(!preventDuplicateLinks)}
             />
           </div>
-
-          <p>Clicking on Links should:</p>
+          <p>{t("clicking_on_links_should")}</p>
           <div className="p-3">
             <label
               className="label cursor-pointer flex gap-2 justify-start w-fit"
@@ -172,7 +183,7 @@ export default function Appearance() {
                 checked={linksRouteTo === LinksRouteTo.ORIGINAL}
                 onChange={() => setLinksRouteTo(LinksRouteTo.ORIGINAL)}
               />
-              <span className="label-text">Open the original content</span>
+              <span className="label-text">{t("open_original_content")}</span>
             </label>
 
             <label
@@ -188,7 +199,7 @@ export default function Appearance() {
                 checked={linksRouteTo === LinksRouteTo.PDF}
                 onChange={() => setLinksRouteTo(LinksRouteTo.PDF)}
               />
-              <span className="label-text">Open PDF, if available</span>
+              <span className="label-text">{t("open_pdf_if_available")}</span>
             </label>
 
             <label
@@ -204,7 +215,27 @@ export default function Appearance() {
                 checked={linksRouteTo === LinksRouteTo.READABLE}
                 onChange={() => setLinksRouteTo(LinksRouteTo.READABLE)}
               />
-              <span className="label-text">Open Readable, if available</span>
+              <span className="label-text">
+                {t("open_readable_if_available")}
+              </span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Monolith"
+                checked={linksRouteTo === LinksRouteTo.MONOLITH}
+                onChange={() => setLinksRouteTo(LinksRouteTo.MONOLITH)}
+              />
+              <span className="label-text">
+                {t("open_webpage_if_available")}
+              </span>
             </label>
 
             <label
@@ -220,7 +251,9 @@ export default function Appearance() {
                 checked={linksRouteTo === LinksRouteTo.SCREENSHOT}
                 onChange={() => setLinksRouteTo(LinksRouteTo.SCREENSHOT)}
               />
-              <span className="label-text">Open Screenshot, if available</span>
+              <span className="label-text">
+                {t("open_screenshot_if_available")}
+              </span>
             </label>
           </div>
         </div>
@@ -228,10 +261,12 @@ export default function Appearance() {
         <SubmitButton
           onClick={submit}
           loading={submitLoader}
-          label="Save Changes"
+          label={t("save_changes")}
           className="mt-2 w-full sm:w-fit"
         />
       </div>
     </SettingsLayout>
   );
 }
+
+export { getServerSideProps };
