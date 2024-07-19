@@ -2,20 +2,19 @@ import React from "react";
 import useLinkStore from "@/store/links";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
+import Button from "../ui/Button";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   onClose: Function;
 };
 
 export default function BulkDeleteLinksModal({ onClose }: Props) {
+  const { t } = useTranslation();
   const { selectedLinks, setSelectedLinks, deleteLinksById } = useLinkStore();
 
   const deleteLink = async () => {
-    const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${
-        selectedLinks.length > 1 ? "s" : ""
-      }...`
-    );
+    const load = toast.loading(t("deleting"));
 
     const response = await deleteLinksById(
       selectedLinks.map((link) => link.id as number)
@@ -24,12 +23,7 @@ export default function BulkDeleteLinksModal({ onClose }: Props) {
     toast.dismiss(load);
 
     if (response.ok) {
-      toast.success(
-        `Deleted ${selectedLinks.length} Link${
-          selectedLinks.length > 1 ? "s" : ""
-        }`
-      );
-
+      toast.success(t("deleted"));
       setSelectedLinks([]);
       onClose();
     } else toast.error(response.data as string);
@@ -38,37 +32,33 @@ export default function BulkDeleteLinksModal({ onClose }: Props) {
   return (
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin text-red-500">
-        Delete {selectedLinks.length} Link{selectedLinks.length > 1 ? "s" : ""}
+        {selectedLinks.length === 1
+          ? t("delete_link")
+          : t("delete_links", { count: selectedLinks.length })}
       </p>
 
       <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
-        {selectedLinks.length > 1 ? (
-          <p>Are you sure you want to delete {selectedLinks.length} links?</p>
-        ) : (
-          <p>Are you sure you want to delete this link?</p>
-        )}
+        <p>
+          {selectedLinks.length === 1
+            ? t("link_deletion_confirmation_message")
+            : t("links_deletion_confirmation_message", {
+                count: selectedLinks.length,
+              })}
+        </p>
 
         <div role="alert" className="alert alert-warning">
           <i className="bi-exclamation-triangle text-xl" />
-          <span>
-            <b>Warning:</b> This action is irreversible!
-          </span>
+          <span>{t("warning_irreversible")}</span>
         </div>
 
-        <p>
-          Hold the <kbd className="kbd kbd-sm">Shift</kbd> key while clicking
-          &apos;Delete&apos; to bypass this confirmation in the future.
-        </p>
+        <p>{t("shift_key_tip")}</p>
 
-        <button
-          className={`ml-auto btn w-fit text-white flex items-center gap-2 duration-100 bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer`}
-          onClick={deleteLink}
-        >
+        <Button className="ml-auto" intent="destructive" onClick={deleteLink}>
           <i className="bi-trash text-xl" />
-          Delete
-        </button>
+          {t("delete")}
+        </Button>
       </div>
     </Modal>
   );

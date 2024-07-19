@@ -61,7 +61,7 @@ export default function PreservedFormatRow({
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link?.image, link?.pdf, link?.readable, link?.monolith]);
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;
@@ -69,10 +69,15 @@ export default function PreservedFormatRow({
       .then((response) => {
         if (response.ok) {
           // Create a temporary link and click it to trigger the download
-          const link = document.createElement("a");
-          link.href = path;
-          link.download = format === ArchivedFormat.pdf ? "PDF" : "Screenshot";
-          link.click();
+          const anchorElement = document.createElement("a");
+          anchorElement.href = path;
+          anchorElement.download =
+            format === ArchivedFormat.monolith
+              ? "Webpage"
+              : format === ArchivedFormat.pdf
+                ? "PDF"
+                : "Screenshot";
+          anchorElement.click();
         } else {
           console.error("Failed to download file");
         }

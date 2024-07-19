@@ -1,39 +1,25 @@
-import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Sidebar from "@/components/Sidebar";
 import { useRouter } from "next/router";
 import SearchBar from "@/components/SearchBar";
-import useAccountStore from "@/store/account";
-import ProfilePhoto from "@/components/ProfilePhoto";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import ToggleDarkMode from "./ToggleDarkMode";
-import useLocalSettingsStore from "@/store/localSettings";
 import NewLinkModal from "./ModalContent/NewLinkModal";
 import NewCollectionModal from "./ModalContent/NewCollectionModal";
-import Link from "next/link";
 import UploadFileModal from "./ModalContent/UploadFileModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import MobileNavigation from "./MobileNavigation";
+import ProfileDropdown from "./ProfileDropdown";
+import { useTranslation } from "next-i18next";
 
 export default function Navbar() {
-  const { settings, updateSettings } = useLocalSettingsStore();
-
-  const { account } = useAccountStore();
-
+  const { t } = useTranslation();
   const router = useRouter();
 
   const [sidebar, setSidebar] = useState(false);
 
   const { width } = useWindowDimensions();
-
-  const handleToggle = () => {
-    if (settings.theme === "dark") {
-      updateSettings({ theme: "light" });
-    } else {
-      updateSettings({ theme: "dark" });
-    }
-  };
 
   useEffect(() => {
     setSidebar(false);
@@ -65,7 +51,7 @@ export default function Navbar() {
         <ToggleDarkMode className="hidden sm:inline-grid" />
 
         <div className="dropdown dropdown-end sm:inline-block hidden">
-          <div className="tooltip tooltip-bottom" data-tip="Create New...">
+          <div className="tooltip tooltip-bottom" data-tip={t("create_new")}>
             <div
               tabIndex={0}
               role="button"
@@ -90,10 +76,10 @@ export default function Navbar() {
                 tabIndex={0}
                 role="button"
               >
-                New Link
+                {t("new_link")}
               </div>
             </li>
-            {/* <li>
+            <li>
               <div
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
@@ -102,9 +88,9 @@ export default function Navbar() {
                 tabIndex={0}
                 role="button"
               >
-                Upload File
+                {t("upload_file")}
               </div>
-            </li> */}
+            </li>
             <li>
               <div
                 onClick={() => {
@@ -114,61 +100,13 @@ export default function Navbar() {
                 tabIndex={0}
                 role="button"
               >
-                New Collection
+                {t("new_collection")}
               </div>
             </li>
           </ul>
         </div>
 
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            onMouseDown={dropdownTriggerer}
-            className="btn btn-circle btn-ghost"
-          >
-            <ProfilePhoto
-              src={account.image ? account.image : undefined}
-              priority={true}
-            />
-          </div>
-          <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
-            <li>
-              <Link
-                href="/settings/account"
-                onClick={() => (document?.activeElement as HTMLElement)?.blur()}
-                tabIndex={0}
-                role="button"
-              >
-                Settings
-              </Link>
-            </li>
-            <li className="block sm:hidden">
-              <div
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  handleToggle();
-                }}
-                tabIndex={0}
-                role="button"
-              >
-                Switch to {settings.theme === "light" ? "Dark" : "Light"}
-              </div>
-            </li>
-            <li>
-              <div
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  signOut();
-                }}
-                tabIndex={0}
-                role="button"
-              >
-                Logout
-              </div>
-            </li>
-          </ul>
-        </div>
+        <ProfileDropdown />
       </div>
 
       <MobileNavigation />

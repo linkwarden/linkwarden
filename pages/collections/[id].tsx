@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import SortDropdown from "@/components/SortDropdown";
 import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
@@ -19,23 +18,22 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
-import ViewDropdown from "@/components/ViewDropdown";
 import CardView from "@/components/LinkViews/Layouts/CardView";
-// import GridView from "@/components/LinkViews/Layouts/GridView";
 import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
-import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
-import toast from "react-hot-toast";
-import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
+import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useTranslation } from "next-i18next";
+import LinkListOptions from "@/components/LinkListOptions";
 
 export default function Index() {
+  const { t } = useTranslation();
   const { settings } = useLocalSettingsStore();
 
   const router = useRouter();
 
-  const { links, selectedLinks, setSelectedLinks, deleteLinksById } =
-    useLinkStore();
+  const { links } = useLinkStore();
   const { collections } = useCollectionStore();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
@@ -61,6 +59,7 @@ export default function Index() {
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsMonolith: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 
@@ -78,15 +77,13 @@ export default function Index() {
           username: account.username as string,
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
+          archiveAsMonolith: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }
     };
 
     fetchOwner();
-
-    // When the collection changes, reset the selected links
-    setSelectedLinks([]);
   }, [activeCollection]);
 
   const [editCollectionModal, setEditCollectionModal] = useState(false);
@@ -94,8 +91,6 @@ export default function Index() {
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
-  const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
-  const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
@@ -108,41 +103,12 @@ export default function Index() {
 
   const linkView = {
     [ViewMode.Card]: CardView,
-    // [ViewMode.Grid]: GridView,
     [ViewMode.List]: ListView,
+    [ViewMode.Masonry]: MasonryView,
   };
 
   // @ts-ignore
   const LinkComponent = linkView[viewMode];
-
-  const handleSelectAll = () => {
-    if (selectedLinks.length === links.length) {
-      setSelectedLinks([]);
-    } else {
-      setSelectedLinks(links.map((link) => link));
-    }
-  };
-
-  const bulkDeleteLinks = async () => {
-    const load = toast.loading(
-      `Deleting ${selectedLinks.length} Link${
-        selectedLinks.length > 1 ? "s" : ""
-      }...`
-    );
-
-    const response = await deleteLinksById(
-      selectedLinks.map((link) => link.id as number)
-    );
-
-    toast.dismiss(load);
-
-    response.ok &&
-      toast.success(
-        `Deleted ${selectedLinks.length} Link${
-          selectedLinks.length > 1 ? "s" : ""
-        }!`
-      );
-  };
 
   return (
     <MainLayout>
@@ -162,7 +128,7 @@ export default function Index() {
                 style={{ color: activeCollection?.color }}
               ></i>
 
-              <p className="sm:text-4xl text-3xl capitalize w-full py-1 break-words hyphens-auto font-thin">
+              <p className="sm:text-3xl text-2xl capitalize w-full py-1 break-words hyphens-auto font-thin">
                 {activeCollection?.name}
               </p>
             </div>
@@ -187,7 +153,7 @@ export default function Index() {
                         setEditCollectionModal(true);
                       }}
                     >
-                      Edit Collection Info
+                      {t("edit_collection_info")}
                     </div>
                   </li>
                 )}
@@ -201,8 +167,8 @@ export default function Index() {
                     }}
                   >
                     {permissions === true
-                      ? "Share and Collaborate"
-                      : "View Team"}
+                      ? t("share_and_collaborate")
+                      : t("view_team")}
                   </div>
                 </li>
                 {permissions === true && (
@@ -215,7 +181,7 @@ export default function Index() {
                         setNewCollectionModal(true);
                       }}
                     >
-                      Create Sub-Collection
+                      {t("create_subcollection")}
                     </div>
                   </li>
                 )}
@@ -229,8 +195,8 @@ export default function Index() {
                     }}
                   >
                     {permissions === true
-                      ? "Delete Collection"
-                      : "Leave Collection"}
+                      ? t("delete_collection")
+                      : t("leave_collection")}
                   </div>
                 </li>
               </ul>
@@ -272,11 +238,23 @@ export default function Index() {
                   </div>
                 ) : null}
               </div>
-              <p className="text-neutral text-sm font-semibold">
-                By {collectionOwner.name}
+
+              <p className="text-neutral text-sm">
                 {activeCollection.members.length > 0 &&
-                  ` and ${activeCollection.members.length} others`}
-                .
+                activeCollection.members.length === 1
+                  ? t("by_author_and_other", {
+                      author: collectionOwner.name,
+                      count: activeCollection.members.length,
+                    })
+                  : activeCollection.members.length > 0 &&
+                      activeCollection.members.length !== 1
+                    ? t("by_author_and_others", {
+                        author: collectionOwner.name,
+                        count: activeCollection.members.length,
+                      })
+                    : t("by_author", {
+                        author: collectionOwner.name,
+                      })}
               </p>
             </div>
           </div>
@@ -313,84 +291,37 @@ export default function Index() {
 
         <div className="divider my-0"></div>
 
-        <div className="flex justify-between items-center gap-5">
-          <p>Showing {activeCollection?._count?.links} results</p>
-          <div className="flex items-center gap-2">
-            {links.length > 0 &&
-              (permissions === true ||
-                permissions?.canUpdate ||
-                permissions?.canDelete) && (
-                <div
-                  role="button"
-                  onClick={() => {
-                    setEditMode(!editMode);
-                    setSelectedLinks([]);
-                  }}
-                  className={`btn btn-square btn-sm btn-ghost ${
-                    editMode
-                      ? "bg-primary/20 hover:bg-primary/20"
-                      : "hover:bg-neutral/20"
-                  }`}
-                >
-                  <i className="bi-pencil-fill text-neutral text-xl"></i>
-                </div>
-              )}
-            <SortDropdown sortBy={sortBy} setSort={setSortBy} />
-            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
-          </div>
-        </div>
-
-        {editMode && links.length > 0 && (
-          <div className="w-full flex justify-between items-center min-h-[32px]">
-            {links.length > 0 && (
-              <div className="flex gap-3 ml-3">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-primary"
-                  onChange={() => handleSelectAll()}
-                  checked={
-                    selectedLinks.length === links.length && links.length > 0
-                  }
-                />
-                {selectedLinks.length > 0 ? (
-                  <span>
-                    {selectedLinks.length}{" "}
-                    {selectedLinks.length === 1 ? "link" : "links"} selected
-                  </span>
-                ) : (
-                  <span>Nothing selected</span>
-                )}
-              </div>
-            )}
-            <div className="flex gap-3">
-              <button
-                onClick={() => setBulkEditLinksModal(true)}
-                className="btn btn-sm btn-accent text-white w-fit ml-auto"
-                disabled={
-                  selectedLinks.length === 0 ||
-                  !(permissions === true || permissions?.canUpdate)
-                }
-              >
-                Edit
-              </button>
-              <button
-                onClick={(e) => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  e.shiftKey
-                    ? bulkDeleteLinks()
-                    : setBulkDeleteLinksModal(true);
-                }}
-                className="btn btn-sm bg-red-400 border-red-400 hover:border-red-500 hover:bg-red-500 text-white w-fit ml-auto"
-                disabled={
-                  selectedLinks.length === 0 ||
-                  !(permissions === true || permissions?.canDelete)
-                }
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        )}
+        <LinkListOptions
+          t={t}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          editMode={
+            permissions === true ||
+            permissions?.canUpdate ||
+            permissions?.canDelete
+              ? editMode
+              : undefined
+          }
+          setEditMode={
+            permissions === true ||
+            permissions?.canUpdate ||
+            permissions?.canDelete
+              ? setEditMode
+              : undefined
+          }
+        >
+          <p>
+            {activeCollection?._count?.links === 1
+              ? t("showing_count_result", {
+                  count: activeCollection?._count?.links,
+                })
+              : t("showing_count_results", {
+                  count: activeCollection?._count?.links,
+                })}
+          </p>
+        </LinkListOptions>
 
         {links.some((e) => e.collectionId === Number(router.query.id)) ? (
           <LinkComponent
@@ -429,22 +360,10 @@ export default function Index() {
               activeCollection={activeCollection}
             />
           )}
-          {bulkDeleteLinksModal && (
-            <BulkDeleteLinksModal
-              onClose={() => {
-                setBulkDeleteLinksModal(false);
-              }}
-            />
-          )}
-          {bulkEditLinksModal && (
-            <BulkEditLinksModal
-              onClose={() => {
-                setBulkEditLinksModal(false);
-              }}
-            />
-          )}
         </>
       )}
     </MainLayout>
   );
 }
+
+export { getServerSideProps };

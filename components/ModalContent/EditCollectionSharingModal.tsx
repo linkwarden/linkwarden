@@ -10,6 +10,7 @@ import ProfilePhoto from "../ProfilePhoto";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   onClose: Function;
@@ -20,6 +21,8 @@ export default function EditCollectionSharingModal({
   onClose,
   activeCollection,
 }: Props) {
+  const { t } = useTranslation();
+
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
@@ -33,7 +36,7 @@ export default function EditCollectionSharingModal({
 
       setSubmitLoader(true);
 
-      const load = toast.loading("Updating...");
+      const load = toast.loading(t("updating"));
 
       let response;
 
@@ -42,7 +45,7 @@ export default function EditCollectionSharingModal({
       toast.dismiss(load);
 
       if (response.ok) {
-        toast.success(`Updated!`);
+        toast.success(t("updated"));
         onClose();
       } else toast.error(response.data as string);
 
@@ -65,6 +68,7 @@ export default function EditCollectionSharingModal({
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsMonolith: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 
@@ -93,7 +97,7 @@ export default function EditCollectionSharingModal({
   return (
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">
-        {permissions === true ? "Share and Collaborate" : "Team"}
+        {permissions === true ? t("share_and_collaborate") : t("team")}
       </p>
 
       <div className="divider mb-3 mt-1"></div>
@@ -101,7 +105,7 @@ export default function EditCollectionSharingModal({
       <div className="flex flex-col gap-3">
         {permissions === true && (
           <div>
-            <p>Make Public</p>
+            <p>{t("make_collection_public")}</p>
 
             <label className="label cursor-pointer justify-start gap-2">
               <input
@@ -115,25 +119,26 @@ export default function EditCollectionSharingModal({
                 }
                 className="checkbox checkbox-primary"
               />
-              <span className="label-text">Make this a public collection</span>
+              <span className="label-text">
+                {t("make_collection_public_checkbox")}
+              </span>
             </label>
 
             <p className="text-neutral text-sm">
-              This will let <b>Anyone</b> to view this collection and it&apos;s
-              users.
+              {t("make_collection_public_desc")}
             </p>
           </div>
         )}
 
         {collection.isPublic ? (
           <div className={permissions === true ? "pl-5" : ""}>
-            <p className="mb-2">Sharable Link (Click to copy)</p>
+            <p className="mb-2">{t("sharable_link_guide")}</p>
             <div
               onClick={() => {
                 try {
                   navigator.clipboard
                     .writeText(publicCollectionURL)
-                    .then(() => toast.success("Copied!"));
+                    .then(() => toast.success(t("copied")));
                 } catch (err) {
                   console.log(err);
                 }
@@ -149,13 +154,13 @@ export default function EditCollectionSharingModal({
 
         {permissions === true && (
           <>
-            <p>Members</p>
+            <p>{t("members")}</p>
 
             <div className="flex items-center gap-2">
               <TextInput
                 value={memberUsername || ""}
                 className="bg-base-200"
-                placeholder="Username (without the '@')"
+                placeholder={t("members_username_placeholder")}
                 onChange={(e) => setMemberUsername(e.target.value)}
                 onKeyDown={(e) =>
                   e.key === "Enter" &&
@@ -163,7 +168,8 @@ export default function EditCollectionSharingModal({
                     account.username as string,
                     memberUsername || "",
                     collection,
-                    setMemberState
+                    setMemberState,
+                    t
                   )
                 }
               />
@@ -174,7 +180,8 @@ export default function EditCollectionSharingModal({
                     account.username as string,
                     memberUsername || "",
                     collection,
-                    setMemberState
+                    setMemberState,
+                    t
                   )
                 }
                 className="btn btn-accent dark:border-violet-400 text-white btn-square btn-sm h-10 w-10"
@@ -214,7 +221,7 @@ export default function EditCollectionSharingModal({
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm font-bold">Owner</p>
+                    <p className="text-sm font-bold">{t("owner")}</p>
                   </div>
                 </div>
               </div>
@@ -226,11 +233,11 @@ export default function EditCollectionSharingModal({
                 .map((e, i) => {
                   const roleLabel =
                     e.canCreate && e.canUpdate && e.canDelete
-                      ? "Admin"
+                      ? t("admin")
                       : e.canCreate && !e.canUpdate && !e.canDelete
-                        ? "Contributor"
+                        ? t("contributor")
                         : !e.canCreate && !e.canUpdate && !e.canDelete
-                          ? "Viewer"
+                          ? t("viewer")
                           : undefined;
 
                   return (
@@ -307,8 +314,10 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">Viewer</p>
-                                        <p>Read-only access</p>
+                                        <p className="font-bold">
+                                          {t("viewer")}
+                                        </p>
+                                        <p>{t("viewer_desc")}</p>
                                       </div>
                                     </label>
                                   </li>
@@ -350,8 +359,10 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">Contributor</p>
-                                        <p>Can view and create Links</p>
+                                        <p className="font-bold">
+                                          {t("contributor")}
+                                        </p>
+                                        <p>{t("contributor_desc")}</p>
                                       </div>
                                     </label>
                                   </li>
@@ -393,8 +404,10 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">Admin</p>
-                                        <p>Full access to all Links</p>
+                                        <p className="font-bold">
+                                          {t("admin")}
+                                        </p>
+                                        <p>{t("admin_desc")}</p>
                                       </div>
                                     </label>
                                   </li>
@@ -411,7 +424,7 @@ export default function EditCollectionSharingModal({
                                 className={
                                   "bi-x text-xl btn btn-sm btn-square btn-ghost text-neutral hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"
                                 }
-                                title="Remove Member"
+                                title={t("remove_member")}
                                 onClick={() => {
                                   const updatedMembers =
                                     collection.members.filter((member) => {
@@ -442,7 +455,7 @@ export default function EditCollectionSharingModal({
             className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto mt-3"
             onClick={submit}
           >
-            Save Changes
+            {t("save_changes")}
           </button>
         )}
       </div>

@@ -2,8 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import removeFile from "@/lib/api/storage/removeFile";
 import { Collection, Link } from "@prisma/client";
+import { removeFiles } from "@/lib/api/manageLinkFiles";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
@@ -29,6 +29,12 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     });
 
   if (req.method === "PUT") {
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     if (
       link?.lastPreserved &&
       getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved) <
@@ -76,20 +82,10 @@ const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
       image: null,
       pdf: null,
       readable: null,
+      monolith: null,
       preview: null,
     },
   });
 
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}.pdf`,
-  });
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}.png`,
-  });
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}_readability.json`,
-  });
-  await removeFile({
-    filePath: `archives/preview/${link.collection.id}/${link.id}.png`,
-  });
+  await removeFiles(link.id, link.collection.id);
 };

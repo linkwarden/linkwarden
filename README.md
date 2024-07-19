@@ -57,7 +57,7 @@ We've forked the old version from the current repository into [this repo](https:
 
 ## Features
 
-- 📸 Auto capture a screenshot, PDF, and readable view of each webpage.
+- 📸 Auto capture a screenshot, PDF, single html file, and readable view of each webpage.
 - 🏛️ Send your webpage to Wayback Machine ([archive.org](https://archive.org)) for a snapshot. (Optional)
 - 📂 Organize links by collection, sub-collection, name, description and multiple tags.
 - 👥 Collaborate on gathering links in a collection.
