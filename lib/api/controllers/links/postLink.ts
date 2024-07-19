@@ -1,10 +1,8 @@
 import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import getTitle from "@/lib/shared/getTitle";
-import { UsersAndCollections } from "@prisma/client";
-import getPermission from "@/lib/api/getPermission";
+import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 import createFolder from "@/lib/api/storage/createFolder";
-import validateUrlSize from "../../validateUrlSize";
+import setLinkCollection from "../../setLinkCollection";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
@@ -12,103 +10,22 @@ export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
-  try {
-    new URL(link.url || "");
-  } catch (error) {
-    return {
-      response:
-        "Please enter a valid Address for the Link. (It should start with http/https)",
-      status: 400,
-    };
-  }
-
-  if (!link.collection.id && link.collection.name) {
-    link.collection.name = link.collection.name.trim();
-
-    // find the collection with the name and the user's id
-    const findCollection = await prisma.collection.findFirst({
-      where: {
-        name: link.collection.name,
-        ownerId: userId,
-        parentId: link.collection.parentId,
-      },
-    });
-
-    if (findCollection) {
-      const collectionIsAccessible = await getPermission({
-        userId,
-        collectionId: findCollection.id,
-      });
-
-      const memberHasAccess = collectionIsAccessible?.members.some(
-        (e: UsersAndCollections) => e.userId === userId && e.canCreate
-      );
-
-      if (!(collectionIsAccessible?.ownerId === userId || memberHasAccess))
-        return { response: "Collection is not accessible.", status: 401 };
-
-      link.collection.id = findCollection.id;
-      link.collection.ownerId = findCollection.ownerId;
-    } else {
-      const collection = await prisma.collection.create({
-        data: {
-          name: link.collection.name,
-          ownerId: userId,
-        },
-      });
-
-      link.collection.id = collection.id;
-
-      await prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          collectionOrder: {
-            push: link.collection.id,
-          },
-        },
-      });
+  if (link.url || link.type === "url") {
+    try {
+      new URL(link.url || "");
+    } catch (error) {
+      return {
+        response:
+          "Please enter a valid Address for the Link. (It should start with http/https)",
+        status: 400,
+      };
     }
-  } else if (link.collection.id) {
-    const collectionIsAccessible = await getPermission({
-      userId,
-      collectionId: link.collection.id,
-    });
-
-    const memberHasAccess = collectionIsAccessible?.members.some(
-      (e: UsersAndCollections) => e.userId === userId && e.canCreate
-    );
-
-    if (!(collectionIsAccessible?.ownerId === userId || memberHasAccess))
-      return { response: "Collection is not accessible.", status: 401 };
-  } else if (!link.collection.id) {
-    link.collection.name = "Unorganized";
-    link.collection.parentId = null;
-
-    // find the collection with the name "Unorganized" and the user's id
-    const unorganizedCollection = await prisma.collection.findFirst({
-      where: {
-        name: "Unorganized",
-        ownerId: userId,
-      },
-    });
-
-    link.collection.id = unorganizedCollection?.id;
-
-    await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        collectionOrder: {
-          push: link.collection.id,
-        },
-      },
-    });
-  } else {
-    return { response: "Uncaught error.", status: 500 };
   }
+
+  const linkCollection = await setLinkCollection(link, userId);
+
+  if (!linkCollection)
+    return { response: "Collection is not accessible.", status: 400 };
 
   const user = await prisma.user.findUnique({
     where: {
@@ -117,9 +34,14 @@ export default async function postLink(
   });
 
   if (user?.preventDuplicateLinks) {
+    const url = link.url?.trim().replace(/\/+$/, ""); // trim and remove trailing slashes from the URL
+    const hasWwwPrefix = url?.includes(`://www.`);
+    const urlWithoutWww = hasWwwPrefix ? url?.replace(`://www.`, "://") : url;
+    const urlWithWww = hasWwwPrefix ? url : url?.replace("://", `://www.`);
+
     const existingLink = await prisma.link.findFirst({
       where: {
-        url: link.url?.trim(),
+        OR: [{ url: urlWithWww }, { url: urlWithoutWww }],
         collection: {
           ownerId: userId,
         },
@@ -136,29 +58,23 @@ export default async function postLink(
   const numberOfLinksTheUserHas = await prisma.link.count({
     where: {
       collection: {
-        ownerId: userId,
+        ownerId: linkCollection.ownerId,
       },
     },
   });
 
-  if (numberOfLinksTheUserHas + 1 > MAX_LINKS_PER_USER)
+  if (numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
     return {
-      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
       status: 400,
     };
 
-  link.collection.name = link.collection.name.trim();
+  const { title, headers } = await fetchTitleAndHeaders(link.url || "");
 
-  const description =
-    link.description && link.description !== ""
-      ? link.description
-      : link.url
-        ? await getTitle(link.url)
-        : undefined;
+  const name =
+    link.name && link.name !== "" ? link.name : link.url ? title : "";
 
-  const validatedUrl = link.url ? await validateUrlSize(link.url) : undefined;
-
-  const contentType = validatedUrl?.get("content-type");
+  const contentType = headers?.get("content-type");
   let linkType = "url";
   let imageExtension = "png";
 
@@ -172,13 +88,13 @@ export default async function postLink(
 
   const newLink = await prisma.link.create({
     data: {
-      url: link.url?.trim(),
-      name: link.name,
-      description,
+      url: link.url?.trim().replace(/\/+$/, "") || null,
+      name,
+      description: link.description,
       type: linkType,
       collection: {
         connect: {
-          id: link.collection.id,
+          id: linkCollection.id,
         },
       },
       tags: {
@@ -186,14 +102,14 @@ export default async function postLink(
           where: {
             name_ownerId: {
               name: tag.name.trim(),
-              ownerId: link.collection.ownerId,
+              ownerId: linkCollection.ownerId,
             },
           },
           create: {
             name: tag.name.trim(),
             owner: {
               connect: {
-                id: link.collection.ownerId,
+                id: linkCollection.ownerId,
               },
             },
           },

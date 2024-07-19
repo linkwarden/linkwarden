@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import AnnouncementBar from "@/components/AnnouncementBar";
+import Announcement from "@/components/Announcement";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode, useEffect, useState } from "react";
 import getLatestVersion from "@/lib/client/getLatestVersion";
@@ -33,27 +33,20 @@ export default function MainLayout({ children }: Props) {
   };
 
   return (
-    <>
+    <div className="flex" data-testid="dashboard-wrapper">
       {showAnnouncement ? (
-        <AnnouncementBar toggleAnnouncementBar={toggleAnnouncementBar} />
+        <Announcement toggleAnnouncementBar={toggleAnnouncementBar} />
       ) : undefined}
-
-      <div className="flex">
-        <div className="hidden lg:block">
-          <Sidebar
-            className={`fixed ${showAnnouncement ? "top-10" : "top-0"}`}
-          />
-        </div>
-
-        <div
-          className={`w-full sm:pb-0 pb-20 flex flex-col min-h-${
-            showAnnouncement ? "full" : "screen"
-          } lg:ml-80 ${showAnnouncement ? "mt-10" : ""}`}
-        >
-          <Navbar />
-          {children}
-        </div>
+      <div className="hidden lg:block">
+        <Sidebar className={`fixed top-0`} />
       </div>
-    </>
+
+      <div
+        className={`w-full sm:pb-0 pb-20 flex flex-col min-h-screen lg:ml-80`}
+      >
+        <Navbar />
+        {children}
+      </div>
+    </div>
   );
 }

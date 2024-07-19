@@ -9,6 +9,7 @@ type Props = {
   onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
   className?: string;
   spellCheck?: boolean;
+  "data-testid"?: string;
 };
 
 export default function TextInput({
@@ -20,9 +21,11 @@ export default function TextInput({
   onKeyDown,
   className,
   spellCheck,
+  "data-testid": dataTestId,
 }: Props) {
   return (
     <input
+      data-testid={dataTestId}
       spellCheck={spellCheck}
       autoFocus={autoFocus}
       type={type ? type : "text"}

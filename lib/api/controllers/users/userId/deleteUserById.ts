@@ -5,12 +5,10 @@ import Stripe from "stripe";
 import { DeleteUserBody } from "@/types/global";
 import removeFile from "@/lib/api/storage/removeFile";
 
-const keycloakEnabled = process.env.KEYCLOAK_CLIENT_SECRET;
-const authentikEnabled = process.env.AUTHENTIK_CLIENT_SECRET;
-
 export default async function deleteUserById(
   userId: number,
-  body: DeleteUserBody
+  body: DeleteUserBody,
+  isServerAdmin?: boolean
 ) {
   // First, we retrieve the user from the database
   const user = await prisma.user.findUnique({
@@ -24,16 +22,23 @@ export default async function deleteUserById(
     };
   }
 
-  // Then, we check if the provided password matches the one stored in the database (disabled in Keycloak integration)
-  if (!keycloakEnabled && !authentikEnabled) {
-    const isPasswordValid = bcrypt.compareSync(
-      body.password,
-      user.password as string
-    );
+  if (!isServerAdmin) {
+    if (user.password) {
+      const isPasswordValid = bcrypt.compareSync(
+        body.password,
+        user.password as string
+      );
 
-    if (!isPasswordValid) {
+      if (!isPasswordValid && !isServerAdmin) {
+        return {
+          response: "Invalid credentials.",
+          status: 401, // Unauthorized
+        };
+      }
+    } else {
       return {
-        response: "Invalid credentials.",
+        response:
+          "User has no password. Please reset your password from the forgot password page.",
         status: 401, // Unauthorized
       };
     }
@@ -43,6 +48,11 @@ export default async function deleteUserById(
   await prisma
     .$transaction(
       async (prisma) => {
+        // Delete Access Tokens
+        await prisma.accessToken.deleteMany({
+          where: { userId },
+        });
+
         // Delete whitelisted users
         await prisma.whitelistedUser.deleteMany({
           where: { userId },
@@ -70,7 +80,11 @@ export default async function deleteUserById(
           });
 
           // Delete archive folders
-          removeFolder({ filePath: `archives/${collection.id}` });
+          await removeFolder({ filePath: `archives/${collection.id}` });
+
+          await removeFolder({
+            filePath: `archives/preview/${collection.id}`,
+          });
         }
 
         // Delete collections after cleaning up related data
@@ -80,9 +94,11 @@ export default async function deleteUserById(
 
         // Delete subscription
         if (process.env.STRIPE_SECRET_KEY)
-          await prisma.subscription.delete({
-            where: { userId },
-          });
+          await prisma.subscription
+            .delete({
+              where: { userId },
+            })
+            .catch((err) => console.log(err));
 
         await prisma.usersAndCollections.deleteMany({
           where: {

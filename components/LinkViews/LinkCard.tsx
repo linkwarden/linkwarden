@@ -19,6 +19,8 @@ import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
+import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -29,6 +31,9 @@ type Props = {
 };
 
 export default function LinkCard({ link, flipDropdown, editMode }: Props) {
+  const { t } = useTranslation();
+
+  const viewMode = localStorage.getItem("viewMode") || "card";
   const { collections } = useCollectionStore();
   const { account } = useAccountStore();
 
@@ -53,7 +58,9 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   let shortendURL;
 
   try {
-    shortendURL = new URL(link.url || "").host.toLowerCase();
+    if (link.url) {
+      shortendURL = new URL(link.url).host.toLowerCase();
+    }
   } catch (error) {
     console.log(error);
   }
@@ -109,7 +116,6 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
-  // window.open ('www.yourdomain.com', '_ blank');
   return (
     <div
       ref={ref}
@@ -118,101 +124,101 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
         selectable
           ? handleCheckboxClick(link)
           : editMode
-            ? toast.error(
-                "You don't have permission to edit or delete this item."
-              )
+            ? toast.error(t("link_selection_error"))
             : undefined
       }
     >
       <div
-        className="rounded-2xl cursor-pointer"
+        className="rounded-2xl cursor-pointer h-full flex flex-col justify-between"
         onClick={() =>
           !editMode && window.open(generateLinkHref(link, account), "_blank")
         }
       >
-        <div className="relative rounded-t-2xl h-40 overflow-hidden">
-          {previewAvailable(link) ? (
-            <Image
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
-              width={1280}
-              height={720}
-              alt=""
-              className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
-              style={{ filter: "blur(2px)" }}
-              draggable="false"
-              onError={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.display = "none";
-              }}
-            />
-          ) : link.preview === "unavailable" ? (
-            <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
-          ) : (
-            <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
-          )}
-          <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
-            <LinkIcon link={link} />
-          </div>
-        </div>
-
-        <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
-
-        <div className="p-3 mt-1">
-          <p className="truncate w-full pr-8 text-primary">
-            {unescapeString(link.name || link.description) || link.url}
-          </p>
-
-          <Link
-            href={link.url || ""}
-            target="_blank"
-            title={link.url || ""}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="flex gap-1 item-center select-none text-neutral mt-1 hover:opacity-70 duration-100"
-          >
-            <i className="bi-link-45deg text-lg mt-[0.10rem] leading-none"></i>
-            <p className="text-sm truncate">{shortendURL}</p>
-          </Link>
-        </div>
-
-        <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
-
-        <div className="flex justify-between text-xs text-neutral px-3 pb-1">
-          <div className="cursor-pointer w-fit">
-            {collection && (
-              <LinkCollection link={link} collection={collection} />
+        <div>
+          <div className="relative rounded-t-2xl h-40 overflow-hidden">
+            {previewAvailable(link) ? (
+              <Image
+                src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
+                width={1280}
+                height={720}
+                alt=""
+                className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
+                style={
+                  link.type !== "image" ? { filter: "blur(1px)" } : undefined
+                }
+                draggable="false"
+                onError={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.display = "none";
+                }}
+              />
+            ) : link.preview === "unavailable" ? (
+              <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
+            ) : (
+              <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
+            )}
+            {link.type !== "image" && (
+              <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+                <LinkIcon link={link} />
+              </div>
             )}
           </div>
-          <LinkDate link={link} />
+          <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
+        </div>
+
+        <div className="flex flex-col justify-between h-full">
+          <div className="p-3 flex flex-col gap-2">
+            <p className="truncate w-full pr-9 text-primary text-sm">
+              {unescapeString(link.name)}
+            </p>
+
+            <LinkTypeBadge link={link} />
+          </div>
+
+          <div>
+            <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+
+            <div className="flex justify-between text-xs text-neutral px-3 pb-1 gap-2">
+              <div className="cursor-pointer truncate">
+                {collection && (
+                  <LinkCollection link={link} collection={collection} />
+                )}
+              </div>
+              <LinkDate link={link} />
+            </div>
+          </div>
         </div>
       </div>
 
       {showInfo && (
-        <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-2xl fade-in overflow-y-auto">
+        <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-[0.9rem] fade-in overflow-y-auto">
           <div
             onClick={() => setShowInfo(!showInfo)}
             className=" float-right btn btn-sm outline-none btn-circle btn-ghost z-10"
           >
             <i className="bi-x text-neutral text-2xl"></i>
           </div>
-          <p className="text-neutral text-lg font-semibold">Description</p>
+          <p className="text-neutral text-lg font-semibold">
+            {t("description")}
+          </p>
 
-          <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
+          <hr className="divider my-2 border-t border-neutral-content h-[1px]" />
           <p>
             {link.description ? (
               unescapeString(link.description)
             ) : (
               <span className="text-neutral text-sm">
-                No description provided.
+                {t("no_description")}
               </span>
             )}
           </p>
-          {link.tags[0] && (
+          {link.tags && link.tags[0] && (
             <>
-              <p className="text-neutral text-lg mt-3 font-semibold">Tags</p>
+              <p className="text-neutral text-lg mt-3 font-semibold">
+                {t("tags")}
+              </p>
 
-              <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
+              <hr className="divider my-2 border-t border-neutral-content h-[1px]" />
 
               <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
                 <div className="flex gap-1 items-center flex-wrap">

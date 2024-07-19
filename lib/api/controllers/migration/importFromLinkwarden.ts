@@ -26,7 +26,7 @@ export default async function importFromLinkwarden(
 
   if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
     return {
-      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
       status: 400,
     };
 
@@ -54,7 +54,7 @@ export default async function importFromLinkwarden(
 
           // Import Links
           for (const link of e.links) {
-            const newLink = await prisma.link.create({
+            await prisma.link.create({
               data: {
                 url: link.url,
                 name: link.name,

@@ -31,20 +31,23 @@ model User {
   username                String?               @unique
   email                   String?               @unique
   emailVerified           DateTime?
+  unverifiedNewEmail      String?
   image                   String?
-  accounts                Account[]
   password                String?
+  locale                  String                @default("en")
+  accounts                Account[]
   collections             Collection[]
   tags                    Tag[]
   pinnedLinks             Link[]
   collectionsJoined       UsersAndCollections[]
-  collectionOrder         Int[]                @default([])
+  collectionOrder         Int[]                 @default([])
   whitelistedUsers        WhitelistedUser[]
   accessTokens            AccessToken[]
   subscriptions           Subscription?
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
+  archiveAsMonolith       Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
@@ -56,6 +59,7 @@ enum LinksRouteTo {
   ORIGINAL
   PDF
   READABLE
+  MONOLITH
   SCREENSHOT
 }
 
@@ -76,6 +80,14 @@ model VerificationToken {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 }
 
 model Collection {
@@ -114,7 +126,7 @@ model UsersAndCollections {
 
 model Link {
   id            Int        @id @default(autoincrement())
-  name          String
+  name          String     @default("")
   type          String     @default("url")
   description   String     @default("")
   pinnedBy      User[]
@@ -127,6 +139,7 @@ model Link {
   image         String?
   pdf           String?
   readable      String?
+  monolith      String?
   lastPreserved DateTime?
   importDate    DateTime?
   createdAt     DateTime   @default(now())
@@ -165,6 +178,7 @@ model AccessToken {
   userId     Int
   token      String    @unique
   revoked    Boolean   @default(false)
+  isSession  Boolean   @default(false)
   expires    DateTime
   lastUsedAt DateTime?
   createdAt  DateTime  @default(now())

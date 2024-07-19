@@ -50,6 +50,7 @@ export interface TagIncludingLinkCount extends Tag {
 
 export interface AccountSettings extends User {
   newPassword?: string;
+  oldPassword?: string;
   whitelistedUsers: string[];
   subscription?: {
     active?: boolean;
@@ -68,6 +69,7 @@ export enum ViewMode {
   Card = "card",
   Grid = "grid",
   List = "list",
+  Masonry = "masonry",
 }
 
 export enum Sort {
@@ -114,6 +116,7 @@ export type MigrationRequest = {
 export enum MigrationFormat {
   linkwarden,
   htmlFile,
+  wallabag,
 }
 
 export enum Plan {
@@ -134,12 +137,14 @@ export enum ArchivedFormat {
   jpeg,
   pdf,
   readability,
+  monolith,
 }
 
 export enum LinkType {
   url,
   pdf,
   image,
+  monolith,
 }
 
 export enum TokenExpiry {

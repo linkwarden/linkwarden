@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useLinkStore from "@/store/links";
 import {
-  ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
+  ArchivedFormat,
 } from "@/types/global";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -12,11 +12,14 @@ import { useSession } from "next-auth/react";
 import {
   pdfAvailable,
   readabilityAvailable,
+  monolithAvailable,
   screenshotAvailable,
 } from "@/lib/shared/getArchiveValidity";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
+import { useTranslation } from "next-i18next";
+import { BeatLoader } from "react-spinners";
 
 type Props = {
   onClose: Function;
@@ -24,14 +27,12 @@ type Props = {
 };
 
 export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
+  const { t } = useTranslation();
   const session = useSession();
   const { getLink } = useLinkStore();
-
   const { account } = useAccountStore();
-
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
-
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
@@ -42,6 +43,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     username: "",
     image: "",
     archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsMonolith: undefined as unknown as boolean,
     archiveAsPDF: undefined as unknown as boolean,
   });
 
@@ -59,6 +61,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
           username: account.username as string,
           image: account.image as string,
           archiveAsScreenshot: account.archiveAsScreenshot as boolean,
+          archiveAsMonolith: account.archiveAsScreenshot as boolean,
           archiveAsPDF: account.archiveAsPDF as boolean,
         });
       }
@@ -73,11 +76,23 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       (collectionOwner.archiveAsScreenshot === true
         ? link.pdf && link.pdf !== "pending"
         : true) &&
+      (collectionOwner.archiveAsMonolith === true
+        ? link.monolith && link.monolith !== "pending"
+        : true) &&
       (collectionOwner.archiveAsPDF === true
         ? link.pdf && link.pdf !== "pending"
         : true) &&
       link.readable &&
       link.readable !== "pending"
+    );
+  };
+
+  const atLeastOneFormatAvailable = () => {
+    return (
+      screenshotAvailable(link) ||
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ||
+      monolithAvailable(link)
     );
   };
 
@@ -109,17 +124,16 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link?.monolith]);
 
   const updateArchive = async () => {
-    const load = toast.loading("Sending request...");
+    const load = toast.loading(t("sending_request"));
 
     const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
       method: "PUT",
     });
 
     const data = await response.json();
-
     toast.dismiss(load);
 
     if (response.ok) {
@@ -127,76 +141,89 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       setLink(
         (newLink as any).response as LinkIncludingShortenedCollectionAndTags
       );
-      toast.success(`Link is being archived...`);
+      toast.success(t("link_being_archived"));
     } else toast.error(data.response);
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">Preserved Formats</p>
-
+      <p className="text-xl font-thin">{t("preserved_formats")}</p>
       <div className="divider mb-2 mt-1"></div>
-
-      {isReady() &&
-      (screenshotAvailable(link) ||
-        pdfAvailable(link) ||
-        readabilityAvailable(link)) ? (
-        <p className="mb-3">
-          The following formats are available for this link:
-        </p>
+      {screenshotAvailable(link) ||
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ||
+      monolithAvailable(link) ? (
+        <p className="mb-3">{t("available_formats")}</p>
       ) : (
         ""
       )}
 
       <div className={`flex flex-col gap-3`}>
-        {isReady() ? (
-          <>
-            {screenshotAvailable(link) ? (
-              <PreservedFormatRow
-                name={"Screenshot"}
-                icon={"bi-file-earmark-image"}
-                format={
-                  link?.image?.endsWith("png")
-                    ? ArchivedFormat.png
-                    : ArchivedFormat.jpeg
-                }
-                activeLink={link}
-                downloadable={true}
-              />
-            ) : undefined}
+        {monolithAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("webpage")}
+            icon={"bi-filetype-html"}
+            format={ArchivedFormat.monolith}
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
 
-            {pdfAvailable(link) ? (
-              <PreservedFormatRow
-                name={"PDF"}
-                icon={"bi-file-earmark-pdf"}
-                format={ArchivedFormat.pdf}
-                activeLink={link}
-                downloadable={true}
-              />
-            ) : undefined}
+        {screenshotAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("screenshot")}
+            icon={"bi-file-earmark-image"}
+            format={
+              link?.image?.endsWith("png")
+                ? ArchivedFormat.png
+                : ArchivedFormat.jpeg
+            }
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
 
-            {readabilityAvailable(link) ? (
-              <PreservedFormatRow
-                name={"Readable"}
-                icon={"bi-file-earmark-text"}
-                format={ArchivedFormat.readability}
-                activeLink={link}
-              />
-            ) : undefined}
-          </>
-        ) : (
-          <div
-            className={`w-full h-full flex flex-col justify-center p-10 skeleton bg-base-200`}
-          >
-            <i className="bi-stack drop-shadow text-primary text-8xl mx-auto mb-5"></i>
-            <p className="text-center text-2xl">
-              Link preservation is in the queue
-            </p>
-            <p className="text-center text-lg">
-              Please check back later to see the result
-            </p>
+        {pdfAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("pdf")}
+            icon={"bi-file-earmark-pdf"}
+            format={ArchivedFormat.pdf}
+            activeLink={link}
+            downloadable={true}
+          />
+        ) : undefined}
+
+        {readabilityAvailable(link) ? (
+          <PreservedFormatRow
+            name={t("readable")}
+            icon={"bi-file-earmark-text"}
+            format={ArchivedFormat.readability}
+            activeLink={link}
+          />
+        ) : undefined}
+
+        {!isReady() && !atLeastOneFormatAvailable() ? (
+          <div className={`w-full h-full flex flex-col justify-center p-10`}>
+            <BeatLoader
+              color="oklch(var(--p))"
+              className="mx-auto mb-3"
+              size={30}
+            />
+
+            <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
+            <p className="text-center text-lg">{t("check_back_later")}</p>
           </div>
-        )}
+        ) : !isReady() && atLeastOneFormatAvailable() ? (
+          <div className={`w-full h-full flex flex-col justify-center p-5`}>
+            <BeatLoader
+              color="oklch(var(--p))"
+              className="mx-auto mb-3"
+              size={20}
+            />
+            <p className="text-center">{t("there_are_more_formats")}</p>
+            <p className="text-center text-sm">{t("check_back_later")}</p>
+          </div>
+        ) : undefined}
 
         <div
           className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${
@@ -209,23 +236,21 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
               ""
             )}`}
             target="_blank"
-            className={`text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm`}
+            className="text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm"
           >
-            <p className="whitespace-nowrap">
-              View latest snapshot on archive.org
-            </p>
+            <p className="whitespace-nowrap">{t("view_latest_snapshot")}</p>
             <i className="bi-box-arrow-up-right" />
           </Link>
-          {link?.collection.ownerId === session.data?.user.id ? (
-            <div className={`btn btn-outline`} onClick={() => updateArchive()}>
+          {link?.collection.ownerId === session.data?.user.id && (
+            <div className="btn btn-outline" onClick={updateArchive}>
               <div>
-                <p>Refresh Preserved Formats</p>
+                <p>{t("refresh_preserved_formats")}</p>
                 <p className="text-xs">
-                  This deletes the current preservations
+                  {t("this_deletes_current_preservations")}
                 </p>
               </div>
             </div>
-          ) : undefined}
+          )}
         </div>
       </div>
     </Modal>

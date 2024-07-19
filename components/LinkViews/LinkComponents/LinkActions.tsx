@@ -11,6 +11,7 @@ import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
 import useAccountStore from "@/store/account";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -18,6 +19,7 @@ type Props = {
   position?: string;
   toggleShowInfo?: () => void;
   linkInfo?: boolean;
+  alignToTop?: boolean;
   flipDropdown?: boolean;
 };
 
@@ -26,8 +28,11 @@ export default function LinkActions({
   toggleShowInfo,
   position,
   linkInfo,
+  alignToTop,
   flipDropdown,
 }: Props) {
+  const { t } = useTranslation();
+
   const permissions = usePermissions(link.collection.id as number);
 
   const [editLinkModal, setEditLinkModal] = useState(false);
@@ -41,7 +46,7 @@ export default function LinkActions({
   const pinLink = async () => {
     const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0];
 
-    const load = toast.loading("Applying...");
+    const load = toast.loading(t("applying"));
 
     const response = await updateLink({
       ...link,
@@ -50,26 +55,33 @@ export default function LinkActions({
 
     toast.dismiss(load);
 
-    response.ok &&
-      toast.success(`Link ${isAlreadyPinned ? "Unpinned!" : "Pinned!"}`);
+    if (response.ok) {
+      toast.success(isAlreadyPinned ? t("link_unpinned") : t("link_unpinned"));
+    } else {
+      toast.error(response.data as string);
+    }
   };
 
   const deleteLink = async () => {
-    const load = toast.loading("Deleting...");
+    const load = toast.loading(t("deleting"));
 
     const response = await removeLink(link.id as number);
 
     toast.dismiss(load);
 
-    response.ok && toast.success(`Link Deleted.`);
+    if (response.ok) {
+      toast.success(t("deleted"));
+    } else {
+      toast.error(response.data as string);
+    }
   };
 
   return (
     <>
       <div
-        className={`dropdown dropdown-left dropdown-end absolute ${
+        className={`dropdown dropdown-left absolute ${
           position || "top-3 right-3"
-        } z-20`}
+        } ${alignToTop ? "" : "dropdown-end"} z-20`}
       >
         <div
           tabIndex={0}
@@ -79,7 +91,11 @@ export default function LinkActions({
         >
           <i title="More" className="bi-three-dots text-xl" />
         </div>
-        <ul className="dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 translate-y-10">
+        <ul
+          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 ${
+            alignToTop ? "" : "translate-y-10"
+          }`}
+        >
           <li>
             <div
               role="button"
@@ -90,8 +106,8 @@ export default function LinkActions({
               }}
             >
               {link?.pinnedBy && link.pinnedBy[0]
-                ? "Unpin"
-                : "Pin to Dashboard"}
+                ? t("unpin")
+                : t("pin_to_dashboard")}
             </div>
           </li>
           {linkInfo !== undefined && toggleShowInfo ? (
@@ -104,7 +120,7 @@ export default function LinkActions({
                   toggleShowInfo();
                 }}
               >
-                {!linkInfo ? "Show" : "Hide"} Link Details
+                {!linkInfo ? t("show_link_details") : t("hide_link_details")}
               </div>
             </li>
           ) : undefined}
@@ -118,22 +134,24 @@ export default function LinkActions({
                   setEditLinkModal(true);
                 }}
               >
-                Edit Link
+                {t("edit_link")}
               </div>
             </li>
           ) : undefined}
-          <li>
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => {
-                (document?.activeElement as HTMLElement)?.blur();
-                setPreservedFormatsModal(true);
-              }}
-            >
-              Preserved Formats
-            </div>
-          </li>
+          {link.type === "url" && (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setPreservedFormatsModal(true);
+                }}
+              >
+                {t("preserved_formats")}
+              </div>
+            </li>
+          )}
           {permissions === true || permissions?.canDelete ? (
             <li>
               <div
@@ -144,7 +162,7 @@ export default function LinkActions({
                   e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
                 }}
               >
-                Delete
+                {t("delete")}
               </div>
             </li>
           ) : undefined}

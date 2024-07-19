@@ -3,7 +3,10 @@ import { LinkRequestQuery } from "@/types/global";
 import getDashboardData from "@/lib/api/controllers/dashboard/getDashboardData";
 import verifyUser from "@/lib/api/verifyUser";
 
-export default async function links(req: NextApiRequest, res: NextApiResponse) {
+export default async function dashboard(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const user = await verifyUser({ req, res });
   if (!user) return;
 
