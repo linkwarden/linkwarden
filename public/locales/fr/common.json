@@ -6,7 +6,7 @@
   "username": "Nom d'utilisateur",
   "email": "E-mail",
   "subscribed": "Abonné(e)",
-  "created_at": "Created At",
+  "created_at": "Créé le",
   "not_available": "S/O",
   "check_your_email": "Veuillez vérifier votre adresse e-mail",
   "authenticating": "Authentification...",
