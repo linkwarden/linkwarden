@@ -68,12 +68,15 @@ export default function PublicCollections() {
     searchByTags: searchFilter.tags,
   });
 
-  const [collection, setCollection] =
-    useState<CollectionIncludingMembersAndLinkCount>();
+  const [collection, setCollection] = useState<CollectionIncludingMembersAndLinkCount>();
 
   useEffect(() => {
     if (router.query.id) {
-      getPublicCollectionData(Number(router.query.id), setCollection);
+      getPublicCollectionData(Number(router.query.id), setCollection).then((res) => {
+        if (res.status === 400) {
+          router.push("/dashboard");
+        }
+      })
     }
   }, [collections]);
 
@@ -108,9 +111,8 @@ export default function PublicCollections() {
     <div
       className="h-96"
       style={{
-        backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-          settings.theme === "dark" ? "#262626" : "#f3f4f6"
-        } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+        backgroundImage: `linear-gradient(${collection?.color}30 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
       {collection ? (
@@ -181,20 +183,20 @@ export default function PublicCollections() {
 
               <p className="text-neutral text-sm">
                 {collection.members.length > 0 &&
-                collection.members.length === 1
+                  collection.members.length === 1
                   ? t("by_author_and_other", {
+                    author: collectionOwner.name,
+                    count: collection.members.length,
+                  })
+                  : collection.members.length > 0 &&
+                    collection.members.length !== 1
+                    ? t("by_author_and_others", {
                       author: collectionOwner.name,
                       count: collection.members.length,
                     })
-                  : collection.members.length > 0 &&
-                      collection.members.length !== 1
-                    ? t("by_author_and_others", {
-                        author: collectionOwner.name,
-                        count: collection.members.length,
-                      })
                     : t("by_author", {
-                        author: collectionOwner.name,
-                      })}
+                      author: collectionOwner.name,
+                    })}
               </p>
             </div>
           </div>
@@ -218,11 +220,11 @@ export default function PublicCollections() {
               placeholder={
                 collection._count?.links === 1
                   ? t("search_count_link", {
-                      count: collection._count?.links,
-                    })
+                    count: collection._count?.links,
+                  })
                   : t("search_count_links", {
-                      count: collection._count?.links,
-                    })
+                    count: collection._count?.links,
+                  })
               }
             />
           </LinkListOptions>
