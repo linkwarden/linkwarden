@@ -129,12 +129,12 @@ export default function CollectionCard({ collection, className }: Props) {
         className="flex items-center absolute bottom-3 left-3 z-10 btn px-2 btn-ghost rounded-full"
         onClick={() => setEditCollectionSharingModal(true)}
       >
-        {collectionOwner.id ? (
+        {collectionOwner.id && (
           <ProfilePhoto
             src={collectionOwner.image || undefined}
             name={collectionOwner.name}
           />
-        ) : undefined}
+        )}
         {collection.members
           .sort((a, b) => (a.userId as number) - (b.userId as number))
           .map((e, i) => {
@@ -159,11 +159,9 @@ export default function CollectionCard({ collection, className }: Props) {
       <Link
         href={`/collections/${collection.id}`}
         style={{
-          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
-            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
-          } 50%, ${
-            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
-          } 100%)`,
+          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+            } 50%, ${settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+            } 100%)`,
         }}
         className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
       >
@@ -178,12 +176,12 @@ export default function CollectionCard({ collection, className }: Props) {
           <div className="flex justify-end items-center">
             <div className="text-right">
               <div className="font-bold text-sm flex justify-end gap-1 items-center">
-                {collection.isPublic ? (
+                {collection.isPublic && (
                   <i
                     className="bi-globe2 drop-shadow text-neutral"
                     title="This collection is being shared publicly."
                   ></i>
-                ) : undefined}
+                )}
                 <i
                   className="bi-link-45deg text-lg text-neutral"
                   title="This collection is being shared publicly."
@@ -203,24 +201,24 @@ export default function CollectionCard({ collection, className }: Props) {
           </div>
         </div>
       </Link>
-      {editCollectionModal ? (
+      {editCollectionModal && (
         <EditCollectionModal
           onClose={() => setEditCollectionModal(false)}
           activeCollection={collection}
         />
-      ) : undefined}
-      {editCollectionSharingModal ? (
+      )}
+      {editCollectionSharingModal && (
         <EditCollectionSharingModal
           onClose={() => setEditCollectionSharingModal(false)}
           activeCollection={collection}
         />
-      ) : undefined}
-      {deleteCollectionModal ? (
+      )}
+      {deleteCollectionModal && (
         <DeleteCollectionModal
           onClose={() => setDeleteCollectionModal(false)}
           activeCollection={collection}
         />
-      ) : undefined}
+      )}
     </div>
   );
 }

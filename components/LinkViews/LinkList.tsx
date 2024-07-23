@@ -91,9 +91,8 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`${selectedStyle} border relative items-center flex ${
-          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-        } duration-200 rounded-lg w-full`}
+        className={`${selectedStyle} border relative items-center flex ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+          } duration-200 rounded-lg w-full`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
@@ -139,9 +138,9 @@ export default function LinkCardCompact({
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
               <div className="flex items-center gap-x-3 text-neutral flex-wrap">
-                {collection ? (
+                {collection && (
                   <LinkCollection link={link} collection={collection} />
-                ) : undefined}
+                )}
                 {link.name && <LinkTypeBadge link={link} />}
                 <LinkDate link={link} />
               </div>
@@ -153,8 +152,8 @@ export default function LinkCardCompact({
           collection={collection}
           position="top-3 right-3"
           flipDropdown={flipDropdown}
-          // toggleShowInfo={() => setShowInfo(!showInfo)}
-          // linkInfo={showInfo}
+        // toggleShowInfo={() => setShowInfo(!showInfo)}
+        // linkInfo={showInfo}
         />
       </div>
       <div

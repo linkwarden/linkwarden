@@ -128,7 +128,7 @@ export default function NewLinkModal({ onClose }: Props) {
         </div>
       </div>
       <div className={"mt-2"}>
-        {optionsExpanded ? (
+        {optionsExpanded && (
           <div className="mt-5">
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
@@ -163,7 +163,7 @@ export default function NewLinkModal({ onClose }: Props) {
               </div>
             </div>
           </div>
-        ) : undefined}
+        )}
       </div>
       <div className="flex justify-between items-center mt-5">
         <div

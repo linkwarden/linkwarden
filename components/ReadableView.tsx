@@ -183,7 +183,7 @@ export default function ReadableView({ link }: Props) {
                   link?.name || link?.description || link?.url || ""
                 )}
               </p>
-              {link?.url ? (
+              {link?.url && (
                 <Link
                   href={link?.url || ""}
                   title={link?.url}
@@ -192,11 +192,9 @@ export default function ReadableView({ link }: Props) {
                 >
                   <i className="bi-link-45deg"></i>
 
-                  {isValidUrl(link?.url || "")
-                    ? new URL(link?.url as string).host
-                    : undefined}
+                  {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
                 </Link>
-              ) : undefined}
+              )}
             </div>
           </div>
 
@@ -231,10 +229,10 @@ export default function ReadableView({ link }: Props) {
           <p className="min-w-fit text-sm text-neutral">
             {date
               ? new Date(date).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
               : undefined}
           </p>
 
@@ -259,9 +257,8 @@ export default function ReadableView({ link }: Props) {
           ></div>
         ) : (
           <div
-            className={`w-full h-full flex flex-col justify-center p-10 ${
-              link?.readable === "pending" || !link?.readable ? "skeleton" : ""
-            }`}
+            className={`w-full h-full flex flex-col justify-center p-10 ${link?.readable === "pending" || !link?.readable ? "skeleton" : ""
+              }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
