@@ -29,19 +29,19 @@ export default function Account() {
     !objectIsEmpty(account)
       ? account
       : ({
-          // @ts-ignore
-          id: null,
-          name: "",
-          username: "",
-          email: "",
-          emailVerified: null,
-          password: undefined,
-          image: "",
-          isPrivate: true,
-          // @ts-ignore
-          createdAt: null,
-          whitelistedUsers: [],
-        } as unknown as AccountSettings)
+        // @ts-ignore
+        id: null,
+        name: "",
+        username: "",
+        email: "",
+        emailVerified: null,
+        password: undefined,
+        image: "",
+        isPrivate: true,
+        // @ts-ignore
+        createdAt: null,
+        whitelistedUsers: [],
+      } as unknown as AccountSettings)
   );
 
   const { t } = useTranslation();
@@ -176,7 +176,7 @@ export default function Account() {
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
               />
             </div>
-            {emailEnabled ? (
+            {emailEnabled && (
               <div>
                 <p className="mb-2">{t("email")}</p>
                 <TextInput
@@ -185,7 +185,7 @@ export default function Account() {
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                 />
               </div>
-            ) : undefined}
+            )}
             <div>
               <p className="mb-2">{t("language")}</p>
               <select
@@ -418,9 +418,7 @@ export default function Account() {
 
           <p>
             {t("delete_account_warning")}
-            {process.env.NEXT_PUBLIC_STRIPE
-              ? " " + t("cancel_subscription_notice")
-              : undefined}
+            {process.env.NEXT_PUBLIC_STRIPE && " " + t("cancel_subscription_notice")}
           </p>
         </div>
 
@@ -429,14 +427,14 @@ export default function Account() {
         </Link>
       </div>
 
-      {emailChangeVerificationModal ? (
+      {emailChangeVerificationModal && (
         <EmailChangeVerificationModal
           onClose={() => setEmailChangeVerificationModal(false)}
           onSubmit={submit}
           oldEmail={account.email || ""}
           newEmail={user.email || ""}
         />
-      ) : undefined}
+      )}
     </SettingsLayout>
   );
 }

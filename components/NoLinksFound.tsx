@@ -39,9 +39,9 @@ export default function NoLinksFound({ text }: Props) {
           </span>
         </div>
       </div>
-      {newLinkModal ? (
+      {newLinkModal && (
         <NewLinkModal onClose={() => setNewLinkModal(false)} />
-      ) : undefined}
+      )}
     </div>
   );
 }

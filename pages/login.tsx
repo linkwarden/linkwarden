@@ -203,9 +203,9 @@ export default function Login({
             {t("login")}
           </Button>
 
-          {availableLogins.buttonAuths.length > 0 ? (
+          {availableLogins.buttonAuths.length > 0 && (
             <div className="divider my-1">{t("or_continue_with")}</div>
-          ) : undefined}
+          )}
         </>
       );
     }
@@ -224,9 +224,9 @@ export default function Login({
             loading={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
-            value.name.toLowerCase() === "apple" ? (
-              <i className={"bi-" + value.name.toLowerCase()}></i>
-            ) : undefined}
+              value.name.toLowerCase() === "apple" && (
+                <i className={"bi-" + value.name.toLowerCase()}></i>
+              )}
             {value.name}
           </Button>
         </React.Fragment>

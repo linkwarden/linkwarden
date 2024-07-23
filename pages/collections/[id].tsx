@@ -115,9 +115,8 @@ export default function Index() {
       <div
         className="h-[60rem] p-5 flex gap-3 flex-col"
         style={{
-          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
+            } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
@@ -211,12 +210,12 @@ export default function Index() {
                 className="flex items-center btn px-2 btn-ghost rounded-full w-fit"
                 onClick={() => setEditCollectionSharingModal(true)}
               >
-                {collectionOwner.id ? (
+                {collectionOwner.id && (
                   <ProfilePhoto
                     src={collectionOwner.image || undefined}
                     name={collectionOwner.name}
                   />
-                ) : undefined}
+                )}
                 {activeCollection.members
                   .sort((a, b) => (a.userId as number) - (b.userId as number))
                   .map((e, i) => {
@@ -241,20 +240,20 @@ export default function Index() {
 
               <p className="text-neutral text-sm">
                 {activeCollection.members.length > 0 &&
-                activeCollection.members.length === 1
+                  activeCollection.members.length === 1
                   ? t("by_author_and_other", {
+                    author: collectionOwner.name,
+                    count: activeCollection.members.length,
+                  })
+                  : activeCollection.members.length > 0 &&
+                    activeCollection.members.length !== 1
+                    ? t("by_author_and_others", {
                       author: collectionOwner.name,
                       count: activeCollection.members.length,
                     })
-                  : activeCollection.members.length > 0 &&
-                      activeCollection.members.length !== 1
-                    ? t("by_author_and_others", {
-                        author: collectionOwner.name,
-                        count: activeCollection.members.length,
-                      })
                     : t("by_author", {
-                        author: collectionOwner.name,
-                      })}
+                      author: collectionOwner.name,
+                    })}
               </p>
             </div>
           </div>
@@ -299,15 +298,15 @@ export default function Index() {
           setSortBy={setSortBy}
           editMode={
             permissions === true ||
-            permissions?.canUpdate ||
-            permissions?.canDelete
+              permissions?.canUpdate ||
+              permissions?.canDelete
               ? editMode
               : undefined
           }
           setEditMode={
             permissions === true ||
-            permissions?.canUpdate ||
-            permissions?.canDelete
+              permissions?.canUpdate ||
+              permissions?.canDelete
               ? setEditMode
               : undefined
           }
@@ -315,11 +314,11 @@ export default function Index() {
           <p>
             {activeCollection?._count?.links === 1
               ? t("showing_count_result", {
-                  count: activeCollection?._count?.links,
-                })
+                count: activeCollection?._count?.links,
+              })
               : t("showing_count_results", {
-                  count: activeCollection?._count?.links,
-                })}
+                count: activeCollection?._count?.links,
+              })}
           </p>
         </LinkListOptions>
 

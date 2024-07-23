@@ -79,9 +79,8 @@ export default function LinkActions({
   return (
     <>
       <div
-        className={`dropdown dropdown-left absolute ${
-          position || "top-3 right-3"
-        } ${alignToTop ? "" : "dropdown-end"} z-20`}
+        className={`dropdown dropdown-left absolute ${position || "top-3 right-3"
+          } ${alignToTop ? "" : "dropdown-end"} z-20`}
       >
         <div
           tabIndex={0}
@@ -92,9 +91,8 @@ export default function LinkActions({
           <i title="More" className="bi-three-dots text-xl" />
         </div>
         <ul
-          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 ${
-            alignToTop ? "" : "translate-y-10"
-          }`}
+          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 ${alignToTop ? "" : "translate-y-10"
+            }`}
         >
           <li>
             <div
@@ -110,7 +108,7 @@ export default function LinkActions({
                 : t("pin_to_dashboard")}
             </div>
           </li>
-          {linkInfo !== undefined && toggleShowInfo ? (
+          {linkInfo !== undefined && toggleShowInfo && (
             <li>
               <div
                 role="button"
@@ -123,8 +121,8 @@ export default function LinkActions({
                 {!linkInfo ? t("show_link_details") : t("hide_link_details")}
               </div>
             </li>
-          ) : undefined}
-          {permissions === true || permissions?.canUpdate ? (
+          )}
+          {permissions === true || permissions?.canUpdate && (
             <li>
               <div
                 role="button"
@@ -137,7 +135,7 @@ export default function LinkActions({
                 {t("edit_link")}
               </div>
             </li>
-          ) : undefined}
+          )}
           {link.type === "url" && (
             <li>
               <div
@@ -152,7 +150,7 @@ export default function LinkActions({
               </div>
             </li>
           )}
-          {permissions === true || permissions?.canDelete ? (
+          {permissions === true || permissions?.canDelete && (
             <li>
               <div
                 role="button"
@@ -165,28 +163,28 @@ export default function LinkActions({
                 {t("delete")}
               </div>
             </li>
-          ) : undefined}
+          )}
         </ul>
       </div>
 
-      {editLinkModal ? (
+      {editLinkModal && (
         <EditLinkModal
           onClose={() => setEditLinkModal(false)}
           activeLink={link}
         />
-      ) : undefined}
-      {deleteLinkModal ? (
+      )}
+      {deleteLinkModal && (
         <DeleteLinkModal
           onClose={() => setDeleteLinkModal(false)}
           activeLink={link}
         />
-      ) : undefined}
-      {preservedFormatsModal ? (
+      )}
+      {preservedFormatsModal && (
         <PreservedFormatsModal
           onClose={() => setPreservedFormatsModal(false)}
           activeLink={link}
         />
-      ) : undefined}
+      )}
       {/* {expandedLink ? (
                 <ExpandedLink onClose={() => setExpandedLink(false)} link={link} />
               ) : undefined} */}
