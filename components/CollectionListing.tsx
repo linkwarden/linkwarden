@@ -231,11 +231,10 @@ const renderItem = (
   return (
     <div ref={provided.innerRef} {...provided.draggableProps} className="mb-1">
       <div
-        className={`${
-          currentPath === `/collections/${collection.id}`
+        className={`${currentPath === `/collections/${collection.id}`
             ? "bg-primary/20 is-active"
             : "hover:bg-neutral/20"
-        } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
+          } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
       >
         {Icon(item as ExtendedTreeItem, onExpand, onCollapse)}
 
@@ -253,12 +252,12 @@ const renderItem = (
             ></i>
             <p className="truncate w-full">{collection.name}</p>
 
-            {collection.isPublic ? (
+            {collection.isPublic && (
               <i
                 className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
                 title="This collection is being shared publicly."
               ></i>
-            ) : undefined}
+            )}
             <div className="drop-shadow text-neutral text-xs">
               {collection._count?.links}
             </div>

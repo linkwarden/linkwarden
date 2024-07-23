@@ -324,9 +324,9 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-      {newLinkModal ? (
+      {newLinkModal && (
         <NewLinkModal onClose={() => setNewLinkModal(false)} />
-      ) : undefined}
+      )}
     </MainLayout>
   );
 }

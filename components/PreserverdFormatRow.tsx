@@ -97,19 +97,18 @@ export default function PreservedFormatRow({
       </div>
 
       <div className="flex gap-1">
-        {downloadable || false ? (
+        {downloadable || false && (
           <div
             onClick={() => handleDownload()}
             className="btn btn-sm btn-square"
           >
             <i className="bi-cloud-arrow-down text-xl text-neutral" />
           </div>
-        ) : undefined}
+        )}
 
         <Link
-          href={`${
-            isPublic ? "/public" : ""
-          }/preserved/${link?.id}?format=${format}`}
+          href={`${isPublic ? "/public" : ""
+            }/preserved/${link?.id}?format=${format}`}
           target="_blank"
           className="btn btn-sm btn-square"
         >

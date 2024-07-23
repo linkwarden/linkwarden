@@ -104,16 +104,17 @@ export default function PublicCollections() {
   // @ts-ignore
   const LinkComponent = linkView[viewMode];
 
-  return collection ? (
+  if (!collection) return null;
+
+  return (
     <div
       className="h-96"
       style={{
-        backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-          settings.theme === "dark" ? "#262626" : "#f3f4f6"
-        } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+        backgroundImage: `linear-gradient(${collection?.color}30 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
-      {collection ? (
+      {collection && (
         <Head>
           <title>{collection.name} | Linkwarden</title>
           <meta
@@ -122,7 +123,7 @@ export default function PublicCollections() {
             key="title"
           />
         </Head>
-      ) : undefined}
+      )}
       <div className="lg:w-3/4 w-full mx-auto p-5 bg">
         <div className="flex items-center justify-between">
           <p className="text-4xl font-thin mb-2 capitalize mt-10">
@@ -151,12 +152,12 @@ export default function PublicCollections() {
                 className="flex items-center btn px-2 btn-ghost rounded-full"
                 onClick={() => setEditCollectionSharingModal(true)}
               >
-                {collectionOwner.id ? (
+                {collectionOwner.id && (
                   <ProfilePhoto
                     src={collectionOwner.image || undefined}
                     name={collectionOwner.name}
                   />
-                ) : undefined}
+                )}
                 {collection.members
                   .sort((a, b) => (a.userId as number) - (b.userId as number))
                   .map((e, i) => {
@@ -181,20 +182,20 @@ export default function PublicCollections() {
 
               <p className="text-neutral text-sm">
                 {collection.members.length > 0 &&
-                collection.members.length === 1
+                  collection.members.length === 1
                   ? t("by_author_and_other", {
+                    author: collectionOwner.name,
+                    count: collection.members.length,
+                  })
+                  : collection.members.length > 0 &&
+                    collection.members.length !== 1
+                    ? t("by_author_and_others", {
                       author: collectionOwner.name,
                       count: collection.members.length,
                     })
-                  : collection.members.length > 0 &&
-                      collection.members.length !== 1
-                    ? t("by_author_and_others", {
-                        author: collectionOwner.name,
-                        count: collection.members.length,
-                      })
                     : t("by_author", {
-                        author: collectionOwner.name,
-                      })}
+                      author: collectionOwner.name,
+                    })}
               </p>
             </div>
           </div>
@@ -218,11 +219,11 @@ export default function PublicCollections() {
               placeholder={
                 collection._count?.links === 1
                   ? t("search_count_link", {
-                      count: collection._count?.links,
-                    })
+                    count: collection._count?.links,
+                  })
                   : t("search_count_links", {
-                      count: collection._count?.links,
-                    })
+                    count: collection._count?.links,
+                  })
               }
             />
           </LinkListOptions>
@@ -248,15 +249,13 @@ export default function PublicCollections() {
         </p> */}
         </div>
       </div>
-      {editCollectionSharingModal ? (
+      {editCollectionSharingModal && (
         <EditCollectionSharingModal
           onClose={() => setEditCollectionSharingModal(false)}
           activeCollection={collection}
         />
-      ) : undefined}
+      )}
     </div>
-  ) : (
-    <></>
   );
 }
 

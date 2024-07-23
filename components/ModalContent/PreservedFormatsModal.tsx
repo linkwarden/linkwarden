@@ -150,16 +150,16 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       <p className="text-xl font-thin">{t("preserved_formats")}</p>
       <div className="divider mb-2 mt-1"></div>
       {screenshotAvailable(link) ||
-      pdfAvailable(link) ||
-      readabilityAvailable(link) ||
-      monolithAvailable(link) ? (
+        pdfAvailable(link) ||
+        readabilityAvailable(link) ||
+        monolithAvailable(link) ? (
         <p className="mb-3">{t("available_formats")}</p>
       ) : (
         ""
       )}
 
       <div className={`flex flex-col gap-3`}>
-        {monolithAvailable(link) ? (
+        {monolithAvailable(link) && (
           <PreservedFormatRow
             name={t("webpage")}
             icon={"bi-filetype-html"}
@@ -167,9 +167,9 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             activeLink={link}
             downloadable={true}
           />
-        ) : undefined}
+        )}
 
-        {screenshotAvailable(link) ? (
+        {screenshotAvailable(link) && (
           <PreservedFormatRow
             name={t("screenshot")}
             icon={"bi-file-earmark-image"}
@@ -181,9 +181,9 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             activeLink={link}
             downloadable={true}
           />
-        ) : undefined}
+        )}
 
-        {pdfAvailable(link) ? (
+        {pdfAvailable(link) && (
           <PreservedFormatRow
             name={t("pdf")}
             icon={"bi-file-earmark-pdf"}
@@ -191,16 +191,16 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             activeLink={link}
             downloadable={true}
           />
-        ) : undefined}
+        )}
 
-        {readabilityAvailable(link) ? (
+        {readabilityAvailable(link) && (
           <PreservedFormatRow
             name={t("readable")}
             icon={"bi-file-earmark-text"}
             format={ArchivedFormat.readability}
             activeLink={link}
           />
-        ) : undefined}
+        )}
 
         {!isReady() && !atLeastOneFormatAvailable() ? (
           <div className={`w-full h-full flex flex-col justify-center p-10`}>
@@ -213,7 +213,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
             <p className="text-center text-lg">{t("check_back_later")}</p>
           </div>
-        ) : !isReady() && atLeastOneFormatAvailable() ? (
+        ) : !isReady() && atLeastOneFormatAvailable() && (
           <div className={`w-full h-full flex flex-col justify-center p-5`}>
             <BeatLoader
               color="oklch(var(--p))"
@@ -223,12 +223,11 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             <p className="text-center">{t("there_are_more_formats")}</p>
             <p className="text-center text-sm">{t("check_back_later")}</p>
           </div>
-        ) : undefined}
+        )}
 
         <div
-          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${
-            isReady() ? "sm:mt " : ""
-          }`}
+          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${isReady() ? "sm:mt " : ""
+            }`}
         >
           <Link
             href={`https://web.archive.org/web/${link?.url?.replace(

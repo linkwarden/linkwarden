@@ -120,15 +120,15 @@ export default function Navbar() {
           </ClickAwayHandler>
         </div>
       ) : null}
-      {newLinkModal ? (
+      {newLinkModal && (
         <NewLinkModal onClose={() => setNewLinkModal(false)} />
-      ) : undefined}
-      {newCollectionModal ? (
+      )}
+      {newCollectionModal && (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
-      ) : undefined}
-      {uploadFileModal ? (
+      )}
+      {uploadFileModal && (
         <UploadFileModal onClose={() => setUploadFileModal(false)} />
-      ) : undefined}
+      )}
     </div>
   );
 }

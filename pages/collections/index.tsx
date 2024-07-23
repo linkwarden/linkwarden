@@ -58,7 +58,7 @@ export default function Collections() {
           </div>
         </div>
 
-        {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] ? (
+        {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] && (
           <>
             <PageHeader
               icon={"bi-folder"}
@@ -74,11 +74,11 @@ export default function Collections() {
                 })}
             </div>
           </>
-        ) : undefined}
+        )}
       </div>
-      {newCollectionModal ? (
+      {newCollectionModal && (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
-      ) : undefined}
+      )}
     </MainLayout>
   );
 }
