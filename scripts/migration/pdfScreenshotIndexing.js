@@ -77,6 +77,8 @@ async function pdfScreenshotIndexing() {
     orderBy: { id: "asc" },
   });
 
+  let counter = 0;
+
   // PDFs
   for (let link of links) {
     const path = `archives/${link.collectionId}/${link.id}.pdf`;
@@ -88,11 +90,14 @@ async function pdfScreenshotIndexing() {
         where: { id: link.id },
         data: { pdf: path },
       });
-      console.log(`${link.id}`);
-    } else {
-      console.log(`${link.id}`);
     }
+
+    console.log("count:", counter, "id:", link.id, "PDF");
+
+    counter++;
   }
+
+  counter = 0;
 
   // Screenshots (PNGs)
   for (let link of links) {
@@ -105,11 +110,14 @@ async function pdfScreenshotIndexing() {
         where: { id: link.id },
         data: { image: path },
       });
-      console.log(`${link.id}`);
-    } else {
-      console.log(`${link.id}`);
     }
+
+    console.log("count:", counter, "id:", link.id, "PNG");
+
+    counter++;
   }
+
+  counter = 0;
 
   // Screenshots (JPEGs)
   for (let link of links) {
@@ -122,10 +130,11 @@ async function pdfScreenshotIndexing() {
         where: { id: link.id },
         data: { image: path },
       });
-      console.log(`${link.id}`);
-    } else {
-      console.log(`${link.id}`);
     }
+
+    console.log("count:", counter, "id:", link.id, "JPEG");
+
+    counter++;
   }
 
   await prisma.$disconnect();
