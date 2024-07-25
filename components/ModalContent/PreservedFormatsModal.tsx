@@ -104,7 +104,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       );
     })();
 
-    let interval: any;
+    let interval: NodeJS.Timeout | null = null;
 
     if (!isReady()) {
       interval = setInterval(async () => {
