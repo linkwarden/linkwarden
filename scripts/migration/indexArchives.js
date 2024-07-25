@@ -66,6 +66,14 @@ async function checkFileExistence(path) {
 
 async function indexArchives() {
   const links = await prisma.link.findMany({
+    select: {
+      id: true,
+      collectionId: true,
+      image: true,
+      pdf: true,
+      readable: true,
+      monolith: true,
+    },
     orderBy: { id: "asc" },
   });
 
