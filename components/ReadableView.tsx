@@ -75,7 +75,7 @@ export default function ReadableView({ link }: Props) {
   useEffect(() => {
     if (link) getLink(link?.id as number);
 
-    let interval: any;
+    let interval: NodeJS.Timeout | null = null;
     if (
       link &&
       (link?.image === "pending" ||
