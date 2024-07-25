@@ -65,8 +65,6 @@ async function checkFileExistence(path) {
 }
 
 async function pdfScreenshotIndexing() {
-  let counter = 0;
-
   const links = await prisma.link.findMany({
     select: {
       id: true,
@@ -78,6 +76,8 @@ async function pdfScreenshotIndexing() {
     },
     orderBy: { id: "asc" },
   });
+
+  let counter = 0;
 
   // PDFs
   for (let link of links) {
@@ -92,10 +92,12 @@ async function pdfScreenshotIndexing() {
       });
     }
 
-    console.log(counter, "id:", link.id, "PDF");
+    console.log("count:", counter, "id:", link.id, "PDF");
 
     counter++;
   }
+
+  counter = 0;
 
   // Screenshots (PNGs)
   for (let link of links) {
@@ -110,10 +112,12 @@ async function pdfScreenshotIndexing() {
       });
     }
 
-    console.log(counter, "id:", link.id, "PNG");
+    console.log("count:", counter, "id:", link.id, "PNG");
 
     counter++;
   }
+
+  counter = 0;
 
   // Screenshots (JPEGs)
   for (let link of links) {
@@ -128,7 +132,7 @@ async function pdfScreenshotIndexing() {
       });
     }
 
-    console.log(counter, "id:", link.id, "JPEG");
+    console.log("count:", counter, "id:", link.id, "JPEG");
 
     counter++;
   }
