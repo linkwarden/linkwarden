@@ -81,6 +81,8 @@ export enum Sort {
   DescriptionZA,
 }
 
+export type Order = { [key: string]: 'asc' | 'desc' };
+
 export type LinkRequestQuery = {
   sort: Sort;
   cursor?: number;

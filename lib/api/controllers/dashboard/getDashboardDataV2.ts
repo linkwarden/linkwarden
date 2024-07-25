@@ -1,23 +1,23 @@
 import { prisma } from "@/lib/api/db";
-import { LinkRequestQuery, Sort } from "@/types/global";
+import { LinkRequestQuery, Order, Sort } from "@/types/global";
 
 type Response<D> =
   | {
-      data: D;
-      message: string;
-      status: number;
-    }
+    data: D;
+    message: string;
+    status: number;
+  }
   | {
-      data: D;
-      message: string;
-      status: number;
-    };
+    data: D;
+    message: string;
+    status: number;
+  };
 
 export default async function getDashboardData(
   userId: number,
   query: LinkRequestQuery
 ): Promise<Response<any>> {
-  let order: any;
+  let order: Order = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
