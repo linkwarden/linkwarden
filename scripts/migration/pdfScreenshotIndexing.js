@@ -1,5 +1,5 @@
-// This is a script that looks for every link and checks if the preservations exist in the filesystem.
-// If they do, it updates the link with the path to the preservation.
+// This is a script that looks for every link and checks if the pdf/screenshot exist in the filesystem.
+// If they do, it updates the link with the path in the db.
 // If they don't, it passes.
 
 const { S3 } = require("@aws-sdk/client-s3");
@@ -64,7 +64,7 @@ async function checkFileExistence(path) {
   }
 }
 
-async function indexArchives() {
+async function pdfScreenshotIndexing() {
   const links = await prisma.link.findMany({
     select: {
       id: true,
@@ -128,44 +128,10 @@ async function indexArchives() {
     }
   }
 
-  // Readability
-  for (let link of links) {
-    const path = `archives/${link.collectionId}/${link.id}_readability.json`;
-
-    const res = await checkFileExistence(path);
-
-    if (res) {
-      await prisma.link.update({
-        where: { id: link.id },
-        data: { readable: path },
-      });
-      console.log(`${link.id}`);
-    } else {
-      console.log(`${link.id}`);
-    }
-  }
-
-  // Webpages
-  for (let link of links) {
-    const path = `archives/${link.collectionId}/${link.id}.html`;
-
-    const res = await checkFileExistence(path);
-
-    if (res) {
-      await prisma.link.update({
-        where: { id: link.id },
-        data: { monolith: path },
-      });
-      console.log(`${link.id}`);
-    } else {
-      console.log(`${link.id}`);
-    }
-  }
-
   await prisma.$disconnect();
 }
 
-indexArchives().catch((e) => {
+pdfScreenshotIndexing().catch((e) => {
   console.error(e);
   process.exit(1);
 });
