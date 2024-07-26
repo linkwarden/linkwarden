@@ -86,15 +86,16 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
             image:
               user.archiveAsScreenshot && !link.image?.startsWith("archive")
                 ? "pending"
-                : "unavailable",
+                : undefined,
             pdf:
               user.archiveAsPDF && !link.pdf?.startsWith("archive")
                 ? "pending"
-                : "unavailable",
+                : undefined,
+            monolith:
+              user.archiveAsMonolith && !link.monolith?.startsWith("archive")
+                ? "pending"
+                : undefined,
             readable: !link.readable?.startsWith("archive")
-              ? "pending"
-              : undefined,
-            monolith: !link.monolith?.startsWith("archive")
               ? "pending"
               : undefined,
             preview: !link.readable?.startsWith("archive")
