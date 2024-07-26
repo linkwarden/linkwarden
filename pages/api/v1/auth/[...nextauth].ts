@@ -79,10 +79,7 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 const providers: Provider[] = [];
 
-if (
-  process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === "true" ||
-  process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === undefined
-) {
+if (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false") {
   // undefined is for backwards compatibility
   providers.push(
     CredentialsProvider({
