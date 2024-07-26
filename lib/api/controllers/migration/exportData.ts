@@ -22,14 +22,25 @@ export default async function exportData(userId: number) {
 
   const { password, id, ...userData } = user;
 
-  function redactIds(obj: any) {
-    if (Array.isArray(obj)) {
-      obj.forEach((o) => redactIds(o));
-    } else if (obj !== null && typeof obj === "object") {
-      delete obj.id;
-      for (let key in obj) {
-        redactIds(obj[key]);
-      }
+  function redactIds(data: object | object[]): void {
+    if (Array.isArray(data)) {
+      data.forEach((item) => redactIds(item));
+    } else if (data !== null && typeof data === "object") {
+      const fieldsToRedact = ['id', 'parentId', 'collectionId', 'ownerId'];
+
+      fieldsToRedact.forEach((field) => {
+        if (field in data) {
+          delete (data as any)[field];
+        }
+      });
+
+      // Recursively call redactIds for each property that is an object or an array
+      Object.keys(data).forEach((key) => {
+        const value = (data as any)[key];
+        if (value !== null && (typeof value === "object" || Array.isArray(value))) {
+          redactIds(value);
+        }
+      });
     }
   }
 
