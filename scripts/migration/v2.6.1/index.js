@@ -1,4 +1,12 @@
-// This is a script that looks for every link and checks if the pdf/screenshot exist in the filesystem.
+// Run the script with `node scripts/migration/v2.6.1/index.js`
+// Docker users can run the script with `docker exec -it CONTAINER_ID /bin/bash -c 'node scripts/migration/v2.6.1/index.js'`
+
+// There are two parts to this script:
+
+// Firstly we decided that the "name" field should be the auto-generated field instead of the "description" field, so we need to
+// move the data from the "description" field to the "name" field for links that have an empty name.
+
+// Secondly it looks for every link and checks if the pdf/screenshot exist in the filesystem.
 // If they do, it updates the link with the path in the db.
 // If they don't, it passes.
 
@@ -64,7 +72,34 @@ async function checkFileExistence(path) {
   }
 }
 
-async function pdfScreenshotIndexing() {
+async function main() {
+  console.log("Starting... Please do not interrupt the process.");
+
+  const linksWithoutName = await prisma.link.findMany({
+    where: {
+      name: "",
+      description: {
+        not: "",
+      },
+    },
+    select: {
+      id: true,
+      description: true,
+    },
+  });
+
+  for (const link of linksWithoutName) {
+    await prisma.link.update({
+      where: {
+        id: link.id,
+      },
+      data: {
+        name: link.description,
+        description: "",
+      },
+    });
+  }
+
   const links = await prisma.link.findMany({
     select: {
       id: true,
@@ -76,8 +111,6 @@ async function pdfScreenshotIndexing() {
     },
     orderBy: { id: "asc" },
   });
-
-  let counter = 0;
 
   // PDFs
   for (let link of links) {
@@ -92,12 +125,8 @@ async function pdfScreenshotIndexing() {
       });
     }
 
-    console.log("count:", counter, "id:", link.id, "PDF");
-
-    counter++;
+    console.log("Indexing the PDF for link:", link.id);
   }
-
-  counter = 0;
 
   // Screenshots (PNGs)
   for (let link of links) {
@@ -112,12 +141,8 @@ async function pdfScreenshotIndexing() {
       });
     }
 
-    console.log("count:", counter, "id:", link.id, "PNG");
-
-    counter++;
+    console.log("Indexing the PNG for link:", link.id);
   }
-
-  counter = 0;
 
   // Screenshots (JPEGs)
   for (let link of links) {
@@ -132,15 +157,13 @@ async function pdfScreenshotIndexing() {
       });
     }
 
-    console.log("count:", counter, "id:", link.id, "JPEG");
-
-    counter++;
+    console.log("Indexing the JPEG for link:", link.id);
   }
 
   await prisma.$disconnect();
 }
 
-pdfScreenshotIndexing().catch((e) => {
+main().catch((e) => {
   console.error(e);
   process.exit(1);
 });
