@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
 import useCollectionStore from "@/store/collections";
 import toast from "react-hot-toast";
-import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
+import { AccountSettings, CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
@@ -62,15 +62,7 @@ export default function EditCollectionSharingModal({
 
   const [memberUsername, setMemberUsername] = useState("");
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<Partial<AccountSettings>>({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -130,7 +122,7 @@ export default function EditCollectionSharingModal({
           </div>
         )}
 
-        {collection.isPublic ? (
+        {collection.isPublic && (
           <div className={permissions === true ? "pl-5" : ""}>
             <p className="mb-2">{t("sharable_link_guide")}</p>
             <div
@@ -148,7 +140,7 @@ export default function EditCollectionSharingModal({
               {publicCollectionURL}
             </div>
           </div>
-        ) : null}
+        )}
 
         {permissions === true && <div className="divider my-3"></div>}
 

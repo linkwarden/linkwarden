@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
@@ -54,8 +54,10 @@ export default function Account() {
     if (!objectIsEmpty(account)) setUser({ ...account });
   }, [account]);
 
-  const handleImageUpload = async (e: any) => {
-    const file: File = e.target.files[0];
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return toast.error(t("image_upload_no_file_error"));
+
     const fileExtension = file.name.split(".").pop()?.toLowerCase();
     const allowedExtensions = ["png", "jpeg", "jpg"];
     if (allowedExtensions.includes(fileExtension as string)) {
@@ -100,9 +102,10 @@ export default function Account() {
     setSubmitLoader(false);
   };
 
-  const importBookmarks = async (e: any, format: MigrationFormat) => {
+  const importBookmarks = async (e: ChangeEvent<HTMLInputElement>, format: MigrationFormat) => {
     setSubmitLoader(true);
-    const file: File = e.target.files[0];
+    const file = e.target.files?.[0];
+
     if (file) {
       var reader = new FileReader();
       reader.readAsText(file, "UTF-8");
