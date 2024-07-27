@@ -26,7 +26,7 @@ export default async function exportData(userId: number) {
     if (Array.isArray(data)) {
       data.forEach((item) => redactIds(item));
     } else if (data !== null && typeof data === "object") {
-      const fieldsToRedact = ['id', 'parentId', 'collectionId', 'ownerId'];
+      const fieldsToRedact = ["id", "parentId", "collectionId", "ownerId"];
 
       fieldsToRedact.forEach((field) => {
         if (field in data) {
@@ -37,7 +37,10 @@ export default async function exportData(userId: number) {
       // Recursively call redactIds for each property that is an object or an array
       Object.keys(data).forEach((key) => {
         const value = (data as any)[key];
-        if (value !== null && (typeof value === "object" || Array.isArray(value))) {
+        if (
+          value !== null &&
+          (typeof value === "object" || Array.isArray(value))
+        ) {
           redactIds(value);
         }
       });

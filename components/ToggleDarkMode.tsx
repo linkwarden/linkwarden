@@ -10,7 +10,9 @@ export default function ToggleDarkMode({ className }: Props) {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
 
-  const [theme, setTheme] = useState<string | null>(localStorage.getItem("theme"));
+  const [theme, setTheme] = useState<string | null>(
+    localStorage.getItem("theme")
+  );
 
   const handleToggle = (e: ChangeEvent<HTMLInputElement>) => {
     setTheme(e.target.checked ? "dark" : "light");

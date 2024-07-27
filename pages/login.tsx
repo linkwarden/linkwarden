@@ -224,9 +224,9 @@ export default function Login({
             loading={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
-              value.name.toLowerCase() === "apple" && (
+              (value.name.toLowerCase() === "apple" && (
                 <i className={"bi-" + value.name.toLowerCase()}></i>
-              )}
+              ))}
             {value.name}
           </Button>
         </React.Fragment>

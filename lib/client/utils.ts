@@ -7,10 +7,15 @@ export function isPWA() {
 }
 
 export function isIphone() {
-  return /iPhone/.test(navigator.userAgent) && !(window as unknown as { MSStream?: any }).MSStream;
+  return (
+    /iPhone/.test(navigator.userAgent) &&
+    !(window as unknown as { MSStream?: any }).MSStream
+  );
 }
 
-export function dropdownTriggerer(e: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement>) {
+export function dropdownTriggerer(
+  e: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement>
+) {
   let targetEl = e.currentTarget;
   if (targetEl && targetEl.matches(":focus")) {
     setTimeout(function () {

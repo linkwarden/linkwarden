@@ -189,8 +189,12 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
             where: { id: linkId },
             data: {
               preview: isPDF ? "unavailable" : undefined,
-              image: isImage ? `archives/${collectionPermissions.id}/${linkId + suffix}` : null,
-              pdf: isPDF ? `archives/${collectionPermissions.id}/${linkId + suffix}` : null,
+              image: isImage
+                ? `archives/${collectionPermissions.id}/${linkId + suffix}`
+                : null,
+              pdf: isPDF
+                ? `archives/${collectionPermissions.id}/${linkId + suffix}`
+                : null,
               lastPreserved: new Date().toISOString(),
             },
           });

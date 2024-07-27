@@ -84,23 +84,23 @@ export default async function importFromWallabag(
               tags:
                 link.tags && link.tags[0]
                   ? {
-                    connectOrCreate: link.tags.map((tag) => ({
-                      where: {
-                        name_ownerId: {
-                          name: tag.trim(),
-                          ownerId: userId,
-                        },
-                      },
-                      create: {
-                        name: tag.trim(),
-                        owner: {
-                          connect: {
-                            id: userId,
+                      connectOrCreate: link.tags.map((tag) => ({
+                        where: {
+                          name_ownerId: {
+                            name: tag.trim(),
+                            ownerId: userId,
                           },
                         },
-                      },
-                    })),
-                  }
+                        create: {
+                          name: tag.trim(),
+                          owner: {
+                            connect: {
+                              id: userId,
+                            },
+                          },
+                        },
+                      })),
+                    }
                   : undefined,
             },
           });

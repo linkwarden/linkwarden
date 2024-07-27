@@ -28,10 +28,10 @@ export default async function readFile(filePath: string) {
     try {
       let returnObject:
         | {
-          file: Buffer | string;
-          contentType: ReturnContentTypes;
-          status: number;
-        }
+            file: Buffer | string;
+            contentType: ReturnContentTypes;
+            status: number;
+          }
         | undefined;
 
       const headObjectAsync = util.promisify(
