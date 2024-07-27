@@ -32,9 +32,8 @@ export default function ProfileDropdown() {
         />
       </div>
       <ul
-        className={`dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box ${
-          isAdmin ? "w-48" : "w-40"
-        } mt-1`}
+        className={`dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box ${isAdmin ? "w-48" : "w-40"
+          } mt-1`}
       >
         <li>
           <Link
@@ -60,7 +59,7 @@ export default function ProfileDropdown() {
             })}
           </div>
         </li>
-        {isAdmin ? (
+        {isAdmin && (
           <li>
             <Link
               href="/admin"
@@ -71,7 +70,7 @@ export default function ProfileDropdown() {
               {t("server_administration")}
             </Link>
           </li>
-        ) : null}
+        )}
         <li>
           <div
             onClick={() => {

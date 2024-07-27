@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/api/db";
-import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
@@ -85,23 +84,23 @@ export default async function importFromWallabag(
               tags:
                 link.tags && link.tags[0]
                   ? {
-                      connectOrCreate: link.tags.map((tag) => ({
-                        where: {
-                          name_ownerId: {
-                            name: tag.trim(),
-                            ownerId: userId,
-                          },
-                        },
-                        create: {
+                    connectOrCreate: link.tags.map((tag) => ({
+                      where: {
+                        name_ownerId: {
                           name: tag.trim(),
-                          owner: {
-                            connect: {
-                              id: userId,
-                            },
+                          ownerId: userId,
+                        },
+                      },
+                      create: {
+                        name: tag.trim(),
+                        owner: {
+                          connect: {
+                            id: userId,
                           },
                         },
-                      })),
-                    }
+                      },
+                    })),
+                  }
                   : undefined,
             },
           });
