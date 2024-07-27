@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import { AccountSettings, CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import React, { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
@@ -33,15 +33,7 @@ export default function CollectionCard({ collection, className }: Props) {
 
   const permissions = usePermissions(collection.id as number);
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<Partial<AccountSettings>>({});
 
   useEffect(() => {
     const fetchOwner = async () => {

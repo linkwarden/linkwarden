@@ -1,6 +1,7 @@
 "use client";
 import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
 import {
+  AccountSettings,
   CollectionIncludingMembersAndLinkCount,
   Sort,
   ViewMode,
@@ -36,15 +37,7 @@ export default function PublicCollections() {
 
   const router = useRouter();
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<Partial<AccountSettings>>({});
 
   const [searchFilter, setSearchFilter] = useState({
     name: true,

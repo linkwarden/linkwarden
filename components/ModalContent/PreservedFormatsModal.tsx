@@ -3,6 +3,7 @@ import useLinkStore from "@/store/links";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
+  AccountSettings,
 } from "@/types/global";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -37,15 +38,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<Partial<AccountSettings>>({});
 
   useEffect(() => {
     const fetchOwner = async () => {

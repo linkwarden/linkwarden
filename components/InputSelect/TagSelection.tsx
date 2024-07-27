@@ -35,7 +35,6 @@ export default function TagSelection({ onChange, defaultValue }: Props) {
       options={options}
       styles={styles}
       defaultValue={defaultValue}
-      // menuPosition="fixed"
       isMulti
     />
   );
