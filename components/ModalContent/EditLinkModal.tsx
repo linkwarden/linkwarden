@@ -98,7 +98,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
             <p className="mb-2">{t("collection")}</p>
-            {link.collection.name ? (
+            {link.collection.name && (
               <CollectionSelection
                 onChange={setCollection}
                 defaultValue={
@@ -108,7 +108,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
                 }
                 creatable={false}
               />
-            ) : null}
+            )}
           </div>
 
           <div>

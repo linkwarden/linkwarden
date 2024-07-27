@@ -4,15 +4,15 @@ import ClickAwayHandler from "./ClickAwayHandler";
 
 type MenuItem =
   | {
-      name: string;
-      onClick: MouseEventHandler;
-      href?: string;
-    }
+    name: string;
+    onClick: MouseEventHandler;
+    href?: string;
+  }
   | {
-      name: string;
-      onClick?: MouseEventHandler;
-      href: string;
-    }
+    name: string;
+    onClick?: MouseEventHandler;
+    href: string;
+  }
   | undefined;
 
 type Props = {
@@ -60,7 +60,7 @@ export default function Dropdown({
     }
   }, [points, dropdownHeight]);
 
-  return !points || pos ? (
+  return !points || pos && (
     <ClickAwayHandler
       onMount={(e) => {
         setDropdownHeight(e.height);
@@ -69,16 +69,15 @@ export default function Dropdown({
       style={
         points
           ? {
-              position: "fixed",
-              top: `${pos?.y}px`,
-              left: `${pos?.x}px`,
-            }
+            position: "fixed",
+            top: `${pos?.y}px`,
+            left: `${pos?.x}px`,
+          }
           : undefined
       }
       onClickOutside={onClickOutside}
-      className={`${
-        className || ""
-      } py-1 shadow-md border border-neutral-content bg-base-200 rounded-md flex flex-col z-20`}
+      className={`${className || ""
+        } py-1 shadow-md border border-neutral-content bg-base-200 rounded-md flex flex-col z-20`}
     >
       {items.map((e, i) => {
         const inner = e && (
@@ -102,5 +101,5 @@ export default function Dropdown({
         );
       })}
     </ClickAwayHandler>
-  ) : null;
+  );
 }

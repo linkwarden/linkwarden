@@ -6,6 +6,16 @@ import { Options } from "./types";
 import CreatableSelect from "react-select/creatable";
 import Select, { ActionMeta } from "react-select";
 
+interface Option {
+  label: string;
+  value: number;
+  ownerId: number;
+  count?: {
+    links: number;
+  };
+  parentId?: number;
+}
+
 type Props = {
   onChange: (newValue: unknown, actionMeta: ActionMeta<unknown>) => void;
   showDefaultValue?: boolean;

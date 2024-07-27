@@ -104,9 +104,9 @@ export default function Admin() {
         <p>{t("no_users_found")}</p>
       )}
 
-      {newUserModal ? (
+      {newUserModal && (
         <NewUserModal onClose={() => setNewUserModal(false)} />
-      ) : null}
+      )}
     </div>
   );
 }
