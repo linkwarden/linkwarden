@@ -4,17 +4,17 @@ import { useEffect, useState } from "react";
 import { styles } from "./styles";
 import { Options } from "./types";
 import CreatableSelect from "react-select/creatable";
-import Select, { ActionMeta } from "react-select";
+import Select from "react-select";
 
 type Props = {
-  onChange: (newValue: unknown, actionMeta: ActionMeta<unknown>) => void;
+  onChange: any;
   showDefaultValue?: boolean;
   defaultValue?:
-    | {
-        label: string;
-        value?: number;
-      }
-    | undefined;
+  | {
+    label: string;
+    value?: number;
+  }
+  | undefined;
   creatable?: boolean;
 };
 
@@ -107,7 +107,7 @@ export default function CollectionSelection({
         components={{
           Option: customOption,
         }}
-        // menuPosition="fixed"
+      // menuPosition="fixed"
       />
     );
   } else {
@@ -123,7 +123,7 @@ export default function CollectionSelection({
         components={{
           Option: customOption,
         }}
-        // menuPosition="fixed"
+      // menuPosition="fixed"
       />
     );
   }

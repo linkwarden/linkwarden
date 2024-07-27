@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import { styles } from "./styles";
 import { Options } from "./types";
-import { ActionMeta } from "react-select";
 
 type Props = {
-  onChange: (newValue: unknown, actionMeta: ActionMeta<unknown>) => void;
+  onChange: any;
   defaultValue?: {
     value: number;
     label: string;
