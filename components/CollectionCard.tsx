@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { AccountSettings, CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import {
+  AccountSettings,
+  CollectionIncludingMembersAndLinkCount,
+} from "@/types/global";
 import React, { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
@@ -33,7 +36,9 @@ export default function CollectionCard({ collection, className }: Props) {
 
   const permissions = usePermissions(collection.id as number);
 
-  const [collectionOwner, setCollectionOwner] = useState<Partial<AccountSettings>>({});
+  const [collectionOwner, setCollectionOwner] = useState<
+    Partial<AccountSettings>
+  >({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -151,9 +156,11 @@ export default function CollectionCard({ collection, className }: Props) {
       <Link
         href={`/collections/${collection.id}`}
         style={{
-          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
-            } 50%, ${settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
-            } 100%)`,
+          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
+            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+          } 50%, ${
+            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+          } 100%)`,
         }}
         className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
       >

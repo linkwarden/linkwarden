@@ -133,9 +133,9 @@ export default function Register({
             loading={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
-              value.name.toLowerCase() === "apple" && (
+              (value.name.toLowerCase() === "apple" && (
                 <i className={"bi-" + value.name.toLowerCase()}></i>
-              )}
+              ))}
             {value.name}
           </Button>
         </React.Fragment>
@@ -149,8 +149,8 @@ export default function Register({
       text={
         process.env.NEXT_PUBLIC_STRIPE
           ? t("trial_offer_desc", {
-            count: Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14),
-          })
+              count: Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14),
+            })
           : t("register_desc")
       }
       data-testid="registration-form"

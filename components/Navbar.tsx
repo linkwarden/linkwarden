@@ -120,9 +120,7 @@ export default function Navbar() {
           </ClickAwayHandler>
         </div>
       )}
-      {newLinkModal && (
-        <NewLinkModal onClose={() => setNewLinkModal(false)} />
-      )}
+      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
       {newCollectionModal && (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
       )}

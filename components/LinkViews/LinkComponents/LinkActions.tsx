@@ -79,8 +79,9 @@ export default function LinkActions({
   return (
     <>
       <div
-        className={`dropdown dropdown-left absolute ${position || "top-3 right-3"
-          } ${alignToTop ? "" : "dropdown-end"} z-20`}
+        className={`dropdown dropdown-left absolute ${
+          position || "top-3 right-3"
+        } ${alignToTop ? "" : "dropdown-end"} z-20`}
       >
         <div
           tabIndex={0}
@@ -91,8 +92,9 @@ export default function LinkActions({
           <i title="More" className="bi-three-dots text-xl" />
         </div>
         <ul
-          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 ${alignToTop ? "" : "translate-y-10"
-            }`}
+          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 ${
+            alignToTop ? "" : "translate-y-10"
+          }`}
         >
           <li>
             <div
@@ -122,20 +124,21 @@ export default function LinkActions({
               </div>
             </li>
           )}
-          {permissions === true || permissions?.canUpdate && (
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  setEditLinkModal(true);
-                }}
-              >
-                {t("edit_link")}
-              </div>
-            </li>
-          )}
+          {permissions === true ||
+            (permissions?.canUpdate && (
+              <li>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    setEditLinkModal(true);
+                  }}
+                >
+                  {t("edit_link")}
+                </div>
+              </li>
+            ))}
           {link.type === "url" && (
             <li>
               <div
@@ -150,20 +153,21 @@ export default function LinkActions({
               </div>
             </li>
           )}
-          {permissions === true || permissions?.canDelete && (
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={(e) => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
-                }}
-              >
-                {t("delete")}
-              </div>
-            </li>
-          )}
+          {permissions === true ||
+            (permissions?.canDelete && (
+              <li>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
+                  }}
+                >
+                  {t("delete")}
+                </div>
+              </li>
+            ))}
         </ul>
       </div>
 

@@ -25,8 +25,9 @@ export default function CenteredForm({
       <div className="m-auto flex flex-col gap-2 w-full">
         {settings.theme && (
           <Image
-            src={`/linkwarden_${settings.theme === "dark" ? "dark" : "light"
-              }.png`}
+            src={`/linkwarden_${
+              settings.theme === "dark" ? "dark" : "light"
+            }.png`}
             width={640}
             height={136}
             alt="Linkwarden"

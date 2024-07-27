@@ -38,7 +38,9 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
-  const [collectionOwner, setCollectionOwner] = useState<Partial<AccountSettings>>({});
+  const [collectionOwner, setCollectionOwner] = useState<
+    Partial<AccountSettings>
+  >({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -143,9 +145,9 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       <p className="text-xl font-thin">{t("preserved_formats")}</p>
       <div className="divider mb-2 mt-1"></div>
       {screenshotAvailable(link) ||
-        pdfAvailable(link) ||
-        readabilityAvailable(link) ||
-        monolithAvailable(link) ? (
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ||
+      monolithAvailable(link) ? (
         <p className="mb-3">{t("available_formats")}</p>
       ) : (
         ""
@@ -206,21 +208,25 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
             <p className="text-center text-lg">{t("check_back_later")}</p>
           </div>
-        ) : !isReady() && atLeastOneFormatAvailable() && (
-          <div className={`w-full h-full flex flex-col justify-center p-5`}>
-            <BeatLoader
-              color="oklch(var(--p))"
-              className="mx-auto mb-3"
-              size={20}
-            />
-            <p className="text-center">{t("there_are_more_formats")}</p>
-            <p className="text-center text-sm">{t("check_back_later")}</p>
-          </div>
+        ) : (
+          !isReady() &&
+          atLeastOneFormatAvailable() && (
+            <div className={`w-full h-full flex flex-col justify-center p-5`}>
+              <BeatLoader
+                color="oklch(var(--p))"
+                className="mx-auto mb-3"
+                size={20}
+              />
+              <p className="text-center">{t("there_are_more_formats")}</p>
+              <p className="text-center text-sm">{t("check_back_later")}</p>
+            </div>
+          )
         )}
 
         <div
-          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${isReady() ? "sm:mt " : ""
-            }`}
+          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${
+            isReady() ? "sm:mt " : ""
+          }`}
         >
           <Link
             href={`https://web.archive.org/web/${link?.url?.replace(
