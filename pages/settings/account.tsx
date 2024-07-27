@@ -29,19 +29,19 @@ export default function Account() {
     !objectIsEmpty(account)
       ? account
       : ({
-        // @ts-ignore
-        id: null,
-        name: "",
-        username: "",
-        email: "",
-        emailVerified: null,
-        password: undefined,
-        image: "",
-        isPrivate: true,
-        // @ts-ignore
-        createdAt: null,
-        whitelistedUsers: [],
-      } as unknown as AccountSettings)
+          // @ts-ignore
+          id: null,
+          name: "",
+          username: "",
+          email: "",
+          emailVerified: null,
+          password: undefined,
+          image: "",
+          isPrivate: true,
+          // @ts-ignore
+          createdAt: null,
+          whitelistedUsers: [],
+        } as unknown as AccountSettings)
   );
 
   const { t } = useTranslation();
@@ -102,7 +102,10 @@ export default function Account() {
     setSubmitLoader(false);
   };
 
-  const importBookmarks = async (e: ChangeEvent<HTMLInputElement>, format: MigrationFormat) => {
+  const importBookmarks = async (
+    e: ChangeEvent<HTMLInputElement>,
+    format: MigrationFormat
+  ) => {
     setSubmitLoader(true);
     const file = e.target.files?.[0];
 
@@ -421,7 +424,8 @@ export default function Account() {
 
           <p>
             {t("delete_account_warning")}
-            {process.env.NEXT_PUBLIC_STRIPE && " " + t("cancel_subscription_notice")}
+            {process.env.NEXT_PUBLIC_STRIPE &&
+              " " + t("cancel_subscription_notice")}
           </p>
         </div>
 

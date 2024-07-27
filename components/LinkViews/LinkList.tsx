@@ -91,8 +91,9 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`${selectedStyle} border relative items-center flex ${!showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-          } duration-200 rounded-lg w-full`}
+        className={`${selectedStyle} border relative items-center flex ${
+          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+        } duration-200 rounded-lg w-full`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
@@ -152,8 +153,8 @@ export default function LinkCardCompact({
           collection={collection}
           position="top-3 right-3"
           flipDropdown={flipDropdown}
-        // toggleShowInfo={() => setShowInfo(!showInfo)}
-        // linkInfo={showInfo}
+          // toggleShowInfo={() => setShowInfo(!showInfo)}
+          // linkInfo={showInfo}
         />
       </div>
       <div

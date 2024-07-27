@@ -60,7 +60,10 @@ export default function Dashboard() {
     handleNumberOfLinksToShow();
   }, [width]);
 
-  const importBookmarks = async (e: React.ChangeEvent<HTMLInputElement>, format: MigrationFormat) => {
+  const importBookmarks = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    format: MigrationFormat
+  ) => {
     const file: File | null = e.target.files && e.target.files[0];
 
     if (file) {
@@ -324,9 +327,7 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-      {newLinkModal && (
-        <NewLinkModal onClose={() => setNewLinkModal(false)} />
-      )}
+      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
     </MainLayout>
   );
 }

@@ -3,15 +3,15 @@ import { LinkRequestQuery, Order, Sort } from "@/types/global";
 
 type Response<D> =
   | {
-    data: D;
-    message: string;
-    status: number;
-  }
+      data: D;
+      message: string;
+      status: number;
+    }
   | {
-    data: D;
-    message: string;
-    status: number;
-  };
+      data: D;
+      message: string;
+      status: number;
+    };
 
 export default async function getDashboardData(
   userId: number,
