@@ -1,5 +1,5 @@
 import useLocalSettingsStore from "@/store/localSettings";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useTranslation } from "next-i18next";
 
 type Props = {
@@ -10,15 +10,18 @@ export default function ToggleDarkMode({ className }: Props) {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
 
-  const [theme, setTheme] = useState(localStorage.getItem("theme"));
+  const [theme, setTheme] = useState<string | null>(localStorage.getItem("theme"));
 
-  const handleToggle = (e: any) => {
+  const handleToggle = (e: ChangeEvent<HTMLInputElement>) => {
     setTheme(e.target.checked ? "dark" : "light");
   };
 
   useEffect(() => {
-    updateSettings({ theme: theme as string });
-  }, [theme]);
+    if (theme) {
+      updateSettings({ theme });
+      localStorage.setItem("theme", theme);
+    }
+  }, [theme, updateSettings]);
 
   return (
     <div
@@ -34,7 +37,7 @@ export default function ToggleDarkMode({ className }: Props) {
           type="checkbox"
           onChange={handleToggle}
           className="theme-controller"
-          checked={localStorage.getItem("theme") === "light" ? false : true}
+          checked={theme === "dark"}
         />
         <i className="bi-sun-fill text-xl swap-on"></i>
         <i className="bi-moon-fill text-xl swap-off"></i>

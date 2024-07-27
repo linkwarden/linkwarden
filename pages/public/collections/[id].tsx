@@ -171,13 +171,13 @@ export default function PublicCollections() {
                     );
                   })
                   .slice(0, 3)}
-                {collection.members.length - 3 > 0 ? (
+                {collection.members.length - 3 > 0 && (
                   <div className={`avatar drop-shadow-md placeholder -ml-3`}>
                     <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
                       <span>+{collection.members.length - 3}</span>
                     </div>
                   </div>
-                ) : null}
+                )}
               </div>
 
               <p className="text-neutral text-sm">
