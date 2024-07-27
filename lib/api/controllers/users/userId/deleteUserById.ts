@@ -26,7 +26,7 @@ export default async function deleteUserById(
     if (user.password) {
       const isPasswordValid = bcrypt.compareSync(
         body.password,
-        user.password as string
+        user.password
       );
 
       if (!isPasswordValid && !isServerAdmin) {

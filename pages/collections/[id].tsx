@@ -1,6 +1,7 @@
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import {
+  AccountSettings,
   CollectionIncludingMembersAndLinkCount,
   Sort,
   ViewMode,
@@ -53,15 +54,7 @@ export default function Index() {
 
   const { account } = useAccountStore();
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<Partial<AccountSettings>>({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -217,7 +210,7 @@ export default function Index() {
                   />
                 )}
                 {activeCollection.members
-                  .sort((a, b) => (a.userId as number) - (b.userId as number))
+                  .sort((a, b) => (a.userId) - (b.userId))
                   .map((e, i) => {
                     return (
                       <ProfilePhoto

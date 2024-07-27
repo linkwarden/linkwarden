@@ -166,8 +166,12 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
           where: { id: linkId },
         });
 
-        if (linkStillExists && files.file[0].mimetype?.includes("image")) {
-          const collectionId = collectionPermissions.id as number;
+        const { mimetype } = files.file[0];
+        const isPDF = mimetype?.includes("pdf");
+        const isImage = mimetype?.includes("image");
+
+        if (linkStillExists && isImage) {
+          const collectionId = collectionPermissions.id;
           createFolder({
             filePath: `archives/preview/${collectionId}`,
           });
@@ -184,15 +188,9 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
           await prisma.link.update({
             where: { id: linkId },
             data: {
-              preview: files.file[0].mimetype?.includes("pdf")
-                ? "unavailable"
-                : undefined,
-              image: files.file[0].mimetype?.includes("image")
-                ? `archives/${collectionPermissions.id}/${linkId + suffix}`
-                : null,
-              pdf: files.file[0].mimetype?.includes("pdf")
-                ? `archives/${collectionPermissions.id}/${linkId + suffix}`
-                : null,
+              preview: isPDF ? "unavailable" : undefined,
+              image: isImage ? `archives/${collectionPermissions.id}/${linkId + suffix}` : null,
+              pdf: isPDF ? `archives/${collectionPermissions.id}/${linkId + suffix}` : null,
               lastPreserved: new Date().toISOString(),
             },
           });

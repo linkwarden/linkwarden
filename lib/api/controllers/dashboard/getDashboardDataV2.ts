@@ -105,9 +105,8 @@ export default async function getDashboardData(
   });
 
   const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
-    (a, b) => (new Date(b.id) as any) - (new Date(a.id) as any)
+    (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
   );
-
   return {
     data: {
       links,
