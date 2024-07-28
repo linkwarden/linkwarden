@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 export default function useCollectivePermissions(collectionIds: number[]) {
   const { collections } = useCollectionStore();
-
   const { account } = useAccountStore();
 
   const [permissions, setPermissions] = useState<Member | true>();
