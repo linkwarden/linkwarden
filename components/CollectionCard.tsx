@@ -15,12 +15,11 @@ import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 
-type Props = {
+export default function CollectionCard({
+  collection,
+}: {
   collection: CollectionIncludingMembersAndLinkCount;
-  className?: string;
-};
-
-export default function CollectionCard({ collection, className }: Props) {
+}) {
   const { t } = useTranslation();
   const { settings } = useLocalSettingsStore();
   const { account } = useAccountStore();
@@ -49,11 +48,11 @@ export default function CollectionCard({ collection, className }: Props) {
         setCollectionOwner({
           id: account.id as number,
           name: account.name,
-          username: account.username as string,
-          image: account.image as string,
-          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsMonolith: account.archiveAsMonolith as boolean,
-          archiveAsPDF: account.archiveAsPDF as boolean,
+          username: account.username,
+          image: account.image,
+          archiveAsScreenshot: account.archiveAsScreenshot,
+          archiveAsMonolith: account.archiveAsMonolith,
+          archiveAsPDF: account.archiveAsPDF,
         });
       }
     };

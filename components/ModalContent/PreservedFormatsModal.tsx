@@ -51,13 +51,13 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         setCollectionOwner(owner);
       } else if (link.collection.ownerId === account.id) {
         setCollectionOwner({
-          id: account.id as number,
+          id: account.id,
           name: account.name,
-          username: account.username as string,
-          image: account.image as string,
-          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsMonolith: account.archiveAsScreenshot as boolean,
-          archiveAsPDF: account.archiveAsPDF as boolean,
+          username: account.username,
+          image: account.image,
+          archiveAsScreenshot: account.archiveAsScreenshot,
+          archiveAsMonolith: account.archiveAsScreenshot,
+          archiveAsPDF: account.archiveAsPDF,
         });
       }
     };
