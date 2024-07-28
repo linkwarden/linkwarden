@@ -124,21 +124,20 @@ export default function LinkActions({
               </div>
             </li>
           )}
-          {permissions === true ||
-            (permissions?.canUpdate && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setEditLinkModal(true);
-                  }}
-                >
-                  {t("edit_link")}
-                </div>
-              </li>
-            ))}
+          {(permissions === true || permissions?.canUpdate) && (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setEditLinkModal(true);
+                }}
+              >
+                {t("edit_link")}
+              </div>
+            </li>
+          )}
           {link.type === "url" && (
             <li>
               <div
@@ -153,21 +152,20 @@ export default function LinkActions({
               </div>
             </li>
           )}
-          {permissions === true ||
-            (permissions?.canDelete && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={(e) => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
-                  }}
-                >
-                  {t("delete")}
-                </div>
-              </li>
-            ))}
+          {(permissions === true || permissions?.canDelete) && (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
+                }}
+              >
+                {t("delete")}
+              </div>
+            </li>
+          )}
         </ul>
       </div>
 
