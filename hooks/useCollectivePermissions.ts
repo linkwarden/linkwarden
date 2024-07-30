@@ -1,10 +1,11 @@
 import useAccountStore from "@/store/account";
-import useCollectionStore from "@/store/collections";
 import { Member } from "@/types/global";
 import { useEffect, useState } from "react";
+import { useCollections } from "./store/collections";
 
 export default function useCollectivePermissions(collectionIds: number[]) {
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
 
   const { account } = useAccountStore();
 

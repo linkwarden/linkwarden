@@ -1,4 +1,3 @@
-import useCollectionStore from "@/store/collections";
 import CollectionCard from "@/components/CollectionCard";
 import { useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
@@ -10,10 +9,12 @@ import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
 
 export default function Collections() {
   const { t } = useTranslation();
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
   const [sortedCollections, setSortedCollections] = useState(collections);
 

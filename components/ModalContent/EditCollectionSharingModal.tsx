@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
-import useCollectionStore from "@/store/collections";
 import toast from "react-hot-toast";
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserData from "@/lib/client/getPublicUserData";
@@ -11,6 +10,7 @@ import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
+import { useUpdateCollection } from "@/hooks/store/collections";
 
 type Props = {
   onClose: Function;
@@ -27,7 +27,7 @@ export default function EditCollectionSharingModal({
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { updateCollection } = useCollectionStore();
+  const updateCollection = useUpdateCollection();
 
   const submit = async () => {
     if (!submitLoader) {
@@ -36,18 +36,11 @@ export default function EditCollectionSharingModal({
 
       setSubmitLoader(true);
 
-      const load = toast.loading(t("updating"));
-
-      let response;
-
-      response = await updateCollection(collection as any);
-
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success(t("updated"));
-        onClose();
-      } else toast.error(response.data as string);
+      await updateCollection.mutateAsync(collection, {
+        onSuccess: () => {
+          onClose();
+        },
+      });
 
       setSubmitLoader(false);
     }

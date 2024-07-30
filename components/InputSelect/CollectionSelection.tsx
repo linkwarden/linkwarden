@@ -1,10 +1,10 @@
-import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { styles } from "./styles";
 import { Options } from "./types";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
+import { useCollections } from "@/hooks/store/collections";
 
 type Props = {
   onChange: any;
@@ -24,7 +24,9 @@ export default function CollectionSelection({
   showDefaultValue = true,
   creatable = true,
 }: Props) {
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
+
   const router = useRouter();
 
   const [options, setOptions] = useState<Options[]>([]);

@@ -9,7 +9,6 @@ import Tree, {
   TreeSourcePosition,
   TreeDestinationPosition,
 } from "@atlaskit/tree";
-import useCollectionStore from "@/store/collections";
 import { Collection } from "@prisma/client";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
@@ -17,6 +16,7 @@ import { useRouter } from "next/router";
 import useAccountStore from "@/store/account";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
+import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
@@ -24,7 +24,9 @@ interface ExtendedTreeItem extends TreeItem {
 
 const CollectionListing = () => {
   const { t } = useTranslation();
-  const { collections, updateCollection } = useCollectionStore();
+  const updateCollection = useUpdateCollection();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
   const { account, updateAccount } = useAccountStore();
 
   const router = useRouter();
@@ -151,7 +153,7 @@ const CollectionListing = () => {
     const updatedCollectionOrder = [...account.collectionOrder];
 
     if (source.parentId !== destination.parentId) {
-      await updateCollection({
+      await updateCollection.mutateAsync({
         ...movedCollection,
         parentId:
           destination.parentId && destination.parentId !== "root"

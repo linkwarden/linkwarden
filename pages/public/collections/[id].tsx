@@ -23,8 +23,8 @@ import ListView from "@/components/LinkViews/Layouts/ListView";
 import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import useCollectionStore from "@/store/collections";
 import LinkListOptions from "@/components/LinkListOptions";
+import { useCollections } from "@/hooks/store/collections";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
@@ -32,7 +32,8 @@ export default function PublicCollections() {
 
   const { settings } = useLocalSettingsStore();
 
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
 
   const router = useRouter();
 

@@ -1,4 +1,3 @@
-import useCollectionStore from "@/store/collections";
 import useTagStore from "@/store/tags";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,6 +6,7 @@ import { Disclosure, Transition } from "@headlessui/react";
 import SidebarHighlightLink from "@/components/SidebarHighlightLink";
 import CollectionListing from "@/components/CollectionListing";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
 
 export default function Sidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
@@ -22,7 +22,9 @@ export default function Sidebar({ className }: { className?: string }) {
     }
   );
 
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
+
   const { tags } = useTagStore();
   const [active, setActive] = useState("");
 
