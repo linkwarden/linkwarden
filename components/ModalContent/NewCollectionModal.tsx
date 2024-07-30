@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
-import useCollectionStore from "@/store/collections";
-import toast from "react-hot-toast";
 import { HexColorPicker } from "react-colorful";
 import { Collection } from "@prisma/client";
 import Modal from "../Modal";
@@ -9,6 +7,7 @@ import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import useAccountStore from "@/store/account";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
+import { useCreateCollection } from "@/hooks/store/collections";
 
 type Props = {
   onClose: Function;
@@ -33,7 +32,8 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
   }, []);
 
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { addCollection } = useCollectionStore();
+
+  const createCollection = useCreateCollection();
 
   const submit = async () => {
     if (submitLoader) return;
@@ -41,18 +41,11 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
 
     setSubmitLoader(true);
 
-    const load = toast.loading(t("creating"));
-
-    let response = await addCollection(collection as any);
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(t("created_success"));
-      if (response.data) {
-        setAccount(data?.user.id as number);
+    await createCollection.mutateAsync(collection, {
+      onSuccess: () => {
         onClose();
-      }
-    } else toast.error(response.data as string);
+      },
+    });
 
     setSubmitLoader(false);
   };

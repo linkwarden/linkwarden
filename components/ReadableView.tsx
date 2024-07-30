@@ -14,8 +14,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import LinkActions from "./LinkViews/LinkComponents/LinkActions";
-import useCollectionStore from "@/store/collections";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
 
 type LinkContent = {
   title: string;
@@ -46,7 +46,8 @@ export default function ReadableView({ link }: Props) {
   const router = useRouter();
 
   const { getLink } = useLinkStore();
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
 
   const collection = useMemo(() => {
     return collections.find(

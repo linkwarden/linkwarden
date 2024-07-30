@@ -3,7 +3,6 @@ import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
-import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import {
   LinkIncludingShortenedCollectionAndTags,
@@ -14,6 +13,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
 
 type Props = {
   onClose: Function;
@@ -49,7 +49,8 @@ export default function UploadFileModal({ onClose }: Props) {
   const [submitLoader, setSubmitLoader] = useState(false);
   const [optionsExpanded, setOptionsExpanded] = useState(false);
   const router = useRouter();
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = null;

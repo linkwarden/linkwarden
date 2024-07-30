@@ -5,7 +5,6 @@ import {
 } from "@/types/global";
 import { useEffect, useRef, useState } from "react";
 import useLinkStore from "@/store/links";
-import useCollectionStore from "@/store/collections";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -21,6 +20,7 @@ import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -33,7 +33,8 @@ type Props = {
 export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
   const { t } = useTranslation();
 
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
   const { account } = useAccountStore();
 
   const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
