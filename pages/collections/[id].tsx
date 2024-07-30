@@ -1,4 +1,3 @@
-import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import {
   CollectionIncludingMembersAndLinkCount,
@@ -26,6 +25,7 @@ import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
+import { useCollections } from "@/hooks/store/collections";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -34,7 +34,8 @@ export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();
-  const { collections } = useCollectionStore();
+  const { data: { response: collections } = { response: [] } } =
+    useCollections();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 

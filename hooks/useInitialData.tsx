@@ -1,4 +1,3 @@
-import useCollectionStore from "@/store/collections";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import useTagStore from "@/store/tags";
@@ -7,7 +6,7 @@ import useLocalSettingsStore from "@/store/localSettings";
 
 export default function useInitialData() {
   const { status, data } = useSession();
-  const { setCollections } = useCollectionStore();
+  // const { setCollections } = useCollectionStore();
   const { setTags } = useTagStore();
   // const { setLinks } = useLinkStore();
   const { account, setAccount } = useAccountStore();
@@ -24,7 +23,7 @@ export default function useInitialData() {
   // Get the rest of the data
   useEffect(() => {
     if (account.id && (!process.env.NEXT_PUBLIC_STRIPE || account.username)) {
-      setCollections();
+      // setCollections();
       setTags();
       // setLinks();
     }
