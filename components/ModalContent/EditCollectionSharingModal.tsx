@@ -10,7 +10,7 @@ import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@/hooks/store/collections";
-import { useUser } from "@/hooks/store/users";
+import { useUser } from "@/hooks/store/user";
 
 type Props = {
   onClose: Function;

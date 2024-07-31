@@ -10,7 +10,7 @@ import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModa
 import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/users";
+import { useUser } from "@/hooks/store/user";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;

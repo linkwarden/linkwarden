@@ -19,7 +19,7 @@ import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
-import { useUser } from "@/hooks/store/users";
+import { useUser } from "@/hooks/store/user";
 
 type Props = {
   onClose: Function;
