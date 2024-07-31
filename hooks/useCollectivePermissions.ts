@@ -1,7 +1,7 @@
 import { Member } from "@/types/global";
 import { useEffect, useState } from "react";
 import { useCollections } from "./store/collections";
-import { useUser } from "./store/users";
+import { useUser } from "./store/user";
 
 export default function useCollectivePermissions(collectionIds: number[]) {
   const { data: collections = [] } = useCollections();

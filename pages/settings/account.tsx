@@ -16,7 +16,7 @@ import Button from "@/components/ui/Button";
 import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { useUpdateUser, useUser } from "@/hooks/store/users";
+import { useUpdateUser, useUser } from "@/hooks/store/user";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
