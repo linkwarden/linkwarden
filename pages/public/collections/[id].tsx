@@ -32,8 +32,7 @@ export default function PublicCollections() {
 
   const { settings } = useLocalSettingsStore();
 
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
 
   const router = useRouter();
 

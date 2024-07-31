@@ -1,11 +1,11 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useState } from "react";
-import useAccountStore from "@/store/account";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useUpdateUser, useUser } from "@/hooks/store/users";
 
 export default function Password() {
   const { t } = useTranslation();
@@ -13,7 +13,8 @@ export default function Password() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { account, updateAccount } = useAccountStore();
+  const { data: account = [] } = useUser();
+  const updateUser = useUpdateUser();
 
   const submit = async () => {
     if (newPassword === "" || oldPassword === "") {
@@ -23,23 +24,19 @@ export default function Password() {
 
     setSubmitLoader(true);
 
-    const load = toast.loading(t("applying_changes"));
-
-    const response = await updateAccount({
-      ...account,
-      newPassword,
-      oldPassword,
-    });
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(t("settings_applied"));
-      setNewPassword("");
-      setOldPassword("");
-    } else {
-      toast.error(response.data as string);
-    }
+    await updateUser.mutateAsync(
+      {
+        ...account,
+        newPassword,
+        oldPassword,
+      },
+      {
+        onSuccess: () => {
+          setNewPassword("");
+          setOldPassword("");
+        },
+      }
+    );
 
     setSubmitLoader(false);
   };

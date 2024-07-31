@@ -4,8 +4,6 @@ import { HexColorPicker } from "react-colorful";
 import { Collection } from "@prisma/client";
 import Modal from "../Modal";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
-import useAccountStore from "@/store/account";
-import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { useCreateCollection } from "@/hooks/store/collections";
 
@@ -24,8 +22,6 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
   } as Partial<Collection>;
 
   const [collection, setCollection] = useState<Partial<Collection>>(initial);
-  const { setAccount } = useAccountStore();
-  const { data } = useSession();
 
   useEffect(() => {
     setCollection(initial);

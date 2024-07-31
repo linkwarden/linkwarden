@@ -12,7 +12,6 @@ import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
 import useLocalSettingsStore from "@/store/localSettings";
-import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
@@ -26,6 +25,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
 import { useCollections } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/users";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -34,8 +34,7 @@ export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
@@ -52,7 +51,7 @@ export default function Index() {
     );
   }, [router, collections]);
 
-  const { account } = useAccountStore();
+  const { data: user = [] } = useUser();
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,
@@ -66,20 +65,20 @@ export default function Index() {
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (activeCollection && activeCollection.ownerId !== account.id) {
+      if (activeCollection && activeCollection.ownerId !== user.id) {
         const owner = await getPublicUserData(
           activeCollection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (activeCollection && activeCollection.ownerId === account.id) {
+      } else if (activeCollection && activeCollection.ownerId === user.id) {
         setCollectionOwner({
-          id: account.id as number,
-          name: account.name,
-          username: account.username as string,
-          image: account.image as string,
-          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsMonolith: account.archiveAsScreenshot as boolean,
-          archiveAsPDF: account.archiveAsPDF as boolean,
+          id: user.id as number,
+          name: user.name,
+          username: user.username as string,
+          image: user.image as string,
+          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user.archiveAsScreenshot as boolean,
+          archiveAsPDF: user.archiveAsPDF as boolean,
         });
       }
     };

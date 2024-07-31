@@ -22,8 +22,7 @@ export default function Sidebar({ className }: { className?: string }) {
     }
   );
 
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
 
   const { tags } = useTagStore();
   const [active, setActive] = useState("");
