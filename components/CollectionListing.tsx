@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
-import { useUpdateUser, useUser } from "@/hooks/store/users";
+import { useUpdateUser, useUser } from "@/hooks/store/user";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;

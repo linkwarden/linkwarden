@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
-import { useUser } from "@/hooks/store/users";
+import { useUser } from "@/hooks/store/user";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;

@@ -7,7 +7,7 @@ import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps"; // Import getServerSideProps for server-side data fetching
 import { LinksRouteTo } from "@prisma/client";
-import { useUpdateUser, useUser } from "@/hooks/store/users";
+import { useUpdateUser, useUser } from "@/hooks/store/user";
 
 export default function Appearance() {
   const { t } = useTranslation();

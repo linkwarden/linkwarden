@@ -11,7 +11,7 @@ import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/users";
+import { useUser } from "@/hooks/store/user";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;

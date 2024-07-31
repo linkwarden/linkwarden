@@ -25,7 +25,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
 import { useCollections } from "@/hooks/store/collections";
-import { useUser } from "@/hooks/store/users";
+import { useUser } from "@/hooks/store/user";
 
 export default function Index() {
   const { t } = useTranslation();

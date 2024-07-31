@@ -4,7 +4,7 @@ import ProfilePhoto from "./ProfilePhoto";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/users";
+import { useUser } from "@/hooks/store/user";
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();

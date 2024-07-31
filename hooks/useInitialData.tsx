@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import useTagStore from "@/store/tags";
 import useLocalSettingsStore from "@/store/localSettings";
-import { useUser } from "./store/users";
+import { useUser } from "./store/user";
 
 export default function useInitialData() {
   const { status, data } = useSession();
