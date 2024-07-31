@@ -6,12 +6,10 @@ import toast from "react-hot-toast";
 const useCollections = () => {
   return useQuery({
     queryKey: ["collections"],
-    queryFn: async (): Promise<{
-      response: CollectionIncludingMembersAndLinkCount[];
-    }> => {
+    queryFn: async (): Promise<CollectionIncludingMembersAndLinkCount[]> => {
       const response = await fetch("/api/v1/collections");
       const data = await response.json();
-      return data;
+      return data.response;
     },
   });
 };
@@ -21,11 +19,11 @@ const useCreateCollection = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (body: any) => {
       const load = toast.loading(t("creating"));
 
       const response = await fetch("/api/v1/collections", {
-        body: JSON.stringify(data),
+        body: JSON.stringify(body),
         headers: {
           "Content-Type": "application/json",
         },
@@ -34,14 +32,18 @@ const useCreateCollection = () => {
 
       toast.dismiss(load);
 
-      return response.json();
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response;
     },
     onSuccess: (data) => {
       toast.success(t("created"));
       return queryClient.setQueryData(["collections"], (oldData: any) => {
-        return {
-          response: [...oldData.response, data.response],
-        };
+        console.log([...oldData, data]);
+
+        return [...oldData, data];
       });
     },
     onError: (error) => {
@@ -55,33 +57,43 @@ const useUpdateCollection = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (body: any) => {
       const load = toast.loading(t("updating_collection"));
 
-      const response = await fetch(`/api/v1/collections/${data.id}`, {
+      const response = await fetch(`/api/v1/collections/${body.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(body),
       });
 
       toast.dismiss(load);
 
-      return response.json();
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response;
     },
     onSuccess: (data) => {
       {
         toast.success(t("updated"));
         return queryClient.setQueryData(["collections"], (oldData: any) => {
-          return {
-            response: oldData.response.map((collection: any) =>
-              collection.id === data.response.id ? data.response : collection
-            ),
-          };
+          return oldData.map((collection: any) =>
+            collection.id === data.id ? data : collection
+          );
         });
       }
     },
+    // onMutate: async (data) => {
+    //   await queryClient.cancelQueries({ queryKey: ["collections"] });
+    //   queryClient.setQueryData(["collections"], (oldData: any) => {
+    //     return oldData.map((collection: any) =>
+    //         collection.id === data.id ? data : collection
+    //       )
+    //   });
+    // },
     onError: (error) => {
       toast.error(error.message);
     },
@@ -105,16 +117,16 @@ const useDeleteCollection = () => {
 
       toast.dismiss(load);
 
-      return response.json();
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response;
     },
     onSuccess: (data) => {
       toast.success(t("deleted"));
       return queryClient.setQueryData(["collections"], (oldData: any) => {
-        return {
-          response: oldData.response.filter(
-            (collection: any) => collection.id !== data.response.id
-          ),
-        };
+        return oldData.filter((collection: any) => collection.id !== data.id);
       });
     },
     onError: (error) => {

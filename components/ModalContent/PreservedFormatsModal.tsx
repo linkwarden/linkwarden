@@ -16,10 +16,10 @@ import {
   screenshotAvailable,
 } from "@/lib/shared/getArchiveValidity";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
-import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
+import { useUser } from "@/hooks/store/users";
 
 type Props = {
   onClose: Function;
@@ -30,7 +30,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
   const { t } = useTranslation();
   const session = useSession();
   const { getLink } = useLinkStore();
-  const { account } = useAccountStore();
+  const { data: user = [] } = useUser();
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
   const router = useRouter();
@@ -49,20 +49,20 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (link.collection.ownerId !== account.id) {
+      if (link.collection.ownerId !== user.id) {
         const owner = await getPublicUserData(
           link.collection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (link.collection.ownerId === account.id) {
+      } else if (link.collection.ownerId === user.id) {
         setCollectionOwner({
-          id: account.id as number,
-          name: account.name,
-          username: account.username as string,
-          image: account.image as string,
-          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsMonolith: account.archiveAsScreenshot as boolean,
-          archiveAsPDF: account.archiveAsPDF as boolean,
+          id: user.id as number,
+          name: user.name,
+          username: user.username as string,
+          image: user.image as string,
+          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user.archiveAsScreenshot as boolean,
+          archiveAsPDF: user.archiveAsPDF as boolean,
         });
       }
     };

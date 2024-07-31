@@ -13,8 +13,7 @@ import { useCollections } from "@/hooks/store/collections";
 
 export default function Collections() {
   const { t } = useTranslation();
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
   const [sortedCollections, setSortedCollections] = useState(collections);
 

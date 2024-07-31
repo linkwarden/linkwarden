@@ -11,12 +11,12 @@ import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import { isPWA } from "@/lib/client/utils";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
-import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/users";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -33,10 +33,9 @@ export default function LinkCardCompact({
 }: Props) {
   const { t } = useTranslation();
 
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
 
-  const { account } = useAccountStore();
+  const { data: user = [] } = useUser();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
 
   useEffect(() => {
@@ -121,7 +120,7 @@ export default function LinkCardCompact({
         <div
           className="flex items-center cursor-pointer w-full"
           onClick={() =>
-            !editMode && window.open(generateLinkHref(link, account), "_blank")
+            !editMode && window.open(generateLinkHref(link, user), "_blank")
           }
         >
           <div className="shrink-0">

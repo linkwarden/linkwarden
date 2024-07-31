@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
@@ -17,6 +16,7 @@ import Button from "@/components/ui/Button";
 import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useUpdateUser, useUser } from "@/hooks/store/users";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -24,7 +24,8 @@ export default function Account() {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
     useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { account, updateAccount } = useAccountStore();
+  const { data: account = [] } = useUser();
+  const updateUser = useUpdateUser();
   const [user, setUser] = useState<AccountSettings>(
     !objectIsEmpty(account)
       ? account
@@ -78,25 +79,22 @@ export default function Account() {
 
   const submit = async (password?: string) => {
     setSubmitLoader(true);
-    const load = toast.loading(t("applying_settings"));
 
-    const response = await updateAccount({
-      ...user,
-      // @ts-ignore
-      password: password ? password : undefined,
-    });
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      const emailChanged = account.email !== user.email;
-
-      toast.success(t("settings_applied"));
-      if (emailChanged) {
-        toast.success(t("email_change_request"));
-        setEmailChangeVerificationModal(false);
+    await updateUser.mutateAsync(
+      {
+        ...user,
+        password: password ? password : undefined,
+      },
+      {
+        onSuccess: (data) => {
+          if (data.response.email !== user.email) {
+            toast.success(t("email_change_request"));
+            setEmailChangeVerificationModal(false);
+          }
+        },
       }
-    } else toast.error(response.data as string);
+    );
+
     setSubmitLoader(false);
   };
 

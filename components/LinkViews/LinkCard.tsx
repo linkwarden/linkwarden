@@ -15,12 +15,12 @@ import Link from "next/link";
 import LinkIcon from "./LinkComponents/LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
-import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/users";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -34,10 +34,9 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   const { t } = useTranslation();
 
   const viewMode = localStorage.getItem("viewMode") || "card";
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
 
-  const { account } = useAccountStore();
+  const { data: user = [] } = useUser();
 
   const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
 
@@ -133,7 +132,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       <div
         className="rounded-2xl cursor-pointer h-full flex flex-col justify-between"
         onClick={() =>
-          !editMode && window.open(generateLinkHref(link, account), "_blank")
+          !editMode && window.open(generateLinkHref(link, user), "_blank")
         }
       >
         <div>

@@ -5,12 +5,12 @@ import ProfilePhoto from "./ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
 import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
-import useAccountStore from "@/store/account";
 import EditCollectionModal from "./ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
+import { useUser } from "@/hooks/store/users";
 
 type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
@@ -20,7 +20,7 @@ type Props = {
 export default function CollectionCard({ collection, className }: Props) {
   const { t } = useTranslation();
   const { settings } = useLocalSettingsStore();
-  const { account } = useAccountStore();
+  const { data: user = [] } = useUser();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",
@@ -45,18 +45,18 @@ export default function CollectionCard({ collection, className }: Props) {
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (collection && collection.ownerId !== account.id) {
+      if (collection && collection.ownerId !== user.id) {
         const owner = await getPublicUserData(collection.ownerId as number);
         setCollectionOwner(owner);
-      } else if (collection && collection.ownerId === account.id) {
+      } else if (collection && collection.ownerId === user.id) {
         setCollectionOwner({
-          id: account.id as number,
-          name: account.name,
-          username: account.username as string,
-          image: account.image as string,
-          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsMonolith: account.archiveAsMonolith as boolean,
-          archiveAsPDF: account.archiveAsPDF as boolean,
+          id: user.id as number,
+          name: user.name,
+          username: user.username as string,
+          image: user.image as string,
+          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user.archiveAsMonolith as boolean,
+          archiveAsPDF: user.archiveAsPDF as boolean,
         });
       }
     };

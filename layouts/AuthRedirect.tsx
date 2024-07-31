@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import useInitialData from "@/hooks/useInitialData";
-import useAccountStore from "@/store/account";
+import { useUser } from "@/hooks/store/users";
 
 interface Props {
   children: ReactNode;
@@ -14,7 +14,7 @@ export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
   const { status } = useSession();
   const [shouldRenderChildren, setShouldRenderChildren] = useState(false);
-  const { account } = useAccountStore();
+  const { data: user = [] } = useUser();
 
   useInitialData();
 
@@ -23,7 +23,7 @@ export default function AuthRedirect({ children }: Props) {
     const isUnauthenticated = status === "unauthenticated";
     const isPublicPage = router.pathname.startsWith("/public");
     const hasInactiveSubscription =
-      account.id && !account.subscription?.active && stripeEnabled;
+      user.id && !user.subscription?.active && stripeEnabled;
 
     // There are better ways of doing this... but this one works for now
     const routes = [
@@ -63,7 +63,7 @@ export default function AuthRedirect({ children }: Props) {
         setShouldRenderChildren(true);
       }
     }
-  }, [status, account, router.pathname]);
+  }, [status, user, router.pathname]);
 
   function redirectTo(destination: string) {
     router.push(destination).then(() => setShouldRenderChildren(true));
