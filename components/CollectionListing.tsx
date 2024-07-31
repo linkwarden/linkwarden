@@ -13,10 +13,10 @@ import { Collection } from "@prisma/client";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useRouter } from "next/router";
-import useAccountStore from "@/store/account";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
+import { useUpdateUser, useUser } from "@/hooks/store/users";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
@@ -25,54 +25,56 @@ interface ExtendedTreeItem extends TreeItem {
 const CollectionListing = () => {
   const { t } = useTranslation();
   const updateCollection = useUpdateCollection();
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
-  const { account, updateAccount } = useAccountStore();
+  const { data: collections = [] } = useCollections();
+
+  const { data: user = [] } = useUser();
+  const updateUser = useUpdateUser();
 
   const router = useRouter();
   const currentPath = router.asPath;
 
+  const [tree, setTree] = useState<TreeData | undefined>();
+
   const initialTree = useMemo(() => {
-    if (collections.length > 0) {
+    if (
+      // !tree &&
+      collections.length > 0
+    ) {
       return buildTreeFromCollections(
         collections,
         router,
-        account.collectionOrder
+        user.collectionOrder
       );
-    }
-    return undefined;
-  }, [collections, router]);
-
-  const [tree, setTree] = useState(initialTree);
+    } else return undefined;
+  }, [collections, user, router]);
 
   useEffect(() => {
+    // if (!tree)
     setTree(initialTree);
   }, [initialTree]);
 
   useEffect(() => {
-    if (account.username) {
+    if (user.username) {
       if (
-        (!account.collectionOrder || account.collectionOrder.length === 0) &&
+        (!user.collectionOrder || user.collectionOrder.length === 0) &&
         collections.length > 0
       )
-        updateAccount({
-          ...account,
+        updateUser.mutate({
+          ...user,
           collectionOrder: collections
             .filter(
               (e) =>
                 e.parentId === null ||
                 !collections.find((i) => i.id === e.parentId)
             ) // Filter out collections with non-null parentId
-            .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
+            .map((e) => e.id as number),
         });
       else {
-        const newCollectionOrder: number[] = [
-          ...(account.collectionOrder || []),
-        ];
+        const newCollectionOrder: number[] = [...(user.collectionOrder || [])];
 
         // Start with collections that are in both account.collectionOrder and collections
         const existingCollectionIds = collections.map((c) => c.id as number);
-        const filteredCollectionOrder = account.collectionOrder.filter((id) =>
+        const filteredCollectionOrder = user.collectionOrder.filter((id: any) =>
           existingCollectionIds.includes(id)
         );
 
@@ -80,7 +82,7 @@ const CollectionListing = () => {
         collections.forEach((collection) => {
           if (
             !filteredCollectionOrder.includes(collection.id as number) &&
-            (!collection.parentId || collection.ownerId === account.id)
+            (!collection.parentId || collection.ownerId === user.id)
           ) {
             filteredCollectionOrder.push(collection.id as number);
           }
@@ -89,10 +91,10 @@ const CollectionListing = () => {
         // check if the newCollectionOrder is the same as the old one
         if (
           JSON.stringify(newCollectionOrder) !==
-          JSON.stringify(account.collectionOrder)
+          JSON.stringify(user.collectionOrder)
         ) {
-          updateAccount({
-            ...account,
+          updateUser.mutateAsync({
+            ...user,
             collectionOrder: newCollectionOrder,
           });
         }
@@ -140,9 +142,9 @@ const CollectionListing = () => {
     );
 
     if (
-      (movedCollection?.ownerId !== account.id &&
+      (movedCollection?.ownerId !== user.id &&
         destination.parentId !== source.parentId) ||
-      (destinationCollection?.ownerId !== account.id &&
+      (destinationCollection?.ownerId !== user.id &&
         destination.parentId !== "root")
     ) {
       return toast.error(t("cant_change_collection_you_dont_own"));
@@ -150,7 +152,7 @@ const CollectionListing = () => {
 
     setTree((currentTree) => moveItemOnTree(currentTree!, source, destination));
 
-    const updatedCollectionOrder = [...account.collectionOrder];
+    const updatedCollectionOrder = [...user.collectionOrder];
 
     if (source.parentId !== destination.parentId) {
       await updateCollection.mutateAsync({
@@ -174,8 +176,8 @@ const CollectionListing = () => {
 
       updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
 
-      await updateAccount({
-        ...account,
+      await updateUser.mutateAsync({
+        ...user,
         collectionOrder: updatedCollectionOrder,
       });
     } else if (
@@ -184,8 +186,8 @@ const CollectionListing = () => {
     ) {
       updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
 
-      await updateAccount({
-        ...account,
+      updateUser.mutate({
+        ...user,
         collectionOrder: updatedCollectionOrder,
       });
     } else if (
@@ -195,8 +197,8 @@ const CollectionListing = () => {
     ) {
       updatedCollectionOrder.splice(source.index, 1);
 
-      await updateAccount({
-        ...account,
+      await updateUser.mutateAsync({
+        ...user,
         collectionOrder: updatedCollectionOrder,
       });
     }

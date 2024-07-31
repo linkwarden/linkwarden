@@ -46,8 +46,7 @@ export default function ReadableView({ link }: Props) {
   const router = useRouter();
 
   const { getLink } = useLinkStore();
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
 
   const collection = useMemo(() => {
     return collections.find(

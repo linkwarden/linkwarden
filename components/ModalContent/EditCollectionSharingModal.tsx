@@ -3,7 +3,6 @@ import TextInput from "@/components/TextInput";
 import toast from "react-hot-toast";
 import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserData from "@/lib/client/getPublicUserData";
-import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import ProfilePhoto from "../ProfilePhoto";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
@@ -11,6 +10,7 @@ import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/users";
 
 type Props = {
   onClose: Function;
@@ -46,7 +46,7 @@ export default function EditCollectionSharingModal({
     }
   };
 
-  const { account } = useAccountStore();
+  const { data: user = [] } = useUser();
   const permissions = usePermissions(collection.id as number);
 
   const currentURL = new URL(document.URL);
@@ -158,7 +158,7 @@ export default function EditCollectionSharingModal({
                 onKeyDown={(e) =>
                   e.key === "Enter" &&
                   addMemberToCollection(
-                    account.username as string,
+                    user.username as string,
                     memberUsername || "",
                     collection,
                     setMemberState,
@@ -170,7 +170,7 @@ export default function EditCollectionSharingModal({
               <div
                 onClick={() =>
                   addMemberToCollection(
-                    account.username as string,
+                    user.username as string,
                     memberUsername || "",
                     collection,
                     setMemberState,

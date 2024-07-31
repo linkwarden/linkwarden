@@ -24,8 +24,7 @@ export default function CollectionSelection({
   showDefaultValue = true,
   creatable = true,
 }: Props) {
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
 
   const router = useRouter();
 

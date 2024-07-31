@@ -49,8 +49,7 @@ export default function UploadFileModal({ onClose }: Props) {
   const [submitLoader, setSubmitLoader] = useState(false);
   const [optionsExpanded, setOptionsExpanded] = useState(false);
   const router = useRouter();
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = null;

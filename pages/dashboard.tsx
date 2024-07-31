@@ -22,8 +22,7 @@ import { useCollections } from "@/hooks/store/collections";
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { data: { response: collections } = { response: [] } } =
-    useCollections();
+  const { data: collections = [] } = useCollections();
   const { links } = useLinkStore();
   const { tags } = useTagStore();
 

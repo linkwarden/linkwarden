@@ -9,9 +9,9 @@ import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsModal";
 import useLinkStore from "@/store/links";
 import { toast } from "react-hot-toast";
-import useAccountStore from "@/store/account";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
+import { useUser } from "@/hooks/store/users";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -39,7 +39,7 @@ export default function LinkActions({
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
   const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
-  const { account } = useAccountStore();
+  const { data: user = [] } = useUser();
 
   const { removeLink, updateLink } = useLinkStore();
 
@@ -50,7 +50,7 @@ export default function LinkActions({
 
     const response = await updateLink({
       ...link,
-      pinnedBy: isAlreadyPinned ? undefined : [{ id: account.id }],
+      pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
     });
 
     toast.dismiss(load);
