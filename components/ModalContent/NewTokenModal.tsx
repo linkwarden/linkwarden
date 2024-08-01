@@ -3,10 +3,10 @@ import TextInput from "@/components/TextInput";
 import { TokenExpiry } from "@/types/global";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
-import useTokenStore from "@/store/tokens";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
+import { useAddToken } from "@/hooks/store/tokens";
 
 type Props = {
   onClose: Function;
@@ -15,7 +15,7 @@ type Props = {
 export default function NewTokenModal({ onClose }: Props) {
   const { t } = useTranslation();
   const [newToken, setNewToken] = useState("");
-  const { addToken } = useTokenStore();
+  const addToken = useAddToken();
 
   const initial = {
     name: "",
@@ -28,16 +28,12 @@ export default function NewTokenModal({ onClose }: Props) {
   const submit = async () => {
     if (!submitLoader) {
       setSubmitLoader(true);
-      const load = toast.loading(t("creating_token"));
 
-      const { ok, data } = await addToken(token);
-
-      toast.dismiss(load);
-
-      if (ok) {
-        toast.success(t("token_created"));
-        setNewToken((data as any).secretKey);
-      } else toast.error(data as string);
+      await addToken.mutateAsync(token, {
+        onSuccess: (data) => {
+          setNewToken(data.secretKey);
+        },
+      });
 
       setSubmitLoader(false);
     }
