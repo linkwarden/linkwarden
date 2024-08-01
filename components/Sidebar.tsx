@@ -22,9 +22,9 @@ export default function Sidebar({ className }: { className?: string }) {
     }
   );
 
-  const { data: collections = [] } = useCollections();
+  const { data: collections } = useCollections();
 
-  const { data: tags = [] } = useTags();
+  const { data: tags } = useTags();
   const [active, setActive] = useState("");
 
   const router = useRouter();

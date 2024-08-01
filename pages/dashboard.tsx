@@ -22,9 +22,9 @@ import { useTags } from "@/hooks/store/tags";
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { data: collections = [] } = useCollections();
+  const { data: collections } = useCollections();
   const { links } = useLinkStore();
-  const { data: tags = [] } = useTags();
+  const { data: tags } = useTags();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 

@@ -30,7 +30,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
   const { t } = useTranslation();
   const session = useSession();
   const { getLink } = useLinkStore();
-  const { data: user = [] } = useUser();
+  const { data: user } = useUser();
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
   const router = useRouter();

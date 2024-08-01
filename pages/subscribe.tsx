@@ -20,7 +20,7 @@ export default function Subscribe() {
 
   const router = useRouter();
 
-  const { data: user = [] } = useUser();
+  const { data: user } = useUser();
 
   useEffect(() => {
     const hasInactiveSubscription =

@@ -24,7 +24,7 @@ export default function Account() {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
     useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { data: account = [] } = useUser();
+  const { data: account } = useUser();
   const updateUser = useUpdateUser();
   const [user, setUser] = useState<AccountSettings>(
     !objectIsEmpty(account)
