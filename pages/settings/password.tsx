@@ -13,7 +13,7 @@ export default function Password() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { data: account = [] } = useUser();
+  const { data: account } = useUser();
   const updateUser = useUpdateUser();
 
   const submit = async () => {

@@ -21,7 +21,7 @@ type UserModal = {
 export default function Admin() {
   const { t } = useTranslation();
 
-  const { data: users = [] } = useUsers();
+  const { data: users } = useUsers();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>();

@@ -39,7 +39,7 @@ export default function LinkActions({
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
   const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
-  const { data: user = [] } = useUser();
+  const { data: user } = useUser();
 
   const { removeLink, updateLink } = useLinkStore();
 

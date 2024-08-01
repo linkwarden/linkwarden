@@ -11,6 +11,7 @@ const useCollections = () => {
       const data = await response.json();
       return data.response;
     },
+    initialData: [],
   });
 };
 

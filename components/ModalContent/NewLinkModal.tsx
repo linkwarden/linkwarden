@@ -43,7 +43,7 @@ export default function NewLinkModal({ onClose }: Props) {
   const [submitLoader, setSubmitLoader] = useState(false);
   const [optionsExpanded, setOptionsExpanded] = useState(false);
   const router = useRouter();
-  const { data: collections = [] } = useCollections();
+  const { data: collections } = useCollections();
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = null;

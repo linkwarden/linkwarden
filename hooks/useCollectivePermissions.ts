@@ -4,9 +4,9 @@ import { useCollections } from "./store/collections";
 import { useUser } from "./store/user";
 
 export default function useCollectivePermissions(collectionIds: number[]) {
-  const { data: collections = [] } = useCollections();
+  const { data: collections } = useCollections();
 
-  const { data: user = [] } = useUser();
+  const { data: user } = useUser();
 
   const [permissions, setPermissions] = useState<Member | true>();
   useEffect(() => {

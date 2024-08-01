@@ -33,9 +33,9 @@ export default function LinkCardCompact({
 }: Props) {
   const { t } = useTranslation();
 
-  const { data: collections = [] } = useCollections();
+  const { data: collections } = useCollections();
 
-  const { data: user = [] } = useUser();
+  const { data: user } = useUser();
   const { links, setSelectedLinks, selectedLinks } = useLinkStore();
 
   useEffect(() => {
