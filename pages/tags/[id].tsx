@@ -2,7 +2,6 @@ import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import useTagStore from "@/store/tags";
 import { Sort, TagIncludingLinkCount, ViewMode } from "@/types/global";
 import useLinks from "@/hooks/useLinks";
 import { toast } from "react-hot-toast";
@@ -15,13 +14,16 @@ import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
+import { useRemoveTag, useTags, useUpdateTag } from "@/hooks/store/tags";
 
 export default function Index() {
   const { t } = useTranslation();
   const router = useRouter();
 
   const { links } = useLinkStore();
-  const { tags, updateTag, removeTag } = useTagStore();
+  const { data: tags = [] } = useTags();
+  const updateTag = useUpdateTag();
+  const removeTag = useRemoveTag();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
@@ -41,7 +43,7 @@ export default function Index() {
   useLinks({ tagId: Number(router.query.id), sort: sortBy });
 
   useEffect(() => {
-    const tag = tags.find((e) => e.id === Number(router.query.id));
+    const tag = tags.find((e: any) => e.id === Number(router.query.id));
 
     if (tags.length > 0 && !tag?.id) {
       router.push("/dashboard");
@@ -72,21 +74,12 @@ export default function Index() {
 
     setSubmitLoader(true);
 
-    const load = toast.loading(t("applying_changes"));
-
-    let response;
-
     if (activeTag && newTagName)
-      response = await updateTag({
+      await updateTag.mutateAsync({
         ...activeTag,
         name: newTagName,
       });
 
-    toast.dismiss(load);
-
-    if (response?.ok) {
-      toast.success(t("tag_renamed"));
-    } else toast.error(response?.data as string);
     setSubmitLoader(false);
     setRenameTag(false);
   };
@@ -94,18 +87,13 @@ export default function Index() {
   const remove = async () => {
     setSubmitLoader(true);
 
-    const load = toast.loading(t("applying_changes"));
+    if (activeTag?.id)
+      await removeTag.mutateAsync(activeTag?.id, {
+        onSuccess: () => {
+          router.push("/links");
+        },
+      });
 
-    let response;
-
-    if (activeTag?.id) response = await removeTag(activeTag?.id);
-
-    toast.dismiss(load);
-
-    if (response?.ok) {
-      toast.success(t("tag_deleted"));
-      router.push("/links");
-    } else toast.error(response?.data as string);
     setSubmitLoader(false);
     setRenameTag(false);
   };
