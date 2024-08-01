@@ -3,7 +3,6 @@ import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import useTagStore from "./tags";
 
 type ResponseObject = {
   ok: boolean;
@@ -79,7 +78,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
       set((state) => ({
         links: [data.response, ...state.links],
       }));
-      useTagStore.getState().setTags();
     }
 
     return { ok: response.ok, data: data.response };
@@ -154,7 +152,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
           ...state.links,
         ],
       }));
-      useTagStore.getState().setTags();
     }
 
     return { ok: response.ok, data: data.response };
@@ -209,7 +206,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
           e.id === data.response.id ? data.response : e
         ),
       }));
-      useTagStore.getState().setTags();
     }
 
     return { ok: response.ok, data: data.response };
@@ -243,7 +239,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
             : e
         ),
       }));
-      useTagStore.getState().setTags();
     }
 
     return { ok: response.ok, data: data.response };
@@ -262,7 +257,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
       set((state) => ({
         links: state.links.filter((e) => e.id !== linkId),
       }));
-      useTagStore.getState().setTags();
     }
 
     return { ok: response.ok, data: data.response };
@@ -282,7 +276,6 @@ const useLinkStore = create<LinkStore>()((set) => ({
       set((state) => ({
         links: state.links.filter((e) => !linkIds.includes(e.id as number)),
       }));
-      useTagStore.getState().setTags();
     }
 
     return { ok: response.ok, data: data.response };

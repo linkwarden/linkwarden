@@ -1,5 +1,4 @@
 import useLinkStore from "@/store/links";
-import useTagStore from "@/store/tags";
 import MainLayout from "@/layouts/MainLayout";
 import { useEffect, useState } from "react";
 import useLinks from "@/hooks/useLinks";
@@ -19,12 +18,13 @@ import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
+import { useTags } from "@/hooks/store/tags";
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
   const { links } = useLinkStore();
-  const { tags } = useTagStore();
+  const { data: tags = [] } = useTags();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
