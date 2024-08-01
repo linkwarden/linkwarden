@@ -34,7 +34,7 @@ export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();
-  const { data: collections = [] } = useCollections();
+  const { data: collections } = useCollections();
 
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
@@ -51,7 +51,7 @@ export default function Index() {
     );
   }, [router, collections]);
 
-  const { data: user = [] } = useUser();
+  const { data: user } = useUser();
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,

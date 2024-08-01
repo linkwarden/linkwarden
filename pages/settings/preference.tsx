@@ -13,7 +13,7 @@ export default function Appearance() {
   const { t } = useTranslation();
   const { updateSettings } = useLocalSettingsStore();
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { data: account = [] } = useUser();
+  const { data: account } = useUser();
   const updateUser = useUpdateUser();
   const [user, setUser] = useState(account);
 

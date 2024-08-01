@@ -18,7 +18,7 @@ export default function AccessTokens() {
     setRevokeTokenModal(true);
   };
 
-  const { data: tokens = [] } = useTokens();
+  const { data: tokens } = useTokens();
 
   return (
     <SettingsLayout>

@@ -21,7 +21,7 @@ export default function Index() {
   const router = useRouter();
 
   const { links } = useLinkStore();
-  const { data: tags = [] } = useTags();
+  const { data: tags } = useTags();
   const updateTag = useUpdateTag();
   const removeTag = useRemoveTag();
 

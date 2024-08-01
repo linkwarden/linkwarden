@@ -34,9 +34,9 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   const { t } = useTranslation();
 
   const viewMode = localStorage.getItem("viewMode") || "card";
-  const { data: collections = [] } = useCollections();
+  const { data: collections } = useCollections();
 
-  const { data: user = [] } = useUser();
+  const { data: user } = useUser();
 
   const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
 

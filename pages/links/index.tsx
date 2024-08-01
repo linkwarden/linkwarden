@@ -1,5 +1,6 @@
 import NoLinksFound from "@/components/NoLinksFound";
 import useLinks from "@/hooks/useLinks";
+// import { useLinks } from "@/hooks/store/links";
 import MainLayout from "@/layouts/MainLayout";
 import useLinkStore from "@/store/links";
 import React, { useEffect, useState } from "react";
@@ -15,6 +16,8 @@ import { useTranslation } from "next-i18next";
 
 export default function Links() {
   const { t } = useTranslation();
+
+  // const { data: links } = useLinks();
   const { links } = useLinkStore();
 
   const [viewMode, setViewMode] = useState<string>(
