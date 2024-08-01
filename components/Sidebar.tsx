@@ -1,4 +1,3 @@
-import useTagStore from "@/store/tags";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -7,6 +6,7 @@ import SidebarHighlightLink from "@/components/SidebarHighlightLink";
 import CollectionListing from "@/components/CollectionListing";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
+import { useTags } from "@/hooks/store/tags";
 
 export default function Sidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   const { data: collections = [] } = useCollections();
 
-  const { tags } = useTagStore();
+  const { data: tags = [] } = useTags();
   const [active, setActive] = useState("");
 
   const router = useRouter();
@@ -130,8 +130,8 @@ export default function Sidebar({ className }: { className?: string }) {
           <Disclosure.Panel className="flex flex-col gap-1">
             {tags[0] ? (
               tags
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((e, i) => {
+                .sort((a: any, b: any) => a.name.localeCompare(b.name))
+                .map((e: any, i: any) => {
                   return (
                     <Link key={i} href={`/tags/${e.id}`}>
                       <div
