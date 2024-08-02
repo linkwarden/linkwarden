@@ -29,7 +29,7 @@ export default async function createSession(
     secret: process.env.NEXTAUTH_SECRET as string,
   });
 
-  const createToken = await prisma.accessToken.create({
+  await prisma.accessToken.create({
     data: {
       name: sessionName || "Unknown Device",
       userId,

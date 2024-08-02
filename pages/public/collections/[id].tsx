@@ -1,6 +1,7 @@
 "use client";
 import getPublicCollectionData from "@/lib/client/getPublicCollectionData";
 import {
+  AccountSettings,
   CollectionIncludingMembersAndLinkCount,
   Sort,
   ViewMode,
@@ -36,15 +37,9 @@ export default function PublicCollections() {
 
   const router = useRouter();
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<
+    Partial<AccountSettings>
+  >({});
 
   const [searchFilter, setSearchFilter] = useState({
     name: true,
@@ -104,7 +99,9 @@ export default function PublicCollections() {
   // @ts-ignore
   const LinkComponent = linkView[viewMode];
 
-  return collection ? (
+  if (!collection) return null;
+
+  return (
     <div
       className="h-96"
       style={{
@@ -113,7 +110,7 @@ export default function PublicCollections() {
         } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
       }}
     >
-      {collection ? (
+      {collection && (
         <Head>
           <title>{collection.name} | Linkwarden</title>
           <meta
@@ -122,7 +119,7 @@ export default function PublicCollections() {
             key="title"
           />
         </Head>
-      ) : undefined}
+      )}
       <div className="lg:w-3/4 w-full mx-auto p-5 bg">
         <div className="flex items-center justify-between">
           <p className="text-4xl font-thin mb-2 capitalize mt-10">
@@ -151,12 +148,12 @@ export default function PublicCollections() {
                 className="flex items-center btn px-2 btn-ghost rounded-full"
                 onClick={() => setEditCollectionSharingModal(true)}
               >
-                {collectionOwner.id ? (
+                {collectionOwner.id && (
                   <ProfilePhoto
                     src={collectionOwner.image || undefined}
                     name={collectionOwner.name}
                   />
-                ) : undefined}
+                )}
                 {collection.members
                   .sort((a, b) => (a.userId as number) - (b.userId as number))
                   .map((e, i) => {
@@ -170,13 +167,13 @@ export default function PublicCollections() {
                     );
                   })
                   .slice(0, 3)}
-                {collection.members.length - 3 > 0 ? (
+                {collection.members.length - 3 > 0 && (
                   <div className={`avatar drop-shadow-md placeholder -ml-3`}>
                     <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
                       <span>+{collection.members.length - 3}</span>
                     </div>
                   </div>
-                ) : null}
+                )}
               </div>
 
               <p className="text-neutral text-sm">
@@ -248,15 +245,13 @@ export default function PublicCollections() {
         </p> */}
         </div>
       </div>
-      {editCollectionSharingModal ? (
+      {editCollectionSharingModal && (
         <EditCollectionSharingModal
           onClose={() => setEditCollectionSharingModal(false)}
           activeCollection={collection}
         />
-      ) : undefined}
+      )}
     </div>
-  ) : (
-    <></>
   );
 }
 

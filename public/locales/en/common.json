@@ -117,6 +117,7 @@
   "applying_settings": "Applying settings...",
   "settings_applied": "Settings Applied!",
   "email_change_request": "Email change request sent. Please verify the new email address.",
+  "image_upload_no_file_error": "No file selected. Please choose an image to upload.",
   "image_upload_size_error": "Please select a PNG or JPEG file that's less than 1MB.",
   "image_upload_format_error": "Invalid file format.",
   "importing_bookmarks": "Importing bookmarks...",

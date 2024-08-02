@@ -103,7 +103,7 @@ export default function CollectionSelection({
         onChange={onChange}
         options={options}
         styles={styles}
-        defaultValue={showDefaultValue ? defaultValue : null}
+        defaultValue={showDefaultValue && defaultValue}
         components={{
           Option: customOption,
         }}
@@ -119,7 +119,7 @@ export default function CollectionSelection({
         onChange={onChange}
         options={options}
         styles={styles}
-        defaultValue={showDefaultValue ? defaultValue : null}
+        defaultValue={showDefaultValue && defaultValue}
         components={{
           Option: customOption,
         }}

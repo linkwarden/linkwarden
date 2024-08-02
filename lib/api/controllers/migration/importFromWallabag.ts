@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/api/db";
-import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;

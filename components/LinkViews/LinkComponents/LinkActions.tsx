@@ -110,7 +110,7 @@ export default function LinkActions({
                 : t("pin_to_dashboard")}
             </div>
           </li>
-          {linkInfo !== undefined && toggleShowInfo ? (
+          {linkInfo !== undefined && toggleShowInfo && (
             <li>
               <div
                 role="button"
@@ -123,8 +123,8 @@ export default function LinkActions({
                 {!linkInfo ? t("show_link_details") : t("hide_link_details")}
               </div>
             </li>
-          ) : undefined}
-          {permissions === true || permissions?.canUpdate ? (
+          )}
+          {(permissions === true || permissions?.canUpdate) && (
             <li>
               <div
                 role="button"
@@ -137,7 +137,7 @@ export default function LinkActions({
                 {t("edit_link")}
               </div>
             </li>
-          ) : undefined}
+          )}
           {link.type === "url" && (
             <li>
               <div
@@ -152,7 +152,7 @@ export default function LinkActions({
               </div>
             </li>
           )}
-          {permissions === true || permissions?.canDelete ? (
+          {(permissions === true || permissions?.canDelete) && (
             <li>
               <div
                 role="button"
@@ -165,28 +165,28 @@ export default function LinkActions({
                 {t("delete")}
               </div>
             </li>
-          ) : undefined}
+          )}
         </ul>
       </div>
 
-      {editLinkModal ? (
+      {editLinkModal && (
         <EditLinkModal
           onClose={() => setEditLinkModal(false)}
           activeLink={link}
         />
-      ) : undefined}
-      {deleteLinkModal ? (
+      )}
+      {deleteLinkModal && (
         <DeleteLinkModal
           onClose={() => setDeleteLinkModal(false)}
           activeLink={link}
         />
-      ) : undefined}
-      {preservedFormatsModal ? (
+      )}
+      {preservedFormatsModal && (
         <PreservedFormatsModal
           onClose={() => setPreservedFormatsModal(false)}
           activeLink={link}
         />
-      ) : undefined}
+      )}
       {/* {expandedLink ? (
                 <ExpandedLink onClose={() => setExpandedLink(false)} link={link} />
               ) : undefined} */}

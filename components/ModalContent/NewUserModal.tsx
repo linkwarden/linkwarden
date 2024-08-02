@@ -86,7 +86,7 @@ export default function NewUserModal({ onClose }: Props) {
             />
           </div>
 
-          {emailEnabled ? (
+          {emailEnabled && (
             <div>
               <p className="mb-2">{t("email")}</p>
               <TextInput
@@ -96,7 +96,7 @@ export default function NewUserModal({ onClose }: Props) {
                 value={form.email}
               />
             </div>
-          ) : undefined}
+          )}
 
           <div>
             <p className="mb-2">

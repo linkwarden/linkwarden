@@ -75,7 +75,7 @@ export default function ReadableView({ link }: Props) {
   useEffect(() => {
     if (link) getLink(link?.id as number);
 
-    let interval: any;
+    let interval: NodeJS.Timeout | null = null;
     if (
       link &&
       (link?.image === "pending" ||
@@ -183,7 +183,7 @@ export default function ReadableView({ link }: Props) {
                   link?.name || link?.description || link?.url || ""
                 )}
               </p>
-              {link?.url ? (
+              {link?.url && (
                 <Link
                   href={link?.url || ""}
                   title={link?.url}
@@ -192,11 +192,10 @@ export default function ReadableView({ link }: Props) {
                 >
                   <i className="bi-link-45deg"></i>
 
-                  {isValidUrl(link?.url || "")
-                    ? new URL(link?.url as string).host
-                    : undefined}
+                  {isValidUrl(link?.url || "") &&
+                    new URL(link?.url as string).host}
                 </Link>
-              ) : undefined}
+              )}
             </div>
           </div>
 

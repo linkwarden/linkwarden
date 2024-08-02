@@ -84,7 +84,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
   const permissions = usePermissions(collection?.id as number);
 
   useEffect(() => {
-    let interval: any;
+    let interval: NodeJS.Timeout | null = null;
 
     if (
       isVisible &&

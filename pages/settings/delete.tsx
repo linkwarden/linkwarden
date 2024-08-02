@@ -83,7 +83,7 @@ export default function Delete() {
           />
         </div>
 
-        {process.env.NEXT_PUBLIC_STRIPE ? (
+        {process.env.NEXT_PUBLIC_STRIPE && (
           <fieldset className="border rounded-md p-2 border-primary">
             <legend className="px-3 py-1 text-sm sm:text-base border rounded-md border-primary">
               <b>{t("optional")}</b> <i>{t("feedback_help")}</i>
@@ -123,7 +123,7 @@ export default function Delete() {
               />
             </div>
           </fieldset>
-        ) : undefined}
+        )}
 
         <Button
           className="mx-auto"

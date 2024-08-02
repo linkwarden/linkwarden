@@ -1,6 +1,7 @@
 import useCollectionStore from "@/store/collections";
 import useLinkStore from "@/store/links";
 import {
+  AccountSettings,
   CollectionIncludingMembersAndLinkCount,
   Sort,
   ViewMode,
@@ -53,15 +54,9 @@ export default function Index() {
 
   const { account } = useAccountStore();
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<
+    Partial<AccountSettings>
+  >({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -74,11 +69,11 @@ export default function Index() {
         setCollectionOwner({
           id: account.id as number,
           name: account.name,
-          username: account.username as string,
-          image: account.image as string,
-          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsMonolith: account.archiveAsScreenshot as boolean,
-          archiveAsPDF: account.archiveAsPDF as boolean,
+          username: account.username,
+          image: account.image,
+          archiveAsScreenshot: account.archiveAsScreenshot,
+          archiveAsMonolith: account.archiveAsScreenshot,
+          archiveAsPDF: account.archiveAsPDF,
         });
       }
     };
@@ -211,14 +206,14 @@ export default function Index() {
                 className="flex items-center btn px-2 btn-ghost rounded-full w-fit"
                 onClick={() => setEditCollectionSharingModal(true)}
               >
-                {collectionOwner.id ? (
+                {collectionOwner.id && (
                   <ProfilePhoto
                     src={collectionOwner.image || undefined}
                     name={collectionOwner.name}
                   />
-                ) : undefined}
+                )}
                 {activeCollection.members
-                  .sort((a, b) => (a.userId as number) - (b.userId as number))
+                  .sort((a, b) => a.userId - b.userId)
                   .map((e, i) => {
                     return (
                       <ProfilePhoto
@@ -230,13 +225,13 @@ export default function Index() {
                     );
                   })
                   .slice(0, 3)}
-                {activeCollection.members.length - 3 > 0 ? (
+                {activeCollection.members.length - 3 > 0 && (
                   <div className={`avatar drop-shadow-md placeholder -ml-3`}>
                     <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
                       <span>+{activeCollection.members.length - 3}</span>
                     </div>
                   </div>
-                ) : null}
+                )}
               </div>
 
               <p className="text-neutral text-sm">
