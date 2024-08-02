@@ -81,6 +81,8 @@ export enum Sort {
   NameZA,
   DescriptionAZ,
   DescriptionZA,
+  ReadingTimeShortestFirst,
+  ReadingTimeLongestFirst,
 }
 
 export type LinkRequestQuery = {

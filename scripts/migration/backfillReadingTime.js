@@ -35,7 +35,7 @@ async function main() {
         id: link.id,
       },
       data: {
-        readingTime: readingTime(link.textContent).minutes,
+        readingTime: readingTime(link.textContent).minutes || null,
       },
     });
   }

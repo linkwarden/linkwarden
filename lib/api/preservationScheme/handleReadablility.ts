@@ -44,7 +44,9 @@ const handleReadablility = async (content: string, link: Link) => {
       data: {
         readable: `archives/${collectionId}/${link.id}_readability.json`,
         textContent: articleText,
-        readingTime: articleText ? readingTime(articleText).minutes : null,
+        readingTime: articleText
+          ? readingTime(articleText).minutes || null
+          : null,
       },
     });
   }
