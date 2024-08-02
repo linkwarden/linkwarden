@@ -17,6 +17,7 @@ import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
+import LinkReadingTime from "./LinkComponents/LinkReadingTime";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -144,6 +145,7 @@ export default function LinkCardCompact({
                 ) : undefined}
                 {link.name && <LinkTypeBadge link={link} />}
                 <LinkDate link={link} />
+                <LinkReadingTime link={link} />
               </div>
             </div>
           </div>

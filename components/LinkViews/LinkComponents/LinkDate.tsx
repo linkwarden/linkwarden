@@ -3,14 +3,16 @@ import React from "react";
 
 export default function LinkDate({
   link,
+  month = "short",
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
+  month?: "short" | "long";
 }) {
   const formattedDate = new Date(
     (link.importDate || link.createdAt) as string
   ).toLocaleString("en-US", {
     year: "numeric",
-    month: "short",
+    month,
     day: "numeric",
   });
 

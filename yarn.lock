@@ -1903,6 +1903,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@tailwindcss/container-queries@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/container-queries/-/container-queries-0.1.1.tgz#9a759ce2cb8736a4c6a0cb93aeb740573a731974"
+  integrity sha512-p18dswChx6WnTSaJCSGx6lTmrGzNNvm2FtXmiO6AuA1V4U5REyoqwmT6kgAsIMdjo07QdAfYXHJ4hnMtfHzWgA==
+
 "@tokenizer/token@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@tokenizer/token/-/token-0.3.0.tgz#fe98a93fe789247e998c75e74e9c7c63217aa276"
@@ -5371,6 +5376,11 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
+
+reading-time-estimator@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/reading-time-estimator/-/reading-time-estimator-1.11.0.tgz#46229a4f534e8168849da1aeb55530dd9f6c26f5"
+  integrity sha512-2813WXSxCPsDvgrYq+cPBI4gGqgmtKlo62rpI0mwnhrMfZJIqbDfOeidr9Y36OruDesQGmYA9DkVRmvsBbv2DA==
 
 redux@^4.0.0, redux@^4.0.1:
   version "4.2.1"

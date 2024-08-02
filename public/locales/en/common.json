@@ -211,6 +211,8 @@
   "name_za": "Name (Z-A)",
   "description_az": "Description (A-Z)",
   "description_za": "Description (Z-A)",
+  "reading_time_shortest_first": "Reading Time (Shortest First)",
+  "reading_time_longest_first": "Reading Time (Longest First)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0>. All rights reserved.",
   "you_have_no_collections": "You have no Collections...",
   "you_have_no_tags": "You have no Tags...",

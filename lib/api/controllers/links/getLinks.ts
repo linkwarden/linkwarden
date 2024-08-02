@@ -12,6 +12,10 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
   else if (query.sort === Sort.DescriptionAZ) order = { description: "asc" };
   else if (query.sort === Sort.DescriptionZA) order = { description: "desc" };
+  else if (query.sort === Sort.ReadingTimeShortestFirst)
+    order = { readingTime: { sort: "asc", nulls: "first" } };
+  else if (query.sort === Sort.ReadingTimeLongestFirst)
+    order = { readingTime: { sort: "desc", nulls: "last" } };
 
   const searchConditions = [];
 

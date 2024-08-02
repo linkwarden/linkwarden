@@ -117,6 +117,38 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
             <span className="label-text">{t("description_za")}</span>
           </label>
         </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="radio"
+              name="sort-radio"
+              className="radio checked:bg-primary"
+              checked={sortBy === Sort.ReadingTimeShortestFirst}
+              onChange={() => setSort(Sort.ReadingTimeShortestFirst)}
+            />
+            <span className="label-text">{t("reading_time_shortest_first")}</span>
+          </label>
+        </li>
+        <li>
+          <label
+            className="label cursor-pointer flex justify-start"
+            tabIndex={0}
+            role="button"
+          >
+            <input
+              type="radio"
+              name="sort-radio"
+              className="radio checked:bg-primary"
+              checked={sortBy === Sort.ReadingTimeLongestFirst}
+              onChange={() => setSort(Sort.ReadingTimeLongestFirst)}
+            />
+            <span className="label-text">{t("reading_time_longest_first")}</span>
+          </label>
+        </li>
       </ul>
     </div>
   );
