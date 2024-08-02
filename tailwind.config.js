@@ -48,9 +48,17 @@ module.exports = {
     "./layouts/**/*.{js,ts,jsx,tsx}",
   ],
   plugins: [
+    require("@tailwindcss/container-queries"),
     require("daisyui"),
     plugin(({ addVariant }) => {
       addVariant("dark", '&[data-theme="dark"]');
     }),
   ],
+  theme: {
+    extend: {
+      containers: {
+        "2xs": "16rem",
+      },
+    },
+  },
 };

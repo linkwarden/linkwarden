@@ -4,6 +4,7 @@ import DOMPurify from "dompurify";
 import { prisma } from "../db";
 import createFile from "../storage/createFile";
 import { Link } from "@prisma/client";
+import { readingTime } from "reading-time-estimator";
 
 const handleReadablility = async (content: string, link: Link) => {
   const window = new JSDOM("").window;
@@ -43,6 +44,7 @@ const handleReadablility = async (content: string, link: Link) => {
       data: {
         readable: `archives/${collectionId}/${link.id}_readability.json`,
         textContent: articleText,
+        readingTime: articleText ? readingTime(articleText).minutes : null,
       },
     });
   }

@@ -21,6 +21,7 @@ import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
+import LinkReadingTime from "./LinkComponents/LinkReadingTime";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -118,7 +119,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative`}
+      className={`${selectedStyle} @container/link-masonry border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
@@ -197,9 +198,14 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
 
         <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
 
-        <div className="flex flex-wrap justify-between text-xs text-neutral px-3 pb-1 w-full gap-x-2">
+        <div className="flex justify-between text-xs text-neutral px-3 pb-1 w-full gap-x-2">
           {collection && <LinkCollection link={link} collection={collection} />}
-          <LinkDate link={link} />
+          <div className="flex gap-2">
+            <div className="hidden @2xs/link-masonry:block">
+              <LinkReadingTime link={link} />
+            </div>
+            <LinkDate link={link} />
+          </div>
         </div>
       </div>
 

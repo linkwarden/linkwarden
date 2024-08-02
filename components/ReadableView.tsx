@@ -16,6 +16,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import LinkActions from "./LinkViews/LinkComponents/LinkActions";
 import useCollectionStore from "@/store/collections";
 import { useTranslation } from "next-i18next";
+import LinkDate from "./LinkViews/LinkComponents/LinkDate";
+import LinkReadingTime from "./LinkViews/LinkComponents/LinkReadingTime";
 
 type LinkContent = {
   title: string;
@@ -38,8 +40,6 @@ export default function ReadableView({ link }: Props) {
   const [linkContent, setLinkContent] = useState<LinkContent>();
   const [imageError, setImageError] = useState<boolean>(false);
   const [colorPalette, setColorPalette] = useState<RGBColor[]>();
-
-  const [date, setDate] = useState<Date | string>();
 
   const colorThief = new ColorThief();
 
@@ -68,8 +68,6 @@ export default function ReadableView({ link }: Props) {
     };
 
     fetchLinkContent();
-
-    setDate(link.importDate || link.createdAt);
   }, [link]);
 
   useEffect(() => {
@@ -228,14 +226,9 @@ export default function ReadableView({ link }: Props) {
             ))}
           </div>
 
-          <p className="min-w-fit text-sm text-neutral">
-            {date
-              ? new Date(date).toLocaleString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })
-              : undefined}
+          <p className="flex gap-2 min-w-fit text-sm text-neutral">
+            <LinkDate link={link} month="long" />
+            <LinkReadingTime link={link} />
           </p>
 
           {link?.name ? <p>{unescapeString(link?.description)}</p> : undefined}

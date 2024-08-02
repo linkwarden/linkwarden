@@ -13,6 +13,7 @@ export interface LinkIncludingShortenedCollectionAndTags
     | "updatedAt"
     | "lastPreserved"
     | "importDate"
+    | "readingTime"
   > {
   id?: number;
   createdAt?: string;
@@ -23,6 +24,7 @@ export interface LinkIncludingShortenedCollectionAndTags
     id: number;
   }[];
   collection: OptionalExcluding<Collection, "name" | "ownerId">;
+  readingTime?: number | null;
 }
 
 export interface Member {

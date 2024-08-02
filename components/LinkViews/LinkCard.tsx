@@ -21,6 +21,7 @@ import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
+import LinkReadingTime from "./LinkComponents/LinkReadingTime";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -119,7 +120,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative`}
+      className={`${selectedStyle} @container/link-card border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
@@ -184,7 +185,12 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
                   <LinkCollection link={link} collection={collection} />
                 )}
               </div>
-              <LinkDate link={link} />
+              <div className="flex gap-2">
+                <div className="hidden @2xs/link-card:block">
+                  <LinkReadingTime link={link} />
+                </div>
+                <LinkDate link={link} />
+              </div>
             </div>
           </div>
         </div>

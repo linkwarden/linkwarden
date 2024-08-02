@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/api/db";
-import { Backup } from "@/types/global";
+import {readingTime} from "reading-time-estimator";
 import createFolder from "@/lib/api/storage/createFolder";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
@@ -76,6 +76,7 @@ export default async function importFromWallabag(
               url: link.url,
               name: link.title || "",
               textContent: link.content || "",
+              readingTime: link.content ? readingTime(link.content).minutes : null,
               importDate: link.created_at || null,
               collection: {
                 connect: {

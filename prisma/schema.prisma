@@ -91,21 +91,21 @@ model PasswordResetToken {
 }
 
 model Collection {
-  id              Int                   @id @default(autoincrement())
-  name            String
-  description     String                @default("")
-  color           String                @default("#0ea5e9")
-  parentId        Int?
-  parent          Collection?           @relation("SubCollections", fields: [parentId], references: [id])
-  subCollections  Collection[]          @relation("SubCollections")
-  isPublic        Boolean               @default(false)
-  owner           User                  @relation(fields: [ownerId], references: [id])
-  ownerId         Int
-  members         UsersAndCollections[]
-  links           Link[]
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @default(now()) @updatedAt
-  
+  id             Int                   @id @default(autoincrement())
+  name           String
+  description    String                @default("")
+  color          String                @default("#0ea5e9")
+  parentId       Int?
+  parent         Collection?           @relation("SubCollections", fields: [parentId], references: [id])
+  subCollections Collection[]          @relation("SubCollections")
+  isPublic       Boolean               @default(false)
+  owner          User                  @relation(fields: [ownerId], references: [id])
+  ownerId        Int
+  members        UsersAndCollections[]
+  links          Link[]
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @default(now()) @updatedAt
+
   @@index([ownerId])
 }
 
@@ -129,6 +129,7 @@ model Link {
   name          String     @default("")
   type          String     @default("url")
   description   String     @default("")
+  readingTime   Int? // in minutes
   pinnedBy      User[]
   collection    Collection @relation(fields: [collectionId], references: [id])
   collectionId  Int
@@ -173,7 +174,7 @@ model Subscription {
 
 model AccessToken {
   id         Int       @id @default(autoincrement())
-  name       String    
+  name       String
   user       User      @relation(fields: [userId], references: [id])
   userId     Int
   token      String    @unique
