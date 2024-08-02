@@ -63,7 +63,8 @@ async function processBookmarks(
         ) as Element;
 
         if (collectionName) {
-          const collectionNameContent = (collectionName.children[0] as TextNode)?.content;
+          const collectionNameContent = (collectionName.children[0] as TextNode)
+            ?.content;
           if (collectionNameContent) {
             collectionId = await createCollection(
               userId,
@@ -274,4 +275,3 @@ function processNodes(nodes: Node[]) {
   nodes.forEach(findAndProcessDL);
   return nodes;
 }
-
