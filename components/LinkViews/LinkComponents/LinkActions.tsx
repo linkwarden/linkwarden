@@ -7,11 +7,10 @@ import usePermissions from "@/hooks/usePermissions";
 import EditLinkModal from "@/components/ModalContent/EditLinkModal";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsModal";
-import useLinkStore from "@/store/links";
-import { toast } from "react-hot-toast";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
+import { useDeleteLink, useUpdateLink } from "@/hooks/store/links";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -39,41 +38,18 @@ export default function LinkActions({
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
   const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
-  const { data: user } = useUser();
+  const { data: user = {} } = useUser();
 
-  const { removeLink, updateLink } = useLinkStore();
+  const updateLink = useUpdateLink();
+  const deleteLink = useDeleteLink();
 
   const pinLink = async () => {
     const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0];
 
-    const load = toast.loading(t("applying"));
-
-    const response = await updateLink({
+    await updateLink.mutateAsync({
       ...link,
       pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
     });
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(isAlreadyPinned ? t("link_unpinned") : t("link_unpinned"));
-    } else {
-      toast.error(response.data as string);
-    }
-  };
-
-  const deleteLink = async () => {
-    const load = toast.loading(t("deleting"));
-
-    const response = await removeLink(link.id as number);
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(t("deleted"));
-    } else {
-      toast.error(response.data as string);
-    }
   };
 
   return (
@@ -157,9 +133,11 @@ export default function LinkActions({
               <div
                 role="button"
                 tabIndex={0}
-                onClick={(e) => {
+                onClick={async (e) => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
+                  e.shiftKey
+                    ? await deleteLink.mutateAsync(link.id as number)
+                    : setDeleteLinkModal(true);
                 }}
               >
                 {t("delete")}

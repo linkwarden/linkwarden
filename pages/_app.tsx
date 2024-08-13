@@ -14,7 +14,13 @@ import { appWithTranslation } from "next-i18next";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 30,
+    },
+  },
+});
 
 function App({
   Component,
@@ -105,12 +111,3 @@ function App({
 }
 
 export default appWithTranslation(App);
-
-// function GetData({ children }: { children: React.ReactNode }) {
-//   const status = useInitialData();
-//   return typeof window !== "undefined" && status !== "loading" ? (
-//     children
-//   ) : (
-//     <></>
-//   );
-// }

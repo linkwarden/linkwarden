@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import useLinkStore from "@/store/links";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
@@ -20,6 +19,7 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@/hooks/store/user";
+import { useGetLink } from "@/hooks/store/links";
 
 type Props = {
   onClose: Function;
@@ -29,8 +29,8 @@ type Props = {
 export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
   const { t } = useTranslation();
   const session = useSession();
-  const { getLink } = useLinkStore();
-  const { data: user } = useUser();
+  const getLink = useGetLink();
+  const { data: user = {} } = useUser();
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
   const router = useRouter();
@@ -98,7 +98,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   useEffect(() => {
     (async () => {
-      const data = await getLink(link.id as number, isPublic);
+      const data = await getLink.mutateAsync(link.id as number);
       setLink(
         (data as any).response as LinkIncludingShortenedCollectionAndTags
       );
@@ -108,7 +108,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
     if (!isReady()) {
       interval = setInterval(async () => {
-        const data = await getLink(link.id as number, isPublic);
+        const data = await getLink.mutateAsync(link.id as number);
         setLink(
           (data as any).response as LinkIncludingShortenedCollectionAndTags
         );
@@ -137,7 +137,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     toast.dismiss(load);
 
     if (response.ok) {
-      const newLink = await getLink(link?.id as number);
+      const newLink = await getLink.mutateAsync(link?.id as number);
       setLink(
         (newLink as any).response as LinkIncludingShortenedCollectionAndTags
       );

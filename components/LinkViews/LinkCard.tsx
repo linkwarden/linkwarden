@@ -21,6 +21,7 @@ import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
+import { useGetLink, useLinks } from "@/hooks/store/links";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -33,12 +34,16 @@ type Props = {
 export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   const { t } = useTranslation();
 
-  const viewMode = localStorage.getItem("viewMode") || "card";
-  const { data: collections } = useCollections();
+  const { data: collections = [] } = useCollections();
 
-  const { data: user } = useUser();
+  const { data: user = {} } = useUser();
 
-  const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
+  const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const {
+    data: { data: links = [] },
+  } = useLinks();
+  const getLink = useGetLink();
 
   useEffect(() => {
     if (!editMode) {
@@ -94,7 +99,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       link.preview !== "unavailable"
     ) {
       interval = setInterval(async () => {
-        getLink(link.id as number);
+        getLink.mutateAsync(link.id as number);
       }, 5000);
     }
 

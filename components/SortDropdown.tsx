@@ -1,7 +1,8 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Sort } from "@/types/global";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { TFunction } from "i18next";
+import useLocalSettingsStore from "@/store/localSettings";
 
 type Props = {
   sortBy: Sort;
@@ -10,6 +11,12 @@ type Props = {
 };
 
 export default function SortDropdown({ sortBy, setSort, t }: Props) {
+  const { updateSettings } = useLocalSettingsStore();
+
+  useEffect(() => {
+    updateSettings({ sortBy });
+  }, [sortBy]);
+
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
       <div

@@ -13,7 +13,6 @@ const useTags = () => {
       const data = await response.json();
       return data.response;
     },
-    initialData: [],
   });
 };
 
