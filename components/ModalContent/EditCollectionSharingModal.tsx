@@ -46,7 +46,7 @@ export default function EditCollectionSharingModal({
     }
   };
 
-  const { data: user } = useUser();
+  const { data: user = {} } = useUser();
   const permissions = usePermissions(collection.id as number);
 
   const currentURL = new URL(document.URL);

@@ -67,7 +67,6 @@ export interface PublicCollectionIncludingLinks extends Collection {
 
 export enum ViewMode {
   Card = "card",
-  Grid = "grid",
   List = "list",
   Masonry = "masonry",
 }
@@ -82,7 +81,7 @@ export enum Sort {
 }
 
 export type LinkRequestQuery = {
-  sort: Sort;
+  sort?: Sort;
   cursor?: number;
   collectionId?: number;
   tagId?: number;

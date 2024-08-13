@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import useLinkStore from "@/store/links";
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import toast from "react-hot-toast";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { useGetLink } from "@/hooks/store/links";
 
 type Props = {
   name: string;
@@ -24,8 +22,7 @@ export default function PreservedFormatRow({
   activeLink,
   downloadable,
 }: Props) {
-  const session = useSession();
-  const { getLink } = useLinkStore();
+  const getLink = useGetLink();
 
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
@@ -36,7 +33,7 @@ export default function PreservedFormatRow({
 
   useEffect(() => {
     (async () => {
-      const data = await getLink(link.id as number, isPublic);
+      const data = await getLink.mutateAsync(link.id as number);
       setLink(
         (data as any).response as LinkIncludingShortenedCollectionAndTags
       );
@@ -45,7 +42,7 @@ export default function PreservedFormatRow({
     let interval: any;
     if (link?.image === "pending" || link?.pdf === "pending") {
       interval = setInterval(async () => {
-        const data = await getLink(link.id as number, isPublic);
+        const data = await getLink.mutateAsync(link.id as number);
         setLink(
           (data as any).response as LinkIncludingShortenedCollectionAndTags
         );

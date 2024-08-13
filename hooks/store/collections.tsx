@@ -11,7 +11,6 @@ const useCollections = () => {
       const data = await response.json();
       return data.response;
     },
-    initialData: [],
   });
 };
 
@@ -42,8 +41,6 @@ const useCreateCollection = () => {
     onSuccess: (data) => {
       toast.success(t("created"));
       return queryClient.setQueryData(["collections"], (oldData: any) => {
-        console.log([...oldData, data]);
-
         return [...oldData, data];
       });
     },

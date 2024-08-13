@@ -3,12 +3,11 @@ import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
-import useLinkStore from "@/store/links";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import toast from "react-hot-toast";
 import Link from "next/link";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
+import { useUpdateLink } from "@/hooks/store/links";
 
 type Props = {
   onClose: Function;
@@ -27,8 +26,9 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
     console.log(error);
   }
 
-  const { updateLink } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
+
+  const updateLink = useUpdateLink();
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = null;
@@ -50,19 +50,14 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
   const submit = async () => {
     if (!submitLoader) {
       setSubmitLoader(true);
-      const load = toast.loading(t("updating"));
-      let response = await updateLink(link);
-      toast.dismiss(load);
 
-      if (response.ok) {
-        toast.success(t("updated"));
-        onClose();
-      } else {
-        toast.error(response.data as string);
-      }
+      await updateLink.mutateAsync(link, {
+        onSuccess: () => {
+          onClose();
+        },
+      });
 
       setSubmitLoader(false);
-      return response;
     }
   };
 

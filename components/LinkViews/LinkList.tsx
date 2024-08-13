@@ -17,6 +17,7 @@ import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
+import { useLinks } from "@/hooks/store/links";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -33,10 +34,12 @@ export default function LinkCardCompact({
 }: Props) {
   const { t } = useTranslation();
 
-  const { data: collections } = useCollections();
+  const { data: collections = [] } = useCollections();
 
-  const { data: user } = useUser();
-  const { links, setSelectedLinks, selectedLinks } = useLinkStore();
+  const { data: user = {} } = useUser();
+  const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const { links } = useLinks();
 
   useEffect(() => {
     if (!editMode) {
