@@ -23,16 +23,14 @@ import { useGetLink } from "@/hooks/store/links";
 
 type Props = {
   onClose: Function;
-  activeLink: LinkIncludingShortenedCollectionAndTags;
+  link: LinkIncludingShortenedCollectionAndTags;
 };
 
-export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
+export default function PreservedFormatsModal({ onClose, link }: Props) {
   const { t } = useTranslation();
   const session = useSession();
   const getLink = useGetLink();
   const { data: user = {} } = useUser();
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
@@ -98,20 +96,14 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   useEffect(() => {
     (async () => {
-      const data = await getLink.mutateAsync(link.id as number);
-      setLink(
-        (data as any).response as LinkIncludingShortenedCollectionAndTags
-      );
+      await getLink.mutateAsync(link.id as number);
     })();
 
     let interval: any;
 
     if (!isReady()) {
       interval = setInterval(async () => {
-        const data = await getLink.mutateAsync(link.id as number);
-        setLink(
-          (data as any).response as LinkIncludingShortenedCollectionAndTags
-        );
+        await getLink.mutateAsync(link.id as number);
       }, 5000);
     } else {
       if (interval) {
@@ -137,10 +129,8 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     toast.dismiss(load);
 
     if (response.ok) {
-      const newLink = await getLink.mutateAsync(link?.id as number);
-      setLink(
-        (newLink as any).response as LinkIncludingShortenedCollectionAndTags
-      );
+      await getLink.mutateAsync(link?.id as number);
+
       toast.success(t("link_being_archived"));
     } else toast.error(data.response);
   };
@@ -164,7 +154,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             name={t("webpage")}
             icon={"bi-filetype-html"}
             format={ArchivedFormat.monolith}
-            activeLink={link}
+            link={link}
             downloadable={true}
           />
         ) : undefined}
@@ -178,7 +168,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 ? ArchivedFormat.png
                 : ArchivedFormat.jpeg
             }
-            activeLink={link}
+            link={link}
             downloadable={true}
           />
         ) : undefined}
@@ -188,7 +178,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             name={t("pdf")}
             icon={"bi-file-earmark-pdf"}
             format={ArchivedFormat.pdf}
-            activeLink={link}
+            link={link}
             downloadable={true}
           />
         ) : undefined}
@@ -198,7 +188,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             name={t("readable")}
             icon={"bi-file-earmark-text"}
             format={ArchivedFormat.readability}
-            activeLink={link}
+            link={link}
           />
         ) : undefined}
 

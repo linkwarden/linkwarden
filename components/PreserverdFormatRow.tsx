@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
@@ -11,7 +10,7 @@ type Props = {
   name: string;
   icon: string;
   format: ArchivedFormat;
-  activeLink: LinkIncludingShortenedCollectionAndTags;
+  link: LinkIncludingShortenedCollectionAndTags;
   downloadable?: boolean;
 };
 
@@ -19,46 +18,14 @@ export default function PreservedFormatRow({
   name,
   icon,
   format,
-  activeLink,
+  link,
   downloadable,
 }: Props) {
   const getLink = useGetLink();
 
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
-
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
-
-  useEffect(() => {
-    (async () => {
-      const data = await getLink.mutateAsync(link.id as number);
-      setLink(
-        (data as any).response as LinkIncludingShortenedCollectionAndTags
-      );
-    })();
-
-    let interval: any;
-    if (link?.image === "pending" || link?.pdf === "pending") {
-      interval = setInterval(async () => {
-        const data = await getLink.mutateAsync(link.id as number);
-        setLink(
-          (data as any).response as LinkIncludingShortenedCollectionAndTags
-        );
-      }, 5000);
-    } else {
-      if (interval) {
-        clearInterval(interval);
-      }
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [link?.image, link?.pdf, link?.readable, link?.monolith]);
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;

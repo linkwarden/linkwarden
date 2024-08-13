@@ -12,12 +12,12 @@ import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection
 import Image from "next/image";
 import { previewAvailable } from "@/lib/shared/getArchiveValidity";
 import Link from "next/link";
-import LinkIcon from "./LinkComponents/LinkIcon";
+import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
-import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
+import LinkTypeBadge from "./LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";

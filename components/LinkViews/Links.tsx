@@ -1,18 +1,16 @@
-import LinkCard from "@/components/LinkViews/LinkCard";
-import { useLinks } from "@/hooks/store/links";
+import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ViewMode,
 } from "@/types/global";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { GridLoader } from "react-spinners";
-import LinkMasonry from "@/components/LinkViews/LinkMasonry";
+import LinkMasonry from "@/components/LinkViews/LinkComponents/LinkMasonry";
 import Masonry from "react-masonry-css";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../../tailwind.config.js";
 import { useMemo } from "react";
-import LinkList from "@/components/LinkViews/LinkList";
+import LinkList from "@/components/LinkViews/LinkComponents/LinkList";
 
 export function CardView({
   links,
@@ -59,15 +57,6 @@ export function CardView({
             </div>
           );
         })}
-
-      {/* {isLoading && links.length > 0 && (
-        <GridLoader
-          color="oklch(var(--p))"
-          loading={true}
-          size={20}
-          className="fixed top-5 right-5 opacity-50 z-30"
-        />
-      )} */}
     </div>
   );
 }
@@ -100,15 +89,6 @@ export function ListView({
           />
         );
       })}
-
-      {/* {isLoading && links.length > 0 && (
-        <GridLoader
-          color="oklch(var(--p))"
-          loading={true}
-          size={20}
-          className="fixed top-5 right-5 opacity-50 z-30"
-        />
-      )} */}
     </div>
   );
 }
@@ -157,15 +137,6 @@ export function MasonryView({
           />
         );
       })}
-
-      {/* {isLoading && links.length > 0 && (
-        <GridLoader
-          color="oklch(var(--p))"
-          loading={true}
-          size={20}
-          className="fixed top-5 right-5 opacity-50 z-30"
-        />
-      )} */}
     </Masonry>
   );
 }
