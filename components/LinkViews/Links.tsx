@@ -61,38 +61,6 @@ export function CardView({
   );
 }
 
-export function ListView({
-  links,
-  editMode,
-  isLoading,
-  placeholders,
-  hasNextPage,
-  placeHolderRef,
-}: {
-  links?: LinkIncludingShortenedCollectionAndTags[];
-  editMode?: boolean;
-  isLoading?: boolean;
-  placeholders?: number[];
-  hasNextPage?: boolean;
-  placeHolderRef?: any;
-}) {
-  return (
-    <div className="flex gap-1 flex-col">
-      {links?.map((e, i) => {
-        return (
-          <LinkList
-            key={i}
-            link={e}
-            count={i}
-            flipDropdown={i === links.length - 1}
-            editMode={editMode}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
 export function MasonryView({
   links,
   editMode,
@@ -137,7 +105,74 @@ export function MasonryView({
           />
         );
       })}
+
+      {(hasNextPage || isLoading) &&
+        placeholders?.map((e, i) => {
+          return (
+            <div
+              className="flex flex-col gap-4"
+              ref={e === 1 ? placeHolderRef : undefined}
+              key={i}
+            >
+              <div className="skeleton h-40 w-full"></div>
+              <div className="skeleton h-3 w-2/3"></div>
+              <div className="skeleton h-3 w-full"></div>
+              <div className="skeleton h-3 w-full"></div>
+              <div className="skeleton h-3 w-1/3"></div>
+            </div>
+          );
+        })}
     </Masonry>
+  );
+}
+
+export function ListView({
+  links,
+  editMode,
+  isLoading,
+  placeholders,
+  hasNextPage,
+  placeHolderRef,
+}: {
+  links?: LinkIncludingShortenedCollectionAndTags[];
+  editMode?: boolean;
+  isLoading?: boolean;
+  placeholders?: number[];
+  hasNextPage?: boolean;
+  placeHolderRef?: any;
+}) {
+  return (
+    <div className="flex gap-1 flex-col">
+      {links?.map((e, i) => {
+        return (
+          <LinkList
+            key={i}
+            link={e}
+            count={i}
+            flipDropdown={i === links.length - 1}
+            editMode={editMode}
+          />
+        );
+      })}
+
+      {(hasNextPage || isLoading) &&
+        placeholders?.map((e, i) => {
+          return (
+            <div
+              ref={e === 1 ? placeHolderRef : undefined}
+              key={i}
+              className="flex gap-4 p-4"
+            >
+              <div className="skeleton h-16 w-16"></div>
+              <div className="flex flex-col gap-4 w-full">
+                <div className="skeleton h-3 w-2/3"></div>
+                <div className="skeleton h-3 w-full"></div>
+                <div className="skeleton h-3 w-1/3"></div>
+              </div>
+            </div>
+          );
+        })}
+    </div>
   );
 }
 
@@ -168,6 +203,9 @@ export default function Links({
         links={links}
         editMode={editMode}
         isLoading={useData?.isLoading}
+        placeholders={placeholderCountToArray(placeholderCount)}
+        hasNextPage={useData?.hasNextPage}
+        placeHolderRef={ref}
       />
     );
   } else if (layout === ViewMode.Masonry) {
@@ -176,6 +214,9 @@ export default function Links({
         links={links}
         editMode={editMode}
         isLoading={useData?.isLoading}
+        placeholders={placeholderCountToArray(placeholderCount)}
+        hasNextPage={useData?.hasNextPage}
+        placeHolderRef={ref}
       />
     );
   } else {
