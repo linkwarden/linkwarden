@@ -1,31 +1,28 @@
-import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { Sort, TagIncludingLinkCount, ViewMode } from "@/types/global";
-import useLinks from "@/hooks/useLinks";
-import { toast } from "react-hot-toast";
-import CardView from "@/components/LinkViews/Layouts/CardView";
-import ListView from "@/components/LinkViews/Layouts/ListView";
+import { useLinks } from "@/hooks/store/links";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
-import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
 import { useRemoveTag, useTags, useUpdateTag } from "@/hooks/store/tags";
+import Links from "@/components/LinkViews/Links";
 
 export default function Index() {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { links } = useLinkStore();
-  const { data: tags } = useTags();
+  const { data: tags = [] } = useTags();
   const updateTag = useUpdateTag();
   const removeTag = useRemoveTag();
 
-  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
+  const [sortBy, setSortBy] = useState<Sort>(
+    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
+  );
 
   const [renameTag, setRenameTag] = useState(false);
   const [newTagName, setNewTagName] = useState<string>();
@@ -40,7 +37,10 @@ export default function Index() {
     if (editMode) return setEditMode(false);
   }, [router]);
 
-  useLinks({ tagId: Number(router.query.id), sort: sortBy });
+  const { links, data } = useLinks({
+    sort: sortBy,
+    tagId: Number(router.query.id),
+  });
 
   useEffect(() => {
     const tag = tags.find((e: any) => e.id === Number(router.query.id));
@@ -98,18 +98,9 @@ export default function Index() {
     setRenameTag(false);
   };
 
-  const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Card
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
-
-  const linkView = {
-    [ViewMode.Card]: CardView,
-    [ViewMode.List]: ListView,
-    [ViewMode.Masonry]: MasonryView,
-  };
-
-  // @ts-ignore
-  const LinkComponent = linkView[viewMode];
 
   return (
     <MainLayout>
@@ -210,11 +201,12 @@ export default function Index() {
           </div>
         </LinkListOptions>
 
-        <LinkComponent
+        <Links
           editMode={editMode}
-          links={links.filter((e) =>
-            e.tags.some((e) => e.id === Number(router.query.id))
-          )}
+          links={links}
+          layout={viewMode}
+          placeholderCount={1}
+          useData={data}
         />
       </div>
       {bulkDeleteLinksModal && (

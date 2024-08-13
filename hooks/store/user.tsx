@@ -19,7 +19,7 @@ const useUser = () => {
       return data.response;
     },
     enabled: !!userId,
-    initialData: {},
+    placeholderData: {},
   });
 };
 

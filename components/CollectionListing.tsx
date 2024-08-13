@@ -25,9 +25,9 @@ interface ExtendedTreeItem extends TreeItem {
 const CollectionListing = () => {
   const { t } = useTranslation();
   const updateCollection = useUpdateCollection();
-  const { data: collections } = useCollections();
+  const { data: collections = [] } = useCollections();
 
-  const { data: user } = useUser();
+  const { data: user = {} } = useUser();
   const updateUser = useUpdateUser();
 
   const router = useRouter();

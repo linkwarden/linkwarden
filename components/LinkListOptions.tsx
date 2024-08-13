@@ -5,17 +5,17 @@ import ViewDropdown from "./ViewDropdown";
 import { TFunction } from "i18next";
 import BulkDeleteLinksModal from "./ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "./ModalContent/BulkEditLinksModal";
-import toast from "react-hot-toast";
 import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
-import { Sort } from "@/types/global";
+import { Sort, ViewMode } from "@/types/global";
+import { useBulkDeleteLinks, useLinks } from "@/hooks/store/links";
 
 type Props = {
   children: React.ReactNode;
   t: TFunction<"translation", undefined>;
-  viewMode: string;
-  setViewMode: Dispatch<SetStateAction<string>>;
+  viewMode: ViewMode;
+  setViewMode: Dispatch<SetStateAction<ViewMode>>;
   searchFilter?: {
     name: boolean;
     url: boolean;
@@ -48,8 +48,11 @@ const LinkListOptions = ({
   editMode,
   setEditMode,
 }: Props) => {
-  const { links, selectedLinks, setSelectedLinks, deleteLinksById } =
-    useLinkStore();
+  const { selectedLinks, setSelectedLinks } = useLinkStore();
+
+  const deleteLinksById = useBulkDeleteLinks();
+
+  const { links } = useLinks();
 
   const router = useRouter();
 
@@ -73,23 +76,14 @@ const LinkListOptions = ({
   };
 
   const bulkDeleteLinks = async () => {
-    const load = toast.loading(t("deleting_selections"));
-
-    const response = await deleteLinksById(
-      selectedLinks.map((link) => link.id as number)
+    await deleteLinksById.mutateAsync(
+      selectedLinks.map((link) => link.id as number),
+      {
+        onSuccess: () => {
+          setSelectedLinks([]);
+        },
+      }
     );
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(
-        selectedLinks.length === 1
-          ? t("link_deleted")
-          : t("links_deleted", { count: selectedLinks.length })
-      );
-    } else {
-      toast.error(response.data as string);
-    }
   };
 
   return (
@@ -99,57 +93,64 @@ const LinkListOptions = ({
 
         <div className="flex gap-3 items-center justify-end">
           <div className="flex gap-2 items-center mt-2">
-            {links.length > 0 && editMode !== undefined && setEditMode && (
-              <div
-                role="button"
-                onClick={() => {
-                  setEditMode(!editMode);
-                  setSelectedLinks([]);
-                }}
-                className={`btn btn-square btn-sm btn-ghost ${
-                  editMode
-                    ? "bg-primary/20 hover:bg-primary/20"
-                    : "hover:bg-neutral/20"
-                }`}
-              >
-                <i className="bi-pencil-fill text-neutral text-xl"></i>
-              </div>
-            )}
+            {links &&
+              links.length > 0 &&
+              editMode !== undefined &&
+              setEditMode && (
+                <div
+                  role="button"
+                  onClick={() => {
+                    setEditMode(!editMode);
+                    setSelectedLinks([]);
+                  }}
+                  className={`btn btn-square btn-sm btn-ghost ${
+                    editMode
+                      ? "bg-primary/20 hover:bg-primary/20"
+                      : "hover:bg-neutral/20"
+                  }`}
+                >
+                  <i className="bi-pencil-fill text-neutral text-xl"></i>
+                </div>
+              )}
             {searchFilter && setSearchFilter && (
               <FilterSearchDropdown
                 searchFilter={searchFilter}
                 setSearchFilter={setSearchFilter}
               />
             )}
-            <SortDropdown sortBy={sortBy} setSort={setSortBy} t={t} />
+            <SortDropdown
+              sortBy={sortBy}
+              setSort={(value) => {
+                setSortBy(value);
+              }}
+              t={t}
+            />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
       </div>
 
-      {editMode && links.length > 0 && (
+      {links && editMode && links.length > 0 && (
         <div className="w-full flex justify-between items-center min-h-[32px]">
-          {links.length > 0 && (
-            <div className="flex gap-3 ml-3">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-primary"
-                onChange={() => handleSelectAll()}
-                checked={
-                  selectedLinks.length === links.length && links.length > 0
-                }
-              />
-              {selectedLinks.length > 0 ? (
-                <span>
-                  {selectedLinks.length === 1
-                    ? t("link_selected")
-                    : t("links_selected", { count: selectedLinks.length })}
-                </span>
-              ) : (
-                <span>{t("nothing_selected")}</span>
-              )}
-            </div>
-          )}
+          <div className="flex gap-3 ml-3">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary"
+              onChange={() => handleSelectAll()}
+              checked={
+                selectedLinks.length === links.length && links.length > 0
+              }
+            />
+            {selectedLinks.length > 0 ? (
+              <span>
+                {selectedLinks.length === 1
+                  ? t("link_selected")
+                  : t("links_selected", { count: selectedLinks.length })}
+              </span>
+            ) : (
+              <span>{t("nothing_selected")}</span>
+            )}
+          </div>
           <div className="flex gap-3">
             <button
               onClick={() => setBulkEditLinksModal(true)}

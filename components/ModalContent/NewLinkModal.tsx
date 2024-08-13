@@ -3,14 +3,13 @@ import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
-import useLinkStore from "@/store/links";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
+import { useAddLink } from "@/hooks/store/links";
 
 type Props = {
   onClose: Function;
@@ -39,11 +38,13 @@ export default function NewLinkModal({ onClose }: Props) {
 
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(initial);
-  const { addLink } = useLinkStore();
+
+  const addLink = useAddLink();
+
   const [submitLoader, setSubmitLoader] = useState(false);
   const [optionsExpanded, setOptionsExpanded] = useState(false);
   const router = useRouter();
-  const { data: collections } = useCollections();
+  const { data: collections = [] } = useCollections();
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = null;
@@ -86,15 +87,13 @@ export default function NewLinkModal({ onClose }: Props) {
   const submit = async () => {
     if (!submitLoader) {
       setSubmitLoader(true);
-      const load = toast.loading(t("creating_link"));
-      const response = await addLink(link);
-      toast.dismiss(load);
-      if (response.ok) {
-        toast.success(t("link_created"));
-        onClose();
-      } else {
-        toast.error(response.data as string);
-      }
+
+      await addLink.mutateAsync(link, {
+        onSuccess: () => {
+          onClose();
+        },
+      });
+
       setSubmitLoader(false);
     }
   };

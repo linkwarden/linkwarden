@@ -20,7 +20,7 @@ type Props = {
 export default function CollectionCard({ collection, className }: Props) {
   const { t } = useTranslation();
   const { settings } = useLocalSettingsStore();
-  const { data: user } = useUser();
+  const { data: user = {} } = useUser();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",

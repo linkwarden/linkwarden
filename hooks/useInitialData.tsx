@@ -6,7 +6,7 @@ import { useUser } from "./store/user";
 export default function useInitialData() {
   const { status, data } = useSession();
   // const { setLinks } = useLinkStore();
-  const { data: user } = useUser();
+  const { data: user = {} } = useUser();
   const { setSettings } = useLocalSettingsStore();
 
   useEffect(() => {

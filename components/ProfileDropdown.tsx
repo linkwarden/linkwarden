@@ -9,7 +9,7 @@ import { useUser } from "@/hooks/store/user";
 export default function ProfileDropdown() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
-  const { data: user } = useUser();
+  const { data: user = {} } = useUser();
 
   const isAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
 

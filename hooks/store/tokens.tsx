@@ -14,7 +14,6 @@ const useTokens = () => {
       const data = await response.json();
       return data.response as AccessToken[];
     },
-    initialData: [],
   });
 };
 
