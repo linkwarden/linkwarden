@@ -13,7 +13,7 @@ import { isPWA } from "@/lib/client/utils";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
-import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
+import LinkTypeBadge from "./LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
