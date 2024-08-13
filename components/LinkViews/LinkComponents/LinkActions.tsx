@@ -162,7 +162,7 @@ export default function LinkActions({
       {preservedFormatsModal ? (
         <PreservedFormatsModal
           onClose={() => setPreservedFormatsModal(false)}
-          activeLink={link}
+          link={link}
         />
       ) : undefined}
       {/* {expandedLink ? (
