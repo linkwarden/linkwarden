@@ -203,17 +203,14 @@ export default function Account() {
             <div>
               <p className="mb-2">{t("language")}</p>
               <select
+                value={user.locale || ""}
                 onChange={(e) => {
                   setUser({ ...user, locale: e.target.value });
                 }}
                 className="select border border-neutral-content focus:outline-none focus:border-primary duration-100 w-full bg-base-200 rounded-[0.375rem] min-h-0 h-[2.625rem] leading-4 p-2"
               >
                 {i18n.locales.map((locale) => (
-                  <option
-                    key={locale}
-                    value={locale}
-                    selected={user.locale === locale}
-                  >
+                  <option key={locale} value={locale}>
                     {new Intl.DisplayNames(locale, { type: "language" }).of(
                       locale
                     ) || ""}

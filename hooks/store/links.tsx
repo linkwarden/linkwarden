@@ -12,6 +12,7 @@ import {
   LinkRequestQuery,
 } from "@/types/global";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 const useLinks = (params: LinkRequestQuery = {}) => {
   const router = useRouter();
@@ -58,6 +59,8 @@ const useLinks = (params: LinkRequestQuery = {}) => {
 };
 
 const useFetchLinks = (params: string) => {
+  const { status } = useSession();
+
   return useInfiniteQuery({
     queryKey: ["links", { params }],
     queryFn: async (params) => {
@@ -80,6 +83,7 @@ const useFetchLinks = (params: string) => {
       }
       return lastPage.at(-1).id;
     },
+    enabled: status === "authenticated",
   });
 };
 

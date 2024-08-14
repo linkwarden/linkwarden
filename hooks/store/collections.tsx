@@ -1,7 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import { useSession } from "next-auth/react";
 
 const useCollections = () => {
+  const { status } = useSession();
+
   return useQuery({
     queryKey: ["collections"],
     queryFn: async (): Promise<CollectionIncludingMembersAndLinkCount[]> => {
@@ -9,6 +12,7 @@ const useCollections = () => {
       const data = await response.json();
       return data.response;
     },
+    enabled: status === "authenticated",
   });
 };
 
