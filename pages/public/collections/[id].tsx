@@ -71,7 +71,13 @@ export default function PublicCollections() {
 
   useEffect(() => {
     if (router.query.id) {
-      getPublicCollectionData(Number(router.query.id), setCollection);
+      getPublicCollectionData(Number(router.query.id), setCollection).then(
+        (res) => {
+          if (res.status === 400) {
+            router.push("/dashboard");
+          }
+        }
+      );
     }
   }, [collections]);
 
