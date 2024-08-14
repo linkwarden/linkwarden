@@ -8,8 +8,6 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import useLinks from "@/hooks/useLinks";
-import useLinkStore from "@/store/links";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import ToggleDarkMode from "@/components/ToggleDarkMode";
 import getPublicUserData from "@/lib/client/getPublicUserData";
@@ -18,21 +16,19 @@ import Link from "next/link";
 import useLocalSettingsStore from "@/store/localSettings";
 import SearchBar from "@/components/SearchBar";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
-import CardView from "@/components/LinkViews/Layouts/CardView";
-import ListView from "@/components/LinkViews/Layouts/ListView";
-import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import useCollectionStore from "@/store/collections";
 import LinkListOptions from "@/components/LinkListOptions";
+import { useCollections } from "@/hooks/store/collections";
+import { usePublicLinks } from "@/hooks/store/publicLinks";
+import Links from "@/components/LinkViews/Links";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
-  const { links } = useLinkStore();
 
   const { settings } = useLocalSettingsStore();
 
-  const { collections } = useCollectionStore();
+  const { data: collections = [] } = useCollections();
 
   const router = useRouter();
 
@@ -54,9 +50,11 @@ export default function PublicCollections() {
     textContent: false,
   });
 
-  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
+  const [sortBy, setSortBy] = useState<Sort>(
+    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
+  );
 
-  useLinks({
+  const { links, data } = usePublicLinks({
     sort: sortBy,
     searchQueryString: router.query.q
       ? decodeURIComponent(router.query.q as string)
@@ -91,18 +89,9 @@ export default function PublicCollections() {
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
 
-  const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Card
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
-
-  const linkView = {
-    [ViewMode.Card]: CardView,
-    [ViewMode.List]: ListView,
-    [ViewMode.Masonry]: MasonryView,
-  };
-
-  // @ts-ignore
-  const LinkComponent = linkView[viewMode];
 
   return collection ? (
     <div
@@ -227,19 +216,21 @@ export default function PublicCollections() {
             />
           </LinkListOptions>
 
-          {links[0] ? (
-            <LinkComponent
-              links={links
-                .filter((e) => e.collectionId === Number(router.query.id))
-                .map((e, i) => {
-                  const linkWithCollectionData = {
-                    ...e,
-                    collection: collection, // Append collection data
-                  };
-                  return linkWithCollectionData;
-                })}
-            />
-          ) : (
+          <Links
+            links={
+              links?.map((e, i) => {
+                const linkWithCollectionData = {
+                  ...e,
+                  collection: collection, // Append collection data
+                };
+                return linkWithCollectionData;
+              }) as any
+            }
+            layout={viewMode}
+            placeholderCount={1}
+            useData={data}
+          />
+          {!data.isLoading && links && !links[0] && (
             <p>{t("collection_is_empty")}</p>
           )}
 

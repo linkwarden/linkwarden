@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
@@ -17,6 +16,7 @@ import Button from "@/components/ui/Button";
 import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useUpdateUser, useUser } from "@/hooks/store/user";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -24,7 +24,8 @@ export default function Account() {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
     useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { account, updateAccount } = useAccountStore();
+  const { data: account } = useUser();
+  const updateUser = useUpdateUser();
   const [user, setUser] = useState<AccountSettings>(
     !objectIsEmpty(account)
       ? account
@@ -78,25 +79,38 @@ export default function Account() {
 
   const submit = async (password?: string) => {
     setSubmitLoader(true);
+
     const load = toast.loading(t("applying_settings"));
 
-    const response = await updateAccount({
-      ...user,
-      // @ts-ignore
-      password: password ? password : undefined,
-    });
+    await updateUser.mutateAsync(
+      {
+        ...user,
+        password: password ? password : undefined,
+      },
+      {
+        onSuccess: (data) => {
+          if (data.response.email !== user.email) {
+            toast.success(t("email_change_request"));
+            setEmailChangeVerificationModal(false);
+          }
+        },
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-    toast.dismiss(load);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            if (data.response.email !== user.email) {
+              toast.success(t("email_change_request"));
+              setEmailChangeVerificationModal(false);
+            }
 
-    if (response.ok) {
-      const emailChanged = account.email !== user.email;
-
-      toast.success(t("settings_applied"));
-      if (emailChanged) {
-        toast.success(t("email_change_request"));
-        setEmailChangeVerificationModal(false);
+            toast.success(t("settings_applied"));
+          }
+        },
       }
-    } else toast.error(response.data as string);
+    );
+
     setSubmitLoader(false);
   };
 
@@ -189,17 +203,14 @@ export default function Account() {
             <div>
               <p className="mb-2">{t("language")}</p>
               <select
+                value={user.locale || ""}
                 onChange={(e) => {
                   setUser({ ...user, locale: e.target.value });
                 }}
                 className="select border border-neutral-content focus:outline-none focus:border-primary duration-100 w-full bg-base-200 rounded-[0.375rem] min-h-0 h-[2.625rem] leading-4 p-2"
               >
                 {i18n.locales.map((locale) => (
-                  <option
-                    key={locale}
-                    value={locale}
-                    selected={user.locale === locale}
-                  >
+                  <option key={locale} value={locale}>
                     {new Intl.DisplayNames(locale, { type: "language" }).of(
                       locale
                     ) || ""}

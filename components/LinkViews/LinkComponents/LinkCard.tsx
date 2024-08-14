@@ -5,7 +5,6 @@ import {
 } from "@/types/global";
 import { useEffect, useRef, useState } from "react";
 import useLinkStore from "@/store/links";
-import useCollectionStore from "@/store/collections";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -13,14 +12,16 @@ import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection
 import Image from "next/image";
 import { previewAvailable } from "@/lib/shared/getArchiveValidity";
 import Link from "next/link";
-import LinkIcon from "./LinkComponents/LinkIcon";
+import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
-import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
-import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
+import LinkTypeBadge from "./LinkTypeBadge";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/user";
+import { useGetLink, useLinks } from "@/hooks/store/links";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -33,11 +34,16 @@ type Props = {
 export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   const { t } = useTranslation();
 
-  const viewMode = localStorage.getItem("viewMode") || "card";
-  const { collections } = useCollectionStore();
-  const { account } = useAccountStore();
+  const { data: collections = [] } = useCollections();
 
-  const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
+  const { data: user = {} } = useUser();
+
+  const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const {
+    data: { data: links = [] },
+  } = useLinks();
+  const getLink = useGetLink();
 
   useEffect(() => {
     if (!editMode) {
@@ -93,7 +99,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       link.preview !== "unavailable"
     ) {
       interval = setInterval(async () => {
-        getLink(link.id as number);
+        getLink.mutateAsync(link.id as number);
       }, 5000);
     }
 
@@ -131,7 +137,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       <div
         className="rounded-2xl cursor-pointer h-full flex flex-col justify-between"
         onClick={() =>
-          !editMode && window.open(generateLinkHref(link, account), "_blank")
+          !editMode && window.open(generateLinkHref(link, user), "_blank")
         }
       >
         <div>

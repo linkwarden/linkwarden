@@ -7,11 +7,11 @@ import usePermissions from "@/hooks/usePermissions";
 import EditLinkModal from "@/components/ModalContent/EditLinkModal";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsModal";
-import useLinkStore from "@/store/links";
-import { toast } from "react-hot-toast";
-import useAccountStore from "@/store/account";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
+import { useUser } from "@/hooks/store/user";
+import { useDeleteLink, useUpdateLink } from "@/hooks/store/links";
+import toast from "react-hot-toast";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -39,41 +39,35 @@ export default function LinkActions({
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
   const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
-  const { account } = useAccountStore();
+  const { data: user = {} } = useUser();
 
-  const { removeLink, updateLink } = useLinkStore();
+  const updateLink = useUpdateLink();
+  const deleteLink = useDeleteLink();
 
   const pinLink = async () => {
-    const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0];
+    const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0] ? true : false;
 
-    const load = toast.loading(t("applying"));
+    const load = toast.loading(t("updating"));
 
-    const response = await updateLink({
-      ...link,
-      pinnedBy: isAlreadyPinned ? undefined : [{ id: account.id }],
-    });
+    await updateLink.mutateAsync(
+      {
+        ...link,
+        pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
+      },
+      {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(isAlreadyPinned ? t("link_unpinned") : t("link_unpinned"));
-    } else {
-      toast.error(response.data as string);
-    }
-  };
-
-  const deleteLink = async () => {
-    const load = toast.loading(t("deleting"));
-
-    const response = await removeLink(link.id as number);
-
-    toast.dismiss(load);
-
-    if (response.ok) {
-      toast.success(t("deleted"));
-    } else {
-      toast.error(response.data as string);
-    }
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success(
+              isAlreadyPinned ? t("link_unpinned") : t("link_pinned")
+            );
+          }
+        },
+      }
+    );
   };
 
   return (
@@ -157,9 +151,25 @@ export default function LinkActions({
               <div
                 role="button"
                 tabIndex={0}
-                onClick={(e) => {
+                onClick={async (e) => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  e.shiftKey ? deleteLink() : setDeleteLinkModal(true);
+                  e.shiftKey
+                    ? async () => {
+                        const load = toast.loading(t("deleting"));
+
+                        await deleteLink.mutateAsync(link.id as number, {
+                          onSettled: (data, error) => {
+                            toast.dismiss(load);
+
+                            if (error) {
+                              toast.error(error.message);
+                            } else {
+                              toast.success(t("deleted"));
+                            }
+                          },
+                        });
+                      }
+                    : setDeleteLinkModal(true);
                 }}
               >
                 {t("delete")}
@@ -184,7 +194,7 @@ export default function LinkActions({
       {preservedFormatsModal ? (
         <PreservedFormatsModal
           onClose={() => setPreservedFormatsModal(false)}
-          activeLink={link}
+          link={link}
         />
       ) : undefined}
       {/* {expandedLink ? (

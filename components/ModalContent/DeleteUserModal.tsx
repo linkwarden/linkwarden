@@ -1,8 +1,8 @@
-import toast from "react-hot-toast";
 import Modal from "../Modal";
-import useUserStore from "@/store/admin/users";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
+import { useDeleteUser } from "@/hooks/store/admin/users";
+import { useState } from "react";
 
 type Props = {
   onClose: Function;
@@ -11,22 +11,22 @@ type Props = {
 
 export default function DeleteUserModal({ onClose, userId }: Props) {
   const { t } = useTranslation();
-  const { removeUser } = useUserStore();
 
-  const deleteUser = async () => {
-    const load = toast.loading(t("deleting_user"));
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const deleteUser = useDeleteUser();
 
-    const response = await removeUser(userId);
+  const submit = async () => {
+    if (!submitLoader) {
+      setSubmitLoader(true);
 
-    toast.dismiss(load);
+      await deleteUser.mutateAsync(userId, {
+        onSuccess: () => {
+          onClose();
+        },
+      });
 
-    if (response.ok) {
-      toast.success(t("user_deleted"));
-    } else {
-      toast.error(response.data as string);
+      setSubmitLoader(false);
     }
-
-    onClose();
   };
 
   return (
@@ -45,7 +45,7 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
           </span>
         </div>
 
-        <Button className="ml-auto" intent="destructive" onClick={deleteUser}>
+        <Button className="ml-auto" intent="destructive" onClick={submit}>
           <i className="bi-trash text-xl" />
           {t("delete_confirmation")}
         </Button>
