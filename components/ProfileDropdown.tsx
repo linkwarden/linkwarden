@@ -1,17 +1,17 @@
 import useLocalSettingsStore from "@/store/localSettings";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import ProfilePhoto from "./ProfilePhoto";
-import useAccountStore from "@/store/account";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
+import { useUser } from "@/hooks/store/user";
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
-  const { account } = useAccountStore();
+  const { data: user = {} } = useUser();
 
-  const isAdmin = account.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
+  const isAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
 
   const handleToggle = () => {
     const newTheme = settings.theme === "dark" ? "light" : "dark";
@@ -27,7 +27,7 @@ export default function ProfileDropdown() {
         className="btn btn-circle btn-ghost"
       >
         <ProfilePhoto
-          src={account.image ? account.image : undefined}
+          src={user.image ? user.image : undefined}
           priority={true}
         />
       </div>

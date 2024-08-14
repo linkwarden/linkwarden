@@ -1,5 +1,3 @@
-import useCollectionStore from "@/store/collections";
-import useLinkStore from "@/store/links";
 import {
   CollectionIncludingMembersAndLinkCount,
   Sort,
@@ -9,23 +7,22 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
 import useLocalSettingsStore from "@/store/localSettings";
-import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
-import CardView from "@/components/LinkViews/Layouts/CardView";
-import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
-import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
+import { useCollections } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/user";
+import { useLinks } from "@/hooks/store/links";
+import Links from "@/components/LinkViews/Links";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -33,17 +30,21 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { links } = useLinkStore();
-  const { collections } = useCollectionStore();
+  const { data: collections = [] } = useCollections();
 
-  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
+  const [sortBy, setSortBy] = useState<Sort>(
+    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
+  );
+
+  const { links, data } = useLinks({
+    sort: sortBy,
+    collectionId: Number(router.query.id),
+  });
 
   const [activeCollection, setActiveCollection] =
     useState<CollectionIncludingMembersAndLinkCount>();
 
   const permissions = usePermissions(activeCollection?.id as number);
-
-  useLinks({ collectionId: Number(router.query.id), sort: sortBy });
 
   useEffect(() => {
     setActiveCollection(
@@ -51,7 +52,7 @@ export default function Index() {
     );
   }, [router, collections]);
 
-  const { account } = useAccountStore();
+  const { data: user = {} } = useUser();
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,
@@ -65,20 +66,20 @@ export default function Index() {
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (activeCollection && activeCollection.ownerId !== account.id) {
+      if (activeCollection && activeCollection.ownerId !== user.id) {
         const owner = await getPublicUserData(
           activeCollection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (activeCollection && activeCollection.ownerId === account.id) {
+      } else if (activeCollection && activeCollection.ownerId === user.id) {
         setCollectionOwner({
-          id: account.id as number,
-          name: account.name,
-          username: account.username as string,
-          image: account.image as string,
-          archiveAsScreenshot: account.archiveAsScreenshot as boolean,
-          archiveAsMonolith: account.archiveAsScreenshot as boolean,
-          archiveAsPDF: account.archiveAsPDF as boolean,
+          id: user.id as number,
+          name: user.name,
+          username: user.username as string,
+          image: user.image as string,
+          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user.archiveAsScreenshot as boolean,
+          archiveAsPDF: user.archiveAsPDF as boolean,
         });
       }
     };
@@ -97,18 +98,9 @@ export default function Index() {
     if (editMode) return setEditMode(false);
   }, [router]);
 
-  const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Card
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
-
-  const linkView = {
-    [ViewMode.Card]: CardView,
-    [ViewMode.List]: ListView,
-    [ViewMode.Masonry]: MasonryView,
-  };
-
-  // @ts-ignore
-  const LinkComponent = linkView[viewMode];
 
   return (
     <MainLayout>
@@ -323,16 +315,14 @@ export default function Index() {
           </p>
         </LinkListOptions>
 
-        {links.some((e) => e.collectionId === Number(router.query.id)) ? (
-          <LinkComponent
-            editMode={editMode}
-            links={links.filter(
-              (e) => e.collection.id === activeCollection?.id
-            )}
-          />
-        ) : (
-          <NoLinksFound />
-        )}
+        <Links
+          editMode={editMode}
+          links={links}
+          layout={viewMode}
+          placeholderCount={1}
+          useData={data}
+        />
+        {!data.isLoading && links && !links[0] && <NoLinksFound />}
       </div>
       {activeCollection && (
         <>
