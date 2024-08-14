@@ -322,7 +322,7 @@ export default function Index() {
           placeholderCount={1}
           useData={data}
         />
-        {!data.isLoading && !links[0] && <NoLinksFound />}
+        {!data.isLoading && links && !links[0] && <NoLinksFound />}
       </div>
       {activeCollection && (
         <>

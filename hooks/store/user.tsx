@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
 const useUser = () => {
-  const { data } = useSession();
+  const { data, status } = useSession();
 
   const userId = data?.user.id;
 
@@ -16,7 +16,7 @@ const useUser = () => {
 
       return data.response;
     },
-    enabled: !!userId,
+    enabled: !!userId && status === "authenticated",
     placeholderData: {},
   });
 };

@@ -1,7 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { TagIncludingLinkCount } from "@/types/global";
+import { useSession } from "next-auth/react";
 
 const useTags = () => {
+  const { status } = useSession();
+
   return useQuery({
     queryKey: ["tags"],
     queryFn: async () => {
@@ -11,6 +14,7 @@ const useTags = () => {
       const data = await response.json();
       return data.response;
     },
+    enabled: status === "authenticated",
   });
 };
 

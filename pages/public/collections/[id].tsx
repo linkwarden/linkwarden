@@ -230,7 +230,9 @@ export default function PublicCollections() {
             placeholderCount={1}
             useData={data}
           />
-          {!data.isLoading && !links[0] && <p>{t("collection_is_empty")}</p>}
+          {!data.isLoading && links && !links[0] && (
+            <p>{t("collection_is_empty")}</p>
+          )}
 
           {/* <p className="text-center text-neutral">
         List created with <span className="text-black">Linkwarden.</span>

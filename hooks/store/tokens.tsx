@@ -1,7 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AccessToken } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 const useTokens = () => {
+  const { status } = useSession();
+
   return useQuery({
     queryKey: ["tokens"],
     queryFn: async () => {
@@ -12,6 +15,7 @@ const useTokens = () => {
       const data = await response.json();
       return data.response as AccessToken[];
     },
+    enabled: status === "authenticated",
   });
 };
 

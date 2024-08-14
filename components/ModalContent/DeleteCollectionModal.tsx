@@ -50,8 +50,8 @@ export default function DeleteCollectionModal({
             toast.error(error.message);
           } else {
             onClose();
-            router.push("/collections");
             toast.success(t("deleted"));
+            router.push("/collections");
           }
         },
       });

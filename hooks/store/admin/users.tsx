@@ -1,8 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
+import { useSession } from "next-auth/react";
 
 const useUsers = () => {
+  const { status } = useSession();
+
   return useQuery({
     queryKey: ["users"],
     queryFn: async () => {
@@ -17,6 +20,7 @@ const useUsers = () => {
       const data = await response.json();
       return data.response;
     },
+    enabled: status === "authenticated",
   });
 };
 
