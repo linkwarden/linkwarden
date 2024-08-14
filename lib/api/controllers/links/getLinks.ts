@@ -5,7 +5,7 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
   const POSTGRES_IS_ENABLED =
     process.env.DATABASE_URL?.startsWith("postgresql");
 
-  let order: any;
+  let order: any = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
@@ -146,7 +146,7 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
         select: { id: true },
       },
     },
-    orderBy: order || { id: "desc" },
+    orderBy: order,
   });
 
   return { response: links, status: 200 };

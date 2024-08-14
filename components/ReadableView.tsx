@@ -1,7 +1,6 @@
 import unescapeString from "@/lib/client/unescapeString";
 import { readabilityAvailable } from "@/lib/shared/getArchiveValidity";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import useLinkStore from "@/store/links";
 import {
   ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
@@ -14,8 +13,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import LinkActions from "./LinkViews/LinkComponents/LinkActions";
-import useCollectionStore from "@/store/collections";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
+import { useGetLink } from "@/hooks/store/links";
 
 type LinkContent = {
   title: string;
@@ -45,8 +45,8 @@ export default function ReadableView({ link }: Props) {
 
   const router = useRouter();
 
-  const { getLink } = useLinkStore();
-  const { collections } = useCollectionStore();
+  const getLink = useGetLink();
+  const { data: collections = [] } = useCollections();
 
   const collection = useMemo(() => {
     return collections.find(
@@ -73,7 +73,7 @@ export default function ReadableView({ link }: Props) {
   }, [link]);
 
   useEffect(() => {
-    if (link) getLink(link?.id as number);
+    if (link) getLink.mutateAsync(link?.id as number);
 
     let interval: any;
     if (
@@ -87,7 +87,10 @@ export default function ReadableView({ link }: Props) {
         !link?.readable ||
         !link?.monolith)
     ) {
-      interval = setInterval(() => getLink(link.id as number), 5000);
+      interval = setInterval(
+        () => getLink.mutateAsync(link.id as number),
+        5000
+      );
     } else {
       if (interval) {
         clearInterval(interval);

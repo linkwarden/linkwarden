@@ -6,6 +6,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
+import { useBulkEditLinks } from "@/hooks/store/links";
 
 type Props = {
   onClose: Function;
@@ -13,13 +14,14 @@ type Props = {
 
 export default function BulkEditLinksModal({ onClose }: Props) {
   const { t } = useTranslation();
-  const { updateLinks, selectedLinks, setSelectedLinks } = useLinkStore();
+  const { selectedLinks, setSelectedLinks } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
   const [removePreviousTags, setRemovePreviousTags] = useState(false);
   const [updatedValues, setUpdatedValues] = useState<
     Pick<LinkIncludingShortenedCollectionAndTags, "tags" | "collectionId">
   >({ tags: [] });
 
+  const updateLinks = useBulkEditLinks();
   const setCollection = (e: any) => {
     const collectionId = e?.value || null;
     setUpdatedValues((prevValues) => ({ ...prevValues, collectionId }));
@@ -36,22 +38,28 @@ export default function BulkEditLinksModal({ onClose }: Props) {
 
       const load = toast.loading(t("updating"));
 
-      const response = await updateLinks(
-        selectedLinks,
-        removePreviousTags,
-        updatedValues
+      await updateLinks.mutateAsync(
+        {
+          links: selectedLinks,
+          newData: updatedValues,
+          removePreviousTags,
+        },
+        {
+          onSettled: (data, error) => {
+            toast.dismiss(load);
+
+            if (error) {
+              toast.error(error.message);
+            } else {
+              setSelectedLinks([]);
+              onClose();
+              toast.success(t("updated"));
+            }
+          },
+        }
       );
 
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success(t("updated"));
-        setSelectedLinks([]);
-        onClose();
-      } else toast.error(response.data as string);
-
       setSubmitLoader(false);
-      return response;
     }
   };
 

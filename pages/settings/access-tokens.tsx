@@ -1,11 +1,11 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import NewTokenModal from "@/components/ModalContent/NewTokenModal";
 import RevokeTokenModal from "@/components/ModalContent/RevokeTokenModal";
 import { AccessToken } from "@prisma/client";
-import useTokenStore from "@/store/tokens";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useTokens } from "@/hooks/store/tokens";
 
 export default function AccessTokens() {
   const [newTokenModal, setNewTokenModal] = useState(false);
@@ -18,15 +18,7 @@ export default function AccessTokens() {
     setRevokeTokenModal(true);
   };
 
-  const { setTokens, tokens } = useTokenStore();
-
-  useEffect(() => {
-    fetch("/api/v1/tokens")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.response) setTokens(data.response as AccessToken[]);
-      });
-  }, []);
+  const { data: tokens = [] } = useTokens();
 
   return (
     <SettingsLayout>
