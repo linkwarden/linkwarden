@@ -168,7 +168,7 @@ export default function Dashboard() {
             <div className="w-full">
               <Links
                 layout={viewMode}
-                placeholderCount={showLinks}
+                placeholderCount={showLinks / 2}
                 useData={dashboardData}
               />
             </div>
@@ -307,7 +307,7 @@ export default function Dashboard() {
             <div className="w-full">
               <Links
                 layout={viewMode}
-                placeholderCount={showLinks}
+                placeholderCount={showLinks / 2}
                 useData={dashboardData}
               />
             </div>

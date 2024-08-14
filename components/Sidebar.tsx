@@ -24,7 +24,7 @@ export default function Sidebar({ className }: { className?: string }) {
 
   const { data: collections } = useCollections();
 
-  const { data: tags = [] } = useTags();
+  const { data: tags = [], isLoading } = useTags();
   const [active, setActive] = useState("");
 
   const router = useRouter();
@@ -128,7 +128,13 @@ export default function Sidebar({ className }: { className?: string }) {
           leaveTo="transform opacity-0 -translate-y-3"
         >
           <Disclosure.Panel className="flex flex-col gap-1">
-            {tags[0] ? (
+            {isLoading ? (
+              <div className="flex flex-col gap-4">
+                <div className="skeleton h-4 w-full"></div>
+                <div className="skeleton h-4 w-full"></div>
+                <div className="skeleton h-4 w-full"></div>
+              </div>
+            ) : tags[0] ? (
               tags
                 .sort((a: any, b: any) => a.name.localeCompare(b.name))
                 .map((e: any, i: any) => {
