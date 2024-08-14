@@ -7,6 +7,7 @@ import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
 import { useDeleteCollection } from "@/hooks/store/collections";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -39,10 +40,19 @@ export default function DeleteCollectionModal({
 
       setSubmitLoader(true);
 
+      const load = toast.loading(t("deleting_collection"));
+
       deleteCollection.mutateAsync(collection.id as number, {
-        onSuccess: () => {
-          onClose();
-          router.push("/collections");
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            onClose();
+            router.push("/collections");
+            toast.success(t("deleted"));
+          }
         },
       });
 

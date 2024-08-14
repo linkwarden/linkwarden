@@ -4,6 +4,7 @@ import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
 import { useBulkDeleteLinks } from "@/hooks/store/links";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -16,12 +17,21 @@ export default function BulkDeleteLinksModal({ onClose }: Props) {
   const deleteLinksById = useBulkDeleteLinks();
 
   const deleteLink = async () => {
+    const load = toast.loading(t("deleting"));
+
     await deleteLinksById.mutateAsync(
       selectedLinks.map((link) => link.id as number),
       {
-        onSuccess: () => {
-          setSelectedLinks([]);
-          onClose();
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            setSelectedLinks([]);
+            onClose();
+            toast.success(t("deleted"));
+          }
         },
       }
     );

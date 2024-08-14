@@ -6,6 +6,7 @@ import Modal from "../Modal";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useTranslation } from "next-i18next";
 import { useCreateCollection } from "@/hooks/store/collections";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -37,9 +38,18 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
 
     setSubmitLoader(true);
 
+    const load = toast.loading(t("creating"));
+
     await createCollection.mutateAsync(collection, {
-      onSuccess: () => {
-        onClose();
+      onSettled: (data, error) => {
+        toast.dismiss(load);
+
+        if (error) {
+          toast.error(error.message);
+        } else {
+          onClose();
+          toast.success(t("created"));
+        }
       },
     });
 

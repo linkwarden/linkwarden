@@ -11,6 +11,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
 import { useRemoveTag, useTags, useUpdateTag } from "@/hooks/store/tags";
 import Links from "@/components/LinkViews/Links";
+import toast from "react-hot-toast";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -74,11 +75,27 @@ export default function Index() {
 
     setSubmitLoader(true);
 
-    if (activeTag && newTagName)
-      await updateTag.mutateAsync({
-        ...activeTag,
-        name: newTagName,
-      });
+    if (activeTag && newTagName) {
+      const load = toast.loading(t("applying_changes"));
+
+      await updateTag.mutateAsync(
+        {
+          ...activeTag,
+          name: newTagName,
+        },
+        {
+          onSettled: (data, error) => {
+            toast.dismiss(load);
+
+            if (error) {
+              toast.error(error.message);
+            } else {
+              toast.success(t("tag_renamed"));
+            }
+          },
+        }
+      );
+    }
 
     setSubmitLoader(false);
     setRenameTag(false);
@@ -87,12 +104,22 @@ export default function Index() {
   const remove = async () => {
     setSubmitLoader(true);
 
-    if (activeTag?.id)
+    if (activeTag?.id) {
+      const load = toast.loading(t("applying_changes"));
+
       await removeTag.mutateAsync(activeTag?.id, {
-        onSuccess: () => {
-          router.push("/links");
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            router.push("/links");
+            toast.success(t("tag_deleted"));
+          }
         },
       });
+    }
 
     setSubmitLoader(false);
     setRenameTag(false);

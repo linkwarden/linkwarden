@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
 import { Sort, ViewMode } from "@/types/global";
 import { useBulkDeleteLinks, useLinks } from "@/hooks/store/links";
+import toast from "react-hot-toast";
 
 type Props = {
   children: React.ReactNode;
@@ -76,11 +77,20 @@ const LinkListOptions = ({
   };
 
   const bulkDeleteLinks = async () => {
+    const load = toast.loading(t("deleting"));
+
     await deleteLinksById.mutateAsync(
       selectedLinks.map((link) => link.id as number),
       {
-        onSuccess: () => {
-          setSelectedLinks([]);
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            setSelectedLinks([]);
+            toast.success(t("deleted"));
+          }
         },
       }
     );

@@ -80,6 +80,8 @@ export default function Account() {
   const submit = async (password?: string) => {
     setSubmitLoader(true);
 
+    const load = toast.loading(t("applying_settings"));
+
     await updateUser.mutateAsync(
       {
         ...user,
@@ -90,6 +92,20 @@ export default function Account() {
           if (data.response.email !== user.email) {
             toast.success(t("email_change_request"));
             setEmailChangeVerificationModal(false);
+          }
+        },
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            if (data.response.email !== user.email) {
+              toast.success(t("email_change_request"));
+              setEmailChangeVerificationModal(false);
+            }
+
+            toast.success(t("settings_applied"));
           }
         },
       }

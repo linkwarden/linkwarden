@@ -1,6 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import { useTranslation } from "next-i18next";
 import { AccessToken } from "@prisma/client";
 
 const useTokens = () => {
@@ -19,12 +17,9 @@ const useTokens = () => {
 
 const useAddToken = () => {
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: async (body: Partial<AccessToken>) => {
-      const load = toast.loading(t("creating_token"));
-
       const response = await fetch("/api/v1/tokens", {
         body: JSON.stringify(body),
         method: "POST",
@@ -33,8 +28,6 @@ const useAddToken = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.response);
 
-      toast.dismiss(load);
-
       return data.response;
     },
     onSuccess: (data) => {
@@ -42,22 +35,15 @@ const useAddToken = () => {
         ...oldData,
         data.token,
       ]);
-      toast.success(t("token_added"));
-    },
-    onError: (error) => {
-      toast.error(error.message);
     },
   });
 };
 
 const useRevokeToken = () => {
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
 
   return useMutation({
     mutationFn: async (tokenId: number) => {
-      const load = toast.loading(t("deleting"));
-
       const response = await fetch(`/api/v1/tokens/${tokenId}`, {
         method: "DELETE",
       });
@@ -65,18 +51,12 @@ const useRevokeToken = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.response);
 
-      toast.dismiss(load);
-
       return data.response;
     },
     onSuccess: (data, variables) => {
       queryClient.setQueryData(["tokens"], (oldData: AccessToken[]) =>
         oldData.filter((token: Partial<AccessToken>) => token.id !== variables)
       );
-      toast.success(t("token_revoked"));
-    },
-    onError: (error) => {
-      toast.error(error.message);
     },
   });
 };

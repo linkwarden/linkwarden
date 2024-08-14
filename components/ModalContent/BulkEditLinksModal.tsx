@@ -36,6 +36,8 @@ export default function BulkEditLinksModal({ onClose }: Props) {
     if (!submitLoader) {
       setSubmitLoader(true);
 
+      const load = toast.loading(t("updating"));
+
       await updateLinks.mutateAsync(
         {
           links: selectedLinks,
@@ -43,9 +45,16 @@ export default function BulkEditLinksModal({ onClose }: Props) {
           removePreviousTags,
         },
         {
-          onSuccess: () => {
-            setSelectedLinks([]);
-            onClose();
+          onSettled: (data, error) => {
+            toast.dismiss(load);
+
+            if (error) {
+              toast.error(error.message);
+            } else {
+              setSelectedLinks([]);
+              onClose();
+              toast.success(t("updated"));
+            }
           },
         }
       );

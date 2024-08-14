@@ -8,6 +8,7 @@ import Link from "next/link";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useUpdateLink } from "@/hooks/store/links";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -51,9 +52,18 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
     if (!submitLoader) {
       setSubmitLoader(true);
 
+      const load = toast.loading(t("updating"));
+
       await updateLink.mutateAsync(link, {
-        onSuccess: () => {
-          onClose();
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            onClose();
+            toast.success(t("updated"));
+          }
         },
       });
 

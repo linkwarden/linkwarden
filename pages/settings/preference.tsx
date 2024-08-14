@@ -74,7 +74,22 @@ export default function Appearance() {
   const submit = async () => {
     setSubmitLoader(true);
 
-    await updateUser.mutateAsync({ ...user });
+    const load = toast.loading(t("applying_settings"));
+
+    await updateUser.mutateAsync(
+      { ...user },
+      {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success(t("settings_applied"));
+          }
+        },
+      }
+    );
 
     setSubmitLoader(false);
   };
