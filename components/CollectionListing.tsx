@@ -25,7 +25,7 @@ interface ExtendedTreeItem extends TreeItem {
 const CollectionListing = () => {
   const { t } = useTranslation();
   const updateCollection = useUpdateCollection();
-  const { data: collections = [] } = useCollections();
+  const { data: collections = [], isLoading } = useCollections();
 
   const { data: user = {} } = useUser();
   const updateUser = useUpdateUser();
@@ -204,7 +204,15 @@ const CollectionListing = () => {
     }
   };
 
-  if (!tree) {
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="skeleton h-4 w-full"></div>
+        <div className="skeleton h-4 w-full"></div>
+        <div className="skeleton h-4 w-full"></div>
+      </div>
+    );
+  } else if (!tree) {
     return (
       <p className="text-neutral text-xs font-semibold truncate w-full px-2 mt-5 mb-8">
         {t("you_have_no_collections")}
