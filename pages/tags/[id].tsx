@@ -194,7 +194,7 @@ export default function Index() {
                           className={"bi-three-dots text-neutral text-2xl"}
                         ></i>
                       </div>
-                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-36 mt-1">
+                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
                         <li>
                           <div
                             role="button"
@@ -203,6 +203,7 @@ export default function Index() {
                               (document?.activeElement as HTMLElement)?.blur();
                               setRenameTag(true);
                             }}
+                            className="whitespace-nowrap"
                           >
                             {t("rename_tag")}
                           </div>
@@ -215,6 +216,7 @@ export default function Index() {
                               (document?.activeElement as HTMLElement)?.blur();
                               remove();
                             }}
+                            className="whitespace-nowrap"
                           >
                             {t("delete_tag")}
                           </div>

@@ -115,7 +115,7 @@ export default function NewTokenModal({ onClose }: Props) {
                 >
                   {getLabel(token.expires)}
                 </Button>
-                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-full sm:w-52 mt-1">
+                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
                   <li>
                     <label
                       className="label cursor-pointer flex justify-start"
@@ -135,7 +135,9 @@ export default function NewTokenModal({ onClose }: Props) {
                           });
                         }}
                       />
-                      <span className="label-text">{t("7_days")}</span>
+                      <span className="label-text whitespace-nowrap">
+                        {t("7_days")}
+                      </span>
                     </label>
                   </li>
                   <li>
@@ -154,7 +156,9 @@ export default function NewTokenModal({ onClose }: Props) {
                           setToken({ ...token, expires: TokenExpiry.oneMonth });
                         }}
                       />
-                      <span className="label-text">{t("30_days")}</span>
+                      <span className="label-text whitespace-nowrap">
+                        {t("30_days")}
+                      </span>
                     </label>
                   </li>
                   <li>
@@ -176,7 +180,9 @@ export default function NewTokenModal({ onClose }: Props) {
                           });
                         }}
                       />
-                      <span className="label-text">{t("60_days")}</span>
+                      <span className="label-text whitespace-nowrap">
+                        {t("60_days")}
+                      </span>
                     </label>
                   </li>
                   <li>
@@ -198,7 +204,9 @@ export default function NewTokenModal({ onClose }: Props) {
                           });
                         }}
                       />
-                      <span className="label-text">{t("90_days")}</span>
+                      <span className="label-text whitespace-nowrap">
+                        {t("90_days")}
+                      </span>
                     </label>
                   </li>
                   <li>
@@ -217,7 +225,9 @@ export default function NewTokenModal({ onClose }: Props) {
                           setToken({ ...token, expires: TokenExpiry.never });
                         }}
                       />
-                      <span className="label-text">{t("no_expiration")}</span>
+                      <span className="label-text whitespace-nowrap">
+                        {t("no_expiration")}
+                      </span>
                     </label>
                   </li>
                 </ul>

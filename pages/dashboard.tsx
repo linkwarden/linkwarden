@@ -214,13 +214,14 @@ export default function Dashboard() {
                     <i className="bi-cloud-upload text-xl duration-100"></i>
                     <p>{t("import_links")}</p>
                   </div>
-                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
                     <li>
                       <label
                         tabIndex={0}
                         role="button"
                         htmlFor="import-linkwarden-file"
                         title={t("from_linkwarden")}
+                        className="whitespace-nowrap"
                       >
                         {t("from_linkwarden")}
                         <input
@@ -241,6 +242,7 @@ export default function Dashboard() {
                         role="button"
                         htmlFor="import-html-file"
                         title={t("from_html")}
+                        className="whitespace-nowrap"
                       >
                         {t("from_html")}
                         <input
@@ -261,6 +263,7 @@ export default function Dashboard() {
                         role="button"
                         htmlFor="import-wallabag-file"
                         title={t("from_wallabag")}
+                        className="whitespace-nowrap"
                       >
                         {t("from_wallabag")}
                         <input
