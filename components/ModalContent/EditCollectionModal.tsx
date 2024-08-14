@@ -5,6 +5,7 @@ import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@/hooks/store/collections";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -29,9 +30,18 @@ export default function EditCollectionModal({
 
       setSubmitLoader(true);
 
+      const load = toast.loading(t("updating_collection"));
+
       await updateCollection.mutateAsync(collection, {
-        onSuccess: () => {
-          onClose();
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            onClose();
+            toast.success(t("updated"));
+          }
         },
       });
 

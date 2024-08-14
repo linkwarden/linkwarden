@@ -116,11 +116,20 @@ export default function UploadFileModal({ onClose }: Props) {
 
       setSubmitLoader(true);
 
+      const load = toast.loading(t("creating"));
+
       await uploadFile.mutateAsync(
         { link, file },
         {
-          onSuccess: () => {
-            onClose();
+          onSettled: (data, error) => {
+            toast.dismiss(load);
+
+            if (error) {
+              toast.error(error.message);
+            } else {
+              onClose();
+              toast.success(t("created_success"));
+            }
           },
         }
       );

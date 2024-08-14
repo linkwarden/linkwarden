@@ -36,9 +36,18 @@ export default function EditCollectionSharingModal({
 
       setSubmitLoader(true);
 
+      const load = toast.loading(t("updating_collection"));
+
       await updateCollection.mutateAsync(collection, {
-        onSuccess: () => {
-          onClose();
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            onClose();
+            toast.success(t("updated"));
+          }
         },
       });
 
