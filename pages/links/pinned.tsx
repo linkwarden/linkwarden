@@ -53,7 +53,7 @@ export default function PinnedLinks() {
           placeholderCount={1}
           useData={data}
         />
-        {!data.isLoading && !links[0] && (
+        {!data.isLoading && links && !links[0] && (
           <div
             style={{ flex: "1 1 auto" }}
             className="flex flex-col gap-2 justify-center h-full w-full mx-auto p-10"

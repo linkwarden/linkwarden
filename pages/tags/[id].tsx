@@ -114,8 +114,8 @@ export default function Index() {
           if (error) {
             toast.error(error.message);
           } else {
-            router.push("/links");
             toast.success(t("tag_deleted"));
+            router.push("/links");
           }
         },
       });

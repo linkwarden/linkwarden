@@ -58,7 +58,7 @@ export default function Index() {
           placeholderCount={1}
           useData={data}
         />
-        {!data.isLoading && !links[0] && (
+        {!data.isLoading && links && !links[0] && (
           <NoLinksFound text={t("you_have_not_added_any_links")} />
         )}
       </div>
