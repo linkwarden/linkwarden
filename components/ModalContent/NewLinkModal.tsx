@@ -10,6 +10,7 @@ import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useAddLink } from "@/hooks/store/links";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -88,9 +89,18 @@ export default function NewLinkModal({ onClose }: Props) {
     if (!submitLoader) {
       setSubmitLoader(true);
 
+      const load = toast.loading(t("creating_link"));
+
       await addLink.mutateAsync(link, {
-        onSuccess: () => {
-          onClose();
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            onClose();
+            toast.success(t("link_created"));
+          }
         },
       });
 

@@ -29,9 +29,17 @@ export default function NewTokenModal({ onClose }: Props) {
     if (!submitLoader) {
       setSubmitLoader(true);
 
+      const load = toast.loading(t("creating_token"));
+
       await addToken.mutateAsync(token, {
-        onSuccess: (data) => {
-          setNewToken(data.secretKey);
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            setNewToken(data.secretKey);
+          }
         },
       });
 

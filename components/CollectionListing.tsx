@@ -155,15 +155,22 @@ const CollectionListing = () => {
     const updatedCollectionOrder = [...user.collectionOrder];
 
     if (source.parentId !== destination.parentId) {
-      await updateCollection.mutateAsync({
-        ...movedCollection,
-        parentId:
-          destination.parentId && destination.parentId !== "root"
-            ? Number(destination.parentId)
-            : destination.parentId === "root"
-              ? "root"
-              : null,
-      } as any);
+      await updateCollection.mutateAsync(
+        {
+          ...movedCollection,
+          parentId:
+            destination.parentId && destination.parentId !== "root"
+              ? Number(destination.parentId)
+              : destination.parentId === "root"
+                ? "root"
+                : null,
+        },
+        {
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        }
+      );
     }
 
     if (

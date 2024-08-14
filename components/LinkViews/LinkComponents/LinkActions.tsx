@@ -11,6 +11,7 @@ import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
 import { useDeleteLink, useUpdateLink } from "@/hooks/store/links";
+import toast from "react-hot-toast";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -44,12 +45,29 @@ export default function LinkActions({
   const deleteLink = useDeleteLink();
 
   const pinLink = async () => {
-    const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0];
+    const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0] ? true : false;
 
-    await updateLink.mutateAsync({
-      ...link,
-      pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
-    });
+    const load = toast.loading(t("updating"));
+
+    await updateLink.mutateAsync(
+      {
+        ...link,
+        pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
+      },
+      {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success(
+              isAlreadyPinned ? t("link_unpinned") : t("link_pinned")
+            );
+          }
+        },
+      }
+    );
   };
 
   return (
@@ -136,7 +154,21 @@ export default function LinkActions({
                 onClick={async (e) => {
                   (document?.activeElement as HTMLElement)?.blur();
                   e.shiftKey
-                    ? await deleteLink.mutateAsync(link.id as number)
+                    ? async () => {
+                        const load = toast.loading(t("deleting"));
+
+                        await deleteLink.mutateAsync(link.id as number, {
+                          onSettled: (data, error) => {
+                            toast.dismiss(load);
+
+                            if (error) {
+                              toast.error(error.message);
+                            } else {
+                              toast.success(t("deleted"));
+                            }
+                          },
+                        });
+                      }
                     : setDeleteLinkModal(true);
                 }}
               >

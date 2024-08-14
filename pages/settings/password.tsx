@@ -24,6 +24,8 @@ export default function Password() {
 
     setSubmitLoader(true);
 
+    const load = toast.loading(t("applying_settings"));
+
     await updateUser.mutateAsync(
       {
         ...account,
@@ -31,9 +33,17 @@ export default function Password() {
         oldPassword,
       },
       {
-        onSuccess: () => {
-          setNewPassword("");
-          setOldPassword("");
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            setNewPassword("");
+            setOldPassword("");
+
+            toast.success(t("settings_applied"));
+          }
         },
       }
     );

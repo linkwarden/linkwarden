@@ -4,6 +4,7 @@ import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
 import { AccessToken } from "@prisma/client";
 import { useRevokeToken } from "@/hooks/store/tokens";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -21,9 +22,18 @@ export default function DeleteTokenModal({ onClose, activeToken }: Props) {
   }, [activeToken]);
 
   const deleteLink = async () => {
+    const load = toast.loading(t("deleting"));
+
     await revokeToken.mutateAsync(token.id, {
-      onSuccess: () => {
-        onClose();
+      onSettled: (data, error) => {
+        toast.dismiss(load);
+
+        if (error) {
+          toast.error(error.message);
+        } else {
+          onClose();
+          toast.success(t("token_revoked"));
+        }
       },
     });
   };

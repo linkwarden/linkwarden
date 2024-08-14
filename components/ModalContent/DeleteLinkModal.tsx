@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
 import { useDeleteLink } from "@/hooks/store/links";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -24,13 +25,21 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
   }, []);
 
   const submit = async () => {
-    await deleteLink.mutateAsync(link.id as number, {
-      onSuccess: () => {
-        if (router.pathname.startsWith("/links/[id]")) {
-          router.push("/dashboard");
-        }
+    const load = toast.loading(t("deleting"));
 
-        onClose();
+    await deleteLink.mutateAsync(link.id as number, {
+      onSettled: (data, error) => {
+        toast.dismiss(load);
+
+        if (error) {
+          toast.error(error.message);
+        } else {
+          if (router.pathname.startsWith("/links/[id]")) {
+            router.push("/dashboard");
+          }
+          onClose();
+          toast.success(t("deleted"));
+        }
       },
     });
   };

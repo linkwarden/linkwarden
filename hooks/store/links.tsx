@@ -5,14 +5,12 @@ import {
   useQueryClient,
   useMutation,
 } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
   LinkRequestQuery,
 } from "@/types/global";
-import toast from "react-hot-toast";
-import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
 const useLinks = (params: LinkRequestQuery = {}) => {
@@ -98,13 +96,10 @@ const buildQueryString = (params: LinkRequestQuery) => {
 };
 
 const useAddLink = () => {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (link: LinkIncludingShortenedCollectionAndTags) => {
-      const load = toast.loading(t("creating_link"));
-
       const response = await fetch("/api/v1/links", {
         method: "POST",
         headers: {
@@ -113,8 +108,6 @@ const useAddLink = () => {
         body: JSON.stringify(link),
       });
 
-      toast.dismiss(load);
-
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.response);
@@ -122,8 +115,6 @@ const useAddLink = () => {
       return data.response;
     },
     onSuccess: (data) => {
-      toast.success(t("link_created"));
-
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
         if (!oldData) return undefined;
         return [data, ...oldData];
@@ -141,20 +132,14 @@ const useAddLink = () => {
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
   });
 };
 
 const useUpdateLink = () => {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (link: LinkIncludingShortenedCollectionAndTags) => {
-      const load = toast.loading(t("updating"));
-
       const response = await fetch(`/api/v1/links/${link.id}`, {
         method: "PUT",
         headers: {
@@ -163,8 +148,6 @@ const useUpdateLink = () => {
         body: JSON.stringify(link),
       });
 
-      toast.dismiss(load);
-
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.response);
@@ -172,8 +155,6 @@ const useUpdateLink = () => {
       return data.response;
     },
     onSuccess: (data) => {
-      toast.success(t("updated"));
-
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
         if (!oldData) return undefined;
         return oldData.map((e: any) => (e.id === data.id ? data : e));
@@ -193,25 +174,17 @@ const useUpdateLink = () => {
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
   });
 };
 
 const useDeleteLink = () => {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const load = toast.loading(t("deleting"));
-
       const response = await fetch(`/api/v1/links/${id}`, {
         method: "DELETE",
       });
-
-      toast.dismiss(load);
 
       const data = await response.json();
 
@@ -220,8 +193,6 @@ const useDeleteLink = () => {
       return data.response;
     },
     onSuccess: (data) => {
-      toast.success(t("deleted"));
-
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
         if (!oldData) return undefined;
         return oldData.filter((e: any) => e.id !== data.id);
@@ -240,9 +211,6 @@ const useDeleteLink = () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
     },
   });
 };
@@ -281,13 +249,10 @@ const useGetLink = () => {
 };
 
 const useBulkDeleteLinks = () => {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (linkIds: number[]) => {
-      const load = toast.loading(t("deleting"));
-
       const response = await fetch("/api/v1/links", {
         method: "DELETE",
         headers: {
@@ -296,8 +261,6 @@ const useBulkDeleteLinks = () => {
         body: JSON.stringify({ linkIds }),
       });
 
-      toast.dismiss(load);
-
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.response);
@@ -305,8 +268,6 @@ const useBulkDeleteLinks = () => {
       return linkIds;
     },
     onSuccess: (data) => {
-      toast.success(t("deleted"));
-
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
         if (!oldData) return undefined;
         return oldData.filter((e: any) => !data.includes(e.id));
@@ -326,14 +287,10 @@ const useBulkDeleteLinks = () => {
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
   });
 };
 
 const useUploadFile = () => {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -353,8 +310,6 @@ const useUploadFile = () => {
       } else {
         return { ok: false, data: "Invalid file type." };
       }
-
-      const load = toast.loading(t("creating"));
 
       const response = await fetch("/api/v1/links", {
         body: JSON.stringify({
@@ -385,13 +340,9 @@ const useUploadFile = () => {
         );
       }
 
-      toast.dismiss(load);
-
       return data.response;
     },
     onSuccess: (data) => {
-      toast.success(t("created_success"));
-
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
         if (!oldData) return undefined;
         return [data, ...oldData];
@@ -409,14 +360,10 @@ const useUploadFile = () => {
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
   });
 };
 
 const useBulkEditLinks = () => {
-  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -432,8 +379,6 @@ const useBulkEditLinks = () => {
       >;
       removePreviousTags: boolean;
     }) => {
-      const load = toast.loading(t("updating"));
-
       const response = await fetch("/api/v1/links", {
         method: "PUT",
         headers: {
@@ -442,8 +387,6 @@ const useBulkEditLinks = () => {
         body: JSON.stringify({ links, newData, removePreviousTags }),
       });
 
-      toast.dismiss(load);
-
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.response);
@@ -451,8 +394,6 @@ const useBulkEditLinks = () => {
       return data.response;
     },
     onSuccess: (data, { links, newData, removePreviousTags }) => {
-      toast.success(t("updated"));
-
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
         if (!oldData) return undefined;
         return oldData.map((e: any) =>
@@ -476,9 +417,6 @@ const useBulkEditLinks = () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
     },
   });
 };
