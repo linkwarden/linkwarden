@@ -80,7 +80,7 @@ export default function CollectionCard({ collection, className }: Props) {
         >
           <i className="bi-three-dots text-xl" title="More"></i>
         </div>
-        <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+        <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
           {permissions === true && (
             <li>
               <div
@@ -90,6 +90,7 @@ export default function CollectionCard({ collection, className }: Props) {
                   (document?.activeElement as HTMLElement)?.blur();
                   setEditCollectionModal(true);
                 }}
+                className="whitespace-nowrap"
               >
                 {t("edit_collection_info")}
               </div>
@@ -103,6 +104,7 @@ export default function CollectionCard({ collection, className }: Props) {
                 (document?.activeElement as HTMLElement)?.blur();
                 setEditCollectionSharingModal(true);
               }}
+              className="whitespace-nowrap"
             >
               {permissions === true
                 ? t("share_and_collaborate")
@@ -117,6 +119,7 @@ export default function CollectionCard({ collection, className }: Props) {
                 (document?.activeElement as HTMLElement)?.blur();
                 setDeleteCollectionModal(true);
               }}
+              className="whitespace-nowrap"
             >
               {permissions === true
                 ? t("delete_collection")

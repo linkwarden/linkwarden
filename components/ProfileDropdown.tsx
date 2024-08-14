@@ -32,9 +32,7 @@ export default function ProfileDropdown() {
         />
       </div>
       <ul
-        className={`dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box ${
-          isAdmin ? "w-48" : "w-40"
-        } mt-1`}
+        className={`dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1`}
       >
         <li>
           <Link
@@ -42,6 +40,7 @@ export default function ProfileDropdown() {
             onClick={() => (document?.activeElement as HTMLElement)?.blur()}
             tabIndex={0}
             role="button"
+            className="whitespace-nowrap"
           >
             {t("settings")}
           </Link>
@@ -54,6 +53,7 @@ export default function ProfileDropdown() {
             }}
             tabIndex={0}
             role="button"
+            className="whitespace-nowrap"
           >
             {t("switch_to", {
               theme: settings.theme === "light" ? t("dark") : t("light"),
@@ -67,6 +67,7 @@ export default function ProfileDropdown() {
               onClick={() => (document?.activeElement as HTMLElement)?.blur()}
               tabIndex={0}
               role="button"
+              className="whitespace-nowrap"
             >
               {t("server_administration")}
             </Link>
@@ -80,6 +81,7 @@ export default function ProfileDropdown() {
             }}
             tabIndex={0}
             role="button"
+            className="whitespace-nowrap"
           >
             {t("logout")}
           </div>

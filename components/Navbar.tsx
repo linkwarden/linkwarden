@@ -66,7 +66,7 @@ export default function Navbar() {
               </span>
             </div>
           </div>
-          <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mt-1">
+          <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
             <li>
               <div
                 onClick={() => {
@@ -75,6 +75,7 @@ export default function Navbar() {
                 }}
                 tabIndex={0}
                 role="button"
+                className="whitespace-nowrap"
               >
                 {t("new_link")}
               </div>
@@ -87,6 +88,7 @@ export default function Navbar() {
                 }}
                 tabIndex={0}
                 role="button"
+                className="whitespace-nowrap"
               >
                 {t("upload_file")}
               </div>
@@ -99,6 +101,7 @@ export default function Navbar() {
                 }}
                 tabIndex={0}
                 role="button"
+                className="whitespace-nowrap"
               >
                 {t("new_collection")}
               </div>
