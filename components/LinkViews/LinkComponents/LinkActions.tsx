@@ -86,7 +86,7 @@ export default function LinkActions({
           <i title="More" className="bi-three-dots text-xl" />
         </div>
         <ul
-          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box w-44 mr-1 ${
+          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mr-1 ${
             alignToTop ? "" : "translate-y-10"
           }`}
         >
@@ -98,6 +98,7 @@ export default function LinkActions({
                 (document?.activeElement as HTMLElement)?.blur();
                 pinLink();
               }}
+              className="whitespace-nowrap"
             >
               {link?.pinnedBy && link.pinnedBy[0]
                 ? t("unpin")
@@ -113,6 +114,7 @@ export default function LinkActions({
                   (document?.activeElement as HTMLElement)?.blur();
                   toggleShowInfo();
                 }}
+                className="whitespace-nowrap"
               >
                 {!linkInfo ? t("show_link_details") : t("hide_link_details")}
               </div>
@@ -127,6 +129,7 @@ export default function LinkActions({
                   (document?.activeElement as HTMLElement)?.blur();
                   setEditLinkModal(true);
                 }}
+                className="whitespace-nowrap"
               >
                 {t("edit_link")}
               </div>
@@ -141,6 +144,7 @@ export default function LinkActions({
                   (document?.activeElement as HTMLElement)?.blur();
                   setPreservedFormatsModal(true);
                 }}
+                className="whitespace-nowrap"
               >
                 {t("preserved_formats")}
               </div>
@@ -171,6 +175,7 @@ export default function LinkActions({
                       }
                     : setDeleteLinkModal(true);
                 }}
+                className="whitespace-nowrap"
               >
                 {t("delete")}
               </div>

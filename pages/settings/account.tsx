@@ -242,9 +242,13 @@ export default function Account() {
                   <i className="bi-pencil-square text-md duration-100"></i>
                   {t("edit")}
                 </Button>
-                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
                   <li>
-                    <label tabIndex={0} role="button">
+                    <label
+                      tabIndex={0}
+                      role="button"
+                      className="whitespace-nowrap"
+                    >
                       {t("upload_new_photo")}
                       <input
                         type="file"
@@ -267,6 +271,7 @@ export default function Account() {
                             image: "",
                           })
                         }
+                        className="whitespace-nowrap"
                       >
                         {t("remove_photo")}
                       </div>
@@ -341,13 +346,14 @@ export default function Account() {
                   {t("import_links")}
                 </Button>
 
-                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
                   <li>
                     <label
                       tabIndex={0}
                       role="button"
                       htmlFor="import-linkwarden-file"
                       title={t("from_linkwarden")}
+                      className="whitespace-nowrap"
                     >
                       {t("from_linkwarden")}
                       <input
@@ -368,6 +374,7 @@ export default function Account() {
                       role="button"
                       htmlFor="import-html-file"
                       title={t("from_html")}
+                      className="whitespace-nowrap"
                     >
                       {t("from_html")}
                       <input
@@ -388,6 +395,7 @@ export default function Account() {
                       role="button"
                       htmlFor="import-wallabag-file"
                       title={t("from_wallabag")}
+                      className="whitespace-nowrap"
                     >
                       {t("from_wallabag")}
                       <input

@@ -277,7 +277,7 @@ export default function EditCollectionSharingModal({
                                   {roleLabel}
                                   <i className="bi-chevron-down"></i>
                                 </div>
-                                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-64 mt-1">
+                                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
                                   <li>
                                     <label
                                       className="label cursor-pointer flex justify-start"
@@ -316,10 +316,12 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">
+                                        <p className="font-bold whitespace-nowrap">
                                           {t("viewer")}
                                         </p>
-                                        <p>{t("viewer_desc")}</p>
+                                        <p className="whitespace-nowrap">
+                                          {t("viewer_desc")}
+                                        </p>
                                       </div>
                                     </label>
                                   </li>
@@ -361,10 +363,12 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">
+                                        <p className="font-bold whitespace-nowrap">
                                           {t("contributor")}
                                         </p>
-                                        <p>{t("contributor_desc")}</p>
+                                        <p className="whitespace-nowrap">
+                                          {t("contributor_desc")}
+                                        </p>
                                       </div>
                                     </label>
                                   </li>
@@ -406,10 +410,12 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">
+                                        <p className="font-bold whitespace-nowrap">
                                           {t("admin")}
                                         </p>
-                                        <p>{t("admin_desc")}</p>
+                                        <p className="whitespace-nowrap">
+                                          {t("admin_desc")}
+                                        </p>
                                       </div>
                                     </label>
                                   </li>
