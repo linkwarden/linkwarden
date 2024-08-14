@@ -13,7 +13,7 @@ RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn yarn i
     && apt-get install -y build-essential curl libssl-dev pkg-config \
     && su -c "curl https://sh.rustup.rs -sSf | bash -s -- -y" linkwarden \
     && su -c "cargo install monolith" linkwarden \
-    && npx playwright install-deps \
+    && npx playwright install --with-deps chromium \
     && chown -Rf linkwarden /data \
     && su -c "yarn playwright install" linkwarden \
     && su -c "yarn prisma generate" linkwarden \
@@ -29,8 +29,7 @@ RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn yarn i
        /home/linkwarden/.rustup \
        /home/linkwarden/.cargo \
        /usr/local/share/.cache/yarn/* \
-       /var/lib/apt/lists/* \
-    && chown -Rf linkwarden /data 
+       /var/lib/apt/lists/* 
 
 USER linkwarden
 ENTRYPOINT ["/data/entrypoint.sh"]
