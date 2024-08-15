@@ -73,27 +73,7 @@ export default function Search() {
           <PageHeader icon={"bi-search"} title={"Search Results"} />
         </LinkListOptions>
 
-        {/* {
-        !isLoading && 
-        !links[0] ? (
-          <p>{t("nothing_found")}</p>
-        ) : links[0] ? (
-          <LinkComponent
-            editMode={editMode}
-            links={links}
-            isLoading={isLoading}
-          />
-        ) : (
-          isLoading && (
-            <GridLoader
-              color="oklch(var(--p))"
-              loading={true}
-              size={20}
-              className="m-auto py-10"
-            />
-          )
-        )} */}
-
+        {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}
         <Links
           editMode={editMode}
           links={links}
