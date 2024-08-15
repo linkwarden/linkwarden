@@ -1186,7 +1186,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
               providerAccountId: account?.providerAccountId,
             },
           });
-          if (existingUser && newSsoUsersDisabled) {
+          if (!existingUser && newSsoUsersDisabled) {
             return false;
           }
         }
