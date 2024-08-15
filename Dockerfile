@@ -28,11 +28,9 @@ RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
 COPY --from=monolith-builder /usr/local/cargo/bin/monolith /usr/local/bin/monolith
 
 RUN set -eux && \
-    npx playwright install-deps && \
+    npx playwright install --with-deps chromium && \
     apt-get clean && \
     yarn cache clean
-
-RUN yarn playwright install
 
 COPY . .
 
