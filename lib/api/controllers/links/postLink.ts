@@ -90,7 +90,7 @@ export default async function postLink(
 
   const newLink = await prisma.link.create({
     data: {
-      url: link.url?.trim().replace(/\/+$/, "") || null,
+      url: link.url?.trim() || null,
       name,
       description: link.description,
       type: linkType,
