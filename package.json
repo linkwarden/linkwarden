@@ -1,6 +1,6 @@
 {
   "name": "linkwarden",
-  "version": "v2.6.2",
+  "version": "v2.7.0",
   "main": "index.js",
   "repository": "https://github.com/linkwarden/linkwarden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
