@@ -159,20 +159,23 @@ const useUpdateLink = () => {
       return data.response;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.map((e: any) => (e.id === data.id ? data : e));
-      });
+      // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+      //   if (!oldData) return undefined;
+      //   return oldData.map((e: any) => (e.id === data.id ? data : e));
+      // });
 
-      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-        if (!oldData) return undefined;
-        return {
-          pages: oldData.pages.map((page: any) =>
-            page.map((item: any) => (item.id === data.id ? data : item))
-          ),
-          pageParams: oldData.pageParams,
-        };
-      });
+      // queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
+      //   if (!oldData) return undefined;
+      //   return {
+      //     pages: oldData.pages.map((page: any) =>
+      //       page.map((item: any) => (item.id === data.id ? data : item))
+      //     ),
+      //     pageParams: oldData.pageParams,
+      //   };
+      // });
+
+      queryClient.invalidateQueries({ queryKey: ["links"] }); // Temporary workaround
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] }); // Temporary workaround
 
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
@@ -425,6 +428,22 @@ const useBulkEditLinks = () => {
   });
 };
 
+const resetInfiniteQueryPagination = async (
+  queryClient: any,
+  queryKey: any
+) => {
+  queryClient.setQueriesData({ queryKey }, (oldData: any) => {
+    if (!oldData) return undefined;
+
+    return {
+      pages: oldData.pages.slice(0, 1),
+      pageParams: oldData.pageParams.slice(0, 1),
+    };
+  });
+
+  await queryClient.invalidateQueries(queryKey);
+};
+
 export {
   useLinks,
   useAddLink,
@@ -434,4 +453,5 @@ export {
   useUploadFile,
   useGetLink,
   useBulkEditLinks,
+  resetInfiniteQueryPagination,
 };
