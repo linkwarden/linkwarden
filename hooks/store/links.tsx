@@ -398,14 +398,13 @@ const useBulkEditLinks = () => {
       return data.response;
     },
     onSuccess: (data, { links, newData, removePreviousTags }) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.map((e: any) =>
-          data.find((d: any) => d.id === e.id) ? data : e
-        );
-      });
-
-      // TODO: Fix this
+      // TODO: Fix these
+      // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+      //   if (!oldData) return undefined;
+      //   return oldData.map((e: any) =>
+      //     data.find((d: any) => d.id === e.id) ? data : e
+      //   );
+      // });
       // queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
       //   if (!oldData) return undefined;
       //   return {
@@ -417,6 +416,7 @@ const useBulkEditLinks = () => {
       //   };
       // });
       queryClient.invalidateQueries({ queryKey: ["links"] }); // Temporary workaround
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] }); // Temporary workaround
 
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
