@@ -5,7 +5,7 @@ export default async function getDashboardData(
   userId: number,
   query: LinkRequestQuery
 ) {
-  let order: any;
+  let order: any = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
@@ -42,7 +42,7 @@ export default async function getDashboardData(
         select: { id: true },
       },
     },
-    orderBy: order || { id: "desc" },
+    orderBy: order,
   });
 
   const recentlyAddedLinks = await prisma.link.findMany({
@@ -67,10 +67,18 @@ export default async function getDashboardData(
         select: { id: true },
       },
     },
-    orderBy: order || { id: "desc" },
+    orderBy: order,
   });
 
-  const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
+  const combinedLinks = [...recentlyAddedLinks, ...pinnedLinks];
+
+  const uniqueLinks = Array.from(
+    combinedLinks
+      .reduce((map, item) => map.set(item.id, item), new Map())
+      .values()
+  );
+
+  const links = uniqueLinks.sort(
     (a, b) => (new Date(b.id) as any) - (new Date(a.id) as any)
   );
 

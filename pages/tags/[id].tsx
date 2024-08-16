@@ -1,29 +1,29 @@
-import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import useTagStore from "@/store/tags";
 import { Sort, TagIncludingLinkCount, ViewMode } from "@/types/global";
-import useLinks from "@/hooks/useLinks";
-import { toast } from "react-hot-toast";
-import CardView from "@/components/LinkViews/Layouts/CardView";
-import ListView from "@/components/LinkViews/Layouts/ListView";
+import { useLinks } from "@/hooks/store/links";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
-import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
+import { useRemoveTag, useTags, useUpdateTag } from "@/hooks/store/tags";
+import Links from "@/components/LinkViews/Links";
+import toast from "react-hot-toast";
 
 export default function Index() {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { links } = useLinkStore();
-  const { tags, updateTag, removeTag } = useTagStore();
+  const { data: tags = [] } = useTags();
+  const updateTag = useUpdateTag();
+  const removeTag = useRemoveTag();
 
-  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
+  const [sortBy, setSortBy] = useState<Sort>(
+    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
+  );
 
   const [renameTag, setRenameTag] = useState(false);
   const [newTagName, setNewTagName] = useState<string>();
@@ -38,10 +38,13 @@ export default function Index() {
     if (editMode) return setEditMode(false);
   }, [router]);
 
-  useLinks({ tagId: Number(router.query.id), sort: sortBy });
+  const { links, data } = useLinks({
+    sort: sortBy,
+    tagId: Number(router.query.id),
+  });
 
   useEffect(() => {
-    const tag = tags.find((e) => e.id === Number(router.query.id));
+    const tag = tags.find((e: any) => e.id === Number(router.query.id));
 
     if (tags.length > 0 && !tag?.id) {
       router.push("/dashboard");
@@ -72,21 +75,28 @@ export default function Index() {
 
     setSubmitLoader(true);
 
-    const load = toast.loading(t("applying_changes"));
+    if (activeTag && newTagName) {
+      const load = toast.loading(t("applying_changes"));
 
-    let response;
+      await updateTag.mutateAsync(
+        {
+          ...activeTag,
+          name: newTagName,
+        },
+        {
+          onSettled: (data, error) => {
+            toast.dismiss(load);
 
-    if (activeTag && newTagName)
-      response = await updateTag({
-        ...activeTag,
-        name: newTagName,
-      });
+            if (error) {
+              toast.error(error.message);
+            } else {
+              toast.success(t("tag_renamed"));
+            }
+          },
+        }
+      );
+    }
 
-    toast.dismiss(load);
-
-    if (response?.ok) {
-      toast.success(t("tag_renamed"));
-    } else toast.error(response?.data as string);
     setSubmitLoader(false);
     setRenameTag(false);
   };
@@ -94,34 +104,30 @@ export default function Index() {
   const remove = async () => {
     setSubmitLoader(true);
 
-    const load = toast.loading(t("applying_changes"));
+    if (activeTag?.id) {
+      const load = toast.loading(t("applying_changes"));
 
-    let response;
+      await removeTag.mutateAsync(activeTag?.id, {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-    if (activeTag?.id) response = await removeTag(activeTag?.id);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success(t("tag_deleted"));
+            router.push("/links");
+          }
+        },
+      });
+    }
 
-    toast.dismiss(load);
-
-    if (response?.ok) {
-      toast.success(t("tag_deleted"));
-      router.push("/links");
-    } else toast.error(response?.data as string);
     setSubmitLoader(false);
     setRenameTag(false);
   };
 
-  const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Card
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
-
-  const linkView = {
-    [ViewMode.Card]: CardView,
-    [ViewMode.List]: ListView,
-    [ViewMode.Masonry]: MasonryView,
-  };
-
-  // @ts-ignore
-  const LinkComponent = linkView[viewMode];
 
   return (
     <MainLayout>
@@ -188,7 +194,7 @@ export default function Index() {
                           className={"bi-three-dots text-neutral text-2xl"}
                         ></i>
                       </div>
-                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-36 mt-1">
+                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
                         <li>
                           <div
                             role="button"
@@ -197,6 +203,7 @@ export default function Index() {
                               (document?.activeElement as HTMLElement)?.blur();
                               setRenameTag(true);
                             }}
+                            className="whitespace-nowrap"
                           >
                             {t("rename_tag")}
                           </div>
@@ -209,6 +216,7 @@ export default function Index() {
                               (document?.activeElement as HTMLElement)?.blur();
                               remove();
                             }}
+                            className="whitespace-nowrap"
                           >
                             {t("delete_tag")}
                           </div>
@@ -222,11 +230,12 @@ export default function Index() {
           </div>
         </LinkListOptions>
 
-        <LinkComponent
+        <Links
           editMode={editMode}
-          links={links.filter((e) =>
-            e.tags.some((e) => e.id === Number(router.query.id))
-          )}
+          links={links}
+          layout={viewMode}
+          placeholderCount={1}
+          useData={data}
         />
       </div>
       {bulkDeleteLinksModal && (

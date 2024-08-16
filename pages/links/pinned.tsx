@@ -1,44 +1,31 @@
-import useLinks from "@/hooks/useLinks";
 import MainLayout from "@/layouts/MainLayout";
-import useLinkStore from "@/store/links";
 import React, { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { Sort, ViewMode } from "@/types/global";
-import CardView from "@/components/LinkViews/Layouts/CardView";
-import ListView from "@/components/LinkViews/Layouts/ListView";
 import { useRouter } from "next/router";
-import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
+import { useLinks } from "@/hooks/store/links";
+import Links from "@/components/LinkViews/Links";
 
 export default function PinnedLinks() {
   const { t } = useTranslation();
 
-  const { links } = useLinkStore();
-
-  const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Card
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
-  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
+  const [sortBy, setSortBy] = useState<Sort>(
+    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
+  );
 
-  useLinks({ sort: sortBy, pinnedOnly: true });
+  const { links, data } = useLinks({
+    sort: sortBy,
+    pinnedOnly: true,
+  });
 
   const router = useRouter();
   const [editMode, setEditMode] = useState(false);
-
-  useEffect(() => {
-    if (editMode) return setEditMode(false);
-  }, [router]);
-
-  const linkView = {
-    [ViewMode.Card]: CardView,
-    [ViewMode.List]: ListView,
-    [ViewMode.Masonry]: MasonryView,
-  };
-
-  // @ts-ignore
-  const LinkComponent = linkView[viewMode];
 
   return (
     <MainLayout>
@@ -59,9 +46,7 @@ export default function PinnedLinks() {
           />
         </LinkListOptions>
 
-        {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
-          <LinkComponent editMode={editMode} links={links} />
-        ) : (
+        {!data.isLoading && links && !links[0] && (
           <div
             style={{ flex: "1 1 auto" }}
             className="flex flex-col gap-2 justify-center h-full w-full mx-auto p-10"
@@ -82,6 +67,13 @@ export default function PinnedLinks() {
             </p>
           </div>
         )}
+        <Links
+          editMode={editMode}
+          links={links}
+          layout={viewMode}
+          placeholderCount={1}
+          useData={data}
+        />
       </div>
     </MainLayout>
   );
