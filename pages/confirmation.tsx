@@ -43,6 +43,12 @@ export default function EmailConfirmaion() {
 
         <div className="divider my-3"></div>
 
+        {router.query.email && typeof router.query.email === "string" && (
+          <p className="text-center font-bold mb-3 break-all">
+            {decodeURIComponent(router.query.email)}
+          </p>
+        )}
+
         <p>{t("verification_email_sent_desc")}</p>
 
         <div className="mx-auto w-fit mt-3">

@@ -1,8 +1,10 @@
+import { Sort } from "@/types/global";
 import { create } from "zustand";
 
 type LocalSettings = {
   theme?: string;
   viewMode?: string;
+  sortBy?: Sort;
 };
 
 type LocalSettingsStore = {
@@ -15,10 +17,11 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
   settings: {
     theme: "",
     viewMode: "",
+    sortBy: Sort.DateNewestFirst,
   },
   updateSettings: async (newSettings) => {
     if (
-      newSettings.theme &&
+      newSettings.theme !== undefined &&
       newSettings.theme !== localStorage.getItem("theme")
     ) {
       localStorage.setItem("theme", newSettings.theme);
@@ -29,12 +32,19 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     }
 
     if (
-      newSettings.viewMode &&
+      newSettings.viewMode !== undefined &&
       newSettings.viewMode !== localStorage.getItem("viewMode")
     ) {
       localStorage.setItem("viewMode", newSettings.viewMode);
 
       // const localTheme = localStorage.getItem("viewMode") || "";
+    }
+
+    if (
+      newSettings.sortBy !== undefined &&
+      newSettings.sortBy !== Number(localStorage.getItem("sortBy"))
+    ) {
+      localStorage.setItem("sortBy", newSettings.sortBy.toString());
     }
 
     set((state) => ({ settings: { ...state.settings, ...newSettings } }));
