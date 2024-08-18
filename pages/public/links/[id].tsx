@@ -17,12 +17,14 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="flex h-screen py-20">
+    <div className="flex h-screen">
       {getLink.data ? (
-        <LinkDetails
-          link={getLink.data}
-          className="max-w-xl p-5 m-auto w-full"
-        />
+        <div className="m-auto py-20 w-full">
+          <LinkDetails
+            link={getLink.data}
+            className="max-w-xl mx-auto p-5 w-full"
+          />
+        </div>
       ) : (
         <div className="max-w-xl p-5 m-auto w-full flex flex-col items-center gap-5">
           <div className="w-20 h-20 skeleton rounded-xl"></div>
