@@ -127,9 +127,9 @@ export default function LinkCardCompact({
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
               <div className="flex items-center gap-x-3 text-neutral flex-wrap">
-                {collection ? (
+                {collection && (
                   <LinkCollection link={link} collection={collection} />
-                ) : undefined}
+                )}
                 {link.name && <LinkTypeBadge link={link} />}
                 <LinkDate link={link} />
               </div>
