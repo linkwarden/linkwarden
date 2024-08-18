@@ -150,7 +150,7 @@ export default function UploadFileModal({ onClose }: Props) {
           <label className="btn h-10 btn-sm w-full border border-neutral-content hover:border-neutral-content flex justify-between">
             <input
               type="file"
-              accept=".pdf,.png,.jpg,.jpeg,.html"
+              accept=".pdf,.png,.jpg,.jpeg"
               className="cursor-pointer custom-file-input"
               onChange={(e) => e.target.files && setFile(e.target.files[0])}
             />
