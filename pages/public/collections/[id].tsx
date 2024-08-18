@@ -94,15 +94,6 @@ export default function PublicCollections() {
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
 
-  const linkView = {
-    [ViewMode.Card]: CardView,
-    [ViewMode.List]: ListView,
-    [ViewMode.Masonry]: MasonryView,
-  };
-
-  // @ts-ignore
-  const LinkComponent = linkView[viewMode];
-
   if (!collection) return null;
 
   return (
