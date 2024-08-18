@@ -135,16 +135,15 @@ export default function LinkDetails({ className, link }: Props) {
 
           <p className="text-sm mb-2 text-neutral">{t("link")}</p>
 
-          <div className="rounded-lg p-2 bg-base-200 flex justify-between items-center gap-2">
-            <Link
-              href={link.url}
-              title={link.url}
-              target="_blank"
-              className="truncate"
-            >
-              {link.url}
-            </Link>
-            <CopyButton text={link.url} />
+          <div className="relative">
+            <div className="rounded-lg p-2 bg-base-200 hide-scrollbar overflow-x-auto whitespace-nowrap flex justify-between items-center gap-2 pr-14">
+              <Link href={link.url} title={link.url} target="_blank">
+                {link.url}
+              </Link>
+              <div className="absolute right-0 px-2 bg-base-200">
+                <CopyButton text={link.url} />
+              </div>
+            </div>
           </div>
         </>
       )}
@@ -153,20 +152,24 @@ export default function LinkDetails({ className, link }: Props) {
 
       <p className="text-sm mb-2 text-neutral">{t("collection")}</p>
 
-      <Link
-        href={
-          isPublicRoute
-            ? `/public/collections/${link.collection.id}`
-            : `/collections/${link.collection.id}`
-        }
-        className="rounded-lg p-2 bg-base-200 flex justify-between items-center gap-2"
-      >
-        <p className="truncate">{link.collection.name}</p>
-        <i
-          className="bi-folder-fill text-xl"
-          style={{ color: link.collection.color }}
-        ></i>
-      </Link>
+      <div className="relative">
+        <Link
+          href={
+            isPublicRoute
+              ? `/public/collections/${link.collection.id}`
+              : `/collections/${link.collection.id}`
+          }
+          className="rounded-lg p-2 bg-base-200 hide-scrollbar overflow-x-auto whitespace-nowrap flex justify-between items-center gap-2 pr-14"
+        >
+          <p>{link.collection.name}</p>
+          <div className="absolute right-0 px-2 bg-base-200">
+            <i
+              className="bi-folder-fill text-xl"
+              style={{ color: link.collection.color }}
+            ></i>
+          </div>
+        </Link>
+      </div>
 
       {link.tags[0] && (
         <>
