@@ -80,6 +80,8 @@ export default function LinkCardCompact({
 
   const permissions = usePermissions(collection?.id as number);
 
+  const [showInfo, setShowInfo] = useState(false);
+
   const selectedStyle = selectedLinks.some(
     (selectedLink) => selectedLink.id === link.id
   )
@@ -94,7 +96,7 @@ export default function LinkCardCompact({
     <>
       <div
         className={`${selectedStyle} border relative items-center flex ${
-          !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
+          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
         } duration-200 rounded-lg w-full`}
         onClick={() =>
           selectable
@@ -104,6 +106,20 @@ export default function LinkCardCompact({
               : undefined
         }
       >
+        {/* {showCheckbox &&
+          editMode &&
+          (permissions === true ||
+            permissions?.canCreate ||
+            permissions?.canDelete) && (
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary my-auto mr-2"
+              checked={selectedLinks.some(
+                (selectedLink) => selectedLink.id === link.id
+              )}
+              onChange={() => handleCheckboxClick(link)}
+            />
+          )} */}
         <div
           className="flex items-center cursor-pointer w-full"
           onClick={() =>
@@ -141,6 +157,8 @@ export default function LinkCardCompact({
           collection={collection}
           position="top-3 right-3"
           flipDropdown={flipDropdown}
+          // toggleShowInfo={() => setShowInfo(!showInfo)}
+          // linkInfo={showInfo}
         />
       </div>
       <div

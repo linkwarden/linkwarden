@@ -70,7 +70,7 @@ export default function UploadFileModal({ onClose }: Props) {
 
   useEffect(() => {
     setOptionsExpanded(false);
-    if (router.pathname.startsWith("/collections/") && router.query.id) {
+    if (router.query.id) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
       );
