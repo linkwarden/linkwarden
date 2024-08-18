@@ -136,7 +136,7 @@ export default function LinkActions({
                 {t("show_link_details")}
               </div>
             </li>
-            {permissions === true || permissions?.canUpdate ? (
+            {(permissions === true || permissions?.canUpdate) && (
               <li>
                 <div
                   role="button"
@@ -150,7 +150,7 @@ export default function LinkActions({
                   {t("edit_link")}
                 </div>
               </li>
-            ) : undefined}
+            )}
             {link.type === "url" && (
               <li>
                 <div
@@ -166,7 +166,7 @@ export default function LinkActions({
                 </div>
               </li>
             )}
-            {permissions === true || permissions?.canDelete ? (
+            {(permissions === true || permissions?.canDelete) && (
               <li>
                 <div
                   role="button"
@@ -196,36 +196,35 @@ export default function LinkActions({
                   {t("delete")}
                 </div>
               </li>
-            ) : undefined}
+            )}
           </ul>
         </div>
       )}
-
-      {editLinkModal ? (
+      {editLinkModal && (
         <EditLinkModal
           onClose={() => setEditLinkModal(false)}
           activeLink={link}
         />
-      ) : undefined}
-      {deleteLinkModal ? (
+      )}
+      {deleteLinkModal && (
         <DeleteLinkModal
           onClose={() => setDeleteLinkModal(false)}
           activeLink={link}
         />
-      ) : undefined}
-      {preservedFormatsModal ? (
+      )}
+      {preservedFormatsModal && (
         <PreservedFormatsModal
           onClose={() => setPreservedFormatsModal(false)}
           link={link}
         />
-      ) : undefined}
-      {linkDetailModal ? (
+      )}
+      {linkDetailModal && (
         <LinkDetailModal
           onClose={() => setLinkDetailModal(false)}
           onEdit={() => setEditLinkModal(true)}
           link={link}
         />
-      ) : undefined}
+      )}
     </>
   );
 }
