@@ -52,11 +52,9 @@ export default function PreservedFormatRow({
   };
 
   return (
-    <div className="flex justify-between items-center pr-1 border border-neutral-content rounded-md">
+    <div className="flex justify-between items-center rounded-lg p-2 bg-base-200">
       <div className="flex gap-2 items-center">
-        <div className="bg-primary text-primary-content p-2 rounded-l-md">
-          <i className={`${icon} text-2xl`} />
-        </div>
+        <i className={`${icon} text-2xl text-primary`} />
         <p>{name}</p>
       </div>
 
@@ -64,7 +62,7 @@ export default function PreservedFormatRow({
         {downloadable || false ? (
           <div
             onClick={() => handleDownload()}
-            className="btn btn-sm btn-square"
+            className="btn btn-sm btn-square btn-ghost"
           >
             <i className="bi-cloud-arrow-down text-xl text-neutral" />
           </div>
@@ -75,9 +73,9 @@ export default function PreservedFormatRow({
             isPublic ? "/public" : ""
           }/preserved/${link?.id}?format=${format}`}
           target="_blank"
-          className="btn btn-sm btn-square"
+          className="btn btn-sm btn-square btn-ghost"
         >
-          <i className="bi-box-arrow-up-right text-xl text-neutral" />
+          <i className="bi-box-arrow-up-right text-lg text-neutral" />
         </Link>
       </div>
     </div>

@@ -225,9 +225,21 @@ const useDeleteLink = () => {
 const useGetLink = () => {
   const queryClient = useQueryClient();
 
+  const router = useRouter();
+
   return useMutation({
-    mutationFn: async (id: number) => {
-      const response = await fetch(`/api/v1/links/${id}`);
+    mutationFn: async ({
+      id,
+      isPublicRoute = router.pathname.startsWith("/public") ? true : undefined,
+    }: {
+      id: number;
+      isPublicRoute?: boolean;
+    }) => {
+      const path = isPublicRoute
+        ? `/api/v1/public/links/${id}`
+        : `/api/v1/links/${id}`;
+
+      const response = await fetch(path);
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.response);
@@ -250,7 +262,20 @@ const useGetLink = () => {
         };
       });
 
-      queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
+      queryClient.setQueriesData(
+        { queryKey: ["publicLinks"] },
+        (oldData: any) => {
+          if (!oldData) return undefined;
+          return {
+            pages: oldData.pages.map((page: any) =>
+              page.map((item: any) => (item.id === data.id ? data : item))
+            ),
+            pageParams: oldData.pageParams,
+          };
+        }
+      );
+
+      // queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
   });
 };

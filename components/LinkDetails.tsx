@@ -3,10 +3,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
 } from "@/types/global";
-import toast from "react-hot-toast";
 import Link from "next/link";
-import Modal from "../Modal";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import {
   pdfAvailable,
@@ -20,20 +17,20 @@ import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@/hooks/store/user";
 import { useGetLink } from "@/hooks/store/links";
+import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
+import CopyButton from "./CopyButton";
+import { useRouter } from "next/router";
 
 type Props = {
-  onClose: Function;
+  className?: string;
   link: LinkIncludingShortenedCollectionAndTags;
 };
 
-export default function PreservedFormatsModal({ onClose, link }: Props) {
+export default function LinkDetails({ className, link }: Props) {
   const { t } = useTranslation();
   const session = useSession();
   const getLink = useGetLink();
   const { data: user = {} } = useUser();
-  const router = useRouter();
-
-  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,
@@ -96,14 +93,18 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
 
   useEffect(() => {
     (async () => {
-      await getLink.mutateAsync({ id: link.id as number });
+      await getLink.mutateAsync({
+        id: link.id as number,
+      });
     })();
 
     let interval: any;
 
     if (!isReady()) {
       interval = setInterval(async () => {
-        await getLink.mutateAsync({ id: link.id as number });
+        await getLink.mutateAsync({
+          id: link.id as number,
+        });
       }, 5000);
     } else {
       if (interval) {
@@ -118,35 +119,102 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
     };
   }, [link?.monolith]);
 
-  const updateArchive = async () => {
-    const load = toast.loading(t("sending_request"));
+  const router = useRouter();
 
-    const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
-      method: "PUT",
-    });
-
-    const data = await response.json();
-    toast.dismiss(load);
-
-    if (response.ok) {
-      await getLink.mutateAsync({ id: link.id as number });
-
-      toast.success(t("link_being_archived"));
-    } else toast.error(data.response);
-  };
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   return (
-    <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">{t("preserved_formats")}</p>
-      <div className="divider mb-2 mt-1"></div>
-      {screenshotAvailable(link) ||
-      pdfAvailable(link) ||
-      readabilityAvailable(link) ||
-      monolithAvailable(link) ? (
-        <p className="mb-3">{t("available_formats")}</p>
-      ) : (
-        ""
+    <div className={className} data-vaul-no-drag>
+      <LinkIcon link={link} className="mx-auto" />
+
+      {link.name && <p className="text-xl text-center mt-2">{link.name}</p>}
+
+      {link.url && (
+        <>
+          <br />
+
+          <p className="text-sm mb-2 text-neutral">{t("link")}</p>
+
+          <div className="rounded-lg p-2 bg-base-200 flex justify-between items-center gap-2">
+            <Link
+              href={link.url}
+              title={link.url}
+              target="_blank"
+              className="truncate"
+            >
+              {link.url}
+            </Link>
+            <CopyButton text={link.url} />
+          </div>
+        </>
       )}
+
+      <br />
+
+      <p className="text-sm mb-2 text-neutral">{t("collection")}</p>
+
+      <Link
+        href={
+          isPublicRoute
+            ? `/public/collections/${link.collection.id}`
+            : `/collections/${link.collection.id}`
+        }
+        className="rounded-lg p-2 bg-base-200 flex justify-between items-center gap-2"
+      >
+        <p className="truncate">{link.collection.name}</p>
+        <i
+          className="bi-folder-fill text-xl"
+          style={{ color: link.collection.color }}
+        ></i>
+      </Link>
+
+      {link.tags[0] && (
+        <>
+          <br />
+
+          <div>
+            <p className="text-sm mb-2 text-neutral">{t("tags")}</p>
+          </div>
+
+          <div className="flex gap-2">
+            {link.tags.map((tag) =>
+              isPublicRoute ? (
+                <div key={tag.id} className="rounded-lg px-3 py-1 bg-base-200">
+                  {tag.name}
+                </div>
+              ) : (
+                <Link
+                  href={"/tags/" + tag.id}
+                  key={tag.id}
+                  className="rounded-lg px-3 py-1 bg-base-200"
+                >
+                  {tag.name}
+                </Link>
+              )
+            )}
+          </div>
+        </>
+      )}
+
+      {link.description && (
+        <>
+          <br />
+
+          <div>
+            <p className="text-sm mb-2 text-neutral">{t("notes")}</p>
+
+            <div className="rounded-lg p-2 bg-base-200 hyphens-auto">
+              <p>{link.description}</p>
+            </div>
+          </div>
+        </>
+      )}
+
+      <br />
+
+      <p className="text-sm mb-2 text-neutral" title={t("available_formats")}>
+        {link.url ? t("preserved_formats") : t("file")}
+      </p>
 
       <div className={`flex flex-col gap-3`}>
         {monolithAvailable(link) ? (
@@ -203,7 +271,7 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
             <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
             <p className="text-center text-lg">{t("check_back_later")}</p>
           </div>
-        ) : !isReady() && atLeastOneFormatAvailable() ? (
+        ) : link.url && !isReady() && atLeastOneFormatAvailable() ? (
           <div className={`w-full h-full flex flex-col justify-center p-5`}>
             <BeatLoader
               color="oklch(var(--p))"
@@ -215,34 +283,20 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
           </div>
         ) : undefined}
 
-        <div
-          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${
-            isReady() ? "sm:mt " : ""
-          }`}
-        >
+        {link.url && (
           <Link
             href={`https://web.archive.org/web/${link?.url?.replace(
               /(^\w+:|^)\/\//,
               ""
             )}`}
             target="_blank"
-            className="text-neutral duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm"
+            className="text-neutral mx-auto duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm"
           >
             <p className="whitespace-nowrap">{t("view_latest_snapshot")}</p>
             <i className="bi-box-arrow-up-right" />
           </Link>
-          {link?.collection.ownerId === session.data?.user.id && (
-            <div className="btn btn-outline" onClick={updateArchive}>
-              <div>
-                <p>{t("refresh_preserved_formats")}</p>
-                <p className="text-xs">
-                  {t("this_deletes_current_preservations")}
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
+        )}
       </div>
-    </Modal>
+    </div>
   );
 }
