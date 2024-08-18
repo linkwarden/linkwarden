@@ -135,7 +135,7 @@ export default function Dashboard() {
 
             <DashboardItem
               name={tags.length === 1 ? t("tag") : t("tags")}
-              value={tags.length * numberOfLinks}
+              value={tags.length}
               icon={"bi-hash"}
             />
           </div>

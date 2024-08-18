@@ -21,9 +21,8 @@ export default function ToggleDarkMode({ className }: Props) {
   useEffect(() => {
     if (theme) {
       updateSettings({ theme });
-      localStorage.setItem("theme", theme);
     }
-  }, [theme, updateSettings]);
+  }, [theme]);
 
   return (
     <div

@@ -61,8 +61,7 @@ export default function Dropdown({
   }, [points, dropdownHeight]);
 
   return (
-    !points ||
-    (pos && (
+    (!points || pos) && (
       <ClickAwayHandler
         onMount={(e) => {
           setDropdownHeight(e.height);
@@ -104,6 +103,6 @@ export default function Dropdown({
           );
         })}
       </ClickAwayHandler>
-    ))
+    )
   );
 }
