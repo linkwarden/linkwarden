@@ -272,12 +272,12 @@ const renderItem = (
             ></i>
             <p className="truncate w-full">{collection.name}</p>
 
-            {collection.isPublic ? (
+            {collection.isPublic && (
               <i
                 className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
                 title="This collection is being shared publicly."
               ></i>
-            ) : undefined}
+            )}
             <div className="drop-shadow text-neutral text-xs">
               {collection._count?.links}
             </div>
