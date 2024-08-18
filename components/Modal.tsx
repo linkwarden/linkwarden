@@ -32,7 +32,7 @@ export default function Modal({
     return (
       <Drawer.Root
         open={drawerIsOpen}
-        onClose={() => dismissible && setTimeout(() => toggleModal(), 100)}
+        onClose={() => dismissible && setTimeout(() => toggleModal(), 350)}
         dismissible={dismissible}
       >
         <Drawer.Portal>
