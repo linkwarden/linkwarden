@@ -117,7 +117,7 @@ export default function LinkDetailModal({ onClose, onEdit, link }: Props) {
         className="bi-box-arrow-up-right text-xl text-neutral btn btn-sm btn-square btn-ghost absolute top-3 right-3 select-none"
       ></Link>
 
-      <div className="sm:m-auto sm:w-5/6">
+      <div className="sm:m-auto p-10 w-full max-w-xl">
         <LinkDetails link={link} />
 
         {permissions === true ||
