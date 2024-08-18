@@ -159,20 +159,23 @@ const useUpdateLink = () => {
       return data.response;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.map((e: any) => (e.id === data.id ? data : e));
-      });
+      // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+      //   if (!oldData) return undefined;
+      //   return oldData.map((e: any) => (e.id === data.id ? data : e));
+      // });
 
-      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-        if (!oldData) return undefined;
-        return {
-          pages: oldData.pages.map((page: any) =>
-            page.map((item: any) => (item.id === data.id ? data : item))
-          ),
-          pageParams: oldData.pageParams,
-        };
-      });
+      // queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
+      //   if (!oldData) return undefined;
+      //   return {
+      //     pages: oldData.pages.map((page: any) =>
+      //       page.map((item: any) => (item.id === data.id ? data : item))
+      //     ),
+      //     pageParams: oldData.pageParams,
+      //   };
+      // });
+
+      queryClient.invalidateQueries({ queryKey: ["links"] }); // Temporary workaround
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] }); // Temporary workaround
 
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
@@ -222,9 +225,21 @@ const useDeleteLink = () => {
 const useGetLink = () => {
   const queryClient = useQueryClient();
 
+  const router = useRouter();
+
   return useMutation({
-    mutationFn: async (id: number) => {
-      const response = await fetch(`/api/v1/links/${id}`);
+    mutationFn: async ({
+      id,
+      isPublicRoute = router.pathname.startsWith("/public") ? true : undefined,
+    }: {
+      id: number;
+      isPublicRoute?: boolean;
+    }) => {
+      const path = isPublicRoute
+        ? `/api/v1/public/links/${id}`
+        : `/api/v1/links/${id}`;
+
+      const response = await fetch(path);
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.response);
@@ -247,7 +262,20 @@ const useGetLink = () => {
         };
       });
 
-      queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
+      queryClient.setQueriesData(
+        { queryKey: ["publicLinks"] },
+        (oldData: any) => {
+          if (!oldData) return undefined;
+          return {
+            pages: oldData.pages.map((page: any) =>
+              page.map((item: any) => (item.id === data.id ? data : item))
+            ),
+            pageParams: oldData.pageParams,
+          };
+        }
+      );
+
+      // queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
   });
 };
@@ -398,14 +426,13 @@ const useBulkEditLinks = () => {
       return data.response;
     },
     onSuccess: (data, { links, newData, removePreviousTags }) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.map((e: any) =>
-          data.find((d: any) => d.id === e.id) ? data : e
-        );
-      });
-
-      // TODO: Fix this
+      // TODO: Fix these
+      // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+      //   if (!oldData) return undefined;
+      //   return oldData.map((e: any) =>
+      //     data.find((d: any) => d.id === e.id) ? data : e
+      //   );
+      // });
       // queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
       //   if (!oldData) return undefined;
       //   return {
@@ -417,12 +444,29 @@ const useBulkEditLinks = () => {
       //   };
       // });
       queryClient.invalidateQueries({ queryKey: ["links"] }); // Temporary workaround
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] }); // Temporary workaround
 
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
   });
+};
+
+const resetInfiniteQueryPagination = async (
+  queryClient: any,
+  queryKey: any
+) => {
+  queryClient.setQueriesData({ queryKey }, (oldData: any) => {
+    if (!oldData) return undefined;
+
+    return {
+      pages: oldData.pages.slice(0, 1),
+      pageParams: oldData.pageParams.slice(0, 1),
+    };
+  });
+
+  await queryClient.invalidateQueries(queryKey);
 };
 
 export {
@@ -434,4 +478,5 @@ export {
   useUploadFile,
   useGetLink,
   useBulkEditLinks,
+  resetInfiniteQueryPagination,
 };
