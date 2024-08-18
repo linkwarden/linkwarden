@@ -79,7 +79,7 @@
     "socks-proxy-agent": "^8.0.2",
     "stripe": "^12.13.0",
     "tailwind-merge": "^2.3.0",
-    "vaul": "^0.8.8",
+    "vaul": "^0.9.1",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
@@ -95,7 +95,7 @@
     "postcss": "^8.4.26",
     "prettier": "3.1.1",
     "prisma": "^4.16.2",
-    "tailwindcss": "^3.3.3",
+    "tailwindcss": "^3.4.10",
     "ts-node": "^10.9.2",
     "typescript": "4.9.4"
   }

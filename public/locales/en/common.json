@@ -361,7 +361,6 @@
   "unpin": "Unpin",
   "pin_to_dashboard": "Pin to Dashboard",
   "show_link_details": "Show Link Details",
-  "hide_link_details": "Hide Link Details",
   "link_pinned": "Link Pinned!",
   "link_unpinned": "Link Unpinned!",
   "webpage": "Webpage",
@@ -371,5 +370,6 @@
   "demo_title": "Demo Only",
   "demo_desc": "This is only a demo instance of Linkwarden and uploads are disabled.",
   "demo_desc_2": "If you want to try out the full version, you can sign up for a free trial at:",
-  "demo_button": "Login as demo user"
+  "demo_button": "Login as demo user",
+  "notes": "Notes"
 }
