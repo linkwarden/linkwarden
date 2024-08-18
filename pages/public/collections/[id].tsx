@@ -20,7 +20,6 @@ import EditCollectionSharingModal from "@/components/ModalContent/EditCollection
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
-import { useCollections } from "@/hooks/store/collections";
 import { usePublicLinks } from "@/hooks/store/publicLinks";
 import Links from "@/components/LinkViews/Links";
 
@@ -28,8 +27,6 @@ export default function PublicCollections() {
   const { t } = useTranslation();
 
   const { settings } = useLocalSettingsStore();
-
-  const { data: collections = [] } = useCollections();
 
   const router = useRouter();
 
@@ -66,25 +63,22 @@ export default function PublicCollections() {
 
   useEffect(() => {
     if (router.query.id) {
-      getPublicCollectionData(Number(router.query.id), setCollection).then(
-        (res) => {
-          if (res.status === 400) {
-            router.push("/dashboard");
-          }
+      getPublicCollectionData(Number(router.query.id)).then((res) => {
+        if (res.status === 400) {
+          router.push("/dashboard");
+        } else {
+          setCollection(res.response);
         }
-      );
+      });
     }
-  }, [collections]);
+  }, []);
 
   useEffect(() => {
-    const fetchOwner = async () => {
-      if (collection) {
-        const owner = await getPublicUserData(collection.ownerId as number);
-        setCollectionOwner(owner);
-      }
-    };
-
-    fetchOwner();
+    if (collection) {
+      getPublicUserData(collection.ownerId as number).then((owner) =>
+        setCollectionOwner(owner)
+      );
+    }
   }, [collection]);
 
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
@@ -233,9 +227,7 @@ export default function PublicCollections() {
             placeholderCount={1}
             useData={data}
           />
-          {!data.isLoading && links && !links[0] && (
-            <p>{t("collection_is_empty")}</p>
-          )}
+          {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}
 
           {/* <p className="text-center text-neutral">
         List created with <span className="text-black">Linkwarden.</span>

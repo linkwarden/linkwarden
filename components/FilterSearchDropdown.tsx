@@ -1,6 +1,8 @@
 import { dropdownTriggerer } from "@/lib/client/utils";
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "next-i18next";
+import { resetInfiniteQueryPagination } from "@/hooks/store/links";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   setSearchFilter: Function;
@@ -18,6 +20,7 @@ export default function FilterSearchDropdown({
   searchFilter,
 }: Props) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
@@ -41,9 +44,10 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.name}
-              onChange={() =>
-                setSearchFilter({ ...searchFilter, name: !searchFilter.name })
-              }
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
+                setSearchFilter({ ...searchFilter, name: !searchFilter.name });
+              }}
             />
             <span className="label-text whitespace-nowrap">{t("name")}</span>
           </label>
@@ -59,9 +63,10 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.url}
-              onChange={() =>
-                setSearchFilter({ ...searchFilter, url: !searchFilter.url })
-              }
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
+                setSearchFilter({ ...searchFilter, url: !searchFilter.url });
+              }}
             />
             <span className="label-text whitespace-nowrap">{t("link")}</span>
           </label>
@@ -77,12 +82,13 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.description}
-              onChange={() =>
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
                 setSearchFilter({
                   ...searchFilter,
                   description: !searchFilter.description,
-                })
-              }
+                });
+              }}
             />
             <span className="label-text whitespace-nowrap">
               {t("description")}
@@ -100,9 +106,10 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.tags}
-              onChange={() =>
-                setSearchFilter({ ...searchFilter, tags: !searchFilter.tags })
-              }
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
+                setSearchFilter({ ...searchFilter, tags: !searchFilter.tags });
+              }}
             />
             <span className="label-text whitespace-nowrap">{t("tags")}</span>
           </label>
@@ -118,12 +125,13 @@ export default function FilterSearchDropdown({
               name="search-filter-checkbox"
               className="checkbox checkbox-primary"
               checked={searchFilter.textContent}
-              onChange={() =>
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
                 setSearchFilter({
                   ...searchFilter,
                   textContent: !searchFilter.textContent,
-                })
-              }
+                });
+              }}
             />
             <span className="label-text whitespace-nowrap">
               {t("full_content")}

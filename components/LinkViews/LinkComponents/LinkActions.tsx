@@ -202,9 +202,6 @@ export default function LinkActions({
           link={link}
         />
       )}
-      {/* {expandedLink ? (
-                <ExpandedLink onClose={() => setExpandedLink(false)} link={link} />
-              ) : undefined} */}
     </>
   );
 }
