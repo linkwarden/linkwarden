@@ -96,7 +96,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
       link.preview !== "unavailable"
     ) {
       interval = setInterval(async () => {
-        getLink.mutateAsync({ id: link.id as number });
+        getLink.mutateAsync(link.id as number);
       }, 5000);
     }
 
@@ -106,6 +106,8 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
       }
     };
   }, [isVisible, link.preview]);
+
+  const [showInfo, setShowInfo] = useState(false);
 
   const selectedStyle = selectedLinks.some(
     (selectedLink) => selectedLink.id === link.id
@@ -205,6 +207,57 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
         </div>
       </div>
 
+      {showInfo && (
+        <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-2xl fade-in overflow-y-auto">
+          <div
+            onClick={() => setShowInfo(!showInfo)}
+            className=" float-right btn btn-sm outline-none btn-circle btn-ghost z-10"
+          >
+            <i className="bi-x text-neutral text-2xl"></i>
+          </div>
+          <p className="text-neutral text-lg font-semibold">
+            {t("description")}
+          </p>
+
+          <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
+          <p>
+            {link.description ? (
+              unescapeString(link.description)
+            ) : (
+              <span className="text-neutral text-sm">
+                {t("no_description")}
+              </span>
+            )}
+          </p>
+          {link.tags && link.tags[0] && (
+            <>
+              <p className="text-neutral text-lg mt-3 font-semibold">
+                {t("tags")}
+              </p>
+
+              <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
+
+              <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
+                <div className="flex gap-1 items-center flex-wrap">
+                  {link.tags.map((e, i) => (
+                    <Link
+                      href={"/tags/" + e.id}
+                      key={i}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="btn btn-xs btn-ghost truncate max-w-[19rem]"
+                    >
+                      #{e.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
       <LinkActions
         link={link}
         collection={collection}
@@ -213,6 +266,8 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
             ? "top-[10.75rem] right-3"
             : "top-[.75rem] right-3"
         }
+        toggleShowInfo={() => setShowInfo(!showInfo)}
+        linkInfo={showInfo}
         flipDropdown={flipDropdown}
       />
     </div>
