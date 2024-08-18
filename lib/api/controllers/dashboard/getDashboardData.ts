@@ -42,7 +42,7 @@ export default async function getDashboardData(
         select: { id: true },
       },
     },
-    orderBy: order || { id: "desc" },
+    orderBy: order,
   });
 
   const recentlyAddedLinks = await prisma.link.findMany({
@@ -67,11 +67,19 @@ export default async function getDashboardData(
         select: { id: true },
       },
     },
-    orderBy: order || { id: "desc" },
+    orderBy: order,
   });
 
-  const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
-    (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
+  const combinedLinks = [...recentlyAddedLinks, ...pinnedLinks];
+
+  const uniqueLinks = Array.from(
+    combinedLinks
+      .reduce((map, item) => map.set(item.id, item), new Map())
+      .values()
+  );
+
+  const links = uniqueLinks.sort(
+    (a, b) => (new Date(b.id) as any) - (new Date(a.id) as any)
   );
 
   return { response: links, status: 200 };

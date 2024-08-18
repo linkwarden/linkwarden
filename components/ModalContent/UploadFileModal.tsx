@@ -3,8 +3,6 @@ import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
-import useCollectionStore from "@/store/collections";
-import useLinkStore from "@/store/links";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
@@ -14,6 +12,8 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
+import { useUploadFile } from "@/hooks/store/links";
 
 type Props = {
   onClose: Function;
@@ -45,11 +45,11 @@ export default function UploadFileModal({ onClose }: Props) {
     useState<LinkIncludingShortenedCollectionAndTags>(initial);
   const [file, setFile] = useState<File>();
 
-  const { uploadFile } = useLinkStore();
+  const uploadFile = useUploadFile();
   const [submitLoader, setSubmitLoader] = useState(false);
   const [optionsExpanded, setOptionsExpanded] = useState(false);
   const router = useRouter();
-  const { collections } = useCollectionStore();
+  const { data: collections = [] } = useCollections();
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = null;
@@ -115,20 +115,26 @@ export default function UploadFileModal({ onClose }: Props) {
       // }
 
       setSubmitLoader(true);
+
       const load = toast.loading(t("creating"));
 
-      const response = await uploadFile(link, file);
+      await uploadFile.mutateAsync(
+        { link, file },
+        {
+          onSettled: (data, error) => {
+            toast.dismiss(load);
 
-      toast.dismiss(load);
-      if (response.ok) {
-        toast.success(t("created_success"));
-        onClose();
-      } else {
-        toast.error(response.data as string);
-      }
+            if (error) {
+              toast.error(error.message);
+            } else {
+              onClose();
+              toast.success(t("created_success"));
+            }
+          },
+        }
+      );
 
       setSubmitLoader(false);
-      return response;
     }
   };
 

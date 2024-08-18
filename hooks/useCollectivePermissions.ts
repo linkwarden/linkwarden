@@ -1,11 +1,12 @@
-import useAccountStore from "@/store/account";
-import useCollectionStore from "@/store/collections";
 import { Member } from "@/types/global";
 import { useEffect, useState } from "react";
+import { useCollections } from "./store/collections";
+import { useUser } from "./store/user";
 
 export default function useCollectivePermissions(collectionIds: number[]) {
-  const { collections } = useCollectionStore();
-  const { account } = useAccountStore();
+  const { data: collections = [] } = useCollections();
+
+  const { data: user = {} } = useUser();
 
   const [permissions, setPermissions] = useState<Member | true>();
   useEffect(() => {
@@ -14,7 +15,7 @@ export default function useCollectivePermissions(collectionIds: number[]) {
 
       if (collection) {
         let getPermission: Member | undefined = collection.members.find(
-          (e) => e.userId === account.id
+          (e) => e.userId === user.id
         );
 
         if (
@@ -24,10 +25,10 @@ export default function useCollectivePermissions(collectionIds: number[]) {
         )
           getPermission = undefined;
 
-        setPermissions(account.id === collection.ownerId || getPermission);
+        setPermissions(user.id === collection.ownerId || getPermission);
       }
     }
-  }, [account, collections, collectionIds]);
+  }, [user, collections, collectionIds]);
 
   return permissions;
 }

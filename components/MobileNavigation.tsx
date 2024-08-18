@@ -41,7 +41,7 @@ export default function MobileNavigation({}: Props) {
                 <i className="bi-plus text-5xl pointer-events-none"></i>
               </span>
             </div>
-            <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box w-40 mb-1 -ml-12">
+            <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box mb-1 -ml-12">
               <li>
                 <div
                   onClick={() => {
@@ -50,6 +50,7 @@ export default function MobileNavigation({}: Props) {
                   }}
                   tabIndex={0}
                   role="button"
+                  className="whitespace-nowrap"
                 >
                   {t("new_link")}
                 </div>
@@ -62,6 +63,7 @@ export default function MobileNavigation({}: Props) {
                   }}
                   tabIndex={0}
                   role="button"
+                  className="whitespace-nowrap"
                 >
                   {t("upload_file")}
                 </div>
@@ -74,6 +76,7 @@ export default function MobileNavigation({}: Props) {
                   }}
                   tabIndex={0}
                   role="button"
+                  className="whitespace-nowrap"
                 >
                   {t("new_collection")}
                 </div>

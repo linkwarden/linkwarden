@@ -1,6 +1,5 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useState, useEffect } from "react";
-import useAccountStore from "@/store/account";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import Checkbox from "@/components/Checkbox";
@@ -8,12 +7,14 @@ import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps"; // Import getServerSideProps for server-side data fetching
 import { LinksRouteTo } from "@prisma/client";
+import { useUpdateUser, useUser } from "@/hooks/store/user";
 
 export default function Appearance() {
   const { t } = useTranslation();
   const { updateSettings } = useLocalSettingsStore();
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { account, updateAccount } = useAccountStore();
+  const { data: account } = useUser();
+  const updateUser = useUpdateUser();
   const [user, setUser] = useState(account);
 
   const [preventDuplicateLinks, setPreventDuplicateLinks] = useState<boolean>(
@@ -73,17 +74,23 @@ export default function Appearance() {
   const submit = async () => {
     setSubmitLoader(true);
 
-    const load = toast.loading(t("applying_changes"));
+    const load = toast.loading(t("applying_settings"));
 
-    const response = await updateAccount({ ...user });
+    await updateUser.mutateAsync(
+      { ...user },
+      {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-    toast.dismiss(load);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success(t("settings_applied"));
+          }
+        },
+      }
+    );
 
-    if (response.ok) {
-      toast.success(t("settings_applied"));
-    } else {
-      toast.error(response.data as string);
-    }
     setSubmitLoader(false);
   };
 

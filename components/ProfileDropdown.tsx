@@ -1,17 +1,17 @@
 import useLocalSettingsStore from "@/store/localSettings";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import ProfilePhoto from "./ProfilePhoto";
-import useAccountStore from "@/store/account";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
+import { useUser } from "@/hooks/store/user";
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
-  const { account } = useAccountStore();
+  const { data: user = {} } = useUser();
 
-  const isAdmin = account.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
+  const isAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
 
   const handleToggle = () => {
     const newTheme = settings.theme === "dark" ? "light" : "dark";
@@ -27,14 +27,12 @@ export default function ProfileDropdown() {
         className="btn btn-circle btn-ghost"
       >
         <ProfilePhoto
-          src={account.image ? account.image : undefined}
+          src={user.image ? user.image : undefined}
           priority={true}
         />
       </div>
       <ul
-        className={`dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box ${
-          isAdmin ? "w-48" : "w-40"
-        } mt-1`}
+        className={`dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1`}
       >
         <li>
           <Link
@@ -42,6 +40,7 @@ export default function ProfileDropdown() {
             onClick={() => (document?.activeElement as HTMLElement)?.blur()}
             tabIndex={0}
             role="button"
+            className="whitespace-nowrap"
           >
             {t("settings")}
           </Link>
@@ -54,6 +53,7 @@ export default function ProfileDropdown() {
             }}
             tabIndex={0}
             role="button"
+            className="whitespace-nowrap"
           >
             {t("switch_to", {
               theme: settings.theme === "light" ? t("dark") : t("light"),
@@ -67,6 +67,7 @@ export default function ProfileDropdown() {
               onClick={() => (document?.activeElement as HTMLElement)?.blur()}
               tabIndex={0}
               role="button"
+              className="whitespace-nowrap"
             >
               {t("server_administration")}
             </Link>
@@ -80,6 +81,7 @@ export default function ProfileDropdown() {
             }}
             tabIndex={0}
             role="button"
+            className="whitespace-nowrap"
           >
             {t("logout")}
           </div>
