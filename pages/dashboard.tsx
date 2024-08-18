@@ -111,14 +111,14 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <div className="flex justify-evenly flex-col items-start sm:flex-row sm:items-center gap-5 xl:w-full h-full rounded-2xl p-5 bg-base-200">
+          <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
             <DashboardItem
               name={numberOfLinks === 1 ? t("link") : t("links")}
               value={numberOfLinks}
               icon={"bi-link-45deg"}
             />
 
-            <div className="divider m-0"></div>
+            <div className="divider xl:divider-horizontal"></div>
 
             <DashboardItem
               name={
@@ -128,11 +128,11 @@ export default function Dashboard() {
               icon={"bi-folder"}
             />
 
-            <div className="divider m-0"></div>
+            <div className="divider xl:divider-horizontal"></div>
 
             <DashboardItem
               name={tags.length === 1 ? t("tag") : t("tags")}
-              value={tags.length * numberOfLinks}
+              value={tags.length}
               icon={"bi-hash"}
             />
           </div>
