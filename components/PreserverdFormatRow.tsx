@@ -68,8 +68,9 @@ export default function PreservedFormatRow({
         ) : undefined}
 
         <Link
-          href={`${isPublic ? "/public" : ""
-            }/preserved/${link?.id}?format=${format}`}
+          href={`${
+            isPublic ? "/public" : ""
+          }/preserved/${link?.id}?format=${format}`}
           target="_blank"
           className="btn btn-sm btn-square"
         >
