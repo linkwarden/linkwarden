@@ -11,6 +11,7 @@ import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
+import CopyButton from "../CopyButton";
 
 type Props = {
   onClose: Function;
@@ -133,21 +134,11 @@ export default function EditCollectionSharingModal({
         )}
 
         {collection.isPublic ? (
-          <div className={permissions === true ? "pl-5" : ""}>
+          <div>
             <p className="mb-2">{t("sharable_link_guide")}</p>
-            <div
-              onClick={() => {
-                try {
-                  navigator.clipboard
-                    .writeText(publicCollectionURL)
-                    .then(() => toast.success(t("copied")));
-                } catch (err) {
-                  console.log(err);
-                }
-              }}
-              className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 bg-base-200 border-neutral-content border-solid border outline-none hover:border-primary dark:hover:border-primary duration-100 cursor-text"
-            >
+            <div className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 bg-base-200 border-neutral-content border-solid border flex items-center gap-2 justify-between">
               {publicCollectionURL}
+              <CopyButton text={publicCollectionURL} />
             </div>
           </div>
         ) : null}
