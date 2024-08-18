@@ -96,7 +96,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
   useEffect(() => {
-    let interval: any;
+    let interval: NodeJS.Timeout | null = null;
 
     if (
       isVisible &&

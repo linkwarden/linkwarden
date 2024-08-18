@@ -77,7 +77,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
 
       <div className="divider mb-3 mt-1"></div>
 
-      {link.url ? (
+      {link.url && (
         <Link
           href={link.url}
           className="truncate text-neutral flex gap-2 mb-5 w-fit max-w-full"
@@ -87,7 +87,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
           <i className="bi-link-45deg text-xl" />
           <p>{shortenedURL}</p>
         </Link>
-      ) : undefined}
+      )}
 
       <div className="w-full">
         <p className="mb-2">{t("name")}</p>
@@ -103,7 +103,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
             <p className="mb-2">{t("collection")}</p>
-            {link.collection.name ? (
+            {link.collection.name && (
               <CollectionSelection
                 onChange={setCollection}
                 defaultValue={
@@ -113,7 +113,7 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
                 }
                 creatable={false}
               />
-            ) : null}
+            )}
           </div>
 
           <div>

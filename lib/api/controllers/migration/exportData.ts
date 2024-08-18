@@ -22,18 +22,5 @@ export default async function exportData(userId: number) {
 
   const { password, id, ...userData } = user;
 
-  function redactIds(obj: any) {
-    if (Array.isArray(obj)) {
-      obj.forEach((o) => redactIds(o));
-    } else if (obj !== null && typeof obj === "object") {
-      delete obj.id;
-      for (let key in obj) {
-        redactIds(obj[key]);
-      }
-    }
-  }
-
-  redactIds(userData);
-
   return { response: userData, status: 200 };
 }

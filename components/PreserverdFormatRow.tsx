@@ -4,7 +4,6 @@ import {
 } from "@/types/global";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useGetLink } from "@/hooks/store/links";
 
 type Props = {
   name: string;
@@ -21,8 +20,6 @@ export default function PreservedFormatRow({
   link,
   downloadable,
 }: Props) {
-  const getLink = useGetLink();
-
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
