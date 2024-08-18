@@ -46,13 +46,6 @@ export default function ReadableView({ link }: Props) {
   const router = useRouter();
 
   const getLink = useGetLink();
-  const { data: collections = [] } = useCollections();
-
-  const collection = useMemo(() => {
-    return collections.find(
-      (e) => e.id === link.collection.id
-    ) as CollectionIncludingMembersAndLinkCount;
-  }, [collections, link]);
 
   useEffect(() => {
     const fetchLinkContent = async () => {
@@ -73,7 +66,7 @@ export default function ReadableView({ link }: Props) {
   }, [link]);
 
   useEffect(() => {
-    if (link) getLink.mutateAsync(link?.id as number);
+    if (link) getLink.mutateAsync({ id: link.id as number });
 
     let interval: any;
     if (
@@ -88,7 +81,10 @@ export default function ReadableView({ link }: Props) {
         !link?.monolith)
     ) {
       interval = setInterval(
-        () => getLink.mutateAsync(link.id as number),
+        () =>
+          getLink.mutateAsync({
+            id: link.id as number,
+          }),
         5000
       );
     } else {
@@ -243,13 +239,6 @@ export default function ReadableView({ link }: Props) {
 
           {link?.name ? <p>{unescapeString(link?.description)}</p> : undefined}
         </div>
-
-        <LinkActions
-          link={link}
-          collection={collection}
-          position="top-3 right-3"
-          alignToTop
-        />
       </div>
 
       <div className="flex flex-col gap-5 h-full">
