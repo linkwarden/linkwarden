@@ -9,7 +9,7 @@ export const resizeImage = (file: File): Promise<Blob> =>
       "JPEG", // output format
       100, // quality
       0, // rotation
-      (uri: any) => {
+      (uri) => {
         resolve(uri as Blob);
       },
       "blob" // output type

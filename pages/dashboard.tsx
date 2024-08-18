@@ -55,11 +55,14 @@ export default function Dashboard() {
     handleNumberOfLinksToShow();
   }, [width]);
 
-  const importBookmarks = async (e: any, format: MigrationFormat) => {
-    const file: File = e.target.files[0];
+  const importBookmarks = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    format: MigrationFormat
+  ) => {
+    const file: File | null = e.target.files && e.target.files[0];
 
     if (file) {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.readAsText(file, "UTF-8");
       reader.onload = async function (e) {
         const load = toast.loading("Importing...");
@@ -132,7 +135,7 @@ export default function Dashboard() {
 
             <DashboardItem
               name={tags.length === 1 ? t("tag") : t("tags")}
-              value={tags.length * numberOfLinks}
+              value={tags.length}
               icon={"bi-hash"}
             />
           </div>
@@ -339,9 +342,7 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-      {newLinkModal ? (
-        <NewLinkModal onClose={() => setNewLinkModal(false)} />
-      ) : undefined}
+      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
     </MainLayout>
   );
 }
