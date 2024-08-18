@@ -1,7 +1,15 @@
-node_modules
+node_modules/
 pgdata
 .env
-.devcontainer
+.env.sample
+ARCHITECTURE.md
+LICENSE.md
+README.md
+.devcontainer/
 docker-compose.yml
 Dockerfile
 README.md
+.git/
+.github/
+.gitignore
+.vscode/

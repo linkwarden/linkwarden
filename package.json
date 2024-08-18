@@ -73,6 +73,7 @@
     "react-masonry-css": "^1.0.16",
     "react-select": "^5.7.4",
     "react-spinners": "^0.14.1",
+    "sharp": "^0.33.5",
     "socks-proxy-agent": "^8.0.2",
     "stripe": "^12.13.0",
     "tailwind-merge": "^2.3.0",
