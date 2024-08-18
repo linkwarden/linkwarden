@@ -20,7 +20,7 @@ export default function Index() {
   useEffect(() => {
     const fetchLink = async () => {
       if (router.query.id) {
-        await getLink.mutateAsync(Number(router.query.id));
+        await getLink.mutateAsync({ id: Number(router.query.id) });
       }
     };
 

@@ -1,6 +1,6 @@
 {
   "name": "linkwarden",
-  "version": "v2.7.0",
+  "version": "v2.8.0",
   "main": "index.js",
   "repository": "https://github.com/linkwarden/linkwarden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
@@ -25,6 +25,8 @@
     "@aws-sdk/client-s3": "^3.379.1",
     "@headlessui/react": "^1.7.15",
     "@mozilla/readability": "^0.4.4",
+    "@phosphor-icons/core": "^2.1.1",
+    "@phosphor-icons/react": "^2.1.7",
     "@prisma/client": "^4.16.2",
     "@stripe/stripe-js": "^1.54.1",
     "@tanstack/react-query": "^5.51.15",
@@ -50,6 +52,7 @@
     "eslint-config-next": "13.4.9",
     "formidable": "^3.5.1",
     "framer-motion": "^10.16.4",
+    "fuse.js": "^7.0.0",
     "handlebars": "^4.7.8",
     "himalaya": "^1.1.0",
     "i18next": "^23.11.5",
@@ -76,7 +79,7 @@
     "socks-proxy-agent": "^8.0.2",
     "stripe": "^12.13.0",
     "tailwind-merge": "^2.3.0",
-    "vaul": "^0.8.8",
+    "vaul": "^0.9.1",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
@@ -92,7 +95,7 @@
     "postcss": "^8.4.26",
     "prettier": "3.1.1",
     "prisma": "^4.16.2",
-    "tailwindcss": "^3.3.3",
+    "tailwindcss": "^3.4.10",
     "ts-node": "^10.9.2",
     "typescript": "4.9.4"
   }
