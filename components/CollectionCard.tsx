@@ -158,9 +158,11 @@ export default function CollectionCard({
       <Link
         href={`/collections/${collection.id}`}
         style={{
-          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
-            } 50%, ${settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
-            } 100%)`,
+          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
+            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+          } 50%, ${
+            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+          } 100%)`,
         }}
         className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
       >

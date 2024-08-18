@@ -30,19 +30,19 @@ export default function Account() {
     !objectIsEmpty(account)
       ? account
       : ({
-        // @ts-ignore
-        id: null,
-        name: "",
-        username: "",
-        email: "",
-        emailVerified: null,
-        password: undefined,
-        image: "",
-        isPrivate: true,
-        // @ts-ignore
-        createdAt: null,
-        whitelistedUsers: [],
-      } as unknown as AccountSettings)
+          // @ts-ignore
+          id: null,
+          name: "",
+          username: "",
+          email: "",
+          emailVerified: null,
+          password: undefined,
+          image: "",
+          isPrivate: true,
+          // @ts-ignore
+          createdAt: null,
+          whitelistedUsers: [],
+        } as unknown as AccountSettings)
   );
 
   const { t } = useTranslation();

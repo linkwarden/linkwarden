@@ -135,9 +135,9 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
       <p className="text-xl font-thin">{t("preserved_formats")}</p>
       <div className="divider mb-2 mt-1"></div>
       {screenshotAvailable(link) ||
-        pdfAvailable(link) ||
-        readabilityAvailable(link) ||
-        monolithAvailable(link) ? (
+      pdfAvailable(link) ||
+      readabilityAvailable(link) ||
+      monolithAvailable(link) ? (
         <p className="mb-3">{t("available_formats")}</p>
       ) : (
         ""
@@ -214,8 +214,9 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
         )}
 
         <div
-          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${isReady() ? "sm:mt " : ""
-            }`}
+          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${
+            isReady() ? "sm:mt " : ""
+          }`}
         >
           <Link
             href={`https://web.archive.org/web/${link?.url?.replace(
