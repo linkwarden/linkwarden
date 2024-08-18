@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
-import useCollectionStore from "@/store/collections";
-import toast from "react-hot-toast";
 import { HexColorPicker } from "react-colorful";
 import { Collection } from "@prisma/client";
 import Modal from "../Modal";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
-import useAccountStore from "@/store/account";
-import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
+import { useCreateCollection } from "@/hooks/store/collections";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -25,15 +23,14 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
   } as Partial<Collection>;
 
   const [collection, setCollection] = useState<Partial<Collection>>(initial);
-  const { setAccount } = useAccountStore();
-  const { data } = useSession();
 
   useEffect(() => {
     setCollection(initial);
   }, []);
 
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { addCollection } = useCollectionStore();
+
+  const createCollection = useCreateCollection();
 
   const submit = async () => {
     if (submitLoader) return;
@@ -43,16 +40,18 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
 
     const load = toast.loading(t("creating"));
 
-    let response = await addCollection(collection as any);
-    toast.dismiss(load);
+    await createCollection.mutateAsync(collection, {
+      onSettled: (data, error) => {
+        toast.dismiss(load);
 
-    if (response.ok) {
-      toast.success(t("created_success"));
-      if (response.data) {
-        setAccount(data?.user.id as number);
-        onClose();
-      }
-    } else toast.error(response.data as string);
+        if (error) {
+          toast.error(error.message);
+        } else {
+          onClose();
+          toast.success(t("created"));
+        }
+      },
+    });
 
     setSubmitLoader(false);
   };

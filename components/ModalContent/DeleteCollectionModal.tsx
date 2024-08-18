@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
-import useCollectionStore from "@/store/collections";
-import toast from "react-hot-toast";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
 import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
+import { useDeleteCollection } from "@/hooks/store/collections";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -22,7 +22,6 @@ export default function DeleteCollectionModal({
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { removeCollection } = useCollectionStore();
   const router = useRouter();
   const [inputField, setInputField] = useState("");
   const permissions = usePermissions(collection.id as number);
@@ -30,6 +29,8 @@ export default function DeleteCollectionModal({
   useEffect(() => {
     setCollection(activeCollection);
   }, []);
+
+  const deleteCollection = useDeleteCollection();
 
   const submit = async () => {
     if (permissions === true && collection.name !== inputField) return;
@@ -41,17 +42,19 @@ export default function DeleteCollectionModal({
 
       const load = toast.loading(t("deleting_collection"));
 
-      let response = await removeCollection(collection.id as number);
+      deleteCollection.mutateAsync(collection.id as number, {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success(t("deleted"));
-        onClose();
-        router.push("/collections");
-      } else {
-        toast.error(response.data as string);
-      }
+          if (error) {
+            toast.error(error.message);
+          } else {
+            onClose();
+            toast.success(t("deleted"));
+            router.push("/collections");
+          }
+        },
+      });
 
       setSubmitLoader(false);
     }

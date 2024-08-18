@@ -7,7 +7,7 @@ import { Plan } from "@/types/global";
 import Button from "@/components/ui/Button";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
-import useAccountStore from "@/store/account";
+import { useUser } from "@/hooks/store/user";
 
 const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
 
@@ -20,11 +20,11 @@ export default function Subscribe() {
 
   const router = useRouter();
 
-  const { account } = useAccountStore();
+  const { data: user = {} } = useUser();
 
   useEffect(() => {
     const hasInactiveSubscription =
-      account.id && !account.subscription?.active && stripeEnabled;
+      user.id && !user.subscription?.active && stripeEnabled;
 
     if (session.status === "authenticated" && !hasInactiveSubscription) {
       router.push("/dashboard");

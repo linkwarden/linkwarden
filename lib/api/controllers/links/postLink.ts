@@ -86,9 +86,11 @@ export default async function postLink(
     else if (contentType === "image/png") imageExtension = "png";
   }
 
+  if (!link.tags) link.tags = [];
+
   const newLink = await prisma.link.create({
     data: {
-      url: link.url?.trim().replace(/\/+$/, "") || null,
+      url: link.url?.trim() || null,
       name,
       description: link.description,
       type: linkType,
@@ -98,7 +100,7 @@ export default async function postLink(
         },
       },
       tags: {
-        connectOrCreate: link.tags.map((tag) => ({
+        connectOrCreate: link.tags?.map((tag) => ({
           where: {
             name_ownerId: {
               name: tag.name.trim(),

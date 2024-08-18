@@ -1,8 +1,8 @@
-import useTagStore from "@/store/tags";
 import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import { styles } from "./styles";
 import { Options } from "./types";
+import { useTags } from "@/hooks/store/tags";
 
 type Props = {
   onChange: any;
@@ -13,12 +13,12 @@ type Props = {
 };
 
 export default function TagSelection({ onChange, defaultValue }: Props) {
-  const { tags } = useTagStore();
+  const { data: tags = [] } = useTags();
 
   const [options, setOptions] = useState<Options[]>([]);
 
   useEffect(() => {
-    const formatedCollections = tags.map((e) => {
+    const formatedCollections = tags.map((e: any) => {
       return { value: e.id, label: e.name };
     });
 

@@ -1,5 +1,3 @@
-import useCollectionStore from "@/store/collections";
-import useTagStore from "@/store/tags";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -7,6 +5,8 @@ import { Disclosure, Transition } from "@headlessui/react";
 import SidebarHighlightLink from "@/components/SidebarHighlightLink";
 import CollectionListing from "@/components/CollectionListing";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
+import { useTags } from "@/hooks/store/tags";
 
 export default function Sidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
@@ -22,8 +22,9 @@ export default function Sidebar({ className }: { className?: string }) {
     }
   );
 
-  const { collections } = useCollectionStore();
-  const { tags } = useTagStore();
+  const { data: collections } = useCollections();
+
+  const { data: tags = [], isLoading } = useTags();
   const [active, setActive] = useState("");
 
   const router = useRouter();
@@ -127,10 +128,16 @@ export default function Sidebar({ className }: { className?: string }) {
           leaveTo="transform opacity-0 -translate-y-3"
         >
           <Disclosure.Panel className="flex flex-col gap-1">
-            {tags[0] ? (
+            {isLoading ? (
+              <div className="flex flex-col gap-4">
+                <div className="skeleton h-4 w-full"></div>
+                <div className="skeleton h-4 w-full"></div>
+                <div className="skeleton h-4 w-full"></div>
+              </div>
+            ) : tags[0] ? (
               tags
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((e, i) => {
+                .sort((a: any, b: any) => a.name.localeCompare(b.name))
+                .map((e: any, i: any) => {
                   return (
                     <Link key={i} href={`/tags/${e.id}`}>
                       <div

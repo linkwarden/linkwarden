@@ -1,5 +1,4 @@
 import { useState, useEffect, ChangeEvent } from "react";
-import useAccountStore from "@/store/account";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
@@ -17,6 +16,7 @@ import Button from "@/components/ui/Button";
 import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useUpdateUser, useUser } from "@/hooks/store/user";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -24,24 +24,25 @@ export default function Account() {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
     useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { account, updateAccount } = useAccountStore();
+  const { data: account } = useUser();
+  const updateUser = useUpdateUser();
   const [user, setUser] = useState<AccountSettings>(
     !objectIsEmpty(account)
       ? account
       : ({
-          // @ts-ignore
-          id: null,
-          name: "",
-          username: "",
-          email: "",
-          emailVerified: null,
-          password: undefined,
-          image: "",
-          isPrivate: true,
-          // @ts-ignore
-          createdAt: null,
-          whitelistedUsers: [],
-        } as unknown as AccountSettings)
+        // @ts-ignore
+        id: null,
+        name: "",
+        username: "",
+        email: "",
+        emailVerified: null,
+        password: undefined,
+        image: "",
+        isPrivate: true,
+        // @ts-ignore
+        createdAt: null,
+        whitelistedUsers: [],
+      } as unknown as AccountSettings)
   );
 
   const { t } = useTranslation();
@@ -80,25 +81,38 @@ export default function Account() {
 
   const submit = async (password?: string) => {
     setSubmitLoader(true);
+
     const load = toast.loading(t("applying_settings"));
 
-    const response = await updateAccount({
-      ...user,
-      // @ts-ignore
-      password: password ? password : undefined,
-    });
+    await updateUser.mutateAsync(
+      {
+        ...user,
+        password: password ? password : undefined,
+      },
+      {
+        onSuccess: (data) => {
+          if (data.response.email !== user.email) {
+            toast.success(t("email_change_request"));
+            setEmailChangeVerificationModal(false);
+          }
+        },
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-    toast.dismiss(load);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            if (data.response.email !== user.email) {
+              toast.success(t("email_change_request"));
+              setEmailChangeVerificationModal(false);
+            }
 
-    if (response.ok) {
-      const emailChanged = account.email !== user.email;
-
-      toast.success(t("settings_applied"));
-      if (emailChanged) {
-        toast.success(t("email_change_request"));
-        setEmailChangeVerificationModal(false);
+            toast.success(t("settings_applied"));
+          }
+        },
       }
-    } else toast.error(response.data as string);
+    );
+
     setSubmitLoader(false);
   };
 
@@ -195,17 +209,14 @@ export default function Account() {
             <div>
               <p className="mb-2">{t("language")}</p>
               <select
+                value={user.locale || ""}
                 onChange={(e) => {
                   setUser({ ...user, locale: e.target.value });
                 }}
                 className="select border border-neutral-content focus:outline-none focus:border-primary duration-100 w-full bg-base-200 rounded-[0.375rem] min-h-0 h-[2.625rem] leading-4 p-2"
               >
                 {i18n.locales.map((locale) => (
-                  <option
-                    key={locale}
-                    value={locale}
-                    selected={user.locale === locale}
-                  >
+                  <option key={locale} value={locale} className="capitalize">
                     {new Intl.DisplayNames(locale, { type: "language" }).of(
                       locale
                     ) || ""}
@@ -237,9 +248,13 @@ export default function Account() {
                   <i className="bi-pencil-square text-md duration-100"></i>
                   {t("edit")}
                 </Button>
-                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
                   <li>
-                    <label tabIndex={0} role="button">
+                    <label
+                      tabIndex={0}
+                      role="button"
+                      className="whitespace-nowrap"
+                    >
                       {t("upload_new_photo")}
                       <input
                         type="file"
@@ -262,6 +277,7 @@ export default function Account() {
                             image: "",
                           })
                         }
+                        className="whitespace-nowrap"
                       >
                         {t("remove_photo")}
                       </div>
@@ -336,13 +352,14 @@ export default function Account() {
                   {t("import_links")}
                 </Button>
 
-                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
                   <li>
                     <label
                       tabIndex={0}
                       role="button"
                       htmlFor="import-linkwarden-file"
                       title={t("from_linkwarden")}
+                      className="whitespace-nowrap"
                     >
                       {t("from_linkwarden")}
                       <input
@@ -363,6 +380,7 @@ export default function Account() {
                       role="button"
                       htmlFor="import-html-file"
                       title={t("from_html")}
+                      className="whitespace-nowrap"
                     >
                       {t("from_html")}
                       <input
@@ -383,6 +401,7 @@ export default function Account() {
                       role="button"
                       htmlFor="import-wallabag-file"
                       title={t("from_wallabag")}
+                      className="whitespace-nowrap"
                     >
                       {t("from_wallabag")}
                       <input

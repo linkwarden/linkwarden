@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import useLinkStore from "@/store/links";
 import { useRouter } from "next/router";
 import {
   ArchivedFormat,
@@ -7,9 +6,12 @@ import {
 } from "@/types/global";
 import ReadableView from "@/components/ReadableView";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useGetLink, useLinks } from "@/hooks/store/links";
 
 export default function Index() {
-  const { links, getLink } = useLinkStore();
+  const { links } = useLinks();
+
+  const getLink = useGetLink();
 
   const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>();
 
@@ -18,7 +20,7 @@ export default function Index() {
   useEffect(() => {
     const fetchLink = async () => {
       if (router.query.id) {
-        await getLink(Number(router.query.id));
+        await getLink.mutateAsync(Number(router.query.id));
       }
     };
 
@@ -26,7 +28,8 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    if (links[0]) setLink(links.find((e) => e.id === Number(router.query.id)));
+    if (links && links[0])
+      setLink(links.find((e) => e.id === Number(router.query.id)));
   }, [links]);
 
   return (

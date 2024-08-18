@@ -11,7 +11,16 @@ import { Session } from "next-auth";
 import { isPWA } from "@/lib/client/utils";
 // import useInitialData from "@/hooks/useInitialData";
 import { appWithTranslation } from "next-i18next";
-import nextI18nextConfig from "../next-i18next.config";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 30,
+    },
+  },
+});
 
 function App({
   Component,
@@ -29,82 +38,76 @@ function App({
   }, []);
 
   return (
-    <SessionProvider
-      session={pageProps.session}
-      refetchOnWindowFocus={false}
-      basePath="/api/v1/auth"
-    >
-      <Head>
-        <title>Linkwarden</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicon-16x16.png"
-        />
-        <link rel="manifest" href="/site.webmanifest" />
-      </Head>
-      <AuthRedirect>
-        {/* <GetData> */}
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          toastOptions={{
-            className:
-              "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white",
-          }}
-        >
-          {(t) => (
-            <ToastBar toast={t}>
-              {({ icon, message }) => (
-                <div
-                  className="flex flex-row"
-                  data-testid="toast-message-container"
-                  data-type={t.type}
-                >
-                  {icon}
-                  <span data-testid="toast-message">{message}</span>
-                  {t.type !== "loading" && (
-                    <button
-                      className="btn btn-xs outline-none btn-circle btn-ghost"
-                      data-testid="close-toast-button"
-                      onClick={() => toast.dismiss(t.id)}
-                    >
-                      <i className="bi bi-x"></i>
-                    </button>
-                  )}
-                </div>
-              )}
-            </ToastBar>
-          )}
-        </Toaster>
-        <Component {...pageProps} />
-        {/* </GetData> */}
-      </AuthRedirect>
-    </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <SessionProvider
+        session={pageProps.session}
+        refetchOnWindowFocus={false}
+        basePath="/api/v1/auth"
+      >
+        <Head>
+          <title>Linkwarden</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta name="theme-color" content="#000000" />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png"
+          />
+          <link rel="manifest" href="/site.webmanifest" />
+        </Head>
+        <AuthRedirect>
+          {/* <GetData> */}
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              className:
+                "border border-sky-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white",
+            }}
+          >
+            {(t) => (
+              <ToastBar toast={t}>
+                {({ icon, message }) => (
+                  <div
+                    className="flex flex-row"
+                    data-testid="toast-message-container"
+                    data-type={t.type}
+                  >
+                    {icon}
+                    <span data-testid="toast-message">{message}</span>
+                    {t.type !== "loading" && (
+                      <button
+                        className="btn btn-xs outline-none btn-circle btn-ghost"
+                        data-testid="close-toast-button"
+                        onClick={() => toast.dismiss(t.id)}
+                      >
+                        <i className="bi bi-x"></i>
+                      </button>
+                    )}
+                  </div>
+                )}
+              </ToastBar>
+            )}
+          </Toaster>
+          <Component {...pageProps} />
+          {/* </GetData> */}
+        </AuthRedirect>
+      </SessionProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 
 export default appWithTranslation(App);
-
-// function GetData({ children }: { children: React.ReactNode }) {
-//   const status = useInitialData();
-//   return typeof window !== "undefined" && status !== "loading" ? (
-//     children
-//   ) : (
-//     <></>
-//   );
-// }

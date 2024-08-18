@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
-import useCollectionStore from "@/store/collections";
 import toast from "react-hot-toast";
 import {
   AccountSettings,
@@ -8,13 +7,14 @@ import {
   Member,
 } from "@/types/global";
 import getPublicUserData from "@/lib/client/getPublicUserData";
-import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import ProfilePhoto from "../ProfilePhoto";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
+import { useUpdateCollection } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/user";
 
 type Props = {
   onClose: Function;
@@ -31,7 +31,7 @@ export default function EditCollectionSharingModal({
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { updateCollection } = useCollectionStore();
+  const updateCollection = useUpdateCollection();
 
   const submit = async () => {
     if (!submitLoader) {
@@ -40,24 +40,26 @@ export default function EditCollectionSharingModal({
 
       setSubmitLoader(true);
 
-      const load = toast.loading(t("updating"));
+      const load = toast.loading(t("updating_collection"));
 
-      let response;
+      await updateCollection.mutateAsync(collection, {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-      response = await updateCollection(collection as any);
-
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success(t("updated"));
-        onClose();
-      } else toast.error(response.data as string);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            onClose();
+            toast.success(t("updated"));
+          }
+        },
+      });
 
       setSubmitLoader(false);
     }
   };
 
-  const { account } = useAccountStore();
+  const { data: user = {} } = useUser();
   const permissions = usePermissions(collection.id as number);
 
   const currentURL = new URL(document.URL);
@@ -163,7 +165,7 @@ export default function EditCollectionSharingModal({
                 onKeyDown={(e) =>
                   e.key === "Enter" &&
                   addMemberToCollection(
-                    account.username as string,
+                    user.username as string,
                     memberUsername || "",
                     collection,
                     setMemberState,
@@ -175,7 +177,7 @@ export default function EditCollectionSharingModal({
               <div
                 onClick={() =>
                   addMemberToCollection(
-                    account.username as string,
+                    user.username as string,
                     memberUsername || "",
                     collection,
                     setMemberState,
@@ -273,7 +275,7 @@ export default function EditCollectionSharingModal({
                                   {roleLabel}
                                   <i className="bi-chevron-down"></i>
                                 </div>
-                                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-64 mt-1">
+                                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
                                   <li>
                                     <label
                                       className="label cursor-pointer flex justify-start"
@@ -312,10 +314,12 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">
+                                        <p className="font-bold whitespace-nowrap">
                                           {t("viewer")}
                                         </p>
-                                        <p>{t("viewer_desc")}</p>
+                                        <p className="whitespace-nowrap">
+                                          {t("viewer_desc")}
+                                        </p>
                                       </div>
                                     </label>
                                   </li>
@@ -357,10 +361,12 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">
+                                        <p className="font-bold whitespace-nowrap">
                                           {t("contributor")}
                                         </p>
-                                        <p>{t("contributor_desc")}</p>
+                                        <p className="whitespace-nowrap">
+                                          {t("contributor_desc")}
+                                        </p>
                                       </div>
                                     </label>
                                   </li>
@@ -402,10 +408,12 @@ export default function EditCollectionSharingModal({
                                         }}
                                       />
                                       <div>
-                                        <p className="font-bold">
+                                        <p className="font-bold whitespace-nowrap">
                                           {t("admin")}
                                         </p>
-                                        <p>{t("admin_desc")}</p>
+                                        <p className="whitespace-nowrap">
+                                          {t("admin_desc")}
+                                        </p>
                                       </div>
                                     </label>
                                   </li>
