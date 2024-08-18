@@ -5,7 +5,6 @@ import {
 } from "@/types/global";
 import { useEffect, useRef, useState } from "react";
 import useLinkStore from "@/store/links";
-import useCollectionStore from "@/store/collections";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -13,14 +12,16 @@ import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection
 import Image from "next/image";
 import { previewAvailable } from "@/lib/shared/getArchiveValidity";
 import Link from "next/link";
-import LinkIcon from "./LinkComponents/LinkIcon";
+import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
-import useAccountStore from "@/store/account";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
-import LinkTypeBadge from "./LinkComponents/LinkTypeBadge";
+import LinkTypeBadge from "./LinkTypeBadge";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/user";
+import { useGetLink, useLinks } from "@/hooks/store/links";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -30,14 +31,16 @@ type Props = {
   editMode?: boolean;
 };
 
-export default function LinkCard({ link, flipDropdown, editMode }: Props) {
+export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
   const { t } = useTranslation();
 
-  const viewMode = localStorage.getItem("viewMode") || "card";
-  const { collections } = useCollectionStore();
-  const { account } = useAccountStore();
+  const { data: collections = [] } = useCollections();
+  const { data: user = {} } = useUser();
 
-  const { links, getLink, setSelectedLinks, selectedLinks } = useLinkStore();
+  const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const { links } = useLinks();
+  const getLink = useGetLink();
 
   useEffect(() => {
     if (!editMode) {
@@ -93,7 +96,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       link.preview !== "unavailable"
     ) {
       interval = setInterval(async () => {
-        getLink(link.id as number);
+        getLink.mutateAsync(link.id as number);
       }, 5000);
     }
 
@@ -129,69 +132,83 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       }
     >
       <div
-        className="rounded-2xl cursor-pointer h-full flex flex-col justify-between"
+        className="rounded-2xl cursor-pointer"
         onClick={() =>
-          !editMode && window.open(generateLinkHref(link, account), "_blank")
+          !editMode && window.open(generateLinkHref(link, user), "_blank")
         }
       >
-        <div>
-          <div className="relative rounded-t-2xl h-40 overflow-hidden">
-            {previewAvailable(link) ? (
-              <Image
-                src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
-                width={1280}
-                height={720}
-                alt=""
-                className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
-                style={
-                  link.type !== "image" ? { filter: "blur(1px)" } : undefined
-                }
-                draggable="false"
-                onError={(e) => {
-                  const target = e.target as HTMLElement;
-                  target.style.display = "none";
-                }}
-              />
-            ) : link.preview === "unavailable" ? (
-              <div className="bg-gray-50 duration-100 h-40 bg-opacity-80"></div>
-            ) : (
-              <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
-            )}
-            {link.type !== "image" && (
-              <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
-                <LinkIcon link={link} />
-              </div>
-            )}
-          </div>
-          <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
+        <div className="relative rounded-t-2xl overflow-hidden">
+          {previewAvailable(link) ? (
+            <Image
+              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
+              width={1280}
+              height={720}
+              alt=""
+              className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
+              style={
+                link.type !== "image" ? { filter: "blur(1px)" } : undefined
+              }
+              draggable="false"
+              onError={(e) => {
+                const target = e.target as HTMLElement;
+                target.style.display = "none";
+              }}
+            />
+          ) : link.preview === "unavailable" ? null : (
+            <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
+          )}
+          {link.type !== "image" && (
+            <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+              <LinkIcon link={link} />
+            </div>
+          )}
         </div>
 
-        <div className="flex flex-col justify-between h-full">
-          <div className="p-3 flex flex-col gap-2">
-            <p className="truncate w-full pr-9 text-primary text-sm">
-              {unescapeString(link.name)}
+        {link.preview !== "unavailable" && (
+          <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+        )}
+
+        <div className="p-3 flex flex-col gap-2">
+          <p className="hyphens-auto w-full pr-9 text-primary text-sm">
+            {unescapeString(link.name)}
+          </p>
+
+          <LinkTypeBadge link={link} />
+
+          {link.description && (
+            <p className="hyphens-auto text-sm">
+              {unescapeString(link.description)}
             </p>
+          )}
 
-            <LinkTypeBadge link={link} />
-          </div>
-
-          <div>
-            <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
-
-            <div className="flex justify-between text-xs text-neutral px-3 pb-1 gap-2">
-              <div className="cursor-pointer truncate">
-                {collection && (
-                  <LinkCollection link={link} collection={collection} />
-                )}
-              </div>
-              <LinkDate link={link} />
+          {link.tags && link.tags[0] && (
+            <div className="flex gap-1 items-center flex-wrap">
+              {link.tags.map((e, i) => (
+                <Link
+                  href={"/tags/" + e.id}
+                  key={i}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  className="btn btn-xs btn-ghost truncate max-w-[19rem]"
+                >
+                  #{e.name}
+                </Link>
+              ))}
             </div>
-          </div>
+          )}
+        </div>
+
+        <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+
+        <div className="flex flex-wrap justify-between text-xs text-neutral px-3 pb-1 w-full gap-x-2">
+          {collection && <LinkCollection link={link} collection={collection} />}
+          <LinkDate link={link} />
         </div>
       </div>
 
       {showInfo && (
-        <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-[0.9rem] fade-in overflow-y-auto">
+        <div className="p-3 absolute z-30 top-0 left-0 right-0 bottom-0 bg-base-200 rounded-2xl fade-in overflow-y-auto">
           <div
             onClick={() => setShowInfo(!showInfo)}
             className=" float-right btn btn-sm outline-none btn-circle btn-ghost z-10"
@@ -202,7 +219,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
             {t("description")}
           </p>
 
-          <hr className="divider my-2 border-t border-neutral-content h-[1px]" />
+          <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
           <p>
             {link.description ? (
               unescapeString(link.description)
@@ -218,7 +235,7 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
                 {t("tags")}
               </p>
 
-              <hr className="divider my-2 border-t border-neutral-content h-[1px]" />
+              <hr className="divider my-2 last:hidden border-t border-neutral-content h-[1px]" />
 
               <div className="flex gap-3 items-center flex-wrap mt-2 truncate relative">
                 <div className="flex gap-1 items-center flex-wrap">
@@ -244,7 +261,11 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
       <LinkActions
         link={link}
         collection={collection}
-        position="top-[10.75rem] right-3"
+        position={
+          link.preview !== "unavailable"
+            ? "top-[10.75rem] right-3"
+            : "top-[.75rem] right-3"
+        }
         toggleShowInfo={() => setShowInfo(!showInfo)}
         linkInfo={showInfo}
         flipDropdown={flipDropdown}

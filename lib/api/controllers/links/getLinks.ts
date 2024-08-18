@@ -146,7 +146,7 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
         select: { id: true },
       },
     },
-    orderBy: order || { id: "desc" },
+    orderBy: order,
   });
 
   return { response: links, status: 200 };

@@ -8,12 +8,12 @@ import ProfilePhoto from "./ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
 import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
-import useAccountStore from "@/store/account";
 import EditCollectionModal from "./ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
+import { useUser } from "@/hooks/store/user";
 
 export default function CollectionCard({
   collection,
@@ -22,7 +22,7 @@ export default function CollectionCard({
 }) {
   const { t } = useTranslation();
   const { settings } = useLocalSettingsStore();
-  const { account } = useAccountStore();
+  const { data: user = {} } = useUser();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     "en-US",
@@ -41,18 +41,18 @@ export default function CollectionCard({
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (collection && collection.ownerId !== account.id) {
+      if (collection && collection.ownerId !== user.id) {
         const owner = await getPublicUserData(collection.ownerId as number);
         setCollectionOwner(owner);
-      } else if (collection && collection.ownerId === account.id) {
+      } else if (collection && collection.ownerId === user.id) {
         setCollectionOwner({
-          id: account.id as number,
-          name: account.name,
-          username: account.username,
-          image: account.image,
-          archiveAsScreenshot: account.archiveAsScreenshot,
-          archiveAsMonolith: account.archiveAsMonolith,
-          archiveAsPDF: account.archiveAsPDF,
+          id: user.id as number,
+          name: user.name,
+          username: user.username as string,
+          image: user.image as string,
+          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user.archiveAsMonolith as boolean,
+          archiveAsPDF: user.archiveAsPDF as boolean,
         });
       }
     };
@@ -76,7 +76,7 @@ export default function CollectionCard({
         >
           <i className="bi-three-dots text-xl" title="More"></i>
         </div>
-        <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+        <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
           {permissions === true && (
             <li>
               <div
@@ -86,6 +86,7 @@ export default function CollectionCard({
                   (document?.activeElement as HTMLElement)?.blur();
                   setEditCollectionModal(true);
                 }}
+                className="whitespace-nowrap"
               >
                 {t("edit_collection_info")}
               </div>
@@ -99,6 +100,7 @@ export default function CollectionCard({
                 (document?.activeElement as HTMLElement)?.blur();
                 setEditCollectionSharingModal(true);
               }}
+              className="whitespace-nowrap"
             >
               {permissions === true
                 ? t("share_and_collaborate")
@@ -113,6 +115,7 @@ export default function CollectionCard({
                 (document?.activeElement as HTMLElement)?.blur();
                 setDeleteCollectionModal(true);
               }}
+              className="whitespace-nowrap"
             >
               {permissions === true
                 ? t("delete_collection")
@@ -155,11 +158,9 @@ export default function CollectionCard({
       <Link
         href={`/collections/${collection.id}`}
         style={{
-          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
-            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
-          } 50%, ${
-            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
-          } 100%)`,
+          backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+            } 50%, ${settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+            } 100%)`,
         }}
         className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
       >

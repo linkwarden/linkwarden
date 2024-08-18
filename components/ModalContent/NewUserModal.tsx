@@ -1,9 +1,9 @@
 import toast from "react-hot-toast";
 import Modal from "../Modal";
-import useUserStore from "@/store/admin/users";
 import TextInput from "../TextInput";
 import { FormEvent, useState } from "react";
 import { useTranslation, Trans } from "next-i18next";
+import { useAddUser } from "@/hooks/store/admin/users";
 
 type Props = {
   onClose: Function;
@@ -20,7 +20,9 @@ const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
 
 export default function NewUserModal({ onClose }: Props) {
   const { t } = useTranslation();
-  const { addUser } = useUserStore();
+
+  const addUser = useAddUser();
+
   const [form, setForm] = useState<FormData>({
     name: "",
     username: "",
@@ -44,24 +46,15 @@ export default function NewUserModal({ onClose }: Props) {
       };
 
       if (checkFields()) {
-        if (form.password.length < 8)
-          return toast.error(t("password_length_error"));
-
         setSubmitLoader(true);
 
-        const load = toast.loading(t("creating_account"));
+        await addUser.mutateAsync(form, {
+          onSuccess: () => {
+            onClose();
+          },
+        });
 
-        const response = await addUser(form);
-
-        toast.dismiss(load);
         setSubmitLoader(false);
-
-        if (response.ok) {
-          toast.success(t("user_created"));
-          onClose();
-        } else {
-          toast.error(response.data as string);
-        }
       } else {
         toast.error(t("fill_all_fields_error"));
       }

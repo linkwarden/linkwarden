@@ -1,5 +1,3 @@
-import useCollectionStore from "@/store/collections";
-import useLinkStore from "@/store/links";
 import {
   AccountSettings,
   CollectionIncludingMembersAndLinkCount,
@@ -10,23 +8,22 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import useLinks from "@/hooks/useLinks";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
 import useLocalSettingsStore from "@/store/localSettings";
-import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
-import CardView from "@/components/LinkViews/Layouts/CardView";
-import ListView from "@/components/LinkViews/Layouts/ListView";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
-import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
+import { useCollections } from "@/hooks/store/collections";
+import { useUser } from "@/hooks/store/user";
+import { useLinks } from "@/hooks/store/links";
+import Links from "@/components/LinkViews/Links";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -34,17 +31,21 @@ export default function Index() {
 
   const router = useRouter();
 
-  const { links } = useLinkStore();
-  const { collections } = useCollectionStore();
+  const { data: collections = [] } = useCollections();
 
-  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
+  const [sortBy, setSortBy] = useState<Sort>(
+    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
+  );
+
+  const { links, data } = useLinks({
+    sort: sortBy,
+    collectionId: Number(router.query.id),
+  });
 
   const [activeCollection, setActiveCollection] =
     useState<CollectionIncludingMembersAndLinkCount>();
 
   const permissions = usePermissions(activeCollection?.id as number);
-
-  useLinks({ collectionId: Number(router.query.id), sort: sortBy });
 
   useEffect(() => {
     setActiveCollection(
@@ -52,7 +53,7 @@ export default function Index() {
     );
   }, [router, collections]);
 
-  const { account } = useAccountStore();
+  const { data: user = {} } = useUser();
 
   const [collectionOwner, setCollectionOwner] = useState<
     Partial<AccountSettings>
@@ -60,20 +61,20 @@ export default function Index() {
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (activeCollection && activeCollection.ownerId !== account.id) {
+      if (activeCollection && activeCollection.ownerId !== user.id) {
         const owner = await getPublicUserData(
           activeCollection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (activeCollection && activeCollection.ownerId === account.id) {
+      } else if (activeCollection && activeCollection.ownerId === user.id) {
         setCollectionOwner({
-          id: account.id as number,
-          name: account.name,
-          username: account.username,
-          image: account.image,
-          archiveAsScreenshot: account.archiveAsScreenshot,
-          archiveAsMonolith: account.archiveAsScreenshot,
-          archiveAsPDF: account.archiveAsPDF,
+          id: user.id as number,
+          name: user.name,
+          username: user.username as string,
+          image: user.image as string,
+          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user.archiveAsScreenshot as boolean,
+          archiveAsPDF: user.archiveAsPDF as boolean,
         });
       }
     };
@@ -92,27 +93,17 @@ export default function Index() {
     if (editMode) return setEditMode(false);
   }, [router]);
 
-  const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Card
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
-
-  const linkView = {
-    [ViewMode.Card]: CardView,
-    [ViewMode.List]: ListView,
-    [ViewMode.Masonry]: MasonryView,
-  };
-
-  // @ts-ignore
-  const LinkComponent = linkView[viewMode];
 
   return (
     <MainLayout>
       <div
         className="h-[60rem] p-5 flex gap-3 flex-col"
         style={{
-          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
+            } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
@@ -137,7 +128,7 @@ export default function Index() {
               >
                 <i className="bi-three-dots text-xl" title="More"></i>
               </div>
-              <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-52 mt-1">
+              <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
                 {permissions === true && (
                   <li>
                     <div
@@ -147,6 +138,7 @@ export default function Index() {
                         (document?.activeElement as HTMLElement)?.blur();
                         setEditCollectionModal(true);
                       }}
+                      className="whitespace-nowrap"
                     >
                       {t("edit_collection_info")}
                     </div>
@@ -160,6 +152,7 @@ export default function Index() {
                       (document?.activeElement as HTMLElement)?.blur();
                       setEditCollectionSharingModal(true);
                     }}
+                    className="whitespace-nowrap"
                   >
                     {permissions === true
                       ? t("share_and_collaborate")
@@ -175,6 +168,7 @@ export default function Index() {
                         (document?.activeElement as HTMLElement)?.blur();
                         setNewCollectionModal(true);
                       }}
+                      className="whitespace-nowrap"
                     >
                       {t("create_subcollection")}
                     </div>
@@ -188,6 +182,7 @@ export default function Index() {
                       (document?.activeElement as HTMLElement)?.blur();
                       setDeleteCollectionModal(true);
                     }}
+                    className="whitespace-nowrap"
                   >
                     {permissions === true
                       ? t("delete_collection")
@@ -236,20 +231,20 @@ export default function Index() {
 
               <p className="text-neutral text-sm">
                 {activeCollection.members.length > 0 &&
-                activeCollection.members.length === 1
+                  activeCollection.members.length === 1
                   ? t("by_author_and_other", {
+                    author: collectionOwner.name,
+                    count: activeCollection.members.length,
+                  })
+                  : activeCollection.members.length > 0 &&
+                    activeCollection.members.length !== 1
+                    ? t("by_author_and_others", {
                       author: collectionOwner.name,
                       count: activeCollection.members.length,
                     })
-                  : activeCollection.members.length > 0 &&
-                      activeCollection.members.length !== 1
-                    ? t("by_author_and_others", {
-                        author: collectionOwner.name,
-                        count: activeCollection.members.length,
-                      })
                     : t("by_author", {
-                        author: collectionOwner.name,
-                      })}
+                      author: collectionOwner.name,
+                    })}
               </p>
             </div>
           </div>
@@ -294,15 +289,15 @@ export default function Index() {
           setSortBy={setSortBy}
           editMode={
             permissions === true ||
-            permissions?.canUpdate ||
-            permissions?.canDelete
+              permissions?.canUpdate ||
+              permissions?.canDelete
               ? editMode
               : undefined
           }
           setEditMode={
             permissions === true ||
-            permissions?.canUpdate ||
-            permissions?.canDelete
+              permissions?.canUpdate ||
+              permissions?.canDelete
               ? setEditMode
               : undefined
           }
@@ -310,24 +305,22 @@ export default function Index() {
           <p>
             {activeCollection?._count?.links === 1
               ? t("showing_count_result", {
-                  count: activeCollection?._count?.links,
-                })
+                count: activeCollection?._count?.links,
+              })
               : t("showing_count_results", {
-                  count: activeCollection?._count?.links,
-                })}
+                count: activeCollection?._count?.links,
+              })}
           </p>
         </LinkListOptions>
 
-        {links.some((e) => e.collectionId === Number(router.query.id)) ? (
-          <LinkComponent
-            editMode={editMode}
-            links={links.filter(
-              (e) => e.collection.id === activeCollection?.id
-            )}
-          />
-        ) : (
-          <NoLinksFound />
-        )}
+        <Links
+          editMode={editMode}
+          links={links}
+          layout={viewMode}
+          placeholderCount={1}
+          useData={data}
+        />
+        {!data.isLoading && links && !links[0] && <NoLinksFound />}
       </div>
       {activeCollection && (
         <>

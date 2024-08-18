@@ -1,9 +1,5 @@
-import useLinkStore from "@/store/links";
-import useCollectionStore from "@/store/collections";
-import useTagStore from "@/store/tags";
 import MainLayout from "@/layouts/MainLayout";
 import { useEffect, useState } from "react";
-import useLinks from "@/hooks/useLinks";
 import Link from "next/link";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import React from "react";
@@ -12,25 +8,24 @@ import { MigrationFormat, MigrationRequest, ViewMode } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
 import NewLinkModal from "@/components/ModalContent/NewLinkModal";
 import PageHeader from "@/components/PageHeader";
-import CardView from "@/components/LinkViews/Layouts/CardView";
-import ListView from "@/components/LinkViews/Layouts/ListView";
 import ViewDropdown from "@/components/ViewDropdown";
 import { dropdownTriggerer } from "@/lib/client/utils";
-import MasonryView from "@/components/LinkViews/Layouts/MasonryView";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
+import { useTags } from "@/hooks/store/tags";
+import { useDashboardData } from "@/hooks/store/dashboardData";
+import Links from "@/components/LinkViews/Links";
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const { collections } = useCollectionStore();
-  const { links } = useLinkStore();
-  const { tags } = useTagStore();
+  const { data: collections = [] } = useCollections();
+  const dashboardData = useDashboardData();
+  const { data: tags = [] } = useTags();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
   const [showLinks, setShowLinks] = useState(3);
-
-  useLinks({ pinnedOnly: true, sort: 0 });
 
   useEffect(() => {
     setNumberOfLinks(
@@ -102,19 +97,9 @@ export default function Dashboard() {
 
   const [newLinkModal, setNewLinkModal] = useState(false);
 
-  const [viewMode, setViewMode] = useState<string>(
-    localStorage.getItem("viewMode") || ViewMode.Card
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
-
-  const linkView = {
-    [ViewMode.Card]: CardView,
-    // [ViewMode.Grid]: ,
-    [ViewMode.List]: ListView,
-    [ViewMode.Masonry]: MasonryView,
-  };
-
-  // @ts-ignore
-  const LinkComponent = linkView[viewMode];
 
   return (
     <MainLayout>
@@ -174,12 +159,30 @@ export default function Dashboard() {
         </div>
 
         <div
-          style={{ flex: links[0] ? "0 1 auto" : "1 1 auto" }}
+          style={{
+            flex:
+              dashboardData.data || dashboardData.isLoading
+                ? "0 1 auto"
+                : "1 1 auto",
+          }}
           className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
         >
-          {links[0] ? (
+          {dashboardData.isLoading ? (
             <div className="w-full">
-              <LinkComponent links={links.slice(0, showLinks)} />
+              <Links
+                layout={viewMode}
+                placeholderCount={showLinks / 2}
+                useData={dashboardData}
+              />
+            </div>
+          ) : dashboardData.data &&
+            dashboardData.data[0] &&
+            !dashboardData.isLoading ? (
+            <div className="w-full">
+              <Links
+                links={dashboardData.data.slice(0, showLinks)}
+                layout={viewMode}
+              />
             </div>
           ) : (
             <div className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200">
@@ -214,13 +217,14 @@ export default function Dashboard() {
                     <i className="bi-cloud-upload text-xl duration-100"></i>
                     <p>{t("import_links")}</p>
                   </div>
-                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1 w-60">
+                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
                     <li>
                       <label
                         tabIndex={0}
                         role="button"
                         htmlFor="import-linkwarden-file"
                         title={t("from_linkwarden")}
+                        className="whitespace-nowrap"
                       >
                         {t("from_linkwarden")}
                         <input
@@ -241,6 +245,7 @@ export default function Dashboard() {
                         role="button"
                         htmlFor="import-html-file"
                         title={t("from_html")}
+                        className="whitespace-nowrap"
                       >
                         {t("from_html")}
                         <input
@@ -261,6 +266,7 @@ export default function Dashboard() {
                         role="button"
                         htmlFor="import-wallabag-file"
                         title={t("from_wallabag")}
+                        className="whitespace-nowrap"
                       >
                         {t("from_wallabag")}
                         <input
@@ -303,12 +309,21 @@ export default function Dashboard() {
           style={{ flex: "1 1 auto" }}
           className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
         >
-          {links.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
+          {dashboardData.isLoading ? (
             <div className="w-full">
-              <LinkComponent
-                links={links
+              <Links
+                layout={viewMode}
+                placeholderCount={showLinks / 2}
+                useData={dashboardData}
+              />
+            </div>
+          ) : dashboardData.data?.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
+            <div className="w-full">
+              <Links
+                links={dashboardData.data
                   .filter((e) => e.pinnedBy && e.pinnedBy[0])
                   .slice(0, showLinks)}
+                layout={viewMode}
               />
             </div>
           ) : (

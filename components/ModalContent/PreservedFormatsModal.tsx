@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import useLinkStore from "@/store/links";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
@@ -17,23 +16,22 @@ import {
   screenshotAvailable,
 } from "@/lib/shared/getArchiveValidity";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
-import useAccountStore from "@/store/account";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
+import { useUser } from "@/hooks/store/user";
+import { useGetLink } from "@/hooks/store/links";
 
 type Props = {
   onClose: Function;
-  activeLink: LinkIncludingShortenedCollectionAndTags;
+  link: LinkIncludingShortenedCollectionAndTags;
 };
 
-export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
+export default function PreservedFormatsModal({ onClose, link }: Props) {
   const { t } = useTranslation();
   const session = useSession();
-  const { getLink } = useLinkStore();
-  const { account } = useAccountStore();
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
+  const getLink = useGetLink();
+  const { data: user = {} } = useUser();
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
@@ -44,20 +42,20 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (link.collection.ownerId !== account.id) {
+      if (link.collection.ownerId !== user.id) {
         const owner = await getPublicUserData(
           link.collection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (link.collection.ownerId === account.id) {
+      } else if (link.collection.ownerId === user.id) {
         setCollectionOwner({
-          id: account.id,
-          name: account.name,
-          username: account.username,
-          image: account.image,
-          archiveAsScreenshot: account.archiveAsScreenshot,
-          archiveAsMonolith: account.archiveAsScreenshot,
-          archiveAsPDF: account.archiveAsPDF,
+          id: user.id as number,
+          name: user.name,
+          username: user.username as string,
+          image: user.image as string,
+          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user.archiveAsScreenshot as boolean,
+          archiveAsPDF: user.archiveAsPDF as boolean,
         });
       }
     };
@@ -93,20 +91,14 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
 
   useEffect(() => {
     (async () => {
-      const data = await getLink(link.id as number, isPublic);
-      setLink(
-        (data as any).response as LinkIncludingShortenedCollectionAndTags
-      );
+      await getLink.mutateAsync(link.id as number);
     })();
 
     let interval: NodeJS.Timeout | null = null;
 
     if (!isReady()) {
       interval = setInterval(async () => {
-        const data = await getLink(link.id as number, isPublic);
-        setLink(
-          (data as any).response as LinkIncludingShortenedCollectionAndTags
-        );
+        await getLink.mutateAsync(link.id as number);
       }, 5000);
     } else {
       if (interval) {
@@ -132,10 +124,8 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
     toast.dismiss(load);
 
     if (response.ok) {
-      const newLink = await getLink(link?.id as number);
-      setLink(
-        (newLink as any).response as LinkIncludingShortenedCollectionAndTags
-      );
+      await getLink.mutateAsync(link?.id as number);
+
       toast.success(t("link_being_archived"));
     } else toast.error(data.response);
   };
@@ -145,9 +135,9 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
       <p className="text-xl font-thin">{t("preserved_formats")}</p>
       <div className="divider mb-2 mt-1"></div>
       {screenshotAvailable(link) ||
-      pdfAvailable(link) ||
-      readabilityAvailable(link) ||
-      monolithAvailable(link) ? (
+        pdfAvailable(link) ||
+        readabilityAvailable(link) ||
+        monolithAvailable(link) ? (
         <p className="mb-3">{t("available_formats")}</p>
       ) : (
         ""
@@ -159,7 +149,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             name={t("webpage")}
             icon={"bi-filetype-html"}
             format={ArchivedFormat.monolith}
-            activeLink={link}
+            link={link}
             downloadable={true}
           />
         )}
@@ -173,7 +163,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
                 ? ArchivedFormat.png
                 : ArchivedFormat.jpeg
             }
-            activeLink={link}
+            link={link}
             downloadable={true}
           />
         )}
@@ -183,7 +173,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             name={t("pdf")}
             icon={"bi-file-earmark-pdf"}
             format={ArchivedFormat.pdf}
-            activeLink={link}
+            link={link}
             downloadable={true}
           />
         )}
@@ -193,7 +183,7 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
             name={t("readable")}
             icon={"bi-file-earmark-text"}
             format={ArchivedFormat.readability}
-            activeLink={link}
+            link={link}
           />
         )}
 
@@ -224,9 +214,8 @@ export default function PreservedFormatsModal({ onClose, activeLink }: Props) {
         )}
 
         <div
-          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${
-            isReady() ? "sm:mt " : ""
-          }`}
+          className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${isReady() ? "sm:mt " : ""
+            }`}
         >
           <Link
             href={`https://web.archive.org/web/${link?.url?.replace(

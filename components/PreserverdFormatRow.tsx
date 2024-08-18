@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from "react";
-import useLinkStore from "@/store/links";
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
@@ -11,7 +9,7 @@ type Props = {
   name: string;
   icon: string;
   format: ArchivedFormat;
-  activeLink: LinkIncludingShortenedCollectionAndTags;
+  link: LinkIncludingShortenedCollectionAndTags;
   downloadable?: boolean;
 };
 
@@ -19,42 +17,12 @@ export default function PreservedFormatRow({
   name,
   icon,
   format,
-  activeLink,
+  link,
   downloadable,
 }: Props) {
-  const { getLink } = useLinkStore();
-
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
-
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await getLink(link.id as number, isPublic);
-      setLink(data as LinkIncludingShortenedCollectionAndTags);
-    })();
-
-    let interval: NodeJS.Timeout | null = null;
-    if (link?.image === "pending" || link?.pdf === "pending") {
-      interval = setInterval(async () => {
-        const { data } = await getLink(link.id as number, isPublic);
-        setLink(data as LinkIncludingShortenedCollectionAndTags);
-      }, 5000);
-    } else {
-      if (interval) {
-        clearInterval(interval);
-      }
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [link?.image, link?.pdf, link?.readable, link?.monolith]);
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;
@@ -90,20 +58,18 @@ export default function PreservedFormatRow({
       </div>
 
       <div className="flex gap-1">
-        {downloadable ||
-          (false && (
-            <div
-              onClick={() => handleDownload()}
-              className="btn btn-sm btn-square"
-            >
-              <i className="bi-cloud-arrow-down text-xl text-neutral" />
-            </div>
-          ))}
+        {downloadable || false ? (
+          <div
+            onClick={() => handleDownload()}
+            className="btn btn-sm btn-square"
+          >
+            <i className="bi-cloud-arrow-down text-xl text-neutral" />
+          </div>
+        ) : undefined}
 
         <Link
-          href={`${
-            isPublic ? "/public" : ""
-          }/preserved/${link?.id}?format=${format}`}
+          href={`${isPublic ? "/public" : ""
+            }/preserved/${link?.id}?format=${format}`}
           target="_blank"
           className="btn btn-sm btn-square"
         >

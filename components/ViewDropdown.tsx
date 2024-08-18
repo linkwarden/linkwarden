@@ -4,8 +4,8 @@ import useLocalSettingsStore from "@/store/localSettings";
 import { ViewMode } from "@/types/global";
 
 type Props = {
-  viewMode: string;
-  setViewMode: Dispatch<SetStateAction<string>>;
+  viewMode: ViewMode;
+  setViewMode: Dispatch<SetStateAction<ViewMode>>;
 };
 
 export default function ViewDropdown({ viewMode, setViewMode }: Props) {
@@ -19,7 +19,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
   };
 
   useEffect(() => {
-    updateSettings({ viewMode: viewMode as ViewMode });
+    updateSettings({ viewMode });
   }, [viewMode]);
 
   return (

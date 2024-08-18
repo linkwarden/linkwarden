@@ -298,6 +298,7 @@
   "create_new_collection": "Create a New Collection",
   "color": "Color",
   "reset": "Reset",
+  "updating_collection": "Updating Collection...",
   "collection_name_placeholder": "e.g. Example Collection",
   "collection_description_placeholder": "The purpose of this Collection...",
   "create_collection_button": "Create Collection",

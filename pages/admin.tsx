@@ -1,11 +1,11 @@
 import NewUserModal from "@/components/ModalContent/NewUserModal";
-import useUserStore from "@/store/admin/users";
 import { User as U } from "@prisma/client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import UserListing from "@/components/UserListing";
+import { useUsers } from "@/hooks/store/admin/users";
 
 interface User extends U {
   subscriptions: {
@@ -21,7 +21,7 @@ type UserModal = {
 export default function Admin() {
   const { t } = useTranslation();
 
-  const { users, setUsers } = useUserStore();
+  const { data: users = [] } = useUsers();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>();
@@ -32,10 +32,6 @@ export default function Admin() {
   });
 
   const [newUserModal, setNewUserModal] = useState(false);
-
-  useEffect(() => {
-    setUsers();
-  }, []);
 
   return (
     <div className="max-w-6xl mx-auto p-5">
@@ -71,7 +67,7 @@ export default function Admin() {
 
                 if (users) {
                   setFilteredUsers(
-                    users.filter((user) =>
+                    users.filter((user: any) =>
                       JSON.stringify(user)
                         .toLowerCase()
                         .includes(e.target.value.toLowerCase())

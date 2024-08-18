@@ -29,7 +29,7 @@ export default function FilterSearchDropdown({
       >
         <i className="bi-funnel text-neutral text-2xl"></i>
       </div>
-      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box w-56 mt-1">
+      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
         <li>
           <label
             className="label cursor-pointer flex justify-start"
@@ -45,7 +45,7 @@ export default function FilterSearchDropdown({
                 setSearchFilter({ ...searchFilter, name: !searchFilter.name })
               }
             />
-            <span className="label-text">{t("name")}</span>
+            <span className="label-text whitespace-nowrap">{t("name")}</span>
           </label>
         </li>
         <li>
@@ -63,7 +63,7 @@ export default function FilterSearchDropdown({
                 setSearchFilter({ ...searchFilter, url: !searchFilter.url })
               }
             />
-            <span className="label-text">{t("link")}</span>
+            <span className="label-text whitespace-nowrap">{t("link")}</span>
           </label>
         </li>
         <li>
@@ -84,7 +84,9 @@ export default function FilterSearchDropdown({
                 })
               }
             />
-            <span className="label-text">{t("description")}</span>
+            <span className="label-text whitespace-nowrap">
+              {t("description")}
+            </span>
           </label>
         </li>
         <li>
@@ -102,7 +104,7 @@ export default function FilterSearchDropdown({
                 setSearchFilter({ ...searchFilter, tags: !searchFilter.tags })
               }
             />
-            <span className="label-text">{t("tags")}</span>
+            <span className="label-text whitespace-nowrap">{t("tags")}</span>
           </label>
         </li>
         <li>
@@ -123,8 +125,10 @@ export default function FilterSearchDropdown({
                 })
               }
             />
-            <span className="label-text">{t("full_content")}</span>
-            <div className="ml-auto badge badge-sm badge-neutral">
+            <span className="label-text whitespace-nowrap">
+              {t("full_content")}
+            </span>
+            <div className="ml-auto badge badge-sm badge-neutral whitespace-nowrap">
               {t("slower")}
             </div>
           </label>
