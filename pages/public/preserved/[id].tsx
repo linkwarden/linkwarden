@@ -6,9 +6,10 @@ import {
 } from "@/types/global";
 import ReadableView from "@/components/ReadableView";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { useGetLink } from "@/hooks/store/links";
+import { useGetLink, useLinks } from "@/hooks/store/links";
 
 export default function Index() {
+  const { links } = useLinks();
   const getLink = useGetLink();
 
   const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>();
@@ -18,13 +19,17 @@ export default function Index() {
   useEffect(() => {
     const fetchLink = async () => {
       if (router.query.id) {
-        const get = await getLink.mutateAsync({ id: Number(router.query.id) });
-        setLink(get);
+        await getLink.mutateAsync(Number(router.query.id));
       }
     };
 
     fetchLink();
   }, []);
+
+  useEffect(() => {
+    if (links && links[0])
+      setLink(links.find((e) => e.id === Number(router.query.id)));
+  }, [links]);
 
   return (
     <div className="relative">
@@ -33,12 +38,6 @@ export default function Index() {
       </div> */}
       {link && Number(router.query.format) === ArchivedFormat.readability && (
         <ReadableView link={link} />
-      )}
-      {link && Number(router.query.format) === ArchivedFormat.monolith && (
-        <iframe
-          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}`}
-          className="w-full h-screen border-none"
-        ></iframe>
       )}
       {link && Number(router.query.format) === ArchivedFormat.pdf && (
         <iframe
