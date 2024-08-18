@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
+  AccountSettings,
 } from "@/types/global";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -35,15 +36,9 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<
+    Partial<AccountSettings>
+  >({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -99,7 +94,7 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
       await getLink.mutateAsync({ id: link.id as number });
     })();
 
-    let interval: any;
+    let interval: NodeJS.Timeout | null = null;
 
     if (!isReady()) {
       interval = setInterval(async () => {
@@ -149,7 +144,7 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
       )}
 
       <div className={`flex flex-col gap-3`}>
-        {monolithAvailable(link) ? (
+        {monolithAvailable(link) && (
           <PreservedFormatRow
             name={t("webpage")}
             icon={"bi-filetype-html"}
@@ -157,9 +152,9 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
             link={link}
             downloadable={true}
           />
-        ) : undefined}
+        )}
 
-        {screenshotAvailable(link) ? (
+        {screenshotAvailable(link) && (
           <PreservedFormatRow
             name={t("screenshot")}
             icon={"bi-file-earmark-image"}
@@ -171,9 +166,9 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
             link={link}
             downloadable={true}
           />
-        ) : undefined}
+        )}
 
-        {pdfAvailable(link) ? (
+        {pdfAvailable(link) && (
           <PreservedFormatRow
             name={t("pdf")}
             icon={"bi-file-earmark-pdf"}
@@ -181,16 +176,16 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
             link={link}
             downloadable={true}
           />
-        ) : undefined}
+        )}
 
-        {readabilityAvailable(link) ? (
+        {readabilityAvailable(link) && (
           <PreservedFormatRow
             name={t("readable")}
             icon={"bi-file-earmark-text"}
             format={ArchivedFormat.readability}
             link={link}
           />
-        ) : undefined}
+        )}
 
         {!isReady() && !atLeastOneFormatAvailable() ? (
           <div className={`w-full h-full flex flex-col justify-center p-10`}>
@@ -203,17 +198,20 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
             <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
             <p className="text-center text-lg">{t("check_back_later")}</p>
           </div>
-        ) : !isReady() && atLeastOneFormatAvailable() ? (
-          <div className={`w-full h-full flex flex-col justify-center p-5`}>
-            <BeatLoader
-              color="oklch(var(--p))"
-              className="mx-auto mb-3"
-              size={20}
-            />
-            <p className="text-center">{t("there_are_more_formats")}</p>
-            <p className="text-center text-sm">{t("check_back_later")}</p>
-          </div>
-        ) : undefined}
+        ) : (
+          !isReady() &&
+          atLeastOneFormatAvailable() && (
+            <div className={`w-full h-full flex flex-col justify-center p-5`}>
+              <BeatLoader
+                color="oklch(var(--p))"
+                className="mx-auto mb-3"
+                size={20}
+              />
+              <p className="text-center">{t("there_are_more_formats")}</p>
+              <p className="text-center text-sm">{t("check_back_later")}</p>
+            </div>
+          )
+        )}
 
         <div
           className={`flex flex-col sm:flex-row gap-3 items-center justify-center ${

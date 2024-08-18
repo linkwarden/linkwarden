@@ -150,7 +150,7 @@ export default function UploadFileModal({ onClose }: Props) {
           <label className="btn h-10 btn-sm w-full border border-neutral-content hover:border-neutral-content flex justify-between">
             <input
               type="file"
-              accept=".pdf,.png,.jpg,.jpeg,.html"
+              accept=".pdf,.png,.jpg,.jpeg"
               className="cursor-pointer custom-file-input"
               onChange={(e) => e.target.files && setFile(e.target.files[0])}
             />
@@ -163,7 +163,7 @@ export default function UploadFileModal({ onClose }: Props) {
         </div>
         <div className="sm:col-span-2 col-span-5">
           <p className="mb-2">{t("collection")}</p>
-          {link.collection.name ? (
+          {link.collection.name && (
             <CollectionSelection
               onChange={setCollection}
               defaultValue={{
@@ -171,10 +171,10 @@ export default function UploadFileModal({ onClose }: Props) {
                 value: link.collection.id,
               }}
             />
-          ) : null}
+          )}
         </div>
       </div>
-      {optionsExpanded ? (
+      {optionsExpanded && (
         <div className="mt-5">
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
@@ -209,7 +209,7 @@ export default function UploadFileModal({ onClose }: Props) {
             </div>
           </div>
         </div>
-      ) : undefined}
+      )}
       <div className="flex justify-between items-center mt-5">
         <div
           onClick={() => setOptionsExpanded(!optionsExpanded)}
