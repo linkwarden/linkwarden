@@ -96,14 +96,14 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
 
   useEffect(() => {
     (async () => {
-      await getLink.mutateAsync({ id: link.id as number });
+      await getLink.mutateAsync(link.id as number);
     })();
 
     let interval: any;
 
     if (!isReady()) {
       interval = setInterval(async () => {
-        await getLink.mutateAsync({ id: link.id as number });
+        await getLink.mutateAsync(link.id as number);
       }, 5000);
     } else {
       if (interval) {
@@ -129,7 +129,7 @@ export default function PreservedFormatsModal({ onClose, link }: Props) {
     toast.dismiss(load);
 
     if (response.ok) {
-      await getLink.mutateAsync({ id: link.id as number });
+      await getLink.mutateAsync(link?.id as number);
 
       toast.success(t("link_being_archived"));
     } else toast.error(data.response);
