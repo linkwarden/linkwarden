@@ -88,7 +88,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
                 <p className="w-full mb-2">{t("color")}</p>
                 <div className="color-picker flex justify-between items-center">
                   <HexColorPicker
-                    color={collection.color}
+                    color={collection.color as string}
                     onChange={(color) =>
                       setCollection({ ...collection, color })
                     }
@@ -96,7 +96,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
                   <div className="flex flex-col gap-2 items-center w-32">
                     <i
                       className={"bi-folder-fill text-5xl"}
-                      style={{ color: collection.color }}
+                      style={{ color: collection.color as string }}
                     ></i>
                     <div
                       className="btn btn-ghost btn-xs"

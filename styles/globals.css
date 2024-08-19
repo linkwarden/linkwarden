@@ -36,6 +36,14 @@
   scrollbar-width: none;
 }
 
+.hide-color-picker {
+  opacity: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: none;
+}
+
 .hyphens {
   hyphens: auto;
 }

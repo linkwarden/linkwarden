@@ -205,7 +205,7 @@ export default function ReadableView({ link }: Props) {
             >
               <i
                 className="bi-folder-fill drop-shadow text-2xl"
-                style={{ color: link?.collection.color }}
+                style={{ color: link?.collection.color as string }}
               ></i>
               <p
                 title={link?.collection.name}

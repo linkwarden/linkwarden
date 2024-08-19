@@ -6,6 +6,8 @@ import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@/hooks/store/collections";
 import toast from "react-hot-toast";
+import IconPicker from "../IconPicker";
+import Icon from "../Icon";
 
 type Props = {
   onClose: Function;
@@ -20,6 +22,7 @@ export default function EditCollectionModal({
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
+  const [iconPicker, setIconPicker] = useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
   const updateCollection = useUpdateCollection();
 
@@ -71,17 +74,32 @@ export default function EditCollectionModal({
               <div>
                 <p className="w-full mb-2">{t("color")}</p>
                 <div className="color-picker flex justify-between items-center">
-                  <HexColorPicker
-                    color={collection.color}
-                    onChange={(color) =>
-                      setCollection({ ...collection, color })
-                    }
-                  />
-                  <div className="flex flex-col gap-2 items-center w-32">
-                    <i
-                      className="bi-folder-fill text-5xl"
-                      style={{ color: collection.color }}
-                    ></i>
+                  <div className="flex flex-col gap-2 items-center w-32 relative">
+                    <Icon
+                      icon={collection.icon as string}
+                      size={80}
+                      weight={collection.iconWeight as any}
+                      color={collection.color as string}
+                      onClick={() => setIconPicker(true)}
+                    />
+                    {iconPicker && (
+                      <IconPicker
+                        onClose={() => setIconPicker(false)}
+                        className="top-20"
+                        color={collection.color as string}
+                        setColor={(color: string) =>
+                          setCollection({ ...collection, color })
+                        }
+                        weight={collection.iconWeight as any}
+                        setWeight={(iconWeight: string) =>
+                          setCollection({ ...collection, iconWeight })
+                        }
+                        iconName={collection.icon as string}
+                        setIconName={(icon: string) =>
+                          setCollection({ ...collection, icon })
+                        }
+                      />
+                    )}
                     <div
                       className="btn btn-ghost btn-xs"
                       onClick={() =>
