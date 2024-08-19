@@ -8,7 +8,7 @@ const InstallApp = (props: Props) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return isOpen && !isPWA() ? (
-    <div className="fixed left-0 right-0 bottom-10 w-full p-5">
+    <div className="fixed left-0 right-0 bottom-10 w-full">
       <div className="mx-auto w-fit p-2 flex justify-between gap-2 items-center border border-neutral-content rounded-xl bg-base-300 backdrop-blur-md bg-opacity-80 max-w-md">
         <svg
           xmlns="http://www.w3.org/2000/svg"
