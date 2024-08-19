@@ -120,25 +120,24 @@ export default function LinkDetailModal({ onClose, onEdit, link }: Props) {
       <div className="sm:m-auto p-10 w-full max-w-xl">
         <LinkDetails link={link} />
 
-        {permissions === true ||
-          (permissions?.canUpdate && (
-            <>
-              <br />
-              <br />
+        {(permissions === true || permissions?.canUpdate) && (
+          <>
+            <br />
+            <br />
 
-              <div className="mx-auto text-center">
-                <div
-                  className="btn btn-sm btn-ghost"
-                  onClick={() => {
-                    onEdit();
-                    onClose();
-                  }}
-                >
-                  {t("edit_link")}
-                </div>
+            <div className="mx-auto text-center">
+              <div
+                className="btn btn-sm btn-ghost"
+                onClick={() => {
+                  onEdit();
+                  onClose();
+                }}
+              >
+                {t("edit_link")}
               </div>
-            </>
-          ))}
+            </div>
+          </>
+        )}
       </div>
     </Drawer>
   );

@@ -112,7 +112,7 @@ export default function Index() {
             <div className="flex items-center gap-2">
               <i
                 className="bi-folder-fill text-3xl drop-shadow"
-                style={{ color: activeCollection?.color }}
+                style={{ color: activeCollection?.color as string }}
               ></i>
 
               <p className="sm:text-3xl text-2xl capitalize w-full py-1 break-words hyphens-auto font-thin">
