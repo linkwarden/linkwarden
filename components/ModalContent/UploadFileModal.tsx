@@ -35,6 +35,9 @@ export default function UploadFileModal({ onClose }: Props) {
     readable: "",
     monolith: "",
     textContent: "",
+    icon: "",
+    iconWeight: "",
+    color: "",
     collection: {
       name: "",
       ownerId: data?.user.id as number,

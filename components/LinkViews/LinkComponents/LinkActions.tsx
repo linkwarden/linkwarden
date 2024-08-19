@@ -105,24 +105,23 @@ export default function LinkActions({
               alignToTop ? "" : "translate-y-10"
             }`}
           >
-            {permissions === true ||
-              (permissions?.canUpdate && (
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      pinLink();
-                    }}
-                    className="whitespace-nowrap"
-                  >
-                    {link?.pinnedBy && link.pinnedBy[0]
-                      ? t("unpin")
-                      : t("pin_to_dashboard")}
-                  </div>
-                </li>
-              ))}
+            {(permissions === true || permissions?.canUpdate) && (
+              <li>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    (document?.activeElement as HTMLElement)?.blur();
+                    pinLink();
+                  }}
+                  className="whitespace-nowrap"
+                >
+                  {link?.pinnedBy && link.pinnedBy[0]
+                    ? t("unpin")
+                    : t("pin_to_dashboard")}
+                </div>
+              </li>
+            )}
             <li>
               <div
                 role="button"
@@ -173,8 +172,9 @@ export default function LinkActions({
                   tabIndex={0}
                   onClick={async (e) => {
                     (document?.activeElement as HTMLElement)?.blur();
+                    console.log(e.shiftKey);
                     e.shiftKey
-                      ? async () => {
+                      ? (async () => {
                           const load = toast.loading(t("deleting"));
 
                           await deleteLink.mutateAsync(link.id as number, {
@@ -188,7 +188,7 @@ export default function LinkActions({
                               }
                             },
                           });
-                        }
+                        })()
                       : setDeleteLinkModal(true);
                   }}
                   className="whitespace-nowrap"

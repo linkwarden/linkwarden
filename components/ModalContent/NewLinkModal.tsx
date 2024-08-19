@@ -31,6 +31,9 @@ export default function NewLinkModal({ onClose }: Props) {
     readable: "",
     monolith: "",
     textContent: "",
+    icon: "",
+    iconWeight: "",
+    color: "",
     collection: {
       name: "",
       ownerId: data?.user.id as number,
