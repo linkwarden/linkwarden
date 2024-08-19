@@ -1179,14 +1179,14 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     callbacks: {
       async signIn({ user, account, profile, email, credentials }) {
-        if (account?.provider !== "credentials" && newSsoUsersDisabled) {
+        if (account?.provider !== "credentials") {
           // registration via SSO can be separately disabled
           const existingUser = await prisma.account.findFirst({
             where: {
               providerAccountId: account?.providerAccountId,
             },
           });
-          if (!existingUser) {
+          if (!existingUser && newSsoUsersDisabled) {
             return false;
           }
         }
