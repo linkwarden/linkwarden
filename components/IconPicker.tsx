@@ -1,12 +1,11 @@
-import { icons } from "@/lib/client/icons";
-import React, { useMemo, useState, lazy, Suspense } from "react";
-import Fuse from "fuse.js";
+import React, { useState } from "react";
 import TextInput from "./TextInput";
 import Popover from "./Popover";
 import { HexColorPicker } from "react-colorful";
 import { useTranslation } from "next-i18next";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
+import IconGrid from "./IconGrid";
 
 type Props = {
   alignment?: "left" | "right";
@@ -31,22 +30,9 @@ const IconPicker = ({
   className,
   reset,
 }: Props) => {
-  const fuse = new Fuse(icons, {
-    keys: [{ name: "name", weight: 4 }, "tags", "categories"],
-    threshold: 0.2,
-    useExtendedSearch: true,
-  });
-
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [iconPicker, setIconPicker] = useState(false);
-
-  const filteredQueryResultsSelector = useMemo(() => {
-    if (!query) {
-      return icons;
-    }
-    return fuse.search(query).map((result) => result.item);
-  }, [query]);
 
   return (
     <div className="relative">
@@ -89,41 +75,32 @@ const IconPicker = ({
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
               >
-                <option value="regular">Regular</option>
-                <option value="thin">Thin</option>
-                <option value="light">Light</option>
-                <option value="bold">Bold</option>
-                <option value="fill">Fill</option>
-                <option value="duotone">Duotone</option>
+                <option value="regular">{t("regular")}</option>
+                <option value="thin">{t("thin")}</option>
+                <option value="light">{t("light_icon")}</option>
+                <option value="bold">{t("bold")}</option>
+                <option value="fill">{t("fill")}</option>
+                <option value="duotone">{t("duotone")}</option>
               </select>
               <HexColorPicker color={color} onChange={(e) => setColor(e)} />
             </div>
 
-            <div className="flex flex-col gap-2 w-fit">
+            <div className="flex flex-col gap-2 w-full">
               <TextInput
                 className="p-2 rounded w-full h-7 text-sm"
-                placeholder="Search icons"
+                placeholder={t("search")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
 
               <div className="grid grid-cols-4 gap-1 w-full overflow-y-auto h-32 border border-neutral-content bg-base-100 rounded-md p-2">
-                {filteredQueryResultsSelector.map((icon) => {
-                  const IconComponent = icon.Icon;
-                  return (
-                    <div
-                      key={icon.pascal_name}
-                      onClick={() => setIconName(icon.pascal_name)}
-                      className={`cursor-pointer btn p-1 box-border bg-base-100 border-none aspect-square ${
-                        icon.pascal_name === iconName
-                          ? "outline outline-1 outline-primary"
-                          : ""
-                      }`}
-                    >
-                      <IconComponent size={32} weight={weight} color={color} />
-                    </div>
-                  );
-                })}
+                <IconGrid
+                  query={query}
+                  color={color}
+                  weight={weight}
+                  iconName={iconName}
+                  setIconName={setIconName}
+                />
               </div>
             </div>
           </div>
