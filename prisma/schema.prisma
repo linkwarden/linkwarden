@@ -96,7 +96,7 @@ model Collection {
   description     String                @default("")
   icon            String?
   iconWeight      String?
-  color           String?
+  color           String                @default("#0ea5e9")
   parentId        Int?
   parent          Collection?           @relation("SubCollections", fields: [parentId], references: [id])
   subCollections  Collection[]          @relation("SubCollections")

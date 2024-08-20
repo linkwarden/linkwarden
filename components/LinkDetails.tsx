@@ -20,6 +20,8 @@ import { useGetLink } from "@/hooks/store/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
+import Icon from "./Icon";
+import { IconWeight } from "@phosphor-icons/react";
 
 type Props = {
   className?: string;
@@ -163,10 +165,19 @@ export default function LinkDetails({ className, link }: Props) {
         >
           <p>{link.collection.name}</p>
           <div className="absolute right-0 px-2 bg-base-200">
-            <i
-              className="bi-folder-fill text-xl"
-              style={{ color: link.collection.color }}
-            ></i>
+            {link.collection.icon ? (
+              <Icon
+                icon={link.collection.icon}
+                size={30}
+                weight={(link.collection.iconWeight || "regular") as IconWeight}
+                color={link.collection.color || "#0ea5e9"}
+              />
+            ) : (
+              <i
+                className="bi-folder-fill text-2xl"
+                style={{ color: link.collection.color || "#0ea5e9" }}
+              ></i>
+            )}
           </div>
         </Link>
       </div>
