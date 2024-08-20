@@ -6,7 +6,6 @@ import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@/hooks/store/collections";
 import toast from "react-hot-toast";
 import IconPicker from "../IconPicker";
-import Icon from "../Icon";
 import { IconWeight } from "@phosphor-icons/react";
 
 type Props = {

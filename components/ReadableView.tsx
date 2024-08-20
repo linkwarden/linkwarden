@@ -16,6 +16,8 @@ import LinkActions from "./LinkViews/LinkComponents/LinkActions";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useGetLink } from "@/hooks/store/links";
+import { IconWeight } from "@phosphor-icons/react";
+import Icon from "./Icon";
 
 type LinkContent = {
   title: string;
@@ -203,10 +205,21 @@ export default function ReadableView({ link }: Props) {
               href={`/collections/${link?.collection.id}`}
               className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
             >
-              <i
-                className="bi-folder-fill drop-shadow text-2xl"
-                style={{ color: link?.collection.color as string }}
-              ></i>
+              {link.collection.icon ? (
+                <Icon
+                  icon={link.collection.icon}
+                  size={30}
+                  weight={
+                    (link.collection.iconWeight || "regular") as IconWeight
+                  }
+                  color={link.collection.color || "#0ea5e9"}
+                />
+              ) : (
+                <i
+                  className="bi-folder-fill text-2xl"
+                  style={{ color: link.collection.color || "#0ea5e9" }}
+                ></i>
+              )}
               <p
                 title={link?.collection.name}
                 className="text-lg truncate max-w-[12rem]"
