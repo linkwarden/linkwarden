@@ -17,6 +17,8 @@ import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
+import Icon from "./Icon";
+import { IconWeight } from "@phosphor-icons/react";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
@@ -256,7 +258,7 @@ const renderItem = (
             : "hover:bg-neutral/20"
         } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
       >
-        {Icon(item as ExtendedTreeItem, onExpand, onCollapse)}
+        {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
 
         <Link
           href={`/collections/${collection.id}`}
@@ -266,10 +268,21 @@ const renderItem = (
           <div
             className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
-            <i
-              className="bi-folder-fill text-2xl drop-shadow"
-              style={{ color: collection.color }}
-            ></i>
+            {collection.icon ? (
+              <Icon
+                icon={collection.icon}
+                size={30}
+                weight={(collection.iconWeight || "regular") as IconWeight}
+                color={collection.color || "#0ea5e9"}
+                className="-mr-[0.15rem]"
+              />
+            ) : (
+              <i
+                className="bi-folder-fill text-2xl"
+                style={{ color: collection.color || "#0ea5e9" }}
+              ></i>
+            )}
+
             <p className="truncate w-full">{collection.name}</p>
 
             {collection.isPublic && (
@@ -288,7 +301,7 @@ const renderItem = (
   );
 };
 
-const Icon = (
+const Dropdown = (
   item: ExtendedTreeItem,
   onExpand: (id: ItemId) => void,
   onCollapse: (id: ItemId) => void
@@ -332,6 +345,8 @@ const buildTreeFromCollections = (
           name: collection.name,
           description: collection.description,
           color: collection.color,
+          icon: collection.icon,
+          iconWeight: collection.iconWeight,
           isPublic: collection.isPublic,
           ownerId: collection.ownerId,
           createdAt: collection.createdAt,
