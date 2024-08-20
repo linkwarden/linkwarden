@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
-import { HexColorPicker } from "react-colorful";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
@@ -8,6 +7,7 @@ import { useUpdateCollection } from "@/hooks/store/collections";
 import toast from "react-hot-toast";
 import IconPicker from "../IconPicker";
 import Icon from "../Icon";
+import { IconWeight } from "@phosphor-icons/react";
 
 type Props = {
   onClose: Function;
@@ -22,7 +22,6 @@ export default function EditCollectionModal({
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
-  const [iconPicker, setIconPicker] = useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
   const updateCollection = useUpdateCollection();
 
@@ -59,10 +58,32 @@ export default function EditCollectionModal({
       <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="w-full">
-            <p className="mb-2">{t("name")}</p>
-            <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
+          <div className="flex gap-3 items-end">
+            <IconPicker
+              color={collection.color || "#0ea5e9"}
+              setColor={(color: string) =>
+                setCollection({ ...collection, color })
+              }
+              weight={(collection.iconWeight || "regular") as IconWeight}
+              setWeight={(iconWeight: string) =>
+                setCollection({ ...collection, iconWeight })
+              }
+              iconName={collection.icon as string}
+              setIconName={(icon: string) =>
+                setCollection({ ...collection, icon })
+              }
+              reset={() =>
+                setCollection({
+                  ...collection,
+                  color: "#0ea5e9",
+                  icon: "",
+                  iconWeight: "",
+                })
+              }
+            />
+            <div className="w-full">
+              <p className="mb-2">{t("name")}</p>
               <TextInput
                 className="bg-base-200"
                 value={collection.name}
@@ -71,46 +92,6 @@ export default function EditCollectionModal({
                   setCollection({ ...collection, name: e.target.value })
                 }
               />
-              <div>
-                <p className="w-full mb-2">{t("color")}</p>
-                <div className="color-picker flex justify-between items-center">
-                  <div className="flex flex-col gap-2 items-center w-32 relative">
-                    <Icon
-                      icon={collection.icon as string}
-                      size={80}
-                      weight={collection.iconWeight as any}
-                      color={collection.color as string}
-                      onClick={() => setIconPicker(true)}
-                    />
-                    {iconPicker && (
-                      <IconPicker
-                        onClose={() => setIconPicker(false)}
-                        className="top-20"
-                        color={collection.color as string}
-                        setColor={(color: string) =>
-                          setCollection({ ...collection, color })
-                        }
-                        weight={collection.iconWeight as any}
-                        setWeight={(iconWeight: string) =>
-                          setCollection({ ...collection, iconWeight })
-                        }
-                        iconName={collection.icon as string}
-                        setIconName={(icon: string) =>
-                          setCollection({ ...collection, icon })
-                        }
-                      />
-                    )}
-                    <div
-                      className="btn btn-ghost btn-xs"
-                      onClick={() =>
-                        setCollection({ ...collection, color: "#0ea5e9" })
-                      }
-                    >
-                      {t("reset")}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
