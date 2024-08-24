@@ -111,7 +111,7 @@ export default function LinkCardCompact({
           }
         >
           <div className="shrink-0">
-            <LinkIcon link={link} className="w-12 h-12 text-4xl" />
+            <LinkIcon link={link} hideBackground />
           </div>
 
           <div className="w-[calc(100%-56px)] ml-2">

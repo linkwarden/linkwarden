@@ -9,6 +9,8 @@ import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useUpdateLink } from "@/hooks/store/links";
 import toast from "react-hot-toast";
+import IconPicker from "../IconPicker";
+import { IconWeight } from "@phosphor-icons/react";
 
 type Props = {
   onClose: Function;
@@ -136,6 +138,29 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
               }
               placeholder={t("link_description_placeholder")}
               className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
+            />
+          </div>
+
+          <div>
+            <IconPicker
+              hideDefaultIcon
+              color={link.color || "#0ea5e9"}
+              setColor={(color: string) => setLink({ ...link, color })}
+              weight={(link.iconWeight || "regular") as IconWeight}
+              setWeight={(iconWeight: string) =>
+                setLink({ ...link, iconWeight })
+              }
+              iconName={link.icon as string}
+              setIconName={(icon: string) => setLink({ ...link, icon })}
+              reset={() =>
+                setLink({
+                  ...link,
+                  color: "",
+                  icon: "",
+                  iconWeight: "",
+                })
+              }
+              alignment="-top-10 translate-x-20"
             />
           </div>
         </div>

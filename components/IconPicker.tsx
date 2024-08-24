@@ -8,13 +8,14 @@ import { IconWeight } from "@phosphor-icons/react";
 import IconGrid from "./IconGrid";
 
 type Props = {
-  alignment?: "left" | "right";
+  alignment?: string;
   color: string;
   setColor: Function;
   iconName?: string;
   setIconName: Function;
   weight: "light" | "regular" | "bold" | "fill" | "duotone" | "thin";
   setWeight: Function;
+  hideDefaultIcon?: boolean;
   reset: Function;
   className?: string;
 };
@@ -27,6 +28,7 @@ const IconPicker = ({
   setIconName,
   weight,
   setWeight,
+  hideDefaultIcon,
   className,
   reset,
 }: Props) => {
@@ -47,6 +49,8 @@ const IconPicker = ({
             weight={(weight || "regular") as IconWeight}
             color={color || "#0ea5e9"}
           />
+        ) : !iconName && hideDefaultIcon ? (
+          <p className="p-1">{t("set_custom_icon")}</p>
         ) : (
           <i
             className="bi-folder-fill text-6xl"
@@ -59,7 +63,8 @@ const IconPicker = ({
           onClose={() => setIconPicker(false)}
           className={
             className +
-            " fade-in bg-base-200 border border-neutral-content p-2 h-44 w-[22.5rem] rounded-lg backdrop-blur-sm bg-opacity-90 top-20 left-0 lg:-translate-x-1/3"
+            " fade-in bg-base-200 border border-neutral-content p-2 h-44 w-[22.5rem] rounded-lg backdrop-blur-sm bg-opacity-90 " +
+            (alignment || " lg:-translate-x-1/3 top-20 left-0 ")
           }
         >
           <div className="flex gap-2 h-full w-full">
