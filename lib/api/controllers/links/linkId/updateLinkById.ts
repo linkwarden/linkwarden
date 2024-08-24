@@ -96,6 +96,9 @@ export default async function updateLinkById(
       data: {
         name: data.name,
         description: data.description,
+        icon: data.icon,
+        iconWeight: data.iconWeight,
+        color: data.color,
         collection: {
           connect: {
             id: data.collection.id,

@@ -127,7 +127,9 @@ export default function LinkDetails({ className, link }: Props) {
 
   return (
     <div className={className} data-vaul-no-drag>
-      <LinkIcon link={link} className="mx-auto" />
+      <div className="mx-auto w-fit">
+        <LinkIcon link={link} hideBackground />
+      </div>
 
       {link.name && <p className="text-xl text-center mt-2">{link.name}</p>}
 
