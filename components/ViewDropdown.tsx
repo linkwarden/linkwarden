@@ -56,17 +56,6 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
       >
         <i className="bi bi-view-stacked w-4 h-4 text-neutral"></i>
       </button>
-
-      {/* <button
-        onClick={(e) => onChangeViewMode(e, ViewMode.Grid)}
-        className={`btn btn-square btn-sm btn-ghost ${
-          viewMode == ViewMode.Grid
-            ? "bg-primary/20 hover:bg-primary/20"
-            : "hover:bg-neutral/20"
-        }`}
-      >
-        <i className="bi-columns-gap w-4 h-4 text-neutral"></i>
-      </button> */}
     </div>
   );
 }
