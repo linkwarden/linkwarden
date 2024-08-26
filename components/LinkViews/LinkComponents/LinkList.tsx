@@ -93,9 +93,9 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`${selectedStyle} border relative items-center flex ${
-          !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-        } duration-200 rounded-lg w-full`}
+        className={`${selectedStyle} rounded-md border relative items-center flex ${
+          !isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
+        } duration-200 w-full`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
@@ -143,12 +143,7 @@ export default function LinkCardCompact({
           flipDropdown={flipDropdown}
         />
       </div>
-      <div
-        className="last:hidden rounded-none"
-        style={{
-          borderTop: "1px solid var(--fallback-bc,oklch(var(--bc)/0.1))",
-        }}
-      ></div>
+      <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
     </>
   );
 }
