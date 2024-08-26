@@ -22,6 +22,8 @@ import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
 import { useGetLink, useLinks } from "@/hooks/store/links";
+import useLocalSettingsStore from "@/store/localSettings";
+import clsx from "clsx";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -38,6 +40,10 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
   const { data: user = {} } = useUser();
 
   const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const {
+    settings: { show },
+  } = useLocalSettingsStore();
 
   const { links } = useLinks();
   const getLink = useGetLink();
@@ -129,55 +135,64 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
             : undefined
       }
     >
-      <div
-        className="rounded-2xl cursor-pointer"
-        onClick={() =>
-          !editMode && window.open(generateLinkHref(link, user), "_blank")
-        }
-      >
-        <div className="relative rounded-t-2xl overflow-hidden">
-          {previewAvailable(link) ? (
-            <Image
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
-              width={1280}
-              height={720}
-              alt=""
-              className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
-              style={
-                link.type !== "image" ? { filter: "blur(1px)" } : undefined
-              }
-              draggable="false"
-              onError={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.display = "none";
-              }}
-            />
-          ) : link.preview === "unavailable" ? null : (
-            <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
-          )}
-          <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
-            <LinkIcon link={link} />
-          </div>
-        </div>
+      <div>
+        {show.image && previewAvailable(link) && (
+          <div
+            className="rounded-2xl cursor-pointer"
+            onClick={() =>
+              !editMode && window.open(generateLinkHref(link, user), "_blank")
+            }
+          >
+            <div className="relative rounded-t-2xl overflow-hidden">
+              {previewAvailable(link) ? (
+                <Image
+                  src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
+                  width={1280}
+                  height={720}
+                  alt=""
+                  className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
+                  style={show.icon ? { filter: "blur(1px)" } : undefined}
+                  draggable="false"
+                  onError={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.display = "none";
+                  }}
+                />
+              ) : link.preview === "unavailable" ? null : (
+                <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
+              )}
+              {show.icon && (
+                <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+                  <LinkIcon link={link} />
+                </div>
+              )}
+            </div>
 
-        {link.preview !== "unavailable" && (
-          <hr className="divider my-0 last:hidden border-t border-neutral-content h-[1px]" />
+            <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
+          </div>
         )}
 
-        <div className="p-3 flex flex-col gap-2">
-          <p className="hyphens-auto w-full pr-9 text-primary text-sm">
-            {unescapeString(link.name)}
-          </p>
+        <div className="p-3 flex flex-col gap-2 h-full min-h-14">
+          {show.name && (
+            <p className="hyphens-auto w-full pr-9 text-primary text-sm">
+              {unescapeString(link.name)}
+            </p>
+          )}
 
-          <LinkTypeBadge link={link} />
+          {show.link && <LinkTypeBadge link={link} />}
 
-          {link.description && (
-            <p className="hyphens-auto text-sm">
+          {show.description && link.description && (
+            <p
+              className={clsx(
+                "hyphens-auto text-sm w-full",
+                ((!show.name && !show.link) || !link.name) && "pr-9"
+              )}
+            >
               {unescapeString(link.description)}
             </p>
           )}
 
-          {link.tags && link.tags[0] && (
+          {show.tags && link.tags && link.tags[0] && (
             <div className="flex gap-1 items-center flex-wrap">
               {link.tags.map((e, i) => (
                 <Link
@@ -195,21 +210,29 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
           )}
         </div>
 
-        <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+        {(show.collection || show.date) && (
+          <div>
+            <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
 
-        <div className="flex flex-wrap justify-between text-xs text-neutral px-3 pb-1 w-full gap-x-2">
-          {collection && <LinkCollection link={link} collection={collection} />}
-          <LinkDate link={link} />
-        </div>
+            <div className="flex flex-wrap justify-between text-xs text-neutral px-3 pb-1 w-full gap-x-2">
+              {show.collection && (
+                <div className="cursor-pointer truncate">
+                  <LinkCollection link={link} collection={collection} />
+                </div>
+              )}
+              {show.date && <LinkDate link={link} />}
+            </div>
+          </div>
+        )}
       </div>
 
       <LinkActions
         link={link}
         collection={collection}
         position={
-          link.preview !== "unavailable"
+          previewAvailable(link) && show.image
             ? "top-[10.75rem] right-3"
-            : "top-[.75rem] right-3"
+            : "top-3 right-3"
         }
         flipDropdown={flipDropdown}
       />
