@@ -380,5 +380,10 @@
   "duotone": "Duotone",
   "light_icon": "Light",
   "search": "Search",
-  "set_custom_icon": "Set Custom Icon"
+  "set_custom_icon": "Set Custom Icon",
+  "view": "View",
+  "show": "Show",
+  "image": "Image",
+  "icon": "Icon",
+  "date": "Date"
 }
