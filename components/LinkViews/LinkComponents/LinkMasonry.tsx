@@ -155,11 +155,9 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
           ) : link.preview === "unavailable" ? null : (
             <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
           )}
-          {link.type !== "image" && (
-            <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
-              <LinkIcon link={link} />
-            </div>
-          )}
+          <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+            <LinkIcon link={link} />
+          </div>
         </div>
 
         {link.preview !== "unavailable" && (

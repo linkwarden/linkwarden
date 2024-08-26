@@ -23,6 +23,7 @@ import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
 import { useGetLink, useLinks } from "@/hooks/store/links";
 import { useRouter } from "next/router";
+import useLocalSettingsStore from "@/store/localSettings";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -40,6 +41,10 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
   const { data: user = {} } = useUser();
 
   const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const {
+    settings: { show },
+  } = useLocalSettingsStore();
 
   const {
     data: { data: links = [] },
@@ -166,11 +171,9 @@ export default function LinkCard({ link, flipDropdown, editMode }: Props) {
             ) : (
               <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
             )}
-            {link.type !== "image" && (
-              <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
-                <LinkIcon link={link} />
-              </div>
-            )}
+            <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+              <LinkIcon link={link} />
+            </div>
           </div>
           <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
         </div>
