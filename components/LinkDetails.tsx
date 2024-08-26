@@ -192,7 +192,7 @@ export default function LinkDetails({ className, link }: Props) {
             <p className="text-sm mb-2 text-neutral">{t("tags")}</p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {link.tags.map((tag) =>
               isPublicRoute ? (
                 <div key={tag.id} className="rounded-lg px-3 py-1 bg-base-200">

@@ -18,6 +18,7 @@ import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
 import { useLinks } from "@/hooks/store/links";
+import useLocalSettingsStore from "@/store/localSettings";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -38,6 +39,10 @@ export default function LinkCardCompact({
 
   const { data: user = {} } = useUser();
   const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const {
+    settings: { show },
+  } = useLocalSettingsStore();
 
   const { links } = useLinks();
 
@@ -105,33 +110,31 @@ export default function LinkCardCompact({
         }
       >
         <div
-          className="flex items-center cursor-pointer w-full"
+          className="flex items-center cursor-pointer w-full min-h-12"
           onClick={() =>
             !editMode && window.open(generateLinkHref(link, user), "_blank")
           }
         >
-          <div className="shrink-0">
-            <LinkIcon link={link} hideBackground />
-          </div>
+          {show.icon && (
+            <div className="shrink-0">
+              <LinkIcon link={link} hideBackground />
+            </div>
+          )}
 
           <div className="w-[calc(100%-56px)] ml-2">
-            <p className="line-clamp-1 mr-8 text-primary select-none">
-              {link.name ? (
-                unescapeString(link.name)
-              ) : (
-                <div className="mt-2">
-                  <LinkTypeBadge link={link} />
-                </div>
-              )}
-            </p>
+            {show.name && (
+              <p className="line-clamp-1 mr-8 text-primary select-none">
+                {unescapeString(link.name)}
+              </p>
+            )}
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
               <div className="flex items-center gap-x-3 text-neutral flex-wrap">
-                {collection && (
+                {show.link && <LinkTypeBadge link={link} />}
+                {show.collection && (
                   <LinkCollection link={link} collection={collection} />
                 )}
-                {link.name && <LinkTypeBadge link={link} />}
-                <LinkDate link={link} />
+                {show.date && <LinkDate link={link} />}
               </div>
             </div>
           </div>
