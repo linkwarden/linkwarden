@@ -1,14 +1,12 @@
 import LinkDetails from "@/components/LinkDetails";
 import { useGetLink } from "@/hooks/store/links";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 
 const Index = () => {
   const router = useRouter();
   const { id } = router.query;
-
-  useState;
 
   const getLink = useGetLink();
 
