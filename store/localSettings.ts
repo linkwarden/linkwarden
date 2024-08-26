@@ -6,7 +6,7 @@ type LocalSettings = {
   viewMode: string;
   show: {
     link: boolean;
-    title: boolean;
+    name: boolean;
     description: boolean;
     image: boolean;
     tags: boolean;
@@ -29,7 +29,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     viewMode: "",
     show: {
       link: true,
-      title: true,
+      name: true,
       description: true,
       image: true,
       tags: true,

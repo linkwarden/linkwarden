@@ -5,12 +5,12 @@ type Props = {
   icon: string;
 } & Icons.IconProps;
 
-const Icon = forwardRef<SVGSVGElement, Props>(({ icon, ...rest }) => {
+const Icon = forwardRef<SVGSVGElement, Props>(({ icon, ...rest }, ref) => {
   const IconComponent: any = Icons[icon as keyof typeof Icons];
 
   if (!IconComponent) {
-    return <></>;
-  } else return <IconComponent {...rest} />;
+    return null;
+  } else return <IconComponent ref={ref} {...rest} />;
 });
 
 export default Icon;
