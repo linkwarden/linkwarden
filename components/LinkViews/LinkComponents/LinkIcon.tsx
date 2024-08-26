@@ -16,8 +16,8 @@ export default function LinkIcon({
   hideBackground?: boolean;
 }) {
   let iconClasses: string = clsx(
-    "rounded-md flex item-center justify-center select-none z-10 w-12 h-12",
-    !hideBackground && "bg-white backdrop-blur-lg bg-opacity-50 p-1",
+    "rounded flex item-center justify-center select-none z-10 w-12 h-12",
+    !hideBackground && "rounded-md bg-white backdrop-blur-lg bg-opacity-50 p-1",
     className
   );
 
@@ -50,23 +50,17 @@ export default function LinkIcon({
             }}
           />
         ) : (
-          <LinkPlaceholderIcon
-            iconClasses={iconClasses}
-            icon="bi-link-45deg"
-            hideBackground={hideBackground}
-          />
+          <LinkPlaceholderIcon iconClasses={iconClasses} icon="bi-link-45deg" />
         )
       ) : link.type === "pdf" ? (
         <LinkPlaceholderIcon
           iconClasses={iconClasses}
           icon="bi-file-earmark-pdf"
-          hideBackground={hideBackground}
         />
       ) : link.type === "image" ? (
         <LinkPlaceholderIcon
           iconClasses={iconClasses}
           icon="bi-file-earmark-image"
-          hideBackground={hideBackground}
         />
       ) : // : link.type === "monolith" ? (
       //   <LinkPlaceholderIcon
@@ -83,11 +77,9 @@ export default function LinkIcon({
 const LinkPlaceholderIcon = ({
   iconClasses,
   icon,
-  hideBackground,
 }: {
   iconClasses: string;
   icon: string;
-  hideBackground?: boolean;
 }) => {
   return (
     <div className={clsx(iconClasses, "aspect-square text-4xl text-[#0ea5e9]")}>
