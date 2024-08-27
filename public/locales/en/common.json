@@ -385,5 +385,7 @@
   "show": "Show",
   "image": "Image",
   "icon": "Icon",
-  "date": "Date"
+  "date": "Date",
+  "preview_unavailable": "Preview Unavailable",
+  "icon_and_preview": "Icon & Preview"
 }
