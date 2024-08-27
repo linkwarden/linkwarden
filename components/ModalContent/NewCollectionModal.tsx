@@ -113,7 +113,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
           <div className="w-full">
             <p className="mb-2">{t("description")}</p>
             <textarea
-              className="w-full h-[13rem] resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
+              className="w-full h-32 resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
               placeholder={t("collection_description_placeholder")}
               value={collection.description}
               onChange={(e) =>

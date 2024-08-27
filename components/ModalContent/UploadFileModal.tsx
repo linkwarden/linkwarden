@@ -207,7 +207,7 @@ export default function UploadFileModal({ onClose }: Props) {
                   setLink({ ...link, description: e.target.value })
                 }
                 placeholder={t("description_placeholder")}
-                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
+                className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
               />
             </div>
           </div>

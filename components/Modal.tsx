@@ -40,7 +40,7 @@ export default function Modal({
           <ClickAwayHandler
             onClickOutside={() => dismissible && setDrawerIsOpen(false)}
           >
-            <Drawer.Content className="flex flex-col rounded-t-2xl min-h-max mt-24 fixed bottom-0 left-0 right-0 z-30">
+            <Drawer.Content className="flex flex-col rounded-t-2xl h-[90%] mt-24 fixed bottom-0 left-0 right-0 z-30">
               <div
                 className="p-4 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto"
                 data-testid="mobile-modal-container"
