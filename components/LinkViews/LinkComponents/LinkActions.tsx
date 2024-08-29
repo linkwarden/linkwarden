@@ -222,6 +222,7 @@ export default function LinkActions({
         <LinkDetailModal
           onClose={() => setLinkDetailModal(false)}
           onEdit={() => setEditLinkModal(true)}
+          onDelete={() => setDeleteLinkModal(true)}
           link={link}
         />
       )}
