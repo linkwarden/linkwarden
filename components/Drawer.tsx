@@ -46,7 +46,7 @@ export default function Drawer({
                 data-testid="mobile-modal-container"
               >
                 <div
-                  className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5"
+                  className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5 relative z-20"
                   data-testid="mobile-modal-slider"
                 />
                 {children}

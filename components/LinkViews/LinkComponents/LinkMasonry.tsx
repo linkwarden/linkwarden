@@ -162,7 +162,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
                 <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
               )}
               {show.icon && (
-                <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center shadow rounded-md">
+                <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center rounded-md">
                   <LinkIcon link={link} />
                 </div>
               )}
