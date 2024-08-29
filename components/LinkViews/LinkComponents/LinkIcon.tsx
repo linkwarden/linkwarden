@@ -84,7 +84,7 @@ const LinkPlaceholderIcon = ({
   icon: string;
 }) => {
   return (
-    <div className={clsx(iconClasses, "aspect-square text-4xl text-[#0ea5e9]")}>
+    <div className={clsx(iconClasses, "aspect-square text-4xl text-[#000000]")}>
       <i className={`${icon} m-auto`}></i>
     </div>
   );
