@@ -16,7 +16,7 @@ export default function LinkIcon({
   hideBackground?: boolean;
 }) {
   let iconClasses: string = clsx(
-    "rounded flex item-center justify-center select-none z-10 w-12 h-12",
+    "rounded flex item-center justify-center shadow-md select-none z-10 w-12 h-12",
     !hideBackground && "rounded-md bg-white backdrop-blur-lg bg-opacity-50 p-1",
     className
   );
