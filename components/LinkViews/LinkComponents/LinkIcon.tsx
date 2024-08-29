@@ -16,7 +16,7 @@ export default function LinkIcon({
   hideBackground?: boolean;
 }) {
   let iconClasses: string = clsx(
-    "rounded flex item-center justify-center shadow-md select-none z-10 w-12 h-12",
+    "rounded flex item-center justify-center shadow select-none z-10 w-12 h-12",
     !hideBackground && "rounded-md bg-white backdrop-blur-lg bg-opacity-50 p-1",
     className
   );
@@ -29,13 +29,15 @@ export default function LinkIcon({
   return (
     <>
       {link.icon ? (
-        <Icon
-          icon={link.icon}
-          size={30}
-          weight={(link.iconWeight || "regular") as IconWeight}
-          color={link.color || "#0ea5e9"}
-          className={iconClasses}
-        />
+        <div className={iconClasses}>
+          <Icon
+            icon={link.icon}
+            size={30}
+            weight={(link.iconWeight || "regular") as IconWeight}
+            color={link.color || "#0ea5e9"}
+            className="m-auto"
+          />
+        </div>
       ) : link.type === "url" && url ? (
         showFavicon ? (
           <Image
