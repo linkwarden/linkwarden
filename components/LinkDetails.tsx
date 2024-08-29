@@ -30,15 +30,9 @@ type Props = {
   className?: string;
   link: LinkIncludingShortenedCollectionAndTags;
   standalone?: boolean;
-  editMode?: boolean;
 };
 
-export default function LinkDetails({
-  className,
-  link,
-  standalone,
-  editMode,
-}: Props) {
+export default function LinkDetails({ className, link, standalone }: Props) {
   const { t } = useTranslation();
   const session = useSession();
   const getLink = useGetLink();
