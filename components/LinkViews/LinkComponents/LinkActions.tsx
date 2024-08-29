@@ -6,11 +6,10 @@ import {
 import usePermissions from "@/hooks/usePermissions";
 import EditLinkModal from "@/components/ModalContent/EditLinkModal";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
-import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
-import { useDeleteLink, useUpdateLink } from "@/hooks/store/links";
+import { useDeleteLink, useGetLink, useUpdateLink } from "@/hooks/store/links";
 import toast from "react-hot-toast";
 import LinkDetailModal from "@/components/ModalContent/LinkDetailModal";
 import { useRouter } from "next/router";
@@ -32,11 +31,11 @@ export default function LinkActions({
   const { t } = useTranslation();
 
   const permissions = usePermissions(link.collection.id as number);
+  const getLink = useGetLink();
 
   const [editLinkModal, setEditLinkModal] = useState(false);
   const [linkDetailModal, setLinkDetailModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
-  const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
   const { data: user = {} } = useUser();
 
@@ -67,6 +66,23 @@ export default function LinkActions({
         },
       }
     );
+  };
+
+  const updateArchive = async () => {
+    const load = toast.loading(t("sending_request"));
+
+    const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
+      method: "PUT",
+    });
+
+    const data = await response.json();
+    toast.dismiss(load);
+
+    if (response.ok) {
+      await getLink.mutateAsync({ id: link.id as number });
+
+      toast.success(t("link_being_archived"));
+    } else toast.error(data.response);
   };
 
   const router = useRouter();
@@ -157,11 +173,11 @@ export default function LinkActions({
                   tabIndex={0}
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
-                    setPreservedFormatsModal(true);
+                    updateArchive();
                   }}
                   className="whitespace-nowrap"
                 >
-                  {t("preserved_formats")}
+                  {t("refresh_preserved_formats")}
                 </div>
               </li>
             )}
@@ -212,16 +228,12 @@ export default function LinkActions({
           activeLink={link}
         />
       )}
-      {preservedFormatsModal && (
-        <PreservedFormatsModal
-          onClose={() => setPreservedFormatsModal(false)}
-          link={link}
-        />
-      )}
       {linkDetailModal && (
         <LinkDetailModal
           onClose={() => setLinkDetailModal(false)}
           onEdit={() => setEditLinkModal(true)}
+          onPin={pinLink}
+          onUpdateArchive={updateArchive}
           onDelete={() => setDeleteLinkModal(true)}
           link={link}
         />

@@ -12,18 +12,15 @@ import LinkDetails from "../LinkDetails";
 import Link from "next/link";
 import usePermissions from "@/hooks/usePermissions";
 import { useRouter } from "next/router";
-import { previewAvailable } from "@/lib/shared/getArchiveValidity";
-import Image from "next/image";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import toast from "react-hot-toast";
-import EditLinkModal from "./EditLinkModal";
-import DeleteLinkModal from "./DeleteLinkModal";
-import PreservedFormatsModal from "./PreservedFormatsModal";
 
 type Props = {
   onClose: Function;
   onEdit: Function;
   onDelete: Function;
+  onUpdateArchive: Function;
+  onPin: Function;
   link: LinkIncludingShortenedCollectionAndTags;
 };
 
@@ -31,6 +28,8 @@ export default function LinkDetailModal({
   onClose,
   onEdit,
   onDelete,
+  onUpdateArchive,
+  onPin,
   link,
 }: Props) {
   const { t } = useTranslation();
@@ -124,53 +123,6 @@ export default function LinkDetailModal({
   const updateLink = useUpdateLink();
   const deleteLink = useDeleteLink();
 
-  const pinLink = async () => {
-    const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0] ? true : false;
-
-    const load = toast.loading(t("updating"));
-
-    await updateLink.mutateAsync(
-      {
-        ...link,
-        pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
-      },
-      {
-        onSettled: (data, error) => {
-          toast.dismiss(load);
-
-          if (error) {
-            toast.error(error.message);
-          } else {
-            toast.success(
-              isAlreadyPinned ? t("link_unpinned") : t("link_pinned")
-            );
-          }
-        },
-      }
-    );
-  };
-
-  const updateArchive = async () => {
-    const load = toast.loading(t("sending_request"));
-
-    const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
-      method: "PUT",
-    });
-
-    const data = await response.json();
-    toast.dismiss(load);
-
-    if (response.ok) {
-      await getLink.mutateAsync({ id: link.id as number });
-
-      toast.success(t("link_being_archived"));
-    } else toast.error(data.response);
-  };
-
-  const [editLinkModal, setEditLinkModal] = useState(false);
-  const [deleteLinkModal, setDeleteLinkModal] = useState(false);
-  const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
-
   return (
     <Drawer toggleDrawer={onClose} className="sm:h-screen sm:flex relative">
       <div
@@ -197,7 +149,7 @@ export default function LinkDetailModal({
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  pinLink();
+                  onPin();
                 }}
                 className="whitespace-nowrap"
               >
@@ -214,7 +166,8 @@ export default function LinkDetailModal({
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  setEditLinkModal(true);
+                  onEdit();
+                  onClose();
                 }}
                 className="whitespace-nowrap"
               >
@@ -229,7 +182,7 @@ export default function LinkDetailModal({
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  updateArchive();
+                  onUpdateArchive();
                 }}
                 className="whitespace-nowrap"
               >
@@ -281,20 +234,6 @@ export default function LinkDetailModal({
 
       <div className="w-full">
         <LinkDetails link={link} className="sm:mt-0 -mt-11" />
-
-        {/* {(permissions === true || permissions?.canUpdate) && (
-          <div className="mx-auto text-center">
-            <div
-              className="btn btn-sm btn-ghost"
-              onClick={() => {
-                onEdit();
-                onClose();
-              }}
-            >
-              {t("edit_link")}
-            </div>
-          </div>
-        )} */}
       </div>
     </Drawer>
   );
