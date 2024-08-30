@@ -4,14 +4,13 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import usePermissions from "@/hooks/usePermissions";
-import EditLinkModal from "@/components/ModalContent/EditLinkModal";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
 import { useDeleteLink, useGetLink, useUpdateLink } from "@/hooks/store/links";
 import toast from "react-hot-toast";
-import LinkDetailModal from "@/components/ModalContent/LinkDetailModal";
+import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";
 
 type Props = {
@@ -34,7 +33,7 @@ export default function LinkActions({
   const getLink = useGetLink();
 
   const [editLinkModal, setEditLinkModal] = useState(false);
-  const [linkDetailModal, setLinkDetailModal] = useState(false);
+  const [linkModal, setLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
 
   const { data: user = {} } = useUser();
@@ -96,7 +95,7 @@ export default function LinkActions({
           className={`absolute ${position || "top-3 right-3"} ${
             alignToTop ? "" : "dropdown-end"
           } z-20`}
-          onClick={() => setLinkDetailModal(true)}
+          onClick={() => setLinkModal(true)}
         >
           <div className="btn btn-ghost btn-sm btn-square text-neutral">
             <i title="More" className="bi-three-dots text-xl" />
@@ -144,7 +143,7 @@ export default function LinkActions({
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  setLinkDetailModal(true);
+                  setLinkModal(true);
                 }}
                 className="whitespace-nowrap"
               >
@@ -217,9 +216,13 @@ export default function LinkActions({
         </div>
       )}
       {editLinkModal && (
-        <EditLinkModal
+        <LinkModal
           onClose={() => setEditLinkModal(false)}
-          activeLink={link}
+          onPin={pinLink}
+          onUpdateArchive={updateArchive}
+          onDelete={() => setDeleteLinkModal(true)}
+          link={link}
+          activeMode="edit"
         />
       )}
       {deleteLinkModal && (
@@ -228,10 +231,9 @@ export default function LinkActions({
           activeLink={link}
         />
       )}
-      {linkDetailModal && (
-        <LinkDetailModal
-          onClose={() => setLinkDetailModal(false)}
-          onEdit={() => setEditLinkModal(true)}
+      {linkModal && (
+        <LinkModal
+          onClose={() => setLinkModal(false)}
           onPin={pinLink}
           onUpdateArchive={updateArchive}
           onDelete={() => setDeleteLinkModal(true)}
