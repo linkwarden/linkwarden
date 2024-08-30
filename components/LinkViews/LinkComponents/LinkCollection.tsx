@@ -29,12 +29,12 @@ export default function LinkCollection({
             icon={link.collection.icon}
             size={20}
             weight={(link.collection.iconWeight || "regular") as IconWeight}
-            color={link.collection.color || "#0ea5e9"}
+            color={link.collection.color}
           />
         ) : (
           <i
             className="bi-folder-fill text-lg"
-            style={{ color: link.collection.color || "#0ea5e9" }}
+            style={{ color: link.collection.color }}
           ></i>
         )}
         <p className="truncate capitalize">{collection?.name}</p>

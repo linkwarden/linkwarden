@@ -212,12 +212,12 @@ export default function ReadableView({ link }: Props) {
                   weight={
                     (link.collection.iconWeight || "regular") as IconWeight
                   }
-                  color={link.collection.color || "#0ea5e9"}
+                  color={link.collection.color}
                 />
               ) : (
                 <i
                   className="bi-folder-fill text-2xl"
-                  style={{ color: link.collection.color || "#0ea5e9" }}
+                  style={{ color: link.collection.color }}
                 ></i>
               )}
               <p

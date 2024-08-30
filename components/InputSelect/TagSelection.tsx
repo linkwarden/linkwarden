@@ -10,9 +10,16 @@ type Props = {
     value: number;
     label: string;
   }[];
+  autoFocus?: boolean;
+  onBlur?: any;
 };
 
-export default function TagSelection({ onChange, defaultValue }: Props) {
+export default function TagSelection({
+  onChange,
+  defaultValue,
+  autoFocus,
+  onBlur,
+}: Props) {
   const { data: tags = [] } = useTags();
 
   const [options, setOptions] = useState<Options[]>([]);
@@ -35,6 +42,8 @@ export default function TagSelection({ onChange, defaultValue }: Props) {
       styles={styles}
       defaultValue={defaultValue}
       isMulti
+      autoFocus={autoFocus}
+      onBlur={onBlur}
     />
   );
 }

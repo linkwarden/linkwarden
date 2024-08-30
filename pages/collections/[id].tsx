@@ -119,12 +119,12 @@ export default function Index() {
                   weight={
                     (activeCollection.iconWeight || "regular") as IconWeight
                   }
-                  color={activeCollection.color || "#0ea5e9"}
+                  color={activeCollection.color}
                 />
               ) : (
                 <i
                   className="bi-folder-fill text-3xl"
-                  style={{ color: activeCollection.color || "#0ea5e9" }}
+                  style={{ color: activeCollection.color }}
                 ></i>
               )}
 
