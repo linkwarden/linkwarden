@@ -10,10 +10,12 @@ export default function LinkIcon({
   link,
   className,
   hideBackground,
+  onClick,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   className?: string;
   hideBackground?: boolean;
+  onClick?: Function;
 }) {
   let iconClasses: string = clsx(
     "rounded flex item-center justify-center shadow select-none z-10 w-12 h-12",
@@ -27,14 +29,14 @@ export default function LinkIcon({
   const [showFavicon, setShowFavicon] = React.useState<boolean>(true);
 
   return (
-    <>
+    <div onClick={() => onClick && onClick()}>
       {link.icon ? (
         <div className={iconClasses}>
           <Icon
             icon={link.icon}
             size={30}
             weight={(link.iconWeight || "regular") as IconWeight}
-            color={link.color || "#0ea5e9"}
+            color={link.color || "#006796"}
             className="m-auto"
           />
         </div>
@@ -72,7 +74,7 @@ export default function LinkIcon({
       //   />
       // )
       undefined}
-    </>
+    </div>
   );
 }
 
@@ -84,7 +86,7 @@ const LinkPlaceholderIcon = ({
   icon: string;
 }) => {
   return (
-    <div className={clsx(iconClasses, "aspect-square text-4xl text-[#000000]")}>
+    <div className={clsx(iconClasses, "aspect-square text-4xl text-[#006796]")}>
       <i className={`${icon} m-auto`}></i>
     </div>
   );

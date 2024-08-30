@@ -162,6 +162,19 @@
   height: fit-content;
 }
 
+.react-select__indicator-separator {
+  display: none;
+}
+
+.react-select__control--is-focused .react-select__dropdown-indicator,
+.react-select__control .react-select__dropdown-indicator,
+.react-select__control .react-select__dropdown-indicator:hover,
+.react-select__control .react-select__dropdown-indicator:focus,
+.react-select__control--is-focused .react-select__dropdown-indicator:hover,
+.react-select__control--is-focused .react-select__dropdown-indicator:focus {
+  color: oklch(var(--n));
+}
+
 /* Theme */
 
 @layer components {
@@ -169,13 +182,13 @@
     @apply bg-base-200 hover:border-neutral-content;
   }
 
+  .react-select-container .react-select__control--is-focused {
+    @apply border-primary hover:border-primary;
+  }
+
   .react-select-container .react-select__menu {
     @apply bg-base-100 border-neutral-content border rounded-md;
   }
-  /* 
-  .react-select-container .react-select__menu-list {
-    @apply h-20;
-  } */
 
   .react-select-container .react-select__input-container,
   .react-select-container .react-select__single-value {

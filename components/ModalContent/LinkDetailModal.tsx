@@ -233,7 +233,7 @@ export default function LinkDetailModal({
       ></Link>
 
       <div className="w-full">
-        <LinkDetails link={link} className="sm:mt-0 -mt-11" />
+        <LinkDetails activeLink={link} className="sm:mt-0 -mt-11" />
       </div>
     </Drawer>
   );

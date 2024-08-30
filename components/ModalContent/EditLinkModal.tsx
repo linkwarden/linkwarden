@@ -145,54 +145,6 @@ export default function EditLinkModal({ onClose, activeLink }: Props) {
               className="resize-none w-full rounded-md p-2 h-32 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
             />
           </div>
-
-          <div>
-            <p className="mb-2">{t("icon_and_preview")}</p>
-            <div className="flex gap-3">
-              <IconPicker
-                hideDefaultIcon
-                color={link.color || "#0ea5e9"}
-                setColor={(color: string) => setLink({ ...link, color })}
-                weight={(link.iconWeight || "regular") as IconWeight}
-                setWeight={(iconWeight: string) =>
-                  setLink({ ...link, iconWeight })
-                }
-                iconName={link.icon as string}
-                setIconName={(icon: string) => setLink({ ...link, icon })}
-                reset={() =>
-                  setLink({
-                    ...link,
-                    color: "",
-                    icon: "",
-                    iconWeight: "",
-                  })
-                }
-                alignment="-top-10 translate-x-20"
-              />
-
-              {previewAvailable(link) ? (
-                <Image
-                  src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
-                  width={1280}
-                  height={720}
-                  alt=""
-                  className="object-cover h-20 w-32 rounded-lg opacity-80"
-                  onError={(e) => {
-                    const target = e.target as HTMLElement;
-                    target.style.display = "none";
-                  }}
-                />
-              ) : link.preview === "unavailable" ? (
-                <div className="bg-gray-50 duration-100 h-20 w-32 bg-opacity-80 rounded-lg flex flex-col justify-center">
-                  <p className="text-black text-sm text-center">
-                    {t("preview_unavailable")}
-                  </p>
-                </div>
-              ) : (
-                <div className="duration-100 h-20 w-32 bg-opacity-80 skeleton rounded-lg"></div>
-              )}
-            </div>
-          </div>
         </div>
       </div>
 
