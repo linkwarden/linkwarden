@@ -273,13 +273,13 @@ const renderItem = (
                 icon={collection.icon}
                 size={30}
                 weight={(collection.iconWeight || "regular") as IconWeight}
-                color={collection.color || "#0ea5e9"}
+                color={collection.color}
                 className="-mr-[0.15rem]"
               />
             ) : (
               <i
                 className="bi-folder-fill text-2xl"
-                style={{ color: collection.color || "#0ea5e9" }}
+                style={{ color: collection.color }}
               ></i>
             )}
 

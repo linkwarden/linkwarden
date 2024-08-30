@@ -20,7 +20,7 @@ const Index = () => {
     <div className="flex h-screen">
       {getLink.data ? (
         <LinkDetails
-          link={getLink.data}
+          activeLink={getLink.data}
           className="sm:max-w-xl sm:m-auto sm:p-5 w-full"
           standalone
         />

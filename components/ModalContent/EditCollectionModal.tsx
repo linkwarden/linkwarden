@@ -60,7 +60,7 @@ export default function EditCollectionModal({
         <div className="flex flex-col gap-3">
           <div className="flex gap-3 items-end">
             <IconPicker
-              color={collection.color || "#0ea5e9"}
+              color={collection.color}
               setColor={(color: string) =>
                 setCollection({ ...collection, color })
               }

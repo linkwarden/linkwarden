@@ -22,6 +22,7 @@ export interface LinkIncludingShortenedCollectionAndTags
   pinnedBy?: {
     id: number;
   }[];
+  updatedAt?: string;
   collection: OptionalExcluding<Collection, "name" | "ownerId">;
 }
 
