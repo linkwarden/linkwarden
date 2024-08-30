@@ -39,7 +39,7 @@ const IconPopover = ({
       onClose={() => onClose()}
       className={clsx(
         className,
-        "fade-in bg-base-200 border border-neutral-content p-2 h-44 w-[22.5rem] rounded-lg"
+        "fade-in bg-base-200 border border-neutral-content p-2 h-44 w-[22.5rem] rounded-lg shadow-md"
       )}
     >
       <div className="flex gap-2 h-full w-full">
