@@ -14,7 +14,7 @@ export const styles: StylesConfig = {
         ? "oklch(var(--p))"
         : "oklch(var(--nc))",
     },
-    transition: "all 50ms",
+    transition: "all 100ms",
   }),
   control: (styles, state) => ({
     ...styles,
