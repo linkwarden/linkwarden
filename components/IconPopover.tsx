@@ -39,32 +39,10 @@ const IconPopover = ({
       onClose={() => onClose()}
       className={clsx(
         className,
-        "fade-in bg-base-200 border border-neutral-content p-2 h-44 w-[22.5rem] rounded-lg shadow-md"
+        "fade-in bg-base-200 border border-neutral-content p-2 w-[22.5rem] rounded-lg shadow-md"
       )}
     >
       <div className="flex gap-2 h-full w-full">
-        <div className="flex flex-col gap-2 h-full w-fit color-picker">
-          <div
-            className="btn btn-ghost btn-xs"
-            onClick={reset as React.MouseEventHandler<HTMLDivElement>}
-          >
-            {t("reset")}
-          </div>
-          <select
-            className="border border-neutral-content bg-base-100 focus:outline-none focus:border-primary duration-100 w-full rounded-md h-7"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-          >
-            <option value="regular">{t("regular")}</option>
-            <option value="thin">{t("thin")}</option>
-            <option value="light">{t("light_icon")}</option>
-            <option value="bold">{t("bold")}</option>
-            <option value="fill">{t("fill")}</option>
-            <option value="duotone">{t("duotone")}</option>
-          </select>
-          <HexColorPicker color={color} onChange={(e) => setColor(e)} />
-        </div>
-
         <div className="flex flex-col gap-2 w-full">
           <TextInput
             className="p-2 rounded w-full h-7 text-sm"
@@ -73,7 +51,7 @@ const IconPopover = ({
             onChange={(e) => setQuery(e.target.value)}
           />
 
-          <div className="grid grid-cols-4 gap-1 w-full overflow-y-auto h-32 border border-neutral-content bg-base-100 rounded-md p-2">
+          <div className="grid grid-cols-6 gap-1 w-full overflow-y-auto h-44 border border-neutral-content bg-base-100 rounded-md p-2">
             <IconGrid
               query={query}
               color={color}
@@ -81,6 +59,79 @@ const IconPopover = ({
               iconName={iconName}
               setIconName={setIconName}
             />
+          </div>
+
+          <div className="flex gap-2 color-picker w-full">
+            <HexColorPicker color={color} onChange={(e) => setColor(e)} />
+
+            <div className="grid grid-cols-2 gap-1 text-sm">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  className="radio radio-primary mr-2"
+                  value="regular"
+                  checked={weight === "regular"}
+                  onChange={() => setWeight("regular")}
+                />
+                {t("regular")}
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  className="radio radio-primary mr-2"
+                  value="thin"
+                  checked={weight === "thin"}
+                  onChange={() => setWeight("thin")}
+                />
+                {t("thin")}
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  className="radio radio-primary mr-2"
+                  value="light"
+                  checked={weight === "light"}
+                  onChange={() => setWeight("light")}
+                />
+                {t("light_icon")}
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  className="radio radio-primary mr-2"
+                  value="bold"
+                  checked={weight === "bold"}
+                  onChange={() => setWeight("bold")}
+                />
+                {t("bold")}
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  className="radio radio-primary mr-2"
+                  value="fill"
+                  checked={weight === "fill"}
+                  onChange={() => setWeight("fill")}
+                />
+                {t("fill")}
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  className="radio radio-primary mr-2"
+                  value="duotone"
+                  checked={weight === "duotone"}
+                  onChange={() => setWeight("duotone")}
+                />
+                {t("duotone")}
+              </label>
+            </div>
+          </div>
+          <div
+            className="btn btn-neutral btn-sm mt-2 w-fit mx-auto"
+            onClick={reset as React.MouseEventHandler<HTMLDivElement>}
+          >
+            {t("reset_defaults")}
           </div>
         </div>
       </div>

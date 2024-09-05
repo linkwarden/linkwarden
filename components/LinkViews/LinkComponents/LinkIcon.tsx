@@ -91,5 +91,3 @@ const LinkPlaceholderIcon = ({
     </div>
   );
 };
-
-// `text-black aspect-square text-4xl ${iconClasses}`
