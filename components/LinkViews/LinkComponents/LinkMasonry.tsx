@@ -146,7 +146,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
             <div className="relative rounded-t-2xl overflow-hidden">
               {previewAvailable(link) ? (
                 <Image
-                  src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
+                  src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
                   width={1280}
                   height={720}
                   alt=""

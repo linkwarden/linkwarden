@@ -49,7 +49,7 @@ export default function LinkActions({
     await updateLink.mutateAsync(
       {
         ...link,
-        pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
+        pinnedBy: isAlreadyPinned ? [{ id: undefined }] : [{ id: user.id }],
       },
       {
         onSettled: (data, error) => {
@@ -95,6 +95,9 @@ export default function LinkActions({
           className={`absolute ${position || "top-3 right-3"} ${
             alignToTop ? "" : "dropdown-end"
           } z-20`}
+          tabIndex={0}
+          role="button"
+          onMouseDown={dropdownTriggerer}
           onClick={() => setLinkModal(true)}
         >
           <div className="btn btn-ghost btn-sm btn-square text-neutral">
@@ -120,23 +123,21 @@ export default function LinkActions({
               alignToTop ? "" : "translate-y-10"
             }`}
           >
-            {(permissions === true || permissions?.canUpdate) && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    pinLink();
-                  }}
-                  className="whitespace-nowrap"
-                >
-                  {link?.pinnedBy && link.pinnedBy[0]
-                    ? t("unpin")
-                    : t("pin_to_dashboard")}
-                </div>
-              </li>
-            )}
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  pinLink();
+                }}
+                className="whitespace-nowrap"
+              >
+                {link?.pinnedBy && link.pinnedBy[0]
+                  ? t("unpin")
+                  : t("pin_to_dashboard")}
+              </div>
+            </li>
             <li>
               <div
                 role="button"
@@ -165,7 +166,7 @@ export default function LinkActions({
                 </div>
               </li>
             )}
-            {link.type === "url" && (
+            {link.type === "url" && permissions === true && (
               <li>
                 <div
                   role="button"
