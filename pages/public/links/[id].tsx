@@ -1,14 +1,12 @@
 import LinkDetails from "@/components/LinkDetails";
 import { useGetLink } from "@/hooks/store/links";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 
 const Index = () => {
   const router = useRouter();
   const { id } = router.query;
-
-  useState;
 
   const getLink = useGetLink();
 
@@ -17,11 +15,12 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="flex h-screen py-20">
+    <div className="flex h-screen">
       {getLink.data ? (
         <LinkDetails
-          link={getLink.data}
-          className="max-w-xl p-5 m-auto w-full"
+          activeLink={getLink.data}
+          className="sm:max-w-xl sm:m-auto sm:p-5 w-full"
+          standalone
         />
       ) : (
         <div className="max-w-xl p-5 m-auto w-full flex flex-col items-center gap-5">

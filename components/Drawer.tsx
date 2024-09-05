@@ -40,13 +40,13 @@ export default function Drawer({
           <ClickAwayHandler
             onClickOutside={() => dismissible && setDrawerIsOpen(false)}
           >
-            <D.Content className="flex flex-col rounded-t-2xl min-h-max mt-24 fixed bottom-0 left-0 right-0 z-30 h-[90%]">
+            <D.Content className="flex flex-col rounded-t-2xl mt-24 fixed bottom-0 left-0 right-0 z-30 h-[90%]">
               <div
                 className="p-4 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto"
                 data-testid="mobile-modal-container"
               >
                 <div
-                  className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5"
+                  className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5 relative z-20"
                   data-testid="mobile-modal-slider"
                 />
                 {children}
