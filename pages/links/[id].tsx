@@ -17,11 +17,12 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="flex h-screen py-20">
+    <div className="flex h-screen">
       {getLink.data ? (
         <LinkDetails
-          link={getLink.data}
-          className="max-w-xl p-5 m-auto w-full"
+          activeLink={getLink.data}
+          className="sm:max-w-xl sm:m-auto sm:p-5 w-full"
+          standalone
         />
       ) : (
         <div className="max-w-xl p-5 m-auto w-full flex flex-col items-center gap-5">

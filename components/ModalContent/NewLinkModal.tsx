@@ -31,6 +31,9 @@ export default function NewLinkModal({ onClose }: Props) {
     readable: "",
     monolith: "",
     textContent: "",
+    icon: "",
+    iconWeight: "",
+    color: "",
     collection: {
       name: "",
       ownerId: data?.user.id as number,
@@ -166,7 +169,7 @@ export default function NewLinkModal({ onClose }: Props) {
                     setLink({ ...link, description: e.target.value })
                   }
                   placeholder={t("link_description_placeholder")}
-                  className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                  className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
                 />
               </div>
             </div>

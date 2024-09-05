@@ -142,7 +142,7 @@ export function ListView({
   placeHolderRef?: any;
 }) {
   return (
-    <div className="flex gap-1 flex-col">
+    <div className="flex flex-col">
       {links?.map((e, i) => {
         return (
           <LinkList
@@ -161,13 +161,13 @@ export function ListView({
             <div
               ref={e === 1 ? placeHolderRef : undefined}
               key={i}
-              className="flex gap-4 p-4"
+              className="flex gap-2 py-2 px-1"
             >
-              <div className="skeleton h-16 w-16"></div>
-              <div className="flex flex-col gap-4 w-full">
-                <div className="skeleton h-3 w-2/3"></div>
-                <div className="skeleton h-3 w-full"></div>
-                <div className="skeleton h-3 w-1/3"></div>
+              <div className="skeleton h-12 w-12"></div>
+              <div className="flex flex-col gap-3 w-full">
+                <div className="skeleton h-2 w-2/3"></div>
+                <div className="skeleton h-2 w-full"></div>
+                <div className="skeleton h-2 w-1/3"></div>
               </div>
             </div>
           );

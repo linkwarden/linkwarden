@@ -42,6 +42,8 @@ export default async function postCollection(
       name: collection.name.trim(),
       description: collection.description,
       color: collection.color,
+      icon: collection.icon,
+      iconWeight: collection.iconWeight,
       parent: collection.parentId
         ? {
             connect: {

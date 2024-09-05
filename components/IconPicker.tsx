@@ -1,44 +1,81 @@
-import { icons } from "@/lib/client/icons";
-import React, { useMemo, useState } from "react";
-import Fuse from "fuse.js";
+import React, { useState } from "react";
 import TextInput from "./TextInput";
+import Popover from "./Popover";
+import { HexColorPicker } from "react-colorful";
+import { useTranslation } from "next-i18next";
+import Icon from "./Icon";
+import { IconWeight } from "@phosphor-icons/react";
+import IconGrid from "./IconGrid";
+import IconPopover from "./IconPopover";
+import clsx from "clsx";
 
-const fuse = new Fuse(icons, {
-  keys: [{ name: "name", weight: 4 }, "tags", "categories"],
-  threshold: 0.2,
-  useExtendedSearch: true,
-});
+type Props = {
+  alignment?: string;
+  color: string;
+  setColor: Function;
+  iconName?: string;
+  setIconName: Function;
+  weight: "light" | "regular" | "bold" | "fill" | "duotone" | "thin";
+  setWeight: Function;
+  hideDefaultIcon?: boolean;
+  reset: Function;
+  className?: string;
+};
 
-type Props = {};
-
-const IconPicker = (props: Props) => {
-  const [query, setQuery] = useState("");
-
-  const filteredQueryResultsSelector = useMemo(() => {
-    if (!query) {
-      return icons;
-    }
-    return fuse.search(query).map((result) => result.item);
-  }, [query]);
+const IconPicker = ({
+  alignment,
+  color,
+  setColor,
+  iconName,
+  setIconName,
+  weight,
+  setWeight,
+  hideDefaultIcon,
+  className,
+  reset,
+}: Props) => {
+  const { t } = useTranslation();
+  const [iconPicker, setIconPicker] = useState(false);
 
   return (
-    <div className="w-fit">
-      <TextInput
-        className="p-2 rounded w-full mb-5"
-        placeholder="Search icons"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <div className="grid grid-cols-6 gap-5 w-fit">
-        {filteredQueryResultsSelector.map((icon) => {
-          const IconComponent = icon.Icon;
-          return (
-            <div key={icon.name} onClick={() => console.log(icon.name)}>
-              <IconComponent size={32} weight="fill" />
-            </div>
-          );
-        })}
+    <div className="relative">
+      <div
+        onClick={() => setIconPicker(!iconPicker)}
+        className="btn btn-square w-20 h-20"
+      >
+        {iconName ? (
+          <Icon
+            icon={iconName}
+            size={60}
+            weight={(weight || "regular") as IconWeight}
+            color={color || "#0ea5e9"}
+          />
+        ) : !iconName && hideDefaultIcon ? (
+          <p className="p-1">{t("set_custom_icon")}</p>
+        ) : (
+          <i
+            className="bi-folder-fill text-6xl"
+            style={{ color: color || "#0ea5e9" }}
+          ></i>
+        )}
       </div>
+      {iconPicker && (
+        <IconPopover
+          alignment={alignment}
+          color={color}
+          setColor={setColor}
+          iconName={iconName}
+          setIconName={setIconName}
+          weight={weight}
+          setWeight={setWeight}
+          reset={reset}
+          onClose={() => setIconPicker(false)}
+          className={clsx(
+            className,
+            alignment || "lg:-translate-x-1/3 top-20 left-0"
+          )}
+        />
+      )}
     </div>
   );
 };

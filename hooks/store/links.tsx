@@ -13,6 +13,7 @@ import {
 } from "@/types/global";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import Jimp from "jimp";
 
 const useLinks = (params: LinkRequestQuery = {}) => {
   const router = useRouter();
@@ -395,6 +396,41 @@ const useUploadFile = () => {
   });
 };
 
+const useUpdatePreview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ linkId, file }: { linkId: number; file: File }) => {
+      const formBody = new FormData();
+
+      if (!linkId || !file)
+        throw new Error("Error generating preview: Invalid parameters");
+
+      formBody.append("file", file);
+
+      const res = await fetch(
+        `/api/v1/archives/${linkId}?format=` + ArchivedFormat.jpeg,
+        {
+          body: formBody,
+          method: "POST",
+        }
+      );
+
+      const data = res.json();
+
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
+      queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
+    },
+  });
+};
+
 const useBulkEditLinks = () => {
   const queryClient = useQueryClient();
 
@@ -479,4 +515,5 @@ export {
   useGetLink,
   useBulkEditLinks,
   resetInfiniteQueryPagination,
+  useUpdatePreview,
 };
