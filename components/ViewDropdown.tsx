@@ -57,7 +57,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
         >
           <button
             onClick={(e) => onChangeViewMode(e, ViewMode.Card)}
-            className={`btn btn-square btn-sm btn-ghost ${
+            className={`btn w-[31%] btn-sm btn-ghost ${
               viewMode === ViewMode.Card
                 ? "bg-primary/20 hover:bg-primary/20"
                 : "hover:bg-neutral/20"
@@ -67,7 +67,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
           </button>
           <button
             onClick={(e) => onChangeViewMode(e, ViewMode.Masonry)}
-            className={`btn btn-square btn-sm btn-ghost ${
+            className={`btn w-[31%] btn-sm btn-ghost ${
               viewMode === ViewMode.Masonry
                 ? "bg-primary/20 hover:bg-primary/20"
                 : "hover:bg-neutral/20"
@@ -77,7 +77,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
           </button>
           <button
             onClick={(e) => onChangeViewMode(e, ViewMode.List)}
-            className={`btn btn-square btn-sm btn-ghost ${
+            className={`btn w-[31%] btn-sm btn-ghost ${
               viewMode === ViewMode.List
                 ? "bg-primary/20 hover:bg-primary/20"
                 : "hover:bg-neutral/20"

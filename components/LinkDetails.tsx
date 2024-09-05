@@ -4,7 +4,6 @@ import {
   ArchivedFormat,
 } from "@/types/global";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import {
   pdfAvailable,
   readabilityAvailable,
@@ -17,7 +16,11 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@/hooks/store/user";
-import { useGetLink, useUpdateLink } from "@/hooks/store/links";
+import {
+  useGetLink,
+  useUpdateLink,
+  useUpdatePreview,
+} from "@/hooks/store/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
@@ -31,6 +34,7 @@ import TagSelection from "./InputSelect/TagSelection";
 import unescapeString from "@/lib/client/unescapeString";
 import IconPopover from "./IconPopover";
 import TextInput from "./TextInput";
+import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
   className?: string;
@@ -50,8 +54,13 @@ export default function LinkDetails({
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
 
+  useEffect(() => {
+    setLink(activeLink);
+  }, [activeLink]);
+
+  const permissions = usePermissions(link.collection.id as number);
+
   const { t } = useTranslation();
-  const session = useSession();
   const getLink = useGetLink();
   const { data: user = {} } = useUser();
 
@@ -140,13 +149,14 @@ export default function LinkDetails({
         clearInterval(interval);
       }
     };
-  }, [link?.monolith]);
+  }, [link.monolith]);
 
   const router = useRouter();
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   const updateLink = useUpdateLink();
+  const updatePreview = useUpdatePreview();
 
   const submit = async (e?: any) => {
     e?.preventDefault();
@@ -169,7 +179,6 @@ export default function LinkDetails({
         } else {
           toast.success(t("updated"));
           setMode && setMode("view");
-          console.log(data);
           setLink(data);
         }
       },
@@ -208,7 +217,7 @@ export default function LinkDetails({
         >
           {previewAvailable(link) ? (
             <Image
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true`}
+              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
               width={1280}
               height={720}
               alt=""
@@ -227,7 +236,7 @@ export default function LinkDetails({
             <div className="duration-100 h-40 skeleton rounded-b-none"></div>
           )}
 
-          {!standalone && (
+          {!standalone && (permissions === true || permissions?.canUpdate) && (
             <div className="absolute top-0 bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 duration-100 flex justify-end items-end">
               <label className="btn btn-xs mb-2 mr-3 opacity-50 hover:opacity-100">
                 {t("upload_preview_image")}
@@ -238,37 +247,26 @@ export default function LinkDetails({
                     const file = e.target.files?.[0];
                     if (!file) return;
 
-                    const formData = new FormData();
-                    formData.append("file", file);
+                    const load = toast.loading(t("updating"));
 
-                    const load = toast.loading(t("uploading"));
+                    await updatePreview.mutateAsync(
+                      {
+                        linkId: link.id as number,
+                        file,
+                      },
+                      {
+                        onSettled: (data, error) => {
+                          toast.dismiss(load);
 
-                    try {
-                      const res = await fetch(
-                        `/api/v1/archives/${link.id}/preview`,
-                        {
-                          method: "POST",
-                          body: formData,
-                        }
-                      );
-
-                      if (!res.ok) {
-                        throw new Error(await res.text());
+                          if (error) {
+                            toast.error(error.message);
+                          } else {
+                            toast.success(t("updated"));
+                            setLink({ updatedAt: data.updatedAt, ...link });
+                          }
+                        },
                       }
-
-                      const data = await res.json();
-
-                      setLink({
-                        ...link,
-                        preview: data.preview,
-                      });
-
-                      toast.success(t("uploaded"));
-                    } catch (error) {
-                      console.error(error);
-                    } finally {
-                      toast.dismiss(load);
-                    }
+                    );
                   }}
                   className="hidden"
                 />
@@ -277,11 +275,7 @@ export default function LinkDetails({
           )}
         </div>
 
-        {standalone ? (
-          <div className="-mt-14 ml-8 relative w-fit pb-2">
-            <LinkIcon link={link} onClick={() => setIconPopover(true)} />
-          </div>
-        ) : (
+        {!standalone && (permissions === true || permissions?.canUpdate) ? (
           <div className="-mt-14 ml-8 relative w-fit pb-2">
             <div className="tooltip tooltip-bottom" data-tip={t("change_icon")}>
               <LinkIcon
@@ -315,6 +309,10 @@ export default function LinkDetails({
                 }}
               />
             )}
+          </div>
+        ) : (
+          <div className="-mt-14 ml-8 relative w-fit pb-2">
+            <LinkIcon link={link} onClick={() => setIconPopover(true)} />
           </div>
         )}
 

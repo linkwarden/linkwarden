@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from "react";
-import {
-  ArchivedFormat,
-  LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
-import getPublicUserData from "@/lib/client/getPublicUserData";
+import React, { useState } from "react";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/user";
-import { useDeleteLink, useGetLink, useUpdateLink } from "@/hooks/store/links";
+import { useDeleteLink } from "@/hooks/store/links";
 import Drawer from "../Drawer";
 import LinkDetails from "../LinkDetails";
 import Link from "next/link";
@@ -34,86 +29,6 @@ export default function LinkModal({
   activeMode,
 }: Props) {
   const { t } = useTranslation();
-  const getLink = useGetLink();
-  const { data: user = {} } = useUser();
-
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
-
-  useEffect(() => {
-    const fetchOwner = async () => {
-      if (link.collection.ownerId !== user.id) {
-        const owner = await getPublicUserData(
-          link.collection.ownerId as number
-        );
-        setCollectionOwner(owner);
-      } else if (link.collection.ownerId === user.id) {
-        setCollectionOwner({
-          id: user.id as number,
-          name: user.name,
-          username: user.username as string,
-          image: user.image as string,
-          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
-          archiveAsMonolith: user.archiveAsScreenshot as boolean,
-          archiveAsPDF: user.archiveAsPDF as boolean,
-        });
-      }
-    };
-
-    fetchOwner();
-  }, [link.collection.ownerId]);
-
-  const isReady = () => {
-    return (
-      link &&
-      (collectionOwner.archiveAsScreenshot === true
-        ? link.pdf && link.pdf !== "pending"
-        : true) &&
-      (collectionOwner.archiveAsMonolith === true
-        ? link.monolith && link.monolith !== "pending"
-        : true) &&
-      (collectionOwner.archiveAsPDF === true
-        ? link.pdf && link.pdf !== "pending"
-        : true) &&
-      link.readable &&
-      link.readable !== "pending"
-    );
-  };
-
-  useEffect(() => {
-    (async () => {
-      await getLink.mutateAsync({
-        id: link.id as number,
-      });
-    })();
-
-    let interval: any;
-
-    if (!isReady()) {
-      interval = setInterval(async () => {
-        await getLink.mutateAsync({
-          id: link.id as number,
-        });
-      }, 5000);
-    } else {
-      if (interval) {
-        clearInterval(interval);
-      }
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [link?.monolith]);
 
   const permissions = usePermissions(link.collection.id as number);
 
@@ -136,30 +51,32 @@ export default function LinkModal({
           onClick={() => onClose()}
         ></div>
 
-        <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
-          <div
-            className={clsx(
-              "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
-              mode === "view" && "bg-primary bg-opacity-50"
-            )}
-            onClick={() => {
-              setMode("view");
-            }}
-          >
-            View
+        {(permissions === true || permissions?.canUpdate) && (
+          <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
+            <div
+              className={clsx(
+                "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
+                mode === "view" && "bg-primary bg-opacity-50"
+              )}
+              onClick={() => {
+                setMode("view");
+              }}
+            >
+              View
+            </div>
+            <div
+              className={clsx(
+                "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
+                mode === "edit" && "bg-primary bg-opacity-50"
+              )}
+              onClick={() => {
+                setMode("edit");
+              }}
+            >
+              Edit
+            </div>
           </div>
-          <div
-            className={clsx(
-              "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
-              mode === "edit" && "bg-primary bg-opacity-50"
-            )}
-            onClick={() => {
-              setMode("edit");
-            }}
-          >
-            Edit
-          </div>
-        </div>
+        )}
 
         <div className="flex gap-2">
           <div className={`dropdown dropdown-end z-20`}>
@@ -174,7 +91,7 @@ export default function LinkModal({
             <ul
               className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box`}
             >
-              {(permissions === true || permissions?.canUpdate) && (
+              {
                 <li>
                   <div
                     role="button"
@@ -190,7 +107,7 @@ export default function LinkModal({
                       : t("pin_to_dashboard")}
                   </div>
                 </li>
-              )}
+              }
               {link.type === "url" && permissions === true && (
                 <li>
                   <div

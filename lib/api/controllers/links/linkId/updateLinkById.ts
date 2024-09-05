@@ -25,15 +25,15 @@ export default async function updateLinkById(
     (e: UsersAndCollections) => e.userId === userId
   );
 
-  // If the user is able to create a link, they can pin it to their dashboard only.
-  if (canPinPermission) {
+  // If the user is part of a collection, they can pin it to their dashboard
+  if (canPinPermission && data.pinnedBy && data.pinnedBy[0]) {
     const updatedLink = await prisma.link.update({
       where: {
         id: linkId,
       },
       data: {
         pinnedBy:
-          data?.pinnedBy && data.pinnedBy[0]
+          data?.pinnedBy && data.pinnedBy[0].id === userId
             ? { connect: { id: userId } }
             : { disconnect: { id: userId } },
       },
@@ -48,7 +48,7 @@ export default async function updateLinkById(
       },
     });
 
-    // return { response: updatedLink, status: 200 };
+    return { response: updatedLink, status: 200 };
   }
 
   const targetCollectionIsAccessible = await getPermission({
