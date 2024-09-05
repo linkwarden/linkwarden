@@ -221,7 +221,7 @@ export default function LinkDetails({
               width={1280}
               height={720}
               alt=""
-              className="object-cover scale-105"
+              className="object-cover scale-105 object-center h-full"
               style={{
                 filter: "blur(1px)",
               }}
