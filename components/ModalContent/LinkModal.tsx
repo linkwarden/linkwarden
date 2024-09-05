@@ -159,13 +159,13 @@ export default function LinkModal({
               )}
             </ul>
           </div>
-          <Link
-            href={
-              isPublicRoute ? `/public/links/${link.id}` : `/links/${link.id}`
-            }
-            target="_blank"
-            className="bi-box-arrow-up-right btn-circle text-base-content opacity-50 hover:opacity-100 btn btn-sm select-none z-10"
-          ></Link>
+          {link.url && (
+            <Link
+              href={link.url}
+              target="_blank"
+              className="bi-box-arrow-up-right btn-circle text-base-content opacity-50 hover:opacity-100 btn btn-sm select-none z-10"
+            ></Link>
+          )}
         </div>
       </div>
 
