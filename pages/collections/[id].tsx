@@ -24,6 +24,8 @@ import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
 import { useLinks } from "@/hooks/store/links";
 import Links from "@/components/LinkViews/Links";
+import Icon from "@/components/Icon";
+import { IconWeight } from "@phosphor-icons/react";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -110,10 +112,21 @@ export default function Index() {
         {activeCollection && (
           <div className="flex gap-3 items-start justify-between">
             <div className="flex items-center gap-2">
-              <i
-                className="bi-folder-fill text-3xl drop-shadow"
-                style={{ color: activeCollection?.color }}
-              ></i>
+              {activeCollection.icon ? (
+                <Icon
+                  icon={activeCollection.icon}
+                  size={45}
+                  weight={
+                    (activeCollection.iconWeight || "regular") as IconWeight
+                  }
+                  color={activeCollection.color}
+                />
+              ) : (
+                <i
+                  className="bi-folder-fill text-3xl"
+                  style={{ color: activeCollection.color }}
+                ></i>
+              )}
 
               <p className="sm:text-3xl text-2xl capitalize w-full py-1 break-words hyphens-auto font-thin">
                 {activeCollection?.name}

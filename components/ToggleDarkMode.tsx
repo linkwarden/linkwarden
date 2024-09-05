@@ -1,12 +1,14 @@
 import useLocalSettingsStore from "@/store/localSettings";
 import { useEffect, useState, ChangeEvent } from "react";
 import { useTranslation } from "next-i18next";
+import clsx from "clsx";
 
 type Props = {
   className?: string;
+  align?: "left" | "right";
 };
 
-export default function ToggleDarkMode({ className }: Props) {
+export default function ToggleDarkMode({ className, align }: Props) {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
 
@@ -26,7 +28,7 @@ export default function ToggleDarkMode({ className }: Props) {
 
   return (
     <div
-      className="tooltip tooltip-bottom"
+      className={clsx("tooltip", align ? `tooltip-${align}` : "tooltip-bottom")}
       data-tip={t("switch_to", {
         theme: settings.theme === "light" ? "Dark" : "Light",
       })}

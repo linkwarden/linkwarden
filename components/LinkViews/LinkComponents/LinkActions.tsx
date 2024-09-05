@@ -4,15 +4,13 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import usePermissions from "@/hooks/usePermissions";
-import EditLinkModal from "@/components/ModalContent/EditLinkModal";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
-import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
-import { useDeleteLink, useUpdateLink } from "@/hooks/store/links";
+import { useDeleteLink, useGetLink, useUpdateLink } from "@/hooks/store/links";
 import toast from "react-hot-toast";
-import LinkDetailModal from "@/components/ModalContent/LinkDetailModal";
+import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";
 
 type Props = {
@@ -32,11 +30,11 @@ export default function LinkActions({
   const { t } = useTranslation();
 
   const permissions = usePermissions(link.collection.id as number);
+  const getLink = useGetLink();
 
   const [editLinkModal, setEditLinkModal] = useState(false);
-  const [linkDetailModal, setLinkDetailModal] = useState(false);
+  const [linkModal, setLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
-  const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
   const { data: user = {} } = useUser();
 
@@ -51,7 +49,7 @@ export default function LinkActions({
     await updateLink.mutateAsync(
       {
         ...link,
-        pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
+        pinnedBy: isAlreadyPinned ? [{ id: undefined }] : [{ id: user.id }],
       },
       {
         onSettled: (data, error) => {
@@ -69,6 +67,23 @@ export default function LinkActions({
     );
   };
 
+  const updateArchive = async () => {
+    const load = toast.loading(t("sending_request"));
+
+    const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
+      method: "PUT",
+    });
+
+    const data = await response.json();
+    toast.dismiss(load);
+
+    if (response.ok) {
+      await getLink.mutateAsync({ id: link.id as number });
+
+      toast.success(t("link_being_archived"));
+    } else toast.error(data.response);
+  };
+
   const router = useRouter();
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
@@ -80,7 +95,10 @@ export default function LinkActions({
           className={`absolute ${position || "top-3 right-3"} ${
             alignToTop ? "" : "dropdown-end"
           } z-20`}
-          onClick={() => setLinkDetailModal(true)}
+          tabIndex={0}
+          role="button"
+          onMouseDown={dropdownTriggerer}
+          onClick={() => setLinkModal(true)}
         >
           <div className="btn btn-ghost btn-sm btn-square text-neutral">
             <i title="More" className="bi-three-dots text-xl" />
@@ -105,31 +123,28 @@ export default function LinkActions({
               alignToTop ? "" : "translate-y-10"
             }`}
           >
-            {permissions === true ||
-              (permissions?.canUpdate && (
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      pinLink();
-                    }}
-                    className="whitespace-nowrap"
-                  >
-                    {link?.pinnedBy && link.pinnedBy[0]
-                      ? t("unpin")
-                      : t("pin_to_dashboard")}
-                  </div>
-                </li>
-              ))}
             <li>
               <div
                 role="button"
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  setLinkDetailModal(true);
+                  pinLink();
+                }}
+                className="whitespace-nowrap"
+              >
+                {link?.pinnedBy && link.pinnedBy[0]
+                  ? t("unpin")
+                  : t("pin_to_dashboard")}
+              </div>
+            </li>
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setLinkModal(true);
                 }}
                 className="whitespace-nowrap"
               >
@@ -151,18 +166,18 @@ export default function LinkActions({
                 </div>
               </li>
             )}
-            {link.type === "url" && (
+            {link.type === "url" && permissions === true && (
               <li>
                 <div
                   role="button"
                   tabIndex={0}
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
-                    setPreservedFormatsModal(true);
+                    updateArchive();
                   }}
                   className="whitespace-nowrap"
                 >
-                  {t("preserved_formats")}
+                  {t("refresh_preserved_formats")}
                 </div>
               </li>
             )}
@@ -173,8 +188,9 @@ export default function LinkActions({
                   tabIndex={0}
                   onClick={async (e) => {
                     (document?.activeElement as HTMLElement)?.blur();
+                    console.log(e.shiftKey);
                     e.shiftKey
-                      ? async () => {
+                      ? (async () => {
                           const load = toast.loading(t("deleting"));
 
                           await deleteLink.mutateAsync(link.id as number, {
@@ -188,7 +204,7 @@ export default function LinkActions({
                               }
                             },
                           });
-                        }
+                        })()
                       : setDeleteLinkModal(true);
                   }}
                   className="whitespace-nowrap"
@@ -201,9 +217,13 @@ export default function LinkActions({
         </div>
       )}
       {editLinkModal && (
-        <EditLinkModal
+        <LinkModal
           onClose={() => setEditLinkModal(false)}
-          activeLink={link}
+          onPin={pinLink}
+          onUpdateArchive={updateArchive}
+          onDelete={() => setDeleteLinkModal(true)}
+          link={link}
+          activeMode="edit"
         />
       )}
       {deleteLinkModal && (
@@ -212,16 +232,12 @@ export default function LinkActions({
           activeLink={link}
         />
       )}
-      {preservedFormatsModal && (
-        <PreservedFormatsModal
-          onClose={() => setPreservedFormatsModal(false)}
-          link={link}
-        />
-      )}
-      {linkDetailModal && (
-        <LinkDetailModal
-          onClose={() => setLinkDetailModal(false)}
-          onEdit={() => setEditLinkModal(true)}
+      {linkModal && (
+        <LinkModal
+          onClose={() => setLinkModal(false)}
+          onPin={pinLink}
+          onUpdateArchive={updateArchive}
+          onDelete={() => setDeleteLinkModal(true)}
           link={link}
         />
       )}
