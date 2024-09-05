@@ -335,7 +335,12 @@ export default function LinkDetails({
 
               <div className="relative">
                 <div className="rounded-md p-2 bg-base-200 hide-scrollbar overflow-x-auto whitespace-nowrap flex justify-between items-center gap-2 pr-14">
-                  <Link href={link.url} title={link.url} target="_blank">
+                  <Link
+                    href={link.url}
+                    title={link.url}
+                    target="_blank"
+                    className={clsx(mode === "edit" && "pointer-events-none")}
+                  >
                     {link.url}
                   </Link>
                   <div className="absolute right-0 px-2 bg-base-200">
