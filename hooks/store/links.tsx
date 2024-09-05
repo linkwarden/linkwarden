@@ -412,7 +412,7 @@ const useUpdatePreview = () => {
         `/api/v1/archives/${linkId}?format=` + ArchivedFormat.jpeg,
         {
           body: formBody,
-          method: "POST",
+          method: "PUT",
         }
       );
 
