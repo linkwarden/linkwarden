@@ -206,7 +206,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
     });
   }
   // To update the link preview
-  else if (req.method === "PUT" && format === ArchivedFormat.jpeg) {
+  else if (req.method === "PUT") {
     if (process.env.NEXT_PUBLIC_DEMO === "true")
       return res.status(400).json({
         response:
