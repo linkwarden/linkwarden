@@ -391,5 +391,7 @@
   "no_tags": "No tags.",
   "no_description_provided": "No description provided.",
   "change_icon": "Change Icon",
-  "upload_preview_image": "Upload Preview Image"
+  "upload_preview_image": "Upload Preview Image",
+  "columns": "Columns",
+  "default": "Default"
 }

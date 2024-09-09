@@ -14,6 +14,7 @@ type LocalSettings = {
     collection: boolean;
     date: boolean;
   };
+  columns: number;
   sortBy?: Sort;
 };
 
@@ -37,10 +38,11 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       collection: true,
       date: true,
     },
+    columns: 0,
     sortBy: Sort.DateNewestFirst,
   },
   updateSettings: (newSettings) => {
-    const { theme, viewMode, sortBy, show } = newSettings;
+    const { theme, viewMode, sortBy, show, columns } = newSettings;
 
     if (theme !== undefined && theme !== localStorage.getItem("theme")) {
       localStorage.setItem("theme", theme);
@@ -56,6 +58,10 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
 
     if (sortBy !== undefined) {
       localStorage.setItem("sortBy", sortBy.toString());
+    }
+
+    if (columns !== undefined) {
+      localStorage.setItem("columns", columns.toString());
     }
 
     const currentShowString = localStorage.getItem("show");
@@ -80,6 +86,9 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     const viewMode = localStorage.getItem("viewMode") || "card";
     localStorage.setItem("viewMode", viewMode);
 
+    const columns = parseInt(localStorage.getItem("columns") || "0");
+    localStorage.setItem("columns", columns.toString());
+
     const storedShow = localStorage.getItem("show");
     const show = storedShow
       ? JSON.parse(storedShow)
@@ -100,6 +109,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
         theme,
         viewMode,
         show,
+        columns,
         sortBy: useLocalSettingsStore.getState().settings.sortBy,
       },
     });

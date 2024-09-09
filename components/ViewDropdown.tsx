@@ -13,11 +13,9 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
   const { settings, updateSettings } = useLocalSettingsStore((state) => state);
   const { t } = useTranslation();
 
-  const onChangeViewMode = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    mode: ViewMode
-  ) => {
+  const onChangeViewMode = (mode: ViewMode) => {
     setViewMode(mode);
+    updateSettings({ viewMode });
   };
 
   const toggleShowSetting = (setting: keyof typeof settings.show) => {
@@ -28,9 +26,9 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
     updateSettings({ show: newShowSettings });
   };
 
-  useEffect(() => {
-    updateSettings({ viewMode });
-  }, [viewMode, updateSettings]);
+  const onColumnsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateSettings({ columns: Number(e.target.value) });
+  };
 
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
@@ -48,15 +46,14 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
           <i className="bi-view-stacked w-4 h-4 text-neutral"></i>
         )}
       </div>
-      <ul className="dropdown-content z-[30] menu shadow bg-base-200 min-w-52 border border-neutral-content rounded-xl mt-1">
+      <ul
+        tabIndex={0}
+        className="dropdown-content z-[30] menu shadow bg-base-200 min-w-52 border border-neutral-content rounded-xl mt-1"
+      >
         <p className="mb-1 text-sm text-neutral">{t("view")}</p>
-        <div
-          className="p-1 flex w-full justify-between gap-1 border border-neutral-content rounded-[0.625rem]"
-          tabIndex={0}
-          role="button"
-        >
+        <div className="p-1 flex w-full justify-between gap-1 border border-neutral-content rounded-[0.625rem]">
           <button
-            onClick={(e) => onChangeViewMode(e, ViewMode.Card)}
+            onClick={(e) => onChangeViewMode(ViewMode.Card)}
             className={`btn w-[31%] btn-sm btn-ghost ${
               viewMode === ViewMode.Card
                 ? "bg-primary/20 hover:bg-primary/20"
@@ -66,7 +63,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
             <i className="bi-grid text-lg text-neutral"></i>
           </button>
           <button
-            onClick={(e) => onChangeViewMode(e, ViewMode.Masonry)}
+            onClick={(e) => onChangeViewMode(ViewMode.Masonry)}
             className={`btn w-[31%] btn-sm btn-ghost ${
               viewMode === ViewMode.Masonry
                 ? "bg-primary/20 hover:bg-primary/20"
@@ -76,7 +73,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
             <i className="bi-columns-gap text-lg text-neutral"></i>
           </button>
           <button
-            onClick={(e) => onChangeViewMode(e, ViewMode.List)}
+            onClick={(e) => onChangeViewMode(ViewMode.List)}
             className={`btn w-[31%] btn-sm btn-ghost ${
               viewMode === ViewMode.List
                 ? "bg-primary/20 hover:bg-primary/20"
@@ -86,7 +83,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
             <i className="bi-view-stacked text-lg text-neutral"></i>
           </button>
         </div>
-        <p className="my-1 text-sm text-neutral">{t("show")}</p>
+        <p className="mb-1 mt-2 text-sm text-neutral">{t("show")}</p>
         {Object.entries(settings.show)
           .filter((e) =>
             settings.viewMode === ViewMode.List // Hide tags, image, icon, and description checkboxes in list view
@@ -100,11 +97,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
           )
           .map(([key, value]) => (
             <li key={key}>
-              <label
-                className="label cursor-pointer flex justify-start"
-                tabIndex={0}
-                role="button"
-              >
+              <label className="label cursor-pointer flex justify-start">
                 <input
                   type="checkbox"
                   className="checkbox checkbox-primary"
@@ -117,6 +110,21 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
               </label>
             </li>
           ))}
+        <p className="mb-1 mt-2 text-sm text-neutral">
+          {t("columns")}:{" "}
+          {settings.columns === 0 ? t("default") : settings.columns}
+        </p>
+        <div>
+          <input
+            type="range"
+            min={0}
+            max="8"
+            value={settings.columns}
+            onChange={(e) => onColumnsChange(e)}
+            className="range range-xs"
+            step="1"
+          />
+        </div>
       </ul>
     </div>
   );
