@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import useLocalSettingsStore from "@/store/localSettings";
 import { ViewMode } from "@/types/global";
 import { dropdownTriggerer } from "@/lib/client/utils";
