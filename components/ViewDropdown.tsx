@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import useLocalSettingsStore from "@/store/localSettings";
 import { ViewMode } from "@/types/global";
 import { dropdownTriggerer } from "@/lib/client/utils";
@@ -12,6 +12,10 @@ type Props = {
 export default function ViewDropdown({ viewMode, setViewMode }: Props) {
   const { settings, updateSettings } = useLocalSettingsStore((state) => state);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    updateSettings({ viewMode });
+  }, [viewMode, updateSettings]);
 
   const onChangeViewMode = (mode: ViewMode) => {
     setViewMode(mode);
