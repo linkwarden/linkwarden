@@ -48,7 +48,7 @@ export default async function getDashboardData(
   });
 
   const pinnedLinks = await prisma.link.findMany({
-    take: 10,
+    take: 16,
     where: {
       AND: [
         {
@@ -80,7 +80,7 @@ export default async function getDashboardData(
   });
 
   const recentlyAddedLinks = await prisma.link.findMany({
-    take: 10,
+    take: 16,
     where: {
       collection: {
         OR: [

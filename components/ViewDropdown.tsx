@@ -114,32 +114,36 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
               </label>
             </li>
           ))}
-        <p className="mb-1 mt-2 text-sm text-neutral">
-          {t("columns")}:{" "}
-          {settings.columns === 0 ? t("default") : settings.columns}
-        </p>
-        <div>
-          <input
-            type="range"
-            min={0}
-            max="8"
-            value={settings.columns}
-            onChange={(e) => onColumnsChange(e)}
-            className="range range-xs range-primary"
-            step="1"
-          />
-          <div className="flex w-full justify-between px-2 text-xs text-neutral">
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-            <span>|</span>
-          </div>
-        </div>
+        {settings.viewMode !== ViewMode.List && (
+          <>
+            <p className="mb-1 mt-2 text-sm text-neutral">
+              {t("columns")}:{" "}
+              {settings.columns === 0 ? t("default") : settings.columns}
+            </p>
+            <div>
+              <input
+                type="range"
+                min={0}
+                max="8"
+                value={settings.columns}
+                onChange={(e) => onColumnsChange(e)}
+                className="range range-xs range-primary"
+                step="1"
+              />
+              <div className="flex w-full justify-between px-2 text-xs text-neutral">
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+                <span>|</span>
+              </div>
+            </div>
+          </>
+        )}
       </ul>
     </div>
   );
