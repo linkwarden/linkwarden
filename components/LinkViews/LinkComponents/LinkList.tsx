@@ -93,7 +93,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   return (
     <>
       <div
-        className={`${selectedStyle} rounded-md border relative items-center flex ${
+        className={`${selectedStyle} rounded-md border relative group items-center flex ${
           !isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
         } duration-200 w-full`}
         onClick={() =>
@@ -137,7 +137,10 @@ export default function LinkCardCompact({ link, editMode }: Props) {
         <LinkActions
           link={link}
           collection={collection}
-          className="top-3 right-3"
+          className={
+            "top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
+          }
+          btnStyle="btn-ghost"
         />
       </div>
       <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>

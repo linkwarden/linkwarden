@@ -16,16 +16,20 @@ import { useCollections } from "@/hooks/store/collections";
 import { useTags } from "@/hooks/store/tags";
 import { useDashboardData } from "@/hooks/store/dashboardData";
 import Links from "@/components/LinkViews/Links";
+import useLocalSettingsStore from "@/store/localSettings";
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
-  const dashboardData = useDashboardData();
+  const { data: { links = [] } = { links: [] }, ...dashboardData } =
+    useDashboardData();
   const { data: tags = [] } = useTags();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
   const [showLinks, setShowLinks] = useState(3);
+
+  const { settings } = useLocalSettingsStore();
 
   useEffect(() => {
     setNumberOfLinks(
@@ -52,8 +56,10 @@ export default function Dashboard() {
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    handleNumberOfLinksToShow();
-  }, [width]);
+    settings.columns === 0
+      ? handleNumberOfLinksToShow()
+      : setShowLinks(settings.columns);
+  }, [width, settings.columns]);
 
   const importBookmarks = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -160,10 +166,7 @@ export default function Dashboard() {
 
         <div
           style={{
-            flex:
-              dashboardData.data || dashboardData.isLoading
-                ? "0 1 auto"
-                : "1 1 auto",
+            flex: links || dashboardData.isLoading ? "0 1 auto" : "1 1 auto",
           }}
           className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
         >
@@ -175,14 +178,9 @@ export default function Dashboard() {
                 useData={dashboardData}
               />
             </div>
-          ) : dashboardData.data &&
-            dashboardData.data[0] &&
-            !dashboardData.isLoading ? (
+          ) : links && links[0] && !dashboardData.isLoading ? (
             <div className="w-full">
-              <Links
-                links={dashboardData.data.slice(0, showLinks)}
-                layout={viewMode}
-              />
+              <Links links={links.slice(0, showLinks)} layout={viewMode} />
             </div>
           ) : (
             <div className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200">
@@ -317,11 +315,11 @@ export default function Dashboard() {
                 useData={dashboardData}
               />
             </div>
-          ) : dashboardData.data?.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
+          ) : links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
               <Links
-                links={dashboardData.data
-                  .filter((e) => e.pinnedBy && e.pinnedBy[0])
+                links={links
+                  .filter((e: any) => e.pinnedBy && e.pinnedBy[0])
                   .slice(0, showLinks)}
                 layout={viewMode}
               />
