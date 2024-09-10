@@ -3,7 +3,6 @@ import { readabilityAvailable } from "@/lib/shared/getArchiveValidity";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import {
   ArchivedFormat,
-  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import ColorThief, { RGBColor } from "colorthief";
@@ -11,10 +10,8 @@ import DOMPurify from "dompurify";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
-import LinkActions from "./LinkViews/LinkComponents/LinkActions";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
-import { useCollections } from "@/hooks/store/collections";
 import { useGetLink } from "@/hooks/store/links";
 import { IconWeight } from "@phosphor-icons/react";
 import Icon from "./Icon";

@@ -24,15 +24,10 @@ type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   count: number;
   className?: string;
-  flipDropdown?: boolean;
   editMode?: boolean;
 };
 
-export default function LinkCardCompact({
-  link,
-  flipDropdown,
-  editMode,
-}: Props) {
+export default function LinkCardCompact({ link, editMode }: Props) {
   const { t } = useTranslation();
 
   const { data: collections = [] } = useCollections();
@@ -142,8 +137,7 @@ export default function LinkCardCompact({
         <LinkActions
           link={link}
           collection={collection}
-          position="top-3 right-3"
-          flipDropdown={flipDropdown}
+          className="top-3 right-3"
         />
       </div>
       <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>

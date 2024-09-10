@@ -3,7 +3,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
@@ -27,14 +27,28 @@ import clsx from "clsx";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
-  count: number;
-  className?: string;
-  flipDropdown?: boolean;
+  columns: number;
   editMode?: boolean;
 };
 
-export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
+export default function LinkMasonry({ link, editMode, columns }: Props) {
   const { t } = useTranslation();
+
+  const heightMap = {
+    1: "h-48",
+    2: "h-44",
+    3: "h-40",
+    4: "h-36",
+    5: "h-32",
+    6: "h-28",
+    7: "h-24",
+    8: "h-20",
+  };
+
+  const imageHeightClass = useMemo(
+    () => (columns ? heightMap[columns as keyof typeof heightMap] : "h-40"),
+    [columns]
+  );
 
   const { data: collections = [] } = useCollections();
   const { data: user = {} } = useUser();
@@ -126,7 +140,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative`}
+      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
@@ -150,7 +164,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
                   width={1280}
                   height={720}
                   alt=""
-                  className="rounded-t-2xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105"
+                  className={`rounded-t-2xl select-none object-cover z-10 ${imageHeightClass} w-full shadow opacity-80 scale-105`}
                   style={show.icon ? { filter: "blur(1px)" } : undefined}
                   draggable="false"
                   onError={(e) => {
@@ -159,7 +173,9 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
                   }}
                 />
               ) : link.preview === "unavailable" ? null : (
-                <div className="duration-100 h-40 bg-opacity-80 skeleton rounded-none"></div>
+                <div
+                  className={`duration-100 ${imageHeightClass} bg-opacity-80 skeleton rounded-none`}
+                ></div>
               )}
               {show.icon && (
                 <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center rounded-md">
@@ -174,7 +190,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
 
         <div className="p-3 flex flex-col gap-2 h-full min-h-14">
           {show.name && (
-            <p className="hyphens-auto w-full pr-9 text-primary text-sm">
+            <p className="hyphens-auto w-full text-primary text-sm">
               {unescapeString(link.name)}
             </p>
           )}
@@ -182,12 +198,7 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
           {show.link && <LinkTypeBadge link={link} />}
 
           {show.description && link.description && (
-            <p
-              className={clsx(
-                "hyphens-auto text-sm w-full",
-                ((!show.name && !show.link) || !link.name) && "pr-9"
-              )}
-            >
+            <p className={clsx("hyphens-auto text-sm w-full")}>
               {unescapeString(link.description)}
             </p>
           )}
@@ -226,15 +237,14 @@ export default function LinkMasonry({ link, flipDropdown, editMode }: Props) {
         )}
       </div>
 
+      {/* Overlay on hover */}
+      <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-2xl duration-100"></div>
       <LinkActions
         link={link}
         collection={collection}
-        position={
-          previewAvailable(link) && show.image
-            ? "top-[10.75rem] right-3"
-            : "top-3 right-3"
+        className={
+          "top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
         }
-        flipDropdown={flipDropdown}
       />
     </div>
   );
