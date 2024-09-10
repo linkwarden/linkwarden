@@ -128,6 +128,17 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
             className="range range-xs range-primary"
             step="1"
           />
+          <div className="flex w-full justify-between px-2 text-xs text-neutral">
+            <span>|</span>
+            <span>|</span>
+            <span>|</span>
+            <span>|</span>
+            <span>|</span>
+            <span>|</span>
+            <span>|</span>
+            <span>|</span>
+            <span>|</span>
+          </div>
         </div>
       </ul>
     </div>
