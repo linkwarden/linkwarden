@@ -125,7 +125,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
             max="8"
             value={settings.columns}
             onChange={(e) => onColumnsChange(e)}
-            className="range range-xs"
+            className="range range-xs range-primary"
             step="1"
           />
         </div>
