@@ -16,17 +16,10 @@ import { useRouter } from "next/router";
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
-  position?: string;
-  alignToTop?: boolean;
-  flipDropdown?: boolean;
+  className?: string;
 };
 
-export default function LinkActions({
-  link,
-  position,
-  alignToTop,
-  flipDropdown,
-}: Props) {
+export default function LinkActions({ link, className }: Props) {
   const { t } = useTranslation();
 
   const permissions = usePermissions(link.collection.id as number);
@@ -92,9 +85,7 @@ export default function LinkActions({
     <>
       {isPublicRoute ? (
         <div
-          className={`absolute ${position || "top-3 right-3"} ${
-            alignToTop ? "" : "dropdown-end"
-          } z-20`}
+          className={`absolute ${className || "top-3 right-3"} z-20`}
           tabIndex={0}
           role="button"
           onMouseDown={dropdownTriggerer}
@@ -107,21 +98,21 @@ export default function LinkActions({
       ) : (
         <div
           className={`dropdown dropdown-left absolute ${
-            position || "top-3 right-3"
-          } ${alignToTop ? "" : "dropdown-end"} z-20`}
+            className || "top-3 right-3"
+          } z-20`}
         >
           <div
             tabIndex={0}
             role="button"
             onMouseDown={dropdownTriggerer}
-            className="btn btn-ghost btn-sm btn-square text-neutral"
+            className="btn btn-sm btn-square text-neutral"
           >
             <i title="More" className="bi-three-dots text-xl" />
           </div>
           <ul
-            className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mr-1 ${
-              alignToTop ? "" : "translate-y-10"
-            }`}
+            className={
+              "dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mr-1"
+            }
           >
             <li>
               <div
