@@ -12,14 +12,16 @@ import { useDeleteLink, useGetLink, useUpdateLink } from "@/hooks/store/links";
 import toast from "react-hot-toast";
 import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
   className?: string;
+  btnStyle?: string;
 };
 
-export default function LinkActions({ link, className }: Props) {
+export default function LinkActions({ link, className, btnStyle }: Props) {
   const { t } = useTranslation();
 
   const permissions = usePermissions(link.collection.id as number);
@@ -85,13 +87,17 @@ export default function LinkActions({ link, className }: Props) {
     <>
       {isPublicRoute ? (
         <div
-          className={`absolute ${className || "top-3 right-3"} z-20`}
+          className={clsx(
+            className || "top-3 right-3",
+            "absolute z-20",
+            btnStyle
+          )}
           tabIndex={0}
           role="button"
           onMouseDown={dropdownTriggerer}
           onClick={() => setLinkModal(true)}
         >
-          <div className="btn btn-ghost btn-sm btn-square text-neutral">
+          <div className="btn btn-sm btn-square text-neutral">
             <i title="More" className="bi-three-dots text-xl" />
           </div>
         </div>
@@ -105,7 +111,7 @@ export default function LinkActions({ link, className }: Props) {
             tabIndex={0}
             role="button"
             onMouseDown={dropdownTriggerer}
-            className="btn btn-sm btn-square text-neutral"
+            className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}
           >
             <i title="More" className="bi-three-dots text-xl" />
           </div>

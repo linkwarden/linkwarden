@@ -1,4 +1,3 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
@@ -7,11 +6,11 @@ const useDashboardData = () => {
 
   return useQuery({
     queryKey: ["dashboardData"],
-    queryFn: async (): Promise<LinkIncludingShortenedCollectionAndTags[]> => {
-      const response = await fetch("/api/v1/dashboard");
+    queryFn: async () => {
+      const response = await fetch("/api/v2/dashboard");
       const data = await response.json();
 
-      return data.response;
+      return data.data;
     },
     enabled: status === "authenticated",
   });
