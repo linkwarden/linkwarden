@@ -24,6 +24,7 @@ import { useUser } from "@/hooks/store/user";
 import { useGetLink, useLinks } from "@/hooks/store/links";
 import useLocalSettingsStore from "@/store/localSettings";
 import clsx from "clsx";
+import LinkPin from "./LinkPin";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -245,6 +246,10 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
         className={
           "top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
         }
+      />
+      <LinkPin
+        link={link}
+        className="absolute top-3 right-[3.25rem] group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
       />
     </div>
   );
