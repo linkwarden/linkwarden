@@ -23,6 +23,7 @@ import { useUser } from "@/hooks/store/user";
 import { useGetLink, useLinks } from "@/hooks/store/links";
 import { useRouter } from "next/router";
 import useLocalSettingsStore from "@/store/localSettings";
+import LinkPin from "./LinkPin";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -36,13 +37,13 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   const { t } = useTranslation();
 
   const heightMap = {
-    1: "h-48",
-    2: "h-44",
-    3: "h-40",
-    4: "h-36",
-    5: "h-32",
-    6: "h-28",
-    7: "h-24",
+    1: "h-44",
+    2: "h-40",
+    3: "h-36",
+    4: "h-32",
+    5: "h-28",
+    6: "h-24",
+    7: "h-20",
     8: "h-20",
   };
 
@@ -216,7 +217,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
             <div>
               <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
 
-              <div className="flex justify-between text-xs text-neutral px-3 pb-1 gap-2">
+              <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
                 {show.collection && (
                   <div className="cursor-pointer truncate">
                     <LinkCollection link={link} collection={collection} />
@@ -237,6 +238,10 @@ export default function LinkCard({ link, columns, editMode }: Props) {
         className={
           "top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
         }
+      />
+      <LinkPin
+        link={link}
+        className="absolute top-3 right-[3.25rem] group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
       />
     </div>
   );

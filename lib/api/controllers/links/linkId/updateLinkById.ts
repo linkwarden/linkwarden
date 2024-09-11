@@ -124,7 +124,7 @@ export default async function updateLinkById(
           })),
         },
         pinnedBy:
-          data?.pinnedBy && data.pinnedBy[0]
+          data?.pinnedBy && data.pinnedBy[0].id === userId
             ? { connect: { id: userId } }
             : { disconnect: { id: userId } },
       },

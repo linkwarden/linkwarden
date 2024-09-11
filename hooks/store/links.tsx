@@ -121,8 +121,11 @@ const useAddLink = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return [data, ...oldData];
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: [data, ...oldData.links],
+        };
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -161,8 +164,8 @@ const useUpdateLink = () => {
     },
     onSuccess: (data) => {
       // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-      //   if (!oldData) return undefined;
-      //   return oldData.map((e: any) => (e.id === data.id ? data : e));
+      //   if (!oldData?.links) return undefined;
+      //   return oldData.links.map((e: any) => (e.id === data.id ? data : e));
       // });
 
       // queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -202,8 +205,11 @@ const useDeleteLink = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.filter((e: any) => e.id !== data.id);
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: oldData.links.filter((e: any) => e.id !== data.id),
+        };
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -249,8 +255,11 @@ const useGetLink = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.map((e: any) => (e.id === data.id ? data : e));
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: oldData.links.map((e: any) => (e.id === data.id ? data : e)),
+        };
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -302,8 +311,8 @@ const useBulkDeleteLinks = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.filter((e: any) => !data.includes(e.id));
+        if (!oldData.links) return undefined;
+        return oldData.links.filter((e: any) => !data.includes(e.id));
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -377,8 +386,11 @@ const useUploadFile = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return [data, ...oldData];
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: [data, ...oldData.links],
+        };
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -464,8 +476,8 @@ const useBulkEditLinks = () => {
     onSuccess: (data, { links, newData, removePreviousTags }) => {
       // TODO: Fix these
       // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-      //   if (!oldData) return undefined;
-      //   return oldData.map((e: any) =>
+      //   if (!oldData?.links) return undefined;
+      //   return oldData.links.map((e: any) =>
       //     data.find((d: any) => d.id === e.id) ? data : e
       //   );
       // });
