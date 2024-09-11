@@ -19,6 +19,7 @@ import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
 import { useLinks } from "@/hooks/store/links";
 import useLocalSettingsStore from "@/store/localSettings";
+import LinkPin from "./LinkPin";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -134,11 +135,16 @@ export default function LinkCardCompact({ link, editMode }: Props) {
             </div>
           </div>
         </div>
+        <LinkPin
+          link={link}
+          className="absolute top-3 right-[3.25rem] group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
+          btnStyle="btn-ghost"
+        />
         <LinkActions
           link={link}
           collection={collection}
           className={
-            "top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
+            "absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
           }
           btnStyle="btn-ghost"
         />

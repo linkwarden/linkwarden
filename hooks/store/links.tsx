@@ -433,12 +433,38 @@ const useUpdatePreview = () => {
       return data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["links"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: oldData.links.map((e: any) =>
+            e.id === data.response.id
+              ? {
+                  ...e,
+                  preview: `archives/preview/${e.collectionId}/${e.id}.jpeg`,
+                }
+              : e
+          ),
+        };
+      });
 
-      queryClient.invalidateQueries({ queryKey: ["collections"] });
-      queryClient.invalidateQueries({ queryKey: ["tags"] });
-      queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
+      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
+        if (!oldData) return undefined;
+        return {
+          pages: oldData.pages.map((page: any) =>
+            page.map((item: any) =>
+              item.id === data.response.id
+                ? {
+                    ...item,
+                    preview: `archives/preview/${item.collectionId}/${item.id}.jpeg`,
+                    updatedAt: new Date().toISOString(),
+                  }
+                : item
+            )
+          ),
+          pageParams: oldData.pageParams,
+        };
+      });
     },
   });
 };
