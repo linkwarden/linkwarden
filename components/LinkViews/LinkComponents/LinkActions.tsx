@@ -7,12 +7,12 @@ import usePermissions from "@/hooks/usePermissions";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/user";
-import { useDeleteLink, useGetLink, useUpdateLink } from "@/hooks/store/links";
+import { useDeleteLink, useGetLink } from "@/hooks/store/links";
 import toast from "react-hot-toast";
 import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";
 import clsx from "clsx";
+import usePinLink from "@/lib/client/pinLink";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -27,40 +27,13 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
   const permissions = usePermissions(link.collection.id as number);
   const getLink = useGetLink();
 
+  const pinLink = usePinLink();
+
   const [editLinkModal, setEditLinkModal] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
 
-  const { data: user = {} } = useUser();
-
-  const updateLink = useUpdateLink();
   const deleteLink = useDeleteLink();
-
-  const pinLink = async () => {
-    const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0] ? true : false;
-
-    const load = toast.loading(t("updating"));
-
-    await updateLink.mutateAsync(
-      {
-        ...link,
-        pinnedBy: isAlreadyPinned ? [{ id: undefined }] : [{ id: user.id }],
-      },
-      {
-        onSettled: (data, error) => {
-          toast.dismiss(load);
-
-          if (error) {
-            toast.error(error.message);
-          } else {
-            toast.success(
-              isAlreadyPinned ? t("link_unpinned") : t("link_pinned")
-            );
-          }
-        },
-      }
-    );
-  };
 
   const updateArchive = async () => {
     const load = toast.loading(t("sending_request"));
@@ -103,7 +76,7 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
         </div>
       ) : (
         <div
-          className={`dropdown dropdown-left absolute ${
+          className={`dropdown dropdown-end absolute ${
             className || "top-3 right-3"
           } z-20`}
         >
@@ -117,7 +90,7 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
           </div>
           <ul
             className={
-              "dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mr-1"
+              "dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1"
             }
           >
             <li>
@@ -126,7 +99,7 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  pinLink();
+                  pinLink(link);
                 }}
                 className="whitespace-nowrap"
               >
@@ -216,7 +189,7 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
       {editLinkModal && (
         <LinkModal
           onClose={() => setEditLinkModal(false)}
-          onPin={pinLink}
+          onPin={() => pinLink(link)}
           onUpdateArchive={updateArchive}
           onDelete={() => setDeleteLinkModal(true)}
           link={link}
@@ -232,7 +205,7 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
       {linkModal && (
         <LinkModal
           onClose={() => setLinkModal(false)}
-          onPin={pinLink}
+          onPin={() => pinLink(link)}
           onUpdateArchive={updateArchive}
           onDelete={() => setDeleteLinkModal(true)}
           link={link}
