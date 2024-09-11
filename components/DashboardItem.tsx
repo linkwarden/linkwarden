@@ -14,12 +14,7 @@ export default function dashboardItem({
       </div>
       <div className="ml-4 flex flex-col justify-center">
         <p className="text-neutral text-xs tracking-wider">{name}</p>
-        <p className="font-thin text-5xl text-primary mt-0.5 hidden sm:block md:hidden">
-          {value < 1000 ? value : (value / 1000).toFixed(1) + "k"}
-        </p>
-        <p className="font-thin text-5xl text-primary mt-0.5 sm:hidden md:block">
-          {value}
-        </p>
+        <p className="font-thin text-5xl text-primary mt-0.5">{value || 0}</p>
       </div>
     </div>
   );

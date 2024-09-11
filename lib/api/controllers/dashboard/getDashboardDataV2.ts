@@ -107,9 +107,15 @@ export default async function getDashboardData(
   const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
     (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
   );
+
+  // Make sure links are unique
+  const uniqueLinks = links.filter(
+    (link, index, self) => index === self.findIndex((t) => t.id === link.id)
+  );
+
   return {
     data: {
-      links,
+      links: uniqueLinks,
       numberOfPinnedLinks,
     },
     message: "Dashboard data fetched successfully.",
