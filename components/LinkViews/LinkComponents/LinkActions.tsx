@@ -60,17 +60,13 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
     <>
       {isPublicRoute ? (
         <div
-          className={clsx(
-            className || "top-3 right-3",
-            "absolute z-20",
-            btnStyle
-          )}
+          className={clsx(className || "top-3 right-3 absolute z-20")}
           tabIndex={0}
           role="button"
           onMouseDown={dropdownTriggerer}
           onClick={() => setLinkModal(true)}
         >
-          <div className="btn btn-sm btn-square text-neutral">
+          <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>
             <i title="More" className="bi-three-dots text-xl" />
           </div>
         </div>

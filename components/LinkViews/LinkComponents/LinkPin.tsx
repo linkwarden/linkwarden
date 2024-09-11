@@ -18,10 +18,10 @@ export default function LinkPin({ link, className, btnStyle }: Props) {
 
   return (
     <div
-      className={clsx(className || "top-3 right-3 absolute", btnStyle)}
+      className={clsx(className || "top-3 right-3 absolute")}
       onClick={() => pinLink(link)}
     >
-      <div className="btn btn-sm btn-square text-neutral">
+      <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>
         <i
           title="Pin"
           className={clsx(
