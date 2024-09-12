@@ -5,11 +5,10 @@ import usePinLink from "@/lib/client/pinLink";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
-  className?: string;
   btnStyle?: string;
 };
 
-export default function LinkPin({ link, className, btnStyle }: Props) {
+export default function LinkPin({ link, btnStyle }: Props) {
   const pinLink = usePinLink();
   const router = useRouter();
 
@@ -18,7 +17,7 @@ export default function LinkPin({ link, className, btnStyle }: Props) {
 
   return (
     <div
-      className={clsx(className || "top-3 right-3 absolute")}
+      className="absolute top-3 right-[3.25rem] group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
       onClick={() => pinLink(link)}
     >
       <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>

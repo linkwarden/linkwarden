@@ -135,19 +135,8 @@ export default function LinkCardCompact({ link, editMode }: Props) {
             </div>
           </div>
         </div>
-        <LinkPin
-          link={link}
-          className="absolute top-3 right-[3.25rem] group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
-          btnStyle="btn-ghost"
-        />
-        <LinkActions
-          link={link}
-          collection={collection}
-          className={
-            "absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
-          }
-          btnStyle="btn-ghost"
-        />
+        <LinkPin link={link} btnStyle="btn-ghost" />
+        <LinkActions link={link} collection={collection} btnStyle="btn-ghost" />
       </div>
       <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
     </>
