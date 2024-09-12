@@ -96,9 +96,18 @@ export default async function updateLinkById(
       },
     });
 
-    if (oldLink && oldLink?.url !== data.url) {
+    if (
+      data.url &&
+      oldLink &&
+      oldLink?.url !== data.url &&
+      isValidUrl(data.url)
+    ) {
       await removeFiles(oldLink.id, oldLink.collectionId);
-    }
+    } else
+      return {
+        response: "Invalid URL.",
+        status: 401,
+      };
 
     const updatedLink = await prisma.link.update({
       where: {

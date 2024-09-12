@@ -127,21 +127,22 @@ export default function LinkActions({ link, btnStyle }: Props) {
                 </div>
               </li>
             )}
-            {link.type === "url" && permissions === true && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    updateArchive();
-                  }}
-                  className="whitespace-nowrap"
-                >
-                  {t("refresh_preserved_formats")}
-                </div>
-              </li>
-            )}
+            {link.type === "url" &&
+              (permissions === true || permissions?.canUpdate) && (
+                <li>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      updateArchive();
+                    }}
+                    className="whitespace-nowrap"
+                  >
+                    {t("refresh_preserved_formats")}
+                  </div>
+                </li>
+              )}
             {(permissions === true || permissions?.canDelete) && (
               <li>
                 <div

@@ -440,7 +440,7 @@ export default function LinkDetails({
 
             {mode === "view" ? (
               <div className="flex gap-2 flex-wrap rounded-md p-2 bg-base-200 border border-base-200 w-full text-xs">
-                {link.tags[0] ? (
+                {link.tags && link.tags[0] ? (
                   link.tags.map((tag) =>
                     isPublicRoute ? (
                       <div
