@@ -17,11 +17,10 @@ import usePinLink from "@/lib/client/pinLink";
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
-  className?: string;
   btnStyle?: string;
 };
 
-export default function LinkActions({ link, className, btnStyle }: Props) {
+export default function LinkActions({ link, btnStyle }: Props) {
   const { t } = useTranslation();
 
   const permissions = usePermissions(link.collection.id as number);
@@ -60,9 +59,7 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
     <>
       {isPublicRoute ? (
         <div
-          className={clsx(className || "top-3 right-3 absolute z-20")}
-          tabIndex={0}
-          role="button"
+          className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
           onMouseDown={dropdownTriggerer}
           onClick={() => setLinkModal(true)}
         >
@@ -72,9 +69,7 @@ export default function LinkActions({ link, className, btnStyle }: Props) {
         </div>
       ) : (
         <div
-          className={`dropdown dropdown-end absolute ${
-            className || "top-3 right-3"
-          } z-20`}
+          className={`dropdown dropdown-end absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 z-20`}
         >
           <div
             tabIndex={0}
