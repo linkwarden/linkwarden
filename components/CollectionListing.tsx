@@ -45,6 +45,7 @@ const CollectionListing = () => {
       return buildTreeFromCollections(
         collections,
         router,
+        tree,
         user.collectionOrder
       );
     } else return undefined;
@@ -324,6 +325,7 @@ const Dropdown = (
 const buildTreeFromCollections = (
   collections: CollectionIncludingMembersAndLinkCount[],
   router: ReturnType<typeof useRouter>,
+  tree?: TreeData,
   order?: number[]
 ): TreeData => {
   if (order) {
@@ -338,7 +340,7 @@ const buildTreeFromCollections = (
         id: collection.id,
         children: [],
         hasChildren: false,
-        isExpanded: false,
+        isExpanded: tree?.items[collection.id as number]?.isExpanded || false,
         data: {
           id: collection.id,
           parentId: collection.parentId,
