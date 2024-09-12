@@ -2,8 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import { Collection, Link } from "@prisma/client";
-import { removeFiles } from "@/lib/api/manageLinkFiles";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { UsersAndCollections } from "@prisma/client";
+import getPermission from "@/lib/api/getPermission";
+import { moveFiles, removeFiles } from "@/lib/api/manageLinkFiles";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
@@ -23,7 +25,16 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       response: "Link not found.",
     });
 
-  if (link.collection.ownerId !== user.id)
+  const collectionIsAccessible = await getPermission({
+    userId: user.id,
+    collectionId: link.collectionId,
+  });
+
+  const memberHasAccess = collectionIsAccessible?.members.some(
+    (e: UsersAndCollections) => e.userId === user.id && e.canUpdate
+  );
+
+  if (!(collectionIsAccessible?.ownerId === user.id || memberHasAccess))
     return res.status(401).json({
       response: "Permission denied.",
     });
@@ -54,7 +65,20 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         response: "Invalid URL.",
       });
 
-    await deleteArchivedFiles(link);
+    await prisma.link.update({
+      where: {
+        id: link.id,
+      },
+      data: {
+        image: null,
+        pdf: null,
+        readable: null,
+        monolith: null,
+        preview: null,
+      },
+    });
+
+    await removeFiles(link.id, link.collection.id);
 
     return res.status(200).json({
       response: "Link is being archived.",
@@ -71,21 +95,4 @@ const getTimezoneDifferenceInMinutes = (future: Date, past: Date) => {
   const diffInMinutes = diffInMilliseconds / (1000 * 60);
 
   return diffInMinutes;
-};
-
-const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
-  await prisma.link.update({
-    where: {
-      id: link.id,
-    },
-    data: {
-      image: null,
-      pdf: null,
-      readable: null,
-      monolith: null,
-      preview: null,
-    },
-  });
-
-  await removeFiles(link.id, link.collection.id);
 };

@@ -13,6 +13,7 @@ import {
 } from "@/types/global";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import Jimp from "jimp";
 
 const useLinks = (params: LinkRequestQuery = {}) => {
   const router = useRouter();
@@ -120,8 +121,11 @@ const useAddLink = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return [data, ...oldData];
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: [data, ...oldData.links],
+        };
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -160,8 +164,8 @@ const useUpdateLink = () => {
     },
     onSuccess: (data) => {
       // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-      //   if (!oldData) return undefined;
-      //   return oldData.map((e: any) => (e.id === data.id ? data : e));
+      //   if (!oldData?.links) return undefined;
+      //   return oldData.links.map((e: any) => (e.id === data.id ? data : e));
       // });
 
       // queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -201,8 +205,11 @@ const useDeleteLink = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.filter((e: any) => e.id !== data.id);
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: oldData.links.filter((e: any) => e.id !== data.id),
+        };
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -225,9 +232,21 @@ const useDeleteLink = () => {
 const useGetLink = () => {
   const queryClient = useQueryClient();
 
+  const router = useRouter();
+
   return useMutation({
-    mutationFn: async (id: number) => {
-      const response = await fetch(`/api/v1/links/${id}`);
+    mutationFn: async ({
+      id,
+      isPublicRoute = router.pathname.startsWith("/public") ? true : undefined,
+    }: {
+      id: number;
+      isPublicRoute?: boolean;
+    }) => {
+      const path = isPublicRoute
+        ? `/api/v1/public/links/${id}`
+        : `/api/v1/links/${id}`;
+
+      const response = await fetch(path);
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.response);
@@ -236,8 +255,11 @@ const useGetLink = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.map((e: any) => (e.id === data.id ? data : e));
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: oldData.links.map((e: any) => (e.id === data.id ? data : e)),
+        };
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -250,7 +272,20 @@ const useGetLink = () => {
         };
       });
 
-      queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
+      queryClient.setQueriesData(
+        { queryKey: ["publicLinks"] },
+        (oldData: any) => {
+          if (!oldData) return undefined;
+          return {
+            pages: oldData.pages.map((page: any) =>
+              page.map((item: any) => (item.id === data.id ? data : item))
+            ),
+            pageParams: oldData.pageParams,
+          };
+        }
+      );
+
+      // queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
   });
 };
@@ -276,8 +311,8 @@ const useBulkDeleteLinks = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return oldData.filter((e: any) => !data.includes(e.id));
+        if (!oldData.links) return undefined;
+        return oldData.links.filter((e: any) => !data.includes(e.id));
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -351,8 +386,11 @@ const useUploadFile = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return undefined;
-        return [data, ...oldData];
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: [data, ...oldData.links],
+        };
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
@@ -366,6 +404,67 @@ const useUploadFile = () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
+    },
+  });
+};
+
+const useUpdatePreview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ linkId, file }: { linkId: number; file: File }) => {
+      const formBody = new FormData();
+
+      if (!linkId || !file)
+        throw new Error("Error generating preview: Invalid parameters");
+
+      formBody.append("file", file);
+
+      const res = await fetch(
+        `/api/v1/archives/${linkId}?format=` + ArchivedFormat.jpeg,
+        {
+          body: formBody,
+          method: "PUT",
+        }
+      );
+
+      const data = res.json();
+
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+        if (!oldData?.links) return undefined;
+        return {
+          ...oldData,
+          links: oldData.links.map((e: any) =>
+            e.id === data.response.id
+              ? {
+                  ...e,
+                  preview: `archives/preview/${e.collectionId}/${e.id}.jpeg`,
+                }
+              : e
+          ),
+        };
+      });
+
+      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
+        if (!oldData) return undefined;
+        return {
+          pages: oldData.pages.map((page: any) =>
+            page.map((item: any) =>
+              item.id === data.response.id
+                ? {
+                    ...item,
+                    preview: `archives/preview/${item.collectionId}/${item.id}.jpeg`,
+                    updatedAt: new Date().toISOString(),
+                  }
+                : item
+            )
+          ),
+          pageParams: oldData.pageParams,
+        };
+      });
     },
   });
 };
@@ -403,8 +502,8 @@ const useBulkEditLinks = () => {
     onSuccess: (data, { links, newData, removePreviousTags }) => {
       // TODO: Fix these
       // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-      //   if (!oldData) return undefined;
-      //   return oldData.map((e: any) =>
+      //   if (!oldData?.links) return undefined;
+      //   return oldData.links.map((e: any) =>
       //     data.find((d: any) => d.id === e.id) ? data : e
       //   );
       // });
@@ -454,4 +553,5 @@ export {
   useGetLink,
   useBulkEditLinks,
   resetInfiniteQueryPagination,
+  useUpdatePreview,
 };

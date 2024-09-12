@@ -22,6 +22,7 @@ export interface LinkIncludingShortenedCollectionAndTags
   pinnedBy?: {
     id: number;
   }[];
+  updatedAt?: string;
   collection: OptionalExcluding<Collection, "name" | "ownerId">;
 }
 
@@ -79,6 +80,8 @@ export enum Sort {
   DescriptionAZ,
   DescriptionZA,
 }
+
+export type Order = { [key: string]: "asc" | "desc" };
 
 export type LinkRequestQuery = {
   sort?: Sort;
