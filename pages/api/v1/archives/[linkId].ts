@@ -282,7 +282,7 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
             filePath: `archives/preview/${collectionId}`,
           });
 
-          generatePreview(fileBuffer, collectionId, linkId);
+          await generatePreview(fileBuffer, collectionId, linkId);
         }
 
         fs.unlinkSync(files.file[0].filepath);
