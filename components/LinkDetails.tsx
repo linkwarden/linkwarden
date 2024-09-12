@@ -327,30 +327,6 @@ export default function LinkDetails({
             </div>
           )}
 
-          {link.url && (
-            <>
-              <br />
-
-              <p className="text-sm mb-2 text-neutral">{t("link")}</p>
-
-              <div className="relative">
-                <div className="rounded-md p-2 bg-base-200 hide-scrollbar overflow-x-auto whitespace-nowrap flex justify-between items-center gap-2 pr-14">
-                  <Link
-                    href={link.url}
-                    title={link.url}
-                    target="_blank"
-                    className={clsx(mode === "edit" && "pointer-events-none")}
-                  >
-                    {link.url}
-                  </Link>
-                  <div className="absolute right-0 px-2 bg-base-200">
-                    <CopyButton text={link.url} />
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-
           {mode === "edit" && (
             <>
               <br />
@@ -368,6 +344,41 @@ export default function LinkDetails({
               </div>
             </>
           )}
+
+          {link.url && mode === "view" ? (
+            <>
+              <br />
+
+              <p className="text-sm mb-2 text-neutral">{t("link")}</p>
+
+              <div className="relative">
+                <div className="rounded-md p-2 bg-base-200 hide-scrollbar overflow-x-auto whitespace-nowrap flex justify-between items-center gap-2 pr-14">
+                  <Link href={link.url} title={link.url} target="_blank">
+                    {link.url}
+                  </Link>
+                  <div className="absolute right-0 px-2 bg-base-200">
+                    <CopyButton text={link.url} />
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : activeLink.url ? (
+            <>
+              <br />
+
+              <div>
+                <p className="text-sm mb-2 text-neutral relative w-fit flex justify-between">
+                  {t("link")}
+                </p>
+                <TextInput
+                  value={link.url || ""}
+                  onChange={(e) => setLink({ ...link, url: e.target.value })}
+                  placeholder={t("placeholder_example_link")}
+                  className="bg-base-200"
+                />
+              </div>
+            </>
+          ) : undefined}
 
           <br />
 
