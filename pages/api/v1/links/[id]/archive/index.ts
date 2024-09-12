@@ -54,7 +54,20 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         response: "Invalid URL.",
       });
 
-    await deleteArchivedFiles(link);
+    await prisma.link.update({
+      where: {
+        id: link.id,
+      },
+      data: {
+        image: null,
+        pdf: null,
+        readable: null,
+        monolith: null,
+        preview: null,
+      },
+    });
+
+    await removeFiles(link.id, link.collection.id);
 
     return res.status(200).json({
       response: "Link is being archived.",
@@ -71,21 +84,4 @@ const getTimezoneDifferenceInMinutes = (future: Date, past: Date) => {
   const diffInMinutes = diffInMilliseconds / (1000 * 60);
 
   return diffInMinutes;
-};
-
-const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
-  await prisma.link.update({
-    where: {
-      id: link.id,
-    },
-    data: {
-      image: null,
-      pdf: null,
-      readable: null,
-      monolith: null,
-      preview: null,
-    },
-  });
-
-  await removeFiles(link.id, link.collection.id);
 };
