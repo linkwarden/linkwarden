@@ -94,6 +94,8 @@ model Collection {
   id              Int                   @id @default(autoincrement())
   name            String
   description     String                @default("")
+  icon            String?
+  iconWeight      String?
   color           String                @default("#0ea5e9")
   parentId        Int?
   parent          Collection?           @relation("SubCollections", fields: [parentId], references: [id])
@@ -133,6 +135,9 @@ model Link {
   collection    Collection @relation(fields: [collectionId], references: [id])
   collectionId  Int
   tags          Tag[]
+  icon          String?
+  iconWeight    String?
+  color         String?
   url           String?
   textContent   String?
   preview       String?
