@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/api/db";
-import { LinkRequestQuery, Sort } from "@/types/global";
+import { LinkRequestQuery, Order, Sort } from "@/types/global";
 
 type Response<D> =
   | {
@@ -17,7 +17,7 @@ export default async function getDashboardData(
   userId: number,
   query: LinkRequestQuery
 ): Promise<Response<any>> {
-  let order: any;
+  let order: Order = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
@@ -48,7 +48,7 @@ export default async function getDashboardData(
   });
 
   const pinnedLinks = await prisma.link.findMany({
-    take: 10,
+    take: 16,
     where: {
       AND: [
         {
@@ -80,7 +80,7 @@ export default async function getDashboardData(
   });
 
   const recentlyAddedLinks = await prisma.link.findMany({
-    take: 10,
+    take: 16,
     where: {
       collection: {
         OR: [
@@ -105,12 +105,17 @@ export default async function getDashboardData(
   });
 
   const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
-    (a, b) => (new Date(b.id) as any) - (new Date(a.id) as any)
+    (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
+  );
+
+  // Make sure links are unique
+  const uniqueLinks = links.filter(
+    (link, index, self) => index === self.findIndex((t) => t.id === link.id)
   );
 
   return {
     data: {
-      links,
+      links: uniqueLinks,
       numberOfPinnedLinks,
     },
     message: "Dashboard data fetched successfully.",

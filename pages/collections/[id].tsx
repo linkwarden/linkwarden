@@ -1,4 +1,5 @@
 import {
+  AccountSettings,
   CollectionIncludingMembersAndLinkCount,
   Sort,
   ViewMode,
@@ -23,6 +24,8 @@ import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
 import { useLinks } from "@/hooks/store/links";
 import Links from "@/components/LinkViews/Links";
+import Icon from "@/components/Icon";
+import { IconWeight } from "@phosphor-icons/react";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -54,15 +57,9 @@ export default function Index() {
 
   const { data: user = {} } = useUser();
 
-  const [collectionOwner, setCollectionOwner] = useState({
-    id: null as unknown as number,
-    name: "",
-    username: "",
-    image: "",
-    archiveAsScreenshot: undefined as unknown as boolean,
-    archiveAsMonolith: undefined as unknown as boolean,
-    archiveAsPDF: undefined as unknown as boolean,
-  });
+  const [collectionOwner, setCollectionOwner] = useState<
+    Partial<AccountSettings>
+  >({});
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -115,10 +112,21 @@ export default function Index() {
         {activeCollection && (
           <div className="flex gap-3 items-start justify-between">
             <div className="flex items-center gap-2">
-              <i
-                className="bi-folder-fill text-3xl drop-shadow"
-                style={{ color: activeCollection?.color }}
-              ></i>
+              {activeCollection.icon ? (
+                <Icon
+                  icon={activeCollection.icon}
+                  size={45}
+                  weight={
+                    (activeCollection.iconWeight || "regular") as IconWeight
+                  }
+                  color={activeCollection.color}
+                />
+              ) : (
+                <i
+                  className="bi-folder-fill text-3xl"
+                  style={{ color: activeCollection.color }}
+                ></i>
+              )}
 
               <p className="sm:text-3xl text-2xl capitalize w-full py-1 break-words hyphens-auto font-thin">
                 {activeCollection?.name}
@@ -207,14 +215,14 @@ export default function Index() {
                 className="flex items-center btn px-2 btn-ghost rounded-full w-fit"
                 onClick={() => setEditCollectionSharingModal(true)}
               >
-                {collectionOwner.id ? (
+                {collectionOwner.id && (
                   <ProfilePhoto
                     src={collectionOwner.image || undefined}
                     name={collectionOwner.name}
                   />
-                ) : undefined}
+                )}
                 {activeCollection.members
-                  .sort((a, b) => (a.userId as number) - (b.userId as number))
+                  .sort((a, b) => a.userId - b.userId)
                   .map((e, i) => {
                     return (
                       <ProfilePhoto
@@ -226,13 +234,13 @@ export default function Index() {
                     );
                   })
                   .slice(0, 3)}
-                {activeCollection.members.length - 3 > 0 ? (
+                {activeCollection.members.length - 3 > 0 && (
                   <div className={`avatar drop-shadow-md placeholder -ml-3`}>
                     <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
                       <span>+{activeCollection.members.length - 3}</span>
                     </div>
                   </div>
-                ) : null}
+                )}
               </div>
 
               <p className="text-neutral text-sm">

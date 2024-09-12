@@ -60,7 +60,7 @@ export default function ProfileDropdown() {
             })}
           </div>
         </li>
-        {isAdmin ? (
+        {isAdmin && (
           <li>
             <Link
               href="/admin"
@@ -72,7 +72,7 @@ export default function ProfileDropdown() {
               {t("server_administration")}
             </Link>
           </li>
-        ) : null}
+        )}
         <li>
           <div
             onClick={() => {
