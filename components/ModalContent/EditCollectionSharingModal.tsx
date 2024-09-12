@@ -133,7 +133,7 @@ export default function EditCollectionSharingModal({
 
         {collection.isPublic && (
           <div>
-            <p className="mb-2">{t("sharable_link_guide")}</p>
+            <p className="mb-2">{t("sharable_link")}</p>
             <div className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 bg-base-200 border-neutral-content border-solid border flex items-center gap-2 justify-between">
               {publicCollectionURL}
               <CopyButton text={publicCollectionURL} />

@@ -315,7 +315,7 @@
   "make_collection_public": "Make Collection Public",
   "make_collection_public_checkbox": "Make this a public collection",
   "make_collection_public_desc": "This will allow anyone to view this collection and it's users.",
-  "sharable_link_guide": "Sharable Link (Click to copy)",
+  "sharable_link": "Sharable Link",
   "copied": "Copied!",
   "members": "Members",
   "members_username_placeholder": "Username (without the '@')",
