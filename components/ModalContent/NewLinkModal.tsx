@@ -31,6 +31,9 @@ export default function NewLinkModal({ onClose }: Props) {
     readable: "",
     monolith: "",
     textContent: "",
+    icon: "",
+    iconWeight: "",
+    color: "",
     collection: {
       name: "",
       ownerId: data?.user.id as number,
@@ -61,7 +64,7 @@ export default function NewLinkModal({ onClose }: Props) {
   };
 
   useEffect(() => {
-    if (router.query.id) {
+    if (router.pathname.startsWith("/collections/") && router.query.id) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
       );
@@ -124,7 +127,7 @@ export default function NewLinkModal({ onClose }: Props) {
         </div>
         <div className="sm:col-span-2 col-span-5">
           <p className="mb-2">{t("collection")}</p>
-          {link.collection.name ? (
+          {link.collection.name && (
             <CollectionSelection
               onChange={setCollection}
               defaultValue={{
@@ -132,11 +135,11 @@ export default function NewLinkModal({ onClose }: Props) {
                 value: link.collection.id,
               }}
             />
-          ) : null}
+          )}
         </div>
       </div>
       <div className={"mt-2"}>
-        {optionsExpanded ? (
+        {optionsExpanded && (
           <div className="mt-5">
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
@@ -166,12 +169,12 @@ export default function NewLinkModal({ onClose }: Props) {
                     setLink({ ...link, description: e.target.value })
                   }
                   placeholder={t("link_description_placeholder")}
-                  className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                  className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
                 />
               </div>
             </div>
           </div>
-        ) : undefined}
+        )}
       </div>
       <div className="flex justify-between items-center mt-5">
         <div
