@@ -2,7 +2,8 @@ import { prisma } from "@/lib/api/db";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import { moveFiles } from "@/lib/api/manageLinkFiles";
+import { moveFiles, removeFiles } from "@/lib/api/manageLinkFiles";
+import isValidUrl from "@/lib/shared/isValidUrl";
 
 export default async function updateLinkById(
   userId: number,
@@ -25,15 +26,15 @@ export default async function updateLinkById(
     (e: UsersAndCollections) => e.userId === userId
   );
 
-  // If the user is able to create a link, they can pin it to their dashboard only.
-  if (canPinPermission) {
+  // If the user is part of a collection, they can pin it to their dashboard
+  if (canPinPermission && data.pinnedBy && data.pinnedBy[0]) {
     const updatedLink = await prisma.link.update({
       where: {
         id: linkId,
       },
       data: {
         pinnedBy:
-          data?.pinnedBy && data.pinnedBy[0]
+          data?.pinnedBy && data.pinnedBy[0].id === userId
             ? { connect: { id: userId } }
             : { disconnect: { id: userId } },
       },
@@ -48,7 +49,7 @@ export default async function updateLinkById(
       },
     });
 
-    // return { response: updatedLink, status: 200 };
+    return { response: updatedLink, status: 200 };
   }
 
   const targetCollectionIsAccessible = await getPermission({
@@ -89,13 +90,41 @@ export default async function updateLinkById(
       status: 401,
     };
   else {
+    const oldLink = await prisma.link.findUnique({
+      where: {
+        id: linkId,
+      },
+    });
+
+    if (
+      data.url &&
+      oldLink &&
+      oldLink?.url !== data.url &&
+      isValidUrl(data.url)
+    ) {
+      await removeFiles(oldLink.id, oldLink.collectionId);
+    } else if (oldLink?.url !== data.url)
+      return {
+        response: "Invalid URL.",
+        status: 401,
+      };
+
     const updatedLink = await prisma.link.update({
       where: {
         id: linkId,
       },
       data: {
         name: data.name,
+        url: data.url,
         description: data.description,
+        icon: data.icon,
+        iconWeight: data.iconWeight,
+        color: data.color,
+        image: oldLink?.url !== data.url ? null : undefined,
+        pdf: oldLink?.url !== data.url ? null : undefined,
+        readable: oldLink?.url !== data.url ? null : undefined,
+        monolith: oldLink?.url !== data.url ? null : undefined,
+        preview: oldLink?.url !== data.url ? null : undefined,
         collection: {
           connect: {
             id: data.collection.id,
@@ -121,7 +150,7 @@ export default async function updateLinkById(
           })),
         },
         pinnedBy:
-          data?.pinnedBy && data.pinnedBy[0]
+          data?.pinnedBy && data.pinnedBy[0]?.id === userId
             ? { connect: { id: userId } }
             : { disconnect: { id: userId } },
       },

@@ -146,31 +146,29 @@ export default function Index() {
               <i className={"bi-hash text-primary text-3xl"} />
 
               {renameTag ? (
-                <>
-                  <form onSubmit={submit} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      autoFocus
-                      className="sm:text-3xl text-2xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
-                      value={newTagName}
-                      onChange={(e) => setNewTagName(e.target.value)}
-                    />
-                    <div
-                      onClick={() => submit()}
-                      id="expand-dropdown"
-                      className="btn btn-ghost btn-square btn-sm"
-                    >
-                      <i className={"bi-check text-neutral text-2xl"}></i>
-                    </div>
-                    <div
-                      onClick={() => cancelUpdateTag()}
-                      id="expand-dropdown"
-                      className="btn btn-ghost btn-square btn-sm"
-                    >
-                      <i className={"bi-x text-neutral text-2xl"}></i>
-                    </div>
-                  </form>
-                </>
+                <form onSubmit={submit} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    autoFocus
+                    className="sm:text-3xl text-2xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
+                    value={newTagName}
+                    onChange={(e) => setNewTagName(e.target.value)}
+                  />
+                  <div
+                    onClick={() => submit()}
+                    id="expand-dropdown"
+                    className="btn btn-ghost btn-square btn-sm"
+                  >
+                    <i className={"bi-check2 text-neutral text-2xl"}></i>
+                  </div>
+                  <div
+                    onClick={() => cancelUpdateTag()}
+                    id="expand-dropdown"
+                    className="btn btn-ghost btn-square btn-sm"
+                  >
+                    <i className={"bi-x text-neutral text-2xl"}></i>
+                  </div>
+                </form>
               ) : (
                 <>
                   <p className="sm:text-3xl text-2xl capitalize">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
@@ -55,8 +55,10 @@ export default function Account() {
     if (!objectIsEmpty(account)) setUser({ ...account });
   }, [account]);
 
-  const handleImageUpload = async (e: any) => {
-    const file: File = e.target.files[0];
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return toast.error(t("image_upload_no_file_error"));
+
     const fileExtension = file.name.split(".").pop()?.toLowerCase();
     const allowedExtensions = ["png", "jpeg", "jpg"];
     if (allowedExtensions.includes(fileExtension as string)) {
@@ -114,9 +116,13 @@ export default function Account() {
     setSubmitLoader(false);
   };
 
-  const importBookmarks = async (e: any, format: MigrationFormat) => {
+  const importBookmarks = async (
+    e: ChangeEvent<HTMLInputElement>,
+    format: MigrationFormat
+  ) => {
     setSubmitLoader(true);
-    const file: File = e.target.files[0];
+    const file = e.target.files?.[0];
+
     if (file) {
       var reader = new FileReader();
       reader.readAsText(file, "UTF-8");
@@ -190,7 +196,7 @@ export default function Account() {
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
               />
             </div>
-            {emailEnabled ? (
+            {emailEnabled && (
               <div>
                 <p className="mb-2">{t("email")}</p>
                 <TextInput
@@ -199,7 +205,7 @@ export default function Account() {
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                 />
               </div>
-            ) : undefined}
+            )}
             <div>
               <p className="mb-2">{t("language")}</p>
               <select
@@ -437,9 +443,8 @@ export default function Account() {
 
           <p>
             {t("delete_account_warning")}
-            {process.env.NEXT_PUBLIC_STRIPE
-              ? " " + t("cancel_subscription_notice")
-              : undefined}
+            {process.env.NEXT_PUBLIC_STRIPE &&
+              " " + t("cancel_subscription_notice")}
           </p>
         </div>
 
@@ -448,14 +453,14 @@ export default function Account() {
         </Link>
       </div>
 
-      {emailChangeVerificationModal ? (
+      {emailChangeVerificationModal && (
         <EmailChangeVerificationModal
           onClose={() => setEmailChangeVerificationModal(false)}
           onSubmit={submit}
           oldEmail={account.email || ""}
           newEmail={user.email || ""}
         />
-      ) : undefined}
+      )}
     </SettingsLayout>
   );
 }

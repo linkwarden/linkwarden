@@ -1,7 +1,9 @@
+import Icon from "@/components/Icon";
 import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
+import { IconWeight } from "@phosphor-icons/react";
 import Link from "next/link";
 import React from "react";
 
@@ -22,10 +24,19 @@ export default function LinkCollection({
         className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100 select-none"
         title={collection?.name}
       >
-        <i
-          className="bi-folder-fill text-lg drop-shadow"
-          style={{ color: collection?.color }}
-        ></i>
+        {link.collection.icon ? (
+          <Icon
+            icon={link.collection.icon}
+            size={20}
+            weight={(link.collection.iconWeight || "regular") as IconWeight}
+            color={link.collection.color}
+          />
+        ) : (
+          <i
+            className="bi-folder-fill text-lg"
+            style={{ color: link.collection.color }}
+          ></i>
+        )}
         <p className="truncate capitalize">{collection?.name}</p>
       </Link>
     </>

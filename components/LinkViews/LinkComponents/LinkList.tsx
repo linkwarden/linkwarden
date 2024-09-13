@@ -18,26 +18,27 @@ import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
 import { useLinks } from "@/hooks/store/links";
+import useLocalSettingsStore from "@/store/localSettings";
+import LinkPin from "./LinkPin";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   count: number;
   className?: string;
-  flipDropdown?: boolean;
   editMode?: boolean;
 };
 
-export default function LinkCardCompact({
-  link,
-  flipDropdown,
-  editMode,
-}: Props) {
+export default function LinkCardCompact({ link, editMode }: Props) {
   const { t } = useTranslation();
 
   const { data: collections = [] } = useCollections();
 
   const { data: user = {} } = useUser();
   const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const {
+    settings: { show },
+  } = useLocalSettingsStore();
 
   const { links } = useLinks();
 
@@ -80,8 +81,6 @@ export default function LinkCardCompact({
 
   const permissions = usePermissions(collection?.id as number);
 
-  const [showInfo, setShowInfo] = useState(false);
-
   const selectedStyle = selectedLinks.some(
     (selectedLink) => selectedLink.id === link.id
   )
@@ -95,9 +94,9 @@ export default function LinkCardCompact({
   return (
     <>
       <div
-        className={`${selectedStyle} border relative items-center flex ${
-          !showInfo && !isPWA() ? "hover:bg-base-300 p-3" : "py-3"
-        } duration-200 rounded-lg w-full`}
+        className={`${selectedStyle} rounded-md border relative group items-center flex ${
+          !isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
+        } duration-200 w-full`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
@@ -106,67 +105,40 @@ export default function LinkCardCompact({
               : undefined
         }
       >
-        {/* {showCheckbox &&
-          editMode &&
-          (permissions === true ||
-            permissions?.canCreate ||
-            permissions?.canDelete) && (
-            <input
-              type="checkbox"
-              className="checkbox checkbox-primary my-auto mr-2"
-              checked={selectedLinks.some(
-                (selectedLink) => selectedLink.id === link.id
-              )}
-              onChange={() => handleCheckboxClick(link)}
-            />
-          )} */}
         <div
-          className="flex items-center cursor-pointer w-full"
+          className="flex items-center cursor-pointer w-full min-h-12"
           onClick={() =>
             !editMode && window.open(generateLinkHref(link, user), "_blank")
           }
         >
-          <div className="shrink-0">
-            <LinkIcon link={link} className="w-12 h-12 text-4xl" />
-          </div>
+          {show.icon && (
+            <div className="shrink-0">
+              <LinkIcon link={link} hideBackground />
+            </div>
+          )}
 
           <div className="w-[calc(100%-56px)] ml-2">
-            <p className="line-clamp-1 mr-8 text-primary select-none">
-              {link.name ? (
-                unescapeString(link.name)
-              ) : (
-                <div className="mt-2">
-                  <LinkTypeBadge link={link} />
-                </div>
-              )}
-            </p>
+            {show.name && (
+              <p className="line-clamp-1 mr-8 text-primary select-none">
+                {unescapeString(link.name)}
+              </p>
+            )}
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
               <div className="flex items-center gap-x-3 text-neutral flex-wrap">
-                {collection ? (
+                {show.link && <LinkTypeBadge link={link} />}
+                {show.collection && (
                   <LinkCollection link={link} collection={collection} />
-                ) : undefined}
-                {link.name && <LinkTypeBadge link={link} />}
-                <LinkDate link={link} />
+                )}
+                {show.date && <LinkDate link={link} />}
               </div>
             </div>
           </div>
         </div>
-        <LinkActions
-          link={link}
-          collection={collection}
-          position="top-3 right-3"
-          flipDropdown={flipDropdown}
-          // toggleShowInfo={() => setShowInfo(!showInfo)}
-          // linkInfo={showInfo}
-        />
+        <LinkPin link={link} btnStyle="btn-ghost" />
+        <LinkActions link={link} collection={collection} btnStyle="btn-ghost" />
       </div>
-      <div
-        className="last:hidden rounded-none"
-        style={{
-          borderTop: "1px solid var(--fallback-bc,oklch(var(--bc)/0.1))",
-        }}
-      ></div>
+      <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
     </>
   );
 }
