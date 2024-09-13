@@ -103,7 +103,7 @@ export default async function updateLinkById(
       isValidUrl(data.url)
     ) {
       await removeFiles(oldLink.id, oldLink.collectionId);
-    } else
+    } else if (oldLink?.url !== data.url)
       return {
         response: "Invalid URL.",
         status: 401,
