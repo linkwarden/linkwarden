@@ -11,6 +11,7 @@ import fs from "fs";
 import verifyToken from "@/lib/api/verifyToken";
 import generatePreview from "@/lib/api/generatePreview";
 import createFolder from "@/lib/api/storage/createFolder";
+import { UploadFileSchema } from "@/lib/shared/schemaValidation";
 
 export const config = {
   api: {
@@ -137,6 +138,20 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
         "image/jpg",
         "image/jpeg",
       ];
+
+      const dataValidation = UploadFileSchema.safeParse({
+        id: Number(req.query.linkId),
+        format: Number(req.query.format),
+        file: files.file,
+      });
+
+      if (!dataValidation.success) {
+        return res.status(400).json({
+          response: `Error: ${
+            dataValidation.error.issues[0].message
+          } [${dataValidation.error.issues[0].path.join(", ")}]`,
+        });
+      }
 
       if (
         err ||

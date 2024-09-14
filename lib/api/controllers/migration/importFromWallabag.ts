@@ -67,14 +67,22 @@ export default async function importFromWallabag(
         createFolder({ filePath: `archives/${newCollection.id}` });
 
         for (const link of backup) {
+          if (link.url) {
+            try {
+              new URL(link.url.trim());
+            } catch (err) {
+              continue;
+            }
+          }
+
           await prisma.link.create({
             data: {
               pinnedBy: link.is_starred
                 ? { connect: { id: userId } }
                 : undefined,
-              url: link.url,
-              name: link.title || "",
-              textContent: link.content || "",
+              url: link.url?.trim().slice(0, 254),
+              name: link.title?.trim().slice(0, 254) || "",
+              textContent: link.content?.trim() || "",
               importDate: link.created_at || null,
               collection: {
                 connect: {
@@ -87,12 +95,12 @@ export default async function importFromWallabag(
                       connectOrCreate: link.tags.map((tag) => ({
                         where: {
                           name_ownerId: {
-                            name: tag.trim(),
+                            name: tag?.trim().slice(0, 49),
                             ownerId: userId,
                           },
                         },
                         create: {
-                          name: tag.trim(),
+                          name: tag?.trim().slice(0, 49),
                           owner: {
                             connect: {
                               id: userId,

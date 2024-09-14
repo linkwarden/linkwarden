@@ -1,13 +1,10 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { prisma } from "./db";
 import getPermission from "./getPermission";
 import { UsersAndCollections } from "@prisma/client";
+import { PostLinkSchemaType } from "../shared/schemaValidation";
 
-const setLinkCollection = async (
-  link: LinkIncludingShortenedCollectionAndTags,
-  userId: number
-) => {
-  if (link?.collection?.id && typeof link?.collection?.id === "number") {
+const setLinkCollection = async (link: PostLinkSchemaType, userId: number) => {
+  if (link.collection?.id && typeof link.collection?.id === "number") {
     const existingCollection = await prisma.collection.findUnique({
       where: {
         id: link.collection.id,
@@ -29,7 +26,7 @@ const setLinkCollection = async (
       return null;
 
     return existingCollection;
-  } else if (link?.collection?.name) {
+  } else if (link.collection?.name) {
     if (link.collection.name === "Unorganized") {
       const firstTopLevelUnorganizedCollection =
         await prisma.collection.findFirst({
