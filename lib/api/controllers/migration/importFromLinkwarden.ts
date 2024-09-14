@@ -44,9 +44,9 @@ export default async function importFromLinkwarden(
                   id: userId,
                 },
               },
-              name: e.name,
-              description: e.description,
-              color: e.color,
+              name: e.name?.trim().slice(0, 254),
+              description: e.description?.trim().slice(0, 254),
+              color: e.color?.trim().slice(0, 50),
             },
           });
 
@@ -54,11 +54,19 @@ export default async function importFromLinkwarden(
 
           // Import Links
           for (const link of e.links) {
+            if (link.url) {
+              try {
+                new URL(link.url.trim());
+              } catch (err) {
+                continue;
+              }
+            }
+
             await prisma.link.create({
               data: {
-                url: link.url,
-                name: link.name,
-                description: link.description,
+                url: link.url?.trim().slice(0, 254),
+                name: link.name?.trim().slice(0, 254),
+                description: link.description?.trim().slice(0, 254),
                 collection: {
                   connect: {
                     id: newCollection.id,
@@ -69,12 +77,12 @@ export default async function importFromLinkwarden(
                   connectOrCreate: link.tags.map((tag) => ({
                     where: {
                       name_ownerId: {
-                        name: tag.name.trim(),
+                        name: tag.name?.slice(0, 49),
                         ownerId: userId,
                       },
                     },
                     create: {
-                      name: tag.name.trim(),
+                      name: tag.name?.trim().slice(0, 49),
                       owner: {
                         connect: {
                           id: userId,
