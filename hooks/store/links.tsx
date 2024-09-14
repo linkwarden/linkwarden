@@ -13,7 +13,7 @@ import {
 } from "@/types/global";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Jimp from "jimp";
+import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
 
 const useLinks = (params: LinkRequestQuery = {}) => {
   const router = useRouter();
@@ -104,7 +104,15 @@ const useAddLink = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (link: LinkIncludingShortenedCollectionAndTags) => {
+    mutationFn: async (link: PostLinkSchemaType) => {
+      if (link.url || link.type === "url") {
+        try {
+          new URL(link.url || "");
+        } catch (error) {
+          throw new Error("invalid_url_guide");
+        }
+      }
+
       const response = await fetch("/api/v1/links", {
         method: "POST",
         headers: {
@@ -124,7 +132,7 @@ const useAddLink = () => {
         if (!oldData?.links) return undefined;
         return {
           ...oldData,
-          links: [data, ...oldData.links],
+          links: [data, ...oldData?.links],
         };
       });
 
@@ -311,7 +319,7 @@ const useBulkDeleteLinks = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData.links) return undefined;
+        if (!oldData?.links) return undefined;
         return oldData.links.filter((e: any) => !data.includes(e.id));
       });
 
@@ -389,7 +397,7 @@ const useUploadFile = () => {
         if (!oldData?.links) return undefined;
         return {
           ...oldData,
-          links: [data, ...oldData.links],
+          links: [data, ...oldData?.links],
         };
       });
 

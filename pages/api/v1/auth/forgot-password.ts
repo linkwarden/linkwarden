@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import sendPasswordResetRequest from "@/lib/api/sendPasswordResetRequest";
+import { ForgotPasswordSchema } from "@/lib/shared/schemaValidation";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function forgotPassword(
@@ -13,13 +14,17 @@ export default async function forgotPassword(
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    const email = req.body.email;
+    const dataValidation = ForgotPasswordSchema.safeParse(req.body);
 
-    if (!email) {
+    if (!dataValidation.success) {
       return res.status(400).json({
-        response: "Invalid email.",
+        response: `Error: ${
+          dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`,
       });
     }
+
+    const { email } = dataValidation.data;
 
     const recentPasswordRequestsCount = await prisma.passwordResetToken.count({
       where: {
@@ -45,7 +50,7 @@ export default async function forgotPassword(
 
     if (!user || !user.email) {
       return res.status(400).json({
-        response: "Invalid email.",
+        response: "No user found with that email.",
       });
     }
 

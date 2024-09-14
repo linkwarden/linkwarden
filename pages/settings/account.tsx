@@ -113,6 +113,12 @@ export default function Account() {
       }
     );
 
+    if (user.locale !== account.locale) {
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    }
+
     setSubmitLoader(false);
   };
 

@@ -7,7 +7,7 @@ import { useTags } from "@/hooks/store/tags";
 type Props = {
   onChange: any;
   defaultValue?: {
-    value: number;
+    value?: number;
     label: string;
   }[];
   autoFocus?: boolean;

@@ -1,26 +1,30 @@
 import { prisma } from "@/lib/api/db";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 import createFolder from "@/lib/api/storage/createFolder";
 import setLinkCollection from "../../setLinkCollection";
+import {
+  PostLinkSchema,
+  PostLinkSchemaType,
+} from "@/lib/shared/schemaValidation";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
 export default async function postLink(
-  link: LinkIncludingShortenedCollectionAndTags,
+  body: PostLinkSchemaType,
   userId: number
 ) {
-  if (link.url || link.type === "url") {
-    try {
-      new URL(link.url || "");
-    } catch (error) {
-      return {
-        response:
-          "Please enter a valid Address for the Link. (It should start with http/https)",
-        status: 400,
-      };
-    }
+  const dataValidation = PostLinkSchema.safeParse(body);
+
+  if (!dataValidation.success) {
+    return {
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      status: 400,
+    };
   }
+
+  const link = dataValidation.data;
 
   const linkCollection = await setLinkCollection(link, userId);
 
