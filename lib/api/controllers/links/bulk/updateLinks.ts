@@ -1,9 +1,10 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import updateLinkById from "../linkId/updateLinkById";
+import { UpdateLinkSchemaType } from "@/lib/shared/schemaValidation";
 
 export default async function updateLinks(
   userId: number,
-  links: LinkIncludingShortenedCollectionAndTags[],
+  links: UpdateLinkSchemaType[],
   removePreviousTags: boolean,
   newData: Pick<
     LinkIncludingShortenedCollectionAndTags,
@@ -22,7 +23,7 @@ export default async function updateLinks(
       updatedTags = [...(newData.tags ?? [])];
     }
 
-    const updatedData: LinkIncludingShortenedCollectionAndTags = {
+    const updatedData: UpdateLinkSchemaType = {
       ...link,
       tags: updatedTags,
       collection: {

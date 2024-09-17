@@ -6,42 +6,27 @@ import createFile from "@/lib/api/storage/createFile";
 import createFolder from "@/lib/api/storage/createFolder";
 import sendChangeEmailVerificationRequest from "@/lib/api/sendChangeEmailVerificationRequest";
 import { i18n } from "next-i18next.config";
+import { UpdateUserSchema } from "@/lib/shared/schemaValidation";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
 export default async function updateUserById(
   userId: number,
-  data: AccountSettings
+  body: AccountSettings
 ) {
-  if (emailEnabled && !data.email)
-    return {
-      response: "Email invalid.",
-      status: 400,
-    };
-  else if (!data.username)
-    return {
-      response: "Username invalid.",
-      status: 400,
-    };
+  const dataValidation = UpdateUserSchema().safeParse(body);
 
-  // Check email (if enabled)
-  const checkEmail =
-    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  if (emailEnabled && !checkEmail.test(data.email?.toLowerCase() || ""))
+  if (!dataValidation.success) {
     return {
-      response: "Please enter a valid email.",
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
       status: 400,
     };
+  }
 
-  const checkUsername = RegExp("^[a-z0-9_-]{3,31}$");
-
-  if (!checkUsername.test(data.username.toLowerCase()))
-    return {
-      response:
-        "Username has to be between 3-30 characters, no spaces and special characters are allowed.",
-      status: 400,
-    };
+  const data = dataValidation.data;
 
   const userIsTaken = await prisma.user.findFirst({
     where: {
@@ -116,7 +101,7 @@ export default async function updateUserById(
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, password: true },
+    select: { email: true, password: true, name: true },
   });
 
   if (user && user.email && data.email && data.email !== user.email) {
@@ -148,7 +133,7 @@ export default async function updateUserById(
     sendChangeEmailVerificationRequest(
       user.email,
       data.email,
-      data.name.trim()
+      data.name?.trim() || user.name
     );
   }
 
@@ -193,8 +178,8 @@ export default async function updateUserById(
       id: userId,
     },
     data: {
-      name: data.name.trim(),
-      username: data.username?.toLowerCase().trim(),
+      name: data.name,
+      username: data.username,
       isPrivate: data.isPrivate,
       image:
         data.image && data.image.startsWith("http")
@@ -202,10 +187,10 @@ export default async function updateUserById(
           : data.image
             ? `uploads/avatar/${userId}.jpg`
             : "",
-      collectionOrder: data.collectionOrder.filter(
+      collectionOrder: data.collectionOrder?.filter(
         (value, index, self) => self.indexOf(value) === index
       ),
-      locale: i18n.locales.includes(data.locale) ? data.locale : "en",
+      locale: i18n.locales.includes(data.locale || "") ? data.locale : "en",
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsMonolith: data.archiveAsMonolith,
       archiveAsPDF: data.archiveAsPDF,

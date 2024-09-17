@@ -1,4 +1,5 @@
 import { ArchivedFormat, TokenExpiry } from "@/types/global";
+import { LinksRouteTo } from "@prisma/client";
 import { z } from "zod";
 
 // const stringField = z.string({
@@ -33,16 +34,50 @@ export const PostUserSchema = () => {
 
   return z.object({
     name: z.string().trim().min(1).max(50),
-    password: z.string().min(8),
+    password: z.string().min(8).max(2048),
     email: emailEnabled
       ? z.string().trim().email().toLowerCase()
       : z.string().optional(),
     username: z
       .string()
       .trim()
+      .toLowerCase()
       .min(3)
       .max(50)
       .regex(/^[a-z0-9_-]{3,50}$/),
+  });
+};
+
+export const UpdateUserSchema = () => {
+  const emailEnabled =
+    process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
+
+  return z.object({
+    name: z.string().trim().min(1).max(50).optional(),
+    email: emailEnabled
+      ? z.string().trim().email().toLowerCase()
+      : z.string().optional(),
+    username: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .min(3)
+      .max(30)
+      .regex(/^[a-z0-9_-]{3,30}$/),
+    image: z.string().optional(),
+    password: z.string().min(8).max(2048).optional(),
+    newPassword: z.string().min(8).max(2048).optional(),
+    oldPassword: z.string().min(8).max(2048).optional(),
+    archiveAsScreenshot: z.boolean().optional(),
+    archiveAsPDF: z.boolean().optional(),
+    archiveAsMonolith: z.boolean().optional(),
+    archiveAsWaybackMachine: z.boolean().optional(),
+    locale: z.string().max(20).optional(),
+    isPrivate: z.boolean().optional(),
+    preventDuplicateLinks: z.boolean().optional(),
+    collectionOrder: z.array(z.number()).optional(),
+    linksRouteTo: z.nativeEnum(LinksRouteTo).optional(),
+    whitelistedUsers: z.array(z.string().max(50)).optional(),
   });
 };
 
@@ -54,13 +89,13 @@ export const PostSessionSchema = z.object({
 
 export const PostLinkSchema = z.object({
   type: z.enum(["url", "pdf", "image"]),
-  url: z.string().trim().max(255).url().optional(),
-  name: z.string().trim().max(255).optional(),
-  description: z.string().trim().max(255).optional(),
+  url: z.string().trim().max(2048).url().optional(),
+  name: z.string().trim().max(2048).optional(),
+  description: z.string().trim().max(2048).optional(),
   collection: z
     .object({
       id: z.number().optional(),
-      name: z.string().trim().max(255).optional(),
+      name: z.string().trim().max(2048).optional(),
     })
     .optional(),
   tags:
@@ -75,6 +110,35 @@ export const PostLinkSchema = z.object({
 });
 
 export type PostLinkSchemaType = z.infer<typeof PostLinkSchema>;
+
+export const UpdateLinkSchema = z.object({
+  id: z.number(),
+  name: z.string().trim().max(2048).optional(),
+  url: z.string().trim().max(2048).optional(),
+  description: z.string().trim().max(2048).optional(),
+  icon: z.string().trim().max(50).nullish(),
+  iconWeight: z.string().trim().max(50).nullish(),
+  color: z.string().trim().max(10).nullish(),
+  collection: z.object({
+    id: z.number(),
+    ownerId: z.number(),
+  }),
+  tags: z.array(
+    z.object({
+      id: z.number().optional(),
+      name: z.string().trim().max(50),
+    })
+  ),
+  pinnedBy: z
+    .array(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .optional(),
+});
+
+export type UpdateLinkSchemaType = z.infer<typeof UpdateLinkSchema>;
 
 const ACCEPTED_TYPES = [
   "image/jpeg",
@@ -103,12 +167,39 @@ export const UploadFileSchema = z.object({
 });
 
 export const PostCollectionSchema = z.object({
-  name: z.string().trim().max(255),
-  description: z.string().trim().max(255).optional(),
-  color: z.string().trim().max(7).optional(),
+  name: z.string().trim().max(2048),
+  description: z.string().trim().max(2048).optional(),
+  color: z.string().trim().max(10).optional(),
   icon: z.string().trim().max(50).optional(),
   iconWeight: z.string().trim().max(50).optional(),
   parentId: z.number().optional(),
 });
 
 export type PostCollectionSchemaType = z.infer<typeof PostCollectionSchema>;
+
+export const UpdateCollectionSchema = z.object({
+  id: z.number(),
+  name: z.string().trim().max(2048),
+  description: z.string().trim().max(2048).optional(),
+  color: z.string().trim().max(10).optional(),
+  isPublic: z.boolean().optional(),
+  icon: z.string().trim().max(50).nullish(),
+  iconWeight: z.string().trim().max(50).nullish(),
+  parentId: z.number().nullish(),
+  members: z.array(
+    z.object({
+      userId: z.number(),
+      canCreate: z.boolean(),
+      canUpdate: z.boolean(),
+      canDelete: z.boolean(),
+    })
+  ),
+});
+
+export type UpdateCollectionSchemaType = z.infer<typeof UpdateCollectionSchema>;
+
+export const UpdateTagSchema = z.object({
+  name: z.string().trim().max(50),
+});
+
+export type UpdateTagSchemaType = z.infer<typeof UpdateTagSchema>;

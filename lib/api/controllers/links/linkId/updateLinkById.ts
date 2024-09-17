@@ -1,20 +1,30 @@
 import { prisma } from "@/lib/api/db";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import { moveFiles, removeFiles } from "@/lib/api/manageLinkFiles";
 import isValidUrl from "@/lib/shared/isValidUrl";
+import {
+  UpdateLinkSchema,
+  UpdateLinkSchemaType,
+} from "@/lib/shared/schemaValidation";
 
 export default async function updateLinkById(
   userId: number,
   linkId: number,
-  data: LinkIncludingShortenedCollectionAndTags
+  body: UpdateLinkSchemaType
 ) {
-  if (!data || !data.collection.id)
+  const dataValidation = UpdateLinkSchema.safeParse(body);
+
+  if (!dataValidation.success) {
     return {
-      response: "Please choose a valid link and collection.",
-      status: 401,
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      status: 400,
     };
+  }
+
+  const data = dataValidation.data;
 
   const collectionIsAccessible = await getPermission({ userId, linkId });
 
@@ -33,10 +43,11 @@ export default async function updateLinkById(
         id: linkId,
       },
       data: {
-        pinnedBy:
-          data?.pinnedBy && data.pinnedBy[0].id === userId
+        pinnedBy: data?.pinnedBy
+          ? data.pinnedBy[0]?.id === userId
             ? { connect: { id: userId } }
-            : { disconnect: { id: userId } },
+            : { disconnect: { id: userId } }
+          : undefined,
       },
       include: {
         collection: true,
@@ -63,11 +74,9 @@ export default async function updateLinkById(
 
   const targetCollectionMatchesData = data.collection.id
     ? data.collection.id === targetCollectionIsAccessible?.id
-    : true && data.collection.name
-      ? data.collection.name === targetCollectionIsAccessible?.name
-      : true && data.collection.ownerId
-        ? data.collection.ownerId === targetCollectionIsAccessible?.ownerId
-        : true;
+    : true && data.collection.ownerId
+      ? data.collection.ownerId === targetCollectionIsAccessible?.ownerId
+      : true;
 
   if (!targetCollectionMatchesData)
     return {
@@ -149,10 +158,11 @@ export default async function updateLinkById(
             },
           })),
         },
-        pinnedBy:
-          data?.pinnedBy && data.pinnedBy[0]?.id === userId
+        pinnedBy: data?.pinnedBy
+          ? data.pinnedBy[0]?.id === userId
             ? { connect: { id: userId } }
-            : { disconnect: { id: userId } },
+            : { disconnect: { id: userId } }
+          : undefined,
       },
       include: {
         tags: true,
