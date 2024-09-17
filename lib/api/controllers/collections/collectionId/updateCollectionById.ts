@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/api/db";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import getPermission from "@/lib/api/getPermission";
 import {
   UpdateCollectionSchema,
