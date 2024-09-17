@@ -1,14 +1,31 @@
 import { prisma } from "@/lib/api/db";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import getPermission from "@/lib/api/getPermission";
+import {
+  UpdateCollectionSchema,
+  UpdateCollectionSchemaType,
+} from "@/lib/shared/schemaValidation";
 
 export default async function updateCollection(
   userId: number,
   collectionId: number,
-  data: CollectionIncludingMembersAndLinkCount
+  body: UpdateCollectionSchemaType
 ) {
   if (!collectionId)
     return { response: "Please choose a valid collection.", status: 401 };
+
+  const dataValidation = UpdateCollectionSchema.safeParse(body);
+
+  if (!dataValidation.success) {
+    return {
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      status: 400,
+    };
+  }
+
+  const data = dataValidation.data;
 
   const collectionIsAccessible = await getPermission({
     userId,
@@ -76,7 +93,7 @@ export default async function updateCollection(
               : undefined,
         members: {
           create: data.members.map((e) => ({
-            user: { connect: { id: e.user.id || e.userId } },
+            user: { connect: { id: e.userId } },
             canCreate: e.canCreate,
             canUpdate: e.canUpdate,
             canDelete: e.canDelete,
