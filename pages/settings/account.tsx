@@ -17,6 +17,7 @@ import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
+import { z } from "zod";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -80,6 +81,16 @@ export default function Account() {
   };
 
   const submit = async (password?: string) => {
+    if (!/^[a-z0-9_-]{3,50}$/.test(user.username || "")) {
+      return toast.error(t("username_invalid_guide"));
+    }
+
+    const emailSchema = z.string().trim().email().toLowerCase();
+    const emailValidation = emailSchema.safeParse(user.email || "");
+    if (!emailValidation.success) {
+      return toast.error(t("email_invalid"));
+    }
+
     setSubmitLoader(true);
 
     const load = toast.loading(t("applying_settings"));
@@ -207,6 +218,7 @@ export default function Account() {
                 <p className="mb-2">{t("email")}</p>
                 <TextInput
                   value={user.email || ""}
+                  type="email"
                   className="bg-base-200"
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                 />
