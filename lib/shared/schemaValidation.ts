@@ -133,9 +133,11 @@ export const UpdateLinkSchema = z.object({
   ),
   pinnedBy: z
     .array(
-      z.object({
-        id: z.number(),
-      })
+      z
+        .object({
+          id: z.number().optional(),
+        })
+        .optional()
     )
     .optional(),
 });
