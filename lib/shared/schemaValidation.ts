@@ -38,13 +38,15 @@ export const PostUserSchema = () => {
     email: emailEnabled
       ? z.string().trim().email().toLowerCase()
       : z.string().optional(),
-    username: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .min(3)
-      .max(50)
-      .regex(/^[a-z0-9_-]{3,50}$/),
+    username: emailEnabled
+      ? z.string().optional()
+      : z
+          .string()
+          .trim()
+          .toLowerCase()
+          .min(3)
+          .max(50)
+          .regex(/^[a-z0-9_-]{3,50}$/),
   });
 };
 
