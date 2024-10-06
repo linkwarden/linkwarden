@@ -170,6 +170,7 @@ model Subscription {
   stripeSubscriptionId String   @unique
   currentPeriodStart   DateTime
   currentPeriodEnd     DateTime
+  quantity             Int      @default(1)
   user                 User     @relation(fields: [userId], references: [id])
   userId               Int      @unique
   createdAt            DateTime @default(now())
