@@ -18,12 +18,18 @@ export default async function paymentCheckout(
 
   const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =
     process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS;
+
   const session = await stripe.checkout.sessions.create({
     customer: isExistingCustomer ? isExistingCustomer : undefined,
     line_items: [
       {
         price: priceId,
         quantity: 1,
+        adjustable_quantity: {
+          enabled: true,
+          minimum: 1,
+          maximum: Number(process.env.STRIPE_MAX_QUANTITY || 100),
+        },
       },
     ],
     mode: "subscription",

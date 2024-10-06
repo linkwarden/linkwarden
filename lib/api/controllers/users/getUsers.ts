@@ -17,5 +17,5 @@ export default async function getUsers() {
     },
   });
 
-  return { response: users, status: 200 };
+  return { response: users.sort((a: any, b: any) => a.id - b.id), status: 200 };
 }
