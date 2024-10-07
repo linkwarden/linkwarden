@@ -59,30 +59,6 @@ export default async function webhook(
     return res.status(400).send("Webhook signature verification failed.");
   }
 
-  // switch (event.type) {
-  //   case "invoice.payment_succeeded":
-  //     console.log(
-  //       `Payment for ${event.data.object.customer_email} was successful!`
-  //     );
-  //     await handleCreateSubscription(event.data.object);
-  //     break;
-  //   case "customer.subscription.updated":
-  //     console.log(
-  //       `Subscription for ${event.data.object.customer_email} was updated.`
-  //     );
-  //     await handleUpdateSubscription(event.data.object);
-  //     break;
-  //   case "customer.subscription.deleted":
-  //     console.log(
-  //       `Subscription for ${event.data.object.customer_email} was deleted.`
-  //     );
-  //     await handleDeleteSubscription(event.data.object);
-  //     break;
-  //   default:
-  //     // Unexpected event type
-  //     console.log(`Unhandled event type ${event.type}.`);
-  // }
-
   // Handle the event based on its type
   const eventType = event.type;
   const data = event.data.object;
