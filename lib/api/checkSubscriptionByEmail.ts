@@ -1,22 +1,9 @@
 import Stripe from "stripe";
 
-const MONTHLY_PRICE_ID = process.env.MONTHLY_PRICE_ID;
-const YEARLY_PRICE_ID = process.env.YEARLY_PRICE_ID;
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
 export default async function checkSubscriptionByEmail(email: string) {
-  let active: boolean | undefined,
-    stripeSubscriptionId: string | undefined,
-    currentPeriodStart: number | undefined,
-    currentPeriodEnd: number | undefined;
-
-  if (!STRIPE_SECRET_KEY)
-    return {
-      active,
-      stripeSubscriptionId,
-      currentPeriodStart,
-      currentPeriodEnd,
-    };
+  if (!STRIPE_SECRET_KEY) return null;
 
   const stripe = new Stripe(STRIPE_SECRET_KEY, {
     apiVersion: "2022-11-15",
@@ -28,26 +15,17 @@ export default async function checkSubscriptionByEmail(email: string) {
     expand: ["data.subscriptions"],
   });
 
-  listByEmail.data.some((customer) => {
-    customer.subscriptions?.data.some((subscription) => {
-      subscription.current_period_end;
-
-      active =
-        subscription.items.data.some(
-          (e) =>
-            (e.price.id === MONTHLY_PRICE_ID && e.price.active === true) ||
-            (e.price.id === YEARLY_PRICE_ID && e.price.active === true)
-        ) || false;
-      stripeSubscriptionId = subscription.id;
-      currentPeriodStart = subscription.current_period_start * 1000;
-      currentPeriodEnd = subscription.current_period_end * 1000;
-    });
-  });
-
-  return {
-    active: active || false,
-    stripeSubscriptionId,
-    currentPeriodStart,
-    currentPeriodEnd,
-  };
+  if (listByEmail?.data[0]?.subscriptions?.data[0]) {
+    return {
+      active: (listByEmail.data[0].subscriptions?.data[0] as any).plan.active,
+      stripeSubscriptionId: listByEmail.data[0].subscriptions?.data[0].id,
+      currentPeriodStart:
+        listByEmail.data[0].subscriptions?.data[0].current_period_start * 1000,
+      currentPeriodEnd:
+        listByEmail.data[0].subscriptions?.data[0].current_period_end * 1000,
+      quantity: (listByEmail?.data[0]?.subscriptions?.data[0] as any).quantity,
+    };
+  } else {
+    return null;
+  }
 }

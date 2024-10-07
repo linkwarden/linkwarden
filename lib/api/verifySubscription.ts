@@ -9,64 +9,56 @@ interface UserIncludingSubscription extends User {
 export default async function verifySubscription(
   user?: UserIncludingSubscription
 ) {
-  if (!user) {
+  if (!user || !user.subscriptions) {
     return null;
   }
 
-  const subscription = user.subscriptions;
+  if (
+    !user.subscriptions.active ||
+    new Date() > user.subscriptions.currentPeriodEnd
+  ) {
+    const subscription = await checkSubscriptionByEmail(user.email as string);
 
-  const currentDate = new Date();
+    if (
+      !subscription ||
+      !subscription.stripeSubscriptionId ||
+      !subscription.currentPeriodEnd ||
+      !subscription.currentPeriodStart ||
+      !subscription.quantity
+    ) {
+      return null;
+    }
 
-  if (!subscription?.active || currentDate > subscription.currentPeriodEnd) {
     const {
       active,
       stripeSubscriptionId,
       currentPeriodStart,
       currentPeriodEnd,
-    } = await checkSubscriptionByEmail(user.email as string);
+      quantity,
+    } = subscription;
 
-    if (
-      active &&
-      stripeSubscriptionId &&
-      currentPeriodStart &&
-      currentPeriodEnd
-    ) {
-      await prisma.subscription
-        .upsert({
-          where: {
-            userId: user.id,
-          },
-          create: {
-            active,
-            stripeSubscriptionId,
-            currentPeriodStart: new Date(currentPeriodStart),
-            currentPeriodEnd: new Date(currentPeriodEnd),
-            userId: user.id,
-          },
-          update: {
-            active,
-            stripeSubscriptionId,
-            currentPeriodStart: new Date(currentPeriodStart),
-            currentPeriodEnd: new Date(currentPeriodEnd),
-          },
-        })
-        .catch((err) => console.log(err));
-    } else if (!active) {
-      const subscription = await prisma.subscription.findFirst({
+    await prisma.subscription
+      .upsert({
         where: {
           userId: user.id,
         },
-      });
-
-      if (subscription)
-        await prisma.subscription.delete({
-          where: {
-            userId: user.id,
-          },
-        });
-
-      return null;
-    }
+        create: {
+          active,
+          stripeSubscriptionId,
+          currentPeriodStart: new Date(currentPeriodStart),
+          currentPeriodEnd: new Date(currentPeriodEnd),
+          quantity,
+          userId: user.id,
+        },
+        update: {
+          active,
+          stripeSubscriptionId,
+          currentPeriodStart: new Date(currentPeriodStart),
+          currentPeriodEnd: new Date(currentPeriodEnd),
+          quantity,
+        },
+      })
+      .catch((err) => console.log(err));
   }
 
   return user;
