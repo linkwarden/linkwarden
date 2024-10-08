@@ -35,7 +35,7 @@ export default async function updateCollection(
     return { response: "Collection is not accessible.", status: 401 };
 
   if (data.parentId) {
-    if (data.parentId !== ("root" as any)) {
+    if (data.parentId !== "root") {
       const findParentCollection = await prisma.collection.findUnique({
         where: {
           id: data.parentId,
@@ -79,13 +79,13 @@ export default async function updateCollection(
         iconWeight: data.iconWeight,
         isPublic: data.isPublic,
         parent:
-          data.parentId && data.parentId !== ("root" as any)
+          data.parentId && data.parentId !== "root"
             ? {
                 connect: {
                   id: data.parentId,
                 },
               }
-            : data.parentId === ("root" as any)
+            : data.parentId === "root"
               ? {
                   disconnect: true,
                 }
