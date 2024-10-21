@@ -3,7 +3,7 @@ import getUserById from "@/lib/api/controllers/users/userId/getUserById";
 import updateUserById from "@/lib/api/controllers/users/userId/updateUserById";
 import deleteUserById from "@/lib/api/controllers/users/userId/deleteUserById";
 import { prisma } from "@/lib/api/db";
-import verifySubscription from "@/lib/api/verifySubscription";
+import verifySubscription from "@/lib/api/stripe/verifySubscription";
 import verifyToken from "@/lib/api/verifyToken";
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;

@@ -133,7 +133,7 @@ export default async function updateUserById(
     sendChangeEmailVerificationRequest(
       user.email,
       data.email,
-      data.name?.trim() || user.name
+      data.name?.trim() || user.name || "Linkwarden User"
     );
   }
 

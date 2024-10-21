@@ -4,30 +4,30 @@ import TextInput from "../TextInput";
 import { FormEvent, useState } from "react";
 import { useTranslation, Trans } from "next-i18next";
 import { useAddUser } from "@/hooks/store/admin/users";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 type Props = {
   onClose: Function;
 };
 
 type FormData = {
-  name: string;
   username?: string;
   email?: string;
-  password: string;
+  invite: boolean;
 };
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
 
-export default function NewUserModal({ onClose }: Props) {
+export default function InviteModal({ onClose }: Props) {
   const { t } = useTranslation();
 
   const addUser = useAddUser();
 
   const [form, setForm] = useState<FormData>({
-    name: "",
-    username: "",
+    username: emailEnabled ? undefined : "",
     email: emailEnabled ? "" : undefined,
-    password: "",
+    invite: true,
   });
   const [submitLoader, setSubmitLoader] = useState(false);
 
@@ -35,16 +35,11 @@ export default function NewUserModal({ onClose }: Props) {
     event.preventDefault();
 
     if (!submitLoader) {
-      if (form.password.length < 8)
-        return toast.error(t("password_length_error"));
-
       const checkFields = () => {
         if (emailEnabled) {
-          return form.name !== "" && form.email !== "" && form.password !== "";
+          return form.email !== "";
         } else {
-          return (
-            form.name !== "" && form.username !== "" && form.password !== ""
-          );
+          return form.username !== "";
         }
       };
 
@@ -52,6 +47,13 @@ export default function NewUserModal({ onClose }: Props) {
         setSubmitLoader(true);
 
         await addUser.mutateAsync(form, {
+          onSettled: () => {
+            signIn("invite", {
+              email: form.email,
+              callbackUrl: "/",
+              redirect: false,
+            });
+          },
           onSuccess: () => {
             onClose();
           },
@@ -66,34 +68,20 @@ export default function NewUserModal({ onClose }: Props) {
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">{t("create_new_user")}</p>
-
+      <p className="text-xl font-thin">{t("invite_user")}</p>
       <div className="divider mb-3 mt-1"></div>
-
+      <p className="mb-3">{t("invite_user_desc")}</p>
       <form onSubmit={submit}>
-        <div className="grid sm:grid-cols-2 gap-3">
+        {emailEnabled ? (
           <div>
-            <p className="mb-2">{t("display_name")}</p>
             <TextInput
-              placeholder={t("placeholder_johnny")}
+              placeholder={t("placeholder_email")}
               className="bg-base-200"
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              value={form.name}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              value={form.email}
             />
           </div>
-
-          {emailEnabled && (
-            <div>
-              <p className="mb-2">{t("email")}</p>
-              <TextInput
-                placeholder={t("placeholder_email")}
-                className="bg-base-200"
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                value={form.email}
-              />
-            </div>
-          )}
-
+        ) : (
           <div>
             <p className="mb-2">
               {t("username")}{" "}
@@ -108,25 +96,19 @@ export default function NewUserModal({ onClose }: Props) {
               value={form.username}
             />
           </div>
-
-          <div>
-            <p className="mb-2">{t("password")}</p>
-            <TextInput
-              placeholder="••••••••••••••"
-              className="bg-base-200"
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              value={form.password}
-            />
-          </div>
-        </div>
+        )}
 
         <div role="note" className="alert alert-note mt-5">
           <i className="bi-exclamation-triangle text-xl" />
           <span>
-            <Trans
-              i18nKey="password_change_note"
-              components={[<b key={0} />]}
-            />
+            <p className="mb-1">{t("invite_user_note")}</p>
+            <Link
+              href=""
+              className="font-semibold whitespace-nowrap hover:opacity-80 duration-100"
+              target="_blank"
+            >
+              {t("learn_more")} <i className="bi-box-arrow-up-right"></i>
+            </Link>
           </span>
         </div>
 
@@ -135,7 +117,7 @@ export default function NewUserModal({ onClose }: Props) {
             className="btn btn-accent dark:border-violet-400 text-white ml-auto"
             type="submit"
           >
-            {t("create_user")}
+            {t("send_invitation")}
           </button>
         </div>
       </form>

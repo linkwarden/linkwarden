@@ -396,5 +396,12 @@
   "default": "Default",
   "invalid_url_guide":"Please enter a valid Address for the Link. (It should start with http/https)",
   "email_invalid": "Please enter a valid email address.",
-  "username_invalid_guide": "Username has to be at least 3 characters, no spaces and special characters are allowed."
+  "username_invalid_guide": "Username has to be at least 3 characters, no spaces and special characters are allowed.",
+  "manage_team": "Manage Team",
+  "team_management": "Team Management",
+  "invite_user": "Invite User",
+  "invite_user_desc": "To invite someone to your team, please enter their email address below:",
+  "invite_user_note": "Please note that once the invitation is accepted, an additional seat will be used and your account will automatically be billed for this addition.",
+  "send_invitation": "Send Invitation",
+  "learn_more": "Learn more"
 }

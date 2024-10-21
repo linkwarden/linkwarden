@@ -12,6 +12,7 @@ export default function ProfileDropdown() {
   const { data: user = {} } = useUser();
 
   const isAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
+  const DISABLE_INVITES = process.env.DISABLE_INVITES === "true";
 
   const handleToggle = () => {
     const newTheme = settings.theme === "dark" ? "light" : "dark";
@@ -70,6 +71,19 @@ export default function ProfileDropdown() {
               className="whitespace-nowrap"
             >
               {t("server_administration")}
+            </Link>
+          </li>
+        )}
+        {!DISABLE_INVITES && (
+          <li>
+            <Link
+              href="/team"
+              onClick={() => (document?.activeElement as HTMLElement)?.blur()}
+              tabIndex={0}
+              role="button"
+              className="whitespace-nowrap"
+            >
+              {t("manage_team")}
             </Link>
           </li>
         )}
