@@ -10,6 +10,10 @@ export default async function postLink(
   link: LinkIncludingShortenedCollectionAndTags,
   userId: number
 ) {
+
+  const trimUrl = link.url?.replace(/\n.*$/, "") || null;
+  link.url = trimUrl;
+
   if (link.url || link.type === "url") {
     try {
       new URL(link.url || "");
