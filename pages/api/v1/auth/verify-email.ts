@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/api/db";
-import updateCustomerEmail from "@/lib/api/updateCustomerEmail";
+import updateCustomerEmail from "@/lib/api/stripe/updateCustomerEmail";
 import { VerifyEmailSchema } from "@/lib/shared/schemaValidation";
 import type { NextApiRequest, NextApiResponse } from "next";
 

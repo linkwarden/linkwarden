@@ -23,13 +23,14 @@ export default function Subscribe() {
   const { data: user = {} } = useUser();
 
   useEffect(() => {
-    const hasInactiveSubscription =
-      user.id && !user.subscription?.active && stripeEnabled;
-
-    if (session.status === "authenticated" && !hasInactiveSubscription) {
+    if (
+      session.status === "authenticated" &&
+      user.id &&
+      user?.subscription?.active
+    ) {
       router.push("/dashboard");
     }
-  }, [session.status]);
+  }, [session.status, user]);
 
   async function submit() {
     setSubmitLoader(true);
@@ -40,6 +41,8 @@ export default function Subscribe() {
     const data = await res.json();
 
     router.push(data.response);
+
+    toast.dismiss(redirectionToast);
   }
 
   return (

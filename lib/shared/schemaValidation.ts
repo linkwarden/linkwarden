@@ -33,8 +33,8 @@ export const PostUserSchema = () => {
     process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;
 
   return z.object({
-    name: z.string().trim().min(1).max(50),
-    password: z.string().min(8).max(2048),
+    name: z.string().trim().min(1).max(50).optional(),
+    password: z.string().min(8).max(2048).optional(),
     email: emailEnabled
       ? z.string().trim().email().toLowerCase()
       : z.string().optional(),
@@ -47,6 +47,7 @@ export const PostUserSchema = () => {
           .min(3)
           .max(50)
           .regex(/^[a-z0-9_-]{3,50}$/),
+    invite: z.boolean().optional(),
   });
 };
 
@@ -66,7 +67,7 @@ export const UpdateUserSchema = () => {
       .min(3)
       .max(30)
       .regex(/^[a-z0-9_-]{3,30}$/),
-    image: z.string().optional(),
+    image: z.string().nullish(),
     password: z.string().min(8).max(2048).optional(),
     newPassword: z.string().min(8).max(2048).optional(),
     oldPassword: z.string().min(8).max(2048).optional(),

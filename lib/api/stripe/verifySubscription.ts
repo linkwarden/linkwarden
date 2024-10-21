@@ -1,4 +1,4 @@
-import { prisma } from "./db";
+import { prisma } from "../db";
 import { Subscription, User } from "@prisma/client";
 import checkSubscriptionByEmail from "./checkSubscriptionByEmail";
 
@@ -7,7 +7,7 @@ interface UserIncludingSubscription extends User {
 }
 
 export default async function verifySubscription(
-  user?: UserIncludingSubscription
+  user?: UserIncludingSubscription | null
 ) {
   if (!user || !user.subscriptions) {
     return null;

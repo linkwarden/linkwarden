@@ -41,6 +41,7 @@ export default function AuthRedirect({ children }: Props) {
       { path: "/tags", isProtected: true },
       { path: "/preserved", isProtected: true },
       { path: "/admin", isProtected: true },
+      { path: "/team", isProtected: true },
       { path: "/search", isProtected: true },
     ];
 

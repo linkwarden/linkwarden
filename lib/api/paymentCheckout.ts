@@ -1,4 +1,6 @@
 import Stripe from "stripe";
+import verifySubscription from "./stripe/verifySubscription";
+import { prisma } from "./db";
 
 export default async function paymentCheckout(
   stripeSecretKey: string,
@@ -8,6 +10,22 @@ export default async function paymentCheckout(
   const stripe = new Stripe(stripeSecretKey, {
     apiVersion: "2022-11-15",
   });
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email.toLowerCase(),
+    },
+    include: {
+      subscriptions: true,
+    },
+  });
+
+  const subscription = await verifySubscription(user);
+
+  if (subscription) {
+    // To prevent users from creating multiple subscriptions
+    return { response: "/dashboard", status: 200 };
+  }
 
   const listByEmail = await stripe.customers.list({
     email: email.toLowerCase(),
@@ -25,16 +43,11 @@ export default async function paymentCheckout(
       {
         price: priceId,
         quantity: 1,
-        adjustable_quantity: {
-          enabled: true,
-          minimum: 1,
-          maximum: Number(process.env.STRIPE_MAX_QUANTITY || 100),
-        },
       },
     ],
     mode: "subscription",
     customer_email: isExistingCustomer ? undefined : email.toLowerCase(),
-    success_url: `${process.env.BASE_URL}?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${process.env.BASE_URL}/dashboard`,
     cancel_url: `${process.env.BASE_URL}/login`,
     automatic_tax: {
       enabled: true,

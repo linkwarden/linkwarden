@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import handleSubscription from "@/lib/api/handleSubscription";
+import handleSubscription from "@/lib/api/stripe/handleSubscription";
 
 export const config = {
   api: {
@@ -17,7 +17,7 @@ const buffer = (req: NextApiRequest) => {
     });
 
     req.on("end", () => {
-      resolve(Buffer.concat(chunks));
+      resolve(Buffer.concat(chunks as any));
     });
 
     req.on("error", reject);
@@ -78,7 +78,7 @@ export default async function webhook(
       case "customer.subscription.updated":
         await handleSubscription({
           id: data.id,
-          active: data.status === "active",
+          active: data.status === "active" || data.status === "trialing",
           quantity: data?.quantity ?? 1,
           periodStart: data.current_period_start,
           periodEnd: data.current_period_end,
