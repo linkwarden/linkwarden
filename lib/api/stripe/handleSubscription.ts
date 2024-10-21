@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { prisma } from "./db";
+import { prisma } from "../db";
 
 type Data = {
   id: string;

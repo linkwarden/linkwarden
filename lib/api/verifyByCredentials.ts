@@ -1,6 +1,6 @@
 import { prisma } from "./db";
 import { User } from "@prisma/client";
-import verifySubscription from "./verifySubscription";
+import verifySubscription from "./stripe/verifySubscription";
 import bcrypt from "bcrypt";
 
 type Props = {
