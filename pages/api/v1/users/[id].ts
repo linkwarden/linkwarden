@@ -41,6 +41,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
       },
       include: {
         subscriptions: true,
+        parentSubscription: true,
       },
     });
 

@@ -403,5 +403,8 @@
   "invite_user_desc": "To invite someone to your team, please enter their email address below:",
   "invite_user_note": "Please note that once the invitation is accepted, an additional seat will be used and your account will automatically be billed for this addition.",
   "send_invitation": "Send Invitation",
-  "learn_more": "Learn more"
+  "learn_more": "Learn more",
+  "finalize_profile": "Finalize Your Profile",
+  "invitation_desc": "{{owner}} invited you to join Linkwarden. \nTo continue, please finish setting up your account.",
+  "accepted_invitation_please_fill": "You've accepted the invitation to join Linkwarden. Please fill out the following to finalize your account."
 }
