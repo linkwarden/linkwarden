@@ -23,13 +23,13 @@ export default function Subscribe() {
   const { data: user = {} } = useUser();
 
   useEffect(() => {
+    console.log("user", user);
     if (
       session.status === "authenticated" &&
       user.id &&
-      user?.subscription?.active
-    ) {
+      (user?.subscription?.active || user.parentSubscription?.active)
+    )
       router.push("/dashboard");
-    }
   }, [session.status, user]);
 
   async function submit() {

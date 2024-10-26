@@ -17,6 +17,7 @@ export default async function paymentCheckout(
     },
     include: {
       subscriptions: true,
+      parentSubscription: true,
     },
   });
 

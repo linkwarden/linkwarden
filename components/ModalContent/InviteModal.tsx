@@ -50,7 +50,7 @@ export default function InviteModal({ onClose }: Props) {
           onSettled: () => {
             signIn("invite", {
               email: form.email,
-              callbackUrl: "/",
+              callbackUrl: "/member-onboarding",
               redirect: false,
             });
           },

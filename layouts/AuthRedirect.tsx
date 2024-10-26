@@ -23,7 +23,10 @@ export default function AuthRedirect({ children }: Props) {
     const isUnauthenticated = status === "unauthenticated";
     const isPublicPage = router.pathname.startsWith("/public");
     const hasInactiveSubscription =
-      user.id && !user.subscription?.active && stripeEnabled;
+      user.id &&
+      !user.subscription?.active &&
+      !user.parentSubscription?.active &&
+      stripeEnabled;
 
     // There are better ways of doing this... but this one works for now
     const routes = [
@@ -50,6 +53,8 @@ export default function AuthRedirect({ children }: Props) {
     } else {
       if (isLoggedIn && hasInactiveSubscription) {
         redirectTo("/subscribe");
+      } else if (isLoggedIn && !user.name && user.parentSubscriptionId) {
+        redirectTo("/member-onboarding");
       } else if (
         isLoggedIn &&
         !routes.some((e) => router.pathname.startsWith(e.path) && e.isProtected)
