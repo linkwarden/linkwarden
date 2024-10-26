@@ -44,11 +44,6 @@ export default async function postCollection(
 
   const newCollection = await prisma.collection.create({
     data: {
-      owner: {
-        connect: {
-          id: userId,
-        },
-      },
       name: collection.name.trim(),
       description: collection.description,
       color: collection.color,
@@ -61,6 +56,16 @@ export default async function postCollection(
             },
           }
         : undefined,
+      owner: {
+        connect: {
+          id: userId,
+        },
+      },
+      createdBy: {
+        connect: {
+          id: userId,
+        },
+      },
     },
     include: {
       _count: {

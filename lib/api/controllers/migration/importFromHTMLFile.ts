@@ -2,8 +2,7 @@ import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
 import { parse, Node, Element, TextNode } from "himalaya";
-
-const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
+import { hasPassedLimit } from "../../verifyCapacity";
 
 export default async function importFromHTMLFile(
   userId: number,
@@ -20,19 +19,14 @@ export default async function importFromHTMLFile(
   const bookmarks = document.querySelectorAll("A");
   const totalImports = bookmarks.length;
 
-  const numberOfLinksTheUserHas = await prisma.link.count({
-    where: {
-      collection: {
-        ownerId: userId,
-      },
-    },
-  });
+  const hasTooManyLinks = await hasPassedLimit(userId, totalImports);
 
-  if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+  if (hasTooManyLinks) {
     return {
-      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Your subscription have reached the maximum number of links allowed.`,
       status: 400,
     };
+  }
 
   const jsonData = parse(document.documentElement.outerHTML);
 
@@ -183,6 +177,11 @@ const createCollection = async (
           id: userId,
         },
       },
+      createdBy: {
+        connect: {
+          id: userId,
+        },
+      },
     },
   });
 
@@ -222,28 +221,27 @@ const createLink = async (
       url,
       description,
       collectionId,
+      createdById: userId,
       tags:
         tags && tags[0]
           ? {
               connectOrCreate: tags.map((tag: string) => {
-                return (
-                  {
-                    where: {
-                      name_ownerId: {
-                        name: tag.trim(),
-                        ownerId: userId,
-                      },
-                    },
-                    create: {
+                return {
+                  where: {
+                    name_ownerId: {
                       name: tag.trim(),
-                      owner: {
-                        connect: {
-                          id: userId,
-                        },
+                      ownerId: userId,
+                    },
+                  },
+                  create: {
+                    name: tag.trim(),
+                    owner: {
+                      connect: {
+                        id: userId,
                       },
                     },
-                  } || undefined
-                );
+                  },
+                };
               }),
             }
           : undefined,
