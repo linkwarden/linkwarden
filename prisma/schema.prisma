@@ -115,8 +115,8 @@ model Collection {
   ownerId         Int
   members         UsersAndCollections[]
   teamId          Int?
-  createdBy       User?                 @relation("CreatedCollections", fields: [createdById], references: [id])
-  createdById     Int?
+  createdBy       User                  @relation("CreatedCollections", fields: [createdById], references: [id])
+  createdById     Int
   links           Link[]
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @default(now()) @updatedAt
@@ -145,8 +145,8 @@ model Link {
   type          String     @default("url")
   description   String     @default("")
   pinnedBy      User[]     @relation("PinnedLinks")
-  createdBy     User?      @relation("CreatedLinks", fields: [createdById], references: [id])
-  createdById   Int?
+  createdBy     User       @relation("CreatedLinks", fields: [createdById], references: [id])
+  createdById   Int
   collection    Collection @relation(fields: [collectionId], references: [id])
   collectionId  Int
   tags          Tag[]
