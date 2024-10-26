@@ -53,6 +53,7 @@ export default function MemberOnboarding() {
             router.push("/dashboard");
           },
           onSettled: (data, error) => {
+            setSubmitLoader(false);
             toast.dismiss(load);
 
             if (error) {
@@ -63,8 +64,6 @@ export default function MemberOnboarding() {
           },
         }
       );
-
-      setSubmitLoader(false);
     } else {
       toast.error(t("please_fill_all_fields"));
     }

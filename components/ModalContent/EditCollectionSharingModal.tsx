@@ -45,6 +45,7 @@ export default function EditCollectionSharingModal({
 
       await updateCollection.mutateAsync(collection, {
         onSettled: (data, error) => {
+          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -55,8 +56,6 @@ export default function EditCollectionSharingModal({
           }
         },
       });
-
-      setSubmitLoader(false);
     }
   };
 
