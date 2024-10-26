@@ -48,6 +48,7 @@ export default function InviteModal({ onClose }: Props) {
 
         await addUser.mutateAsync(form, {
           onSettled: () => {
+            setSubmitLoader(false);
             signIn("invite", {
               email: form.email,
               callbackUrl: "/member-onboarding",
@@ -58,8 +59,6 @@ export default function InviteModal({ onClose }: Props) {
             onClose();
           },
         });
-
-        setSubmitLoader(false);
       } else {
         toast.error(t("fill_all_fields_error"));
       }

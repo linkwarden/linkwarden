@@ -43,6 +43,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
 
     await createCollection.mutateAsync(collection, {
       onSettled: (data, error) => {
+        setSubmitLoader(false);
         toast.dismiss(load);
 
         if (error) {
@@ -53,8 +54,6 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
         }
       },
     });
-
-    setSubmitLoader(false);
   };
 
   return (

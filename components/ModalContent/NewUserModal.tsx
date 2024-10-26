@@ -55,9 +55,10 @@ export default function NewUserModal({ onClose }: Props) {
           onSuccess: () => {
             onClose();
           },
+          onSettled: () => {
+            setSubmitLoader(false);
+          },
         });
-
-        setSubmitLoader(false);
       } else {
         toast.error(t("fill_all_fields_error"));
       }
