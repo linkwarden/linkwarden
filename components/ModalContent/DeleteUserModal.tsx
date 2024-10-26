@@ -23,9 +23,10 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
         onSuccess: () => {
           onClose();
         },
+        onSettled: (data, error) => {
+          setSubmitLoader(false);
+        },
       });
-
-      setSubmitLoader(false);
     }
   };
 

@@ -115,6 +115,7 @@ export default function UploadFileModal({ onClose }: Props) {
         { link, file },
         {
           onSettled: (data, error) => {
+            setSubmitLoader(false);
             toast.dismiss(load);
 
             if (error) {
@@ -126,8 +127,6 @@ export default function UploadFileModal({ onClose }: Props) {
           },
         }
       );
-
-      setSubmitLoader(false);
     }
   };
 
