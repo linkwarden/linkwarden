@@ -1393,6 +1393,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             },
             include: {
               subscriptions: true,
+              parentSubscription: true,
             },
           });
 

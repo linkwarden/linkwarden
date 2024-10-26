@@ -33,6 +33,7 @@ export default async function verifyByCredentials({
         },
     include: {
       subscriptions: true,
+      parentSubscription: true,
     },
   });
 
