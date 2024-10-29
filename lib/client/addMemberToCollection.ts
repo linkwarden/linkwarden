@@ -2,9 +2,10 @@ import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserData from "./getPublicUserData";
 import { toast } from "react-hot-toast";
 import { TFunction } from "i18next";
+import { User } from "@prisma/client";
 
 const addMemberToCollection = async (
-  ownerUsername: string,
+  owner: User,
   memberUsername: string,
   collection: CollectionIncludingMembersAndLinkCount,
   setMember: (newMember: Member) => null | undefined,
@@ -12,7 +13,12 @@ const addMemberToCollection = async (
 ) => {
   const checkIfMemberAlreadyExists = collection.members.find((e) => {
     const username = (e.user.username || "").toLowerCase();
-    return username === memberUsername.toLowerCase();
+    const email = (e.user.email || "").toLowerCase();
+
+    return (
+      username === memberUsername.toLowerCase() ||
+      email === memberUsername.toLowerCase()
+    );
   });
 
   if (
@@ -21,7 +27,8 @@ const addMemberToCollection = async (
     // member can't be empty
     memberUsername.trim() !== "" &&
     // member can't be the owner
-    memberUsername.trim().toLowerCase() !== ownerUsername.toLowerCase()
+    memberUsername.trim().toLowerCase() !== owner.username?.toLowerCase() &&
+    memberUsername.trim().toLowerCase() !== owner.email?.toLowerCase()
   ) {
     // Lookup, get data/err, list ...
     const user = await getPublicUserData(memberUsername.trim().toLowerCase());
@@ -37,12 +44,16 @@ const addMemberToCollection = async (
           id: user.id,
           name: user.name,
           username: user.username,
+          email: user.email,
           image: user.image,
         },
       });
     }
   } else if (checkIfMemberAlreadyExists) toast.error(t("user_already_member"));
-  else if (memberUsername.trim().toLowerCase() === ownerUsername.toLowerCase())
+  else if (
+    memberUsername.trim().toLowerCase() === owner.username?.toLowerCase() ||
+    memberUsername.trim().toLowerCase() === owner.email?.toLowerCase()
+  )
     toast.error(t("you_are_already_collection_owner"));
 };
 

@@ -150,12 +150,12 @@ export default function EditCollectionSharingModal({
               <TextInput
                 value={memberUsername || ""}
                 className="bg-base-200"
-                placeholder={t("members_username_placeholder")}
+                placeholder={t("add_member_placeholder")}
                 onChange={(e) => setMemberUsername(e.target.value)}
                 onKeyDown={(e) =>
                   e.key === "Enter" &&
                   addMemberToCollection(
-                    user.username as string,
+                    user,
                     memberUsername || "",
                     collection,
                     setMemberState,
@@ -167,7 +167,7 @@ export default function EditCollectionSharingModal({
               <div
                 onClick={() =>
                   addMemberToCollection(
-                    user.username as string,
+                    user,
                     memberUsername || "",
                     collection,
                     setMemberState,

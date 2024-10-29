@@ -58,6 +58,12 @@ export default async function updateCollection(
     }
   }
 
+  const uniqueMembers = data.members.filter(
+    (e, i, a) =>
+      a.findIndex((el) => el.userId === e.userId) === i &&
+      e.userId !== collectionIsAccessible.ownerId
+  );
+
   const updatedCollection = await prisma.$transaction(async () => {
     await prisma.usersAndCollections.deleteMany({
       where: {
@@ -91,7 +97,7 @@ export default async function updateCollection(
                 }
               : undefined,
         members: {
-          create: data.members.map((e) => ({
+          create: uniqueMembers.map((e) => ({
             user: { connect: { id: e.userId } },
             canCreate: e.canCreate,
             canUpdate: e.canUpdate,

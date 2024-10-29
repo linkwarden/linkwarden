@@ -11,6 +11,12 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const token = await verifyToken({ req });
 
+  const queryId = Number(req.query.id);
+
+  if (!queryId) {
+    return res.status(400).json({ response: "Invalid request." });
+  }
+
   if (typeof token === "string") {
     res.status(401).json({ response: token });
     return null;
@@ -24,12 +30,12 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
 
   const isServerAdmin = user?.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
 
-  const userId = isServerAdmin ? Number(req.query.id) : token.id;
-
-  if (userId !== Number(req.query.id) && !isServerAdmin)
-    return res.status(401).json({ response: "Permission denied." });
+  const userId = token.id;
 
   if (req.method === "GET") {
+    if (userId !== queryId && !isServerAdmin)
+      return res.status(401).json({ response: "Permission denied." });
+
     const users = await getUserById(userId);
     return res.status(users.status).json({ response: users.response });
   }
@@ -59,6 +65,9 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (req.method === "PUT") {
+    if (userId !== queryId && !isServerAdmin)
+      return res.status(401).json({ response: "Permission denied." });
+
     if (process.env.NEXT_PUBLIC_DEMO === "true")
       return res.status(400).json({
         response:
@@ -74,7 +83,12 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    const updated = await deleteUserById(userId, req.body, isServerAdmin);
+    const updated = await deleteUserById(
+      userId,
+      req.body,
+      isServerAdmin,
+      queryId
+    );
     return res.status(updated.status).json({ response: updated.response });
   }
 }
