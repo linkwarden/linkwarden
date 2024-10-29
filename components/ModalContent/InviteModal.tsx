@@ -49,13 +49,13 @@ export default function InviteModal({ onClose }: Props) {
         await addUser.mutateAsync(form, {
           onSettled: () => {
             setSubmitLoader(false);
-            signIn("invite", {
+          },
+          onSuccess: async () => {
+            await signIn("invite", {
               email: form.email,
               callbackUrl: "/member-onboarding",
               redirect: false,
             });
-          },
-          onSuccess: () => {
             onClose();
           },
         });
