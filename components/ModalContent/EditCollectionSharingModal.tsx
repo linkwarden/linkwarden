@@ -66,7 +66,7 @@ export default function EditCollectionSharingModal({
 
   const publicCollectionURL = `${currentURL.origin}/public/collections/${collection.id}`;
 
-  const [memberUsername, setMemberUsername] = useState("");
+  const [memberIdentifier, setMemberIdentifier] = useState("");
 
   const [collectionOwner, setCollectionOwner] = useState<
     Partial<AccountSettings>
@@ -91,7 +91,7 @@ export default function EditCollectionSharingModal({
       members: [...collection.members, newMember],
     });
 
-    setMemberUsername("");
+    setMemberIdentifier("");
   };
 
   return (
@@ -148,15 +148,15 @@ export default function EditCollectionSharingModal({
 
             <div className="flex items-center gap-2">
               <TextInput
-                value={memberUsername || ""}
+                value={memberIdentifier || ""}
                 className="bg-base-200"
                 placeholder={t("add_member_placeholder")}
-                onChange={(e) => setMemberUsername(e.target.value)}
+                onChange={(e) => setMemberIdentifier(e.target.value)}
                 onKeyDown={(e) =>
                   e.key === "Enter" &&
                   addMemberToCollection(
                     user,
-                    memberUsername || "",
+                    memberIdentifier.replace(/^@/, "") || "",
                     collection,
                     setMemberState,
                     t
@@ -168,7 +168,7 @@ export default function EditCollectionSharingModal({
                 onClick={() =>
                   addMemberToCollection(
                     user,
-                    memberUsername || "",
+                    memberIdentifier.replace(/^@/, "") || "",
                     collection,
                     setMemberState,
                     t
