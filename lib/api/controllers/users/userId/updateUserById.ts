@@ -277,6 +277,7 @@ export default async function updateUserById(
     image: userInfo.image ? `${userInfo.image}?${Date.now()}` : "",
     subscription: {
       active: subscriptions?.active,
+      quantity: subscriptions?.quantity,
     },
     parentSubscription: {
       active: parentSubscription?.active,

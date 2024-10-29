@@ -35,6 +35,7 @@ export default async function getUserById(userId: number) {
     whitelistedUsers: whitelistedUsernames,
     subscription: {
       active: subscriptions?.active,
+      quantity: subscriptions?.quantity,
     },
     parentSubscription: {
       active: parentSubscription?.active,

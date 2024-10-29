@@ -12,7 +12,6 @@ export default function ProfileDropdown() {
   const { data: user = {} } = useUser();
 
   const isAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
-  const DISABLE_INVITES = process.env.DISABLE_INVITES === "true";
 
   const handleToggle = () => {
     const newTheme = settings.theme === "dark" ? "light" : "dark";
@@ -74,16 +73,16 @@ export default function ProfileDropdown() {
             </Link>
           </li>
         )}
-        {!DISABLE_INVITES && (
+        {!user.parentSubscriptionId && (
           <li>
             <Link
-              href="/team"
+              href="/settings/billing"
               onClick={() => (document?.activeElement as HTMLElement)?.blur()}
               tabIndex={0}
               role="button"
               className="whitespace-nowrap"
             >
-              {t("manage_team")}
+              {t("invite_users")}
             </Link>
           </li>
         )}

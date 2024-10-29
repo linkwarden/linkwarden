@@ -8,7 +8,6 @@ import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
-import { useSession } from "next-auth/react";
 
 interface FormData {
   password: string;
@@ -27,8 +26,6 @@ export default function MemberOnboarding() {
 
   const { data: user = {} } = useUser();
   const updateUser = useUpdateUser();
-
-  const { status } = useSession();
 
   useEffect(() => {
     toast.success(t("accepted_invitation_please_fill"));
@@ -146,7 +143,7 @@ export default function MemberOnboarding() {
             size="full"
             loading={submitLoader}
           >
-            {t("sign_up")}
+            {t("continue_to_dashboard")}
           </Button>
         </div>
       </form>
