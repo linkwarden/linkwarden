@@ -6,7 +6,7 @@ import { User } from "@prisma/client";
 
 const addMemberToCollection = async (
   owner: User,
-  memberUsername: string,
+  memberIdentifier: string,
   collection: CollectionIncludingMembersAndLinkCount,
   setMember: (newMember: Member) => null | undefined,
   t: TFunction<"translation", undefined>
@@ -16,8 +16,8 @@ const addMemberToCollection = async (
     const email = (e.user.email || "").toLowerCase();
 
     return (
-      username === memberUsername.toLowerCase() ||
-      email === memberUsername.toLowerCase()
+      username === memberIdentifier.toLowerCase() ||
+      email === memberIdentifier.toLowerCase()
     );
   });
 
@@ -25,13 +25,13 @@ const addMemberToCollection = async (
     // no duplicate members
     !checkIfMemberAlreadyExists &&
     // member can't be empty
-    memberUsername.trim() !== "" &&
+    memberIdentifier.trim() !== "" &&
     // member can't be the owner
-    memberUsername.trim().toLowerCase() !== owner.username?.toLowerCase() &&
-    memberUsername.trim().toLowerCase() !== owner.email?.toLowerCase()
+    memberIdentifier.trim().toLowerCase() !== owner.username?.toLowerCase() &&
+    memberIdentifier.trim().toLowerCase() !== owner.email?.toLowerCase()
   ) {
     // Lookup, get data/err, list ...
-    const user = await getPublicUserData(memberUsername.trim().toLowerCase());
+    const user = await getPublicUserData(memberIdentifier.trim().toLowerCase());
 
     if (user.username) {
       setMember({
@@ -51,8 +51,8 @@ const addMemberToCollection = async (
     }
   } else if (checkIfMemberAlreadyExists) toast.error(t("user_already_member"));
   else if (
-    memberUsername.trim().toLowerCase() === owner.username?.toLowerCase() ||
-    memberUsername.trim().toLowerCase() === owner.email?.toLowerCase()
+    memberIdentifier.trim().toLowerCase() === owner.username?.toLowerCase() ||
+    memberIdentifier.trim().toLowerCase() === owner.email?.toLowerCase()
   )
     toast.error(t("you_are_already_collection_owner"));
 };
