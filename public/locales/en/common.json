@@ -396,5 +396,6 @@
   "default": "Default",
   "invalid_url_guide":"Please enter a valid Address for the Link. (It should start with http/https)",
   "email_invalid": "Please enter a valid email address.",
-  "username_invalid_guide": "Username has to be at least 3 characters, no spaces and special characters are allowed."
+  "username_invalid_guide": "Username has to be at least 3 characters, no spaces and special characters are allowed.",
+  "browse_by_topic": "Browse by topic"
 }
