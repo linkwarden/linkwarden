@@ -15,7 +15,16 @@ export default async function deleteUserById(
   const user = await prisma.user.findUnique({
     where: { id: userId },
     include: {
-      subscriptions: true,
+      subscriptions: {
+        include: {
+          user: true,
+        },
+      },
+      parentSubscription: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
 
@@ -178,24 +187,36 @@ export default async function deleteUserById(
     });
 
     try {
-      const listByEmail = await stripe.customers.list({
-        email: user.email?.toLowerCase(),
-        expand: ["data.subscriptions"],
-      });
+      if (user.subscriptions?.id) {
+        const listByEmail = await stripe.customers.list({
+          email: user.email?.toLowerCase(),
+          expand: ["data.subscriptions"],
+        });
 
-      if (listByEmail.data[0].subscriptions?.data[0].id) {
-        const deleted = await stripe.subscriptions.cancel(
-          listByEmail.data[0].subscriptions?.data[0].id,
-          {
-            cancellation_details: {
-              comment: body.cancellation_details?.comment,
-              feedback: body.cancellation_details?.feedback,
-            },
-          }
+        if (listByEmail.data[0].subscriptions?.data[0].id) {
+          const deleted = await stripe.subscriptions.cancel(
+            listByEmail.data[0].subscriptions?.data[0].id,
+            {
+              cancellation_details: {
+                comment: body.cancellation_details?.comment,
+                feedback: body.cancellation_details?.feedback,
+              },
+            }
+          );
+
+          return {
+            response: deleted,
+            status: 200,
+          };
+        }
+      } else if (user.parentSubscription?.id) {
+        await updateSeats(
+          user.parentSubscription.stripeSubscriptionId,
+          user.parentSubscription.quantity - 1
         );
 
         return {
-          response: deleted,
+          response: "User account and all related data deleted successfully.",
           status: 200,
         };
       }

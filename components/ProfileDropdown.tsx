@@ -6,6 +6,8 @@ import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
 
+const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
+
 export default function ProfileDropdown() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
@@ -73,7 +75,7 @@ export default function ProfileDropdown() {
             </Link>
           </li>
         )}
-        {!user.parentSubscriptionId && (
+        {!user.parentSubscriptionId && stripeEnabled && (
           <li>
             <Link
               href="/settings/billing"
