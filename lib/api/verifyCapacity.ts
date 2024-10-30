@@ -8,7 +8,15 @@ export const hasPassedLimit = async (
   numberOfImports: number
 ) => {
   if (!stripeEnabled) {
-    return false;
+    const totalLinks = await prisma.link.count({
+      where: {
+        createdBy: {
+          id: userId,
+        },
+      },
+    });
+
+    return MAX_LINKS_PER_USER - (numberOfImports + totalLinks) < 0;
   }
 
   const user = await prisma.user.findUnique({

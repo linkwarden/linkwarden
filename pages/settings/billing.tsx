@@ -28,12 +28,13 @@ export default function Billing() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_STRIPE) router.push("/settings/profile");
-  }, []);
-
-  const { data: users = [] } = useUsers();
   const { data: account } = useUser();
+  const { data: users = [] } = useUsers();
+
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_STRIPE || account.parentSubscriptionId)
+      router.push("/settings/account");
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>();
