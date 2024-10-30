@@ -1,13 +1,25 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Sort } from "@/types/global";
 import { dropdownTriggerer } from "@/lib/client/utils";
+import { TFunction } from "i18next";
+import useLocalSettingsStore from "@/store/localSettings";
+import { resetInfiniteQueryPagination } from "@/hooks/store/links";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   sortBy: Sort;
   setSort: Dispatch<SetStateAction<Sort>>;
+  t: TFunction<"translation", undefined>;
 };
 
-export default function SortDropdown({ sortBy, setSort }: Props) {
+export default function SortDropdown({ sortBy, setSort, t }: Props) {
+  const { updateSettings } = useLocalSettingsStore();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    updateSettings({ sortBy });
+  }, [sortBy]);
+
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
       <div
@@ -18,7 +30,7 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
       >
         <i className="bi-chevron-expand text-neutral text-2xl"></i>
       </div>
-      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl w-52 mt-1">
+      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
         <li>
           <label
             className="label cursor-pointer flex justify-start"
@@ -29,13 +41,15 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Date (Newest First)"
               checked={sortBy === Sort.DateNewestFirst}
               onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
                 setSort(Sort.DateNewestFirst);
               }}
             />
-            <span className="label-text">Date (Newest First)</span>
+            <span className="label-text whitespace-nowrap">
+              {t("date_newest_first")}
+            </span>
           </label>
         </li>
         <li>
@@ -48,11 +62,15 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Date (Oldest First)"
               checked={sortBy === Sort.DateOldestFirst}
-              onChange={() => setSort(Sort.DateOldestFirst)}
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
+                setSort(Sort.DateOldestFirst);
+              }}
             />
-            <span className="label-text">Date (Oldest First)</span>
+            <span className="label-text whitespace-nowrap">
+              {t("date_oldest_first")}
+            </span>
           </label>
         </li>
         <li>
@@ -65,11 +83,13 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Name (A-Z)"
               checked={sortBy === Sort.NameAZ}
-              onChange={() => setSort(Sort.NameAZ)}
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
+                setSort(Sort.NameAZ);
+              }}
             />
-            <span className="label-text">Name (A-Z)</span>
+            <span className="label-text whitespace-nowrap">{t("name_az")}</span>
           </label>
         </li>
         <li>
@@ -82,11 +102,13 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Name (Z-A)"
               checked={sortBy === Sort.NameZA}
-              onChange={() => setSort(Sort.NameZA)}
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
+                setSort(Sort.NameZA);
+              }}
             />
-            <span className="label-text">Name (Z-A)</span>
+            <span className="label-text whitespace-nowrap">{t("name_za")}</span>
           </label>
         </li>
         <li>
@@ -99,11 +121,15 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Description (A-Z)"
               checked={sortBy === Sort.DescriptionAZ}
-              onChange={() => setSort(Sort.DescriptionAZ)}
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
+                setSort(Sort.DescriptionAZ);
+              }}
             />
-            <span className="label-text">Description (A-Z)</span>
+            <span className="label-text whitespace-nowrap">
+              {t("description_az")}
+            </span>
           </label>
         </li>
         <li>
@@ -116,11 +142,15 @@ export default function SortDropdown({ sortBy, setSort }: Props) {
               type="radio"
               name="sort-radio"
               className="radio checked:bg-primary"
-              value="Description (Z-A)"
               checked={sortBy === Sort.DescriptionZA}
-              onChange={() => setSort(Sort.DescriptionZA)}
+              onChange={() => {
+                resetInfiniteQueryPagination(queryClient, ["links"]);
+                setSort(Sort.DescriptionZA);
+              }}
             />
-            <span className="label-text">Description (Z-A)</span>
+            <span className="label-text whitespace-nowrap">
+              {t("description_za")}
+            </span>
           </label>
         </li>
       </ul>

@@ -1,7 +1,6 @@
 import unescapeString from "@/lib/client/unescapeString";
 import { readabilityAvailable } from "@/lib/shared/getArchiveValidity";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import useLinkStore from "@/store/links";
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
@@ -12,6 +11,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "next-i18next";
+import { useGetLink } from "@/hooks/store/links";
+import { IconWeight } from "@phosphor-icons/react";
+import Icon from "./Icon";
 
 type LinkContent = {
   title: string;
@@ -30,6 +33,7 @@ type Props = {
 };
 
 export default function ReadableView({ link }: Props) {
+  const { t } = useTranslation();
   const [linkContent, setLinkContent] = useState<LinkContent>();
   const [imageError, setImageError] = useState<boolean>(false);
   const [colorPalette, setColorPalette] = useState<RGBColor[]>();
@@ -40,7 +44,7 @@ export default function ReadableView({ link }: Props) {
 
   const router = useRouter();
 
-  const { links, getLink } = useLinkStore();
+  const getLink = useGetLink();
 
   useEffect(() => {
     const fetchLinkContent = async () => {
@@ -61,19 +65,27 @@ export default function ReadableView({ link }: Props) {
   }, [link]);
 
   useEffect(() => {
-    if (link) getLink(link?.id as number);
+    if (link) getLink.mutateAsync({ id: link.id as number });
 
-    let interval: any;
+    let interval: NodeJS.Timeout | null = null;
     if (
       link &&
       (link?.image === "pending" ||
         link?.pdf === "pending" ||
         link?.readable === "pending" ||
+        link?.monolith === "pending" ||
         !link?.image ||
         !link?.pdf ||
-        !link?.readable)
+        !link?.readable ||
+        !link?.monolith)
     ) {
-      interval = setInterval(() => getLink(link.id as number), 5000);
+      interval = setInterval(
+        () =>
+          getLink.mutateAsync({
+            id: link.id as number,
+          }),
+        5000
+      );
     } else {
       if (interval) {
         clearInterval(interval);
@@ -85,7 +97,7 @@ export default function ReadableView({ link }: Props) {
         clearInterval(interval);
       }
     };
-  }, [link?.image, link?.pdf, link?.readable]);
+  }, [link?.image, link?.pdf, link?.readable, link?.monolith]);
 
   const rgbToHex = (r: number, g: number, b: number): string =>
     "#" +
@@ -128,10 +140,10 @@ export default function ReadableView({ link }: Props) {
   }, [colorPalette]);
 
   return (
-    <div className={`flex flex-col max-w-screen-md h-full mx-auto py-5`}>
+    <div className={`flex flex-col max-w-screen-md h-full mx-auto p-5`}>
       <div
         id="link-banner"
-        className="link-banner bg-opacity-10 border-neutral-content p-3 border mb-3"
+        className="link-banner relative bg-opacity-10 border-neutral-content p-3 border mb-3"
       >
         <div id="link-banner-inner" className="link-banner-inner"></div>
 
@@ -164,12 +176,12 @@ export default function ReadableView({ link }: Props) {
               />
             )}
             <div className="flex flex-col">
-              <p className="text-xl">
+              <p className="text-xl pr-10">
                 {unescapeString(
                   link?.name || link?.description || link?.url || ""
                 )}
               </p>
-              {link?.url ? (
+              {link?.url && (
                 <Link
                   href={link?.url || ""}
                   title={link?.url}
@@ -178,11 +190,10 @@ export default function ReadableView({ link }: Props) {
                 >
                   <i className="bi-link-45deg"></i>
 
-                  {isValidUrl(link?.url || "")
-                    ? new URL(link?.url as string).host
-                    : undefined}
+                  {isValidUrl(link?.url || "") &&
+                    new URL(link?.url as string).host}
                 </Link>
-              ) : undefined}
+              )}
             </div>
           </div>
 
@@ -191,10 +202,21 @@ export default function ReadableView({ link }: Props) {
               href={`/collections/${link?.collection.id}`}
               className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
             >
-              <i
-                className="bi-folder-fill drop-shadow text-2xl"
-                style={{ color: link?.collection.color }}
-              ></i>
+              {link.collection.icon ? (
+                <Icon
+                  icon={link.collection.icon}
+                  size={30}
+                  weight={
+                    (link.collection.iconWeight || "regular") as IconWeight
+                  }
+                  color={link.collection.color}
+                />
+              ) : (
+                <i
+                  className="bi-folder-fill text-2xl"
+                  style={{ color: link.collection.color }}
+                ></i>
+              )}
               <p
                 title={link?.collection.name}
                 className="text-lg truncate max-w-[12rem]"
@@ -202,7 +224,7 @@ export default function ReadableView({ link }: Props) {
                 {link?.collection.name}
               </p>
             </Link>
-            {link?.tags.map((e, i) => (
+            {link?.tags?.map((e, i) => (
               <Link key={i} href={`/tags/${e.id}`} className="z-10">
                 <p
                   title={e.name}
@@ -254,11 +276,9 @@ export default function ReadableView({ link }: Props) {
               <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.598.598 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.659z" />
             </svg>
             <p className="text-center text-2xl">
-              The Link preservation is currently in the queue
+              {t("link_preservation_in_queue")}
             </p>
-            <p className="text-center text-lg mt-2">
-              Please check back later to see the result
-            </p>
+            <p className="text-center text-lg mt-2">{t("check_back_later")}</p>
           </div>
         )}
       </div>

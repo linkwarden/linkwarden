@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import getPermission from "@/lib/api/getPermission";
-import { Collection, UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@prisma/client";
 import removeFolder from "@/lib/api/storage/removeFolder";
 
 export default async function deleteCollection(
@@ -57,7 +57,8 @@ export default async function deleteCollection(
       },
     });
 
-    await removeFolder({ filePath: `archives/${collectionId}` });
+    removeFolder({ filePath: `archives/${collectionId}` });
+    removeFolder({ filePath: `archives/preview/${collectionId}` });
 
     await removeFromOrders(userId, collectionId);
 
@@ -99,7 +100,8 @@ async function deleteSubCollections(collectionId: number) {
       where: { id: subCollection.id },
     });
 
-    await removeFolder({ filePath: `archives/${subCollection.id}` });
+    removeFolder({ filePath: `archives/${subCollection.id}` });
+    removeFolder({ filePath: `archives/preview/${subCollection.id}` });
   }
 }
 

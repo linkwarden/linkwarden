@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/api/db";
-import { LinkRequestQuery, Sort } from "@/types/global";
+import { LinkRequestQuery, Order, Sort } from "@/types/global";
 
 export default async function getLink(
   query: Omit<LinkRequestQuery, "tagId" | "pinnedOnly">, takeAll = false
 ) {
-  const POSTGRES_IS_ENABLED = process.env.DATABASE_URL.startsWith("postgresql");
+  const POSTGRES_IS_ENABLED =
+    process.env.DATABASE_URL?.startsWith("postgresql");
 
-  let order: any;
+  let order: Order = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
@@ -68,7 +69,7 @@ export default async function getLink(
   }
 
   const links = await prisma.link.findMany({
-    take: !takeAll ? Number(process.env.PAGINATION_TAKE_COUNT) || 20 : undefined,
+    take: Number(process.env.PAGINATION_TAKE_COUNT) || 50,
     skip: query.cursor ? 1 : undefined,
     cursor: query.cursor ? { id: query.cursor } : undefined,
     where: {
