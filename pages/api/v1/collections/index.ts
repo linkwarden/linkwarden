@@ -16,6 +16,12 @@ export default async function collections(
       .status(collections.status)
       .json({ response: collections.response });
   } else if (req.method === "POST") {
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     const newCollection = await postCollection(req.body, user.id);
     return res
       .status(newCollection.status)

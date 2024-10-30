@@ -11,7 +11,13 @@ export default async function tokens(
   if (!user) return;
 
   if (req.method === "POST") {
-    const token = await postToken(JSON.parse(req.body), user.id);
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
+    const token = await postToken(req.body, user.id);
     return res.status(token.status).json({ response: token.response });
   } else if (req.method === "GET") {
     const token = await getTokens(user.id);

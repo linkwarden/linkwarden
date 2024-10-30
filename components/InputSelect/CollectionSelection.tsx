@@ -1,10 +1,10 @@
-import useCollectionStore from "@/store/collections";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { styles } from "./styles";
 import { Options } from "./types";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
+import { useCollections } from "@/hooks/store/collections";
 
 type Props = {
   onChange: any;
@@ -16,6 +16,8 @@ type Props = {
       }
     | undefined;
   creatable?: boolean;
+  autoFocus?: boolean;
+  onBlur?: any;
 };
 
 export default function CollectionSelection({
@@ -23,8 +25,11 @@ export default function CollectionSelection({
   defaultValue,
   showDefaultValue = true,
   creatable = true,
+  autoFocus,
+  onBlur,
 }: Props) {
-  const { collections } = useCollectionStore();
+  const { data: collections = [] } = useCollections();
+
   const router = useRouter();
 
   const [options, setOptions] = useState<Options[]>([]);
@@ -75,7 +80,7 @@ export default function CollectionSelection({
     return (
       <div
         {...innerProps}
-        className="px-2 py-2 last:border-0 border-b border-neutral-content hover:bg-neutral-content cursor-pointer"
+        className="px-2 py-2 last:border-0 border-b border-neutral-content hover:bg-neutral-content duration-100 cursor-pointer"
       >
         <div className="flex w-full justify-between items-center">
           <span>{data.label}</span>
@@ -103,6 +108,8 @@ export default function CollectionSelection({
         onChange={onChange}
         options={options}
         styles={styles}
+        autoFocus={autoFocus}
+        onBlur={onBlur}
         defaultValue={showDefaultValue ? defaultValue : null}
         components={{
           Option: customOption,
@@ -119,7 +126,9 @@ export default function CollectionSelection({
         onChange={onChange}
         options={options}
         styles={styles}
+        autoFocus={autoFocus}
         defaultValue={showDefaultValue ? defaultValue : null}
+        onBlur={onBlur}
         components={{
           Option: customOption,
         }}

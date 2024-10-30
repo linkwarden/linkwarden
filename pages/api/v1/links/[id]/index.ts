@@ -14,6 +14,12 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       response: updated.response,
     });
   } else if (req.method === "PUT") {
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     const updated = await updateLinkById(
       user.id,
       Number(req.query.id),
@@ -23,6 +29,12 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       response: updated.response,
     });
   } else if (req.method === "DELETE") {
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     const deleted = await deleteLinkById(user.id, Number(req.query.id));
     return res.status(deleted.status).json({
       response: deleted.response,

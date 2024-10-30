@@ -28,7 +28,20 @@ export function readabilityAvailable(
   );
 }
 
-export function previewAvailable(link: any) {
+export function monolithAvailable(
+  link: LinkIncludingShortenedCollectionAndTags
+) {
+  return (
+    link &&
+    link.monolith &&
+    link.monolith !== "pending" &&
+    link.monolith !== "unavailable"
+  );
+}
+
+export function previewAvailable(
+  link: LinkIncludingShortenedCollectionAndTags
+) {
   return (
     link &&
     link.preview &&

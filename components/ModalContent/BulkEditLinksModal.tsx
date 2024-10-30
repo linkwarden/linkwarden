@@ -5,22 +5,25 @@ import useLinkStore from "@/store/links";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
+import { useTranslation } from "next-i18next";
+import { useBulkEditLinks } from "@/hooks/store/links";
 
 type Props = {
   onClose: Function;
 };
 
 export default function BulkEditLinksModal({ onClose }: Props) {
-  const { updateLinks, selectedLinks, setSelectedLinks } = useLinkStore();
+  const { t } = useTranslation();
+  const { selectedLinks, setSelectedLinks } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
   const [removePreviousTags, setRemovePreviousTags] = useState(false);
   const [updatedValues, setUpdatedValues] = useState<
     Pick<LinkIncludingShortenedCollectionAndTags, "tags" | "collectionId">
   >({ tags: [] });
 
+  const updateLinks = useBulkEditLinks();
   const setCollection = (e: any) => {
     const collectionId = e?.value || null;
-    console.log(updatedValues);
     setUpdatedValues((prevValues) => ({ ...prevValues, collectionId }));
   };
 
@@ -33,37 +36,45 @@ export default function BulkEditLinksModal({ onClose }: Props) {
     if (!submitLoader) {
       setSubmitLoader(true);
 
-      const load = toast.loading("Updating...");
+      const load = toast.loading(t("updating"));
 
-      const response = await updateLinks(
-        selectedLinks,
-        removePreviousTags,
-        updatedValues
+      await updateLinks.mutateAsync(
+        {
+          links: selectedLinks,
+          newData: updatedValues,
+          removePreviousTags,
+        },
+        {
+          onSettled: (data, error) => {
+            toast.dismiss(load);
+
+            if (error) {
+              toast.error(error.message);
+            } else {
+              setSelectedLinks([]);
+              onClose();
+              toast.success(t("updated"));
+            }
+          },
+        }
       );
 
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success(`Updated!`);
-        setSelectedLinks([]);
-        onClose();
-      } else toast.error(response.data as string);
-
       setSubmitLoader(false);
-      return response;
     }
   };
 
   return (
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">
-        Edit {selectedLinks.length} Link{selectedLinks.length > 1 ? "s" : ""}
+        {selectedLinks.length === 1
+          ? t("edit_link")
+          : t("edit_links", { count: selectedLinks.length })}
       </p>
       <div className="divider mb-3 mt-1"></div>
       <div className="mt-5">
         <div className="grid sm:grid-cols-2 gap-3">
           <div>
-            <p className="mb-2">Move to Collection</p>
+            <p className="mb-2">{t("move_to_collection")}</p>
             <CollectionSelection
               showDefaultValue={false}
               onChange={setCollection}
@@ -72,7 +83,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
           </div>
 
           <div>
-            <p className="mb-2">Add Tags</p>
+            <p className="mb-2">{t("add_tags")}</p>
             <TagSelection onChange={setTags} />
           </div>
         </div>
@@ -84,7 +95,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
               checked={removePreviousTags}
               onChange={(e) => setRemovePreviousTags(e.target.checked)}
             />
-            Remove previous tags
+            {t("remove_previous_tags")}
           </label>
         </div>
       </div>
@@ -94,7 +105,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
           className="btn btn-accent dark:border-violet-400 text-white"
           onClick={submit}
         >
-          Save Changes
+          {t("save_changes")}
         </button>
       </div>
     </Modal>

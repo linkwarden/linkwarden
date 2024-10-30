@@ -1,95 +1,74 @@
 import React, { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
-import useCollectionStore from "@/store/collections";
-import useLinkStore from "@/store/links";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import toast from "react-hot-toast";
 import Modal from "../Modal";
+import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
+import { useAddLink } from "@/hooks/store/links";
+import toast from "react-hot-toast";
+import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
 
 type Props = {
   onClose: Function;
 };
 
 export default function NewLinkModal({ onClose }: Props) {
-  const { data } = useSession();
-
+  const { t } = useTranslation();
   const initial = {
     name: "",
     url: "",
     description: "",
     type: "url",
     tags: [],
-    preview: "",
-    image: "",
-    pdf: "",
-    readable: "",
-    textContent: "",
     collection: {
+      id: undefined,
       name: "",
-      ownerId: data?.user.id as number,
     },
-  } as LinkIncludingShortenedCollectionAndTags;
+  } as PostLinkSchemaType;
 
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags>(initial);
+  const [link, setLink] = useState<PostLinkSchemaType>(initial);
 
-  const { addLink } = useLinkStore();
+  const addLink = useAddLink();
+
   const [submitLoader, setSubmitLoader] = useState(false);
-
   const [optionsExpanded, setOptionsExpanded] = useState(false);
-
   const router = useRouter();
-  const { collections } = useCollectionStore();
+  const { data: collections = [] } = useCollections();
 
   const setCollection = (e: any) => {
-    if (e?.__isNew__) e.value = null;
-
+    if (e?.__isNew__) e.value = undefined;
     setLink({
       ...link,
-      collection: { id: e?.value, name: e?.label, ownerId: e?.ownerId },
+      collection: { id: e?.value, name: e?.label },
     });
   };
 
   const setTags = (e: any) => {
-    const tagNames = e.map((e: any) => {
-      return { name: e.label };
-    });
-
+    const tagNames = e.map((e: any) => ({ name: e.label }));
     setLink({ ...link, tags: tagNames });
   };
 
   useEffect(() => {
-    if (router.query.id) {
+    if (router.pathname.startsWith("/collections/") && router.query.id) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
       );
 
-      if (
-        currentCollection &&
-        currentCollection.ownerId &&
-        router.asPath.startsWith("/collections/")
-      )
+      if (currentCollection && currentCollection.ownerId)
         setLink({
           ...initial,
           collection: {
             id: currentCollection.id,
             name: currentCollection.name,
-            ownerId: currentCollection.ownerId,
           },
         });
     } else
       setLink({
         ...initial,
-        collection: {
-          name: "Unorganized",
-          ownerId: data?.user.id as number,
-        },
+        collection: { name: "Unorganized" },
       });
   }, []);
 
@@ -97,115 +76,103 @@ export default function NewLinkModal({ onClose }: Props) {
     if (!submitLoader) {
       setSubmitLoader(true);
 
-      let response;
+      const load = toast.loading(t("creating_link"));
 
-      const load = toast.loading("Creating...");
+      await addLink.mutateAsync(link, {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-      response = await addLink(link);
+          if (error) {
+            toast.error(t(error.message));
+          } else {
+            onClose();
+            toast.success(t("link_created"));
+          }
+        },
+      });
 
-      toast.dismiss(load);
-
-      if (response.ok) {
-        toast.success(`Created!`);
-        onClose();
-      } else toast.error(response.data as string);
       setSubmitLoader(false);
-
-      return response;
     }
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin">Create a New Link</p>
-
+      <p className="text-xl font-thin">{t("create_new_link")}</p>
       <div className="divider mb-3 mt-1"></div>
-
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">
-          <p className="mb-2">Link</p>
+          <p className="mb-2">{t("link")}</p>
           <TextInput
             value={link.url || ""}
             onChange={(e) => setLink({ ...link, url: e.target.value })}
-            placeholder="e.g. http://example.com/"
+            placeholder={t("link_url_placeholder")}
             className="bg-base-200"
           />
         </div>
         <div className="sm:col-span-2 col-span-5">
-          <p className="mb-2">Collection</p>
-          {link.collection.name ? (
+          <p className="mb-2">{t("collection")}</p>
+          {link.collection?.name && (
             <CollectionSelection
               onChange={setCollection}
               defaultValue={{
-                label: link.collection.name,
-                value: link.collection.id,
+                value: link.collection?.id,
+                label: link.collection?.name || "Unorganized",
               }}
             />
-          ) : null}
+          )}
         </div>
       </div>
-
       <div className={"mt-2"}>
-        {optionsExpanded ? (
+        {optionsExpanded && (
           <div className="mt-5">
-            {/* <hr className="mb-3 border border-neutral-content" /> */}
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <p className="mb-2">Name</p>
+                <p className="mb-2">{t("name")}</p>
                 <TextInput
                   value={link.name}
                   onChange={(e) => setLink({ ...link, name: e.target.value })}
-                  placeholder="e.g. Example Link"
+                  placeholder={t("link_name_placeholder")}
                   className="bg-base-200"
                 />
               </div>
-
               <div>
-                <p className="mb-2">Tags</p>
+                <p className="mb-2">{t("tags")}</p>
                 <TagSelection
                   onChange={setTags}
-                  defaultValue={link.tags.map((e) => {
-                    return { label: e.name, value: e.id };
-                  })}
+                  defaultValue={link.tags?.map((e) => ({
+                    label: e.name,
+                    value: e.id,
+                  }))}
                 />
               </div>
-
               <div className="sm:col-span-2">
-                <p className="mb-2">Description</p>
+                <p className="mb-2">{t("description")}</p>
                 <textarea
-                  value={unescapeString(link.description) as string}
+                  value={unescapeString(link.description || "") || ""}
                   onChange={(e) =>
                     setLink({ ...link, description: e.target.value })
                   }
-                  placeholder="Will be auto generated if nothing is provided."
-                  className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                  placeholder={t("link_description_placeholder")}
+                  className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
                 />
               </div>
             </div>
           </div>
-        ) : undefined}
+        )}
       </div>
-
       <div className="flex justify-between items-center mt-5">
         <div
           onClick={() => setOptionsExpanded(!optionsExpanded)}
           className={`rounded-md cursor-pointer btn btn-sm btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
         >
-          <p className="font-normal">
-            {optionsExpanded ? "Hide" : "More"} Options
-          </p>
-          <i
-            className={`${
-              optionsExpanded ? "bi-chevron-up" : "bi-chevron-down"
-            }`}
-          ></i>
+          <p>{optionsExpanded ? t("hide_options") : t("more_options")}</p>
+          <i className={`bi-chevron-${optionsExpanded ? "up" : "down"}`}></i>
         </div>
-
         <button
           className="btn btn-accent dark:border-violet-400 text-white"
           onClick={submit}
         >
-          Create Link
+          {t("create_link")}
         </button>
       </div>
     </Modal>

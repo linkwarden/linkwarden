@@ -2,7 +2,6 @@ import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
 import { parse, Node, Element, TextNode } from "himalaya";
-import { writeFileSync } from "fs";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
@@ -31,7 +30,7 @@ export default async function importFromHTMLFile(
 
   if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
     return {
-      response: `Error: Each user can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
       status: 400,
     };
 
@@ -63,11 +62,22 @@ async function processBookmarks(
         ) as Element;
 
         if (collectionName) {
-          collectionId = await createCollection(
-            userId,
-            (collectionName.children[0] as TextNode).content,
-            parentCollectionId
-          );
+          const collectionNameContent = (collectionName.children[0] as TextNode)
+            ?.content;
+          if (collectionNameContent) {
+            collectionId = await createCollection(
+              userId,
+              collectionNameContent,
+              parentCollectionId
+            );
+          } else {
+            // Handle the case when the collection name is empty
+            collectionId = await createCollection(
+              userId,
+              "Untitled Collection",
+              parentCollectionId
+            );
+          }
         }
         await processBookmarks(
           userId,
@@ -144,6 +154,8 @@ const createCollection = async (
   collectionName: string,
   parentId?: number
 ) => {
+  collectionName = collectionName.trim().slice(0, 254);
+
   const findCollection = await prisma.collection.findFirst({
     where: {
       parentId,
@@ -188,6 +200,22 @@ const createLink = async (
   tags?: string[],
   importDate?: Date
 ) => {
+  url = url.trim().slice(0, 254);
+  try {
+    new URL(url);
+  } catch (e) {
+    return;
+  }
+  tags = tags?.map((tag) => tag.trim().slice(0, 49));
+  name = name?.trim().slice(0, 254);
+  description = description?.trim().slice(0, 254);
+  if (importDate) {
+    const dateString = importDate.toISOString();
+    if (dateString.length > 50) {
+      importDate = undefined;
+    }
+  }
+
   await prisma.link.create({
     data: {
       name: name || "",

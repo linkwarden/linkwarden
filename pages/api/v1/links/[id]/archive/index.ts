@@ -2,8 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import removeFile from "@/lib/api/storage/removeFile";
-import { Collection, Link } from "@prisma/client";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { UsersAndCollections } from "@prisma/client";
+import getPermission from "@/lib/api/getPermission";
+import { moveFiles, removeFiles } from "@/lib/api/manageLinkFiles";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
@@ -23,12 +25,27 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       response: "Link not found.",
     });
 
-  if (link.collection.ownerId !== user.id)
+  const collectionIsAccessible = await getPermission({
+    userId: user.id,
+    collectionId: link.collectionId,
+  });
+
+  const memberHasAccess = collectionIsAccessible?.members.some(
+    (e: UsersAndCollections) => e.userId === user.id && e.canUpdate
+  );
+
+  if (!(collectionIsAccessible?.ownerId === user.id || memberHasAccess))
     return res.status(401).json({
       response: "Permission denied.",
     });
 
   if (req.method === "PUT") {
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     if (
       link?.lastPreserved &&
       getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved) <
@@ -48,7 +65,20 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         response: "Invalid URL.",
       });
 
-    await deleteArchivedFiles(link);
+    await prisma.link.update({
+      where: {
+        id: link.id,
+      },
+      data: {
+        image: null,
+        pdf: null,
+        readable: null,
+        monolith: null,
+        preview: null,
+      },
+    });
+
+    await removeFiles(link.id, link.collection.id);
 
     return res.status(200).json({
       response: "Link is being archived.",
@@ -65,31 +95,4 @@ const getTimezoneDifferenceInMinutes = (future: Date, past: Date) => {
   const diffInMinutes = diffInMilliseconds / (1000 * 60);
 
   return diffInMinutes;
-};
-
-const deleteArchivedFiles = async (link: Link & { collection: Collection }) => {
-  await prisma.link.update({
-    where: {
-      id: link.id,
-    },
-    data: {
-      image: null,
-      pdf: null,
-      readable: null,
-      preview: null,
-    },
-  });
-
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}.pdf`,
-  });
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}.png`,
-  });
-  await removeFile({
-    filePath: `archives/${link.collection.id}/${link.id}_readability.json`,
-  });
-  await removeFile({
-    filePath: `archives/preview/${link.collection.id}/${link.id}.png`,
-  });
 };
