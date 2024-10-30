@@ -9,8 +9,6 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
 
-const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
-
 export default function Subscribe() {
   const { t } = useTranslation();
   const [submitLoader, setSubmitLoader] = useState(false);
