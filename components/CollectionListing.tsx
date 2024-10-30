@@ -9,66 +9,75 @@ import Tree, {
   TreeSourcePosition,
   TreeDestinationPosition,
 } from "@atlaskit/tree";
-import useCollectionStore from "@/store/collections";
 import { Collection } from "@prisma/client";
 import Link from "next/link";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useRouter } from "next/router";
-import useAccountStore from "@/store/account";
 import toast from "react-hot-toast";
+import { useTranslation } from "next-i18next";
+import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
+import { useUpdateUser, useUser } from "@/hooks/store/user";
+import Icon from "./Icon";
+import { IconWeight } from "@phosphor-icons/react";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
 }
 
 const CollectionListing = () => {
-  const { collections, updateCollection } = useCollectionStore();
-  const { account, updateAccount } = useAccountStore();
+  const { t } = useTranslation();
+  const updateCollection = useUpdateCollection();
+  const { data: collections = [], isLoading } = useCollections();
+
+  const { data: user = {} } = useUser();
+  const updateUser = useUpdateUser();
 
   const router = useRouter();
   const currentPath = router.asPath;
 
+  const [tree, setTree] = useState<TreeData | undefined>();
+
   const initialTree = useMemo(() => {
-    if (collections.length > 0) {
+    if (
+      // !tree &&
+      collections.length > 0
+    ) {
       return buildTreeFromCollections(
         collections,
         router,
-        account.collectionOrder
+        tree,
+        user.collectionOrder
       );
-    }
-    return undefined;
-  }, [collections, router]);
-
-  const [tree, setTree] = useState(initialTree);
+    } else return undefined;
+  }, [collections, user, router]);
 
   useEffect(() => {
+    // if (!tree)
     setTree(initialTree);
   }, [initialTree]);
 
   useEffect(() => {
-    if (account.username) {
+    if (user.username) {
       if (
-        (!account.collectionOrder || account.collectionOrder.length === 0) &&
+        (!user.collectionOrder || user.collectionOrder.length === 0) &&
         collections.length > 0
       )
-        updateAccount({
-          ...account,
+        updateUser.mutate({
+          ...user,
           collectionOrder: collections
             .filter(
               (e) =>
                 e.parentId === null ||
                 !collections.find((i) => i.id === e.parentId)
             ) // Filter out collections with non-null parentId
-            .map((e) => e.id as number), // Use "as number" to assert that e.id is a number
+            .map((e) => e.id as number),
         });
       else {
-        const newCollectionOrder: number[] = [
-          ...(account.collectionOrder || []),
-        ];
+        const newCollectionOrder: number[] = [...(user.collectionOrder || [])];
 
         // Start with collections that are in both account.collectionOrder and collections
         const existingCollectionIds = collections.map((c) => c.id as number);
-        const filteredCollectionOrder = account.collectionOrder.filter((id) =>
+        const filteredCollectionOrder = user.collectionOrder.filter((id: any) =>
           existingCollectionIds.includes(id)
         );
 
@@ -76,7 +85,7 @@ const CollectionListing = () => {
         collections.forEach((collection) => {
           if (
             !filteredCollectionOrder.includes(collection.id as number) &&
-            (!collection.parentId || collection.ownerId === account.id)
+            (!collection.parentId || collection.ownerId === user.id)
           ) {
             filteredCollectionOrder.push(collection.id as number);
           }
@@ -85,10 +94,10 @@ const CollectionListing = () => {
         // check if the newCollectionOrder is the same as the old one
         if (
           JSON.stringify(newCollectionOrder) !==
-          JSON.stringify(account.collectionOrder)
+          JSON.stringify(user.collectionOrder)
         ) {
-          updateAccount({
-            ...account,
+          updateUser.mutateAsync({
+            ...user,
             collectionOrder: newCollectionOrder,
           });
         }
@@ -136,30 +145,35 @@ const CollectionListing = () => {
     );
 
     if (
-      (movedCollection?.ownerId !== account.id &&
+      (movedCollection?.ownerId !== user.id &&
         destination.parentId !== source.parentId) ||
-      (destinationCollection?.ownerId !== account.id &&
+      (destinationCollection?.ownerId !== user.id &&
         destination.parentId !== "root")
     ) {
-      return toast.error(
-        "You can't make change to a collection you don't own."
-      );
+      return toast.error(t("cant_change_collection_you_dont_own"));
     }
 
     setTree((currentTree) => moveItemOnTree(currentTree!, source, destination));
 
-    const updatedCollectionOrder = [...account.collectionOrder];
+    const updatedCollectionOrder = [...user.collectionOrder];
 
     if (source.parentId !== destination.parentId) {
-      await updateCollection({
-        ...movedCollection,
-        parentId:
-          destination.parentId && destination.parentId !== "root"
-            ? Number(destination.parentId)
-            : destination.parentId === "root"
-              ? "root"
-              : null,
-      } as any);
+      await updateCollection.mutateAsync(
+        {
+          ...movedCollection,
+          parentId:
+            destination.parentId && destination.parentId !== "root"
+              ? Number(destination.parentId)
+              : destination.parentId === "root"
+                ? "root"
+                : null,
+        },
+        {
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        }
+      );
     }
 
     if (
@@ -172,8 +186,8 @@ const CollectionListing = () => {
 
       updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
 
-      await updateAccount({
-        ...account,
+      await updateUser.mutateAsync({
+        ...user,
         collectionOrder: updatedCollectionOrder,
       });
     } else if (
@@ -182,8 +196,8 @@ const CollectionListing = () => {
     ) {
       updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
 
-      await updateAccount({
-        ...account,
+      updateUser.mutate({
+        ...user,
         collectionOrder: updatedCollectionOrder,
       });
     } else if (
@@ -193,15 +207,27 @@ const CollectionListing = () => {
     ) {
       updatedCollectionOrder.splice(source.index, 1);
 
-      await updateAccount({
-        ...account,
+      await updateUser.mutateAsync({
+        ...user,
         collectionOrder: updatedCollectionOrder,
       });
     }
   };
 
-  if (!tree) {
-    return <></>;
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="skeleton h-4 w-full"></div>
+        <div className="skeleton h-4 w-full"></div>
+        <div className="skeleton h-4 w-full"></div>
+      </div>
+    );
+  } else if (!tree) {
+    return (
+      <p className="text-neutral text-xs font-semibold truncate w-full px-2 mt-5 mb-8">
+        {t("you_have_no_collections")}
+      </p>
+    );
   } else
     return (
       <Tree
@@ -233,7 +259,7 @@ const renderItem = (
             : "hover:bg-neutral/20"
         } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
       >
-        {Icon(item as ExtendedTreeItem, onExpand, onCollapse)}
+        {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
 
         <Link
           href={`/collections/${collection.id}`}
@@ -243,18 +269,29 @@ const renderItem = (
           <div
             className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
-            <i
-              className="bi-folder-fill text-2xl drop-shadow"
-              style={{ color: collection.color }}
-            ></i>
+            {collection.icon ? (
+              <Icon
+                icon={collection.icon}
+                size={30}
+                weight={(collection.iconWeight || "regular") as IconWeight}
+                color={collection.color}
+                className="-mr-[0.15rem]"
+              />
+            ) : (
+              <i
+                className="bi-folder-fill text-2xl"
+                style={{ color: collection.color }}
+              ></i>
+            )}
+
             <p className="truncate w-full">{collection.name}</p>
 
-            {collection.isPublic ? (
+            {collection.isPublic && (
               <i
                 className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
                 title="This collection is being shared publicly."
               ></i>
-            ) : undefined}
+            )}
             <div className="drop-shadow text-neutral text-xs">
               {collection._count?.links}
             </div>
@@ -265,7 +302,7 @@ const renderItem = (
   );
 };
 
-const Icon = (
+const Dropdown = (
   item: ExtendedTreeItem,
   onExpand: (id: ItemId) => void,
   onCollapse: (id: ItemId) => void
@@ -288,6 +325,7 @@ const Icon = (
 const buildTreeFromCollections = (
   collections: CollectionIncludingMembersAndLinkCount[],
   router: ReturnType<typeof useRouter>,
+  tree?: TreeData,
   order?: number[]
 ): TreeData => {
   if (order) {
@@ -302,13 +340,15 @@ const buildTreeFromCollections = (
         id: collection.id,
         children: [],
         hasChildren: false,
-        isExpanded: false,
+        isExpanded: tree?.items[collection.id as number]?.isExpanded || false,
         data: {
           id: collection.id,
           parentId: collection.parentId,
           name: collection.name,
           description: collection.description,
           color: collection.color,
+          icon: collection.icon,
+          iconWeight: collection.iconWeight,
           isPublic: collection.isPublic,
           ownerId: collection.ownerId,
           createdAt: collection.createdAt,

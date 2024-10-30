@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import removeFile from "@/lib/api/storage/removeFile";
+import { removeFiles } from "@/lib/api/manageLinkFiles";
 
 export default async function deleteLinksById(
   userId: number,
@@ -43,15 +43,7 @@ export default async function deleteLinksById(
     const linkId = linkIds[i];
     const collectionIsAccessible = collectionIsAccessibleArray[i];
 
-    removeFile({
-      filePath: `archives/${collectionIsAccessible?.id}/${linkId}.pdf`,
-    });
-    removeFile({
-      filePath: `archives/${collectionIsAccessible?.id}/${linkId}.png`,
-    });
-    removeFile({
-      filePath: `archives/${collectionIsAccessible?.id}/${linkId}_readability.json`,
-    });
+    if (collectionIsAccessible) removeFiles(linkId, collectionIsAccessible.id);
   }
 
   return { response: deletedLinks, status: 200 };

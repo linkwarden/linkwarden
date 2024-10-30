@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import useLinkStore from "@/store/links";
-import toast from "react-hot-toast";
 import Modal from "../Modal";
-import { useRouter } from "next/router";
+import Button from "../ui/Button";
+import { useTranslation } from "next-i18next";
 import { AccessToken } from "@prisma/client";
-import useTokenStore from "@/store/tokens";
+import { useRevokeToken } from "@/hooks/store/tokens";
+import toast from "react-hot-toast";
 
 type Props = {
   onClose: Function;
@@ -12,50 +12,45 @@ type Props = {
 };
 
 export default function DeleteTokenModal({ onClose, activeToken }: Props) {
+  const { t } = useTranslation();
   const [token, setToken] = useState<AccessToken>(activeToken);
 
-  const { revokeToken } = useTokenStore();
-  const [submitLoader, setSubmitLoader] = useState(false);
-
-  const router = useRouter();
+  const revokeToken = useRevokeToken();
 
   useEffect(() => {
     setToken(activeToken);
-  }, []);
+  }, [activeToken]);
 
   const deleteLink = async () => {
-    console.log(token);
-    const load = toast.loading("Deleting...");
+    const load = toast.loading(t("deleting"));
 
-    const response = await revokeToken(token.id as number);
+    await revokeToken.mutateAsync(token.id, {
+      onSettled: (data, error) => {
+        toast.dismiss(load);
 
-    toast.dismiss(load);
-
-    response.ok && toast.success(`Token Revoked.`);
-
-    onClose();
+        if (error) {
+          toast.error(error.message);
+        } else {
+          onClose();
+          toast.success(t("token_revoked"));
+        }
+      },
+    });
   };
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin text-red-500">Revoke Token</p>
+      <p className="text-xl font-thin text-red-500">{t("revoke_token")}</p>
 
       <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
-        <p>
-          Are you sure you want to revoke this Access Token? Any apps or
-          services using this token will no longer be able to access Linkwarden
-          using it.
-        </p>
+        <p>{t("revoke_confirmation")}</p>
 
-        <button
-          className={`ml-auto btn w-fit text-white flex items-center gap-2 duration-100 bg-red-500 hover:bg-red-400 hover:dark:bg-red-600 cursor-pointer`}
-          onClick={deleteLink}
-        >
+        <Button className="ml-auto" intent="destructive" onClick={deleteLink}>
           <i className="bi-trash text-xl" />
-          Revoke
-        </button>
+          {t("revoke")}
+        </Button>
       </div>
     </Modal>
   );

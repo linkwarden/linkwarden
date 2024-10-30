@@ -55,6 +55,20 @@ export function getLogins() {
       name: process.env.AUTHENTIK_CUSTOM_NAME ?? "Authentik",
     });
   }
+  // Azure AD B2C
+  if (process.env.NEXT_PUBLIC_AZURE_AD_B2C_ENABLED === "true") {
+    buttonAuths.push({
+      method: "azure-ad-b2c",
+      name: process.env.AZURE_AD_B2C_CUSTOM_NAME ?? "Azure AD B2C",
+    });
+  }
+  // Azure AD
+  if (process.env.NEXT_PUBLIC_AZURE_AD_ENABLED === "true") {
+    buttonAuths.push({
+      method: "azure-ad",
+      name: process.env.AZURE_AD_CUSTOM_NAME ?? "Azure AD",
+    });
+  }
   // Battle.net
   if (process.env.NEXT_PUBLIC_BATTLENET_ENABLED === "true") {
     buttonAuths.push({
@@ -391,10 +405,16 @@ export function getLogins() {
       name: process.env.ZOOM_CUSTOM_NAME ?? "Zoom",
     });
   }
+  // Authelia
+  if (process.env.NEXT_PUBLIC_AUTHELIA_ENABLED === "true") {
+    buttonAuths.push({
+      method: "authelia",
+      name: process.env.AUTHELIA_CUSTOM_NAME ?? "Authelia",
+    });
+  }
   return {
     credentialsEnabled:
-      process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === "true" ||
-      process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED === undefined
+      process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false"
         ? "true"
         : "false",
     emailEnabled:

@@ -3,60 +3,53 @@ import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
-import useCollectionStore from "@/store/collections";
-import useLinkStore from "@/store/links";
 import {
-  ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
+  ArchivedFormat,
 } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
+import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
+import { useUploadFile } from "@/hooks/store/links";
+import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
 
 type Props = {
   onClose: Function;
 };
 
 export default function UploadFileModal({ onClose }: Props) {
+  const { t } = useTranslation();
   const { data } = useSession();
 
   const initial = {
     name: "",
-    url: "",
     description: "",
     type: "url",
     tags: [],
-    preview: "",
-    image: "",
-    pdf: "",
-    readable: "",
-    textContent: "",
     collection: {
+      id: undefined,
       name: "",
-      ownerId: data?.user.id as number,
     },
-  } as LinkIncludingShortenedCollectionAndTags;
+  } as PostLinkSchemaType;
 
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags>(initial);
-
+  const [link, setLink] = useState<PostLinkSchemaType>(initial);
   const [file, setFile] = useState<File>();
 
-  const { addLink } = useLinkStore();
+  const uploadFile = useUploadFile();
   const [submitLoader, setSubmitLoader] = useState(false);
-
   const [optionsExpanded, setOptionsExpanded] = useState(false);
-
   const router = useRouter();
-  const { collections } = useCollectionStore();
+  const { data: collections = [] } = useCollections();
 
   const setCollection = (e: any) => {
-    if (e?.__isNew__) e.value = null;
+    if (e?.__isNew__) e.value = undefined;
 
     setLink({
       ...link,
-      collection: { id: e?.value, name: e?.label, ownerId: e?.ownerId },
+      collection: { id: e?.value, name: e?.label },
     });
   };
 
@@ -70,7 +63,7 @@ export default function UploadFileModal({ onClose }: Props) {
 
   useEffect(() => {
     setOptionsExpanded(false);
-    if (router.query.id) {
+    if (router.pathname.startsWith("/collections/") && router.query.id) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
       );
@@ -85,23 +78,19 @@ export default function UploadFileModal({ onClose }: Props) {
           collection: {
             id: currentCollection.id,
             name: currentCollection.name,
-            ownerId: currentCollection.ownerId,
           },
         });
     } else
       setLink({
         ...initial,
-        collection: {
-          name: "Unorganized",
-          ownerId: data?.user.id as number,
-        },
+        collection: { name: "Unorganized" },
       });
-  }, []);
+  }, [router, collections]);
 
   const submit = async () => {
     if (!submitLoader && file) {
       let fileType: ArchivedFormat | null = null;
-      let linkType: "url" | "image" | "pdf" | null = null;
+      let linkType: "url" | "image" | "monolith" | "pdf" | null = null;
 
       if (file?.type === "image/jpg" || file.type === "image/jpeg") {
         fileType = ArchivedFormat.jpeg;
@@ -113,55 +102,44 @@ export default function UploadFileModal({ onClose }: Props) {
         fileType = ArchivedFormat.pdf;
         linkType = "pdf";
       }
+      // else if (file.type === "text/html") {
+      //   fileType = ArchivedFormat.monolith;
+      //   linkType = "monolith";
+      // }
 
-      if (fileType !== null && linkType !== null) {
-        setSubmitLoader(true);
+      setSubmitLoader(true);
 
-        let response;
+      const load = toast.loading(t("creating"));
 
-        const load = toast.loading("Creating...");
+      await uploadFile.mutateAsync(
+        { link, file },
+        {
+          onSettled: (data, error) => {
+            toast.dismiss(load);
 
-        response = await addLink({
-          ...link,
-          type: linkType,
-          name: link.name ? link.name : file.name.replace(/\.[^/.]+$/, ""),
-        });
-
-        toast.dismiss(load);
-
-        if (response.ok) {
-          const formBody = new FormData();
-          file && formBody.append("file", file);
-
-          await fetch(
-            `/api/v1/archives/${
-              (response.data as LinkIncludingShortenedCollectionAndTags).id
-            }?format=${fileType}`,
-            {
-              body: formBody,
-              method: "POST",
+            if (error) {
+              toast.error(error.message);
+            } else {
+              onClose();
+              toast.success(t("created_success"));
             }
-          );
-          toast.success(`Created!`);
-          onClose();
-        } else toast.error(response.data as string);
+          },
+        }
+      );
 
-        setSubmitLoader(false);
-
-        return response;
-      }
+      setSubmitLoader(false);
     }
   };
 
   return (
     <Modal toggleModal={onClose}>
       <div className="flex gap-2 items-start">
-        <p className="text-xl font-thin">Upload File</p>
+        <p className="text-xl font-thin">{t("upload_file")}</p>
       </div>
       <div className="divider mb-3 mt-1"></div>
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">
-          <p className="mb-2">File</p>
+          <p className="mb-2">{t("file")}</p>
           <label className="btn h-10 btn-sm w-full border border-neutral-content hover:border-neutral-content flex justify-between">
             <input
               type="file"
@@ -171,74 +149,74 @@ export default function UploadFileModal({ onClose }: Props) {
             />
           </label>
           <p className="text-xs font-semibold mt-2">
-            PDF, PNG, JPG (Up to {process.env.NEXT_PUBLIC_MAX_FILE_SIZE || 30}
-            MB)
+            {t("file_types", {
+              size: process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10,
+            })}
           </p>
         </div>
         <div className="sm:col-span-2 col-span-5">
-          <p className="mb-2">Collection</p>
-          {link.collection.name ? (
+          <p className="mb-2">{t("collection")}</p>
+          {link.collection?.name && (
             <CollectionSelection
               onChange={setCollection}
               defaultValue={{
-                label: link.collection.name,
-                value: link.collection.id,
+                value: link.collection?.id,
+                label: link.collection?.name || "Unorganized",
               }}
             />
-          ) : null}
+          )}
         </div>
       </div>
-      {optionsExpanded ? (
+      {optionsExpanded && (
         <div className="mt-5">
-          {/* <hr className="mb-3 border border-neutral-content" /> */}
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
-              <p className="mb-2">Name</p>
+              <p className="mb-2">{t("name")}</p>
               <TextInput
                 value={link.name}
                 onChange={(e) => setLink({ ...link, name: e.target.value })}
-                placeholder="e.g. Example Link"
+                placeholder={t("example_link")}
                 className="bg-base-200"
               />
             </div>
-
             <div>
-              <p className="mb-2">Tags</p>
+              <p className="mb-2">{t("tags")}</p>
               <TagSelection
                 onChange={setTags}
-                defaultValue={link.tags.map((e) => {
-                  return { label: e.name, value: e.id };
-                })}
+                defaultValue={link.tags?.map((e) => ({
+                  value: e.id,
+                  label: e.name,
+                }))}
               />
             </div>
-
             <div className="sm:col-span-2">
-              <p className="mb-2">Description</p>
+              <p className="mb-2">{t("description")}</p>
               <textarea
-                value={unescapeString(link.description) as string}
+                value={unescapeString(link.description || "") || ""}
                 onChange={(e) =>
                   setLink({ ...link, description: e.target.value })
                 }
-                placeholder="Will be auto generated if nothing is provided."
-                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
+                placeholder={t("description_placeholder")}
+                className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
               />
             </div>
           </div>
         </div>
-      ) : undefined}
+      )}
       <div className="flex justify-between items-center mt-5">
         <div
           onClick={() => setOptionsExpanded(!optionsExpanded)}
           className={`rounded-md cursor-pointer btn btn-sm btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
         >
-          <p>{optionsExpanded ? "Hide" : "More"} Options</p>
+          <p>
+            {optionsExpanded ? t("hide") : t("more")} {t("options")}
+          </p>
         </div>
-
         <button
           className="btn btn-accent dark:border-violet-400 text-white"
           onClick={submit}
         >
-          Create Link
+          {t("upload_file")}
         </button>
       </div>
     </Modal>

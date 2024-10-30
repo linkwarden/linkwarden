@@ -1,0 +1,143 @@
+name: Linkwarden Playwright Tests
+
+on:
+  push:
+    branches:
+      - main
+      - qacomet/**
+  pull_request:
+  workflow_dispatch:
+
+env:
+  PGHOST: localhost
+  PGPORT: 5432
+  PGUSER: postgres
+  PGPASSWORD: password
+  PGDATABASE: postgres
+
+  TEST_POSTGRES_USER: test_linkwarden_user
+  TEST_POSTGRES_PASSWORD: password
+  TEST_POSTGRES_DATABASE: test_linkwarden_db
+  TEST_POSTGRES_DATABASE_TEMPLATE: test_linkwarden_db_template
+  TEST_POSTGRES_HOST: localhost
+  TEST_POSTGREST_PORT: 5432
+  PRODUCTION_POSTGRES_DATABASE: linkwarden_db
+
+  NEXTAUTH_SECRET: very_sensitive_secret
+  NEXTAUTH_URL: http://localhost:3000/api/v1/auth
+
+  # Manual installation database settings
+  DATABASE_URL: postgresql://test_linkwarden_user:password@localhost:5432/test_linkwarden_db
+
+  # Docker installation database settings
+  POSTGRES_PASSWORD: password
+
+  TEST_USERNAME: test-user
+  TEST_PASSWORD: password
+
+jobs:
+  playwright-test-runner:
+    strategy:
+      matrix:
+        test_case: ['@login']
+    timeout-minutes: 20
+    runs-on:
+      - ubuntu-22.04
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: 'yarn'
+
+      - name: Initialize PostgreSQL
+        run: |
+          echo "Initializing Databases"
+          psql -h localhost -U postgres -d postgres -c "CREATE USER ${{ env.TEST_POSTGRES_USER }} WITH PASSWORD '${{ env.TEST_POSTGRES_PASSWORD }}';"
+          psql -h localhost -U postgres -d postgres -c "CREATE DATABASE ${{ env.TEST_POSTGRES_DATABASE }} OWNER ${{ env.TEST_POSTGRES_USER }};"
+
+      - name: Install packages
+        run: yarn install -y
+
+      - name: Cache playwright dependencies
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: |
+            ffmpeg fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf
+            fonts-unifont fonts-wqy-zenhei gstreamer1.0-libav gstreamer1.0-plugins-bad
+            gstreamer1.0-plugins-base gstreamer1.0-plugins-good libaa1 libass9
+            libasyncns0 libavc1394-0 libavcodec58 libavdevice58 libavfilter7
+            libavformat58 libavutil56 libbluray2 libbs2b0 libcaca0 libcdio-cdda2
+            libcdio-paranoia2 libcdio19 libcdparanoia0 libchromaprint1 libcodec2-1.0
+            libdc1394-25 libdca0 libdecor-0-0 libdv4 libdvdnav4 libdvdread8 libegl-mesa0
+            libegl1 libevdev2 libevent-2.1-7 libfaad2 libffi7 libflac8 libflite1
+            libfluidsynth3 libfreeaptx0 libgles2 libgme0 libgsm1 libgssdp-1.2-0
+            libgstreamer-gl1.0-0 libgstreamer-plugins-bad1.0-0
+            libgstreamer-plugins-base1.0-0 libgstreamer-plugins-good1.0-0 libgupnp-1.2-1
+            libgupnp-igd-1.0-4 libharfbuzz-icu0 libhyphen0 libiec61883-0
+            libinstpatch-1.0-2 libjack-jackd2-0 libkate1 libldacbt-enc2 liblilv-0-0
+            libltc11 libmanette-0.2-0 libmfx1 libmjpegutils-2.1-0 libmodplug1
+            libmp3lame0 libmpcdec6 libmpeg2encpp-2.1-0 libmpg123-0 libmplex2-2.1-0
+            libmysofa1 libnice10 libnotify4 libopenal-data libopenal1 libopengl0
+            libopenh264-6 libopenmpt0 libopenni2-0 libopus0 liborc-0.4-0
+            libpocketsphinx3 libpostproc55 libpulse0 libqrencode4 libraw1394-11
+            librubberband2 libsamplerate0 libsbc1 libsdl2-2.0-0 libserd-0-0 libshine3
+            libshout3 libsndfile1 libsndio7.0 libsord-0-0 libsoundtouch1 libsoup-3.0-0
+            libsoup-3.0-common libsoxr0 libspandsp2 libspeex1 libsphinxbase3
+            libsratom-0-0 libsrt1.4-gnutls libsrtp2-1 libssh-gcrypt-4 libswresample3
+            libswscale5 libtag1v5 libtag1v5-vanilla libtheora0 libtwolame0 libudfread0
+            libv4l-0 libv4lconvert0 libva-drm2 libva-x11-2 libva2 libvdpau1
+            libvidstab1.1 libvisual-0.4-0 libvo-aacenc0 libvo-amrwbenc0 libvorbisenc2
+            libvpx7 libwavpack1 libwebrtc-audio-processing1 libwildmidi2 libwoff1
+            libx264-163 libxcb-shape0 libxv1 libxvidcore4 libzbar0 libzimg2
+            libzvbi-common libzvbi0 libzxingcore1 ocl-icd-libopencl1 timgm6mb-soundfont
+            xfonts-cyrillic xfonts-encodings xfonts-scalable xfonts-utils
+
+      - name: Cache playwright browsers
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install playwright
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: yarn playwright install --with-deps
+
+      - name: Setup project
+        run: |
+          yarn prisma generate
+          yarn build
+          yarn prisma migrate deploy
+
+      - name: Start linkwarden server and worker
+        run: yarn start &
+
+      - name: Run Tests
+        run: npx playwright test --grep ${{ matrix.test_case }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: test-results
+          retention-days: 30

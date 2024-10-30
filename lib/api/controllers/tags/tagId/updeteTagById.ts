@@ -1,18 +1,31 @@
 import { prisma } from "@/lib/api/db";
-import { Tag } from "@prisma/client";
+import {
+  UpdateTagSchema,
+  UpdateTagSchemaType,
+} from "@/lib/shared/schemaValidation";
 
 export default async function updeteTagById(
   userId: number,
   tagId: number,
-  data: Tag
+  body: UpdateTagSchemaType
 ) {
-  if (!tagId || !data.name)
-    return { response: "Please choose a valid name for the tag.", status: 401 };
+  const dataValidation = UpdateTagSchema.safeParse(body);
+
+  if (!dataValidation.success) {
+    return {
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      status: 400,
+    };
+  }
+
+  const { name } = dataValidation.data;
 
   const tagNameIsTaken = await prisma.tag.findFirst({
     where: {
       ownerId: userId,
-      name: data.name,
+      name: name,
     },
   });
 
@@ -39,7 +52,7 @@ export default async function updeteTagById(
       id: tagId,
     },
     data: {
-      name: data.name,
+      name: name,
     },
   });
 
