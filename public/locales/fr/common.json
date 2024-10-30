@@ -370,5 +370,6 @@
   "demo_title": "Démonstration uniquement",
   "demo_desc": "Il s'agit d'une instance de démonstration de Linkwarden et les téléchargements sont désactivés.",
   "demo_desc_2": "Si vous souhaitez tester la version complète, vous pouvez vous inscrire pour un essai gratuit à l'adresse suivante:",
-  "demo_button": "Se connecter en tant qu'utilisateur de démonstration"
+  "demo_button": "Se connecter en tant qu'utilisateur de démonstration",
+  "browse_by_topic": "Naviguer par sujet"
 }
