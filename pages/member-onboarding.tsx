@@ -3,7 +3,7 @@ import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
@@ -26,10 +26,6 @@ export default function MemberOnboarding() {
 
   const { data: user = {} } = useUser();
   const updateUser = useUpdateUser();
-
-  useEffect(() => {
-    toast.success(t("accepted_invitation_please_fill"));
-  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -71,7 +67,7 @@ export default function MemberOnboarding() {
       <form onSubmit={submit}>
         <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
-            {t("finalize_profile")}
+            {t("invitation_accepted")}
           </p>
 
           <div className="divider my-0"></div>
