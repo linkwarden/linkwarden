@@ -373,5 +373,6 @@
   "demo_title": "Sadece Demo",
   "demo_desc": "Bu sadece bir Linkwarden demo örneğidir ve yüklemeler devre dışı bırakılmıştır.",
   "demo_desc_2": "Tam sürümü denemek istiyorsanız, ücretsiz deneme için kaydolabilirsiniz:",
-  "demo_button": "Demo kullanıcı olarak giriş yap"
+  "demo_button": "Demo kullanıcı olarak giriş yap",
+  "browse_by_topic": "Konuya göre göz atı"
 }
