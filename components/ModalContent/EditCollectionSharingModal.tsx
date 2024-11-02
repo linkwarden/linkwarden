@@ -130,31 +130,6 @@ export default function EditCollectionSharingModal({
           </div>
         )}
 
-        {permissions === true && collection.isPublic && (
-          <div>
-            <p>Show tags in public collection</p>
-
-            <label className="label cursor-pointer justify-start gap-2">
-              <input
-                type="checkbox"
-                checked={collection.tagsArePublic}
-                onChange={() =>
-                  setCollection({
-                    ...collection,
-                    tagsArePublic: !collection.tagsArePublic,
-                  })
-                }
-                className="checkbox checkbox-primary"
-              />
-              <span className="label-text">Show tags in public collection</span>
-            </label>
-
-            <p className="text-neutral text-sm">
-              This will let <b>Anyone</b> view this collections tags and search
-              this collections links by them.
-            </p>
-          </div>
-        )}
         {collection.isPublic && (
           <div>
             <p className="mb-2">{t("sharable_link")}</p>

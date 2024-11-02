@@ -25,11 +25,10 @@ import { usePublicLinks } from "@/hooks/store/publicLinks";
 import Links from "@/components/LinkViews/Links";
 import { Disclosure, Transition } from "@headlessui/react";
 
-
 export default function PublicCollections() {
   const { t } = useTranslation();
 
-const { settings } = useLocalSettingsStore();
+  const { settings } = useLocalSettingsStore();
 
   const router = useRouter();
 
@@ -37,22 +36,31 @@ const { settings } = useLocalSettingsStore();
     Partial<AccountSettings>
   >({});
 
-  const handleTagSelection = (tag: string  | undefined) => {
+  const handleTagSelection = (tag: string | undefined) => {
     if (tag) {
-      Object.keys(searchFilter).forEach((v) => searchFilter[(v as keyof {name: boolean, url: boolean, description: boolean, tags: boolean, textContent: boolean})] = false)
+      Object.keys(searchFilter).forEach(
+        (v) =>
+          (searchFilter[
+            v as keyof {
+              name: boolean;
+              url: boolean;
+              description: boolean;
+              tags: boolean;
+              textContent: boolean;
+            }
+          ] = false)
+      );
       searchFilter.tags = true;
       return router.push(
         "/public/collections/" +
-        router.query.id +
-        "?q=" +
-        encodeURIComponent(tag || "")
+          router.query.id +
+          "?q=" +
+          encodeURIComponent(tag || "")
       );
     } else {
-      return router.push(
-        "/public/collections/" +
-        router.query.id)
+      return router.push("/public/collections/" + router.query.id);
     }
-  }
+  };
 
   const [searchFilter, setSearchFilter] = useState({
     name: true,
@@ -106,18 +114,18 @@ const { settings } = useLocalSettingsStore();
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
 
-const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
-  const storedValue = localStorage.getItem(
-    "tagDisclosureForPublicCollection" + collection?.id
-  );
-  return storedValue ? storedValue === "true" : true;
-});
-useEffect(() => {
-  localStorage.setItem(
-    "tagDisclosureForPublicCollection" + collection?.id,
-    tagDisclosure ? "true" : "false"
-  );
-}, [tagDisclosure]);
+  const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
+    const storedValue = localStorage.getItem(
+      "tagDisclosureForPublicCollection" + collection?.id
+    );
+    return storedValue ? storedValue === "true" : true;
+  });
+  useEffect(() => {
+    localStorage.setItem(
+      "tagDisclosureForPublicCollection" + collection?.id,
+      tagDisclosure ? "true" : "false"
+    );
+  }, [tagDisclosure]);
 
   if (!collection) return <></>;
   else
@@ -243,88 +251,85 @@ useEffect(() => {
                 }
               />
             </LinkListOptions>
-            {collection.tagsArePublic &&
-              linksForWholeCollection?.flatMap((l) => l.tags)[0] && (
-                <Disclosure defaultOpen={tagDisclosure}>
-                  <Disclosure.Button
-                    onClick={() => {
-                      setTagDisclosure(!tagDisclosure);
-                    }}
-                    className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
-                  >
-                    <p className="text-sm">{t("browse_by_topic")}</p>
-                    <i
-                      className={`bi-chevron-down ${
-                        tagDisclosure ? "rotate-reverse" : "rotate"
-                      }`}
-                    ></i>
-                  </Disclosure.Button>
-                  <Transition
-                    enter="transition duration-100 ease-out"
-                    enterFrom="transform opacity-0 -translate-y-3"
-                    enterTo="transform opacity-100 translate-y-0"
-                    leave="transition duration-100 ease-out"
-                    leaveFrom="transform opacity-100 translate-y-0"
-                    leaveTo="transform opacity-0 -translate-y-3"
-                  >
-                    <Disclosure.Panel>
-                      <div className="flex gap-2 mt-2 mb-6 flex-wrap">
-                        <button
-                          className="max-w-full"
-                          onClick={() => handleTagSelection(undefined)}
-                        >
-                          <div
-                            className="
+            {linksForWholeCollection?.flatMap((l) => l.tags)[0] && (
+              <Disclosure defaultOpen={tagDisclosure}>
+                <Disclosure.Button
+                  onClick={() => {
+                    setTagDisclosure(!tagDisclosure);
+                  }}
+                  className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
+                >
+                  <p className="text-sm">{t("browse_by_topic")}</p>
+                  <i
+                    className={`bi-chevron-down ${
+                      tagDisclosure ? "rotate-reverse" : "rotate"
+                    }`}
+                  ></i>
+                </Disclosure.Button>
+                <Transition
+                  enter="transition duration-100 ease-out"
+                  enterFrom="transform opacity-0 -translate-y-3"
+                  enterTo="transform opacity-100 translate-y-0"
+                  leave="transition duration-100 ease-out"
+                  leaveFrom="transform opacity-100 translate-y-0"
+                  leaveTo="transform opacity-0 -translate-y-3"
+                >
+                  <Disclosure.Panel>
+                    <div className="flex gap-2 mt-2 mb-6 flex-wrap">
+                      <button
+                        className="max-w-full"
+                        onClick={() => handleTagSelection(undefined)}
+                      >
+                        <div
+                          className="
                       bg-neutral-content/20 hover:bg-neutral/20 duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8"
-                          >
-                            <i className="text-primary bi-hash text-2xl text-primary drop-shadow"></i>
-                            <p className="truncate pr-7">{t("all_links")}</p>
-                            <div className="text-neutral drop-shadow text-neutral text-xs">
-                              {collection._count?.links}
-                            </div>
+                        >
+                          <i className="text-primary bi-hash text-2xl text-primary drop-shadow"></i>
+                          <p className="truncate pr-7">{t("all_links")}</p>
+                          <div className="text-neutral drop-shadow text-neutral text-xs">
+                            {collection._count?.links}
                           </div>
-                        </button>
-                        {linksForWholeCollection
-                          .flatMap((l) => l.tags)
-                          .map((t) => t.name)
-                          .filter(
-                            (item, pos, self) => self.indexOf(item) === pos
-                          )
-                          .sort((a, b) => a.localeCompare(b))
-                          .map((e, i) => {
-                            const active = router.query.q === e;
-                            return (
-                              <button
-                                className="max-w-full"
-                                key={i}
-                                onClick={() => handleTagSelection(e)}
-                              >
-                                <div
-                                  className={`
+                        </div>
+                      </button>
+                      {linksForWholeCollection
+                        .flatMap((l) => l.tags)
+                        .map((t) => t.name)
+                        .filter((item, pos, self) => self.indexOf(item) === pos)
+                        .sort((a, b) => a.localeCompare(b))
+                        .map((e, i) => {
+                          const active = router.query.q === e;
+                          return (
+                            <button
+                              className="max-w-full"
+                              key={i}
+                              onClick={() => handleTagSelection(e)}
+                            >
+                              <div
+                                className={`
                             ${
                               active
                                 ? "bg-primary/20"
                                 : "bg-neutral-content/20 hover:bg-neutral/20"
                             } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
-                                >
-                                  <i className="bi-hash text-2xl text-primary drop-shadow"></i>
-                                  <p className="truncate pr-7">{e}</p>
-                                  <div className="drop-shadow text-neutral text-xs">
-                                    {
-                                      linksForWholeCollection.filter((l) =>
-                                        l.tags.map((t) => t.name).includes(e)
-                                      ).length
-                                    }
-                                  </div>
+                              >
+                                <i className="bi-hash text-2xl text-primary drop-shadow"></i>
+                                <p className="truncate pr-7">{e}</p>
+                                <div className="drop-shadow text-neutral text-xs">
+                                  {
+                                    linksForWholeCollection.filter((l) =>
+                                      l.tags.map((t) => t.name).includes(e)
+                                    ).length
+                                  }
                                 </div>
-                              </button>
-                            );
-                          })}
-                      </div>
-                    </Disclosure.Panel>
-                  </Transition>
-                </Disclosure>
-              )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                    </div>
+                  </Disclosure.Panel>
+                </Transition>
+              </Disclosure>
+            )}
             <Links
               links={
                 links?.map((e, i) => {
