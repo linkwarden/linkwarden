@@ -80,6 +80,7 @@ export default function Appearance() {
       { ...user },
       {
         onSettled: (data, error) => {
+          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -90,8 +91,6 @@ export default function Appearance() {
         },
       }
     );
-
-    setSubmitLoader(false);
   };
 
   return (

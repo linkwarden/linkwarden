@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "./db";
 import { User } from "@prisma/client";
-import verifySubscription from "./verifySubscription";
+import verifySubscription from "./stripe/verifySubscription";
 import verifyToken from "./verifyToken";
 
 type Props = {
@@ -30,6 +30,7 @@ export default async function verifyUser({
     },
     include: {
       subscriptions: true,
+      parentSubscription: true,
     },
   });
 

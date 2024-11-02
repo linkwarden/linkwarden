@@ -35,7 +35,7 @@ export default async function updateCollection(
     return { response: "Collection is not accessible.", status: 401 };
 
   if (data.parentId) {
-    if (data.parentId !== ("root" as any)) {
+    if (data.parentId !== "root") {
       const findParentCollection = await prisma.collection.findUnique({
         where: {
           id: data.parentId,
@@ -57,6 +57,12 @@ export default async function updateCollection(
         };
     }
   }
+
+  const uniqueMembers = data.members.filter(
+    (e, i, a) =>
+      a.findIndex((el) => el.userId === e.userId) === i &&
+      e.userId !== collectionIsAccessible.ownerId
+  );
 
   const updatedCollection = await prisma.$transaction(async () => {
     await prisma.usersAndCollections.deleteMany({
@@ -80,19 +86,19 @@ export default async function updateCollection(
         isPublic: data.isPublic,
         tagsArePublic: data.tagsArePublic,
         parent:
-          data.parentId && data.parentId !== ("root" as any)
+          data.parentId && data.parentId !== "root"
             ? {
                 connect: {
                   id: data.parentId,
                 },
               }
-            : data.parentId === ("root" as any)
+            : data.parentId === "root"
               ? {
                   disconnect: true,
                 }
               : undefined,
         members: {
-          create: data.members.map((e) => ({
+          create: uniqueMembers.map((e) => ({
             user: { connect: { id: e.userId } },
             canCreate: e.canCreate,
             canUpdate: e.canUpdate,
