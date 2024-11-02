@@ -101,7 +101,6 @@ export default async function updateUserById(
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, password: true, name: true },
   });
 
   if (user && user.email && data.email && data.email !== user.email) {
@@ -133,7 +132,7 @@ export default async function updateUserById(
     sendChangeEmailVerificationRequest(
       user.email,
       data.email,
-      data.name?.trim() || user.name
+      data.name?.trim() || user.name || "Linkwarden User"
     );
   }
 
@@ -170,8 +169,20 @@ export default async function updateUserById(
 
   // Other settings / Apply changes
 
+  const isInvited =
+    user?.name === null && user.parentSubscriptionId && !user.password;
+
+  if (isInvited && data.password === "")
+    return {
+      response: "Password is required.",
+      status: 400,
+    };
+
   const saltRounds = 10;
-  const newHashedPassword = bcrypt.hashSync(data.newPassword || "", saltRounds);
+  const newHashedPassword = bcrypt.hashSync(
+    data.newPassword || data.password || "",
+    saltRounds
+  );
 
   const updatedUser = await prisma.user.update({
     where: {
@@ -198,18 +209,28 @@ export default async function updateUserById(
       linksRouteTo: data.linksRouteTo,
       preventDuplicateLinks: data.preventDuplicateLinks,
       password:
-        data.newPassword && data.newPassword !== ""
+        isInvited || (data.newPassword && data.newPassword !== "")
           ? newHashedPassword
           : undefined,
     },
     include: {
       whitelistedUsers: true,
       subscriptions: true,
+      parentSubscription: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
 
-  const { whitelistedUsers, password, subscriptions, ...userInfo } =
-    updatedUser;
+  const {
+    whitelistedUsers,
+    password,
+    subscriptions,
+    parentSubscription,
+    ...userInfo
+  } = updatedUser;
 
   // If user.whitelistedUsers is not provided, we will assume the whitelistedUsers should be removed
   const newWhitelistedUsernames: string[] = data.whitelistedUsers || [];
@@ -250,11 +271,20 @@ export default async function updateUserById(
     });
   }
 
-  const response: Omit<AccountSettings, "password"> = {
+  const response = {
     ...userInfo,
     whitelistedUsers: newWhitelistedUsernames,
     image: userInfo.image ? `${userInfo.image}?${Date.now()}` : "",
-    subscription: { active: subscriptions?.active },
+    subscription: {
+      active: subscriptions?.active,
+      quantity: subscriptions?.quantity,
+    },
+    parentSubscription: {
+      active: parentSubscription?.active,
+      user: {
+        email: parentSubscription?.user.email,
+      },
+    },
   };
 
   return { response, status: 200 };

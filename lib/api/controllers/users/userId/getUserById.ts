@@ -12,6 +12,11 @@ export default async function getUserById(userId: number) {
         },
       },
       subscriptions: true,
+      parentSubscription: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
 
@@ -22,13 +27,21 @@ export default async function getUserById(userId: number) {
     (usernames) => usernames.username
   );
 
-  const { password, subscriptions, ...lessSensitiveInfo } = user;
+  const { password, subscriptions, parentSubscription, ...lessSensitiveInfo } =
+    user;
 
   const data = {
     ...lessSensitiveInfo,
     whitelistedUsers: whitelistedUsernames,
     subscription: {
       active: subscriptions?.active,
+      quantity: subscriptions?.quantity,
+    },
+    parentSubscription: {
+      active: parentSubscription?.active,
+      user: {
+        email: parentSubscription?.user.email,
+      },
     },
   };
 

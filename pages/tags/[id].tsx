@@ -85,6 +85,7 @@ export default function Index() {
         },
         {
           onSettled: (data, error) => {
+            setSubmitLoader(false);
             toast.dismiss(load);
 
             if (error) {
@@ -97,7 +98,6 @@ export default function Index() {
       );
     }
 
-    setSubmitLoader(false);
     setRenameTag(false);
   };
 

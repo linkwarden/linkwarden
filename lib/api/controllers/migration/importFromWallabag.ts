@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
-
-const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
+import { hasPassedLimit } from "../../verifyCapacity";
 
 type WallabagBackup = {
   is_archived: number;
@@ -36,19 +35,14 @@ export default async function importFromWallabag(
 
   let totalImports = backup.length;
 
-  const numberOfLinksTheUserHas = await prisma.link.count({
-    where: {
-      collection: {
-        ownerId: userId,
-      },
-    },
-  });
+  const hasTooManyLinks = await hasPassedLimit(userId, totalImports);
 
-  if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+  if (hasTooManyLinks) {
     return {
-      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Your subscription have reached the maximum number of links allowed.`,
       status: 400,
     };
+  }
 
   await prisma
     .$transaction(
@@ -61,6 +55,11 @@ export default async function importFromWallabag(
               },
             },
             name: "Imports",
+            createdBy: {
+              connect: {
+                id: userId,
+              },
+            },
           },
         });
 
@@ -87,6 +86,11 @@ export default async function importFromWallabag(
               collection: {
                 connect: {
                   id: newCollection.id,
+                },
+              },
+              createdBy: {
+                connect: {
+                  id: userId,
                 },
               },
               tags:

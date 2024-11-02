@@ -32,7 +32,7 @@ export interface Member {
   canCreate: boolean;
   canUpdate: boolean;
   canDelete: boolean;
-  user: OptionalExcluding<User, "username" | "name" | "id">;
+  user: OptionalExcluding<User, "email" | "username" | "name" | "id">;
 }
 
 export interface CollectionIncludingMembersAndLinkCount
