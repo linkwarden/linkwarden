@@ -45,6 +45,7 @@ const setLinkCollection = async (link: PostLinkSchemaType, userId: number) => {
       data: {
         name: link.collection.name.trim(),
         ownerId: userId,
+        createdById: userId,
       },
     });
 
@@ -78,6 +79,7 @@ const setLinkCollection = async (link: PostLinkSchemaType, userId: number) => {
           name: "Unorganized",
           ownerId: userId,
           parentId: null,
+          createdById: userId,
         },
       });
   }

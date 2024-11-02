@@ -7,6 +7,7 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { useUser } from "@/hooks/store/user";
 
 export default function Delete() {
   const [password, setPassword] = useState("");
@@ -15,6 +16,7 @@ export default function Delete() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data } = useSession();
   const { t } = useTranslation();
+  const { data: user } = useUser();
 
   const submit = async () => {
     const body = {
@@ -83,7 +85,7 @@ export default function Delete() {
           />
         </div>
 
-        {process.env.NEXT_PUBLIC_STRIPE && (
+        {process.env.NEXT_PUBLIC_STRIPE && !user.parentSubscriptionId && (
           <fieldset className="border rounded-md p-2 border-primary">
             <legend className="px-3 py-1 text-sm sm:text-base border rounded-md border-primary">
               <b>{t("optional")}</b> <i>{t("feedback_help")}</i>

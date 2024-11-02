@@ -16,10 +16,9 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
   } else if (req.method === "GET") {
     const user = await verifyUser({ req, res });
 
-    if (!user || user.id !== Number(process.env.NEXT_PUBLIC_ADMIN || 1))
-      return res.status(401).json({ response: "Unauthorized..." });
+    if (!user) return res.status(401).json({ response: "Unauthorized..." });
 
-    const response = await getUsers();
+    const response = await getUsers(user);
     return res.status(response.status).json({ response: response.response });
   }
 }

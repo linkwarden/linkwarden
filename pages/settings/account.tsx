@@ -108,6 +108,7 @@ export default function Account() {
           }
         },
         onSettled: (data, error) => {
+          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -129,8 +130,6 @@ export default function Account() {
         location.reload();
       }, 1000);
     }
-
-    setSubmitLoader(false);
   };
 
   const importBookmarks = async (

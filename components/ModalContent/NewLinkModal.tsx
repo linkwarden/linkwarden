@@ -80,6 +80,7 @@ export default function NewLinkModal({ onClose }: Props) {
 
       await addLink.mutateAsync(link, {
         onSettled: (data, error) => {
+          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -90,8 +91,6 @@ export default function NewLinkModal({ onClose }: Props) {
           }
         },
       });
-
-      setSubmitLoader(false);
     }
   };
 
