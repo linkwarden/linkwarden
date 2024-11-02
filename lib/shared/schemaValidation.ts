@@ -190,7 +190,6 @@ export const UpdateCollectionSchema = z.object({
   isPublic: z.boolean().optional(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
-  tagsArePublic: z.boolean().optional(),
   parentId: z.union([z.number(), z.literal("root")]).nullish(),
   members: z.array(
     z.object({

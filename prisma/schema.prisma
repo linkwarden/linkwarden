@@ -105,7 +105,6 @@ model Collection {
   parent          Collection?           @relation("SubCollections", fields: [parentId], references: [id])
   subCollections  Collection[]          @relation("SubCollections")
   isPublic        Boolean               @default(false)
-  tagsArePublic   Boolean               @default(false) 
   owner           User                  @relation(fields: [ownerId], references: [id])
   ownerId         Int
   members         UsersAndCollections[]
