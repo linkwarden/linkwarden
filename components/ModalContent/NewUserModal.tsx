@@ -35,6 +35,9 @@ export default function NewUserModal({ onClose }: Props) {
     event.preventDefault();
 
     if (!submitLoader) {
+      if (form.password.length < 8)
+        return toast.error(t("password_length_error"));
+
       const checkFields = () => {
         if (emailEnabled) {
           return form.name !== "" && form.email !== "" && form.password !== "";
@@ -52,9 +55,10 @@ export default function NewUserModal({ onClose }: Props) {
           onSuccess: () => {
             onClose();
           },
+          onSettled: () => {
+            setSubmitLoader(false);
+          },
         });
-
-        setSubmitLoader(false);
       } else {
         toast.error(t("fill_all_fields_error"));
       }

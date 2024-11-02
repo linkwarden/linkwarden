@@ -34,6 +34,7 @@ export default function NewTokenModal({ onClose }: Props) {
 
       await addToken.mutateAsync(token, {
         onSettled: (data, error) => {
+          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -43,8 +44,6 @@ export default function NewTokenModal({ onClose }: Props) {
           }
         },
       });
-
-      setSubmitLoader(false);
     }
   };
 
