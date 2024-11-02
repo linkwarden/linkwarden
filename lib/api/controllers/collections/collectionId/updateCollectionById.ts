@@ -84,7 +84,6 @@ export default async function updateCollection(
         icon: data.icon,
         iconWeight: data.iconWeight,
         isPublic: data.isPublic,
-        tagsArePublic: data.tagsArePublic,
         parent:
           data.parentId && data.parentId !== "root"
             ? {
