@@ -54,7 +54,7 @@ export default async function forgotPassword(
       });
     }
 
-    sendPasswordResetRequest(user.email, user.name);
+    sendPasswordResetRequest(user.email, user.name || "Linkwarden User");
 
     return res.status(200).json({
       response: "Password reset email sent.",

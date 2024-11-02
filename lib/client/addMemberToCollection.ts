@@ -2,29 +2,36 @@ import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
 import getPublicUserData from "./getPublicUserData";
 import { toast } from "react-hot-toast";
 import { TFunction } from "i18next";
+import { User } from "@prisma/client";
 
 const addMemberToCollection = async (
-  ownerUsername: string,
-  memberUsername: string,
+  owner: User,
+  memberIdentifier: string,
   collection: CollectionIncludingMembersAndLinkCount,
   setMember: (newMember: Member) => null | undefined,
   t: TFunction<"translation", undefined>
 ) => {
   const checkIfMemberAlreadyExists = collection.members.find((e) => {
     const username = (e.user.username || "").toLowerCase();
-    return username === memberUsername.toLowerCase();
+    const email = (e.user.email || "").toLowerCase();
+
+    return (
+      username === memberIdentifier.toLowerCase() ||
+      email === memberIdentifier.toLowerCase()
+    );
   });
 
   if (
     // no duplicate members
     !checkIfMemberAlreadyExists &&
     // member can't be empty
-    memberUsername.trim() !== "" &&
+    memberIdentifier.trim() !== "" &&
     // member can't be the owner
-    memberUsername.trim().toLowerCase() !== ownerUsername.toLowerCase()
+    memberIdentifier.trim().toLowerCase() !== owner.username?.toLowerCase() &&
+    memberIdentifier.trim().toLowerCase() !== owner.email?.toLowerCase()
   ) {
     // Lookup, get data/err, list ...
-    const user = await getPublicUserData(memberUsername.trim().toLowerCase());
+    const user = await getPublicUserData(memberIdentifier.trim().toLowerCase());
 
     if (user.username) {
       setMember({
@@ -37,12 +44,16 @@ const addMemberToCollection = async (
           id: user.id,
           name: user.name,
           username: user.username,
+          email: user.email,
           image: user.image,
         },
       });
     }
   } else if (checkIfMemberAlreadyExists) toast.error(t("user_already_member"));
-  else if (memberUsername.trim().toLowerCase() === ownerUsername.toLowerCase())
+  else if (
+    memberIdentifier.trim().toLowerCase() === owner.username?.toLowerCase() ||
+    memberIdentifier.trim().toLowerCase() === owner.email?.toLowerCase()
+  )
     toast.error(t("you_are_already_collection_owner"));
 };
 
