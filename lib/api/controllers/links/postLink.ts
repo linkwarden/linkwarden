@@ -6,8 +6,7 @@ import {
   PostLinkSchema,
   PostLinkSchemaType,
 } from "@/lib/shared/schemaValidation";
-
-const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
+import { hasPassedLimit } from "../../verifyCapacity";
 
 export default async function postLink(
   body: PostLinkSchemaType,
@@ -59,19 +58,14 @@ export default async function postLink(
       };
   }
 
-  const numberOfLinksTheUserHas = await prisma.link.count({
-    where: {
-      collection: {
-        ownerId: linkCollection.ownerId,
-      },
-    },
-  });
+  const hasTooManyLinks = await hasPassedLimit(userId, 1);
 
-  if (numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+  if (hasTooManyLinks) {
     return {
-      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Your subscription have reached the maximum number of links allowed.`,
       status: 400,
     };
+  }
 
   const { title, headers } = await fetchTitleAndHeaders(link.url || "");
 
@@ -98,6 +92,11 @@ export default async function postLink(
       name,
       description: link.description,
       type: linkType,
+      createdBy: {
+        connect: {
+          id: userId,
+        },
+      },
       collection: {
         connect: {
           id: linkCollection.id,

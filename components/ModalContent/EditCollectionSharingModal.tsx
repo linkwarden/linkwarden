@@ -45,6 +45,7 @@ export default function EditCollectionSharingModal({
 
       await updateCollection.mutateAsync(collection, {
         onSettled: (data, error) => {
+          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -55,8 +56,6 @@ export default function EditCollectionSharingModal({
           }
         },
       });
-
-      setSubmitLoader(false);
     }
   };
 
@@ -67,7 +66,7 @@ export default function EditCollectionSharingModal({
 
   const publicCollectionURL = `${currentURL.origin}/public/collections/${collection.id}`;
 
-  const [memberUsername, setMemberUsername] = useState("");
+  const [memberIdentifier, setMemberIdentifier] = useState("");
 
   const [collectionOwner, setCollectionOwner] = useState<
     Partial<AccountSettings>
@@ -92,7 +91,7 @@ export default function EditCollectionSharingModal({
       members: [...collection.members, newMember],
     });
 
-    setMemberUsername("");
+    setMemberIdentifier("");
   };
 
   return (
@@ -174,15 +173,15 @@ export default function EditCollectionSharingModal({
 
             <div className="flex items-center gap-2">
               <TextInput
-                value={memberUsername || ""}
+                value={memberIdentifier || ""}
                 className="bg-base-200"
-                placeholder={t("members_username_placeholder")}
-                onChange={(e) => setMemberUsername(e.target.value)}
+                placeholder={t("add_member_placeholder")}
+                onChange={(e) => setMemberIdentifier(e.target.value)}
                 onKeyDown={(e) =>
                   e.key === "Enter" &&
                   addMemberToCollection(
-                    user.username as string,
-                    memberUsername || "",
+                    user,
+                    memberIdentifier.replace(/^@/, "") || "",
                     collection,
                     setMemberState,
                     t
@@ -193,8 +192,8 @@ export default function EditCollectionSharingModal({
               <div
                 onClick={() =>
                   addMemberToCollection(
-                    user.username as string,
-                    memberUsername || "",
+                    user,
+                    memberIdentifier.replace(/^@/, "") || "",
                     collection,
                     setMemberState,
                     t
