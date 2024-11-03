@@ -142,13 +142,13 @@ function delay(sec: number) {
 }
 
 async function init() {
-  console.log("\x1b[34m%s\x1b[0m", "Starting the link processing task");
+  console.log("\x1b[34m%s\x1b[0m", "Processing the links...");
   while (true) {
     try {
       await processBatch();
       await delay(intervalInSeconds);
     } catch (error) {
-      console.error("\x1b[34m%s\x1b[0m", "Error processing links:", error);
+      console.error("\x1b[34m%s\x1b[0m", "Error processing link:", error);
       await delay(intervalInSeconds);
     }
   }

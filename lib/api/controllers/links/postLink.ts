@@ -1,26 +1,29 @@
 import { prisma } from "@/lib/api/db";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 import createFolder from "@/lib/api/storage/createFolder";
 import setLinkCollection from "../../setLinkCollection";
-
-const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
+import {
+  PostLinkSchema,
+  PostLinkSchemaType,
+} from "@/lib/shared/schemaValidation";
+import { hasPassedLimit } from "../../verifyCapacity";
 
 export default async function postLink(
-  link: LinkIncludingShortenedCollectionAndTags,
+  body: PostLinkSchemaType,
   userId: number
 ) {
-  if (link.url || link.type === "url") {
-    try {
-      new URL(link.url || "");
-    } catch (error) {
-      return {
-        response:
-          "Please enter a valid Address for the Link. (It should start with http/https)",
-        status: 400,
-      };
-    }
+  const dataValidation = PostLinkSchema.safeParse(body);
+
+  if (!dataValidation.success) {
+    return {
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      status: 400,
+    };
   }
+
+  const link = dataValidation.data;
 
   const linkCollection = await setLinkCollection(link, userId);
 
@@ -55,19 +58,14 @@ export default async function postLink(
       };
   }
 
-  const numberOfLinksTheUserHas = await prisma.link.count({
-    where: {
-      collection: {
-        ownerId: linkCollection.ownerId,
-      },
-    },
-  });
+  const hasTooManyLinks = await hasPassedLimit(userId, 1);
 
-  if (numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+  if (hasTooManyLinks) {
     return {
-      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Your subscription have reached the maximum number of links allowed.`,
       status: 400,
     };
+  }
 
   const { title, headers } = await fetchTitleAndHeaders(link.url || "");
 
@@ -94,6 +92,11 @@ export default async function postLink(
       name,
       description: link.description,
       type: linkType,
+      createdBy: {
+        connect: {
+          id: userId,
+        },
+      },
       collection: {
         connect: {
           id: linkCollection.id,

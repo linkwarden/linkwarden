@@ -14,6 +14,7 @@ import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useUploadFile } from "@/hooks/store/links";
+import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
 
 type Props = {
   onClose: Function;
@@ -25,24 +26,16 @@ export default function UploadFileModal({ onClose }: Props) {
 
   const initial = {
     name: "",
-    url: "",
     description: "",
     type: "url",
     tags: [],
-    preview: "",
-    image: "",
-    pdf: "",
-    readable: "",
-    monolith: "",
-    textContent: "",
     collection: {
+      id: undefined,
       name: "",
-      ownerId: data?.user.id as number,
     },
-  } as LinkIncludingShortenedCollectionAndTags;
+  } as PostLinkSchemaType;
 
-  const [link, setLink] =
-    useState<LinkIncludingShortenedCollectionAndTags>(initial);
+  const [link, setLink] = useState<PostLinkSchemaType>(initial);
   const [file, setFile] = useState<File>();
 
   const uploadFile = useUploadFile();
@@ -52,11 +45,11 @@ export default function UploadFileModal({ onClose }: Props) {
   const { data: collections = [] } = useCollections();
 
   const setCollection = (e: any) => {
-    if (e?.__isNew__) e.value = null;
+    if (e?.__isNew__) e.value = undefined;
 
     setLink({
       ...link,
-      collection: { id: e?.value, name: e?.label, ownerId: e?.ownerId },
+      collection: { id: e?.value, name: e?.label },
     });
   };
 
@@ -70,10 +63,11 @@ export default function UploadFileModal({ onClose }: Props) {
 
   useEffect(() => {
     setOptionsExpanded(false);
-    if (router.query.id) {
+    if (router.pathname.startsWith("/collections/") && router.query.id) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
       );
+
       if (
         currentCollection &&
         currentCollection.ownerId &&
@@ -84,13 +78,12 @@ export default function UploadFileModal({ onClose }: Props) {
           collection: {
             id: currentCollection.id,
             name: currentCollection.name,
-            ownerId: currentCollection.ownerId,
           },
         });
     } else
       setLink({
         ...initial,
-        collection: { name: "Unorganized", ownerId: data?.user.id as number },
+        collection: { name: "Unorganized" },
       });
   }, [router, collections]);
 
@@ -122,6 +115,7 @@ export default function UploadFileModal({ onClose }: Props) {
         { link, file },
         {
           onSettled: (data, error) => {
+            setSubmitLoader(false);
             toast.dismiss(load);
 
             if (error) {
@@ -133,8 +127,6 @@ export default function UploadFileModal({ onClose }: Props) {
           },
         }
       );
-
-      setSubmitLoader(false);
     }
   };
 
@@ -150,7 +142,7 @@ export default function UploadFileModal({ onClose }: Props) {
           <label className="btn h-10 btn-sm w-full border border-neutral-content hover:border-neutral-content flex justify-between">
             <input
               type="file"
-              accept=".pdf,.png,.jpg,.jpeg,.html"
+              accept=".pdf,.png,.jpg,.jpeg"
               className="cursor-pointer custom-file-input"
               onChange={(e) => e.target.files && setFile(e.target.files[0])}
             />
@@ -163,18 +155,18 @@ export default function UploadFileModal({ onClose }: Props) {
         </div>
         <div className="sm:col-span-2 col-span-5">
           <p className="mb-2">{t("collection")}</p>
-          {link.collection.name ? (
+          {link.collection?.name && (
             <CollectionSelection
               onChange={setCollection}
               defaultValue={{
-                label: link.collection.name,
-                value: link.collection.id,
+                value: link.collection?.id,
+                label: link.collection?.name || "Unorganized",
               }}
             />
-          ) : null}
+          )}
         </div>
       </div>
-      {optionsExpanded ? (
+      {optionsExpanded && (
         <div className="mt-5">
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
@@ -190,26 +182,26 @@ export default function UploadFileModal({ onClose }: Props) {
               <p className="mb-2">{t("tags")}</p>
               <TagSelection
                 onChange={setTags}
-                defaultValue={link.tags.map((e) => ({
-                  label: e.name,
+                defaultValue={link.tags?.map((e) => ({
                   value: e.id,
+                  label: e.name,
                 }))}
               />
             </div>
             <div className="sm:col-span-2">
               <p className="mb-2">{t("description")}</p>
               <textarea
-                value={unescapeString(link.description) as string}
+                value={unescapeString(link.description || "") || ""}
                 onChange={(e) =>
                   setLink({ ...link, description: e.target.value })
                 }
                 placeholder={t("description_placeholder")}
-                className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-sky-300 dark:focus:border-sky-600 border-solid border outline-none duration-100"
+                className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
               />
             </div>
           </div>
         </div>
-      ) : undefined}
+      )}
       <div className="flex justify-between items-center mt-5">
         <div
           onClick={() => setOptionsExpanded(!optionsExpanded)}
