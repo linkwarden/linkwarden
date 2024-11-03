@@ -1,7 +1,6 @@
 import MainLayout from "@/layouts/MainLayout";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import useWindowDimensions from "@/hooks/useWindowDimensions";
 import React from "react";
 import { toast } from "react-hot-toast";
 import { MigrationFormat, MigrationRequest, ViewMode } from "@/types/global";
@@ -16,16 +15,20 @@ import { useCollections } from "@/hooks/store/collections";
 import { useTags } from "@/hooks/store/tags";
 import { useDashboardData } from "@/hooks/store/dashboardData";
 import Links from "@/components/LinkViews/Links";
+import useLocalSettingsStore from "@/store/localSettings";
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
-  const dashboardData = useDashboardData();
+  const {
+    data: { links = [], numberOfPinnedLinks } = { links: [] },
+    ...dashboardData
+  } = useDashboardData();
   const { data: tags = [] } = useTags();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
-  const [showLinks, setShowLinks] = useState(3);
+  const { settings } = useLocalSettingsStore();
 
   useEffect(() => {
     setNumberOfLinks(
@@ -37,29 +40,28 @@ export default function Dashboard() {
     );
   }, [collections]);
 
-  const handleNumberOfLinksToShow = () => {
+  const numberOfLinksToShow = useMemo(() => {
     if (window.innerWidth > 1900) {
-      setShowLinks(10);
+      return 10;
     } else if (window.innerWidth > 1500) {
-      setShowLinks(8);
+      return 8;
     } else if (window.innerWidth > 880) {
-      setShowLinks(6);
+      return 6;
     } else if (window.innerWidth > 550) {
-      setShowLinks(4);
-    } else setShowLinks(2);
-  };
+      return 4;
+    } else {
+      return 2;
+    }
+  }, []);
 
-  const { width } = useWindowDimensions();
-
-  useEffect(() => {
-    handleNumberOfLinksToShow();
-  }, [width]);
-
-  const importBookmarks = async (e: any, format: MigrationFormat) => {
-    const file: File = e.target.files[0];
+  const importBookmarks = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    format: MigrationFormat
+  ) => {
+    const file: File | null = e.target.files && e.target.files[0];
 
     if (file) {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.readAsText(file, "UTF-8");
       reader.onload = async function (e) {
         const load = toast.loading("Importing...");
@@ -110,32 +112,30 @@ export default function Dashboard() {
           <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
         </div>
 
-        <div>
-          <div className="flex justify-evenly flex-col xl:flex-row xl:items-center gap-2 xl:w-full h-full rounded-2xl p-8 border border-neutral-content bg-base-200">
-            <DashboardItem
-              name={numberOfLinks === 1 ? t("link") : t("links")}
-              value={numberOfLinks}
-              icon={"bi-link-45deg"}
-            />
+        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-5 xl:flex-row xl:justify-evenly xl:w-full h-full rounded-2xl p-5 bg-base-200 border border-neutral-content">
+          <DashboardItem
+            name={numberOfLinks === 1 ? t("link") : t("links")}
+            value={numberOfLinks}
+            icon={"bi-link-45deg"}
+          />
 
-            <div className="divider xl:divider-horizontal"></div>
+          <DashboardItem
+            name={collections.length === 1 ? t("collection") : t("collections")}
+            value={collections.length}
+            icon={"bi-folder"}
+          />
 
-            <DashboardItem
-              name={
-                collections.length === 1 ? t("collection") : t("collections")
-              }
-              value={collections.length}
-              icon={"bi-folder"}
-            />
+          <DashboardItem
+            name={tags.length === 1 ? t("tag") : t("tags")}
+            value={tags.length}
+            icon={"bi-hash"}
+          />
 
-            <div className="divider xl:divider-horizontal"></div>
-
-            <DashboardItem
-              name={tags.length === 1 ? t("tag") : t("tags")}
-              value={tags.length}
-              icon={"bi-hash"}
-            />
-          </div>
+          <DashboardItem
+            name={t("pinned")}
+            value={numberOfPinnedLinks}
+            icon={"bi-pin-angle"}
+          />
         </div>
 
         <div className="flex justify-between items-center">
@@ -157,10 +157,7 @@ export default function Dashboard() {
 
         <div
           style={{
-            flex:
-              dashboardData.data || dashboardData.isLoading
-                ? "0 1 auto"
-                : "1 1 auto",
+            flex: links || dashboardData.isLoading ? "0 1 auto" : "1 1 auto",
           }}
           className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
         >
@@ -168,16 +165,17 @@ export default function Dashboard() {
             <div className="w-full">
               <Links
                 layout={viewMode}
-                placeholderCount={showLinks / 2}
+                placeholderCount={settings.columns || 1}
                 useData={dashboardData}
               />
             </div>
-          ) : dashboardData.data &&
-            dashboardData.data[0] &&
-            !dashboardData.isLoading ? (
+          ) : links && links[0] && !dashboardData.isLoading ? (
             <div className="w-full">
               <Links
-                links={dashboardData.data.slice(0, showLinks)}
+                links={links.slice(
+                  0,
+                  settings.columns ? settings.columns * 2 : numberOfLinksToShow
+                )}
                 layout={viewMode}
               />
             </div>
@@ -310,16 +308,21 @@ export default function Dashboard() {
             <div className="w-full">
               <Links
                 layout={viewMode}
-                placeholderCount={showLinks / 2}
+                placeholderCount={settings.columns || 1}
                 useData={dashboardData}
               />
             </div>
-          ) : dashboardData.data?.some((e) => e.pinnedBy && e.pinnedBy[0]) ? (
+          ) : links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
             <div className="w-full">
               <Links
-                links={dashboardData.data
-                  .filter((e) => e.pinnedBy && e.pinnedBy[0])
-                  .slice(0, showLinks)}
+                links={links
+                  .filter((e: any) => e.pinnedBy && e.pinnedBy[0])
+                  .slice(
+                    0,
+                    settings.columns
+                      ? settings.columns * 2
+                      : numberOfLinksToShow
+                  )}
                 layout={viewMode}
               />
             </div>
@@ -339,9 +342,7 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-      {newLinkModal ? (
-        <NewLinkModal onClose={() => setNewLinkModal(false)} />
-      ) : undefined}
+      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
     </MainLayout>
   );
 }

@@ -1,14 +1,30 @@
 import { prisma } from "@/lib/api/db";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import getPermission from "@/lib/api/getPermission";
+import {
+  UpdateCollectionSchema,
+  UpdateCollectionSchemaType,
+} from "@/lib/shared/schemaValidation";
 
 export default async function updateCollection(
   userId: number,
   collectionId: number,
-  data: CollectionIncludingMembersAndLinkCount
+  body: UpdateCollectionSchemaType
 ) {
   if (!collectionId)
     return { response: "Please choose a valid collection.", status: 401 };
+
+  const dataValidation = UpdateCollectionSchema.safeParse(body);
+
+  if (!dataValidation.success) {
+    return {
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      status: 400,
+    };
+  }
+
+  const data = dataValidation.data;
 
   const collectionIsAccessible = await getPermission({
     userId,
@@ -18,10 +34,8 @@ export default async function updateCollection(
   if (!(collectionIsAccessible?.ownerId === userId))
     return { response: "Collection is not accessible.", status: 401 };
 
-  console.log(data);
-
   if (data.parentId) {
-    if (data.parentId !== ("root" as any)) {
+    if (data.parentId !== "root") {
       const findParentCollection = await prisma.collection.findUnique({
         where: {
           id: data.parentId,
@@ -44,6 +58,12 @@ export default async function updateCollection(
     }
   }
 
+  const uniqueMembers = data.members.filter(
+    (e, i, a) =>
+      a.findIndex((el) => el.userId === e.userId) === i &&
+      e.userId !== collectionIsAccessible.ownerId
+  );
+
   const updatedCollection = await prisma.$transaction(async () => {
     await prisma.usersAndCollections.deleteMany({
       where: {
@@ -61,22 +81,24 @@ export default async function updateCollection(
         name: data.name.trim(),
         description: data.description,
         color: data.color,
+        icon: data.icon,
+        iconWeight: data.iconWeight,
         isPublic: data.isPublic,
         parent:
-          data.parentId && data.parentId !== ("root" as any)
+          data.parentId && data.parentId !== "root"
             ? {
                 connect: {
                   id: data.parentId,
                 },
               }
-            : data.parentId === ("root" as any)
+            : data.parentId === "root"
               ? {
                   disconnect: true,
                 }
               : undefined,
         members: {
-          create: data.members.map((e) => ({
-            user: { connect: { id: e.user.id || e.userId } },
+          create: uniqueMembers.map((e) => ({
+            user: { connect: { id: e.userId } },
             canCreate: e.canCreate,
             canUpdate: e.canUpdate,
             canDelete: e.canDelete,
