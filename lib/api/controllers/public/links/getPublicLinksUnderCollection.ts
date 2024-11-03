@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { LinkRequestQuery, Order, Sort } from "@/types/global";
 
 export default async function getLink(
-  query: Omit<LinkRequestQuery, "tagId" | "pinnedOnly">, takeAll = false
+  query: Omit<LinkRequestQuery, "tagId" | "pinnedOnly">
 ) {
   const POSTGRES_IS_ENABLED =
     process.env.DATABASE_URL?.startsWith("postgresql");

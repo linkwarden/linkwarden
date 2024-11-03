@@ -371,6 +371,5 @@
   "demo_title": "Nur Demo",
   "demo_desc": "Dies ist nur eine Demo-Instanz von Linkwarden und Uploads sind deaktiviert.",
   "demo_desc_2": "Wenn Du die Vollversion ausprobieren möchtest, kannst Du Dich für eine kostenlose Testversion anmelden unter:",
-  "demo_button": "Login als Demo-Benutzer",
-  "browse_by_topic": "Nach Thema suchen"
+  "demo_button": "Login als Demo-Benutzer"
 }
