@@ -6,6 +6,7 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import UserListing from "@/components/UserListing";
 import { useUsers } from "@/hooks/store/admin/users";
+import Divider from "@/components/ui/Divider";
 
 interface User extends U {
   subscriptions: {
@@ -88,7 +89,7 @@ export default function Admin() {
         </div>
       </div>
 
-      <div className="divider my-3"></div>
+      <Divider className="my-3" />
 
       {filteredUsers && filteredUsers.length > 0 && searchQuery !== "" ? (
         UserListing(filteredUsers, deleteUserModal, setDeleteUserModal, t)
@@ -100,9 +101,7 @@ export default function Admin() {
         <p>{t("no_users_found")}</p>
       )}
 
-      {newUserModal ? (
-        <NewUserModal onClose={() => setNewUserModal(false)} />
-      ) : null}
+      {newUserModal && <NewUserModal onClose={() => setNewUserModal(false)} />}
     </div>
   );
 }

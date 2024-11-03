@@ -88,13 +88,10 @@ function App({
                     {icon}
                     <span data-testid="toast-message">{message}</span>
                     {t.type !== "loading" && (
-                      <button
-                        className="btn btn-xs outline-none btn-circle btn-ghost"
+                      <div
                         data-testid="close-toast-button"
                         onClick={() => toast.dismiss(t.id)}
-                      >
-                        <i className="bi bi-x"></i>
-                      </button>
+                      ></div>
                     )}
                   </div>
                 )}

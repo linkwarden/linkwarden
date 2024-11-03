@@ -27,7 +27,7 @@ model Account {
 
 model User {
   id                      Int                   @id @default(autoincrement())
-  name                    String
+  name                    String?
   username                String?               @unique
   email                   String?               @unique
   emailVerified           DateTime?
@@ -35,10 +35,14 @@ model User {
   image                   String?
   password                String?
   locale                  String                @default("en")
+  parentSubscription      Subscription?         @relation("ChildUsers", fields: [parentSubscriptionId], references: [id])
+  parentSubscriptionId    Int?
   accounts                Account[]
   collections             Collection[]
   tags                    Tag[]
-  pinnedLinks             Link[]
+  pinnedLinks             Link[]                @relation("PinnedLinks")
+  createdLinks            Link[]                @relation("CreatedLinks")
+  createdCollections      Collection[]          @relation("CreatedCollections")
   collectionsJoined       UsersAndCollections[]
   collectionOrder         Int[]                 @default([])
   whitelistedUsers        WhitelistedUser[]
@@ -94,6 +98,8 @@ model Collection {
   id              Int                   @id @default(autoincrement())
   name            String
   description     String                @default("")
+  icon            String?
+  iconWeight      String?
   color           String                @default("#0ea5e9")
   parentId        Int?
   parent          Collection?           @relation("SubCollections", fields: [parentId], references: [id])
@@ -102,6 +108,8 @@ model Collection {
   owner           User                  @relation(fields: [ownerId], references: [id])
   ownerId         Int
   members         UsersAndCollections[]
+  createdBy       User?                 @relation("CreatedCollections", fields: [createdById], references: [id])
+  createdById     Int?
   links           Link[]
   createdAt       DateTime              @default(now())
   updatedAt       DateTime              @default(now()) @updatedAt
@@ -129,10 +137,15 @@ model Link {
   name          String     @default("")
   type          String     @default("url")
   description   String     @default("")
-  pinnedBy      User[]
+  pinnedBy      User[]     @relation("PinnedLinks")
+  createdBy     User?      @relation("CreatedLinks", fields: [createdById], references: [id])
+  createdById   Int?
   collection    Collection @relation(fields: [collectionId], references: [id])
   collectionId  Int
   tags          Tag[]
+  icon          String?
+  iconWeight    String?
+  color         String?
   url           String?
   textContent   String?
   preview       String?
@@ -165,8 +178,10 @@ model Subscription {
   stripeSubscriptionId String   @unique
   currentPeriodStart   DateTime
   currentPeriodEnd     DateTime
+  quantity             Int      @default(1)
   user                 User     @relation(fields: [userId], references: [id])
   userId               Int      @unique
+  childUsers           User[]   @relation("ChildUsers")
   createdAt            DateTime @default(now())
   updatedAt            DateTime @default(now()) @updatedAt
 }

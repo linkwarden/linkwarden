@@ -1,15 +1,22 @@
 import { prisma } from "@/lib/api/db";
 
-export default async function getTags(userId: number) {
+export default async function getTags({
+  userId,
+  collectionId,
+}: {
+  userId?: number;
+  collectionId?: number;
+}) {
   // Remove empty tags
-  await prisma.tag.deleteMany({
-    where: {
-      ownerId: userId,
-      links: {
-        none: {},
+  if (userId)
+    await prisma.tag.deleteMany({
+      where: {
+        ownerId: userId,
+        links: {
+          none: {},
+        },
       },
-    },
-  });
+    });
 
   const tags = await prisma.tag.findMany({
     where: {
@@ -25,6 +32,13 @@ export default async function getTags(userId: number) {
                   },
                 },
               },
+            },
+          },
+        },
+        {
+          links: {
+            some: {
+              collectionId,
             },
           },
         },
