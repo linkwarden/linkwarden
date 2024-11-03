@@ -114,7 +114,7 @@ export default function Navbar() {
 
       <MobileNavigation />
 
-      {sidebar && (
+      {sidebar ? (
         <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-40">
           <ClickAwayHandler className="h-full" onClickOutside={toggleSidebar}>
             <div className="slide-right h-full shadow-lg">
@@ -122,14 +122,16 @@ export default function Navbar() {
             </div>
           </ClickAwayHandler>
         </div>
-      )}
-      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
-      {newCollectionModal && (
+      ) : null}
+      {newLinkModal ? (
+        <NewLinkModal onClose={() => setNewLinkModal(false)} />
+      ) : undefined}
+      {newCollectionModal ? (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
-      )}
-      {uploadFileModal && (
+      ) : undefined}
+      {uploadFileModal ? (
         <UploadFileModal onClose={() => setUploadFileModal(false)} />
-      )}
+      ) : undefined}
     </div>
   );
 }

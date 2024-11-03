@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/api/db";
+import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
-import { hasPassedLimit } from "../../verifyCapacity";
+
+const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 
 type WallabagBackup = {
   is_archived: number;
@@ -35,14 +37,19 @@ export default async function importFromWallabag(
 
   let totalImports = backup.length;
 
-  const hasTooManyLinks = await hasPassedLimit(userId, totalImports);
+  const numberOfLinksTheUserHas = await prisma.link.count({
+    where: {
+      collection: {
+        ownerId: userId,
+      },
+    },
+  });
 
-  if (hasTooManyLinks) {
+  if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
     return {
-      response: `Your subscription have reached the maximum number of links allowed.`,
+      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
       status: 400,
     };
-  }
 
   await prisma
     .$transaction(
@@ -55,42 +62,24 @@ export default async function importFromWallabag(
               },
             },
             name: "Imports",
-            createdBy: {
-              connect: {
-                id: userId,
-              },
-            },
           },
         });
 
         createFolder({ filePath: `archives/${newCollection.id}` });
 
         for (const link of backup) {
-          if (link.url) {
-            try {
-              new URL(link.url.trim());
-            } catch (err) {
-              continue;
-            }
-          }
-
           await prisma.link.create({
             data: {
               pinnedBy: link.is_starred
                 ? { connect: { id: userId } }
                 : undefined,
-              url: link.url?.trim().slice(0, 254),
-              name: link.title?.trim().slice(0, 254) || "",
-              textContent: link.content?.trim() || "",
+              url: link.url,
+              name: link.title || "",
+              textContent: link.content || "",
               importDate: link.created_at || null,
               collection: {
                 connect: {
                   id: newCollection.id,
-                },
-              },
-              createdBy: {
-                connect: {
-                  id: userId,
                 },
               },
               tags:
@@ -99,12 +88,12 @@ export default async function importFromWallabag(
                       connectOrCreate: link.tags.map((tag) => ({
                         where: {
                           name_ownerId: {
-                            name: tag?.trim().slice(0, 49),
+                            name: tag.trim(),
                             ownerId: userId,
                           },
                         },
                         create: {
-                          name: tag?.trim().slice(0, 49),
+                          name: tag.trim(),
                           owner: {
                             connect: {
                               id: userId,

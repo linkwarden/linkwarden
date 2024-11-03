@@ -44,7 +44,6 @@ export default function DeleteCollectionModal({
 
       deleteCollection.mutateAsync(collection.id as number, {
         onSettled: (data, error) => {
-          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -56,6 +55,8 @@ export default function DeleteCollectionModal({
           }
         },
       });
+
+      setSubmitLoader(false);
     }
   };
 

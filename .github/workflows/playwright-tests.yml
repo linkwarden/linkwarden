@@ -59,10 +59,10 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v2
 
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: "18"
           cache: 'yarn'
@@ -135,7 +135,7 @@ jobs:
       - name: Run Tests
         run: npx playwright test --grep ${{ matrix.test_case }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-report

@@ -74,12 +74,12 @@ const UserListing = (
         </tbody>
       </table>
 
-      {deleteUserModal.isOpen && deleteUserModal.userId && (
+      {deleteUserModal.isOpen && deleteUserModal.userId ? (
         <DeleteUserModal
           onClose={() => setDeleteUserModal({ isOpen: false, userId: null })}
           userId={deleteUserModal.userId}
         />
-      )}
+      ) : null}
     </div>
   );
 };

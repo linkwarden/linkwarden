@@ -1,6 +1,6 @@
 import { prisma } from "./db";
 import { User } from "@prisma/client";
-import verifySubscription from "./stripe/verifySubscription";
+import verifySubscription from "./verifySubscription";
 import bcrypt from "bcrypt";
 
 type Props = {
@@ -33,7 +33,6 @@ export default async function verifyByCredentials({
         },
     include: {
       subscriptions: true,
-      parentSubscription: true,
     },
   });
 

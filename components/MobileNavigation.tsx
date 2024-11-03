@@ -87,13 +87,15 @@ export default function MobileNavigation({}: Props) {
           <MobileNavigationButton href={`/collections`} icon={"bi-folder"} />
         </div>
       </div>
-      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
-      {newCollectionModal && (
+      {newLinkModal ? (
+        <NewLinkModal onClose={() => setNewLinkModal(false)} />
+      ) : undefined}
+      {newCollectionModal ? (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
-      )}
-      {uploadFileModal && (
+      ) : undefined}
+      {uploadFileModal ? (
         <UploadFileModal onClose={() => setUploadFileModal(false)} />
-      )}
+      ) : undefined}
     </>
   );
 }

@@ -7,19 +7,12 @@ import { useTags } from "@/hooks/store/tags";
 type Props = {
   onChange: any;
   defaultValue?: {
-    value?: number;
+    value: number;
     label: string;
   }[];
-  autoFocus?: boolean;
-  onBlur?: any;
 };
 
-export default function TagSelection({
-  onChange,
-  defaultValue,
-  autoFocus,
-  onBlur,
-}: Props) {
+export default function TagSelection({ onChange, defaultValue }: Props) {
   const { data: tags = [] } = useTags();
 
   const [options, setOptions] = useState<Options[]>([]);
@@ -41,9 +34,8 @@ export default function TagSelection({
       options={options}
       styles={styles}
       defaultValue={defaultValue}
+      // menuPosition="fixed"
       isMulti
-      autoFocus={autoFocus}
-      onBlur={onBlur}
     />
   );
 }

@@ -2,13 +2,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/user";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
   const LINKWARDEN_VERSION = process.env.version;
-
-  const { data: user } = useUser();
 
   const router = useRouter();
   const [active, setActive] = useState("");
@@ -76,7 +73,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        {process.env.NEXT_PUBLIC_STRIPE && !user.parentSubscriptionId && (
+        {process.env.NEXT_PUBLIC_STRIPE && (
           <Link href="/settings/billing">
             <div
               className={`${

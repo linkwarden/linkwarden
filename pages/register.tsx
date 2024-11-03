@@ -133,9 +133,9 @@ export default function Register({
             loading={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
-              (value.name.toLowerCase() === "apple" && (
-                <i className={"bi-" + value.name.toLowerCase()}></i>
-              ))}
+            value.name.toLowerCase() === "apple" ? (
+              <i className={"bi-" + value.name.toLowerCase()}></i>
+            ) : undefined}
             {value.name}
           </Button>
         </React.Fragment>
@@ -201,7 +201,7 @@ export default function Register({
               </div>
             )}
 
-            {emailEnabled && (
+            {emailEnabled ? (
               <div>
                 <p className="text-sm w-fit font-semibold mb-1">{t("email")}</p>
 
@@ -214,7 +214,7 @@ export default function Register({
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
-            )}
+            ) : undefined}
 
             <div className="w-full">
               <p className="text-sm w-fit font-semibold  mb-1">
@@ -248,7 +248,7 @@ export default function Register({
               />
             </div>
 
-            {process.env.NEXT_PUBLIC_STRIPE && (
+            {process.env.NEXT_PUBLIC_STRIPE ? (
               <div className="text-xs text-neutral mb-3">
                 <p>
                   <Trans
@@ -270,7 +270,7 @@ export default function Register({
                   />
                 </p>
               </div>
-            )}
+            ) : undefined}
 
             <Button
               type="submit"
@@ -282,9 +282,9 @@ export default function Register({
               {t("sign_up")}
             </Button>
 
-            {availableLogins.buttonAuths.length > 0 && (
+            {availableLogins.buttonAuths.length > 0 ? (
               <div className="divider my-1">{t("or_continue_with")}</div>
-            )}
+            ) : undefined}
 
             {displayLoginExternalButton()}
             <div>
@@ -298,7 +298,7 @@ export default function Register({
                   {t("login")}
                 </Link>
               </div>
-              {process.env.NEXT_PUBLIC_STRIPE && (
+              {process.env.NEXT_PUBLIC_STRIPE ? (
                 <div className="text-neutral text-center flex items-baseline gap-1 justify-center">
                   <p>{t("need_help")}</p>
                   <Link
@@ -309,7 +309,7 @@ export default function Register({
                     {t("get_in_touch")}
                   </Link>
                 </div>
-              )}
+              ) : undefined}
             </div>
           </div>
         </form>

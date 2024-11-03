@@ -9,6 +9,8 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
 
+const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
+
 export default function Subscribe() {
   const { t } = useTranslation();
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -21,14 +23,13 @@ export default function Subscribe() {
   const { data: user = {} } = useUser();
 
   useEffect(() => {
-    console.log("user", user);
-    if (
-      session.status === "authenticated" &&
-      user.id &&
-      (user?.subscription?.active || user.parentSubscription?.active)
-    )
+    const hasInactiveSubscription =
+      user.id && !user.subscription?.active && stripeEnabled;
+
+    if (session.status === "authenticated" && !hasInactiveSubscription) {
       router.push("/dashboard");
-  }, [session.status, user]);
+    }
+  }, [session.status]);
 
   async function submit() {
     setSubmitLoader(true);
@@ -39,8 +40,6 @@ export default function Subscribe() {
     const data = await res.json();
 
     router.push(data.response);
-
-    toast.dismiss(redirectionToast);
   }
 
   return (

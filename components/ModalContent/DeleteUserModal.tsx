@@ -3,7 +3,6 @@ import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
 import { useDeleteUser } from "@/hooks/store/admin/users";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 
 type Props = {
   onClose: Function;
@@ -24,40 +23,31 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
         onSuccess: () => {
           onClose();
         },
-        onSettled: (data, error) => {
-          setSubmitLoader(false);
-        },
       });
+
+      setSubmitLoader(false);
     }
   };
 
-  const { data } = useSession();
-  const isAdmin = data?.user?.id === Number(process.env.NEXT_PUBLIC_ADMIN);
-
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin text-red-500">
-        {isAdmin ? t("delete_user") : t("remove_user")}
-      </p>
+      <p className="text-xl font-thin text-red-500">{t("delete_user")}</p>
 
       <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
         <p>{t("confirm_user_deletion")}</p>
-        <p>{t("confirm_user_removal_desc")}</p>
 
-        {isAdmin && (
-          <div role="alert" className="alert alert-warning">
-            <i className="bi-exclamation-triangle text-xl" />
-            <span>
-              <b>{t("warning")}:</b> {t("irreversible_action_warning")}
-            </span>
-          </div>
-        )}
+        <div role="alert" className="alert alert-warning">
+          <i className="bi-exclamation-triangle text-xl" />
+          <span>
+            <b>{t("warning")}:</b> {t("irreversible_action_warning")}
+          </span>
+        </div>
 
         <Button className="ml-auto" intent="destructive" onClick={submit}>
           <i className="bi-trash text-xl" />
-          {isAdmin ? t("delete_confirmation") : t("confirm")}
+          {t("delete_confirmation")}
         </Button>
       </div>
     </Modal>

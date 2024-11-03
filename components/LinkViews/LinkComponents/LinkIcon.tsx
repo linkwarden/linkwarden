@@ -2,26 +2,34 @@ import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import Image from "next/image";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import React from "react";
-import Icon from "@/components/Icon";
-import { IconWeight } from "@phosphor-icons/react";
-import clsx from "clsx";
 
 export default function LinkIcon({
   link,
   className,
-  hideBackground,
-  onClick,
+  size,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   className?: string;
-  hideBackground?: boolean;
-  onClick?: Function;
+  size?: "small" | "medium";
 }) {
-  let iconClasses: string = clsx(
-    "rounded flex item-center justify-center shadow select-none z-10 w-12 h-12",
-    !hideBackground && "rounded-md bg-white backdrop-blur-lg bg-opacity-50 p-1",
-    className
-  );
+  let iconClasses: string =
+    "bg-white shadow rounded-md border-[2px] flex item-center justify-center border-white select-none z-10 " +
+    (className || "");
+
+  let dimension;
+
+  switch (size) {
+    case "small":
+      dimension = " w-8 h-8";
+      break;
+    case "medium":
+      dimension = " w-12 h-12";
+      break;
+    default:
+      size = "medium";
+      dimension = " w-12 h-12";
+      break;
+  }
 
   const url =
     isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
@@ -29,41 +37,37 @@ export default function LinkIcon({
   const [showFavicon, setShowFavicon] = React.useState<boolean>(true);
 
   return (
-    <div onClick={() => onClick && onClick()}>
-      {link.icon ? (
-        <div className={iconClasses}>
-          <Icon
-            icon={link.icon}
-            size={30}
-            weight={(link.iconWeight || "regular") as IconWeight}
-            color={link.color || "#006796"}
-            className="m-auto"
-          />
-        </div>
-      ) : link.type === "url" && url ? (
+    <>
+      {link.type === "url" && url ? (
         showFavicon ? (
           <Image
             src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
             width={64}
             height={64}
             alt=""
-            className={iconClasses}
+            className={iconClasses + dimension}
             draggable="false"
             onError={() => {
               setShowFavicon(false);
             }}
           />
         ) : (
-          <LinkPlaceholderIcon iconClasses={iconClasses} icon="bi-link-45deg" />
+          <LinkPlaceholderIcon
+            iconClasses={iconClasses + dimension}
+            size={size}
+            icon="bi-link-45deg"
+          />
         )
       ) : link.type === "pdf" ? (
         <LinkPlaceholderIcon
-          iconClasses={iconClasses}
+          iconClasses={iconClasses + dimension}
+          size={size}
           icon="bi-file-earmark-pdf"
         />
       ) : link.type === "image" ? (
         <LinkPlaceholderIcon
-          iconClasses={iconClasses}
+          iconClasses={iconClasses + dimension}
+          size={size}
           icon="bi-file-earmark-image"
         />
       ) : // : link.type === "monolith" ? (
@@ -74,19 +78,25 @@ export default function LinkIcon({
       //   />
       // )
       undefined}
-    </div>
+    </>
   );
 }
 
 const LinkPlaceholderIcon = ({
   iconClasses,
+  size,
   icon,
 }: {
   iconClasses: string;
+  size?: "small" | "medium";
   icon: string;
 }) => {
   return (
-    <div className={clsx(iconClasses, "aspect-square text-4xl text-[#006796]")}>
+    <div
+      className={`${
+        size === "small" ? "text-2xl" : "text-4xl"
+      } text-black aspect-square ${iconClasses}`}
+    >
       <i className={`${icon} m-auto`}></i>
     </div>
   );

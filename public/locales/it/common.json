@@ -117,7 +117,6 @@
   "applying_settings": "Applicazione delle impostazioni in corso...",
   "settings_applied": "Impostazioni Applicate!",
   "email_change_request": "Richiesta di cambio email inviata. Per favore verifica il nuovo indirizzo email.",
-  "image_upload_no_file_error": "Nessun file selezionato. Scegli un'immagine da caricare.",
   "image_upload_size_error": "Per favore seleziona un file PNG o JPEG di dimensioni inferiori a 1MB.",
   "image_upload_format_error": "Formato file non valido.",
   "importing_bookmarks": "Importazione dei segnalibri in corso...",

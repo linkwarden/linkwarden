@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/api/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
-import { ResetPasswordSchema } from "@/lib/shared/schemaValidation";
 
 export default async function resetPassword(
   req: NextApiRequest,
@@ -14,17 +13,20 @@ export default async function resetPassword(
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    const dataValidation = ResetPasswordSchema.safeParse(req.body);
+    const token = req.body.token;
+    const password = req.body.password;
 
-    if (!dataValidation.success) {
+    if (!password || password.length < 8) {
       return res.status(400).json({
-        response: `Error: ${
-          dataValidation.error.issues[0].message
-        } [${dataValidation.error.issues[0].path.join(", ")}]`,
+        response: "Password must be at least 8 characters.",
       });
     }
 
-    const { token, password } = dataValidation.data;
+    if (!token || typeof token !== "string") {
+      return res.status(400).json({
+        response: "Invalid token.",
+      });
+    }
 
     // Hashed password
     const saltRounds = 10;

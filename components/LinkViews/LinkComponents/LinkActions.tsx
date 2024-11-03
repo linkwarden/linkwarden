@@ -4,205 +4,207 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import usePermissions from "@/hooks/usePermissions";
+import EditLinkModal from "@/components/ModalContent/EditLinkModal";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
+import PreservedFormatsModal from "@/components/ModalContent/PreservedFormatsModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
-import { useDeleteLink, useGetLink } from "@/hooks/store/links";
+import { useUser } from "@/hooks/store/user";
+import { useDeleteLink, useUpdateLink } from "@/hooks/store/links";
 import toast from "react-hot-toast";
-import LinkModal from "@/components/ModalContent/LinkModal";
-import { useRouter } from "next/router";
-import clsx from "clsx";
-import usePinLink from "@/lib/client/pinLink";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
-  btnStyle?: string;
+  position?: string;
+  toggleShowInfo?: () => void;
+  linkInfo?: boolean;
+  alignToTop?: boolean;
+  flipDropdown?: boolean;
 };
 
-export default function LinkActions({ link, btnStyle }: Props) {
+export default function LinkActions({
+  link,
+  toggleShowInfo,
+  position,
+  linkInfo,
+  alignToTop,
+  flipDropdown,
+}: Props) {
   const { t } = useTranslation();
 
   const permissions = usePermissions(link.collection.id as number);
-  const getLink = useGetLink();
-
-  const pinLink = usePinLink();
 
   const [editLinkModal, setEditLinkModal] = useState(false);
-  const [linkModal, setLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
+  const [preservedFormatsModal, setPreservedFormatsModal] = useState(false);
 
+  const { data: user = {} } = useUser();
+
+  const updateLink = useUpdateLink();
   const deleteLink = useDeleteLink();
 
-  const updateArchive = async () => {
-    const load = toast.loading(t("sending_request"));
+  const pinLink = async () => {
+    const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0] ? true : false;
 
-    const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
-      method: "PUT",
-    });
+    const load = toast.loading(t("updating"));
 
-    const data = await response.json();
-    toast.dismiss(load);
+    await updateLink.mutateAsync(
+      {
+        ...link,
+        pinnedBy: isAlreadyPinned ? undefined : [{ id: user.id }],
+      },
+      {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
 
-    if (response.ok) {
-      await getLink.mutateAsync({ id: link.id as number });
-
-      toast.success(t("link_being_archived"));
-    } else toast.error(data.response);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success(
+              isAlreadyPinned ? t("link_unpinned") : t("link_pinned")
+            );
+          }
+        },
+      }
+    );
   };
-
-  const router = useRouter();
-
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   return (
     <>
-      {isPublicRoute ? (
+      <div
+        className={`dropdown dropdown-left absolute ${
+          position || "top-3 right-3"
+        } ${alignToTop ? "" : "dropdown-end"} z-20`}
+      >
         <div
-          className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
+          tabIndex={0}
+          role="button"
           onMouseDown={dropdownTriggerer}
-          onClick={() => setLinkModal(true)}
+          className="btn btn-ghost btn-sm btn-square text-neutral"
         >
-          <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>
-            <i title="More" className="bi-three-dots text-xl" />
-          </div>
+          <i title="More" className="bi-three-dots text-xl" />
         </div>
-      ) : (
-        <div
-          className={`dropdown dropdown-end absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 z-20`}
+        <ul
+          className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mr-1 ${
+            alignToTop ? "" : "translate-y-10"
+          }`}
         >
-          <div
-            tabIndex={0}
-            role="button"
-            onMouseDown={dropdownTriggerer}
-            className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}
-          >
-            <i title="More" className="bi-three-dots text-xl" />
-          </div>
-          <ul
-            className={
-              "dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1"
-            }
-          >
+          <li>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                (document?.activeElement as HTMLElement)?.blur();
+                pinLink();
+              }}
+              className="whitespace-nowrap"
+            >
+              {link?.pinnedBy && link.pinnedBy[0]
+                ? t("unpin")
+                : t("pin_to_dashboard")}
+            </div>
+          </li>
+          {linkInfo !== undefined && toggleShowInfo ? (
             <li>
               <div
                 role="button"
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  pinLink(link);
+                  toggleShowInfo();
                 }}
                 className="whitespace-nowrap"
               >
-                {link?.pinnedBy && link.pinnedBy[0]
-                  ? t("unpin")
-                  : t("pin_to_dashboard")}
+                {!linkInfo ? t("show_link_details") : t("hide_link_details")}
               </div>
             </li>
+          ) : undefined}
+          {permissions === true || permissions?.canUpdate ? (
             <li>
               <div
                 role="button"
                 tabIndex={0}
                 onClick={() => {
                   (document?.activeElement as HTMLElement)?.blur();
-                  setLinkModal(true);
+                  setEditLinkModal(true);
                 }}
                 className="whitespace-nowrap"
               >
-                {t("show_link_details")}
+                {t("edit_link")}
               </div>
             </li>
-            {(permissions === true || permissions?.canUpdate) && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setEditLinkModal(true);
-                  }}
-                  className="whitespace-nowrap"
-                >
-                  {t("edit_link")}
-                </div>
-              </li>
-            )}
-            {link.type === "url" &&
-              (permissions === true || permissions?.canUpdate) && (
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      updateArchive();
-                    }}
-                    className="whitespace-nowrap"
-                  >
-                    {t("refresh_preserved_formats")}
-                  </div>
-                </li>
-              )}
-            {(permissions === true || permissions?.canDelete) && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={async (e) => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    console.log(e.shiftKey);
-                    e.shiftKey
-                      ? (async () => {
-                          const load = toast.loading(t("deleting"));
+          ) : undefined}
+          {link.type === "url" && (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  setPreservedFormatsModal(true);
+                }}
+                className="whitespace-nowrap"
+              >
+                {t("preserved_formats")}
+              </div>
+            </li>
+          )}
+          {permissions === true || permissions?.canDelete ? (
+            <li>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={async (e) => {
+                  (document?.activeElement as HTMLElement)?.blur();
+                  e.shiftKey
+                    ? async () => {
+                        const load = toast.loading(t("deleting"));
 
-                          await deleteLink.mutateAsync(link.id as number, {
-                            onSettled: (data, error) => {
-                              toast.dismiss(load);
+                        await deleteLink.mutateAsync(link.id as number, {
+                          onSettled: (data, error) => {
+                            toast.dismiss(load);
 
-                              if (error) {
-                                toast.error(error.message);
-                              } else {
-                                toast.success(t("deleted"));
-                              }
-                            },
-                          });
-                        })()
-                      : setDeleteLinkModal(true);
-                  }}
-                  className="whitespace-nowrap"
-                >
-                  {t("delete")}
-                </div>
-              </li>
-            )}
-          </ul>
-        </div>
-      )}
-      {editLinkModal && (
-        <LinkModal
+                            if (error) {
+                              toast.error(error.message);
+                            } else {
+                              toast.success(t("deleted"));
+                            }
+                          },
+                        });
+                      }
+                    : setDeleteLinkModal(true);
+                }}
+                className="whitespace-nowrap"
+              >
+                {t("delete")}
+              </div>
+            </li>
+          ) : undefined}
+        </ul>
+      </div>
+
+      {editLinkModal ? (
+        <EditLinkModal
           onClose={() => setEditLinkModal(false)}
-          onPin={() => pinLink(link)}
-          onUpdateArchive={updateArchive}
-          onDelete={() => setDeleteLinkModal(true)}
-          link={link}
-          activeMode="edit"
+          activeLink={link}
         />
-      )}
-      {deleteLinkModal && (
+      ) : undefined}
+      {deleteLinkModal ? (
         <DeleteLinkModal
           onClose={() => setDeleteLinkModal(false)}
           activeLink={link}
         />
-      )}
-      {linkModal && (
-        <LinkModal
-          onClose={() => setLinkModal(false)}
-          onPin={() => pinLink(link)}
-          onUpdateArchive={updateArchive}
-          onDelete={() => setDeleteLinkModal(true)}
+      ) : undefined}
+      {preservedFormatsModal ? (
+        <PreservedFormatsModal
+          onClose={() => setPreservedFormatsModal(false)}
           link={link}
         />
-      )}
+      ) : undefined}
+      {/* {expandedLink ? (
+                <ExpandedLink onClose={() => setExpandedLink(false)} link={link} />
+              ) : undefined} */}
     </>
   );
 }

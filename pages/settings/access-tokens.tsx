@@ -40,7 +40,7 @@ export default function AccessTokens() {
           {t("new_token")}
         </button>
 
-        {tokens.length > 0 && (
+        {tokens.length > 0 ? (
           <table className="table mt-2 overflow-x-auto">
             <thead>
               <tr>
@@ -67,18 +67,10 @@ export default function AccessTokens() {
                       )}
                     </td>
                     <td>
-                      {new Date(token.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {new Date(token.createdAt || "").toLocaleDateString()}
                     </td>
                     <td>
-                      {new Date(token.expires).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {new Date(token.expires || "").toLocaleDateString()}
                     </td>
                     <td>
                       <button
@@ -93,12 +85,12 @@ export default function AccessTokens() {
               ))}
             </tbody>
           </table>
-        )}
+        ) : undefined}
       </div>
 
-      {newTokenModal && (
+      {newTokenModal ? (
         <NewTokenModal onClose={() => setNewTokenModal(false)} />
-      )}
+      ) : undefined}
       {revokeTokenModal && selectedToken && (
         <RevokeTokenModal
           onClose={() => {

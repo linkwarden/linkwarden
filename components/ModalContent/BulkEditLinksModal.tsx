@@ -46,7 +46,6 @@ export default function BulkEditLinksModal({ onClose }: Props) {
         },
         {
           onSettled: (data, error) => {
-            setSubmitLoader(false);
             toast.dismiss(load);
 
             if (error) {
@@ -59,6 +58,8 @@ export default function BulkEditLinksModal({ onClose }: Props) {
           },
         }
       );
+
+      setSubmitLoader(false);
     }
   };
 

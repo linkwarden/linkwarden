@@ -6,16 +6,16 @@ type Props = {
   req: NextApiRequest;
 };
 
-export default async function isAuthenticatedRequest({ req }: Props) {
+export default async function isServerAdmin({ req }: Props): Promise<boolean> {
   const token = await getToken({ req });
   const userId = token?.id;
 
   if (!userId) {
-    return null;
+    return false;
   }
 
   if (token.exp < Date.now() / 1000) {
-    return null;
+    return false;
   }
 
   // check if token is revoked
@@ -27,21 +27,18 @@ export default async function isAuthenticatedRequest({ req }: Props) {
   });
 
   if (revoked) {
-    return null;
+    return false;
   }
 
   const findUser = await prisma.user.findFirst({
     where: {
       id: userId,
     },
-    include: {
-      subscriptions: true,
-    },
   });
 
-  if (findUser && !findUser?.subscriptions) {
-    return null;
+  if (findUser?.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1)) {
+    return true;
+  } else {
+    return false;
   }
-
-  return findUser;
 }

@@ -5,7 +5,7 @@ type Props = {
   src?: string;
   className?: string;
   priority?: boolean;
-  name?: string | null;
+  name?: string;
   large?: boolean;
 };
 

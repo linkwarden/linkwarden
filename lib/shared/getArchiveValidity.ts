@@ -39,9 +39,7 @@ export function monolithAvailable(
   );
 }
 
-export function previewAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
-) {
+export function previewAvailable(link: any) {
   return (
     link &&
     link.preview &&

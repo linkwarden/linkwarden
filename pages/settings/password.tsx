@@ -34,7 +34,6 @@ export default function Password() {
       },
       {
         onSettled: (data, error) => {
-          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -48,6 +47,8 @@ export default function Password() {
         },
       }
     );
+
+    setSubmitLoader(false);
   };
 
   return (

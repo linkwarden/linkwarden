@@ -3,13 +3,14 @@ import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
+import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
 import { useAddLink } from "@/hooks/store/links";
 import toast from "react-hot-toast";
-import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
 
 type Props = {
   onClose: Function;
@@ -17,19 +18,27 @@ type Props = {
 
 export default function NewLinkModal({ onClose }: Props) {
   const { t } = useTranslation();
+  const { data } = useSession();
   const initial = {
     name: "",
     url: "",
     description: "",
     type: "url",
     tags: [],
+    preview: "",
+    image: "",
+    pdf: "",
+    readable: "",
+    monolith: "",
+    textContent: "",
     collection: {
-      id: undefined,
       name: "",
+      ownerId: data?.user.id as number,
     },
-  } as PostLinkSchemaType;
+  } as LinkIncludingShortenedCollectionAndTags;
 
-  const [link, setLink] = useState<PostLinkSchemaType>(initial);
+  const [link, setLink] =
+    useState<LinkIncludingShortenedCollectionAndTags>(initial);
 
   const addLink = useAddLink();
 
@@ -39,10 +48,10 @@ export default function NewLinkModal({ onClose }: Props) {
   const { data: collections = [] } = useCollections();
 
   const setCollection = (e: any) => {
-    if (e?.__isNew__) e.value = undefined;
+    if (e?.__isNew__) e.value = null;
     setLink({
       ...link,
-      collection: { id: e?.value, name: e?.label },
+      collection: { id: e?.value, name: e?.label, ownerId: e?.ownerId },
     });
   };
 
@@ -52,23 +61,27 @@ export default function NewLinkModal({ onClose }: Props) {
   };
 
   useEffect(() => {
-    if (router.pathname.startsWith("/collections/") && router.query.id) {
+    if (router.query.id) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
       );
-
-      if (currentCollection && currentCollection.ownerId)
+      if (
+        currentCollection &&
+        currentCollection.ownerId &&
+        router.asPath.startsWith("/collections/")
+      )
         setLink({
           ...initial,
           collection: {
             id: currentCollection.id,
             name: currentCollection.name,
+            ownerId: currentCollection.ownerId,
           },
         });
     } else
       setLink({
         ...initial,
-        collection: { name: "Unorganized" },
+        collection: { name: "Unorganized", ownerId: data?.user.id as number },
       });
   }, []);
 
@@ -80,17 +93,18 @@ export default function NewLinkModal({ onClose }: Props) {
 
       await addLink.mutateAsync(link, {
         onSettled: (data, error) => {
-          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
-            toast.error(t(error.message));
+            toast.error(error.message);
           } else {
             onClose();
             toast.success(t("link_created"));
           }
         },
       });
+
+      setSubmitLoader(false);
     }
   };
 
@@ -110,19 +124,19 @@ export default function NewLinkModal({ onClose }: Props) {
         </div>
         <div className="sm:col-span-2 col-span-5">
           <p className="mb-2">{t("collection")}</p>
-          {link.collection?.name && (
+          {link.collection.name ? (
             <CollectionSelection
               onChange={setCollection}
               defaultValue={{
-                value: link.collection?.id,
-                label: link.collection?.name || "Unorganized",
+                label: link.collection.name,
+                value: link.collection.id,
               }}
             />
-          )}
+          ) : null}
         </div>
       </div>
       <div className={"mt-2"}>
-        {optionsExpanded && (
+        {optionsExpanded ? (
           <div className="mt-5">
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
@@ -138,7 +152,7 @@ export default function NewLinkModal({ onClose }: Props) {
                 <p className="mb-2">{t("tags")}</p>
                 <TagSelection
                   onChange={setTags}
-                  defaultValue={link.tags?.map((e) => ({
+                  defaultValue={link.tags.map((e) => ({
                     label: e.name,
                     value: e.id,
                   }))}
@@ -147,17 +161,17 @@ export default function NewLinkModal({ onClose }: Props) {
               <div className="sm:col-span-2">
                 <p className="mb-2">{t("description")}</p>
                 <textarea
-                  value={unescapeString(link.description || "") || ""}
+                  value={unescapeString(link.description) as string}
                   onChange={(e) =>
                     setLink({ ...link, description: e.target.value })
                   }
                   placeholder={t("link_description_placeholder")}
-                  className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                  className="resize-none w-full rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
                 />
               </div>
             </div>
           </div>
-        )}
+        ) : undefined}
       </div>
       <div className="flex justify-between items-center mt-5">
         <div

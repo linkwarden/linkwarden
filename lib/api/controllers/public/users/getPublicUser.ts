@@ -5,20 +5,13 @@ export default async function getPublicUser(
   isId: boolean,
   requestingId?: number
 ) {
-  const user = await prisma.user.findFirst({
+  const user = await prisma.user.findUnique({
     where: isId
       ? {
           id: Number(targetId) as number,
         }
       : {
-          OR: [
-            {
-              username: targetId as string,
-            },
-            {
-              email: targetId as string,
-            },
-          ],
+          username: targetId as string,
         },
     include: {
       whitelistedUsers: {
@@ -29,7 +22,7 @@ export default async function getPublicUser(
     },
   });
 
-  if (!user || !user.id)
+  if (!user)
     return { response: "User not found or profile is private.", status: 404 };
 
   const whitelistedUsernames = user.whitelistedUsers?.map(
@@ -38,7 +31,7 @@ export default async function getPublicUser(
 
   const isInAPublicCollection = await prisma.collection.findFirst({
     where: {
-      OR: [
+      ["OR"]: [
         { ownerId: user.id },
         {
           members: {
@@ -80,7 +73,6 @@ export default async function getPublicUser(
     id: lessSensitiveInfo.id,
     name: lessSensitiveInfo.name,
     username: lessSensitiveInfo.username,
-    email: lessSensitiveInfo.email,
     image: lessSensitiveInfo.image,
     archiveAsScreenshot: lessSensitiveInfo.archiveAsScreenshot,
     archiveAsMonolith: lessSensitiveInfo.archiveAsMonolith,

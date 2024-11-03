@@ -14,7 +14,7 @@ export default async function moveFile(from: string, to: string) {
     };
 
     try {
-      s3Client.copyObject(copyParams, async (err: unknown) => {
+      s3Client.copyObject(copyParams, async (err: any) => {
         if (err) {
           console.error("Error copying the object:", err);
         } else {

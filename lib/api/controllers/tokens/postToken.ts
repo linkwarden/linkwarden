@@ -1,32 +1,28 @@
 import { prisma } from "@/lib/api/db";
-import {
-  PostTokenSchemaType,
-  PostTokenSchema,
-} from "@/lib/shared/schemaValidation";
 import { TokenExpiry } from "@/types/global";
 import crypto from "crypto";
 import { decode, encode } from "next-auth/jwt";
 
 export default async function postToken(
-  body: PostTokenSchemaType,
+  body: {
+    name: string;
+    expires: TokenExpiry;
+  },
   userId: number
 ) {
-  const dataValidation = PostTokenSchema.safeParse(body);
+  console.log(body);
 
-  if (!dataValidation.success) {
+  const checkHasEmptyFields = !body.name || body.expires === undefined;
+
+  if (checkHasEmptyFields)
     return {
-      response: `Error: ${
-        dataValidation.error.issues[0].message
-      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      response: "Please fill out all the fields.",
       status: 400,
     };
-  }
-
-  const { name, expires } = dataValidation.data;
 
   const checkIfTokenExists = await prisma.accessToken.findFirst({
     where: {
-      name: name,
+      name: body.name,
       revoked: false,
       userId,
     },
@@ -44,16 +40,16 @@ export default async function postToken(
   const oneDayInSeconds = 86400;
   let expiryDateSecond = 7 * oneDayInSeconds;
 
-  if (expires === TokenExpiry.oneMonth) {
+  if (body.expires === TokenExpiry.oneMonth) {
     expiryDate.setDate(expiryDate.getDate() + 30);
     expiryDateSecond = 30 * oneDayInSeconds;
-  } else if (expires === TokenExpiry.twoMonths) {
+  } else if (body.expires === TokenExpiry.twoMonths) {
     expiryDate.setDate(expiryDate.getDate() + 60);
     expiryDateSecond = 60 * oneDayInSeconds;
-  } else if (expires === TokenExpiry.threeMonths) {
+  } else if (body.expires === TokenExpiry.threeMonths) {
     expiryDate.setDate(expiryDate.getDate() + 90);
     expiryDateSecond = 90 * oneDayInSeconds;
-  } else if (expires === TokenExpiry.never) {
+  } else if (body.expires === TokenExpiry.never) {
     expiryDate.setDate(expiryDate.getDate() + 73000); // 200 years (not really never)
     expiryDateSecond = 73050 * oneDayInSeconds;
   } else {
@@ -79,7 +75,7 @@ export default async function postToken(
 
   const createToken = await prisma.accessToken.create({
     data: {
-      name: name,
+      name: body.name,
       userId,
       token: tokenBody?.jti as string,
       expires: expiryDate,

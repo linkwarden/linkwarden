@@ -3,6 +3,7 @@ import { readabilityAvailable } from "@/lib/shared/getArchiveValidity";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import {
   ArchivedFormat,
+  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import ColorThief, { RGBColor } from "colorthief";
@@ -10,11 +11,11 @@ import DOMPurify from "dompurify";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import LinkActions from "./LinkViews/LinkComponents/LinkActions";
 import { useTranslation } from "next-i18next";
+import { useCollections } from "@/hooks/store/collections";
 import { useGetLink } from "@/hooks/store/links";
-import { IconWeight } from "@phosphor-icons/react";
-import Icon from "./Icon";
 
 type LinkContent = {
   title: string;
@@ -45,6 +46,13 @@ export default function ReadableView({ link }: Props) {
   const router = useRouter();
 
   const getLink = useGetLink();
+  const { data: collections = [] } = useCollections();
+
+  const collection = useMemo(() => {
+    return collections.find(
+      (e) => e.id === link.collection.id
+    ) as CollectionIncludingMembersAndLinkCount;
+  }, [collections, link]);
 
   useEffect(() => {
     const fetchLinkContent = async () => {
@@ -65,9 +73,9 @@ export default function ReadableView({ link }: Props) {
   }, [link]);
 
   useEffect(() => {
-    if (link) getLink.mutateAsync({ id: link.id as number });
+    if (link) getLink.mutateAsync(link?.id as number);
 
-    let interval: NodeJS.Timeout | null = null;
+    let interval: any;
     if (
       link &&
       (link?.image === "pending" ||
@@ -80,10 +88,7 @@ export default function ReadableView({ link }: Props) {
         !link?.monolith)
     ) {
       interval = setInterval(
-        () =>
-          getLink.mutateAsync({
-            id: link.id as number,
-          }),
+        () => getLink.mutateAsync(link.id as number),
         5000
       );
     } else {
@@ -181,7 +186,7 @@ export default function ReadableView({ link }: Props) {
                   link?.name || link?.description || link?.url || ""
                 )}
               </p>
-              {link?.url && (
+              {link?.url ? (
                 <Link
                   href={link?.url || ""}
                   title={link?.url}
@@ -190,10 +195,11 @@ export default function ReadableView({ link }: Props) {
                 >
                   <i className="bi-link-45deg"></i>
 
-                  {isValidUrl(link?.url || "") &&
-                    new URL(link?.url as string).host}
+                  {isValidUrl(link?.url || "")
+                    ? new URL(link?.url as string).host
+                    : undefined}
                 </Link>
-              )}
+              ) : undefined}
             </div>
           </div>
 
@@ -202,21 +208,10 @@ export default function ReadableView({ link }: Props) {
               href={`/collections/${link?.collection.id}`}
               className="flex items-center gap-1 cursor-pointer hover:opacity-60 duration-100 mr-2 z-10"
             >
-              {link.collection.icon ? (
-                <Icon
-                  icon={link.collection.icon}
-                  size={30}
-                  weight={
-                    (link.collection.iconWeight || "regular") as IconWeight
-                  }
-                  color={link.collection.color}
-                />
-              ) : (
-                <i
-                  className="bi-folder-fill text-2xl"
-                  style={{ color: link.collection.color }}
-                ></i>
-              )}
+              <i
+                className="bi-folder-fill drop-shadow text-2xl"
+                style={{ color: link?.collection.color }}
+              ></i>
               <p
                 title={link?.collection.name}
                 className="text-lg truncate max-w-[12rem]"
@@ -248,6 +243,13 @@ export default function ReadableView({ link }: Props) {
 
           {link?.name ? <p>{unescapeString(link?.description)}</p> : undefined}
         </div>
+
+        <LinkActions
+          link={link}
+          collection={collection}
+          position="top-3 right-3"
+          alignToTop
+        />
       </div>
 
       <div className="flex flex-col gap-5 h-full">

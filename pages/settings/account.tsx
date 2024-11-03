@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 import { AccountSettings } from "@/types/global";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
@@ -17,7 +17,6 @@ import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
-import { z } from "zod";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -56,10 +55,8 @@ export default function Account() {
     if (!objectIsEmpty(account)) setUser({ ...account });
   }, [account]);
 
-  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return toast.error(t("image_upload_no_file_error"));
-
+  const handleImageUpload = async (e: any) => {
+    const file: File = e.target.files[0];
     const fileExtension = file.name.split(".").pop()?.toLowerCase();
     const allowedExtensions = ["png", "jpeg", "jpg"];
     if (allowedExtensions.includes(fileExtension as string)) {
@@ -81,16 +78,6 @@ export default function Account() {
   };
 
   const submit = async (password?: string) => {
-    if (!/^[a-z0-9_-]{3,50}$/.test(user.username || "")) {
-      return toast.error(t("username_invalid_guide"));
-    }
-
-    const emailSchema = z.string().trim().email().toLowerCase();
-    const emailValidation = emailSchema.safeParse(user.email || "");
-    if (!emailValidation.success) {
-      return toast.error(t("email_invalid"));
-    }
-
     setSubmitLoader(true);
 
     const load = toast.loading(t("applying_settings"));
@@ -108,7 +95,6 @@ export default function Account() {
           }
         },
         onSettled: (data, error) => {
-          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -125,20 +111,12 @@ export default function Account() {
       }
     );
 
-    if (user.locale !== account.locale) {
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
-    }
+    setSubmitLoader(false);
   };
 
-  const importBookmarks = async (
-    e: ChangeEvent<HTMLInputElement>,
-    format: MigrationFormat
-  ) => {
+  const importBookmarks = async (e: any, format: MigrationFormat) => {
     setSubmitLoader(true);
-    const file = e.target.files?.[0];
-
+    const file: File = e.target.files[0];
     if (file) {
       var reader = new FileReader();
       reader.readAsText(file, "UTF-8");
@@ -212,17 +190,16 @@ export default function Account() {
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
               />
             </div>
-            {emailEnabled && (
+            {emailEnabled ? (
               <div>
                 <p className="mb-2">{t("email")}</p>
                 <TextInput
                   value={user.email || ""}
-                  type="email"
                   className="bg-base-200"
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
                 />
               </div>
-            )}
+            ) : undefined}
             <div>
               <p className="mb-2">{t("language")}</p>
               <select
@@ -460,8 +437,9 @@ export default function Account() {
 
           <p>
             {t("delete_account_warning")}
-            {process.env.NEXT_PUBLIC_STRIPE &&
-              " " + t("cancel_subscription_notice")}
+            {process.env.NEXT_PUBLIC_STRIPE
+              ? " " + t("cancel_subscription_notice")
+              : undefined}
           </p>
         </div>
 
@@ -470,14 +448,14 @@ export default function Account() {
         </Link>
       </div>
 
-      {emailChangeVerificationModal && (
+      {emailChangeVerificationModal ? (
         <EmailChangeVerificationModal
           onClose={() => setEmailChangeVerificationModal(false)}
           onSubmit={submit}
           oldEmail={account.email || ""}
           newEmail={user.email || ""}
         />
-      )}
+      ) : undefined}
     </SettingsLayout>
   );
 }

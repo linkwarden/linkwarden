@@ -17,8 +17,6 @@ import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
-import Icon from "./Icon";
-import { IconWeight } from "@phosphor-icons/react";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
@@ -45,7 +43,6 @@ const CollectionListing = () => {
       return buildTreeFromCollections(
         collections,
         router,
-        tree,
         user.collectionOrder
       );
     } else return undefined;
@@ -259,7 +256,7 @@ const renderItem = (
             : "hover:bg-neutral/20"
         } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
       >
-        {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
+        {Icon(item as ExtendedTreeItem, onExpand, onCollapse)}
 
         <Link
           href={`/collections/${collection.id}`}
@@ -269,29 +266,18 @@ const renderItem = (
           <div
             className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
           >
-            {collection.icon ? (
-              <Icon
-                icon={collection.icon}
-                size={30}
-                weight={(collection.iconWeight || "regular") as IconWeight}
-                color={collection.color}
-                className="-mr-[0.15rem]"
-              />
-            ) : (
-              <i
-                className="bi-folder-fill text-2xl"
-                style={{ color: collection.color }}
-              ></i>
-            )}
-
+            <i
+              className="bi-folder-fill text-2xl drop-shadow"
+              style={{ color: collection.color }}
+            ></i>
             <p className="truncate w-full">{collection.name}</p>
 
-            {collection.isPublic && (
+            {collection.isPublic ? (
               <i
                 className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
                 title="This collection is being shared publicly."
               ></i>
-            )}
+            ) : undefined}
             <div className="drop-shadow text-neutral text-xs">
               {collection._count?.links}
             </div>
@@ -302,7 +288,7 @@ const renderItem = (
   );
 };
 
-const Dropdown = (
+const Icon = (
   item: ExtendedTreeItem,
   onExpand: (id: ItemId) => void,
   onCollapse: (id: ItemId) => void
@@ -325,7 +311,6 @@ const Dropdown = (
 const buildTreeFromCollections = (
   collections: CollectionIncludingMembersAndLinkCount[],
   router: ReturnType<typeof useRouter>,
-  tree?: TreeData,
   order?: number[]
 ): TreeData => {
   if (order) {
@@ -340,15 +325,13 @@ const buildTreeFromCollections = (
         id: collection.id,
         children: [],
         hasChildren: false,
-        isExpanded: tree?.items[collection.id as number]?.isExpanded || false,
+        isExpanded: false,
         data: {
           id: collection.id,
           parentId: collection.parentId,
           name: collection.name,
           description: collection.description,
           color: collection.color,
-          icon: collection.icon,
-          iconWeight: collection.iconWeight,
           isPublic: collection.isPublic,
           ownerId: collection.ownerId,
           createdAt: collection.createdAt,

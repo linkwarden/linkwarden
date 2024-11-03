@@ -10,7 +10,6 @@ import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
-import { dropdownTriggerer } from "@/lib/client/utils";
 
 export default function Collections() {
   const { t } = useTranslation();
@@ -30,37 +29,12 @@ export default function Collections() {
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full h-full">
         <div className="flex justify-between">
-          <div className="flex items-center gap-3">
-            <PageHeader
-              icon={"bi-folder"}
-              title={t("collections")}
-              description={t("collections_you_own")}
-            />
-            <div className="relative">
-              <div className={"dropdown dropdown-bottom font-normal"}>
-                <div
-                  tabIndex={0}
-                  role="button"
-                  onMouseDown={dropdownTriggerer}
-                  className="btn btn-ghost btn-sm btn-square text-neutral"
-                >
-                  <i className={"bi-three-dots text-neutral text-2xl"}></i>
-                </div>
-                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => setNewCollectionModal(true)}
-                      className="whitespace-nowrap"
-                    >
-                      {t("new_collection")}
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          <PageHeader
+            icon={"bi-folder"}
+            title={t("collections")}
+            description={t("collections_you_own")}
+          />
+
           <div className="flex gap-3 justify-end">
             <div className="relative mt-2">
               <SortDropdown sortBy={sortBy} setSort={setSortBy} t={t} />
@@ -86,7 +60,7 @@ export default function Collections() {
           </div>
         </div>
 
-        {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] && (
+        {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] ? (
           <>
             <PageHeader
               icon={"bi-folder"}
@@ -102,11 +76,11 @@ export default function Collections() {
                 })}
             </div>
           </>
-        )}
+        ) : undefined}
       </div>
-      {newCollectionModal && (
+      {newCollectionModal ? (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
-      )}
+      ) : undefined}
     </MainLayout>
   );
 }

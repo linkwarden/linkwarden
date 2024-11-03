@@ -9,11 +9,6 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
 
   const tagId = Number(req.query.id);
 
-  if (!tagId)
-    return res.status(400).json({
-      response: "Please choose a valid name for the tag.",
-    });
-
   if (req.method === "PUT") {
     if (process.env.NEXT_PUBLIC_DEMO === "true")
       return res.status(400).json({

@@ -34,9 +34,9 @@ export default function MainLayout({ children }: Props) {
 
   return (
     <div className="flex" data-testid="dashboard-wrapper">
-      {showAnnouncement && (
+      {showAnnouncement ? (
         <Announcement toggleAnnouncementBar={toggleAnnouncementBar} />
-      )}
+      ) : undefined}
       <div className="hidden lg:block">
         <Sidebar className={`fixed top-0`} />
       </div>

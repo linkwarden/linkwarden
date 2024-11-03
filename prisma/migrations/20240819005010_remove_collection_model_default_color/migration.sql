@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Collection" ALTER COLUMN "color" DROP NOT NULL,
-ALTER COLUMN "color" DROP DEFAULT;

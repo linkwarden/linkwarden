@@ -27,9 +27,6 @@ const useAddToken = () => {
       const response = await fetch("/api/v1/tokens", {
         body: JSON.stringify(body),
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
       const data = await response.json();

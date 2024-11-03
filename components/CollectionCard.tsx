@@ -1,8 +1,5 @@
 import Link from "next/link";
-import {
-  AccountSettings,
-  CollectionIncludingMembersAndLinkCount,
-} from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import React, { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
@@ -15,11 +12,12 @@ import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
 
-export default function CollectionCard({
-  collection,
-}: {
+type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
-}) {
+  className?: string;
+};
+
+export default function CollectionCard({ collection, className }: Props) {
   const { t } = useTranslation();
   const { settings } = useLocalSettingsStore();
   const { data: user = {} } = useUser();
@@ -35,9 +33,15 @@ export default function CollectionCard({
 
   const permissions = usePermissions(collection.id as number);
 
-  const [collectionOwner, setCollectionOwner] = useState<
-    Partial<AccountSettings>
-  >({});
+  const [collectionOwner, setCollectionOwner] = useState({
+    id: null as unknown as number,
+    name: "",
+    username: "",
+    image: "",
+    archiveAsScreenshot: undefined as unknown as boolean,
+    archiveAsMonolith: undefined as unknown as boolean,
+    archiveAsPDF: undefined as unknown as boolean,
+  });
 
   useEffect(() => {
     const fetchOwner = async () => {
@@ -128,12 +132,12 @@ export default function CollectionCard({
         className="flex items-center absolute bottom-3 left-3 z-10 btn px-2 btn-ghost rounded-full"
         onClick={() => setEditCollectionSharingModal(true)}
       >
-        {collectionOwner.id && (
+        {collectionOwner.id ? (
           <ProfilePhoto
             src={collectionOwner.image || undefined}
             name={collectionOwner.name}
           />
-        )}
+        ) : undefined}
         {collection.members
           .sort((a, b) => (a.userId as number) - (b.userId as number))
           .map((e, i) => {
@@ -147,13 +151,13 @@ export default function CollectionCard({
             );
           })
           .slice(0, 3)}
-        {collection.members.length - 3 > 0 && (
+        {collection.members.length - 3 > 0 ? (
           <div className={`avatar drop-shadow-md placeholder -ml-3`}>
             <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
               <span>+{collection.members.length - 3}</span>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
       <Link
         href={`/collections/${collection.id}`}
@@ -177,12 +181,12 @@ export default function CollectionCard({
           <div className="flex justify-end items-center">
             <div className="text-right">
               <div className="font-bold text-sm flex justify-end gap-1 items-center">
-                {collection.isPublic && (
+                {collection.isPublic ? (
                   <i
                     className="bi-globe2 drop-shadow text-neutral"
                     title="This collection is being shared publicly."
                   ></i>
-                )}
+                ) : undefined}
                 <i
                   className="bi-link-45deg text-lg text-neutral"
                   title="This collection is being shared publicly."
@@ -202,24 +206,24 @@ export default function CollectionCard({
           </div>
         </div>
       </Link>
-      {editCollectionModal && (
+      {editCollectionModal ? (
         <EditCollectionModal
           onClose={() => setEditCollectionModal(false)}
           activeCollection={collection}
         />
-      )}
-      {editCollectionSharingModal && (
+      ) : undefined}
+      {editCollectionSharingModal ? (
         <EditCollectionSharingModal
           onClose={() => setEditCollectionSharingModal(false)}
           activeCollection={collection}
         />
-      )}
-      {deleteCollectionModal && (
+      ) : undefined}
+      {deleteCollectionModal ? (
         <DeleteCollectionModal
           onClose={() => setDeleteCollectionModal(false)}
           activeCollection={collection}
         />
-      )}
+      ) : undefined}
     </div>
   );
 }

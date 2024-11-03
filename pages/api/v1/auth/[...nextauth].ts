@@ -1,11 +1,9 @@
 import { prisma } from "@/lib/api/db";
-import sendInvitationRequest from "@/lib/api/sendInvitationRequest";
 import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
-import updateSeats from "@/lib/api/stripe/updateSeats";
-import verifySubscription from "@/lib/api/stripe/verifySubscription";
+import verifySubscription from "@/lib/api/verifySubscription";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { randomBytes } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Adapter } from "next-auth/adapters";
 import NextAuth from "next-auth/next";
@@ -135,7 +133,6 @@ if (process.env.NEXT_PUBLIC_CREDENTIALS_ENABLED !== "false") {
 if (emailEnabled) {
   providers.push(
     EmailProvider({
-      id: "email",
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       maxAge: 1200,
@@ -154,56 +151,6 @@ if (emailEnabled) {
           throw Error("Too many requests. Please try again later.");
 
         sendVerificationRequest({
-          identifier,
-          url,
-          from: provider.from as string,
-          token,
-        });
-      },
-    }),
-    EmailProvider({
-      id: "invite",
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
-      maxAge: 1200,
-      async sendVerificationRequest({ identifier, url, provider, token }) {
-        const parentSubscriptionEmail = (
-          await prisma.user.findFirst({
-            where: {
-              email: identifier,
-              emailVerified: null,
-            },
-            include: {
-              parentSubscription: {
-                include: {
-                  user: {
-                    select: {
-                      email: true,
-                    },
-                  },
-                },
-              },
-            },
-          })
-        )?.parentSubscription?.user.email;
-
-        if (!parentSubscriptionEmail) throw Error("Invalid email.");
-
-        const recentVerificationRequestsCount =
-          await prisma.verificationToken.count({
-            where: {
-              identifier,
-              createdAt: {
-                gt: new Date(new Date().getTime() - 1000 * 60 * 5), // 5 minutes
-              },
-            },
-          });
-
-        if (recentVerificationRequestsCount >= 4)
-          throw Error("Too many requests. Please try again later.");
-
-        sendInvitationRequest({
-          parentSubscriptionEmail,
           identifier,
           url,
           from: provider.from as string,
@@ -1232,52 +1179,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     callbacks: {
       async signIn({ user, account, profile, email, credentials }) {
-        if (
-          !(user as User).emailVerified &&
-          !email?.verificationRequest
-          // && (account?.provider === "email" || account?.provider === "google")
-        ) {
-          // Email is being verified for the first time...
-          console.log("Email is being verified for the first time...");
-
-          const parentSubscriptionId = (user as User).parentSubscriptionId;
-
-          if (parentSubscriptionId) {
-            // Add seat request to Stripe
-            const parentSubscription = await prisma.subscription.findFirst({
-              where: {
-                id: parentSubscriptionId,
-              },
-            });
-
-            // Count child users with verified email under a specific subscription, excluding the current user
-            const verifiedChildUsersCount = await prisma.user.count({
-              where: {
-                parentSubscriptionId: parentSubscriptionId,
-                id: {
-                  not: user.id as number,
-                },
-                emailVerified: {
-                  not: null,
-                },
-              },
-            });
-
-            if (
-              STRIPE_SECRET_KEY &&
-              parentSubscription?.quantity &&
-              verifiedChildUsersCount + 2 > // add current user and the admin
-                parentSubscription.quantity
-            ) {
-              // Add seat if the user count exceeds the subscription limit
-              await updateSeats(
-                parentSubscription.stripeSubscriptionId,
-                verifiedChildUsersCount + 2
-              );
-            }
-          }
-        }
-
         if (account?.provider !== "credentials") {
           // registration via SSO can be separately disabled
           const existingUser = await prisma.account.findFirst({
@@ -1386,6 +1287,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       async session({ session, token }) {
         session.user.id = token.id;
 
+        console.log("session", session);
+
         if (STRIPE_SECRET_KEY) {
           const user = await prisma.user.findUnique({
             where: {
@@ -1393,7 +1296,6 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             },
             include: {
               subscriptions: true,
-              parentSubscription: true,
             },
           });
 

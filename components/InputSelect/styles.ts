@@ -14,7 +14,7 @@ export const styles: StylesConfig = {
         ? "oklch(var(--p))"
         : "oklch(var(--nc))",
     },
-    transition: "all 100ms",
+    transition: "all 50ms",
   }),
   control: (styles, state) => ({
     ...styles,
@@ -50,28 +50,19 @@ export const styles: StylesConfig = {
   multiValue: (styles) => {
     return {
       ...styles,
-      backgroundColor: "oklch(var(--b2))",
-      color: "oklch(var(--bc))",
-      display: "flex",
-      alignItems: "center",
-      gap: "0.1rem",
-      marginRight: "0.4rem",
+      backgroundColor: "#0ea5e9",
+      color: "white",
     };
   },
   multiValueLabel: (styles) => ({
     ...styles,
-    color: "oklch(var(--bc))",
+    color: "white",
   }),
   multiValueRemove: (styles) => ({
     ...styles,
-    height: "1.2rem",
-    width: "1.2rem",
-    borderRadius: "100px",
-    transition: "all 100ms",
-    color: "oklch(var(--w))",
     ":hover": {
-      color: "red",
-      backgroundColor: "oklch(var(--nc))",
+      color: "white",
+      backgroundColor: "#38bdf8",
     },
   }),
   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
