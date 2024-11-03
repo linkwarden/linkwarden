@@ -60,6 +60,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       req.body.removePreviousTags,
       req.body.newData
     );
+
     return res.status(updated.status).json({
       response: updated.response,
     });

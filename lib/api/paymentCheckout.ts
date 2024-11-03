@@ -1,4 +1,6 @@
 import Stripe from "stripe";
+import verifySubscription from "./stripe/verifySubscription";
+import { prisma } from "./db";
 
 export default async function paymentCheckout(
   stripeSecretKey: string,
@@ -9,6 +11,23 @@ export default async function paymentCheckout(
     apiVersion: "2022-11-15",
   });
 
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email.toLowerCase(),
+    },
+    include: {
+      subscriptions: true,
+      parentSubscription: true,
+    },
+  });
+
+  const subscription = await verifySubscription(user);
+
+  if (subscription) {
+    // To prevent users from creating multiple subscriptions
+    return { response: "/dashboard", status: 200 };
+  }
+
   const listByEmail = await stripe.customers.list({
     email: email.toLowerCase(),
     expand: ["data.subscriptions"],
@@ -18,6 +37,7 @@ export default async function paymentCheckout(
 
   const NEXT_PUBLIC_TRIAL_PERIOD_DAYS =
     process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS;
+
   const session = await stripe.checkout.sessions.create({
     customer: isExistingCustomer ? isExistingCustomer : undefined,
     line_items: [
@@ -28,7 +48,7 @@ export default async function paymentCheckout(
     ],
     mode: "subscription",
     customer_email: isExistingCustomer ? undefined : email.toLowerCase(),
-    success_url: `${process.env.BASE_URL}?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${process.env.BASE_URL}/dashboard`,
     cancel_url: `${process.env.BASE_URL}/login`,
     automatic_tax: {
       enabled: true,

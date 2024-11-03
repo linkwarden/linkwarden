@@ -6,6 +6,8 @@ import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
 
+const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
+
 export default function ProfileDropdown() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
@@ -60,7 +62,7 @@ export default function ProfileDropdown() {
             })}
           </div>
         </li>
-        {isAdmin ? (
+        {isAdmin && (
           <li>
             <Link
               href="/admin"
@@ -72,7 +74,20 @@ export default function ProfileDropdown() {
               {t("server_administration")}
             </Link>
           </li>
-        ) : null}
+        )}
+        {!user.parentSubscriptionId && stripeEnabled && (
+          <li>
+            <Link
+              href="/settings/billing"
+              onClick={() => (document?.activeElement as HTMLElement)?.blur()}
+              tabIndex={0}
+              role="button"
+              className="whitespace-nowrap"
+            >
+              {t("invite_users")}
+            </Link>
+          </li>
+        )}
         <li>
           <div
             onClick={() => {

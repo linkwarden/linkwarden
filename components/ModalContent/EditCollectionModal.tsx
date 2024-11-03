@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
-import { HexColorPicker } from "react-colorful";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@/hooks/store/collections";
 import toast from "react-hot-toast";
+import IconPicker from "../IconPicker";
+import { IconWeight } from "@phosphor-icons/react";
 
 type Props = {
   onClose: Function;
@@ -34,6 +35,7 @@ export default function EditCollectionModal({
 
       await updateCollection.mutateAsync(collection, {
         onSettled: (data, error) => {
+          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -44,8 +46,6 @@ export default function EditCollectionModal({
           }
         },
       });
-
-      setSubmitLoader(false);
     }
   };
 
@@ -56,10 +56,32 @@ export default function EditCollectionModal({
       <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="w-full">
-            <p className="mb-2">{t("name")}</p>
-            <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
+          <div className="flex gap-3 items-end">
+            <IconPicker
+              color={collection.color}
+              setColor={(color: string) =>
+                setCollection({ ...collection, color })
+              }
+              weight={(collection.iconWeight || "regular") as IconWeight}
+              setWeight={(iconWeight: string) =>
+                setCollection({ ...collection, iconWeight })
+              }
+              iconName={collection.icon as string}
+              setIconName={(icon: string) =>
+                setCollection({ ...collection, icon })
+              }
+              reset={() =>
+                setCollection({
+                  ...collection,
+                  color: "#0ea5e9",
+                  icon: "",
+                  iconWeight: "",
+                })
+              }
+            />
+            <div className="w-full">
+              <p className="mb-2">{t("name")}</p>
               <TextInput
                 className="bg-base-200"
                 value={collection.name}
@@ -68,38 +90,13 @@ export default function EditCollectionModal({
                   setCollection({ ...collection, name: e.target.value })
                 }
               />
-              <div>
-                <p className="w-full mb-2">{t("color")}</p>
-                <div className="color-picker flex justify-between items-center">
-                  <HexColorPicker
-                    color={collection.color}
-                    onChange={(color) =>
-                      setCollection({ ...collection, color })
-                    }
-                  />
-                  <div className="flex flex-col gap-2 items-center w-32">
-                    <i
-                      className="bi-folder-fill text-5xl"
-                      style={{ color: collection.color }}
-                    ></i>
-                    <div
-                      className="btn btn-ghost btn-xs"
-                      onClick={() =>
-                        setCollection({ ...collection, color: "#0ea5e9" })
-                      }
-                    >
-                      {t("reset")}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
           <div className="w-full">
             <p className="mb-2">{t("description")}</p>
             <textarea
-              className="w-full h-[13rem] resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
+              className="w-full h-32 resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
               placeholder={t("collection_description_placeholder")}
               value={collection.description}
               onChange={(e) =>
