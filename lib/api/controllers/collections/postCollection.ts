@@ -1,16 +1,26 @@
 import { prisma } from "@/lib/api/db";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
+import {
+  PostCollectionSchema,
+  PostCollectionSchemaType,
+} from "@/lib/shared/schemaValidation";
 
 export default async function postCollection(
-  collection: CollectionIncludingMembersAndLinkCount,
+  body: PostCollectionSchemaType,
   userId: number
 ) {
-  if (!collection || collection.name.trim() === "")
+  const dataValidation = PostCollectionSchema.safeParse(body);
+
+  if (!dataValidation.success) {
     return {
-      response: "Please enter a valid collection.",
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
       status: 400,
     };
+  }
+
+  const collection = dataValidation.data;
 
   if (collection.parentId) {
     const findParentCollection = await prisma.collection.findUnique({
@@ -34,14 +44,11 @@ export default async function postCollection(
 
   const newCollection = await prisma.collection.create({
     data: {
-      owner: {
-        connect: {
-          id: userId,
-        },
-      },
       name: collection.name.trim(),
       description: collection.description,
       color: collection.color,
+      icon: collection.icon,
+      iconWeight: collection.iconWeight,
       parent: collection.parentId
         ? {
             connect: {
@@ -49,6 +56,16 @@ export default async function postCollection(
             },
           }
         : undefined,
+      owner: {
+        connect: {
+          id: userId,
+        },
+      },
+      createdBy: {
+        connect: {
+          id: userId,
+        },
+      },
     },
     include: {
       _count: {

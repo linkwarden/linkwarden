@@ -16,7 +16,7 @@ const generatePreview = async (
         return;
       }
 
-      image.resize(1280, Jimp.AUTO).quality(20);
+      image.resize(1000, Jimp.AUTO).quality(20);
       const processedBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
 
       if (

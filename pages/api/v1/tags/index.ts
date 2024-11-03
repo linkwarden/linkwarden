@@ -7,7 +7,9 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
   if (!user) return;
 
   if (req.method === "GET") {
-    const tags = await getTags(user.id);
+    const tags = await getTags({
+      userId: user.id,
+    });
     return res.status(tags.status).json({ response: tags.response });
   }
 }
