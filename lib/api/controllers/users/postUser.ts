@@ -22,8 +22,6 @@ export default async function postUser(
   const isAdmin =
     parentUser && parentUser.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
 
-  const DISABLE_INVITES = process.env.DISABLE_INVITES === "true";
-
   if (process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" && !isAdmin) {
     return { response: "Registration is disabled.", status: 400 };
   }
@@ -42,7 +40,7 @@ export default async function postUser(
   const { name, email, password, invite } = dataValidation.data;
   let { username } = dataValidation.data;
 
-  if (invite && (DISABLE_INVITES || !emailEnabled)) {
+  if (invite && (!stripeEnabled || !emailEnabled)) {
     return { response: "You are not authorized to invite users.", status: 401 };
   } else if (invite && !parentUser) {
     return { response: "You must be logged in to invite users.", status: 401 };
