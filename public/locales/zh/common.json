@@ -370,6 +370,5 @@
   "demo_title": "仅限演示",
   "demo_desc": "这只是 Linkwarden 的演示实例，禁止上传文件。",
   "demo_desc_2": "如果你想尝试完整版，你可以注册免费试用：",
-  "demo_button": "以演示用户登录",
-  "browse_by_topic": "按主题浏览"
+  "demo_button": "以演示用户登录"
 }

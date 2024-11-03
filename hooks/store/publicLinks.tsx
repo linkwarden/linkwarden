@@ -32,32 +32,18 @@ const usePublicLinks = (params: LinkRequestQuery = {}) => {
     searchByTags: params.searchByTags,
   } as LinkRequestQuery;
 
-  const queryParamsForAllLinksObject = {
-    sort: params.sort ?? Number(window.localStorage.getItem("sortBy")) ?? 0,
-    collectionId: params.collectionId ?? router.query.id,
-  } as LinkRequestQuery;
-
   const queryString = buildQueryString(queryParamsObject);
-  const queryStringForAllLinkObject = buildQueryString(queryParamsForAllLinksObject);
   const { data, ...rest } = useFetchLinks(queryString);
-  const allLinks = useFetchLinks(queryStringForAllLinkObject);
   const links = useMemo(() => {
     return data?.pages.reduce((acc, page) => {
       return [...acc, ...page];
     }, []);
   }, [data]);
-  const linksForWholeCollection = useMemo(() => {
-    return allLinks.data?.pages.reduce((acc, page) => {
-      return [...acc, ...page];
-    }, []);
-  }, [allLinks.data])
   return {
     links,
-    linksForWholeCollection,
     data: { ...data, ...rest },
   } as {
     links: LinkIncludingShortenedCollectionAndTags[];
-    linksForWholeCollection: LinkIncludingShortenedCollectionAndTags[];
     data: UseInfiniteQueryResult<InfiniteData<any, unknown>, Error>;
   };
 };
