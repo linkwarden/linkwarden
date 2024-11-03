@@ -1,40 +1,23 @@
-FROM node:18.18-bullseye-slim
+# Use an official Node.js runtime as a parent image
+FROM node:14
 
-ARG DEBIAN_FRONTEND=noninteractive
+# Set the working directory
+WORKDIR /usr/src/app
 
-RUN mkdir /data
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-WORKDIR /data
+# Install dependencies
+RUN npm install
 
-COPY ./package.json ./yarn.lock ./playwright.config.ts ./
-
-RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn yarn install --network-timeout 10000000
-
-RUN apt-get update
-
-RUN apt-get install -y \
-    build-essential \
-    curl \
-    libssl-dev \
-    pkg-config
-
-RUN apt-get update
-
-RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
-
-ENV PATH="/root/.cargo/bin:${PATH}"
-
-RUN cargo install monolith
-
-RUN npx playwright install-deps && \
-    apt-get clean && \
-    yarn cache clean
-
-RUN yarn playwright install
-
+# Copy the rest of the application code
 COPY . .
 
-RUN yarn prisma generate && \
-    yarn build
+# Build the application
+RUN npm run build
 
-CMD yarn prisma migrate deploy && yarn start
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Define the command to run the app
+CMD ["npm", "start"]

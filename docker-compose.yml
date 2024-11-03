@@ -1,21 +1,25 @@
-version: "3.5"
+version: '3.8'
+
 services:
-  postgres:
-    image: postgres:16-alpine
-    env_file: .env
-    restart: always
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
-  linkwarden:
-    env_file: .env
-    environment:
-      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
-    restart: always
-    # build: . # uncomment this line to build from source
-    image: ghcr.io/linkwarden/linkwarden:latest # comment this line to build from source
+  app:
+    build: .
     ports:
-      - 3000:3000
-    volumes:
-      - ./data:/data/data
+      - "3000:3000"
+    environment:
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      DATABASE_URL: ${DATABASE_URL}
     depends_on:
-      - postgres
+      - db
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
