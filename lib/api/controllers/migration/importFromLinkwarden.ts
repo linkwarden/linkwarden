@@ -1,8 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
-
-const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
+import { hasPassedLimit } from "../../verifyCapacity";
 
 export default async function importFromLinkwarden(
   userId: number,
@@ -16,19 +15,14 @@ export default async function importFromLinkwarden(
     totalImports += collection.links.length;
   });
 
-  const numberOfLinksTheUserHas = await prisma.link.count({
-    where: {
-      collection: {
-        ownerId: userId,
-      },
-    },
-  });
+  const hasTooManyLinks = await hasPassedLimit(userId, totalImports);
 
-  if (totalImports + numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
+  if (hasTooManyLinks) {
     return {
-      response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
+      response: `Your subscription have reached the maximum number of links allowed.`,
       status: 400,
     };
+  }
 
   await prisma
     .$transaction(
@@ -44,9 +38,14 @@ export default async function importFromLinkwarden(
                   id: userId,
                 },
               },
-              name: e.name,
-              description: e.description,
-              color: e.color,
+              name: e.name?.trim().slice(0, 254),
+              description: e.description?.trim().slice(0, 254),
+              color: e.color?.trim().slice(0, 50),
+              createdBy: {
+                connect: {
+                  id: userId,
+                },
+              },
             },
           });
 
@@ -54,14 +53,27 @@ export default async function importFromLinkwarden(
 
           // Import Links
           for (const link of e.links) {
+            if (link.url) {
+              try {
+                new URL(link.url.trim());
+              } catch (err) {
+                continue;
+              }
+            }
+
             await prisma.link.create({
               data: {
-                url: link.url,
-                name: link.name,
-                description: link.description,
+                url: link.url?.trim().slice(0, 254),
+                name: link.name?.trim().slice(0, 254),
+                description: link.description?.trim().slice(0, 254),
                 collection: {
                   connect: {
                     id: newCollection.id,
+                  },
+                },
+                createdBy: {
+                  connect: {
+                    id: userId,
                   },
                 },
                 // Import Tags
@@ -69,12 +81,12 @@ export default async function importFromLinkwarden(
                   connectOrCreate: link.tags.map((tag) => ({
                     where: {
                       name_ownerId: {
-                        name: tag.name.trim(),
+                        name: tag.name?.slice(0, 49),
                         ownerId: userId,
                       },
                     },
                     create: {
-                      name: tag.name.trim(),
+                      name: tag.name?.trim().slice(0, 49),
                       owner: {
                         connect: {
                           id: userId,

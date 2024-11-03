@@ -22,6 +22,7 @@ export interface LinkIncludingShortenedCollectionAndTags
   pinnedBy?: {
     id: number;
   }[];
+  updatedAt?: string;
   collection: OptionalExcluding<Collection, "name" | "ownerId">;
 }
 
@@ -31,7 +32,7 @@ export interface Member {
   canCreate: boolean;
   canUpdate: boolean;
   canDelete: boolean;
-  user: OptionalExcluding<User, "username" | "name" | "id">;
+  user: OptionalExcluding<User, "email" | "username" | "name" | "id">;
 }
 
 export interface CollectionIncludingMembersAndLinkCount
@@ -79,6 +80,8 @@ export enum Sort {
   DescriptionAZ,
   DescriptionZA,
 }
+
+export type Order = { [key: string]: "asc" | "desc" };
 
 export type LinkRequestQuery = {
   sort?: Sort;

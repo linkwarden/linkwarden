@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/api/db";
-import updateCustomerEmail from "@/lib/api/updateCustomerEmail";
+import updateCustomerEmail from "@/lib/api/stripe/updateCustomerEmail";
+import { VerifyEmailSchema } from "@/lib/shared/schemaValidation";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function verifyEmail(
@@ -13,13 +14,17 @@ export default async function verifyEmail(
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    const token = req.query.token;
+    const dataValidation = VerifyEmailSchema.safeParse(req.query);
 
-    if (!token || typeof token !== "string") {
+    if (!dataValidation.success) {
       return res.status(400).json({
-        response: "Invalid token.",
+        response: `Error: ${
+          dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`,
       });
     }
+
+    const { token } = dataValidation.data;
 
     // Check token in db
     const verifyToken = await prisma.verificationToken.findFirst({

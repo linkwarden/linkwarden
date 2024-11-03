@@ -7,6 +7,7 @@ import { dropdownTriggerer } from "@/lib/client/utils";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
 import { useAddToken } from "@/hooks/store/tokens";
+import CopyButton from "../CopyButton";
 
 type Props = {
   onClose: Function;
@@ -33,6 +34,7 @@ export default function NewTokenModal({ onClose }: Props) {
 
       await addToken.mutateAsync(token, {
         onSettled: (data, error) => {
+          setSubmitLoader(false);
           toast.dismiss(load);
 
           if (error) {
@@ -42,8 +44,6 @@ export default function NewTokenModal({ onClose }: Props) {
           }
         },
       });
-
-      setSubmitLoader(false);
     }
   };
 
@@ -68,21 +68,14 @@ export default function NewTokenModal({ onClose }: Props) {
         <div className="flex flex-col justify-center space-y-4">
           <p className="text-xl font-thin">{t("access_token_created")}</p>
           <p>{t("token_creation_notice")}</p>
-          <TextInput
-            spellCheck={false}
-            value={newToken}
-            onChange={() => {}}
-            className="w-full"
-          />
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(newToken);
-              toast.success(t("copied_to_clipboard"));
-            }}
-            className="btn btn-primary w-fit mx-auto"
-          >
-            {t("copy_to_clipboard")}
-          </button>
+          <div className="relative">
+            <div className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 bg-base-200 border-neutral-content border-solid border flex items-center gap-2 justify-between pr-14">
+              {newToken}
+              <div className="absolute right-0 px-2 border-neutral-content border-solid border-r bg-base-200">
+                <CopyButton text={newToken} />
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <>

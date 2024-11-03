@@ -43,6 +43,9 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
       password: process.env.PROXY_PASSWORD,
     };
   }
+  if (process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH) {
+    browserOptions.executablePath = process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
+  }
 
   const browser = await chromium.launch(browserOptions);
   const context = await browser.newContext({

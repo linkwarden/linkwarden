@@ -11,9 +11,6 @@ const useUsers = () => {
     queryFn: async () => {
       const response = await fetch("/api/v1/users");
       if (!response.ok) {
-        if (response.status === 401) {
-          window.location.href = "/dashboard";
-        }
         throw new Error("Failed to fetch users.");
       }
 
@@ -30,8 +27,6 @@ const useAddUser = () => {
 
   return useMutation({
     mutationFn: async (body: any) => {
-      if (body.password.length < 8) throw new Error(t("password_length_error"));
-
       const load = toast.loading(t("creating_account"));
 
       const response = await fetch("/api/v1/users", {
