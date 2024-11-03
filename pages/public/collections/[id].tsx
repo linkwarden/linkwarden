@@ -22,6 +22,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
 import { usePublicLinks } from "@/hooks/store/publicLinks";
 import Links from "@/components/LinkViews/Links";
+import { usePublicTags } from "@/hooks/store/publicTags";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
@@ -33,6 +34,32 @@ export default function PublicCollections() {
   const [collectionOwner, setCollectionOwner] = useState<
     Partial<AccountSettings>
   >({});
+
+  const handleTagSelection = (tag: string | undefined) => {
+    if (tag) {
+      Object.keys(searchFilter).forEach(
+        (v) =>
+          (searchFilter[
+            v as keyof {
+              name: boolean;
+              url: boolean;
+              description: boolean;
+              tags: boolean;
+              textContent: boolean;
+            }
+          ] = false)
+      );
+      searchFilter.tags = true;
+      return router.push(
+        "/public/collections/" +
+          router.query.id +
+          "?q=" +
+          encodeURIComponent(tag || "")
+      );
+    } else {
+      return router.push("/public/collections/" + router.query.id);
+    }
+  };
 
   const [searchFilter, setSearchFilter] = useState({
     name: true,
@@ -46,6 +73,8 @@ export default function PublicCollections() {
     Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
   );
 
+  const { data: tags } = usePublicTags();
+
   const { links, data } = usePublicLinks({
     sort: sortBy,
     searchQueryString: router.query.q
@@ -57,10 +86,8 @@ export default function PublicCollections() {
     searchByTextContent: searchFilter.textContent,
     searchByTags: searchFilter.tags,
   });
-
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>();
-
   useEffect(() => {
     if (router.query.id) {
       getPublicCollectionData(Number(router.query.id)).then((res) => {
@@ -212,7 +239,56 @@ export default function PublicCollections() {
                 }
               />
             </LinkListOptions>
-
+            {tags && tags[0] && (
+              <div className="flex gap-2 mt-2 mb-6 flex-wrap">
+                <button
+                  className="max-w-full"
+                  onClick={() => handleTagSelection(undefined)}
+                >
+                  <div
+                    className={`${
+                      !router.query.q
+                        ? "bg-primary/20"
+                        : "bg-neutral-content/20 hover:bg-neutral/20"
+                    } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
+                  >
+                    <i className="text-primary bi-hash text-2xl drop-shadow"></i>
+                    <p className="truncate pr-7">{t("all_links")}</p>
+                    <div className="text-neutral drop-shadow text-xs">
+                      {collection._count?.links}
+                    </div>
+                  </div>
+                </button>
+                {tags
+                  .map((t) => t.name)
+                  .filter((item, pos, self) => self.indexOf(item) === pos)
+                  .sort((a, b) => a.localeCompare(b))
+                  .map((e, i) => {
+                    const active = router.query.q === e;
+                    return (
+                      <button
+                        className="max-w-full"
+                        key={i}
+                        onClick={() => handleTagSelection(e)}
+                      >
+                        <div
+                          className={`${
+                            active
+                              ? "bg-primary/20"
+                              : "bg-neutral-content/20 hover:bg-neutral/20"
+                          } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
+                        >
+                          <i className="bi-hash text-2xl text-primary drop-shadow"></i>
+                          <p className="truncate pr-7">{e}</p>
+                          <div className="drop-shadow text-neutral text-xs">
+                            {tags.filter((t) => t.name === e)[0]._count.links}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+              </div>
+            )}
             <Links
               links={
                 links?.map((e, i) => {
