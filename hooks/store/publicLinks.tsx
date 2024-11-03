@@ -33,12 +33,15 @@ const usePublicLinks = (params: LinkRequestQuery = {}) => {
   } as LinkRequestQuery;
 
   const queryString = buildQueryString(queryParamsObject);
+
   const { data, ...rest } = useFetchLinks(queryString);
+
   const links = useMemo(() => {
     return data?.pages.reduce((acc, page) => {
       return [...acc, ...page];
     }, []);
   }, [data]);
+
   return {
     links,
     data: { ...data, ...rest },
