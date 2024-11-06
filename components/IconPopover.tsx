@@ -127,11 +127,14 @@ const IconPopover = ({
               </label>
             </div>
           </div>
-          <div
-            className="btn btn-ghost btn-sm mt-2 w-fit mx-auto"
-            onClick={reset as React.MouseEventHandler<HTMLDivElement>}
-          >
-            {t("reset_defaults")}
+          <div className="flex flex-col-reverse gap-2 justify-between items-center mt-2">
+            <p className="text-neutral text-sm">{t("close_to_apply")}</p>
+            <div
+              className="btn btn-ghost btn-sm w-fit"
+              onClick={reset as React.MouseEventHandler<HTMLDivElement>}
+            >
+              {t("reset_defaults")}
+            </div>
           </div>
         </div>
       </div>
