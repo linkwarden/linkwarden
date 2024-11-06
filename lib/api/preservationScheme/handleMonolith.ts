@@ -39,7 +39,7 @@ const handleMonolith = async (link: Link, content: string) => {
       });
     });
   } catch (err) {
-    console.log("Error running MONOLITH:", err);
+    console.log("Uncaught Monolith error...");
   }
 };
 
