@@ -90,11 +90,8 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
         <p className="mb-1 mt-2 text-sm text-neutral">{t("show")}</p>
         {Object.entries(settings.show)
           .filter((e) =>
-            settings.viewMode === ViewMode.List // Hide tags, image, icon, and description checkboxes in list view
-              ? e[0] !== "tags" &&
-                e[0] !== "image" &&
-                e[0] !== "icon" &&
-                e[0] !== "description"
+            settings.viewMode === ViewMode.List // Hide tags, image, and description checkboxes in list view
+              ? e[0] !== "tags" && e[0] !== "image" && e[0] !== "description"
               : settings.viewMode === ViewMode.Card // Hide tags and description checkboxes in card view
                 ? e[0] !== "tags" && e[0] !== "description"
                 : true
