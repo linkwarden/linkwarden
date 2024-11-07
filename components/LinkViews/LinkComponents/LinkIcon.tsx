@@ -1,7 +1,7 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import Image from "next/image";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import React from "react";
+import React, { useState } from "react";
 import Icon from "@/components/Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import clsx from "clsx";
@@ -26,7 +26,7 @@ export default function LinkIcon({
   const url =
     isValidUrl(link.url || "") && link.url ? new URL(link.url) : undefined;
 
-  const [showFavicon, setShowFavicon] = React.useState<boolean>(true);
+  const [faviconLoaded, setFaviconLoaded] = useState(false);
 
   return (
     <div onClick={() => onClick && onClick()}>
@@ -41,21 +41,27 @@ export default function LinkIcon({
           />
         </div>
       ) : link.type === "url" && url ? (
-        showFavicon ? (
+        <>
           <Image
             src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
             width={64}
             height={64}
             alt=""
-            className={iconClasses}
+            className={clsx(
+              iconClasses,
+              faviconLoaded ? "" : "absolute opacity-0"
+            )}
             draggable="false"
-            onError={() => {
-              setShowFavicon(false);
-            }}
+            onLoadingComplete={() => setFaviconLoaded(true)}
+            onError={() => setFaviconLoaded(false)}
           />
-        ) : (
-          <LinkPlaceholderIcon iconClasses={iconClasses} icon="bi-link-45deg" />
-        )
+          {!faviconLoaded && (
+            <LinkPlaceholderIcon
+              iconClasses={iconClasses}
+              icon="bi-link-45deg"
+            />
+          )}
+        </>
       ) : link.type === "pdf" ? (
         <LinkPlaceholderIcon
           iconClasses={iconClasses}
