@@ -417,5 +417,5 @@
   "remove_user": "Remove User",
   "continue_to_dashboard": "Continue to Dashboard",
   "confirm_user_removal_desc": "They will need to have a subscription to access Linkwarden again.",
-  "close_to_apply": "Close to apply"
+  "click_out_to_apply": "Click outside to apply"
 }
