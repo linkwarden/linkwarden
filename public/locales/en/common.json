@@ -417,5 +417,14 @@
   "remove_user": "Remove User",
   "continue_to_dashboard": "Continue to Dashboard",
   "confirm_user_removal_desc": "They will need to have a subscription to access Linkwarden again.",
-  "click_out_to_apply": "Click outside to apply"
+  "click_out_to_apply": "Click outside to apply",
+  "submit": "Submit",
+  "thanks_for_feedback": "Thanks for your feedback!",
+  "quick_survey": "Quick Survey",
+  "how_did_you_discover_linkwarden": "How did you discover Linkwarden?",
+  "rather_not_say": "Rather not say",
+  "search_engine": "Search Engine (Google, Bing, etc.)",
+  "reddit": "Reddit",
+  "lemmy": "Lemmy",
+  "people_recommendation": "Recommendation (Friend, Family, etc.)"
 }

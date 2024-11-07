@@ -21,7 +21,6 @@ export default function Subscribe() {
   const { data: user = {} } = useUser();
 
   useEffect(() => {
-    console.log("user", user);
     if (
       session.status === "authenticated" &&
       user.id &&
