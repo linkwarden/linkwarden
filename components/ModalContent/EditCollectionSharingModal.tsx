@@ -16,6 +16,7 @@ import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@/hooks/store/collections";
 import { useUser } from "@/hooks/store/user";
 import CopyButton from "../CopyButton";
+import { useRouter } from "next/router";
 
 type Props = {
   onClose: Function;
@@ -94,16 +95,22 @@ export default function EditCollectionSharingModal({
     setMemberIdentifier("");
   };
 
+  const router = useRouter();
+
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+
   return (
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">
-        {permissions === true ? t("share_and_collaborate") : t("team")}
+        {permissions === true && !isPublicRoute
+          ? t("share_and_collaborate")
+          : t("team")}
       </p>
 
       <div className="divider mb-3 mt-1"></div>
 
       <div className="flex flex-col gap-3">
-        {permissions === true && (
+        {permissions === true && !isPublicRoute && (
           <div>
             <p>{t("make_collection_public")}</p>
 
@@ -140,9 +147,11 @@ export default function EditCollectionSharingModal({
           </div>
         )}
 
-        {permissions === true && <div className="divider my-3"></div>}
+        {permissions === true && !isPublicRoute && (
+          <div className="divider my-3"></div>
+        )}
 
-        {permissions === true && (
+        {permissions === true && !isPublicRoute && (
           <>
             <p>{t("members")}</p>
 
@@ -254,7 +263,7 @@ export default function EditCollectionSharingModal({
                           </div>
 
                           <div className={"flex items-center gap-2"}>
-                            {permissions === true ? (
+                            {permissions === true && !isPublicRoute ? (
                               <div className="dropdown dropdown-bottom dropdown-end">
                                 <div
                                   tabIndex={0}
@@ -415,7 +424,7 @@ export default function EditCollectionSharingModal({
                               </p>
                             )}
 
-                            {permissions === true && (
+                            {permissions === true && !isPublicRoute && (
                               <i
                                 className={
                                   "bi-x text-xl btn btn-sm btn-square btn-ghost text-neutral hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"
@@ -446,7 +455,7 @@ export default function EditCollectionSharingModal({
           </>
         )}
 
-        {permissions === true && (
+        {permissions === true && !isPublicRoute && (
           <button
             className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto mt-3"
             onClick={submit}
