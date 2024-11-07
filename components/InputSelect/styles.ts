@@ -31,7 +31,6 @@ export const styles: StylesConfig = {
     height: "full",
     borderRadius: "0.375rem",
     lineHeight: "1.25rem",
-    zIndex: 10,
     // "@media screen and (min-width: 1024px)": {
     //   fontSize: "0.875rem",
     // },
