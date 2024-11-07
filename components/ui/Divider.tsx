@@ -3,10 +3,15 @@ import React from "react";
 
 type Props = {
   className?: string;
+  vertical?: boolean;
 };
 
-function Divider({ className }: Props) {
-  return <hr className={clsx("border-neutral-content border-t", className)} />;
+function Divider({ className, vertical = false }: Props) {
+  return vertical ? (
+    <hr className={clsx("border-neutral-content border-l h-full", className)} />
+  ) : (
+    <hr className={clsx("border-neutral-content border-t", className)} />
+  );
 }
 
 export default Divider;
