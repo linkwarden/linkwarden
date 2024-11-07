@@ -46,6 +46,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (
       process.env.NEXT_PUBLIC_STRIPE === "true" &&
+      account &&
       account.id &&
       account.referredBy === null &&
       // if user is using Linkwarden for more than 3 days
