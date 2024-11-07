@@ -255,7 +255,7 @@
   "sending_request": "Envoi de la demande...",
   "link_being_archived": "Le lien est en cours d'archivage...",
   "preserved_formats": "Formats conservés",
-  "available_formats": "Les formats suivants sont disponibles pour ce lien:",
+  "available_formats": "Les formats suivants sont disponibles pour ce lien",
   "readable": "Lisible",
   "preservation_in_queue": "La préservation du lien est dans la file d'attente",
   "view_latest_snapshot": "Voir le dernier instantané sur archive.org",

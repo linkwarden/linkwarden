@@ -20,6 +20,7 @@ import { useUser } from "@/hooks/store/user";
 import { useLinks } from "@/hooks/store/links";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
+import { useRouter } from "next/router";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -91,6 +92,9 @@ export default function LinkCardCompact({ link, editMode }: Props) {
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
+  const router = useRouter();
+
+  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
   return (
     <>
       <div
@@ -135,7 +139,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
             </div>
           </div>
         </div>
-        <LinkPin link={link} btnStyle="btn-ghost" />
+        {!isPublic && <LinkPin link={link} btnStyle="btn-ghost" />}
         <LinkActions link={link} collection={collection} btnStyle="btn-ghost" />
       </div>
       <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>

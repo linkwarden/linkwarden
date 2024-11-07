@@ -64,7 +64,7 @@ export default function LinkActions({ link, btnStyle }: Props) {
           onClick={() => setLinkModal(true)}
         >
           <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>
-            <i title="More" className="bi-three-dots text-xl" />
+            <i title="More" className="bi-info-circle text-xl" />
           </div>
         </div>
       ) : (
@@ -127,22 +127,6 @@ export default function LinkActions({ link, btnStyle }: Props) {
                 </div>
               </li>
             )}
-            {link.type === "url" &&
-              (permissions === true || permissions?.canUpdate) && (
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      updateArchive();
-                    }}
-                    className="whitespace-nowrap"
-                  >
-                    {t("refresh_preserved_formats")}
-                  </div>
-                </li>
-              )}
             {(permissions === true || permissions?.canDelete) && (
               <li>
                 <div

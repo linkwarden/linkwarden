@@ -14,7 +14,7 @@ export default function LinkCollection({
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
 }) {
-  return (
+  return collection?.name ? (
     <>
       <Link
         href={`/collections/${link.collection.id}`}
@@ -40,5 +40,7 @@ export default function LinkCollection({
         <p className="truncate capitalize">{collection?.name}</p>
       </Link>
     </>
+  ) : (
+    <></>
   );
 }

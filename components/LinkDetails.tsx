@@ -42,6 +42,7 @@ type Props = {
   standalone?: boolean;
   mode?: "view" | "edit";
   setMode?: Function;
+  onUpdateArchive?: Function;
 };
 
 export default function LinkDetails({
@@ -50,6 +51,7 @@ export default function LinkDetails({
   standalone,
   mode = "view",
   setMode,
+  onUpdateArchive,
 }: Props) {
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
@@ -236,46 +238,50 @@ export default function LinkDetails({
             <div className="duration-100 h-40 skeleton rounded-none"></div>
           )}
 
-          {!standalone && (permissions === true || permissions?.canUpdate) && (
-            <div className="absolute top-0 bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 duration-100 flex justify-end items-end">
-              <label className="btn btn-xs mb-2 mr-3 opacity-50 hover:opacity-100">
-                {t("upload_preview_image")}
-                <input
-                  type="file"
-                  accept="image/jpg, image/jpeg, image/png"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
+          {!standalone &&
+            (permissions === true || permissions?.canUpdate) &&
+            !isPublicRoute && (
+              <div className="absolute top-0 bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 duration-100 flex justify-end items-end">
+                <label className="btn btn-xs mb-2 mr-3 opacity-50 hover:opacity-100">
+                  {t("upload_preview_image")}
+                  <input
+                    type="file"
+                    accept="image/jpg, image/jpeg, image/png"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
 
-                    const load = toast.loading(t("updating"));
+                      const load = toast.loading(t("updating"));
 
-                    await updatePreview.mutateAsync(
-                      {
-                        linkId: link.id as number,
-                        file,
-                      },
-                      {
-                        onSettled: (data, error) => {
-                          toast.dismiss(load);
-
-                          if (error) {
-                            toast.error(error.message);
-                          } else {
-                            toast.success(t("updated"));
-                            setLink({ updatedAt: data.updatedAt, ...link });
-                          }
+                      await updatePreview.mutateAsync(
+                        {
+                          linkId: link.id as number,
+                          file,
                         },
-                      }
-                    );
-                  }}
-                  className="hidden"
-                />
-              </label>
-            </div>
-          )}
+                        {
+                          onSettled: (data, error) => {
+                            toast.dismiss(load);
+
+                            if (error) {
+                              toast.error(error.message);
+                            } else {
+                              toast.success(t("updated"));
+                              setLink({ updatedAt: data.updatedAt, ...link });
+                            }
+                          },
+                        }
+                      );
+                    }}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            )}
         </div>
 
-        {!standalone && (permissions === true || permissions?.canUpdate) ? (
+        {!standalone &&
+        (permissions === true || permissions?.canUpdate) &&
+        !isPublicRoute ? (
           <div className="-mt-14 ml-8 relative w-fit pb-2">
             <div className="tooltip tooltip-bottom" data-tip={t("change_icon")}>
               <LinkIcon
@@ -505,12 +511,30 @@ export default function LinkDetails({
             <div>
               <br />
 
-              <p
-                className="text-sm mb-2 text-neutral"
-                title={t("available_formats")}
-              >
-                {link.url ? t("preserved_formats") : t("file")}
-              </p>
+              <div className="flex gap-1 items-center mb-2">
+                <p
+                  className="text-sm text-neutral"
+                  title={t("available_formats")}
+                >
+                  {link.url ? t("preserved_formats") : t("file")}
+                </p>
+
+                {onUpdateArchive &&
+                  (permissions === true || permissions?.canUpdate) &&
+                  !isPublicRoute && (
+                    <div
+                      className="tooltip tooltip-bottom"
+                      data-tip={t("refresh_preserved_formats")}
+                    >
+                      <button
+                        className="btn btn-xs btn-ghost btn-square text-neutral"
+                        onClick={() => onUpdateArchive()}
+                      >
+                        <i className="bi-arrow-clockwise text-sm" />
+                      </button>
+                    </div>
+                  )}
+              </div>
 
               <div className={`flex flex-col rounded-md p-3 bg-base-200`}>
                 {monolithAvailable(link) ? (
