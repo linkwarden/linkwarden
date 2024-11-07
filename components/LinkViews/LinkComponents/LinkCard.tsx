@@ -113,8 +113,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   const permissions = usePermissions(collection?.id as number);
 
   const router = useRouter();
-
-  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -125,7 +124,10 @@ export default function LinkCard({ link, columns, editMode }: Props) {
       link.preview !== "unavailable"
     ) {
       interval = setInterval(async () => {
-        getLink.mutateAsync({ id: link.id as number, isPublicRoute: isPublic });
+        getLink.mutateAsync({
+          id: link.id as number,
+          isPublicRoute: isPublicRoute,
+        });
       }, 5000);
     }
 
@@ -145,8 +147,6 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   const selectable =
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
-
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   return (
     <div
@@ -220,7 +220,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
               <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
 
               <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
-                {show.collection && (
+                {show.collection && !isPublicRoute && (
                   <div className="cursor-pointer truncate">
                     <LinkCollection link={link} collection={collection} />
                   </div>
