@@ -257,7 +257,7 @@
   "sending_request": "İstek Gönderiliyor...",
   "link_being_archived": "Bağlantı arşivleniyor...",
   "preserved_formats": "Korunan Formatlar",
-  "available_formats": "Bu bağlantı için kullanılabilir formatlar:",
+  "available_formats": "Bu bağlantı için kullanılabilir formatlar",
   "readable": "Okunabilir",
   "preservation_in_queue": "Bağlantı koruma sırada",
   "view_latest_snapshot": "archive.org'da son anlık görüntüyü görüntüle",

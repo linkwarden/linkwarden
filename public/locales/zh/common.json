@@ -255,7 +255,7 @@
   "sending_request": "正在发送请求...",
   "link_being_archived": "链接正在归档...",
   "preserved_formats": "保存格式",
-  "available_formats": "以下格式可用于此链接：",
+  "available_formats": "以下格式可用于此链接",
   "readable": "可读视图",
   "preservation_in_queue": "链接保存正在处理中...",
   "view_latest_snapshot": "在 archive.org 上查看最新快照",

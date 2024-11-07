@@ -255,7 +255,7 @@
   "sending_request": "Verzoek Verzenden...",
   "link_being_archived": "Link wordt gearchiveerd...",
   "preserved_formats": "Bewaarde Formaten",
-  "available_formats": "De volgende formaten zijn beschikbaar voor deze link:",
+  "available_formats": "De volgende formaten zijn beschikbaar voor deze link",
   "readable": "Leesbaar",
   "preservation_in_queue": "Linkbewaring staat in de wachtrij",
   "view_latest_snapshot": "Bekijk de laatste momentopname op archive.org",

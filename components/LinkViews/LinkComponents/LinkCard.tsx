@@ -146,6 +146,8 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+
   return (
     <div
       ref={ref}
@@ -233,7 +235,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
       {/* Overlay on hover */}
       <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-2xl duration-100"></div>
       <LinkActions link={link} collection={collection} />
-      <LinkPin link={link} />
+      {!isPublicRoute && <LinkPin link={link} />}
     </div>
   );
 }

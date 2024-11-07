@@ -256,7 +256,7 @@
   "sending_request": "Надсилання запиту...",
   "link_being_archived": "Посилання архівується...",
   "preserved_formats": "Збережені формати",
-  "available_formats": "Для цього посилання доступні такі формати:",
+  "available_formats": "Для цього посилання доступні такі формати",
   "readable": "Читабельний",
   "preservation_in_queue": "У черзі збереження посилання",
   "view_latest_snapshot": "Перегляньте останній знімок на archive.org",

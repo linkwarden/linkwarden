@@ -256,7 +256,7 @@
   "sending_request": "リクエストを送信中...",
   "link_being_archived": "リンクがアーカイブされています...",
   "preserved_formats": "保存された形式",
-  "available_formats": "このリンクには以下の形式が利用可能です:",
+  "available_formats": "このリンクには以下の形式が利用可能です",
   "readable": "リーダブル",
   "preservation_in_queue": "リンクの保存がキューに追加されています",
   "view_latest_snapshot": "archive.org で最新のスナップショットを見る",
