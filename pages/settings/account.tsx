@@ -101,12 +101,6 @@ export default function Account() {
         password: password ? password : undefined,
       },
       {
-        onSuccess: (data) => {
-          if (data.response.email !== user.email) {
-            toast.success(t("email_change_request"));
-            setEmailChangeVerificationModal(false);
-          }
-        },
         onSettled: (data, error) => {
           setSubmitLoader(false);
           toast.dismiss(load);
