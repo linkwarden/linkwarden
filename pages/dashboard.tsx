@@ -16,6 +16,7 @@ import { useTags } from "@/hooks/store/tags";
 import { useDashboardData } from "@/hooks/store/dashboardData";
 import Links from "@/components/LinkViews/Links";
 import useLocalSettingsStore from "@/store/localSettings";
+import Divider from "@/components/ui/Divider";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -112,7 +113,7 @@ export default function Dashboard() {
           <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
         </div>
 
-        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-5 xl:flex-row xl:justify-evenly xl:w-full h-full rounded-2xl p-5 bg-base-200 border border-neutral-content">
+        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full h-full">
           <DashboardItem
             name={numberOfLinks === 1 ? t("link") : t("links")}
             value={numberOfLinks}
