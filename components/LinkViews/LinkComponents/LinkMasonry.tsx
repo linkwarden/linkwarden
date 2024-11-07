@@ -232,7 +232,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
             <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
 
             <div className="flex flex-wrap justify-between items-center text-xs text-neutral px-3 pb-1 w-full gap-x-2">
-              {show.collection && (
+              {!isPublic && show.collection && (
                 <div className="cursor-pointer truncate">
                   <LinkCollection link={link} collection={collection} />
                 </div>
