@@ -1,6 +1,7 @@
 import { icons } from "@/lib/client/icons";
 import Fuse from "fuse.js";
-import { useMemo } from "react";
+import { forwardRef, useMemo } from "react";
+import { FixedSizeGrid as Grid } from "react-window";
 
 const fuse = new Fuse(icons, {
   keys: [{ name: "name", weight: 4 }, "tags", "categories"],
@@ -17,32 +18,74 @@ type Props = {
 };
 
 const IconGrid = ({ query, color, weight, iconName, setIconName }: Props) => {
-  const filteredQueryResultsSelector = useMemo(() => {
+  // Memoize the filtered results to avoid recalculations on each render
+  const filteredIcons = useMemo(() => {
     if (!query) {
       return icons;
     }
     return fuse.search(query).map((result) => result.item);
   }, [query]);
 
+  // Grid configuration
+  const columnCount = 6;
+  const rowCount = Math.ceil(filteredIcons.length / columnCount);
+  const GUTTER_SIZE = 5;
+
+  // Render a single cell (icon) in the grid
+  const Cell = ({ columnIndex, rowIndex, style }: any) => {
+    const index = rowIndex * columnCount + columnIndex;
+    if (index >= filteredIcons.length) return null; // Prevent overflow
+
+    const icon = filteredIcons[index];
+    const IconComponent = icon.Icon;
+
+    return (
+      <div
+        style={{
+          ...style,
+          left: style.left + GUTTER_SIZE,
+          top: style.top + GUTTER_SIZE,
+          width: style.width - GUTTER_SIZE,
+          height: style.height - GUTTER_SIZE,
+        }}
+        onClick={() => setIconName(icon.pascal_name)}
+        className={`cursor-pointer p-[6px] rounded-lg bg-base-100 w-full ${
+          icon.pascal_name === iconName
+            ? "outline outline-1 outline-primary"
+            : ""
+        }`}
+      >
+        <IconComponent size={32} weight={weight} color={color} />
+      </div>
+    );
+  };
+
+  const innerElementType = forwardRef(({ style, ...rest }: any, ref) => (
+    <div
+      ref={ref}
+      style={{
+        ...style,
+        paddingLeft: GUTTER_SIZE,
+        paddingTop: GUTTER_SIZE,
+      }}
+      {...rest}
+    />
+  ));
+
   return (
-    <>
-      {filteredQueryResultsSelector.map((icon) => {
-        const IconComponent = icon.Icon;
-        return (
-          <div
-            key={icon.pascal_name}
-            onClick={() => setIconName(icon.pascal_name)}
-            className={`cursor-pointer btn p-1 box-border bg-base-100 border-none w-full ${
-              icon.pascal_name === iconName
-                ? "outline outline-1 outline-primary"
-                : ""
-            }`}
-          >
-            <IconComponent size={32} weight={weight} color={color} />
-          </div>
-        );
-      })}
-    </>
+    <Grid
+      columnCount={columnCount}
+      rowCount={rowCount}
+      columnWidth={50}
+      rowHeight={50}
+      innerElementType={innerElementType}
+      width={320}
+      height={158}
+      itemData={filteredIcons}
+      className="hide-scrollbar ml-[4px] w-fit"
+    >
+      {Cell}
+    </Grid>
   );
 };
 
