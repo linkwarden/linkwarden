@@ -272,7 +272,7 @@
   "sending_request": "Enviando solicitação...",
   "link_being_archived": "O link está sendo arquivado...",
   "preserved_formats": "Formatos Preservados",
-  "available_formats": "Os seguintes formatos estão disponíveis para este link:",
+  "available_formats": "Os seguintes formatos estão disponíveis para este link",
   "readable": "Legível",
   "preservation_in_queue": "A preservação do link está na fila",
   "view_latest_snapshot": "Ver o último snapshot em archive.org",
