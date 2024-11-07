@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import { useEffect, useMemo, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -16,7 +16,8 @@ import { useTags } from "@/hooks/store/tags";
 import { useDashboardData } from "@/hooks/store/dashboardData";
 import Links from "@/components/LinkViews/Links";
 import useLocalSettingsStore from "@/store/localSettings";
-import Divider from "@/components/ui/Divider";
+import { useUpdateUser, useUser } from "@/hooks/store/user";
+import SurveyModal from "@/components/ModalContent/SurveyModal";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -26,6 +27,7 @@ export default function Dashboard() {
     ...dashboardData
   } = useDashboardData();
   const { data: tags = [] } = useTags();
+  const { data: account = [] } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
@@ -40,6 +42,19 @@ export default function Dashboard() {
       )
     );
   }, [collections]);
+
+  useEffect(() => {
+    if (
+      process.env.NEXT_PUBLIC_STRIPE === "true" &&
+      account.id &&
+      account.referredBy === null &&
+      // if user is using Linkwarden for more than 3 days
+      new Date().getTime() - new Date(account.createdAt).getTime() >
+        3 * 24 * 60 * 60 * 1000
+    ) {
+      setShowsSurveyModal(true);
+    }
+  }, [account]);
 
   const numberOfLinksToShow = useMemo(() => {
     if (window.innerWidth > 1900) {
@@ -100,6 +115,42 @@ export default function Dashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>(
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
+
+  const [showSurveyModal, setShowsSurveyModal] = useState(false);
+
+  const { data: user } = useUser();
+  const updateUser = useUpdateUser();
+
+  const [submitLoader, setSubmitLoader] = useState(false);
+
+  const submitSurvey = async (referer: string, other?: string) => {
+    if (submitLoader) return;
+
+    setSubmitLoader(true);
+
+    const load = toast.loading(t("applying"));
+
+    await updateUser.mutateAsync(
+      {
+        ...user,
+        referredBy: referer === "other" ? "Other: " + other : referer,
+      },
+      {
+        onSettled: (data, error) => {
+          console.log(data, error);
+          setSubmitLoader(false);
+          toast.dismiss(load);
+
+          if (error) {
+            toast.error(error.message);
+          } else {
+            toast.success(t("thanks_for_feedback"));
+            setShowsSurveyModal(false);
+          }
+        },
+      }
+    );
+  };
 
   return (
     <MainLayout>
@@ -343,6 +394,14 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+      {showSurveyModal && (
+        <SurveyModal
+          submit={submitSurvey}
+          onClose={() => {
+            setShowsSurveyModal(false);
+          }}
+        />
+      )}
       {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
     </MainLayout>
   );
