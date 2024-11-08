@@ -58,8 +58,6 @@ export default async function deleteUserById(
       }
     } else {
       if (user.parentSubscriptionId) {
-        console.log(userId, user.parentSubscriptionId);
-
         return {
           response: "Permission denied.",
           status: 401,
@@ -89,18 +87,16 @@ export default async function deleteUserById(
               disconnect: true,
             },
           },
-          select: {
-            id: true,
-          },
         });
 
-        await updateSeats(
-          user.subscriptions.stripeSubscriptionId,
-          user.subscriptions.quantity - 1
-        );
+        if (removeUser.emailVerified)
+          await updateSeats(
+            user.subscriptions.stripeSubscriptionId,
+            user.subscriptions.quantity - 1
+          );
 
         return {
-          response: removeUser,
+          response: "Account removed from subscription.",
           status: 200,
         };
       }
@@ -209,7 +205,7 @@ export default async function deleteUserById(
             status: 200,
           };
         }
-      } else if (user.parentSubscription?.id) {
+      } else if (user.parentSubscription?.id && user && user.emailVerified) {
         await updateSeats(
           user.parentSubscription.stripeSubscriptionId,
           user.parentSubscription.quantity - 1
