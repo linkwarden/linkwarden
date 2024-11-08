@@ -23,7 +23,6 @@ const usePublicTags = (): UseQueryResult<TagIncludingCount[]> => {
       const data = await response.json();
       return data.response;
     },
-    enabled: status === "authenticated",
   });
 };
 

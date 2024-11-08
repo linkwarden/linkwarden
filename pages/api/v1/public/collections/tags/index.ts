@@ -37,6 +37,6 @@ export default async function collections(
       collectionId: collection.id,
     });
 
-    return res.status(tags.status).json({ response: tags.response });
+    return res.status(tags?.status || 500).json({ response: tags?.response });
   }
 }

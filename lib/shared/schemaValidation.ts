@@ -81,7 +81,7 @@ export const UpdateUserSchema = () => {
     collectionOrder: z.array(z.number()).optional(),
     linksRouteTo: z.nativeEnum(LinksRouteTo).optional(),
     whitelistedUsers: z.array(z.string().max(50)).optional(),
-    referredBy: z.string().max(100).optional(),
+    referredBy: z.string().max(100).nullish(),
   });
 };
 
