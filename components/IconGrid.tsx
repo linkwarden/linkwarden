@@ -18,7 +18,6 @@ type Props = {
 };
 
 const IconGrid = ({ query, color, weight, iconName, setIconName }: Props) => {
-  // Memoize the filtered results to avoid recalculations on each render
   const filteredIcons = useMemo(() => {
     if (!query) {
       return icons;
@@ -26,12 +25,10 @@ const IconGrid = ({ query, color, weight, iconName, setIconName }: Props) => {
     return fuse.search(query).map((result) => result.item);
   }, [query]);
 
-  // Grid configuration
   const columnCount = 6;
   const rowCount = Math.ceil(filteredIcons.length / columnCount);
   const GUTTER_SIZE = 5;
 
-  // Render a single cell (icon) in the grid
   const Cell = ({ columnIndex, rowIndex, style }: any) => {
     const index = rowIndex * columnCount + columnIndex;
     if (index >= filteredIcons.length) return null; // Prevent overflow
@@ -60,7 +57,7 @@ const IconGrid = ({ query, color, weight, iconName, setIconName }: Props) => {
     );
   };
 
-  const innerElementType = forwardRef(({ style, ...rest }: any, ref) => (
+  const InnerElementType = forwardRef(({ style, ...rest }: any, ref) => (
     <div
       ref={ref}
       style={{
@@ -72,13 +69,15 @@ const IconGrid = ({ query, color, weight, iconName, setIconName }: Props) => {
     />
   ));
 
+  InnerElementType.displayName = "InnerElementType";
+
   return (
     <Grid
       columnCount={columnCount}
       rowCount={rowCount}
       columnWidth={50}
       rowHeight={50}
-      innerElementType={innerElementType}
+      innerElementType={InnerElementType}
       width={320}
       height={158}
       itemData={filteredIcons}
