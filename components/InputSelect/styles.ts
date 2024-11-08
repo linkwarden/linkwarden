@@ -16,6 +16,10 @@ export const styles: StylesConfig = {
     },
     transition: "all 100ms",
   }),
+  menu: (styles) => ({
+    ...styles,
+    zIndex: 10,
+  }),
   control: (styles, state) => ({
     ...styles,
     fontFamily: font,
