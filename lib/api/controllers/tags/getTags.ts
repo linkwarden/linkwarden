@@ -62,11 +62,6 @@ export default async function getTags({
           },
         },
       },
-      include: {
-        _count: {
-          select: { links: true },
-        },
-      },
     });
 
     return { response: tags, status: 200 };
