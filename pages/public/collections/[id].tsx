@@ -252,11 +252,7 @@ export default function PublicCollections() {
                         : "bg-neutral-content/20 hover:bg-neutral/20"
                     } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
                   >
-                    <i className="text-primary bi-hash text-2xl drop-shadow"></i>
-                    <p className="truncate pr-7">{t("all_links")}</p>
-                    <div className="text-neutral drop-shadow text-xs">
-                      {collection._count?.links}
-                    </div>
+                    <p className="truncate px-3">{t("all_links")}</p>
                   </div>
                 </button>
                 {tags
@@ -279,10 +275,7 @@ export default function PublicCollections() {
                           } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
                         >
                           <i className="bi-hash text-2xl text-primary drop-shadow"></i>
-                          <p className="truncate pr-7">{e}</p>
-                          <div className="drop-shadow text-neutral text-xs">
-                            {tags.filter((t) => t.name === e)[0]._count.links}
-                          </div>
+                          <p className="truncate pr-3">{e}</p>
                         </div>
                       </button>
                     );
