@@ -7,8 +7,9 @@ export default async function getTags({
   userId?: number;
   collectionId?: number;
 }) {
-  // Remove empty tags
-  if (userId)
+  console.log("collectionId", collectionId);
+  if (userId) {
+    // Remove empty tags
     await prisma.tag.deleteMany({
       where: {
         ownerId: userId,
@@ -18,43 +19,56 @@ export default async function getTags({
       },
     });
 
-  const tags = await prisma.tag.findMany({
-    where: {
-      OR: [
-        { ownerId: userId }, // Tags owned by the user
-        {
-          links: {
-            some: {
-              collection: {
-                members: {
-                  some: {
-                    userId, // Tags from collections where the user is a member
+    const tags = await prisma.tag.findMany({
+      where: {
+        OR: [
+          { ownerId: userId }, // Tags owned by the user
+          {
+            links: {
+              some: {
+                collection: {
+                  members: {
+                    some: {
+                      userId, // Tags from collections where the user is a member
+                    },
                   },
                 },
               },
             },
           },
+        ],
+      },
+      include: {
+        _count: {
+          select: { links: true },
         },
-        {
-          links: {
-            some: {
-              collectionId,
+      },
+      // orderBy: {
+      //   links: {
+      //     _count: "desc",
+      //   },
+      // },
+    });
+
+    return { response: tags, status: 200 };
+  } else if (collectionId) {
+    const tags = await prisma.tag.findMany({
+      where: {
+        links: {
+          some: {
+            collection: {
+              id: collectionId,
             },
           },
         },
-      ],
-    },
-    include: {
-      _count: {
-        select: { links: true },
       },
-    },
-    // orderBy: {
-    //   links: {
-    //     _count: "desc",
-    //   },
-    // },
-  });
+      include: {
+        _count: {
+          select: { links: true },
+        },
+      },
+    });
 
-  return { response: tags, status: 200 };
+    return { response: tags, status: 200 };
+  }
 }
