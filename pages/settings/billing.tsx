@@ -191,7 +191,7 @@ export default function Billing() {
                   </p>
                 </td>
                 {user.id !== account.id && (
-                  <td>
+                  <td className="relative">
                     <div
                       className={`dropdown dropdown-bottom font-normal dropdown-end absolute right-[0.35rem] top-[0.35rem]`}
                     >
