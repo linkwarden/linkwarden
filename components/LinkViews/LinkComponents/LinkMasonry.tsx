@@ -155,14 +155,14 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
             : undefined
       }
     >
-      <div>
+      <div
+        className="rounded-2xl cursor-pointer"
+        onClick={() =>
+          !editMode && window.open(generateLinkHref(link, user), "_blank")
+        }
+      >
         {show.image && previewAvailable(link) && (
-          <div
-            className="rounded-2xl cursor-pointer"
-            onClick={() =>
-              !editMode && window.open(generateLinkHref(link, user), "_blank")
-            }
-          >
+          <div>
             <div className="relative rounded-t-2xl overflow-hidden">
               {previewAvailable(link) ? (
                 <Image
