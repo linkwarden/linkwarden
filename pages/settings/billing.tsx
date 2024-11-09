@@ -255,7 +255,12 @@ export default function Billing() {
         </table>
       </div>
       <p className="text-sm text-center font-bold mt-3">
-        {t("seats_purchased", { count: account?.subscription?.quantity })}
+        {t(
+          account?.subscription?.quantity === 1
+            ? "seat_purchased"
+            : "seats_purchased",
+          { count: account?.subscription?.quantity }
+        )}
       </p>
       {inviteModal && <InviteModal onClose={() => setInviteModal(false)} />}
       {deleteUserModal.isOpen && deleteUserModal.userId && (
