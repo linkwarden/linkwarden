@@ -411,6 +411,7 @@
   "active": "Active",
   "manage_seats": "Manage Seats",
   "seats_purchased": "{{count}} seats purchased",
+  "seat_purchased": "{{count}} seat purchased",
   "date_added": "Date Added",
   "resend_invite": "Resend Invitation",
   "resend_invite_success": "Invitation Resent!",
