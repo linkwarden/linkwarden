@@ -102,7 +102,7 @@ export default function InviteModal({ onClose }: Props) {
           <span>
             <p className="mb-1">{t("invite_user_note")}</p>
             <Link
-              href=""
+              href="https://docs.linkwarden.app/billing/seats#how-seats-affect-billing"
               className="font-semibold whitespace-nowrap hover:opacity-80 duration-100"
               target="_blank"
             >
