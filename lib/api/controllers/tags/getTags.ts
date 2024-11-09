@@ -7,7 +7,6 @@ export default async function getTags({
   userId?: number;
   collectionId?: number;
 }) {
-  console.log("collectionId", collectionId);
   if (userId) {
     // Remove empty tags
     await prisma.tag.deleteMany({
