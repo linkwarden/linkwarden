@@ -53,7 +53,9 @@ export default function Dashboard() {
       new Date().getTime() - new Date(account.createdAt).getTime() >
         3 * 24 * 60 * 60 * 1000
     ) {
-      setShowsSurveyModal(true);
+      setTimeout(() => {
+        setShowsSurveyModal(true);
+      }, 1000);
     }
   }, [account]);
 
