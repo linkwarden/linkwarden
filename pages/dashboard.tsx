@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import { BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -90,23 +90,44 @@ export default function Dashboard() {
           data: request,
         };
 
-        const response = await fetch("/api/v1/migration", {
-          method: "POST",
-          body: JSON.stringify(body),
-        });
+        try {
+          const response = await fetch("/api/v1/migration", {
+            method: "POST",
+            body: JSON.stringify(body),
+          });
 
-        await response.json();
+          if (!response.ok) {
+            const errorData = await response.json();
+            toast.dismiss(load);
 
-        toast.dismiss(load);
+            toast.error(
+              errorData.response ||
+                "Failed to import bookmarks. Please try again."
+            );
+            return;
+          }
 
-        toast.success("Imported the Bookmarks! Reloading the page...");
+          await response.json();
+          toast.dismiss(load);
+          toast.success("Imported the Bookmarks! Reloading the page...");
 
-        setTimeout(() => {
-          location.reload();
-        }, 2000);
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } catch (error) {
+          console.error("Request failed", error);
+          toast.dismiss(load);
+          toast.error(
+            "An error occurred while importing bookmarks. Please check the logs for more info."
+          );
+        }
       };
+
       reader.onerror = function (e) {
-        console.log("Error:", e);
+        console.log("Error reading file:", e);
+        toast.error(
+          "Failed to read the file. Please make sure the file is correct and try again."
+        );
       };
     }
   };
@@ -233,7 +254,7 @@ export default function Dashboard() {
               />
             </div>
           ) : (
-            <div className="sky-shadow flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200">
+            <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
               <p className="text-center text-2xl">
                 {t("view_added_links_here")}
               </p>
@@ -382,7 +403,7 @@ export default function Dashboard() {
           ) : (
             <div
               style={{ flex: "1 1 auto" }}
-              className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200"
+              className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200"
             >
               <i className="bi-pin mx-auto text-6xl text-primary"></i>
               <p className="text-center text-2xl">
