@@ -143,6 +143,21 @@ export default function Index() {
                 <i className="bi-three-dots text-xl" title="More"></i>
               </div>
               <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
+                <li>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => {
+                      (document?.activeElement as HTMLElement)?.blur();
+                      for (const link of links) {
+                        if (link.url) window.open(link.url, "_blank");
+                      }
+                    }}
+                    className="whitespace-nowrap"
+                  >
+                    {t("open_all_links")}
+                  </div>
+                </li>
                 {permissions === true && (
                   <li>
                     <div
