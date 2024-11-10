@@ -59,7 +59,6 @@ export default function SurveyModal({ onClose, submit }: Props) {
           intent="accent"
           onClick={() => submit(referer, other)}
         >
-          <i className="bi-check2 text-xl" />
           {t("submit")}
         </Button>
       </div>
