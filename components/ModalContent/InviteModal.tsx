@@ -100,7 +100,13 @@ export default function InviteModal({ onClose }: Props) {
         <div role="note" className="alert alert-note mt-5">
           <i className="bi-exclamation-triangle text-xl" />
           <span>
-            <p className="mb-1">{t("invite_user_note")}</p>
+            <p>{t("invite_user_note")}</p>
+            <p className="mb-1">
+              {t("invite_user_price", {
+                price: 4,
+                priceAnnual: 36,
+              })}
+            </p>
             <Link
               href="https://docs.linkwarden.app/billing/seats#how-seats-affect-billing"
               className="font-semibold whitespace-nowrap hover:opacity-80 duration-100"
