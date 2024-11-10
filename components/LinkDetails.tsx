@@ -328,7 +328,7 @@ export default function LinkDetails({
               <p
                 className={clsx("relative w-fit", !link.name && "text-neutral")}
               >
-                {link.name || t("untitled")}
+                {unescapeString(link.name) || t("untitled")}
               </p>
             </div>
           )}
