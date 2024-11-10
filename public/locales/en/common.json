@@ -427,5 +427,6 @@
   "search_engine": "Search Engine (Google, Bing, etc.)",
   "reddit": "Reddit",
   "lemmy": "Lemmy",
-  "people_recommendation": "Recommendation (Friend, Family, etc.)"
+  "people_recommendation": "Recommendation (Friend, Family, etc.)",
+  "open_all_links": "Open all Links"
 }
