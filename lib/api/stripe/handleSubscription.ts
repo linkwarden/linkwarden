@@ -10,8 +10,7 @@ type Data = {
   action:
     | "customer.subscription.created"
     | "customer.subscription.updated"
-    | "customer.subscription.deleted"
-    | "customer.subscription.cancelled";
+    | "customer.subscription.deleted";
 };
 
 export default async function handleSubscription({
