@@ -184,27 +184,20 @@ export default async function deleteUserById(
 
     try {
       if (user.subscriptions?.id) {
-        const listByEmail = await stripe.customers.list({
-          email: user.email?.toLowerCase(),
-          expand: ["data.subscriptions"],
-        });
+        const deleted = await stripe.subscriptions.cancel(
+          user.subscriptions.stripeSubscriptionId,
+          {
+            cancellation_details: {
+              comment: body.cancellation_details?.comment,
+              feedback: body.cancellation_details?.feedback,
+            },
+          }
+        );
 
-        if (listByEmail.data[0].subscriptions?.data[0].id) {
-          const deleted = await stripe.subscriptions.cancel(
-            listByEmail.data[0].subscriptions?.data[0].id,
-            {
-              cancellation_details: {
-                comment: body.cancellation_details?.comment,
-                feedback: body.cancellation_details?.feedback,
-              },
-            }
-          );
-
-          return {
-            response: deleted,
-            status: 200,
-          };
-        }
+        return {
+          response: deleted,
+          status: 200,
+        };
       } else if (user.parentSubscription?.id && user && user.emailVerified) {
         await updateSeats(
           user.parentSubscription.stripeSubscriptionId,
