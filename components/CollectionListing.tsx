@@ -27,7 +27,7 @@ const CollectionListing = () => {
   const updateCollection = useUpdateCollection();
   const { data: collections = [], isLoading } = useCollections();
 
-  const { data: user = {} } = useUser();
+  const { data: user = {}, refetch } = useUser();
   const updateUser = useUpdateUser();
 
   const router = useRouter();
@@ -36,10 +36,7 @@ const CollectionListing = () => {
   const [tree, setTree] = useState<TreeData | undefined>();
 
   const initialTree = useMemo(() => {
-    if (
-      // !tree &&
-      collections.length > 0
-    ) {
+    if (collections.length > 0) {
       return buildTreeFromCollections(
         collections,
         router,
@@ -49,12 +46,12 @@ const CollectionListing = () => {
   }, [collections, user, router]);
 
   useEffect(() => {
-    // if (!tree)
     setTree(initialTree);
   }, [initialTree]);
 
   useEffect(() => {
     if (user.username) {
+      refetch();
       if (
         (!user.collectionOrder || user.collectionOrder.length === 0) &&
         collections.length > 0
@@ -62,11 +59,7 @@ const CollectionListing = () => {
         updateUser.mutate({
           ...user,
           collectionOrder: collections
-            .filter(
-              (e) =>
-                e.parentId === null ||
-                !collections.find((i) => i.id === e.parentId)
-            ) // Filter out collections with non-null parentId
+            .filter((e) => e.parentId === null)
             .map((e) => e.id as number),
         });
       else {
@@ -100,7 +93,7 @@ const CollectionListing = () => {
         }
       }
     }
-  }, [collections]);
+  }, [user, collections]);
 
   const onExpand = (movedCollectionId: ItemId) => {
     setTree((currentTree) =>

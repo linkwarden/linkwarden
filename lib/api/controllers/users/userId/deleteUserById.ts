@@ -4,15 +4,28 @@ import removeFolder from "@/lib/api/storage/removeFolder";
 import Stripe from "stripe";
 import { DeleteUserBody } from "@/types/global";
 import removeFile from "@/lib/api/storage/removeFile";
+import updateSeats from "@/lib/api/stripe/updateSeats";
 
 export default async function deleteUserById(
   userId: number,
   body: DeleteUserBody,
-  isServerAdmin?: boolean
+  isServerAdmin: boolean,
+  queryId: number
 ) {
-  // First, we retrieve the user from the database
   const user = await prisma.user.findUnique({
     where: { id: userId },
+    include: {
+      subscriptions: {
+        include: {
+          user: true,
+        },
+      },
+      parentSubscription: {
+        include: {
+          user: true,
+        },
+      },
+    },
   });
 
   if (!user) {
@@ -23,24 +36,70 @@ export default async function deleteUserById(
   }
 
   if (!isServerAdmin) {
-    if (user.password) {
-      const isPasswordValid = bcrypt.compareSync(
-        body.password,
-        user.password as string
-      );
+    if (queryId === userId) {
+      if (user.password) {
+        const isPasswordValid = bcrypt.compareSync(
+          body.password,
+          user.password
+        );
 
-      if (!isPasswordValid && !isServerAdmin) {
+        if (!isPasswordValid && !isServerAdmin) {
+          return {
+            response: "Invalid credentials.",
+            status: 401,
+          };
+        }
+      } else {
         return {
-          response: "Invalid credentials.",
-          status: 401, // Unauthorized
+          response:
+            "User has no password. Please reset your password from the forgot password page.",
+          status: 401,
         };
       }
     } else {
-      return {
-        response:
-          "User has no password. Please reset your password from the forgot password page.",
-        status: 401, // Unauthorized
-      };
+      if (user.parentSubscriptionId) {
+        return {
+          response: "Permission denied.",
+          status: 401,
+        };
+      } else {
+        if (!user.subscriptions) {
+          return {
+            response: "User has no subscription.",
+            status: 401,
+          };
+        }
+
+        const findChild = await prisma.user.findFirst({
+          where: { id: queryId, parentSubscriptionId: user.subscriptions?.id },
+        });
+
+        if (!findChild)
+          return {
+            response: "Permission denied.",
+            status: 401,
+          };
+
+        const removeUser = await prisma.user.update({
+          where: { id: findChild.id },
+          data: {
+            parentSubscription: {
+              disconnect: true,
+            },
+          },
+        });
+
+        if (removeUser.emailVerified)
+          await updateSeats(
+            user.subscriptions.stripeSubscriptionId,
+            user.subscriptions.quantity - 1
+          );
+
+        return {
+          response: "Account removed from subscription.",
+          status: 200,
+        };
+      }
     }
   }
 
@@ -50,27 +109,27 @@ export default async function deleteUserById(
       async (prisma) => {
         // Delete Access Tokens
         await prisma.accessToken.deleteMany({
-          where: { userId },
+          where: { userId: queryId },
         });
 
         // Delete whitelisted users
         await prisma.whitelistedUser.deleteMany({
-          where: { userId },
+          where: { userId: queryId },
         });
 
         // Delete links
         await prisma.link.deleteMany({
-          where: { collection: { ownerId: userId } },
+          where: { collection: { ownerId: queryId } },
         });
 
         // Delete tags
         await prisma.tag.deleteMany({
-          where: { ownerId: userId },
+          where: { ownerId: queryId },
         });
 
         // Find collections that the user owns
         const collections = await prisma.collection.findMany({
-          where: { ownerId: userId },
+          where: { ownerId: queryId },
         });
 
         for (const collection of collections) {
@@ -89,29 +148,29 @@ export default async function deleteUserById(
 
         // Delete collections after cleaning up related data
         await prisma.collection.deleteMany({
-          where: { ownerId: userId },
+          where: { ownerId: queryId },
         });
 
         // Delete subscription
         if (process.env.STRIPE_SECRET_KEY)
           await prisma.subscription
             .delete({
-              where: { userId },
+              where: { userId: queryId },
             })
             .catch((err) => console.log(err));
 
         await prisma.usersAndCollections.deleteMany({
           where: {
-            OR: [{ userId: userId }, { collection: { ownerId: userId } }],
+            OR: [{ userId: queryId }, { collection: { ownerId: queryId } }],
           },
         });
 
         // Delete user's avatar
-        await removeFile({ filePath: `uploads/avatar/${userId}.jpg` });
+        await removeFile({ filePath: `uploads/avatar/${queryId}.jpg` });
 
         // Finally, delete the user
         await prisma.user.delete({
-          where: { id: userId },
+          where: { id: queryId },
         });
       },
       { timeout: 20000 }
@@ -124,24 +183,36 @@ export default async function deleteUserById(
     });
 
     try {
-      const listByEmail = await stripe.customers.list({
-        email: user.email?.toLowerCase(),
-        expand: ["data.subscriptions"],
-      });
+      if (user.subscriptions?.id) {
+        const listByEmail = await stripe.customers.list({
+          email: user.email?.toLowerCase(),
+          expand: ["data.subscriptions"],
+        });
 
-      if (listByEmail.data[0].subscriptions?.data[0].id) {
-        const deleted = await stripe.subscriptions.cancel(
-          listByEmail.data[0].subscriptions?.data[0].id,
-          {
-            cancellation_details: {
-              comment: body.cancellation_details?.comment,
-              feedback: body.cancellation_details?.feedback,
-            },
-          }
+        if (listByEmail.data[0].subscriptions?.data[0].id) {
+          const deleted = await stripe.subscriptions.cancel(
+            listByEmail.data[0].subscriptions?.data[0].id,
+            {
+              cancellation_details: {
+                comment: body.cancellation_details?.comment,
+                feedback: body.cancellation_details?.feedback,
+              },
+            }
+          );
+
+          return {
+            response: deleted,
+            status: 200,
+          };
+        }
+      } else if (user.parentSubscription?.id && user && user.emailVerified) {
+        await updateSeats(
+          user.parentSubscription.stripeSubscriptionId,
+          user.parentSubscription.quantity - 1
         );
 
         return {
-          response: deleted,
+          response: "User account and all related data deleted successfully.",
           status: 200,
         };
       }

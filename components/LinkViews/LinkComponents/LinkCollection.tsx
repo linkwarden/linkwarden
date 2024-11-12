@@ -3,6 +3,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 export default function LinkCollection({
@@ -12,7 +13,11 @@ export default function LinkCollection({
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
 }) {
-  return (
+  const router = useRouter();
+
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+
+  return !isPublicRoute && collection?.name ? (
     <>
       <Link
         href={`/collections/${link.collection.id}`}
@@ -29,5 +34,5 @@ export default function LinkCollection({
         <p className="truncate capitalize">{collection?.name}</p>
       </Link>
     </>
-  );
+  ) : null;
 }
