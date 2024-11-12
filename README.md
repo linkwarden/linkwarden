@@ -69,16 +69,19 @@ We've forked the old version from the current repository into [this repo](https:
 - 📱 Responsive design and supports most modern browsers.
 - 🌓 Dark/Light mode support.
 - 🧩 Browser extension, managed by the community. [Star it here!](https://github.com/linkwarden/browser-extension)
+- 🔄 Browser Synchronization (using [Floccus](https://floccus.org)!)
 - ⬇️ Import and export your bookmarks.
 - 🔐 SSO integration. (Enterprise and Self-hosted users only)
 - 📦 Installable Progressive Web App (PWA).
 - 🍏 iOS and MacOS Apps, maintained by [JGeek00](https://github.com/JGeek00).
-- 🍎 iOS Shortcut to save links to Linkwarden.
+- 🍎 iOS Shortcut to save Links to Linkwarden.
 - 🔑 API keys.
 - ✅ Bulk actions.
 - 👥 User administration.
 - 🌐 Support for Other Languages (i18n).
 - 📁 Image and PDF Uploads.
+- 🎨 Custom Icons for Links and Collections.
+- ⚙️ Customizable View and Adjustable Columns.
 - ✨ And many more features. (Literally!)
 
 ## Like what we're doing? Give us a Star ⭐
