@@ -72,6 +72,7 @@ export default async function webhook(
           quantity: data?.quantity ?? 1,
           periodStart: data.current_period_start,
           periodEnd: data.current_period_end,
+          action: "customer.subscription.created",
         });
         break;
 
@@ -82,6 +83,7 @@ export default async function webhook(
           quantity: data?.quantity ?? 1,
           periodStart: data.current_period_start,
           periodEnd: data.current_period_end,
+          action: "customer.subscription.updated",
         });
         break;
 
@@ -92,6 +94,7 @@ export default async function webhook(
           quantity: data?.lines?.data[0]?.quantity ?? 1,
           periodStart: data.current_period_start,
           periodEnd: data.current_period_end,
+          action: "customer.subscription.deleted",
         });
         break;
 
@@ -102,6 +105,7 @@ export default async function webhook(
           quantity: data?.lines?.data[0]?.quantity ?? 1,
           periodStart: data.current_period_start,
           periodEnd: data.current_period_end,
+          action: "customer.subscription.cancelled",
         });
         break;
 
