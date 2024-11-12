@@ -34,8 +34,8 @@ RUN set -eux && \
 
 COPY . .
 
-RUN yarn prisma generate && \
-    yarn build
+RUN yarn prisma generate
+RUN yarn build
 
 EXPOSE 3000
 
