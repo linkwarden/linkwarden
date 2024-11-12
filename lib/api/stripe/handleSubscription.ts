@@ -7,6 +7,11 @@ type Data = {
   quantity: number;
   periodStart: number;
   periodEnd: number;
+  action:
+    | "customer.subscription.created"
+    | "customer.subscription.updated"
+    | "customer.subscription.deleted"
+    | "customer.subscription.cancelled";
 };
 
 export default async function handleSubscription({
@@ -15,6 +20,7 @@ export default async function handleSubscription({
   quantity,
   periodStart,
   periodEnd,
+  action,
 }: Data) {
   const subscription = await prisma.subscription.findUnique({
     where: {
@@ -57,7 +63,13 @@ export default async function handleSubscription({
       },
     });
 
-    if (!user) throw new Error("User not found");
+    if (!user) {
+      if (action === "customer.subscription.deleted") {
+        return "User not found or deleted";
+      } else {
+        throw new Error("User not found");
+      }
+    }
 
     const userId = user.id;
 
