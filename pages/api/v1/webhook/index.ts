@@ -98,17 +98,6 @@ export default async function webhook(
         });
         break;
 
-      case "customer.subscription.cancelled":
-        await handleSubscription({
-          id: data.id,
-          active: !(data.current_period_end * 1000 < Date.now()),
-          quantity: data?.lines?.data[0]?.quantity ?? 1,
-          periodStart: data.current_period_start,
-          periodEnd: data.current_period_end,
-          action: "customer.subscription.cancelled",
-        });
-        break;
-
       default:
         console.log(`Unhandled event type ${eventType}`);
     }
