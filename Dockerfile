@@ -34,9 +34,8 @@ RUN set -eux && \
 
 COPY . .
 
-RUN yarn prisma generate && \
-    yarn build --ignore-engines
-
 EXPOSE 3000
 
-CMD yarn prisma migrate deploy && yarn start
+CMD yarn prisma generate && \
+    yarn build --ignore-engines && \
+    yarn prisma migrate deploy && yarn start
