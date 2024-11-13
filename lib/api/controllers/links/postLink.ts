@@ -76,7 +76,7 @@ export default async function postLink(
   let linkType = "url";
   let imageExtension = "png";
 
-  if (!link.url) linkType = link.type;
+  if (!link.url) linkType = link.type || "url";
   else if (contentType === "application/pdf") linkType = "pdf";
   else if (contentType?.startsWith("image")) {
     linkType = "image";
