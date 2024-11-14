@@ -37,7 +37,7 @@ export const PostUserSchema = () => {
     password: z.string().min(8).max(2048).optional(),
     email: emailEnabled
       ? z.string().trim().email().toLowerCase()
-      : z.string().optional(),
+      : z.string().nullish(),
     username: emailEnabled
       ? z.string().optional()
       : z
@@ -59,7 +59,7 @@ export const UpdateUserSchema = () => {
     name: z.string().trim().min(1).max(50).optional(),
     email: emailEnabled
       ? z.string().trim().email().toLowerCase()
-      : z.string().optional(),
+      : z.string().nullish(),
     username: z
       .string()
       .trim()
