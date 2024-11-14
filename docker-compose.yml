@@ -11,8 +11,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
     restart: always
-    build: . # uncomment this line to build from source
-    # image: ghcr.io/linkwarden/linkwarden:latest # comment this line to build from source
+    # build: . # uncomment this line to build from source
+    image: ghcr.io/linkwarden/linkwarden:latest # comment this line to build from source
     ports:
       - 3000:3000
     volumes:
