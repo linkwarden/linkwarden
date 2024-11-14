@@ -87,7 +87,7 @@ export default function Account() {
 
     const emailSchema = z.string().trim().email().toLowerCase();
     const emailValidation = emailSchema.safeParse(user.email || "");
-    if (!emailValidation.success) {
+    if (emailEnabled && !emailValidation.success) {
       return toast.error(t("email_invalid"));
     }
 
