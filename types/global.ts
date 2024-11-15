@@ -119,6 +119,7 @@ export enum MigrationFormat {
   linkwarden,
   htmlFile,
   wallabag,
+  omnivore,
 }
 
 export enum Plan {
