@@ -51,7 +51,7 @@ export default function Dashboard() {
       account.referredBy === null &&
       // if user is using Linkwarden for more than 3 days
       new Date().getTime() - new Date(account.createdAt).getTime() >
-        3 * 24 * 60 * 60 * 1000
+      3 * 24 * 60 * 60 * 1000
     ) {
       setTimeout(() => {
         setShowsSurveyModal(true);
@@ -104,7 +104,7 @@ export default function Dashboard() {
 
             toast.error(
               errorData.response ||
-                "Failed to import bookmarks. Please try again."
+              "Failed to import bookmarks. Please try again."
             );
             return;
           }
@@ -348,6 +348,27 @@ export default function Dashboard() {
                           className="hidden"
                           onChange={(e) =>
                             importBookmarks(e, MigrationFormat.wallabag)
+                          }
+                        />
+                      </label>
+                    </li>
+                    <li>
+                      <label
+                        tabIndex={0}
+                        role="button"
+                        htmlFor="import-omnivore-file"
+                        title={t("from_omnivore")}
+                        className="whitespace-nowrap"
+                      >
+                        {t("from_omnivore")}
+                        <input
+                          type="file"
+                          name="photo"
+                          id="import-omnivore-file"
+                          accept=".zip"
+                          className="hidden"
+                          onChange={(e) =>
+                            importBookmarks(e, MigrationFormat.omnivore)
                           }
                         />
                       </label>
