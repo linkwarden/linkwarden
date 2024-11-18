@@ -27,7 +27,7 @@ type WallabagBackup = {
 
 export default async function importFromWallabag(
   userId: number,
-  rawData: string
+  rawData: any
 ) {
   const data: WallabagBackup = JSON.parse(rawData);
 
@@ -96,23 +96,23 @@ export default async function importFromWallabag(
               tags:
                 link.tags && link.tags[0]
                   ? {
-                      connectOrCreate: link.tags.map((tag) => ({
-                        where: {
-                          name_ownerId: {
-                            name: tag?.trim().slice(0, 49),
-                            ownerId: userId,
-                          },
-                        },
-                        create: {
+                    connectOrCreate: link.tags.map((tag) => ({
+                      where: {
+                        name_ownerId: {
                           name: tag?.trim().slice(0, 49),
-                          owner: {
-                            connect: {
-                              id: userId,
-                            },
+                          ownerId: userId,
+                        },
+                      },
+                      create: {
+                        name: tag?.trim().slice(0, 49),
+                        owner: {
+                          connect: {
+                            id: userId,
                           },
                         },
-                      })),
-                    }
+                      },
+                    })),
+                  }
                   : undefined,
             },
           });

@@ -81,21 +81,24 @@ export default function Dashboard() {
 
     if (file) {
       const reader = new FileReader();
-      reader.readAsText(file, "UTF-8");
+      //reader.readAsText(file, "UTF-8");
+      reader.readAsArrayBuffer(file);
       reader.onload = async function (e) {
         const load = toast.loading("Importing...");
 
-        const request: string = e.target?.result as string;
+        // const request: string = e.target?.result as string;
 
-        const body: MigrationRequest = {
-          format,
-          data: request,
-        };
+        // const body: MigrationRequest = {
+        //   format,
+        //   data: request,
+        // };
 
         try {
-          const response = await fetch("/api/v1/migration", {
+          const migrationFormatName = MigrationFormat[format];
+          const response = await fetch(`/api/v1/migration/${migrationFormatName}`, {
             method: "POST",
-            body: JSON.stringify(body),
+            body: e.target?.result as ArrayBuffer,
+            headers: { "Content-Type": "application/octet-stream" },
           });
 
           if (!response.ok) {
