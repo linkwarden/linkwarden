@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 type Props = {
   src?: string;
@@ -17,10 +18,11 @@ export default function ProfilePhoto({
   large,
 }: Props) {
   const [image, setImage] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (src && !src?.includes("base64") && !src.startsWith("http"))
-      setImage(`/api/v1/${src.replace("uploads/", "").replace(".jpg", "")}`);
+      setImage(`${router.basePath}/api/v1/${src.replace("uploads/", "").replace(".jpg", "")}`);
     else if (!src) setImage("");
     else {
       setImage(src);

@@ -8,6 +8,7 @@ import Button from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUser } from "@/hooks/store/user";
+import { useRouter } from "next/router";
 
 export default function Delete() {
   const [password, setPassword] = useState("");
@@ -17,6 +18,7 @@ export default function Delete() {
   const { data } = useSession();
   const { t } = useTranslation();
   const { data: user } = useUser();
+  const router = useRouter();
 
   const submit = async () => {
     const body = {
@@ -34,7 +36,7 @@ export default function Delete() {
     setSubmitLoader(true);
     const load = toast.loading(t("deleting_message"));
 
-    const response = await fetch(`/api/v1/users/${data?.user.id}`, {
+    const response = await fetch(`${router.basePath}/api/v1/users/${data?.user.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

@@ -25,7 +25,7 @@ export default function PreservedFormatRow({
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
   const handleDownload = () => {
-    const path = `/api/v1/archives/${link?.id}?format=${format}`;
+    const path = `${router.basePath}/api/v1/archives/${link?.id}?format=${format}`;
     fetch(path)
       .then((response) => {
         if (response.ok) {

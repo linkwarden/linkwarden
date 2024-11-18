@@ -33,11 +33,12 @@ export default function LinkActions({ link, btnStyle }: Props) {
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
 
   const deleteLink = useDeleteLink();
+  const router = useRouter();
 
   const updateArchive = async () => {
     const load = toast.loading(t("sending_request"));
 
-    const response = await fetch(`/api/v1/links/${link?.id}/archive`, {
+    const response = await fetch(`${router.basePath}/api/v1/links/${link?.id}/archive`, {
       method: "PUT",
     });
 
@@ -50,8 +51,6 @@ export default function LinkActions({ link, btnStyle }: Props) {
       toast.success(t("link_being_archived"));
     } else toast.error(data.response);
   };
-
-  const router = useRouter();
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 

@@ -219,7 +219,7 @@ export default function LinkDetails({
         >
           {previewAvailable(link) ? (
             <Image
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
+              src={`${router.basePath}/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
               width={1280}
               height={720}
               alt=""
