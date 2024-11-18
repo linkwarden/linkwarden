@@ -18,7 +18,7 @@ const VerifyEmail = () => {
 
     // Verify token
 
-    fetch(`/api/v1/auth/verify-email?token=${token}`, {
+    fetch(`${router.basePath}/api/v1/auth/verify-email?token=${token}`, {
       method: "POST",
     }).then((res) => {
       if (res.ok) {

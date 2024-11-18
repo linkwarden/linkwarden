@@ -1,14 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { TagIncludingLinkCount } from "@/types/global";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const useTags = () => {
   const { status } = useSession();
+  const router = useRouter();
 
   return useQuery({
     queryKey: ["tags"],
     queryFn: async () => {
-      const response = await fetch("/api/v1/tags");
+      const response = await fetch(`${router.basePath}/api/v1/tags`);
       if (!response.ok) throw new Error("Failed to fetch tags.");
 
       const data = await response.json();
@@ -20,10 +22,11 @@ const useTags = () => {
 
 const useUpdateTag = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (tag: TagIncludingLinkCount) => {
-      const response = await fetch(`/api/v1/tags/${tag.id}`, {
+      const response = await fetch(`${router.basePath}/api/v1/tags/${tag.id}`, {
         body: JSON.stringify(tag),
         headers: {
           "Content-Type": "application/json",
@@ -48,10 +51,11 @@ const useUpdateTag = () => {
 
 const useRemoveTag = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (tagId: number) => {
-      const response = await fetch(`/api/v1/tags/${tagId}`, {
+      const response = await fetch(`${router.basePath}/api/v1/tags/${tagId}`, {
         method: "DELETE",
       });
 

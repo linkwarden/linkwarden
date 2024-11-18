@@ -18,6 +18,7 @@ import Links from "@/components/LinkViews/Links";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
+import { useRouter } from "next/router";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -73,6 +74,7 @@ export default function Dashboard() {
     }
   }, []);
 
+  const router = useRouter();
   const importBookmarks = async (
     e: React.ChangeEvent<HTMLInputElement>,
     format: MigrationFormat
@@ -93,7 +95,7 @@ export default function Dashboard() {
         };
 
         try {
-          const response = await fetch("/api/v1/migration", {
+          const response = await fetch(`${router.basePath}/api/v1/migration`, {
             method: "POST",
             body: JSON.stringify(body),
           });

@@ -13,6 +13,7 @@ import { isPWA } from "@/lib/client/utils";
 import { appWithTranslation } from "next-i18next";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,13 +37,13 @@ function App({
       document.getElementsByTagName("head")[0].appendChild(meta);
     }
   }, []);
-
+  const router = useRouter();
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider
         session={pageProps.session}
         refetchOnWindowFocus={false}
-        basePath="/api/v1/auth"
+        basePath={`${router.basePath}/api/v1/auth`}
       >
         <Head>
           <title>Linkwarden</title>
@@ -51,21 +52,21 @@ function App({
           <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="/apple-touch-icon.png"
+            href={`${router.basePath}/apple-touch-icon.png`}
           />
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="/favicon-32x32.png"
+            href={`${router.basePath}/favicon-32x32.png`}
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="/favicon-16x16.png"
+            href={`${router.basePath}/favicon-16x16.png`}
           />
-          <link rel="manifest" href="/site.webmanifest" />
+          <link rel="manifest" href={`${router.basePath}/site.webmanifest`} />
         </Head>
         <AuthRedirect>
           {/* <GetData> */}

@@ -52,11 +52,12 @@ const usePublicLinks = (params: LinkRequestQuery = {}) => {
 };
 
 const useFetchLinks = (params: string) => {
+  const router = useRouter();
   return useInfiniteQuery({
     queryKey: ["links", { params }],
     queryFn: async (params) => {
       const response = await fetch(
-        "/api/v1/public/collections/links?cursor=" +
+        `${router.basePath}/api/v1/public/collections/links?cursor=` +
           params.pageParam +
           ((params.queryKey[1] as any).params
             ? "&" + (params.queryKey[1] as any).params

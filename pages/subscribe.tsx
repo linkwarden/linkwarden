@@ -34,7 +34,7 @@ export default function Subscribe() {
 
     const redirectionToast = toast.loading(t("redirecting_to_stripe"));
 
-    const res = await fetch("/api/v1/payment?plan=" + plan);
+    const res = await fetch(`${router.basePath}/api/v1/payment?plan=` + plan);
     const data = await res.json();
 
     router.push(data.response);

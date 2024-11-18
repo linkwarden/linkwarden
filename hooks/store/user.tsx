@@ -1,15 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const useUser = () => {
   const { data, status } = useSession();
+  const router = useRouter();
 
   const userId = data?.user.id;
 
   return useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const response = await fetch(`/api/v1/users/${userId}`);
+      const response = await fetch(`${router.basePath}/api/v1/users/${userId}`);
       if (!response.ok) throw new Error("Failed to fetch user data.");
 
       const data = await response.json();
@@ -23,10 +25,11 @@ const useUser = () => {
 
 const useUpdateUser = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (user: any) => {
-      const response = await fetch(`/api/v1/users/${user.id}`, {
+      const response = await fetch(`${router.basePath}/api/v1/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(user),
