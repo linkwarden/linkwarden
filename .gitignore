@@ -54,3 +54,7 @@ certificates
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# pnpm
+pnpm-lock.yaml
+
