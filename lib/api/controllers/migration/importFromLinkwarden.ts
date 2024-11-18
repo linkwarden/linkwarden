@@ -5,7 +5,7 @@ import { hasPassedLimit } from "../../verifyCapacity";
 
 export default async function importFromLinkwarden(
   userId: number,
-  rawData: string
+  rawData: any
 ) {
   const data: Backup = JSON.parse(rawData);
 
