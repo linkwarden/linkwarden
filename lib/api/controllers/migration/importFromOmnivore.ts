@@ -33,42 +33,42 @@ export default async function importFromOmnivore(
 
     const zipEntries = await importArchive.getEntries();
 
-    for (const entry of zipEntries) {
-
-        if (entry.filename.startsWith("metadata_")) {
-            console.log(`Getting metadata from ${entry.filename}`);
-
-            const jsonWriter = new TextWriter();
-            const jsonMetadatString: string = await entry.getData(jsonWriter);
-            const metadata: OmnivoreMetadata = JSON.parse(jsonMetadatString);
-
-            const hasTooManyLinks = await hasPassedLimit(userId, metadata.length);
-            if (hasTooManyLinks) {
-                return {
-                    response: `Your subscription have reached the maximum number of links allowed.`,
-                    status: 400,
-                };
-            }
-
-            await prisma.$transaction(
-                async () => {
-                    const omnivoreCollection = await prisma.collection.create({
-                        data: {
-                            owner: {
-                                connect: {
-                                    id: userId
-                                }
-                            },
-                            name: "Omnivore Imports",
-                            createdBy: {
-                                connect: {
-                                    id: userId
-                                }
-                            }
+    await prisma.$transaction(
+        async () => {
+            const omnivoreCollection = await prisma.collection.create({
+                data: {
+                    owner: {
+                        connect: {
+                            id: userId
                         }
-                    });
+                    },
+                    name: "Omnivore Imports",
+                    createdBy: {
+                        connect: {
+                            id: userId
+                        }
+                    }
+                }
+            });
 
-                    createFolder({ filePath: `archives/${omnivoreCollection.id}` });
+            createFolder({ filePath: `archives/${omnivoreCollection.id}` });
+
+            for (const entry of zipEntries) {
+
+                if (entry.filename.startsWith("metadata_")) {
+                    console.log(`Getting metadata from ${entry.filename}`);
+
+                    const jsonWriter = new TextWriter();
+                    const jsonMetadatString: string = await entry.getData(jsonWriter);
+                    const metadata: OmnivoreMetadata = JSON.parse(jsonMetadatString);
+
+                    const hasTooManyLinks = await hasPassedLimit(userId, metadata.length);
+                    if (hasTooManyLinks) {
+                        return {
+                            response: `Your subscription have reached the maximum number of links allowed.`,
+                            status: 400,
+                        };
+                    }
 
                     for (const data of metadata) {
                         try {
@@ -122,7 +122,7 @@ export default async function importFromOmnivore(
                         )
                     }
                 }
-            )
+            }
         }
-    }
+    )
 }
