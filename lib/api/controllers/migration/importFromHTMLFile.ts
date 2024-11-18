@@ -6,7 +6,7 @@ import { hasPassedLimit } from "../../verifyCapacity";
 
 export default async function importFromHTMLFile(
   userId: number,
-  rawData: string
+  rawData: any
 ) {
   const dom = new JSDOM(rawData);
   const document = dom.window.document;
@@ -167,10 +167,10 @@ const createCollection = async (
       name: collectionName,
       parent: parentId
         ? {
-            connect: {
-              id: parentId,
-            },
-          }
+          connect: {
+            id: parentId,
+          },
+        }
         : undefined,
       owner: {
         connect: {
@@ -225,25 +225,25 @@ const createLink = async (
       tags:
         tags && tags[0]
           ? {
-              connectOrCreate: tags.map((tag: string) => {
-                return {
-                  where: {
-                    name_ownerId: {
-                      name: tag.trim(),
-                      ownerId: userId,
-                    },
-                  },
-                  create: {
+            connectOrCreate: tags.map((tag: string) => {
+              return {
+                where: {
+                  name_ownerId: {
                     name: tag.trim(),
-                    owner: {
-                      connect: {
-                        id: userId,
-                      },
+                    ownerId: userId,
+                  },
+                },
+                create: {
+                  name: tag.trim(),
+                  owner: {
+                    connect: {
+                      id: userId,
                     },
                   },
-                };
-              }),
-            }
+                },
+              };
+            }),
+          }
           : undefined,
       importDate: importDate || undefined,
     },
