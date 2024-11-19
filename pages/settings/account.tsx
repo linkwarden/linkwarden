@@ -7,7 +7,6 @@ import { resizeImage } from "@/lib/client/resizeImage";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import SubmitButton from "@/components/SubmitButton";
 import React from "react";
-import { MigrationFormat, MigrationRequest } from "@/types/global";
 import Link from "next/link";
 import Checkbox from "@/components/Checkbox";
 import { dropdownTriggerer } from "@/lib/client/utils";
@@ -18,7 +17,7 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import { z } from "zod";
-import importBookmarks from "@/lib/client/importBookmarks"
+import ImportDropdown from "@/components/ImportDropdown";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -315,85 +314,7 @@ export default function Account() {
           <div className="flex gap-3 flex-col">
             <div>
               <p className="mb-2">{t("import_data")}</p>
-              <div className="dropdown dropdown-bottom">
-                <Button
-                  tabIndex={0}
-                  role="button"
-                  intent="secondary"
-                  onMouseDown={dropdownTriggerer}
-                  className="text-sm"
-                  id="import-dropdown"
-                >
-                  <i className="bi-cloud-upload text-xl duration-100"></i>
-                  {t("import_links")}
-                </Button>
-
-                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
-                  <li>
-                    <label
-                      tabIndex={0}
-                      role="button"
-                      htmlFor="import-linkwarden-file"
-                      title={t("from_linkwarden")}
-                      className="whitespace-nowrap"
-                    >
-                      {t("from_linkwarden")}
-                      <input
-                        type="file"
-                        name="photo"
-                        id="import-linkwarden-file"
-                        accept=".json"
-                        className="hidden"
-                        onChange={(e) =>
-                          importBookmarks(e, MigrationFormat.linkwarden)
-                        }
-                      />
-                    </label>
-                  </li>
-                  <li>
-                    <label
-                      tabIndex={0}
-                      role="button"
-                      htmlFor="import-html-file"
-                      title={t("from_html")}
-                      className="whitespace-nowrap"
-                    >
-                      {t("from_html")}
-                      <input
-                        type="file"
-                        name="photo"
-                        id="import-html-file"
-                        accept=".html"
-                        className="hidden"
-                        onChange={(e) =>
-                          importBookmarks(e, MigrationFormat.htmlFile)
-                        }
-                      />
-                    </label>
-                  </li>
-                  <li>
-                    <label
-                      tabIndex={0}
-                      role="button"
-                      htmlFor="import-wallabag-file"
-                      title={t("from_wallabag")}
-                      className="whitespace-nowrap"
-                    >
-                      {t("from_wallabag")}
-                      <input
-                        type="file"
-                        name="photo"
-                        id="import-wallabag-file"
-                        accept=".json"
-                        className="hidden"
-                        onChange={(e) =>
-                          importBookmarks(e, MigrationFormat.wallabag)
-                        }
-                      />
-                    </label>
-                  </li>
-                </ul>
-              </div>
+              <ImportDropdown />
             </div>
 
             <div>
