@@ -124,5 +124,6 @@ export default async function importFromOmnivore(
                 }
             }
         }
-    )
+    );
+    return { response: "Success.", status: 200 };
 }
