@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { hasPassedLimit } from "../../verifyCapacity";
+import { Readable } from 'stream';
+import streamToBlob from "stream-to-blob";
 
 type WallabagBackup = {
   is_archived: number;
@@ -27,9 +29,10 @@ type WallabagBackup = {
 
 export default async function importFromWallabag(
   userId: number,
-  rawData: any
+  rawStream: Readable
 ) {
-  const data: WallabagBackup = JSON.parse(rawData);
+  const rawData: Blob = await streamToBlob(rawStream);
+  const data: WallabagBackup = JSON.parse(await rawData.text());
 
   const backup = data.filter((e) => e.url);
 
