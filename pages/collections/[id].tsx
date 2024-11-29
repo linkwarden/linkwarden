@@ -25,7 +25,7 @@ import { useUser } from "@/hooks/store/user";
 import { useLinks } from "@/hooks/store/links";
 import Links from "@/components/LinkViews/Links";
 import Icon from "@/components/Icon";
-import { IconWeight } from "@phosphor-icons/react";
+import CollectionCard from "@/components/CollectionCard";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -283,30 +283,18 @@ export default function Index() {
           <p>{activeCollection?.description}</p>
         )}
 
-        {/* {collections.some((e) => e.parentId === activeCollection.id) ? (
-          <fieldset className="border rounded-md p-2 border-neutral-content">
+        {collections.some((e) => e.parentId === activeCollection?.id) ? (
+          <fieldset className="rounded-md p-2 border-neutral-content">
             <legend className="text-sm ml-2">Sub-Collections</legend>
-            <div className="flex gap-3">
+            <div className="grid-cols-8 grid gap-5">
               {collections
                 .filter((e) => e.parentId === activeCollection?.id)
                 .map((e, i) => {
-                  return (
-                    <Link
-                      key={i}
-                      className="flex gap-1 items-center btn btn-ghost btn-sm"
-                      href={`/collections/${e.id}`}
-                    >
-                      <i
-                        className="bi-folder-fill text-2xl drop-shadow"
-                        style={{ color: e.color }}
-                      ></i>
-                      <p className="text-xs">{e.name}</p>
-                    </Link>
-                  );
+                  return <CollectionCard key={i} collection={e} />;
                 })}
             </div>
           </fieldset>
-        ) : undefined} */}
+        ) : undefined}
 
         <div className="divider my-0"></div>
 
