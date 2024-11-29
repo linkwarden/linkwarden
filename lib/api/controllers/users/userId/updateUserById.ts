@@ -201,6 +201,8 @@ export default async function updateUserById(
       collectionOrder: data.collectionOrder?.filter(
         (value, index, self) => self.indexOf(value) === index
       ),
+      aiTaggingMethod: data.aiTaggingMethod,
+      aiPredefinedTags: data.aiPredefinedTags,
       locale: i18n.locales.includes(data.locale || "") ? data.locale : "en",
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsMonolith: data.archiveAsMonolith,
