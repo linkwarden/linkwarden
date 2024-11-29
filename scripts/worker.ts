@@ -45,6 +45,20 @@ async function processBatch() {
         {
           monolith: "pending",
         },
+        ///////////////////////
+        {
+          // See if tags are empty
+          collection: {
+            owner: {
+              NOT: {
+                aiTaggingMethod: "DISABLED",
+              },
+            },
+          },
+          tags: {
+            none: {},
+          },
+        },
       ],
     },
     take: archiveTakeCount,
@@ -88,6 +102,20 @@ async function processBatch() {
         },
         {
           monolith: "pending",
+        },
+        ///////////////////////
+        {
+          // See if tags are empty
+          collection: {
+            owner: {
+              NOT: {
+                aiTaggingMethod: "DISABLED",
+              },
+            },
+          },
+          tags: {
+            none: {},
+          },
         },
       ],
     },

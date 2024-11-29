@@ -49,6 +49,8 @@ model User {
   accessTokens            AccessToken[]
   subscriptions           Subscription?
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
+  aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
+  aiPredefinedTags        String[]              @default([])
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
@@ -58,6 +60,12 @@ model User {
   referredBy              String?
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
+}
+
+enum AiTaggingMethod {
+  DISABLED
+  GENERATE
+  PREDEFINED
 }
 
 enum LinksRouteTo {

@@ -5,9 +5,10 @@ import { toast } from "react-hot-toast";
 import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
-import getServerSideProps from "@/lib/client/getServerSideProps"; // Import getServerSideProps for server-side data fetching
-import { LinksRouteTo } from "@prisma/client";
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
+import TagSelection from "@/components/InputSelect/TagSelection";
 
 export default function Appearance() {
   const { t } = useTranslation();
@@ -18,23 +19,24 @@ export default function Appearance() {
   const [user, setUser] = useState(account);
 
   const [preventDuplicateLinks, setPreventDuplicateLinks] = useState<boolean>(
-    account.preventDuplicateLinks
+    account.preventDuplicateLinks || false
   );
   const [archiveAsScreenshot, setArchiveAsScreenshot] = useState<boolean>(
-    account.archiveAsScreenshot
+    account.archiveAsScreenshot || false
   );
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(
-    account.archiveAsPDF
+    account.archiveAsPDF || false
   );
-
   const [archiveAsMonolith, setArchiveAsMonolith] = useState<boolean>(
-    account.archiveAsMonolith
+    account.archiveAsMonolith || false
   );
-
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
-    useState<boolean>(account.archiveAsWaybackMachine);
-
+    useState<boolean>(account.archiveAsWaybackMachine || false);
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
+  const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
+    account.aiTaggingMethod
+  );
+  const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
 
   useEffect(() => {
     setUser({
@@ -45,6 +47,8 @@ export default function Appearance() {
       archiveAsWaybackMachine,
       linksRouteTo,
       preventDuplicateLinks,
+      aiTaggingMethod,
+      aiPredefinedTags,
     });
   }, [
     account,
@@ -54,6 +58,8 @@ export default function Appearance() {
     archiveAsWaybackMachine,
     linksRouteTo,
     preventDuplicateLinks,
+    aiTaggingMethod,
+    aiPredefinedTags,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -68,6 +74,8 @@ export default function Appearance() {
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
       setPreventDuplicateLinks(account.preventDuplicateLinks);
+      setAiTaggingMethod(account.aiTaggingMethod);
+      setAiPredefinedTags(account.aiPredefinedTags);
     }
   }, [account]);
 
@@ -124,6 +132,88 @@ export default function Appearance() {
             >
               <i className="bi-sun-fill text-6xl"></i>
               <p className="ml-2 text-2xl">{t("light")}</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p className="capitalize text-3xl font-thin inline">
+            {t("ai_settings")}
+          </p>
+          <div className="divider my-3"></div>
+
+          <p>{t("ai_tagging_method")}</p>
+
+          <div className="p-3">
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="ai-tagging-method-radio"
+                className="radio checked:bg-primary"
+                value="DISABLED"
+                checked={aiTaggingMethod === AiTaggingMethod.DISABLED}
+                onChange={() => setAiTaggingMethod(AiTaggingMethod.DISABLED)}
+              />
+              <span className="label-text">{t("disabled")}</span>
+            </label>
+            <p className="text-neutral text-sm pl-5">
+              {t("ai_tagging_disabled_desc")}
+            </p>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="ai-tagging-method-radio"
+                className="radio checked:bg-primary"
+                value="GENERATE"
+                checked={aiTaggingMethod === AiTaggingMethod.GENERATE}
+                onChange={() => setAiTaggingMethod(AiTaggingMethod.GENERATE)}
+              />
+              <span className="label-text">{t("auto_generate_tags")}</span>
+            </label>
+            <p className="text-neutral text-sm pl-5">
+              {t("auto_generate_tags_desc")}
+            </p>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="ai-tagging-method-radio"
+                className="radio checked:bg-primary"
+                value="PREDEFINED"
+                checked={aiTaggingMethod === AiTaggingMethod.PREDEFINED}
+                onChange={() => setAiTaggingMethod(AiTaggingMethod.PREDEFINED)}
+              />
+              <span className="label-text">
+                {t("based_on_predefined_tags")}
+              </span>
+            </label>
+            <div className="pl-5">
+              <p className="text-neutral text-sm mb-2">
+                {t("based_on_predefined_tags_desc")}
+              </p>
+              {aiPredefinedTags && (
+                <TagSelection
+                  onChange={(e: any) => {
+                    setAiPredefinedTags(e.map((e: any) => e.label));
+                  }}
+                  defaultValue={aiPredefinedTags
+                    .map((e) => ({ label: e }))
+                    .filter((e) => e.label !== "")}
+                />
+              )}
             </div>
           </div>
         </div>
