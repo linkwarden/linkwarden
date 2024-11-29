@@ -9,10 +9,8 @@ import { useRouter } from "next/router";
 import React from "react";
 
 export default function LinkCollection({
-  link,
   collection,
 }: {
-  link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
 }) {
   const router = useRouter();
@@ -22,24 +20,24 @@ export default function LinkCollection({
   return !isPublicRoute && collection?.name ? (
     <>
       <Link
-        href={`/collections/${link.collection.id}`}
+        href={`/collections/${collection.id}`}
         onClick={(e) => {
           e.stopPropagation();
         }}
         className="flex items-center gap-1 max-w-full w-fit hover:opacity-70 duration-100 select-none"
         title={collection?.name}
       >
-        {link.collection.icon ? (
+        {collection.icon ? (
           <Icon
-            icon={link.collection.icon}
+            icon={collection.icon}
             size={20}
-            weight={(link.collection.iconWeight || "regular") as IconWeight}
-            color={link.collection.color}
+            weight={(collection.iconWeight || "regular") as IconWeight}
+            color={collection.color}
           />
         ) : (
           <i
             className="bi-folder-fill text-lg"
-            style={{ color: link.collection.color }}
+            style={{ color: collection.color }}
           ></i>
         )}
         <p className="truncate capitalize">{collection?.name}</p>
