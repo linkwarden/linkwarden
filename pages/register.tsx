@@ -149,8 +149,8 @@ export default function Register({
       text={
         process.env.NEXT_PUBLIC_STRIPE
           ? t("trial_offer_desc", {
-            count: Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14),
-          })
+              count: Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14),
+            })
           : t("register_desc")
       }
       data-testid="registration-form"
