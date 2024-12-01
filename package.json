@@ -81,6 +81,7 @@
     "react-window": "^1.8.10",
     "rss-parser": "^3.13.0",
     "socks-proxy-agent": "^8.0.2",
+    "stream-size": "^0.0.6",
     "stream-to-blob": "^2.0.1",
     "stripe": "^12.13.0",
     "tailwind-merge": "^2.3.0",
