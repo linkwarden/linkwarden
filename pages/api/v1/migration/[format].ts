@@ -6,18 +6,20 @@ import { MigrationFormat, MigrationRequest } from "@/types/global";
 import verifyUser from "@/lib/api/verifyUser";
 import importFromWallabag from "@/lib/api/controllers/migration/importFromWallabag";
 import importFromOmnivore from "@/lib/api/controllers/migration/importFromOmnivore";
-import { Readable } from 'stream';
+import { Readable } from "stream";
+import getSizeTransform from "stream-size";
 
 export const config = {
   api: {
-    // bodyParser: {
-    //   sizeLimit: process.env.IMPORT_LIMIT
-    //     ? process.env.IMPORT_LIMIT + "mb"
-    //     : "10mb",
-    // },
+    // Disable body parser to be able to process binary uploads
     bodyParser: false,
   },
 };
+
+const IMPORT_SIZE_LIMIT_BYTES =
+  parseInt(process.env.IMPORT_LIMIT ? process.env.IMPORT_LIMIT : "10") *
+  1024 *
+  1024;
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
@@ -30,9 +32,13 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    const importData: Readable = Readable.from(req); // TODO have something like a limit reader
-    console.log(`received body type ${typeof importData}`);
-    const importFormatName = String(req.query.format) as keyof typeof MigrationFormat;
+    const unlimitedReadable: Readable = Readable.from(req);
+    const importData = unlimitedReadable.pipe(
+      getSizeTransform(IMPORT_SIZE_LIMIT_BYTES)
+    );
+    const importFormatName = String(
+      req.query.format
+    ) as keyof typeof MigrationFormat;
     const importFormat: MigrationFormat = MigrationFormat[importFormatName];
 
     let data;

@@ -5755,6 +5755,11 @@ stop-iteration-iterator@^1.0.0:
   dependencies:
     internal-slot "^1.0.4"
 
+stream-size@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/stream-size/-/stream-size-0.0.6.tgz#05d7132e2d2fdb91b533a6e50aff882f040d7679"
+  integrity sha512-TZsxxZzKPkiD7fxcKx0Ze9s0+WnGGbX1yWZNoXXmN6YjyEu/62pYkLKo7P627N27BT9kI93ZfZAx38brr/hq+Q==
+
 stream-to-blob@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/stream-to-blob/-/stream-to-blob-2.0.1.tgz#59ab71d7a7f0bfb899570e886e44d39f4ac4381a"
