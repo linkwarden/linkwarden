@@ -63,7 +63,7 @@ export default async function importFromLinkwarden(
 
             await prisma.link.create({
               data: {
-                url: link.url?.trim(),
+                url: link.url?.trim().slice(0, 2047),
                 name: link.name?.trim().slice(0, 254),
                 description: link.description?.trim().slice(0, 254),
                 importDate: new Date(link.importDate || link.createdAt),
