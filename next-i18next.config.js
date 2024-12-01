@@ -15,6 +15,7 @@ module.exports = {
       "de",
       "nl",
       "tr",
+      "pl",
     ],
   },
   reloadOnPrerender: process.env.NODE_ENV === "development",
