@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { hasPassedLimit } from "../../verifyCapacity";
-import { Readable } from 'stream';
+import { Readable } from "stream";
 import streamToBlob from "stream-to-blob";
 
 type WallabagBackup = {
@@ -99,23 +99,23 @@ export default async function importFromWallabag(
               tags:
                 link.tags && link.tags[0]
                   ? {
-                    connectOrCreate: link.tags.map((tag) => ({
-                      where: {
-                        name_ownerId: {
-                          name: tag?.trim().slice(0, 49),
-                          ownerId: userId,
-                        },
-                      },
-                      create: {
-                        name: tag?.trim().slice(0, 49),
-                        owner: {
-                          connect: {
-                            id: userId,
+                      connectOrCreate: link.tags.map((tag) => ({
+                        where: {
+                          name_ownerId: {
+                            name: tag?.trim().slice(0, 49),
+                            ownerId: userId,
                           },
                         },
-                      },
-                    })),
-                  }
+                        create: {
+                          name: tag?.trim().slice(0, 49),
+                          owner: {
+                            connect: {
+                              id: userId,
+                            },
+                          },
+                        },
+                      })),
+                    }
                   : undefined,
             },
           });

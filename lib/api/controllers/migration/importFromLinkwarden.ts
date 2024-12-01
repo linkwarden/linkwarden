@@ -2,7 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 import { hasPassedLimit } from "../../verifyCapacity";
-import { Readable } from 'stream';
+import { Readable } from "stream";
 import streamToBlob from "stream-to-blob";
 
 export default async function importFromLinkwarden(
