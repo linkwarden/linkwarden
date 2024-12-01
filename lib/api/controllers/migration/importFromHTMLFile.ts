@@ -3,7 +3,7 @@ import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "../../verifyCapacity";
-import { Readable } from 'stream';
+import { Readable } from "stream";
 import streamToBlob from "stream-to-blob";
 
 export default async function importFromHTMLFile(
@@ -170,10 +170,10 @@ const createCollection = async (
       name: collectionName,
       parent: parentId
         ? {
-          connect: {
-            id: parentId,
-          },
-        }
+            connect: {
+              id: parentId,
+            },
+          }
         : undefined,
       owner: {
         connect: {
@@ -228,25 +228,25 @@ const createLink = async (
       tags:
         tags && tags[0]
           ? {
-            connectOrCreate: tags.map((tag: string) => {
-              return {
-                where: {
-                  name_ownerId: {
-                    name: tag.trim(),
-                    ownerId: userId,
-                  },
-                },
-                create: {
-                  name: tag.trim(),
-                  owner: {
-                    connect: {
-                      id: userId,
+              connectOrCreate: tags.map((tag: string) => {
+                return {
+                  where: {
+                    name_ownerId: {
+                      name: tag.trim(),
+                      ownerId: userId,
                     },
                   },
-                },
-              };
-            }),
-          }
+                  create: {
+                    name: tag.trim(),
+                    owner: {
+                      connect: {
+                        id: userId,
+                      },
+                    },
+                  },
+                };
+              }),
+            }
           : undefined,
       importDate: importDate || undefined,
     },
