@@ -14,7 +14,7 @@ const usePublicTags = (): UseQueryResult<TagIncludingCount[]> => {
     queryKey: ["tags"],
     queryFn: async () => {
       const response = await fetch(
-        "/api/v1/public/collections/tags" +
+        `${router.basePath}/api/v1/public/collections/tags` +
           "?collectionId=" +
           router.query.id || ""
       );

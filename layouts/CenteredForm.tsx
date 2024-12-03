@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { ReactNode } from "react";
 import { Trans } from "next-i18next";
+import { useRouter } from "next/router";
 
 interface Props {
   text?: string;
@@ -16,7 +17,7 @@ export default function CenteredForm({
   "data-testid": dataTestId,
 }: Props) {
   const { settings } = useLocalSettingsStore();
-
+  const router = useRouter();
   return (
     <div
       className="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center p-5"
@@ -25,7 +26,7 @@ export default function CenteredForm({
       <div className="m-auto flex flex-col gap-2 w-full">
         {settings.theme && (
           <Image
-            src={`/linkwarden_${
+            src={`${router.basePath}/linkwarden_${
               settings.theme === "dark" ? "dark" : "light"
             }.png`}
             width={640}

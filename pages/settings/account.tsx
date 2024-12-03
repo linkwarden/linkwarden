@@ -18,6 +18,7 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import { z } from "zod";
+import { useRouter } from "next/router";
 
 const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
 
@@ -47,6 +48,7 @@ export default function Account() {
   );
 
   const { t } = useTranslation();
+  const router = useRouter();
 
   function objectIsEmpty(obj: object) {
     return Object.keys(obj).length === 0;
@@ -146,7 +148,7 @@ export default function Account() {
         };
 
         try {
-          const response = await fetch("/api/v1/migration", {
+          const response = await fetch(`${router.basePath}/api/v1/migration`, {
             method: "POST",
             body: JSON.stringify(body),
           });

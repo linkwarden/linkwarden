@@ -50,7 +50,7 @@ export default function ReadableView({ link }: Props) {
     const fetchLinkContent = async () => {
       if (router.query.id && readabilityAvailable(link)) {
         const response = await fetch(
-          `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}`
+          `${router.basePath}/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}`
         );
 
         const data = await response?.json();

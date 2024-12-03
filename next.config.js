@@ -3,6 +3,7 @@ const { version } = require("./package.json");
 const { i18n } = require("./next-i18next.config");
 
 const nextConfig = {
+  basePath: process.env.BASE_PATH ?? '',
   i18n,
   reactStrictMode: true,
   staticPageGenerationTimeout: 1000,
