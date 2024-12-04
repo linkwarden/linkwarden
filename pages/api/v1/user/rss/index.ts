@@ -28,7 +28,7 @@ export default async function handler(
 		);
 
 		if (collectionIsAccessible?.ownerId !== user.id && !memberHasAccess) {
-			return res.status(403).json({ error: "You do not have permission to add a link to this collection" });
+			return res.status(403).json({ response: "You do not have permission to add a link to this collection" });
 		}
 
 		const response = await prisma.rssSubscription.create({
