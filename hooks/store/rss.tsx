@@ -2,6 +2,12 @@ import { RssSubscription } from "@prisma/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
+interface RssSubscriptionWithCollectionName extends RssSubscription {
+	collection: {
+		name: string; // Include only the name of the collection
+	};
+}
+
 const useRssSubscriptions = () => {
 	const { status } = useSession();
 
@@ -12,7 +18,7 @@ const useRssSubscriptions = () => {
 			if (!response.ok) throw new Error("Failed to fetch rss subscriptions.");
 
 			const data = await response.json();
-			return data.response as RssSubscription[];
+			return data.response as RssSubscriptionWithCollectionName[];
 		},
 		enabled: status === "authenticated",
 	});

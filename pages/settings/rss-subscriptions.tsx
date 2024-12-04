@@ -5,6 +5,7 @@ import { useRssSubscriptions } from "@/hooks/store/rss";
 import DeleteRssSubscriptionModal from "@/components/ModalContent/DeleteRssSubscriptionModal";
 import { useState } from "react";
 import { RssSubscription } from "@prisma/client";
+import Link from "next/link";
 
 export default function RssSubscriptions() {
 	const { t } = useTranslation();
@@ -42,25 +43,31 @@ export default function RssSubscriptions() {
 							<tr>
 								<th>{t("name")}</th>
 								<th>{t("link")}</th>
+								<th>{t("collection")}</th>
 								<th></th>
 							</tr>
 						</thead>
 						<tbody>
-							{rssSubscriptions.map((rssSubscription, i) => (
-								<tr key={i}>
-									<td>{rssSubscription.name}</td>
-									<td>{rssSubscription.url}</td>
-									<td>
-										<button
-											className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
-											onClick={() => openDeleteModal(rssSubscription)}
+							{rssSubscriptions.map((rssSubscription, i) => {
+								return (
+									<tr key={i}>
+										<td>{rssSubscription.name}</td>
+										<td>{rssSubscription.url}</td>
+										<td>
+											<Link className="hover:underline" href={`/collections/${rssSubscription.collectionId}`}>{rssSubscription.collection.name}</Link>
+										</td>
+										<td>
+											<button
+												className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
+												onClick={() => openDeleteModal(rssSubscription)}
 
-										>
-											<i className="bi-x text-lg"></i>
-										</button>
-									</td>
-								</tr>
-							))}
+											>
+												<i className="bi-x text-lg"></i>
+											</button>
+										</td>
+									</tr>
+								);
+							})}
 						</tbody>
 					</table>
 				)}
