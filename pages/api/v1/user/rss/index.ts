@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/api/db";
 import getPermission from "@/lib/api/getPermission";
-import setLinkCollection from "@/lib/api/setLinkCollection";
 import verifyUser from "@/lib/api/verifyUser";
 import { UsersAndCollections } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -20,7 +19,6 @@ export default async function handler(
 	}
 
 	if (req.method === "POST") {
-		console.log(req.body);
 		const { name, url, collectionId } = req.body;
 
 		const collectionIsAccessible = await getPermission({ userId: user.id, collectionId: Number(collectionId) });
@@ -47,5 +45,9 @@ export default async function handler(
 		});
 
 		return res.status(200).json({ response });
+	}
+
+	if (req.method === "DELETE") {
+
 	}
 }
