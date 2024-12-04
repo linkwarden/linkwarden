@@ -14,9 +14,9 @@ export default async function handler(
 	if (req.method === "DELETE") {
 		const rssSubscription = await prisma.rssSubscription.findUnique({ where: { id: rssId } });
 
-		if (!rssSubscription) return res.status(404).json({ error: "RSS subscription not found." });
+		if (!rssSubscription) return res.status(404).json({ response: "RSS subscription not found." });
 
-		if (rssSubscription.ownerId !== user.id) return res.status(403).json({ error: "Permission denied." });
+		if (rssSubscription.ownerId !== user.id) return res.status(403).json({ response: "Permission denied." });
 
 		await prisma.rssSubscription.delete({ where: { id: rssId } });
 
