@@ -144,34 +144,8 @@ async function fetchAndProcessRSS() {
     try {
       const feed = await parser.parseURL(rssSubscription.url);
 
-      // If there's no lastBuildDate, process all feed items
-      if (!rssSubscription.lastBuildDate) {
-        feed.items.forEach(async (item) => {
-          await prisma.link.create({
-            data: {
-              name: item.title,
-              url: item.link,
-              type: "link",
-              createdBy: {
-                connect: {
-                  id: rssSubscription.ownerId
-                }
-              },
-              collection: {
-                connect: {
-                  id: rssSubscription.collectionId
-                }
-              }
-            }
-          });
-        });
-
-        await prisma.rssSubscription.update({
-          where: { id: rssSubscription.id },
-          data: { lastBuildDate: new Date(feed.lastBuildDate) }
-        });
-      } else if (rssSubscription.lastBuildDate && new Date(rssSubscription.lastBuildDate) < new Date(feed.lastBuildDate)) {
-        console.log(`Processing new feeds for ${rssSubscription.name}`);
+      if (rssSubscription.lastBuildDate && new Date(rssSubscription.lastBuildDate) < new Date(feed.lastBuildDate)) {
+        console.log(`Processing new RSS feed items for ${rssSubscription.name}`);
 
         const newItems = feed.items.filter(item => {
           const itemPubDate = item.pubDate ? new Date(item.pubDate) : null;

@@ -13,7 +13,15 @@ export default async function handler(
 	if (!user) return;
 
 	if (req.method === "GET") {
-		const response = await prisma.rssSubscription.findMany({});
+		const response = await prisma.rssSubscription.findMany({
+			include: {
+				collection: {
+					select: {
+						name: true,
+					}
+				},
+			},
+		});
 
 		return res.status(200).json({ response });
 	}
@@ -36,6 +44,7 @@ export default async function handler(
 				name,
 				url,
 				ownerId: user.id,
+				lastBuildDate: new Date(),
 				collection: {
 					connect: {
 						id: collectionId,
@@ -45,9 +54,5 @@ export default async function handler(
 		});
 
 		return res.status(200).json({ response });
-	}
-
-	if (req.method === "DELETE") {
-
 	}
 }
