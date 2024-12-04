@@ -144,10 +144,15 @@ async function fetchAndProcessRSS() {
     try {
       const feed = await parser.parseURL(rssSubscription.url);
 
-      if (rssSubscription.lastBuildDate && new Date(rssSubscription.lastBuildDate) < new Date(feed.lastBuildDate)) {
-        console.log(`Processing new RSS feed items for ${rssSubscription.name}`);
+      if (
+        rssSubscription.lastBuildDate &&
+        new Date(rssSubscription.lastBuildDate) < new Date(feed.lastBuildDate)
+      ) {
+        console.log(
+          `Processing new RSS feed items for ${rssSubscription.name}`
+        );
 
-        const newItems = feed.items.filter(item => {
+        const newItems = feed.items.filter((item) => {
           const itemPubDate = item.pubDate ? new Date(item.pubDate) : null;
           return itemPubDate && itemPubDate > rssSubscription.lastBuildDate!; // We know lastBuildDate is not null here
         });
@@ -160,22 +165,22 @@ async function fetchAndProcessRSS() {
               type: "link",
               createdBy: {
                 connect: {
-                  id: rssSubscription.ownerId
-                }
+                  id: rssSubscription.ownerId,
+                },
               },
               collection: {
                 connect: {
-                  id: rssSubscription.collectionId
-                }
-              }
-            }
+                  id: rssSubscription.collectionId,
+                },
+              },
+            },
           });
         });
 
         // Update the lastBuildDate in the database
         await prisma.rssSubscription.update({
           where: { id: rssSubscription.id },
-          data: { lastBuildDate: new Date(feed.lastBuildDate) }
+          data: { lastBuildDate: new Date(feed.lastBuildDate) },
         });
       }
     } catch (error) {
@@ -192,7 +197,8 @@ function delay(sec: number) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
 }
 
-const POLLING_INTERVAL_MINUTES = Number(process.env.RSS_POLLING_INTERVAL_MINUTES) || 60; // Default to one hour if not set
+const POLLING_INTERVAL_MINUTES =
+  Number(process.env.RSS_POLLING_INTERVAL_MINUTES) || 60; // Default to one hour if not set
 const pollingIntervalInSeconds = POLLING_INTERVAL_MINUTES * 60;
 
 async function startRSSPolling() {
@@ -203,7 +209,8 @@ async function startRSSPolling() {
   }
 }
 
-const archiveIntervalInSeconds = Number(process.env.ARCHIVE_SCRIPT_INTERVAL) || 10;
+const archiveIntervalInSeconds =
+  Number(process.env.ARCHIVE_SCRIPT_INTERVAL) || 10;
 
 async function startArchiveProcessing() {
   while (true) {
