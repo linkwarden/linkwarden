@@ -45,7 +45,7 @@ const useAddRssSubscription = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(
         ["rss-subscriptions"],
-        (oldData: RssSubscription[]) => [...oldData, data.rssSubscription]
+        (oldData: RssSubscription[]) => [...oldData, data]
       );
     },
   });

@@ -434,5 +434,6 @@
   "rss_subscriptions_desc": "RSS Subscriptions are a way to keep up with your favorite websites and blogs. Linkwarden will automatically fetch the latest articles from the feeds you provide.",
   "rss_deletion_confirmation": "Are you sure you want to delete this RSS Subscription?",
   "new_rss_subscription": "New RSS Subscription",
-  "rss_subscription_deleted": "RSS Subscription deleted!"
+  "rss_subscription_deleted": "RSS Subscription deleted!",
+  "create_rss_subscription": "Create RSS Subscription"
 }
