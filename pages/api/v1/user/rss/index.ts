@@ -32,8 +32,9 @@ export default async function handler(
 
     if (!dataValidation.success) {
       return res.status(400).json({
-        response: `Error: ${dataValidation.error.issues[0].message
-          } [${dataValidation.error.issues[0].path.join(", ")}]`,
+        response: `Error: ${
+          dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`,
       });
     }
 
@@ -46,12 +47,9 @@ export default async function handler(
     });
 
     if (!linkCollection) {
-      return res
-        .status(403)
-        .json({
-          response:
-            "You do not have permission to add a link to this collection",
-        });
+      return res.status(403).json({
+        response: "You do not have permission to add a link to this collection",
+      });
     }
 
     const existingRssSubscription = await prisma.rssSubscription.findFirst({

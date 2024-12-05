@@ -8,7 +8,11 @@ type SetCollectionInput = {
   collectionName?: string;
 };
 
-const setCollection = async ({ userId, collectionId, collectionName }: SetCollectionInput) => {
+const setCollection = async ({
+  userId,
+  collectionId,
+  collectionName,
+}: SetCollectionInput) => {
   if (collectionId) {
     // Check if the collection exists
     const existingCollection = await prisma.collection.findUnique({
@@ -37,15 +41,17 @@ const setCollection = async ({ userId, collectionId, collectionName }: SetCollec
   if (collectionName) {
     // If the collection name is "Unorganized", find or create it
     if (collectionName === "Unorganized") {
-      const firstTopLevelUnorganizedCollection = await prisma.collection.findFirst({
-        where: {
-          name: "Unorganized",
-          ownerId: userId,
-          parentId: null,
-        },
-      });
+      const firstTopLevelUnorganizedCollection =
+        await prisma.collection.findFirst({
+          where: {
+            name: "Unorganized",
+            ownerId: userId,
+            parentId: null,
+          },
+        });
 
-      if (firstTopLevelUnorganizedCollection) return firstTopLevelUnorganizedCollection;
+      if (firstTopLevelUnorganizedCollection)
+        return firstTopLevelUnorganizedCollection;
     }
 
     // Create a new collection with the given name
