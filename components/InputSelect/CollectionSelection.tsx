@@ -5,19 +5,21 @@ import { Options } from "./types";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
 import { useCollections } from "@/hooks/store/collections";
+import clsx from "clsx";
 
 type Props = {
   onChange: any;
   showDefaultValue?: boolean;
   defaultValue?:
-    | {
-        label: string;
-        value?: number;
-      }
-    | undefined;
+  | {
+    label: string;
+    value?: number;
+  }
+  | undefined;
   creatable?: boolean;
   autoFocus?: boolean;
   onBlur?: any;
+  className?: string;
 };
 
 export default function CollectionSelection({
@@ -27,6 +29,7 @@ export default function CollectionSelection({
   creatable = true,
   autoFocus,
   onBlur,
+  className
 }: Props) {
   const { data: collections = [] } = useCollections();
 
@@ -103,7 +106,7 @@ export default function CollectionSelection({
     return (
       <CreatableSelect
         isClearable={false}
-        className="react-select-container"
+        className={clsx("react-select-container", className)}
         classNamePrefix="react-select"
         onChange={onChange}
         options={options}
@@ -114,14 +117,14 @@ export default function CollectionSelection({
         components={{
           Option: customOption,
         }}
-        // menuPosition="fixed"
+      // menuPosition="fixed"
       />
     );
   } else {
     return (
       <Select
         isClearable={false}
-        className="react-select-container"
+        className={clsx("react-select-container", className)}
         classNamePrefix="react-select"
         onChange={onChange}
         options={options}
@@ -132,7 +135,7 @@ export default function CollectionSelection({
         components={{
           Option: customOption,
         }}
-        // menuPosition="fixed"
+      // menuPosition="fixed"
       />
     );
   }

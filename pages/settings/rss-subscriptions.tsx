@@ -5,13 +5,14 @@ import { useRssSubscriptions } from "@/hooks/store/rss";
 import DeleteRssSubscriptionModal from "@/components/ModalContent/DeleteRssSubscriptionModal";
 import { useState } from "react";
 import { RssSubscription } from "@prisma/client";
-import Link from "next/link";
+import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
 
 export default function RssSubscriptions() {
   const { t } = useTranslation();
   const { data: rssSubscriptions = [] } = useRssSubscriptions();
 
   const [deleteSubscriptionModal, setDeleteSubscriptionModal] = useState(false);
+  const [newSubscriptionModal, setNewSubscriptionModal] = useState(false);
   const [selectedSubscription, setSelectedSubscription] =
     useState<RssSubscription | null>(null);
 
@@ -19,6 +20,8 @@ export default function RssSubscriptions() {
     setSelectedSubscription(subscription);
     setDeleteSubscriptionModal(true);
   };
+
+  console.log(rssSubscriptions);
 
   return (
     <SettingsLayout>
@@ -32,9 +35,9 @@ export default function RssSubscriptions() {
 
         <button
           className={`btn ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
-          // onClick={() => {
-          // 	setNewTokenModal(true);
-          // }}
+          onClick={() => {
+            setNewSubscriptionModal(true);
+          }}
         >
           {t("new_rss_subscription")}
         </button>
@@ -53,14 +56,14 @@ export default function RssSubscriptions() {
                 <tr key={i}>
                   <td>{rssSubscription.name}</td>
                   <td>{rssSubscription.url}</td>
-                  <td>
+                  {/* <td>
                     <Link
                       className="hover:underline"
                       href={`/collections/${rssSubscription.collectionId}`}
                     >
                       {rssSubscription.collection.name}
                     </Link>
-                  </td>
+                  </td> */}
                   <td>
                     <button
                       className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
@@ -75,6 +78,9 @@ export default function RssSubscriptions() {
           </table>
         )}
       </div>
+      {newSubscriptionModal && (
+        <NewRssSubscriptionModal onClose={() => setNewSubscriptionModal(false)} />
+      )}
       {deleteSubscriptionModal && selectedSubscription && (
         <DeleteRssSubscriptionModal
           rssSubscription={selectedSubscription}

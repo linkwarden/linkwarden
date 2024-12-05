@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/api/db";
 import getPermission from "@/lib/api/getPermission";
+import setCollection from "@/lib/api/setCollection";
 import verifyUser from "@/lib/api/verifyUser";
+import { PostRssSubscriptionSchema } from "@/lib/shared/schemaValidation";
 import { UsersAndCollections } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -26,24 +28,44 @@ export default async function handler(
   }
 
   if (req.method === "POST") {
-    const { name, url, collectionId } = req.body;
+    const dataValidation = PostRssSubscriptionSchema.safeParse(req.body);
 
-    const collectionIsAccessible = await getPermission({
+    if (!dataValidation.success) {
+      return res.status(400).json({
+        response: `Error: ${dataValidation.error.issues[0].message
+          } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      });
+    }
+
+    const { name, url, collectionId, collectionName } = dataValidation.data;
+
+    const linkCollection = await setCollection({
       userId: user.id,
-      collectionId: Number(collectionId),
+      collectionId: collectionId,
+      collectionName: collectionName,
     });
 
-    const memberHasAccess = collectionIsAccessible?.members.some(
-      (e: UsersAndCollections) => e.userId === user.id
-    );
-
-    if (collectionIsAccessible?.ownerId !== user.id && !memberHasAccess) {
+    if (!linkCollection) {
       return res
         .status(403)
         .json({
           response:
             "You do not have permission to add a link to this collection",
         });
+    }
+
+    const existingRssSubscription = await prisma.rssSubscription.findFirst({
+      where: {
+        name: name,
+        ownerId: user.id,
+      },
+    });
+
+    if (existingRssSubscription) {
+      return {
+        response: "RSS Subscription with that name already exists.",
+        status: 400,
+      };
     }
 
     const response = await prisma.rssSubscription.create({
@@ -54,7 +76,7 @@ export default async function handler(
         lastBuildDate: new Date(),
         collection: {
           connect: {
-            id: collectionId,
+            id: linkCollection.id,
           },
         },
       },
