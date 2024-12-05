@@ -17,8 +17,9 @@ export default async function postLink(
 
   if (!dataValidation.success) {
     return {
-      response: `Error: ${dataValidation.error.issues[0].message
-        } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
       status: 400,
     };
   }
