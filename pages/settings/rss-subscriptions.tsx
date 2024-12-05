@@ -21,8 +21,6 @@ export default function RssSubscriptions() {
     setDeleteSubscriptionModal(true);
   };
 
-  console.log(rssSubscriptions);
-
   return (
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">
