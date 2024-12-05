@@ -79,7 +79,9 @@ export default function RssSubscriptions() {
         )}
       </div>
       {newSubscriptionModal && (
-        <NewRssSubscriptionModal onClose={() => setNewSubscriptionModal(false)} />
+        <NewRssSubscriptionModal
+          onClose={() => setNewSubscriptionModal(false)}
+        />
       )}
       {deleteSubscriptionModal && selectedSubscription && (
         <DeleteRssSubscriptionModal
