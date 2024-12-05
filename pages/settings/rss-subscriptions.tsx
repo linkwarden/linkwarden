@@ -6,6 +6,7 @@ import DeleteRssSubscriptionModal from "@/components/ModalContent/DeleteRssSubsc
 import { useState } from "react";
 import { RssSubscription } from "@prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
+import Link from "next/link";
 
 export default function RssSubscriptions() {
   const { t } = useTranslation();
@@ -54,14 +55,14 @@ export default function RssSubscriptions() {
                 <tr key={i}>
                   <td>{rssSubscription.name}</td>
                   <td>{rssSubscription.url}</td>
-                  {/* <td>
+                  <td>
                     <Link
                       className="hover:underline"
                       href={`/collections/${rssSubscription.collectionId}`}
                     >
                       {rssSubscription.collection.name}
                     </Link>
-                  </td> */}
+                  </td>
                   <td>
                     <button
                       className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
