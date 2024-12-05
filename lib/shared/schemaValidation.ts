@@ -41,12 +41,12 @@ export const PostUserSchema = () => {
     username: emailEnabled
       ? z.string().optional()
       : z
-          .string()
-          .trim()
-          .toLowerCase()
-          .min(3)
-          .max(50)
-          .regex(/^[a-z0-9_-]{3,50}$/),
+        .string()
+        .trim()
+        .toLowerCase()
+        .min(3)
+        .max(50)
+        .regex(/^[a-z0-9_-]{3,50}$/),
     invite: z.boolean().optional(),
   });
 };
@@ -209,3 +209,11 @@ export const UpdateTagSchema = z.object({
 });
 
 export type UpdateTagSchemaType = z.infer<typeof UpdateTagSchema>;
+
+export const PostRssSubscriptionSchema = z.object({
+  name: z.string(),
+  url: z.string().url(),
+  collectionId: z.number().optional(),
+  collectionName: z.string().optional(),
+});
+

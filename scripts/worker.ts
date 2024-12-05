@@ -148,9 +148,7 @@ async function fetchAndProcessRSS() {
         rssSubscription.lastBuildDate &&
         new Date(rssSubscription.lastBuildDate) < new Date(feed.lastBuildDate)
       ) {
-        console.log(
-          `Processing new RSS feed items for ${rssSubscription.name}`
-        );
+        console.log("\x1b[34m%s\x1b[0m", `Processing new RSS feed items for ${rssSubscription.name}`);
 
         const newItems = feed.items.filter((item) => {
           const itemPubDate = item.pubDate ? new Date(item.pubDate) : null;
