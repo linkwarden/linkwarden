@@ -42,6 +42,7 @@
   "from_linkwarden": "From Linkwarden",
   "from_html": "From Bookmarks HTML file",
   "from_wallabag": "From Wallabag (JSON file)",
+  "from_omnivore": "From Omnivore (ZIP file)",
   "pinned": "Pinned",
   "pinned_links_desc": "Your pinned Links",
   "pin_favorite_links_here": "Pin Your Favorite Links Here!",
