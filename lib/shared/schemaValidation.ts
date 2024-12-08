@@ -211,8 +211,8 @@ export const UpdateTagSchema = z.object({
 export type UpdateTagSchemaType = z.infer<typeof UpdateTagSchema>;
 
 export const PostRssSubscriptionSchema = z.object({
-  name: z.string(),
-  url: z.string().url(),
+  name: z.string().max(50),
+  url: z.string().url().max(2048),
   collectionId: z.number().optional(),
-  collectionName: z.string().optional(),
+  collectionName: z.string().max(50).optional(),
 });

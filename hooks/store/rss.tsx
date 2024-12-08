@@ -43,10 +43,7 @@ const useAddRssSubscription = () => {
       return data.response;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        ["rss-subscriptions"],
-        (oldData: RssSubscription[]) => [...oldData, data]
-      );
+      queryClient.invalidateQueries({ queryKey: ["rss-subscriptions"] });
     },
   });
 };
@@ -63,15 +60,8 @@ const useDeleteRssSubscription = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.response);
     },
-    onSuccess: (_, rssSubscriptionId) => {
-      queryClient.setQueryData(
-        ["rss-subscriptions"],
-        (oldData: RssSubscription[]) => {
-          return oldData.filter(
-            (rssSubscription) => rssSubscription.id !== rssSubscriptionId
-          );
-        }
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["rss-subscriptions"] });
     },
   });
 };

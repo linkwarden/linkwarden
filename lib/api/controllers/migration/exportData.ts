@@ -6,6 +6,7 @@ export default async function exportData(userId: number) {
     include: {
       collections: {
         include: {
+          rssSubscriptions: true,
           links: {
             include: {
               tags: true,

@@ -1,9 +1,7 @@
 import { prisma } from "@/lib/api/db";
-import getPermission from "@/lib/api/getPermission";
 import setCollection from "@/lib/api/setCollection";
 import verifyUser from "@/lib/api/verifyUser";
 import { PostRssSubscriptionSchema } from "@/lib/shared/schemaValidation";
-import { UsersAndCollections } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -35,6 +33,21 @@ export default async function handler(
         response: `Error: ${
           dataValidation.error.issues[0].message
         } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      });
+    }
+
+    const rssSubscriptionCount = await prisma.rssSubscription.count({
+      where: {
+        ownerId: user.id,
+      },
+    });
+
+    const RSS_SUBSCRIPTION_LIMIT_PER_USER =
+      Number(process.env.RSS_SUBSCRIPTION_LIMIT_PER_USER) || 20;
+
+    if (rssSubscriptionCount >= 10) {
+      return res.status(403).json({
+        response: `You have reached the limit of ${RSS_SUBSCRIPTION_LIMIT_PER_USER} RSS subscriptions.`,
       });
     }
 
