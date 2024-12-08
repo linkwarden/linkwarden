@@ -3,6 +3,7 @@ import { Collection, Link, User } from "@prisma/client";
 import { prisma } from "../lib/api/db";
 import archiveHandler from "../lib/api/archiveHandler";
 import Parser from "rss-parser";
+import { hasPassedLimit } from "../lib/api/verifyCapacity";
 
 const args = process.argv.slice(2).join(" ");
 
@@ -158,6 +159,19 @@ async function fetchAndProcessRSS() {
           return itemPubDate && itemPubDate > rssSubscription.lastBuildDate!; // We know lastBuildDate is not null here
         });
 
+        const hasTooManyLinks = await hasPassedLimit(
+          rssSubscription.ownerId,
+          newItems.length
+        );
+
+        if (hasTooManyLinks) {
+          console.log(
+            "\x1b[34m%s\x1b[0m",
+            `User ${rssSubscription.ownerId} has too many links. Skipping new RSS feed items.`
+          );
+          return;
+        }
+
         newItems.forEach(async (item) => {
           await prisma.link.create({
             data: {
@@ -198,13 +212,12 @@ function delay(sec: number) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
 }
 
-const POLLING_INTERVAL_MINUTES =
-  Number(process.env.RSS_POLLING_INTERVAL_MINUTES) || 60; // Default to one hour if not set
-const pollingIntervalInSeconds = POLLING_INTERVAL_MINUTES * 60;
+const pollingIntervalInSeconds =
+  (Number(process.env.NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES) || 60) * 60; // Default to one hour if not set
 
 async function startRSSPolling() {
+  console.log("\x1b[34m%s\x1b[0m", "Starting RSS polling...");
   while (true) {
-    console.log("\x1b[34m%s\x1b[0m", "Starting RSS polling...");
     await fetchAndProcessRSS();
     await delay(pollingIntervalInSeconds);
   }
@@ -214,8 +227,8 @@ const archiveIntervalInSeconds =
   Number(process.env.ARCHIVE_SCRIPT_INTERVAL) || 10;
 
 async function startArchiveProcessing() {
+  console.log("\x1b[34m%s\x1b[0m", "Starting link preservation...");
   while (true) {
-    console.log("\x1b[34m%s\x1b[0m", "Starting archive processing...");
     await processBatch();
     await delay(archiveIntervalInSeconds);
   }

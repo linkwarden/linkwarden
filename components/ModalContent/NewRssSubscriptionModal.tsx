@@ -25,6 +25,10 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
   const submit = async () => {
     if (submitLoader) return;
 
+    if (!form.name || !form.url || !form.collectionId) {
+      return toast.error(t("fill_all_fields"));
+    }
+
     setSubmitLoader(true);
 
     const load = toast.loading(t("creating"));
@@ -55,33 +59,35 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
             <label>{t("name")}</label>
             <TextInput
               type="text"
+              placeholder="Sample RSS"
               className="bg-base-200 mt-2"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
           </div>
           <div className="w-full">
-            <label>{t("link")}</label>
-            <TextInput
-              type="text"
-              className="bg-base-200 mt-2"
-              value={form.url}
-              onChange={(e) => setForm({ ...form, url: e.target.value })}
+            <label>{t("collection")}</label>
+            <CollectionSelection
+              className="mt-2"
+              onChange={(e: any) => {
+                if (e?.__isNew__) e.value = undefined;
+                setForm({
+                  ...form,
+                  collectionId: e?.value,
+                  collectionName: e?.label,
+                });
+              }}
             />
           </div>
         </div>
         <div className="w-full mt-3">
-          <label>{t("collection")}</label>
-          <CollectionSelection
-            className="mt-2"
-            onChange={(e: any) => {
-              if (e?.__isNew__) e.value = undefined;
-              setForm({
-                ...form,
-                collectionId: e?.value,
-                collectionName: e?.label,
-              });
-            }}
+          <label>{t("link")}</label>
+          <TextInput
+            type="text"
+            placeholder="https://example.com/rss"
+            className="bg-base-200 mt-2"
+            value={form.url}
+            onChange={(e) => setForm({ ...form, url: e.target.value })}
           />
         </div>
         <div className="flex justify-end items-center mt-5">
