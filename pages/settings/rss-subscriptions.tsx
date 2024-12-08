@@ -30,7 +30,11 @@ export default function RssSubscriptions() {
 
       <div className="divider my-3"></div>
       <div className="flex flex-col gap-3">
-        <p>{t("rss_subscriptions_desc")}</p>
+        <p>
+          {t("rss_subscriptions_desc", {
+            number: process.env.NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES || 60,
+          })}
+        </p>
 
         <button
           className={`btn ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
@@ -55,14 +59,7 @@ export default function RssSubscriptions() {
                 <tr key={i}>
                   <td>{rssSubscription.name}</td>
                   <td>{rssSubscription.url}</td>
-                  <td>
-                    <Link
-                      className="hover:underline"
-                      href={`/collections/${rssSubscription.collectionId}`}
-                    >
-                      {rssSubscription.collection.name}
-                    </Link>
-                  </td>
+                  <td>{rssSubscription.collection.name}</td>
                   <td>
                     <button
                       className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
