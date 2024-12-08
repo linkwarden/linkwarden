@@ -394,7 +394,7 @@
   "upload_preview_image": "Upload Preview Image",
   "columns": "Columns",
   "default": "Default",
-  "invalid_url_guide":"Please enter a valid Address for the Link. (It should start with http/https)",
+  "invalid_url_guide": "Please enter a valid Address for the Link. (It should start with http/https)",
   "email_invalid": "Please enter a valid email address.",
   "username_invalid_guide": "Username has to be at least 3 characters, no spaces and special characters are allowed.",
   "team_management": "Team Management",
@@ -429,5 +429,11 @@
   "reddit": "Reddit",
   "lemmy": "Lemmy",
   "people_recommendation": "Recommendation (Friend, Family, etc.)",
-  "open_all_links": "Open all Links"
+  "open_all_links": "Open all Links",
+  "rss_subscriptions": "RSS Subscriptions",
+  "rss_subscriptions_desc": "RSS Subscriptions are a way to keep up with your favorite websites and blogs. Linkwarden will automatically fetch the latest articles every {{number}} minutes from the feeds you provide.",
+  "rss_deletion_confirmation": "Are you sure you want to delete this RSS Subscription?",
+  "new_rss_subscription": "New RSS Subscription",
+  "rss_subscription_deleted": "RSS Subscription deleted!",
+  "create_rss_subscription": "Create RSS Subscription"
 }
