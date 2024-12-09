@@ -1,51 +1,33 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { Link } from "@prisma/client";
 
-export function screenshotAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
+export function formatAvailable(
+  link: Link | LinkIncludingShortenedCollectionAndTags,
+  format: "image" | "pdf" | "readable" | "monolith" | "preview"
 ) {
   return (
     link &&
-    link.image &&
-    link.image !== "pending" &&
-    link.image !== "unavailable"
+    link[format] &&
+    link[format] !== "pending" &&
+    link[format] !== "unavailable"
   );
 }
 
-export function pdfAvailable(link: LinkIncludingShortenedCollectionAndTags) {
-  return (
-    link && link.pdf && link.pdf !== "pending" && link.pdf !== "unavailable"
-  );
-}
-
-export function readabilityAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
-) {
-  return (
-    link &&
-    link.readable &&
-    link.readable !== "pending" &&
-    link.readable !== "unavailable"
-  );
-}
-
-export function monolithAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
-) {
-  return (
-    link &&
-    link.monolith &&
-    link.monolith !== "pending" &&
-    link.monolith !== "unavailable"
-  );
-}
-
-export function previewAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
-) {
-  return (
-    link &&
-    link.preview &&
-    link.preview !== "pending" &&
-    link.preview !== "unavailable"
-  );
+export function formatStatus(
+  link: Link | LinkIncludingShortenedCollectionAndTags,
+  format: "image" | "pdf" | "readable" | "monolith" | "preview"
+): "pending" | "processed" | "error" {
+  // Before getting passed to the archive handler...
+  if (!link[format]) {
+    return "pending";
+  } else if (
+    link[format].startsWith("unavailable") ||
+    link[format].startsWith("archive")
+  ) {
+    return "processed";
+  } else if (link[format].startsWith("pending")) {
+    return "pending";
+  } else {
+    return "error";
+  }
 }

@@ -162,6 +162,7 @@ model Link {
   pdf           String?
   readable      String?
   monolith      String?
+  aiTagged      Boolean    @default(false)
   lastPreserved DateTime?
   importDate    DateTime?
   createdAt     DateTime   @default(now())
