@@ -4,13 +4,7 @@ import {
   ArchivedFormat,
 } from "@/types/global";
 import Link from "next/link";
-import {
-  pdfAvailable,
-  readabilityAvailable,
-  monolithAvailable,
-  screenshotAvailable,
-  previewAvailable,
-} from "@/lib/shared/getArchiveValidity";
+import { formatAvailable } from "@/lib/shared/getArchiveValidity";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
@@ -118,10 +112,10 @@ export default function LinkDetails({
 
   const atLeastOneFormatAvailable = () => {
     return (
-      screenshotAvailable(link) ||
-      pdfAvailable(link) ||
-      readabilityAvailable(link) ||
-      monolithAvailable(link)
+      formatAvailable(link, "image") ||
+      formatAvailable(link, "pdf") ||
+      formatAvailable(link, "readable") ||
+      formatAvailable(link, "monolith")
     );
   };
 
@@ -217,7 +211,7 @@ export default function LinkDetails({
               : "-mx-4 -mt-4"
           )}
         >
-          {previewAvailable(link) ? (
+          {formatAvailable(link, "preview") ? (
             <Image
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
               width={1280}
@@ -537,7 +531,7 @@ export default function LinkDetails({
               </div>
 
               <div className={`flex flex-col rounded-md p-3 bg-base-200`}>
-                {monolithAvailable(link) ? (
+                {formatAvailable(link, "monolith") ? (
                   <>
                     <PreservedFormatRow
                       name={t("webpage")}
@@ -550,7 +544,7 @@ export default function LinkDetails({
                   </>
                 ) : undefined}
 
-                {screenshotAvailable(link) ? (
+                {formatAvailable(link, "image") ? (
                   <>
                     <PreservedFormatRow
                       name={t("screenshot")}
@@ -567,7 +561,7 @@ export default function LinkDetails({
                   </>
                 ) : undefined}
 
-                {pdfAvailable(link) ? (
+                {formatAvailable(link, "pdf") ? (
                   <>
                     <PreservedFormatRow
                       name={t("pdf")}
@@ -580,7 +574,7 @@ export default function LinkDetails({
                   </>
                 ) : undefined}
 
-                {readabilityAvailable(link) ? (
+                {formatAvailable(link, "readable") ? (
                   <>
                     <PreservedFormatRow
                       name={t("readable")}

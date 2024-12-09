@@ -55,9 +55,7 @@ async function processBatch() {
               },
             },
           },
-          tags: {
-            none: {},
-          },
+          aiTagged: false,
         },
       ],
     },
@@ -113,9 +111,7 @@ async function processBatch() {
               },
             },
           },
-          tags: {
-            none: {},
-          },
+          aiTagged: false,
         },
       ],
     },
