@@ -32,6 +32,12 @@ RUN set -eux && \
     apt-get clean && \
     yarn cache clean
 
+# Install ca-certificates to prevent monolith from failing to retrieve resources due to invalid certificates
+# https://docs.docker.com/build/building/best-practices/#apt-get
+RUN apt-get update && apt-get install -y  \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY . .
 
 RUN yarn prisma generate && \
