@@ -96,17 +96,10 @@ export default function LinkDetails({
   const isReady = () => {
     return (
       link &&
-      (collectionOwner.archiveAsScreenshot === true
-        ? link.pdf && link.pdf !== "pending"
-        : true) &&
-      (collectionOwner.archiveAsMonolith === true
-        ? link.monolith && link.monolith !== "pending"
-        : true) &&
-      (collectionOwner.archiveAsPDF === true
-        ? link.pdf && link.pdf !== "pending"
-        : true) &&
-      link.readable &&
-      link.readable !== "pending"
+      (collectionOwner.archiveAsScreenshot === true ? link.pdf : true) &&
+      (collectionOwner.archiveAsMonolith === true ? link.monolith : true) &&
+      (collectionOwner.archiveAsPDF === true ? link.pdf : true) &&
+      link.readable
     );
   };
 

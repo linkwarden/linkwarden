@@ -100,24 +100,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           where: { id: link.id },
           data: {
             type: linkType,
-            image:
-              user.archiveAsScreenshot && !link.image?.startsWith("archive")
-                ? "pending"
-                : undefined,
-            pdf:
-              user.archiveAsPDF && !link.pdf?.startsWith("archive")
-                ? "pending"
-                : undefined,
-            monolith:
-              user.archiveAsMonolith && !link.monolith?.startsWith("archive")
-                ? "pending"
-                : undefined,
-            readable: !link.readable?.startsWith("archive")
-              ? "pending"
-              : undefined,
-            preview: !link.readable?.startsWith("archive")
-              ? "pending"
-              : undefined,
             lastPreserved: new Date().toISOString(),
           },
         });
