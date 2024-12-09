@@ -38,7 +38,7 @@ export default function ResetPassword() {
 
       const load = toast.loading(t("sending_password_recovery_link"));
 
-      const response = await fetch("/api/v1/auth/reset-password", {
+      const response = await fetch(`${router.basePath}/api/v1/auth/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

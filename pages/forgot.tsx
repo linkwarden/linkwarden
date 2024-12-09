@@ -6,6 +6,7 @@ import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 
 interface FormData {
   email: string;
@@ -14,6 +15,7 @@ interface FormData {
 export default function Forgot() {
   const { t } = useTranslation();
   const [submitLoader, setSubmitLoader] = useState(false);
+  const router = useRouter();
 
   const [form, setForm] = useState<FormData>({
     email: "",
@@ -22,7 +24,7 @@ export default function Forgot() {
   const [isEmailSent, setIsEmailSent] = useState(false);
 
   async function submitRequest() {
-    const response = await fetch("/api/v1/auth/forgot-password", {
+    const response = await fetch(`${router.basePath}/api/v1/auth/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -61,12 +61,13 @@ const useLinks = (params: LinkRequestQuery = {}) => {
 
 const useFetchLinks = (params: string) => {
   const { status } = useSession();
+  const router = useRouter();
 
   return useInfiniteQuery({
     queryKey: ["links", { params }],
     queryFn: async (params) => {
       const response = await fetch(
-        "/api/v1/links?cursor=" +
+        `${router.basePath}/api/v1/links?cursor=` +
           params.pageParam +
           ((params.queryKey[1] as any).params
             ? "&" + (params.queryKey[1] as any).params
@@ -102,7 +103,7 @@ const buildQueryString = (params: LinkRequestQuery) => {
 
 const useAddLink = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async (link: PostLinkSchemaType) => {
       if (link.url || link.type === "url") {
@@ -113,7 +114,7 @@ const useAddLink = () => {
         }
       }
 
-      const response = await fetch("/api/v1/links", {
+      const response = await fetch(`${router.basePath}/api/v1/links`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -153,10 +154,10 @@ const useAddLink = () => {
 
 const useUpdateLink = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async (link: LinkIncludingShortenedCollectionAndTags) => {
-      const response = await fetch(`/api/v1/links/${link.id}`, {
+      const response = await fetch(`${router.basePath}/api/v1/links/${link.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -198,10 +199,10 @@ const useUpdateLink = () => {
 
 const useDeleteLink = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/v1/links/${id}`, {
+      const response = await fetch(`${router.basePath}/api/v1/links/${id}`, {
         method: "DELETE",
       });
 
@@ -251,8 +252,8 @@ const useGetLink = () => {
       isPublicRoute?: boolean;
     }) => {
       const path = isPublicRoute
-        ? `/api/v1/public/links/${id}`
-        : `/api/v1/links/${id}`;
+        ? `${router.basePath}/api/v1/public/links/${id}`
+        : `${router.basePath}/api/v1/links/${id}`;
 
       const response = await fetch(path);
       const data = await response.json();
@@ -300,10 +301,10 @@ const useGetLink = () => {
 
 const useBulkDeleteLinks = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async (linkIds: number[]) => {
-      const response = await fetch("/api/v1/links", {
+      const response = await fetch(`${router.basePath}/api/v1/links`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -342,7 +343,7 @@ const useBulkDeleteLinks = () => {
 
 const useUploadFile = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async ({ link, file }: any) => {
       let fileType: ArchivedFormat | null = null;
@@ -361,7 +362,7 @@ const useUploadFile = () => {
         return { ok: false, data: "Invalid file type." };
       }
 
-      const response = await fetch("/api/v1/links", {
+      const response = await fetch(`${router.basePath}/api/v1/links`, {
         body: JSON.stringify({
           ...link,
           type: linkType,
@@ -382,7 +383,7 @@ const useUploadFile = () => {
         file && formBody.append("file", file);
 
         await fetch(
-          `/api/v1/archives/${(data as any).response.id}?format=${fileType}`,
+          `${router.basePath}/api/v1/archives/${(data as any).response.id}?format=${fileType}`,
           {
             body: formBody,
             method: "POST",
@@ -418,7 +419,7 @@ const useUploadFile = () => {
 
 const useUpdatePreview = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async ({ linkId, file }: { linkId: number; file: File }) => {
       const formBody = new FormData();
@@ -429,7 +430,7 @@ const useUpdatePreview = () => {
       formBody.append("file", file);
 
       const res = await fetch(
-        `/api/v1/archives/${linkId}?format=` + ArchivedFormat.jpeg,
+        `${router.basePath}/api/v1/archives/${linkId}?format=` + ArchivedFormat.jpeg,
         {
           body: formBody,
           method: "PUT",
@@ -479,7 +480,7 @@ const useUpdatePreview = () => {
 
 const useBulkEditLinks = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async ({
       links,
@@ -493,7 +494,7 @@ const useBulkEditLinks = () => {
       >;
       removePreviousTags: boolean;
     }) => {
-      const response = await fetch("/api/v1/links", {
+      const response = await fetch(`${router.basePath}/api/v1/links`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

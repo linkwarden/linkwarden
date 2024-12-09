@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import nextJsConfig from "@/next.config";
 
 type ResponseObject = {
   ok: boolean;
@@ -23,7 +24,7 @@ const useLinkStore = create<LinkStore>()((set) => ({
   selectedLinks: [],
   setSelectedLinks: (links) => set({ selectedLinks: links }),
   updateLinks: async (links, removePreviousTags, newData) => {
-    const response = await fetch("/api/v1/links", {
+    const response = await fetch(`${nextJsConfig.basePath}/api/v1/links`, {
       body: JSON.stringify({ links, removePreviousTags, newData }),
       headers: {
         "Content-Type": "application/json",

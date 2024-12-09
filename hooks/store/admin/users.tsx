@@ -2,14 +2,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const useUsers = () => {
   const { status } = useSession();
+  const router = useRouter();
 
   return useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const response = await fetch("/api/v1/users");
+      const response = await fetch(`${router.basePath}/api/v1/users`);
       if (!response.ok) {
         throw new Error("Failed to fetch users.");
       }
@@ -24,12 +26,13 @@ const useUsers = () => {
 const useAddUser = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (body: any) => {
       const load = toast.loading(t("creating_account"));
 
-      const response = await fetch("/api/v1/users", {
+      const response = await fetch(`${router.basePath}/api/v1/users`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: {
@@ -56,13 +59,14 @@ const useAddUser = () => {
 
 const useDeleteUser = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { t } = useTranslation();
 
   return useMutation({
     mutationFn: async (userId: number) => {
       const load = toast.loading(t("deleting_user"));
 
-      const response = await fetch(`/api/v1/users/${userId}`, {
+      const response = await fetch(`${router.basePath}/api/v1/users/${userId}`, {
         method: "DELETE",
       });
 

@@ -28,27 +28,27 @@ export default function Index() {
       ) : getLink.data?.id &&
         Number(router.query.format) === ArchivedFormat.monolith ? (
         <iframe
-          src={`/api/v1/archives/${getLink.data.id}?format=${ArchivedFormat.monolith}`}
+          src={`${router.basePath}/api/v1/archives/${getLink.data.id}?format=${ArchivedFormat.monolith}`}
           className="w-full h-screen border-none"
         ></iframe>
       ) : getLink.data?.id &&
         Number(router.query.format) === ArchivedFormat.pdf ? (
         <iframe
-          src={`/api/v1/archives/${getLink.data.id}?format=${ArchivedFormat.pdf}`}
+          src={`${router.basePath}/api/v1/archives/${getLink.data.id}?format=${ArchivedFormat.pdf}`}
           className="w-full h-screen border-none"
         ></iframe>
       ) : getLink.data?.id &&
         Number(router.query.format) === ArchivedFormat.png ? (
         <img
           alt=""
-          src={`/api/v1/archives/${getLink.data.id}?format=${ArchivedFormat.png}`}
+          src={`${router.basePath}/api/v1/archives/${getLink.data.id}?format=${ArchivedFormat.png}`}
           className="w-fit mx-auto"
         />
       ) : getLink.data?.id &&
         Number(router.query.format) === ArchivedFormat.jpeg ? (
         <img
           alt=""
-          src={`/api/v1/archives/${getLink.data.id}?format=${ArchivedFormat.jpeg}`}
+          src={`${router.basePath}/api/v1/archives/${getLink.data.id}?format=${ArchivedFormat.jpeg}`}
           className="w-fit mx-auto"
         />
       ) : getLink.error ? (

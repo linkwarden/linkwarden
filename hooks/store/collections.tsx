@@ -1,14 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const useCollections = () => {
   const { status } = useSession();
-
+  const router = useRouter();
   return useQuery({
     queryKey: ["collections"],
     queryFn: async (): Promise<CollectionIncludingMembersAndLinkCount[]> => {
-      const response = await fetch("/api/v1/collections");
+      const response = await fetch(`${router.basePath}/api/v1/collections`);
       const data = await response.json();
       return data.response;
     },
@@ -18,10 +19,10 @@ const useCollections = () => {
 
 const useCreateCollection = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async (body: any) => {
-      const response = await fetch("/api/v1/collections", {
+      const response = await fetch(`${router.basePath}/api/v1/collections`, {
         body: JSON.stringify(body),
         headers: {
           "Content-Type": "application/json",
@@ -45,10 +46,10 @@ const useCreateCollection = () => {
 
 const useUpdateCollection = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async (body: any) => {
-      const response = await fetch(`/api/v1/collections/${body.id}`, {
+      const response = await fetch(`${router.basePath}/api/v1/collections/${body.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -84,10 +85,10 @@ const useUpdateCollection = () => {
 
 const useDeleteCollection = () => {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/v1/collections/${id}`, {
+      const response = await fetch(`${router.basePath}/api/v1/collections/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
