@@ -1,6 +1,6 @@
 {
   "name": "linkwarden",
-  "version": "v2.8.3",
+  "version": "v2.8.4",
   "main": "index.js",
   "repository": "https://github.com/linkwarden/linkwarden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
@@ -77,6 +77,7 @@
     "react-select": "^5.7.4",
     "react-spinners": "^0.14.1",
     "react-window": "^1.8.10",
+    "rss-parser": "^3.13.0",
     "socks-proxy-agent": "^8.0.2",
     "stripe": "^12.13.0",
     "tailwind-merge": "^2.3.0",
