@@ -70,14 +70,7 @@ export default function ReadableView({ link }: Props) {
     let interval: NodeJS.Timeout | null = null;
     if (
       link &&
-      (link?.image === "pending" ||
-        link?.pdf === "pending" ||
-        link?.readable === "pending" ||
-        link?.monolith === "pending" ||
-        !link?.image ||
-        !link?.pdf ||
-        !link?.readable ||
-        !link?.monolith)
+      (!link?.image || !link?.pdf || !link?.readable || !link?.monolith)
     ) {
       interval = setInterval(
         () =>
@@ -261,7 +254,7 @@ export default function ReadableView({ link }: Props) {
         ) : (
           <div
             className={`w-full h-full flex flex-col justify-center p-10 ${
-              link?.readable === "pending" || !link?.readable ? "skeleton" : ""
+              !link?.readable ? "skeleton" : ""
             }`}
           >
             <svg

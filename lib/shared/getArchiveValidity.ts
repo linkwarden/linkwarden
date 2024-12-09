@@ -5,12 +5,7 @@ export function formatAvailable(
   link: Link | LinkIncludingShortenedCollectionAndTags,
   format: "image" | "pdf" | "readable" | "monolith" | "preview"
 ) {
-  return (
-    link &&
-    link[format] &&
-    link[format] !== "pending" &&
-    link[format] !== "unavailable"
-  );
+  return link && link[format] && link[format] !== "unavailable";
 }
 
 export function formatStatus(
@@ -25,8 +20,6 @@ export function formatStatus(
     link[format].startsWith("archive")
   ) {
     return "processed";
-  } else if (link[format].startsWith("pending")) {
-    return "pending";
   } else {
     return "error";
   }
