@@ -104,25 +104,26 @@ model PasswordResetToken {
 }
 
 model Collection {
-  id              Int                   @id @default(autoincrement())
-  name            String
-  description     String                @default("")
-  icon            String?
-  iconWeight      String?
-  color           String                @default("#0ea5e9")
-  parentId        Int?
-  parent          Collection?           @relation("SubCollections", fields: [parentId], references: [id])
-  subCollections  Collection[]          @relation("SubCollections")
-  isPublic        Boolean               @default(false)
-  owner           User                  @relation(fields: [ownerId], references: [id])
-  ownerId         Int
-  members         UsersAndCollections[]
-  createdBy       User?                 @relation("CreatedCollections", fields: [createdById], references: [id])
-  createdById     Int?
-  links           Link[]
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @default(now()) @updatedAt
-  
+  id               Int                   @id @default(autoincrement())
+  name             String
+  description      String                @default("")
+  icon             String?
+  iconWeight       String?
+  color            String                @default("#0ea5e9")
+  parentId         Int?
+  parent           Collection?           @relation("SubCollections", fields: [parentId], references: [id])
+  subCollections   Collection[]          @relation("SubCollections")
+  isPublic         Boolean               @default(false)
+  owner            User                  @relation(fields: [ownerId], references: [id])
+  ownerId          Int
+  members          UsersAndCollections[]
+  createdBy        User?                 @relation("CreatedCollections", fields: [createdById], references: [id])
+  createdById      Int?
+  links            Link[]
+  rssSubscriptions RssSubscription[]
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @default(now()) @updatedAt
+
   @@index([ownerId])
 }
 
@@ -198,7 +199,7 @@ model Subscription {
 
 model AccessToken {
   id         Int       @id @default(autoincrement())
-  name       String    
+  name       String
   user       User      @relation(fields: [userId], references: [id])
   userId     Int
   token      String    @unique
@@ -208,4 +209,16 @@ model AccessToken {
   lastUsedAt DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now()) @updatedAt
+}
+
+model RssSubscription {
+  id            Int        @id @default(autoincrement())
+  url           String
+  name          String
+  lastBuildDate DateTime?
+  collection    Collection @relation(fields: [collectionId], references: [id])
+  collectionId  Int
+  ownerId       Int
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
 }
