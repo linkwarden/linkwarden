@@ -136,87 +136,92 @@ export default function Appearance() {
           </div>
         </div>
 
-        <div>
-          <p className="capitalize text-3xl font-thin inline">
-            {t("ai_settings")}
-          </p>
-          <div className="divider my-3"></div>
-
-          <p>{t("ai_tagging_method")}</p>
-
-          <div className="p-3">
-            <label
-              className="label cursor-pointer flex gap-2 justify-start w-fit"
-              tabIndex={0}
-              role="button"
-            >
-              <input
-                type="radio"
-                name="ai-tagging-method-radio"
-                className="radio checked:bg-primary"
-                value="DISABLED"
-                checked={aiTaggingMethod === AiTaggingMethod.DISABLED}
-                onChange={() => setAiTaggingMethod(AiTaggingMethod.DISABLED)}
-              />
-              <span className="label-text">{t("disabled")}</span>
-            </label>
-            <p className="text-neutral text-sm pl-5">
-              {t("ai_tagging_disabled_desc")}
+        {process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && (
+          <div>
+            <p className="capitalize text-3xl font-thin inline">
+              {t("ai_settings")}
             </p>
 
-            <label
-              className="label cursor-pointer flex gap-2 justify-start w-fit"
-              tabIndex={0}
-              role="button"
-            >
-              <input
-                type="radio"
-                name="ai-tagging-method-radio"
-                className="radio checked:bg-primary"
-                value="GENERATE"
-                checked={aiTaggingMethod === AiTaggingMethod.GENERATE}
-                onChange={() => setAiTaggingMethod(AiTaggingMethod.GENERATE)}
-              />
-              <span className="label-text">{t("auto_generate_tags")}</span>
-            </label>
-            <p className="text-neutral text-sm pl-5">
-              {t("auto_generate_tags_desc")}
-            </p>
+            <div className="divider my-3"></div>
 
-            <label
-              className="label cursor-pointer flex gap-2 justify-start w-fit"
-              tabIndex={0}
-              role="button"
-            >
-              <input
-                type="radio"
-                name="ai-tagging-method-radio"
-                className="radio checked:bg-primary"
-                value="PREDEFINED"
-                checked={aiTaggingMethod === AiTaggingMethod.PREDEFINED}
-                onChange={() => setAiTaggingMethod(AiTaggingMethod.PREDEFINED)}
-              />
-              <span className="label-text">
-                {t("based_on_predefined_tags")}
-              </span>
-            </label>
-            <div className="pl-5">
-              <p className="text-neutral text-sm mb-2">
-                {t("based_on_predefined_tags_desc")}
-              </p>
-              {aiPredefinedTags && (
-                <TagSelection
-                  onChange={(e: any) => {
-                    setAiPredefinedTags(e.map((e: any) => e.label));
-                  }}
-                  defaultValue={aiPredefinedTags
-                    .map((e) => ({ label: e }))
-                    .filter((e) => e.label !== "")}
+            <p>{t("ai_tagging_method")}</p>
+
+            <div className="p-3">
+              <label
+                className="label cursor-pointer flex gap-2 justify-start w-fit"
+                tabIndex={0}
+                role="button"
+              >
+                <input
+                  type="radio"
+                  name="ai-tagging-method-radio"
+                  className="radio checked:bg-primary"
+                  value="DISABLED"
+                  checked={aiTaggingMethod === AiTaggingMethod.DISABLED}
+                  onChange={() => setAiTaggingMethod(AiTaggingMethod.DISABLED)}
                 />
-              )}
+                <span className="label-text">{t("disabled")}</span>
+              </label>
+              <p className="text-neutral text-sm pl-5">
+                {t("ai_tagging_disabled_desc")}
+              </p>
+
+              <label
+                className="label cursor-pointer flex gap-2 justify-start w-fit"
+                tabIndex={0}
+                role="button"
+              >
+                <input
+                  type="radio"
+                  name="ai-tagging-method-radio"
+                  className="radio checked:bg-primary"
+                  value="GENERATE"
+                  checked={aiTaggingMethod === AiTaggingMethod.GENERATE}
+                  onChange={() => setAiTaggingMethod(AiTaggingMethod.GENERATE)}
+                />
+                <span className="label-text">{t("auto_generate_tags")}</span>
+              </label>
+              <p className="text-neutral text-sm pl-5">
+                {t("auto_generate_tags_desc")}
+              </p>
+
+              <label
+                className="label cursor-pointer flex gap-2 justify-start w-fit"
+                tabIndex={0}
+                role="button"
+              >
+                <input
+                  type="radio"
+                  name="ai-tagging-method-radio"
+                  className="radio checked:bg-primary"
+                  value="PREDEFINED"
+                  checked={aiTaggingMethod === AiTaggingMethod.PREDEFINED}
+                  onChange={() =>
+                    setAiTaggingMethod(AiTaggingMethod.PREDEFINED)
+                  }
+                />
+                <span className="label-text">
+                  {t("based_on_predefined_tags")}
+                </span>
+              </label>
+              <div className="pl-5">
+                <p className="text-neutral text-sm mb-2">
+                  {t("based_on_predefined_tags_desc")}
+                </p>
+                {aiPredefinedTags && (
+                  <TagSelection
+                    onChange={(e: any) => {
+                      setAiPredefinedTags(e.map((e: any) => e.label));
+                    }}
+                    defaultValue={aiPredefinedTags
+                      .map((e) => ({ label: e }))
+                      .filter((e) => e.label !== "")}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div>
           <p className="capitalize text-3xl font-thin inline">

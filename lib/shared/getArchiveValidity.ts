@@ -7,20 +7,3 @@ export function formatAvailable(
 ) {
   return link && link[format] && link[format] !== "unavailable";
 }
-
-export function formatStatus(
-  link: Link | LinkIncludingShortenedCollectionAndTags,
-  format: "image" | "pdf" | "readable" | "monolith" | "preview"
-): "pending" | "processed" | "error" {
-  // Before getting passed to the archive handler...
-  if (!link[format]) {
-    return "pending";
-  } else if (
-    link[format].startsWith("unavailable") ||
-    link[format].startsWith("archive")
-  ) {
-    return "processed";
-  } else {
-    return "error";
-  }
-}
