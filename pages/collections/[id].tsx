@@ -26,6 +26,8 @@ import { useLinks } from "@/hooks/store/links";
 import Links from "@/components/LinkViews/Links";
 import Icon from "@/components/Icon";
 import CollectionCard from "@/components/CollectionCard";
+import { IconWeight } from "@phosphor-icons/react";
+import PageHeader from "@/components/PageHeader";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -283,20 +285,38 @@ export default function Index() {
           <p>{activeCollection?.description}</p>
         )}
 
+        <div className="divider my-0"></div>
+
         {collections.some((e) => e.parentId === activeCollection?.id) ? (
-          <fieldset className="rounded-md p-2 border-neutral-content">
-            <legend className="text-sm ml-2">Sub-Collections</legend>
-            <div className="grid-cols-8 grid gap-5">
+          <>
+            <PageHeader
+              icon={"bi-folder"}
+              title={t("collections")}
+              description={
+                collections.filter((e) => e.parentId === activeCollection?.id)
+                  .length === 1
+                  ? t("showing_count_result", {
+                      count: collections.filter(
+                        (e) => e.parentId === activeCollection?.id
+                      ).length,
+                    })
+                  : t("showing_count_results", {
+                      count: collections.filter(
+                        (e) => e.parentId === activeCollection?.id
+                      ).length,
+                    })
+              }
+              className="scale-90 w-fit"
+            />
+            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {collections
                 .filter((e) => e.parentId === activeCollection?.id)
                 .map((e, i) => {
                   return <CollectionCard key={i} collection={e} />;
                 })}
             </div>
-          </fieldset>
+          </>
         ) : undefined}
-
-        <div className="divider my-0"></div>
 
         <LinkListOptions
           t={t}
@@ -319,15 +339,32 @@ export default function Index() {
               : undefined
           }
         >
-          <p>
-            {activeCollection?._count?.links === 1
-              ? t("showing_count_result", {
-                  count: activeCollection?._count?.links,
-                })
-              : t("showing_count_results", {
-                  count: activeCollection?._count?.links,
-                })}
-          </p>
+          {collections.some((e) => e.parentId === activeCollection?.id) ? (
+            <PageHeader
+              icon={"bi-link-45deg"}
+              title={t("links")}
+              description={
+                activeCollection?._count?.links === 1
+                  ? t("showing_count_result", {
+                      count: activeCollection?._count?.links,
+                    })
+                  : t("showing_count_results", {
+                      count: activeCollection?._count?.links,
+                    })
+              }
+              className="scale-90 w-fit"
+            />
+          ) : (
+            <p>
+              {activeCollection?._count?.links === 1
+                ? t("showing_count_result", {
+                    count: activeCollection?._count?.links,
+                  })
+                : t("showing_count_results", {
+                    count: activeCollection?._count?.links,
+                  })}
+            </p>
+          )}
         </LinkListOptions>
 
         <Links
