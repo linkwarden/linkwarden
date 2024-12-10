@@ -333,7 +333,7 @@ const buildTreeFromCollections = (
       return 0;
     }
 
-    let totalLinkCount = collection.data._count?.links || 0;
+    let totalLinkCount = (collection.data as any)._count?.links || 0;
 
     if (collection.hasChildren) {
       collection.children.forEach((childId) => {
@@ -401,7 +401,7 @@ const buildTreeFromCollections = (
     const collectionId = collection.id;
     if (items[collectionId as number] && collection.id) {
       const linkCount = getTotalLinkCount(collectionId as number);
-      items[collectionId as number].data._count.links = linkCount;
+      (items[collectionId as number].data as any)._count.links = linkCount;
     }
   });
 
