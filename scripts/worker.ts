@@ -30,17 +30,6 @@ async function processBatch() {
         {
           monolith: null,
         },
-        {
-          // See if tags are empty
-          collection: {
-            owner: {
-              NOT: {
-                aiTaggingMethod: "DISABLED",
-              },
-            },
-          },
-          aiTagged: false,
-        },
       ],
     },
     take: archiveTakeCount,
@@ -69,17 +58,6 @@ async function processBatch() {
         },
         {
           monolith: null,
-        },
-        {
-          // See if tags are empty
-          collection: {
-            owner: {
-              NOT: {
-                aiTaggingMethod: "DISABLED",
-              },
-            },
-          },
-          aiTagged: false,
         },
       ],
     },
