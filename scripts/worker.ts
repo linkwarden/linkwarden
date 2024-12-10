@@ -24,28 +24,13 @@ async function processBatch() {
           image: null,
         },
         {
-          image: "pending",
-        },
-        ///////////////////////
-        {
           pdf: null,
         },
-        {
-          pdf: "pending",
-        },
-        ///////////////////////
         {
           readable: null,
         },
         {
-          readable: "pending",
-        },
-        ///////////////////////
-        {
           monolith: null,
-        },
-        {
-          monolith: "pending",
         },
       ],
     },
@@ -68,28 +53,13 @@ async function processBatch() {
           image: null,
         },
         {
-          image: "pending",
-        },
-        ///////////////////////
-        {
           pdf: null,
         },
-        {
-          pdf: "pending",
-        },
-        ///////////////////////
         {
           readable: null,
         },
         {
-          readable: "pending",
-        },
-        ///////////////////////
-        {
           monolith: null,
-        },
-        {
-          monolith: "pending",
         },
       ],
     },
