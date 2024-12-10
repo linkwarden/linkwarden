@@ -10,7 +10,7 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import Image from "next/image";
-import { previewAvailable } from "@/lib/shared/getArchiveValidity";
+import { formatAvailable } from "@/lib/shared/getArchiveValidity";
 import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
@@ -171,7 +171,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
             <div
               className={`relative rounded-t-2xl ${imageHeightClass} overflow-hidden`}
             >
-              {previewAvailable(link) ? (
+              {formatAvailable(link, "preview") ? (
                 <Image
                   src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
                   width={1280}

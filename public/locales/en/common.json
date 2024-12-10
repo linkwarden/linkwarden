@@ -430,5 +430,20 @@
   "reddit": "Reddit",
   "lemmy": "Lemmy",
   "people_recommendation": "Recommendation (Friend, Family, etc.)",
-  "open_all_links": "Open all Links"
+  "open_all_links": "Open all Links",
+  "ai_settings": "AI Settings",
+  "ai_tagging_method": "AI Tagging Method:",
+  "based_on_predefined_tags": "Based on predefined Tags",
+  "based_on_predefined_tags_desc": "Auto-categorize links to predefined tags based on the content of each link.",
+  "auto_generate_tags": "Auto-generate Tags",
+  "auto_generate_tags_desc": "Auto-generate relevant tags based on the content of each link.",
+  "disabled": "Disabled",
+  "ai_tagging_disabled_desc": "AI tagging is disabled.",
+  "tag_selection_placeholder": "Choose or add custom tags…",
+  "rss_subscriptions": "RSS Subscriptions",
+  "rss_subscriptions_desc": "RSS Subscriptions are a way to keep up with your favorite websites and blogs. Linkwarden will automatically fetch the latest articles every {{number}} minutes from the feeds you provide.",
+  "rss_deletion_confirmation": "Are you sure you want to delete this RSS Subscription?",
+  "new_rss_subscription": "New RSS Subscription",
+  "rss_subscription_deleted": "RSS Subscription deleted!",
+  "create_rss_subscription": "Create RSS Subscription"
 }
