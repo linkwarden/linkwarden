@@ -1,51 +1,9 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { Link } from "@prisma/client";
 
-export function screenshotAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
+export function formatAvailable(
+  link: Link | LinkIncludingShortenedCollectionAndTags,
+  format: "image" | "pdf" | "readable" | "monolith" | "preview"
 ) {
-  return (
-    link &&
-    link.image &&
-    link.image !== "pending" &&
-    link.image !== "unavailable"
-  );
-}
-
-export function pdfAvailable(link: LinkIncludingShortenedCollectionAndTags) {
-  return (
-    link && link.pdf && link.pdf !== "pending" && link.pdf !== "unavailable"
-  );
-}
-
-export function readabilityAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
-) {
-  return (
-    link &&
-    link.readable &&
-    link.readable !== "pending" &&
-    link.readable !== "unavailable"
-  );
-}
-
-export function monolithAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
-) {
-  return (
-    link &&
-    link.monolith &&
-    link.monolith !== "pending" &&
-    link.monolith !== "unavailable"
-  );
-}
-
-export function previewAvailable(
-  link: LinkIncludingShortenedCollectionAndTags
-) {
-  return (
-    link &&
-    link.preview &&
-    link.preview !== "pending" &&
-    link.preview !== "unavailable"
-  );
+  return link && link[format] && link[format] !== "unavailable";
 }

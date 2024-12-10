@@ -246,11 +246,10 @@ const renderItem = (
   return (
     <div ref={provided.innerRef} {...provided.draggableProps} className="mb-1">
       <div
-        className={`${
-          currentPath === `/collections/${collection.id}`
+        className={`${currentPath === `/collections/${collection.id}`
             ? "bg-primary/20 is-active"
             : "hover:bg-neutral/20"
-        } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
+          } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
       >
         {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
 
@@ -260,7 +259,7 @@ const renderItem = (
           {...provided.dragHandleProps}
         >
           <div
-            className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8 capitalize`}
+            className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             {collection.icon ? (
               <Icon
