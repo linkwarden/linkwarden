@@ -50,6 +50,7 @@ export const styles: StylesConfig = {
   placeholder: (styles) => ({
     ...styles,
     borderColor: "black",
+    color: "oklch(var(--n))",
   }),
   multiValue: (styles) => {
     return {

@@ -82,7 +82,7 @@ export default async function importFromWallabag(
               pinnedBy: link.is_starred
                 ? { connect: { id: userId } }
                 : undefined,
-              url: link.url?.trim().slice(0, 254),
+              url: link.url?.trim().slice(0, 2047),
               name: link.title?.trim().slice(0, 254) || "",
               textContent: link.content?.trim() || "",
               importDate: link.created_at || null,

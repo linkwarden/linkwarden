@@ -1,7 +1,7 @@
 import { LaunchOptions, chromium, devices } from "playwright";
 import { prisma } from "./db";
 import sendToWayback from "./preservationScheme/sendToWayback";
-import { Collection, Link, User } from "@prisma/client";
+import { AiTaggingMethod, Collection, Link, User } from "@prisma/client";
 import fetchHeaders from "./fetchHeaders";
 import createFolder from "./storage/createFolder";
 import { removeFiles } from "./manageLinkFiles";
@@ -11,6 +11,7 @@ import handleArchivePreview from "./preservationScheme/handleArchivePreview";
 import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf";
 import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
+import autoTagLink from "./autoTagLink";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -21,6 +22,21 @@ type LinksAndCollectionAndOwner = Link & {
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 
 export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
+  if (process.env.DISABLE_PRESERVATION === "true") {
+    await prisma.link.update({
+      where: { id: link.id },
+      data: {
+        lastPreserved: new Date().toISOString(),
+        readable: "unavailable",
+        image: "unavailable",
+        monolith: "unavailable",
+        pdf: "unavailable",
+        preview: "unavailable",
+      },
+    });
+    return;
+  }
+
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(
       () =>
@@ -33,20 +49,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
     );
   });
 
-  // allow user to configure a proxy
-  let browserOptions: LaunchOptions = {};
-  if (process.env.PROXY) {
-    browserOptions.proxy = {
-      server: process.env.PROXY,
-      bypass: process.env.PROXY_BYPASS,
-      username: process.env.PROXY_USERNAME,
-      password: process.env.PROXY_PASSWORD,
-    };
-  }
-  if (process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH) {
-    browserOptions.executablePath =
-      process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
-  }
+  const browserOptions = getBrowserOptions();
 
   const browser = await chromium.launch(browserOptions);
   const context = await browser.newContext({
@@ -56,66 +59,26 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
   const page = await context.newPage();
 
-  createFolder({
-    filePath: `archives/preview/${link.collectionId}`,
-  });
+  createFolder({ filePath: `archives/preview/${link.collectionId}` });
+  createFolder({ filePath: `archives/${link.collectionId}` });
 
-  createFolder({
-    filePath: `archives/${link.collectionId}`,
-  });
+  const user = link.collection?.owner;
 
   try {
     await Promise.race([
       (async () => {
-        const user = link.collection?.owner;
-
-        const header = link.url ? await fetchHeaders(link.url) : undefined;
-
-        const contentType = header?.get("content-type");
-        let linkType = "url";
-        let imageExtension = "png";
-
-        if (!link.url) linkType = link.type;
-        else if (contentType?.includes("application/pdf")) linkType = "pdf";
-        else if (contentType?.startsWith("image")) {
-          linkType = "image";
-          if (contentType.includes("image/jpeg")) imageExtension = "jpeg";
-          else if (contentType.includes("image/png")) imageExtension = "png";
-        }
-
-        await prisma.link.update({
-          where: { id: link.id },
-          data: {
-            type: linkType,
-            image:
-              user.archiveAsScreenshot && !link.image?.startsWith("archive")
-                ? "pending"
-                : undefined,
-            pdf:
-              user.archiveAsPDF && !link.pdf?.startsWith("archive")
-                ? "pending"
-                : undefined,
-            monolith:
-              user.archiveAsMonolith && !link.monolith?.startsWith("archive")
-                ? "pending"
-                : undefined,
-            readable: !link.readable?.startsWith("archive")
-              ? "pending"
-              : undefined,
-            preview: !link.readable?.startsWith("archive")
-              ? "pending"
-              : undefined,
-            lastPreserved: new Date().toISOString(),
-          },
-        });
+        const { linkType, imageExtension } = await determineLinkType(
+          link.id,
+          link.url
+        );
 
         // send to archive.org
         if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
 
-        if (linkType === "image" && !link.image?.startsWith("archive")) {
+        if (linkType === "image" && !link.image) {
           await imageHandler(link, imageExtension); // archive image (jpeg/png)
           return;
-        } else if (linkType === "pdf" && !link.pdf?.startsWith("archive")) {
+        } else if (linkType === "pdf" && !link.pdf) {
           await pdfHandler(link); // archive pdf
           return;
         } else if (link.url) {
@@ -126,35 +89,28 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           const content = await page.content();
 
           // Preview
-          if (
-            !link.preview?.startsWith("archives") &&
-            !link.preview?.startsWith("unavailable")
-          )
-            await handleArchivePreview(link, page);
+          if (!link.preview) await handleArchivePreview(link, page);
 
           // Readability
+          if (!link.readable) await handleReadablility(content, link);
+
+          // Auto-tagging
           if (
-            !link.readable?.startsWith("archives") &&
-            !link.readable?.startsWith("unavailable")
+            user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
+            !link.aiTagged &&
+            process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL
           )
-            await handleReadablility(content, link);
+            await autoTagLink(user, link.id);
 
           // Screenshot/PDF
           if (
-            (!link.image?.startsWith("archives") &&
-              !link.image?.startsWith("unavailable")) ||
-            (!link.pdf?.startsWith("archives") &&
-              !link.pdf?.startsWith("unavailable"))
+            (user.archiveAsScreenshot && !link.image) ||
+            (user.archiveAsPDF && !link.pdf)
           )
             await handleScreenshotAndPdf(link, page, user);
 
           // Monolith
-          if (
-            !link.monolith?.startsWith("archive") &&
-            !link.monolith?.startsWith("unavailable") &&
-            user.archiveAsMonolith &&
-            link.url
-          )
+          if (user.archiveAsMonolith && !link.monolith && link.url)
             await handleMonolith(link, content);
         }
       })(),
@@ -174,21 +130,16 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         where: { id: link.id },
         data: {
           lastPreserved: new Date().toISOString(),
-          readable: !finalLink.readable?.startsWith("archives")
-            ? "unavailable"
-            : undefined,
-          image: !finalLink.image?.startsWith("archives")
-            ? "unavailable"
-            : undefined,
-          monolith: !finalLink.monolith?.startsWith("archives")
-            ? "unavailable"
-            : undefined,
-          pdf: !finalLink.pdf?.startsWith("archives")
-            ? "unavailable"
-            : undefined,
-          preview: !finalLink.preview?.startsWith("archives")
-            ? "unavailable"
-            : undefined,
+          readable: !finalLink.readable ? "unavailable" : undefined,
+          image: !finalLink.image ? "unavailable" : undefined,
+          monolith: !finalLink.monolith ? "unavailable" : undefined,
+          pdf: !finalLink.pdf ? "unavailable" : undefined,
+          preview: !finalLink.preview ? "unavailable" : undefined,
+          aiTagged:
+            user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
+            !finalLink.aiTagged
+              ? true
+              : undefined,
         },
       });
     else {
@@ -197,4 +148,59 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
     await browser.close();
   }
+}
+
+// Determine the type of the link based on its content-type header.
+async function determineLinkType(
+  linkId: number,
+  url?: string | null
+): Promise<{
+  linkType: "url" | "pdf" | "image";
+  imageExtension: "png" | "jpeg";
+}> {
+  let linkType: "url" | "pdf" | "image" = "url";
+  let imageExtension: "png" | "jpeg" = "png";
+
+  if (!url) return { linkType: "url", imageExtension };
+
+  const headers = await fetchHeaders(url);
+  const contentType = headers?.get("content-type");
+
+  if (contentType?.includes("application/pdf")) {
+    linkType = "pdf";
+  } else if (contentType?.startsWith("image")) {
+    linkType = "image";
+    if (contentType.includes("image/jpeg")) imageExtension = "jpeg";
+    else if (contentType.includes("image/png")) imageExtension = "png";
+  }
+
+  await prisma.link.update({
+    where: { id: linkId },
+    data: {
+      type: linkType,
+    },
+  });
+
+  return { linkType, imageExtension };
+}
+
+// Construct browser launch options based on environment variables.
+function getBrowserOptions(): LaunchOptions {
+  let browserOptions: LaunchOptions = {};
+
+  if (process.env.PROXY) {
+    browserOptions.proxy = {
+      server: process.env.PROXY,
+      bypass: process.env.PROXY_BYPASS,
+      username: process.env.PROXY_USERNAME,
+      password: process.env.PROXY_PASSWORD,
+    };
+  }
+
+  if (process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH) {
+    browserOptions.executablePath =
+      process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
+  }
+
+  return browserOptions;
 }

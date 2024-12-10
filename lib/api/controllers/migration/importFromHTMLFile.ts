@@ -202,7 +202,7 @@ const createLink = async (
   tags?: string[],
   importDate?: Date
 ) => {
-  url = url.trim().slice(0, 254);
+  url = url.trim().slice(0, 2047);
   try {
     new URL(url);
   } catch (e) {
