@@ -68,7 +68,7 @@ export default function Collections() {
           </div>
         </div>
 
-        <div className="grid min-[1900px]:grid-cols-4 2xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+        <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
           {sortedCollections
             .filter((e) => e.ownerId === data?.user.id && e.parentId === null)
             .map((e, i) => {
@@ -94,7 +94,7 @@ export default function Collections() {
               description={t("other_collections_desc")}
             />
 
-            <div className="grid min-[1900px]:grid-cols-4 2xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {sortedCollections
                 .filter((e) => e.ownerId !== data?.user.id)
                 .map((e, i) => {
