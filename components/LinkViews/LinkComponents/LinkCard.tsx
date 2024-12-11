@@ -173,7 +173,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
             >
               {formatAvailable(link, "preview") ? (
                 <Image
-                  src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
+                  src={`${router.basePath}/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
                   width={1280}
                   height={720}
                   alt=""

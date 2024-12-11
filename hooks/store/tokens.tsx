@@ -1,14 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AccessToken } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const useTokens = () => {
   const { status } = useSession();
+  const router = useRouter();
 
   return useQuery({
     queryKey: ["tokens"],
     queryFn: async () => {
-      const response = await fetch("/api/v1/tokens");
+      const response = await fetch(`${router.basePath}/api/v1/tokens`);
 
       if (!response.ok) throw new Error("Failed to fetch tokens.");
 
@@ -21,10 +23,11 @@ const useTokens = () => {
 
 const useAddToken = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (body: Partial<AccessToken>) => {
-      const response = await fetch("/api/v1/tokens", {
+      const response = await fetch(`${router.basePath}/api/v1/tokens`, {
         body: JSON.stringify(body),
         method: "POST",
         headers: {
@@ -48,10 +51,11 @@ const useAddToken = () => {
 
 const useRevokeToken = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (tokenId: number) => {
-      const response = await fetch(`/api/v1/tokens/${tokenId}`, {
+      const response = await fetch(`${router.basePath}/api/v1/tokens/${tokenId}`, {
         method: "DELETE",
       });
 
