@@ -2,12 +2,11 @@ import { prisma } from "@/lib/api/db";
 import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 import { hasPassedLimit } from "../../verifyCapacity";
-import { Readable } from "stream";
-import streamToBlob from "stream-to-blob";
+import streamToBlob from "@/lib/shared/streamToBlob";
 
 export default async function importFromLinkwarden(
   userId: number,
-  rawStream: Readable
+  rawStream: ReadableStream
 ) {
   const rawData: Blob = await streamToBlob(rawStream);
   const data: Backup = JSON.parse(await rawData.text());
@@ -22,7 +21,7 @@ export default async function importFromLinkwarden(
 
   if (hasTooManyLinks) {
     return {
-      response: `Your subscription have reached the maximum number of links allowed.`,
+      response: `Your subscription has reached the maximum number of links allowed.`,
       status: 400,
     };
   }
