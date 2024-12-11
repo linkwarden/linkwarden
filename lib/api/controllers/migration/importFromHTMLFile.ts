@@ -3,12 +3,11 @@ import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "../../verifyCapacity";
-import { Readable } from "stream";
-import streamToBlob from "stream-to-blob";
+import streamToBlob from "@/lib/shared/streamToBlob";
 
 export default async function importFromHTMLFile(
   userId: number,
-  rawStream: Readable
+  rawStream: ReadableStream
 ) {
   const rawData: Blob = await streamToBlob(rawStream);
   const dom = new JSDOM(await rawData.arrayBuffer());
@@ -26,7 +25,7 @@ export default async function importFromHTMLFile(
 
   if (hasTooManyLinks) {
     return {
-      response: `Your subscription have reached the maximum number of links allowed.`,
+      response: `Your subscription has reached the maximum number of links allowed.`,
       status: 400,
     };
   }
