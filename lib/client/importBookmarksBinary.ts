@@ -31,7 +31,7 @@ const importBookmarksBinary = async (
 
           toast.error(
             errorData.response ||
-            "Failed to import bookmarks. Please try again."
+              "Failed to import bookmarks. Please try again."
           );
           return;
         }

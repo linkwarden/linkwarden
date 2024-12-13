@@ -150,7 +150,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           preview: !finalLink.preview ? "unavailable" : undefined,
           aiTagged:
             user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
-              !finalLink.aiTagged
+            !finalLink.aiTagged
               ? true
               : undefined,
         },

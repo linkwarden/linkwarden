@@ -6,7 +6,7 @@ import { useTranslation } from "next-i18next";
 import { dropdownTriggerer } from "@/lib/client/utils";
 
 type Props = {};
-const ImportDropdown = ({ }: Props) => {
+const ImportDropdown = ({}: Props) => {
   const { t } = useTranslation();
   return (
     <div className="dropdown dropdown-bottom">
@@ -93,7 +93,9 @@ const ImportDropdown = ({ }: Props) => {
               id="import-omnivore-file"
               accept=".zip"
               className="hidden"
-              onChange={(e) => importBookmarksBinary(e, MigrationFormat.omnivore)}
+              onChange={(e) =>
+                importBookmarksBinary(e, MigrationFormat.omnivore)
+              }
             />
           </label>
         </li>
