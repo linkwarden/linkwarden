@@ -3,11 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "react-hot-toast";
-import { ViewMode } from "@/types/global";
+import { MigrationFormat, MigrationRequest, ViewMode } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
 import NewLinkModal from "@/components/ModalContent/NewLinkModal";
 import PageHeader from "@/components/PageHeader";
 import ViewDropdown from "@/components/ViewDropdown";
+import { dropdownTriggerer } from "@/lib/client/utils";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
@@ -51,7 +52,7 @@ export default function Dashboard() {
       account.referredBy === null &&
       // if user is using Linkwarden for more than 3 days
       new Date().getTime() - new Date(account.createdAt).getTime() >
-        3 * 24 * 60 * 60 * 1000
+      3 * 24 * 60 * 60 * 1000
     ) {
       setTimeout(() => {
         setShowsSurveyModal(true);
