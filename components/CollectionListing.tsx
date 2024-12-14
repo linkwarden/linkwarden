@@ -246,10 +246,11 @@ const renderItem = (
   return (
     <div ref={provided.innerRef} {...provided.draggableProps} className="mb-1">
       <div
-        className={`${currentPath === `/collections/${collection.id}`
+        className={`${
+          currentPath === `/collections/${collection.id}`
             ? "bg-primary/20 is-active"
             : "hover:bg-neutral/20"
-          } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
+        } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
       >
         {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
 
@@ -326,6 +327,23 @@ const buildTreeFromCollections = (
     });
   }
 
+  function getTotalLinkCount(collectionId: number): number {
+    const collection = items[collectionId];
+    if (!collection) {
+      return 0;
+    }
+
+    let totalLinkCount = (collection.data as any)._count?.links || 0;
+
+    if (collection.hasChildren) {
+      collection.children.forEach((childId) => {
+        totalLinkCount += getTotalLinkCount(childId as number);
+      });
+    }
+
+    return totalLinkCount;
+  }
+
   const items: { [key: string]: ExtendedTreeItem } = collections.reduce(
     (acc: any, collection) => {
       acc[collection.id as number] = {
@@ -376,6 +394,14 @@ const buildTreeFromCollections = (
     if (parentId && items[parentId] && collection.id) {
       items[parentId].children.push(collection.id);
       items[parentId].hasChildren = true;
+    }
+  });
+
+  collections.forEach((collection) => {
+    const collectionId = collection.id;
+    if (items[collectionId as number] && collection.id) {
+      const linkCount = getTotalLinkCount(collectionId as number);
+      (items[collectionId as number].data as any)._count.links = linkCount;
     }
   });
 
