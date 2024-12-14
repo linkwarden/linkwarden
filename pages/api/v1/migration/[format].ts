@@ -35,7 +35,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     const unlimitedReadable: Readable = Readable.from(req);
     const importData = unlimitedReadable.pipe(
       getSizeTransform(IMPORT_SIZE_LIMIT_BYTES)
-    );
+    ) as unknown as ReadableStream;
     const importFormatName = String(
       req.query.format
     ) as keyof typeof MigrationFormat;

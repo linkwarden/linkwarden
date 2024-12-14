@@ -1,16 +1,19 @@
+import clsx from "clsx";
 import React from "react";
 
 export default function PageHeader({
   title,
   description,
   icon,
+  className,
 }: {
   title: string;
   description?: string;
   icon: string;
+  className?: string;
 }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className={clsx("flex items-center gap-3", className)}>
       <i
         className={`${icon} text-primary sm:text-3xl text-2xl drop-shadow`}
       ></i>

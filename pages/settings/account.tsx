@@ -31,6 +31,7 @@ export default function Account() {
     !objectIsEmpty(account)
       ? account
       : ({
+          // @ts-ignore
           id: null,
           name: "",
           username: "",
@@ -38,7 +39,8 @@ export default function Account() {
           emailVerified: null,
           password: undefined,
           image: "",
-          isPrivate: false,
+          isPrivate: true,
+          // @ts-ignore
           createdAt: null,
           whitelistedUsers: [],
         } as unknown as AccountSettings)
