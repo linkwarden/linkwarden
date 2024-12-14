@@ -37,6 +37,7 @@
     "@types/nodemailer": "^6.4.8",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.7",
+    "@zip.js/zip.js": "^2.7.53",
     "axios": "^1.5.1",
     "bcrypt": "^5.1.0",
     "bootstrap-icons": "^1.11.2",

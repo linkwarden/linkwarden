@@ -1,7 +1,7 @@
-import { MigrationFormat, MigrationRequest } from "@/types/global";
+import { MigrationFormat } from "@/types/global";
 import { toast } from "react-hot-toast";
 
-const importBookmarks = async (
+const importBookmarksBinary = async (
   e: React.ChangeEvent<HTMLInputElement>,
   format: MigrationFormat
 ) => {
@@ -9,22 +9,21 @@ const importBookmarks = async (
 
   if (file) {
     const reader = new FileReader();
-    reader.readAsText(file, "UTF-8");
+
+    reader.readAsArrayBuffer(file);
     reader.onload = async function (e) {
       const load = toast.loading("Importing...");
 
-      const request: string = e.target?.result as string;
-
-      const body: MigrationRequest = {
-        format,
-        data: request,
-      };
-
       try {
-        const response = await fetch("/api/v1/migration", {
-          method: "POST",
-          body: JSON.stringify(body),
-        });
+        const migrationFormatName = MigrationFormat[format];
+        const response = await fetch(
+          `/api/v1/migration/upload/${migrationFormatName}`,
+          {
+            method: "POST",
+            body: e.target?.result as ArrayBuffer,
+            headers: { "Content-Type": "application/octet-stream" },
+          }
+        );
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -62,4 +61,4 @@ const importBookmarks = async (
   }
 };
 
-export default importBookmarks;
+export default importBookmarksBinary;

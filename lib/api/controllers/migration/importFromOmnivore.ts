@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { hasPassedLimit } from "../../verifyCapacity";
+import { ZipReader, BlobReader, TextWriter } from "@zip.js/zip.js";
+import { Readable } from "stream";
 import streamToBlob from "@/lib/shared/streamToBlob";
-import JSZip from "jszip";
 
 type OmnivoreMetadata = {
   id: string;
@@ -25,10 +26,10 @@ export default async function importFromOmnivore(
   rawStream: ReadableStream
 ) {
   const rawData: Blob = await streamToBlob(rawStream);
+  const zipFileReader = new BlobReader(rawData);
+  const importArchive = new ZipReader(zipFileReader);
 
-  const arrayBuffer = await rawData.arrayBuffer();
-
-  const zip = await JSZip.loadAsync(arrayBuffer);
+  const zipEntries = await importArchive.getEntries();
 
   await prisma.$transaction(async () => {
     const omnivoreCollection = await prisma.collection.create({
@@ -49,17 +50,19 @@ export default async function importFromOmnivore(
 
     createFolder({ filePath: `archives/${omnivoreCollection.id}` });
 
-    for (const filename of Object.keys(zip.files)) {
-      if (filename.startsWith("metadata_")) {
-        console.log(`Getting metadata from ${filename}`);
+    for (const entry of zipEntries) {
+      if (entry.filename.startsWith("metadata_")) {
+        console.log(`Getting metadata from ${entry.filename}`);
 
-        const jsonMetadataString = await zip.files[filename].async("string");
-        const metadata: OmnivoreMetadata = JSON.parse(jsonMetadataString);
+        const jsonWriter = new TextWriter();
+        const jsonMetadatString: string =
+          (await entry.getData?.(jsonWriter)) ?? "";
+        const metadata: OmnivoreMetadata = JSON.parse(jsonMetadatString);
 
         const hasTooManyLinks = await hasPassedLimit(userId, metadata.length);
         if (hasTooManyLinks) {
           return {
-            response: `Your subscription has reached the maximum number of links allowed.`,
+            response: `Your subscription have reached the maximum number of links allowed.`,
             status: 400,
           };
         }
@@ -71,7 +74,7 @@ export default async function importFromOmnivore(
             continue;
           }
           console.log("Extracting text data");
-          // const textData = await zip.file(`content/${data.slug}.html`)?.async("string") ?? "";
+          //const textData = await importArchive.get(`content/${data.slug}.html`)?.get_string()
 
           await prisma.link.create({
             data: {
@@ -117,6 +120,5 @@ export default async function importFromOmnivore(
       }
     }
   });
-
   return { response: "Success.", status: 200 };
 }

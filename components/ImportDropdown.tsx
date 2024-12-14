@@ -1,5 +1,6 @@
 import React from "react";
 import importBookmarks from "@/lib/client/importBookmarks";
+import importBookmarksBinary from "@/lib/client/importBookmarksBinary";
 import { MigrationFormat } from "@/types/global";
 import { useTranslation } from "next-i18next";
 import { dropdownTriggerer } from "@/lib/client/utils";
@@ -92,7 +93,9 @@ const ImportDropdown = ({}: Props) => {
               id="import-omnivore-file"
               accept=".zip"
               className="hidden"
-              onChange={(e) => importBookmarks(e, MigrationFormat.omnivore)}
+              onChange={(e) =>
+                importBookmarksBinary(e, MigrationFormat.omnivore)
+              }
             />
           </label>
         </li>
