@@ -25,7 +25,7 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
   const submit = async () => {
     if (submitLoader) return;
 
-    if (!form.name || !form.url || !form.collectionId) {
+    if (!form.name || !form.url || (!form.collectionId && !form.collectionName)) {
       return toast.error(t("fill_all_fields"));
     }
 

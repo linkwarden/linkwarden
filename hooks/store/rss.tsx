@@ -14,7 +14,7 @@ const useRssSubscriptions = () => {
   return useQuery({
     queryKey: ["rss-subscriptions"],
     queryFn: async () => {
-      const response = await fetch("/api/v1/user/rss");
+      const response = await fetch("/api/v1/rss");
       if (!response.ok) throw new Error("Failed to fetch rss subscriptions.");
 
       const data = await response.json();
@@ -29,7 +29,7 @@ const useAddRssSubscription = () => {
 
   return useMutation({
     mutationFn: async (body: Partial<RssSubscription>) => {
-      const response = await fetch("/api/v1/user/rss", {
+      const response = await fetch("/api/v1/rss", {
         body: JSON.stringify(body),
         method: "POST",
         headers: {
@@ -53,7 +53,7 @@ const useDeleteRssSubscription = () => {
 
   return useMutation({
     mutationFn: async (rssSubscriptionId: number) => {
-      const response = await fetch(`/api/v1/user/rss/${rssSubscriptionId}`, {
+      const response = await fetch(`/api/v1/rss/${rssSubscriptionId}`, {
         method: "DELETE",
       });
 
