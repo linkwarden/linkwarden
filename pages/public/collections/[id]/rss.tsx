@@ -33,8 +33,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params, res, req 
 
 	const host = req.headers.host;
 
-	const siteUrl = `https://${host}/collection/${data.id}`;
-	const feedUrl = `https://${host}/collections/${data.id}/rss`;
+	const protocol = req.headers['x-forwarded-proto'] || (req.socket ? 'https' : 'http');
+	const siteUrl = `${protocol}://${host}/public/collections/${data.id}`;
+	const feedUrl = `${protocol}://${host}/public/collections/${data.id}/rss`;
 
 	const feed = new RSS({
 		title: data.name,
