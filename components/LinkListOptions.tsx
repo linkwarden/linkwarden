@@ -113,11 +113,10 @@ const LinkListOptions = ({
                     setEditMode(!editMode);
                     setSelectedLinks([]);
                   }}
-                  className={`btn btn-square btn-sm btn-ghost ${
-                    editMode
+                  className={`btn btn-square btn-sm btn-ghost ${editMode
                       ? "bg-primary/20 hover:bg-primary/20"
                       : "hover:bg-neutral/20"
-                  }`}
+                    }`}
                 >
                   <i className="bi-pencil-fill text-neutral text-xl"></i>
                 </div>
