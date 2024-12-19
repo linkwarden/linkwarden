@@ -40,22 +40,22 @@ export default function PublicCollections() {
     if (tag) {
       Object.keys(searchFilter).forEach(
         (v) =>
-        (searchFilter[
-          v as keyof {
-            name: boolean;
-            url: boolean;
-            description: boolean;
-            tags: boolean;
-            textContent: boolean;
-          }
-        ] = false)
+          (searchFilter[
+            v as keyof {
+              name: boolean;
+              url: boolean;
+              description: boolean;
+              tags: boolean;
+              textContent: boolean;
+            }
+          ] = false)
       );
       searchFilter.tags = true;
       return router.push(
         "/public/collections/" +
-        router.query.id +
-        "?q=" +
-        encodeURIComponent(tag || "")
+          router.query.id +
+          "?q=" +
+          encodeURIComponent(tag || "")
       );
     } else {
       return router.push("/public/collections/" + router.query.id);
@@ -122,8 +122,9 @@ export default function PublicCollections() {
       <div
         className="h-96"
         style={{
-          backgroundImage: `linear-gradient(${collection?.color}30 10%, ${settings.theme === "dark" ? "#262626" : "#f3f4f6"
-            } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+          backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
+            settings.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {collection && (
@@ -143,7 +144,11 @@ export default function PublicCollections() {
             </p>
             <div className="flex gap-2 items-center mt-8 min-w-fit">
               <div className="tooltip tooltip-bottom" data-tip={t("rss_feed")}>
-                <Link href={`/public/collections/${collection.id}/rss`} target="_blank" className="text-neutral btn btn-ghost btn-sm size-8">
+                <Link
+                  href={`/public/collections/${collection.id}/rss`}
+                  target="_blank"
+                  className="text-neutral btn btn-ghost btn-sm size-8"
+                >
                   <i className="bi bi-rss text-xl"></i>
                 </Link>
               </div>
@@ -200,20 +205,20 @@ export default function PublicCollections() {
 
                 <p className="text-neutral text-sm">
                   {collection.members.length > 0 &&
-                    collection.members.length === 1
+                  collection.members.length === 1
                     ? t("by_author_and_other", {
-                      author: collectionOwner.name,
-                      count: collection.members.length,
-                    })
-                    : collection.members.length > 0 &&
-                      collection.members.length !== 1
-                      ? t("by_author_and_others", {
                         author: collectionOwner.name,
                         count: collection.members.length,
                       })
+                    : collection.members.length > 0 &&
+                        collection.members.length !== 1
+                      ? t("by_author_and_others", {
+                          author: collectionOwner.name,
+                          count: collection.members.length,
+                        })
                       : t("by_author", {
-                        author: collectionOwner.name,
-                      })}
+                          author: collectionOwner.name,
+                        })}
                 </p>
               </div>
             </div>
@@ -237,11 +242,11 @@ export default function PublicCollections() {
                 placeholder={
                   collection._count?.links === 1
                     ? t("search_count_link", {
-                      count: collection._count?.links,
-                    })
+                        count: collection._count?.links,
+                      })
                     : t("search_count_links", {
-                      count: collection._count?.links,
-                    })
+                        count: collection._count?.links,
+                      })
                 }
               />
             </LinkListOptions>
@@ -252,10 +257,11 @@ export default function PublicCollections() {
                   onClick={() => handleTagSelection(undefined)}
                 >
                   <div
-                    className={`${!router.query.q
-                      ? "bg-primary/20"
-                      : "bg-neutral-content/20 hover:bg-neutral/20"
-                      } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
+                    className={`${
+                      !router.query.q
+                        ? "bg-primary/20"
+                        : "bg-neutral-content/20 hover:bg-neutral/20"
+                    } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
                   >
                     <p className="truncate px-3">{t("all_links")}</p>
                   </div>
@@ -273,10 +279,11 @@ export default function PublicCollections() {
                         onClick={() => handleTagSelection(e)}
                       >
                         <div
-                          className={`${active
-                            ? "bg-primary/20"
-                            : "bg-neutral-content/20 hover:bg-neutral/20"
-                            } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
+                          className={`${
+                            active
+                              ? "bg-primary/20"
+                              : "bg-neutral-content/20 hover:bg-neutral/20"
+                          } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
                         >
                           <i className="bi-hash text-2xl text-primary drop-shadow"></i>
                           <p className="truncate pr-3">{e}</p>
