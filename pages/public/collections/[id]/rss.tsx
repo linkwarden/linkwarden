@@ -21,8 +21,13 @@ export const getServerSideProps: GetServerSideProps = async ({ params, res, req 
 			isPublic: true,
 		},
 		include: {
-			links: true,
-		}
+			links: {
+				orderBy: {
+					createdAt: 'desc',
+				},
+				take: 20,
+			}
+		},
 	})
 
 	if (!data) {

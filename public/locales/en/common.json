@@ -444,5 +444,6 @@
   "rss_deletion_confirmation": "Are you sure you want to delete this RSS Subscription?",
   "new_rss_subscription": "New RSS Subscription",
   "rss_subscription_deleted": "RSS Subscription deleted!",
-  "create_rss_subscription": "Create RSS Subscription"
+  "create_rss_subscription": "Create RSS Subscription",
+  "rss_feed": "RSS Feed"
 }
