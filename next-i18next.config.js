@@ -14,6 +14,7 @@ module.exports = {
       "es",
       "de",
       "nl",
+      "ru",
       "tr",
     ],
   },
