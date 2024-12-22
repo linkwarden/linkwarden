@@ -49,20 +49,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
     );
   });
 
-  // allow user to configure a proxy
-  let browserOptions: LaunchOptions = {};
-  if (process.env.PROXY) {
-    browserOptions.proxy = {
-      server: process.env.PROXY,
-      bypass: process.env.PROXY_BYPASS,
-      username: process.env.PROXY_USERNAME,
-      password: process.env.PROXY_PASSWORD,
-    };
-  }
-  if (process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH) {
-    browserOptions.executablePath =
-      process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
-  }
+  const browserOptions = getBrowserOptions();
 
   const browser = await chromium.launch(browserOptions);
   const context = await browser.newContext({
