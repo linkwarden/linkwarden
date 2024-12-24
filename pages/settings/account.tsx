@@ -39,7 +39,7 @@ export default function Account() {
           emailVerified: null,
           password: undefined,
           image: "",
-          isPrivate: true,
+          isPrivate: false,
           // @ts-ignore
           createdAt: null,
           whitelistedUsers: [],

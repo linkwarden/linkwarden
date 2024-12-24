@@ -2,14 +2,12 @@ import { prisma } from "@/lib/api/db";
 import { Backup } from "@/types/global";
 import createFolder from "@/lib/api/storage/createFolder";
 import { hasPassedLimit } from "../../verifyCapacity";
-import streamToBlob from "@/lib/shared/streamToBlob";
 
 export default async function importFromLinkwarden(
   userId: number,
-  rawStream: ReadableStream
+  rawData: string
 ) {
-  const rawData: Blob = await streamToBlob(rawStream);
-  const data: Backup = JSON.parse(await rawData.text());
+  const data: Backup = JSON.parse(rawData);
 
   let totalImports = 0;
 
