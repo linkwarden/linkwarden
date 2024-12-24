@@ -2,41 +2,34 @@ import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { hasPassedLimit } from "../../verifyCapacity";
 
-type WallabagBackup = {
-  is_archived: number;
-  is_starred: number;
-  tags: String[];
-  is_public: boolean;
-  id: number;
+type OmnivoreItem = {
+  id: string;
+  slug: string;
   title: string;
+  description: string;
+  author: string;
   url: string;
-  content: string;
-  created_at: Date;
-  updated_at: Date;
-  published_by: string[];
-  starred_at: Date;
-  annotations: any[];
-  mimetype: string;
-  language: string;
-  reading_time: number;
-  domain_name: string;
-  preview_picture: string;
-  http_status: string;
-  headers: Record<string, string>;
-}[];
+  state: string;
+  readingProgress: number;
+  thumbnail: string;
+  labels: string[];
+  savedAt: string;
+  updatedAt: string;
+  publishedAt: string;
+};
 
-export default async function importFromWallabag(
+type OmnivoreMetadata = OmnivoreItem[];
+
+export default async function importFromOmnivore(
   userId: number,
   rawData: string
 ) {
-  const data: WallabagBackup = JSON.parse(rawData);
+  const data: OmnivoreMetadata = JSON.parse(rawData);
 
-  const backup = data.filter((e) => e.url);
+  const backup = data.filter((item) => !!item.url);
 
-  let totalImports = backup.length;
-
+  const totalImports = backup.length;
   const hasTooManyLinks = await hasPassedLimit(userId, totalImports);
-
   if (hasTooManyLinks) {
     return {
       response: `Your subscription has reached the maximum number of links allowed.`,
@@ -54,7 +47,7 @@ export default async function importFromWallabag(
                 id: userId,
               },
             },
-            name: "Imports",
+            name: "Omnivore Imports",
             createdBy: {
               connect: {
                 id: userId,
@@ -65,24 +58,20 @@ export default async function importFromWallabag(
 
         createFolder({ filePath: `archives/${newCollection.id}` });
 
-        for (const link of backup) {
-          if (link.url) {
-            try {
-              new URL(link.url.trim());
-            } catch (err) {
-              continue;
-            }
+        for (const item of backup) {
+          try {
+            new URL(item.url.trim());
+          } catch (err) {
+            continue;
           }
 
           await prisma.link.create({
             data: {
-              pinnedBy: link.is_starred
-                ? { connect: { id: userId } }
-                : undefined,
-              url: link.url?.trim().slice(0, 2047),
-              name: link.title?.trim().slice(0, 254) || "",
-              textContent: link.content?.trim().slice(0, 2047) || "",
-              importDate: link.created_at || null,
+              url: item.url?.trim().slice(0, 2047),
+              name: item.title?.trim().slice(0, 254) || "",
+              description: item.description?.trim().slice(0, 2047) || "",
+              image: item.thumbnail || "",
+              importDate: item.savedAt ? new Date(item.savedAt) : null,
               collection: {
                 connect: {
                   id: newCollection.id,
@@ -93,18 +82,19 @@ export default async function importFromWallabag(
                   id: userId,
                 },
               },
+
               tags:
-                link.tags && link.tags[0]
+                item.labels && item.labels.length > 0
                   ? {
-                      connectOrCreate: link.tags.map((tag) => ({
+                      connectOrCreate: item.labels.map((label) => ({
                         where: {
                           name_ownerId: {
-                            name: tag?.trim().slice(0, 49),
+                            name: label?.trim().slice(0, 49),
                             ownerId: userId,
                           },
                         },
                         create: {
-                          name: tag?.trim().slice(0, 49),
+                          name: label?.trim().slice(0, 49),
                           owner: {
                             connect: {
                               id: userId,
@@ -120,7 +110,10 @@ export default async function importFromWallabag(
       },
       { timeout: 30000 }
     )
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.error("Error during Omnivore import:", err);
+      throw err;
+    });
 
   return { response: "Success.", status: 200 };
 }

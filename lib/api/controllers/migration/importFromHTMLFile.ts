@@ -23,7 +23,7 @@ export default async function importFromHTMLFile(
 
   if (hasTooManyLinks) {
     return {
-      response: `Your subscription have reached the maximum number of links allowed.`,
+      response: `Your subscription has reached the maximum number of links allowed.`,
       status: 400,
     };
   }
