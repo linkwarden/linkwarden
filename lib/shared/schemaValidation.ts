@@ -1,5 +1,5 @@
 import { ArchivedFormat, TokenExpiry } from "@/types/global";
-import { LinksRouteTo } from "@prisma/client";
+import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
 import { z } from "zod";
 
 // const stringField = z.string({
@@ -75,6 +75,8 @@ export const UpdateUserSchema = () => {
     archiveAsPDF: z.boolean().optional(),
     archiveAsMonolith: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
+    aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
+    aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     locale: z.string().max(20).optional(),
     isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
@@ -209,3 +211,10 @@ export const UpdateTagSchema = z.object({
 });
 
 export type UpdateTagSchemaType = z.infer<typeof UpdateTagSchema>;
+
+export const PostRssSubscriptionSchema = z.object({
+  name: z.string().max(50),
+  url: z.string().url().max(2048),
+  collectionId: z.number().optional(),
+  collectionName: z.string().max(50).optional(),
+});
