@@ -1,5 +1,24 @@
 import { MigrationFormat, MigrationRequest } from "@/types/global";
 import { toast } from "react-hot-toast";
+import JSZip from "jszip";
+
+const processOmnivoreZipFile = async (zip: JSZip): Promise<string> => {
+  const metadataFiles = Object.keys(zip.files).filter((filePath) => {
+    const file = zip.files[filePath];
+    return filePath.startsWith("metadata_") && !file.dir;
+  });
+
+  const allMetadataArrays = await Promise.all(
+    metadataFiles.map(async (filePath) => {
+      const fileContent = await zip.files[filePath].async("string");
+      return JSON.parse(fileContent) || [];
+    })
+  );
+
+  const flattenedData = allMetadataArrays.flat();
+
+  return JSON.stringify(flattenedData);
+};
 
 const importBookmarks = async (
   e: React.ChangeEvent<HTMLInputElement>,
@@ -9,11 +28,26 @@ const importBookmarks = async (
 
   if (file) {
     const reader = new FileReader();
-    reader.readAsText(file, "UTF-8");
+
+    if (format === MigrationFormat.omnivore) reader.readAsArrayBuffer(file);
+    else reader.readAsText(file, "UTF-8");
+
     reader.onload = async function (e) {
       const load = toast.loading("Importing...");
 
-      const request: string = e.target?.result as string;
+      let request = e.target?.result as any;
+
+      if (format === MigrationFormat.omnivore) {
+        try {
+          const zip = await JSZip.loadAsync(request);
+          request = await processOmnivoreZipFile(zip);
+        } catch (zipError) {
+          console.error("Failed to parse zip file:", zipError);
+          toast.dismiss(load);
+          toast.error("Failed to parse the zip file. Please try again.");
+          return;
+        }
+      }
 
       const body: MigrationRequest = {
         format,

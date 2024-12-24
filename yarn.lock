@@ -2173,11 +2173,6 @@
     "@typescript-eslint/types" "5.49.0"
     eslint-visitor-keys "^3.3.0"
 
-"@zip.js/zip.js@^2.7.53":
-  version "2.7.53"
-  resolved "https://registry.yarnpkg.com/@zip.js/zip.js/-/zip.js-2.7.53.tgz#bf88e90d8eed562182c01339643bc405446b0578"
-  integrity sha512-G6Bl5wN9EXXVaTUIox71vIX5Z454zEBe+akKpV4m1tUboIctT5h7ID3QXCJd/Lfy2rSvmkTmZIucf1jGRR4f5A==
-
 abab@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.6.tgz#41b80f2c871d19686216b82309231cfd3cb3d291"
@@ -5820,11 +5815,6 @@ stop-iteration-iterator@^1.0.0:
   integrity sha512-iCGQj+0l0HOdZ2AEeBADlsRC+vsnDsZsbdSiH1yNSjcfKM7fdpCMfqAL/dwF5BLiw/XhRft/Wax6zQbhq2BcjQ==
   dependencies:
     internal-slot "^1.0.4"
-
-stream-size@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/stream-size/-/stream-size-0.0.6.tgz#05d7132e2d2fdb91b533a6e50aff882f040d7679"
-  integrity sha512-TZsxxZzKPkiD7fxcKx0Ze9s0+WnGGbX1yWZNoXXmN6YjyEu/62pYkLKo7P627N27BT9kI93ZfZAx38brr/hq+Q==
 
 streamsearch@^1.1.0:
   version "1.1.0"
