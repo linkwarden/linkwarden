@@ -1,91 +1,80 @@
 import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { hasPassedLimit } from "../../verifyCapacity";
-import { ZipReader, BlobReader, TextWriter } from "@zip.js/zip.js";
-import { Readable } from "stream";
-import streamToBlob from "@/lib/shared/streamToBlob";
 
-type OmnivoreMetadata = {
+type OmnivoreItem = {
   id: string;
   slug: string;
   title: string;
   description: string;
-  author?: string;
+  author: string;
   url: string;
   state: string;
   readingProgress: number;
   thumbnail: string;
   labels: string[];
-  savedAt: Date;
-  updatedAt: Date;
-  publishedAt?: Date;
-}[];
+  savedAt: string;
+  updatedAt: string;
+  publishedAt: string;
+};
+
+type OmnivoreMetadata = OmnivoreItem[];
 
 export default async function importFromOmnivore(
   userId: number,
-  rawStream: ReadableStream
+  rawData: string
 ) {
-  const rawData: Blob = await streamToBlob(rawStream);
-  const zipFileReader = new BlobReader(rawData);
-  const importArchive = new ZipReader(zipFileReader);
+  const data: OmnivoreMetadata = JSON.parse(rawData);
 
-  const zipEntries = await importArchive.getEntries();
+  const backup = data.filter((item) => !!item.url);
 
-  await prisma.$transaction(async () => {
-    const omnivoreCollection = await prisma.collection.create({
-      data: {
-        owner: {
-          connect: {
-            id: userId,
+  const totalImports = backup.length;
+  const hasTooManyLinks = await hasPassedLimit(userId, totalImports);
+  if (hasTooManyLinks) {
+    return {
+      response: `Your subscription has reached the maximum number of links allowed.`,
+      status: 400,
+    };
+  }
+
+  await prisma
+    .$transaction(
+      async () => {
+        const newCollection = await prisma.collection.create({
+          data: {
+            owner: {
+              connect: {
+                id: userId,
+              },
+            },
+            name: "Omnivore Imports",
+            createdBy: {
+              connect: {
+                id: userId,
+              },
+            },
           },
-        },
-        name: "Omnivore Imports",
-        createdBy: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
-    });
+        });
 
-    createFolder({ filePath: `archives/${omnivoreCollection.id}` });
+        createFolder({ filePath: `archives/${newCollection.id}` });
 
-    for (const entry of zipEntries) {
-      if (entry.filename.startsWith("metadata_")) {
-        console.log(`Getting metadata from ${entry.filename}`);
-
-        const jsonWriter = new TextWriter();
-        const jsonMetadatString: string =
-          (await entry.getData?.(jsonWriter)) ?? "";
-        const metadata: OmnivoreMetadata = JSON.parse(jsonMetadatString);
-
-        const hasTooManyLinks = await hasPassedLimit(userId, metadata.length);
-        if (hasTooManyLinks) {
-          return {
-            response: `Your subscription have reached the maximum number of links allowed.`,
-            status: 400,
-          };
-        }
-
-        for (const data of metadata) {
+        for (const item of backup) {
           try {
-            new URL(data.url.trim());
+            new URL(item.url.trim());
           } catch (err) {
             continue;
           }
-          console.log("Extracting text data");
-          //const textData = await importArchive.get(`content/${data.slug}.html`)?.get_string()
 
           await prisma.link.create({
             data: {
-              url: data.url.trim(),
-              name: data.title.trim().slice(0, 254),
-              importDate: data.savedAt,
-              description: data.description ? data.description : "",
-              //textContent: textData, // TODO maybe we need to cleanup the html
+              url: item.url?.trim().slice(0, 2047),
+              name: item.title?.trim().slice(0, 254) || "",
+              description: item.description?.trim().slice(0, 2047) || "",
+              image: item.thumbnail || "",
+              importDate: item.savedAt ? new Date(item.savedAt) : null,
               collection: {
                 connect: {
-                  id: omnivoreCollection.id,
+                  id: newCollection.id,
                 },
               },
               createdBy: {
@@ -93,10 +82,11 @@ export default async function importFromOmnivore(
                   id: userId,
                 },
               },
+
               tags:
-                data.labels && data.labels[0]
+                item.labels && item.labels.length > 0
                   ? {
-                      connectOrCreate: data.labels.map((label) => ({
+                      connectOrCreate: item.labels.map((label) => ({
                         where: {
                           name_ownerId: {
                             name: label?.trim().slice(0, 49),
@@ -117,8 +107,13 @@ export default async function importFromOmnivore(
             },
           });
         }
-      }
-    }
-  });
+      },
+      { timeout: 30000 }
+    )
+    .catch((err) => {
+      console.error("Error during Omnivore import:", err);
+      throw err;
+    });
+
   return { response: "Success.", status: 200 };
 }
