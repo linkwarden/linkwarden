@@ -22,7 +22,13 @@ COPY ./package.json ./yarn.lock ./playwright.config.ts ./
 
 RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
     set -eux && \
-    yarn install --network-timeout 10000000
+    yarn install --network-timeout 10000000 && \
+    # Install curl for healthcheck
+    apt-get update && \
+    apt-get install -yqq --no-install-recommends curl && \
+    apt-get autoremove && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the compiled monolith binary from the builder stage
 COPY --from=monolith-builder /usr/local/cargo/bin/monolith /usr/local/bin/monolith
