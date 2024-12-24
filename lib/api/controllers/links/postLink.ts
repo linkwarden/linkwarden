@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 import createFolder from "@/lib/api/storage/createFolder";
-import setLinkCollection from "../../setLinkCollection";
+import setCollection from "../../setCollection";
 import {
   PostLinkSchema,
   PostLinkSchemaType,
@@ -25,7 +25,11 @@ export default async function postLink(
 
   const link = dataValidation.data;
 
-  const linkCollection = await setLinkCollection(link, userId);
+  const linkCollection = await setCollection({
+    userId,
+    collectionId: link.collection?.id,
+    collectionName: link.collection?.name,
+  });
 
   if (!linkCollection)
     return { response: "Collection is not accessible.", status: 400 };
@@ -62,7 +66,7 @@ export default async function postLink(
 
   if (hasTooManyLinks) {
     return {
-      response: `Your subscription have reached the maximum number of links allowed.`,
+      response: `Your subscription has reached the maximum number of links allowed.`,
       status: 400,
     };
   }

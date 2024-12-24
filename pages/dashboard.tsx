@@ -3,12 +3,11 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "react-hot-toast";
-import { MigrationFormat, MigrationRequest, ViewMode } from "@/types/global";
+import { ViewMode } from "@/types/global";
 import DashboardItem from "@/components/DashboardItem";
 import NewLinkModal from "@/components/ModalContent/NewLinkModal";
 import PageHeader from "@/components/PageHeader";
 import ViewDropdown from "@/components/ViewDropdown";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@/hooks/store/collections";
@@ -18,6 +17,7 @@ import Links from "@/components/LinkViews/Links";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
+import ImportDropdown from "@/components/ImportDropdown";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -72,67 +72,6 @@ export default function Dashboard() {
       return 2;
     }
   }, []);
-
-  const importBookmarks = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    format: MigrationFormat
-  ) => {
-    const file: File | null = e.target.files && e.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsText(file, "UTF-8");
-      reader.onload = async function (e) {
-        const load = toast.loading("Importing...");
-
-        const request: string = e.target?.result as string;
-
-        const body: MigrationRequest = {
-          format,
-          data: request,
-        };
-
-        try {
-          const response = await fetch("/api/v1/migration", {
-            method: "POST",
-            body: JSON.stringify(body),
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            toast.dismiss(load);
-
-            toast.error(
-              errorData.response ||
-                "Failed to import bookmarks. Please try again."
-            );
-            return;
-          }
-
-          await response.json();
-          toast.dismiss(load);
-          toast.success("Imported the Bookmarks! Reloading the page...");
-
-          setTimeout(() => {
-            location.reload();
-          }, 2000);
-        } catch (error) {
-          console.error("Request failed", error);
-          toast.dismiss(load);
-          toast.error(
-            "An error occurred while importing bookmarks. Please check the logs for more info."
-          );
-        }
-      };
-
-      reader.onerror = function (e) {
-        console.log("Error reading file:", e);
-        toast.error(
-          "Failed to read the file. Please make sure the file is correct and try again."
-        );
-      };
-    }
-  };
 
   const [newLinkModal, setNewLinkModal] = useState(false);
 
@@ -277,83 +216,7 @@ export default function Dashboard() {
                   </span>
                 </div>
 
-                <div className="dropdown dropdown-bottom">
-                  <div
-                    tabIndex={0}
-                    role="button"
-                    onMouseDown={dropdownTriggerer}
-                    className="inline-flex items-center gap-2 text-sm btn bg-neutral-content text-secondary-foreground hover:bg-neutral-content/80 border border-neutral/30 hover:border hover:border-neutral/30"
-                    id="import-dropdown"
-                  >
-                    <i className="bi-cloud-upload text-xl duration-100"></i>
-                    <p>{t("import_links")}</p>
-                  </div>
-                  <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
-                    <li>
-                      <label
-                        tabIndex={0}
-                        role="button"
-                        htmlFor="import-linkwarden-file"
-                        title={t("from_linkwarden")}
-                        className="whitespace-nowrap"
-                      >
-                        {t("from_linkwarden")}
-                        <input
-                          type="file"
-                          name="photo"
-                          id="import-linkwarden-file"
-                          accept=".json"
-                          className="hidden"
-                          onChange={(e) =>
-                            importBookmarks(e, MigrationFormat.linkwarden)
-                          }
-                        />
-                      </label>
-                    </li>
-                    <li>
-                      <label
-                        tabIndex={0}
-                        role="button"
-                        htmlFor="import-html-file"
-                        title={t("from_html")}
-                        className="whitespace-nowrap"
-                      >
-                        {t("from_html")}
-                        <input
-                          type="file"
-                          name="photo"
-                          id="import-html-file"
-                          accept=".html"
-                          className="hidden"
-                          onChange={(e) =>
-                            importBookmarks(e, MigrationFormat.htmlFile)
-                          }
-                        />
-                      </label>
-                    </li>
-                    <li>
-                      <label
-                        tabIndex={0}
-                        role="button"
-                        htmlFor="import-wallabag-file"
-                        title={t("from_wallabag")}
-                        className="whitespace-nowrap"
-                      >
-                        {t("from_wallabag")}
-                        <input
-                          type="file"
-                          name="photo"
-                          id="import-wallabag-file"
-                          accept=".json"
-                          className="hidden"
-                          onChange={(e) =>
-                            importBookmarks(e, MigrationFormat.wallabag)
-                          }
-                        />
-                      </label>
-                    </li>
-                  </ul>
-                </div>
+                <ImportDropdown />
               </div>
             </div>
           )}
