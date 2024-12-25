@@ -142,6 +142,16 @@ export default function PublicCollections() {
               {collection.name}
             </p>
             <div className="flex gap-2 items-center mt-8 min-w-fit">
+              <div className="tooltip tooltip-bottom" data-tip={t("rss_feed")}>
+                <Link
+                  href={`/public/collections/${collection.id}/rss`}
+                  target="_blank"
+                  className="text-neutral btn btn-ghost btn-sm size-8"
+                >
+                  <i className="bi bi-rss text-xl"></i>
+                </Link>
+              </div>
+
               <ToggleDarkMode />
 
               <Link href="https://linkwarden.app/" target="_blank">
