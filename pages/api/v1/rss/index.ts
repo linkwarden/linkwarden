@@ -20,6 +20,9 @@ export default async function handler(
           },
         },
       },
+      where: {
+        ownerId: user.id,
+      },
     });
 
     return res.status(200).json({ response });
