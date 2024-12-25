@@ -23,7 +23,6 @@ import LinkListOptions from "@/components/LinkListOptions";
 import { usePublicLinks } from "@/hooks/store/publicLinks";
 import Links from "@/components/LinkViews/Links";
 import { usePublicTags } from "@/hooks/store/publicTags";
-import clsx from "clsx";
 
 export default function PublicCollections() {
   const { t } = useTranslation();

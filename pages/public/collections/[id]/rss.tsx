@@ -10,8 +10,8 @@ export const getServerSideProps: GetServerSideProps = async ({
   res,
   req,
 }) => {
-  const id = parseInt(params?.id as string, 10);
-  if (isNaN(id)) {
+  const id = Number(params?.id as string);
+  if (isNaN(id) || !id) {
     if (res) {
       res.statusCode = 404;
       res.end();
@@ -21,13 +21,13 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const data = await prisma.collection.findUnique({
     where: {
-      id: parseInt(params?.id as string),
+      id,
       isPublic: true,
     },
     include: {
       links: {
         orderBy: {
-          createdAt: "desc",
+          id: "desc",
         },
         take: 20,
       },
