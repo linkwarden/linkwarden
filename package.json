@@ -54,7 +54,6 @@
     "framer-motion": "^10.16.4",
     "fuse.js": "^7.0.0",
     "handlebars": "^4.7.8",
-    "himalaya": "^1.1.0",
     "i18next": "^23.11.5",
     "jimp": "^0.22.10",
     "jsdom": "^22.1.0",
