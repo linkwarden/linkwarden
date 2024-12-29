@@ -61,7 +61,7 @@ export default async function importFromLinkwarden(
               }
             }
 
-            await prisma.link.create({
+            const newLink = await prisma.link.create({
               data: {
                 url: link.url?.trim().slice(0, 2047),
                 name: link.name?.trim().slice(0, 254),
@@ -97,6 +97,19 @@ export default async function importFromLinkwarden(
                   })),
                 },
               },
+            });
+            // Import pinnedLinks
+            data?.pinnedLinks.forEach(async (pinnedLink) => {
+              if (pinnedLink.url === newLink.url) {
+                await prisma.link.update({
+                  where: {
+                    id: newLink.id,
+                  },
+                  data: {
+                    pinnedBy: { connect: { id: userId } },
+                  },
+                });
+              }
             });
           }
         }
