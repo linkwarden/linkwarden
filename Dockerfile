@@ -23,9 +23,9 @@ COPY ./package.json ./yarn.lock ./playwright.config.ts ./
 RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
     set -eux && \
     yarn install --network-timeout 10000000 && \
-    # Install curl for healthcheck
+    # Install curl for healthcheck, and ca-certificates to prevent monolith from failing to retrieve resources due to invalid certificates
     apt-get update && \
-    apt-get install -yqq --no-install-recommends curl && \
+    apt-get install -yqq --no-install-recommends curl ca-certificates && \
     apt-get autoremove && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -37,12 +37,6 @@ RUN set -eux && \
     npx playwright install --with-deps chromium && \
     apt-get clean && \
     yarn cache clean
-
-# Install ca-certificates to prevent monolith from failing to retrieve resources due to invalid certificates
-# https://docs.docker.com/build/building/best-practices/#apt-get
-RUN apt-get update && apt-get install -y  \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
 
 COPY . .
 
