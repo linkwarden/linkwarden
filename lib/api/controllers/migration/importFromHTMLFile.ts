@@ -81,9 +81,9 @@ async function processBookmarks(
       } else if (item.type === "element" && item.tagName === "a") {
         // process link
 
-        const linkUrl = item?.attributes.find(
-          (e) => e.key.toLowerCase() === "href"
-        )?.value;
+        const linkUrl = item?.attributes
+          .find((e) => e.key.toLowerCase() === "href")
+          ?.value.replace(/&amp;/g, "&"); // Replace "&amp;" with "&" to get around parser bug
         const linkName = (
           item?.children.find((e) => e.type === "text") as TextNode
         )?.content;
