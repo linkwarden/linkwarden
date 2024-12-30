@@ -119,9 +119,9 @@ export type PostLinkSchemaType = z.infer<typeof PostLinkSchema>;
 
 export const UpdateLinkSchema = z.object({
   id: z.number(),
-  name: z.string().trim().max(2048).optional(),
-  url: z.string().trim().max(2048).optional(),
-  description: z.string().trim().max(2048).optional(),
+  name: z.string().trim().max(2048).nullish(),
+  url: z.string().trim().max(2048).nullish(),
+  description: z.string().trim().max(2048).nullish(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
   color: z.string().trim().max(10).nullish(),
