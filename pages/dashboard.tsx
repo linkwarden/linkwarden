@@ -127,7 +127,7 @@ export default function Dashboard() {
           <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
         </div>
 
-        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full h-full">
+        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full">
           <DashboardItem
             name={numberOfLinks === 1 ? t("link") : t("links")}
             value={numberOfLinks}
