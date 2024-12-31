@@ -75,6 +75,8 @@ export const UpdateUserSchema = () => {
     archiveAsPDF: z.boolean().optional(),
     archiveAsMonolith: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
+    dashboardPinnedLinks: z.boolean().optional(),
+    dashboardRecentLinks: z.boolean().optional(),
     aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     locale: z.string().max(20).optional(),

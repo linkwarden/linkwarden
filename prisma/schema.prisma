@@ -51,6 +51,8 @@ model User {
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
   aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
   aiPredefinedTags        String[]              @default([])
+  dashboardRecentLinks    Boolean               @default(true)
+  dashboardPinnedLinks    Boolean               @default(true)
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
