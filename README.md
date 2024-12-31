@@ -63,6 +63,7 @@ We've forked the old version from the current repository into [this repo](https:
 
 - 📸 Auto capture a screenshot, PDF, single html file, and readable view of each webpage.
 - 🏛️ Send your webpage to Wayback Machine ([archive.org](https://archive.org)) for a snapshot. (Optional)
+- ✨ Local AI Tagging to automatically tag your links based on their content (Optional).
 - 📂 Organize links by collection, sub-collection, name, description and multiple tags.
 - 👥 Collaborate on gathering links in a collection.
 - 🎛️ Customize the permissions of each member.
@@ -84,7 +85,7 @@ We've forked the old version from the current repository into [this repo](https:
 - 🌐 Support for Other Languages (i18n).
 - 📁 Image and PDF Uploads.
 - 🎨 Custom Icons for Links and Collections.
-- ⚙️ Customizable View and Adjustable Columns.
+- 🔔 RSS Feed Subscription.
 - ✨ And many more features. (Literally!)
 
 ## Like what we're doing? Give us a Star ⭐
