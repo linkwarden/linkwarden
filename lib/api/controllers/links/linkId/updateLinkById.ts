@@ -123,9 +123,9 @@ export default async function updateLinkById(
         id: linkId,
       },
       data: {
-        name: data.name,
+        name: data.name || "",
         url: data.url,
-        description: data.description,
+        description: data.description || "",
         icon: data.icon,
         iconWeight: data.iconWeight,
         color: data.color,
