@@ -446,5 +446,9 @@
   "new_rss_subscription": "New RSS Subscription",
   "rss_subscription_deleted": "RSS Subscription deleted!",
   "create_rss_subscription": "Create RSS Subscription",
-  "rss_feed": "RSS Feed"
+  "rss_feed": "RSS Feed",
+  "dashboard_settings": "Dashboard Settings",
+  "choose_whats_displayed_dashboard": "Choose what's displayed on your Dashboard.",
+  "pinned_links": "Pinned Links",
+  "recent_links": "Recent Links"
 }

@@ -30,6 +30,12 @@ export default function Appearance() {
   const [archiveAsMonolith, setArchiveAsMonolith] = useState<boolean>(
     account.archiveAsMonolith || false
   );
+  const [dashboardPinnedLinks, setDashboardPinnedLinks] = useState<boolean>(
+    account.dashboardPinnedLinks || false
+  );
+  const [dashboardRecentLinks, setDashboardRecentLinks] = useState<boolean>(
+    account.dashboardRecentLinks || false
+  );
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
     useState<boolean>(account.archiveAsWaybackMachine || false);
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
@@ -49,6 +55,8 @@ export default function Appearance() {
       preventDuplicateLinks,
       aiTaggingMethod,
       aiPredefinedTags,
+      dashboardRecentLinks,
+      dashboardPinnedLinks,
     });
   }, [
     account,
@@ -60,6 +68,8 @@ export default function Appearance() {
     preventDuplicateLinks,
     aiTaggingMethod,
     aiPredefinedTags,
+    dashboardRecentLinks,
+    dashboardPinnedLinks,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -76,6 +86,8 @@ export default function Appearance() {
       setPreventDuplicateLinks(account.preventDuplicateLinks);
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
+      setDashboardRecentLinks(account.dashboardRecentLinks);
+      setDashboardPinnedLinks(account.dashboardPinnedLinks);
     }
   }, [account]);
 
@@ -222,6 +234,27 @@ export default function Appearance() {
             </div>
           </div>
         )}
+
+        <div>
+          <p className="capitalize text-3xl font-thin inline">
+            {t("dashboard_settings")}
+          </p>
+          <div className="divider my-3"></div>
+          <p>{t("choose_whats_displayed_dashboard")}</p>
+          <div className="p-3">
+            <Checkbox
+              label={t("pinned_links")}
+              state={dashboardPinnedLinks}
+              onClick={() => setDashboardPinnedLinks(!dashboardPinnedLinks)}
+            />
+
+            <Checkbox
+              label={t("recent_links")}
+              state={dashboardRecentLinks}
+              onClick={() => setDashboardRecentLinks(!dashboardRecentLinks)}
+            />
+          </div>
+        </div>
 
         <div>
           <p className="capitalize text-3xl font-thin inline">

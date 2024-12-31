@@ -209,6 +209,8 @@ export default async function updateUserById(
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,
+      dashboardPinnedLinks: data.dashboardPinnedLinks,
+      dashboardRecentLinks: data.dashboardRecentLinks,
       preventDuplicateLinks: data.preventDuplicateLinks,
       referredBy:
         !user?.referredBy && data.referredBy ? data.referredBy : undefined,
