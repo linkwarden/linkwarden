@@ -448,7 +448,7 @@
   "create_rss_subscription": "Create RSS Subscription",
   "rss_feed": "RSS Feed",
   "dashboard_settings": "Dashboard Settings",
-  "choose_whats_displayed_dashboard": "Choose what's displayed on your Dashboard.",
+  "choose_whats_displayed_dashboard": "Choose what's displayed on your Dashboard:",
   "pinned_links": "Pinned Links",
   "recent_links": "Recent Links"
 }
