@@ -10,7 +10,10 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import Image from "next/image";
-import { formatAvailable } from "@/lib/shared/getArchiveValidity";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@/lib/shared/formatStats";
 import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import { generateLinkHref } from "@/lib/client/generateLinkHref";
@@ -24,6 +27,7 @@ import { useGetLink, useLinks } from "@/hooks/store/links";
 import { useRouter } from "next/router";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
+import LinkFormats from "./LinkFormats";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -199,6 +203,13 @@ export default function LinkCard({ link, columns, editMode }: Props) {
                   <LinkIcon link={link} />
                 </div>
               )}
+              {show.preserved_formats &&
+                link.type === "url" &&
+                atLeastOneFormatAvailable(link) && (
+                  <div className="absolute bottom-0 right-0 m-2 bg-base-200 bg-opacity-60 px-1 rounded-md">
+                    <LinkFormats link={link} />
+                  </div>
+                )}
             </div>
             <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
           </div>

@@ -10,7 +10,10 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import Image from "next/image";
-import { formatAvailable } from "@/lib/shared/getArchiveValidity";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@/lib/shared/formatStats";
 import Link from "next/link";
 import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
@@ -26,6 +29,7 @@ import useLocalSettingsStore from "@/store/localSettings";
 import clsx from "clsx";
 import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
+import LinkFormats from "./LinkFormats";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -196,9 +200,16 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
         <div className="p-3 flex flex-col gap-2 h-full min-h-14">
           {show.name && (
-            <p className="hyphens-auto w-full text-primary text-sm">
+            <div className="hyphens-auto w-full text-primary text-sm">
               {unescapeString(link.name)}
-            </p>
+              {show.preserved_formats &&
+                link.type === "url" &&
+                atLeastOneFormatAvailable(link) && (
+                  <div className="pl-1 inline-block">
+                    <LinkFormats link={link} />
+                  </div>
+                )}
+            </div>
           )}
 
           {show.link && <LinkTypeBadge link={link} />}

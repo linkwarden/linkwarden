@@ -13,6 +13,7 @@ type LocalSettings = {
     tags: boolean;
     icon: boolean;
     collection: boolean;
+    preserved_formats: boolean;
     date: boolean;
   };
   columns: number;
@@ -38,6 +39,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       tags: true,
       icon: true,
       collection: true,
+      preserved_formats: true,
       date: true,
     },
     columns: 0,
@@ -100,18 +102,20 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     localStorage.setItem("columns", columns.toString());
 
     const storedShow = localStorage.getItem("show");
+    const defaultShow = {
+      link: true,
+      name: true,
+      description: true,
+      image: true,
+      tags: true,
+      icon: true,
+      collection: true,
+      preserved_formats: true,
+      date: true,
+    };
     const show = storedShow
-      ? JSON.parse(storedShow)
-      : {
-          link: true,
-          name: true,
-          description: true,
-          image: true,
-          tags: true,
-          icon: true,
-          collection: true,
-          date: true,
-        };
+      ? { ...defaultShow, ...JSON.parse(storedShow) }
+      : defaultShow;
     localStorage.setItem("show", JSON.stringify(show));
 
     set({

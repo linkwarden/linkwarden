@@ -7,3 +7,14 @@ export function formatAvailable(
 ) {
   return link && link[format] && link[format] !== "unavailable";
 }
+
+export const atLeastOneFormatAvailable = (
+  link: Link | LinkIncludingShortenedCollectionAndTags
+) => {
+  return (
+    formatAvailable(link, "image") ||
+    formatAvailable(link, "pdf") ||
+    formatAvailable(link, "readable") ||
+    formatAvailable(link, "monolith")
+  );
+};
