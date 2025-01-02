@@ -1,5 +1,5 @@
 import unescapeString from "@/lib/client/unescapeString";
-import { formatAvailable } from "@/lib/shared/getArchiveValidity";
+import { formatAvailable } from "@/lib/shared/formatStats";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import {
   ArchivedFormat,

@@ -4,7 +4,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import { LinksRouteTo } from "@prisma/client";
-import { formatAvailable } from "../shared/getArchiveValidity";
+import { formatAvailable } from "../shared/formatStats";
 
 export const generateLinkHref = (
   link: LinkIncludingShortenedCollectionAndTags,

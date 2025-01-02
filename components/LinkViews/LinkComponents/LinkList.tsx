@@ -21,6 +21,8 @@ import { useLinks } from "@/hooks/store/links";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
+import { atLeastOneFormatAvailable } from "@/lib/shared/formatStats";
+import LinkFormats from "./LinkFormats";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -123,9 +125,18 @@ export default function LinkCardCompact({ link, editMode }: Props) {
 
           <div className="w-[calc(100%-56px)] ml-2">
             {show.name && (
-              <p className="line-clamp-1 mr-8 text-primary select-none">
-                {unescapeString(link.name)}
-              </p>
+              <div className="flex gap-1 mr-20">
+                <p className="truncate text-primary">
+                  {unescapeString(link.name)}
+                </p>
+                {show.preserved_formats &&
+                  link.type === "url" &&
+                  atLeastOneFormatAvailable(link) && (
+                    <div className="pl-1 inline-block text-lg">
+                      <LinkFormats link={link} />
+                    </div>
+                  )}
+              </div>
             )}
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
