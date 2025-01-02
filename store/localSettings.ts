@@ -4,6 +4,7 @@ import { create } from "zustand";
 type LocalSettings = {
   theme: string;
   viewMode: string;
+  color: string;
   show: {
     link: boolean;
     name: boolean;
@@ -28,6 +29,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
   settings: {
     theme: "",
     viewMode: "",
+    color: "",
     show: {
       link: true,
       name: true,
@@ -42,7 +44,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     sortBy: Sort.DateNewestFirst,
   },
   updateSettings: (newSettings) => {
-    const { theme, viewMode, sortBy, show, columns } = newSettings;
+    const { theme, viewMode, color, sortBy, show, columns } = newSettings;
 
     if (theme !== undefined && theme !== localStorage.getItem("theme")) {
       localStorage.setItem("theme", theme);
@@ -54,6 +56,11 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       viewMode !== localStorage.getItem("viewMode")
     ) {
       localStorage.setItem("viewMode", viewMode);
+    }
+
+    if (color !== undefined) {
+      localStorage.setItem("color", color);
+      document.documentElement.style.setProperty("--p", `var(${color})`);
     }
 
     if (sortBy !== undefined) {
@@ -83,6 +90,9 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     const theme = localStorage.getItem("theme") || "dark";
     localStorage.setItem("theme", theme);
 
+    const color = localStorage.getItem("color") || "--default";
+    localStorage.setItem("color", color);
+
     const viewMode = localStorage.getItem("viewMode") || "card";
     localStorage.setItem("viewMode", viewMode);
 
@@ -108,6 +118,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       settings: {
         theme,
         viewMode,
+        color,
         show,
         columns,
         sortBy: useLocalSettingsStore.getState().settings.sortBy,
@@ -115,6 +126,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     });
 
     document.querySelector("html")?.setAttribute("data-theme", theme);
+    document.documentElement.style.setProperty("--p", `var(${color})`);
   },
 }));
 

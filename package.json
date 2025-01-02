@@ -43,6 +43,7 @@
     "bootstrap-icons": "^1.11.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "colorjs.io": "^0.5.2",
     "colorthief": "^2.4.0",
     "concurrently": "^8.2.2",
     "crypto-js": "^4.2.0",
