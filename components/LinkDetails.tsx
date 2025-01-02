@@ -4,7 +4,10 @@ import {
   ArchivedFormat,
 } from "@/types/global";
 import Link from "next/link";
-import { formatAvailable } from "@/lib/shared/getArchiveValidity";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@/lib/shared/formatStats";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
@@ -101,15 +104,6 @@ export default function LinkDetails({
       (collectionOwner.archiveAsMonolith === true ? link.monolith : true) &&
       (collectionOwner.archiveAsPDF === true ? link.pdf : true) &&
       link.readable
-    );
-  };
-
-  const atLeastOneFormatAvailable = () => {
-    return (
-      formatAvailable(link, "image") ||
-      formatAvailable(link, "pdf") ||
-      formatAvailable(link, "readable") ||
-      formatAvailable(link, "monolith")
     );
   };
 
@@ -580,7 +574,7 @@ export default function LinkDetails({
                   </>
                 ) : undefined}
 
-                {!isReady() && !atLeastOneFormatAvailable() ? (
+                {!isReady() && !atLeastOneFormatAvailable(link) ? (
                   <div
                     className={`w-full h-full flex flex-col justify-center p-10`}
                   >
@@ -597,7 +591,9 @@ export default function LinkDetails({
                       {t("check_back_later")}
                     </p>
                   </div>
-                ) : link.url && !isReady() && atLeastOneFormatAvailable() ? (
+                ) : link.url &&
+                  !isReady() &&
+                  atLeastOneFormatAvailable(link) ? (
                   <div
                     className={`w-full h-full flex flex-col justify-center p-5`}
                   >
