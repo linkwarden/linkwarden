@@ -29,6 +29,7 @@ import unescapeString from "@/lib/client/unescapeString";
 import IconPopover from "./IconPopover";
 import TextInput from "./TextInput";
 import usePermissions from "@/hooks/usePermissions";
+import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
 
 type Props = {
   className?: string;
@@ -279,7 +280,7 @@ export default function LinkDetails({
             </div>
             {iconPopover && (
               <IconPopover
-                color={link.color || "#006796"}
+                color={link.color || oklchVariableToHex("--p")}
                 setColor={(color: string) => setLink({ ...link, color })}
                 weight={(link.iconWeight || "regular") as IconWeight}
                 setWeight={(iconWeight: string) =>

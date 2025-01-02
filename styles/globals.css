@@ -3,23 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --my-color: #fff;
   --selection-color: #fff;
   --selection-bg-color: #fff;
 }
 
 [data-theme="dark"] {
-  --my-color: #000;
   color-scheme: dark;
   --selection-color: #000000;
   --selection-bg-color: #ffffff;
+  --default: 82.76% 0.101277 230.317893;
+  --red: 69.73% 0.168 22.43;
+  --rose: 75% 0.2 340;
+  --yellow: 90% 0.1 90;
+  --green: 70% 0.15 140;
+  --orange: 80% 0.18 60;
+  --zinc: 88.45% 0.05 220;
 }
 
 [data-theme="light"] {
-  --my-color: #ffabc8;
   color-scheme: light;
   --selection-color: #ffffff;
   --selection-bg-color: #000000;
+  --default: 50% 0.1193 242.75;
+  --red: 49.7% 0.2026 22.43;
+  --rose: 55% 0.25 340;
+  --yellow: 69.58% 0.2 90;
+  --green: 60% 0.2 140;
+  --orange: 70% 0.22 60;
+  --zinc: 50% 0.07 220;
 }
 
 ::selection {
@@ -194,14 +205,6 @@
   .react-select-container .react-select__single-value {
     @apply text-base-content;
   }
-}
-
-.primary-btn-gradient {
-  box-shadow: inset 0px -9px 10px oklch(var(--p));
-}
-
-.primary-btn-gradient:hover {
-  box-shadow: inset 0px -20px 40px #00436c;
 }
 
 .line-break * {
