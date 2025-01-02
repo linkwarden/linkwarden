@@ -17,7 +17,6 @@ import {
 import Link from "next/link";
 import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
-import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
@@ -30,6 +29,7 @@ import clsx from "clsx";
 import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
 import LinkFormats from "./LinkFormats";
+import openLink from "@/lib/client/openLink";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -161,9 +161,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
     >
       <div
         className="rounded-2xl cursor-pointer"
-        onClick={() =>
-          !editMode && window.open(generateLinkHref(link, user), "_blank")
-        }
+        onClick={() => !editMode && openLink(link, user)}
       >
         {show.image && formatAvailable(link, "preview") && (
           <div>

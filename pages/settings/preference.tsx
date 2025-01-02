@@ -360,6 +360,22 @@ export default function Appearance() {
                 type="radio"
                 name="link-preference-radio"
                 className="radio checked:bg-primary"
+                value="Original"
+                checked={linksRouteTo === LinksRouteTo.DETAILS}
+                onChange={() => setLinksRouteTo(LinksRouteTo.DETAILS)}
+              />
+              <span className="label-text">{t("show_link_details")}</span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
                 value="PDF"
                 checked={linksRouteTo === LinksRouteTo.PDF}
                 onChange={() => setLinksRouteTo(LinksRouteTo.PDF)}
