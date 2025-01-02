@@ -12,7 +12,7 @@ import TagSelection from "@/components/InputSelect/TagSelection";
 
 export default function Appearance() {
   const { t } = useTranslation();
-  const { updateSettings } = useLocalSettingsStore();
+  const { settings, updateSettings } = useLocalSettingsStore();
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
   const updateUser = useUpdateUser();
@@ -121,29 +121,60 @@ export default function Appearance() {
 
       <div className="flex flex-col gap-5">
         <div>
-          <p className="mb-3">{t("select_theme")}</p>
           <div className="flex gap-3 w-full">
-            <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
-                localStorage.getItem("theme") === "dark"
-                  ? "dark:outline-primary text-primary"
-                  : "text-white"
-              }`}
-              onClick={() => updateSettings({ theme: "dark" })}
-            >
-              <i className="bi-moon-fill text-6xl"></i>
-              <p className="ml-2 text-2xl">{t("dark")}</p>
-            </div>
-            <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
-                localStorage.getItem("theme") === "light"
-                  ? "outline-primary text-primary"
-                  : "text-black"
-              }`}
-              onClick={() => updateSettings({ theme: "light" })}
-            >
-              <i className="bi-sun-fill text-6xl"></i>
-              <p className="ml-2 text-2xl">{t("light")}</p>
+            {[
+              {
+                theme: "dark",
+                icon: "bi-moon-fill",
+                bgColor: "bg-black",
+                textColor: "text-white",
+                activeColor: "text-primary",
+              },
+              {
+                theme: "light",
+                icon: "bi-sun-fill",
+                bgColor: "bg-white",
+                textColor: "text-black",
+                activeColor: "text-primary",
+              },
+            ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
+              <div
+                key={theme}
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
+                  localStorage.getItem("theme") === theme
+                    ? `outline-primary ${activeColor}`
+                    : textColor
+                }`}
+                onClick={() => updateSettings({ theme })}
+              >
+                <i className={`${icon} text-3xl`}></i>
+                <p className="ml-2 text-2xl">{t(theme)}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-3">
+            <div className="flex gap-3 w-3/4 mx-auto">
+              {[
+                "--default",
+                "--red",
+                "--rose",
+                "--yellow",
+                "--green",
+                "--orange",
+                "--zinc",
+              ].map((color) => (
+                <div
+                  key={color}
+                  className="relative rounded-full w-full aspect-square cursor-pointer"
+                  style={{ backgroundColor: `oklch(var(${color}))` }}
+                  onClick={() => updateSettings({ color })}
+                >
+                  {settings.color === color && (
+                    <i className="bi-check2 text-xl text-base-100 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>

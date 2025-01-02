@@ -126,7 +126,7 @@ export const UpdateLinkSchema = z.object({
   description: z.string().trim().max(2048).nullish(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
-  color: z.string().trim().max(10).nullish(),
+  color: z.string().trim().max(50).nullish(),
   collection: z.object({
     id: z.number(),
     ownerId: z.number(),
@@ -179,7 +179,7 @@ export const UploadFileSchema = z.object({
 export const PostCollectionSchema = z.object({
   name: z.string().trim().max(2048),
   description: z.string().trim().max(2048).optional(),
-  color: z.string().trim().max(10).optional(),
+  color: z.string().trim().max(50).optional(),
   icon: z.string().trim().max(50).optional(),
   iconWeight: z.string().trim().max(50).optional(),
   parentId: z.number().optional(),
@@ -191,7 +191,7 @@ export const UpdateCollectionSchema = z.object({
   id: z.number(),
   name: z.string().trim().max(2048),
   description: z.string().trim().max(2048).optional(),
-  color: z.string().trim().max(10).optional(),
+  color: z.string().trim().max(50).optional(),
   isPublic: z.boolean().optional(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
