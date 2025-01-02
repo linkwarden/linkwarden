@@ -97,6 +97,9 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
+
+  const [linkModal, setLinkModal] = useState(false);
+
   return (
     <>
       <div
@@ -113,7 +116,9 @@ export default function LinkCardCompact({ link, editMode }: Props) {
       >
         <div
           className="flex items-center cursor-pointer w-full min-h-12"
-          onClick={() => !editMode && openLink(link, user)}
+          onClick={() =>
+            !editMode && openLink(link, user, () => setLinkModal(true))
+          }
         >
           {show.icon && (
             <div className="shrink-0">
@@ -149,7 +154,13 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           </div>
         </div>
         {!isPublic && <LinkPin link={link} btnStyle="btn-ghost" />}
-        <LinkActions link={link} collection={collection} btnStyle="btn-ghost" />
+        <LinkActions
+          link={link}
+          collection={collection}
+          btnStyle="btn-ghost"
+          linkModal={linkModal}
+          setLinkModal={(e) => setLinkModal(e)}
+        />
       </div>
       <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
     </>

@@ -7,9 +7,11 @@ import { LinksRouteTo } from "@prisma/client";
 
 const openLink = (
   link: LinkIncludingShortenedCollectionAndTags,
-  user: AccountSettings
+  user: AccountSettings,
+  openModal: () => void
 ) => {
   if (user.linksRouteTo === LinksRouteTo.DETAILS) {
+    openModal();
   } else {
     window.open(generateLinkHref(link, user), "_blank");
   }
