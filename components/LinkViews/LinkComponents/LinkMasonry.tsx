@@ -147,6 +147,8 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
+  const [linkModal, setLinkModal] = useState(false);
+
   return (
     <div
       ref={ref}
@@ -161,7 +163,9 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
     >
       <div
         className="rounded-2xl cursor-pointer"
-        onClick={() => !editMode && openLink(link, user)}
+        onClick={() =>
+          !editMode && openLink(link, user, () => setLinkModal(true))
+        }
       >
         {show.image && formatAvailable(link, "preview") && (
           <div>
@@ -254,7 +258,12 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
       {/* Overlay on hover */}
       <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-2xl duration-100"></div>
-      <LinkActions link={link} collection={collection} />
+      <LinkActions
+        link={link}
+        collection={collection}
+        linkModal={linkModal}
+        setLinkModal={(e) => setLinkModal(e)}
+      />
       {!isPublic && <LinkPin link={link} />}
     </div>
   );
