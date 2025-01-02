@@ -76,6 +76,7 @@ enum LinksRouteTo {
   READABLE
   MONOLITH
   SCREENSHOT
+  DETAILS
 }
 
 model WhitelistedUser {

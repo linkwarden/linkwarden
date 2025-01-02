@@ -10,7 +10,6 @@ import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import { isPWA } from "@/lib/client/utils";
-import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
@@ -23,6 +22,7 @@ import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
 import { atLeastOneFormatAvailable } from "@/lib/shared/formatStats";
 import LinkFormats from "./LinkFormats";
+import openLink from "@/lib/client/openLink";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -113,9 +113,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
       >
         <div
           className="flex items-center cursor-pointer w-full min-h-12"
-          onClick={() =>
-            !editMode && window.open(generateLinkHref(link, user), "_blank")
-          }
+          onClick={() => !editMode && openLink(link, user)}
         >
           {show.icon && (
             <div className="shrink-0">
