@@ -28,8 +28,8 @@ export default function LinkActions({ link, btnStyle }: Props) {
 
   const pinLink = usePinLink();
 
-  const [editLinkModal, setEditLinkModal] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
+  const [editLinkModal, setEditLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
 
   const deleteLink = useDeleteLink();

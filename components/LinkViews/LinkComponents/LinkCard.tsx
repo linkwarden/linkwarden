@@ -16,7 +16,6 @@ import {
 } from "@/lib/shared/formatStats";
 import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
-import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
@@ -28,6 +27,7 @@ import { useRouter } from "next/router";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
 import LinkFormats from "./LinkFormats";
+import openLink from "@/lib/client/openLink";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -166,9 +166,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     >
       <div
         className="rounded-2xl cursor-pointer h-full flex flex-col justify-between"
-        onClick={() =>
-          !editMode && window.open(generateLinkHref(link, user), "_blank")
-        }
+        onClick={() => !editMode && openLink(link, user)}
       >
         {show.image && (
           <div>
