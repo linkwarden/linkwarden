@@ -130,6 +130,17 @@ export default async function postLink(
     include: { tags: true, collection: true },
   });
 
+  await prisma.link.update({
+    where: { id: newLink.id },
+    data: {
+      image: link.image
+        ? `archives/${newLink.collectionId}/${newLink.id}.${
+            link.image === "png" ? "png" : "jpeg"
+          }`
+        : undefined,
+    },
+  });
+
   createFolder({ filePath: `archives/${newLink.collectionId}` });
 
   return { response: newLink, status: 200 };
