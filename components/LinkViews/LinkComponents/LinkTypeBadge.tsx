@@ -1,6 +1,5 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import Link from "next/link";
-import React from "react";
 
 export default function LinkTypeBadge({
   link,
@@ -17,6 +16,17 @@ export default function LinkTypeBadge({
     }
   }
 
+  const typeIcon = () => {
+    switch (link.type) {
+      case "pdf":
+        return "bi-file-earmark-pdf";
+      case "image":
+        return "bi-file-earmark-image";
+      default:
+        return "bi-link-45deg";
+    }
+  };
+
   return link.url && shortendURL ? (
     <Link
       href={link.url || ""}
@@ -31,6 +41,9 @@ export default function LinkTypeBadge({
       <p className="text-xs truncate">{shortendURL}</p>
     </Link>
   ) : (
-    <div className="badge badge-primary badge-sm select-none">{link.type}</div>
+    <div className="flex gap-1 item-center select-none text-neutral duration-100 max-w-full w-fit">
+      <i className={typeIcon() + ` text-md leading-none`}></i>
+      <p className="text-xs truncate">{link.type}</p>
+    </div>
   );
 }

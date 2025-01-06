@@ -10,7 +10,6 @@ import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import { isPWA } from "@/lib/client/utils";
-import { generateLinkHref } from "@/lib/client/generateLinkHref";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
@@ -21,6 +20,9 @@ import { useLinks } from "@/hooks/store/links";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
+import { atLeastOneFormatAvailable } from "@/lib/shared/formatStats";
+import LinkFormats from "./LinkFormats";
+import openLink from "@/lib/client/openLink";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -95,6 +97,9 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   const router = useRouter();
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
+
+  const [linkModal, setLinkModal] = useState(false);
+
   return (
     <>
       <div
@@ -112,7 +117,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
         <div
           className="flex items-center cursor-pointer w-full min-h-12"
           onClick={() =>
-            !editMode && window.open(generateLinkHref(link, user), "_blank")
+            !editMode && openLink(link, user, () => setLinkModal(true))
           }
         >
           {show.icon && (
@@ -123,9 +128,18 @@ export default function LinkCardCompact({ link, editMode }: Props) {
 
           <div className="w-[calc(100%-56px)] ml-2">
             {show.name && (
-              <p className="line-clamp-1 mr-8 text-primary select-none">
-                {unescapeString(link.name)}
-              </p>
+              <div className="flex gap-1 mr-20">
+                <p className="truncate text-primary">
+                  {unescapeString(link.name)}
+                </p>
+                {show.preserved_formats &&
+                  link.type === "url" &&
+                  atLeastOneFormatAvailable(link) && (
+                    <div className="pl-1 inline-block text-lg">
+                      <LinkFormats link={link} />
+                    </div>
+                  )}
+              </div>
             )}
 
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
@@ -140,7 +154,13 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           </div>
         </div>
         {!isPublic && <LinkPin link={link} btnStyle="btn-ghost" />}
-        <LinkActions link={link} collection={collection} btnStyle="btn-ghost" />
+        <LinkActions
+          link={link}
+          collection={collection}
+          btnStyle="btn-ghost"
+          linkModal={linkModal}
+          setLinkModal={(e) => setLinkModal(e)}
+        />
       </div>
       <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
     </>

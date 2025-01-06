@@ -16,7 +16,12 @@ export default async function dashboard(
       cursor: req.query.cursor ? Number(req.query.cursor as string) : undefined,
     };
 
-    const data = await getDashboardDataV2(user.id, convertedData);
+    const data = await getDashboardDataV2(
+      user.id,
+      convertedData,
+      user.dashboardRecentLinks,
+      user.dashboardPinnedLinks
+    );
     return res.status(data.status).json({
       data: {
         links: data.data.links,

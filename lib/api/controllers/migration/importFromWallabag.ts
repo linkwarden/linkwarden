@@ -39,7 +39,7 @@ export default async function importFromWallabag(
 
   if (hasTooManyLinks) {
     return {
-      response: `Your subscription have reached the maximum number of links allowed.`,
+      response: `Your subscription has reached the maximum number of links allowed.`,
       status: 400,
     };
   }
@@ -79,9 +79,9 @@ export default async function importFromWallabag(
               pinnedBy: link.is_starred
                 ? { connect: { id: userId } }
                 : undefined,
-              url: link.url?.trim().slice(0, 254),
+              url: link.url?.trim().slice(0, 2047),
               name: link.title?.trim().slice(0, 254) || "",
-              textContent: link.content?.trim() || "",
+              textContent: link.content?.trim().slice(0, 2047) || "",
               importDate: link.created_at || null,
               collection: {
                 connect: {
