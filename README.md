@@ -72,7 +72,7 @@ We've forked the old version from the current repository into [this repo](https:
 - 🔍 Full text search, filter and sort for easy retrieval.
 - 📱 Responsive design and supports most modern browsers.
 - 🌓 Dark/Light mode support.
-- 🧩 Browser extension, managed by the community. [Star it here!](https://github.com/linkwarden/browser-extension)
+- 🧩 Browser extension. [Star it here!](https://github.com/linkwarden/browser-extension)
 - 🔄 Browser Synchronization (using [Floccus](https://floccus.org)!)
 - ⬇️ Import and export your bookmarks.
 - 🔐 SSO integration. (Enterprise and Self-hosted users only)
