@@ -201,12 +201,16 @@ export default async function updateUserById(
       collectionOrder: data.collectionOrder?.filter(
         (value, index, self) => self.indexOf(value) === index
       ),
+      aiTaggingMethod: data.aiTaggingMethod,
+      aiPredefinedTags: data.aiPredefinedTags,
       locale: i18n.locales.includes(data.locale || "") ? data.locale : "en",
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsMonolith: data.archiveAsMonolith,
       archiveAsPDF: data.archiveAsPDF,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,
+      dashboardPinnedLinks: data.dashboardPinnedLinks,
+      dashboardRecentLinks: data.dashboardRecentLinks,
       preventDuplicateLinks: data.preventDuplicateLinks,
       referredBy:
         !user?.referredBy && data.referredBy ? data.referredBy : undefined,

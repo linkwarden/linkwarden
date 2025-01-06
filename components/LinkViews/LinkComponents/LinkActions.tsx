@@ -18,9 +18,16 @@ type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
   btnStyle?: string;
+  linkModal: boolean;
+  setLinkModal: (value: boolean) => void;
 };
 
-export default function LinkActions({ link, btnStyle }: Props) {
+export default function LinkActions({
+  link,
+  btnStyle,
+  linkModal,
+  setLinkModal,
+}: Props) {
   const { t } = useTranslation();
 
   const permissions = usePermissions(link.collection.id as number);
@@ -29,7 +36,6 @@ export default function LinkActions({ link, btnStyle }: Props) {
   const pinLink = usePinLink();
 
   const [editLinkModal, setEditLinkModal] = useState(false);
-  const [linkModal, setLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
 
   const deleteLink = useDeleteLink();

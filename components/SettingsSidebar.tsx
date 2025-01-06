@@ -50,6 +50,19 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
+        <Link href="/settings/rss-subscriptions">
+          <div
+            className={`${
+              active === "/settings/rss-subscriptions"
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+          >
+            <i className="bi-rss text-primary text-2xl"></i>
+            <p className="truncate w-full pr-7">RSS Subscriptions</p>
+          </div>
+        </Link>
+
         <Link href="/settings/access-tokens">
           <div
             className={`${
@@ -85,7 +98,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
                   : "hover:bg-neutral/20"
               } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
-              <i className="bi-credit-card text-primary text-xl"></i>
+              <i className="bi-credit-card text-primary text-2xl"></i>
               <p className="truncate w-full pr-7">{t("billing")}</p>
             </div>
           </Link>
@@ -104,7 +117,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i className="bi-question-circle text-primary text-xl"></i>
+            <i className="bi-question-circle text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">{t("help")}</p>
           </div>
         </Link>
@@ -112,7 +125,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i className="bi-github text-primary text-xl"></i>
+            <i className="bi-github text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">{t("github")}</p>
           </div>
         </Link>
@@ -120,7 +133,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i className="bi-twitter-x text-primary text-xl"></i>
+            <i className="bi-twitter-x text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">{t("twitter")}</p>
           </div>
         </Link>
@@ -128,7 +141,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           <div
             className={`hover:bg-neutral/20 duration-100 py-2 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
-            <i className="bi-mastodon text-primary text-xl"></i>
+            <i className="bi-mastodon text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">{t("mastodon")}</p>
           </div>
         </Link>

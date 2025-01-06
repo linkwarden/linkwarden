@@ -49,6 +49,10 @@ model User {
   accessTokens            AccessToken[]
   subscriptions           Subscription?
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
+  aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
+  aiPredefinedTags        String[]              @default([])
+  dashboardRecentLinks    Boolean               @default(true)
+  dashboardPinnedLinks    Boolean               @default(true)
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
@@ -60,12 +64,19 @@ model User {
   updatedAt               DateTime              @default(now()) @updatedAt
 }
 
+enum AiTaggingMethod {
+  DISABLED
+  GENERATE
+  PREDEFINED
+}
+
 enum LinksRouteTo {
   ORIGINAL
   PDF
   READABLE
   MONOLITH
   SCREENSHOT
+  DETAILS
 }
 
 model WhitelistedUser {
@@ -96,25 +107,26 @@ model PasswordResetToken {
 }
 
 model Collection {
-  id              Int                   @id @default(autoincrement())
-  name            String
-  description     String                @default("")
-  icon            String?
-  iconWeight      String?
-  color           String                @default("#0ea5e9")
-  parentId        Int?
-  parent          Collection?           @relation("SubCollections", fields: [parentId], references: [id])
-  subCollections  Collection[]          @relation("SubCollections")
-  isPublic        Boolean               @default(false)
-  owner           User                  @relation(fields: [ownerId], references: [id])
-  ownerId         Int
-  members         UsersAndCollections[]
-  createdBy       User?                 @relation("CreatedCollections", fields: [createdById], references: [id])
-  createdById     Int?
-  links           Link[]
-  createdAt       DateTime              @default(now())
-  updatedAt       DateTime              @default(now()) @updatedAt
-  
+  id               Int                   @id @default(autoincrement())
+  name             String
+  description      String                @default("")
+  icon             String?
+  iconWeight       String?
+  color            String                @default("#0ea5e9")
+  parentId         Int?
+  parent           Collection?           @relation("SubCollections", fields: [parentId], references: [id])
+  subCollections   Collection[]          @relation("SubCollections")
+  isPublic         Boolean               @default(false)
+  owner            User                  @relation(fields: [ownerId], references: [id])
+  ownerId          Int
+  members          UsersAndCollections[]
+  createdBy        User?                 @relation("CreatedCollections", fields: [createdById], references: [id])
+  createdById      Int?
+  links            Link[]
+  rssSubscriptions RssSubscription[]
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @default(now()) @updatedAt
+
   @@index([ownerId])
 }
 
@@ -154,6 +166,7 @@ model Link {
   pdf           String?
   readable      String?
   monolith      String?
+  aiTagged      Boolean    @default(false)
   lastPreserved DateTime?
   importDate    DateTime?
   createdAt     DateTime   @default(now())
@@ -189,7 +202,7 @@ model Subscription {
 
 model AccessToken {
   id         Int       @id @default(autoincrement())
-  name       String    
+  name       String
   user       User      @relation(fields: [userId], references: [id])
   userId     Int
   token      String    @unique
@@ -199,4 +212,16 @@ model AccessToken {
   lastUsedAt DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now()) @updatedAt
+}
+
+model RssSubscription {
+  id            Int        @id @default(autoincrement())
+  url           String
+  name          String
+  lastBuildDate DateTime?
+  collection    Collection @relation(fields: [collectionId], references: [id])
+  collectionId  Int
+  ownerId       Int
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
 }

@@ -15,8 +15,22 @@ type Response<D> =
 
 export default async function getDashboardData(
   userId: number,
-  query: LinkRequestQuery
+  query: LinkRequestQuery,
+  viewRecent: boolean,
+  viewPinned: boolean
 ): Promise<Response<any>> {
+  let pinnedTake = 0;
+  let recentTake = 0;
+
+  if (viewPinned && viewRecent) {
+    pinnedTake = 16;
+    recentTake = 16;
+  } else if (viewPinned && !viewRecent) {
+    pinnedTake = 32;
+  } else if (!viewPinned && viewRecent) {
+    recentTake = 32;
+  }
+
   let order: Order = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
@@ -47,62 +61,81 @@ export default async function getDashboardData(
     },
   });
 
-  const pinnedLinks = await prisma.link.findMany({
-    take: 16,
-    where: {
-      AND: [
-        {
-          collection: {
-            OR: [
-              { ownerId: userId },
-              {
-                members: {
-                  some: { userId },
-                },
-              },
-            ],
-          },
-        },
-        {
-          pinnedBy: { some: { id: userId } },
-        },
-      ],
-    },
-    include: {
-      tags: true,
-      collection: true,
-      pinnedBy: {
-        where: { id: userId },
-        select: { id: true },
+  if (!viewRecent && !viewPinned) {
+    return {
+      data: {
+        links: [],
+        numberOfPinnedLinks,
       },
-    },
-    orderBy: order || { id: "desc" },
-  });
+      message: "Dashboard data fetched successfully.",
+      status: 200,
+    };
+  }
 
-  const recentlyAddedLinks = await prisma.link.findMany({
-    take: 16,
-    where: {
-      collection: {
-        OR: [
-          { ownerId: userId },
+  let pinnedLinks: any[] = [];
+
+  if (viewPinned) {
+    pinnedLinks = await prisma.link.findMany({
+      take: pinnedTake,
+      where: {
+        AND: [
           {
-            members: {
-              some: { userId },
+            collection: {
+              OR: [
+                { ownerId: userId },
+                {
+                  members: {
+                    some: { userId },
+                  },
+                },
+              ],
             },
+          },
+          {
+            pinnedBy: { some: { id: userId } },
           },
         ],
       },
-    },
-    include: {
-      tags: true,
-      collection: true,
-      pinnedBy: {
-        where: { id: userId },
-        select: { id: true },
+      include: {
+        tags: true,
+        collection: true,
+        pinnedBy: {
+          where: { id: userId },
+          select: { id: true },
+        },
       },
-    },
-    orderBy: order || { id: "desc" },
-  });
+      orderBy: order || { id: "desc" },
+    });
+  }
+
+  let recentlyAddedLinks: any[] = [];
+
+  if (viewRecent) {
+    recentlyAddedLinks = await prisma.link.findMany({
+      take: recentTake,
+      where: {
+        collection: {
+          OR: [
+            { ownerId: userId },
+            {
+              members: {
+                some: { userId },
+              },
+            },
+          ],
+        },
+      },
+      include: {
+        tags: true,
+        collection: true,
+        pinnedBy: {
+          where: { id: userId },
+          select: { id: true },
+        },
+      },
+      orderBy: order || { id: "desc" },
+    });
+  }
 
   const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
     (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
