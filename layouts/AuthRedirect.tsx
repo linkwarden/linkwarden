@@ -3,20 +3,24 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import useInitialData from "@/hooks/useInitialData";
 import { useUser } from "@/hooks/store/user";
+import { GetServerSideProps } from "next";
+import { getEnvData } from "@/pages/api/v1/config";
+import { Config } from "@/store/config";
 
 interface Props {
   children: ReactNode;
+  initialConfig: Config;
 }
 
 const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
 
-export default function AuthRedirect({ children }: Props) {
+export default function AuthRedirect({ children, initialConfig }: Props) {
   const router = useRouter();
   const { status } = useSession();
   const [shouldRenderChildren, setShouldRenderChildren] = useState(false);
   const { data: user = {} } = useUser();
 
-  useInitialData();
+  useInitialData({ initialConfig });
 
   useEffect(() => {
     const isLoggedIn = status === "authenticated";
@@ -80,3 +84,13 @@ export default function AuthRedirect({ children }: Props) {
     return <></>;
   }
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const config = getEnvData();
+
+  return {
+    props: {
+      initialConfig: config,
+    },
+  };
+};
