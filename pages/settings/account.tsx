@@ -18,8 +18,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import { z } from "zod";
 import ImportDropdown from "@/components/ImportDropdown";
-
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER;
+import { useConfig } from "@/hooks/store/config";
 
 export default function Account() {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
@@ -45,6 +44,8 @@ export default function Account() {
           whitelistedUsers: [],
         } as unknown as AccountSettings)
   );
+
+  const { data: config } = useConfig();
 
   const { t } = useTranslation();
 
@@ -87,7 +88,7 @@ export default function Account() {
 
     const emailSchema = z.string().trim().email().toLowerCase();
     const emailValidation = emailSchema.safeParse(user.email || "");
-    if (emailEnabled && !emailValidation.success) {
+    if (config?.EMAIL_PROVIDER && !emailValidation.success) {
       return toast.error(t("email_invalid"));
     }
 
@@ -170,7 +171,7 @@ export default function Account() {
                 onChange={(e) => setUser({ ...user, username: e.target.value })}
               />
             </div>
-            {emailEnabled && (
+            {config?.EMAIL_PROVIDER && (
               <div>
                 <p className="mb-2">{t("email")}</p>
                 <TextInput

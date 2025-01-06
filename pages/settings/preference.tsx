@@ -9,6 +9,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import TagSelection from "@/components/InputSelect/TagSelection";
+import { useConfig } from "@/hooks/store/config";
 
 export default function Appearance() {
   const { t } = useTranslation();
@@ -43,6 +44,8 @@ export default function Appearance() {
     account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
+
+  const { data: config } = useConfig();
 
   useEffect(() => {
     setUser({
@@ -179,7 +182,7 @@ export default function Appearance() {
           </div>
         </div>
 
-        {process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && (
+        {config?.AI_ENABLED && (
           <div>
             <p className="capitalize text-3xl font-thin inline">
               {t("ai_settings")}
