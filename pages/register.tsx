@@ -13,8 +13,7 @@ import { prisma } from "@/lib/api/db";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n } from "next-i18next.config";
 import { Trans, useTranslation } from "next-i18next";
-
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
+import { useConfig } from "@/hooks/store/config";
 
 type FormData = {
   name: string;
@@ -31,10 +30,12 @@ export default function Register({
   const [submitLoader, setSubmitLoader] = useState(false);
   const router = useRouter();
 
+  const { data: config } = useConfig();
+
   const [form, setForm] = useState<FormData>({
     name: "",
-    username: emailEnabled ? undefined : "",
-    email: emailEnabled ? "" : undefined,
+    username: config?.EMAIL_PROVIDER ? undefined : "",
+    email: config?.EMAIL_PROVIDER ? "" : undefined,
     password: "",
     passwordConfirmation: "",
   });
@@ -44,7 +45,7 @@ export default function Register({
 
     if (!submitLoader) {
       const checkFields = () => {
-        if (emailEnabled) {
+        if (config?.EMAIL_PROVIDER) {
           return (
             form.name !== "" &&
             form.email !== "" &&
@@ -86,7 +87,7 @@ export default function Register({
         setSubmitLoader(false);
 
         if (response.ok) {
-          if (form.email && emailEnabled) {
+          if (form.email && config?.EMAIL_PROVIDER) {
             await signIn("email", {
               email: form.email,
               callbackUrl: "/",
@@ -96,7 +97,7 @@ export default function Register({
             router.push(
               "/confirmation?email=" + encodeURIComponent(form.email)
             );
-          } else if (!emailEnabled) router.push("/login");
+          } else if (!config?.EMAIL_PROVIDER) router.push("/login");
 
           toast.success(t("account_created"));
         } else {
@@ -155,7 +156,7 @@ export default function Register({
       }
       data-testid="registration-form"
     >
-      {process.env.NEXT_PUBLIC_DISABLE_REGISTRATION === "true" ? (
+      {config?.DISABLE_REGISTRATION ? (
         <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
           <p>{t("registration_disabled")}</p>
         </div>
@@ -183,7 +184,7 @@ export default function Register({
               />
             </div>
 
-            {emailEnabled ? undefined : (
+            {config?.EMAIL_PROVIDER ? undefined : (
               <div>
                 <p className="text-sm w-fit font-semibold mb-1">
                   {t("username")}
@@ -201,7 +202,7 @@ export default function Register({
               </div>
             )}
 
-            {emailEnabled && (
+            {config?.EMAIL_PROVIDER && (
               <div>
                 <p className="text-sm w-fit font-semibold mb-1">{t("email")}</p>
 
