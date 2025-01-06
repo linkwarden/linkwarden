@@ -25,6 +25,13 @@ export default async function autoTagLink(user: User, linkId: number) {
     prompt = predefinedTagsPrompt(textContent, user.aiPredefinedTags);
   }
 
+  if (
+    user.aiTaggingMethod === AiTaggingMethod.PREDEFINED &&
+    user.aiPredefinedTags.length === 0
+  ) {
+    return console.log("No predefined tags to auto tag for link: ", link.url);
+  }
+
   const response = await axios.post(
     process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL + "/api/generate",
     {
