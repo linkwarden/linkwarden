@@ -136,84 +136,105 @@ export default function PublicCollections() {
             />
           </Head>
         )}
-        <div className="lg:w-3/4 w-full mx-auto p-5 bg">
-          <div className="flex items-center justify-between">
-            <p className="text-4xl font-thin mb-2 capitalize mt-10">
-              {collection.name}
-            </p>
-            <div className="flex gap-2 items-center mt-8 min-w-fit">
-              <ToggleDarkMode />
+        <div className="lg:w-3/4 max-w-[1500px] w-full mx-auto p-5 bg">
+          <div className="flex justify-between gap-2">
+            <div className="w-full">
+              <p className="text-4xl font-thin mb-2 capitalize mt-10">
+                {collection.name}
+              </p>
 
-              <Link href="https://linkwarden.app/" target="_blank">
-                <Image
-                  src={`/icon.png`}
-                  width={551}
-                  height={551}
-                  alt="Linkwarden"
-                  title={t("list_created_with_linkwarden")}
-                  className="h-8 w-fit mx-auto rounded"
-                />
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-3">
-            <div className={`min-w-[15rem]`}>
-              <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
-                <div
-                  className="flex items-center btn px-2 btn-ghost rounded-full"
-                  onClick={() => setEditCollectionSharingModal(true)}
-                >
-                  {collectionOwner.id && (
-                    <ProfilePhoto
-                      src={collectionOwner.image || undefined}
-                      name={collectionOwner.name}
-                    />
-                  )}
-                  {collection.members
-                    .sort((a, b) => (a.userId as number) - (b.userId as number))
-                    .map((e, i) => {
-                      return (
+              <div className="mt-3">
+                <div className={`min-w-[15rem]`}>
+                  <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
+                    <div
+                      className="flex items-center btn px-2 btn-ghost rounded-full"
+                      onClick={() => setEditCollectionSharingModal(true)}
+                    >
+                      {collectionOwner.id && (
                         <ProfilePhoto
-                          key={i}
-                          src={e.user.image ? e.user.image : undefined}
-                          className="-ml-3"
-                          name={e.user.name}
+                          src={collectionOwner.image || undefined}
+                          name={collectionOwner.name}
                         />
-                      );
-                    })
-                    .slice(0, 3)}
-                  {collection.members.length - 3 > 0 && (
-                    <div className={`avatar drop-shadow-md placeholder -ml-3`}>
-                      <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
-                        <span>+{collection.members.length - 3}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <p className="text-neutral text-sm">
-                  {collection.members.length > 0 &&
-                  collection.members.length === 1
-                    ? t("by_author_and_other", {
-                        author: collectionOwner.name,
-                        count: collection.members.length,
-                      })
-                    : collection.members.length > 0 &&
-                        collection.members.length !== 1
-                      ? t("by_author_and_others", {
-                          author: collectionOwner.name,
-                          count: collection.members.length,
+                      )}
+                      {collection.members
+                        .sort(
+                          (a, b) => (a.userId as number) - (b.userId as number)
+                        )
+                        .map((e, i) => {
+                          return (
+                            <ProfilePhoto
+                              key={i}
+                              src={e.user.image ? e.user.image : undefined}
+                              className="-ml-3"
+                              name={e.user.name}
+                            />
+                          );
                         })
-                      : t("by_author", {
-                          author: collectionOwner.name,
-                        })}
-                </p>
+                        .slice(0, 3)}
+                      {collection.members.length - 3 > 0 && (
+                        <div
+                          className={`avatar drop-shadow-md placeholder -ml-3`}
+                        >
+                          <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
+                            <span>+{collection.members.length - 3}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <p className="text-neutral text-sm">
+                      {collection.members.length > 0 &&
+                      collection.members.length === 1
+                        ? t("by_author_and_other", {
+                            author: collectionOwner.name,
+                            count: collection.members.length,
+                          })
+                        : collection.members.length > 0 &&
+                            collection.members.length !== 1
+                          ? t("by_author_and_others", {
+                              author: collectionOwner.name,
+                              count: collection.members.length,
+                            })
+                          : t("by_author", {
+                              author: collectionOwner.name,
+                            })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-5">{collection.description}</p>
+            </div>
+
+            <div className="flex flex-col gap-2 items-center mt-10 min-w-fit">
+              <div
+                className="tooltip tooltip-left w-fit"
+                data-tip={t("list_created_with_linkwarden")}
+              >
+                <Link href="https://linkwarden.app/" target="_blank">
+                  <Image
+                    src={`/icon.png`}
+                    width={551}
+                    height={551}
+                    alt="Linkwarden Icon"
+                    className="h-8 w-fit mx-auto rounded"
+                  />
+                </Link>
+              </div>
+
+              <ToggleDarkMode align="left" />
+
+              <div className="tooltip tooltip-left" data-tip={t("rss_feed")}>
+                <Link
+                  href={`/public/collections/${collection.id}/rss`}
+                  target="_blank"
+                  className="text-neutral btn btn-ghost btn-sm size-8"
+                >
+                  <i className="bi bi-rss text-xl"></i>
+                </Link>
               </div>
             </div>
           </div>
-
-          <p className="mt-5">{collection.description}</p>
 
           <div className="divider mt-5 mb-0"></div>
 

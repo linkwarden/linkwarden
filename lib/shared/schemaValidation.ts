@@ -1,5 +1,5 @@
 import { ArchivedFormat, TokenExpiry } from "@/types/global";
-import { LinksRouteTo } from "@prisma/client";
+import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
 import { z } from "zod";
 
 // const stringField = z.string({
@@ -75,6 +75,10 @@ export const UpdateUserSchema = () => {
     archiveAsPDF: z.boolean().optional(),
     archiveAsMonolith: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
+    dashboardPinnedLinks: z.boolean().optional(),
+    dashboardRecentLinks: z.boolean().optional(),
+    aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
+    aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     locale: z.string().max(20).optional(),
     isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
@@ -96,6 +100,7 @@ export const PostLinkSchema = z.object({
   url: z.string().trim().max(2048).url().optional(),
   name: z.string().trim().max(2048).optional(),
   description: z.string().trim().max(2048).optional(),
+  image: z.enum(["jpeg", "png"]).optional(),
   collection: z
     .object({
       id: z.number().optional(),
@@ -117,12 +122,12 @@ export type PostLinkSchemaType = z.infer<typeof PostLinkSchema>;
 
 export const UpdateLinkSchema = z.object({
   id: z.number(),
-  name: z.string().trim().max(2048).optional(),
-  url: z.string().trim().max(2048).optional(),
-  description: z.string().trim().max(2048).optional(),
+  name: z.string().trim().max(2048).nullish(),
+  url: z.string().trim().max(2048).nullish(),
+  description: z.string().trim().max(2048).nullish(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
-  color: z.string().trim().max(10).nullish(),
+  color: z.string().trim().max(50).nullish(),
   collection: z.object({
     id: z.number(),
     ownerId: z.number(),
@@ -175,7 +180,7 @@ export const UploadFileSchema = z.object({
 export const PostCollectionSchema = z.object({
   name: z.string().trim().max(2048),
   description: z.string().trim().max(2048).optional(),
-  color: z.string().trim().max(10).optional(),
+  color: z.string().trim().max(50).optional(),
   icon: z.string().trim().max(50).optional(),
   iconWeight: z.string().trim().max(50).optional(),
   parentId: z.number().optional(),
@@ -187,7 +192,7 @@ export const UpdateCollectionSchema = z.object({
   id: z.number(),
   name: z.string().trim().max(2048),
   description: z.string().trim().max(2048).optional(),
-  color: z.string().trim().max(10).optional(),
+  color: z.string().trim().max(50).optional(),
   isPublic: z.boolean().optional(),
   icon: z.string().trim().max(50).nullish(),
   iconWeight: z.string().trim().max(50).nullish(),
@@ -209,3 +214,10 @@ export const UpdateTagSchema = z.object({
 });
 
 export type UpdateTagSchemaType = z.infer<typeof UpdateTagSchema>;
+
+export const PostRssSubscriptionSchema = z.object({
+  name: z.string().max(50),
+  url: z.string().url().max(2048),
+  collectionId: z.number().optional(),
+  collectionName: z.string().max(50).optional(),
+});

@@ -5,36 +5,44 @@ import { toast } from "react-hot-toast";
 import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
-import getServerSideProps from "@/lib/client/getServerSideProps"; // Import getServerSideProps for server-side data fetching
-import { LinksRouteTo } from "@prisma/client";
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
+import TagSelection from "@/components/InputSelect/TagSelection";
 
 export default function Appearance() {
   const { t } = useTranslation();
-  const { updateSettings } = useLocalSettingsStore();
+  const { settings, updateSettings } = useLocalSettingsStore();
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
   const updateUser = useUpdateUser();
   const [user, setUser] = useState(account);
 
   const [preventDuplicateLinks, setPreventDuplicateLinks] = useState<boolean>(
-    account.preventDuplicateLinks
+    account.preventDuplicateLinks || false
   );
   const [archiveAsScreenshot, setArchiveAsScreenshot] = useState<boolean>(
-    account.archiveAsScreenshot
+    account.archiveAsScreenshot || false
   );
   const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(
-    account.archiveAsPDF
+    account.archiveAsPDF || false
   );
-
   const [archiveAsMonolith, setArchiveAsMonolith] = useState<boolean>(
-    account.archiveAsMonolith
+    account.archiveAsMonolith || false
   );
-
+  const [dashboardPinnedLinks, setDashboardPinnedLinks] = useState<boolean>(
+    account.dashboardPinnedLinks || false
+  );
+  const [dashboardRecentLinks, setDashboardRecentLinks] = useState<boolean>(
+    account.dashboardRecentLinks || false
+  );
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
-    useState<boolean>(account.archiveAsWaybackMachine);
-
+    useState<boolean>(account.archiveAsWaybackMachine || false);
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
+  const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
+    account.aiTaggingMethod
+  );
+  const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
 
   useEffect(() => {
     setUser({
@@ -45,6 +53,10 @@ export default function Appearance() {
       archiveAsWaybackMachine,
       linksRouteTo,
       preventDuplicateLinks,
+      aiTaggingMethod,
+      aiPredefinedTags,
+      dashboardRecentLinks,
+      dashboardPinnedLinks,
     });
   }, [
     account,
@@ -54,6 +66,10 @@ export default function Appearance() {
     archiveAsWaybackMachine,
     linksRouteTo,
     preventDuplicateLinks,
+    aiTaggingMethod,
+    aiPredefinedTags,
+    dashboardRecentLinks,
+    dashboardPinnedLinks,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -68,6 +84,10 @@ export default function Appearance() {
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
       setPreventDuplicateLinks(account.preventDuplicateLinks);
+      setAiTaggingMethod(account.aiTaggingMethod);
+      setAiPredefinedTags(account.aiPredefinedTags);
+      setDashboardRecentLinks(account.dashboardRecentLinks);
+      setDashboardPinnedLinks(account.dashboardPinnedLinks);
     }
   }, [account]);
 
@@ -101,30 +121,169 @@ export default function Appearance() {
 
       <div className="flex flex-col gap-5">
         <div>
-          <p className="mb-3">{t("select_theme")}</p>
           <div className="flex gap-3 w-full">
-            <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-black ${
-                localStorage.getItem("theme") === "dark"
-                  ? "dark:outline-primary text-primary"
-                  : "text-white"
-              }`}
-              onClick={() => updateSettings({ theme: "dark" })}
-            >
-              <i className="bi-moon-fill text-6xl"></i>
-              <p className="ml-2 text-2xl">{t("dark")}</p>
+            {[
+              {
+                theme: "dark",
+                icon: "bi-moon-fill",
+                bgColor: "bg-black",
+                textColor: "text-white",
+                activeColor: "text-primary",
+              },
+              {
+                theme: "light",
+                icon: "bi-sun-fill",
+                bgColor: "bg-white",
+                textColor: "text-black",
+                activeColor: "text-primary",
+              },
+            ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
+              <div
+                key={theme}
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
+                  localStorage.getItem("theme") === theme
+                    ? `outline-primary ${activeColor}`
+                    : textColor
+                }`}
+                onClick={() => updateSettings({ theme })}
+              >
+                <i className={`${icon} text-3xl`}></i>
+                <p className="ml-2 text-2xl">{t(theme)}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-3">
+            <div className="flex gap-3 w-3/4 mx-auto">
+              {[
+                "--default",
+                "--red",
+                "--rose",
+                "--yellow",
+                "--green",
+                "--orange",
+                "--zinc",
+              ].map((color) => (
+                <div
+                  key={color}
+                  className="relative rounded-full w-full aspect-square cursor-pointer"
+                  style={{ backgroundColor: `oklch(var(${color}))` }}
+                  onClick={() => updateSettings({ color })}
+                >
+                  {settings.color === color && (
+                    <i className="bi-check2 text-xl text-base-100 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
+                  )}
+                </div>
+              ))}
             </div>
-            <div
-              className={`w-full text-center outline-solid outline-neutral-content outline dark:outline-neutral-700 h-36 duration-100 rounded-md flex items-center justify-center cursor-pointer select-none bg-white ${
-                localStorage.getItem("theme") === "light"
-                  ? "outline-primary text-primary"
-                  : "text-black"
-              }`}
-              onClick={() => updateSettings({ theme: "light" })}
-            >
-              <i className="bi-sun-fill text-6xl"></i>
-              <p className="ml-2 text-2xl">{t("light")}</p>
+          </div>
+        </div>
+
+        {process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && (
+          <div>
+            <p className="capitalize text-3xl font-thin inline">
+              {t("ai_settings")}
+            </p>
+
+            <div className="divider my-3"></div>
+
+            <p>{t("ai_tagging_method")}</p>
+
+            <div className="p-3">
+              <label
+                className="label cursor-pointer flex gap-2 justify-start w-fit"
+                tabIndex={0}
+                role="button"
+              >
+                <input
+                  type="radio"
+                  name="ai-tagging-method-radio"
+                  className="radio checked:bg-primary"
+                  value="DISABLED"
+                  checked={aiTaggingMethod === AiTaggingMethod.DISABLED}
+                  onChange={() => setAiTaggingMethod(AiTaggingMethod.DISABLED)}
+                />
+                <span className="label-text">{t("disabled")}</span>
+              </label>
+              <p className="text-neutral text-sm pl-5">
+                {t("ai_tagging_disabled_desc")}
+              </p>
+
+              <label
+                className="label cursor-pointer flex gap-2 justify-start w-fit"
+                tabIndex={0}
+                role="button"
+              >
+                <input
+                  type="radio"
+                  name="ai-tagging-method-radio"
+                  className="radio checked:bg-primary"
+                  value="GENERATE"
+                  checked={aiTaggingMethod === AiTaggingMethod.GENERATE}
+                  onChange={() => setAiTaggingMethod(AiTaggingMethod.GENERATE)}
+                />
+                <span className="label-text">{t("auto_generate_tags")}</span>
+              </label>
+              <p className="text-neutral text-sm pl-5">
+                {t("auto_generate_tags_desc")}
+              </p>
+
+              <label
+                className="label cursor-pointer flex gap-2 justify-start w-fit"
+                tabIndex={0}
+                role="button"
+              >
+                <input
+                  type="radio"
+                  name="ai-tagging-method-radio"
+                  className="radio checked:bg-primary"
+                  value="PREDEFINED"
+                  checked={aiTaggingMethod === AiTaggingMethod.PREDEFINED}
+                  onChange={() =>
+                    setAiTaggingMethod(AiTaggingMethod.PREDEFINED)
+                  }
+                />
+                <span className="label-text">
+                  {t("based_on_predefined_tags")}
+                </span>
+              </label>
+              <div className="pl-5">
+                <p className="text-neutral text-sm mb-2">
+                  {t("based_on_predefined_tags_desc")}
+                </p>
+                {aiPredefinedTags && (
+                  <TagSelection
+                    onChange={(e: any) => {
+                      setAiPredefinedTags(e.map((e: any) => e.label));
+                    }}
+                    defaultValue={aiPredefinedTags
+                      .map((e) => ({ label: e }))
+                      .filter((e) => e.label !== "")}
+                  />
+                )}
+              </div>
             </div>
+          </div>
+        )}
+
+        <div>
+          <p className="capitalize text-3xl font-thin inline">
+            {t("dashboard_settings")}
+          </p>
+          <div className="divider my-3"></div>
+          <p>{t("choose_whats_displayed_dashboard")}</p>
+          <div className="p-3">
+            <Checkbox
+              label={t("pinned_links")}
+              state={dashboardPinnedLinks}
+              onClick={() => setDashboardPinnedLinks(!dashboardPinnedLinks)}
+            />
+
+            <Checkbox
+              label={t("recent_links")}
+              state={dashboardRecentLinks}
+              onClick={() => setDashboardRecentLinks(!dashboardRecentLinks)}
+            />
           </div>
         </div>
 
@@ -190,6 +349,22 @@ export default function Appearance() {
                 onChange={() => setLinksRouteTo(LinksRouteTo.ORIGINAL)}
               />
               <span className="label-text">{t("open_original_content")}</span>
+            </label>
+
+            <label
+              className="label cursor-pointer flex gap-2 justify-start w-fit"
+              tabIndex={0}
+              role="button"
+            >
+              <input
+                type="radio"
+                name="link-preference-radio"
+                className="radio checked:bg-primary"
+                value="Original"
+                checked={linksRouteTo === LinksRouteTo.DETAILS}
+                onChange={() => setLinksRouteTo(LinksRouteTo.DETAILS)}
+              />
+              <span className="label-text">{t("show_link_details")}</span>
             </label>
 
             <label

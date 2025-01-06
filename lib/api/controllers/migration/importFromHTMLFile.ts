@@ -23,7 +23,7 @@ export default async function importFromHTMLFile(
 
   if (hasTooManyLinks) {
     return {
-      response: `Your subscription have reached the maximum number of links allowed.`,
+      response: `Your subscription has reached the maximum number of links allowed.`,
       status: 400,
     };
   }
@@ -199,7 +199,7 @@ const createLink = async (
   tags?: string[],
   importDate?: Date
 ) => {
-  url = url.trim().slice(0, 254);
+  url = url.trim().slice(0, 2047);
   try {
     new URL(url);
   } catch (e) {
