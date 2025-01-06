@@ -98,7 +98,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           if (
             user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
             !link.aiTagged &&
-            process.env.OLLAMA_ENDPOINT_URL
+            process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL
           )
             await autoTagLink(user, link.id);
 
