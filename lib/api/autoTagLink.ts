@@ -33,7 +33,7 @@ export default async function autoTagLink(user: User, linkId: number) {
   }
 
   const response = await axios.post(
-    process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL + "/api/generate",
+    process.env.OLLAMA_ENDPOINT_URL + "/api/generate",
     {
       model: process.env.OLLAMA_MODEL,
       prompt: prompt,
