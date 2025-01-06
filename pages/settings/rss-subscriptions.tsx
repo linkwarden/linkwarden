@@ -7,6 +7,7 @@ import { useState } from "react";
 import { RssSubscription } from "@prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
 import Link from "next/link";
+import { useConfig } from "@/hooks/store/config";
 
 export default function RssSubscriptions() {
   const { t } = useTranslation();
@@ -22,6 +23,8 @@ export default function RssSubscriptions() {
     setDeleteSubscriptionModal(true);
   };
 
+  const { data: config } = useConfig();
+
   return (
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">
@@ -32,7 +35,7 @@ export default function RssSubscriptions() {
       <div className="flex flex-col gap-3">
         <p>
           {t("rss_subscriptions_desc", {
-            number: process.env.NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES || 60,
+            number: config?.RSS_POLLING_INTERVAL_MINUTES || 60,
           })}
         </p>
 
