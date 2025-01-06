@@ -5,13 +5,16 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
+import { useConfig } from "@/hooks/store/config";
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
   const { data: user = {} } = useUser();
 
-  const isAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
+  const { data: config } = useConfig();
+
+  const isAdmin = user.id === (config?.ADMIN || 1);
 
   const handleToggle = () => {
     const newTheme = settings.theme === "dark" ? "light" : "dark";
