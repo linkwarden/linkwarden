@@ -8,18 +8,24 @@ interface User extends U {
     active: boolean;
   };
 }
-
 type UserModal = {
   isOpen: boolean;
   userId: number | null;
 };
 
-const UserListing = (
-  users: User[],
-  deleteUserModal: UserModal,
-  setDeleteUserModal: Function,
-  t: TFunction<"translation", undefined>
-) => {
+interface UserListingProps {
+  users: User[];
+  deleteUserModal: UserModal;
+  setDeleteUserModal: (modal: UserModal) => void;
+  t: TFunction<"translation", undefined>;
+}
+
+const UserListing: React.FC<UserListingProps> = ({
+  users,
+  deleteUserModal,
+  setDeleteUserModal,
+  t,
+}) => {
   const { data: config } = useConfig();
 
   return (
