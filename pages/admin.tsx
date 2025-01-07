@@ -25,7 +25,7 @@ export default function Admin() {
   const { data: users = [] } = useUsers();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState<User[]>();
+  const [filteredUsers, setFilteredUsers] = useState<User[] | null>(null);
 
   const [deleteUserModal, setDeleteUserModal] = useState<UserModal>({
     isOpen: false,
@@ -33,6 +33,19 @@ export default function Admin() {
   });
 
   const [newUserModal, setNewUserModal] = useState(false);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+
+    if (users) {
+      const filtered = users.filter((user: any) =>
+        JSON.stringify(user).toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    } else {
+      setFilteredUsers(null);
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-5">
@@ -63,19 +76,7 @@ export default function Admin() {
               type="text"
               placeholder={t("search_users")}
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-
-                if (users) {
-                  setFilteredUsers(
-                    users.filter((user: any) =>
-                      JSON.stringify(user)
-                        .toLowerCase()
-                        .includes(e.target.value.toLowerCase())
-                    )
-                  );
-                }
-              }}
+              onChange={(e) => handleSearch(e.target.value)}
               className="border border-neutral-content bg-base-200 focus:border-primary py-1 rounded-md pl-9 pr-2 w-full max-w-[15rem] md:w-[15rem] md:max-w-full duration-200 outline-none"
             />
           </div>
@@ -91,12 +92,22 @@ export default function Admin() {
 
       <Divider className="my-3" />
 
-      {filteredUsers && filteredUsers.length > 0 && searchQuery !== "" ? (
-        UserListing(filteredUsers, deleteUserModal, setDeleteUserModal, t)
-      ) : searchQuery !== "" ? (
+      {searchQuery && filteredUsers && filteredUsers.length > 0 ? (
+        <UserListing
+          users={filteredUsers}
+          deleteUserModal={deleteUserModal}
+          setDeleteUserModal={setDeleteUserModal}
+          t={t}
+        />
+      ) : searchQuery ? (
         <p>{t("no_user_found_in_search")}</p>
       ) : users && users.length > 0 ? (
-        UserListing(users, deleteUserModal, setDeleteUserModal, t)
+        <UserListing
+          users={users}
+          deleteUserModal={deleteUserModal}
+          setDeleteUserModal={setDeleteUserModal}
+          t={t}
+        />
       ) : (
         <p>{t("no_users_found")}</p>
       )}
