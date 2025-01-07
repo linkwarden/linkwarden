@@ -216,7 +216,7 @@ export default function PublicCollections() {
                     src={`/icon.png`}
                     width={551}
                     height={551}
-                    alt="Linkwarden Icon"
+                    alt={t("linkwarden_icon")}
                     className="h-8 w-fit mx-auto rounded"
                   />
                 </Link>

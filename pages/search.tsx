@@ -70,7 +70,7 @@ export default function Search() {
           editMode={editMode}
           setEditMode={setEditMode}
         >
-          <PageHeader icon={"bi-search"} title={"Search Results"} />
+          <PageHeader icon={"bi-search"} title={t("search_results")} />
         </LinkListOptions>
 
         {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}

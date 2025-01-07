@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   placeholder?: string;
@@ -8,7 +9,7 @@ type Props = {
 
 export default function SearchBar({ placeholder }: Props) {
   const router = useRouter();
-
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -29,11 +30,11 @@ export default function SearchBar({ placeholder }: Props) {
       <input
         id="search-box"
         type="text"
-        placeholder={placeholder || "Search for Links"}
+        placeholder={placeholder || t("search_for_links")}
         value={searchQuery}
         onChange={(e) => {
           e.target.value.includes("%") &&
-            toast.error("The search query should not contain '%'.");
+            toast.error(t("search_query_invalid_symbol"));
           setSearchQuery(e.target.value.replace("%", ""));
         }}
         onKeyDown={(e) => {
