@@ -125,7 +125,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between">
           <PageHeader
             icon={"bi-house "}
-            title={"Dashboard"}
+            title={t("dashboard")}
             description={t("dashboard_desc")}
           />
           <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
