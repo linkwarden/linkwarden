@@ -87,7 +87,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     if (status === 200) {
       const result = JSON.parse(file.toString())
-
+      
       item.description = result.excerpt || link.description
       item.custom_elements = [{
         'content:encoded': `<![CDATA[${result.content}]]>`,
