@@ -183,7 +183,7 @@ export default function Billing() {
                     {t("date_added")}
                   </p>
                   <p className="whitespace-nowrap">
-                    {new Date(user.createdAt).toLocaleDateString("en-US", {
+                    {new Date(user.createdAt).toLocaleDateString(t("locale"), {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
