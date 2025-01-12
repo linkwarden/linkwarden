@@ -15,7 +15,7 @@
 
 [« LAUNCH DEMO »](https://demo.linkwarden.app)
 
-[Cloud](https://cloud.linkwarden.app) · [Website](https://linkwarden.app) · [Features](https://github.com/linkwarden/linkwarden#features)
+[Cloud](https://cloud.linkwarden.app) · [Website](https://linkwarden.app) · [Features](https://github.com/linkwarden/linkwarden#features) · [Docs](https://docs.linkwarden.app)
 
 </div>
 
@@ -50,15 +50,6 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 <img src="./assets/light_dashboard.jpg" width="23%" />
 </div>
 
-<details>
-<summary><b>A bit of a "history"</b></summary>
-Linkwarden has been completely rebuilt and redesigned from ground up, so pretty much the only thing it has in common with its predecessor is the idea behind it - bookmark management.
-
-**What happened to the old version?**
-We've forked the old version from the current repository into [this repo](https://github.com/linkwarden/linkwarden-old).
-
-</details>
-
 ## Features
 
 - 📸 Auto capture a screenshot, PDF, single html file, and readable view of each webpage.
@@ -77,7 +68,6 @@ We've forked the old version from the current repository into [this repo](https:
 - ⬇️ Import and export your bookmarks.
 - 🔐 SSO integration. (Enterprise and Self-hosted users only)
 - 📦 Installable Progressive Web App (PWA).
-- 🍏 iOS and MacOS Apps, maintained by [JGeek00](https://github.com/JGeek00).
 - 🍎 iOS Shortcut to save Links to Linkwarden.
 - 🔑 API keys.
 - ✅ Bulk actions.
@@ -110,9 +100,14 @@ We _usually_ go after the [popular suggestions](https://github.com/linkwarden/li
 
 Make sure to check out our [public roadmap](https://github.com/orgs/linkwarden/projects/1).
 
-## Documentation
+## Community Projects
 
-For information on how to get started or to set up your own instance, please visit the [documentation](https://docs.linkwarden.app).
+Here are some community-maintained projects that are built around Linkwarden:
+
+- [My Links](https://apps.apple.com/ca/app/my-links-for-linkwarden/id6504573402) - iOS and MacOS Apps, maintained by [JGeek00](https://github.com/JGeek00).
+- [LinkDroid](https://fossdroid.com/a/linkdroid-for-linkwarden.html) - Android App with share sheet integration, [source code](https://github.com/Dacid99/LinkDroid-for-Linkwarden).
+- [LinkGuardian](https://github.com/Elbullazul/LinkGuardian) - An Android client for Linkwarden. Built with Kotlin and Jetpack compose.
+- [StarWarden](https://github.com/rtuszik/starwarden) - A browser extension to save your starred GitHub repositories to Linkwarden.
 
 ## Development
 
