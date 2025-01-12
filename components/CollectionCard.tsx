@@ -25,7 +25,7 @@ export default function CollectionCard({
   const { data: user = {} } = useUser();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
-    "en-US",
+    t("locale"),
     {
       year: "numeric",
       month: "short",
@@ -74,7 +74,7 @@ export default function CollectionCard({
           onMouseDown={dropdownTriggerer}
           className="btn btn-ghost btn-sm btn-square text-neutral"
         >
-          <i className="bi-three-dots text-xl" title="More"></i>
+          <i className="bi-three-dots text-xl" title={t("more")}></i>
         </div>
         <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
           {permissions === true && (
@@ -180,12 +180,12 @@ export default function CollectionCard({
                 {collection.isPublic && (
                   <i
                     className="bi-globe2 drop-shadow text-neutral"
-                    title="This collection is being shared publicly."
+                    title={t("collection_publicly_shared")}
                   ></i>
                 )}
                 <i
                   className="bi-link-45deg text-lg text-neutral"
-                  title="This collection is being shared publicly."
+                  title={t("collection_publicly_shared")}
                 ></i>
                 {collection._count && collection._count.links}
               </div>
@@ -193,7 +193,7 @@ export default function CollectionCard({
                 <p className="font-bold text-xs flex gap-1 items-center">
                   <i
                     className="bi-calendar3 text-neutral"
-                    title="This collection is being shared publicly."
+                    title={t("collection_publicly_shared")}
                   ></i>
                   {formattedDate}
                 </p>
