@@ -450,5 +450,13 @@
   "dashboard_settings": "Dashboard Settings",
   "choose_whats_displayed_dashboard": "Choose what's displayed on your Dashboard:",
   "pinned_links": "Pinned Links",
-  "recent_links": "Recent Links"
+  "recent_links": "Recent Links",
+  "search_results": "Search Results",
+  "linkwarden_icon": "Linkwarden Icon",
+  "permanent_session": "This is a permanent session",
+  "locale": "en-US",
+  "not_found_404": "404 - Not Found",
+  "collection_publicly_shared": "This collection is being shared publicly.",
+  "search_for_links": "Search for Links",
+  "search_query_invalid_symbol": "The search query should not contain '%'."
 }
