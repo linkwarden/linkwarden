@@ -129,7 +129,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           <div className="w-[calc(100%-56px)] ml-2">
             {show.name && (
               <div className="flex gap-1 mr-20">
-                <p className="truncate text-primary">
+                <p className="text-primary break-words">
                   {unescapeString(link.name)}
                 </p>
                 {show.preserved_formats &&
