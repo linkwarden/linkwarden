@@ -58,7 +58,7 @@ export default function AccessTokens() {
                       {token.isSession ? (
                         <div
                           className="tooltip tooltip-right text-left"
-                          data-tip="This is a permanent session"
+                          data-tip={t("permanent_session")}
                         >
                           {token.name}
                         </div>
@@ -67,14 +67,14 @@ export default function AccessTokens() {
                       )}
                     </td>
                     <td>
-                      {new Date(token.createdAt).toLocaleDateString("en-US", {
+                      {new Date(token.createdAt).toLocaleDateString(t("locale"), {
                         month: "short",
                         day: "numeric",
                         year: "numeric",
                       })}
                     </td>
                     <td>
-                      {new Date(token.expires).toLocaleDateString("en-US", {
+                      {new Date(token.expires).toLocaleDateString(t("locale"), {
                         month: "short",
                         day: "numeric",
                         year: "numeric",

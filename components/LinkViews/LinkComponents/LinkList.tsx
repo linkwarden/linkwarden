@@ -105,7 +105,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
       <div
         className={`${selectedStyle} rounded-md border relative group items-center flex ${
           !isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
-        } duration-200 w-full`}
+        } duration-200`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
