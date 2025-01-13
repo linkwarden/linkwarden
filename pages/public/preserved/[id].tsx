@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { ArchivedFormat } from "@/types/global";
+import { useTranslation } from "next-i18next";
 import ReadableView from "@/components/ReadableView";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useGetLink } from "@/hooks/store/links";
@@ -8,7 +9,7 @@ import clsx from "clsx";
 
 export default function Index() {
   const getLink = useGetLink();
-
+  const { t } = useTranslation();
   const router = useRouter();
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function Index() {
   return (
     <div className={clsx(getLink.isPending ? "flex h-screen" : "relative")}>
       {/* <div className="fixed left-1/2 transform -translate-x-1/2 w-fit py-1 px-3 bg-base-200 border border-neutral-content rounded-md">
-        Readable
+        t("readable")
       </div> */}
       {getLink.data?.id &&
       Number(router.query.format) === ArchivedFormat.readability ? (
@@ -52,7 +53,7 @@ export default function Index() {
           className="w-fit mx-auto"
         />
       ) : getLink.error ? (
-        <p>404 - Not found</p>
+        <p>{t("not_found_404")}</p>
       ) : (
         <div className="max-w-3xl p-5 m-auto w-full flex flex-col items-center gap-5">
           <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
