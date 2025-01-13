@@ -48,7 +48,7 @@ export default async function handler(
     const RSS_SUBSCRIPTION_LIMIT_PER_USER =
       Number(process.env.RSS_SUBSCRIPTION_LIMIT_PER_USER) || 20;
 
-    if (rssSubscriptionCount >= 10) {
+    if (rssSubscriptionCount >= RSS_SUBSCRIPTION_LIMIT_PER_USER) {
       return res.status(403).json({
         response: `You have reached the limit of ${RSS_SUBSCRIPTION_LIMIT_PER_USER} RSS subscriptions.`,
       });

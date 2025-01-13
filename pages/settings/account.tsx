@@ -27,7 +27,7 @@ export default function Account() {
   const { data: account } = useUser();
   const updateUser = useUpdateUser();
   const [user, setUser] = useState<AccountSettings>(
-    !objectIsEmpty(account)
+    account.id
       ? account
       : ({
           // @ts-ignore
@@ -49,13 +49,16 @@ export default function Account() {
 
   const { t } = useTranslation();
 
-  function objectIsEmpty(obj: object) {
-    return Object.keys(obj).length === 0;
-  }
+  const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState("");
 
   useEffect(() => {
-    if (!objectIsEmpty(account)) setUser({ ...account });
-  }, [account]);
+    if (!account.id) return;
+
+    setUser({
+      ...account,
+      whitelistedUsers: stringToArray(whitelistedUsersTextbox),
+    });
+  }, [account, whitelistedUsersTextbox]);
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -127,18 +130,9 @@ export default function Account() {
     }
   };
 
-  const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState("");
-
   useEffect(() => {
     setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", "));
   }, [account]);
-
-  useEffect(() => {
-    setUser({
-      ...user,
-      whitelistedUsers: stringToArray(whitelistedUsersTextbox),
-    });
-  }, [whitelistedUsersTextbox]);
 
   const stringToArray = (str: string) => {
     return str?.replace(/\s+/g, "").split(",");

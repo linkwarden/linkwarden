@@ -363,7 +363,7 @@ export default function Appearance() {
                 type="radio"
                 name="link-preference-radio"
                 className="radio checked:bg-primary"
-                value="Original"
+                value="Details"
                 checked={linksRouteTo === LinksRouteTo.DETAILS}
                 onChange={() => setLinksRouteTo(LinksRouteTo.DETAILS)}
               />
