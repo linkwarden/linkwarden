@@ -42,7 +42,7 @@ export default function MainLayout({ children }: Props) {
       </div>
 
       <div
-        className={`w-full sm:pb-0 pb-20 flex flex-col min-h-screen lg:ml-80`}
+        className={`lg:w-[calc(100%-320px)] overflow-x-hidden w-full sm:pb-0 pb-20 flex flex-col min-h-screen lg:ml-80`}
       >
         <Navbar />
         {children}
