@@ -18,6 +18,7 @@ type LocalSettings = {
   };
   columns: number;
   sortBy?: Sort;
+  enableGrouping: boolean;
 };
 
 type LocalSettingsStore = {
@@ -44,6 +45,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     },
     columns: 0,
     sortBy: Sort.DateNewestFirst,
+    enableGrouping: true,
   },
   updateSettings: (newSettings) => {
     const { theme, viewMode, color, sortBy, show, columns } = newSettings;
@@ -126,6 +128,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
         show,
         columns,
         sortBy: useLocalSettingsStore.getState().settings.sortBy,
+        enableGrouping: true,
       },
     });
 

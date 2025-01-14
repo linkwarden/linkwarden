@@ -2,6 +2,7 @@ import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ViewMode,
+  Sort,
 } from "@/types/global";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -12,6 +13,7 @@ import tailwindConfig from "../../tailwind.config.js";
 import { useMemo } from "react";
 import LinkList from "@/components/LinkViews/LinkComponents/LinkList";
 import useLocalSettingsStore from "@/store/localSettings";
+import GroupedLinks from "@/components/LinkViews/GroupedLinks";
 
 export function CardView({
   links,
@@ -288,6 +290,7 @@ export default function Links({
   useData?: any;
 }) {
   const { ref, inView } = useInView();
+  const { settings } = useLocalSettingsStore();
 
   useEffect(() => {
     if (inView && useData?.fetchNextPage && useData?.hasNextPage) {
@@ -295,41 +298,51 @@ export default function Links({
     }
   }, [useData, inView]);
 
-  if (layout === ViewMode.List) {
-    return (
-      <ListView
-        links={links}
-        editMode={editMode}
-        isLoading={useData?.isLoading}
-        placeholders={placeholderCountToArray(placeholderCount)}
-        hasNextPage={useData?.hasNextPage}
-        placeHolderRef={ref}
-      />
-    );
-  } else if (layout === ViewMode.Masonry) {
-    return (
-      <MasonryView
-        links={links}
-        editMode={editMode}
-        isLoading={useData?.isLoading}
-        placeholders={placeholderCountToArray(placeholderCount)}
-        hasNextPage={useData?.hasNextPage}
-        placeHolderRef={ref}
-      />
-    );
-  } else {
-    // Default to card view
-    return (
-      <CardView
-        links={links}
-        editMode={editMode}
-        isLoading={useData?.isLoading}
-        placeholders={placeholderCountToArray(placeholderCount)}
-        hasNextPage={useData?.hasNextPage}
-        placeHolderRef={ref}
-      />
-    );
-  }
+  const renderView = (groupLinks: LinkIncludingShortenedCollectionAndTags[]) => {
+    if (layout === ViewMode.List) {
+      return (
+        <ListView
+          links={groupLinks}
+          editMode={editMode}
+          isLoading={useData?.isLoading}
+          placeholders={placeholderCountToArray(placeholderCount)}
+          hasNextPage={useData?.hasNextPage}
+          placeHolderRef={ref}
+        />
+      );
+    } else if (layout === ViewMode.Masonry) {
+      return (
+        <MasonryView
+          links={groupLinks}
+          editMode={editMode}
+          isLoading={useData?.isLoading}
+          placeholders={placeholderCountToArray(placeholderCount)}
+          hasNextPage={useData?.hasNextPage}
+          placeHolderRef={ref}
+        />
+      );
+    } else {
+      return (
+        <CardView
+          links={groupLinks}
+          editMode={editMode}
+          isLoading={useData?.isLoading}
+          placeholders={placeholderCountToArray(placeholderCount)}
+          hasNextPage={useData?.hasNextPage}
+          placeHolderRef={ref}
+        />
+      );
+    }
+  };
+
+  return (
+    <GroupedLinks
+      links={links}
+      sortBy={settings.sortBy || Sort.DateNewestFirst}
+      enableGrouping={settings.enableGrouping}
+      renderLinks={renderView}
+    />
+  );
 }
 
 const placeholderCountToArray = (num?: number) =>
