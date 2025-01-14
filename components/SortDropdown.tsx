@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function SortDropdown({ sortBy, setSort, t }: Props) {
-  const { updateSettings } = useLocalSettingsStore();
+  const { settings, updateSettings } = useLocalSettingsStore();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -31,6 +31,7 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
         <i className="bi-chevron-expand text-neutral text-2xl"></i>
       </div>
       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
+
         <li>
           <label
             className="label cursor-pointer flex justify-start"
@@ -153,6 +154,21 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
             </span>
           </label>
         </li>
+        <div className="divider m-0"></div>
+        <li>
+          <label className="label cursor-pointer flex justify-start">
+            <input
+              type="checkbox"
+              className="toggle toggle-primary toggle-sm"
+              checked={settings.enableGrouping}
+              onChange={(e) => {
+                updateSettings({ enableGrouping: e.target.checked });
+              }}
+            />
+            <span className="truncate label-text whitespace-nowrap">{t("enable_grouping")}</span>
+          </label>
+        </li>
+
       </ul>
     </div>
   );
