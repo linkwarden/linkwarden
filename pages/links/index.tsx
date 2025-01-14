@@ -68,12 +68,12 @@ export default function Index() {
   const handleDragOver = (event: DragEvent) => {
     if (!isDraggingRef.current) return
 
-    const collectionLinkElement = event.target?.closest('.collection-link') || null;
+    const collectionLinkElement = (event.target as HTMLElement)?.closest('.collection-link') || null;
 
     if (collectionLinkElement === null) return;
 
     // get the collection id
-    let collectionId = collectionLinkElement.dataset.collectionId
+    let collectionId = (collectionLinkElement as HTMLElement).dataset.collectionId
 
     if (collectionId === undefined) return
 
@@ -87,7 +87,7 @@ export default function Index() {
   }
 
   const handleDragLeave = (event: DragEvent) => {
-    const element = event.target?.closest('.collection-link')
+    const element = (event.target as HTMLElement)?.closest('.collection-link')
 
     // remove drag styles
     if (!element) return
