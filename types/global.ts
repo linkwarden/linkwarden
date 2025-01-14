@@ -158,3 +158,20 @@ export enum TokenExpiry {
   threeMonths,
   never,
 }
+
+export enum GroupBy {
+  None,
+  Date,
+  Name,
+  Description
+}
+
+// 将Sort和GroupBy关联起来
+export const SortToGroupMap: { [key in Sort]?: GroupBy } = {
+  [Sort.DateNewestFirst]: GroupBy.Date,
+  [Sort.DateOldestFirst]: GroupBy.Date,
+  [Sort.NameAZ]: GroupBy.Name,
+  [Sort.NameZA]: GroupBy.Name,
+  [Sort.DescriptionAZ]: GroupBy.Description,
+  [Sort.DescriptionZA]: GroupBy.Description,
+};

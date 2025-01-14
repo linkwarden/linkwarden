@@ -103,9 +103,8 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   return (
     <>
       <div
-        className={`${selectedStyle} rounded-md border relative group items-center flex ${
-          !isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
-        } duration-200`}
+        className={`${selectedStyle} rounded-md border relative group items-center flex ${!isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
+          } duration-200`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
@@ -129,7 +128,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           <div className="w-[calc(100%-56px)] ml-2">
             {show.name && (
               <div className="flex gap-1 mr-20">
-                <p className="truncate text-primary">
+                <p className="text-primary">
                   {unescapeString(link.name)}
                 </p>
                 {show.preserved_formats &&
