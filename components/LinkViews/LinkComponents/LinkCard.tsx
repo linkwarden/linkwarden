@@ -165,6 +165,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
             ? toast.error(t("link_selection_error"))
             : undefined
       }
+      draggable={true}
     >
       <div
         className="rounded-2xl cursor-pointer h-full flex flex-col justify-between"
