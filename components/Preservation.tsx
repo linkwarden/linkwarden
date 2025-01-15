@@ -99,7 +99,7 @@ export default function Preservation() {
               className={clsx(
                 "w-full border-none rounded-md",
                 monolithLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[calc(100vh-20rem)]"
+                isExpanded ? "h-full" : "h-[calc(100vh-15rem)]"
               )}
               onLoad={() => setMonolithLoaded(true)}
             />
@@ -115,7 +115,7 @@ export default function Preservation() {
               className={clsx(
                 "w-full border-none rounded-md",
                 pdfLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[calc(100vh-20rem)]"
+                isExpanded ? "h-full" : "h-[calc(100vh-15rem)]"
               )}
               onLoad={() => setPdfLoaded(true)}
             />
