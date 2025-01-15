@@ -50,8 +50,8 @@ export default function ReadableView({ link }: Props) {
   return (
     <div
       className={clsx(
-        "flex flex-col gap-5 h-full rounded-md p-3",
-        linkContent?.content && "bg-base-200"
+        "flex flex-col gap-5 rounded-md",
+        linkContent?.content && "bg-base-200 p-3"
       )}
     >
       {link?.readable?.startsWith("archives") ? (
@@ -78,11 +78,7 @@ export default function ReadableView({ link }: Props) {
           )}
         </>
       ) : (
-        <div
-          className={`w-full h-full flex flex-col justify-center p-10 ${
-            !link?.readable ? "skeleton" : ""
-          }`}
-        >
+        <div className={`w-full h-full flex flex-col justify-center`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"

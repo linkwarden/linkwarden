@@ -26,6 +26,8 @@ export default function Preservation() {
   const [monolithLoaded, setMonolithLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
   useEffect(() => {
     router.push(
       {
@@ -34,6 +36,7 @@ export default function Preservation() {
       undefined,
       { shallow: true }
     );
+
     setPdfLoaded(false);
     setMonolithLoaded(false);
     setImageLoaded(false);
@@ -63,9 +66,18 @@ export default function Preservation() {
   }, []);
 
   const Skeleton = () => (
-    <div className="animate-pulse w-full h-[500px] flex items-center justify-center bg-gray-200 rounded-md">
-      <p className="text-gray-400">Loading...</p>
+    <div className="p-5 m-auto w-full flex flex-col items-center gap-5">
+      <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
+      <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
+      <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
+      <div className="w-3/4 mr-auto h-4 skeleton rounded-md"></div>
+      <div className="w-5/6 mr-auto h-4 skeleton rounded-md"></div>
+      <div className="w-3/4 mr-auto h-4 skeleton rounded-md"></div>
+      <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
+      <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
+      <div className="w-5/6 mr-auto h-4 skeleton rounded-md"></div>
     </div>
+    // <p className="text-gray-400">Loading...</p>
   );
 
   const renderFormat = () => {
@@ -73,7 +85,11 @@ export default function Preservation() {
 
     switch (Number(router.query.format)) {
       case ArchivedFormat.readability:
-        return <ReadableView link={link} />;
+        return (
+          <div className="overflow-auto w-full h-full rounded-md">
+            <ReadableView link={link} />
+          </div>
+        );
 
       case ArchivedFormat.monolith:
         return (
@@ -82,8 +98,9 @@ export default function Preservation() {
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}`}
               className={clsx(
-                "w-full h-screen border-none rounded-md",
-                monolithLoaded ? "block" : "hidden"
+                "w-full border-none rounded-md",
+                monolithLoaded ? "block" : "hidden",
+                isExpanded ? "h-full" : "h-[80vh]"
               )}
               onLoad={() => setMonolithLoaded(true)}
             />
@@ -97,8 +114,9 @@ export default function Preservation() {
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}`}
               className={clsx(
-                "w-full h-screen border-none rounded-md",
-                pdfLoaded ? "block" : "hidden"
+                "w-full border-none rounded-md",
+                pdfLoaded ? "block" : "hidden",
+                isExpanded ? "h-full" : "h-[80vh]"
               )}
               onLoad={() => setPdfLoaded(true)}
             />
@@ -110,17 +128,19 @@ export default function Preservation() {
         return (
           <>
             {!imageLoaded && <Skeleton />}
-            <img
-              alt=""
-              src={`/api/v1/archives/${link.id}?format=${Number(
-                router.query.format
-              )}`}
-              className={clsx(
-                "w-fit mx-auto rounded-md",
-                imageLoaded ? "block" : "hidden"
-              )}
-              onLoad={() => setImageLoaded(true)}
-            />
+            <div className="overflow-auto w-full h-full rounded-md">
+              <img
+                alt=""
+                src={`/api/v1/archives/${link.id}?format=${Number(
+                  router.query.format
+                )}`}
+                className={clsx(
+                  "w-fit mx-auto rounded-md",
+                  imageLoaded ? "block" : "hidden"
+                )}
+                onLoad={() => setImageLoaded(true)}
+              />
+            </div>
           </>
         );
 
@@ -129,9 +149,42 @@ export default function Preservation() {
     }
   };
 
+  const handleDownload = () => {
+    const path = `/api/v1/archives/${link?.id}?format=${format}`;
+    fetch(path)
+      .then((response) => {
+        if (response.ok) {
+          const anchorElement = document.createElement("a");
+          anchorElement.href = path;
+          anchorElement.download =
+            format === ArchivedFormat.monolith
+              ? "Webpage"
+              : format === ArchivedFormat.pdf
+                ? "PDF"
+                : format === ArchivedFormat.readability
+                  ? "Readable"
+                  : "Screenshot";
+          anchorElement.click();
+        } else {
+          console.error("Failed to download file");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   return (
-    <div className={clsx("relative max-w-screen-lg h-full mx-auto p-3")}>
-      {link?.id && (
+    <div
+      className={clsx(
+        !isExpanded && "max-w-screen-lg mx-auto p-3 relative",
+        isExpanded && "fixed inset-0 w-screen h-screen z-50 p-3"
+      )}
+      style={{
+        overflow: isExpanded ? "hidden" : "visible",
+      }}
+    >
+      {!isExpanded && link?.id && (
         <div className="flex flex-col gap-3 items-start">
           <div className="flex gap-3 items-start">
             <div className="flex flex-col w-full gap-1">
@@ -155,70 +208,103 @@ export default function Preservation() {
             </div>
           </div>
 
-          <p className="text-sm text-neutral mb-3 flex justify-between items-center w-full gap-2 flex-wrap">
-            <LinkDate link={link} />
-            <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10 w-full sm:w-fit">
-              {formatAvailable(link, "pdf") && (
-                <div
-                  className={clsx(
-                    "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold w-full text-center",
-                    format === ArchivedFormat.pdf && "bg-primary bg-opacity-50"
-                  )}
-                  onClick={() => setFormat(ArchivedFormat.pdf)}
-                >
-                  {t("pdf")}
-                </div>
-              )}
-              {formatAvailable(link, "monolith") && (
-                <div
-                  className={clsx(
-                    "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold w-full text-center",
-                    format === ArchivedFormat.monolith &&
-                      "bg-primary bg-opacity-50"
-                  )}
-                  onClick={() => setFormat(ArchivedFormat.monolith)}
-                >
-                  {t("webpage")}
-                </div>
-              )}
-              {formatAvailable(link, "readable") && (
-                <div
-                  className={clsx(
-                    "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold w-full text-center",
-                    format === ArchivedFormat.readability &&
-                      "bg-primary bg-opacity-50"
-                  )}
-                  onClick={() => setFormat(ArchivedFormat.readability)}
-                >
-                  {t("readable")}
-                </div>
-              )}
-              {formatAvailable(link, "image") && (
-                <div
-                  className={clsx(
-                    "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold w-full text-center",
-                    format ===
-                      (link?.image?.endsWith("png")
-                        ? ArchivedFormat.png
-                        : ArchivedFormat.jpeg) && "bg-primary bg-opacity-50"
-                  )}
-                  onClick={() =>
-                    setFormat(
-                      link?.image?.endsWith("png")
-                        ? ArchivedFormat.png
-                        : ArchivedFormat.jpeg
-                    )
-                  }
-                >
-                  {t("image")}
-                </div>
-              )}
+          <div className="text-sm text-neutral mb-3 flex justify-between md:flex-row flex-col md:items-center w-full gap-2">
+            <div className="w-1/2">
+              <LinkDate link={link} />
             </div>
-          </p>
+            <div className="flex justify-between items-center flex-wrap w-full gap-2">
+              <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
+                {formatAvailable(link, "pdf") && (
+                  <div
+                    className={clsx(
+                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center",
+                      format === ArchivedFormat.pdf &&
+                        "bg-primary bg-opacity-50"
+                    )}
+                    onClick={() => setFormat(ArchivedFormat.pdf)}
+                  >
+                    {t("pdf")}
+                  </div>
+                )}
+                {formatAvailable(link, "monolith") && (
+                  <div
+                    className={clsx(
+                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center",
+                      format === ArchivedFormat.monolith &&
+                        "bg-primary bg-opacity-50"
+                    )}
+                    onClick={() => setFormat(ArchivedFormat.monolith)}
+                  >
+                    {t("webpage")}
+                  </div>
+                )}
+                {formatAvailable(link, "readable") && (
+                  <div
+                    className={clsx(
+                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center",
+                      format === ArchivedFormat.readability &&
+                        "bg-primary bg-opacity-50"
+                    )}
+                    onClick={() => setFormat(ArchivedFormat.readability)}
+                  >
+                    {t("readable")}
+                  </div>
+                )}
+                {formatAvailable(link, "image") && (
+                  <div
+                    className={clsx(
+                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center",
+                      format ===
+                        (link?.image?.endsWith("png")
+                          ? ArchivedFormat.png
+                          : ArchivedFormat.jpeg) && "bg-primary bg-opacity-50"
+                    )}
+                    onClick={() =>
+                      setFormat(
+                        link?.image?.endsWith("png")
+                          ? ArchivedFormat.png
+                          : ArchivedFormat.jpeg
+                      )
+                    }
+                  >
+                    {t("image")}
+                  </div>
+                )}
+              </div>
+
+              {/* Download + Expand Buttons */}
+              <div className="flex gap-2">
+                <div onClick={handleDownload} className="btn btn-sm btn-circle">
+                  <i className="bi-cloud-arrow-down text-xl text-neutral" />
+                </div>
+                <div
+                  className="btn btn-circle btn-sm"
+                  onClick={() => setIsExpanded(true)}
+                >
+                  <i className="bi-arrows-angle-expand" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
-      {error ? <p>{t("not_found_404")}</p> : renderFormat()}
+      {error ? (
+        <p>{t("not_found_404")}</p>
+      ) : (
+        <div className={clsx("w-full", isExpanded ? "h-full" : "h-auto")}>
+          {renderFormat()}
+        </div>
+      )}
+
+      {isExpanded && (
+        <div
+          className="absolute top-2 right-2 btn btn-circle btn-sm"
+          onClick={() => setIsExpanded(false)}
+        >
+          <i className="bi-arrows-angle-contract" />
+        </div>
+      )}
     </div>
   );
 }
