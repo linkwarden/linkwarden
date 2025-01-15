@@ -261,7 +261,7 @@ const useGetLink = () => {
 
       return data.response;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: LinkIncludingShortenedCollectionAndTags) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
         if (!oldData?.links) return undefined;
         return {

@@ -62,7 +62,7 @@ export default function LinkModal({
                 setMode("view");
               }}
             >
-              View
+              {t("view")}
             </div>
             <div
               className={clsx(
@@ -73,7 +73,7 @@ export default function LinkModal({
                 setMode("edit");
               }}
             >
-              Edit
+              {t("edit")}
             </div>
           </div>
         )}
