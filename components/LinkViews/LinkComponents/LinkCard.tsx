@@ -157,7 +157,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
+      className={`link ${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
@@ -166,6 +166,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
             : undefined
       }
       draggable={true}
+      data-link-id={link.id}
     >
       <div
         className="rounded-2xl cursor-pointer h-full flex flex-col justify-between"

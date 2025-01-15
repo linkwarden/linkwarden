@@ -41,7 +41,8 @@ export default function Index() {
   }, []);
 
   const isDraggingRef = useRef<boolean>(false)
-  const collectionIdRef = useRef<Number | null>(null)
+  const linkIdRef = useRef<number | null>(null)
+  const collectionIdRef = useRef<number | null>(null)
 
   const addEventListeners = () => {
     window.addEventListener('dragend', handleDragEnd);
@@ -56,10 +57,15 @@ export default function Index() {
   }
 
   const handleDrag = (event: DragEvent) => {
-    const element = event.target
-    if (!element)
-      return
+    const linkElement = (event.target as HTMLElement)?.closest('.link') || null;
 
+    if (!linkElement) return
+
+    const linkId = (linkElement as HTMLElement).dataset.linkId
+
+    if (!linkId) return
+
+    linkIdRef.current = parseInt(linkId)
     isDraggingRef.current = true
 
     addEventListeners()
@@ -73,7 +79,7 @@ export default function Index() {
     if (collectionLinkElement === null) return;
 
     // get the collection id
-    let collectionId = (collectionLinkElement as HTMLElement).dataset.collectionId
+    const collectionId = (collectionLinkElement as HTMLElement).dataset.collectionId
 
     if (collectionId === undefined) return
 
@@ -96,11 +102,16 @@ export default function Index() {
     element.classList.remove('bg-indigo-600')
   }
 
-  const handleDragEnd = (event: DragEvent) => {
+  const handleDragEnd = async (event: DragEvent) => {
     isDraggingRef.current = false;
 
-    console.log(collectionIdRef.current);
+    const response = await fetch(`/api/v1/links/${linkIdRef.current}/collection`, {
+      method: "PUT",
+      body: JSON.stringify({ collectionId: collectionIdRef.current })
+    });
 
+    linkIdRef.current = null
+    collectionIdRef.current = null
     removeEventListeners();
   }
 
