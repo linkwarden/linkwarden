@@ -77,7 +77,6 @@ export default function Preservation() {
       <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
       <div className="w-5/6 mr-auto h-4 skeleton rounded-md"></div>
     </div>
-    // <p className="text-gray-400">Loading...</p>
   );
 
   const renderFormat = () => {
@@ -100,7 +99,7 @@ export default function Preservation() {
               className={clsx(
                 "w-full border-none rounded-md",
                 monolithLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[80vh]"
+                isExpanded ? "h-full" : "h-[calc(100vh-20rem)]"
               )}
               onLoad={() => setMonolithLoaded(true)}
             />
@@ -116,7 +115,7 @@ export default function Preservation() {
               className={clsx(
                 "w-full border-none rounded-md",
                 pdfLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[80vh]"
+                isExpanded ? "h-full" : "h-[calc(100vh-20rem)]"
               )}
               onLoad={() => setPdfLoaded(true)}
             />
@@ -209,51 +208,61 @@ export default function Preservation() {
           </div>
 
           <div className="text-sm text-neutral mb-3 flex justify-between md:flex-row flex-col md:items-center w-full gap-2">
-            <div className="w-1/2">
-              <LinkDate link={link} />
-            </div>
-            <div className="flex justify-between items-center flex-wrap w-full gap-2">
+            <LinkDate link={link} />
+            <div className="flex items-center flex-wrap w-full justify-between md:w-fit gap-2">
               <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
                 {formatAvailable(link, "pdf") && (
                   <div
                     className={clsx(
-                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center",
+                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
                       format === ArchivedFormat.pdf &&
                         "bg-primary bg-opacity-50"
                     )}
                     onClick={() => setFormat(ArchivedFormat.pdf)}
                   >
-                    {t("pdf")}
+                    <div className="tooltip tooltip-top" data-tip={t("pdf")}>
+                      <i className={`bi-file-earmark-pdf text-lg`} />
+                    </div>
                   </div>
                 )}
                 {formatAvailable(link, "monolith") && (
                   <div
                     className={clsx(
-                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center",
+                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
                       format === ArchivedFormat.monolith &&
                         "bg-primary bg-opacity-50"
                     )}
                     onClick={() => setFormat(ArchivedFormat.monolith)}
                   >
-                    {t("webpage")}
+                    <div
+                      className="tooltip tooltip-top"
+                      data-tip={t("webpage")}
+                    >
+                      <i className={`bi-filetype-html text-lg`} />
+                    </div>
                   </div>
                 )}
                 {formatAvailable(link, "readable") && (
                   <div
                     className={clsx(
-                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center",
+                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
                       format === ArchivedFormat.readability &&
                         "bg-primary bg-opacity-50"
                     )}
                     onClick={() => setFormat(ArchivedFormat.readability)}
                   >
-                    {t("readable")}
+                    <div
+                      className="tooltip tooltip-top"
+                      data-tip={t("readable")}
+                    >
+                      <i className={`bi-file-earmark-text text-lg`} />
+                    </div>
                   </div>
                 )}
                 {formatAvailable(link, "image") && (
                   <div
                     className={clsx(
-                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center",
+                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
                       format ===
                         (link?.image?.endsWith("png")
                           ? ArchivedFormat.png
@@ -267,7 +276,9 @@ export default function Preservation() {
                       )
                     }
                   >
-                    {t("image")}
+                    <div className="tooltip tooltip-top" data-tip={t("image")}>
+                      <i className={`bi-file-earmark-image text-lg`} />
+                    </div>
                   </div>
                 )}
               </div>
