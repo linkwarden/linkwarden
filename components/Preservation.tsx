@@ -6,42 +6,43 @@ import ReadableView from "@/components/ReadableView";
 import { useGetLink } from "@/hooks/store/links";
 import clsx from "clsx";
 import Link from "next/link";
-import Icon from "./Icon";
 import unescapeString from "@/lib/client/unescapeString";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import { IconWeight } from "@phosphor-icons/react";
-import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import LinkDate from "./LinkViews/LinkComponents/LinkDate";
 import { formatAvailable } from "@/lib/shared/formatStats";
 
 export default function Preservation() {
-  const { data: link, ...getLink } = useGetLink();
-  const { t } = useTranslation();
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public");
+
+  const { data: link, mutateAsync: fetchLink, error } = useGetLink();
+  const { t } = useTranslation();
 
   const [format, setFormat] = useState<ArchivedFormat>(
     Number(router.query.format)
   );
 
-  // A useEffect that changes the query string when the format changes
+  const [pdfLoaded, setPdfLoaded] = useState(false);
+  const [monolithLoaded, setMonolithLoaded] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   useEffect(() => {
     router.push(
       {
-        query: {
-          id: router.query.id,
-          format: format,
-        },
+        query: { id: router.query.id, format },
       },
       undefined,
       { shallow: true }
     );
+    setPdfLoaded(false);
+    setMonolithLoaded(false);
+    setImageLoaded(false);
   }, [format]);
 
   useEffect(() => {
-    getLink.mutateAsync({
+    fetchLink({
       id: Number(router.query.id),
-      isPublicRoute: isPublicRoute,
+      isPublicRoute,
     });
 
     let interval: NodeJS.Timeout | null = null;
@@ -49,29 +50,89 @@ export default function Preservation() {
       link &&
       (!link?.image || !link?.pdf || !link?.readable || !link?.monolith)
     ) {
-      interval = setInterval(
-        () =>
-          getLink.mutateAsync({
-            id: link.id as number,
-          }),
-        5000
-      );
-    } else {
-      if (interval) {
-        clearInterval(interval);
-      }
+      interval = setInterval(() => {
+        fetchLink({ id: link.id as number });
+      }, 5000);
+    } else if (interval) {
+      clearInterval(interval);
     }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, []);
 
+  const Skeleton = () => (
+    <div className="animate-pulse w-full h-[500px] flex items-center justify-center bg-gray-200 rounded-md">
+      <p className="text-gray-400">Loading...</p>
+    </div>
+  );
+
+  const renderFormat = () => {
+    if (!link?.id) return null;
+
+    switch (Number(router.query.format)) {
+      case ArchivedFormat.readability:
+        return <ReadableView link={link} />;
+
+      case ArchivedFormat.monolith:
+        return (
+          <>
+            {!monolithLoaded && <Skeleton />}
+            <iframe
+              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}`}
+              className={clsx(
+                "w-full h-screen border-none rounded-md",
+                monolithLoaded ? "block" : "hidden"
+              )}
+              onLoad={() => setMonolithLoaded(true)}
+            />
+          </>
+        );
+
+      case ArchivedFormat.pdf:
+        return (
+          <>
+            {!pdfLoaded && <Skeleton />}
+            <iframe
+              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}`}
+              className={clsx(
+                "w-full h-screen border-none rounded-md",
+                pdfLoaded ? "block" : "hidden"
+              )}
+              onLoad={() => setPdfLoaded(true)}
+            />
+          </>
+        );
+
+      case ArchivedFormat.png:
+      case ArchivedFormat.jpeg:
+        return (
+          <>
+            {!imageLoaded && <Skeleton />}
+            <img
+              alt=""
+              src={`/api/v1/archives/${link.id}?format=${Number(
+                router.query.format
+              )}`}
+              className={clsx(
+                "w-fit mx-auto rounded-md",
+                imageLoaded ? "block" : "hidden"
+              )}
+              onLoad={() => setImageLoaded(true)}
+            />
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div
-      className={clsx(
-        getLink.isPending ? "flex h-screen" : "relative",
-        "max-w-screen-lg h-full mx-auto p-3"
-      )}
-    >
+    <div className={clsx("relative max-w-screen-lg h-full mx-auto p-3")}>
       {link?.id && (
-        <div className={`flex flex-col gap-3 items-start`}>
+        <div className="flex flex-col gap-3 items-start">
           <div className="flex gap-3 items-start">
             <div className="flex flex-col w-full gap-1">
               <p className="md:text-4xl text-2xl pr-10">
@@ -86,8 +147,7 @@ export default function Preservation() {
                   target="_blank"
                   className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
                 >
-                  <i className="bi-link-45deg"></i>
-
+                  <i className="bi-link-45deg" />
                   {isValidUrl(link?.url || "") &&
                     new URL(link?.url as string).host}
                 </Link>
@@ -104,9 +164,7 @@ export default function Preservation() {
                     "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold w-full text-center",
                     format === ArchivedFormat.pdf && "bg-primary bg-opacity-50"
                   )}
-                  onClick={() => {
-                    setFormat(ArchivedFormat.pdf);
-                  }}
+                  onClick={() => setFormat(ArchivedFormat.pdf)}
                 >
                   {t("pdf")}
                 </div>
@@ -118,9 +176,7 @@ export default function Preservation() {
                     format === ArchivedFormat.monolith &&
                       "bg-primary bg-opacity-50"
                   )}
-                  onClick={() => {
-                    setFormat(ArchivedFormat.monolith);
-                  }}
+                  onClick={() => setFormat(ArchivedFormat.monolith)}
                 >
                   {t("webpage")}
                 </div>
@@ -132,9 +188,7 @@ export default function Preservation() {
                     format === ArchivedFormat.readability &&
                       "bg-primary bg-opacity-50"
                   )}
-                  onClick={() => {
-                    setFormat(ArchivedFormat.readability);
-                  }}
+                  onClick={() => setFormat(ArchivedFormat.readability)}
                 >
                   {t("readable")}
                 </div>
@@ -148,13 +202,13 @@ export default function Preservation() {
                         ? ArchivedFormat.png
                         : ArchivedFormat.jpeg) && "bg-primary bg-opacity-50"
                   )}
-                  onClick={() => {
+                  onClick={() =>
                     setFormat(
                       link?.image?.endsWith("png")
                         ? ArchivedFormat.png
                         : ArchivedFormat.jpeg
-                    );
-                  }}
+                    )
+                  }
                 >
                   {t("image")}
                 </div>
@@ -163,37 +217,8 @@ export default function Preservation() {
           </p>
         </div>
       )}
-      {link?.id &&
-      Number(router.query.format) === ArchivedFormat.readability ? (
-        <ReadableView link={link} />
-      ) : link?.id &&
-        Number(router.query.format) === ArchivedFormat.monolith ? (
-        <iframe
-          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}`}
-          className="w-full h-screen border-none rounded-md"
-        ></iframe>
-      ) : link?.id && Number(router.query.format) === ArchivedFormat.pdf ? (
-        <iframe
-          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}`}
-          className="w-full h-screen border-none rounded-md"
-        ></iframe>
-      ) : link?.id && Number(router.query.format) === ArchivedFormat.png ? (
-        <img
-          alt=""
-          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.png}`}
-          className="w-fit mx-auto rounded-md"
-        />
-      ) : link?.id && Number(router.query.format) === ArchivedFormat.jpeg ? (
-        <img
-          alt=""
-          src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}`}
-          className="w-fit mx-auto rounded-md"
-        />
-      ) : getLink.error ? (
-        <p>{t("not_found_404")}</p>
-      ) : (
-        <></>
-      )}
+
+      {error ? <p>{t("not_found_404")}</p> : renderFormat()}
     </div>
   );
 }
