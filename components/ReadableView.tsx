@@ -72,7 +72,7 @@ export default function ReadableView({ link }: Props) {
         </div>
       </div>
 
-      <div className="text-sm text-neutral mb-3 flex justify-between md:flex-row flex-col md:items-center w-full gap-2">
+      <div className="text-sm text-neutral flex justify-between md:flex-row flex-col md:items-center w-full gap-2">
         <LinkDate link={link} />
       </div>
       {link?.readable?.startsWith("archives") ? (
