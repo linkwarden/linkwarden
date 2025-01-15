@@ -8,6 +8,10 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import clsx from "clsx";
+import LinkDate from "./LinkViews/LinkComponents/LinkDate";
+import isValidUrl from "@/lib/shared/isValidUrl";
+import Link from "next/link";
+import unescapeString from "@/lib/client/unescapeString";
 
 type LinkContent = {
   title: string;
@@ -48,14 +52,36 @@ export default function ReadableView({ link }: Props) {
   }, [link]);
 
   return (
-    <div
-      className={clsx(
-        "flex flex-col gap-5 rounded-md",
-        linkContent?.content && "bg-base-200 p-3"
-      )}
-    >
+    <div className="flex flex-col gap-3 items-start p-3">
+      <div className="flex gap-3 items-start">
+        <div className="flex flex-col w-full gap-1">
+          <p className="md:text-4xl text-2xl">
+            {unescapeString(link?.name || link?.description || link?.url || "")}
+          </p>
+          {link?.url && (
+            <Link
+              href={link?.url || ""}
+              title={link?.url}
+              target="_blank"
+              className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
+            >
+              <i className="bi-link-45deg" />
+              {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
+            </Link>
+          )}
+        </div>
+      </div>
+
+      <div className="text-sm text-neutral mb-3 flex justify-between md:flex-row flex-col md:items-center w-full gap-2">
+        <LinkDate link={link} />
+      </div>
       {link?.readable?.startsWith("archives") ? (
-        <>
+        <div
+          className={clsx(
+            "px-3 rounded-md",
+            linkContent?.content && "bg-base-200"
+          )}
+        >
           {linkContent?.content ? (
             <div
               className="line-break px-1 reader-view"
@@ -76,7 +102,7 @@ export default function ReadableView({ link }: Props) {
               <div className="w-5/6 mr-auto h-4 skeleton rounded-md"></div>
             </div>
           )}
-        </>
+        </div>
       ) : (
         <div className={`w-full h-full flex flex-col justify-center`}>
           <svg

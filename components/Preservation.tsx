@@ -85,7 +85,7 @@ export default function Preservation() {
     switch (Number(router.query.format)) {
       case ArchivedFormat.readability:
         return (
-          <div className="overflow-auto w-full h-full rounded-md">
+          <div className="overflow-auto w-full h-full">
             <ReadableView link={link} />
           </div>
         );
@@ -97,9 +97,9 @@ export default function Preservation() {
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}`}
               className={clsx(
-                "w-full border-none rounded-md",
+                "w-full border-none",
                 monolithLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[calc(100vh-15rem)]"
+                isExpanded ? "h-full" : "h-[calc(100vh-4.5rem)]"
               )}
               onLoad={() => setMonolithLoaded(true)}
             />
@@ -113,9 +113,9 @@ export default function Preservation() {
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}`}
               className={clsx(
-                "w-full border-none rounded-md",
+                "w-full border-none",
                 pdfLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[calc(100vh-15rem)]"
+                isExpanded ? "h-full" : "h-[calc(100vh-4.5rem)]"
               )}
               onLoad={() => setPdfLoaded(true)}
             />
@@ -127,15 +127,15 @@ export default function Preservation() {
         return (
           <>
             {!imageLoaded && <Skeleton />}
-            <div className="overflow-auto w-full h-full rounded-md">
+            <div className="overflow-auto w-fit mx-auto h-full">
               <img
                 alt=""
                 src={`/api/v1/archives/${link.id}?format=${Number(
                   router.query.format
                 )}`}
                 className={clsx(
-                  "w-fit mx-auto rounded-md",
-                  imageLoaded ? "block" : "hidden"
+                  "w-fit h-auto mx-auto", // Ensure block display and proper resizing
+                  !imageLoaded && "hidden"
                 )}
                 onLoad={() => setImageLoaded(true)}
               />
@@ -177,124 +177,92 @@ export default function Preservation() {
     <div
       className={clsx(
         !isExpanded && "max-w-screen-lg mx-auto p-3 relative",
-        isExpanded && "fixed inset-0 w-screen h-screen z-50 p-3"
+        isExpanded && "fixed inset-0 w-screen h-screen z-50"
       )}
       style={{
         overflow: isExpanded ? "hidden" : "visible",
       }}
     >
       {!isExpanded && link?.id && (
-        <div className="flex flex-col gap-3 items-start">
-          <div className="flex gap-3 items-start">
-            <div className="flex flex-col w-full gap-1">
-              <p className="md:text-4xl text-2xl pr-10">
-                {unescapeString(
-                  link?.name || link?.description || link?.url || ""
+        <div className="text-sm text-neutral mb-3 flex justify-between items-center w-full gap-2">
+          <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
+            {formatAvailable(link, "pdf") && (
+              <div
+                className={clsx(
+                  "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
+                  format === ArchivedFormat.pdf && "bg-primary bg-opacity-50"
                 )}
-              </p>
-              {link?.url && (
-                <Link
-                  href={link?.url || ""}
-                  title={link?.url}
-                  target="_blank"
-                  className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
+                onClick={() => setFormat(ArchivedFormat.pdf)}
+              >
+                <div className="tooltip tooltip-bottom" data-tip={t("pdf")}>
+                  <i className={`bi-file-earmark-pdf text-lg`} />
+                </div>
+              </div>
+            )}
+            {formatAvailable(link, "monolith") && (
+              <div
+                className={clsx(
+                  "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
+                  format === ArchivedFormat.monolith &&
+                    "bg-primary bg-opacity-50"
+                )}
+                onClick={() => setFormat(ArchivedFormat.monolith)}
+              >
+                <div className="tooltip tooltip-bottom" data-tip={t("webpage")}>
+                  <i className={`bi-filetype-html text-lg`} />
+                </div>
+              </div>
+            )}
+            {formatAvailable(link, "readable") && (
+              <div
+                className={clsx(
+                  "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
+                  format === ArchivedFormat.readability &&
+                    "bg-primary bg-opacity-50"
+                )}
+                onClick={() => setFormat(ArchivedFormat.readability)}
+              >
+                <div
+                  className="tooltip tooltip-bottom"
+                  data-tip={t("readable")}
                 >
-                  <i className="bi-link-45deg" />
-                  {isValidUrl(link?.url || "") &&
-                    new URL(link?.url as string).host}
-                </Link>
-              )}
-            </div>
+                  <i className={`bi-file-earmark-text text-lg`} />
+                </div>
+              </div>
+            )}
+            {formatAvailable(link, "image") && (
+              <div
+                className={clsx(
+                  "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
+                  format ===
+                    (link?.image?.endsWith("png")
+                      ? ArchivedFormat.png
+                      : ArchivedFormat.jpeg) && "bg-primary bg-opacity-50"
+                )}
+                onClick={() =>
+                  setFormat(
+                    link?.image?.endsWith("png")
+                      ? ArchivedFormat.png
+                      : ArchivedFormat.jpeg
+                  )
+                }
+              >
+                <div className="tooltip tooltip-bottom" data-tip={t("image")}>
+                  <i className={`bi-file-earmark-image text-lg`} />
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="text-sm text-neutral mb-3 flex justify-between md:flex-row flex-col md:items-center w-full gap-2">
-            <LinkDate link={link} />
-            <div className="flex items-center flex-wrap w-full justify-between md:w-fit gap-2">
-              <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
-                {formatAvailable(link, "pdf") && (
-                  <div
-                    className={clsx(
-                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
-                      format === ArchivedFormat.pdf &&
-                        "bg-primary bg-opacity-50"
-                    )}
-                    onClick={() => setFormat(ArchivedFormat.pdf)}
-                  >
-                    <div className="tooltip tooltip-top" data-tip={t("pdf")}>
-                      <i className={`bi-file-earmark-pdf text-lg`} />
-                    </div>
-                  </div>
-                )}
-                {formatAvailable(link, "monolith") && (
-                  <div
-                    className={clsx(
-                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
-                      format === ArchivedFormat.monolith &&
-                        "bg-primary bg-opacity-50"
-                    )}
-                    onClick={() => setFormat(ArchivedFormat.monolith)}
-                  >
-                    <div
-                      className="tooltip tooltip-top"
-                      data-tip={t("webpage")}
-                    >
-                      <i className={`bi-filetype-html text-lg`} />
-                    </div>
-                  </div>
-                )}
-                {formatAvailable(link, "readable") && (
-                  <div
-                    className={clsx(
-                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
-                      format === ArchivedFormat.readability &&
-                        "bg-primary bg-opacity-50"
-                    )}
-                    onClick={() => setFormat(ArchivedFormat.readability)}
-                  >
-                    <div
-                      className="tooltip tooltip-top"
-                      data-tip={t("readable")}
-                    >
-                      <i className={`bi-file-earmark-text text-lg`} />
-                    </div>
-                  </div>
-                )}
-                {formatAvailable(link, "image") && (
-                  <div
-                    className={clsx(
-                      "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold text-center flex justify-between items-center",
-                      format ===
-                        (link?.image?.endsWith("png")
-                          ? ArchivedFormat.png
-                          : ArchivedFormat.jpeg) && "bg-primary bg-opacity-50"
-                    )}
-                    onClick={() =>
-                      setFormat(
-                        link?.image?.endsWith("png")
-                          ? ArchivedFormat.png
-                          : ArchivedFormat.jpeg
-                      )
-                    }
-                  >
-                    <div className="tooltip tooltip-top" data-tip={t("image")}>
-                      <i className={`bi-file-earmark-image text-lg`} />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Download + Expand Buttons */}
-              <div className="flex gap-2">
-                <div onClick={handleDownload} className="btn btn-sm btn-circle">
-                  <i className="bi-cloud-arrow-down text-xl text-neutral" />
-                </div>
-                <div
-                  className="btn btn-circle btn-sm"
-                  onClick={() => setIsExpanded(true)}
-                >
-                  <i className="bi-arrows-angle-expand" />
-                </div>
-              </div>
+          <div className="flex gap-2">
+            <div onClick={handleDownload} className="btn btn-sm btn-circle">
+              <i className="bi-cloud-arrow-down text-xl text-neutral" />
+            </div>
+            <div
+              className="btn btn-circle btn-sm"
+              onClick={() => setIsExpanded(true)}
+            >
+              <i className="bi-arrows-angle-expand" />
             </div>
           </div>
         </div>
@@ -310,7 +278,7 @@ export default function Preservation() {
 
       {isExpanded && (
         <div
-          className="absolute top-2 right-2 btn btn-circle btn-sm"
+          className="absolute top-3 right-3 btn btn-circle btn-sm"
           onClick={() => setIsExpanded(false)}
         >
           <i className="bi-arrows-angle-contract" />
