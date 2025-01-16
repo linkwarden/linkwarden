@@ -12,6 +12,7 @@ import verifyToken from "@/lib/api/verifyToken";
 import generatePreview from "@/lib/api/generatePreview";
 import createFolder from "@/lib/api/storage/createFolder";
 import { UploadFileSchema } from "@/lib/shared/schemaValidation";
+import DOMPurify from "dompurify";
 
 export const config = {
   api: {
