@@ -5,10 +5,6 @@ import { useTranslation } from "next-i18next";
 import ReadableView from "@/components/ReadableView";
 import { useGetLink } from "@/hooks/store/links";
 import clsx from "clsx";
-import Link from "next/link";
-import unescapeString from "@/lib/client/unescapeString";
-import isValidUrl from "@/lib/shared/isValidUrl";
-import LinkDate from "./LinkViews/LinkComponents/LinkDate";
 import { formatAvailable } from "@/lib/shared/formatStats";
 
 export default function Preservation() {
