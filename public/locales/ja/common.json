@@ -42,6 +42,7 @@
   "from_linkwarden": "Linkwardenから",
   "from_html": "ブックマークHTMLファイルから",
   "from_wallabag": "Wallabag (JSON file)から",
+  "from_omnivore": "Omnivore (Zip file)から",
   "pinned": "ピン留め",
   "pinned_links_desc": "ピン留めされたリンク",
   "pin_favorite_links_here": "お気に入りのリンクをここにピン留め！",
