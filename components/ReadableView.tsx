@@ -12,6 +12,7 @@ import LinkDate from "./LinkViews/LinkComponents/LinkDate";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
+import usePermissions from "@/hooks/usePermissions";
 
 type LinkContent = {
   title: string;
@@ -51,6 +52,10 @@ export default function ReadableView({ link }: Props) {
     fetchLinkContent();
   }, [link]);
 
+  const isPublicRoute = router.pathname.startsWith("/public");
+
+  const permissions = usePermissions(link?.collection?.id as number);
+
   return (
     <div className="flex flex-col gap-3 items-start p-3">
       <div className="flex gap-3 items-start">
@@ -78,7 +83,7 @@ export default function ReadableView({ link }: Props) {
       {link?.readable?.startsWith("archives") ? (
         <div
           className={clsx(
-            "px-3 rounded-md",
+            "px-3 rounded-md w-full",
             linkContent?.content && "bg-base-200"
           )}
         >
@@ -86,7 +91,7 @@ export default function ReadableView({ link }: Props) {
             <div
               className="line-break px-1 reader-view"
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(linkContent?.content || "") || "",
+                __html: DOMPurify.sanitize(linkContent?.content) || "",
               }}
             ></div>
           ) : (
