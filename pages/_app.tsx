@@ -47,7 +47,7 @@ function App({
         <Head>
           <title>Linkwarden</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta name="theme-color" content="#000000" />
+          <meta name="theme-color" content="#ffffff" />
           <link
             rel="apple-touch-icon"
             sizes="180x180"
