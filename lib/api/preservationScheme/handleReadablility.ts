@@ -5,7 +5,11 @@ import { prisma } from "../db";
 import createFile from "../storage/createFile";
 import { Link } from "@prisma/client";
 
-const handleReadablility = async (content: string, link: Link) => {
+const handleReadablility = async (
+  content: string,
+  link: Link,
+  keepContent?: boolean
+) => {
   const window = new JSDOM("").window;
   const purify = DOMPurify(window);
   const cleanedUpContent = purify.sanitize(content);
@@ -22,6 +26,10 @@ const handleReadablility = async (content: string, link: Link) => {
         select: { collectionId: true },
       })
     )?.collectionId;
+
+    if (article && keepContent) {
+      article.content = cleanedUpContent;
+    }
 
     const data = JSON.stringify(article);
 

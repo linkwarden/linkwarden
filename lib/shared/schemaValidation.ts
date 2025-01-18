@@ -156,6 +156,7 @@ const ACCEPTED_TYPES = [
   "image/jpg",
   "image/png",
   "application/pdf",
+  "text/plain",
 ];
 const NEXT_PUBLIC_MAX_FILE_BUFFER = Number(
   process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
