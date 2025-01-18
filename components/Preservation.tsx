@@ -82,7 +82,7 @@ export default function Preservation() {
       case ArchivedFormat.readability:
         return (
           <div className="overflow-auto w-full h-full">
-            <ReadableView link={link} />
+            <ReadableView link={link} isExpanded={isExpanded} />
           </div>
         );
 

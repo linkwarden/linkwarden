@@ -1,18 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import formidable from "formidable";
+import fs from "fs";
 import readFile from "@/lib/api/storage/readFile";
-import { prisma } from "@/lib/api/db";
-import { ArchivedFormat } from "@/types/global";
+import createFile from "@/lib/api/storage/createFile";
+import createFolder from "@/lib/api/storage/createFolder";
+import generatePreview from "@/lib/api/generatePreview";
+import verifyToken from "@/lib/api/verifyToken";
 import verifyUser from "@/lib/api/verifyUser";
 import getPermission from "@/lib/api/getPermission";
+import { prisma } from "@/lib/api/db";
 import { UsersAndCollections } from "@prisma/client";
-import formidable from "formidable";
-import createFile from "@/lib/api/storage/createFile";
-import fs from "fs";
-import verifyToken from "@/lib/api/verifyToken";
-import generatePreview from "@/lib/api/generatePreview";
-import createFolder from "@/lib/api/storage/createFolder";
 import { UploadFileSchema } from "@/lib/shared/schemaValidation";
+import isDemoMode from "@/lib/api/isDemoMode";
+import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
 import DOMPurify from "dompurify";
+import { formatAvailable } from "@/lib/shared/formatStats";
+import { ArchivedFormat } from "@/types/global";
+import getLinkTypeFromFormat from "@/lib/shared/getLinkTypeFromFormat";
+import handleReadablility from "@/lib/api/preservationScheme/handleReadablility";
 
 export const config = {
   api: {
@@ -20,295 +25,306 @@ export const config = {
   },
 };
 
-export default async function Index(req: NextApiRequest, res: NextApiResponse) {
+/** ------------------ */
+/** Helper Functions   */
+/** ------------------ */
+
+// Check whether user can create in the given collection
+function userHasCreatePermission(
+  collectionPermissions: any,
+  userId: number
+): boolean {
+  if (!collectionPermissions) return false;
+  const memberHasAccess = collectionPermissions.members.some(
+    (e: UsersAndCollections) => e.userId === userId && e.canCreate
+  );
+  return collectionPermissions.ownerId === userId || Boolean(memberHasAccess);
+}
+
+// Ensure user does not exceed maximum link limit
+async function verifyLinkLimit(userId: number) {
+  const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER || 30000);
+  const userLinkCount = await prisma.link.count({
+    where: {
+      collection: {
+        ownerId: userId,
+      },
+    },
+  });
+  if (userLinkCount > MAX_LINKS_PER_USER) {
+    throw new Error(
+      `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`
+    );
+  }
+}
+
+// Common validation for file size and type
+function validateFile(
+  file: formidable.File,
+  maxMB: number,
+  allowedTypes: string[]
+) {
+  if (!file || !allowedTypes.includes(file.mimetype || "")) {
+    throw new Error(
+      `Sorry, we couldn't process your file. Please ensure it's in [${allowedTypes.join(
+        ", "
+      )}] format and doesn't exceed ${maxMB}MB.`
+    );
+  }
+
+  const fileBuffer = fs.readFileSync(file.filepath);
+  if (Buffer.byteLength(fileBuffer as any) > 1024 * 1024 * maxMB) {
+    throw new Error(
+      `Sorry, we couldn't process your file. Please ensure it doesn't exceed ${maxMB}MB.`
+    );
+  }
+
+  return fileBuffer;
+}
+
+// Retrieve collection if accessible (for both GET and file uploads/updates)
+async function getAccessibleCollection(
+  linkId: number,
+  userId: number | undefined
+) {
+  return prisma.collection.findFirst({
+    where: {
+      links: {
+        some: {
+          id: linkId,
+        },
+      },
+      OR: [
+        { ownerId: userId || -1 },
+        { members: { some: { userId: userId || -1 } } },
+        { isPublic: true },
+      ],
+    },
+  });
+}
+
+/** ------------------ */
+/** Route Handlers     */
+/** ------------------ */
+
+async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   const linkId = Number(req.query.linkId);
   const format = Number(req.query.format);
   const isPreview = Boolean(req.query.preview);
 
-  let suffix: string;
-
-  if (format === ArchivedFormat.png) suffix = ".png";
-  else if (format === ArchivedFormat.jpeg) suffix = ".jpeg";
-  else if (format === ArchivedFormat.pdf) suffix = ".pdf";
-  else if (format === ArchivedFormat.readability) suffix = "_readability.json";
-  else if (format === ArchivedFormat.monolith) suffix = ".html";
-
-  //@ts-ignore
-  if (!linkId || !suffix)
+  const suffix = getSuffixFromFormat(format);
+  if (!linkId || !suffix) {
     return res.status(401).json({ response: "Invalid parameters." });
+  }
 
-  if (req.method === "GET") {
-    const token = await verifyToken({ req });
-    const userId = typeof token === "string" ? undefined : token?.id;
+  // Verify token => If present, get user ID
+  const token = await verifyToken({ req });
+  const userId = typeof token === "string" ? undefined : token?.id;
 
-    const collectionIsAccessible = await prisma.collection.findFirst({
-      where: {
-        links: {
-          some: {
-            id: linkId,
-          },
-        },
-        OR: [
-          { ownerId: userId || -1 },
-          { members: { some: { userId: userId || -1 } } },
-          { isPublic: true },
-        ],
-      },
+  // Check if user can access the collection
+  const collection = await getAccessibleCollection(linkId, userId);
+  if (!collection) {
+    return res
+      .status(401)
+      .json({ response: "You don't have access to this collection." });
+  }
+
+  // Decide the file path
+  const filePath = isPreview
+    ? `archives/preview/${collection.id}/${linkId}.jpeg`
+    : `archives/${collection.id}/${linkId + suffix}`;
+
+  const { file, contentType, status } = await readFile(filePath);
+  res.setHeader("Content-Type", contentType).status(status as number);
+  return res.send(file);
+}
+
+async function handlePost(req: NextApiRequest, res: NextApiResponse) {
+  if (isDemoMode()) {
+    return res.status(400).json({
+      response:
+        "This action is disabled because this is a read-only demo of Linkwarden.",
     });
+  }
 
-    if (!collectionIsAccessible)
-      return res
-        .status(401)
-        .json({ response: "You don't have access to this collection." });
+  const linkId = Number(req.query.linkId);
+  const format = Number(req.query.format);
+  const suffix = getSuffixFromFormat(format);
+  const isPreview = Boolean(req.query.preview);
 
-    if (isPreview) {
-      const { file, contentType, status } = await readFile(
-        `archives/preview/${collectionIsAccessible.id}/${linkId}.jpeg`
-      );
+  if (!linkId || !suffix) {
+    return res.status(401).json({ response: "Invalid parameters." });
+  }
 
-      res.setHeader("Content-Type", contentType).status(status as number);
+  // Verify user and collection permissions
+  const user = await verifyUser({ req, res });
+  if (!user) return; // verifyUser already handles the response on failure
 
-      return res.send(file);
-    } else {
-      const { file, contentType, status } = await readFile(
-        `archives/${collectionIsAccessible.id}/${linkId + suffix}`
-      );
+  const collectionPermissions = await getPermission({
+    userId: user.id,
+    linkId,
+  });
+  if (
+    !userHasCreatePermission(collectionPermissions, user.id) ||
+    !collectionPermissions
+  ) {
+    return res.status(400).json({ response: "Collection is not accessible." });
+  }
 
-      res.setHeader("Content-Type", contentType).status(status as number);
+  const link = await prisma.link.findUnique({
+    where: {
+      id: linkId,
+    },
+  });
 
-      return res.send(file);
-    }
-  } else if (req.method === "POST") {
-    if (process.env.NEXT_PUBLIC_DEMO === "true")
-      return res.status(400).json({
-        response:
-          "This action is disabled because this is a read-only demo of Linkwarden.",
+  if (!link) {
+    return res.status(400).json({ response: "Link not found." });
+  }
+
+  // Ensure if the png already exists, the user is not trying to upload a jpeg (and vice versa)
+  if (
+    (((link.image?.endsWith("jpeg") || link.image?.endsWith("png")) &&
+      format === ArchivedFormat.png) ||
+      (link.image?.endsWith("png") && format === ArchivedFormat.jpeg)) &&
+    !isPreview
+  ) {
+    return res
+      .status(400)
+      .json({ response: "PNG or JPEG file already exists." });
+  }
+
+  try {
+    await verifyLinkLimit(user.id);
+  } catch (err: any) {
+    return res.status(400).json({ response: err.message });
+  }
+
+  const NEXT_PUBLIC_MAX_FILE_BUFFER = Number(
+    process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
+  );
+
+  const form = formidable({
+    maxFields: 1,
+    maxFiles: 1,
+    maxFileSize: NEXT_PUBLIC_MAX_FILE_BUFFER * 1024 * 1024,
+  });
+
+  form.parse(req, async (err, fields, files) => {
+    try {
+      if (err || !files.file || !files.file[0]) {
+        throw new Error(
+          `Sorry, we couldn't process your file. Please ensure it doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`
+        );
+      }
+
+      // Validate input against Zod schema
+      const dataValidation = UploadFileSchema.safeParse({
+        id: linkId,
+        format,
+        file: files.file,
       });
+      if (!dataValidation.success) {
+        const issue = dataValidation.error.issues[0];
+        throw new Error(`Error: ${issue.message} [${issue.path.join(", ")}]`);
+      }
 
-    const user = await verifyUser({ req, res });
-    if (!user) return;
-
-    const collectionPermissions = await getPermission({
-      userId: user.id,
-      linkId,
-    });
-
-    if (!collectionPermissions)
-      return res.status(400).json({
-        response: "Collection is not accessible.",
-      });
-
-    const memberHasAccess = collectionPermissions.members.some(
-      (e: UsersAndCollections) => e.userId === user.id && e.canCreate
-    );
-
-    if (!(collectionPermissions.ownerId === user.id || memberHasAccess))
-      return res.status(400).json({
-        response: "Collection is not accessible.",
-      });
-
-    const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER || 30000);
-
-    const numberOfLinksTheUserHas = await prisma.link.count({
-      where: {
-        collection: {
-          ownerId: user.id,
-        },
-      },
-    });
-
-    if (numberOfLinksTheUserHas > MAX_LINKS_PER_USER)
-      return res.status(400).json({
-        response: `Each collection owner can only have a maximum of ${MAX_LINKS_PER_USER} Links.`,
-      });
-
-    const NEXT_PUBLIC_MAX_FILE_BUFFER = Number(
-      process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
-    );
-
-    const form = formidable({
-      maxFields: 1,
-      maxFiles: 1,
-      maxFileSize: NEXT_PUBLIC_MAX_FILE_BUFFER * 1024 * 1024,
-    });
-
-    form.parse(req, async (err, fields, files) => {
+      // Check file type and size
       const allowedMIMETypes = [
         "application/pdf",
         "image/png",
         "image/jpg",
         "image/jpeg",
+        "text/plain",
       ];
+      const fileBuffer = validateFile(
+        files.file[0],
+        NEXT_PUBLIC_MAX_FILE_BUFFER,
+        allowedMIMETypes
+      );
 
-      const dataValidation = UploadFileSchema.safeParse({
-        id: Number(req.query.linkId),
-        format: Number(req.query.format),
-        file: files.file,
+      // Confirm the link still exists
+      const linkStillExists = await prisma.link.findUnique({
+        where: { id: linkId },
       });
-
-      if (!dataValidation.success) {
-        return res.status(400).json({
-          response: `Error: ${
-            dataValidation.error.issues[0].message
-          } [${dataValidation.error.issues[0].path.join(", ")}]`,
-        });
+      if (!linkStillExists) {
+        throw new Error("Link not found.");
       }
 
-      if (
-        err ||
-        !files.file ||
-        !files.file[0] ||
-        !allowedMIMETypes.includes(files.file[0].mimetype || "")
-      ) {
-        // Handle parsing error
-        return res.status(400).json({
-          response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`,
-        });
-      } else {
-        const fileBuffer = fs.readFileSync(files.file[0].filepath);
+      // Generate a preview if it's an image
+      const { mimetype } = files.file[0];
+      const isPDF = mimetype?.includes("pdf");
+      const isImage = mimetype?.includes("image");
+      const isReadable = mimetype?.includes("text");
 
-        if (
-          Buffer.byteLength(fileBuffer) >
-          1024 * 1024 * Number(NEXT_PUBLIC_MAX_FILE_BUFFER)
-        )
-          return res.status(400).json({
-            response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`,
-          });
-
-        const linkStillExists = await prisma.link.findUnique({
-          where: { id: linkId },
-        });
-
-        const { mimetype } = files.file[0];
-        const isPDF = mimetype?.includes("pdf");
-        const isImage = mimetype?.includes("image");
-
-        if (linkStillExists && isImage) {
-          const collectionId = collectionPermissions.id;
-          createFolder({
-            filePath: `archives/preview/${collectionId}`,
-          });
-
-          generatePreview(fileBuffer, collectionId, linkId);
-        }
-
-        if (linkStillExists) {
-          await createFile({
-            filePath: `archives/${collectionPermissions.id}/${linkId + suffix}`,
-            data: fileBuffer,
-          });
-
-          await prisma.link.update({
-            where: { id: linkId },
-            data: {
-              preview: isPDF ? "unavailable" : undefined,
-              image: isImage
-                ? `archives/${collectionPermissions.id}/${linkId + suffix}`
-                : null,
-              pdf: isPDF
-                ? `archives/${collectionPermissions.id}/${linkId + suffix}`
-                : null,
-              lastPreserved: new Date().toISOString(),
-            },
-          });
-        }
-
-        fs.unlinkSync(files.file[0].filepath);
-      }
-
-      return res.status(200).json({
-        response: files,
-      });
-    });
-  }
-  // To update the link preview
-  else if (req.method === "PUT") {
-    if (process.env.NEXT_PUBLIC_DEMO === "true")
-      return res.status(400).json({
-        response:
-          "This action is disabled because this is a read-only demo of Linkwarden.",
-      });
-
-    const user = await verifyUser({ req, res });
-    if (!user) return;
-
-    const collectionPermissions = await getPermission({
-      userId: user.id,
-      linkId,
-    });
-
-    if (!collectionPermissions)
-      return res.status(400).json({
-        response: "Collection is not accessible.",
-      });
-
-    const memberHasAccess = collectionPermissions.members.some(
-      (e: UsersAndCollections) => e.userId === user.id && e.canCreate
-    );
-
-    if (!(collectionPermissions.ownerId === user.id || memberHasAccess))
-      return res.status(400).json({
-        response: "Collection is not accessible.",
-      });
-
-    const NEXT_PUBLIC_MAX_FILE_BUFFER = Number(
-      process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
-    );
-
-    const form = formidable({
-      maxFields: 1,
-      maxFiles: 1,
-      maxFileSize: NEXT_PUBLIC_MAX_FILE_BUFFER * 1024 * 1024,
-    });
-
-    form.parse(req, async (err, fields, files) => {
-      const allowedMIMETypes = ["image/png", "image/jpg", "image/jpeg"];
-
-      if (
-        err ||
-        !files.file ||
-        !files.file[0] ||
-        !allowedMIMETypes.includes(files.file[0].mimetype || "")
-      ) {
-        // Handle parsing error
-        return res.status(400).json({
-          response: `Sorry, we couldn't process your file. Please ensure it's a PDF, PNG, or JPG format and doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`,
-        });
-      } else {
-        const fileBuffer = fs.readFileSync(files.file[0].filepath);
-
-        if (
-          Buffer.byteLength(fileBuffer) >
-          1024 * 1024 * Number(NEXT_PUBLIC_MAX_FILE_BUFFER)
-        )
-          return res.status(400).json({
-            response: `Sorry, we couldn't process your file. Please ensure it's a PNG, or JPG format and doesn't exceed ${NEXT_PUBLIC_MAX_FILE_BUFFER}MB.`,
-          });
-
-        const linkStillExists = await prisma.link.update({
-          where: { id: linkId },
-          data: {
-            updatedAt: new Date(),
-          },
-        });
-
-        if (linkStillExists) {
-          const collectionId = collectionPermissions.id;
-          createFolder({
-            filePath: `archives/preview/${collectionId}`,
-          });
-
-          await generatePreview(fileBuffer, collectionId, linkId);
-        }
+      if (isReadable) {
+        await handleReadablility(fileBuffer.toString(), link, true);
 
         fs.unlinkSync(files.file[0].filepath);
 
-        if (linkStillExists)
-          return res.status(200).json({
-            response: linkStillExists,
-          });
-        else return res.status(400).json({ response: "Link not found." });
+        return res.status(200).json({ response: files });
       }
-    });
+
+      if (isImage) {
+        const collectionId = collectionPermissions.id;
+        createFolder({ filePath: `archives/preview/${collectionId}` });
+        await generatePreview(fileBuffer, collectionId, linkId);
+      }
+
+      if (!isPreview) {
+        // Store the file
+        await createFile({
+          filePath: `archives/${collectionPermissions.id}/${linkId + suffix}`,
+          data: fileBuffer,
+        });
+      }
+
+      // Update link in DB
+      const updateLink = await prisma.link.update({
+        where: { id: linkId },
+        data: {
+          preview: isPDF ? "unavailable" : undefined,
+          image:
+            isImage && !isPreview
+              ? `archives/${collectionPermissions.id}/${linkId + suffix}`
+              : undefined,
+          pdf: isPDF
+            ? `archives/${collectionPermissions.id}/${linkId + suffix}`
+            : undefined,
+          contentEdited: isReadable ? new Date().toISOString() : undefined,
+          lastPreserved: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      });
+
+      // Clean up temporary file
+      fs.unlinkSync(files.file[0].filepath);
+
+      return res.status(200).json({ response: updateLink });
+    } catch (error: any) {
+      return res.status(400).json({ response: error.message });
+    }
+  });
+}
+
+/** ------------------ */
+/** Main API Handler   */
+/** ------------------ */
+
+export default async function Index(req: NextApiRequest, res: NextApiResponse) {
+  const method = req.method;
+
+  try {
+    switch (method) {
+      case "GET":
+        await handleGet(req, res);
+        break;
+      case "POST":
+        await handlePost(req, res);
+        break;
+      default:
+        return res.status(405).json({ response: "Method not allowed" });
+    }
+  } catch (error: any) {
+    return res.status(400).json({ response: error.message });
   }
 }

@@ -20,7 +20,7 @@ const generatePreview = async (
       const processedBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
 
       if (
-        Buffer.byteLength(processedBuffer) >
+        Buffer.byteLength(processedBuffer as any) >
         1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 0.1)
       ) {
         console.log("Error generating preview: Buffer size exceeded");
