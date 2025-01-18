@@ -15,6 +15,7 @@ import unescapeString from "@/lib/client/unescapeString";
 import usePermissions from "@/hooks/usePermissions";
 import showdown from "showdown";
 import TurndownService from "turndown";
+import { useUpdateFile } from "@/hooks/store/links";
 
 const turndownService = new TurndownService({
   headingStyle: "atx",
@@ -43,9 +44,10 @@ const converter = new showdown.Converter({
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
+  isExpanded: boolean;
 };
 
-export default function ReadableView({ link }: Props) {
+export default function ReadableView({ link, isExpanded }: Props) {
   const { t } = useTranslation();
   const [linkContent, setLinkContent] = useState("");
 
@@ -89,6 +91,8 @@ export default function ReadableView({ link }: Props) {
     setIsEditing(false);
   };
 
+  const updateFile = useUpdateFile();
+
   const saveChanges = () => {
     const updatedHTML = DOMPurify.sanitize(converter.makeHtml(editedMarkdown));
 
@@ -98,41 +102,46 @@ export default function ReadableView({ link }: Props) {
 
     setIsEditing(false);
 
-    // If you want to persist it somewhere:
-    // await fetch('/api/saveHtml', {
-    //   method: 'PUT',
-    //   body: JSON.stringify({ html: updatedHTML }),
-    //   headers: { 'Content-Type': 'application/json' },
-    // });
+    updateFile.mutate({
+      linkId: link.id as number,
+      file: new File([updatedHTML], "updatedContent.txt", {
+        type: "text/plain",
+      }),
+    });
   };
 
   return (
     <div className="flex flex-col gap-3 items-start p-3">
-      <div className="flex gap-3 items-start">
-        <div className="flex flex-col w-full gap-1">
-          <p className="md:text-4xl text-2xl">
-            {unescapeString(link?.name || link?.description || link?.url || "")}
-          </p>
-          {link?.url && (
-            <Link
-              href={link?.url || ""}
-              title={link?.url}
-              target="_blank"
-              className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
-            >
-              <i className="bi-link-45deg" />
-              {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
-            </Link>
-          )}
+      {!isEditing && (
+        <div className="flex gap-3 items-start">
+          <div className="flex flex-col w-full gap-1">
+            <p className="md:text-4xl text-2xl">
+              {unescapeString(
+                link?.name || link?.description || link?.url || ""
+              )}
+            </p>
+            {link?.url && (
+              <Link
+                href={link?.url || ""}
+                title={link?.url}
+                target="_blank"
+                className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
+              >
+                <i className="bi-link-45deg" />
+                {isValidUrl(link?.url || "") &&
+                  new URL(link?.url as string).host}
+              </Link>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="text-sm text-neutral flex justify-between w-full gap-2">
         <LinkDate link={link} />
 
         {!isPublicRoute && (permissions === true || permissions?.canUpdate) && (
           <>
-            {!isEditing ? (
+            {!isEditing && linkContent ? (
               <button
                 className="flex items-center gap-2 btn btn-sm"
                 onClick={startEditing}
@@ -140,8 +149,13 @@ export default function ReadableView({ link }: Props) {
                 <i className="bi-pencil" />
                 {t("edit")}
               </button>
-            ) : (
-              <div className="flex items-center gap-2">
+            ) : linkContent ? (
+              <div
+                className={clsx(
+                  "flex items-center gap-2",
+                  isExpanded && "mr-10"
+                )}
+              >
                 <button
                   className="flex items-center gap-2 btn btn-sm"
                   onClick={cancelEditing}
@@ -155,7 +169,7 @@ export default function ReadableView({ link }: Props) {
                   <i className="bi-check2 text-xl" />
                 </button>
               </div>
-            )}
+            ) : null}
           </>
         )}
       </div>
@@ -165,7 +179,12 @@ export default function ReadableView({ link }: Props) {
           {linkContent ? (
             isEditing ? (
               <textarea
-                className="h-[50vh] w-full rounded-md p-3 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                className={clsx(
+                  "w-full rounded-md p-3 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100 resize-none",
+                  isExpanded
+                    ? "h-[calc(100vh-4.5rem)]"
+                    : "h-[calc(100vh-8.5rem)]"
+                )}
                 value={editedMarkdown}
                 onChange={(e) => setEditedMarkdown(e.target.value)}
               />

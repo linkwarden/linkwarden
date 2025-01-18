@@ -14,6 +14,8 @@ import {
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
+import getFormatFromContentType from "@/lib/shared/getFormatFromContentType";
+import getLinkTypeFromFormat from "@/lib/shared/getLinkTypeFromFormat";
 
 const useLinks = (params: LinkRequestQuery = {}) => {
   const router = useRouter();
@@ -345,21 +347,8 @@ const useUploadFile = () => {
 
   return useMutation({
     mutationFn: async ({ link, file }: any) => {
-      let fileType: ArchivedFormat | null = null;
-      let linkType: "url" | "image" | "pdf" | null = null;
-
-      if (file?.type === "image/jpg" || file.type === "image/jpeg") {
-        fileType = ArchivedFormat.jpeg;
-        linkType = "image";
-      } else if (file.type === "image/png") {
-        fileType = ArchivedFormat.png;
-        linkType = "image";
-      } else if (file.type === "application/pdf") {
-        fileType = ArchivedFormat.pdf;
-        linkType = "pdf";
-      } else {
-        return { ok: false, data: "Invalid file type." };
-      }
+      let format = getFormatFromContentType(file?.type);
+      let linkType = getLinkTypeFromFormat(format);
 
       const response = await fetch("/api/v1/links", {
         body: JSON.stringify({
@@ -382,7 +371,7 @@ const useUploadFile = () => {
         file && formBody.append("file", file);
 
         await fetch(
-          `/api/v1/archives/${(data as any).response.id}?format=${fileType}`,
+          `/api/v1/archives/${(data as any).response.id}?format=${format}`,
           {
             body: formBody,
             method: "POST",
@@ -416,12 +405,24 @@ const useUploadFile = () => {
   });
 };
 
-const useUpdatePreview = () => {
+const useUpdateFile = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ linkId, file }: { linkId: number; file: File }) => {
+    mutationFn: async ({
+      linkId,
+      file,
+      isPreview,
+    }: {
+      linkId: number;
+      file: File;
+      isPreview?: boolean;
+    }) => {
       const formBody = new FormData();
+
+      let format = getFormatFromContentType(file?.type);
+
+      if (isPreview) format = ArchivedFormat.jpeg;
 
       if (!linkId || !file)
         throw new Error("Error generating preview: Invalid parameters");
@@ -429,10 +430,12 @@ const useUpdatePreview = () => {
       formBody.append("file", file);
 
       const res = await fetch(
-        `/api/v1/archives/${linkId}?format=` + ArchivedFormat.jpeg,
+        `/api/v1/archives/${linkId}?format=` +
+          format +
+          (isPreview ? "&preview=true" : ""),
         {
           body: formBody,
-          method: "PUT",
+          method: "POST",
         }
       );
 
@@ -561,5 +564,5 @@ export {
   useGetLink,
   useBulkEditLinks,
   resetInfiniteQueryPagination,
-  useUpdatePreview,
+  useUpdateFile,
 };

@@ -13,11 +13,7 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@/hooks/store/user";
-import {
-  useGetLink,
-  useUpdateLink,
-  useUpdatePreview,
-} from "@/hooks/store/links";
+import { useGetLink, useUpdateLink, useUpdateFile } from "@/hooks/store/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
@@ -140,7 +136,7 @@ export default function LinkDetails({
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   const updateLink = useUpdateLink();
-  const updatePreview = useUpdatePreview();
+  const updateFile = useUpdateFile();
 
   const submit = async (e?: any) => {
     e?.preventDefault();
@@ -235,10 +231,11 @@ export default function LinkDetails({
 
                       const load = toast.loading(t("updating"));
 
-                      await updatePreview.mutateAsync(
+                      await updateFile.mutateAsync(
                         {
                           linkId: link.id as number,
                           file,
+                          isPreview: true,
                         },
                         {
                           onSettled: (data, error) => {
@@ -248,7 +245,10 @@ export default function LinkDetails({
                               toast.error(error.message);
                             } else {
                               toast.success(t("updated"));
-                              setLink({ updatedAt: data.updatedAt, ...link });
+                              setLink({
+                                updatedAt: data.response.updatedAt,
+                                ...link,
+                              });
                             }
                           },
                         }
