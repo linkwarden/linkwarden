@@ -183,8 +183,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
   // Ensure if the png already exists, the user is not trying to upload a jpeg (and vice versa)
   if (
-    (((link.image?.endsWith("jpeg") || link.image?.endsWith("png")) &&
-      format === ArchivedFormat.png) ||
+    ((link.image?.endsWith("jpeg") && format === ArchivedFormat.png) ||
       (link.image?.endsWith("png") && format === ArchivedFormat.jpeg)) &&
     !isPreview
   ) {
