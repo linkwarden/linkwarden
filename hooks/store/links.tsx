@@ -453,6 +453,7 @@ const useUpdateFile = () => {
               ? {
                   ...e,
                   preview: `archives/preview/${e.collectionId}/${e.id}.jpeg`,
+                  updatedAt: new Date().toISOString(),
                 }
               : e
           ),
