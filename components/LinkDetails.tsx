@@ -502,6 +502,7 @@ export default function LinkDetails({
                 </p>
 
                 {onUpdateArchive &&
+                  link.type === "url" &&
                   (permissions === true || permissions?.canUpdate) &&
                   !isPublicRoute && (
                     <div
