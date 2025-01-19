@@ -1,0 +1,13 @@
+name: Installation Problem
+title: Installation Problem
+description: Report an issue with installation
+labels: installation
+body:
+  - type: textarea
+    id: feature-description
+    validations:
+      required: true
+    attributes:
+      label: For installation issues, please visit discord.linkwarden.app
+      description: "Invite link: https://discord.com/invite/CtuYV47nuJ"
+      placeholder: Please do not submit installation issues on GitHub.
