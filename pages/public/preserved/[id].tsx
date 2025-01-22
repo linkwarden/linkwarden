@@ -1,8 +1,7 @@
-import getServerSideProps from "@/lib/client/getServerSideProps";
-import Preservation from "@/components/Preservation";
-
+import { useRouter } from "next/router";
 export default function Index() {
-  return <Preservation />;
-}
+  const router = useRouter();
+  const { id } = router.query;
 
-export { getServerSideProps };
+  return router.push(`/public/links/${id}`);
+}
