@@ -2,15 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --selection-color: #fff;
-  --selection-bg-color: #fff;
-}
-
 [data-theme="dark"] {
   color-scheme: dark;
-  --selection-color: #000000;
-  --selection-bg-color: #ffffff;
   --default: 82.76% 0.101277 230.317893;
   --red: 69.73% 0.168 22.43;
   --rose: 75% 0.2 340;
@@ -22,8 +15,6 @@
 
 [data-theme="light"] {
   color-scheme: light;
-  --selection-color: #ffffff;
-  --selection-bg-color: #000000;
   --default: 50% 0.1193 242.75;
   --red: 49.7% 0.2026 22.43;
   --rose: 55% 0.25 340;
@@ -31,11 +22,6 @@
   --green: 60% 0.2 140;
   --orange: 70% 0.22 60;
   --zinc: 50% 0.07 220;
-}
-
-::selection {
-  background-color: var(--selection-bg-color);
-  color: var(--selection-color);
 }
 
 /* Hide scrollbar */
@@ -205,23 +191,36 @@
   overflow-y: hidden;
 }
 
+.custom-file-input::file-selector-button {
+  cursor: pointer;
+}
+
 /* Reader view custom stylings */
 .reader-view {
-  line-height: 2.8rem;
+  /* line-height: 2.8rem; */
+}
+.reader-view * {
+  text-align: inherit;
+}
+.reader-view mark {
+  background-color: oklch(var(--p) / 0.5);
+  color: oklch(var(--bc));
+  border-radius: 5px;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 .reader-view p {
   font-size: 1.15rem;
-  line-height: 2.5rem;
+  line-height: 1.8;
 }
 .reader-view h1 {
   font-size: 2.2rem;
+  line-height: 1.3;
 }
 .reader-view h2 {
-  line-height: 4rem;
   font-size: 1.9rem;
 }
 .reader-view h3 {
-  line-height: 3.5rem;
   font-size: 1.6rem;
 }
 .reader-view h4 {
@@ -262,7 +261,6 @@
 .reader-view code {
   padding: 0.15rem 0.4rem 0.15rem 0.4rem;
 }
-
 [data-theme="dark"] .reader-view code,
 [data-theme="dark"] .reader-view pre {
   background-color: rgb(49, 49, 49);
@@ -274,6 +272,31 @@
   border-radius: 8px;
 }
 
-.custom-file-input::file-selector-button {
+.reader-view ul[data-type="taskList"] {
+  list-style: none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.reader-view ul[data-type="taskList"] li {
+  align-items: center;
+  display: flex;
+}
+
+.reader-view ul[data-type="taskList"] li > label {
+  flex: 0 0 auto;
+  margin-right: 0.5rem;
+  user-select: none;
+}
+
+.reader-view ul[data-type="taskList"] li > div {
+  flex: 1 1 auto;
+}
+
+.reader-view ul[data-type="taskList"] input[type="checkbox"] {
   cursor: pointer;
+}
+
+.read-only ul[data-type="taskList"] {
+  pointer-events: none;
 }

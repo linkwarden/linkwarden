@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { useTranslation } from "next-i18next";
 import { useDeleteLink } from "@/hooks/store/links";
-import Drawer from "../Drawer";
 import LinkDetails from "../LinkDetails";
 import Link from "next/link";
 import usePermissions from "@/hooks/usePermissions";
@@ -10,6 +9,8 @@ import { useRouter } from "next/router";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import toast from "react-hot-toast";
 import clsx from "clsx";
+import Modal from "../Modal";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 
 type Props = {
   onClose: Function;
@@ -40,17 +41,16 @@ export default function LinkModal({
 
   const [mode, setMode] = useState<"view" | "edit">(activeMode || "view");
 
-  return (
-    <Drawer
-      toggleDrawer={onClose}
-      className="sm:h-screen items-center relative"
-    >
-      <div className="absolute top-3 left-0 right-0 flex justify-between px-3">
-        <div
-          className="bi-x text-xl btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
-          onClick={() => onClose()}
-        ></div>
+  const { width } = useWindowDimensions();
 
+  return (
+    <Modal toggleModal={onClose} isLinkModal>
+      <div
+        className={clsx(
+          "absolute top-3 left-0 right-0 flex justify-center",
+          width >= 640 && "w-1/2 lg:w-1/3 ml-auto"
+        )}
+      >
         {(permissions === true || permissions?.canUpdate) && !isPublicRoute && (
           <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
             <div
@@ -78,7 +78,16 @@ export default function LinkModal({
           </div>
         )}
 
-        <div className="flex gap-2">
+        <div
+          className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10 absolute right-3"
+          onClick={() => {
+            onClose();
+          }}
+        >
+          <i title="Close" className="bi-x text-xl" />
+        </div>
+
+        {/* <div className="flex gap-2">
           {!isPublicRoute && (
             <div className={`dropdown dropdown-end z-20`}>
               <div
@@ -169,18 +178,16 @@ export default function LinkModal({
               className="bi-box-arrow-up-right btn-circle text-base-content opacity-50 hover:opacity-100 btn btn-sm select-none z-10"
             ></Link>
           )}
-        </div>
+        </div> */}
       </div>
 
-      <div className="w-full">
-        <LinkDetails
-          activeLink={link}
-          className="sm:mt-0 -mt-11"
-          mode={mode}
-          setMode={(mode: "view" | "edit") => setMode(mode)}
-          onUpdateArchive={onUpdateArchive}
-        />
-      </div>
-    </Drawer>
+      <LinkDetails
+        activeLink={link}
+        className="sm:mt-0 -mt-11"
+        mode={mode}
+        setMode={(mode: "view" | "edit") => setMode(mode)}
+        onUpdateArchive={onUpdateArchive}
+      />
+    </Modal>
   );
 }

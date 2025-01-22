@@ -6,7 +6,7 @@ const s3Client: S3 | undefined =
   process.env.SPACES_KEY &&
   process.env.SPACES_SECRET
     ? new S3({
-        forcePathStyle: !!process.env.SPACES_FORCE_PATH_STYLE,
+        forcePathStyle: process.env.SPACES_FORCE_PATH_STYLE === "true",
         endpoint: process.env.SPACES_ENDPOINT,
         region: process.env.SPACES_REGION,
         credentials: {
