@@ -202,8 +202,8 @@ export default function LinkDetails({
         <div className={clsx(width >= 640 && "w-1/2 lg:w-1/3 overflow-y-auto")}>
           <div
             className={clsx(
-              "overflow-hidden select-none relative group/banner h-40 opacity-80 rounded-t-2xl sm:rounded-tr-2xl sm:rounded-tl-none",
-              width < 640 && "-mt-5"
+              "overflow-hidden select-none relative group/banner h-40 opacity-80 rounded-t-2xl sm:rounded-tr-2xl sm:rounded-tl-none -mt-5 sm:mt-0",
+              !standalone && "-mx-5 sm:mx-0"
             )}
           >
             {formatAvailable(link, "preview") ? (
