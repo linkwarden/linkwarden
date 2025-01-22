@@ -13,46 +13,55 @@ import isValidUrl from "@/lib/shared/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import usePermissions from "@/hooks/usePermissions";
-import showdown from "showdown";
-import TurndownService from "turndown";
 import { useUpdateFile } from "@/hooks/store/links";
-
-const turndownService = new TurndownService({
-  headingStyle: "atx",
-  bulletListMarker: "-",
-  emDelimiter: "*",
-});
-
-const converter = new showdown.Converter({
-  omitExtraWLInCodeBlocks: true,
-  noHeaderId: false,
-  parseImgDimensions: true,
-  simplifiedAutoLink: true,
-  literalMidWordUnderscores: true,
-  strikethrough: true,
-  tables: true,
-  tablesHeaderId: false,
-  ghCodeBlocks: true,
-  tasklists: true,
-  smoothLivePreview: true,
-  prefixHeaderId: false,
-  disableForced4SpacesIndentedSublists: false,
-  ghCompatibleHeaderId: true,
-  smartIndentationFix: false,
-  headerLevelStart: 1,
-});
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
+import TipTapLink from "@tiptap/extension-link";
+import Highlight from "@tiptap/extension-highlight";
+import TextAlign from "@tiptap/extension-text-align";
+import MenuBar from "./Editor/MenuBar";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import ListItem from "@tiptap/extension-list-item";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   isExpanded: boolean;
+  standalone?: boolean;
 };
 
-export default function ReadableView({ link, isExpanded }: Props) {
+export default function ReadableView({ link, isExpanded, standalone }: Props) {
   const { t } = useTranslation();
   const [linkContent, setLinkContent] = useState("");
-
   const [isEditing, setIsEditing] = useState(false);
-  const [editedMarkdown, setEditedMarkdown] = useState("");
+
+  const editor = useEditor({
+    extensions: [
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
+      StarterKit,
+      Image,
+      ListItem,
+      Highlight,
+      TextAlign,
+      TipTapLink.configure({
+        openOnClick: false,
+      }),
+    ],
+    content: linkContent || "<p></p>",
+    editable: false,
+    editorProps: {
+      attributes: {
+        class: clsx(
+          "rounded-md bg-base-200 focus:outline-none border-neutral-content focus:border-primary border-solid border p-3 overflow-auto duration-100",
+          isExpanded ? "h-[calc(100vh-7.25rem)]" : "h-[calc(80vh-10.75rem)]"
+        ),
+      },
+    },
+  });
 
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public");
@@ -60,47 +69,53 @@ export default function ReadableView({ link, isExpanded }: Props) {
 
   useEffect(() => {
     const fetchLinkContent = async () => {
-      if (router.query.id && formatAvailable(link, "readable")) {
+      if (formatAvailable(link, "readable")) {
         const response = await fetch(
-          `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}`
+          `/api/v1/archives/${link?.id}?format=${
+            ArchivedFormat.readability
+          }&_=${Date.now()}`
         );
         const data = await response?.json();
-        setLinkContent(data?.content);
+        setLinkContent(data?.content || "");
       }
     };
 
     fetchLinkContent();
-  }, [link, router.query.id]);
+  }, [link]);
 
   useEffect(() => {
-    if (!isEditing && linkContent) {
-      const initialMarkdown = turndownService.turndown(linkContent);
-      setEditedMarkdown(initialMarkdown);
+    if (editor) {
+      editor.setEditable(isEditing);
     }
-  }, [linkContent, isEditing]);
+  }, [isEditing, editor]);
+
+  useEffect(() => {
+    if (!isEditing && linkContent && editor) {
+      editor.commands.setContent(linkContent, false);
+    }
+  }, [linkContent, isEditing, editor]);
 
   const startEditing = () => {
-    if (linkContent) {
-      const initialMarkdown = turndownService.turndown(linkContent);
-      setEditedMarkdown(initialMarkdown);
+    if (linkContent && editor) {
+      editor.commands.setContent(linkContent, false);
     }
     setIsEditing(true);
   };
 
   const cancelEditing = () => {
+    if (editor) {
+      editor.commands.setContent(linkContent, false);
+    }
     setIsEditing(false);
   };
 
   const updateFile = useUpdateFile();
 
   const saveChanges = () => {
-    const updatedHTML = DOMPurify.sanitize(converter.makeHtml(editedMarkdown));
+    if (!editor) return;
 
-    console.log("Saved HTML content:", updatedHTML);
-
+    const updatedHTML = DOMPurify.sanitize(editor.getHTML());
     setLinkContent(updatedHTML);
-
-    setIsEditing(false);
 
     updateFile.mutate({
       linkId: link.id as number,
@@ -111,7 +126,7 @@ export default function ReadableView({ link, isExpanded }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-3 items-start p-3">
+    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto">
       {!isEditing && (
         <div className="flex gap-3 items-start">
           <div className="flex flex-col w-full gap-1">
@@ -138,71 +153,71 @@ export default function ReadableView({ link, isExpanded }: Props) {
 
       <div className="text-sm text-neutral flex justify-between w-full gap-2">
         <LinkDate link={link} />
-
-        {!isPublicRoute && (permissions === true || permissions?.canUpdate) && (
-          <>
-            {!isEditing && linkContent ? (
-              <button
-                className="flex items-center gap-2 btn btn-sm"
-                onClick={startEditing}
-              >
-                <i className="bi-pencil" />
-                {t("edit")}
-              </button>
-            ) : linkContent ? (
-              <div
-                className={clsx(
-                  "flex items-center gap-2",
-                  isExpanded && "mr-10"
-                )}
-              >
+        {!isPublicRoute &&
+          !standalone &&
+          (permissions === true || permissions?.canUpdate) && (
+            <>
+              {!isEditing && linkContent ? (
                 <button
-                  className="flex items-center gap-2 btn btn-sm"
-                  onClick={cancelEditing}
+                  className="flex items-center gap-2 btn btn-ghost btn-sm"
+                  onClick={startEditing}
                 >
-                  <i className="bi-x text-xl" />
+                  <i className="bi-pencil" />
+                  {t("edit")}
                 </button>
-                <button
-                  className="flex items-center gap-2 btn btn-primary btn-sm"
-                  onClick={saveChanges}
+              ) : linkContent ? (
+                <div
+                  className={clsx(
+                    "flex items-center gap-2",
+                    isExpanded && "mr-10"
+                  )}
                 >
-                  <i className="bi-check2 text-xl" />
-                </button>
-              </div>
-            ) : null}
-          </>
-        )}
+                  <button
+                    className="flex items-center gap-2 btn btn-ghost btn-square btn-sm"
+                    onClick={cancelEditing}
+                  >
+                    <i className="bi-x text-xl" />
+                  </button>
+                  <button
+                    className="flex items-center gap-2 btn btn-primary btn-square btn-sm"
+                    onClick={() => {
+                      saveChanges();
+                      setIsEditing(false);
+                    }}
+                  >
+                    <i className="bi-check2 text-xl" />
+                  </button>
+                </div>
+              ) : null}
+            </>
+          )}
       </div>
 
       {link?.readable?.startsWith("archives") ? (
         <>
           {linkContent ? (
-            isEditing ? (
-              <textarea
-                className={clsx(
-                  "w-full rounded-md p-3 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100 resize-none",
-                  isExpanded
-                    ? "h-[calc(100vh-4.5rem)]"
-                    : "h-[calc(100vh-8.5rem)]"
-                )}
-                value={editedMarkdown}
-                onChange={(e) => setEditedMarkdown(e.target.value)}
-              />
-            ) : (
-              <div
-                className={clsx(
-                  "p-3 rounded-md w-full",
-                  linkContent && "bg-base-200"
-                )}
-              >
+            <>
+              {editor && isEditing ? (
+                <div className="w-full reader-view">
+                  <MenuBar editor={editor} />
+                  <EditorContent editor={editor} />
+                </div>
+              ) : (
                 <div
-                  className="line-break px-1 reader-view"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(linkContent),
-                  }}
-                />
-              </div>
-            )
+                  className={clsx(
+                    "p-3 rounded-md w-full",
+                    linkContent && "bg-base-200"
+                  )}
+                >
+                  <div
+                    className="line-break px-1 reader-view read-only"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(linkContent),
+                    }}
+                  />
+                </div>
+              )}
+            </>
           ) : (
             <div className="p-5 m-auto w-full flex flex-col items-center gap-5">
               <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
