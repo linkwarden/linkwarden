@@ -72,9 +72,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
     const fetchLinkContent = async () => {
       if (formatAvailable(link, "readable")) {
         const response = await fetch(
-          `/api/v1/archives/${link?.id}?format=${
-            ArchivedFormat.readability
-          }&_=${Date.now()}`
+          `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}&_=${link.updatedAt}`
         );
         const data = await response?.json();
         setLinkContent(data?.content || "");

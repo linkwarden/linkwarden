@@ -353,9 +353,7 @@ const RenderFormat = ({
           <>
             {!monolithLoaded && <PreservationSkeleton />}
             <iframe
-              src={`/api/v1/archives/${link.id}?format=${
-                ArchivedFormat.monolith
-              }&_=${Date.now()}`}
+              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`}
               className={clsx(
                 "w-full border-none",
                 monolithLoaded ? "block" : "hidden",
@@ -370,9 +368,7 @@ const RenderFormat = ({
           <>
             {!pdfLoaded && <PreservationSkeleton />}
             <iframe
-              src={`/api/v1/archives/${link.id}?format=${
-                ArchivedFormat.pdf
-              }&_=${Date.now()}`}
+              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}&_=${link.updatedAt}`}
               className={clsx(
                 "w-full border-none",
                 pdfLoaded ? "block" : "hidden",
@@ -390,7 +386,7 @@ const RenderFormat = ({
             <div className="overflow-auto w-fit mx-auto h-full">
               <img
                 alt=""
-                src={`/api/v1/archives/${link.id}?format=${format}`}
+                src={`/api/v1/archives/${link.id}?format=${format}&_=${link.updatedAt}`}
                 className={clsx("w-fit mx-auto", !imageLoaded && "hidden")}
                 onLoad={() => setImageLoaded(true)}
               />
