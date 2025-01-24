@@ -7,16 +7,6 @@ import verifyUser from "@/lib/api/verifyUser";
 import importFromWallabag from "@/lib/api/controllers/migration/importFromWallabag";
 import importFromOmnivore from "@/lib/api/controllers/migration/importFromOmnivore";
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: process.env.IMPORT_LIMIT
-        ? process.env.IMPORT_LIMIT + "mb"
-        : "10mb",
-    },
-  },
-};
-
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
   if (!user) return;
