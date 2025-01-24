@@ -104,7 +104,7 @@ export default function Index() {
   return (
     <MainLayout>
       <div
-        className="h-[60rem] p-5 flex gap-3 flex-col"
+        className="p-5 flex gap-3 flex-col"
         style={{
           backgroundImage: `linear-gradient(${activeCollection?.color}20 10%, ${
             settings.theme === "dark" ? "#262626" : "#f3f4f6"
