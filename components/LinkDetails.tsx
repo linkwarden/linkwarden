@@ -386,7 +386,9 @@ export default function LinkDetails({
                     )}
                 </div>
 
-                {link.id && <Preservation link={link} standalone />}
+                {link.id && (
+                  <Preservation link={link} standalone={standalone} />
+                )}
               </div>
             )}
 
