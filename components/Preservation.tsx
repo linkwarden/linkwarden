@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import ReadableView from "@/components/ReadableView";
 import clsx from "clsx";
 import { formatAvailable } from "@/lib/shared/formatStats";
-import useWindowDimensions from "@/hooks/useWindowDimensions";
 import { PreservationSkeleton } from "./Skeletons";
 import remToPixels from "@/lib/client/remToPixels";
 import { useReducedMotion } from "framer-motion";
@@ -407,7 +406,7 @@ const RenderFormat = ({
     <div
       style={style}
       className={clsx(
-        "z-[40] overflow-hidden ease-in-out duration-100",
+        "z-[40] overflow-hidden ease-in-out duration-100 pointer-events-auto",
         !isExpanded && "rounded-bl-2xl"
       )}
       data-ignore-click-away

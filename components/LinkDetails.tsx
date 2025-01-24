@@ -356,8 +356,8 @@ export default function LinkDetails({
               </div>
             )}
 
-            {mode === "view" && width < 640 && (
-              <div>
+            {mode === "view" && (
+              <div className="sm:hidden">
                 <br />
 
                 <div className="flex gap-1 items-center mb-2">
