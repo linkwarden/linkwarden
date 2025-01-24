@@ -22,9 +22,12 @@ export default function Navbar() {
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    setSidebar(false);
-    document.body.style.overflow = "auto";
+    if (sidebar) setSidebar(false);
   }, [width, router]);
+
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+  }, [sidebar]);
 
   const toggleSidebar = () => {
     setSidebar(false);
