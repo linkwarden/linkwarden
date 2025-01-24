@@ -51,12 +51,13 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
         openOnClick: false,
       }),
     ],
+    immediatelyRender: false,
     content: linkContent || "<p></p>",
     editable: false,
     editorProps: {
       attributes: {
         class: clsx(
-          "rounded-md bg-base-200 focus:outline-none border-neutral-content focus:border-primary border-solid border p-3 overflow-auto duration-100",
+          "rounded-md focus:outline-none border-neutral-content focus:border-primary border-solid border p-3 overflow-auto duration-100",
           isExpanded ? "h-[calc(100vh-7.25rem)]" : "h-[calc(80vh-10.75rem)]"
         ),
       },
@@ -126,7 +127,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto">
+    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200">
       {!isEditing && (
         <div className="flex gap-3 items-start">
           <div className="flex flex-col w-full gap-1">
