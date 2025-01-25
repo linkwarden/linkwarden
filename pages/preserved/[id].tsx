@@ -1,7 +1,8 @@
-import { useRouter } from "next/router";
-export default function Index() {
-  const router = useRouter();
-  const { id } = router.query;
+import getServerSideProps from "@/lib/client/getServerSideProps";
+import PreservationStandalone from "@/components/PreservationStandalone";
 
-  return router.push(`/links/${id}`);
+export default function Index() {
+  return <PreservationStandalone />;
 }
+
+export { getServerSideProps };
