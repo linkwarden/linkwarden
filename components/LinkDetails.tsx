@@ -4,7 +4,10 @@ import {
   ArchivedFormat,
 } from "@/types/global";
 import Link from "next/link";
-import { formatAvailable } from "@/lib/shared/formatStats";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@/lib/shared/formatStats";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
@@ -26,6 +29,8 @@ import usePermissions from "@/hooks/usePermissions";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
 import Preservation from "./Preservation";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
+import PreservedFormatRow from "./PreserverdFormatRow";
+import { BeatLoader } from "react-spinners";
 
 type Props = {
   className?: string;
@@ -356,42 +361,6 @@ export default function LinkDetails({
               </div>
             )}
 
-            {mode === "view" && width < 640 && (
-              <div>
-                <br />
-
-                <div className="flex gap-1 items-center mb-2">
-                  <p
-                    className="text-sm text-neutral"
-                    title={t("available_formats")}
-                  >
-                    {link.url ? t("preserved_formats") : t("content")}
-                  </p>
-
-                  {onUpdateArchive &&
-                    link.type === "url" &&
-                    (permissions === true || permissions?.canUpdate) &&
-                    !isPublicRoute && (
-                      <div
-                        className="tooltip tooltip-bottom"
-                        data-tip={t("refresh_preserved_formats")}
-                      >
-                        <button
-                          className="btn btn-xs btn-ghost btn-square text-neutral"
-                          onClick={() => onUpdateArchive()}
-                        >
-                          <i className="bi-arrow-clockwise text-sm" />
-                        </button>
-                      </div>
-                    )}
-                </div>
-
-                {link.id && (
-                  <Preservation link={link} standalone={standalone} />
-                )}
-              </div>
-            )}
-
             {mode === "edit" && (
               <>
                 <br />
@@ -573,6 +542,148 @@ export default function LinkDetails({
                 />
               )}
             </div>
+
+            {mode === "view" && (
+              <div>
+                <br />
+
+                <div className="flex gap-1 items-center mb-2">
+                  <p
+                    className="text-sm text-neutral"
+                    title={t("available_formats")}
+                  >
+                    {link.url ? t("preserved_formats") : t("file")}
+                  </p>
+
+                  {onUpdateArchive &&
+                    link.type === "url" &&
+                    (permissions === true || permissions?.canUpdate) &&
+                    !isPublicRoute && (
+                      <div
+                        className="tooltip tooltip-bottom"
+                        data-tip={t("refresh_preserved_formats")}
+                      >
+                        <button
+                          className="btn btn-xs btn-ghost btn-square text-neutral"
+                          onClick={() => onUpdateArchive()}
+                        >
+                          <i className="bi-arrow-clockwise text-sm" />
+                        </button>
+                      </div>
+                    )}
+                </div>
+
+                <div className={`flex flex-col rounded-md p-3 bg-base-200`}>
+                  {formatAvailable(link, "monolith") ? (
+                    <>
+                      <PreservedFormatRow
+                        name={t("webpage")}
+                        icon={"bi-filetype-html"}
+                        format={ArchivedFormat.monolith}
+                        link={link}
+                        downloadable={true}
+                      />
+                      <hr className="m-3 border-t border-neutral-content" />
+                    </>
+                  ) : undefined}
+
+                  {formatAvailable(link, "image") ? (
+                    <>
+                      <PreservedFormatRow
+                        name={t("screenshot")}
+                        icon={"bi-file-earmark-image"}
+                        format={
+                          link?.image?.endsWith("png")
+                            ? ArchivedFormat.png
+                            : ArchivedFormat.jpeg
+                        }
+                        link={link}
+                        downloadable={true}
+                      />
+                      <hr className="m-3 border-t border-neutral-content" />
+                    </>
+                  ) : undefined}
+
+                  {formatAvailable(link, "pdf") ? (
+                    <>
+                      <PreservedFormatRow
+                        name={t("pdf")}
+                        icon={"bi-file-earmark-pdf"}
+                        format={ArchivedFormat.pdf}
+                        link={link}
+                        downloadable={true}
+                      />
+                      <hr className="m-3 border-t border-neutral-content" />
+                    </>
+                  ) : undefined}
+
+                  {formatAvailable(link, "readable") ? (
+                    <>
+                      <PreservedFormatRow
+                        name={t("readable")}
+                        icon={"bi-file-earmark-text"}
+                        format={ArchivedFormat.readability}
+                        link={link}
+                      />
+                      <hr className="m-3 border-t border-neutral-content" />
+                    </>
+                  ) : undefined}
+
+                  {!isReady() && !atLeastOneFormatAvailable(link) ? (
+                    <div
+                      className={`w-full h-full flex flex-col justify-center p-10`}
+                    >
+                      <BeatLoader
+                        color="oklch(var(--p))"
+                        className="mx-auto mb-3"
+                        size={30}
+                      />
+
+                      <p className="text-center text-2xl">
+                        {t("preservation_in_queue")}
+                      </p>
+                      <p className="text-center text-lg">
+                        {t("check_back_later")}
+                      </p>
+                    </div>
+                  ) : link.url &&
+                    !isReady() &&
+                    atLeastOneFormatAvailable(link) ? (
+                    <div
+                      className={`w-full h-full flex flex-col justify-center p-5`}
+                    >
+                      <BeatLoader
+                        color="oklch(var(--p))"
+                        className="mx-auto mb-3"
+                        size={20}
+                      />
+                      <p className="text-center">
+                        {t("there_are_more_formats")}
+                      </p>
+                      <p className="text-center text-sm">
+                        {t("check_back_later")}
+                      </p>
+                    </div>
+                  ) : undefined}
+
+                  {link.url && (
+                    <Link
+                      href={`https://web.archive.org/web/${link?.url?.replace(
+                        /(^\w+:|^)\/\//,
+                        ""
+                      )}`}
+                      target="_blank"
+                      className="text-neutral mx-auto duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm"
+                    >
+                      <p className="whitespace-nowrap">
+                        {t("view_latest_snapshot")}
+                      </p>
+                      <i className="bi-box-arrow-up-right" />
+                    </Link>
+                  )}
+                </div>
+              </div>
+            )}
 
             {mode === "view" ? (
               <>
