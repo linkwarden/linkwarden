@@ -7,7 +7,7 @@ import { useGetLink } from "@/hooks/store/links";
 import clsx from "clsx";
 import { formatAvailable } from "@/lib/shared/formatStats";
 
-export default function Preservation() {
+export default function PreservationStandalone() {
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public");
 
