@@ -459,5 +459,6 @@
   "collection_publicly_shared": "This collection is being shared publicly.",
   "search_for_links": "Search for Links",
   "search_query_invalid_symbol": "The search query should not contain '%'.",
-  "open_modal_new_tab": "Open this modal in a new tab"
+  "open_modal_new_tab": "Open this modal in a new tab",
+  "file": "File"
 }
