@@ -27,7 +27,7 @@ import IconPopover from "./IconPopover";
 import TextInput from "./TextInput";
 import usePermissions from "@/hooks/usePermissions";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
-import Preservation from "./Preservation";
+import Preservation from "./Preservation/Preservation";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import PreservedFormatRow from "./PreserverdFormatRow";
 import { BeatLoader } from "react-spinners";
@@ -201,7 +201,7 @@ export default function LinkDetails({
       >
         {width >= 640 && (
           <div className="w-1/2 lg:w-2/3 overflow-y-auto">
-            {link.id && <Preservation link={link} standalone={standalone} />}
+            {link.id && <Preservation link={link} />}
           </div>
         )}
         <div className={clsx(width >= 640 && "w-1/2 lg:w-1/3 overflow-y-auto")}>
