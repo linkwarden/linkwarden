@@ -112,7 +112,12 @@ const CollectionListing = () => {
     );
   };
 
-  function reorderTreeItems(tree, movedCollectionId, source, destination) {
+  function reorderTreeItems(
+    tree: TreeData,
+    movedCollectionId: ItemId,
+    source: TreeSourcePosition,
+    destination: TreeDestinationPosition
+  ) {
     // Same parent reordering
     if (source.parentId === destination.parentId) {
       const parent = tree.items[source.parentId];
@@ -121,7 +126,9 @@ const CollectionListing = () => {
       // Remove from source index
       children.splice(source.index, 1);
       // Insert at destination index
-      children.splice(destination.index, 0, movedCollectionId);
+      if (destination.index) {
+        children.splice(destination.index, 0, movedCollectionId);
+      }
 
       parent.children = children;
       return tree;
@@ -132,7 +139,9 @@ const CollectionListing = () => {
     const destinationParent = tree.items[destination.parentId];
 
     // Remove from source parent
-    sourceParent.children = sourceParent.children.filter(id => id !== movedCollectionId);
+    sourceParent.children = sourceParent.children.filter(
+      (id) => id !== movedCollectionId
+    );
 
     // Initialize children array if it doesn't exist
     if (!destinationParent.children) {
@@ -140,9 +149,10 @@ const CollectionListing = () => {
     }
 
     // If destination index is not specified, add to the end
-    const destinationIndex = destination.index !== undefined ?
-      destination.index :
-      destinationParent.children.length;
+    const destinationIndex =
+      destination.index !== undefined
+        ? destination.index
+        : destinationParent.children.length;
 
     // Add to destination parent
     destinationParent.children.splice(destinationIndex, 0, movedCollectionId);
@@ -157,7 +167,7 @@ const CollectionListing = () => {
     return tree;
   }
 
-  function flattenTreeIds(tree, nodeId = 'root', result = []) {
+  function flattenTreeIds(tree: TreeData, nodeId: ItemId = 'root', result: Array<ItemId> = []) {
     const node = tree.items[nodeId];
 
     if (nodeId !== 'root') {
