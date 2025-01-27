@@ -18,7 +18,7 @@ export default function Preservation({
   standalone,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
-  standalone?: boolean;
+  standalone: boolean;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -214,6 +214,7 @@ export default function Preservation({
             link={link}
             format={format}
             isExpanded={isExpanded}
+            standalone={standalone}
             containerRef={containerRef}
             setIsExpanded={setIsExpanded}
           />
@@ -229,12 +230,14 @@ const RenderFormat = ({
   link,
   format,
   isExpanded,
+  standalone,
   containerRef,
   setIsExpanded,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   format: ArchivedFormat;
   isExpanded: boolean;
+  standalone: boolean;
   containerRef: React.RefObject<HTMLDivElement>;
   setIsExpanded: (expanded: boolean) => void;
 }) => {
@@ -313,6 +316,7 @@ const RenderFormat = ({
         link={link}
         format={format}
         isExpanded={isExpanded}
+        standalone={standalone}
       />
       {isExpanded && (
         <div

@@ -11,12 +11,14 @@ type Props = {
   format: ArchivedFormat;
   isExpanded: boolean;
   link?: LinkIncludingShortenedCollectionAndTags;
+  standalone?: boolean;
 };
 
 export const PreservationContent: React.FC<Props> = ({
   link,
   format,
   isExpanded,
+  standalone,
 }) => {
   const [pdfLoaded, setPdfLoaded] = useState(false);
   const [monolithLoaded, setMonolithLoaded] = useState(false);
@@ -52,7 +54,11 @@ export const PreservationContent: React.FC<Props> = ({
               className={clsx(
                 "w-full border-none",
                 monolithLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[calc(80vh-3.75rem)]"
+                isExpanded
+                  ? "h-full"
+                  : standalone
+                    ? "h-[calc(100vh-3.75rem)]"
+                    : "h-[calc(80vh-3.75rem)]"
               )}
               onLoad={() => setMonolithLoaded(true)}
             />
@@ -67,7 +73,11 @@ export const PreservationContent: React.FC<Props> = ({
               className={clsx(
                 "w-full border-none",
                 pdfLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[calc(80vh-3.75rem)]"
+                isExpanded
+                  ? "h-full"
+                  : standalone
+                    ? "h-[calc(100vh-3.75rem)]"
+                    : "h-[calc(80vh-3.75rem)]"
               )}
               onLoad={() => setPdfLoaded(true)}
             />
