@@ -42,7 +42,11 @@ export const PreservationContent: React.FC<Props> = ({
       case ArchivedFormat.readability:
         return (
           <div className="overflow-auto w-full h-full">
-            <ReadableView link={link} isExpanded={isExpanded} />
+            <ReadableView
+              link={link}
+              isExpanded={isExpanded}
+              standalone={standalone || false}
+            />
           </div>
         );
       case ArchivedFormat.monolith:

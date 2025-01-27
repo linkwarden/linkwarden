@@ -28,9 +28,10 @@ import ListItem from "@tiptap/extension-list-item";
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   isExpanded: boolean;
+  standalone: boolean;
 };
 
-export default function ReadableView({ link, isExpanded }: Props) {
+export default function ReadableView({ link, isExpanded, standalone }: Props) {
   const { t } = useTranslation();
   const [linkContent, setLinkContent] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -57,7 +58,11 @@ export default function ReadableView({ link, isExpanded }: Props) {
       attributes: {
         class: clsx(
           "rounded-md focus:outline-none border-neutral-content focus:border-primary border-solid border p-3 overflow-auto duration-100",
-          isExpanded ? "h-[calc(100vh-7.25rem)]" : "h-[calc(80vh-10.75rem)]"
+          isExpanded
+            ? "h-[calc(100vh-7.25rem)]"
+            : standalone
+              ? "h-[calc(100vh-10.75rem)]"
+              : "h-[calc(80vh-10.75rem)]"
         ),
       },
     },
