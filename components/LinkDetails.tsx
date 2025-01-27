@@ -198,14 +198,20 @@ export default function LinkDetails({
           !standalone && "sm:flex sm:h-[80vh]"
         )}
       >
-        {width >= 640 && (
+        {width >= 640 && atLeastOneFormatAvailable(link) && (
           <div className="w-1/2 lg:w-2/3 overflow-y-auto">
             {link.id && (
               <Preservation link={link} standalone={standalone || false} />
             )}
           </div>
         )}
-        <div className={clsx(width >= 640 && "w-1/2 lg:w-1/3 overflow-y-auto")}>
+        <div
+          className={clsx(
+            width >= 640 &&
+              atLeastOneFormatAvailable(link) &&
+              "w-1/2 lg:w-1/3 overflow-y-auto"
+          )}
+        >
           <div
             className={clsx(
               "overflow-hidden select-none relative group/banner h-40 opacity-80 -mt-5 sm:mt-0",
@@ -299,7 +305,7 @@ export default function LinkDetails({
                     if (iconTriggerRef.current) {
                       const rect =
                         iconTriggerRef.current.getBoundingClientRect();
-                      if (width >= 640) {
+                      if (width >= 640 && atLeastOneFormatAvailable(link)) {
                         setIconPopoverPosition({
                           top: rect.bottom + window.scrollY,
                           left: rect.left + rect.width / 2 + window.scrollX, // center of LinkIcon
@@ -333,9 +339,21 @@ export default function LinkDetails({
                       iconWeight: "",
                     })
                   }
-                  className={clsx(width >= 640 && "-translate-x-1/2")}
-                  top={width >= 640 ? iconPopoverPosition.top : undefined}
-                  left={width >= 640 ? iconPopoverPosition.left : undefined}
+                  className={clsx(
+                    width >= 640 &&
+                      atLeastOneFormatAvailable(link) &&
+                      "-translate-x-1/2"
+                  )}
+                  top={
+                    width >= 640 && atLeastOneFormatAvailable(link)
+                      ? iconPopoverPosition.top
+                      : undefined
+                  }
+                  left={
+                    width >= 640 && atLeastOneFormatAvailable(link)
+                      ? iconPopoverPosition.left
+                      : undefined
+                  }
                   onClose={() => {
                     setIconPopover(false);
                     submit();
