@@ -40,17 +40,23 @@ type Props = {
   setMode?: Function;
   onClose?: Function;
   onUpdateArchive?: Function;
+  activeMode?: "view" | "edit";
+  onDelete?: Function;
+  onPin?: Function;
 };
 
 export default function LinkDetails({
   className,
   activeLink,
   standalone,
-  mode = "view",
-  setMode,
   onClose,
   onUpdateArchive,
+  activeMode,
+  onDelete,
+  onPin,
 }: Props) {
+  const [mode, setMode] = useState<"view" | "edit">(activeMode || "view");
+
   const [link, setLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(activeLink);
 
@@ -251,99 +257,6 @@ export default function LinkDetails({
               >
                 <i title="Close" className="bi-x text-xl" />
               </div>
-
-              {/* <div className="flex gap-2">
-          {!isPublicRoute && (
-            <div className={`dropdown dropdown-end z-20`}>
-              <div
-                tabIndex={0}
-                role="button"
-                onMouseDown={dropdownTriggerer}
-                className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
-              >
-                <i title="More" className="bi-three-dots text-xl" />
-              </div>
-              <ul
-                className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box`}
-              >
-                {
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        onPin();
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {link?.pinnedBy && link.pinnedBy[0]
-                        ? t("unpin")
-                        : t("pin_to_dashboard")}
-                    </div>
-                  </li>
-                }
-                {link.type === "url" &&
-                  (permissions === true || permissions?.canUpdate) && (
-                    <li>
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          onUpdateArchive();
-                        }}
-                        className="whitespace-nowrap"
-                      >
-                        {t("refresh_preserved_formats")}
-                      </div>
-                    </li>
-                  )}
-                {(permissions === true || permissions?.canDelete) && (
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={async (e) => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        console.log(e.shiftKey);
-                        if (e.shiftKey) {
-                          const load = toast.loading(t("deleting"));
-
-                          await deleteLink.mutateAsync(link.id as number, {
-                            onSettled: (data, error) => {
-                              toast.dismiss(load);
-
-                              if (error) {
-                                toast.error(error.message);
-                              } else {
-                                toast.success(t("deleted"));
-                              }
-                            },
-                          });
-                          onClose();
-                        } else {
-                          onDelete();
-                          onClose();
-                        }
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {t("delete")}
-                    </div>
-                  </li>
-                )}
-              </ul>
-            </div>
-          )}
-          {link.url && (
-            <Link
-              href={link.url}
-              target="_blank"
-              className="bi-box-arrow-up-right btn-circle text-base-content opacity-50 hover:opacity-100 btn btn-sm select-none z-10"
-            ></Link>
-          )}
-        </div> */}
             </div>
           )}
           <div
@@ -502,20 +415,18 @@ export default function LinkDetails({
           )}
 
           <div className={clsx("pb-8 pt-2 p-3", width < 640 && "sm:px-8")}>
-            {mode === "view" && (
+            {mode === "view" ? (
               <div className="text-xl mt-2 pr-7">
                 <p
                   className={clsx(
                     "relative w-fit",
-                    !link.name && "text-neutral"
+                    !link.name ? "text-neutral" : "text-primary"
                   )}
                 >
                   {unescapeString(link.name) || t("untitled")}
                 </p>
               </div>
-            )}
-
-            {mode === "edit" && (
+            ) : (
               <>
                 <br />
 
@@ -529,6 +440,53 @@ export default function LinkDetails({
                     placeholder={t("placeholder_example_link")}
                     className="bg-base-200"
                   />
+                </div>
+              </>
+            )}
+
+            {mode === "view" && !standalone && (
+              <>
+                <br />
+
+                <div className={clsx("flex gap-3")}>
+                  <div
+                    title={t("open_modal_new_tab")}
+                    className="text-center bg-base-200 p-2 rounded-md cursor-pointer duration-100 hover:bg-base-300 active:scale-95 select-none text-2xl w-full"
+                    onClick={() => {
+                      window.open("/links/" + link.id, "_blank");
+                    }}
+                  >
+                    <i className="bi-box-arrow-up-right"></i>
+                  </div>
+                  {onPin && (
+                    <div
+                      title={t("pin_to_dashboard")}
+                      className="text-center bg-base-200 p-2 rounded-md cursor-pointer duration-100 hover:bg-base-300 active:scale-95 select-none text-2xl w-full"
+                      onClick={() => {
+                        onPin();
+                      }}
+                    >
+                      {link?.pinnedBy && link.pinnedBy[0] ? (
+                        <i className="bi-pin-fill"></i>
+                      ) : (
+                        <i className="bi-pin"></i>
+                      )}
+                    </div>
+                  )}
+                  {(permissions === true || permissions?.canDelete) &&
+                    onDelete &&
+                    onClose && (
+                      <div
+                        title={t("delete")}
+                        className="text-center bg-base-200 p-2 rounded-md cursor-pointer duration-100 hover:bg-base-300 active:scale-95 select-none text-2xl w-full"
+                        onClick={() => {
+                          onDelete();
+                          onClose();
+                        }}
+                      >
+                        <i className="bi-trash"></i>
+                      </div>
+                    )}
                 </div>
               </>
             )}
@@ -567,9 +525,7 @@ export default function LinkDetails({
                 </div>
               </>
             ) : undefined}
-
             <br />
-
             <div className="relative">
               <p className="text-sm mb-2 text-neutral relative w-fit flex justify-between">
                 {t("collection")}
@@ -624,9 +580,7 @@ export default function LinkDetails({
                 />
               )}
             </div>
-
             <br />
-
             <div className="relative">
               <p className="text-sm mb-2 text-neutral relative w-fit flex justify-between">
                 {t("tags")}
@@ -667,9 +621,7 @@ export default function LinkDetails({
                 />
               )}
             </div>
-
             <br />
-
             <div className="relative">
               <p className="text-sm mb-2 text-neutral relative w-fit flex justify-between">
                 {t("description")}
@@ -696,7 +648,6 @@ export default function LinkDetails({
                 />
               )}
             </div>
-
             {mode === "view" && (
               <div>
                 <br />
@@ -827,7 +778,7 @@ export default function LinkDetails({
                         ""
                       )}`}
                       target="_blank"
-                      className="text-neutral text-center mx-auto duration-100 hover:opacity-60 text-sm"
+                      className="text-neutral text-center mx-auto duration-100 opacity-100 hover:opacity-60 text-sm"
                     >
                       <p>
                         {t("view_latest_snapshot")}
@@ -841,7 +792,6 @@ export default function LinkDetails({
                 </div>
               </div>
             )}
-
             {mode === "view" ? (
               <>
                 <br />
