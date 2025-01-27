@@ -6,12 +6,12 @@ import {
 } from "@/types/global";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import ReadableView from "@/components/ReadableView";
 import clsx from "clsx";
 import { formatAvailable } from "@/lib/shared/formatStats";
-import { PreservationSkeleton } from "./Skeletons";
+import { PreservationSkeleton } from "../Skeletons";
 import remToPixels from "@/lib/client/remToPixels";
 import { useReducedMotion } from "framer-motion";
+import { PreservationContent } from "./PreservationContent";
 
 export default function Preservation({
   link,
@@ -24,9 +24,6 @@ export default function Preservation({
   const router = useRouter();
 
   const [format, setFormat] = useState<ArchivedFormat>();
-  const [pdfLoaded, setPdfLoaded] = useState(false);
-  const [monolithLoaded, setMonolithLoaded] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [delayPassed, setDelayPassed] = useState(false); // for the modal animation
@@ -72,18 +69,6 @@ export default function Preservation({
       setIsExpanded(true);
     }
   }, [router.query, link]);
-
-  const prevFormatRef = useRef<ArchivedFormat | undefined>(undefined);
-
-  useEffect(() => {
-    if (prevFormatRef.current !== format) {
-      setPdfLoaded(false);
-      setMonolithLoaded(false);
-      setImageLoaded(false);
-
-      prevFormatRef.current = format;
-    }
-  }, [format]);
 
   useEffect(() => {
     if (router.pathname.includes("links")) {
@@ -229,13 +214,6 @@ export default function Preservation({
             link={link}
             format={format}
             isExpanded={isExpanded}
-            setMonolithLoaded={setMonolithLoaded}
-            setPdfLoaded={setPdfLoaded}
-            setImageLoaded={setImageLoaded}
-            monolithLoaded={monolithLoaded}
-            pdfLoaded={pdfLoaded}
-            imageLoaded={imageLoaded}
-            standalone={standalone}
             containerRef={containerRef}
             setIsExpanded={setIsExpanded}
           />
@@ -251,26 +229,12 @@ const RenderFormat = ({
   link,
   format,
   isExpanded,
-  setMonolithLoaded,
-  setPdfLoaded,
-  setImageLoaded,
-  monolithLoaded,
-  pdfLoaded,
-  imageLoaded,
-  standalone,
   containerRef,
   setIsExpanded,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   format: ArchivedFormat;
   isExpanded: boolean;
-  setMonolithLoaded: (loaded: boolean) => void;
-  setPdfLoaded: (loaded: boolean) => void;
-  setImageLoaded: (loaded: boolean) => void;
-  monolithLoaded: boolean;
-  pdfLoaded: boolean;
-  imageLoaded: boolean;
-  standalone?: boolean;
   containerRef: React.RefObject<HTMLDivElement>;
   setIsExpanded: (expanded: boolean) => void;
 }) => {
@@ -336,68 +300,6 @@ const RenderFormat = ({
             : "none",
       };
 
-  const content = () => {
-    switch (format) {
-      case ArchivedFormat.readability:
-        return (
-          <div className="overflow-auto w-full h-full">
-            <ReadableView
-              link={link}
-              isExpanded={isExpanded}
-              standalone={standalone}
-            />
-          </div>
-        );
-      case ArchivedFormat.monolith:
-        return (
-          <>
-            {!monolithLoaded && <PreservationSkeleton />}
-            <iframe
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`}
-              className={clsx(
-                "w-full border-none",
-                monolithLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[calc(80vh-3.75rem)]"
-              )}
-              onLoad={() => setMonolithLoaded(true)}
-            />
-          </>
-        );
-      case ArchivedFormat.pdf:
-        return (
-          <>
-            {!pdfLoaded && <PreservationSkeleton />}
-            <iframe
-              src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}&_=${link.updatedAt}`}
-              className={clsx(
-                "w-full border-none",
-                pdfLoaded ? "block" : "hidden",
-                isExpanded ? "h-full" : "h-[calc(80vh-3.75rem)]"
-              )}
-              onLoad={() => setPdfLoaded(true)}
-            />
-          </>
-        );
-      case ArchivedFormat.png:
-      case ArchivedFormat.jpeg:
-        return (
-          <>
-            {!imageLoaded && <PreservationSkeleton />}
-            <div className="overflow-auto w-fit mx-auto h-full">
-              <img
-                alt=""
-                src={`/api/v1/archives/${link.id}?format=${format}&_=${link.updatedAt}`}
-                className={clsx("w-fit mx-auto", !imageLoaded && "hidden")}
-                onLoad={() => setImageLoaded(true)}
-              />
-            </div>
-          </>
-        );
-      default:
-        return <></>;
-    }
-  };
-
   return ReactDOM.createPortal(
     <div
       style={style}
@@ -407,7 +309,11 @@ const RenderFormat = ({
       )}
       data-ignore-click-away
     >
-      {content()}
+      <PreservationContent
+        link={link}
+        format={format}
+        isExpanded={isExpanded}
+      />
       {isExpanded && (
         <div
           className="absolute top-3 right-3 btn btn-circle btn-primary btn-sm"

@@ -1,8 +1,8 @@
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import PreservationStandalone from "@/components/PreservationStandalone";
+import PreservationPageContent from "@/components/Preservation/PreservationPageContent";
 
 export default function Index() {
-  return <PreservationStandalone />;
+  return <PreservationPageContent />;
 }
 
 export { getServerSideProps };
