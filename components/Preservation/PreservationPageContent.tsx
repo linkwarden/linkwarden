@@ -38,7 +38,6 @@ export default function PreservationPageContent() {
         link={link}
         format={Number(router.query.format)}
         isExpanded={true}
-        standalone
       />
     </div>
   );
