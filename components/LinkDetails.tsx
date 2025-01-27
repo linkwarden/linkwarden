@@ -554,7 +554,7 @@ export default function LinkDetails({
                     className="text-sm text-neutral"
                     title={t("available_formats")}
                   >
-                    {link.url ? t("preserved_formats") : t("file")}
+                    {link.url ? t("preserved_formats") : t("content")}
                   </p>
 
                   {onUpdateArchive &&
