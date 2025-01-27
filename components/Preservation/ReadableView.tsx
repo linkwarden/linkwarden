@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import clsx from "clsx";
-import LinkDate from "./LinkViews/LinkComponents/LinkDate";
+import LinkDate from "../LinkViews/LinkComponents/LinkDate";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
@@ -20,7 +20,7 @@ import Image from "@tiptap/extension-image";
 import TipTapLink from "@tiptap/extension-link";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
-import MenuBar from "./Editor/MenuBar";
+import MenuBar from "../Editor/MenuBar";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import ListItem from "@tiptap/extension-list-item";
@@ -28,10 +28,9 @@ import ListItem from "@tiptap/extension-list-item";
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   isExpanded: boolean;
-  standalone?: boolean;
 };
 
-export default function ReadableView({ link, isExpanded, standalone }: Props) {
+export default function ReadableView({ link, isExpanded }: Props) {
   const { t } = useTranslation();
   const [linkContent, setLinkContent] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -152,44 +151,42 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
 
       <div className="text-sm text-neutral flex justify-between w-full gap-2">
         <LinkDate link={link} />
-        {!isPublicRoute &&
-          !standalone &&
-          (permissions === true || permissions?.canUpdate) && (
-            <>
-              {!isEditing && linkContent ? (
+        {!isPublicRoute && (permissions === true || permissions?.canUpdate) && (
+          <>
+            {!isEditing && linkContent ? (
+              <button
+                className="flex items-center gap-2 btn btn-ghost btn-sm"
+                onClick={startEditing}
+              >
+                <i className="bi-pencil" />
+                {t("edit")}
+              </button>
+            ) : linkContent ? (
+              <div
+                className={clsx(
+                  "flex items-center gap-2",
+                  isExpanded && "mr-10"
+                )}
+              >
                 <button
-                  className="flex items-center gap-2 btn btn-ghost btn-sm"
-                  onClick={startEditing}
+                  className="flex items-center gap-2 btn btn-ghost btn-square btn-sm"
+                  onClick={cancelEditing}
                 >
-                  <i className="bi-pencil" />
-                  {t("edit")}
+                  <i className="bi-x text-xl" />
                 </button>
-              ) : linkContent ? (
-                <div
-                  className={clsx(
-                    "flex items-center gap-2",
-                    isExpanded && "mr-10"
-                  )}
+                <button
+                  className="flex items-center gap-2 btn btn-primary btn-square btn-sm"
+                  onClick={() => {
+                    saveChanges();
+                    setIsEditing(false);
+                  }}
                 >
-                  <button
-                    className="flex items-center gap-2 btn btn-ghost btn-square btn-sm"
-                    onClick={cancelEditing}
-                  >
-                    <i className="bi-x text-xl" />
-                  </button>
-                  <button
-                    className="flex items-center gap-2 btn btn-primary btn-square btn-sm"
-                    onClick={() => {
-                      saveChanges();
-                      setIsEditing(false);
-                    }}
-                  >
-                    <i className="bi-check2 text-xl" />
-                  </button>
-                </div>
-              ) : null}
-            </>
-          )}
+                  <i className="bi-check2 text-xl" />
+                </button>
+              </div>
+            ) : null}
+          </>
+        )}
       </div>
 
       {link?.readable?.startsWith("archives") ? (
