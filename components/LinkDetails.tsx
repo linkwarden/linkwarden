@@ -194,21 +194,23 @@ export default function LinkDetails({
     <div className={clsx(className)}>
       <div
         className={clsx(
-          standalone &&
-            "sm:border sm:border-neutral-content sm:rounded-2xl sm:overflow-auto",
-          width >= 640 && "flex h-[80vh]"
+          standalone && "sm:flex h-screen w-screen",
+          !standalone && "sm:flex sm:h-[80vh]"
         )}
       >
         {width >= 640 && (
           <div className="w-1/2 lg:w-2/3 overflow-y-auto">
-            {link.id && <Preservation link={link} />}
+            {link.id && (
+              <Preservation link={link} standalone={standalone || false} />
+            )}
           </div>
         )}
         <div className={clsx(width >= 640 && "w-1/2 lg:w-1/3 overflow-y-auto")}>
           <div
             className={clsx(
-              "overflow-hidden select-none relative group/banner h-40 opacity-80 rounded-t-2xl sm:rounded-tr-2xl sm:rounded-tl-none -mt-5 sm:mt-0",
-              !standalone && "-mx-5 sm:mx-0"
+              "overflow-hidden select-none relative group/banner h-40 opacity-80 -mt-5 sm:mt-0",
+              !standalone &&
+                "-mx-5 sm:mx-0 rounded-t-2xl sm:rounded-tr-2xl sm:rounded-tl-none"
             )}
           >
             {formatAvailable(link, "preview") ? (
