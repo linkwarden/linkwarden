@@ -88,7 +88,7 @@ export const PreservationContent: React.FC<Props> = ({
         return (
           <>
             {!imageLoaded && <PreservationSkeleton />}
-            <div className="overflow-auto w-fit mx-auto h-full">
+            <div className="overflow-auto w-fit mx-auto h-full flex items-center">
               <img
                 alt=""
                 src={`/api/v1/archives/${link.id}?format=${format}&_=${link.updatedAt}`}
