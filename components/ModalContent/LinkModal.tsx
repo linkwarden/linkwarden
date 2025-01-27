@@ -41,152 +41,15 @@ export default function LinkModal({
 
   const [mode, setMode] = useState<"view" | "edit">(activeMode || "view");
 
-  const { width } = useWindowDimensions();
-
   return (
     <Modal toggleModal={onClose} isLinkModal>
-      <div
-        className={clsx(
-          "absolute top-3 left-0 right-0 flex justify-center",
-          width >= 640 && "w-1/2 lg:w-1/3 ml-auto"
-        )}
-      >
-        {(permissions === true || permissions?.canUpdate) && !isPublicRoute && (
-          <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
-            <div
-              className={clsx(
-                "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
-                mode === "view" && "bg-primary bg-opacity-50"
-              )}
-              onClick={() => {
-                setMode("view");
-              }}
-            >
-              {t("view")}
-            </div>
-            <div
-              className={clsx(
-                "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
-                mode === "edit" && "bg-primary bg-opacity-50"
-              )}
-              onClick={() => {
-                setMode("edit");
-              }}
-            >
-              {t("edit")}
-            </div>
-          </div>
-        )}
-
-        <div
-          className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10 absolute right-3"
-          onClick={() => {
-            onClose();
-          }}
-        >
-          <i title="Close" className="bi-x text-xl" />
-        </div>
-
-        {/* <div className="flex gap-2">
-          {!isPublicRoute && (
-            <div className={`dropdown dropdown-end z-20`}>
-              <div
-                tabIndex={0}
-                role="button"
-                onMouseDown={dropdownTriggerer}
-                className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
-              >
-                <i title="More" className="bi-three-dots text-xl" />
-              </div>
-              <ul
-                className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box`}
-              >
-                {
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        onPin();
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {link?.pinnedBy && link.pinnedBy[0]
-                        ? t("unpin")
-                        : t("pin_to_dashboard")}
-                    </div>
-                  </li>
-                }
-                {link.type === "url" &&
-                  (permissions === true || permissions?.canUpdate) && (
-                    <li>
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          onUpdateArchive();
-                        }}
-                        className="whitespace-nowrap"
-                      >
-                        {t("refresh_preserved_formats")}
-                      </div>
-                    </li>
-                  )}
-                {(permissions === true || permissions?.canDelete) && (
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={async (e) => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        console.log(e.shiftKey);
-                        if (e.shiftKey) {
-                          const load = toast.loading(t("deleting"));
-
-                          await deleteLink.mutateAsync(link.id as number, {
-                            onSettled: (data, error) => {
-                              toast.dismiss(load);
-
-                              if (error) {
-                                toast.error(error.message);
-                              } else {
-                                toast.success(t("deleted"));
-                              }
-                            },
-                          });
-                          onClose();
-                        } else {
-                          onDelete();
-                          onClose();
-                        }
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {t("delete")}
-                    </div>
-                  </li>
-                )}
-              </ul>
-            </div>
-          )}
-          {link.url && (
-            <Link
-              href={link.url}
-              target="_blank"
-              className="bi-box-arrow-up-right btn-circle text-base-content opacity-50 hover:opacity-100 btn btn-sm select-none z-10"
-            ></Link>
-          )}
-        </div> */}
-      </div>
-
       <LinkDetails
         activeLink={link}
         className="sm:mt-0 -mt-11"
         mode={mode}
         setMode={(mode: "view" | "edit") => setMode(mode)}
         onUpdateArchive={onUpdateArchive}
+        onClose={onClose}
       />
     </Modal>
   );
