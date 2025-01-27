@@ -38,6 +38,7 @@ type Props = {
   standalone?: boolean;
   mode?: "view" | "edit";
   setMode?: Function;
+  onClose?: Function;
   onUpdateArchive?: Function;
 };
 
@@ -47,6 +48,7 @@ export default function LinkDetails({
   standalone,
   mode = "view",
   setMode,
+  onClose,
   onUpdateArchive,
 }: Props) {
   const [link, setLink] =
@@ -207,11 +209,143 @@ export default function LinkDetails({
         )}
         <div
           className={clsx(
-            width >= 640 &&
-              atLeastOneFormatAvailable(link) &&
-              "w-1/2 lg:w-1/3 overflow-y-auto"
+            "sm:overflow-y-auto sm:w-full",
+            atLeastOneFormatAvailable(link) && "sm:w-1/2 lg:w-1/3"
           )}
         >
+          {setMode && onClose && (
+            <div className={clsx("flex justify-center -mb-11 pt-3 relative")}>
+              {(permissions === true || permissions?.canUpdate) &&
+                !isPublicRoute && (
+                  <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
+                    <div
+                      className={clsx(
+                        "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
+                        mode === "view" && "bg-primary bg-opacity-50"
+                      )}
+                      onClick={() => {
+                        setMode("view");
+                      }}
+                    >
+                      {t("view")}
+                    </div>
+                    <div
+                      className={clsx(
+                        "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
+                        mode === "edit" && "bg-primary bg-opacity-50"
+                      )}
+                      onClick={() => {
+                        setMode("edit");
+                      }}
+                    >
+                      {t("edit")}
+                    </div>
+                  </div>
+                )}
+
+              <div
+                className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10 absolute right-3"
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                <i title="Close" className="bi-x text-xl" />
+              </div>
+
+              {/* <div className="flex gap-2">
+          {!isPublicRoute && (
+            <div className={`dropdown dropdown-end z-20`}>
+              <div
+                tabIndex={0}
+                role="button"
+                onMouseDown={dropdownTriggerer}
+                className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
+              >
+                <i title="More" className="bi-three-dots text-xl" />
+              </div>
+              <ul
+                className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box`}
+              >
+                {
+                  <li>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        (document?.activeElement as HTMLElement)?.blur();
+                        onPin();
+                      }}
+                      className="whitespace-nowrap"
+                    >
+                      {link?.pinnedBy && link.pinnedBy[0]
+                        ? t("unpin")
+                        : t("pin_to_dashboard")}
+                    </div>
+                  </li>
+                }
+                {link.type === "url" &&
+                  (permissions === true || permissions?.canUpdate) && (
+                    <li>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => {
+                          (document?.activeElement as HTMLElement)?.blur();
+                          onUpdateArchive();
+                        }}
+                        className="whitespace-nowrap"
+                      >
+                        {t("refresh_preserved_formats")}
+                      </div>
+                    </li>
+                  )}
+                {(permissions === true || permissions?.canDelete) && (
+                  <li>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={async (e) => {
+                        (document?.activeElement as HTMLElement)?.blur();
+                        console.log(e.shiftKey);
+                        if (e.shiftKey) {
+                          const load = toast.loading(t("deleting"));
+
+                          await deleteLink.mutateAsync(link.id as number, {
+                            onSettled: (data, error) => {
+                              toast.dismiss(load);
+
+                              if (error) {
+                                toast.error(error.message);
+                              } else {
+                                toast.success(t("deleted"));
+                              }
+                            },
+                          });
+                          onClose();
+                        } else {
+                          onDelete();
+                          onClose();
+                        }
+                      }}
+                      className="whitespace-nowrap"
+                    >
+                      {t("delete")}
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+          {link.url && (
+            <Link
+              href={link.url}
+              target="_blank"
+              className="bi-box-arrow-up-right btn-circle text-base-content opacity-50 hover:opacity-100 btn btn-sm select-none z-10"
+            ></Link>
+          )}
+        </div> */}
+            </div>
+          )}
           <div
             className={clsx(
               "overflow-hidden select-none relative group/banner h-40 opacity-80 -mt-5 sm:mt-0",
@@ -693,12 +827,15 @@ export default function LinkDetails({
                         ""
                       )}`}
                       target="_blank"
-                      className="text-neutral mx-auto duration-100 hover:opacity-60 flex gap-2 w-1/2 justify-center items-center text-sm"
+                      className="text-neutral text-center mx-auto duration-100 hover:opacity-60 text-sm"
                     >
-                      <p className="whitespace-nowrap">
+                      <p>
                         {t("view_latest_snapshot")}
+                        <span>
+                          {" "}
+                          <i className="bi-box-arrow-up-right" />
+                        </span>
                       </p>
-                      <i className="bi-box-arrow-up-right" />
                     </Link>
                   )}
                 </div>
