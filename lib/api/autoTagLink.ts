@@ -58,7 +58,7 @@ export default async function autoTagLink(user: User, linkId: number) {
   })
 
   try {
-    let tags: string[] = object || [];
+    let tags = object
 
     console.log("Tags generated for link: ", link.url, tags);
 
