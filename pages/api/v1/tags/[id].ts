@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import updeteTagById from "@/lib/api/controllers/tags/tagId/updeteTagById";
+import updateTagById from "@/lib/api/controllers/tags/tagId/updateTagById";
 import verifyUser from "@/lib/api/verifyUser";
 import deleteTagById from "@/lib/api/controllers/tags/tagId/deleteTagById";
 
@@ -21,7 +21,7 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    const tags = await updeteTagById(user.id, tagId, req.body);
+    const tags = await updateTagById(user.id, tagId, req.body);
     return res.status(tags.status).json({ response: tags.response });
   } else if (req.method === "DELETE") {
     if (process.env.NEXT_PUBLIC_DEMO === "true")
