@@ -16,8 +16,9 @@ export default async function postLink(
 
   if (!dataValidation.success) {
     return {
-      response: `Error: ${dataValidation.error.issues[0].message
-        } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
       status: 400,
     };
   }
@@ -133,8 +134,9 @@ export default async function postLink(
     where: { id: newLink.id },
     data: {
       image: link.image
-        ? `archives/${newLink.collectionId}/${newLink.id}.${link.image === "png" ? "png" : "jpeg"
-        }`
+        ? `archives/${newLink.collectionId}/${newLink.id}.${
+            link.image === "png" ? "png" : "jpeg"
+          }`
         : undefined,
     },
   });

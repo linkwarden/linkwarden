@@ -115,13 +115,13 @@ async function processAITagging() {
       createdBy: {
         aiTagExistingLinks: true,
         aiTaggingMethod: {
-          in: ['GENERATE', 'PREDEFINED']
-        }
-      }
+          in: ["GENERATE", "PREDEFINED"],
+        },
+      },
     },
     include: {
-      createdBy: true
-    }
+      createdBy: true,
+    },
   });
 
   console.log(`Processing ${links.length} links for AI tagging...`);
@@ -143,12 +143,14 @@ async function processAITagging() {
 
           await page.goto(link.url, {
             waitUntil: "domcontentloaded",
-            timeout: 30000
+            timeout: 30000,
           });
 
           const metaDescription = await page.evaluate(() => {
-            const description = document.querySelector('meta[name="description"]');
-            return description?.getAttribute('content') ?? undefined;
+            const description = document.querySelector(
+              'meta[name="description"]'
+            );
+            return description?.getAttribute("content") ?? undefined;
           });
 
           await autoTagLink(link.createdBy, link.id, metaDescription);
@@ -156,7 +158,7 @@ async function processAITagging() {
           // Mark the link as processed
           await prisma.link.update({
             where: { id: link.id },
-            data: { aiTagged: true }
+            data: { aiTagged: true },
           });
         }
       } catch (error) {
@@ -169,7 +171,7 @@ async function processAITagging() {
         // Mark the link as processed even if it failed to prevent endless retries
         await prisma.link.update({
           where: { id: link.id },
-          data: { aiTagged: true }
+          data: { aiTagged: true },
         });
       } finally {
         if (browser) {
