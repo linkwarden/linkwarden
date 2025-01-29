@@ -124,8 +124,6 @@ async function processAITagging() {
     },
   });
 
-  console.log(`Processing ${links.length} links for AI tagging...`);
-
   await Promise.all(
     links.map(async (link) => {
       let browser = null;
