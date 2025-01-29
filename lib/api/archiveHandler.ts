@@ -86,13 +86,12 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
 
+          const metaDescription = await page.evaluate(() => {
+            const description = document.querySelector('meta[name="description"]');
+            return description?.getAttribute('content') ?? undefined;
+          });
+
           const content = await page.content();
-
-          // Preview
-          if (!link.preview) await handleArchivePreview(link, page);
-
-          // Readability
-          if (!link.readable) await handleReadablility(content, link);
 
           // Auto-tagging
           if (
@@ -104,7 +103,13 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
               process.env.ANTHROPIC_API_KEY
             )
           )
-            await autoTagLink(user, link.id);
+            await autoTagLink(user, link.id, metaDescription);
+
+          // Preview
+          if (!link.preview) await handleArchivePreview(link, page);
+
+          // Readability
+          if (!link.readable) await handleReadablility(content, link);
 
           // Screenshot/PDF
           if (
@@ -189,7 +194,7 @@ async function determineLinkType(
 }
 
 // Construct browser launch options based on environment variables.
-function getBrowserOptions(): LaunchOptions {
+export function getBrowserOptions(): LaunchOptions {
   let browserOptions: LaunchOptions = {};
 
   if (process.env.PROXY) {
