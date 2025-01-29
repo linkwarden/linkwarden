@@ -44,6 +44,7 @@ export default function Appearance() {
     account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
+  const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(account.aiTagExistingLinks);
 
   const { data: config } = useConfig();
 
@@ -58,6 +59,7 @@ export default function Appearance() {
       preventDuplicateLinks,
       aiTaggingMethod,
       aiPredefinedTags,
+      aiTagExistingLinks,
       dashboardRecentLinks,
       dashboardPinnedLinks,
     });
@@ -71,6 +73,7 @@ export default function Appearance() {
     preventDuplicateLinks,
     aiTaggingMethod,
     aiPredefinedTags,
+    aiTagExistingLinks,
     dashboardRecentLinks,
     dashboardPinnedLinks,
   ]);
@@ -89,6 +92,7 @@ export default function Appearance() {
       setPreventDuplicateLinks(account.preventDuplicateLinks);
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
+      setAiTagExistingLinks(account.aiTagExistingLinks);
       setDashboardRecentLinks(account.dashboardRecentLinks);
       setDashboardPinnedLinks(account.dashboardPinnedLinks);
     }
@@ -143,11 +147,10 @@ export default function Appearance() {
             ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
-                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
-                  localStorage.getItem("theme") === theme
-                    ? `outline-primary ${activeColor}`
-                    : textColor
-                }`}
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${localStorage.getItem("theme") === theme
+                  ? `outline-primary ${activeColor}`
+                  : textColor
+                  }`}
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>
@@ -189,6 +192,14 @@ export default function Appearance() {
             </p>
 
             <div className="divider my-3"></div>
+
+            <div className="mb-3">
+              <Checkbox
+                label={t("generate_tags_for_existing_links")}
+                state={aiTagExistingLinks}
+                onClick={() => setAiTagExistingLinks(!aiTagExistingLinks)}
+              />
+            </div>
 
             <p>{t("ai_tagging_method")}</p>
 

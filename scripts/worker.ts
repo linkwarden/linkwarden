@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { Collection, Link, User } from "@prisma/client";
 import { prisma } from "../lib/api/db";
-import archiveHandler from "../lib/api/archiveHandler";
+import archiveHandler, { getBrowserOptions } from "../lib/api/archiveHandler";
 import Parser from "rss-parser";
 import { hasPassedLimit } from "../lib/api/verifyCapacity";
-
-const args = process.argv.slice(2).join(" ");
+import autoTagLink from "../lib/api/autoTagLink";
+import { chromium, devices } from "playwright";
 
 const archiveTakeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
 
@@ -107,75 +107,153 @@ async function processBatch() {
   await Promise.allSettled(processingPromises);
 }
 
+async function processAITagging() {
+  const links = await prisma.link.findMany({
+    where: {
+      aiTagged: false,
+      url: { not: null },
+      createdBy: {
+        aiTagExistingLinks: true,
+        aiTaggingMethod: {
+          in: ['GENERATE', 'PREDEFINED']
+        }
+      }
+    },
+    include: {
+      createdBy: true
+    }
+  });
+
+  console.log(`Processing ${links.length} links for AI tagging...`);
+
+  await Promise.all(
+    links.map(async (link) => {
+      let browser = null;
+      try {
+        if (link.createdBy && link.url) {
+          const browserOptions = getBrowserOptions();
+          browser = await chromium.launch(browserOptions);
+
+          const context = await browser.newContext({
+            ...devices["Desktop Chrome"],
+            ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
+          });
+
+          const page = await context.newPage();
+
+          await page.goto(link.url, {
+            waitUntil: "domcontentloaded",
+            timeout: 30000
+          });
+
+          const metaDescription = await page.evaluate(() => {
+            const description = document.querySelector('meta[name="description"]');
+            return description?.getAttribute('content') ?? undefined;
+          });
+
+          await autoTagLink(link.createdBy, link.id, metaDescription);
+
+          // Mark the link as processed
+          await prisma.link.update({
+            where: { id: link.id },
+            data: { aiTagged: true }
+          });
+        }
+      } catch (error) {
+        console.error(
+          "\x1b[34m%s\x1b[0m",
+          `Error auto-tagging link ${link.url}:`,
+          error
+        );
+
+        // Mark the link as processed even if it failed to prevent endless retries
+        await prisma.link.update({
+          where: { id: link.id },
+          data: { aiTagged: true }
+        });
+      } finally {
+        if (browser) {
+          await browser.close();
+        }
+      }
+    })
+  );
+}
+
 async function fetchAndProcessRSS() {
   const rssSubscriptions = await prisma.rssSubscription.findMany({});
   const parser = new Parser();
 
-  rssSubscriptions.forEach(async (rssSubscription) => {
-    try {
-      const feed = await parser.parseURL(rssSubscription.url);
+  await Promise.all(
+    rssSubscriptions.map(async (rssSubscription) => {
+      try {
+        const feed = await parser.parseURL(rssSubscription.url);
 
-      if (
-        rssSubscription.lastBuildDate &&
-        new Date(rssSubscription.lastBuildDate) < new Date(feed.lastBuildDate)
-      ) {
-        console.log(
-          "\x1b[34m%s\x1b[0m",
-          `Processing new RSS feed items for ${rssSubscription.name}`
-        );
-
-        const newItems = feed.items.filter((item) => {
-          const itemPubDate = item.pubDate ? new Date(item.pubDate) : null;
-          return itemPubDate && itemPubDate > rssSubscription.lastBuildDate!; // We know lastBuildDate is not null here
-        });
-
-        const hasTooManyLinks = await hasPassedLimit(
-          rssSubscription.ownerId,
-          newItems.length
-        );
-
-        if (hasTooManyLinks) {
+        if (
+          rssSubscription.lastBuildDate &&
+          new Date(rssSubscription.lastBuildDate) < new Date(feed.lastBuildDate)
+        ) {
           console.log(
             "\x1b[34m%s\x1b[0m",
-            `User ${rssSubscription.ownerId} has too many links. Skipping new RSS feed items.`
+            `Processing new RSS feed items for ${rssSubscription.name}`
           );
-          return;
-        }
 
-        newItems.forEach(async (item) => {
-          await prisma.link.create({
-            data: {
-              name: item.title,
-              url: item.link,
-              type: "link",
-              createdBy: {
-                connect: {
-                  id: rssSubscription.ownerId,
-                },
-              },
-              collection: {
-                connect: {
-                  id: rssSubscription.collectionId,
-                },
-              },
-            },
+          const newItems = feed.items.filter((item) => {
+            const itemPubDate = item.pubDate ? new Date(item.pubDate) : null;
+            return itemPubDate && itemPubDate > rssSubscription.lastBuildDate!;
           });
-        });
 
-        // Update the lastBuildDate in the database
-        await prisma.rssSubscription.update({
-          where: { id: rssSubscription.id },
-          data: { lastBuildDate: new Date(feed.lastBuildDate) },
-        });
+          const hasTooManyLinks = await hasPassedLimit(
+            rssSubscription.ownerId,
+            newItems.length
+          );
+
+          if (hasTooManyLinks) {
+            console.log(
+              "\x1b[34m%s\x1b[0m",
+              `User ${rssSubscription.ownerId} has too many links. Skipping new RSS feed items.`
+            );
+            return;
+          }
+
+          // Create all links concurrently
+          await Promise.all(
+            newItems.map(async (item) => {
+              return prisma.link.create({
+                data: {
+                  name: item.title,
+                  url: item.link,
+                  type: "link",
+                  createdBy: {
+                    connect: {
+                      id: rssSubscription.ownerId,
+                    },
+                  },
+                  collection: {
+                    connect: {
+                      id: rssSubscription.collectionId,
+                    },
+                  },
+                },
+              });
+            })
+          );
+
+          // Update the lastBuildDate in the database
+          await prisma.rssSubscription.update({
+            where: { id: rssSubscription.id },
+            data: { lastBuildDate: new Date(feed.lastBuildDate) },
+          });
+        }
+      } catch (error) {
+        console.error(
+          "\x1b[34m%s\x1b[0m",
+          `Error processing RSS feed ${rssSubscription.url}:`,
+          error
+        );
       }
-    } catch (error) {
-      console.error(
-        "\x1b[34m%s\x1b[0m",
-        `Error processing RSS feed ${rssSubscription.url}:`,
-        error
-      );
-    }
-  });
+    })
+  );
 }
 
 function delay(sec: number) {
@@ -193,6 +271,16 @@ async function startRSSPolling() {
   }
 }
 
+const aiTaggingIntervalInSeconds = 10;
+
+async function startAITagging() {
+  console.log("\x1b[34m%s\x1b[0m", "Starting AI tagging...");
+  while (true) {
+    await processAITagging();
+    await delay(aiTaggingIntervalInSeconds);
+  }
+}
+
 const archiveIntervalInSeconds =
   Number(process.env.ARCHIVE_SCRIPT_INTERVAL) || 10;
 
@@ -207,6 +295,7 @@ async function startArchiveProcessing() {
 async function init() {
   console.log("\x1b[34m%s\x1b[0m", "Initializing application...");
   startRSSPolling();
+  startAITagging();
   startArchiveProcessing();
 }
 

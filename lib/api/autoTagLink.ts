@@ -26,7 +26,7 @@ const getAIModel = () => {
   throw new Error("No AI provider configured");
 }
 
-export default async function autoTagLink(user: User, linkId: number) {
+export default async function autoTagLink(user: User, linkId: number, metaDescription: string | undefined) {
   const link = await prisma.link.findUnique({
     where: { id: linkId },
   });
@@ -37,15 +37,15 @@ export default async function autoTagLink(user: User, linkId: number) {
 
   let prompt;
 
-  const textContent = link.textContent?.slice(0, 500) + "...";
+  const promptText = metaDescription || link.textContent?.slice(0, 500) + "...";
 
-  if (!link.textContent)
+  if (!promptText)
     return console.log("No text content to auto tag for link: ", link.url);
 
   if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
-    prompt = generateTagsPrompt(textContent);
+    prompt = generateTagsPrompt(promptText);
   } else {
-    prompt = predefinedTagsPrompt(textContent, user.aiPredefinedTags);
+    prompt = predefinedTagsPrompt(promptText, user.aiPredefinedTags);
   }
 
   if (
