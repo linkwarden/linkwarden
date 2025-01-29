@@ -5,12 +5,18 @@ import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
-import { ollama } from "ollama-ai-provider";
+import { createOllama } from "ollama-ai-provider";
 
 const getAIModel = () => {
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) return openai(process.env.OPENAI_MODEL);
   if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL) return anthropic(process.env.ANTHROPIC_MODEL);
-  if (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && process.env.OLLAMA_MODEL) return ollama(process.env.OLLAMA_MODEL);
+  if (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && process.env.OLLAMA_MODEL) {
+    const ollama = createOllama({
+      baseURL: process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL,
+    });
+
+    return ollama(process.env.OLLAMA_MODEL)
+  }
 
   throw new Error("No AI provider configured");
 }
