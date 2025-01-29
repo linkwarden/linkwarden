@@ -7,15 +7,20 @@ import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createOllama } from "ollama-ai-provider";
 
+// Function to concat /api with the base URL properly
+const ensureValidURL = (base: string, path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+
 const getAIModel = () => {
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) return openai(process.env.OPENAI_MODEL);
   if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL) return anthropic(process.env.ANTHROPIC_MODEL);
   if (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && process.env.OLLAMA_MODEL) {
     const ollama = createOllama({
-      baseURL: process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL,
+      baseURL: ensureValidURL(process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL, 'api'),
     });
 
-    return ollama(process.env.OLLAMA_MODEL)
+    return ollama(process.env.OLLAMA_MODEL, {
+      structuredOutputs: true
+    })
   }
 
   throw new Error("No AI provider configured");
