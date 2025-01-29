@@ -273,7 +273,8 @@ async function startRSSPolling() {
   }
 }
 
-const aiTaggingIntervalInSeconds = Number(process.env.AI_TAGGING_SCRIPT_INTERVAL) || 30;
+const aiTaggingIntervalInSeconds =
+  Number(process.env.AI_TAGGING_SCRIPT_INTERVAL) || 30;
 
 async function startAITagging() {
   console.log("\x1b[34m%s\x1b[0m", "Starting AI tagging...");
