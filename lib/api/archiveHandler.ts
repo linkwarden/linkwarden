@@ -98,7 +98,11 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           if (
             user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
             !link.aiTagged &&
-            process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL
+            (
+              process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
+              process.env.OPENAI_API_KEY ||
+              process.env.ANTHROPIC_API_KEY
+            )
           )
             await autoTagLink(user, link.id);
 
@@ -137,7 +141,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           preview: !finalLink.preview ? "unavailable" : undefined,
           aiTagged:
             user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
-            !finalLink.aiTagged
+              !finalLink.aiTagged
               ? true
               : undefined,
         },
