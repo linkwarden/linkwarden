@@ -19,8 +19,9 @@ export default async function updateUserById(
 
   if (!dataValidation.success) {
     return {
-      response: `Error: ${dataValidation.error.issues[0].message
-        } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      response: `Error: ${
+        dataValidation.error.issues[0].message
+      } [${dataValidation.error.issues[0].path.join(", ")}]`,
       status: 400,
     };
   }
@@ -32,18 +33,18 @@ export default async function updateUserById(
       id: { not: userId },
       OR: emailEnabled
         ? [
-          {
-            username: data.username.toLowerCase(),
-          },
-          {
-            email: data.email?.toLowerCase(),
-          },
-        ]
+            {
+              username: data.username.toLowerCase(),
+            },
+            {
+              email: data.email?.toLowerCase(),
+            },
+          ]
         : [
-          {
-            username: data.username.toLowerCase(),
-          },
-        ],
+            {
+              username: data.username.toLowerCase(),
+            },
+          ],
     },
   });
 
