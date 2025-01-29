@@ -17,7 +17,8 @@ const handleReadablility = async (
   const article = new Readability(dom.window.document).parse();
   const articleText = article?.textContent
     .replace(/ +(?= )/g, "") // strip out multiple spaces
-    .replace(/(\r\n|\n|\r)/gm, " "); // strip out line breaks
+    .replace(/(\r\n|\n|\r)/gm, " ") // strip out line breaks
+    .slice(0, 2047);
 
   if (articleText && articleText !== "") {
     const collectionId = (
