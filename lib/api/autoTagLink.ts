@@ -1,7 +1,19 @@
-import { AiTaggingMethod, Collection, Link, Tag, User } from "@prisma/client";
-import axios from "axios";
+import { AiTaggingMethod, User } from "@prisma/client";
 import { generateTagsPrompt, predefinedTagsPrompt } from "./prompts";
 import { prisma } from "./db";
+import { generateObject } from "ai";
+import { openai } from "@ai-sdk/openai";
+import { z } from "zod";
+import { anthropic } from "@ai-sdk/anthropic";
+import { ollama } from "ollama-ai-provider";
+
+const getAIModel = () => {
+  if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) return openai(process.env.OPENAI_MODEL);
+  if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL) return anthropic(process.env.ANTHROPIC_MODEL);
+  if (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && process.env.OLLAMA_MODEL) return ollama(process.env.OLLAMA_MODEL);
+
+  throw new Error("No AI provider configured");
+}
 
 export default async function autoTagLink(user: User, linkId: number) {
   const link = await prisma.link.findUnique({
@@ -32,31 +44,15 @@ export default async function autoTagLink(user: User, linkId: number) {
     return console.log("No predefined tags to auto tag for link: ", link.url);
   }
 
-  const response = await axios.post(
-    process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL + "/api/generate",
-    {
-      model: process.env.OLLAMA_MODEL,
-      prompt: prompt,
-      stream: false,
-      keep_alive: "1m",
-      format: {
-        type: "object",
-        properties: {
-          tags: {
-            type: "array",
-          },
-        },
-        required: ["tags"],
-      },
-      options: {
-        temperature: 0.5,
-        num_predict: 100,
-      },
-    }
-  );
+  const { object } = await generateObject({
+    model: getAIModel(),
+    prompt: prompt,
+    output: 'array',
+    schema: z.string()
+  })
 
   try {
-    let tags: string[] = JSON.parse(response.data.response).tags;
+    let tags: string[] = object || [];
 
     console.log("Tags generated for link: ", link.url, tags);
 
