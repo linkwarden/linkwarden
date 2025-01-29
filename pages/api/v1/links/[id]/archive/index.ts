@@ -2,10 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import { moveFiles, removeFiles } from "@/lib/api/manageLinkFiles";
+import { removeFiles } from "@/lib/api/manageLinkFiles";
 
 const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
