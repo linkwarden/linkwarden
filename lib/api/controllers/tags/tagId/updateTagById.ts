@@ -4,7 +4,7 @@ import {
   UpdateTagSchemaType,
 } from "@/lib/shared/schemaValidation";
 
-export default async function updeteTagById(
+export default async function updateTagById(
   userId: number,
   tagId: number,
   body: UpdateTagSchemaType
