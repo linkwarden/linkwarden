@@ -44,7 +44,9 @@ export default function Appearance() {
     account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
-  const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(account.aiTagExistingLinks);
+  const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
+    account.aiTagExistingLinks
+  );
 
   const { data: config } = useConfig();
 
@@ -147,10 +149,11 @@ export default function Appearance() {
             ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
-                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${localStorage.getItem("theme") === theme
-                  ? `outline-primary ${activeColor}`
-                  : textColor
-                  }`}
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
+                  localStorage.getItem("theme") === theme
+                    ? `outline-primary ${activeColor}`
+                    : textColor
+                }`}
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>

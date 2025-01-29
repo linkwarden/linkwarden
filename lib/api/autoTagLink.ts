@@ -8,25 +8,35 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { createOllama } from "ollama-ai-provider";
 
 // Function to concat /api with the base URL properly
-const ensureValidURL = (base: string, path: string) => `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+const ensureValidURL = (base: string, path: string) =>
+  `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
 const getAIModel = () => {
-  if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) return openai(process.env.OPENAI_MODEL);
-  if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL) return anthropic(process.env.ANTHROPIC_MODEL);
+  if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL)
+    return openai(process.env.OPENAI_MODEL);
+  if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL)
+    return anthropic(process.env.ANTHROPIC_MODEL);
   if (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && process.env.OLLAMA_MODEL) {
     const ollama = createOllama({
-      baseURL: ensureValidURL(process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL, 'api'),
+      baseURL: ensureValidURL(
+        process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL,
+        "api"
+      ),
     });
 
     return ollama(process.env.OLLAMA_MODEL, {
-      structuredOutputs: true
-    })
+      structuredOutputs: true,
+    });
   }
 
   throw new Error("No AI provider configured");
-}
+};
 
-export default async function autoTagLink(user: User, linkId: number, metaDescription: string | undefined) {
+export default async function autoTagLink(
+  user: User,
+  linkId: number,
+  metaDescription: string | undefined
+) {
   const link = await prisma.link.findUnique({
     where: { id: linkId },
   });
@@ -58,12 +68,12 @@ export default async function autoTagLink(user: User, linkId: number, metaDescri
   const { object } = await generateObject({
     model: getAIModel(),
     prompt: prompt,
-    output: 'array',
-    schema: z.string()
-  })
+    output: "array",
+    schema: z.string(),
+  });
 
   try {
-    let tags = object
+    let tags = object;
 
     console.log("Tags generated for link: ", link.url, tags);
 
