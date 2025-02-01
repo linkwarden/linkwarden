@@ -96,7 +96,7 @@ export const PostSessionSchema = z.object({
 });
 
 export const PostLinkSchema = z.object({
-  type: z.enum(["url", "pdf", "image"]).nullish(),
+  type: z.enum(["url", "pdf", "image", "readable"]).nullish(),
   url: z.string().trim().max(2048).url().optional(),
   name: z.string().trim().max(2048).optional(),
   description: z.string().trim().max(2048).optional(),

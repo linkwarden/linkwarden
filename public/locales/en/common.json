@@ -460,5 +460,9 @@
   "search_for_links": "Search for Links",
   "search_query_invalid_symbol": "The search query should not contain '%'.",
   "open_modal_new_tab": "Open this modal in a new tab",
-  "file": "File"
+  "file": "File",
+  "write_new_note": "Write a New Note",
+  "new_note": "New Note",
+  "add_a_title_placeholder": "Add a title...",
+  "write_notes_here_placeholder": "Write some notes here..."
 }
