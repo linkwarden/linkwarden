@@ -29,15 +29,14 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Document from "@tiptap/extension-document";
 
 type Props = {
-  onSave?: () => void; // Make onSave optional
+  onSave?: () => void;
   link?: LinkIncludingShortenedCollectionAndTags;
   className?: string;
   editable?: boolean;
 };
 
-// Define the type for the exposed methods via ref
 export type TextEditorRef = {
-  getEditor: () => any; // Replace `any` with the actual editor type if available
+  getEditor: () => any;
 };
 
 const TextEditor = forwardRef<TextEditorRef, Props>(
@@ -88,7 +87,6 @@ const TextEditor = forwardRef<TextEditorRef, Props>(
       },
     });
 
-    // Expose the editor instance to the parent via ref
     useImperativeHandle(ref, () => ({
       getEditor: () => editor,
     }));
