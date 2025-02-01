@@ -1,5 +1,9 @@
 import { AiTaggingMethod, User } from "@prisma/client";
-import { existingTagsPrompt, generateTagsPrompt, predefinedTagsPrompt } from "./prompts";
+import {
+  existingTagsPrompt,
+  generateTagsPrompt,
+  predefinedTagsPrompt,
+} from "./prompts";
 import { prisma } from "./db";
 import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
@@ -64,20 +68,20 @@ export default async function autoTagLink(
         name: true,
         _count: {
           select: { links: true },
-        }
+        },
       },
       where: {
         ownerId: user.id,
       },
       orderBy: {
         links: {
-          _count: "desc"
-        }
+          _count: "desc",
+        },
       },
       take: 50,
     });
 
-    existingTagsNames = existingTags.map(tag => tag.name);
+    existingTagsNames = existingTags.map((tag) => tag.name);
   }
 
   const promptText = metaDescription || link.textContent?.slice(0, 500) + "...";
