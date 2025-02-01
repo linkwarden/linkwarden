@@ -115,7 +115,7 @@ async function processAITagging() {
       createdBy: {
         aiTagExistingLinks: true,
         aiTaggingMethod: {
-          in: ["GENERATE", "PREDEFINED"],
+          in: ["GENERATE", "EXISTING", "PREDEFINED"],
         },
       },
     },
