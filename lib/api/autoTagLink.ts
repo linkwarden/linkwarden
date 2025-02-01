@@ -81,7 +81,7 @@ export default async function autoTagLink(
       take: 50,
     });
 
-    existingTagsNames = existingTags.map((tag) => tag.name);
+    existingTagsNames = existingTags.map((tag) => tag.name.length > 50 ? tag.name.slice(0, 47) + '...' : tag.name);
   }
 
   const promptText = metaDescription || link.textContent?.slice(0, 500) + "...";
