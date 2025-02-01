@@ -1,5 +1,5 @@
 import { AiTaggingMethod, User } from "@prisma/client";
-import { generateTagsPrompt, predefinedTagsPrompt } from "./prompts";
+import { existingTagsPrompt, generateTagsPrompt, predefinedTagsPrompt } from "./prompts";
 import { prisma } from "./db";
 import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
@@ -43,9 +43,42 @@ export default async function autoTagLink(
 
   if (!link) return console.log("Link not found for auto tagging.");
 
+  const existingTags = await prisma.tag.findMany({
+    select: {
+      name: true,
+    },
+    where: {
+      ownerId: user.id,
+    },
+  });
+
   console.log("Auto tagging link: ", link.url);
 
   let prompt;
+
+  let existingTagsNames: string[] = [];
+
+  if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
+    const existingTags = await prisma.tag.findMany({
+      select: {
+        name: true,
+        _count: {
+          select: { links: true },
+        }
+      },
+      where: {
+        ownerId: user.id,
+      },
+      orderBy: {
+        links: {
+          _count: "desc"
+        }
+      },
+      take: 50,
+    });
+
+    existingTagsNames = existingTags.map(tag => tag.name);
+  }
 
   const promptText = metaDescription || link.textContent?.slice(0, 500) + "...";
 
@@ -54,6 +87,8 @@ export default async function autoTagLink(
 
   if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
     prompt = generateTagsPrompt(promptText);
+  } else if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
+    prompt = existingTagsPrompt(promptText, existingTagsNames);
   } else {
     prompt = predefinedTagsPrompt(promptText, user.aiPredefinedTags);
   }
@@ -79,6 +114,8 @@ export default async function autoTagLink(
 
     if (!tags || tags.length === 0) {
       return;
+    } else if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
+      tags = tags.filter((tag: string) => existingTagsNames.includes(tag));
     } else if (user.aiTaggingMethod === AiTaggingMethod.PREDEFINED) {
       tags = tags.filter((tag: string) => user.aiPredefinedTags.includes(tag));
     }
