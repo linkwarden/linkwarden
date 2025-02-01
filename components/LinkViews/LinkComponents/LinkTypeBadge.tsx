@@ -22,6 +22,8 @@ export default function LinkTypeBadge({
         return "bi-file-earmark-pdf";
       case "image":
         return "bi-file-earmark-image";
+      case "readable":
+        return "bi-file-earmark-text";
       default:
         return "bi-link-45deg";
     }
@@ -43,7 +45,9 @@ export default function LinkTypeBadge({
   ) : (
     <div className="flex gap-1 item-center select-none text-neutral duration-100 max-w-full w-fit">
       <i className={typeIcon() + ` text-md leading-none`}></i>
-      <p className="text-xs truncate">{link.type}</p>
+      <p className="text-xs truncate">
+        {link.type === "readable" ? "note" : link.type}
+      </p>
     </div>
   );
 }

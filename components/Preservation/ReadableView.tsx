@@ -46,7 +46,9 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
       Image,
       ListItem,
       Highlight,
-      TextAlign,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
       TipTapLink.configure({
         openOnClick: false,
       }),

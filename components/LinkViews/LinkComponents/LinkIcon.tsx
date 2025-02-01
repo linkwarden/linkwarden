@@ -74,6 +74,11 @@ export default function LinkIcon({
           iconClasses={iconClasses}
           icon="bi-file-earmark-image"
         />
+      ) : link.type === "readable" ? (
+        <LinkPlaceholderIcon
+          iconClasses={iconClasses}
+          icon="bi-file-earmark-text"
+        />
       ) : // : link.type === "monolith" ? (
       //   <LinkPlaceholderIcon
       //     iconClasses={iconClasses + dimension}

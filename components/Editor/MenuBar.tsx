@@ -27,12 +27,6 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
         title="Heading 3"
       />
       <IconButton
-        onClick={() => editor.chain().focus().setParagraph().run()}
-        isActive={editor.isActive("paragraph")}
-        icon="bi bi-paragraph"
-        title="Paragraph"
-      />
-      <IconButton
         onClick={() => editor.chain().focus().toggleBold().run()}
         isActive={editor.isActive("bold")}
         icon="bi bi-type-bold"
@@ -82,7 +76,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
       />
       <IconButton
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        isActive={editor.isActive({ textAlign: "justify" })}
+        isActive={editor.isActive("bulletList")}
         icon="bi bi-list-ul"
         title="Bullet List"
       />

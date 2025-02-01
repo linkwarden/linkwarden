@@ -297,6 +297,22 @@
   cursor: pointer;
 }
 
+.reader-view h1.is-editor-empty:first-child::before {
+  color: oklch(var(--n));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.reader-view h1 + p.is-empty::before {
+  color: oklch(var(--n));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
 .read-only ul[data-type="taskList"] {
   pointer-events: none;
 }
