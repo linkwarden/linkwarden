@@ -68,6 +68,7 @@ model User {
 enum AiTaggingMethod {
   DISABLED
   GENERATE
+  EXISTING
   PREDEFINED
 }
 

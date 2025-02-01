@@ -149,11 +149,10 @@ export default function Appearance() {
             ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
-                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
-                  localStorage.getItem("theme") === theme
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${localStorage.getItem("theme") === theme
                     ? `outline-primary ${activeColor}`
                     : textColor
-                }`}
+                  }`}
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>
@@ -243,6 +242,25 @@ export default function Appearance() {
               </label>
               <p className="text-neutral text-sm pl-5">
                 {t("auto_generate_tags_desc")}
+              </p>
+
+              <label
+                className="label cursor-pointer flex gap-2 justify-start w-fit"
+                tabIndex={0}
+                role="button"
+              >
+                <input
+                  type="radio"
+                  name="ai-tagging-method-radio"
+                  className="radio checked:bg-primary"
+                  value="EXISTING"
+                  checked={aiTaggingMethod === AiTaggingMethod.EXISTING}
+                  onChange={() => setAiTaggingMethod(AiTaggingMethod.EXISTING)}
+                />
+                <span className="label-text">{t("based_on_existing_tags")}</span>
+              </label>
+              <p className="text-neutral text-sm pl-5">
+                {t("based_on_existing_tags_desc")}
               </p>
 
               <label
