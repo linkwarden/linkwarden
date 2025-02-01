@@ -17,7 +17,7 @@ import DOMPurify from "dompurify";
 import { formatAvailable } from "@/lib/shared/formatStats";
 import { ArchivedFormat } from "@/types/global";
 import getLinkTypeFromFormat from "@/lib/shared/getLinkTypeFromFormat";
-import handleReadablility from "@/lib/api/preservationScheme/handleReadablility";
+import handleReadability from "@/lib/api/preservationScheme/handleReadability";
 
 export const config = {
   api: {
@@ -256,12 +256,14 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const isReadable = mimetype?.includes("text");
 
       if (isReadable) {
-        await handleReadablility(fileBuffer.toString(), link, true);
+        await handleReadability(fileBuffer.toString(), link, true);
 
         fs.unlinkSync(files.file[0].filepath);
 
         return res.status(200).json({ response: files });
       }
+
+      console.log("isPDF", isPDF);
 
       if (isImage) {
         const collectionId = collectionPermissions.id;

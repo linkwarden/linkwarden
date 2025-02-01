@@ -3,11 +3,6 @@ import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
 import unescapeString from "@/lib/client/unescapeString";
-import {
-  LinkIncludingShortenedCollectionAndTags,
-  ArchivedFormat,
-} from "@/types/global";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
@@ -90,24 +85,6 @@ export default function UploadFileModal({ onClose }: Props) {
 
   const submit = async () => {
     if (!submitLoader && file) {
-      let fileType: ArchivedFormat | null = null;
-      let linkType: "url" | "image" | "monolith" | "pdf" | null = null;
-
-      if (file?.type === "image/jpg" || file.type === "image/jpeg") {
-        fileType = ArchivedFormat.jpeg;
-        linkType = "image";
-      } else if (file.type === "image/png") {
-        fileType = ArchivedFormat.png;
-        linkType = "image";
-      } else if (file.type === "application/pdf") {
-        fileType = ArchivedFormat.pdf;
-        linkType = "pdf";
-      }
-      // else if (file.type === "text/html") {
-      //   fileType = ArchivedFormat.monolith;
-      //   linkType = "monolith";
-      // }
-
       setSubmitLoader(true);
 
       const load = toast.loading(t("creating"));

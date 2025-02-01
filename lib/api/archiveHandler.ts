@@ -6,7 +6,7 @@ import fetchHeaders from "./fetchHeaders";
 import createFolder from "./storage/createFolder";
 import { removeFiles } from "./manageLinkFiles";
 import handleMonolith from "./preservationScheme/handleMonolith";
-import handleReadablility from "./preservationScheme/handleReadablility";
+import handleReadability from "./preservationScheme/handleReadability";
 import handleArchivePreview from "./preservationScheme/handleArchivePreview";
 import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf";
 import imageHandler from "./preservationScheme/imageHandler";
@@ -92,7 +92,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           if (!link.preview) await handleArchivePreview(link, page);
 
           // Readability
-          if (!link.readable) await handleReadablility(content, link);
+          if (!link.readable) await handleReadability(content, link);
 
           // Auto-tagging
           if (
