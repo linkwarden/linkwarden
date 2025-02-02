@@ -41,12 +41,12 @@ export const PostUserSchema = () => {
     username: emailEnabled
       ? z.string().optional()
       : z
-          .string()
-          .trim()
-          .toLowerCase()
-          .min(3)
-          .max(50)
-          .regex(/^[a-z0-9_-]{3,50}$/),
+        .string()
+        .trim()
+        .toLowerCase()
+        .min(3)
+        .max(50)
+        .regex(/^[a-z0-9_-]{3,50}$/),
     invite: z.boolean().optional(),
   });
 };
@@ -72,8 +72,9 @@ export const UpdateUserSchema = () => {
     newPassword: z.string().min(8).max(2048).optional(),
     oldPassword: z.string().min(8).max(2048).optional(),
     archiveAsScreenshot: z.boolean().optional(),
-    archiveAsPDF: z.boolean().optional(),
     archiveAsMonolith: z.boolean().optional(),
+    archiveAsPDF: z.boolean().optional(),
+    archiveAsReadable: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
     dashboardPinnedLinks: z.boolean().optional(),
     dashboardRecentLinks: z.boolean().optional(),
