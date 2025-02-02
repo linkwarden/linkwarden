@@ -13,14 +13,13 @@ export default async function updateTagById(
 
   if (!dataValidation.success) {
     return {
-      response: `Error: ${
-        dataValidation.error.issues[0].message
-      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      response: `Error: ${dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`,
       status: 400,
     };
   }
 
-  const { name } = dataValidation.data;
+  const { name, archiveAsScreenshot, archiveAsMonolith, archiveAsPDF, archiveAsReadable, archiveAsWaybackMachine } = dataValidation.data;
 
   const tagNameIsTaken = await prisma.tag.findFirst({
     where: {
@@ -53,6 +52,11 @@ export default async function updateTagById(
     },
     data: {
       name: name,
+      archiveAsScreenshot: archiveAsScreenshot,
+      archiveAsMonolith: archiveAsMonolith,
+      archiveAsPDF: archiveAsPDF,
+      archiveAsReadable: archiveAsReadable,
+      archiveAsWaybackMachine: archiveAsWaybackMachine,
     },
   });
 

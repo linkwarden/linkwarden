@@ -213,6 +213,11 @@ export type UpdateCollectionSchemaType = z.infer<typeof UpdateCollectionSchema>;
 
 export const UpdateTagSchema = z.object({
   name: z.string().trim().max(50),
+  archiveAsScreenshot: z.boolean().nullable(),
+  archiveAsMonolith: z.boolean().nullable(),
+  archiveAsPDF: z.boolean().nullable(),
+  archiveAsReadable: z.boolean().nullable(),
+  archiveAsWaybackMachine: z.boolean().nullable(),
 });
 
 export type UpdateTagSchemaType = z.infer<typeof UpdateTagSchema>;
