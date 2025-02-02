@@ -14,7 +14,6 @@ import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import clsx from "clsx";
 import usePermissions from "@/hooks/usePermissions";
-import { useUpdateFile } from "@/hooks/store/links";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
@@ -29,7 +28,6 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Document from "@tiptap/extension-document";
 
 type Props = {
-  onSave?: () => void;
   link?: LinkIncludingShortenedCollectionAndTags;
   className?: string;
   editable?: boolean;
@@ -40,7 +38,7 @@ export type TextEditorRef = {
 };
 
 const TextEditor = forwardRef<TextEditorRef, Props>(
-  ({ onSave, link, className, editable }, ref) => {
+  ({ link, className, editable }, ref) => {
     const { t } = useTranslation();
     const [linkContent, setLinkContent] = useState("");
 
