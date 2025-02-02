@@ -16,9 +16,11 @@ import { PreservationContent } from "./PreservationContent";
 export default function Preservation({
   link,
   standalone,
+  isReady,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   standalone: boolean;
+  isReady: boolean;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -71,7 +73,7 @@ export default function Preservation({
   }, [router.query, link]);
 
   useEffect(() => {
-    if (router.pathname.includes("links")) {
+    if (router.pathname.includes("/links/[id]")) {
       const query = {
         ...router.query,
         format,

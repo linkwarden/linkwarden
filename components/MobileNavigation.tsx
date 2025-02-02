@@ -6,12 +6,14 @@ import NewCollectionModal from "./ModalContent/NewCollectionModal";
 import UploadFileModal from "./ModalContent/UploadFileModal";
 import MobileNavigationButton from "./MobileNavigationButton";
 import { useTranslation } from "next-i18next";
+import NewNoteModal from "./ModalContent/NewNoteModal";
 
 type Props = {};
 
 export default function MobileNavigation({}: Props) {
   const { t } = useTranslation();
   const [newLinkModal, setNewLinkModal] = useState(false);
+  const [newNoteModal, setNewNoteModal] = useState(false);
   const [newCollectionModal, setNewCollectionModal] = useState(false);
   const [uploadFileModal, setUploadFileModal] = useState(false);
 
@@ -59,6 +61,19 @@ export default function MobileNavigation({}: Props) {
                 <div
                   onClick={() => {
                     (document?.activeElement as HTMLElement)?.blur();
+                    setNewNoteModal(true);
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  className="whitespace-nowrap"
+                >
+                  {t("new_note")}
+                </div>
+              </li>
+              <li>
+                <div
+                  onClick={() => {
+                    (document?.activeElement as HTMLElement)?.blur();
                     setUploadFileModal(true);
                   }}
                   tabIndex={0}
@@ -88,6 +103,7 @@ export default function MobileNavigation({}: Props) {
         </div>
       </div>
       {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
+      {newNoteModal && <NewNoteModal onClose={() => setNewNoteModal(false)} />}
       {newCollectionModal && (
         <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
       )}
