@@ -57,6 +57,7 @@ model User {
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
+  archiveAsReadable       Boolean               @default(true)
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
   referredBy              String?
