@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
 } from "@/types/global";
 import Link from "next/link";
-import {
-  atLeastOneFormatAvailable,
-  formatAvailable,
-} from "@/lib/shared/formatStats";
+import { formatAvailable } from "@/lib/shared/formatStats";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
@@ -111,7 +108,7 @@ export default function LinkDetails({
     fetchOwner();
   }, [link.collection.ownerId]);
 
-  const isReady = () => {
+  const isReady = useMemo(() => {
     return (
       link &&
       (collectionOwner.archiveAsScreenshot === true ? link.pdf : true) &&
@@ -119,7 +116,7 @@ export default function LinkDetails({
       (collectionOwner.archiveAsPDF === true ? link.pdf : true) &&
       link.readable
     );
-  };
+  }, [link, collectionOwner]);
 
   useEffect(() => {
     (async () => {
@@ -130,7 +127,7 @@ export default function LinkDetails({
 
     let interval: any;
 
-    if (!isReady()) {
+    if (!isReady) {
       interval = setInterval(async () => {
         await getLink.mutateAsync({
           id: link.id as number,
@@ -206,19 +203,18 @@ export default function LinkDetails({
           !standalone && "sm:flex sm:h-[80vh]"
         )}
       >
-        {width >= 640 && atLeastOneFormatAvailable(link) && (
+        {width >= 640 && (
           <div className="w-1/2 lg:w-2/3 overflow-y-auto">
             {link.id && (
-              <Preservation link={link} standalone={standalone || false} />
+              <Preservation
+                link={link}
+                standalone={standalone || false}
+                isReady={!!isReady}
+              />
             )}
           </div>
         )}
-        <div
-          className={clsx(
-            "sm:overflow-y-auto sm:w-full",
-            atLeastOneFormatAvailable(link) && "sm:w-1/2 lg:w-1/3"
-          )}
-        >
+        <div className={clsx("sm:overflow-y-auto sm:w-1/2 lg:w-1/3")}>
           {setMode && onClose && (
             <div className={clsx("flex justify-center -mb-11 pt-3 relative")}>
               {(permissions === true || permissions?.canUpdate) &&
@@ -352,7 +348,7 @@ export default function LinkDetails({
                     if (iconTriggerRef.current) {
                       const rect =
                         iconTriggerRef.current.getBoundingClientRect();
-                      if (width >= 640 && atLeastOneFormatAvailable(link)) {
+                      if (width >= 640) {
                         setIconPopoverPosition({
                           top: rect.bottom + window.scrollY,
                           left: rect.left + rect.width / 2 + window.scrollX, // center of LinkIcon
@@ -386,21 +382,9 @@ export default function LinkDetails({
                       iconWeight: "",
                     })
                   }
-                  className={clsx(
-                    width >= 640 &&
-                      atLeastOneFormatAvailable(link) &&
-                      "-translate-x-1/2"
-                  )}
-                  top={
-                    width >= 640 && atLeastOneFormatAvailable(link)
-                      ? iconPopoverPosition.top
-                      : undefined
-                  }
-                  left={
-                    width >= 640 && atLeastOneFormatAvailable(link)
-                      ? iconPopoverPosition.left
-                      : undefined
-                  }
+                  className={clsx("sm:-translate-x-1/2")}
+                  top={width >= 640 ? iconPopoverPosition.top : undefined}
+                  left={width >= 640 ? iconPopoverPosition.left : undefined}
                   onClose={() => {
                     setIconPopover(false);
                     submit();
@@ -734,7 +718,7 @@ export default function LinkDetails({
                     </>
                   ) : undefined}
 
-                  {!isReady() && !atLeastOneFormatAvailable(link) ? (
+                  {!isReady ? (
                     <div
                       className={`w-full h-full flex flex-col justify-center p-10`}
                     >
@@ -751,9 +735,7 @@ export default function LinkDetails({
                         {t("check_back_later")}
                       </p>
                     </div>
-                  ) : link.url &&
-                    !isReady() &&
-                    atLeastOneFormatAvailable(link) ? (
+                  ) : link.url && !isReady ? (
                     <div
                       className={`w-full h-full flex flex-col justify-center p-5`}
                     >
