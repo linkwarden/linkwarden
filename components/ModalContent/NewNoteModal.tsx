@@ -1,4 +1,3 @@
-// NewNoteModal.tsx
 import React, { useEffect, useState, useRef } from "react";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
@@ -84,29 +83,24 @@ export default function NewNoteModal({ onClose }: Props) {
       const editor = editorRef.current?.getEditor();
       if (!editor) throw new Error("Editor not initialized");
 
-      // Get the sanitized HTML content from the editor
       const sanitizedHTML = DOMPurify.sanitize(editor.getHTML());
 
-      // Create a DOM parser to parse the sanitized HTML string
       const parser = new DOMParser();
       const doc = parser.parseFromString(sanitizedHTML, "text/html");
 
-      // Extract the first <h1> element as the title
       const h1 = doc.querySelector("h1");
       const title = h1 ? h1.textContent?.trim() : link.name;
 
-      // Remove the first <h1> from the content to isolate the main content
       if (h1) {
         h1.remove();
       }
-      const contentWithoutTitle = doc.body.innerHTML.trim();
 
-      // Prepare the file content, optionally including the title
+      const contentWithoutTitle = doc.body.innerHTML || "";
+
       const file = new File([contentWithoutTitle], title || "Untitled Note", {
         type: "text/plain",
       });
 
-      // Perform the file upload mutation
       await uploadFile.mutateAsync(
         { link, file },
         {
@@ -134,7 +128,6 @@ export default function NewNoteModal({ onClose }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("write_new_note")}</p>
       <div className="divider mb-2 mt-1"></div>
-      {/* Pass the ref to TextEditor */}
       <TextEditor ref={editorRef} editable />
       <div className={"mt-2"}>
         {optionsExpanded && (
