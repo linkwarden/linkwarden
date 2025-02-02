@@ -1,21 +1,25 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
+import { AiTaggingMethod, LinksRouteTo, Tag } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useConfig } from "@/hooks/store/config";
+import { ArchivalTagOption } from "@/components/InputSelect/types";
+import ArchiveTags from "@/components/ArchiveTags";
+import { useTags } from "@/hooks/store/tags";
 
 export default function Preference() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
+  const { data: tags } = useTags();
   const updateUser = useUpdateUser();
   const [user, setUser] = useState(account);
 
@@ -46,6 +50,9 @@ export default function Preference() {
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
 
+  const [archivalTags, setArchivalTags] = useState<ArchivalTagOption[]>();
+
+  console.log(archivalTags);
   const { data: config } = useConfig();
 
   useEffect(() => {
@@ -97,6 +104,23 @@ export default function Preference() {
       setDashboardPinnedLinks(account.dashboardPinnedLinks);
     }
   }, [account]);
+
+  useEffect(() => {
+    if (tags) {
+      setArchivalTags(
+        tags
+          .filter((tag: Tag) => tag.archiveAsScreenshot || tag.archiveAsMonolith || tag.archiveAsPDF || tag.archiveAsReadable || tag.archiveAsWaybackMachine)
+          .map((tag: Tag) => ({
+            label: tag.name,
+            archiveAsScreenshot: tag.archiveAsScreenshot,
+            archiveAsMonolith: tag.archiveAsMonolith,
+            archiveAsPDF: tag.archiveAsPDF,
+            archiveAsReadable: tag.archiveAsReadable,
+            archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
+          }))
+      );
+    }
+  }, [tags]);
 
   const submit = async () => {
     setSubmitLoader(true);
@@ -331,6 +355,13 @@ export default function Preference() {
                 setArchiveAsWaybackMachine(!archiveAsWaybackMachine)
               }
             />
+          </div>
+          <p>{t("tag_formats_to_archive")}</p>
+          <div className="p-3">
+            <TagSelection type="archival" onChange={(e: ArchivalTagOption[]) => setArchivalTags([...archivalTags || [], ...(e || [])])} />
+            <div className="flex flex-col gap-2">
+              <ArchiveTags archivalTags={archivalTags} />
+            </div>
           </div>
         </div>
 
