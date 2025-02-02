@@ -10,6 +10,7 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
     const tags = await getTags({
       userId: user.id,
     });
+
     return res.status(tags?.status || 500).json({ response: tags?.response });
   }
 }

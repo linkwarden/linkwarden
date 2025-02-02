@@ -171,16 +171,15 @@ export default function Index() {
                 </form>
               ) : (
                 <>
-                  <p className="sm:text-3xl text-2xl capitalize">
+                  <p className="sm:text-3xl text-2xl">
                     {activeTag?.name}
                   </p>
                   <div className="relative">
                     <div
-                      className={`dropdown dropdown-bottom font-normal ${
-                        activeTag?.name.length && activeTag?.name.length > 8
+                      className={`dropdown dropdown-bottom font-normal ${activeTag?.name.length && activeTag?.name.length > 8
                           ? "dropdown-end"
                           : ""
-                      }`}
+                        }`}
                     >
                       <div
                         tabIndex={0}
