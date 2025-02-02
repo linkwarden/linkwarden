@@ -114,7 +114,7 @@ export default function Preservation({
       className={clsx(
         "bg-base-200",
         !isExpanded &&
-          `mx-auto relative p-2 h-full overflow-auto rounded-md sm:rounded-none`,
+        `mx-auto relative p-2 h-full overflow-auto rounded-md sm:rounded-none`,
         isExpanded && "fixed inset-0 w-screen h-screen z-[9999]"
       )}
       style={{
@@ -129,7 +129,7 @@ export default function Preservation({
                 className={clsx(
                   "py-1 px-2 cursor-pointer duration-100 rounded-lg font-semibold text-center flex justify-between items-center w-6",
                   format === ArchivedFormat.readability &&
-                    "bg-primary bg-opacity-50"
+                  "bg-primary bg-opacity-50"
                 )}
                 onClick={() => setFormat(ArchivedFormat.readability)}
               >
@@ -143,7 +143,7 @@ export default function Preservation({
                 className={clsx(
                   "py-1 px-2 cursor-pointer duration-100 rounded-lg font-semibold text-center flex justify-between items-center w-6",
                   format === ArchivedFormat.monolith &&
-                    "bg-primary bg-opacity-50"
+                  "bg-primary bg-opacity-50"
                 )}
                 onClick={() => setFormat(ArchivedFormat.monolith)}
               >
@@ -157,9 +157,9 @@ export default function Preservation({
                 className={clsx(
                   "py-1 px-2 cursor-pointer duration-100 rounded-lg font-semibold text-center flex justify-between items-center w-6",
                   format ===
-                    (link?.image?.endsWith("png")
-                      ? ArchivedFormat.png
-                      : ArchivedFormat.jpeg) && "bg-primary bg-opacity-50"
+                  (link?.image?.endsWith("png")
+                    ? ArchivedFormat.png
+                    : ArchivedFormat.jpeg) && "bg-primary bg-opacity-50"
                 )}
                 onClick={() =>
                   setFormat(
@@ -241,7 +241,7 @@ const RenderFormat = ({
   containerRef: React.RefObject<HTMLDivElement>;
   setIsExpanded: (expanded: boolean) => void;
 }) => {
-  // if (!link?.id) return <></>;
+  if (!link?.id) return <></>;
 
   const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
 
@@ -279,29 +279,29 @@ const RenderFormat = ({
 
   const style = isExpanded
     ? {
-        position: "fixed" as const,
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        zIndex: 9999,
-        transitionProperty:
-          delayPassed && !shouldReduceMotion
-            ? "width, height, top, left"
-            : "none",
-      }
+      position: "fixed" as const,
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      zIndex: 9999,
+      transitionProperty:
+        delayPassed && !shouldReduceMotion
+          ? "width, height, top, left"
+          : "none",
+    }
     : {
-        zIndex: 40,
-        position: "absolute" as const,
-        top: (containerRect?.top ?? 0) + window.scrollY + topPadding,
-        left: (containerRect?.left ?? 0) + window.scrollX,
-        width: containerRect?.width ?? 0,
-        height: containerRect?.height ? containerRect.height - topPadding : 0,
-        transitionProperty:
-          delayPassed && !shouldReduceMotion
-            ? "width, height, top, left"
-            : "none",
-      };
+      zIndex: 40,
+      position: "absolute" as const,
+      top: (containerRect?.top ?? 0) + window.scrollY + topPadding,
+      left: (containerRect?.left ?? 0) + window.scrollX,
+      width: containerRect?.width ?? 0,
+      height: containerRect?.height ? containerRect.height - topPadding : 0,
+      transitionProperty:
+        delayPassed && !shouldReduceMotion
+          ? "width, height, top, left"
+          : "none",
+    };
 
   return ReactDOM.createPortal(
     <div
