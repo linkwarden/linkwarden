@@ -11,7 +11,7 @@ import { useUpdateUser, useUser } from "@/hooks/store/user";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useConfig } from "@/hooks/store/config";
 
-export default function Appearance() {
+export default function Preference() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -25,20 +25,21 @@ export default function Appearance() {
   const [archiveAsScreenshot, setArchiveAsScreenshot] = useState<boolean>(
     account.archiveAsScreenshot || false
   );
-  const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(
-    account.archiveAsPDF || false
-  );
   const [archiveAsMonolith, setArchiveAsMonolith] = useState<boolean>(
     account.archiveAsMonolith || false
   );
+  const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(
+    account.archiveAsPDF || false
+  );
+  const [archiveAsReadable, setArchiveAsReadable] = useState<boolean>(false);
+  const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
+    useState<boolean>(account.archiveAsWaybackMachine || false);
   const [dashboardPinnedLinks, setDashboardPinnedLinks] = useState<boolean>(
     account.dashboardPinnedLinks || false
   );
   const [dashboardRecentLinks, setDashboardRecentLinks] = useState<boolean>(
     account.dashboardRecentLinks || false
   );
-  const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
-    useState<boolean>(account.archiveAsWaybackMachine || false);
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
     account.aiTaggingMethod
@@ -53,6 +54,7 @@ export default function Appearance() {
       archiveAsScreenshot,
       archiveAsMonolith,
       archiveAsPDF,
+      archiveAsReadable,
       archiveAsWaybackMachine,
       linksRouteTo,
       preventDuplicateLinks,
@@ -66,6 +68,7 @@ export default function Appearance() {
     archiveAsScreenshot,
     archiveAsMonolith,
     archiveAsPDF,
+    archiveAsReadable,
     archiveAsWaybackMachine,
     linksRouteTo,
     preventDuplicateLinks,
@@ -84,6 +87,7 @@ export default function Appearance() {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
       setArchiveAsMonolith(account.archiveAsMonolith);
       setArchiveAsPDF(account.archiveAsPDF);
+      setArchiveAsReadable(account.archiveAsReadable);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
       setPreventDuplicateLinks(account.preventDuplicateLinks);
@@ -143,11 +147,10 @@ export default function Appearance() {
             ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
-                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
-                  localStorage.getItem("theme") === theme
-                    ? `outline-primary ${activeColor}`
-                    : textColor
-                }`}
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${localStorage.getItem("theme") === theme
+                  ? `outline-primary ${activeColor}`
+                  : textColor
+                  }`}
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>
@@ -314,6 +317,13 @@ export default function Appearance() {
               state={archiveAsPDF}
               onClick={() => setArchiveAsPDF(!archiveAsPDF)}
             />
+
+            <Checkbox
+              label={t("readable")}
+              state={archiveAsReadable}
+              onClick={() => setArchiveAsReadable(!archiveAsReadable)}
+            />
+
             <Checkbox
               label={t("archive_org_snapshot")}
               state={archiveAsWaybackMachine}

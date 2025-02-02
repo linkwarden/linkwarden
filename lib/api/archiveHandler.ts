@@ -92,7 +92,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           if (!link.preview) await handleArchivePreview(link, page);
 
           // Readability
-          if (!link.readable) await handleReadability(content, link);
+          if (user.archiveAsReadable && !link.readable) await handleReadability(content, link);
 
           // Auto-tagging
           if (
@@ -137,7 +137,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           preview: !finalLink.preview ? "unavailable" : undefined,
           aiTagged:
             user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
-            !finalLink.aiTagged
+              !finalLink.aiTagged
               ? true
               : undefined,
         },
