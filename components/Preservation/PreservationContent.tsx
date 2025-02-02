@@ -6,6 +6,9 @@ import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
+import { BeatLoader } from "react-spinners";
+import { useTranslation } from "next-i18next";
+import { atLeastOneFormatAvailable } from "@/lib/shared/formatStats";
 
 type Props = {
   format: ArchivedFormat;
@@ -24,6 +27,7 @@ export const PreservationContent: React.FC<Props> = ({
   const [monolithLoaded, setMonolithLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const prevFormatRef = useRef<ArchivedFormat | undefined>(undefined);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (prevFormatRef.current !== format) {
@@ -92,7 +96,7 @@ export const PreservationContent: React.FC<Props> = ({
         return (
           <>
             {!imageLoaded && <PreservationSkeleton />}
-            <div className="overflow-auto w-fit mx-auto h-full flex items-center">
+            <div className="overflow-auto w-fit mx-auto h-full">
               <img
                 alt=""
                 src={`/api/v1/archives/${link.id}?format=${format}&_=${link.updatedAt}`}
@@ -107,5 +111,22 @@ export const PreservationContent: React.FC<Props> = ({
     }
   };
 
-  return <>{renderFormat()}</>;
+  return (
+    <>
+      {!atLeastOneFormatAvailable(link) ? (
+        <div className={`w-full h-full flex flex-col justify-center p-10`}>
+          <BeatLoader
+            color="oklch(var(--p))"
+            className="mx-auto mb-3"
+            size={30}
+          />
+
+          <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
+          <p className="text-center text-lg">{t("check_back_later")}</p>
+        </div>
+      ) : (
+        renderFormat()
+      )}
+    </>
+  );
 };

@@ -95,7 +95,8 @@ export default function NewNoteModal({ onClose }: Props) {
         h1.remove();
       }
 
-      const contentWithoutTitle = doc.body.innerHTML || "";
+      const contentWithoutTitle = doc.body.innerHTML.trim() || "<p>a</p>";
+      console.log(contentWithoutTitle);
 
       const file = new File([contentWithoutTitle], title || "Untitled Note", {
         type: "text/plain",

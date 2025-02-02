@@ -1,4 +1,3 @@
-// TextEditor.tsx
 import React, {
   useEffect,
   useState,
