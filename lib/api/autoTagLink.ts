@@ -122,8 +122,7 @@ export default async function autoTagLink(
       tags = tags.filter((tag: string) => user.aiPredefinedTags.includes(tag));
     } else if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
       tags = tags.map((tag: string) =>
-        // I was thinking of doing something like this instead: tag.length > 3 ? titleCase(tag.toLowerCase()) : tag
-        titleCase(tag.toLowerCase())
+        tag.length > 3 ? titleCase(tag.toLowerCase()) : tag
       );
     }
 
