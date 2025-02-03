@@ -44,6 +44,9 @@ export default function Appearance() {
     account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
+  const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
+    account.aiTagExistingLinks
+  );
 
   const { data: config } = useConfig();
 
@@ -58,6 +61,7 @@ export default function Appearance() {
       preventDuplicateLinks,
       aiTaggingMethod,
       aiPredefinedTags,
+      aiTagExistingLinks,
       dashboardRecentLinks,
       dashboardPinnedLinks,
     });
@@ -71,6 +75,7 @@ export default function Appearance() {
     preventDuplicateLinks,
     aiTaggingMethod,
     aiPredefinedTags,
+    aiTagExistingLinks,
     dashboardRecentLinks,
     dashboardPinnedLinks,
   ]);
@@ -89,6 +94,7 @@ export default function Appearance() {
       setPreventDuplicateLinks(account.preventDuplicateLinks);
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
+      setAiTagExistingLinks(account.aiTagExistingLinks);
       setDashboardRecentLinks(account.dashboardRecentLinks);
       setDashboardPinnedLinks(account.dashboardPinnedLinks);
     }
@@ -240,6 +246,27 @@ export default function Appearance() {
                   type="radio"
                   name="ai-tagging-method-radio"
                   className="radio checked:bg-primary"
+                  value="EXISTING"
+                  checked={aiTaggingMethod === AiTaggingMethod.EXISTING}
+                  onChange={() => setAiTaggingMethod(AiTaggingMethod.EXISTING)}
+                />
+                <span className="label-text">
+                  {t("based_on_existing_tags")}
+                </span>
+              </label>
+              <p className="text-neutral text-sm pl-5">
+                {t("based_on_existing_tags_desc")}
+              </p>
+
+              <label
+                className="label cursor-pointer flex gap-2 justify-start w-fit"
+                tabIndex={0}
+                role="button"
+              >
+                <input
+                  type="radio"
+                  name="ai-tagging-method-radio"
+                  className="radio checked:bg-primary"
                   value="PREDEFINED"
                   checked={aiTaggingMethod === AiTaggingMethod.PREDEFINED}
                   onChange={() =>
@@ -265,6 +292,21 @@ export default function Appearance() {
                   />
                 )}
               </div>
+            </div>
+            <div
+              className={`mb-3 ${
+                aiTaggingMethod === AiTaggingMethod.DISABLED ? "opacity-50" : ""
+              }`}
+            >
+              <Checkbox
+                label={t("generate_tags_for_existing_links")}
+                state={aiTagExistingLinks}
+                onClick={() =>
+                  aiTaggingMethod !== AiTaggingMethod.DISABLED &&
+                  setAiTagExistingLinks(!aiTagExistingLinks)
+                }
+                disabled={aiTaggingMethod === AiTaggingMethod.DISABLED}
+              />
             </div>
           </div>
         )}
