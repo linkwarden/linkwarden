@@ -196,14 +196,6 @@ export default function Appearance() {
 
             <div className="divider my-3"></div>
 
-            <div className="mb-3">
-              <Checkbox
-                label={t("generate_tags_for_existing_links")}
-                state={aiTagExistingLinks}
-                onClick={() => setAiTagExistingLinks(!aiTagExistingLinks)}
-              />
-            </div>
-
             <p>{t("ai_tagging_method")}</p>
 
             <div className="p-3">
@@ -300,6 +292,21 @@ export default function Appearance() {
                   />
                 )}
               </div>
+            </div>
+            <div
+              className={`mb-3 ${
+                aiTaggingMethod === AiTaggingMethod.DISABLED ? "opacity-50" : ""
+              }`}
+            >
+              <Checkbox
+                label={t("generate_tags_for_existing_links")}
+                state={aiTagExistingLinks}
+                onClick={() =>
+                  aiTaggingMethod !== AiTaggingMethod.DISABLED &&
+                  setAiTagExistingLinks(!aiTagExistingLinks)
+                }
+                disabled={aiTaggingMethod === AiTaggingMethod.DISABLED}
+              />
             </div>
           </div>
         )}
