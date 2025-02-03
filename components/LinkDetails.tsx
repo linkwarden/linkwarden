@@ -110,11 +110,11 @@ export default function LinkDetails({
 
   const isReady = useMemo(() => {
     return (
-      link &&
-      (collectionOwner.archiveAsScreenshot === true ? link.pdf : true) &&
-      (collectionOwner.archiveAsMonolith === true ? link.monolith : true) &&
-      (collectionOwner.archiveAsPDF === true ? link.pdf : true) &&
-      link.readable
+      ((collectionOwner.archiveAsScreenshot === true ? link.pdf : true) &&
+        (collectionOwner.archiveAsMonolith === true ? link.monolith : true) &&
+        (collectionOwner.archiveAsPDF === true ? link.pdf : true) &&
+        link.readable) ||
+      !link.url
     );
   }, [link, collectionOwner]);
 
