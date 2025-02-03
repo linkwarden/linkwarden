@@ -1,11 +1,9 @@
 import "dotenv/config";
 import { Collection, Link, User } from "@prisma/client";
 import { prisma } from "../lib/api/db";
-import archiveHandler, { getBrowserOptions } from "../lib/api/archiveHandler";
+import archiveHandler from "../lib/api/archiveHandler";
 import Parser from "rss-parser";
 import { hasPassedLimit } from "../lib/api/verifyCapacity";
-import autoTagLink from "../lib/api/autoTagLink";
-import { chromium, devices } from "playwright";
 
 const archiveTakeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
 
@@ -31,6 +29,15 @@ async function processBatch() {
         },
         {
           monolith: null,
+        },
+        {
+          createdBy: {
+            aiTagExistingLinks: true,
+            NOT: {
+              aiTaggingMethod: "DISABLED",
+            },
+          },
+          aiTagged: false,
         },
       ],
     },
@@ -60,6 +67,15 @@ async function processBatch() {
         },
         {
           monolith: null,
+        },
+        {
+          createdBy: {
+            aiTagExistingLinks: true,
+            NOT: {
+              aiTaggingMethod: "DISABLED",
+            },
+          },
+          aiTagged: false,
         },
       ],
     },
@@ -105,79 +121,6 @@ async function processBatch() {
     .map((e) => archiveLink(e));
 
   await Promise.allSettled(processingPromises);
-}
-
-async function processAITagging() {
-  const links = await prisma.link.findMany({
-    where: {
-      aiTagged: false,
-      url: { not: null },
-      createdBy: {
-        aiTagExistingLinks: true,
-        aiTaggingMethod: {
-          in: ["GENERATE", "EXISTING", "PREDEFINED"],
-        },
-      },
-    },
-    include: {
-      createdBy: true,
-    },
-  });
-
-  await Promise.all(
-    links.map(async (link) => {
-      let browser = null;
-      try {
-        if (link.createdBy && link.url) {
-          const browserOptions = getBrowserOptions();
-          browser = await chromium.launch(browserOptions);
-
-          const context = await browser.newContext({
-            ...devices["Desktop Chrome"],
-            ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
-          });
-
-          const page = await context.newPage();
-
-          await page.goto(link.url, {
-            waitUntil: "domcontentloaded",
-            timeout: 30000,
-          });
-
-          const metaDescription = await page.evaluate(() => {
-            const description = document.querySelector(
-              'meta[name="description"]'
-            );
-            return description?.getAttribute("content") ?? undefined;
-          });
-
-          await autoTagLink(link.createdBy, link.id, metaDescription);
-
-          // Mark the link as processed
-          await prisma.link.update({
-            where: { id: link.id },
-            data: { aiTagged: true },
-          });
-        }
-      } catch (error) {
-        console.error(
-          "\x1b[34m%s\x1b[0m",
-          `Error auto-tagging link ${link.url}:`,
-          error
-        );
-
-        // Mark the link as processed even if it failed to prevent endless retries
-        await prisma.link.update({
-          where: { id: link.id },
-          data: { aiTagged: true },
-        });
-      } finally {
-        if (browser) {
-          await browser.close();
-        }
-      }
-    })
-  );
 }
 
 async function fetchAndProcessRSS() {
@@ -271,17 +214,6 @@ async function startRSSPolling() {
   }
 }
 
-const aiTaggingIntervalInSeconds =
-  Number(process.env.AI_TAGGING_SCRIPT_INTERVAL) || 30;
-
-async function startAITagging() {
-  console.log("\x1b[34m%s\x1b[0m", "Starting AI tagging...");
-  while (true) {
-    await processAITagging();
-    await delay(aiTaggingIntervalInSeconds);
-  }
-}
-
 const archiveIntervalInSeconds =
   Number(process.env.ARCHIVE_SCRIPT_INTERVAL) || 10;
 
@@ -296,7 +228,6 @@ async function startArchiveProcessing() {
 async function init() {
   console.log("\x1b[34m%s\x1b[0m", "Initializing application...");
   startRSSPolling();
-  startAITagging();
   startArchiveProcessing();
 }
 

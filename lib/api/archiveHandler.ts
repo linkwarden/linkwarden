@@ -95,6 +95,12 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
           const content = await page.content();
 
+          // Preview
+          if (!link.preview) await handleArchivePreview(link, page);
+
+          // Readability
+          if (!link.readable) await handleReadablility(content, link);
+
           // Auto-tagging
           if (
             user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
@@ -104,12 +110,6 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
               process.env.ANTHROPIC_API_KEY)
           )
             await autoTagLink(user, link.id, metaDescription);
-
-          // Preview
-          if (!link.preview) await handleArchivePreview(link, page);
-
-          // Readability
-          if (!link.readable) await handleReadablility(content, link);
 
           // Screenshot/PDF
           if (
