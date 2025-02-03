@@ -90,9 +90,6 @@ const TextEditor = forwardRef<TextEditorRef, Props>(
 
     const router = useRouter();
     const isPublicRoute = router.pathname.startsWith("/public");
-    const permissions = link
-      ? usePermissions(link.collection?.id as number)
-      : true;
 
     useEffect(() => {
       const fetchLinkContent = async (
@@ -129,5 +126,7 @@ const TextEditor = forwardRef<TextEditorRef, Props>(
     );
   }
 );
+
+TextEditor.displayName = "TextEditor";
 
 export default TextEditor;
