@@ -243,8 +243,6 @@ const RenderFormat = ({
   containerRef: React.RefObject<HTMLDivElement>;
   setIsExpanded: (expanded: boolean) => void;
 }) => {
-  if (!link?.id) return <></>;
-
   const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
 
   const [delayPassed, setDelayPassed] = useState(false); // to get the content in place before animating
@@ -304,6 +302,8 @@ const RenderFormat = ({
             ? "width, height, top, left"
             : "none",
       };
+
+  if (!link?.id) return <></>;
 
   return ReactDOM.createPortal(
     <div
