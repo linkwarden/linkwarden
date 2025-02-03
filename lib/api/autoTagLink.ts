@@ -10,6 +10,7 @@ import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createOllama } from "ollama-ai-provider";
+import { titleCase } from "../shared/utils";
 
 // Function to concat /api with the base URL properly
 const ensureValidURL = (base: string, path: string) =>
@@ -47,16 +48,18 @@ export default async function autoTagLink(
 
   if (!link) return console.log("Link not found for auto tagging.");
 
-  const existingTags = await prisma.tag.findMany({
-    select: {
-      name: true,
-    },
-    where: {
-      ownerId: user.id,
-    },
-  });
+  const description =
+    metaDescription ||
+    (link.textContent ? link.textContent?.slice(0, 500) + "..." : undefined);
 
-  console.log("Auto tagging link: ", link.url);
+  if (!description) return;
+
+  console.log(
+    'Auto tagging "',
+    link.url,
+    '" with the following description: ',
+    description
+  );
 
   let prompt;
 
@@ -86,17 +89,12 @@ export default async function autoTagLink(
     );
   }
 
-  const promptText = metaDescription || link.textContent?.slice(0, 500) + "...";
-
-  if (!promptText)
-    return console.log("No text content to auto tag for link: ", link.url);
-
   if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
-    prompt = generateTagsPrompt(promptText);
+    prompt = generateTagsPrompt(description);
   } else if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
-    prompt = existingTagsPrompt(promptText, existingTagsNames);
+    prompt = existingTagsPrompt(description, existingTagsNames);
   } else {
-    prompt = predefinedTagsPrompt(promptText, user.aiPredefinedTags);
+    prompt = predefinedTagsPrompt(description, user.aiPredefinedTags);
   }
 
   if (
@@ -116,15 +114,20 @@ export default async function autoTagLink(
   try {
     let tags = object;
 
-    console.log("Tags generated for link: ", link.url, tags);
-
     if (!tags || tags.length === 0) {
       return;
     } else if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
       tags = tags.filter((tag: string) => existingTagsNames.includes(tag));
     } else if (user.aiTaggingMethod === AiTaggingMethod.PREDEFINED) {
       tags = tags.filter((tag: string) => user.aiPredefinedTags.includes(tag));
+    } else if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
+      tags = tags.map((tag: string) =>
+        // I was thinking of doing something like this instead: tag.length > 3 ? titleCase(tag.toLowerCase()) : tag
+        titleCase(tag.toLowerCase())
+      );
     }
+
+    console.log("Tags for link:", link.url, "=>", tags);
 
     if (tags.length > 5) {
       tags = tags.slice(0, 5);
@@ -137,12 +140,12 @@ export default async function autoTagLink(
           connectOrCreate: tags.map((tag: string) => ({
             where: {
               name_ownerId: {
-                name: tag.trim().slice(0, 100),
+                name: tag.trim().slice(0, 50),
                 ownerId: user.id,
               },
             },
             create: {
-              name: tag.trim().slice(0, 100),
+              name: tag.trim().slice(0, 50),
               owner: {
                 connect: {
                   id: user.id,
