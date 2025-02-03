@@ -10,8 +10,6 @@ const handleReadablility = async (
   link: Link,
   keepContent?: boolean
 ) => {
-  console.log("articleText", content);
-
   const window = new JSDOM("").window;
   const purify = DOMPurify(window);
   const cleanedUpContent = purify.sanitize(content);
