@@ -465,5 +465,6 @@
   "new_note": "New Note",
   "add_a_title_placeholder": "Add a title...",
   "write_notes_here_placeholder": "Write some notes here...",
-  "tag_formats_to_archive": "Formats to save based on tags:"
+  "tag_settings": "Tag archival and processing settings:",
+  "ai_tagging": "AI Tagging"
 }

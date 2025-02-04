@@ -9,4 +9,5 @@ export interface ArchivalTagOption extends Option {
   archiveAsPDF?: boolean;
   archiveAsReadable?: boolean;
   archiveAsWaybackMachine?: boolean;
+  aiTag?: boolean;
 }
