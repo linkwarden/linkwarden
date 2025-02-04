@@ -10,7 +10,7 @@ import { AiTaggingMethod, LinksRouteTo, Tag } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import ArchivalTagSelection from "@/components/InputSelect/ArchivalTagSelection";
 import { useConfig } from "@/hooks/store/config";
-import { ArchivalTagOption } from "@/components/InputSelect/types";
+import { ArchivalOptionKeys, ArchivalTagOption } from "@/components/InputSelect/types";
 import { useTags } from "@/hooks/store/tags";
 import { cn } from "@/lib/client/utils";
 import TagSelection from "@/components/InputSelect/TagSelection";
@@ -108,14 +108,16 @@ export default function Preference() {
     if (tags) {
       setArchivalTags(
         tags
-          .filter((tag: Tag) => tag.archiveAsScreenshot || tag.archiveAsMonolith || tag.archiveAsPDF || tag.archiveAsReadable || tag.archiveAsWaybackMachine)
+          .filter((tag: Tag) => tag.archiveAsScreenshot || tag.archiveAsMonolith || tag.archiveAsPDF || tag.archiveAsReadable || tag.archiveAsWaybackMachine || tag.aiTag)
           .map((tag: Tag) => ({
             label: tag.name,
+            value: tag.id,
             archiveAsScreenshot: tag.archiveAsScreenshot,
             archiveAsMonolith: tag.archiveAsMonolith,
             archiveAsPDF: tag.archiveAsPDF,
             archiveAsReadable: tag.archiveAsReadable,
             archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
+            aiTag: tag.aiTag,
           }))
       );
     }
@@ -144,8 +146,8 @@ export default function Preference() {
   };
 
   const handleArchivalTagChange = (e: ArchivalTagOption[]) => {
-    const newTags = e || [];
-    const existingTags = archivalTags || [];
+    const newTags = e;
+    const existingTags = archivalTags;
 
     // Filter out any new tags that already exist in archivalTags based on label
     const uniqueNewTags = newTags.filter(newTag =>
@@ -155,12 +157,27 @@ export default function Preference() {
     setArchivalTags([...existingTags, ...uniqueNewTags]);
   };
 
+  const handleArchiveOptionChange = (tag: ArchivalTagOption, option: ArchivalOptionKeys) => {
+    const updatedTags = archivalTags?.map(t =>
+      t.label === tag.label ? { ...t, [option]: !t[option] } : t
+    );
+
+    setArchivalTags(updatedTags);
+  };
+
   const handleDeleteTag = (tagToDelete: ArchivalTagOption) => {
     const updatedTags = archivalTags?.filter(tag => tag.label !== tagToDelete.label);
     setArchivalTags(updatedTags);
   }
 
-  console.log(archivalTags);
+  const ARCHIVAL_OPTIONS: { type: ArchivalOptionKeys; icon: string; label: string }[] = [
+    { type: "aiTag", icon: "bi-tag", label: t("ai_tagging") },
+    { type: "archiveAsScreenshot", icon: "bi-file-earmark-image", label: t("screenshot") },
+    { type: "archiveAsMonolith", icon: "bi-filetype-html", label: t("webpage") },
+    { type: "archiveAsPDF", icon: "bi-file-earmark-pdf", label: t("pdf") },
+    { type: "archiveAsReadable", icon: "bi-file-earmark-text", label: t("readable") },
+    { type: "archiveAsWaybackMachine", icon: "bi-archive", label: t("archive_org_snapshot") },
+  ];
 
   return (
     <SettingsLayout>
@@ -383,16 +400,12 @@ export default function Preference() {
                   <span className="text-xl sm:text-lg text-white truncate max-w-[10rem]">{tag.label}</span>
                   <div className="flex items-center gap-1">
                     <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
-                      {[
-                        { type: 'aiTag', icon: 'bi-tag', label: t("ai_tagging") },
-                        { type: 'archiveAsScreenshot', icon: 'bi-file-earmark-image', label: t("screenshot") },
-                        { type: 'archiveAsMonolith', icon: 'bi-filetype-html', label: t("webpage") },
-                        { type: 'archiveAsPDF', icon: 'bi-file-earmark-pdf', label: t("pdf") },
-                        { type: 'archiveAsReadable', icon: 'bi-file-earmark-text', label: t("readable") },
-                        { type: 'archiveAsWaybackMachine', icon: 'bi-archive', label: t("archive_org_snapshot") },
-                      ].map(({ type, icon, label }) => (
+                      {ARCHIVAL_OPTIONS.map(({ type, icon, label }) => (
                         <div key={type} className="tooltip tooltip-top" data-tip={label}>
-                          <button className={cn("py-1 px-2 bg-base-300 rounded", { "bg-primary bg-opacity-25": tag[type as keyof ArchivalTagOption] })}>
+                          <button
+                            onClick={() => handleArchiveOptionChange(tag, type)}
+                            className={cn("py-1 px-2 bg-base-300 rounded", { "bg-primary bg-opacity-25": tag[type] })}
+                          >
                             <i className={`${icon} text-lg leading-none`}></i>
                           </button>
                         </div>

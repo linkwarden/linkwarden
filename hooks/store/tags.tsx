@@ -1,8 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { TagIncludingLinkCount } from "@/types/global";
 import { useSession } from "next-auth/react";
+import { Tag } from "@prisma/client";
 
-const useTags = () => {
+const useTags = (): UseQueryResult<Tag[], Error> => {
   const { status } = useSession();
 
   return useQuery({
