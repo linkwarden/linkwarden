@@ -4,10 +4,12 @@ export interface Option {
 }
 
 export interface ArchivalTagOption extends Option {
-  archiveAsScreenshot?: boolean;
-  archiveAsMonolith?: boolean;
-  archiveAsPDF?: boolean;
-  archiveAsReadable?: boolean;
-  archiveAsWaybackMachine?: boolean;
-  aiTag?: boolean;
+  archiveAsScreenshot: boolean | null;
+  archiveAsMonolith: boolean | null;
+  archiveAsPDF: boolean | null
+  archiveAsReadable: boolean | null;
+  archiveAsWaybackMachine: boolean | null;
+  aiTag: boolean | null;
 }
+
+export type ArchivalOptionKeys = keyof Omit<ArchivalTagOption, "label" | "value">;

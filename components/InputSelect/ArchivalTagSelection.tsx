@@ -20,19 +20,20 @@ export default function ArchivalTagSelection({
 	const [options, setOptions] = useState<ArchivalTagOption[]>([]);
 
 	useEffect(() => {
-		const formattedTags = tags.map((e: Tag) => {
+		const formattedTags = tags.map((tag: Tag) => {
 			return {
-				value: e.id,
-				label: e.name,
-				archiveAsScreenshot: e.archiveAsScreenshot,
-				archiveAsMonolith: e.archiveAsMonolith,
-				archiveAsPDF: e.archiveAsPDF,
-				archiveAsReadable: e.archiveAsReadable,
-				archiveAsWaybackMachine: e.archiveAsWaybackMachine,
+				value: tag.id,
+				label: tag.name,
+				archiveAsScreenshot: tag.archiveAsScreenshot || false,
+				archiveAsMonolith: tag.archiveAsMonolith || false,
+				archiveAsPDF: tag.archiveAsPDF || false,
+				archiveAsReadable: tag.archiveAsReadable || false,
+				archiveAsWaybackMachine: tag.archiveAsWaybackMachine || false,
+				aiTag: tag.aiTag || false
 			};
 		});
 
-		const filteredTags = formattedTags.filter((tag: ArchivalTagOption) => {
+		const filteredTags = formattedTags.filter((tag) => {
 			return !selectedTags.find((selectedTag) => selectedTag.value === tag.value);
 		});
 
