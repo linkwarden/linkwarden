@@ -1,5 +1,5 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import Checkbox from "@/components/Checkbox";
@@ -8,11 +8,12 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { AiTaggingMethod, LinksRouteTo, Tag } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
-import TagSelection from "@/components/InputSelect/TagSelection";
+import ArchivalTagSelection from "@/components/InputSelect/ArchivalTagSelection";
 import { useConfig } from "@/hooks/store/config";
 import { ArchivalTagOption } from "@/components/InputSelect/types";
-import ArchiveTags from "@/components/ArchiveTags";
 import { useTags } from "@/hooks/store/tags";
+import { cn } from "@/lib/client/utils";
+import TagSelection from "@/components/InputSelect/TagSelection";
 
 export default function Preference() {
   const { t } = useTranslation();
@@ -49,10 +50,8 @@ export default function Preference() {
     account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
+  const [archivalTags, setArchivalTags] = useState<ArchivalTagOption[]>([]);
 
-  const [archivalTags, setArchivalTags] = useState<ArchivalTagOption[]>();
-
-  console.log(archivalTags);
   const { data: config } = useConfig();
 
   useEffect(() => {
@@ -143,6 +142,25 @@ export default function Preference() {
       }
     );
   };
+
+  const handleArchivalTagChange = (e: ArchivalTagOption[]) => {
+    const newTags = e || [];
+    const existingTags = archivalTags || [];
+
+    // Filter out any new tags that already exist in archivalTags based on label
+    const uniqueNewTags = newTags.filter(newTag =>
+      !existingTags.some(existingTag => existingTag.label === newTag.label)
+    );
+
+    setArchivalTags([...existingTags, ...uniqueNewTags]);
+  };
+
+  const handleDeleteTag = (tagToDelete: ArchivalTagOption) => {
+    const updatedTags = archivalTags?.filter(tag => tag.label !== tagToDelete.label);
+    setArchivalTags(updatedTags);
+  }
+
+  console.log(archivalTags);
 
   return (
     <SettingsLayout>
@@ -356,11 +374,38 @@ export default function Preference() {
               }
             />
           </div>
-          <p>{t("tag_formats_to_archive")}</p>
+          <p>{t("tag_settings")}</p>
           <div className="p-3">
-            <TagSelection type="archival" onChange={(e: ArchivalTagOption[]) => setArchivalTags([...archivalTags || [], ...(e || [])])} />
+            <ArchivalTagSelection onChange={handleArchivalTagChange} selectedTags={archivalTags} />
             <div className="flex flex-col gap-2">
-              <ArchiveTags archivalTags={archivalTags} />
+              {archivalTags && archivalTags.map((tag) => (
+                <div key={tag.label} className="w-full flex items-center justify-between bg-base-200 p-2 rounded first-of-type:mt-4">
+                  <span className="text-xl sm:text-lg text-white truncate max-w-[10rem]">{tag.label}</span>
+                  <div className="flex items-center gap-1">
+                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
+                      {[
+                        { type: 'aiTag', icon: 'bi-tag', label: t("ai_tagging") },
+                        { type: 'archiveAsScreenshot', icon: 'bi-file-earmark-image', label: t("screenshot") },
+                        { type: 'archiveAsMonolith', icon: 'bi-filetype-html', label: t("webpage") },
+                        { type: 'archiveAsPDF', icon: 'bi-file-earmark-pdf', label: t("pdf") },
+                        { type: 'archiveAsReadable', icon: 'bi-file-earmark-text', label: t("readable") },
+                        { type: 'archiveAsWaybackMachine', icon: 'bi-archive', label: t("archive_org_snapshot") },
+                      ].map(({ type, icon, label }) => (
+                        <div key={type} className="tooltip tooltip-top" data-tip={label}>
+                          <button className={cn("py-1 px-2 bg-base-300 rounded", { "bg-primary bg-opacity-25": tag[type as keyof ArchivalTagOption] })}>
+                            <i className={`${icon} text-lg leading-none`}></i>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="tooltip tooltip-top" data-tip={t("delete")}>
+                      <button className="py-1 px-2" onClick={() => handleDeleteTag(tag)}>
+                        <i className="bi-x text-lg leading-none"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

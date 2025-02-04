@@ -186,6 +186,7 @@ model Tag {
   archiveAsPDF            Boolean?
   archiveAsReadable       Boolean?
   archiveAsWaybackMachine Boolean?
+  aiTag                   Boolean?
   createdAt               DateTime @default(now())
   updatedAt               DateTime @default(now()) @updatedAt
 
