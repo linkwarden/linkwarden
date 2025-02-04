@@ -1,44 +1,39 @@
-import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import { styles } from "./styles";
-import { ArchivalTagOption } from "./types";
-import { useTags } from "@/hooks/store/tags";
 import { useTranslation } from "next-i18next";
+import { ArchivalTagOption } from "./types";
 import { Tag } from "@prisma/client";
 
+
+export const transformTag = (tag: Tag) => ({
+	label: tag.name,
+	value: tag.id,
+	archiveAsScreenshot: tag.archiveAsScreenshot || false,
+	archiveAsMonolith: tag.archiveAsMonolith || false,
+	archiveAsPDF: tag.archiveAsPDF || false,
+	archiveAsReadable: tag.archiveAsReadable || false,
+	archiveAsWaybackMachine: tag.archiveAsWaybackMachine || false,
+	aiTag: tag.aiTag || false,
+});
+
+export const isArchivalTag = (tag: Tag) =>
+	tag.archiveAsScreenshot ||
+	tag.archiveAsMonolith ||
+	tag.archiveAsPDF ||
+	tag.archiveAsReadable ||
+	tag.archiveAsWaybackMachine ||
+	tag.aiTag;
+
 type Props = {
+	options: ArchivalTagOption[] | []
 	onChange: (e: any) => void;
-	selectedTags: ArchivalTagOption[] | [];
 };
 
 export default function ArchivalTagSelection({
-	onChange,
-	selectedTags
+	options,
+	onChange
 }: Props) {
-	const { data: tags = [] } = useTags();
 	const { t } = useTranslation();
-	const [options, setOptions] = useState<ArchivalTagOption[]>([]);
-
-	useEffect(() => {
-		const formattedTags = tags.map((tag: Tag) => {
-			return {
-				value: tag.id,
-				label: tag.name,
-				archiveAsScreenshot: tag.archiveAsScreenshot || false,
-				archiveAsMonolith: tag.archiveAsMonolith || false,
-				archiveAsPDF: tag.archiveAsPDF || false,
-				archiveAsReadable: tag.archiveAsReadable || false,
-				archiveAsWaybackMachine: tag.archiveAsWaybackMachine || false,
-				aiTag: tag.aiTag || false
-			};
-		});
-
-		const filteredTags = formattedTags.filter((tag) => {
-			return !selectedTags.find((selectedTag) => selectedTag.value === tag.value);
-		});
-
-		setOptions(filteredTags);
-	}, [tags, selectedTags]);
 
 	return (
 		<CreatableSelect

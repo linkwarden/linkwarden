@@ -6,14 +6,14 @@ import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { AiTaggingMethod, LinksRouteTo, Tag } from "@prisma/client";
+import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import ArchivalTagSelection from "@/components/InputSelect/ArchivalTagSelection";
 import { useConfig } from "@/hooks/store/config";
-import { ArchivalOptionKeys, ArchivalTagOption } from "@/components/InputSelect/types";
 import { useTags } from "@/hooks/store/tags";
 import { cn } from "@/lib/client/utils";
 import TagSelection from "@/components/InputSelect/TagSelection";
+import { useArchivalTags } from "@/hooks/useArchivalTags";
 
 export default function Preference() {
   const { t } = useTranslation();
@@ -21,6 +21,7 @@ export default function Preference() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
   const { data: tags } = useTags();
+  const { ARCHIVAL_OPTIONS, archivalTags, options, addTags, toggleOption, removeTag } = useArchivalTags(tags ? tags : []);
   const updateUser = useUpdateUser();
   const [user, setUser] = useState(account);
 
@@ -50,8 +51,6 @@ export default function Preference() {
     account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
-  const [archivalTags, setArchivalTags] = useState<ArchivalTagOption[]>([]);
-
   const { data: config } = useConfig();
 
   useEffect(() => {
@@ -104,25 +103,9 @@ export default function Preference() {
     }
   }, [account]);
 
-  useEffect(() => {
-    if (tags) {
-      setArchivalTags(
-        tags
-          .filter((tag: Tag) => tag.archiveAsScreenshot || tag.archiveAsMonolith || tag.archiveAsPDF || tag.archiveAsReadable || tag.archiveAsWaybackMachine || tag.aiTag)
-          .map((tag: Tag) => ({
-            label: tag.name,
-            value: tag.id,
-            archiveAsScreenshot: tag.archiveAsScreenshot,
-            archiveAsMonolith: tag.archiveAsMonolith,
-            archiveAsPDF: tag.archiveAsPDF,
-            archiveAsReadable: tag.archiveAsReadable,
-            archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
-            aiTag: tag.aiTag,
-          }))
-      );
-    }
-  }, [tags]);
-
+  // Need to track the changes so we don't make useless API calls
+  // tags.length !== archivalTags.length
+  // also need to track the user object as well
   const submit = async () => {
     setSubmitLoader(true);
 
@@ -131,7 +114,7 @@ export default function Preference() {
     await updateUser.mutateAsync(
       { ...user },
       {
-        onSettled: (data, error) => {
+        onSettled: (_, error) => {
           setSubmitLoader(false);
           toast.dismiss(load);
 
@@ -144,40 +127,6 @@ export default function Preference() {
       }
     );
   };
-
-  const handleArchivalTagChange = (e: ArchivalTagOption[]) => {
-    const newTags = e;
-    const existingTags = archivalTags;
-
-    // Filter out any new tags that already exist in archivalTags based on label
-    const uniqueNewTags = newTags.filter(newTag =>
-      !existingTags.some(existingTag => existingTag.label === newTag.label)
-    );
-
-    setArchivalTags([...existingTags, ...uniqueNewTags]);
-  };
-
-  const handleArchiveOptionChange = (tag: ArchivalTagOption, option: ArchivalOptionKeys) => {
-    const updatedTags = archivalTags?.map(t =>
-      t.label === tag.label ? { ...t, [option]: !t[option] } : t
-    );
-
-    setArchivalTags(updatedTags);
-  };
-
-  const handleDeleteTag = (tagToDelete: ArchivalTagOption) => {
-    const updatedTags = archivalTags?.filter(tag => tag.label !== tagToDelete.label);
-    setArchivalTags(updatedTags);
-  }
-
-  const ARCHIVAL_OPTIONS: { type: ArchivalOptionKeys; icon: string; label: string }[] = [
-    { type: "aiTag", icon: "bi-tag", label: t("ai_tagging") },
-    { type: "archiveAsScreenshot", icon: "bi-file-earmark-image", label: t("screenshot") },
-    { type: "archiveAsMonolith", icon: "bi-filetype-html", label: t("webpage") },
-    { type: "archiveAsPDF", icon: "bi-file-earmark-pdf", label: t("pdf") },
-    { type: "archiveAsReadable", icon: "bi-file-earmark-text", label: t("readable") },
-    { type: "archiveAsWaybackMachine", icon: "bi-archive", label: t("archive_org_snapshot") },
-  ];
 
   return (
     <SettingsLayout>
@@ -393,7 +342,7 @@ export default function Preference() {
           </div>
           <p>{t("tag_settings")}</p>
           <div className="p-3">
-            <ArchivalTagSelection onChange={handleArchivalTagChange} selectedTags={archivalTags} />
+            <ArchivalTagSelection onChange={addTags} options={options} />
             <div className="flex flex-col gap-2">
               {archivalTags && archivalTags.map((tag) => (
                 <div key={tag.label} className="w-full flex items-center justify-between bg-base-200 p-2 rounded first-of-type:mt-4">
@@ -403,7 +352,7 @@ export default function Preference() {
                       {ARCHIVAL_OPTIONS.map(({ type, icon, label }) => (
                         <div key={type} className="tooltip tooltip-top" data-tip={label}>
                           <button
-                            onClick={() => handleArchiveOptionChange(tag, type)}
+                            onClick={() => toggleOption(tag, type)}
                             className={cn("py-1 px-2 bg-base-300 rounded", { "bg-primary bg-opacity-25": tag[type] })}
                           >
                             <i className={`${icon} text-lg leading-none`}></i>
@@ -412,7 +361,7 @@ export default function Preference() {
                       ))}
                     </div>
                     <div className="tooltip tooltip-top" data-tip={t("delete")}>
-                      <button className="py-1 px-2" onClick={() => handleDeleteTag(tag)}>
+                      <button className="py-1 px-2" onClick={() => removeTag(tag)}>
                         <i className="bi-x text-lg leading-none"></i>
                       </button>
                     </div>
