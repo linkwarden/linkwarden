@@ -112,6 +112,77 @@ const CollectionListing = () => {
     );
   };
 
+  function reorderTreeItems(
+    tree: TreeData,
+    movedCollectionId: ItemId,
+    source: TreeSourcePosition,
+    destination: TreeDestinationPosition
+  ) {
+    // Same parent reordering
+    if (source.parentId === destination.parentId) {
+      const parent = tree.items[source.parentId];
+      const children = [...parent.children];
+
+      // Remove from source index
+      children.splice(source.index, 1);
+      // Insert at destination index
+      if (destination.index) {
+        children.splice(destination.index, 0, movedCollectionId);
+      }
+
+      parent.children = children;
+      return tree;
+    }
+
+    // Different parent move
+    const sourceParent = tree.items[source.parentId];
+    const destinationParent = tree.items[destination.parentId];
+
+    // Remove from source parent
+    sourceParent.children = sourceParent.children.filter(
+      (id) => id !== movedCollectionId
+    );
+
+    // Initialize children array if it doesn't exist
+    if (!destinationParent.children) {
+      destinationParent.children = [];
+    }
+
+    // If destination index is not specified, add to the end
+    const destinationIndex =
+      destination.index !== undefined
+        ? destination.index
+        : destinationParent.children.length;
+
+    // Add to destination parent
+    destinationParent.children.splice(destinationIndex, 0, movedCollectionId);
+
+    // Update destination parent properties
+    destinationParent.hasChildren = true;
+    destinationParent.isExpanded = true;
+
+    // Update the moved item's parent ID
+    tree.items[movedCollectionId].data.parentId = destination.parentId;
+
+    return tree;
+  }
+
+  function flattenTreeIds(tree: TreeData, nodeId: ItemId = 'root', result: Array<ItemId> = []) {
+    const node = tree.items[nodeId];
+
+    if (nodeId !== 'root') {
+      result.push(node.id);
+    }
+
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(childId => {
+        flattenTreeIds(tree, childId, result);
+      });
+    }
+
+    return result;
+  }
+
   const onDragEnd = async (
     source: TreeSourcePosition,
     destination: TreeDestinationPosition | undefined
@@ -148,7 +219,7 @@ const CollectionListing = () => {
 
     setTree((currentTree) => moveItemOnTree(currentTree!, source, destination));
 
-    const updatedCollectionOrder = [...user.collectionOrder];
+    const newTree = reorderTreeItems(tree, movedCollectionId, source, destination);
 
     if (source.parentId !== destination.parentId) {
       await updateCollection.mutateAsync(
@@ -169,42 +240,10 @@ const CollectionListing = () => {
       );
     }
 
-    if (
-      destination.index !== undefined &&
-      destination.parentId === source.parentId &&
-      source.parentId === "root"
-    ) {
-      updatedCollectionOrder.includes(movedCollectionId) &&
-        updatedCollectionOrder.splice(source.index, 1);
-
-      updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
-
-      await updateUser.mutateAsync({
-        ...user,
-        collectionOrder: updatedCollectionOrder,
-      });
-    } else if (
-      destination.index !== undefined &&
-      destination.parentId === "root"
-    ) {
-      updatedCollectionOrder.splice(destination.index, 0, movedCollectionId);
-
-      updateUser.mutate({
-        ...user,
-        collectionOrder: updatedCollectionOrder,
-      });
-    } else if (
-      source.parentId === "root" &&
-      destination.parentId &&
-      destination.parentId !== "root"
-    ) {
-      updatedCollectionOrder.splice(source.index, 1);
-
-      await updateUser.mutateAsync({
-        ...user,
-        collectionOrder: updatedCollectionOrder,
-      });
-    }
+    await updateUser.mutateAsync({
+      ...user,
+      collectionOrder: flattenTreeIds(newTree),
+    });
   };
 
   if (isLoading) {
