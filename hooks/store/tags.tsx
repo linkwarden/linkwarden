@@ -54,7 +54,7 @@ const useUpdateArchivalTags = () => {
   return useMutation({
     mutationFn: async (tags: ArchivalTagOption[]) => {
       const response = await fetch("/api/v1/tags/archival", {
-        body: JSON.stringify(tags),
+        body: JSON.stringify({ tags }),
         headers: {
           "Content-Type": "application/json",
         },
