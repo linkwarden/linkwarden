@@ -156,8 +156,6 @@ export default async function autoTagLink(
         aiTagged: true,
       },
     });
-
-    console.log("Link auto tagged successfully.");
   } catch (err) {
     console.log("Error auto tagging link: ", link.url);
     console.log("Error: ", err);
