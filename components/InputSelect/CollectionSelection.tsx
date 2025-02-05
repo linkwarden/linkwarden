@@ -66,21 +66,24 @@ export default function CollectionSelection({
   };
 
   useEffect(() => {
-    const formatedCollections = collections.map((e) => {
-      return {
-        value: e.id,
-        label: e.name,
-        parentsLabel: ((e.parentId && getParentNames(e.parentId).join(" > ") + " > ") || "") + e.name,
-        ownerId: e.ownerId,
-        count: e._count,
-        parentId: e.parentId,
-      };
-    })
+    const formattedCollections = collections
+      .map((e) => {
+        return {
+          value: e.id,
+          label: e.name,
+          parentsLabel:
+            ((e.parentId && getParentNames(e.parentId).join(" > ") + " > ") ||
+              "") + e.name,
+          ownerId: e.ownerId,
+          count: e._count,
+          parentId: e.parentId,
+        };
+      })
       .sort((a, b) => {
         return a.parentsLabel.localeCompare(b.parentsLabel);
       });
 
-    setOptions(formatedCollections);
+    setOptions(formattedCollections);
   }, [collections]);
 
   const customOption = ({ data, innerProps }: any) => {
