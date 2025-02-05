@@ -28,6 +28,7 @@ const useArchivalTags = (initialTags: Tag[]) => {
 			archiveAsReadable: tag.archiveAsReadable || false,
 			archiveAsWaybackMachine: tag.archiveAsWaybackMachine || false,
 			aiTag: tag.aiTag || false,
+			newTag: false,
 		});
 
 		const archival = initialTags.filter(isArchivalTag).map(transformTag);
@@ -38,17 +39,18 @@ const useArchivalTags = (initialTags: Tag[]) => {
 	}, [initialTags]);
 
 	const addTags = (newTags: ArchivalTagOption[]) => {
-		console.log("newTags", newTags);
 		const uniqueNewTags = newTags
 			.filter(newTag => !archivalTags.some(existing => existing.label === newTag.label))
-			.map(tag => ({
+			.map(({ __isNew__, ...tag }) => ({
 				...tag,
-				archiveAsScreenshot: tag.__isNew__ ? false : tag.archiveAsScreenshot,
-				archiveAsMonolith: tag.__isNew__ ? false : tag.archiveAsMonolith,
-				archiveAsPDF: tag.__isNew__ ? false : tag.archiveAsPDF,
-				archiveAsReadable: tag.__isNew__ ? false : tag.archiveAsReadable,
-				archiveAsWaybackMachine: tag.__isNew__ ? false : tag.archiveAsWaybackMachine,
-				aiTag: tag.__isNew__ ? false : tag.aiTag,
+				value: __isNew__ ? undefined : tag.value,
+				archiveAsScreenshot: __isNew__ ? false : tag.archiveAsScreenshot,
+				archiveAsMonolith: __isNew__ ? false : tag.archiveAsMonolith,
+				archiveAsPDF: __isNew__ ? false : tag.archiveAsPDF,
+				archiveAsReadable: __isNew__ ? false : tag.archiveAsReadable,
+				archiveAsWaybackMachine: __isNew__ ? false : tag.archiveAsWaybackMachine,
+				aiTag: __isNew__ ? false : tag.aiTag,
+				newTag: __isNew__ ? true : false,
 			}));
 
 		setArchivalTags(prev => [...prev, ...uniqueNewTags]);

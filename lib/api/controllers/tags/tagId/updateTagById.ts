@@ -19,7 +19,7 @@ export default async function updateTagById(
     };
   }
 
-  const { name, archiveAsScreenshot, archiveAsMonolith, archiveAsPDF, archiveAsReadable, archiveAsWaybackMachine } = dataValidation.data;
+  const { name } = dataValidation.data;
 
   const tagNameIsTaken = await prisma.tag.findFirst({
     where: {
@@ -52,11 +52,6 @@ export default async function updateTagById(
     },
     data: {
       name: name,
-      archiveAsScreenshot: archiveAsScreenshot,
-      archiveAsMonolith: archiveAsMonolith,
-      archiveAsPDF: archiveAsPDF,
-      archiveAsReadable: archiveAsReadable,
-      archiveAsWaybackMachine: archiveAsWaybackMachine,
     },
   });
 
