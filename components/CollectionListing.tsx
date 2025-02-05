@@ -126,7 +126,7 @@ const CollectionListing = () => {
       // Remove from source index
       children.splice(source.index, 1);
       // Insert at destination index
-      if (destination.index) {
+      if (destination.index !== undefined) {
         children.splice(destination.index, 0, movedCollectionId);
       }
 
@@ -167,15 +167,19 @@ const CollectionListing = () => {
     return tree;
   }
 
-  function flattenTreeIds(tree: TreeData, nodeId: ItemId = 'root', result: Array<ItemId> = []) {
+  function flattenTreeIds(
+    tree: TreeData,
+    nodeId: ItemId = "root",
+    result: Array<ItemId> = []
+  ) {
     const node = tree.items[nodeId];
 
-    if (nodeId !== 'root') {
+    if (nodeId !== "root") {
       result.push(node.id);
     }
 
     if (node.children && node.children.length > 0) {
-      node.children.forEach(childId => {
+      node.children.forEach((childId) => {
         flattenTreeIds(tree, childId, result);
       });
     }
@@ -219,7 +223,12 @@ const CollectionListing = () => {
 
     setTree((currentTree) => moveItemOnTree(currentTree!, source, destination));
 
-    const newTree = reorderTreeItems(tree, movedCollectionId, source, destination);
+    const newTree = reorderTreeItems(
+      tree,
+      movedCollectionId,
+      source,
+      destination
+    );
 
     if (source.parentId !== destination.parentId) {
       await updateCollection.mutateAsync(
