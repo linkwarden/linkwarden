@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient, UseQueryResult } from "@tanstack
 import { TagIncludingLinkCount } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { Tag } from "@prisma/client";
+import { ArchivalTagOption } from "@/components/InputSelect/types";
 
 const useTags = (): UseQueryResult<Tag[], Error> => {
   const { status } = useSession();
@@ -47,6 +48,30 @@ const useUpdateTag = () => {
   });
 };
 
+const useUpdateArchivalTags = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (tags: ArchivalTagOption[]) => {
+      const response = await fetch("/api/v1/tags/archival", {
+        body: JSON.stringify(tags),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response;
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
+    },
+  });
+}
+
 const useRemoveTag = () => {
   const queryClient = useQueryClient();
 
@@ -69,4 +94,4 @@ const useRemoveTag = () => {
   });
 };
 
-export { useTags, useUpdateTag, useRemoveTag };
+export { useTags, useUpdateTag, useUpdateArchivalTags, useRemoveTag };
