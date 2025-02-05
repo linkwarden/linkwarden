@@ -11,6 +11,7 @@ export interface ArchivalTagOption extends Option {
   archiveAsReadable: boolean;
   archiveAsWaybackMachine: boolean;
   aiTag: boolean;
+  newTag: boolean;
 }
 
 export type ArchivalOptionKeys = keyof Omit<ArchivalTagOption, "label" | "value" | "__isNew__">;

@@ -213,11 +213,6 @@ export type UpdateCollectionSchemaType = z.infer<typeof UpdateCollectionSchema>;
 
 export const UpdateTagSchema = z.object({
   name: z.string().trim().max(50),
-  archiveAsScreenshot: z.boolean().nullable(),
-  archiveAsMonolith: z.boolean().nullable(),
-  archiveAsPDF: z.boolean().nullable(),
-  archiveAsReadable: z.boolean().nullable(),
-  archiveAsWaybackMachine: z.boolean().nullable(),
 });
 
 export type UpdateTagSchemaType = z.infer<typeof UpdateTagSchema>;
@@ -227,4 +222,20 @@ export const PostRssSubscriptionSchema = z.object({
   url: z.string().url().max(2048),
   collectionId: z.number().optional(),
   collectionName: z.string().max(50).optional(),
+});
+
+export const PostArchivalTagSchema = z.object({
+  tags: z.array(
+    z.object({
+      value: z.number().optional(),
+      label: z.string(),
+      newTag: z.boolean(),
+      archiveAsScreenshot: z.boolean(),
+      archiveAsMonolith: z.boolean(),
+      archiveAsPDF: z.boolean(),
+      archiveAsReadable: z.boolean(),
+      archiveAsWaybackMachine: z.boolean(),
+      aiTag: z.boolean()
+    })
+  ),
 });
