@@ -19,64 +19,66 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 
 		const { tags } = dataValidation.data;
 
-		try {
-			await prisma.$transaction(async (tx) => {
-				for (const tag of tags) {
-					if (tag.newTag) {
-						const tagNameIsTaken = await tx.tag.findFirst({
-							where: {
-								ownerId: user.id,
-								name: tag.label,
-							},
-						});
+		console.log(tags);
 
-						if (tagNameIsTaken) {
-							throw new Error(`Tag name "${tag.label}" already exists`);
-						}
+		// This is still broken
+		tags.forEach(async (tag) => {
+			if (tag.newTag) {
+				const tagNameIsTaken = await prisma.tag.findFirst({
+					where: {
+						ownerId: user.id,
+						name: tag.label,
+					},
+				});
 
-						await tx.tag.create({
-							data: {
-								name: tag.label,
-								ownerId: user.id,
-								archiveAsScreenshot: tag.archiveAsScreenshot,
-								archiveAsMonolith: tag.archiveAsMonolith,
-								archiveAsPDF: tag.archiveAsPDF,
-								archiveAsReadable: tag.archiveAsReadable,
-								archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
-								aiTag: tag.aiTag,
-							},
-						});
-					} else if (tag.value) {
-						const targetTag = await tx.tag.findUnique({
-							where: { id: tag.value },
-						});
+				if (tagNameIsTaken)
+					return {
+						response: "Tag names should be unique.",
+						status: 400,
+					};
 
-						if (!targetTag) {
-							throw new Error(`Tag with ID ${tag.value} not found`);
-						}
+				await prisma.tag.create({
+					data: {
+						name: tag.label,
+						ownerId: user.id,
+						archiveAsScreenshot: tag.archiveAsScreenshot,
+						archiveAsMonolith: tag.archiveAsMonolith,
+						archiveAsPDF: tag.archiveAsPDF,
+						archiveAsReadable: tag.archiveAsReadable,
+						archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
+						aiTag: tag.aiTag,
+					},
+				});
+			} else if (tag.value) {
+				const targetTag = await prisma.tag.findUnique({
+					where: {
+						id: tag.value,
+					},
+				});
 
-						if (targetTag.ownerId !== user.id) {
-							throw new Error(`Permission denied for tag ID ${tag.value}`);
-						}
-
-						await tx.tag.update({
-							where: { id: tag.value },
-							data: {
-								archiveAsScreenshot: tag.archiveAsScreenshot,
-								archiveAsMonolith: tag.archiveAsMonolith,
-								archiveAsPDF: tag.archiveAsPDF,
-								archiveAsReadable: tag.archiveAsReadable,
-								archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
-								aiTag: tag.aiTag,
-							},
-						});
-					}
+				if (targetTag?.ownerId !== user.id) {
+					return {
+						response: "Permission denied.",
+						status: 401,
+					};
 				}
 
-				return res.status(200).json({ response: "Tags updated successfully" });
-			});
-		} catch (error: any) {
-			return res.status(400).json({ response: error.message });
-		}
+				await prisma.tag.update({
+					where: {
+						id: tag.value,
+					},
+					data: {
+						archiveAsScreenshot: tag.archiveAsScreenshot,
+						archiveAsMonolith: tag.archiveAsMonolith,
+						archiveAsPDF: tag.archiveAsPDF,
+						archiveAsReadable: tag.archiveAsReadable,
+						archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
+						aiTag: tag.aiTag,
+					},
+				});
+			}
+		});
+
+		return res.status(200).json({ response: "Tags updated successfully." });
 	}
 }

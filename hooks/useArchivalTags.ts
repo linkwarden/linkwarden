@@ -3,13 +3,13 @@ import { Tag } from '@prisma/client';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const isArchivalTag = (tag: Tag) =>
-	tag.archiveAsScreenshot ||
-	tag.archiveAsMonolith ||
-	tag.archiveAsPDF ||
-	tag.archiveAsReadable ||
-	tag.archiveAsWaybackMachine ||
-	tag.aiTag;
+export const isArchivalTag = (tag: ArchivalTagOption | Tag) =>
+	typeof tag.archiveAsScreenshot === "boolean" ||
+	typeof tag.archiveAsMonolith === "boolean" ||
+	typeof tag.archiveAsPDF === "boolean" ||
+	typeof tag.archiveAsReadable === "boolean" ||
+	typeof tag.archiveAsWaybackMachine === "boolean" ||
+	typeof tag.aiTag === "boolean";
 
 const useArchivalTags = (initialTags: Tag[]) => {
 	const [archivalTags, setArchivalTags] = useState<ArchivalTagOption[]>([]);
@@ -64,7 +64,9 @@ const useArchivalTags = (initialTags: Tag[]) => {
 	};
 
 	const removeTag = (tagToDelete: ArchivalTagOption) => {
-		setArchivalTags(prev => prev.filter(tag => tag.label !== tagToDelete.label));
+		setArchivalTags(prev => prev.map(t =>
+			t.label === tagToDelete.label ? { ...t, archiveAsScreenshot: null, archiveAsMonolith: null, archiveAsPDF: null, archiveAsReadable: null, archiveAsWaybackMachine: null, aiTag: null } : t
+		));
 
 		if (!tagToDelete.__isNew__) {
 			const resetTag: ArchivalTagOption = {
