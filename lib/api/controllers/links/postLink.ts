@@ -96,7 +96,6 @@ export default async function postLink(
     data: {
       url: link.url?.trim() || null,
       name,
-      preview: link.type === "readable" ? "unavailable" : undefined,
       description: link.description,
       type: linkType,
       createdBy: {

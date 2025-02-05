@@ -12,7 +12,6 @@ import { dropdownTriggerer } from "@/lib/client/utils";
 import MobileNavigation from "./MobileNavigation";
 import ProfileDropdown from "./ProfileDropdown";
 import { useTranslation } from "next-i18next";
-import NewNoteModal from "./ModalContent/NewNoteModal";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -38,7 +37,6 @@ export default function Navbar() {
   const [newLinkModal, setNewLinkModal] = useState(false);
   const [newCollectionModal, setNewCollectionModal] = useState(false);
   const [uploadFileModal, setUploadFileModal] = useState(false);
-  const [newNoteModal, setNewNoteModal] = useState(false);
 
   return (
     <div className="flex justify-between gap-2 items-center pl-3 pr-4 py-2 border-solid border-b-neutral-content border-b">
@@ -83,19 +81,6 @@ export default function Navbar() {
                 className="whitespace-nowrap flex gap-2"
               >
                 {t("new_link")}
-              </div>
-            </li>
-            <li>
-              <div
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  setNewNoteModal(true);
-                }}
-                tabIndex={0}
-                role="button"
-                className="whitespace-nowrap flex gap-2"
-              >
-                {t("new_note")}
               </div>
             </li>
             <li>
@@ -148,7 +133,6 @@ export default function Navbar() {
       {uploadFileModal && (
         <UploadFileModal onClose={() => setUploadFileModal(false)} />
       )}
-      {newNoteModal && <NewNoteModal onClose={() => setNewNoteModal(false)} />}
     </div>
   );
 }
