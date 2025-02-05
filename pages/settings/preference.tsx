@@ -10,10 +10,10 @@ import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import ArchivalTagSelection from "@/components/InputSelect/ArchivalTagSelection";
 import { useConfig } from "@/hooks/store/config";
-import { useTags } from "@/hooks/store/tags";
+import { useTags, useUpdateArchivalTags } from "@/hooks/store/tags";
 import { cn } from "@/lib/client/utils";
 import TagSelection from "@/components/InputSelect/TagSelection";
-import { useArchivalTags } from "@/hooks/useArchivalTags";
+import { isArchivalTag, useArchivalTags } from "@/hooks/useArchivalTags";
 
 export default function Preference() {
   const { t } = useTranslation();
@@ -21,6 +21,7 @@ export default function Preference() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
   const { data: tags } = useTags();
+  const updateArchivalTags = useUpdateArchivalTags();
   const { ARCHIVAL_OPTIONS, archivalTags, options, addTags, toggleOption, removeTag } = useArchivalTags(tags ? tags : []);
   const updateUser = useUpdateUser();
   const [user, setUser] = useState(account);
@@ -111,21 +112,32 @@ export default function Preference() {
 
     const load = toast.loading(t("applying_settings"));
 
-    await updateUser.mutateAsync(
-      { ...user },
-      {
-        onSettled: (_, error) => {
-          setSubmitLoader(false);
-          toast.dismiss(load);
+    try {
+      await updateUser.mutateAsync({ ...user });
+      await updateArchivalTags.mutateAsync(archivalTags);
+      toast.success(t("settings_applied"));
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setSubmitLoader(false);
+      toast.dismiss(load);
+    }
 
-          if (error) {
-            toast.error(error.message);
-          } else {
-            toast.success(t("settings_applied"));
-          }
-        },
-      }
-    );
+    // await updateUser.mutateAsync(
+    //   { ...user },
+    //   {
+    //     onSettled: (_, error) => {
+    //       setSubmitLoader(false);
+    //       toast.dismiss(load);
+
+    //       if (error) {
+    //         toast.error(error.message);
+    //       } else {
+    //         toast.success(t("settings_applied"));
+    //       }
+    //     },
+    //   }
+    // );
   };
 
   return (
@@ -344,7 +356,7 @@ export default function Preference() {
           <div className="p-3">
             <ArchivalTagSelection onChange={addTags} options={options} />
             <div className="flex flex-col gap-2">
-              {archivalTags && archivalTags.map((tag) => (
+              {archivalTags && archivalTags.filter(isArchivalTag).map((tag) => (
                 <div key={tag.label} className="w-full flex items-center justify-between bg-base-200 p-2 rounded first-of-type:mt-4">
                   <span className="text-xl sm:text-lg text-white truncate max-w-[10rem]">{tag.label}</span>
                   <div className="flex items-center gap-1">

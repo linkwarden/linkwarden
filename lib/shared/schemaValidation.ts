@@ -230,12 +230,12 @@ export const PostArchivalTagSchema = z.object({
       value: z.number().optional(),
       label: z.string(),
       newTag: z.boolean(),
-      archiveAsScreenshot: z.boolean(),
-      archiveAsMonolith: z.boolean(),
-      archiveAsPDF: z.boolean(),
-      archiveAsReadable: z.boolean(),
-      archiveAsWaybackMachine: z.boolean(),
-      aiTag: z.boolean()
+      archiveAsScreenshot: z.boolean().nullable(),
+      archiveAsMonolith: z.boolean().nullable(),
+      archiveAsPDF: z.boolean().nullable(),
+      archiveAsReadable: z.boolean().nullable(),
+      archiveAsWaybackMachine: z.boolean().nullable(),
+      aiTag: z.boolean().nullable()
     })
   ),
 });
