@@ -50,20 +50,6 @@ export default function CollectionSelection({
     };
   }
 
-  useEffect(() => {
-    const formatedCollections = collections.map((e) => {
-      return {
-        value: e.id,
-        label: e.name,
-        ownerId: e.ownerId,
-        count: e._count,
-        parentId: e.parentId,
-      };
-    });
-
-    setOptions(formatedCollections);
-  }, [collections]);
-
   const getParentNames = (parentId: number): string[] => {
     const parentNames = [];
     const parent = collections.find((e) => e.id === parentId);
@@ -79,6 +65,24 @@ export default function CollectionSelection({
     return parentNames.reverse();
   };
 
+  useEffect(() => {
+    const formatedCollections = collections.map((e) => {
+      return {
+        value: e.id,
+        label: e.name,
+        parentsLabel: ((e.parentId && getParentNames(e.parentId).join(" > ") + " > ") || "") + e.name,
+        ownerId: e.ownerId,
+        count: e._count,
+        parentId: e.parentId,
+      };
+    })
+      .sort((a, b) => {
+        return a.parentsLabel.localeCompare(b.parentsLabel);
+      });
+
+    setOptions(formatedCollections);
+  }, [collections]);
+
   const customOption = ({ data, innerProps }: any) => {
     return (
       <div
@@ -90,13 +94,7 @@ export default function CollectionSelection({
           <span className="text-sm text-neutral">{data.count?.links}</span>
         </div>
         <div className="text-xs text-gray-600 dark:text-gray-300">
-          {getParentNames(data?.parentId).length > 0 ? (
-            <>
-              {getParentNames(data.parentId).join(" > ")} {">"} {data.label}
-            </>
-          ) : (
-            data.label
-          )}
+          {data.parentsLabel}
         </div>
       </div>
     );
