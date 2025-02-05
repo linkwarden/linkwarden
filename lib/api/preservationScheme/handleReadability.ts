@@ -13,32 +13,15 @@ const handleReadablility = async (
   const window = new JSDOM("").window;
   const purify = DOMPurify(window);
   const cleanedUpContent = purify.sanitize(content);
-  const dom = new JSDOM(
-    cleanedUpContent,
-    link?.url ? { url: link.url || "" } : undefined
-  );
+  const dom = new JSDOM(cleanedUpContent, { url: link.url || "" });
 
-  let article = new Readability(dom.window.document).parse();
+  const article = new Readability(dom.window.document).parse();
   const articleText = article?.textContent
     .replace(/ +(?= )/g, "") // strip out multiple spaces
     .replace(/(\r\n|\n|\r)/gm, " ") // strip out line breaks
     .slice(0, 2047);
 
-  if ((articleText && articleText !== "") || link.type === "readable") {
-    if (!article) {
-      article = {
-        title: "",
-        byline: null,
-        dir: null,
-        lang: null,
-        content: "<p></p>",
-        textContent: "",
-        length: 1,
-        excerpt: "",
-        siteName: null,
-      } as any;
-    }
-
+  if (articleText && articleText !== "") {
     const collectionId = (
       await prisma.link.findUnique({
         where: { id: link.id },
