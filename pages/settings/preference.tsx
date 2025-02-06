@@ -52,6 +52,8 @@ export default function Preference() {
     account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
+  const [hasAccountChanges, setHasAccountChanges] = useState(false);
+  const [hasTagChanges, setHasTagChanges] = useState(false);
   const { data: config } = useConfig();
 
   useEffect(() => {
@@ -104,40 +106,70 @@ export default function Preference() {
     }
   }, [account]);
 
-  // Need to track the changes so we don't make useless API calls
-  // tags.length !== archivalTags.length
-  // also need to track the user object as well
+  useEffect(() => {
+    const relevantKeys = [
+      'archiveAsScreenshot',
+      'archiveAsMonolith',
+      'archiveAsPDF',
+      'archiveAsReadable',
+      'archiveAsWaybackMachine',
+      'linksRouteTo',
+      'preventDuplicateLinks',
+      'aiTaggingMethod',
+      'aiPredefinedTags',
+      'dashboardRecentLinks',
+      'dashboardPinnedLinks'
+    ];
+
+    const hasChanges = relevantKeys.some(key =>
+      account[key] !== user[key]
+    );
+
+    setHasAccountChanges(hasChanges);
+  }, [account, user]);
+
+  useEffect(() => {
+    if (!tags || !archivalTags) return;
+
+    const hasChanges = archivalTags.some(newTag => {
+      const originalTag = tags.find(t => t.name === newTag.label);
+
+      if (!originalTag) return true;
+
+      return (
+        newTag.archiveAsScreenshot !== originalTag.archiveAsScreenshot ||
+        newTag.archiveAsMonolith !== originalTag.archiveAsMonolith ||
+        newTag.archiveAsPDF !== originalTag.archiveAsPDF ||
+        newTag.archiveAsReadable !== originalTag.archiveAsReadable ||
+        newTag.archiveAsWaybackMachine !== originalTag.archiveAsWaybackMachine ||
+        newTag.aiTag !== originalTag.aiTag
+      );
+    });
+
+    setHasTagChanges(hasChanges);
+  }, [archivalTags, tags]);
+
   const submit = async () => {
     setSubmitLoader(true);
 
     const load = toast.loading(t("applying_settings"));
 
     try {
-      await updateUser.mutateAsync({ ...user });
-      await updateArchivalTags.mutateAsync(archivalTags);
-      toast.success(t("settings_applied"));
+      const promises = [];
+
+      if (hasAccountChanges) promises.push(updateUser.mutateAsync({ ...user }));
+      if (hasTagChanges) promises.push(updateArchivalTags.mutateAsync(archivalTags));
+
+      if (promises.length > 0) {
+        await Promise.all(promises);
+        toast.success(t("settings_applied"));
+      }
     } catch (error: any) {
       toast.error(error.message);
     } finally {
       setSubmitLoader(false);
       toast.dismiss(load);
     }
-
-    // await updateUser.mutateAsync(
-    //   { ...user },
-    //   {
-    //     onSettled: (_, error) => {
-    //       setSubmitLoader(false);
-    //       toast.dismiss(load);
-
-    //       if (error) {
-    //         toast.error(error.message);
-    //       } else {
-    //         toast.success(t("settings_applied"));
-    //       }
-    //     },
-    //   }
-    // );
   };
 
   return (
