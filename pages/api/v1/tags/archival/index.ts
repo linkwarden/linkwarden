@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import { PostArchivalTagSchema } from "@/lib/shared/schemaValidation";
+import { Tag } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function archivalTags(req: NextApiRequest, res: NextApiResponse) {
@@ -18,6 +19,7 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 		}
 
 		const { tags } = dataValidation.data;
+		const updatedTags: Tag[] = []
 
 		for (const tag of tags) {
 			if (tag.newTag) {
@@ -31,7 +33,7 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 				// If the tag name is already taken by the user, skip creating a new tag
 				if (tagNameIsTaken) return
 
-				await prisma.tag.create({
+				const newTag = await prisma.tag.create({
 					data: {
 						name: tag.label,
 						ownerId: user.id,
@@ -42,7 +44,11 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 						archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
 						aiTag: tag.aiTag,
 					},
+					include: {
+						_count: true,
+					}
 				});
+				updatedTags.push(newTag);
 			} else {
 				const targetTag = await prisma.tag.findUnique({
 					where: {
@@ -56,7 +62,7 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 				// If the tag is not found or the ownerId does not match, skip updating
 				if (targetTag && targetTag.ownerId !== user.id) return
 
-				await prisma.tag.update({
+				const updatedTag = await prisma.tag.update({
 					where: {
 						name_ownerId: {
 							name: tag.label,
@@ -71,10 +77,14 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 						archiveAsWaybackMachine: tag.archiveAsWaybackMachine,
 						aiTag: tag.aiTag,
 					},
+					include: {
+						_count: true,
+					}
 				});
+				updatedTags.push(updatedTag);
 			}
 		}
 
-		return res.status(200).json({ response: "Tags updated successfully." });
+		return res.status(200).json({ response: updatedTags });
 	}
 }
