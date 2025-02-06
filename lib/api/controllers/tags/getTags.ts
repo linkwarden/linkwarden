@@ -8,16 +8,6 @@ export default async function getTags({
   collectionId?: number;
 }) {
   if (userId) {
-    // Remove empty tags
-    await prisma.tag.deleteMany({
-      where: {
-        ownerId: userId,
-        links: {
-          none: {},
-        },
-      },
-    });
-
     const tags = await prisma.tag.findMany({
       where: {
         OR: [
