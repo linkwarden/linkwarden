@@ -66,8 +66,17 @@ const useUpdateArchivalTags = () => {
 
       return data.response;
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["tags"] });
+    onSuccess: (data: TagIncludingLinkCount[]) => {
+      queryClient.setQueryData(["tags"], (oldData: TagIncludingLinkCount[] = []) => {
+        const updatedTags = oldData.map((tag) => {
+          const updatedTag = data.find((t) => t.id === tag.id);
+          return updatedTag ? { ...tag, ...updatedTag } : tag;
+        });
+
+        const newTags = data.filter((t) => !oldData.some((tag) => tag.id === t.id));
+
+        return [...updatedTags, ...newTags];
+      });
     },
   });
 }
