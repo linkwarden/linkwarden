@@ -65,7 +65,17 @@ const useArchivalTags = (initialTags: Tag[]) => {
 
 	const removeTag = (tagToDelete: ArchivalTagOption) => {
 		setArchivalTags(prev => prev.map(t =>
-			t.label === tagToDelete.label ? { ...t, archiveAsScreenshot: null, archiveAsMonolith: null, archiveAsPDF: null, archiveAsReadable: null, archiveAsWaybackMachine: null, aiTag: null } : t
+			t.label === tagToDelete.label ?
+				{
+					...t,
+					archiveAsScreenshot: null,
+					archiveAsMonolith: null,
+					archiveAsPDF: null,
+					archiveAsReadable: null,
+					archiveAsWaybackMachine: null,
+					aiTag: null
+				}
+				: t
 		));
 
 		if (!tagToDelete.__isNew__) {
