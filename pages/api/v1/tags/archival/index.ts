@@ -19,10 +19,7 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 
 		const { tags } = dataValidation.data;
 
-		console.log(tags);
-
-		// This is still broken
-		tags.forEach(async (tag) => {
+		for (const tag of tags) {
 			if (tag.newTag) {
 				const tagNameIsTaken = await prisma.tag.findFirst({
 					where: {
@@ -31,11 +28,8 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 					},
 				});
 
-				if (tagNameIsTaken)
-					return {
-						response: "Tag names should be unique.",
-						status: 400,
-					};
+				// If the tag name is already taken by the user, skip creating a new tag
+				if (tagNameIsTaken) return
 
 				await prisma.tag.create({
 					data: {
@@ -49,23 +43,25 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 						aiTag: tag.aiTag,
 					},
 				});
-			} else if (tag.value) {
+			} else {
 				const targetTag = await prisma.tag.findUnique({
 					where: {
-						id: tag.value,
+						name_ownerId: {
+							name: tag.label,
+							ownerId: user.id,
+						},
 					},
 				});
 
-				if (targetTag?.ownerId !== user.id) {
-					return {
-						response: "Permission denied.",
-						status: 401,
-					};
-				}
+				// If the tag is not found or the ownerId does not match, skip updating
+				if (targetTag && targetTag.ownerId !== user.id) return
 
 				await prisma.tag.update({
 					where: {
-						id: tag.value,
+						name_ownerId: {
+							name: tag.label,
+							ownerId: user.id,
+						},
 					},
 					data: {
 						archiveAsScreenshot: tag.archiveAsScreenshot,
@@ -77,7 +73,7 @@ export default async function archivalTags(req: NextApiRequest, res: NextApiResp
 					},
 				});
 			}
-		});
+		}
 
 		return res.status(200).json({ response: "Tags updated successfully." });
 	}
