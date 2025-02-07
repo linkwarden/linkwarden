@@ -239,3 +239,11 @@ export const PostArchivalTagSchema = z.object({
     })
   ),
 });
+
+export const DeleteLinksArchiveSchema = z.object({
+  action: z.enum(["delete", "re-preserve"]),
+});
+
+export const PutLinksArchiveSchema = z.object({
+  links: z.array(z.number()).optional(),
+});
