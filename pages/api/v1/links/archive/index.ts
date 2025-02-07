@@ -8,6 +8,12 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 	const user = await verifyUser({ req, res });
 	if (!user) return;
 
+	const isServerAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
+
+	if (!isServerAdmin) {
+		return res.status(401).json({ response: "Permission denied." });
+	}
+
 	if (req.method === "PUT") {
 		const dataValidation = PutLinksArchiveSchema.safeParse(req.body);
 		if (!dataValidation.success) {
