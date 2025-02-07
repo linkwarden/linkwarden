@@ -466,5 +466,8 @@
   "add_a_title_placeholder": "Add a title...",
   "write_notes_here_placeholder": "Write some notes here...",
   "tag_settings": "Tag archival and processing settings:",
-  "ai_tagging": "AI Tagging"
+  "ai_tagging": "AI Tagging",
+  "worker": "Worker",
+  "regenerate_broken_preservation": "Delete preservation for broken webpages.",
+  "delete_all_preservation": "Delete preservation for all webpages."
 }
