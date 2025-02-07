@@ -240,10 +240,8 @@ export const PostArchivalTagSchema = z.object({
   ),
 });
 
-export const DeleteLinksArchiveSchema = z.object({
-  action: z.enum(["delete", "re-preserve"]),
+export const LinkArchiveActionSchema = z.object({
+  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
 });
 
-export const PutLinksArchiveSchema = z.object({
-  links: z.array(z.number()).optional(),
-});
+export type LinkArchiveActionSchemaType = "allAndRePreserve" | "allAndIgnore" | "allBroken";

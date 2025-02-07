@@ -1,5 +1,5 @@
-import { ArchivalOptionKeys, ArchivalTagOption } from '@/components/InputSelect/types';
 import { Tag } from '@prisma/client';
+import { ArchivalOptionKeys, ArchivalTagOption } from '../components/InputSelect/types';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 

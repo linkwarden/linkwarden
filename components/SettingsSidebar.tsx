@@ -3,12 +3,15 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
+import { useConfig } from "@/hooks/store/config";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
   const LINKWARDEN_VERSION = process.env.version;
 
   const { data: user } = useUser();
+  const { data: config } = useConfig();
+  const isAdmin = user.id === (config?.ADMIN || 1);
 
   const router = useRouter();
   const [active, setActive] = useState("");
@@ -19,18 +22,16 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
   return (
     <div
-      className={`bg-base-100 h-full w-64 overflow-y-auto border-solid border border-base-100 border-r-neutral-content p-5 z-20 flex flex-col gap-5 justify-between ${
-        className || ""
-      }`}
+      className={`bg-base-100 h-full w-64 overflow-y-auto border-solid border border-base-100 border-r-neutral-content p-5 z-20 flex flex-col gap-5 justify-between ${className || ""
+        }`}
     >
       <div className="flex flex-col gap-1">
         <Link href="/settings/account">
           <div
-            className={`${
-              active === "/settings/account"
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`${active === "/settings/account"
+              ? "bg-primary/20"
+              : "hover:bg-neutral/20"
+              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <i className="bi-person text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">{t("account")}</p>
@@ -39,11 +40,10 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="/settings/preference">
           <div
-            className={`${
-              active === "/settings/preference"
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`${active === "/settings/preference"
+              ? "bg-primary/20"
+              : "hover:bg-neutral/20"
+              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <i className="bi-sliders text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">{t("preference")}</p>
@@ -52,11 +52,10 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="/settings/rss-subscriptions">
           <div
-            className={`${
-              active === "/settings/rss-subscriptions"
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`${active === "/settings/rss-subscriptions"
+              ? "bg-primary/20"
+              : "hover:bg-neutral/20"
+              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <i className="bi-rss text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">RSS Subscriptions</p>
@@ -65,11 +64,10 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="/settings/access-tokens">
           <div
-            className={`${
-              active === "/settings/access-tokens"
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`${active === "/settings/access-tokens"
+              ? "bg-primary/20"
+              : "hover:bg-neutral/20"
+              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <i className="bi-key text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">{t("access_tokens")}</p>
@@ -78,25 +76,37 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
         <Link href="/settings/password">
           <div
-            className={`${
-              active === "/settings/password"
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            className={`${active === "/settings/password"
+              ? "bg-primary/20"
+              : "hover:bg-neutral/20"
+              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
           >
             <i className="bi-lock text-primary text-2xl"></i>
             <p className="truncate w-full pr-7">{t("password")}</p>
           </div>
         </Link>
 
+        {isAdmin && (
+          <Link href="/settings/worker">
+            <div
+              className={`${active === "/settings/worker"
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+                } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            >
+              <i className="bi-gear-wide-connected text-primary text-2xl"></i>
+              <p className="truncate w-full pr-7">{t("worker")}</p>
+            </div>
+          </Link>
+        )}
+
         {process.env.NEXT_PUBLIC_STRIPE && !user.parentSubscriptionId && (
           <Link href="/settings/billing">
             <div
-              className={`${
-                active === "/settings/billing"
-                  ? "bg-primary/20"
-                  : "hover:bg-neutral/20"
-              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+              className={`${active === "/settings/billing"
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+                } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
             >
               <i className="bi-credit-card text-primary text-2xl"></i>
               <p className="truncate w-full pr-7">{t("billing")}</p>

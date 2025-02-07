@@ -6,7 +6,6 @@ import DeleteRssSubscriptionModal from "@/components/ModalContent/DeleteRssSubsc
 import { useState } from "react";
 import { RssSubscription } from "@prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
-import Link from "next/link";
 import { useConfig } from "@/hooks/store/config";
 
 export default function RssSubscriptions() {
