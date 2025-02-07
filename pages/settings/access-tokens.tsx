@@ -67,11 +67,14 @@ export default function AccessTokens() {
                       )}
                     </td>
                     <td>
-                      {new Date(token.createdAt).toLocaleDateString(t("locale"), {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      {new Date(token.createdAt).toLocaleDateString(
+                        t("locale"),
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }
+                      )}
                     </td>
                     <td>
                       {new Date(token.expires).toLocaleDateString(t("locale"), {

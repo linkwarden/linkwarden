@@ -202,6 +202,7 @@ export default async function updateUserById(
       ),
       aiTaggingMethod: data.aiTaggingMethod,
       aiPredefinedTags: data.aiPredefinedTags,
+      aiTagExistingLinks: data.aiTagExistingLinks,
       locale: i18n.locales.includes(data.locale || "") ? data.locale : "en",
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsMonolith: data.archiveAsMonolith,

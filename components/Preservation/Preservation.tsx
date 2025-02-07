@@ -7,18 +7,24 @@ import {
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import clsx from "clsx";
-import { formatAvailable } from "@/lib/shared/formatStats";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@/lib/shared/formatStats";
 import { PreservationSkeleton } from "../Skeletons";
 import remToPixels from "@/lib/client/remToPixels";
 import { useReducedMotion } from "framer-motion";
 import { PreservationContent } from "./PreservationContent";
+import { BeatLoader } from "react-spinners";
 
 export default function Preservation({
   link,
   standalone,
+  isReady,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   standalone: boolean;
+  isReady: boolean;
 }) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -71,7 +77,7 @@ export default function Preservation({
   }, [router.query, link]);
 
   useEffect(() => {
-    if (router.pathname.includes("links")) {
+    if (router.pathname.includes("/links/[id]")) {
       const query = {
         ...router.query,
         format,
@@ -121,9 +127,17 @@ export default function Preservation({
         pointerEvents: "auto",
       }}
     >
-      {!isExpanded && link?.id && (
-        <div className="text-sm text-neutral mb-3 flex justify-between items-center w-full gap-2">
-          <div className="flex gap-1 h-8 rounded-xl bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
+      {atLeastOneFormatAvailable(link) && !isExpanded && link?.id && (
+        <div
+          className={clsx(
+            "text-sm text-neutral mb-3 flex justify-between items-center w-full gap-2"
+          )}
+        >
+          <div
+            className={clsx(
+              "flex gap-1 h-8 rounded-xl bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10"
+            )}
+          >
             {formatAvailable(link, "readable") && (
               <div
                 className={clsx(
@@ -208,7 +222,12 @@ export default function Preservation({
         </div>
       )}
 
-      <div className={clsx("w-full", isExpanded ? "h-full" : "h-auto")}>
+      <div
+        className={clsx(
+          "w-full",
+          isExpanded ? "h-full" : "h-[calc(80vh-3.75rem)]"
+        )}
+      >
         {format !== undefined && link.id && delayPassed ? (
           <RenderFormat
             link={link}
@@ -218,6 +237,19 @@ export default function Preservation({
             containerRef={containerRef}
             setIsExpanded={setIsExpanded}
           />
+        ) : delayPassed ? (
+          <div
+            className={`w-full h-full flex flex-col justify-center items-center p-10`}
+          >
+            <BeatLoader
+              color="oklch(var(--p))"
+              className="mx-auto mb-3"
+              size={30}
+            />
+
+            <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
+            <p className="text-center text-lg">{t("check_back_later")}</p>
+          </div>
         ) : (
           <PreservationSkeleton />
         )}
@@ -241,8 +273,6 @@ const RenderFormat = ({
   containerRef: React.RefObject<HTMLDivElement>;
   setIsExpanded: (expanded: boolean) => void;
 }) => {
-  if (!link?.id) return <></>;
-
   const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
 
   const [delayPassed, setDelayPassed] = useState(false); // to get the content in place before animating
@@ -302,6 +332,8 @@ const RenderFormat = ({
             ? "width, height, top, left"
             : "none",
       };
+
+  if (!link?.id) return <></>;
 
   return ReactDOM.createPortal(
     <div
