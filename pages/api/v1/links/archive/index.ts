@@ -2,7 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import verifyUser from "@/lib/api/verifyUser";
 import { prisma } from "@/lib/api/db";
 import { LinkArchiveActionSchema } from "@/lib/shared/schemaValidation";
-import { removeFiles } from "@/lib/api/manageLinkFiles";
+import { removePreservationFiles } from "@/lib/api/manageLinkFiles";
+import { isArchivalTag } from "@/hooks/useArchivalTags";
+import { ArchivalSettings } from "@/lib/api/archiveHandler";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
 	const user = await verifyUser({ req, res });
@@ -24,24 +26,23 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 		}
 
 		const { action } = dataValidation.data;
+		let count = 0;
 
 		if (action === "allAndIgnore") {
 			const allLinks = await prisma.link.findMany();
 
 			for (const link of allLinks) {
-				await removeFiles(link.id, link.collectionId)
+				await removePreservationFiles(link.id, link.collectionId);
 				await prisma.link.update({
-					where: {
-						id: link.id,
-					},
+					where: { id: link.id },
 					data: {
 						image: "unavailable",
 						pdf: "unavailable",
 						readable: "unavailable",
 						monolith: "unavailable",
 						preview: "unavailable",
-					}
-				})
+					},
+				});
 			}
 
 			return res.status(200).json({ response: "Success." });
@@ -49,22 +50,21 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 			const allLinks = await prisma.link.findMany();
 
 			for (const link of allLinks) {
-				await removeFiles(link.id, link.collectionId)
+				await removePreservationFiles(link.id, link.collectionId);
 				await prisma.link.update({
-					where: {
-						id: link.id,
-					},
+					where: { id: link.id },
 					data: {
 						image: null,
 						pdf: null,
 						readable: null,
 						monolith: null,
 						preview: null,
-					}
-				})
+					},
+				});
+				count++;
 			}
 
-			return res.status(200).json({ response: "Success." });
+			return res.status(200).json({ count });
 		} else if (action === "allBroken") {
 			const brokenArchives = await prisma.link.findMany({
 				where: {
@@ -84,25 +84,50 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 							archiveAsPDF: true,
 							archiveAsReadable: true,
 							archiveAsWaybackMachine: true,
-						}
+						},
 					},
-					tags: {
-						select: {
-							archiveAsScreenshot: true,
-							archiveAsMonolith: true,
-							archiveAsPDF: true,
-							archiveAsReadable: true,
-							archiveAsWaybackMachine: true,
-						}
-					}
-				}
+					tags: true,
+				},
 			});
 
-			// Need to check tags & user options for archival formats
-			// and then if the link is missing the same excluded formats
-			// then we can ignore it
+			for (const link of brokenArchives) {
+				const archivalTags = link.tags.filter(isArchivalTag);
 
-			return res.status(200).json({ response: "Success." });
+				const shouldArchive: Omit<ArchivalSettings, "aiTag" | "archiveAsWaybackMachine"> = archivalTags.length > 0
+					? {
+						archiveAsScreenshot: archivalTags.some(tag => tag.archiveAsScreenshot),
+						archiveAsMonolith: archivalTags.some(tag => tag.archiveAsMonolith),
+						archiveAsPDF: archivalTags.some(tag => tag.archiveAsPDF),
+						archiveAsReadable: archivalTags.some(tag => tag.archiveAsReadable),
+					}
+					: {
+						archiveAsScreenshot: link.createdBy?.archiveAsScreenshot || false,
+						archiveAsMonolith: link.createdBy?.archiveAsMonolith || false,
+						archiveAsPDF: link.createdBy?.archiveAsPDF || false,
+						archiveAsReadable: link.createdBy?.archiveAsReadable || false,
+					};
+
+				const needsReprocessing =
+					(link.image === "unavailable" && shouldArchive.archiveAsScreenshot) ||
+					(link.monolith === "unavailable" && shouldArchive.archiveAsMonolith) ||
+					(link.pdf === "unavailable" && shouldArchive.archiveAsPDF) ||
+					(link.readable === "unavailable" && shouldArchive.archiveAsReadable);
+
+				if (needsReprocessing) {
+					await prisma.link.update({
+						where: { id: link.id },
+						data: {
+							image: shouldArchive.archiveAsScreenshot && link.image === "unavailable" ? null : link.image,
+							pdf: shouldArchive.archiveAsPDF && link.pdf === "unavailable" ? null : link.pdf,
+							readable: shouldArchive.archiveAsReadable && link.readable === "unavailable" ? null : link.readable,
+							monolith: shouldArchive.archiveAsMonolith && link.monolith === "unavailable" ? null : link.monolith,
+						},
+					});
+					count++;
+				}
+			}
+
+			return res.status(200).json({ count });
 		}
 	}
 }

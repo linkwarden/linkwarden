@@ -465,10 +465,16 @@
   "new_note": "New Note",
   "add_a_title_placeholder": "Add a title...",
   "write_notes_here_placeholder": "Write some notes here...",
-  "tag_settings": "Tag archival and processing settings:",
+  "archival_tag_settings": "Tag archival settings:",
+  "archival_tag_info": "Applying archival tags to a link will override the global archival settings.",
   "ai_tagging": "AI Tagging",
   "worker": "Worker",
-  "regenerate_broken_preservations": "Regenerate all broken/missing preservations.",
+  "regenerate_broken_preservations": "Regenerate all broken or missing preservations.",
   "delete_all_preservations": "Delete preservation for all webpages.",
-  "delete_all_preservations_and_regenerate": "Delete preservation for all webpages and re-preserve."
+  "delete_all_preservations_and_regenerate": "Delete preservation for all webpages and re-preserve.",
+  "delete_all_preservation_warning": "This action will delete all existing preservations.",
+  "no_broken_preservations": "No broken preservations.",
+  "successfully_represerved_link": "Successfully re-preserved 1 link.",
+  "successfully_represerved_links": "Successfully re-preserved {{count}} links.",
+  "cancel": "Cancel"
 }
