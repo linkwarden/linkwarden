@@ -27,6 +27,8 @@ export interface ArchivalSettings {
 }
 
 export default async function archiveHandler(link: LinkWithCollectionOwnerAndTags) {
+  const user = link.collection?.owner;
+
   if (process.env.DISABLE_PRESERVATION === "true") {
     await prisma.link.update({
       where: { id: link.id },
@@ -37,8 +39,19 @@ export default async function archiveHandler(link: LinkWithCollectionOwnerAndTag
         monolith: "unavailable",
         pdf: "unavailable",
         preview: "unavailable",
+
+        // To prevent re-archiving the same link
+        aiTagged:
+          user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
+          !link.aiTagged &&
+          (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
+            process.env.OPENAI_API_KEY ||
+            process.env.ANTHROPIC_API_KEY)
+            ? true
+            : undefined,
       },
     });
+
     return;
   }
 
@@ -66,8 +79,6 @@ export default async function archiveHandler(link: LinkWithCollectionOwnerAndTag
 
   createFolder({ filePath: `archives/preview/${link.collectionId}` });
   createFolder({ filePath: `archives/${link.collectionId}` });
-
-  const user = link.collection?.owner;
 
   const archivalTags = link.tags.filter(isArchivalTag);
 
@@ -111,6 +122,13 @@ export default async function archiveHandler(link: LinkWithCollectionOwnerAndTag
 
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
 
+          const metaDescription = await page.evaluate(() => {
+            const description = document.querySelector(
+              'meta[name="description"]'
+            );
+            return description?.getAttribute("content") ?? undefined;
+          });
+
           const content = await page.content();
 
           // Preview
@@ -123,9 +141,11 @@ export default async function archiveHandler(link: LinkWithCollectionOwnerAndTag
           if (
             archivalSettings.aiTag &&
             !link.aiTagged &&
-            process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL
+            (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
+              process.env.OPENAI_API_KEY ||
+              process.env.ANTHROPIC_API_KEY)
           )
-            await autoTagLink(user, link.id);
+            await autoTagLink(user, link.id, metaDescription);
 
           // Screenshot/PDF
           if (
@@ -206,7 +226,7 @@ async function determineLinkType(
 }
 
 // Construct browser launch options based on environment variables.
-function getBrowserOptions(): LaunchOptions {
+export function getBrowserOptions(): LaunchOptions {
   let browserOptions: LaunchOptions = {};
 
   if (process.env.PROXY) {

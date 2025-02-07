@@ -432,9 +432,12 @@
   "people_recommendation": "Recommendation (Friend, Family, etc.)",
   "open_all_links": "Open all Links",
   "ai_settings": "AI Settings",
+  "generate_tags_for_existing_links": "Generate tags for existing Links",
   "ai_tagging_method": "AI Tagging Method:",
   "based_on_predefined_tags": "Based on predefined Tags",
   "based_on_predefined_tags_desc": "Auto-categorize links to predefined tags based on the content of each link.",
+  "based_on_existing_tags": "Based on existing Tags",
+  "based_on_existing_tags_desc": "Auto-categorize links to existing tags based on the content of each link.",
   "auto_generate_tags": "Auto-generate Tags",
   "auto_generate_tags_desc": "Auto-generate relevant tags based on the content of each link.",
   "disabled": "Disabled",
@@ -477,4 +480,5 @@
   "successfully_represerved_link": "Successfully re-preserved 1 link.",
   "successfully_represerved_links": "Successfully re-preserved {{count}} links.",
   "cancel": "Cancel"
+
 }
