@@ -468,6 +468,7 @@
   "tag_settings": "Tag archival and processing settings:",
   "ai_tagging": "AI Tagging",
   "worker": "Worker",
-  "regenerate_broken_preservation": "Delete preservation for broken webpages.",
-  "delete_all_preservation": "Delete preservation for all webpages."
+  "regenerate_broken_preservations": "Regenerate all broken/missing preservations.",
+  "delete_all_preservations": "Delete preservation for all webpages.",
+  "delete_all_preservations_and_regenerate": "Delete preservation for all webpages and re-preserve."
 }

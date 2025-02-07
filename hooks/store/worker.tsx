@@ -1,6 +1,7 @@
 import { LinkArchiveActionSchemaType } from "@/lib/shared/schemaValidation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+// Try to remove this and do it in the page component
 const useDeleteAllPreserved = () => {
 	const queryClient = useQueryClient();
 
