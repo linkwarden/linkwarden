@@ -11,11 +11,11 @@ type Props = {
   onChange: any;
   showDefaultValue?: boolean;
   defaultValue?:
-  | {
-    label: string;
-    value?: number;
-  }
-  | undefined;
+    | {
+        label: string;
+        value?: number;
+      }
+    | undefined;
   creatable?: boolean;
   autoFocus?: boolean;
   onBlur?: any;
@@ -118,7 +118,7 @@ export default function CollectionSelection({
         components={{
           Option: customOption,
         }}
-      // menuPosition="fixed"
+        // menuPosition="fixed"
       />
     );
   } else {
@@ -136,7 +136,7 @@ export default function CollectionSelection({
         components={{
           Option: customOption,
         }}
-      // menuPosition="fixed"
+        // menuPosition="fixed"
       />
     );
   }

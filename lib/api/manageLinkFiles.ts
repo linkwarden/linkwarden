@@ -30,7 +30,10 @@ const removeFiles = async (linkId: number, collectionId: number) => {
   });
 };
 
-const removePreservationFiles = async (linkId: number, collectionId: number) => {
+const removePreservationFiles = async (
+  linkId: number,
+  collectionId: number
+) => {
   // PDF
   await removeFile({
     filePath: `archives/${collectionId}/${linkId}.pdf`,

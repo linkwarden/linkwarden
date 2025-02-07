@@ -14,4 +14,7 @@ export interface ArchivalTagOption extends Option {
   newTag: boolean | null;
 }
 
-export type ArchivalOptionKeys = keyof Omit<ArchivalTagOption, "label" | "value" | "__isNew__">;
+export type ArchivalOptionKeys = keyof Omit<
+  ArchivalTagOption,
+  "label" | "value" | "__isNew__"
+>;

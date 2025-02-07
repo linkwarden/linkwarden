@@ -22,7 +22,14 @@ export default function Preference() {
   const { data: account } = useUser();
   const { data: tags } = useTags();
   const updateArchivalTags = useUpdateArchivalTags();
-  const { ARCHIVAL_OPTIONS, archivalTags, options, addTags, toggleOption, removeTag } = useArchivalTags(tags ? tags : []);
+  const {
+    ARCHIVAL_OPTIONS,
+    archivalTags,
+    options,
+    addTags,
+    toggleOption,
+    removeTag,
+  } = useArchivalTags(tags ? tags : []);
   const updateUser = useUpdateUser();
   const [user, setUser] = useState(account);
 
@@ -114,22 +121,20 @@ export default function Preference() {
 
   useEffect(() => {
     const relevantKeys = [
-      'archiveAsScreenshot',
-      'archiveAsMonolith',
-      'archiveAsPDF',
-      'archiveAsReadable',
-      'archiveAsWaybackMachine',
-      'linksRouteTo',
-      'preventDuplicateLinks',
-      'aiTaggingMethod',
-      'aiPredefinedTags',
-      'dashboardRecentLinks',
-      'dashboardPinnedLinks'
+      "archiveAsScreenshot",
+      "archiveAsMonolith",
+      "archiveAsPDF",
+      "archiveAsReadable",
+      "archiveAsWaybackMachine",
+      "linksRouteTo",
+      "preventDuplicateLinks",
+      "aiTaggingMethod",
+      "aiPredefinedTags",
+      "dashboardRecentLinks",
+      "dashboardPinnedLinks",
     ];
 
-    const hasChanges = relevantKeys.some(key =>
-      account[key] !== user[key]
-    );
+    const hasChanges = relevantKeys.some((key) => account[key] !== user[key]);
 
     setHasAccountChanges(hasChanges);
   }, [account, user]);
@@ -137,8 +142,8 @@ export default function Preference() {
   useEffect(() => {
     if (!tags || !archivalTags) return;
 
-    const hasChanges = archivalTags.some(newTag => {
-      const originalTag = tags.find(t => t.name === newTag.label);
+    const hasChanges = archivalTags.some((newTag) => {
+      const originalTag = tags.find((t) => t.name === newTag.label);
 
       if (!originalTag) return true;
 
@@ -147,7 +152,8 @@ export default function Preference() {
         newTag.archiveAsMonolith !== originalTag.archiveAsMonolith ||
         newTag.archiveAsPDF !== originalTag.archiveAsPDF ||
         newTag.archiveAsReadable !== originalTag.archiveAsReadable ||
-        newTag.archiveAsWaybackMachine !== originalTag.archiveAsWaybackMachine ||
+        newTag.archiveAsWaybackMachine !==
+          originalTag.archiveAsWaybackMachine ||
         newTag.aiTag !== originalTag.aiTag
       );
     });
@@ -164,7 +170,8 @@ export default function Preference() {
       const promises = [];
 
       if (hasAccountChanges) promises.push(updateUser.mutateAsync({ ...user }));
-      if (hasTagChanges) promises.push(updateArchivalTags.mutateAsync(archivalTags));
+      if (hasTagChanges)
+        promises.push(updateArchivalTags.mutateAsync(archivalTags));
 
       if (promises.length > 0) {
         await Promise.all(promises);
@@ -205,10 +212,11 @@ export default function Preference() {
             ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
-                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${localStorage.getItem("theme") === theme
-                  ? `outline-primary ${activeColor}`
-                  : textColor
-                  }`}
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
+                  localStorage.getItem("theme") === theme
+                    ? `outline-primary ${activeColor}`
+                    : textColor
+                }`}
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>
@@ -428,37 +436,58 @@ export default function Preference() {
           </div>
           <div className="w-full flex items-center justify-between">
             <p>{t("archival_tag_settings")}</p>
-            <div className="tooltip tooltip-top" data-tip={t("archival_tag_info")}>
+            <div
+              className="tooltip tooltip-top"
+              data-tip={t("archival_tag_info")}
+            >
               <i className="bi-info-lg text-lg leading-none"></i>
             </div>
           </div>
           <div className="p-3">
             <ArchivalTagSelection onChange={addTags} options={options} />
             <div className="flex flex-col gap-2">
-              {archivalTags && archivalTags.filter(isArchivalTag).map((tag) => (
-                <div key={tag.label} className="w-full flex items-center justify-between bg-base-200 p-2 rounded first-of-type:mt-4">
-                  <span className="text-xl sm:text-lg text-white truncate max-w-[10rem]">{tag.label}</span>
-                  <div className="flex items-center gap-1">
-                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
-                      {ARCHIVAL_OPTIONS.map(({ type, icon, label }) => (
-                        <div key={type} className="tooltip tooltip-top" data-tip={label}>
-                          <button
-                            onClick={() => toggleOption(tag, type)}
-                            className={cn("py-1 px-2 bg-base-300 rounded", { "bg-primary bg-opacity-25": tag[type] })}
+              {archivalTags &&
+                archivalTags.filter(isArchivalTag).map((tag) => (
+                  <div
+                    key={tag.label}
+                    className="w-full flex items-center justify-between bg-base-200 p-2 rounded first-of-type:mt-4"
+                  >
+                    <span className="text-xl sm:text-lg text-white truncate max-w-[10rem]">
+                      {tag.label}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
+                        {ARCHIVAL_OPTIONS.map(({ type, icon, label }) => (
+                          <div
+                            key={type}
+                            className="tooltip tooltip-top"
+                            data-tip={label}
                           >
-                            <i className={`${icon} text-lg leading-none`}></i>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="tooltip tooltip-top" data-tip={t("delete")}>
-                      <button className="py-1 px-2" onClick={() => removeTag(tag)}>
-                        <i className="bi-x text-lg leading-none"></i>
-                      </button>
+                            <button
+                              onClick={() => toggleOption(tag, type)}
+                              className={cn("py-1 px-2 bg-base-300 rounded", {
+                                "bg-primary bg-opacity-25": tag[type],
+                              })}
+                            >
+                              <i className={`${icon} text-lg leading-none`}></i>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <div
+                        className="tooltip tooltip-top"
+                        data-tip={t("delete")}
+                      >
+                        <button
+                          className="py-1 px-2"
+                          onClick={() => removeTag(tag)}
+                        >
+                          <i className="bi-x text-lg leading-none"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
