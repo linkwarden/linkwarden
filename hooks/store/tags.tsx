@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { TagIncludingLinkCount } from "@/types/global";
 import { useSession } from "next-auth/react";
 import { Tag } from "@prisma/client";
@@ -67,19 +72,24 @@ const useUpdateArchivalTags = () => {
       return data.response;
     },
     onSuccess: (data: TagIncludingLinkCount[]) => {
-      queryClient.setQueryData(["tags"], (oldData: TagIncludingLinkCount[] = []) => {
-        const updatedTags = oldData.map((tag) => {
-          const updatedTag = data.find((t) => t.id === tag.id);
-          return updatedTag ? { ...tag, ...updatedTag } : tag;
-        });
+      queryClient.setQueryData(
+        ["tags"],
+        (oldData: TagIncludingLinkCount[] = []) => {
+          const updatedTags = oldData.map((tag) => {
+            const updatedTag = data.find((t) => t.id === tag.id);
+            return updatedTag ? { ...tag, ...updatedTag } : tag;
+          });
 
-        const newTags = data.filter((t) => !oldData.some((tag) => tag.id === t.id));
+          const newTags = data.filter(
+            (t) => !oldData.some((tag) => tag.id === t.id)
+          );
 
-        return [...updatedTags, ...newTags];
-      });
+          return [...updatedTags, ...newTags];
+        }
+      );
     },
   });
-}
+};
 
 const useRemoveTag = () => {
   const queryClient = useQueryClient();

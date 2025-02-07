@@ -26,7 +26,9 @@ export interface ArchivalSettings {
   aiTag: boolean;
 }
 
-export default async function archiveHandler(link: LinkWithCollectionOwnerAndTags) {
+export default async function archiveHandler(
+  link: LinkWithCollectionOwnerAndTags
+) {
   const user = link.collection?.owner;
 
   if (process.env.DISABLE_PRESERVATION === "true") {
@@ -82,23 +84,28 @@ export default async function archiveHandler(link: LinkWithCollectionOwnerAndTag
 
   const archivalTags = link.tags.filter(isArchivalTag);
 
-  const archivalSettings: ArchivalSettings = archivalTags.length > 0
-    ? {
-      archiveAsScreenshot: archivalTags.some(tag => tag.archiveAsScreenshot),
-      archiveAsMonolith: archivalTags.some(tag => tag.archiveAsMonolith),
-      archiveAsPDF: archivalTags.some(tag => tag.archiveAsPDF),
-      archiveAsReadable: archivalTags.some(tag => tag.archiveAsReadable),
-      archiveAsWaybackMachine: archivalTags.some(tag => tag.archiveAsWaybackMachine),
-      aiTag: archivalTags.some(tag => tag.aiTag),
-    }
-    : {
-      archiveAsScreenshot: user.archiveAsScreenshot,
-      archiveAsMonolith: user.archiveAsMonolith,
-      archiveAsPDF: user.archiveAsPDF,
-      archiveAsReadable: user.archiveAsReadable,
-      archiveAsWaybackMachine: user.archiveAsWaybackMachine,
-      aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
-    };
+  const archivalSettings: ArchivalSettings =
+    archivalTags.length > 0
+      ? {
+          archiveAsScreenshot: archivalTags.some(
+            (tag) => tag.archiveAsScreenshot
+          ),
+          archiveAsMonolith: archivalTags.some((tag) => tag.archiveAsMonolith),
+          archiveAsPDF: archivalTags.some((tag) => tag.archiveAsPDF),
+          archiveAsReadable: archivalTags.some((tag) => tag.archiveAsReadable),
+          archiveAsWaybackMachine: archivalTags.some(
+            (tag) => tag.archiveAsWaybackMachine
+          ),
+          aiTag: archivalTags.some((tag) => tag.aiTag),
+        }
+      : {
+          archiveAsScreenshot: user.archiveAsScreenshot,
+          archiveAsMonolith: user.archiveAsMonolith,
+          archiveAsPDF: user.archiveAsPDF,
+          archiveAsReadable: user.archiveAsReadable,
+          archiveAsWaybackMachine: user.archiveAsWaybackMachine,
+          aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
+        };
 
   try {
     await Promise.race([
@@ -109,7 +116,8 @@ export default async function archiveHandler(link: LinkWithCollectionOwnerAndTag
         );
 
         // send to archive.org
-        if (archivalSettings.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
+        if (archivalSettings.archiveAsWaybackMachine && link.url)
+          sendToWayback(link.url);
 
         if (linkType === "image" && !link.image) {
           await imageHandler(link, imageExtension); // archive image (jpeg/png)
@@ -135,7 +143,8 @@ export default async function archiveHandler(link: LinkWithCollectionOwnerAndTag
           if (!link.preview) await handleArchivePreview(link, page);
 
           // Readability
-          if (archivalSettings.archiveAsReadable && !link.readable) await handleReadability(content, link);
+          if (archivalSettings.archiveAsReadable && !link.readable)
+            await handleReadability(content, link);
 
           // Auto-tagging
           if (
@@ -180,7 +189,8 @@ export default async function archiveHandler(link: LinkWithCollectionOwnerAndTag
           monolith: !finalLink.monolith ? "unavailable" : undefined,
           pdf: !finalLink.pdf ? "unavailable" : undefined,
           preview: !finalLink.preview ? "unavailable" : undefined,
-          aiTagged: archivalSettings.aiTag && !finalLink.aiTagged || undefined
+          aiTagged:
+            (archivalSettings.aiTag && !finalLink.aiTagged) || undefined,
         },
       });
     else {

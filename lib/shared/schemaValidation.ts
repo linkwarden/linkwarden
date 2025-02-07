@@ -41,12 +41,12 @@ export const PostUserSchema = () => {
     username: emailEnabled
       ? z.string().optional()
       : z
-        .string()
-        .trim()
-        .toLowerCase()
-        .min(3)
-        .max(50)
-        .regex(/^[a-z0-9_-]{3,50}$/),
+          .string()
+          .trim()
+          .toLowerCase()
+          .min(3)
+          .max(50)
+          .regex(/^[a-z0-9_-]{3,50}$/),
     invite: z.boolean().optional(),
   });
 };
@@ -236,7 +236,7 @@ export const PostArchivalTagSchema = z.object({
       archiveAsPDF: z.boolean().nullable(),
       archiveAsReadable: z.boolean().nullable(),
       archiveAsWaybackMachine: z.boolean().nullable(),
-      aiTag: z.boolean().nullable()
+      aiTag: z.boolean().nullable(),
     })
   ),
 });
@@ -245,4 +245,7 @@ export const LinkArchiveActionSchema = z.object({
   action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
 });
 
-export type LinkArchiveActionSchemaType = "allAndRePreserve" | "allAndIgnore" | "allBroken";
+export type LinkArchiveActionSchemaType =
+  | "allAndRePreserve"
+  | "allAndIgnore"
+  | "allBroken";
