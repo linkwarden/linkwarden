@@ -80,6 +80,7 @@ export const UpdateUserSchema = () => {
     dashboardRecentLinks: z.boolean().optional(),
     aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
+    aiTagExistingLinks: z.boolean().optional(),
     locale: z.string().max(20).optional(),
     isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
@@ -97,7 +98,7 @@ export const PostSessionSchema = z.object({
 });
 
 export const PostLinkSchema = z.object({
-  type: z.enum(["url", "pdf", "image", "readable"]).nullish(),
+  type: z.enum(["url", "pdf", "image"]).nullish(),
   url: z.string().trim().max(2048).url().optional(),
   name: z.string().trim().max(2048).optional(),
   description: z.string().trim().max(2048).optional(),
