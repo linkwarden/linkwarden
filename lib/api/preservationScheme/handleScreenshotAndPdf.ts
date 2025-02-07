@@ -19,7 +19,10 @@ const handleScreenshotAndPdf = async (
   if (linkExists) {
     const processingPromises = [];
 
-    if (archivalSettings.archiveAsScreenshot && !link.image?.startsWith("archive")) {
+    if (
+      archivalSettings.archiveAsScreenshot &&
+      !link.image?.startsWith("archive")
+    ) {
       processingPromises.push(
         page
           .screenshot({ fullPage: true, type: "jpeg" })

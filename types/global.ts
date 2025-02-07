@@ -70,7 +70,7 @@ export type LinkWithCollectionOwnerAndTags = LinksIncludingTags & {
   collection: Collection & {
     owner: User;
   };
-}
+};
 
 export enum ViewMode {
   Card = "card",
