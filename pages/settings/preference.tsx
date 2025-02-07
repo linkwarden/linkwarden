@@ -384,7 +384,12 @@ export default function Preference() {
               }
             />
           </div>
-          <p>{t("tag_settings")}</p>
+          <div className="w-full flex items-center justify-between">
+            <p>{t("archival_tag_settings")}</p>
+            <div className="tooltip tooltip-top" data-tip={t("archival_tag_info")}>
+              <i className="bi-info-lg text-lg leading-none"></i>
+            </div>
+          </div>
           <div className="p-3">
             <ArchivalTagSelection onChange={addTags} options={options} />
             <div className="flex flex-col gap-2">
