@@ -149,6 +149,7 @@ export default async function archiveHandler(
           // Auto-tagging
           if (
             archivalSettings.aiTag &&
+            user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
             !link.aiTagged &&
             (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
               process.env.OPENAI_API_KEY ||
