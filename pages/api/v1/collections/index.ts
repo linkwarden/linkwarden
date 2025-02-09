@@ -8,7 +8,7 @@ export default async function collections(
   res: NextApiResponse
 ) {
   const user = await verifyUser({ req, res });
-  if (!user) return res.status(401).json({ response: "Unauthorized" });
+  if (!user) return;
 
   if (req.method === "GET") {
     const collections = await getCollections(user.id);

@@ -6,7 +6,7 @@ import verifyUser from "@/lib/api/verifyUser";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
-  if (!user) return res.status(401).json({ response: "Unauthorized" });
+  if (!user) return;
 
   if (req.method === "GET") {
     const updated = await getLinkById(user.id, Number(req.query.id));
