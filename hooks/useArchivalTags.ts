@@ -5,14 +5,7 @@ import {
 } from "../components/InputSelect/types";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
-export const isArchivalTag = (tag: ArchivalTagOption | Tag) =>
-  typeof tag.archiveAsScreenshot === "boolean" ||
-  typeof tag.archiveAsMonolith === "boolean" ||
-  typeof tag.archiveAsPDF === "boolean" ||
-  typeof tag.archiveAsReadable === "boolean" ||
-  typeof tag.archiveAsWaybackMachine === "boolean" ||
-  typeof tag.aiTag === "boolean";
+import isArchivalTag from "@/lib/shared/isArchivalTag";
 
 const useArchivalTags = (initialTags: Tag[]) => {
   const [archivalTags, setArchivalTags] = useState<ArchivalTagOption[]>([]);

@@ -13,7 +13,7 @@ import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
 import autoTagLink from "./autoTagLink";
 import { LinkWithCollectionOwnerAndTags } from "../../types/global";
-import { isArchivalTag } from "../../hooks/useArchivalTags";
+import isArchivalTag from "../shared/isArchivalTag";
 
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 

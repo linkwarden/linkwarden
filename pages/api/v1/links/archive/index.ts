@@ -6,8 +6,8 @@ import {
   removeFiles,
   removePreservationFiles,
 } from "@/lib/api/manageLinkFiles";
-import { isArchivalTag } from "@/hooks/useArchivalTags";
 import { ArchivalSettings } from "@/lib/api/archiveHandler";
+import isArchivalTag from "@/lib/shared/isArchivalTag";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
@@ -30,7 +30,6 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const { action } = dataValidation.data;
-    let count = 0;
 
     if (action === "allAndIgnore") {
       const allLinks = await prisma.link.findMany();
@@ -63,10 +62,9 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
             preview: null,
           },
         });
-        count++;
       }
 
-      return res.status(200).json({ count });
+      return res.status(200).json({ response: "Success." });
     } else if (action === "allBroken") {
       const brokenArchives = await prisma.link.findMany({
         where: {
@@ -152,11 +150,10 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
                   : link.monolith,
             },
           });
-          count++;
         }
       }
 
-      return res.status(200).json({ count });
+      return res.status(200).json({ response: "Success." });
     }
   }
 }
