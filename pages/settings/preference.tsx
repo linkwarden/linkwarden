@@ -59,7 +59,7 @@ export default function Preference() {
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
   const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
-    account.aiTagExistingLinks || false
+    account.aiTagExistingLinks ?? false
   );
   const [hasAccountChanges, setHasAccountChanges] = useState(false);
   const [hasTagChanges, setHasTagChanges] = useState(false);
@@ -129,6 +129,7 @@ export default function Preference() {
       "preventDuplicateLinks",
       "aiTaggingMethod",
       "aiPredefinedTags",
+      "aiTagExistingLinks",
       "dashboardRecentLinks",
       "dashboardPinnedLinks",
     ];
