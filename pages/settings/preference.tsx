@@ -444,7 +444,7 @@ export default function Preference() {
           </div>
           <div className="p-3">
             <TagSelection
-              isArchivalTagSelection
+              isArchivalSelection
               onChange={addTags}
               options={options}
             />

@@ -47,16 +47,16 @@ const useArchivalTags = (initialTags: Tag[]) => {
         (newTag) =>
           !archivalTags.some((existing) => existing.label === newTag.label)
       )
-      .map(({ __isNew__, value, ...tag }) => ({
+      .map(({ value, ...tag }) => ({
         ...tag,
-        archiveAsScreenshot: __isNew__ ? false : tag.archiveAsScreenshot,
-        archiveAsMonolith: __isNew__ ? false : tag.archiveAsMonolith,
-        archiveAsPDF: __isNew__ ? false : tag.archiveAsPDF,
-        archiveAsReadable: __isNew__ ? false : tag.archiveAsReadable,
-        archiveAsWaybackMachine: __isNew__
+        archiveAsScreenshot: tag.__isNew__ ? false : tag.archiveAsScreenshot,
+        archiveAsMonolith: tag.__isNew__ ? false : tag.archiveAsMonolith,
+        archiveAsPDF: tag.__isNew__ ? false : tag.archiveAsPDF,
+        archiveAsReadable: tag.__isNew__ ? false : tag.archiveAsReadable,
+        archiveAsWaybackMachine: tag.__isNew__
           ? false
           : tag.archiveAsWaybackMachine,
-        aiTag: __isNew__ ? false : tag.aiTag,
+        aiTag: tag.__isNew__ ? false : tag.aiTag,
       }));
 
     setArchivalTags((prev) => [...prev, ...uniqueNewTags]);
@@ -80,19 +80,7 @@ const useArchivalTags = (initialTags: Tag[]) => {
 
   const removeTag = (tagToDelete: ArchivalTagOption) => {
     setArchivalTags((prev) =>
-      prev.map((t) =>
-        t.label === tagToDelete.label
-          ? {
-              ...t,
-              archiveAsScreenshot: null,
-              archiveAsMonolith: null,
-              archiveAsPDF: null,
-              archiveAsReadable: null,
-              archiveAsWaybackMachine: null,
-              aiTag: null,
-            }
-          : t
-      )
+      prev.filter((t) => t.label !== tagToDelete.label)
     );
 
     if (!tagToDelete.__isNew__) {
@@ -106,7 +94,12 @@ const useArchivalTags = (initialTags: Tag[]) => {
         aiTag: false,
       };
 
-      setOptions((prev) => [...prev, resetTag]);
+      setOptions((prev) => {
+        if (!prev.some((t) => t.label === resetTag.label)) {
+          return [...prev, resetTag];
+        }
+        return prev;
+      });
     }
   };
 

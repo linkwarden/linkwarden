@@ -8,7 +8,7 @@ import { useTranslation } from "next-i18next";
 type Props = {
   onChange: (e: any) => void;
   options?: Option[] | ArchivalTagOption[];
-  isArchivalTagSelection?: boolean;
+  isArchivalSelection?: boolean;
   defaultValue?: {
     value?: number;
     label: string;
@@ -20,41 +20,55 @@ type Props = {
 export default function TagSelection({
   onChange,
   options,
-  isArchivalTagSelection,
+  isArchivalSelection,
   defaultValue,
   autoFocus,
   onBlur,
 }: Props) {
-  const { t } = useTranslation();
   const { data: tags = [] } = useTags();
+  const { t } = useTranslation();
+
   const [tagOptions, setTagOptions] = useState<Option[]>([]);
 
   useEffect(() => {
-    setTagOptions(
-      tags.map((e: any) => ({
-        value: e.id,
-        label: e.name,
-      }))
-    );
+    const formatedCollections = tags.map((e: any) => {
+      return { value: e.id, label: e.name };
+    });
+
+    setTagOptions(formatedCollections);
   }, [tags]);
 
-  const selectOptions =
-    isArchivalTagSelection && options ? options : tagOptions;
-  const selectValue = isArchivalTagSelection ? [] : defaultValue;
-
   return (
-    <CreatableSelect
-      isClearable={false}
-      className="react-select-container"
-      classNamePrefix="react-select"
-      onChange={onChange}
-      options={selectOptions}
-      styles={styles}
-      value={selectValue}
-      placeholder={t("tag_selection_placeholder")}
-      isMulti
-      autoFocus={autoFocus}
-      onBlur={onBlur}
-    />
+    <>
+      {isArchivalSelection ? (
+        <CreatableSelect
+          isClearable={false}
+          className="react-select-container"
+          classNamePrefix="react-select"
+          onChange={onChange}
+          options={options}
+          styles={styles}
+          value={[]}
+          placeholder={t("tag_selection_placeholder")}
+          isMulti
+          autoFocus={autoFocus}
+          onBlur={onBlur}
+        />
+      ) : (
+        <CreatableSelect
+          isClearable={false}
+          className="react-select-container"
+          classNamePrefix="react-select"
+          onChange={onChange}
+          options={tagOptions}
+          styles={styles}
+          defaultValue={defaultValue}
+          placeholder={t("tag_selection_placeholder")}
+          isMulti
+          autoFocus={autoFocus}
+          onBlur={onBlur}
+        />
+      )}
+    </>
   );
 }
