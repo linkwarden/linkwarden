@@ -24,14 +24,12 @@ const useArchivalTags = (initialTags: Tag[]) => {
 
     const transformTag = (tag: Tag): ArchivalTagOption => ({
       label: tag.name,
-      value: tag.id,
       archiveAsScreenshot: tag.archiveAsScreenshot || false,
       archiveAsMonolith: tag.archiveAsMonolith || false,
       archiveAsPDF: tag.archiveAsPDF || false,
       archiveAsReadable: tag.archiveAsReadable || false,
       archiveAsWaybackMachine: tag.archiveAsWaybackMachine || false,
       aiTag: tag.aiTag || false,
-      newTag: false,
     });
 
     const archival = initialTags.filter(isArchivalTag).map(transformTag);
@@ -49,9 +47,8 @@ const useArchivalTags = (initialTags: Tag[]) => {
         (newTag) =>
           !archivalTags.some((existing) => existing.label === newTag.label)
       )
-      .map(({ __isNew__, ...tag }) => ({
+      .map(({ __isNew__, value, ...tag }) => ({
         ...tag,
-        value: __isNew__ ? undefined : tag.value,
         archiveAsScreenshot: __isNew__ ? false : tag.archiveAsScreenshot,
         archiveAsMonolith: __isNew__ ? false : tag.archiveAsMonolith,
         archiveAsPDF: __isNew__ ? false : tag.archiveAsPDF,
@@ -60,7 +57,6 @@ const useArchivalTags = (initialTags: Tag[]) => {
           ? false
           : tag.archiveAsWaybackMachine,
         aiTag: __isNew__ ? false : tag.aiTag,
-        newTag: __isNew__ ? true : false,
       }));
 
     setArchivalTags((prev) => [...prev, ...uniqueNewTags]);
@@ -87,14 +83,14 @@ const useArchivalTags = (initialTags: Tag[]) => {
       prev.map((t) =>
         t.label === tagToDelete.label
           ? {
-              ...t,
-              archiveAsScreenshot: null,
-              archiveAsMonolith: null,
-              archiveAsPDF: null,
-              archiveAsReadable: null,
-              archiveAsWaybackMachine: null,
-              aiTag: null,
-            }
+            ...t,
+            archiveAsScreenshot: null,
+            archiveAsMonolith: null,
+            archiveAsPDF: null,
+            archiveAsReadable: null,
+            archiveAsWaybackMachine: null,
+            aiTag: null,
+          }
           : t
       )
     );
@@ -119,29 +115,29 @@ const useArchivalTags = (initialTags: Tag[]) => {
     icon: string;
     label: string;
   }[] = [
-    { type: "aiTag", icon: "bi-tag", label: t("ai_tagging") },
-    {
-      type: "archiveAsScreenshot",
-      icon: "bi-file-earmark-image",
-      label: t("screenshot"),
-    },
-    {
-      type: "archiveAsMonolith",
-      icon: "bi-filetype-html",
-      label: t("webpage"),
-    },
-    { type: "archiveAsPDF", icon: "bi-file-earmark-pdf", label: t("pdf") },
-    {
-      type: "archiveAsReadable",
-      icon: "bi-file-earmark-text",
-      label: t("readable"),
-    },
-    {
-      type: "archiveAsWaybackMachine",
-      icon: "bi-archive",
-      label: t("archive_org_snapshot"),
-    },
-  ];
+      { type: "aiTag", icon: "bi-tag", label: t("ai_tagging") },
+      {
+        type: "archiveAsScreenshot",
+        icon: "bi-file-earmark-image",
+        label: t("screenshot"),
+      },
+      {
+        type: "archiveAsMonolith",
+        icon: "bi-filetype-html",
+        label: t("webpage"),
+      },
+      { type: "archiveAsPDF", icon: "bi-file-earmark-pdf", label: t("pdf") },
+      {
+        type: "archiveAsReadable",
+        icon: "bi-file-earmark-text",
+        label: t("readable"),
+      },
+      {
+        type: "archiveAsWaybackMachine",
+        icon: "bi-archive",
+        label: t("archive_org_snapshot"),
+      },
+    ];
 
   return {
     ARCHIVAL_OPTIONS,

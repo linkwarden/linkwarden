@@ -10,7 +10,7 @@ const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
-  if (!user) return;
+  if (!user) return res.status(401).json({ response: "Unauthorized" });
 
   const link = await prisma.link.findUnique({
     where: {
@@ -48,15 +48,14 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     if (
       link?.lastPreserved &&
       getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved) <
-        RE_ARCHIVE_LIMIT
+      RE_ARCHIVE_LIMIT
     )
       return res.status(400).json({
-        response: `This link is currently being saved or has already been preserved. Please retry in ${
-          RE_ARCHIVE_LIMIT -
+        response: `This link is currently being saved or has already been preserved. Please retry in ${RE_ARCHIVE_LIMIT -
           Math.floor(
             getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved)
           )
-        } minutes or create a new one.`,
+          } minutes or create a new one.`,
       });
 
     if (!link.url || !isValidUrl(link.url))
