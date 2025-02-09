@@ -55,7 +55,7 @@ export default function Preference() {
   );
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
-    account.aiTaggingMethod || AiTaggingMethod.DISABLED
+    account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
   const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
