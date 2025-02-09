@@ -8,7 +8,7 @@ export default async function tokens(
   res: NextApiResponse
 ) {
   const user = await verifyUser({ req, res });
-  if (!user) return res.status(401).json({ response: "Unauthorized" });
+  if (!user) return;
 
   if (req.method === "POST") {
     if (process.env.NEXT_PUBLIC_DEMO === "true")

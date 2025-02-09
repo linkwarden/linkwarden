@@ -4,7 +4,7 @@ import deleteToken from "@/lib/api/controllers/tokens/tokenId/deleteTokenById";
 
 export default async function token(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
-  if (!user) return res.status(401).json({ response: "Unauthorized" });
+  if (!user) return;
 
   if (req.method === "DELETE") {
     if (process.env.NEXT_PUBLIC_DEMO === "true")

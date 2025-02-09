@@ -9,7 +9,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const user = await verifyUser({ req, res });
-  if (!user) return res.status(401).json({ response: "Unauthorized" });
+  if (!user) return;
 
   if (req.method === "GET") {
     const response = await prisma.rssSubscription.findMany({
