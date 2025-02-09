@@ -21,8 +21,9 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
 
     if (!dataValidation.success) {
       return res.status(400).json({
-        response: `Error: ${dataValidation.error.issues[0].message
-          } [${dataValidation.error.issues[0].path.join(", ")}]`,
+        response: `Error: ${
+          dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`,
       });
     }
 

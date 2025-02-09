@@ -83,14 +83,14 @@ const useArchivalTags = (initialTags: Tag[]) => {
       prev.map((t) =>
         t.label === tagToDelete.label
           ? {
-            ...t,
-            archiveAsScreenshot: null,
-            archiveAsMonolith: null,
-            archiveAsPDF: null,
-            archiveAsReadable: null,
-            archiveAsWaybackMachine: null,
-            aiTag: null,
-          }
+              ...t,
+              archiveAsScreenshot: null,
+              archiveAsMonolith: null,
+              archiveAsPDF: null,
+              archiveAsReadable: null,
+              archiveAsWaybackMachine: null,
+              aiTag: null,
+            }
           : t
       )
     );
@@ -115,29 +115,29 @@ const useArchivalTags = (initialTags: Tag[]) => {
     icon: string;
     label: string;
   }[] = [
-      { type: "aiTag", icon: "bi-tag", label: t("ai_tagging") },
-      {
-        type: "archiveAsScreenshot",
-        icon: "bi-file-earmark-image",
-        label: t("screenshot"),
-      },
-      {
-        type: "archiveAsMonolith",
-        icon: "bi-filetype-html",
-        label: t("webpage"),
-      },
-      { type: "archiveAsPDF", icon: "bi-file-earmark-pdf", label: t("pdf") },
-      {
-        type: "archiveAsReadable",
-        icon: "bi-file-earmark-text",
-        label: t("readable"),
-      },
-      {
-        type: "archiveAsWaybackMachine",
-        icon: "bi-archive",
-        label: t("archive_org_snapshot"),
-      },
-    ];
+    { type: "aiTag", icon: "bi-tag", label: t("ai_tagging") },
+    {
+      type: "archiveAsScreenshot",
+      icon: "bi-file-earmark-image",
+      label: t("screenshot"),
+    },
+    {
+      type: "archiveAsMonolith",
+      icon: "bi-filetype-html",
+      label: t("webpage"),
+    },
+    { type: "archiveAsPDF", icon: "bi-file-earmark-pdf", label: t("pdf") },
+    {
+      type: "archiveAsReadable",
+      icon: "bi-file-earmark-text",
+      label: t("readable"),
+    },
+    {
+      type: "archiveAsWaybackMachine",
+      icon: "bi-archive",
+      label: t("archive_org_snapshot"),
+    },
+  ];
 
   return {
     ARCHIVAL_OPTIONS,
