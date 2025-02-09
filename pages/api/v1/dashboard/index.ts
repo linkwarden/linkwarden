@@ -8,7 +8,7 @@ export default async function dashboard(
   res: NextApiResponse
 ) {
   const user = await verifyUser({ req, res });
-  if (!user) return;
+  if (!user) return res.status(401).json({ response: "Unauthorized" });
 
   if (req.method === "GET") {
     const convertedData: LinkRequestQuery = {

@@ -9,7 +9,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const user = await verifyUser({ req, res });
-  if (!user) return;
+  if (!user) return res.status(401).json({ response: "Unauthorized" });
 
   if (req.method === "GET") {
     const response = await prisma.rssSubscription.findMany({
@@ -33,9 +33,8 @@ export default async function handler(
 
     if (!dataValidation.success) {
       return res.status(400).json({
-        response: `Error: ${
-          dataValidation.error.issues[0].message
-        } [${dataValidation.error.issues[0].path.join(", ")}]`,
+        response: `Error: ${dataValidation.error.issues[0].message
+          } [${dataValidation.error.issues[0].path.join(", ")}]`,
       });
     }
 

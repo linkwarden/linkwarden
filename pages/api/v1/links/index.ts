@@ -8,7 +8,7 @@ import updateLinks from "@/lib/api/controllers/links/bulk/updateLinks";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
-  if (!user) return;
+  if (!user) return res.status(401).json({ response: "Unauthorized" });
 
   if (req.method === "GET") {
     // Convert the type of the request query to "LinkRequestQuery"

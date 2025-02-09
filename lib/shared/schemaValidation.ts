@@ -41,12 +41,12 @@ export const PostUserSchema = () => {
     username: emailEnabled
       ? z.string().optional()
       : z
-          .string()
-          .trim()
-          .toLowerCase()
-          .min(3)
-          .max(50)
-          .regex(/^[a-z0-9_-]{3,50}$/),
+        .string()
+        .trim()
+        .toLowerCase()
+        .min(3)
+        .max(50)
+        .regex(/^[a-z0-9_-]{3,50}$/),
     invite: z.boolean().optional(),
   });
 };
@@ -225,21 +225,21 @@ export const PostRssSubscriptionSchema = z.object({
   collectionName: z.string().max(50).optional(),
 });
 
-export const PostArchivalTagSchema = z.object({
+export const PostTagSchema = z.object({
   tags: z.array(
     z.object({
-      value: z.number().optional(),
       label: z.string(),
-      newTag: z.boolean(),
-      archiveAsScreenshot: z.boolean().nullable(),
-      archiveAsMonolith: z.boolean().nullable(),
-      archiveAsPDF: z.boolean().nullable(),
-      archiveAsReadable: z.boolean().nullable(),
-      archiveAsWaybackMachine: z.boolean().nullable(),
-      aiTag: z.boolean().nullable(),
+      archiveAsScreenshot: z.boolean().nullish(),
+      archiveAsMonolith: z.boolean().nullish(),
+      archiveAsPDF: z.boolean().nullish(),
+      archiveAsReadable: z.boolean().nullish(),
+      archiveAsWaybackMachine: z.boolean().nullish(),
+      aiTag: z.boolean().nullish(),
     })
   ),
 });
+
+export type PostTagSchemaType = z.infer<typeof PostTagSchema>;
 
 export const LinkArchiveActionSchema = z.object({
   action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
