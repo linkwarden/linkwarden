@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const user = await verifyUser({ req, res });
-  if (!user) return;
+  if (!user) return res.status(401).json({ response: "Unauthorized" });
 
   const rssId = Number(req.query.id);
 
