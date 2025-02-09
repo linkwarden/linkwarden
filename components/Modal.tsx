@@ -9,7 +9,10 @@ type Props = {
   children: ReactNode;
   className?: string;
   dismissible?: boolean;
-  isLinkModal?: boolean;
+  linkModal?: {
+    state: boolean;
+    size: "full" | "half";
+  };
 };
 
 export default function Modal({
@@ -17,7 +20,7 @@ export default function Modal({
   className,
   children,
   dismissible = true,
-  isLinkModal,
+  linkModal,
 }: Props) {
   const [drawerIsOpen, setDrawerIsOpen] = React.useState(true);
 
@@ -49,7 +52,7 @@ export default function Modal({
               className="p-4 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto"
               data-testid="mobile-modal-container"
             >
-              {!isLinkModal && (
+              {!linkModal?.state && (
                 <div
                   className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-neutral mb-5"
                   data-testid="mobile-modal-slider"
@@ -71,20 +74,22 @@ export default function Modal({
           onClickOutside={() => dismissible && toggleModal()}
           className={clsx(
             "w-full mt-auto sm:m-auto",
-            isLinkModal ? "sm:w-[80vw] sm:h-[80vh]" : "sm:w-11/12 sm:max-w-2xl",
+            linkModal?.state && linkModal.size === "full"
+              ? "sm:w-[80vw] sm:h-[80vh]"
+              : "sm:w-11/12 sm:max-w-2xl",
             className
           )}
         >
           <div
             className={clsx(
               "slide-up mt-auto sm:m-auto relative border-neutral-content rounded-t-2xl sm:rounded-2xl border-t sm:border shadow-2xl bg-base-100",
-              isLinkModal
+              linkModal?.state
                 ? "h-full overflow-hidden"
                 : "overflow-y-auto sm:overflow-y-visible p-5"
             )}
             data-testid="modal-container"
           >
-            {dismissible && !isLinkModal && (
+            {dismissible && !linkModal?.state && (
               <div
                 onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
                 className="absolute top-4 right-3 btn btn-sm outline-none btn-circle btn-ghost z-10"

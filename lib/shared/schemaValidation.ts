@@ -72,8 +72,9 @@ export const UpdateUserSchema = () => {
     newPassword: z.string().min(8).max(2048).optional(),
     oldPassword: z.string().min(8).max(2048).optional(),
     archiveAsScreenshot: z.boolean().optional(),
-    archiveAsPDF: z.boolean().optional(),
     archiveAsMonolith: z.boolean().optional(),
+    archiveAsPDF: z.boolean().optional(),
+    archiveAsReadable: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
     dashboardPinnedLinks: z.boolean().optional(),
     dashboardRecentLinks: z.boolean().optional(),
@@ -223,3 +224,27 @@ export const PostRssSubscriptionSchema = z.object({
   collectionId: z.number().optional(),
   collectionName: z.string().max(50).optional(),
 });
+
+export const PostTagSchema = z.object({
+  tags: z.array(
+    z.object({
+      label: z.string().trim().max(50),
+      archiveAsScreenshot: z.boolean().nullish(),
+      archiveAsMonolith: z.boolean().nullish(),
+      archiveAsPDF: z.boolean().nullish(),
+      archiveAsReadable: z.boolean().nullish(),
+      archiveAsWaybackMachine: z.boolean().nullish(),
+      aiTag: z.boolean().nullish(),
+    })
+  ),
+});
+
+export type PostTagSchemaType = z.infer<typeof PostTagSchema>;
+
+export const LinkArchiveActionSchema = z.object({
+  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
+});
+
+export type LinkArchiveActionSchemaType = z.infer<
+  typeof LinkArchiveActionSchema
+>["action"];

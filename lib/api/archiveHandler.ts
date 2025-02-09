@@ -1,7 +1,7 @@
 import { LaunchOptions, chromium, devices } from "playwright";
 import { prisma } from "./db";
 import sendToWayback from "./preservationScheme/sendToWayback";
-import { AiTaggingMethod, Collection, Link, User } from "@prisma/client";
+import { AiTaggingMethod } from "@prisma/client";
 import fetchHeaders from "./fetchHeaders";
 import createFolder from "./storage/createFolder";
 import { removeFiles } from "./manageLinkFiles";
@@ -12,16 +12,23 @@ import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf"
 import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
 import autoTagLink from "./autoTagLink";
-
-type LinksAndCollectionAndOwner = Link & {
-  collection: Collection & {
-    owner: User;
-  };
-};
+import { LinkWithCollectionOwnerAndTags } from "../../types/global";
+import isArchivalTag from "../shared/isArchivalTag";
 
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 
-export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
+export interface ArchivalSettings {
+  archiveAsScreenshot: boolean;
+  archiveAsMonolith: boolean;
+  archiveAsPDF: boolean;
+  archiveAsReadable: boolean;
+  archiveAsWaybackMachine: boolean;
+  aiTag: boolean;
+}
+
+export default async function archiveHandler(
+  link: LinkWithCollectionOwnerAndTags
+) {
   const user = link.collection?.owner;
 
   if (process.env.DISABLE_PRESERVATION === "true") {
@@ -75,6 +82,31 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
   createFolder({ filePath: `archives/preview/${link.collectionId}` });
   createFolder({ filePath: `archives/${link.collectionId}` });
 
+  const archivalTags = link.tags.filter(isArchivalTag);
+
+  const archivalSettings: ArchivalSettings =
+    archivalTags.length > 0
+      ? {
+          archiveAsScreenshot: archivalTags.some(
+            (tag) => tag.archiveAsScreenshot
+          ),
+          archiveAsMonolith: archivalTags.some((tag) => tag.archiveAsMonolith),
+          archiveAsPDF: archivalTags.some((tag) => tag.archiveAsPDF),
+          archiveAsReadable: archivalTags.some((tag) => tag.archiveAsReadable),
+          archiveAsWaybackMachine: archivalTags.some(
+            (tag) => tag.archiveAsWaybackMachine
+          ),
+          aiTag: archivalTags.some((tag) => tag.aiTag),
+        }
+      : {
+          archiveAsScreenshot: user.archiveAsScreenshot,
+          archiveAsMonolith: user.archiveAsMonolith,
+          archiveAsPDF: user.archiveAsPDF,
+          archiveAsReadable: user.archiveAsReadable,
+          archiveAsWaybackMachine: user.archiveAsWaybackMachine,
+          aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
+        };
+
   try {
     await Promise.race([
       (async () => {
@@ -84,7 +116,8 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
         );
 
         // send to archive.org
-        if (user.archiveAsWaybackMachine && link.url) sendToWayback(link.url);
+        if (archivalSettings.archiveAsWaybackMachine && link.url)
+          sendToWayback(link.url);
 
         if (linkType === "image" && !link.image) {
           await imageHandler(link, imageExtension); // archive image (jpeg/png)
@@ -110,10 +143,12 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
           if (!link.preview) await handleArchivePreview(link, page);
 
           // Readability
-          if (!link.readable) await handleReadability(content, link);
+          if (archivalSettings.archiveAsReadable && !link.readable)
+            await handleReadability(content, link);
 
           // Auto-tagging
           if (
+            archivalSettings.aiTag &&
             user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
             !link.aiTagged &&
             (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
@@ -124,13 +159,13 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
 
           // Screenshot/PDF
           if (
-            (user.archiveAsScreenshot && !link.image) ||
-            (user.archiveAsPDF && !link.pdf)
+            (archivalSettings.archiveAsScreenshot && !link.image) ||
+            (archivalSettings.archiveAsPDF && !link.pdf)
           )
-            await handleScreenshotAndPdf(link, page, user);
+            await handleScreenshotAndPdf(link, page, archivalSettings);
 
           // Monolith
-          if (user.archiveAsMonolith && !link.monolith && link.url)
+          if (archivalSettings.archiveAsMonolith && !link.monolith && link.url)
             await handleMonolith(link, content);
         }
       })(),
@@ -144,6 +179,8 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
     const finalLink = await prisma.link.findUnique({
       where: { id: link.id },
     });
+
+    console.log(finalLink);
 
     if (finalLink)
       await prisma.link.update({

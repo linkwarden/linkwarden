@@ -1,17 +1,11 @@
 import "dotenv/config";
-import { Collection, Link, User } from "@prisma/client";
 import { prisma } from "../lib/api/db";
 import archiveHandler from "../lib/api/archiveHandler";
 import Parser from "rss-parser";
 import { hasPassedLimit } from "../lib/api/verifyCapacity";
+import { LinkWithCollectionOwnerAndTags } from "../types/global";
 
 const archiveTakeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
-
-type LinksAndCollectionAndOwner = Link & {
-  collection: Collection & {
-    owner: User;
-  };
-};
 
 async function processBatch() {
   const linksOldToNew = await prisma.link.findMany({
@@ -49,6 +43,7 @@ async function processBatch() {
           owner: true,
         },
       },
+      tags: true,
     },
   });
 
@@ -87,10 +82,11 @@ async function processBatch() {
           owner: true,
         },
       },
+      tags: true,
     },
   });
 
-  const archiveLink = async (link: LinksAndCollectionAndOwner) => {
+  const archiveLink = async (link: LinkWithCollectionOwnerAndTags) => {
     try {
       console.log(
         "\x1b[34m%s\x1b[0m",

@@ -4,7 +4,10 @@ import {
   ArchivedFormat,
 } from "@/types/global";
 import Link from "next/link";
-import { formatAvailable } from "@/lib/shared/formatStats";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@/lib/shared/formatStats";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
@@ -203,7 +206,7 @@ export default function LinkDetails({
           !standalone && "sm:flex sm:h-[80vh]"
         )}
       >
-        {width >= 640 && (
+        {width >= 640 && atLeastOneFormatAvailable(link) && (
           <div className="w-1/2 lg:w-2/3 overflow-y-auto">
             {link.id && (
               <Preservation
@@ -214,7 +217,12 @@ export default function LinkDetails({
             )}
           </div>
         )}
-        <div className={clsx("sm:overflow-y-auto sm:w-1/2 lg:w-1/3")}>
+        <div
+          className={clsx(
+            "sm:overflow-y-auto",
+            atLeastOneFormatAvailable(link) && "sm:w-1/2 lg:w-1/3"
+          )}
+        >
           {setMode && onClose && (
             <div className={clsx("flex justify-center -mb-11 pt-3 relative")}>
               {(permissions === true || permissions?.canUpdate) &&
