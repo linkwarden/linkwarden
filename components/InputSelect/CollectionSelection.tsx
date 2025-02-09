@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { styles } from "./styles";
-import { Options } from "./types";
+import { Option } from "./types";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
 import { useCollections } from "@/hooks/store/collections";
@@ -35,7 +35,7 @@ export default function CollectionSelection({
 
   const router = useRouter();
 
-  const [options, setOptions] = useState<Options[]>([]);
+  const [options, setOptions] = useState<Option[]>([]);
 
   const collectionId = Number(router.query.id);
 

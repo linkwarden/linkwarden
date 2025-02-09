@@ -56,7 +56,6 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
     <Modal toggleModal={onClose}>
       <>
         <p className="text-xl font-thin">{t("create_rss_subscription")}</p>
-
         <div className="divider mb-3 mt-1"></div>
         <div className="flex sm:flex-row flex-col gap-3 items-center">
           <div className="w-full">

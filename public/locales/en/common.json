@@ -463,5 +463,16 @@
   "search_for_links": "Search for Links",
   "search_query_invalid_symbol": "The search query should not contain '%'.",
   "open_modal_new_tab": "Open this modal in a new tab",
-  "file": "File"
+  "file": "File",
+  "tag_preservation_rule_label": "Preservation rules by tag (override global settings):",
+  "ai_tagging": "AI Tagging",
+  "worker": "Worker",
+  "regenerate_broken_preservations": "Regenerate all broken or missing preservations for all users.",
+  "delete_all_preservations": "Delete preservation for all webpages, applies to all users.",
+  "delete_all_preservations_and_regenerate": "Delete and re-preserve all webpages, applies to all users.",
+  "delete_all_preservation_warning": "This action will delete all existing preservations on the server.",
+  "no_broken_preservations": "No broken preservations.",
+  "links_are_being_represerved": "Links are being re-preserved...",
+  "cancel": "Cancel",
+  "preservation_rules": "Preservation rules:"
 }

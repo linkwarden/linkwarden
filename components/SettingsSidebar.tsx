@@ -3,12 +3,15 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";
+import { useConfig } from "@/hooks/store/config";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
   const LINKWARDEN_VERSION = process.env.version;
 
   const { data: user } = useUser();
+  const { data: config } = useConfig();
+  const isAdmin = user.id === (config?.ADMIN || 1);
 
   const router = useRouter();
   const [active, setActive] = useState("");
@@ -88,6 +91,21 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             <p className="truncate w-full pr-7">{t("password")}</p>
           </div>
         </Link>
+
+        {isAdmin && (
+          <Link href="/settings/worker">
+            <div
+              className={`${
+                active === "/settings/worker"
+                  ? "bg-primary/20"
+                  : "hover:bg-neutral/20"
+              } duration-100 py-5 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            >
+              <i className="bi-gear-wide-connected text-primary text-2xl"></i>
+              <p className="truncate w-full pr-7">{t("worker")}</p>
+            </div>
+          </Link>
+        )}
 
         {process.env.NEXT_PUBLIC_STRIPE && !user.parentSubscriptionId && (
           <Link href="/settings/billing">

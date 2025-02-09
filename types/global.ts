@@ -58,13 +58,19 @@ export interface AccountSettings extends User {
   };
 }
 
-interface LinksIncludingTags extends Link {
+export interface LinksIncludingTags extends Link {
   tags: Tag[];
 }
 
 export interface PublicCollectionIncludingLinks extends Collection {
   links: LinksIncludingTags[];
 }
+
+export type LinkWithCollectionOwnerAndTags = LinksIncludingTags & {
+  collection: Collection & {
+    owner: User;
+  };
+};
 
 export enum ViewMode {
   Card = "card",

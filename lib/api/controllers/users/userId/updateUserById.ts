@@ -208,6 +208,7 @@ export default async function updateUserById(
       archiveAsScreenshot: data.archiveAsScreenshot,
       archiveAsMonolith: data.archiveAsMonolith,
       archiveAsPDF: data.archiveAsPDF,
+      archiveAsReadable: data.archiveAsReadable,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,
       dashboardPinnedLinks: data.dashboardPinnedLinks,

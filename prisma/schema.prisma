@@ -58,6 +58,7 @@ model User {
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
   archiveAsPDF            Boolean               @default(true)
+  archiveAsReadable       Boolean               @default(true)
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
   referredBy              String?
@@ -177,13 +178,19 @@ model Link {
 }
 
 model Tag {
-  id        Int      @id @default(autoincrement())
-  name      String
-  links     Link[]
-  owner     User     @relation(fields: [ownerId], references: [id])
-  ownerId   Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id                      Int      @id @default(autoincrement())
+  name                    String
+  links                   Link[]
+  owner                   User     @relation(fields: [ownerId], references: [id])
+  ownerId                 Int
+  archiveAsScreenshot     Boolean?
+  archiveAsMonolith       Boolean?
+  archiveAsPDF            Boolean?
+  archiveAsReadable       Boolean?
+  archiveAsWaybackMachine Boolean?
+  aiTag                   Boolean?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @default(now()) @updatedAt
 
   @@unique([name, ownerId])
   @@index([ownerId])
