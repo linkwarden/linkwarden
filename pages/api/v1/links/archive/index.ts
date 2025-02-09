@@ -32,13 +32,23 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     const { action } = dataValidation.data;
 
     if (action === "allAndIgnore") {
-      const allLinks = await prisma.link.findMany();
+      const allLinks = await prisma.link.findMany({
+        where: {
+          type: "url",
+          url: {
+            not: null,
+          },
+        },
+      });
 
       for (const link of allLinks) {
+        console.log("Deleted preservation link:", link.id);
+
         await removePreservationFiles(link.id, link.collectionId);
         await prisma.link.update({
           where: { id: link.id },
           data: {
+            preview: link.preview ? link.preview : undefined,
             image: "unavailable",
             pdf: "unavailable",
             readable: "unavailable",
@@ -49,8 +59,17 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 
       return res.status(200).json({ response: "Success." });
     } else if (action === "allAndRePreserve") {
-      const allLinks = await prisma.link.findMany();
+      const allLinks = await prisma.link.findMany({
+        where: {
+          type: "url",
+          url: {
+            not: null,
+          },
+        },
+      });
       for (const link of allLinks) {
+        console.log("Deleted preservation link:", link.id);
+
         await removeFiles(link.id, link.collectionId);
         await prisma.link.update({
           where: { id: link.id },
@@ -68,6 +87,10 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     } else if (action === "allBroken") {
       const brokenArchives = await prisma.link.findMany({
         where: {
+          type: "url",
+          url: {
+            not: null,
+          },
           OR: [
             { image: "unavailable" },
             { pdf: "unavailable" },

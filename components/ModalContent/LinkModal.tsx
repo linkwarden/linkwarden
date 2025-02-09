@@ -1,6 +1,7 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import LinkDetails from "../LinkDetails";
 import Modal from "../Modal";
+import { atLeastOneFormatAvailable } from "@/lib/shared/formatStats";
 
 type Props = {
   onClose: Function;
@@ -20,7 +21,13 @@ export default function LinkModal({
   activeMode,
 }: Props) {
   return (
-    <Modal toggleModal={onClose} isLinkModal>
+    <Modal
+      toggleModal={onClose}
+      linkModal={{
+        state: true,
+        size: atLeastOneFormatAvailable(link) ? "full" : "half",
+      }}
+    >
       <LinkDetails
         activeLink={link}
         className="sm:mt-0 -mt-11"
