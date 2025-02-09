@@ -6,7 +6,7 @@ import createOrUpdateTags from "@/lib/api/controllers/tags/createOrUpdateTags";
 
 export default async function tags(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
-  if (!user) return res.status(401).json({ response: "Unauthorized" });
+  if (!user) return;
 
   if (req.method === "GET") {
     const tags = await getTags({

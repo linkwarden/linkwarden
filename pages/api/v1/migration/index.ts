@@ -19,7 +19,7 @@ export const config = {
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
-  if (!user) return res.status(401).json({ response: "Unauthorized" });
+  if (!user) return;
 
   if (req.method === "GET") {
     const data = await exportData(user.id);
