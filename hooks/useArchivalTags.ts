@@ -42,24 +42,45 @@ const useArchivalTags = (initialTags: Tag[]) => {
   }, [initialTags]);
 
   const addTags = (newTags: ArchivalTagOption[]) => {
-    const uniqueNewTags = newTags
-      .filter(
-        (newTag) =>
-          !archivalTags.some((existing) => existing.label === newTag.label)
-      )
-      .map(({ value, ...tag }) => ({
-        ...tag,
-        archiveAsScreenshot: tag.__isNew__ ? false : tag.archiveAsScreenshot,
-        archiveAsMonolith: tag.__isNew__ ? false : tag.archiveAsMonolith,
-        archiveAsPDF: tag.__isNew__ ? false : tag.archiveAsPDF,
-        archiveAsReadable: tag.__isNew__ ? false : tag.archiveAsReadable,
-        archiveAsWaybackMachine: tag.__isNew__
-          ? false
-          : tag.archiveAsWaybackMachine,
-        aiTag: tag.__isNew__ ? false : tag.aiTag,
-      }));
+    const newTag = newTags.map(({ value, ...tag }) => {
+      // Check if a tag with the same label already exists
+      const existingTag = archivalTags.find(
+        (archiveTag) => archiveTag.label === tag.label
+      );
 
-    setArchivalTags((prev) => [...prev, ...uniqueNewTags]);
+      // If it exists, return the existing tag with archive values set to false
+      if (existingTag) {
+        return {
+          ...existingTag,
+          archiveAsScreenshot: false,
+          archiveAsMonolith: false,
+          archiveAsPDF: false,
+          archiveAsReadable: false,
+          archiveAsWaybackMachine: false,
+          aiTag: false,
+        };
+      }
+
+      // If it doesn't exist, create a new tag with default values
+      return {
+        ...tag,
+        archiveAsScreenshot: false,
+        archiveAsMonolith: false,
+        archiveAsPDF: false,
+        archiveAsReadable: false,
+        archiveAsWaybackMachine: false,
+        aiTag: false,
+      };
+    });
+
+    // Filter out any existing tags with matching labels before adding new ones
+    setArchivalTags((prev) => {
+      const filteredPrev = prev.filter(
+        (prevTag) => !newTags.some(({ label }) => label === prevTag.label)
+      );
+      return [...filteredPrev, ...newTag];
+    });
+
     setOptions((prev) =>
       prev.filter(
         (option) => !newTags.some(({ label }) => label === option.label)
@@ -79,11 +100,24 @@ const useArchivalTags = (initialTags: Tag[]) => {
   };
 
   const removeTag = (tagToDelete: ArchivalTagOption) => {
-    setArchivalTags((prev) =>
-      prev.filter((t) => t.label !== tagToDelete.label)
-    );
-
     if (!tagToDelete.__isNew__) {
+      // Set all the values to null so we can delete the archive settings from the database
+      setArchivalTags((prev) =>
+        prev.map((t) =>
+          t.label === tagToDelete.label
+            ? {
+                ...t,
+                archiveAsScreenshot: null,
+                archiveAsMonolith: null,
+                archiveAsPDF: null,
+                archiveAsReadable: null,
+                archiveAsWaybackMachine: null,
+                aiTag: null,
+              }
+            : t
+        )
+      );
+
       const resetTag: ArchivalTagOption = {
         ...tagToDelete,
         archiveAsScreenshot: false,
@@ -100,6 +134,10 @@ const useArchivalTags = (initialTags: Tag[]) => {
         }
         return prev;
       });
+    } else {
+      setArchivalTags((prev) =>
+        prev.filter((t) => t.label !== tagToDelete.label)
+      );
     }
   };
 
