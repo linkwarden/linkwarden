@@ -39,36 +39,19 @@ export default function TagSelection({
   }, [tags]);
 
   return (
-    <>
-      {isArchivalSelection ? (
-        <CreatableSelect
-          isClearable={false}
-          className="react-select-container"
-          classNamePrefix="react-select"
-          onChange={onChange}
-          options={options}
-          styles={styles}
-          value={[]}
-          placeholder={t("tag_selection_placeholder")}
-          isMulti
-          autoFocus={autoFocus}
-          onBlur={onBlur}
-        />
-      ) : (
-        <CreatableSelect
-          isClearable={false}
-          className="react-select-container"
-          classNamePrefix="react-select"
-          onChange={onChange}
-          options={tagOptions}
-          styles={styles}
-          defaultValue={defaultValue}
-          placeholder={t("tag_selection_placeholder")}
-          isMulti
-          autoFocus={autoFocus}
-          onBlur={onBlur}
-        />
-      )}
-    </>
+    <CreatableSelect
+      isClearable={false}
+      className="react-select-container"
+      classNamePrefix="react-select"
+      onChange={onChange}
+      options={isArchivalSelection ? options : tagOptions}
+      styles={styles}
+      value={isArchivalSelection ? [] : undefined}
+      defaultValue={isArchivalSelection ? undefined : defaultValue}
+      placeholder={t("tag_selection_placeholder")}
+      isMulti
+      autoFocus={autoFocus}
+      onBlur={onBlur}
+    />
   );
 }

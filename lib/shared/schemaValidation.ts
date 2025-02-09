@@ -228,7 +228,7 @@ export const PostRssSubscriptionSchema = z.object({
 export const PostTagSchema = z.object({
   tags: z.array(
     z.object({
-      label: z.string(),
+      label: z.string().trim().max(50),
       archiveAsScreenshot: z.boolean().nullish(),
       archiveAsMonolith: z.boolean().nullish(),
       archiveAsPDF: z.boolean().nullish(),
@@ -245,7 +245,6 @@ export const LinkArchiveActionSchema = z.object({
   action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
 });
 
-export type LinkArchiveActionSchemaType =
-  | "allAndRePreserve"
-  | "allAndIgnore"
-  | "allBroken";
+export type LinkArchiveActionSchemaType = z.infer<
+  typeof LinkArchiveActionSchema
+>["action"];
