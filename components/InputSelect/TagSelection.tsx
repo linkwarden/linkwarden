@@ -26,50 +26,35 @@ export default function TagSelection({
   onBlur,
 }: Props) {
   const { t } = useTranslation();
+  const { data: tags = [] } = useTags();
+  const [tagOptions, setTagOptions] = useState<Option[]>([]);
 
-  if (isArchivalTagSelection && options) {
-    return (
-      <CreatableSelect
-        isClearable={false}
-        className="react-select-container"
-        classNamePrefix="react-select"
-        onChange={onChange}
-        options={options}
-        styles={styles}
-        value={[]}
-        defaultValue={defaultValue}
-        placeholder={t("tag_selection_placeholder")}
-        isMulti
-        autoFocus={autoFocus}
-        onBlur={onBlur}
-      />
+  useEffect(() => {
+    setTagOptions(
+      tags.map((e: any) => ({
+        value: e.id,
+        label: e.name,
+      }))
     );
-  } else {
-    const { data: tags = [] } = useTags();
-    const [options, setOptions] = useState<Option[]>([]);
+  }, [tags]);
 
-    useEffect(() => {
-      const formatedCollections = tags.map((e: any) => {
-        return { value: e.id, label: e.name };
-      });
+  const selectOptions =
+    isArchivalTagSelection && options ? options : tagOptions;
+  const selectValue = isArchivalTagSelection ? [] : defaultValue;
 
-      setOptions(formatedCollections);
-    }, [tags]);
-
-    return (
-      <CreatableSelect
-        isClearable={false}
-        className="react-select-container"
-        classNamePrefix="react-select"
-        onChange={onChange}
-        options={options}
-        styles={styles}
-        defaultValue={defaultValue}
-        placeholder={t("tag_selection_placeholder")}
-        isMulti
-        autoFocus={autoFocus}
-        onBlur={onBlur}
-      />
-    );
-  }
+  return (
+    <CreatableSelect
+      isClearable={false}
+      className="react-select-container"
+      classNamePrefix="react-select"
+      onChange={onChange}
+      options={selectOptions}
+      styles={styles}
+      value={selectValue}
+      placeholder={t("tag_selection_placeholder")}
+      isMulti
+      autoFocus={autoFocus}
+      onBlur={onBlur}
+    />
+  );
 }
