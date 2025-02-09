@@ -435,14 +435,8 @@ export default function Preference() {
               }
             />
           </div>
-          <div className="w-full flex items-center justify-between">
-            <p>{t("archival_tag_settings")}</p>
-            <div
-              className="tooltip tooltip-top"
-              data-tip={t("archival_tag_info")}
-            >
-              <i className="bi-info-lg text-lg leading-none"></i>
-            </div>
+          <div className="max-w-full">
+            <p>{t("tag_preservation_rule_label")}</p>
           </div>
           <div className="p-3">
             <TagSelection
@@ -455,13 +449,22 @@ export default function Preference() {
                 archivalTags.filter(isArchivalTag).map((tag) => (
                   <div
                     key={tag.label}
-                    className="w-full flex items-center justify-between bg-base-200 p-2 rounded first-of-type:mt-4"
+                    className="w-full bg-base-200 py-2 px-4 rounded-md first-of-type:mt-4 max-w-full shadow"
                   >
-                    <span className="text-xl sm:text-lg text-white truncate max-w-[10rem]">
-                      {tag.label}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
+                    <div className="flex justify-between gap-1">
+                      <span className="block sm:text-lg truncate max-w-sm">
+                        {tag.label}
+                      </span>
+                      <button
+                        className="py-1 px-2 btn btn-sm btn-ghost btn-square hover:bg-red-500"
+                        onClick={() => removeTag(tag)}
+                      >
+                        <i className="bi-x text-lg leading-none"></i>
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-between gap-1 mt-1">
+                      <p className="text-sm">{t("preservation_rules")}</p>
+                      <div className="flex gap-1">
                         {ARCHIVAL_OPTIONS.map(({ type, icon, label }) => (
                           <div
                             key={type}
@@ -470,25 +473,15 @@ export default function Preference() {
                           >
                             <button
                               onClick={() => toggleOption(tag, type)}
-                              className={cn("py-1 px-2 bg-base-300 rounded", {
-                                "bg-primary bg-opacity-25": tag[type],
-                              })}
+                              className={cn(
+                                "py-1 px-2 btn btn-sm btn-square",
+                                tag[type] ? "btn-primary" : "btn-ghost"
+                              )}
                             >
                               <i className={`${icon} text-lg leading-none`}></i>
                             </button>
                           </div>
                         ))}
-                      </div>
-                      <div
-                        className="tooltip tooltip-top"
-                        data-tip={t("delete")}
-                      >
-                        <button
-                          className="py-1 px-2"
-                          onClick={() => removeTag(tag)}
-                        >
-                          <i className="bi-x text-lg leading-none"></i>
-                        </button>
                       </div>
                     </div>
                   </div>
