@@ -12,7 +12,8 @@ import { useConfig } from "@/hooks/store/config";
 import { useTags, useUpdateArchivalTags } from "@/hooks/store/tags";
 import { cn } from "@/lib/client/utils";
 import TagSelection from "@/components/InputSelect/TagSelection";
-import { isArchivalTag, useArchivalTags } from "@/hooks/useArchivalTags";
+import { useArchivalTags } from "@/hooks/useArchivalTags";
+import isArchivalTag from "@/lib/shared/isArchivalTag";
 
 export default function Preference() {
   const { t } = useTranslation();

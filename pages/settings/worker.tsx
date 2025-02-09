@@ -63,15 +63,7 @@ export default function Worker() {
           if (action === "allAndIgnore") {
             toast.success(t("deleted"));
           } else {
-            if (data.count === 0) {
-              toast.success(t("no_broken_preservations"));
-            } else if (data.count === 1) {
-              toast.success(t("successfully_represerved_link"));
-            } else {
-              toast.success(
-                t("successfully_represerved_links", { count: data.count })
-              );
-            }
+            toast.success(t("links_are_being_represerved"));
           }
         }
       },
