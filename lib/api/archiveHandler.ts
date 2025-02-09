@@ -180,6 +180,8 @@ export default async function archiveHandler(
       where: { id: link.id },
     });
 
+    console.log(finalLink);
+
     if (finalLink)
       await prisma.link.update({
         where: { id: link.id },
@@ -191,7 +193,10 @@ export default async function archiveHandler(
           pdf: !finalLink.pdf ? "unavailable" : undefined,
           preview: !finalLink.preview ? "unavailable" : undefined,
           aiTagged:
-            (archivalSettings.aiTag && !finalLink.aiTagged) || undefined,
+            user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
+            !finalLink.aiTagged
+              ? true
+              : undefined,
         },
       });
     else {

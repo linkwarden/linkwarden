@@ -87,11 +87,11 @@ export default function Worker() {
           </button>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <span>{t("delete_all_preservations")}</span>
+          <span>{t("delete_all_preservations_and_regenerate")}</span>
           <button
-            className={`btn btn-sm ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
+            className={`btn btn-sm ml-auto btn-error text-white tracking-wider w-fit flex items-center gap-2`}
             onClick={() => {
-              setAction("allAndIgnore");
+              setAction("allAndRePreserve");
               setShowModal(true);
             }}
           >
@@ -99,11 +99,11 @@ export default function Worker() {
           </button>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <span>{t("delete_all_preservations_and_regenerate")}</span>
+          <span>{t("delete_all_preservations")}</span>
           <button
-            className={`btn btn-sm ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
+            className={`btn btn-sm ml-auto btn-error text-white tracking-wider w-fit flex items-center gap-2`}
             onClick={() => {
-              setAction("allAndRePreserve");
+              setAction("allAndIgnore");
               setShowModal(true);
             }}
           >
