@@ -1,8 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { TagIncludingLinkCount } from "@/types/global";
 import { useSession } from "next-auth/react";
+import { Tag } from "@prisma/client";
+import { ArchivalTagOption } from "@/components/InputSelect/types";
 
-const useTags = () => {
+const useTags = (): UseQueryResult<Tag[], Error> => {
   const { status } = useSession();
 
   return useQuery({
@@ -46,6 +53,44 @@ const useUpdateTag = () => {
   });
 };
 
+const useUpdateArchivalTags = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (tags: ArchivalTagOption[]) => {
+      const response = await fetch("/api/v1/tags", {
+        body: JSON.stringify({ tags }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response;
+    },
+    onSuccess: (data: TagIncludingLinkCount[]) => {
+      queryClient.setQueryData(
+        ["tags"],
+        (oldData: TagIncludingLinkCount[] = []) => {
+          const updatedTags = oldData.map((tag) => {
+            const updatedTag = data.find((t) => t.id === tag.id);
+            return updatedTag ? { ...tag, ...updatedTag } : tag;
+          });
+
+          const newTags = data.filter(
+            (t) => !oldData.some((tag) => tag.id === t.id)
+          );
+
+          return [...updatedTags, ...newTags];
+        }
+      );
+    },
+  });
+};
+
 const useRemoveTag = () => {
   const queryClient = useQueryClient();
 
@@ -68,4 +113,4 @@ const useRemoveTag = () => {
   });
 };
 
-export { useTags, useUpdateTag, useRemoveTag };
+export { useTags, useUpdateTag, useUpdateArchivalTags, useRemoveTag };

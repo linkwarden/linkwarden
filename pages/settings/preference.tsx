@@ -8,14 +8,28 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
-import TagSelection from "@/components/InputSelect/TagSelection";
 import { useConfig } from "@/hooks/store/config";
+import { useTags, useUpdateArchivalTags } from "@/hooks/store/tags";
+import { cn } from "@/lib/client/utils";
+import TagSelection from "@/components/InputSelect/TagSelection";
+import { useArchivalTags } from "@/hooks/useArchivalTags";
+import isArchivalTag from "@/lib/shared/isArchivalTag";
 
-export default function Appearance() {
+export default function Preference() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
+  const { data: tags } = useTags();
+  const updateArchivalTags = useUpdateArchivalTags();
+  const {
+    ARCHIVAL_OPTIONS,
+    archivalTags,
+    options,
+    addTags,
+    toggleOption,
+    removeTag,
+  } = useArchivalTags(tags ? tags : []);
   const updateUser = useUpdateUser();
   const [user, setUser] = useState(account);
 
@@ -25,29 +39,31 @@ export default function Appearance() {
   const [archiveAsScreenshot, setArchiveAsScreenshot] = useState<boolean>(
     account.archiveAsScreenshot || false
   );
-  const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(
-    account.archiveAsPDF || false
-  );
   const [archiveAsMonolith, setArchiveAsMonolith] = useState<boolean>(
     account.archiveAsMonolith || false
   );
+  const [archiveAsPDF, setArchiveAsPDF] = useState<boolean>(
+    account.archiveAsPDF || false
+  );
+  const [archiveAsReadable, setArchiveAsReadable] = useState<boolean>(false);
+  const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
+    useState<boolean>(account.archiveAsWaybackMachine || false);
   const [dashboardPinnedLinks, setDashboardPinnedLinks] = useState<boolean>(
     account.dashboardPinnedLinks || false
   );
   const [dashboardRecentLinks, setDashboardRecentLinks] = useState<boolean>(
     account.dashboardRecentLinks || false
   );
-  const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
-    useState<boolean>(account.archiveAsWaybackMachine || false);
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
     account.aiTaggingMethod
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
   const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
-    account.aiTagExistingLinks
+    account.aiTagExistingLinks ?? false
   );
-
+  const [hasAccountChanges, setHasAccountChanges] = useState(false);
+  const [hasTagChanges, setHasTagChanges] = useState(false);
   const { data: config } = useConfig();
 
   useEffect(() => {
@@ -56,6 +72,7 @@ export default function Appearance() {
       archiveAsScreenshot,
       archiveAsMonolith,
       archiveAsPDF,
+      archiveAsReadable,
       archiveAsWaybackMachine,
       linksRouteTo,
       preventDuplicateLinks,
@@ -70,6 +87,7 @@ export default function Appearance() {
     archiveAsScreenshot,
     archiveAsMonolith,
     archiveAsPDF,
+    archiveAsReadable,
     archiveAsWaybackMachine,
     linksRouteTo,
     preventDuplicateLinks,
@@ -89,6 +107,7 @@ export default function Appearance() {
       setArchiveAsScreenshot(account.archiveAsScreenshot);
       setArchiveAsMonolith(account.archiveAsMonolith);
       setArchiveAsPDF(account.archiveAsPDF);
+      setArchiveAsReadable(account.archiveAsReadable);
       setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
       setLinksRouteTo(account.linksRouteTo);
       setPreventDuplicateLinks(account.preventDuplicateLinks);
@@ -100,26 +119,71 @@ export default function Appearance() {
     }
   }, [account]);
 
+  useEffect(() => {
+    const relevantKeys = [
+      "archiveAsScreenshot",
+      "archiveAsMonolith",
+      "archiveAsPDF",
+      "archiveAsReadable",
+      "archiveAsWaybackMachine",
+      "linksRouteTo",
+      "preventDuplicateLinks",
+      "aiTaggingMethod",
+      "aiPredefinedTags",
+      "aiTagExistingLinks",
+      "dashboardRecentLinks",
+      "dashboardPinnedLinks",
+    ];
+
+    const hasChanges = relevantKeys.some((key) => account[key] !== user[key]);
+
+    setHasAccountChanges(hasChanges);
+  }, [account, user]);
+
+  useEffect(() => {
+    if (!tags || !archivalTags) return;
+
+    const hasChanges = archivalTags.some((newTag) => {
+      const originalTag = tags.find((t) => t.name === newTag.label);
+
+      if (!originalTag) return true;
+
+      return (
+        newTag.archiveAsScreenshot !== originalTag.archiveAsScreenshot ||
+        newTag.archiveAsMonolith !== originalTag.archiveAsMonolith ||
+        newTag.archiveAsPDF !== originalTag.archiveAsPDF ||
+        newTag.archiveAsReadable !== originalTag.archiveAsReadable ||
+        newTag.archiveAsWaybackMachine !==
+          originalTag.archiveAsWaybackMachine ||
+        newTag.aiTag !== originalTag.aiTag
+      );
+    });
+
+    setHasTagChanges(hasChanges);
+  }, [archivalTags, tags]);
+
   const submit = async () => {
     setSubmitLoader(true);
 
     const load = toast.loading(t("applying_settings"));
 
-    await updateUser.mutateAsync(
-      { ...user },
-      {
-        onSettled: (data, error) => {
-          setSubmitLoader(false);
-          toast.dismiss(load);
+    try {
+      const promises = [];
 
-          if (error) {
-            toast.error(error.message);
-          } else {
-            toast.success(t("settings_applied"));
-          }
-        },
+      if (hasAccountChanges) promises.push(updateUser.mutateAsync({ ...user }));
+      if (hasTagChanges)
+        promises.push(updateArchivalTags.mutateAsync(archivalTags));
+
+      if (promises.length > 0) {
+        await Promise.all(promises);
+        toast.success(t("settings_applied"));
       }
-    );
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setSubmitLoader(false);
+      toast.dismiss(load);
+    }
   };
 
   return (
@@ -356,6 +420,13 @@ export default function Appearance() {
               state={archiveAsPDF}
               onClick={() => setArchiveAsPDF(!archiveAsPDF)}
             />
+
+            <Checkbox
+              label={t("readable")}
+              state={archiveAsReadable}
+              onClick={() => setArchiveAsReadable(!archiveAsReadable)}
+            />
+
             <Checkbox
               label={t("archive_org_snapshot")}
               state={archiveAsWaybackMachine}
@@ -363,6 +434,59 @@ export default function Appearance() {
                 setArchiveAsWaybackMachine(!archiveAsWaybackMachine)
               }
             />
+          </div>
+          <div className="max-w-full">
+            <p>{t("tag_preservation_rule_label")}</p>
+          </div>
+          <div className="p-3">
+            <TagSelection
+              isArchivalSelection
+              onChange={addTags}
+              options={options}
+            />
+            <div className="flex flex-col gap-2">
+              {archivalTags &&
+                archivalTags.filter(isArchivalTag).map((tag) => (
+                  <div
+                    key={tag.label}
+                    className="w-full bg-base-200 py-2 px-4 rounded-md first-of-type:mt-4 max-w-full shadow"
+                  >
+                    <div className="flex justify-between gap-1">
+                      <span className="block sm:text-lg truncate max-w-sm">
+                        {tag.label}
+                      </span>
+                      <button
+                        className="py-1 px-2 btn btn-sm btn-ghost btn-square hover:bg-red-500"
+                        onClick={() => removeTag(tag)}
+                      >
+                        <i className="bi-x text-lg leading-none"></i>
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-between gap-1 mt-1">
+                      <p className="text-sm">{t("preservation_rules")}</p>
+                      <div className="flex gap-1">
+                        {ARCHIVAL_OPTIONS.map(({ type, icon, label }) => (
+                          <div
+                            key={type}
+                            className="tooltip tooltip-top"
+                            data-tip={label}
+                          >
+                            <button
+                              onClick={() => toggleOption(tag, type)}
+                              className={cn(
+                                "py-1 px-2 btn btn-sm btn-square",
+                                tag[type] ? "btn-primary" : "btn-ghost"
+                              )}
+                            >
+                              <i className={`${icon} text-lg leading-none`}></i>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
 
