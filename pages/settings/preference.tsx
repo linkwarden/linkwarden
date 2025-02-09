@@ -55,11 +55,11 @@ export default function Preference() {
   );
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
-    account.aiTaggingMethod
+    account.aiTaggingMethod || AiTaggingMethod.DISABLED
   );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
   const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
-    account.aiTagExistingLinks
+    account.aiTagExistingLinks || false
   );
   const [hasAccountChanges, setHasAccountChanges] = useState(false);
   const [hasTagChanges, setHasTagChanges] = useState(false);
@@ -152,7 +152,7 @@ export default function Preference() {
         newTag.archiveAsPDF !== originalTag.archiveAsPDF ||
         newTag.archiveAsReadable !== originalTag.archiveAsReadable ||
         newTag.archiveAsWaybackMachine !==
-          originalTag.archiveAsWaybackMachine ||
+        originalTag.archiveAsWaybackMachine ||
         newTag.aiTag !== originalTag.aiTag
       );
     });
@@ -211,11 +211,10 @@ export default function Preference() {
             ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
-                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
-                  localStorage.getItem("theme") === theme
-                    ? `outline-primary ${activeColor}`
-                    : textColor
-                }`}
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${localStorage.getItem("theme") === theme
+                  ? `outline-primary ${activeColor}`
+                  : textColor
+                  }`}
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>
@@ -356,9 +355,8 @@ export default function Preference() {
               </div>
             </div>
             <div
-              className={`mb-3 ${
-                aiTaggingMethod === AiTaggingMethod.DISABLED ? "opacity-50" : ""
-              }`}
+              className={`mb-3 ${aiTaggingMethod === AiTaggingMethod.DISABLED ? "opacity-50" : ""
+                }`}
             >
               <Checkbox
                 label={t("generate_tags_for_existing_links")}
