@@ -21,5 +21,6 @@ export const getEnvData = () => {
     EMAIL_PROVIDER: process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true" || null,
     MAX_FILE_BUFFER: Number(process.env.NEXT_PUBLIC_MAX_FILE_BUFFER) || null,
     AI_ENABLED: hasAiProvider || null,
+    INSTANCE_VERSION: process.env.version,
   };
 };
