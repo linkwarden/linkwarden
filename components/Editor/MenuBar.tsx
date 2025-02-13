@@ -7,7 +7,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   }
 
   return (
-    <div className="flex overflow-x-auto hide-scrollbar gap-1 mb-2">
+    <div className="flex flex-wrap overflow-x-auto hide-scrollbar gap-1 mb-2">
       <IconButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         isActive={editor.isActive("heading", { level: 1 })}

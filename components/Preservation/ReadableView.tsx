@@ -169,12 +169,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
                 {t("edit")}
               </button>
             ) : linkContent ? (
-              <div
-                className={clsx(
-                  "flex items-center gap-2",
-                  isExpanded && "mr-10"
-                )}
-              >
+              <div className={"flex items-center gap-2"}>
                 <button
                   className="flex items-center gap-2 btn btn-ghost btn-square btn-sm"
                   onClick={cancelEditing}
