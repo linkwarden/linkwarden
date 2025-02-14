@@ -3,6 +3,7 @@ import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
+import CommentExtension from "@sereneinserenade/tiptap-comment-extension";
 import DOMPurify from "dompurify";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -14,7 +15,7 @@ import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import usePermissions from "@/hooks/usePermissions";
 import { useUpdateFile } from "@/hooks/store/links";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import TipTapLink from "@tiptap/extension-link";
@@ -45,12 +46,19 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
       StarterKit,
       Image,
       ListItem,
-      Highlight,
+      Highlight.configure({
+        multicolor: true,
+      }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
       TipTapLink.configure({
         openOnClick: false,
+      }),
+      CommentExtension.configure({
+        HTMLAttributes: {
+          class: "linkwarden-comment",
+        },
       }),
     ],
     immediatelyRender: false,
@@ -198,7 +206,38 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
               {editor && isEditing ? (
                 <div className="w-full reader-view">
                   <MenuBar editor={editor} />
-                  <EditorContent editor={editor} />
+                  <div>
+                    <BubbleMenu
+                      editor={editor}
+                      className="bg-base-100 flex items-center gap-1 p-2 rounded-md"
+                    >
+                      {["#D9B566", "#D96666", "#668CD9", "#4CAF50"].map(
+                        (color) => (
+                          <button
+                            key={color}
+                            onClick={() =>
+                              editor
+                                .chain()
+                                .focus()
+                                .toggleHighlight({ color })
+                                .run()
+                            }
+                            className="rounded-full border-2 border-transparent hover:bg-opacity-80 size-8 transition"
+                            style={{ backgroundColor: color }}
+                          />
+                        )
+                      )}
+                      <button
+                        onClick={() =>
+                          editor.chain().focus().unsetHighlight().run()
+                        }
+                        className="rounded flex items-center justify-center size-8 hover:bg-base-200 transition"
+                      >
+                        <i className="bi bi-eraser text-xl"></i>
+                      </button>
+                    </BubbleMenu>
+                    <EditorContent editor={editor} />
+                  </div>
                 </div>
               ) : (
                 <div

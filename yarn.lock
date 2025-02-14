@@ -1537,6 +1537,11 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz#8be36a1f66f3265389e90b5f9c9962146758f728"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
 
+"@sereneinserenade/tiptap-comment-extension@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@sereneinserenade/tiptap-comment-extension/-/tiptap-comment-extension-0.1.2.tgz#896ece32324a81ba3da29dd84b9d90f22383e7ad"
+  integrity sha512-ExUgTIakb0vRGzOY1ucs8FQd2FvNIW59faYsuL1V45evYeVbwT0pGc1U/AaoXp6a+advkUGQy04ThURH7heOPA==
+
 "@smithy/abort-controller@^2.0.1":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@smithy/abort-controller/-/abort-controller-2.0.1.tgz#ddb5dd8c37016e8fcf772bd9c80e900860d74ae6"

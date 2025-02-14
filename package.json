@@ -30,6 +30,7 @@
     "@phosphor-icons/core": "^2.1.1",
     "@phosphor-icons/react": "^2.1.7",
     "@prisma/client": "^5.21.1",
+    "@sereneinserenade/tiptap-comment-extension": "^0.1.2",
     "@stripe/stripe-js": "^1.54.1",
     "@tanstack/react-query": "^5.51.15",
     "@tanstack/react-query-devtools": "^5.51.15",
