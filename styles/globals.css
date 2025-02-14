@@ -300,3 +300,8 @@
 .read-only ul[data-type="taskList"] {
   pointer-events: none;
 }
+
+.linkwarden-comment {
+  background-color: rgba(217, 181, 102, 0.4);
+  border-bottom: 2px solid #d9b566;
+}

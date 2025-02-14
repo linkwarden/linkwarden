@@ -25,6 +25,7 @@ import MenuBar from "../Editor/MenuBar";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import ListItem from "@tiptap/extension-list-item";
+import { v4 } from "uuid";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -123,6 +124,8 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
   };
 
   const updateFile = useUpdateFile();
+
+  console.log(editor?.getHTML());
 
   const saveChanges = () => {
     if (!editor) return;
@@ -234,6 +237,14 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
                         className="rounded flex items-center justify-center size-8 hover:bg-base-200 transition"
                       >
                         <i className="bi bi-eraser text-xl"></i>
+                      </button>
+                      <button
+                        onClick={() => {
+                          editor.commands.setComment(v4());
+                        }}
+                        className="rounded flex items-center justify-center size-8 hover:bg-base-200 transition"
+                      >
+                        <i className="bi bi-chat-square-dots text-xl"></i>
                       </button>
                     </BubbleMenu>
                     <EditorContent editor={editor} />
