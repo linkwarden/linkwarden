@@ -2,6 +2,7 @@ import { prisma } from "@/lib/api/db";
 import { Link, UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import { removeFiles } from "@/lib/api/manageLinkFiles";
+import { meiliClient } from "@/lib/api/meilisearchClient";
 
 export default async function deleteLink(userId: number, linkId: number) {
   if (!linkId) return { response: "Please choose a valid link.", status: 401 };
@@ -25,6 +26,8 @@ export default async function deleteLink(userId: number, linkId: number) {
   });
 
   removeFiles(linkId, collectionIsAccessible.id);
+
+  meiliClient?.index("links").deleteDocument(deleteLink.id);
 
   return { response: deleteLink, status: 200 };
 }

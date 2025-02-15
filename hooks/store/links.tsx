@@ -1,7 +1,5 @@
 import {
-  InfiniteData,
   useInfiniteQuery,
-  UseInfiniteQueryResult,
   useQueryClient,
   useMutation,
 } from "@tanstack/react-query";
@@ -23,17 +21,14 @@ const useLinks = (params: LinkRequestQuery = {}) => {
   const queryParamsObject = {
     sort: params.sort ?? Number(window.localStorage.getItem("sortBy")) ?? 0,
     collectionId:
-      params.collectionId ?? router.pathname === "/collections/[id]"
-        ? router.query.id
-        : undefined,
+      params.collectionId ??
+      (router.pathname === "/collections/[id]" ? router.query.id : undefined),
     tagId:
-      params.tagId ?? router.pathname === "/tags/[id]"
-        ? router.query.id
-        : undefined,
+      params.tagId ??
+      (router.pathname === "/tags/[id]" ? router.query.id : undefined),
     pinnedOnly:
-      params.pinnedOnly ?? router.pathname === "/links/pinned"
-        ? true
-        : undefined,
+      params.pinnedOnly ??
+      (router.pathname === "/links/pinned" ? true : undefined),
     searchQueryString: params.searchQueryString,
     searchByName: params.searchByName,
     searchByUrl: params.searchByUrl,
@@ -47,17 +42,14 @@ const useLinks = (params: LinkRequestQuery = {}) => {
   const { data, ...rest } = useFetchLinks(queryString);
 
   const links = useMemo(() => {
-    return data?.pages.reduce((acc, page) => {
-      return [...acc, ...page];
-    }, []);
+    return data?.pages?.flatMap((page) => page?.links ?? []) ?? [];
   }, [data]);
+
+  const memoizedData = useMemo(() => ({ ...data, ...rest }), [data, rest]);
 
   return {
     links,
-    data: { ...data, ...rest },
-  } as {
-    links: LinkIncludingShortenedCollectionAndTags[];
-    data: UseInfiniteQueryResult<InfiniteData<any, unknown>, Error>;
+    data: memoizedData,
   };
 };
 
@@ -68,7 +60,7 @@ const useFetchLinks = (params: string) => {
     queryKey: ["links", { params }],
     queryFn: async (params) => {
       const response = await fetch(
-        "/api/v1/links?cursor=" +
+        "/api/v1/search?cursor=" +
           params.pageParam +
           ((params.queryKey[1] as any).params
             ? "&" + (params.queryKey[1] as any).params
@@ -76,15 +68,18 @@ const useFetchLinks = (params: string) => {
       );
       const data = await response.json();
 
-      return data.response;
+      return {
+        links: data.data.links as LinkIncludingShortenedCollectionAndTags[],
+        nextCursor: data.data.nextCursor as number | null,
+      };
     },
     initialPageParam: 0,
     refetchOnWindowFocus: false,
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) {
+      if (lastPage.nextCursor === null) {
         return undefined;
       }
-      return lastPage.at(-1).id;
+      return lastPage.nextCursor;
     },
     enabled: status === "authenticated",
   });
@@ -129,7 +124,7 @@ const useAddLink = () => {
 
       return data.response;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: LinkIncludingShortenedCollectionAndTags[]) => {
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
         if (!oldData?.links) return undefined;
         return {
@@ -141,7 +136,13 @@ const useAddLink = () => {
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
         if (!oldData) return undefined;
         return {
-          pages: [[data, ...oldData?.pages[0]], ...oldData?.pages.slice(1)],
+          pages: [
+            {
+              links: [data, ...oldData?.pages[0].links],
+              nextCursor: oldData?.pages[0].nextCursor,
+            },
+            ...oldData?.pages.slice(1),
+          ],
           pageParams: oldData?.pageParams,
         };
       });
@@ -173,24 +174,8 @@ const useUpdateLink = () => {
       return data.response;
     },
     onSuccess: (data) => {
-      // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-      //   if (!oldData?.links) return undefined;
-      //   return oldData.links.map((e: any) => (e.id === data.id ? data : e));
-      // });
-
-      // queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-      //   if (!oldData) return undefined;
-      //   return {
-      //     pages: oldData.pages.map((page: any) =>
-      //       page.map((item: any) => (item.id === data.id ? data : item))
-      //     ),
-      //     pageParams: oldData.pageParams,
-      //   };
-      // });
-
-      queryClient.invalidateQueries({ queryKey: ["links"] }); // Temporary workaround
-      queryClient.invalidateQueries({ queryKey: ["dashboardData"] }); // Temporary workaround
-
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
@@ -224,10 +209,12 @@ const useDeleteLink = () => {
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
         if (!oldData) return undefined;
+
         return {
-          pages: oldData.pages.map((page: any) =>
-            page.filter((item: any) => item.id !== data.id)
-          ),
+          pages: oldData.pages.map((page: any) => ({
+            links: page.links.filter((item: any) => item.id !== data.id),
+            nextCursor: page.nextCursor,
+          })),
           pageParams: oldData.pageParams,
         };
       });
@@ -275,9 +262,12 @@ const useGetLink = () => {
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
         if (!oldData) return undefined;
         return {
-          pages: oldData.pages.map((page: any) =>
-            page.map((item: any) => (item.id === data.id ? data : item))
-          ),
+          pages: oldData.pages.map((page: any) => ({
+            links: page.links.map((item: any) =>
+              item.id === data.id ? data : item
+            ),
+            nextCursor: page.nextCursor,
+          })),
           pageParams: oldData.pageParams,
         };
       });
@@ -287,15 +277,16 @@ const useGetLink = () => {
         (oldData: any) => {
           if (!oldData) return undefined;
           return {
-            pages: oldData.pages.map((page: any) =>
-              page.map((item: any) => (item.id === data.id ? data : item))
-            ),
+            pages: oldData.pages.map((page: any) => ({
+              links: page.links.map((item: any) =>
+                item.id === data.id ? data : item
+              ),
+              nextCursor: page.nextCursor,
+            })),
             pageParams: oldData.pageParams,
           };
         }
       );
-
-      // queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
   });
 };
@@ -320,21 +311,18 @@ const useBulkDeleteLinks = () => {
       return linkIds;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData?.links) return undefined;
-        return oldData.links.filter((e: any) => !data.includes(e.id));
-      });
-
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
         if (!oldData) return undefined;
         return {
-          pages: oldData.pages.map((page: any) =>
-            page.filter((item: any) => !data.includes(item.id))
-          ),
+          pages: oldData.pages.map((page: any) => ({
+            links: page.links.filter((item: any) => !data.includes(item.id)),
+            nextCursor: page.nextCursor,
+          })),
           pageParams: oldData.pageParams,
         };
       });
 
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
@@ -393,7 +381,13 @@ const useUploadFile = () => {
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
         if (!oldData) return undefined;
         return {
-          pages: [[data, ...oldData?.pages[0]], ...oldData?.pages.slice(1)],
+          pages: [
+            {
+              links: [data, ...oldData?.pages[0].links],
+              nextCursor: oldData?.pages[0].nextCursor,
+            },
+            ...oldData?.pages.slice(1),
+          ],
           pageParams: oldData?.pageParams,
         };
       });
@@ -443,40 +437,12 @@ const useUpdateFile = () => {
 
       return data;
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData?.links) return undefined;
-        return {
-          ...oldData,
-          links: oldData.links.map((e: any) =>
-            e.id === data.response.id
-              ? {
-                  ...e,
-                  preview: `archives/preview/${e.collectionId}/${e.id}.jpeg`,
-                  updatedAt: new Date().toISOString(),
-                }
-              : e
-          ),
-        };
-      });
-
-      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-        if (!oldData) return undefined;
-        return {
-          pages: oldData.pages.map((page: any) =>
-            page.map((item: any) =>
-              item.id === data.response.id
-                ? {
-                    ...item,
-                    preview: `archives/preview/${item.collectionId}/${item.id}.jpeg`,
-                    updatedAt: new Date().toISOString(),
-                  }
-                : item
-            )
-          ),
-          pageParams: oldData.pageParams,
-        };
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
+      queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
     },
   });
 };
@@ -511,27 +477,9 @@ const useBulkEditLinks = () => {
 
       return data.response;
     },
-    onSuccess: (data, { links, newData, removePreviousTags }) => {
-      // TODO: Fix these
-      // queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-      //   if (!oldData?.links) return undefined;
-      //   return oldData.links.map((e: any) =>
-      //     data.find((d: any) => d.id === e.id) ? data : e
-      //   );
-      // });
-      // queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-      //   if (!oldData) return undefined;
-      //   return {
-      //     pages: oldData.pages.map((page: any) => for (item of links) {
-      //       page.map((item: any) => (item.id === data.id ? data : item))
-      //     }
-      //     ),
-      //     pageParams: oldData.pageParams,
-      //   };
-      // });
-      queryClient.invalidateQueries({ queryKey: ["links"] }); // Temporary workaround
-      queryClient.invalidateQueries({ queryKey: ["dashboardData"] }); // Temporary workaround
-
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });

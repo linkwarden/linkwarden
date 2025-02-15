@@ -19,7 +19,7 @@ const handleReadablility = async (
   const articleText = article?.textContent
     .replace(/ +(?= )/g, "") // strip out multiple spaces
     .replace(/(\r\n|\n|\r)/gm, " ") // strip out line breaks
-    .slice(0, 2047);
+    .slice(0, process.env.SLICE_TEXT_CONTENT === "true" ? 10000 : undefined); // limit to 10,000 characters if SLICE_TEXT_CONTENT is true
 
   if (articleText && articleText !== "") {
     const collectionId = (
