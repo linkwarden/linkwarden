@@ -164,3 +164,9 @@ export enum TokenExpiry {
   threeMonths = 3,
   never = 4,
 }
+
+export type ResponseObject<T = any> = {
+  success: boolean;
+  message: string;
+  data: T;
+};
