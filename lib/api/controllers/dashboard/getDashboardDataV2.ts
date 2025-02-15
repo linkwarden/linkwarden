@@ -18,7 +18,7 @@ export default async function getDashboardData(
   query: LinkRequestQuery,
   viewRecent: boolean,
   viewPinned: boolean
-): Promise<Response<any>> {
+) {
   let pinnedTake = 0;
   let recentTake = 0;
 
@@ -68,7 +68,8 @@ export default async function getDashboardData(
         numberOfPinnedLinks,
       },
       message: "Dashboard data fetched successfully.",
-      status: 200,
+      statusCode: 200,
+      success: true,
     };
   }
 
@@ -152,6 +153,7 @@ export default async function getDashboardData(
       numberOfPinnedLinks,
     },
     message: "Dashboard data fetched successfully.",
-    status: 200,
+    statusCode: 200,
+    success: true,
   };
 }
