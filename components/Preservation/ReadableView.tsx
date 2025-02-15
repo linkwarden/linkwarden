@@ -3,7 +3,7 @@ import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import CommentExtension from "@sereneinserenade/tiptap-comment-extension";
+import CommentBase, { CommentExtension } from "@sereneinserenade/tiptap-comment-extension";
 import DOMPurify from "dompurify";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -26,6 +26,7 @@ import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import ListItem from "@tiptap/extension-list-item";
 import { v4 } from "uuid";
+import CommentDisplay from "./CommentDisplay";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -206,6 +207,9 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
         <>
           {linkContent ? (
             <>
+              {editor && (
+                <CommentDisplay editor={editor} link={link} />
+              )}
               {editor && isEditing ? (
                 <div className="w-full reader-view">
                   <MenuBar editor={editor} />
