@@ -258,9 +258,14 @@ export async function startIndexing() {
     }));
 
     const task = await meiliClient.index("links").addDocuments(docs);
-    await meiliClient.index("links").waitForTask(task.taskUid, {
-      timeOutMs: 30000,
-    });
+    await meiliClient
+      .index("links")
+      .waitForTask(task.taskUid, {
+        timeOutMs: 30000,
+      })
+      .catch((err) => {
+        console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
+      });
 
     const ids = links.map((l) => l.id);
     await prisma.link.updateMany({
