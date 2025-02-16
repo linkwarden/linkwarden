@@ -248,7 +248,6 @@ export async function startIndexing() {
 
     const docs = links.map((link) => ({
       ...link,
-      id: 1,
       collectionOwnerId: link.collection.ownerId,
       collectionMemberIds: link.collection.members.map((m) => m.userId),
       collectionName: link.collection.name,
