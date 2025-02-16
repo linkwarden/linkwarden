@@ -216,10 +216,12 @@ export async function startIndexing() {
 
   console.log("\x1b[34m%s\x1b[0m", "Starting link indexing...");
 
+  const INDEX_VERSION = 1;
+
   while (true) {
     const links = await getLinkBatch({
       where: {
-        indexVersion: null,
+        indexVersion: { not: INDEX_VERSION },
         lastPreserved: { not: null },
       },
       take: indexTakeCount,
@@ -261,7 +263,7 @@ export async function startIndexing() {
     const ids = links.map((l) => l.id);
     await prisma.link.updateMany({
       where: { id: { in: ids } },
-      data: { indexVersion: 1 },
+      data: { indexVersion: INDEX_VERSION },
     });
 
     console.log(
