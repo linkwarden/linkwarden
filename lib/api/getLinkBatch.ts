@@ -13,19 +13,28 @@ const getLinkBatch = async <T extends Prisma.LinkFindManyArgs>(
 ): Promise<Array<Prisma.LinkGetPayload<T>>> => {
   const { where = {}, take = 10, orderBy, include } = params;
 
-  const oldToNew = await prisma.link.findMany({
-    where,
-    take,
-    orderBy: orderBy ?? { id: "asc" },
-    include,
-  });
+  let oldToNew: any = [];
 
-  const newToOld = await prisma.link.findMany({
-    where,
-    take,
-    orderBy: orderBy ?? { id: "desc" },
-    include,
-  });
+  const firstTake = Math.floor(take / 2);
+  const secondTake = Math.ceil(take / 2);
+
+  if (firstTake > 0)
+    oldToNew = await prisma.link.findMany({
+      where,
+      take: firstTake,
+      orderBy: orderBy ?? { id: "asc" },
+      include,
+    });
+
+  let newToOld: any = [];
+
+  if (secondTake > 0)
+    newToOld = await prisma.link.findMany({
+      where,
+      take: secondTake,
+      orderBy: orderBy ?? { id: "desc" },
+      include,
+    });
 
   const links = [...oldToNew, ...newToOld]
     // Make sure we don't process the same link twice
