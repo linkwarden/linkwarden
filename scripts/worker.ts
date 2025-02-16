@@ -258,7 +258,9 @@ export async function startIndexing() {
     }));
 
     const task = await meiliClient.index("links").addDocuments(docs);
-    await meiliClient.index("links").waitForTask(task.taskUid);
+    await meiliClient.index("links").waitForTask(task.taskUid, {
+      timeOutMs: 30000,
+    });
 
     const ids = links.map((l) => l.id);
     await prisma.link.updateMany({
