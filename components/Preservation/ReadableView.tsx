@@ -34,29 +34,29 @@ const CommentExtension = CommentBase.extend({
       // This needs fixed
       setCommentContent:
         (commentId: string, content: string) =>
-          ({ state, tr }) => {
-            state.doc.descendants((node, pos) => {
-              node.marks.forEach((mark) => {
-                if (
-                  mark.type.name === 'comment' &&
-                  mark.attrs['data-comment-id'] === commentId
-                ) {
-                  const newAttrs = {
-                    ...mark.attrs,
-                    'data-comment-content': content,
-                  };
-                  tr.addMark(
-                    pos,
-                    pos + node.nodeSize,
-                    mark.type.create(newAttrs)
-                  );
-                }
-              });
-              return true;
+        ({ state, tr }) => {
+          state.doc.descendants((node, pos) => {
+            node.marks.forEach((mark) => {
+              if (
+                mark.type.name === "comment" &&
+                mark.attrs["data-comment-id"] === commentId
+              ) {
+                const newAttrs = {
+                  ...mark.attrs,
+                  "data-comment-content": content,
+                };
+                tr.addMark(
+                  pos,
+                  pos + node.nodeSize,
+                  mark.type.create(newAttrs)
+                );
+              }
             });
-
             return true;
-          }
+          });
+
+          return true;
+        },
     };
   },
 });
@@ -93,7 +93,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
       CommentExtension.configure({
         HTMLAttributes: {
           class: "linkwarden-comment",
-          "data-comment-content": ""
+          "data-comment-content": "",
         },
       }),
     ],
@@ -239,9 +239,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
         <>
           {linkContent ? (
             <>
-              {editor && (
-                <CommentDisplay editor={editor} link={link} />
-              )}
+              {editor && <CommentDisplay editor={editor} link={link} />}
               {editor && isEditing ? (
                 <div className="w-full reader-view">
                   <MenuBar editor={editor} />
@@ -278,7 +276,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
                         onClick={() => {
                           const id = v4();
                           editor.commands.setComment(id);
-                          editor.commands.setCommentContent(id, "")
+                          editor.commands.setCommentContent(id, "");
                         }}
                         className="rounded flex items-center justify-center size-8 hover:bg-base-200 transition"
                       >
