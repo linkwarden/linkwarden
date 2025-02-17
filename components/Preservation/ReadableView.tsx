@@ -15,7 +15,7 @@ import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import usePermissions from "@/hooks/usePermissions";
 import { useUpdateFile } from "@/hooks/store/links";
-import { BubbleMenu, Editor, EditorContent, RawCommands, useEditor } from "@tiptap/react";
+import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import TipTapLink from "@tiptap/extension-link";
@@ -27,14 +27,6 @@ import TaskList from "@tiptap/extension-task-list";
 import ListItem from "@tiptap/extension-list-item";
 import { v4 } from "uuid";
 import CommentDisplay from "./CommentDisplay";
-
-declare module "@tiptap/core" {
-  interface Commands<ReturnType> {
-    extendedComment: {
-      setCommentContent: (commentId: string, content: string) => ReturnType;
-    };
-  }
-}
 
 const CommentExtension = CommentBase.extend({
   addCommands() {
