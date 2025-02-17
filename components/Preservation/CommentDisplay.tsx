@@ -12,7 +12,6 @@ const CommentDisplay = ({ editor, link }: { editor: Editor, link: LinkIncludingS
 		}
 	}>({});
 
-	console.log(editor?.getHTML())
 	const timeoutRef = useRef<{ [key: string]: number }>({});
 
 	useEffect(() => {
@@ -114,19 +113,8 @@ const CommentDisplay = ({ editor, link }: { editor: Editor, link: LinkIncludingS
 			}
 		}));
 
-		editor.commands.focus();
-		editor.state.tr.doc.descendants((node) => {
-			if (node.attrs['data-comment-id'] === commentId) {
-				editor.commands.updateAttributes(node.type.name, { 'data-comment-content': newContent });
-				return false;
-			}
-			return true;
-		})
-
-		const element = document.querySelector(`.linkwarden-comment[data-comment-id="${commentId}"]`);
-		if (element) {
-			element.setAttribute('data-comment-content', newContent);
-		}
+		editor.commands.setCommentContent(commentId, newContent);
+		// update the link content automatically (debounce this)
 	};
 
 	return (

@@ -3,7 +3,7 @@ import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import CommentBase, { CommentExtension } from "@sereneinserenade/tiptap-comment-extension";
+import CommentBase from "@sereneinserenade/tiptap-comment-extension";
 import DOMPurify from "dompurify";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -15,7 +15,7 @@ import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import usePermissions from "@/hooks/usePermissions";
 import { useUpdateFile } from "@/hooks/store/links";
-import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
+import { BubbleMenu, Editor, EditorContent, RawCommands, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import TipTapLink from "@tiptap/extension-link";
@@ -27,6 +27,47 @@ import TaskList from "@tiptap/extension-task-list";
 import ListItem from "@tiptap/extension-list-item";
 import { v4 } from "uuid";
 import CommentDisplay from "./CommentDisplay";
+
+declare module "@tiptap/core" {
+  interface Commands<ReturnType> {
+    extendedComment: {
+      setCommentContent: (commentId: string, content: string) => ReturnType;
+    };
+  }
+}
+
+const CommentExtension = CommentBase.extend({
+  addCommands() {
+    return {
+      // This needs fixed
+      setCommentContent:
+        (commentId: string, content: string) =>
+          ({ state, tr }) => {
+            state.doc.descendants((node, pos) => {
+              node.marks.forEach((mark) => {
+                if (
+                  mark.type.name === 'comment' &&
+                  mark.attrs['data-comment-id'] === commentId
+                ) {
+                  const newAttrs = {
+                    ...mark.attrs,
+                    'data-comment-content': content,
+                  };
+                  tr.addMark(
+                    pos,
+                    pos + node.nodeSize,
+                    mark.type.create(newAttrs)
+                  );
+                }
+              });
+              return true;
+            });
+
+            return true;
+          }
+    };
+  },
+});
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -60,6 +101,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
       CommentExtension.configure({
         HTMLAttributes: {
           class: "linkwarden-comment",
+          "data-comment-content": ""
         },
       }),
     ],
@@ -125,8 +167,6 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
   };
 
   const updateFile = useUpdateFile();
-
-  console.log(editor?.getHTML());
 
   const saveChanges = () => {
     if (!editor) return;
@@ -244,7 +284,9 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
                       </button>
                       <button
                         onClick={() => {
-                          editor.commands.setComment(v4());
+                          const id = v4();
+                          editor.commands.setComment(id);
+                          editor.commands.setCommentContent(id, "")
                         }}
                         className="rounded flex items-center justify-center size-8 hover:bg-base-200 transition"
                       >
