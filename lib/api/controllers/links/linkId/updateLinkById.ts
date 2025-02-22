@@ -178,8 +178,6 @@ export default async function updateLinkById(
       },
     });
 
-    meiliClient?.index("links").deleteDocument(updatedLink.id);
-
     if (collectionIsAccessible?.id !== data.collection.id) {
       await moveFiles(linkId, collectionIsAccessible?.id, data.collection.id);
     }
