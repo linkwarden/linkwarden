@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import { DeleteUserBody } from "@/types/global";
 import removeFile from "@/lib/api/storage/removeFile";
 import updateSeats from "@/lib/api/stripe/updateSeats";
+import { meiliClient } from "@/lib/api/meilisearchClient";
 
 export default async function deleteUserById(
   userId: number,
@@ -117,6 +118,15 @@ export default async function deleteUserById(
           where: { userId: queryId },
         });
 
+        const links = await prisma.link.findMany({
+          where: { collection: { ownerId: queryId } },
+          select: { id: true },
+        });
+
+        const linkIds = links.map((link) => link.id);
+
+        meiliClient?.index("links").deleteDocuments(linkIds);
+
         // Delete links
         await prisma.link.deleteMany({
           where: { collection: { ownerId: queryId } },
@@ -132,19 +142,21 @@ export default async function deleteUserById(
           where: { ownerId: queryId },
         });
 
-        for (const collection of collections) {
-          // Delete related users and collections relations
-          await prisma.usersAndCollections.deleteMany({
-            where: { collectionId: collection.id },
-          });
+        await Promise.all(
+          collections.map(async (collection) => {
+            // Delete related users and collections relations
+            await prisma.usersAndCollections.deleteMany({
+              where: { collectionId: collection.id },
+            });
 
-          // Delete archive folders
-          await removeFolder({ filePath: `archives/${collection.id}` });
+            // Delete archive folders
+            await removeFolder({ filePath: `archives/${collection.id}` });
 
-          await removeFolder({
-            filePath: `archives/preview/${collection.id}`,
-          });
-        }
+            await removeFolder({
+              filePath: `archives/preview/${collection.id}`,
+            });
+          })
+        );
 
         // Delete collections after cleaning up related data
         await prisma.collection.deleteMany({
