@@ -16,11 +16,33 @@ export default async function deleteTagById(userId: number, tagId: number) {
       status: 401,
     };
 
-  const updatedTag = await prisma.tag.delete({
+  const deletedTag = await prisma.tag.delete({
     where: {
       id: tagId,
     },
+    include: {
+      links: {
+        select: {
+          id: true,
+        },
+      },
+    },
   });
 
-  return { response: updatedTag, status: 200 };
+  const { links, ...data } = deletedTag;
+
+  const linkIds = links.map((link) => link.id);
+
+  await prisma.link.updateMany({
+    where: {
+      id: {
+        in: linkIds,
+      },
+    },
+    data: {
+      indexVersion: null,
+    },
+  });
+
+  return { response: data, status: 200 };
 }
