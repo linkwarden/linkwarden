@@ -193,8 +193,15 @@ async function setupLinksIndexSchema() {
     .updateFilterableAttributes([
       "collectionOwnerId",
       "collectionMemberIds",
-      // "collectionName",
-      // "tagNames",
+      "collectionName",
+      "tags",
+      "pinnedBy",
+      "url",
+      "type",
+      "name",
+      "description",
+      "collectionIsPublic",
+      "creationTimestamp",
     ]);
   await meiliClient
     .index("links")
@@ -217,6 +224,8 @@ async function setupLinksIndexSchema() {
     .catch((err) => {
       console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
     });
+
+  // if (process.env.NODE_ENV !== "production") await clearIndexes(); // For development/debugging purposes ONLY! This function clears all the indexes and you'll have to reindex everything...
 }
 
 export async function startIndexing() {
@@ -231,7 +240,7 @@ export async function startIndexing() {
   while (true) {
     const links = await getLinkBatch({
       where: {
-        indexVersion: { not: INDEX_VERSION },
+        OR: [{ indexVersion: { not: INDEX_VERSION } }, { indexVersion: null }],
         lastPreserved: { not: null },
       },
       take: indexTakeCount,
@@ -262,16 +271,20 @@ export async function startIndexing() {
       ...link,
       collectionOwnerId: link.collection.ownerId,
       collectionMemberIds: link.collection.members.map((m) => m.userId),
+      collectionIsPublic: link.collection.isPublic,
       collectionName: link.collection.name,
       tags: link.tags.map((t) => t.name),
       pinnedBy: link.pinnedBy.map((p) => p.id),
+      creationTimestamp: Date.parse(link.createdAt.toISOString()) / 1000,
     }));
+
+    console.log(docs);
 
     const task = await meiliClient.index("links").addDocuments(docs);
     await meiliClient
       .index("links")
       .waitForTask(task.taskUid, {
-        timeOutMs: 100000,
+        timeOutMs: 300000,
       })
       .catch((err) => {
         console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
@@ -283,9 +296,18 @@ export async function startIndexing() {
       data: { indexVersion: INDEX_VERSION },
     });
 
+    const indexesLeft = await prisma.link.count({
+      where: {
+        OR: [{ indexVersion: { not: INDEX_VERSION } }, { indexVersion: null }],
+        lastPreserved: { not: null },
+      },
+    });
+
     console.log(
       "\x1b[34m%s\x1b[0m",
-      `Indexed ${links.length} link${links.length === 1 ? "" : "s"}.`
+      `Indexed ${links.length} link${
+        links.length === 1 ? "" : "s"
+      }, ${indexesLeft} left.`
     );
 
     await delay(archiveIntervalInSeconds);
@@ -300,3 +322,26 @@ async function init() {
 }
 
 init();
+
+const clearIndexes = async () => {
+  console.log("Clearing db indexes...");
+
+  const clearedLinks = await prisma.link.updateMany({
+    where: {},
+    data: {
+      indexVersion: null,
+    },
+  });
+
+  console.log("Cleared db indexes:", clearedLinks);
+
+  if (!meiliClient) return;
+
+  const deleteAllDocuments = await meiliClient
+    .index("links")
+    .deleteAllDocuments();
+
+  await meiliClient.index("links").waitForTask(deleteAllDocuments.taskUid, {
+    timeOutMs: 1000000,
+  });
+};
