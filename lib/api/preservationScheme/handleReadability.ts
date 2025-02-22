@@ -10,6 +10,8 @@ const handleReadability = async (
   link: Link,
   keepContent?: boolean
 ) => {
+  const TEXT_CONTENT_LIMIT = Number(process.env.TEXT_CONTENT_LIMIT);
+
   const window = new JSDOM("").window;
   const purify = DOMPurify(window);
   const cleanedUpContent = purify.sanitize(content);
@@ -19,7 +21,7 @@ const handleReadability = async (
   const articleText = article?.textContent
     .replace(/ +(?= )/g, "") // strip out multiple spaces
     .replace(/(\r\n|\n|\r)/gm, " ") // strip out line breaks
-    .slice(0, process.env.SLICE_TEXT_CONTENT === "true" ? 10000 : undefined); // limit to 10,000 characters if SLICE_TEXT_CONTENT is true
+    .slice(0, TEXT_CONTENT_LIMIT ? TEXT_CONTENT_LIMIT : undefined); // limit characters if TEXT_CONTENT_LIMIT is defined
 
   if (articleText && articleText !== "") {
     const collectionId = (
