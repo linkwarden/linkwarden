@@ -5,7 +5,7 @@ import { prisma } from "../db";
 import createFile from "../storage/createFile";
 import { Link } from "@prisma/client";
 
-const handleReadablility = async (
+const handleReadability = async (
   content: string,
   link: Link,
   keepContent?: boolean
@@ -58,4 +58,4 @@ const handleReadablility = async (
   }
 };
 
-export default handleReadablility;
+export default handleReadability;
