@@ -71,11 +71,14 @@ export function parseSearchTokens(searchQueryString: string): Token[] {
     }
   }
 
+  const tokensWithoutGeneralField = tokens.filter((t) => t.field !== "general");
+
   const SEARCH_QUERY_LIMIT = Number(process.env.SEARCH_QUERY_LIMIT);
 
-  if (SEARCH_QUERY_LIMIT) return tokens.slice(0, SEARCH_QUERY_LIMIT);
+  if (SEARCH_QUERY_LIMIT)
+    return tokensWithoutGeneralField.slice(0, SEARCH_QUERY_LIMIT);
 
-  return tokens;
+  return tokensWithoutGeneralField;
 }
 
 export function buildMeiliQuery(tokens: Token[]): string {
@@ -184,10 +187,7 @@ export function buildMeiliFilters(tokens: Token[], userId: number): string[] {
             : `tags = "${escapeForMeilisearch(value)}"`
         );
         break;
-
-      case "general":
       default:
-        // "general" text is handled by the main query, not by filters
         break;
     }
   }
