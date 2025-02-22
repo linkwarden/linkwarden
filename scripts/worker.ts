@@ -240,8 +240,22 @@ export async function startIndexing() {
   while (true) {
     const links = await getLinkBatch({
       where: {
-        OR: [{ indexVersion: { not: INDEX_VERSION } }, { indexVersion: null }],
-        lastPreserved: { not: null },
+        AND: [
+          {
+            OR: [
+              { indexVersion: { not: INDEX_VERSION } },
+              { indexVersion: null },
+            ],
+          },
+          {
+            OR: [
+              { lastPreserved: { not: null } },
+              {
+                url: null,
+              },
+            ],
+          },
+        ],
       },
       take: indexTakeCount,
       include: {
@@ -276,9 +290,8 @@ export async function startIndexing() {
       tags: link.tags.map((t) => t.name),
       pinnedBy: link.pinnedBy.map((p) => p.id),
       creationTimestamp: Date.parse(link.createdAt.toISOString()) / 1000,
+      indexVersion: INDEX_VERSION,
     }));
-
-    console.log(docs);
 
     const task = await meiliClient.index("links").addDocuments(docs);
     await meiliClient
