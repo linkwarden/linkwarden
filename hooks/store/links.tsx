@@ -138,10 +138,10 @@ const useAddLink = () => {
         return {
           pages: [
             {
-              links: [data, ...oldData?.pages[0].links],
-              nextCursor: oldData?.pages[0].nextCursor,
+              links: [data, ...oldData?.pages?.[0]?.links],
+              nextCursor: oldData?.pages?.[0]?.nextCursor,
             },
-            ...oldData?.pages.slice(1),
+            ...oldData?.pages?.slice(1),
           ],
           pageParams: oldData?.pageParams,
         };
@@ -208,7 +208,7 @@ const useDeleteLink = () => {
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-        if (!oldData) return undefined;
+        if (!oldData?.pages?.[0]) return undefined;
 
         return {
           pages: oldData.pages.map((page: any) => ({
@@ -260,30 +260,30 @@ const useGetLink = () => {
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-        if (!oldData) return undefined;
+        if (!oldData?.pages?.[0]) return undefined;
         return {
           pages: oldData.pages.map((page: any) => ({
             links: page.links.map((item: any) =>
               item.id === data.id ? data : item
             ),
-            nextCursor: page.nextCursor,
+            nextCursor: page?.nextCursor,
           })),
-          pageParams: oldData.pageParams,
+          pageParams: oldData?.pageParams,
         };
       });
 
       queryClient.setQueriesData(
         { queryKey: ["publicLinks"] },
         (oldData: any) => {
-          if (!oldData) return undefined;
+          if (!oldData?.pages?.[0]) return undefined;
           return {
             pages: oldData.pages.map((page: any) => ({
               links: page.links.map((item: any) =>
                 item.id === data.id ? data : item
               ),
-              nextCursor: page.nextCursor,
+              nextCursor: page?.nextCursor,
             })),
-            pageParams: oldData.pageParams,
+            pageParams: oldData?.pageParams,
           };
         }
       );
@@ -383,10 +383,10 @@ const useUploadFile = () => {
         return {
           pages: [
             {
-              links: [data, ...oldData?.pages[0].links],
-              nextCursor: oldData?.pages[0].nextCursor,
+              links: [data, ...oldData?.pages?.[0]?.links],
+              nextCursor: oldData?.pages?.[0].nextCursor,
             },
-            ...oldData?.pages.slice(1),
+            ...oldData?.pages?.slice(1),
           ],
           pageParams: oldData?.pageParams,
         };
