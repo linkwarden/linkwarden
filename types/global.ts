@@ -94,11 +94,6 @@ export type LinkRequestQuery = {
   tagId?: number;
   pinnedOnly?: boolean;
   searchQueryString?: string;
-  searchByName?: boolean;
-  searchByUrl?: boolean;
-  searchByDescription?: boolean;
-  searchByTextContent?: boolean;
-  searchByTags?: boolean;
 };
 
 export type PublicLinkRequestQuery = {
