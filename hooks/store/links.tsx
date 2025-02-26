@@ -30,11 +30,6 @@ const useLinks = (params: LinkRequestQuery = {}) => {
       params.pinnedOnly ??
       (router.pathname === "/links/pinned" ? true : undefined),
     searchQueryString: params.searchQueryString,
-    searchByName: params.searchByName,
-    searchByUrl: params.searchByUrl,
-    searchByDescription: params.searchByDescription,
-    searchByTextContent: params.searchByTextContent,
-    searchByTags: params.searchByTags,
   } as LinkRequestQuery;
 
   const queryString = buildQueryString(queryParamsObject);
