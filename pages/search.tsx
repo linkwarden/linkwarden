@@ -14,14 +14,6 @@ export default function Search() {
 
   const router = useRouter();
 
-  const [searchFilter, setSearchFilter] = useState({
-    name: true,
-    url: true,
-    description: true,
-    tags: true,
-    textContent: false,
-  });
-
   const [viewMode, setViewMode] = useState<ViewMode>(
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
@@ -36,24 +28,9 @@ export default function Search() {
     if (editMode) return setEditMode(false);
   }, [router]);
 
-  // const { isLoading } = useLink({
-  //   sort: sortBy,
-  //   searchQueryString: decodeURIComponent(router.query.q as string),
-  //   searchByName: searchFilter.name,
-  //   searchByUrl: searchFilter.url,
-  //   searchByDescription: searchFilter.description,
-  //   searchByTextContent: searchFilter.textContent,
-  //   searchByTags: searchFilter.tags,
-  // });
-
   const { links, data } = useLinks({
     sort: sortBy,
     searchQueryString: decodeURIComponent(router.query.q as string),
-    searchByName: searchFilter.name,
-    searchByUrl: searchFilter.url,
-    searchByDescription: searchFilter.description,
-    searchByTextContent: searchFilter.textContent,
-    searchByTags: searchFilter.tags,
   });
 
   return (
@@ -61,8 +38,6 @@ export default function Search() {
       <div className="p-5 flex flex-col gap-5 w-full h-full">
         <LinkListOptions
           t={t}
-          searchFilter={searchFilter}
-          setSearchFilter={setSearchFilter}
           viewMode={viewMode}
           setViewMode={setViewMode}
           sortBy={sortBy}

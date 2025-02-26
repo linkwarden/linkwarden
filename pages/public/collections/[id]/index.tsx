@@ -37,19 +37,6 @@ export default function PublicCollections() {
 
   const handleTagSelection = (tag: string | undefined) => {
     if (tag) {
-      Object.keys(searchFilter).forEach(
-        (v) =>
-          (searchFilter[
-            v as keyof {
-              name: boolean;
-              url: boolean;
-              description: boolean;
-              tags: boolean;
-              textContent: boolean;
-            }
-          ] = false)
-      );
-      searchFilter.tags = true;
       return router.push(
         "/public/collections/" +
           router.query.id +
@@ -60,14 +47,6 @@ export default function PublicCollections() {
       return router.push("/public/collections/" + router.query.id);
     }
   };
-
-  const [searchFilter, setSearchFilter] = useState({
-    name: true,
-    url: true,
-    description: true,
-    tags: true,
-    textContent: false,
-  });
 
   const [sortBy, setSortBy] = useState<Sort>(
     Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
@@ -80,11 +59,6 @@ export default function PublicCollections() {
     searchQueryString: router.query.q
       ? decodeURIComponent(router.query.q as string)
       : undefined,
-    searchByName: searchFilter.name,
-    searchByUrl: searchFilter.url,
-    searchByDescription: searchFilter.description,
-    searchByTextContent: searchFilter.textContent,
-    searchByTags: searchFilter.tags,
   });
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>();
@@ -245,8 +219,6 @@ export default function PublicCollections() {
               setViewMode={setViewMode}
               sortBy={sortBy}
               setSortBy={setSortBy}
-              searchFilter={searchFilter}
-              setSearchFilter={setSearchFilter}
             >
               <SearchBar
                 placeholder={

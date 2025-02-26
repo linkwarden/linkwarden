@@ -12,60 +12,41 @@ export default async function getLink(
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
-  else if (query.sort === Sort.DescriptionAZ) order = { description: "asc" };
-  else if (query.sort === Sort.DescriptionZA) order = { description: "desc" };
 
   const searchConditions = [];
 
   if (query.searchQueryString) {
-    if (query.searchByName) {
-      searchConditions.push({
-        name: {
-          contains: query.searchQueryString,
-          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
-        },
-      });
-    }
+    searchConditions.push({
+      name: {
+        contains: query.searchQueryString,
+        mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+      },
+    });
 
-    if (query.searchByUrl) {
-      searchConditions.push({
-        url: {
-          contains: query.searchQueryString,
-          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
-        },
-      });
-    }
+    searchConditions.push({
+      url: {
+        contains: query.searchQueryString,
+        mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+      },
+    });
 
-    if (query.searchByDescription) {
-      searchConditions.push({
-        description: {
-          contains: query.searchQueryString,
-          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
-        },
-      });
-    }
+    searchConditions.push({
+      description: {
+        contains: query.searchQueryString,
+        mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+      },
+    });
 
-    if (query.searchByTextContent) {
-      searchConditions.push({
-        textContent: {
-          contains: query.searchQueryString,
-          mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
-        },
-      });
-    }
-
-    if (query.searchByTags) {
-      searchConditions.push({
-        tags: {
-          some: {
-            name: {
-              contains: query.searchQueryString,
-              mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
-            },
+    searchConditions.push({
+      tags: {
+        some: {
+          name: {
+            contains: query.searchQueryString,
+            mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
           },
         },
-      });
-    }
+      },
+    });
   }
 
   const links = await prisma.link.findMany({

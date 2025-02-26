@@ -260,30 +260,46 @@ const useGetLink = () => {
       });
 
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-        if (!oldData?.pages?.[0]) return undefined;
-        return {
-          pages: oldData.pages.map((page: any) => ({
+        if (!oldData) return undefined;
+
+        const newPages = oldData.pages?.map((page: any) => {
+          if (!page?.links) {
+            return page;
+          }
+
+          return {
+            ...page,
             links: page.links.map((item: any) =>
               item.id === data.id ? data : item
             ),
-            nextCursor: page?.nextCursor,
-          })),
-          pageParams: oldData?.pageParams,
+          };
+        });
+
+        return {
+          ...oldData,
+          pages: newPages,
         };
       });
 
       queryClient.setQueriesData(
         { queryKey: ["publicLinks"] },
         (oldData: any) => {
-          if (!oldData?.pages?.[0]) return undefined;
-          return {
-            pages: oldData.pages.map((page: any) => ({
+          if (!oldData) return undefined;
+          const newPages = oldData.pages?.map((page: any) => {
+            if (!page?.links) {
+              return page;
+            }
+            return {
+              ...page,
               links: page.links.map((item: any) =>
                 item.id === data.id ? data : item
               ),
-              nextCursor: page?.nextCursor,
-            })),
-            pageParams: oldData?.pageParams,
+            };
+          });
+
+          return {
+            ...oldData,
+            pages: newPages,
           };
         }
       );
