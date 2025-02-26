@@ -25,13 +25,6 @@ export default async function search(
       searchQueryString: req.query.searchQueryString
         ? (req.query.searchQueryString as string)
         : undefined,
-      searchByName: req.query.searchByName === "true" ? true : undefined,
-      searchByUrl: req.query.searchByUrl === "true" ? true : undefined,
-      searchByDescription:
-        req.query.searchByDescription === "true" ? true : undefined,
-      searchByTextContent:
-        req.query.searchByTextContent === "true" ? true : undefined,
-      searchByTags: req.query.searchByTags === "true" ? true : undefined,
     };
 
     const { statusCode, ...data } = await searchLinks(user.id, convertedData);
