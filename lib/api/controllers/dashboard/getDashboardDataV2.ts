@@ -36,8 +36,6 @@ export default async function getDashboardData(
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
-  else if (query.sort === Sort.DescriptionAZ) order = { description: "asc" };
-  else if (query.sort === Sort.DescriptionZA) order = { description: "desc" };
 
   const numberOfPinnedLinks = await prisma.link.count({
     where: {

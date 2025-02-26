@@ -1,5 +1,4 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import FilterSearchDropdown from "./FilterSearchDropdown";
 import SortDropdown from "./SortDropdown";
 import ViewDropdown from "./ViewDropdown";
 import { TFunction } from "i18next";
@@ -17,20 +16,6 @@ type Props = {
   t: TFunction<"translation", undefined>;
   viewMode: ViewMode;
   setViewMode: Dispatch<SetStateAction<ViewMode>>;
-  searchFilter?: {
-    name: boolean;
-    url: boolean;
-    description: boolean;
-    tags: boolean;
-    textContent: boolean;
-  };
-  setSearchFilter?: (filter: {
-    name: boolean;
-    url: boolean;
-    description: boolean;
-    tags: boolean;
-    textContent: boolean;
-  }) => void;
   sortBy: Sort;
   setSortBy: Dispatch<SetStateAction<Sort>>;
   editMode?: boolean;
@@ -42,8 +27,6 @@ const LinkListOptions = ({
   t,
   viewMode,
   setViewMode,
-  searchFilter,
-  setSearchFilter,
   sortBy,
   setSortBy,
   editMode,
@@ -122,12 +105,6 @@ const LinkListOptions = ({
                   <i className="bi-pencil-fill text-neutral text-xl"></i>
                 </div>
               )}
-            {searchFilter && setSearchFilter && (
-              <FilterSearchDropdown
-                searchFilter={searchFilter}
-                setSearchFilter={setSearchFilter}
-              />
-            )}
             <SortDropdown
               sortBy={sortBy}
               setSort={(value) => {
