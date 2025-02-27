@@ -1,4 +1,4 @@
-import { LaunchOptions, chromium, devices } from "playwright";
+import { Browser, BrowserContext, BrowserContextOptions, LaunchOptions, chromium, devices } from "playwright";
 import { prisma } from "./db";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { AiTaggingMethod, Collection, Link, User } from "@prisma/client";
@@ -49,14 +49,7 @@ export default async function archiveHandler(link: LinksAndCollectionAndOwner) {
     );
   });
 
-  const browserOptions = getBrowserOptions();
-
-  const browser = await chromium.launch(browserOptions);
-  const context = await browser.newContext({
-    ...devices["Desktop Chrome"],
-    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
-  });
-
+  const { browser, context } = await getBrowser();
   const page = await context.newPage();
 
   createFolder({ filePath: `archives/preview/${link.collectionId}` });
@@ -197,10 +190,33 @@ function getBrowserOptions(): LaunchOptions {
     };
   }
 
-  if (process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH) {
+  if (process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH && !process.env.PLAYWRIGHT_WS_URL) {
     browserOptions.executablePath =
       process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
   }
 
   return browserOptions;
+}
+
+async function getBrowser(): Promise<{ browser: Browser; context: BrowserContext }> {
+  const browserOptions = getBrowserOptions();
+  let browser: Browser;
+  let contextOptions: BrowserContextOptions = {
+    ...devices["Desktop Chrome"],
+    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
+  };
+
+  if (process.env.PLAYWRIGHT_WS_URL) {
+    browser = await chromium.connectOverCDP(process.env.PLAYWRIGHT_WS_URL);
+    contextOptions = {
+      ...contextOptions,
+      ...browserOptions,
+    };
+  } else {
+    browser = await chromium.launch(browserOptions);
+  }
+
+  const context = await browser.newContext(contextOptions);
+
+  return { browser, context };
 }
