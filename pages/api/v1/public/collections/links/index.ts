@@ -1,4 +1,4 @@
-import getPublicLinksUnderCollection from "@/lib/api/controllers/public/links/getPublicLinksUnderCollection";
+import searchLinks from "@/lib/api/controllers/search/searchLinks";
 import { LinkRequestQuery } from "@/types/global";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -28,7 +28,11 @@ export default async function collections(
         .json({ response: "Please choose a valid collection." });
     }
 
-    const links = await getPublicLinksUnderCollection(convertedData);
-    return res.status(links.status).json({ response: links.response });
+    const { statusCode, ...data } = await searchLinks({
+      query: convertedData,
+      publicOnly: true,
+    });
+
+    return res.status(statusCode).json(data);
   }
 }

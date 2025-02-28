@@ -27,7 +27,10 @@ export default async function search(
         : undefined,
     };
 
-    const { statusCode, ...data } = await searchLinks(user.id, convertedData);
+    const { statusCode, ...data } = await searchLinks({
+      userId: user.id,
+      query: convertedData,
+    });
 
     return res.status(statusCode).json(data);
   }

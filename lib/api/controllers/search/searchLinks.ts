@@ -7,10 +7,17 @@ import {
   parseSearchTokens,
 } from "../../searchQueryBuilder";
 
-export default async function searchLinks(
-  userId: number,
-  query: LinkRequestQuery
-) {
+interface SearchLinksParams {
+  query: LinkRequestQuery;
+  userId?: number;
+  publicOnly?: boolean;
+}
+
+export default async function searchLinks({
+  query,
+  userId,
+  publicOnly,
+}: SearchLinksParams) {
   const POSTGRES_IS_ENABLED =
     process.env.DATABASE_URL?.startsWith("postgresql");
 
@@ -32,21 +39,27 @@ export default async function searchLinks(
   }
 
   const collectionCondition = [];
-  if (query.collectionId) {
+  if (query.collectionId || publicOnly) {
     collectionCondition.push({
-      collection: { id: query.collectionId },
+      collection: {
+        id: query.collectionId,
+        ...(publicOnly ? { isPublic: true } : {}),
+      },
     });
   }
 
-  const pinnedCondition = query.pinnedOnly
-    ? { pinnedBy: { some: { id: userId } } }
-    : {};
+  const pinnedCondition =
+    query.pinnedOnly && userId ? { pinnedBy: { some: { id: userId } } } : {};
 
   if (meiliClient && query.searchQueryString) {
     const tokens = parseSearchTokens(query.searchQueryString);
     const meiliQuery = buildMeiliQuery(tokens);
 
-    const meiliFilters = buildMeiliFilters(tokens, userId);
+    const meiliFilters = buildMeiliFilters({
+      tokens,
+      userId,
+      publicOnly,
+    });
 
     const limit = paginationTakeCount;
     const offset = query.cursor || 0;
@@ -83,18 +96,22 @@ export default async function searchLinks(
       where: {
         id: { in: meiliIds },
         AND: [
-          {
-            collection: {
-              OR: [
-                { ownerId: userId },
+          ...(userId
+            ? [
                 {
-                  members: {
-                    some: { userId },
+                  collection: {
+                    OR: [
+                      { ownerId: userId },
+                      {
+                        members: {
+                          some: { userId },
+                        },
+                      },
+                    ],
                   },
                 },
-              ],
-            },
-          },
+              ]
+            : []),
           ...collectionCondition,
           {
             OR: [
@@ -109,10 +126,12 @@ export default async function searchLinks(
       include: {
         tags: true,
         collection: true,
-        pinnedBy: {
-          where: { id: userId },
-          select: { id: true },
-        },
+        pinnedBy: userId
+          ? {
+              where: { id: userId },
+              select: { id: true },
+            }
+          : undefined,
       },
       orderBy: order,
     });
@@ -162,20 +181,6 @@ export default async function searchLinks(
             contains: query.searchQueryString,
             mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
           },
-          OR: [
-            { ownerId: userId },
-            {
-              links: {
-                some: {
-                  collection: {
-                    members: {
-                      some: { userId },
-                    },
-                  },
-                },
-              },
-            },
-          ],
         },
       },
     });
@@ -187,18 +192,22 @@ export default async function searchLinks(
     cursor: query.cursor ? { id: query.cursor } : undefined,
     where: {
       AND: [
-        {
-          collection: {
-            OR: [
-              { ownerId: userId },
+        ...(userId
+          ? [
               {
-                members: {
-                  some: { userId },
+                collection: {
+                  OR: [
+                    { ownerId: userId },
+                    {
+                      members: {
+                        some: { userId },
+                      },
+                    },
+                  ],
                 },
               },
-            ],
-          },
-        },
+            ]
+          : []),
         ...collectionCondition,
         {
           OR: [
@@ -216,10 +225,12 @@ export default async function searchLinks(
     include: {
       tags: true,
       collection: true,
-      pinnedBy: {
-        where: { id: userId },
-        select: { id: true },
-      },
+      pinnedBy: userId
+        ? {
+            where: { id: userId },
+            select: { id: true },
+          }
+        : undefined,
     },
     orderBy: order,
   });
