@@ -90,10 +90,18 @@ export function buildMeiliQuery(tokens: Token[]): string {
   return generalValues.join(" ");
 }
 
-export function buildMeiliFilters(tokens: Token[], userId: number): string[] {
-  const filters: string[] = [
-    `(collectionOwnerId = ${userId}) OR (collectionMemberIds = ${userId})`,
-  ];
+export function buildMeiliFilters({
+  tokens,
+  userId,
+  publicOnly,
+}: {
+  tokens: Token[];
+  userId?: number;
+  publicOnly?: boolean;
+}): string[] {
+  const filters: string[] = publicOnly
+    ? ["collectionIsPublic = true"]
+    : [`(collectionOwnerId = ${userId}) OR (collectionMemberIds = ${userId})`];
 
   for (const { field, value, isNegative } of tokens) {
     switch (field) {
