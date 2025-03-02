@@ -185,7 +185,7 @@ export default function CollectionCard({
                 )}
                 <i
                   className="bi-link-45deg text-lg text-neutral"
-                  title={t("collection_publicly_shared")}
+                  title={t("links")}
                 ></i>
                 {collection._count && collection._count.links}
               </div>
