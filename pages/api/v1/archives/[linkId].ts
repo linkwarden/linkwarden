@@ -292,7 +292,6 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
             ? `archives/${collectionPermissions.id}/${linkId + suffix}`
             : undefined,
           contentEdited: isReadable ? new Date().toISOString() : undefined,
-          lastPreserved: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
       });

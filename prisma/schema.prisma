@@ -171,6 +171,7 @@ model Link {
   monolith      String?
   contentEdited DateTime?
   aiTagged      Boolean    @default(false)
+  indexVersion  Int?
   lastPreserved DateTime?
   importDate    DateTime?
   createdAt     DateTime   @default(now())

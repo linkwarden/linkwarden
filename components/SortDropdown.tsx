@@ -111,48 +111,6 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
             <span className="label-text whitespace-nowrap">{t("name_za")}</span>
           </label>
         </li>
-        <li>
-          <label
-            className="label cursor-pointer flex justify-start"
-            tabIndex={0}
-            role="button"
-          >
-            <input
-              type="radio"
-              name="sort-radio"
-              className="radio checked:bg-primary"
-              checked={sortBy === Sort.DescriptionAZ}
-              onChange={() => {
-                resetInfiniteQueryPagination(queryClient, ["links"]);
-                setSort(Sort.DescriptionAZ);
-              }}
-            />
-            <span className="label-text whitespace-nowrap">
-              {t("description_az")}
-            </span>
-          </label>
-        </li>
-        <li>
-          <label
-            className="label cursor-pointer flex justify-start"
-            tabIndex={0}
-            role="button"
-          >
-            <input
-              type="radio"
-              name="sort-radio"
-              className="radio checked:bg-primary"
-              checked={sortBy === Sort.DescriptionZA}
-              onChange={() => {
-                resetInfiniteQueryPagination(queryClient, ["links"]);
-                setSort(Sort.DescriptionZA);
-              }}
-            />
-            <span className="label-text whitespace-nowrap">
-              {t("description_za")}
-            </span>
-          </label>
-        </li>
       </ul>
     </div>
   );

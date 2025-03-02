@@ -75,7 +75,7 @@ export default function Dashboard() {
     } else {
       return 100;
     }
-  }, []);
+  }, [account.dashboardRecentLinks, account.dashboardPinnedLinks]);
 
   const [newLinkModal, setNewLinkModal] = useState(false);
 

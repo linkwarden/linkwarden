@@ -18,7 +18,7 @@ export default async function getDashboardData(
   query: LinkRequestQuery,
   viewRecent: boolean,
   viewPinned: boolean
-): Promise<Response<any>> {
+) {
   let pinnedTake = 0;
   let recentTake = 0;
 
@@ -36,8 +36,6 @@ export default async function getDashboardData(
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
-  else if (query.sort === Sort.DescriptionAZ) order = { description: "asc" };
-  else if (query.sort === Sort.DescriptionZA) order = { description: "desc" };
 
   const numberOfPinnedLinks = await prisma.link.count({
     where: {
@@ -68,7 +66,8 @@ export default async function getDashboardData(
         numberOfPinnedLinks,
       },
       message: "Dashboard data fetched successfully.",
-      status: 200,
+      statusCode: 200,
+      success: true,
     };
   }
 
@@ -152,6 +151,7 @@ export default async function getDashboardData(
       numberOfPinnedLinks,
     },
     message: "Dashboard data fetched successfully.",
-    status: 200,
+    statusCode: 200,
+    success: true,
   };
 }
