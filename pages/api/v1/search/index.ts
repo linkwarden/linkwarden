@@ -1,11 +1,15 @@
+import type { NextApiRequest, NextApiResponse } from "next";
 import searchLinks from "@/lib/api/controllers/search/searchLinks";
 import { LinkRequestQuery } from "@/types/global";
-import type { NextApiRequest, NextApiResponse } from "next";
+import verifyUser from "@/lib/api/verifyUser";
 
-export default async function collections(
+export default async function search(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const user = await verifyUser({ req, res });
+  if (!user) return;
+
   if (req.method === "GET") {
     // Convert the type of the request query to "LinkRequestQuery"
     const convertedData: LinkRequestQuery = {
@@ -14,6 +18,7 @@ export default async function collections(
       collectionId: req.query.collectionId
         ? Number(req.query.collectionId as string)
         : undefined,
+      tagId: req.query.tagId ? Number(req.query.tagId as string) : undefined,
       pinnedOnly: req.query.pinnedOnly
         ? req.query.pinnedOnly === "true"
         : undefined,
@@ -22,15 +27,9 @@ export default async function collections(
         : undefined,
     };
 
-    if (!convertedData.collectionId) {
-      return res
-        .status(400)
-        .json({ response: "Please choose a valid collection." });
-    }
-
     const { statusCode, ...data } = await searchLinks({
+      userId: user.id,
       query: convertedData,
-      publicOnly: true,
     });
 
     return res.status(statusCode).json(data);
