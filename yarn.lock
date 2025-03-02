@@ -7,7 +7,7 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@ai-sdk/anthropic@^1.1.5":
+"@ai-sdk/anthropic@1.1.5":
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/@ai-sdk/anthropic/-/anthropic-1.1.5.tgz#da60ac5655bf9e1d9ad5abcacf99d7c98ae695fb"
   integrity sha512-HGs69t2dsHlt+c4nCeUcdx5ojXs25dH8xly88TZZoyjfiCRWjmyjQxiPHZL2ME864a+vEpQSmvn8DgvMFA4p2g==
@@ -15,7 +15,16 @@
     "@ai-sdk/provider" "1.0.6"
     "@ai-sdk/provider-utils" "2.1.5"
 
-"@ai-sdk/openai@^1.1.5":
+"@ai-sdk/azure@1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@ai-sdk/azure/-/azure-1.1.5.tgz#848fc26cb798174c7f95f2e393d4f68b887a9237"
+  integrity sha512-aQEch9BKzWArzBFhEmf1bjIw1SDAcO4foHJR+obKts4bkREAb6cu3jeRCtTlt+Tl2zAnTEGZk16j/ufS01SRMw==
+  dependencies:
+    "@ai-sdk/openai" "1.1.5"
+    "@ai-sdk/provider" "1.0.6"
+    "@ai-sdk/provider-utils" "2.1.5"
+
+"@ai-sdk/openai@1.1.5":
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/@ai-sdk/openai/-/openai-1.1.5.tgz#6d03802e8368b4be528fd51db32aa2e663724b13"
   integrity sha512-pmZPeb99oWlV3PqMH5DVWtMGZgwWznInjdF0Bi4q1mKoEjomDXSYw+imvzMoSbpCrcGB9uFFTVx2VeR/jvcppg==

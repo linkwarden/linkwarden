@@ -5,9 +5,9 @@ import {
   predefinedTagsPrompt,
 } from "./prompts";
 import { prisma } from "./db";
-import { generateObject } from "ai";
+import { generateObject, LanguageModelV1 } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { azure } from '@ai-sdk/azure';
+import { azure } from "@ai-sdk/azure";
 import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createOllama } from "ollama-ai-provider";
@@ -17,10 +17,14 @@ import { titleCase } from "../shared/utils";
 const ensureValidURL = (base: string, path: string) =>
   `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
-const getAIModel = () => {
+const getAIModel = (): LanguageModelV1 => {
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL)
     return openai(process.env.OPENAI_MODEL);
-  if (process.env.AZURE_API_KEY && process.env.AZURE_RESOURCE_NAME && process.env.AZURE_MODEL)
+  if (
+    process.env.AZURE_API_KEY &&
+    process.env.AZURE_RESOURCE_NAME &&
+    process.env.AZURE_MODEL
+  )
     return azure(process.env.AZURE_MODEL);
   if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL)
     return anthropic(process.env.ANTHROPIC_MODEL);
