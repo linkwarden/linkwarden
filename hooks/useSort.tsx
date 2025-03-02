@@ -26,16 +26,8 @@ export default function useSort<
 
     if (sortBy === Sort.NameAZ)
       setData(dataArray.sort((a, b) => a.name.localeCompare(b.name)));
-    else if (sortBy === Sort.DescriptionAZ)
-      setData(
-        dataArray.sort((a, b) => a.description.localeCompare(b.description))
-      );
     else if (sortBy === Sort.NameZA)
       setData(dataArray.sort((a, b) => b.name.localeCompare(a.name)));
-    else if (sortBy === Sort.DescriptionZA)
-      setData(
-        dataArray.sort((a, b) => b.description.localeCompare(a.description))
-      );
     else if (sortBy === Sort.DateNewestFirst)
       setData(
         dataArray.sort(

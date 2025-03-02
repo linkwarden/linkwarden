@@ -73,6 +73,7 @@
     "jsdom": "^22.1.0",
     "jszip": "^3.10.1",
     "lottie-web": "^5.12.2",
+    "meilisearch": "^0.48.2",
     "micro": "^10.0.1",
     "next": "13.4.12",
     "next-auth": "^4.22.1",

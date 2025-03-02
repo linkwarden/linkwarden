@@ -7,6 +7,7 @@ import {
   UpdateLinkSchema,
   UpdateLinkSchemaType,
 } from "@/lib/shared/schemaValidation";
+import { meiliClient } from "@/lib/api/meilisearchClient";
 
 export default async function updateLinkById(
   userId: number,
@@ -134,6 +135,7 @@ export default async function updateLinkById(
         readable: oldLink?.url !== data.url ? null : undefined,
         monolith: oldLink?.url !== data.url ? null : undefined,
         preview: oldLink?.url !== data.url ? null : undefined,
+        indexVersion: null,
         collection: {
           connect: {
             id: data.collection.id,

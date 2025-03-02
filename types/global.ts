@@ -83,8 +83,6 @@ export enum Sort {
   DateOldestFirst = 1,
   NameAZ = 2,
   NameZA = 3,
-  DescriptionAZ = 4,
-  DescriptionZA = 5,
 }
 
 export type Order = { [key: string]: "asc" | "desc" };
@@ -96,11 +94,6 @@ export type LinkRequestQuery = {
   tagId?: number;
   pinnedOnly?: boolean;
   searchQueryString?: string;
-  searchByName?: boolean;
-  searchByUrl?: boolean;
-  searchByDescription?: boolean;
-  searchByTextContent?: boolean;
-  searchByTags?: boolean;
 };
 
 export type PublicLinkRequestQuery = {
@@ -164,3 +157,9 @@ export enum TokenExpiry {
   threeMonths = 3,
   never = 4,
 }
+
+export type ResponseObject<T = any> = {
+  success: boolean;
+  message: string;
+  data: T;
+};

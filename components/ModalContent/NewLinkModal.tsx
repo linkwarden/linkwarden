@@ -46,8 +46,10 @@ export default function NewLinkModal({ onClose }: Props) {
     });
   };
 
-  const setTags = (e: any) => {
-    const tagNames = e.map((e: any) => ({ name: e.label }));
+  const setTags = (selectedOptions: any = []) => {
+    const tagNames = selectedOptions.map((option: any) => ({
+      name: option.label,
+    }));
     setLink({ ...link, tags: tagNames });
   };
 
@@ -138,10 +140,12 @@ export default function NewLinkModal({ onClose }: Props) {
                 <p className="mb-2">{t("tags")}</p>
                 <TagSelection
                   onChange={setTags}
-                  defaultValue={link.tags?.map((e) => ({
-                    label: e.name,
-                    value: e.id,
-                  }))}
+                  defaultValue={
+                    link.tags?.map((e) => ({
+                      label: e.name,
+                      value: e.id,
+                    })) || []
+                  }
                 />
               </div>
               <div className="sm:col-span-2">

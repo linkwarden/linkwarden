@@ -54,3 +54,6 @@ certificates
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# meilisearch
+data.ms

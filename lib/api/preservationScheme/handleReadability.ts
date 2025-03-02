@@ -5,11 +5,13 @@ import { prisma } from "../db";
 import createFile from "../storage/createFile";
 import { Link } from "@prisma/client";
 
-const handleReadablility = async (
+const handleReadability = async (
   content: string,
   link: Link,
   keepContent?: boolean
 ) => {
+  const TEXT_CONTENT_LIMIT = Number(process.env.TEXT_CONTENT_LIMIT);
+
   const window = new JSDOM("").window;
   const purify = DOMPurify(window);
   const cleanedUpContent = purify.sanitize(content);
@@ -19,7 +21,7 @@ const handleReadablility = async (
   const articleText = article?.textContent
     .replace(/ +(?= )/g, "") // strip out multiple spaces
     .replace(/(\r\n|\n|\r)/gm, " ") // strip out line breaks
-    .slice(0, 2047);
+    .slice(0, TEXT_CONTENT_LIMIT ? TEXT_CONTENT_LIMIT : undefined); // limit characters if TEXT_CONTENT_LIMIT is defined
 
   if (articleText && articleText !== "") {
     const collectionId = (
@@ -58,4 +60,4 @@ const handleReadablility = async (
   }
 };
 
-export default handleReadablility;
+export default handleReadability;
