@@ -19,11 +19,11 @@ const Index = () => {
       {getLink.data ? (
         <LinkDetails
           activeLink={getLink.data}
-          className="sm:w-[80vw] sm:h-[80vh] sm:m-auto w-screen"
+          className="sm:max-w-xl sm:m-auto sm:p-5 w-full"
           standalone
         />
       ) : (
-        <div className="sm:max-w-3xl p-5 m-auto w-full flex flex-col items-center gap-5">
+        <div className="max-w-xl p-5 m-auto w-full flex flex-col items-center gap-5">
           <div className="w-20 h-20 skeleton rounded-xl"></div>
           <div className="w-full h-10 skeleton rounded-xl"></div>
           <div className="w-full h-10 skeleton rounded-xl"></div>
