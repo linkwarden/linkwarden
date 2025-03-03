@@ -74,8 +74,14 @@ const CommentDisplay = ({
   const attachEventListeners = useCallback(() => {
     const oldElements = document.querySelectorAll(".linkwarden-comment");
     oldElements.forEach((element) => {
-      element.removeEventListener("mouseenter", handleMouseEnter as EventListener);
-      element.removeEventListener("mouseleave", handleMouseLeave as EventListener);
+      element.removeEventListener(
+        "mouseenter",
+        handleMouseEnter as EventListener
+      );
+      element.removeEventListener(
+        "mouseleave",
+        handleMouseLeave as EventListener
+      );
     });
 
     const commentElements = document.querySelectorAll(".linkwarden-comment");
@@ -116,10 +122,10 @@ const CommentDisplay = ({
       setTimeout(attachEventListeners, 100);
     };
 
-    editor.on('update', handleUpdate);
+    editor.on("update", handleUpdate);
 
     return () => {
-      editor.off('update', handleUpdate);
+      editor.off("update", handleUpdate);
     };
   }, [editor, attachEventListeners]);
 
@@ -151,49 +157,58 @@ const CommentDisplay = ({
     }, 300);
   };
 
-  const debouncedUpdateContent = useCallback((html: string) => {
-    if (debounceTimeoutRef.current) {
-      window.clearTimeout(debounceTimeoutRef.current);
-    }
+  const debouncedUpdateContent = useCallback(
+    (html: string) => {
+      if (debounceTimeoutRef.current) {
+        window.clearTimeout(debounceTimeoutRef.current);
+      }
 
-    debounceTimeoutRef.current = window.setTimeout(() => {
-      setLinkContent(html);
-      updateFile.mutate({
-        linkId: link.id as number,
-        file: new File([html], "updatedContent.txt", {
-          type: "text/plain",
-        }),
-      });
-      debounceTimeoutRef.current = null;
+      debounceTimeoutRef.current = window.setTimeout(() => {
+        setLinkContent(html);
+        updateFile.mutate({
+          linkId: link.id as number,
+          file: new File([html], "updatedContent.txt", {
+            type: "text/plain",
+          }),
+        });
+        debounceTimeoutRef.current = null;
 
-      setTimeout(attachEventListeners, 150);
-    }, 1000);
-  }, [setLinkContent, updateFile, link.id, attachEventListeners]);
+        setTimeout(attachEventListeners, 150);
+      }, 1000);
+    },
+    [setLinkContent, updateFile, link.id, attachEventListeners]
+  );
 
-  const handleCommentChange = useCallback((commentId: string, newContent: string) => {
-    setComments((prev) => ({
-      ...prev,
-      [commentId]: {
-        ...prev[commentId],
-        content: newContent,
-      },
-    }));
+  const handleCommentChange = useCallback(
+    (commentId: string, newContent: string) => {
+      setComments((prev) => ({
+        ...prev,
+        [commentId]: {
+          ...prev[commentId],
+          content: newContent,
+        },
+      }));
 
-    editor.commands.setCommentContent(commentId, newContent);
+      editor.commands.setCommentContent(commentId, newContent);
 
-    const updatedHTML = DOMPurify.sanitize(editor.getHTML());
-    debouncedUpdateContent(updatedHTML);
-
-  }, [editor, debouncedUpdateContent, attachEventListeners]);
+      const updatedHTML = DOMPurify.sanitize(editor.getHTML());
+      debouncedUpdateContent(updatedHTML);
+    },
+    [editor, debouncedUpdateContent, attachEventListeners]
+  );
 
   const handleDeleteComment = (commentId: string) => {
-    setComments((prev) => Object.fromEntries(Object.entries(prev).filter(([key]) => key !== commentId)));
+    setComments((prev) =>
+      Object.fromEntries(
+        Object.entries(prev).filter(([key]) => key !== commentId)
+      )
+    );
     editor.commands.unsetComment(commentId);
     const updatedHTML = DOMPurify.sanitize(editor.getHTML());
 
     setLinkContent(updatedHTML);
     debouncedUpdateContent(updatedHTML);
-  }
+  };
 
   return (
     <>
