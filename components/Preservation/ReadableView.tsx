@@ -13,17 +13,6 @@ import isValidUrl from "@/lib/shared/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import usePermissions from "@/hooks/usePermissions";
-import { useUpdateFile } from "@/hooks/store/links";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
-import TipTapLink from "@tiptap/extension-link";
-import Highlight from "@tiptap/extension-highlight";
-import TextAlign from "@tiptap/extension-text-align";
-import MenuBar from "../Editor/MenuBar";
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
-import ListItem from "@tiptap/extension-list-item";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -35,40 +24,6 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
   const { t } = useTranslation();
   const [linkContent, setLinkContent] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-
-  const editor = useEditor({
-    extensions: [
-      TaskList,
-      TaskItem.configure({
-        nested: true,
-      }),
-      StarterKit,
-      Image,
-      ListItem,
-      Highlight,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-      TipTapLink.configure({
-        openOnClick: false,
-      }),
-    ],
-    immediatelyRender: false,
-    content: linkContent || "<p></p>",
-    editable: false,
-    editorProps: {
-      attributes: {
-        class: clsx(
-          "rounded-md focus:outline-none border-neutral-content focus:border-primary border-solid border p-3 overflow-auto duration-100",
-          isExpanded
-            ? "h-[calc(100vh-7.25rem)]"
-            : standalone
-              ? "h-[calc(100vh-10.75rem)]"
-              : "h-[calc(80vh-10.75rem)]"
-        ),
-      },
-    },
-  });
 
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public");
@@ -87,48 +42,6 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
 
     fetchLinkContent();
   }, [link]);
-
-  useEffect(() => {
-    if (editor) {
-      editor.setEditable(isEditing);
-    }
-  }, [isEditing, editor]);
-
-  useEffect(() => {
-    if (!isEditing && linkContent && editor) {
-      editor.commands.setContent(linkContent, false);
-    }
-  }, [linkContent, isEditing, editor]);
-
-  const startEditing = () => {
-    if (linkContent && editor) {
-      editor.commands.setContent(linkContent, false);
-    }
-    setIsEditing(true);
-  };
-
-  const cancelEditing = () => {
-    if (editor) {
-      editor.commands.setContent(linkContent, false);
-    }
-    setIsEditing(false);
-  };
-
-  const updateFile = useUpdateFile();
-
-  const saveChanges = () => {
-    if (!editor) return;
-
-    const updatedHTML = DOMPurify.sanitize(editor.getHTML());
-    setLinkContent(updatedHTML);
-
-    updateFile.mutate({
-      linkId: link.id as number,
-      file: new File([updatedHTML], "updatedContent.txt", {
-        type: "text/plain",
-      }),
-    });
-  };
 
   return (
     <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200">
@@ -158,68 +71,25 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
 
       <div className="text-sm text-neutral flex justify-between w-full gap-2">
         <LinkDate link={link} />
-        {!isPublicRoute && (permissions === true || permissions?.canUpdate) && (
-          <>
-            {!isEditing && linkContent ? (
-              <button
-                className="flex items-center gap-2 btn btn-ghost btn-sm"
-                onClick={startEditing}
-              >
-                <i className="bi-pencil" />
-                {t("edit")}
-              </button>
-            ) : linkContent ? (
-              <div
-                className={clsx(
-                  "flex items-center gap-2",
-                  isExpanded && "mr-10"
-                )}
-              >
-                <button
-                  className="flex items-center gap-2 btn btn-ghost btn-square btn-sm"
-                  onClick={cancelEditing}
-                >
-                  <i className="bi-x text-xl" />
-                </button>
-                <button
-                  className="flex items-center gap-2 btn btn-primary btn-square btn-sm"
-                  onClick={() => {
-                    saveChanges();
-                    setIsEditing(false);
-                  }}
-                >
-                  <i className="bi-check2 text-xl" />
-                </button>
-              </div>
-            ) : null}
-          </>
-        )}
       </div>
 
       {link?.readable?.startsWith("archives") ? (
         <>
           {linkContent ? (
             <>
-              {editor && isEditing ? (
-                <div className="w-full reader-view">
-                  <MenuBar editor={editor} />
-                  <EditorContent editor={editor} />
-                </div>
-              ) : (
+              <div
+                className={clsx(
+                  "p-3 rounded-md w-full",
+                  linkContent && "bg-base-200"
+                )}
+              >
                 <div
-                  className={clsx(
-                    "p-3 rounded-md w-full",
-                    linkContent && "bg-base-200"
-                  )}
-                >
-                  <div
-                    className="line-break px-1 reader-view read-only"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(linkContent),
-                    }}
-                  />
-                </div>
-              )}
+                  className="line-break px-1 reader-view read-only"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(linkContent),
+                  }}
+                />
+              </div>
             </>
           ) : (
             <div className="p-5 m-auto w-full flex flex-col items-center gap-5">
