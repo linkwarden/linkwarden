@@ -2,7 +2,7 @@ import { Commands } from "@tiptap/core";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    extendedComment: {
+    extendedCommentExtension: {
       setCommentContent: (commentId: string, content: string) => ReturnType;
     };
   }

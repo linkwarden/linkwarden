@@ -29,34 +29,58 @@ import { v4 } from "uuid";
 import CommentDisplay from "./CommentDisplay";
 
 const CommentExtension = CommentBase.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      commentContent: {
+        default: null,
+        parseHTML: (el) =>
+          (el as HTMLSpanElement).getAttribute("data-comment-content"),
+        renderHTML: (attrs) => ({
+          "data-comment-content": attrs.commentContent,
+        }),
+      },
+    };
+  },
   addCommands() {
     return {
-      // This needs fixed
+      ...this.parent?.(),
       setCommentContent:
         (commentId: string, content: string) =>
-        ({ state, tr }) => {
-          state.doc.descendants((node, pos) => {
-            node.marks.forEach((mark) => {
-              if (
-                mark.type.name === "comment" &&
-                mark.attrs["data-comment-id"] === commentId
-              ) {
-                const newAttrs = {
-                  ...mark.attrs,
-                  "data-comment-content": content,
-                };
-                tr.addMark(
-                  pos,
-                  pos + node.nodeSize,
-                  mark.type.create(newAttrs)
-                );
-              }
-            });
-            return true;
-          });
+          ({ state, tr, dispatch }) => {
+            let didUpdate = false;
 
-          return true;
-        },
+            state.doc.descendants((node, pos) => {
+              node.marks.forEach((mark) => {
+                if (
+                  mark.type.name === "comment" &&
+                  mark.attrs.commentId === commentId
+                ) {
+                  console.log("Comment found:", mark);
+                  const from = pos;
+                  const to = pos + node.nodeSize;
+
+                  const newAttrs = {
+                    ...mark.attrs,
+                    commentContent: content,
+                  };
+
+                  const newMark = mark.type.create(newAttrs);
+                  tr.removeMark(from, to, mark.type);
+                  tr.addMark(from, to, newMark);
+
+                  didUpdate = true;
+                }
+              });
+              return true;
+            });
+
+            if (didUpdate && dispatch) {
+              dispatch(tr);
+            }
+
+            return didUpdate;
+          }
     };
   },
 });
@@ -93,7 +117,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
       CommentExtension.configure({
         HTMLAttributes: {
           class: "linkwarden-comment",
-          "data-comment-content": "",
+          "data-comment-content": "ddd",
         },
       }),
     ],
@@ -239,7 +263,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
         <>
           {linkContent ? (
             <>
-              {editor && <CommentDisplay editor={editor} link={link} />}
+              {editor && <CommentDisplay editor={editor} setLinkContent={setLinkContent} link={link} />}
               {editor && isEditing ? (
                 <div className="w-full reader-view">
                   <MenuBar editor={editor} />
@@ -275,8 +299,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
                       <button
                         onClick={() => {
                           const id = v4();
-                          editor.commands.setComment(id);
-                          editor.commands.setCommentContent(id, "");
+                          editor.commands.setComment(id)
                         }}
                         className="rounded flex items-center justify-center size-8 hover:bg-base-200 transition"
                       >
