@@ -179,23 +179,20 @@ const CommentDisplay = ({
     [setLinkContent, updateFile, link.id, attachEventListeners]
   );
 
-  const handleCommentChange = useCallback(
-    (commentId: string, newContent: string) => {
-      setComments((prev) => ({
-        ...prev,
-        [commentId]: {
-          ...prev[commentId],
-          content: newContent,
-        },
-      }));
+  const handleCommentChange = (commentId: string, newContent: string) => {
+    setComments((prev) => ({
+      ...prev,
+      [commentId]: {
+        ...prev[commentId],
+        content: newContent,
+      },
+    }));
 
-      editor.commands.setCommentContent(commentId, newContent);
+    editor.commands.setCommentContent(commentId, newContent);
 
-      const updatedHTML = DOMPurify.sanitize(editor.getHTML());
-      debouncedUpdateContent(updatedHTML);
-    },
-    [editor, debouncedUpdateContent, attachEventListeners]
-  );
+    const updatedHTML = DOMPurify.sanitize(editor.getHTML());
+    debouncedUpdateContent(updatedHTML);
+  }
 
   const handleDeleteComment = (commentId: string) => {
     setComments((prev) =>
@@ -207,7 +204,13 @@ const CommentDisplay = ({
     const updatedHTML = DOMPurify.sanitize(editor.getHTML());
 
     setLinkContent(updatedHTML);
-    debouncedUpdateContent(updatedHTML);
+
+    updateFile.mutate({
+      linkId: link.id as number,
+      file: new File([updatedHTML], "updatedContent.txt", {
+        type: "text/plain",
+      }),
+    });
   };
 
   return (
