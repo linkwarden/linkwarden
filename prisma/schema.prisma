@@ -169,7 +169,6 @@ model Link {
   pdf           String?
   readable      String?
   monolith      String?
-  contentEdited DateTime?
   aiTagged      Boolean    @default(false)
   indexVersion  Int?
   lastPreserved DateTime?
