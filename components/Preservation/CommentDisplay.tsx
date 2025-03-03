@@ -192,7 +192,7 @@ const CommentDisplay = ({
 
     const updatedHTML = DOMPurify.sanitize(editor.getHTML());
     debouncedUpdateContent(updatedHTML);
-  }
+  };
 
   const handleDeleteComment = (commentId: string) => {
     setComments((prev) =>

@@ -47,39 +47,39 @@ const CommentExtension = CommentBase.extend({
       ...this.parent?.(),
       setCommentContent:
         (commentId: string, content: string) =>
-          ({ state, tr, dispatch }) => {
-            let didUpdate = false;
+        ({ state, tr, dispatch }) => {
+          let didUpdate = false;
 
-            state.doc.descendants((node, pos) => {
-              node.marks.forEach((mark) => {
-                if (
-                  mark.type.name === "comment" &&
-                  mark.attrs.commentId === commentId
-                ) {
-                  const from = pos;
-                  const to = pos + node.nodeSize;
+          state.doc.descendants((node, pos) => {
+            node.marks.forEach((mark) => {
+              if (
+                mark.type.name === "comment" &&
+                mark.attrs.commentId === commentId
+              ) {
+                const from = pos;
+                const to = pos + node.nodeSize;
 
-                  const newAttrs = {
-                    ...mark.attrs,
-                    commentContent: content,
-                  };
+                const newAttrs = {
+                  ...mark.attrs,
+                  commentContent: content,
+                };
 
-                  const newMark = mark.type.create(newAttrs);
-                  tr.removeMark(from, to, mark.type);
-                  tr.addMark(from, to, newMark);
+                const newMark = mark.type.create(newAttrs);
+                tr.removeMark(from, to, mark.type);
+                tr.addMark(from, to, newMark);
 
-                  didUpdate = true;
-                }
-              });
-              return true;
+                didUpdate = true;
+              }
             });
+            return true;
+          });
 
-            if (didUpdate && dispatch) {
-              dispatch(tr);
-            }
+          if (didUpdate && dispatch) {
+            dispatch(tr);
+          }
 
-            return didUpdate;
-          },
+          return didUpdate;
+        },
     };
   },
 });
@@ -115,7 +115,7 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
       }),
       CommentExtension.configure({
         HTMLAttributes: {
-          class: "linkwarden-comment"
+          class: "linkwarden-comment",
         },
       }),
     ],
