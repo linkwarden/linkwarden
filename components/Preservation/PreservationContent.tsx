@@ -183,7 +183,12 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
             {!imageLoaded && (
               <PreservationSkeleton className="max-w-screen-lg" />
             )}
-            <div className={`h-screen overflow-auto flex items-start`}>
+            <div
+              className={clsx(
+                "overflow-auto flex items-start",
+                imageLoaded && "h-screen"
+              )}
+            >
               <img
                 alt=""
                 src={`/api/v1/archives/${link.id}?format=${currentFormat}`}
@@ -198,7 +203,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
                         "items-center"
                       );
                     }
-                  }, 0);
+                  }, 1);
                 }}
                 loading="eager"
               />
@@ -212,7 +217,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
   };
 
   return (
-    <div className="relative bg-base-200 h-screen">
+    <div className="relative bg-base-200">
       {link.url && potentialTabs.length > 1 && (
         <Tab
           tabs={potentialTabs.map((tab) => ({
