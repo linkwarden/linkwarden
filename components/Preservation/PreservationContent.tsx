@@ -9,25 +9,21 @@ import {
 import { BeatLoader } from "react-spinners";
 import { useTranslation } from "next-i18next";
 import { atLeastOneFormatAvailable } from "@/lib/shared/formatStats";
+import Tab from "../Tab";
 
 type Props = {
-  format: ArchivedFormat;
-  isExpanded: boolean;
   link?: LinkIncludingShortenedCollectionAndTags;
-  standalone?: boolean;
+  format?: ArchivedFormat; // Optional now, for backward compatibility
 };
 
-export const PreservationContent: React.FC<Props> = ({
-  link,
-  format,
-  isExpanded,
-  standalone,
-}) => {
+export const PreservationContent: React.FC<Props> = ({ link, format }) => {
   const [pdfLoaded, setPdfLoaded] = useState(false);
   const [monolithLoaded, setMonolithLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const prevFormatRef = useRef<ArchivedFormat | undefined>(undefined);
   const { t } = useTranslation();
+
+  const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
 
   useEffect(() => {
     if (prevFormatRef.current !== format) {
@@ -46,11 +42,7 @@ export const PreservationContent: React.FC<Props> = ({
       case ArchivedFormat.readability:
         return (
           <div className="overflow-auto w-full h-full">
-            <ReadableView
-              link={link}
-              isExpanded={isExpanded}
-              standalone={standalone || false}
-            />
+            <ReadableView link={link} />
           </div>
         );
       case ArchivedFormat.monolith:
@@ -60,13 +52,8 @@ export const PreservationContent: React.FC<Props> = ({
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`}
               className={clsx(
-                "w-full border-none",
-                monolithLoaded ? "block" : "hidden",
-                isExpanded
-                  ? "h-full"
-                  : standalone
-                    ? "h-[calc(100vh-3.75rem)]"
-                    : "h-[calc(80vh-3.75rem)]"
+                "w-full border-none h-screen",
+                monolithLoaded ? "block" : "hidden"
               )}
               onLoad={() => setMonolithLoaded(true)}
             />
@@ -79,13 +66,8 @@ export const PreservationContent: React.FC<Props> = ({
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}&_=${link.updatedAt}`}
               className={clsx(
-                "w-full border-none",
-                pdfLoaded ? "block" : "hidden",
-                isExpanded
-                  ? "h-full"
-                  : standalone
-                    ? "h-[calc(100vh-3.75rem)]"
-                    : "h-[calc(80vh-3.75rem)]"
+                "w-full border-none h-screen",
+                pdfLoaded ? "block" : "hidden"
               )}
               onLoad={() => setPdfLoaded(true)}
             />
@@ -96,14 +78,12 @@ export const PreservationContent: React.FC<Props> = ({
         return (
           <>
             {!imageLoaded && <PreservationSkeleton />}
-            <div className="overflow-auto mx-auto h-full">
-              <img
-                alt=""
-                src={`/api/v1/archives/${link.id}?format=${format}&_=${link.updatedAt}`}
-                className={clsx("w-fit mx-auto", !imageLoaded && "hidden")}
-                onLoad={() => setImageLoaded(true)}
-              />
-            </div>
+            <img
+              alt=""
+              src={`/api/v1/archives/${link.id}?format=${format}&_=${link.updatedAt}`}
+              className={clsx("w-fit mx-auto", !imageLoaded && "hidden")}
+              onLoad={() => setImageLoaded(true)}
+            />
           </>
         );
       default:
@@ -112,7 +92,33 @@ export const PreservationContent: React.FC<Props> = ({
   };
 
   return (
-    <>
+    <div className="relative bg-base-200">
+      {link.url && (
+        <Tab
+          tabs={[
+            {
+              icon: "bi-file-earmark-text",
+              name: "Readable",
+            },
+            {
+              icon: "bi-file-earmark-image",
+              name: "Screenshot",
+            },
+            {
+              icon: "bi-filetype-html",
+              name: "Webpage",
+            },
+            {
+              icon: "bi-file-earmark-pdf",
+              name: "PDF",
+            },
+          ]}
+          activeTabIndex={activeTabIndex}
+          setActiveTabIndex={setActiveTabIndex}
+          className="w-fit absolute left-1/2 -translate-x-1/2 rounded-full bg-base-100 top-2 text-sm shadow-md"
+          hideName
+        />
+      )}
       {!atLeastOneFormatAvailable(link) ? (
         <div className={`w-full h-full flex flex-col justify-center p-10`}>
           <BeatLoader
@@ -127,6 +133,6 @@ export const PreservationContent: React.FC<Props> = ({
       ) : (
         renderFormat()
       )}
-    </>
+    </div>
   );
 };
