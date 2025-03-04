@@ -45,20 +45,6 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    if (
-      link?.lastPreserved &&
-      getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved) <
-        RE_ARCHIVE_LIMIT
-    )
-      return res.status(400).json({
-        response: `This link is currently being saved or has already been preserved. Please retry in ${
-          RE_ARCHIVE_LIMIT -
-          Math.floor(
-            getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved)
-          )
-        } minutes or create a new one.`,
-      });
-
     if (!link.url || !isValidUrl(link.url))
       return res.status(200).json({
         response: "Invalid URL.",
@@ -74,6 +60,8 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         readable: null,
         monolith: null,
         preview: null,
+        lastPreserved: null,
+        indexVersion: null,
       },
     });
 
