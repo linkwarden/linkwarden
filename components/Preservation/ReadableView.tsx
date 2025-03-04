@@ -13,6 +13,7 @@ import isValidUrl from "@/lib/shared/isValidUrl";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
 import usePermissions from "@/hooks/usePermissions";
+import { PreservationSkeleton } from "../Skeletons";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -84,17 +85,7 @@ export default function ReadableView({ link }: Props) {
               </div>
             </>
           ) : (
-            <div className="p-5 m-auto w-full flex flex-col items-center gap-5">
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-3/4 mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-5/6 mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-3/4 mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-5/6 mr-auto h-4 skeleton rounded-md"></div>
-            </div>
+            <PreservationSkeleton />
           )}
         </>
       ) : (
