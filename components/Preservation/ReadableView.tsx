@@ -16,14 +16,11 @@ import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
-  isExpanded: boolean;
-  standalone: boolean;
 };
 
-export default function ReadableView({ link, isExpanded, standalone }: Props) {
+export default function ReadableView({ link }: Props) {
   const { t } = useTranslation();
   const [linkContent, setLinkContent] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
 
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public");
@@ -44,30 +41,25 @@ export default function ReadableView({ link, isExpanded, standalone }: Props) {
   }, [link]);
 
   return (
-    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200">
-      {!isEditing && (
-        <div className="flex gap-3 items-start">
-          <div className="flex flex-col w-full gap-1">
-            <p className="md:text-4xl text-2xl">
-              {unescapeString(
-                link?.name || link?.description || link?.url || ""
-              )}
-            </p>
-            {link?.url && (
-              <Link
-                href={link?.url || ""}
-                title={link?.url}
-                target="_blank"
-                className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
-              >
-                <i className="bi-link-45deg" />
-                {isValidUrl(link?.url || "") &&
-                  new URL(link?.url as string).host}
-              </Link>
-            )}
-          </div>
+    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200 mt-10">
+      <div className="flex gap-3 items-start">
+        <div className="flex flex-col w-full gap-1">
+          <p className="md:text-4xl text-2xl">
+            {unescapeString(link?.name || link?.description || link?.url || "")}
+          </p>
+          {link?.url && (
+            <Link
+              href={link?.url || ""}
+              title={link?.url}
+              target="_blank"
+              className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
+            >
+              <i className="bi-link-45deg" />
+              {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
+            </Link>
+          )}
         </div>
-      )}
+      </div>
 
       <div className="text-sm text-neutral flex justify-between w-full gap-2">
         <LinkDate link={link} />
