@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import toast from "react-hot-toast";
 import clsx from "clsx";
+import Tab from "../Tab";
 
 type Props = {
   onClose: Function;
@@ -52,30 +53,21 @@ export default function LinkModal({
         ></div>
 
         {(permissions === true || permissions?.canUpdate) && !isPublicRoute && (
-          <div className="flex gap-1 h-8 rounded-full bg-neutral-content bg-opacity-50 text-base-content p-1 text-xs duration-100 select-none z-10">
-            <div
-              className={clsx(
-                "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
-                mode === "view" && "bg-primary bg-opacity-50"
-              )}
-              onClick={() => {
-                setMode("view");
-              }}
-            >
-              View
-            </div>
-            <div
-              className={clsx(
-                "py-1 px-2 cursor-pointer duration-100 rounded-full font-semibold",
-                mode === "edit" && "bg-primary bg-opacity-50"
-              )}
-              onClick={() => {
-                setMode("edit");
-              }}
-            >
-              Edit
-            </div>
-          </div>
+          <Tab
+            tabs={[
+              { name: "View" },
+              {
+                name: "Edit",
+              },
+            ].map((tab) => ({
+              name: tab.name,
+            }))}
+            activeTabIndex={mode === "view" ? 0 : 1}
+            setActiveTabIndex={(index: any) =>
+              setMode(index === 0 ? "view" : "edit")
+            }
+            className="w-fit absolute left-1/2 -translate-x-1/2 rounded-full bg-base-100/50 text-sm shadow-md z-10"
+          />
         )}
 
         <div className="flex gap-2">
