@@ -10,6 +10,7 @@ import { openai } from "@ai-sdk/openai";
 import { azure } from "@ai-sdk/azure";
 import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider";
 import { titleCase } from "../shared/utils";
 
@@ -40,7 +41,13 @@ const getAIModel = (): LanguageModelV1 => {
       structuredOutputs: true,
     });
   }
+  if (process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_MODEL) {
+    const openrouter = createOpenRouter({
+      apiKey: process.env.OPENROUTER_API_KEY,
+    });
 
+    return openrouter(process.env.OPENROUTER_MODEL) as LanguageModelV1;
+  }
   throw new Error("No AI provider configured");
 };
 
