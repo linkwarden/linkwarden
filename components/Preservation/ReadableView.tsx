@@ -1,19 +1,24 @@
-import { formatAvailable } from "@/lib/shared/formatStats";
-import {
-  ArchivedFormat,
-  LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
+// Uncomment the comments for a basic notetaking functionality... (WIP)
+import React, { useEffect, useState, useRef } from "react";
 import DOMPurify from "dompurify";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "next-i18next";
 import clsx from "clsx";
-import LinkDate from "../LinkViews/LinkComponents/LinkDate";
-import isValidUrl from "@/lib/shared/isValidUrl";
+import { PreservationSkeleton } from "../Skeletons";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
+import isValidUrl from "@/lib/shared/isValidUrl";
+import LinkDate from "../LinkViews/LinkComponents/LinkDate";
 import usePermissions from "@/hooks/usePermissions";
-import { PreservationSkeleton } from "../Skeletons";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  ArchivedFormat,
+} from "@/types/global";
+import ClickAwayHandler from "@/components/ClickAwayHandler";
+import {
+  useGetLinkHighlights,
+  usePostHighlight,
+} from "@/hooks/store/highlights";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -21,25 +26,124 @@ type Props = {
 
 export default function ReadableView({ link }: Props) {
   const { t } = useTranslation();
-  const [linkContent, setLinkContent] = useState("");
-
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public");
   const permissions = usePermissions(link?.collection?.id as number);
 
+  const postHighlight = usePostHighlight();
+  const { data: linkHighlights } = useGetLinkHighlights(link?.id as number);
+
+  const [linkContent, setLinkContent] = useState("");
+  const [showSelectionMenu, setShowSelectionMenu] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // const [isCommenting, setIsCommenting] = useState(false);
+  // const [commentText, setCommentText] = useState("");
+
   useEffect(() => {
     const fetchLinkContent = async () => {
-      if (formatAvailable(link, "readable")) {
+      if (link?.readable?.startsWith("archives")) {
         const response = await fetch(
           `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}&_=${link.updatedAt}`
         );
-        const data = await response?.json();
-        setLinkContent(data?.content || "");
+        const data = await response.json();
+        setLinkContent(DOMPurify.sanitize(data?.content) || "");
       }
     };
-
     fetchLinkContent();
   }, [link]);
+
+  const handleMouseUp = () => {
+    const selection = window.getSelection();
+    if (!selection) return;
+
+    if (selection.rangeCount === 0) return;
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+
+    if (rect && rect.width && rect.height) {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+
+      setMenuPosition({
+        x: rect.left + scrollLeft + rect.width / 2,
+        y: rect.top + scrollTop - 5,
+      });
+      setShowSelectionMenu(true);
+    }
+  };
+
+  const getHighlightedSection = (color: string) => {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed) return;
+
+    try {
+      const content = document.getElementById("readable-view")?.innerText;
+      const sel = window.getSelection();
+      const range = sel?.getRangeAt(0).cloneRange();
+      const markerTextChar = range?.cloneContents();
+
+      const selectedIndex = content?.indexOf(markerTextChar?.textContent || "");
+
+      if (
+        selectedIndex !== undefined &&
+        markerTextChar?.textContent?.length !== undefined &&
+        selectedIndex !== -1 &&
+        markerTextChar?.textContent?.length !== -1 &&
+        link?.id
+      ) {
+        return {
+          linkId: link.id,
+          color,
+          text: markerTextChar?.textContent,
+          startOffset: selectedIndex,
+          endOffset: selectedIndex + markerTextChar.textContent.length,
+        };
+      }
+      return null;
+    } catch (err) {
+      console.error("Could not highlight selection:", err);
+    }
+  };
+
+  const handleHighlightSelection = async (
+    color: "yellow" | "red" | "blue" | "green"
+  ) => {
+    const selection = getHighlightedSection(color);
+    if (!selection) return;
+
+    postHighlight.mutate(selection);
+  };
+
+  // const handleStartCommenting = (
+  //   event: React.MouseEvent<HTMLButtonElement>
+  // ) => {
+  //   event.preventDefault();
+  //   const highlighted = getHighlightedSection("yellow");
+  //   if (!highlighted) return;
+
+  //   setIsCommenting(true);
+  // };
+
+  // const handleConfirmComment = () => {
+  //   console.log("Confirming comment:", commentText);
+  //   setIsCommenting(false);
+  //   setCommentText("");
+  // };
+
+  // const handleCancelComment = () => {
+  //   setIsCommenting(false);
+  //   setCommentText("");
+  // };
+
+  const handleMenuClickOutside = () => {
+    setShowSelectionMenu(false);
+    // setIsCommenting(false);
+    if (window.getSelection) {
+      window.getSelection()?.removeAllRanges();
+    }
+  };
 
   return (
     <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200 mt-10">
@@ -69,23 +173,112 @@ export default function ReadableView({ link }: Props) {
       {link?.readable?.startsWith("archives") ? (
         <>
           {linkContent ? (
-            <>
+            <div
+              ref={contentRef}
+              className={clsx("p-3 rounded-md w-full bg-base-200")}
+              onMouseUp={handleMouseUp}
+            >
               <div
-                className={clsx(
-                  "p-3 rounded-md w-full",
-                  linkContent && "bg-base-200"
+                id="readable-view"
+                className="line-break px-1 reader-view read-only"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(linkContent),
+                }}
+              />
+
+              {showSelectionMenu &&
+                !isPublicRoute &&
+                (permissions === true || permissions?.canUpdate) && (
+                  <ClickAwayHandler
+                    onClickOutside={handleMenuClickOutside}
+                    className="absolute bg-base-100 p-2 z-[9999] 
+                               whitespace-nowrap -translate-x-1/2 
+                               -translate-y-full rounded-lg shadow-md border border-neutral-content"
+                    style={{
+                      left: menuPosition.x,
+                      top: menuPosition.y,
+                    }}
+                  >
+                    <div className="flex items-center gap-3 justify-between select-none">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => handleHighlightSelection("yellow")}
+                          className="w-5 h-5 rounded-full bg-yellow-300 hover:opacity-70 duration-100"
+                          title="Yellow Highlight"
+                        />
+                        <button
+                          onClick={() => handleHighlightSelection("red")}
+                          className="w-5 h-5 rounded-full bg-red-500 hover:opacity-70 duration-100"
+                          title="Red Highlight"
+                        />
+                        <button
+                          onClick={() => handleHighlightSelection("blue")}
+                          className="w-5 h-5 rounded-full bg-blue-500 hover:opacity-70 duration-100"
+                          title="Blue Highlight"
+                        />
+                        <button
+                          onClick={() => handleHighlightSelection("green")}
+                          className="w-5 h-5 rounded-full bg-green-500 hover:opacity-70 duration-100"
+                          title="Green Highlight"
+                        />
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        {/* {isCommenting ? (
+                          <>
+                            <button
+                              onClick={handleConfirmComment}
+                              className="hover:opacity-70 duration-100"
+                              title="Confirm Comment"
+                            >
+                              <i className="bi-check2" />
+                            </button>
+                            <button
+                              onClick={handleCancelComment}
+                              className="hover:opacity-70 duration-100"
+                              title="Cancel Comment"
+                            >
+                              <i className="bi-x" />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                        <button
+                          onClick={handleStartCommenting}
+                          className="hover:opacity-70 duration-100"
+                          title="Add Comment"
+                        >
+                          <i className="bi-chat-text" />
+                        </button> */}
+                        <button
+                          onClick={() => handleHighlightSelection("yellow")}
+                          className="hover:opacity-70 duration-100"
+                          title="Delete"
+                        >
+                          <i className="bi-trash" />
+                        </button>
+                        {/* </>
+                        )} */}
+                      </div>
+                    </div>
+                    {/* {isCommenting && (
+                      <div className="mt-2">
+                        <textarea
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          placeholder="Add your comment..."
+                          className="resize-none w-full rounded-md p-2 h-28 mt-2 
+                                     border-neutral-content bg-base-200 
+                                     focus:border-primary border-solid 
+                                     border outline-none duration-100"
+                        />
+                      </div>
+                    )} */}
+                  </ClickAwayHandler>
                 )}
-              >
-                <div
-                  className="line-break px-1 reader-view read-only"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(linkContent),
-                  }}
-                />
-              </div>
-            </>
+            </div>
           ) : (
-            <PreservationSkeleton />
+            <PreservationSkeleton className="h-fit" />
           )}
         </>
       ) : (
