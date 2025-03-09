@@ -148,7 +148,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         return (
           <>
             {!monolithLoaded && (
-              <PreservationSkeleton className="max-w-screen-lg" />
+              <PreservationSkeleton className="max-w-screen-lg h-screen" />
             )}
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`}
@@ -164,7 +164,9 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
       case ArchivedFormat.pdf:
         return (
           <>
-            {!pdfLoaded && <PreservationSkeleton className="max-w-screen-lg" />}
+            {!pdfLoaded && (
+              <PreservationSkeleton className="max-w-screen-lg h-screen" />
+            )}
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}&_=${link.updatedAt}`}
               className={clsx(
@@ -181,7 +183,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         return (
           <>
             {!imageLoaded && (
-              <PreservationSkeleton className="max-w-screen-lg" />
+              <PreservationSkeleton className="max-w-screen-lg h-screen" />
             )}
             <div
               className={clsx(
