@@ -1,4 +1,3 @@
-// Uncomment the comments for a basic notetaking functionality... (WIP)
 import React, { useEffect, useState, useRef } from "react";
 import DOMPurify from "dompurify";
 import clsx from "clsx";
@@ -37,9 +36,6 @@ export default function ReadableView({ link }: Props) {
   const [showSelectionMenu, setShowSelectionMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const contentRef = useRef<HTMLDivElement>(null);
-
-  // const [isCommenting, setIsCommenting] = useState(false);
-  // const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
     const fetchLinkContent = async () => {
@@ -116,30 +112,8 @@ export default function ReadableView({ link }: Props) {
     postHighlight.mutate(selection);
   };
 
-  // const handleStartCommenting = (
-  //   event: React.MouseEvent<HTMLButtonElement>
-  // ) => {
-  //   event.preventDefault();
-  //   const highlighted = getHighlightedSection("yellow");
-  //   if (!highlighted) return;
-
-  //   setIsCommenting(true);
-  // };
-
-  // const handleConfirmComment = () => {
-  //   console.log("Confirming comment:", commentText);
-  //   setIsCommenting(false);
-  //   setCommentText("");
-  // };
-
-  // const handleCancelComment = () => {
-  //   setIsCommenting(false);
-  //   setCommentText("");
-  // };
-
   const handleMenuClickOutside = () => {
     setShowSelectionMenu(false);
-    // setIsCommenting(false);
     if (window.getSelection) {
       window.getSelection()?.removeAllRanges();
     }
@@ -224,32 +198,6 @@ export default function ReadableView({ link }: Props) {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        {/* {isCommenting ? (
-                          <>
-                            <button
-                              onClick={handleConfirmComment}
-                              className="hover:opacity-70 duration-100"
-                              title="Confirm Comment"
-                            >
-                              <i className="bi-check2" />
-                            </button>
-                            <button
-                              onClick={handleCancelComment}
-                              className="hover:opacity-70 duration-100"
-                              title="Cancel Comment"
-                            >
-                              <i className="bi-x" />
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                        <button
-                          onClick={handleStartCommenting}
-                          className="hover:opacity-70 duration-100"
-                          title="Add Comment"
-                        >
-                          <i className="bi-chat-text" />
-                        </button> */}
                         <button
                           onClick={() => handleHighlightSelection("yellow")}
                           className="hover:opacity-70 duration-100"
@@ -257,23 +205,8 @@ export default function ReadableView({ link }: Props) {
                         >
                           <i className="bi-trash" />
                         </button>
-                        {/* </>
-                        )} */}
                       </div>
                     </div>
-                    {/* {isCommenting && (
-                      <div className="mt-2">
-                        <textarea
-                          value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
-                          placeholder="Add your comment..."
-                          className="resize-none w-full rounded-md p-2 h-28 mt-2 
-                                     border-neutral-content bg-base-200 
-                                     focus:border-primary border-solid 
-                                     border outline-none duration-100"
-                        />
-                      </div>
-                    )} */}
                   </ClickAwayHandler>
                 )}
             </div>
