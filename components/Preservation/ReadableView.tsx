@@ -16,6 +16,7 @@ import ClickAwayHandler from "@/components/ClickAwayHandler";
 import {
   useGetLinkHighlights,
   usePostHighlight,
+  useRemoveHighlight,
 } from "@/hooks/store/highlights";
 import { Highlight } from "@prisma/client";
 
@@ -29,8 +30,9 @@ export default function ReadableView({ link }: Props) {
   const isPublicRoute = router.pathname.startsWith("/public");
   const permissions = usePermissions(link?.collection?.id as number);
 
-  const postHighlight = usePostHighlight();
+  const postHighlight = usePostHighlight(link?.id as number);
   const { data: linkHighlights } = useGetLinkHighlights(link?.id as number);
+  const deleteHighlight = useRemoveHighlight(link?.id as number);
 
   const [linkContent, setLinkContent] = useState("");
   const [showSelectionMenu, setShowSelectionMenu] = useState(false);
