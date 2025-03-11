@@ -35,7 +35,13 @@ export default function ReadableView({ link }: Props) {
   const deleteHighlight = useRemoveHighlight(link?.id as number);
 
   const [linkContent, setLinkContent] = useState("");
-  const [showSelectionMenu, setShowSelectionMenu] = useState(false);
+  const [selectionMenu, setSelectionMenu] = useState<{
+    show: boolean;
+    highlightId: number | null;
+  }>({
+    show: false,
+    highlightId: null,
+  });
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -52,22 +58,46 @@ export default function ReadableView({ link }: Props) {
     fetchLinkContent();
   }, [link]);
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const highlightId = Number(target.dataset.highlightId);
     const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return;
 
-    const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-
-    if (rect && rect.width && rect.height) {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+    if (highlightId) {
+      const rect = target.getBoundingClientRect();
+      setSelectionMenu({
+        show: true,
+        highlightId: highlightId,
+      });
 
       setMenuPosition({
-        x: rect.left + scrollLeft + rect.width / 2,
-        y: rect.top + scrollTop - 5,
+        x: rect.left + window.scrollX + rect.width / 2,
+        y: rect.top + window.scrollY - 5,
       });
-      setShowSelectionMenu(true);
+
+      return;
+    } else if (
+      selection &&
+      selection.rangeCount > 0 &&
+      !selection.isCollapsed
+    ) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+
+      if (rect && rect.width && rect.height) {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const scrollLeft =
+          window.scrollX || document.documentElement.scrollLeft;
+
+        setMenuPosition({
+          x: rect.left + scrollLeft + rect.width / 2,
+          y: rect.top + scrollTop - 5,
+        });
+        setSelectionMenu({
+          show: true,
+          highlightId: selectionMenu.highlightId,
+        });
+      }
     }
   };
 
@@ -79,15 +109,36 @@ export default function ReadableView({ link }: Props) {
 
       const selectedText = selection.toString();
 
-      if (!selectedText) return null;
+      if (!selectedText) {
+        setSelectionMenu({
+          show: false,
+          highlightId: null,
+        });
+
+        return null;
+      }
 
       const containerText = range.commonAncestorContainer.textContent;
 
-      if (!containerText) return null;
+      if (!containerText) {
+        setSelectionMenu({
+          show: false,
+          highlightId: null,
+        });
+
+        return null;
+      }
 
       const relativeIndex = containerText.indexOf(selectedText);
 
-      if (relativeIndex === -1) return null;
+      if (relativeIndex === -1) {
+        setSelectionMenu({
+          show: false,
+          highlightId: null,
+        });
+
+        return null;
+      }
 
       const containerOffset = linkContent.indexOf(containerText);
 
@@ -101,10 +152,20 @@ export default function ReadableView({ link }: Props) {
           startOffset,
           endOffset: startOffset + selectedText.length,
         };
+      } else {
+        setSelectionMenu({
+          show: false,
+          highlightId: null,
+        });
+
+        return null;
       }
-      return null;
     } catch (err) {
       console.error("Could not highlight selection:", err);
+      setSelectionMenu({
+        show: false,
+        highlightId: null,
+      });
     }
   };
 
@@ -118,11 +179,24 @@ export default function ReadableView({ link }: Props) {
     const selection = getHighlightedSection(color);
     if (!selection) return;
 
-    postHighlight.mutate(selection);
+    postHighlight.mutate(selection, {
+      onSuccess: (data) => {
+        if (data) {
+          setSelectionMenu({
+            show: true,
+            highlightId: data.id,
+          });
+        }
+      },
+    });
   };
 
   const handleMenuClickOutside = () => {
-    setShowSelectionMenu(false);
+    setSelectionMenu({
+      show: false,
+      highlightId: null,
+    });
+
     if (window.getSelection) {
       window.getSelection()?.removeAllRanges();
     }
@@ -166,7 +240,7 @@ export default function ReadableView({ link }: Props) {
                 dangerouslySetInnerHTML={{ __html: highlightedHtml }}
               />
 
-              {showSelectionMenu &&
+              {selectionMenu.show &&
                 !isPublicRoute &&
                 (permissions === true || permissions?.canUpdate) && (
                   <ClickAwayHandler
@@ -181,37 +255,48 @@ export default function ReadableView({ link }: Props) {
                   >
                     <div className="flex items-center gap-3 justify-between select-none">
                       <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => handleHighlightSelection("yellow")}
-                          className="w-5 h-5 rounded-full bg-yellow-300 hover:opacity-70 duration-100"
-                          title="Yellow Highlight"
-                        />
-                        <button
-                          onClick={() => handleHighlightSelection("red")}
-                          className="w-5 h-5 rounded-full bg-red-500 hover:opacity-70 duration-100"
-                          title="Red Highlight"
-                        />
-                        <button
-                          onClick={() => handleHighlightSelection("blue")}
-                          className="w-5 h-5 rounded-full bg-blue-500 hover:opacity-70 duration-100"
-                          title="Blue Highlight"
-                        />
-                        <button
-                          onClick={() => handleHighlightSelection("green")}
-                          className="w-5 h-5 rounded-full bg-green-500 hover:opacity-70 duration-100"
-                          title="Green Highlight"
-                        />
+                        {["yellow", "red", "blue", "green"].map((color) => (
+                          <button
+                            key={color}
+                            onClick={() =>
+                              handleHighlightSelection(
+                                color as "yellow" | "red" | "blue" | "green"
+                              )
+                            }
+                            className={`w-5 h-5 rounded-full bg-${color}-500 hover:opacity-70 duration-100 relative`}
+                            title={`${
+                              color.charAt(0).toUpperCase() + color.slice(1)
+                            } Highlight`}
+                          >
+                            {selectionMenu.highlightId &&
+                              linkHighlights?.find(
+                                (h) => h.id === selectionMenu.highlightId
+                              )?.color === color && (
+                                <i className="bi-check text-black absolute inset-0 flex items-center justify-center" />
+                              )}
+                          </button>
+                        ))}
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => handleHighlightSelection("yellow")}
-                          className="hover:opacity-70 duration-100"
-                          title="Delete"
-                        >
-                          <i className="bi-trash" />
-                        </button>
-                      </div>
+                      {selectionMenu.highlightId && (
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => {
+                              deleteHighlight.mutate(
+                                selectionMenu.highlightId as number
+                              );
+                              setSelectionMenu({
+                                show: false,
+                                highlightId: null,
+                              });
+                            }}
+                            className="hover:opacity-70 duration-100"
+                            title="Delete"
+                          >
+                            <i className="bi-trash" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </ClickAwayHandler>
                 )}
@@ -263,25 +348,25 @@ function getHighlightedHtml(
     }
     if (end > start) {
       const highlightedSection = htmlContent.substring(start, end);
-      let colorCode;
+      let color;
       switch (h.color) {
         case "yellow":
-          colorCode = "#fff06e99";
+          color = "bg-yellow-300";
           break;
         case "red":
-          colorCode = "#fc030399";
+          color = "bg-red-500";
           break;
         case "blue":
-          colorCode = "#0373fc99";
+          color = "bg-blue-500";
           break;
         case "green":
-          colorCode = "#00b51b99";
+          color = "bg-green-500";
           break;
         default:
-          colorCode = h.color;
+          color = h.color;
       }
 
-      result += `<span style="background-color: ${colorCode};" class="rounded-md px-1">${highlightedSection}</span>`;
+      result += `<span class="rounded-md px-1 ${color} hover:bg-opacity-45 bg-opacity-60 duration-100 cursor-pointer" data-highlight-id="${h.id}">${highlightedSection}</span>`;
       lastEnd = end;
     }
   }
