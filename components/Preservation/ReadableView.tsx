@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import DOMPurify from "dompurify";
 import clsx from "clsx";
 import { PreservationSkeleton } from "../Skeletons";
 import { useTranslation } from "next-i18next";
@@ -18,6 +17,7 @@ import {
   useGetLinkHighlights,
   usePostHighlight,
 } from "@/hooks/store/highlights";
+import { Highlight } from "@prisma/client";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -35,26 +35,25 @@ export default function ReadableView({ link }: Props) {
   const [linkContent, setLinkContent] = useState("");
   const [showSelectionMenu, setShowSelectionMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const fetchLinkContent = async () => {
+    async function fetchLinkContent() {
       if (link?.readable?.startsWith("archives")) {
         const response = await fetch(
           `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}&_=${link.updatedAt}`
         );
         const data = await response.json();
-        setLinkContent(DOMPurify.sanitize(data?.content) || "");
+
+        setLinkContent(data?.content ?? "");
       }
-    };
+    }
     fetchLinkContent();
   }, [link]);
 
   const handleMouseUp = () => {
     const selection = window.getSelection();
-    if (!selection) return;
+    if (!selection || selection.rangeCount === 0) return;
 
-    if (selection.rangeCount === 0) return;
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
 
@@ -73,28 +72,32 @@ export default function ReadableView({ link }: Props) {
   const getHighlightedSection = (color: string) => {
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed) return;
-
     try {
-      const content = document.getElementById("readable-view")?.innerText;
-      const sel = window.getSelection();
-      const range = sel?.getRangeAt(0).cloneRange();
-      const markerTextChar = range?.cloneContents();
+      const range = selection.getRangeAt(0).cloneRange();
 
-      const selectedIndex = content?.indexOf(markerTextChar?.textContent || "");
+      const selectedText = selection.toString();
 
-      if (
-        selectedIndex !== undefined &&
-        markerTextChar?.textContent?.length !== undefined &&
-        selectedIndex !== -1 &&
-        markerTextChar?.textContent?.length !== -1 &&
-        link?.id
-      ) {
+      if (!selectedText) return null;
+
+      const containerText = range.commonAncestorContainer.textContent;
+
+      if (!containerText) return null;
+
+      const relativeIndex = containerText.indexOf(selectedText);
+
+      if (relativeIndex === -1) return null;
+
+      const containerOffset = linkContent.indexOf(containerText);
+
+      const startOffset = containerOffset + relativeIndex;
+
+      if (startOffset !== -1 && link?.id) {
         return {
           linkId: link.id,
           color,
-          text: markerTextChar?.textContent,
-          startOffset: selectedIndex,
-          endOffset: selectedIndex + markerTextChar.textContent.length,
+          text: selection.toString(),
+          startOffset,
+          endOffset: startOffset + selectedText.length,
         };
       }
       return null;
@@ -102,6 +105,10 @@ export default function ReadableView({ link }: Props) {
       console.error("Could not highlight selection:", err);
     }
   };
+
+  const highlightedHtml = React.useMemo(() => {
+    return getHighlightedHtml(linkContent, linkHighlights || []);
+  }, [linkContent, linkHighlights]);
 
   const handleHighlightSelection = async (
     color: "yellow" | "red" | "blue" | "green"
@@ -148,16 +155,13 @@ export default function ReadableView({ link }: Props) {
         <>
           {linkContent ? (
             <div
-              ref={contentRef}
               className={clsx("p-3 rounded-md w-full bg-base-200")}
               onMouseUp={handleMouseUp}
             >
               <div
                 id="readable-view"
                 className="line-break px-1 reader-view read-only"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(linkContent),
-                }}
+                dangerouslySetInnerHTML={{ __html: highlightedHtml }}
               />
 
               {showSelectionMenu &&
@@ -235,4 +239,54 @@ export default function ReadableView({ link }: Props) {
       )}
     </div>
   );
+}
+
+function getHighlightedHtml(
+  htmlContent: string,
+  highlights: Highlight[]
+): string {
+  if (!htmlContent || !highlights?.length) return htmlContent;
+
+  const sorted = [...highlights].sort((a, b) => a.startOffset - b.startOffset);
+  let result = "";
+  let lastEnd = 0;
+
+  for (const h of sorted) {
+    if (h.endOffset <= 0 || h.startOffset >= htmlContent.length) continue;
+    const start = Math.max(lastEnd, h.startOffset);
+    const end = Math.min(htmlContent.length, h.endOffset);
+
+    if (start > lastEnd) {
+      result += htmlContent.substring(lastEnd, start);
+    }
+    if (end > start) {
+      const highlightedSection = htmlContent.substring(start, end);
+      let colorCode;
+      switch (h.color) {
+        case "yellow":
+          colorCode = "#fff06e99";
+          break;
+        case "red":
+          colorCode = "#fc030399";
+          break;
+        case "blue":
+          colorCode = "#0373fc99";
+          break;
+        case "green":
+          colorCode = "#00b51b99";
+          break;
+        default:
+          colorCode = h.color;
+      }
+
+      result += `<span style="background-color: ${colorCode};" class="rounded-md px-1">${highlightedSection}</span>`;
+      lastEnd = end;
+    }
+  }
+
+  if (lastEnd < htmlContent.length) {
+    result += htmlContent.substring(lastEnd);
+  }
+
+  return result;
 }
