@@ -50,11 +50,13 @@ const useUpdateHighlight = () => {
           highlight.id === data.id ? data : highlight
         )
       );
+
+      // queryClient.invalidateQueries({ queryKey: ["highlights", data.linkId] });
     },
   });
 };
 
-const usePostHighlight = () => {
+const usePostHighlight = (linkId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -72,26 +74,18 @@ const usePostHighlight = () => {
 
       return data.response;
     },
-    onSuccess: (data: Highlight[]) => {
-      queryClient.setQueryData(["highlights"], (oldData: Highlight[] = []) => {
-        const updatedHighlights = oldData.map((highlight) => {
-          const updatedHighlight = data.find((t) => t.id === highlight.id);
-          return updatedHighlight
-            ? { ...highlight, ...updatedHighlight }
-            : highlight;
-        });
-
-        const newHighlights = data.filter(
-          (t) => !oldData.some((highlight) => highlight.id === t.id)
-        );
-
-        return [...updatedHighlights, ...newHighlights];
-      });
+    onSuccess: (data: Highlight) => {
+      queryClient.setQueryData(
+        ["highlights", linkId],
+        (oldData: Highlight[]) => {
+          return [...oldData, data];
+        }
+      );
     },
   });
 };
 
-const useRemoveHighlight = () => {
+const useRemoveHighlight = (linkId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -105,9 +99,9 @@ const useRemoveHighlight = () => {
 
       return data.response;
     },
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData(["highlights"], (oldData: any) =>
-        oldData.filter((highlight: Highlight) => highlight.id !== variables)
+    onSuccess: (data) => {
+      queryClient.setQueryData(["highlights", linkId], (oldData: any) =>
+        oldData.filter((highlight: Highlight) => highlight.id !== data)
       );
     },
   });
