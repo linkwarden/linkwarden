@@ -21,8 +21,8 @@ export default async function postHighlight(
 
   if (
     !collection ||
-    !collection.members.some((m) => m.userId === userId && m.canUpdate) ||
-    !(collection.ownerId === userId)
+    (!collection.members.some((m) => m.userId === userId && m.canUpdate) &&
+      !(collection.ownerId === userId))
   ) {
     return {
       status: 400,
@@ -30,20 +30,39 @@ export default async function postHighlight(
     };
   }
 
-  // check if highlight already exists
-  const existingHighlight = await prisma.highlight.findFirst({
+  const overlappingHighlight = await prisma.highlight.findFirst({
     where: {
       linkId: body.linkId,
       userId,
-      startOffset: body.startOffset,
-      endOffset: body.endOffset,
+      OR: [
+        {
+          startOffset: {
+            lte: body.startOffset,
+          },
+          endOffset: {
+            gte: body.endOffset,
+          },
+        },
+        {
+          startOffset: {
+            gte: body.startOffset,
+            lte: body.endOffset,
+          },
+        },
+        {
+          endOffset: {
+            gte: body.startOffset,
+            lte: body.endOffset,
+          },
+        },
+      ],
     },
   });
 
-  if (existingHighlight) {
+  if (overlappingHighlight) {
     return {
       status: 400,
-      response: "Highlight already exists",
+      response: "Highlight overlaps with an existing highlight",
     };
   }
 
@@ -60,5 +79,8 @@ export default async function postHighlight(
     },
   });
 
-  return highlight;
+  return {
+    status: 200,
+    response: highlight,
+  };
 }

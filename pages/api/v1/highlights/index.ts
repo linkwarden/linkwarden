@@ -25,6 +25,8 @@ export default async function highlights(
 
     const highlights = await postHighlight(user.id, body);
 
-    return res.status(200).json({ response: highlights });
+    return res
+      .status(highlights.status)
+      .json({ response: highlights.response });
   }
 }
