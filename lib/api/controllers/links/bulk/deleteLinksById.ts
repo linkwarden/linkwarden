@@ -47,7 +47,7 @@ export default async function deleteLinksById(
     if (collectionIsAccessible) removeFiles(linkId, collectionIsAccessible.id);
   }
 
-  meiliClient?.index("links").deleteDocuments(linkIds);
+  await meiliClient?.index("links").deleteDocuments(linkIds);
 
   return { response: deletedLinks, status: 200 };
 }
