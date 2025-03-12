@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import { PostHighlightSchemaType } from "@/lib/shared/schemaValidation";
 
-export default async function postHighlight(
+export default async function postOrUpdateHighlight(
   userId: number,
   body: PostHighlightSchemaType
 ) {
@@ -37,22 +37,22 @@ export default async function postHighlight(
       OR: [
         {
           startOffset: {
-            lte: body.startOffset,
+            lt: body.startOffset,
           },
           endOffset: {
-            gte: body.endOffset,
+            gt: body.endOffset,
           },
         },
         {
           startOffset: {
-            gte: body.startOffset,
-            lte: body.endOffset,
+            gt: body.startOffset,
+            lt: body.endOffset,
           },
         },
         {
           endOffset: {
-            gte: body.startOffset,
-            lte: body.endOffset,
+            gt: body.startOffset,
+            lt: body.endOffset,
           },
         },
       ],
@@ -63,6 +63,32 @@ export default async function postHighlight(
     return {
       status: 400,
       response: "Highlight overlaps with an existing highlight",
+    };
+  }
+
+  const existingHighlight = await prisma.highlight.findFirst({
+    where: {
+      userId,
+      linkId: body.linkId,
+      startOffset: body.startOffset,
+      endOffset: body.endOffset,
+    },
+  });
+
+  if (existingHighlight) {
+    const updatedHighlight = await prisma.highlight.update({
+      where: {
+        id: existingHighlight.id,
+      },
+      data: {
+        color: body.color,
+        comment: body.comment,
+      },
+    });
+
+    return {
+      status: 200,
+      response: updatedHighlight,
     };
   }
 
