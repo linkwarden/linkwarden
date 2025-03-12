@@ -125,7 +125,7 @@ export default async function deleteUserById(
 
         const linkIds = links.map((link) => link.id);
 
-        meiliClient?.index("links").deleteDocuments(linkIds);
+        await meiliClient?.index("links").deleteDocuments(linkIds);
 
         // Delete links
         await prisma.link.deleteMany({
