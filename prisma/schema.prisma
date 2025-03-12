@@ -43,6 +43,7 @@ model User {
   pinnedLinks             Link[]                @relation("PinnedLinks")
   createdLinks            Link[]                @relation("CreatedLinks")
   createdCollections      Collection[]          @relation("CreatedCollections")
+  highlights              Highlight[]
   collectionsJoined       UsersAndCollections[]
   collectionOrder         Int[]                 @default([])
   whitelistedUsers        WhitelistedUser[]
@@ -153,6 +154,7 @@ model Link {
   name          String     @default("")
   type          String     @default("url")
   description   String     @default("")
+  highlight      Highlight[]
   pinnedBy      User[]     @relation("PinnedLinks")
   createdBy     User?      @relation("CreatedLinks", fields: [createdById], references: [id])
   createdById   Int?
@@ -169,7 +171,6 @@ model Link {
   pdf           String?
   readable      String?
   monolith      String?
-  contentEdited DateTime?
   aiTagged      Boolean    @default(false)
   indexVersion  Int?
   lastPreserved DateTime?
@@ -235,4 +236,19 @@ model RssSubscription {
   ownerId       Int
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @default(now()) @updatedAt
+}
+
+model Highlight {
+  id          Int      @id @default(autoincrement())
+  color       String
+  comment     String?
+  link        Link     @relation(fields: [linkId], references: [id])
+  linkId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  startOffset Int
+  endOffset   Int
+  text        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
