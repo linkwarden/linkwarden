@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import verifyUser from "@/lib/api/verifyUser";
 import { PostHighlightSchema } from "@/lib/shared/schemaValidation";
-import postHighlight from "@/lib/api/controllers/highlights/postHighlight";
+import postOrUpdateHighlight from "@/lib/api/controllers/highlights/postOrUpdateHighlight";
 
 export default async function highlights(
   req: NextApiRequest,
@@ -23,7 +23,7 @@ export default async function highlights(
 
     const body = dataValidation.data;
 
-    const highlights = await postHighlight(user.id, body);
+    const highlights = await postOrUpdateHighlight(user.id, body);
 
     return res
       .status(highlights.status)
