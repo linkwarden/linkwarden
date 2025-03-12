@@ -79,6 +79,8 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
             readable: null,
             monolith: null,
             preview: null,
+            lastPreserved: null,
+            indexVersion: null,
           },
         });
       }
@@ -171,6 +173,8 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
                 link.monolith === "unavailable"
                   ? null
                   : link.monolith,
+              lastPreserved: null,
+              indexVersion: null,
             },
           });
         }

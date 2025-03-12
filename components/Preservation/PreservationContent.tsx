@@ -1,118 +1,237 @@
 import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
+import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
+import { BeatLoader } from "react-spinners";
+import Tab from "../Tab";
 import ReadableView from "@/components/Preservation/ReadableView";
 import { PreservationSkeleton } from "../Skeletons";
 import {
-  ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
+  ArchivedFormat,
 } from "@/types/global";
-import { BeatLoader } from "react-spinners";
-import { useTranslation } from "next-i18next";
-import { atLeastOneFormatAvailable } from "@/lib/shared/formatStats";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@/lib/shared/formatStats";
 
 type Props = {
-  format: ArchivedFormat;
-  isExpanded: boolean;
   link?: LinkIncludingShortenedCollectionAndTags;
-  standalone?: boolean;
+  format?: ArchivedFormat;
 };
 
-export const PreservationContent: React.FC<Props> = ({
-  link,
-  format,
-  isExpanded,
-  standalone,
-}) => {
+function findAvailableImageFormat(
+  link: LinkIncludingShortenedCollectionAndTags
+) {
+  return formatAvailable(link, "image")
+    ? link?.image?.endsWith(".png")
+      ? ArchivedFormat.png
+      : link?.image?.endsWith(".jpeg") || link?.image?.endsWith(".jpg")
+        ? ArchivedFormat.jpeg
+        : null
+    : null;
+}
+
+export const PreservationContent: React.FC<Props> = ({ link, format }) => {
+  const router = useRouter();
+  const { t } = useTranslation();
+
   const [pdfLoaded, setPdfLoaded] = useState(false);
   const [monolithLoaded, setMonolithLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const prevFormatRef = useRef<ArchivedFormat | undefined>(undefined);
-  const { t } = useTranslation();
+  const prevFormatRef = useRef<ArchivedFormat | undefined>();
+
+  const [currentFormat, setCurrentFormat] = useState<ArchivedFormat>(
+    format ?? ArchivedFormat.readability
+  );
+
+  const screenshotFormat = findAvailableImageFormat(link!);
+
+  const potentialTabs = [
+    {
+      type: "readable" as const,
+      format: ArchivedFormat.readability,
+      icon: "bi-file-earmark-text",
+      name: "Readable",
+    },
+    {
+      type: "image" as const,
+      format: screenshotFormat,
+      icon: "bi-file-earmark-image",
+      name: "Screenshot",
+    },
+    {
+      type: "monolith" as const,
+      format: ArchivedFormat.monolith,
+      icon: "bi-filetype-html",
+      name: "Webpage",
+    },
+    {
+      type: "pdf" as const,
+      format: ArchivedFormat.pdf,
+      icon: "bi-file-earmark-pdf",
+      name: "PDF",
+    },
+  ].filter((tab) => {
+    if (tab.format == null) return false;
+    return formatAvailable(link!, tab.type);
+  });
+
+  const activeTabIndex = potentialTabs.findIndex(
+    (tab) => tab.format === currentFormat
+  );
+  const validActiveTabIndex = activeTabIndex >= 0 ? activeTabIndex : 0;
+
+  function handleTabChange(newIndex: number) {
+    if (newIndex >= potentialTabs.length) return;
+    const newFormat = potentialTabs[newIndex].format!;
+
+    setCurrentFormat(newFormat);
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, format: newFormat },
+      },
+      undefined,
+      { shallow: true }
+    );
+  }
 
   useEffect(() => {
-    if (prevFormatRef.current !== format) {
+    if (!router.isReady) return;
+
+    const queryVal = router.query.format;
+    if (queryVal) {
+      const qFormat = parseInt(queryVal as string, 10);
+      const allFormats = [
+        ArchivedFormat.readability,
+        ArchivedFormat.monolith,
+        ArchivedFormat.jpeg,
+        ArchivedFormat.png,
+        ArchivedFormat.pdf,
+      ];
+
+      if (allFormats.includes(qFormat)) {
+        setCurrentFormat(qFormat);
+        return;
+      }
+    }
+
+    if (format !== undefined) {
+      setCurrentFormat(format);
+    } else if (potentialTabs.length > 0) {
+      setCurrentFormat(potentialTabs[0].format!);
+    }
+  }, [router.query.format, router.isReady, format, potentialTabs]);
+
+  useEffect(() => {
+    if (prevFormatRef.current !== currentFormat) {
       setPdfLoaded(false);
       setMonolithLoaded(false);
       setImageLoaded(false);
-
-      prevFormatRef.current = format;
+      prevFormatRef.current = currentFormat;
     }
-  }, [format]);
+  }, [currentFormat]);
 
-  if (!link?.id) return <></>;
+  if (!link?.id) return null;
 
   const renderFormat = () => {
-    switch (format) {
+    switch (currentFormat) {
       case ArchivedFormat.readability:
         return (
           <div className="overflow-auto w-full h-full">
-            <ReadableView
-              link={link}
-              isExpanded={isExpanded}
-              standalone={standalone || false}
-            />
+            <ReadableView link={link} />
           </div>
         );
+
       case ArchivedFormat.monolith:
         return (
           <>
-            {!monolithLoaded && <PreservationSkeleton />}
+            {!monolithLoaded && (
+              <PreservationSkeleton className="max-w-screen-lg h-screen" />
+            )}
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`}
               className={clsx(
-                "w-full border-none",
-                monolithLoaded ? "block" : "hidden",
-                isExpanded
-                  ? "h-full"
-                  : standalone
-                    ? "h-[calc(100vh-3.75rem)]"
-                    : "h-[calc(80vh-3.75rem)]"
+                "w-full border-none h-screen",
+                monolithLoaded ? "block" : "hidden"
               )}
               onLoad={() => setMonolithLoaded(true)}
             />
           </>
         );
+
       case ArchivedFormat.pdf:
         return (
           <>
-            {!pdfLoaded && <PreservationSkeleton />}
+            {!pdfLoaded && (
+              <PreservationSkeleton className="max-w-screen-lg h-screen" />
+            )}
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}&_=${link.updatedAt}`}
               className={clsx(
-                "w-full border-none",
-                pdfLoaded ? "block" : "hidden",
-                isExpanded
-                  ? "h-full"
-                  : standalone
-                    ? "h-[calc(100vh-3.75rem)]"
-                    : "h-[calc(80vh-3.75rem)]"
+                "w-full border-none h-screen",
+                pdfLoaded ? "block" : "hidden"
               )}
               onLoad={() => setPdfLoaded(true)}
             />
           </>
         );
+
       case ArchivedFormat.png:
       case ArchivedFormat.jpeg:
         return (
           <>
-            {!imageLoaded && <PreservationSkeleton />}
-            <div className="overflow-auto w-fit mx-auto h-full">
+            {!imageLoaded && (
+              <PreservationSkeleton className="max-w-screen-lg h-screen" />
+            )}
+            <div
+              className={clsx(
+                "overflow-auto flex items-start",
+                imageLoaded && "h-screen"
+              )}
+            >
               <img
                 alt=""
-                src={`/api/v1/archives/${link.id}?format=${format}&_=${link.updatedAt}`}
+                src={`/api/v1/archives/${link.id}?format=${currentFormat}`}
                 className={clsx("w-fit mx-auto", !imageLoaded && "hidden")}
-                onLoad={() => setImageLoaded(true)}
+                onLoad={(e) => {
+                  const img = e.currentTarget;
+                  setImageLoaded(true);
+                  setTimeout(() => {
+                    if (img.naturalHeight < window.innerHeight) {
+                      img.parentElement?.classList.replace(
+                        "items-start",
+                        "items-center"
+                      );
+                    }
+                  }, 1);
+                }}
+                loading="eager"
               />
             </div>
           </>
         );
+
       default:
-        return <></>;
+        return null;
     }
   };
 
   return (
-    <>
+    <div className="relative bg-base-200">
+      {link.url && potentialTabs.length > 1 && (
+        <Tab
+          tabs={potentialTabs.map((tab) => ({
+            icon: tab.icon,
+            name: tab.name,
+          }))}
+          activeTabIndex={validActiveTabIndex}
+          setActiveTabIndex={handleTabChange}
+          className="w-fit absolute left-1/2 -translate-x-1/2 rounded-full bg-base-100 top-2 text-sm shadow-md"
+          hideName
+        />
+      )}
       {!atLeastOneFormatAvailable(link) ? (
         <div className={`w-full h-full flex flex-col justify-center p-10`}>
           <BeatLoader
@@ -120,13 +239,12 @@ export const PreservationContent: React.FC<Props> = ({
             className="mx-auto mb-3"
             size={30}
           />
-
           <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
           <p className="text-center text-lg">{t("check_back_later")}</p>
         </div>
       ) : (
         renderFormat()
       )}
-    </>
+    </div>
   );
 };
