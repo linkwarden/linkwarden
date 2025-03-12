@@ -174,12 +174,22 @@ export default function ReadableView({ link }: Props) {
   }, [linkContent, linkHighlights]);
 
   const handleHighlightSelection = async (
-    color: "yellow" | "red" | "blue" | "green"
+    color: "yellow" | "red" | "blue" | "green",
+    highlightId: number | null
   ) => {
-    const selection = getHighlightedSection(color);
-    if (!selection) return;
+    let selection = getHighlightedSection(color);
 
-    postHighlight.mutate(selection, {
+    if (highlightId) {
+      selection = linkHighlights?.find(
+        (h) => h.id === selectionMenu.highlightId
+      );
+
+      if (selection) selection.color = color;
+    }
+
+    if (!selection && !highlightId) return;
+
+    postHighlight.mutate(selection as Highlight, {
       onSuccess: (data) => {
         if (data) {
           setSelectionMenu({
@@ -260,7 +270,8 @@ export default function ReadableView({ link }: Props) {
                             key={color}
                             onClick={() =>
                               handleHighlightSelection(
-                                color as "yellow" | "red" | "blue" | "green"
+                                color as "yellow" | "red" | "blue" | "green",
+                                selectionMenu.highlightId
                               )
                             }
                             className={`w-5 h-5 rounded-full bg-${color}-500 hover:opacity-70 duration-100 relative`}
@@ -272,7 +283,7 @@ export default function ReadableView({ link }: Props) {
                               linkHighlights?.find(
                                 (h) => h.id === selectionMenu.highlightId
                               )?.color === color && (
-                                <i className="bi-check text-black absolute inset-0 flex items-center justify-center" />
+                                <i className="bi-check2 text-sm text-black absolute inset-0 flex items-center justify-center" />
                               )}
                           </button>
                         ))}

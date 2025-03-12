@@ -26,36 +26,6 @@ const useGetLinkHighlights = (
   });
 };
 
-const useUpdateHighlight = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (highlight: Highlight) => {
-      const response = await fetch(`/api/v1/highlights/${highlight.id}`, {
-        body: JSON.stringify(highlight),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "PUT",
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.response);
-
-      return data.response;
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["highlights"], (oldData: any) =>
-        oldData.map((highlight: Highlight) =>
-          highlight.id === data.id ? data : highlight
-        )
-      );
-
-      // queryClient.invalidateQueries({ queryKey: ["highlights", data.linkId] });
-    },
-  });
-};
-
 const usePostHighlight = (linkId: number) => {
   const queryClient = useQueryClient();
 
@@ -78,7 +48,14 @@ const usePostHighlight = (linkId: number) => {
       queryClient.setQueryData(
         ["highlights", linkId],
         (oldData: Highlight[]) => {
-          return [...oldData, data];
+          const index = oldData.findIndex((h) => h?.id === data?.id);
+          if (index !== -1) {
+            const newData = [...oldData];
+            newData[index] = data;
+            return newData;
+          } else {
+            return [...oldData, data];
+          }
         }
       );
     },
@@ -107,9 +84,4 @@ const useRemoveHighlight = (linkId: number) => {
   });
 };
 
-export {
-  useGetLinkHighlights,
-  useUpdateHighlight,
-  usePostHighlight,
-  useRemoveHighlight,
-};
+export { useGetLinkHighlights, usePostHighlight, useRemoveHighlight };
