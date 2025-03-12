@@ -64,23 +64,37 @@ export default async function deleteCollection(
 
     await removeFromOrders(userId, collectionId);
 
-    return await prisma.collection.delete({
+    const links = await prisma.link.findMany({
+      where: {
+        collectionId: collectionId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const linkIds = links.map((link) => link.id);
+
+    await meiliClient?.index("links").deleteDocuments(linkIds);
+
+    await prisma.link.deleteMany({
+      where: {
+        collection: {
+          id: collectionId,
+        },
+      },
+    });
+
+    const collection = await prisma.collection.delete({
       where: {
         id: collectionId,
       },
-      include: {
-        links: true,
-      },
     });
+
+    return collection;
   });
 
-  const { links, ...data } = deletedCollection;
-
-  const linkIds = links.map((link) => link.id);
-
-  meiliClient?.index("links").deleteDocuments(linkIds);
-
-  return { response: data, status: 200 };
+  return { response: deletedCollection, status: 200 };
 }
 
 async function deleteSubCollections(collectionId: number) {
@@ -110,7 +124,7 @@ async function deleteSubCollections(collectionId: number) {
 
     const linkIds = links.map((link) => link.id);
 
-    meiliClient?.index("links").deleteDocuments(linkIds);
+    await meiliClient?.index("links").deleteDocuments(linkIds);
 
     await prisma.link.deleteMany({
       where: {
