@@ -241,6 +241,17 @@ export const PostTagSchema = z.object({
 
 export type PostTagSchemaType = z.infer<typeof PostTagSchema>;
 
+export const PostHighlightSchema = z.object({
+  color: z.string().trim().max(50),
+  comment: z.string().trim().max(2048).nullish(),
+  startOffset: z.number(),
+  endOffset: z.number(),
+  text: z.string().trim().max(2048),
+  linkId: z.number(),
+});
+
+export type PostHighlightSchemaType = z.infer<typeof PostHighlightSchema>;
+
 export const LinkArchiveActionSchema = z.object({
   action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
 });

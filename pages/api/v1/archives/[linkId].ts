@@ -13,11 +13,7 @@ import { UsersAndCollections } from "@prisma/client";
 import { UploadFileSchema } from "@/lib/shared/schemaValidation";
 import isDemoMode from "@/lib/api/isDemoMode";
 import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
-import DOMPurify from "dompurify";
-import { formatAvailable } from "@/lib/shared/formatStats";
 import { ArchivedFormat } from "@/types/global";
-import getLinkTypeFromFormat from "@/lib/shared/getLinkTypeFromFormat";
-import handleReadability from "@/lib/api/preservationScheme/handleReadability";
 
 export const config = {
   api: {
@@ -233,7 +229,6 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         "image/png",
         "image/jpg",
         "image/jpeg",
-        "text/plain",
       ];
       const fileBuffer = validateFile(
         files.file[0],
@@ -253,15 +248,6 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const { mimetype } = files.file[0];
       const isPDF = mimetype?.includes("pdf");
       const isImage = mimetype?.includes("image");
-      const isReadable = mimetype?.includes("text");
-
-      if (isReadable) {
-        await handleReadability(fileBuffer.toString(), link, true);
-
-        fs.unlinkSync(files.file[0].filepath);
-
-        return res.status(200).json({ response: files });
-      }
 
       console.log("isPDF", isPDF);
 
@@ -291,7 +277,6 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
           pdf: isPDF
             ? `archives/${collectionPermissions.id}/${linkId + suffix}`
             : undefined,
-          contentEdited: isReadable ? new Date().toISOString() : undefined,
           updatedAt: new Date().toISOString(),
         },
       });
