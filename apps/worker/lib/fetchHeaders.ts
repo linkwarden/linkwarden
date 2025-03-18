@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import https from "https";
+import http from "http";
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from "socks-proxy-agent";
 
@@ -11,10 +12,12 @@ export default async function fetchHeaders(url: string) {
       rejectUnauthorized:
         process.env.IGNORE_UNAUTHORIZED_CA === "true" ? false : true,
     });
+    const httpAgent = new http.Agent({
+    });
 
     let fetchOpts = {
       method: "HEAD",
-      agent: httpsAgent,
+      agent: url.lastIndexOf("http:", 0) === 0 ? httpAgent : httpsAgent
     };
 
     if (process.env.PROXY) {
