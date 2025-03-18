@@ -274,7 +274,15 @@ export default function ReadableView({ link }: Props) {
                                 selectionMenu.highlightId
                               )
                             }
-                            className={`w-5 h-5 rounded-full bg-${color}-500 hover:opacity-70 duration-100 relative`}
+                            className={`w-5 h-5 rounded-full ${
+                              color === "yellow"
+                                ? "bg-yellow-300"
+                                : color === "red"
+                                  ? "bg-red-500"
+                                  : color === "blue"
+                                    ? "bg-blue-500"
+                                    : "bg-green-500"
+                            } hover:opacity-70 duration-100 relative`}
                             title={`${
                               color.charAt(0).toUpperCase() + color.slice(1)
                             } Highlight`}
