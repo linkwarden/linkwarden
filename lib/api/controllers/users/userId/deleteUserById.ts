@@ -108,16 +108,6 @@ export default async function deleteUserById(
   await prisma
     .$transaction(
       async (prisma) => {
-        // Delete Access Tokens
-        await prisma.accessToken.deleteMany({
-          where: { userId: queryId },
-        });
-
-        // Delete whitelisted users
-        await prisma.whitelistedUser.deleteMany({
-          where: { userId: queryId },
-        });
-
         const links = await prisma.link.findMany({
           where: { collection: { ownerId: queryId } },
           select: { id: true },
@@ -127,57 +117,19 @@ export default async function deleteUserById(
 
         await meiliClient?.index("links").deleteDocuments(linkIds);
 
-        // Delete links
-        await prisma.link.deleteMany({
-          where: { collection: { ownerId: queryId } },
-        });
-
-        // Delete tags
-        await prisma.tag.deleteMany({
-          where: { ownerId: queryId },
-        });
-
-        // Find collections that the user owns
         const collections = await prisma.collection.findMany({
           where: { ownerId: queryId },
         });
 
         await Promise.all(
           collections.map(async (collection) => {
-            // Delete related users and collections relations
-            await prisma.usersAndCollections.deleteMany({
-              where: { collectionId: collection.id },
-            });
-
-            // Delete archive folders
             await removeFolder({ filePath: `archives/${collection.id}` });
-
             await removeFolder({
               filePath: `archives/preview/${collection.id}`,
             });
           })
         );
 
-        // Delete collections after cleaning up related data
-        await prisma.collection.deleteMany({
-          where: { ownerId: queryId },
-        });
-
-        // Delete subscription
-        if (process.env.STRIPE_SECRET_KEY)
-          await prisma.subscription
-            .delete({
-              where: { userId: queryId },
-            })
-            .catch((err) => console.log(err));
-
-        await prisma.usersAndCollections.deleteMany({
-          where: {
-            OR: [{ userId: queryId }, { collection: { ownerId: queryId } }],
-          },
-        });
-
-        // Delete user's avatar
         await removeFile({ filePath: `uploads/avatar/${queryId}.jpg` });
 
         // Finally, delete the user

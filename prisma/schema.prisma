@@ -86,7 +86,7 @@ enum LinksRouteTo {
 model WhitelistedUser {
   id        Int      @id @default(autoincrement())
   username  String   @default("")
-  User      User?    @relation(fields: [userId], references: [id])
+  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -118,10 +118,10 @@ model Collection {
   iconWeight       String?
   color            String                @default("#0ea5e9")
   parentId         Int?
-  parent           Collection?           @relation("SubCollections", fields: [parentId], references: [id])
+  parent           Collection?           @relation("SubCollections", fields: [parentId], references: [id], onDelete: Cascade)
   subCollections   Collection[]          @relation("SubCollections")
   isPublic         Boolean               @default(false)
-  owner            User                  @relation(fields: [ownerId], references: [id])
+  owner            User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId          Int
   members          UsersAndCollections[]
   createdBy        User?                 @relation("CreatedCollections", fields: [createdById], references: [id])
@@ -135,9 +135,9 @@ model Collection {
 }
 
 model UsersAndCollections {
-  user         User       @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int
-  collection   Collection @relation(fields: [collectionId], references: [id])
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId Int
   canCreate    Boolean
   canUpdate    Boolean
@@ -154,11 +154,11 @@ model Link {
   name          String     @default("")
   type          String     @default("url")
   description   String     @default("")
-  highlight      Highlight[]
+  highlight     Highlight[]
   pinnedBy      User[]     @relation("PinnedLinks")
-  createdBy     User?      @relation("CreatedLinks", fields: [createdById], references: [id])
+  createdBy     User?      @relation("CreatedLinks", fields: [createdById], references: [id], onDelete: Cascade)
   createdById   Int?
-  collection    Collection @relation(fields: [collectionId], references: [id])
+  collection    Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId  Int
   tags          Tag[]
   icon          String?
@@ -183,7 +183,7 @@ model Tag {
   id                      Int      @id @default(autoincrement())
   name                    String
   links                   Link[]
-  owner                   User     @relation(fields: [ownerId], references: [id])
+  owner                   User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId                 Int
   archiveAsScreenshot     Boolean?
   archiveAsMonolith       Boolean?
@@ -205,7 +205,7 @@ model Subscription {
   currentPeriodStart   DateTime
   currentPeriodEnd     DateTime
   quantity             Int      @default(1)
-  user                 User     @relation(fields: [userId], references: [id])
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId               Int      @unique
   childUsers           User[]   @relation("ChildUsers")
   createdAt            DateTime @default(now())
@@ -215,7 +215,7 @@ model Subscription {
 model AccessToken {
   id         Int       @id @default(autoincrement())
   name       String
-  user       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
   token      String    @unique
   revoked    Boolean   @default(false)
@@ -231,7 +231,7 @@ model RssSubscription {
   url           String
   name          String
   lastBuildDate DateTime?
-  collection    Collection @relation(fields: [collectionId], references: [id])
+  collection    Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId  Int
   ownerId       Int
   createdAt     DateTime   @default(now())
@@ -242,9 +242,9 @@ model Highlight {
   id          Int      @id @default(autoincrement())
   color       String
   comment     String?
-  link        Link     @relation(fields: [linkId], references: [id])
+  link        Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
   linkId      Int
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   startOffset Int
   endOffset   Int

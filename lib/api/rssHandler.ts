@@ -54,7 +54,7 @@ const rssHandler = async (rssSubscription: RssSubscription, parser: Parser) => {
             data: {
               name: item.title,
               url: item.link,
-              type: "link",
+              type: "url",
               createdBy: {
                 connect: {
                   id: rssSubscription.ownerId,

@@ -1,0 +1,1 @@
+UPDATE "Link" SET "type" = 'url' WHERE "type" = 'link';
