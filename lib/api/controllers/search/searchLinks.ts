@@ -175,6 +175,13 @@ export default async function searchLinks({
     });
 
     searchConditions.push({
+      textContent: {
+        contains: query.searchQueryString,
+        mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+      },
+    });
+
+    searchConditions.push({
       tags: {
         some: {
           name: {
