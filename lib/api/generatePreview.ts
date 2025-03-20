@@ -21,7 +21,7 @@ const generatePreview = async (
 
       if (
         Buffer.byteLength(processedBuffer as any) >
-        1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 0.1)
+        1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 10)
       ) {
         console.log("Error generating preview: Buffer size exceeded");
         return prisma.link.update({
