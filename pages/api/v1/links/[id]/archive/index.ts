@@ -6,8 +6,6 @@ import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
 import { removeFiles } from "@/lib/api/manageLinkFiles";
 
-const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
-
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
   if (!user) return;

@@ -39,7 +39,7 @@ const handleReadability = async (
 
     if (
       Buffer.byteLength(data, "utf8") >
-      1024 * 1024 * Number(process.env.READABILITY_MAX_BUFFER || 1)
+      1024 * 1024 * Number(process.env.READABILITY_MAX_BUFFER || 100)
     )
       return console.error(
         "Error archiving as Readability: Buffer size exceeded"
