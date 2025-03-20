@@ -9,7 +9,7 @@ const pdfHandler = async ({ url, id }: Link) => {
 
   if (
     Buffer.byteLength(buffer) >
-    1024 * 1024 * Number(process.env.PDF_MAX_BUFFER || 2)
+    1024 * 1024 * Number(process.env.PDF_MAX_BUFFER || 100)
   )
     return console.log("Error archiving as PDF: Buffer size exceeded");
 
