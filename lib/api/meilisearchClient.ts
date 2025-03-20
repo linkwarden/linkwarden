@@ -1,10 +1,10 @@
 import { MeiliSearch } from "meilisearch";
 
-const host = process.env.MEILISEARCH_HOST;
+const apiKey = process.env.MEILI_MASTER_KEY;
 
-export const meiliClient = host
+export const meiliClient = apiKey
   ? new MeiliSearch({
-      host,
-      apiKey: process.env.MEILISEARCH_KEY,
+      host: process.env.MEILI_HOST || "http://meilisearch:7700",
+      apiKey,
     })
   : null;

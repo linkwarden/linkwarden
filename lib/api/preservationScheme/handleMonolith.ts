@@ -9,7 +9,7 @@ const handleMonolith = async (link: Link, content: string) => {
   try {
     let html = execSync(
       `monolith - -I -b "${link.url}" ${
-        process.env.MONOLITH_CUSTOM_OPTIONS || "-j -F -s"
+        process.env.MONOLITH_CUSTOM_OPTIONS || "-j -F -q"
       } -o -`,
       {
         timeout: 120000,
