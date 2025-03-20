@@ -1,4 +1,3 @@
-version: "3.5"
 services:
   postgres:
     image: postgres:16-alpine
@@ -11,11 +10,19 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
     restart: always
-    # build: . # uncomment this line to build from source
-    image: ghcr.io/linkwarden/linkwarden:latest # comment this line to build from source
+    # build: . # uncomment to build from source
+    image: ghcr.io/linkwarden/linkwarden:latest # comment to build from source
     ports:
       - 3000:3000
     volumes:
       - ./data:/data/data
     depends_on:
       - postgres
+      - meilisearch
+  meilisearch:
+    image: getmeili/meilisearch:v1.12.8
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./meili_data:/meili_data

@@ -2,7 +2,6 @@ import "dotenv/config";
 import { prisma } from "../lib/api/db";
 import archiveHandler from "../lib/api/archiveHandler";
 import Parser from "rss-parser";
-import { hasPassedLimit } from "../lib/api/verifyCapacity";
 import { LinkWithCollectionOwnerAndTags } from "../types/global";
 import getLinkBatch from "../lib/api/getLinkBatch";
 import { meiliClient } from "../lib/api/meilisearchClient";
