@@ -237,7 +237,7 @@
   "pwa_install_prompt": "ホーム画面にLinkwardenをインストールして、より高速で快適な体験を。 <0>詳しくはこちら</0>",
   "full_content": "全コンテンツ",
   "slower": "遅い",
-  "new_version_announcement": "新しいバージョンの <0>Linkwarden {{version}}</0> をご覧ください!",
+  "new_version_announcement": "新しいバージョンの <0>Linkwarden {{version}}</0> をご覧ください",
   "creating": "作成中...",
   "upload_file": "ファイルをアップロード",
   "file": "ファイル",
