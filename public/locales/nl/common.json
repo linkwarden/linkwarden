@@ -235,7 +235,7 @@
   "pwa_install_prompt": "Installeer Linkwarden op uw startscherm voor snellere toegang en een verbeterde ervaring. <0>Meer leren</0>",
   "full_content": "Volledige Inhoud",
   "slower": "Langzamer",
-  "new_version_announcement": "Zie wat er nieuw is in <0>Linkwarden {{version}}!</0>",
+  "new_version_announcement": "Zie wat er nieuw is in <0>Linkwarden {{version}}</0>",
   "creating": "Aanmaken...",
   "upload_file": "Bestand Uploaden",
   "file": "Bestand",
