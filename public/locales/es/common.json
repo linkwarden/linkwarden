@@ -236,7 +236,7 @@
     "pwa_install_prompt": "Instala Linkwarden en la pantalla de inicio para un acceso más rápido y una experiencia mejorada. <0>Aprende más</0>",
     "full_content": "Contenido completo",
     "slower": "Más despacio",
-    "new_version_announcement": "¡Descubre las novedades en <0>Linkwarden {{version}}!</0>",
+    "new_version_announcement": "¡Descubre las novedades en <0>Linkwarden {{version}}</0>",
     "creating": "Creando...",
     "upload_file": "Subir archivo",
     "file": "Archivo",

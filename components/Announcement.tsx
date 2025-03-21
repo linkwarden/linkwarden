@@ -21,7 +21,7 @@ export default function Announcement({ toggleAnnouncementBar }: Props) {
               <Link
                 href={`https://blog.linkwarden.app/releases/${announcementId}`}
                 target="_blank"
-                className="underline"
+                className="underline decoration-dotted underline-offset-4 hover:text-primary duration-100"
                 key={0}
               />,
             ]}

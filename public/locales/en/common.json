@@ -237,7 +237,7 @@
   "pwa_install_prompt": "Install Linkwarden to your home screen for a faster access and enhanced experience. <0>Learn more</0>",
   "full_content": "Full Content",
   "slower": "Slower",
-  "new_version_announcement": "See what's new in <0>Linkwarden {{version}}!</0>",
+  "new_version_announcement": "See what's new in <0>Linkwarden {{version}}</0>",
   "creating": "Creating...",
   "upload_file": "Upload File",
   "content": "Content",

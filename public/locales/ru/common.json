@@ -237,7 +237,7 @@
   "pwa_install_prompt": "Установите Linkwarden на главный экран для быстрого доступа и улучшенного опыта. <0>Подробнее</0>",
   "full_content": "Содержимое целиком",
   "slower": "Медленнее",
-  "new_version_announcement": "Ознакомьтесь с нововведениями <0>Linkwarden {{version}}!</0>",
+  "new_version_announcement": "Ознакомьтесь с нововведениями <0>Linkwarden {{version}}</0>",
   "creating": "Создание...",
   "upload_file": "Загрузить файл",
   "file": "Файл",
