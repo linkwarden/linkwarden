@@ -132,6 +132,54 @@ export default async function deleteUserById(
 
         await removeFile({ filePath: `uploads/avatar/${queryId}.jpg` });
 
+        if (process.env.STRIPE_SECRET_KEY) {
+          const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: "2022-11-15",
+          });
+
+          try {
+            if (user.subscriptions?.id && queryId !== userId) {
+              const subscription = await prisma.subscription.findFirst({
+                where: { userId: queryId },
+                select: { stripeSubscriptionId: true },
+              });
+
+              if (subscription) {
+                await stripe.subscriptions.cancel(
+                  subscription.stripeSubscriptionId,
+                  {
+                    cancellation_details: {
+                      comment: body.cancellation_details?.comment,
+                      feedback: body.cancellation_details?.feedback,
+                    },
+                  }
+                );
+              }
+            } else if (user.subscriptions?.id && queryId === userId) {
+              await stripe.subscriptions.cancel(
+                user.subscriptions.stripeSubscriptionId,
+                {
+                  cancellation_details: {
+                    comment: body.cancellation_details?.comment,
+                    feedback: body.cancellation_details?.feedback,
+                  },
+                }
+              );
+            } else if (
+              user.parentSubscription?.id &&
+              user &&
+              user.emailVerified
+            ) {
+              await updateSeats(
+                user.parentSubscription.stripeSubscriptionId,
+                user.parentSubscription.quantity - 1
+              );
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+
         // Finally, delete the user
         await prisma.user.delete({
           where: { id: queryId },
@@ -140,43 +188,6 @@ export default async function deleteUserById(
       { timeout: 20000 }
     )
     .catch((err) => console.log(err));
-
-  if (process.env.STRIPE_SECRET_KEY) {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2022-11-15",
-    });
-
-    try {
-      if (user.subscriptions?.id) {
-        const deleted = await stripe.subscriptions.cancel(
-          user.subscriptions.stripeSubscriptionId,
-          {
-            cancellation_details: {
-              comment: body.cancellation_details?.comment,
-              feedback: body.cancellation_details?.feedback,
-            },
-          }
-        );
-
-        return {
-          response: deleted,
-          status: 200,
-        };
-      } else if (user.parentSubscription?.id && user && user.emailVerified) {
-        await updateSeats(
-          user.parentSubscription.stripeSubscriptionId,
-          user.parentSubscription.quantity - 1
-        );
-
-        return {
-          response: "User account and all related data deleted successfully.",
-          status: 200,
-        };
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
   return {
     response: "User account and all related data deleted successfully.",
