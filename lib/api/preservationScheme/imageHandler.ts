@@ -10,7 +10,7 @@ const imageHandler = async ({ url, id }: Link, extension: string) => {
 
   if (
     Buffer.byteLength(buffer) >
-    1024 * 1024 * Number(process.env.SCREENSHOT_MAX_BUFFER || 2)
+    1024 * 1024 * Number(process.env.SCREENSHOT_MAX_BUFFER || 100)
   )
     return console.log("Error archiving as Screenshot: Buffer size exceeded");
 

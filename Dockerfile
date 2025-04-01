@@ -2,7 +2,8 @@
 # Purpose: Uses the Rust image to build monolith
 # Notes:
 #  - Fine to leave extra here, as only the resulting binary is copied out
-FROM docker.io/rust:1-bookworm AS monolith-builder
+FROM docker.io/rust:1.85-bullseye AS monolith-builder
+
 
 RUN set -eux && cargo install --locked monolith
 
