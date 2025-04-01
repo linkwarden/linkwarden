@@ -248,6 +248,8 @@ model Highlight {
   userId      Int
   startOffset Int
   endOffset   Int
+  startXPath  String   @default("")
+  endXPath    String   @default("")
   text        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
