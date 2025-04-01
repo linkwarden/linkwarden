@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { PreservationSkeleton } from "../Skeletons";
 import { useTranslation } from "next-i18next";
@@ -101,73 +101,302 @@ export default function ReadableView({ link }: Props) {
     }
   };
 
-  const getHighlightedSection = (color: string) => {
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed) return;
-    try {
-      const range = selection.getRangeAt(0).cloneRange();
-
-      const selectedText = selection.toString();
-
-      if (!selectedText) {
-        setSelectionMenu({
-          show: false,
-          highlightId: null,
-        });
-
-        return null;
-      }
-
-      const containerText = range.commonAncestorContainer.textContent;
-
-      if (!containerText) {
-        setSelectionMenu({
-          show: false,
-          highlightId: null,
-        });
-
-        return null;
-      }
-
-      const relativeIndex = containerText.indexOf(selectedText);
-
-      if (relativeIndex === -1) {
-        setSelectionMenu({
-          show: false,
-          highlightId: null,
-        });
-
-        return null;
-      }
-
-      const containerOffset = linkContent.indexOf(containerText);
-
-      const startOffset = containerOffset + relativeIndex;
-
-      if (startOffset !== -1 && link?.id) {
-        return {
-          linkId: link.id,
-          color,
-          text: selection.toString(),
-          startOffset,
-          endOffset: startOffset + selectedText.length,
-        };
+  function getTextNodesIn(root: Node): Text[] {
+    const textNodes: Text[] = [];
+    for (const child of Array.from(root.childNodes)) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        textNodes.push(child as Text);
       } else {
-        setSelectionMenu({
-          show: false,
-          highlightId: null,
-        });
+        textNodes.push(...getTextNodesIn(child));
+      }
+    }
+    return textNodes;
+  }
 
+  function getNodeName(node: Node): string {
+    return node.nodeType === Node.TEXT_NODE
+      ? "text()"
+      : node.nodeName.toLowerCase();
+  }
+
+  function getNodePositionAmongSameType(node: Node): number {
+    const nodeName = getNodeName(node);
+    let index = 1;
+    let prev = node.previousSibling;
+    while (prev) {
+      if (getNodeName(prev) === nodeName) {
+        index++;
+      }
+      prev = prev.previousSibling;
+    }
+    return index;
+  }
+
+  function getXPathForNode(node: Node, root: Node): string {
+    if (node === root) {
+      return "";
+    }
+    const segments: string[] = [];
+    let currentNode: Node | null = node;
+
+    while (currentNode && currentNode !== root) {
+      const nodeName = getNodeName(currentNode);
+      const index = getNodePositionAmongSameType(currentNode);
+      segments.push(`${nodeName}[${index}]`);
+      currentNode = currentNode.parentNode;
+    }
+
+    segments.reverse();
+    return "/" + segments.join("/");
+  }
+
+  function resolveNodeFromXPath(root: Node, xPath: string): Node | null {
+    if (!xPath || xPath === "/") return root;
+    let path = xPath;
+    if (path.startsWith("/")) {
+      path = path.slice(1);
+    }
+
+    let currentNode: Node | null = root;
+    const segments = path.split("/");
+
+    for (const segment of segments) {
+      const match = segment.match(/^([^\[]+)\[(\d+)\]$/);
+      if (!match) {
         return null;
       }
-    } catch (err) {
-      console.error("Could not highlight selection:", err);
-      setSelectionMenu({
-        show: false,
-        highlightId: null,
-      });
+      const [_, nodeName, indexStr] = match;
+      const index = parseInt(indexStr, 10);
+
+      currentNode = findChildByNameAndIndex(currentNode, nodeName, index);
+      if (!currentNode) return null;
     }
-  };
+
+    return currentNode;
+  }
+
+  function findChildByNameAndIndex(
+    parent: Node,
+    nodeName: string,
+    index: number
+  ): Node | null {
+    let count = 0;
+    for (const child of Array.from(parent.childNodes)) {
+      if (getNodeName(child) === nodeName) {
+        count++;
+        if (count === index) return child;
+      }
+    }
+    return null;
+  }
+
+  function getHighlightedSection(color: string) {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || selection.rangeCount === 0)
+      return null;
+
+    const range = selection.getRangeAt(0);
+
+    let startNode = range.startContainer;
+    let endNode = range.endContainer;
+    let startOffset = range.startOffset;
+    let endOffset = range.endOffset;
+
+    if (startNode === endNode && startOffset > endOffset) {
+      [startOffset, endOffset] = [endOffset, startOffset];
+    } else if (startNode !== endNode) {
+      const selectionBackwards = range.collapsed;
+      if (selectionBackwards) {
+        [startNode, endNode] = [endNode, startNode];
+        [startOffset, endOffset] = [endOffset, startOffset];
+      } else {
+        const position = startNode.compareDocumentPosition(endNode);
+        if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+          [startNode, endNode] = [endNode, startNode];
+          [startOffset, endOffset] = [endOffset, startOffset];
+        }
+      }
+    }
+
+    const text = selection.toString();
+    if (!text.trim()) return null;
+
+    const container = document.getElementById("readable-view");
+    if (!container) return null;
+
+    const startXPath = getXPathForNode(startNode, container);
+    const endXPath = getXPathForNode(endNode, container);
+    if (!startXPath || !endXPath) return null;
+
+    return {
+      linkId: link?.id as number,
+      color,
+      text,
+      startXPath,
+      startOffset,
+      endXPath,
+      endOffset,
+    };
+  }
+
+  function getHighlightedHtml(
+    htmlContent: string,
+    highlights: Array<{
+      id: number;
+      color: string;
+      text: string;
+      startXPath: string;
+      startOffset: number;
+      endXPath: string;
+      endOffset: number;
+    }>
+  ) {
+    if (!htmlContent) return "";
+    if (!highlights || !highlights.length) return htmlContent;
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
+    const docRoot = doc.body || doc.documentElement;
+    const textNodes = getTextNodesIn(docRoot);
+    type IndexedHighlight = {
+      id: number;
+      color: string;
+      text: string;
+      startXPath: string;
+      startOffset: number;
+      endXPath: string;
+      endOffset: number;
+      startNodeIndex: number;
+      endNodeIndex: number;
+      earliestNodeIndex: number;
+      earliestOffset: number;
+    };
+
+    const indexed: IndexedHighlight[] = highlights.map((hl) => {
+      const startNode = resolveNodeFromXPath(docRoot, hl.startXPath);
+      const endNode = resolveNodeFromXPath(docRoot, hl.endXPath);
+      let startIndex = startNode ? textNodes.indexOf(startNode as Text) : -1;
+      let endIndex = endNode ? textNodes.indexOf(endNode as Text) : -1;
+
+      if (!startNode || startNode.nodeType !== Node.TEXT_NODE) {
+        startIndex = -1;
+      }
+      if (!endNode || endNode.nodeType !== Node.TEXT_NODE) {
+        endIndex = -1;
+      }
+
+      let sIndex = startIndex;
+      let eIndex = endIndex;
+      let sOffset = hl.startOffset;
+      let eOffset = hl.endOffset;
+      if (sIndex > eIndex || (sIndex === eIndex && sOffset > eOffset)) {
+        [sIndex, eIndex] = [eIndex, sIndex];
+        [sOffset, eOffset] = [eOffset, sOffset];
+      }
+
+      const earliestNodeIndex = sIndex;
+      const earliestOffset = sOffset;
+
+      return {
+        ...hl,
+        startNodeIndex: sIndex,
+        endNodeIndex: eIndex,
+        startOffset: sOffset,
+        endOffset: eOffset,
+        earliestNodeIndex,
+        earliestOffset,
+      };
+    });
+
+    indexed.sort((a, b) => {
+      if (a.earliestNodeIndex !== b.earliestNodeIndex) {
+        return b.earliestNodeIndex - a.earliestNodeIndex;
+      }
+      return b.earliestOffset - a.earliestOffset;
+    });
+
+    for (const hl of indexed) {
+      applyRangeHighlight(docRoot, textNodes, hl);
+    }
+
+    return docRoot.innerHTML;
+  }
+
+  function applyRangeHighlight(
+    docRoot: HTMLElement,
+    textNodes: Text[],
+    hl: {
+      id: number;
+      color: string;
+      startNodeIndex: number;
+      startOffset: number;
+      endNodeIndex: number;
+      endOffset: number;
+    }
+  ) {
+    const { startNodeIndex, endNodeIndex } = hl;
+    if (startNodeIndex < 0 || endNodeIndex < 0) return;
+    if (startNodeIndex >= textNodes.length || endNodeIndex >= textNodes.length)
+      return;
+
+    for (let i = startNodeIndex; i <= endNodeIndex; i++) {
+      const node = textNodes[i];
+      const nodeLength = node.nodeValue?.length ?? 0;
+      if (nodeLength === 0) continue;
+
+      let chunkStart = 0;
+      let chunkEnd = nodeLength;
+
+      if (i === startNodeIndex) {
+        chunkStart = hl.startOffset;
+      }
+      if (i === endNodeIndex) {
+        chunkEnd = hl.endOffset;
+      }
+
+      if (chunkStart < 0) chunkStart = 0;
+      if (chunkEnd > nodeLength) chunkEnd = nodeLength;
+      if (chunkStart >= chunkEnd) continue;
+
+      wrapTextRangeInNode(node, chunkStart, chunkEnd, hl);
+    }
+  }
+
+  function wrapTextRangeInNode(
+    textNode: Text,
+    nodeStart: number,
+    nodeEnd: number,
+    hl: { id: number; color: string }
+  ) {
+    const range = document.createRange();
+    range.setStart(textNode, nodeStart);
+    range.setEnd(textNode, nodeEnd);
+
+    const highlightSpan = document.createElement("span");
+    highlightSpan.setAttribute("data-highlight-id", hl.id.toString());
+    highlightSpan.classList.add("highlighted-span");
+
+    switch (hl.color) {
+      case "yellow":
+        highlightSpan.classList.add("bg-yellow-500");
+        break;
+      case "red":
+        highlightSpan.classList.add("bg-red-500");
+        break;
+      case "blue":
+        highlightSpan.classList.add("bg-blue-500");
+        break;
+      case "green":
+        highlightSpan.classList.add("bg-green-500");
+        break;
+      default:
+        highlightSpan.classList.add("bg-gray-300");
+        break;
+    }
+    highlightSpan.classList.add("bg-opacity-80", "cursor-pointer");
+
+    range.surroundContents(highlightSpan);
+  }
 
   const highlightedHtml = React.useMemo(() => {
     return getHighlightedHtml(linkContent, linkHighlights || []);
@@ -180,9 +409,8 @@ export default function ReadableView({ link }: Props) {
     let selection = getHighlightedSection(color);
 
     if (highlightId) {
-      selection = linkHighlights?.find(
-        (h) => h.id === selectionMenu.highlightId
-      );
+      selection =
+        linkHighlights?.find((h) => h.id === selectionMenu.highlightId) ?? null;
 
       if (selection) selection.color = color;
     }
@@ -345,54 +573,4 @@ export default function ReadableView({ link }: Props) {
       )}
     </div>
   );
-}
-
-function getHighlightedHtml(
-  htmlContent: string,
-  highlights: Highlight[]
-): string {
-  if (!htmlContent || !highlights?.length) return htmlContent;
-
-  const sorted = [...highlights].sort((a, b) => a.startOffset - b.startOffset);
-  let result = "";
-  let lastEnd = 0;
-
-  for (const h of sorted) {
-    if (h.endOffset <= 0 || h.startOffset >= htmlContent.length) continue;
-    const start = Math.max(lastEnd, h.startOffset);
-    const end = Math.min(htmlContent.length, h.endOffset);
-
-    if (start > lastEnd) {
-      result += htmlContent.substring(lastEnd, start);
-    }
-    if (end > start) {
-      const highlightedSection = htmlContent.substring(start, end);
-      let color;
-      switch (h.color) {
-        case "yellow":
-          color = "bg-yellow-300";
-          break;
-        case "red":
-          color = "bg-red-500";
-          break;
-        case "blue":
-          color = "bg-blue-500";
-          break;
-        case "green":
-          color = "bg-green-500";
-          break;
-        default:
-          color = h.color;
-      }
-
-      result += `<span class="rounded-md px-1 ${color} hover:bg-opacity-45 bg-opacity-60 duration-100 cursor-pointer" data-highlight-id="${h.id}">${highlightedSection}</span>`;
-      lastEnd = end;
-    }
-  }
-
-  if (lastEnd < htmlContent.length) {
-    result += htmlContent.substring(lastEnd);
-  }
-
-  return result;
 }
