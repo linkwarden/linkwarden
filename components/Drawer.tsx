@@ -66,7 +66,7 @@ export default function Drawer({
       >
         <D.Portal>
           <D.Overlay className="fixed inset-0 bg-black/10 z-20" />
-          <D.Content className="bg-white flex flex-col h-full w-2/5 min-w-[30rem] mt-24 fixed bottom-0 right-0 z-40 !select-auto focus:outline-none">
+          <D.Content className="bg-white flex flex-col h-full w-2/5 max-w-6xl min-w-[30rem] mt-24 fixed bottom-0 right-0 z-40 !select-auto focus:outline-none">
             <div
               className={clsx(
                 "p-4 bg-base-100 flex-1 border-neutral-content border-l overflow-y-auto",
