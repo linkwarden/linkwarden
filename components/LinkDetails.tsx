@@ -300,7 +300,7 @@ export default function LinkDetails({
           </div>
         )}
 
-        <div className="max-w-xl sm:px-8 p-5 pb-8 pt-2">
+        <div className="sm:px-8 p-5 pb-8 pt-2">
           {mode === "view" && (
             <div className="text-xl mt-2 pr-7">
               <p

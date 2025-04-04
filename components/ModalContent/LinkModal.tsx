@@ -9,7 +9,6 @@ import usePermissions from "@/hooks/usePermissions";
 import { useRouter } from "next/router";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import toast from "react-hot-toast";
-import clsx from "clsx";
 import Tab from "../Tab";
 
 type Props = {
