@@ -63,8 +63,6 @@ export default async function postOrUpdateHighlight(
       linkId: body.linkId,
       startOffset: body.startOffset,
       endOffset: body.endOffset,
-      startXPath: body.startXPath,
-      endXPath: body.endXPath,
       color: body.color,
       text: body.text,
       comment: body.comment,

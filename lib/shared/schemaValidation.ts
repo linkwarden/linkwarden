@@ -246,8 +246,6 @@ export const PostHighlightSchema = z.object({
   comment: z.string().trim().max(2048).nullish(),
   startOffset: z.number(),
   endOffset: z.number(),
-  startXPath: z.string().trim().max(2048),
-  endXPath: z.string().trim().max(2048),
   text: z.string().trim().max(2048),
   linkId: z.number(),
 });
