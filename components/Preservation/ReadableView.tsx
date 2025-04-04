@@ -101,301 +101,137 @@ export default function ReadableView({ link }: Props) {
     }
   };
 
-  function getTextNodesIn(root: Node): Text[] {
-    const textNodes: Text[] = [];
-    for (const child of Array.from(root.childNodes)) {
-      if (child.nodeType === Node.TEXT_NODE) {
-        textNodes.push(child as Text);
-      } else {
-        textNodes.push(...getTextNodesIn(child));
-      }
-    }
-    return textNodes;
-  }
-
-  function getNodeName(node: Node): string {
-    return node.nodeType === Node.TEXT_NODE
-      ? "text()"
-      : node.nodeName.toLowerCase();
-  }
-
-  function getNodePositionAmongSameType(node: Node): number {
-    const nodeName = getNodeName(node);
-    let index = 1;
-    let prev = node.previousSibling;
-    while (prev) {
-      if (getNodeName(prev) === nodeName) {
-        index++;
-      }
-      prev = prev.previousSibling;
-    }
-    return index;
-  }
-
-  function getXPathForNode(node: Node, root: Node): string {
-    if (node === root) {
-      return "";
-    }
-    const segments: string[] = [];
-    let currentNode: Node | null = node;
-
-    while (currentNode && currentNode !== root) {
-      const nodeName = getNodeName(currentNode);
-      const index = getNodePositionAmongSameType(currentNode);
-      segments.push(`${nodeName}[${index}]`);
-      currentNode = currentNode.parentNode;
-    }
-
-    segments.reverse();
-    return "/" + segments.join("/");
-  }
-
-  function resolveNodeFromXPath(root: Node, xPath: string): Node | null {
-    if (!xPath || xPath === "/") return root;
-    let path = xPath;
-    if (path.startsWith("/")) {
-      path = path.slice(1);
-    }
-
-    let currentNode: Node | null = root;
-    const segments = path.split("/");
-
-    for (const segment of segments) {
-      const match = segment.match(/^([^\[]+)\[(\d+)\]$/);
-      if (!match) {
-        return null;
-      }
-      const [_, nodeName, indexStr] = match;
-      const index = parseInt(indexStr, 10);
-
-      currentNode = findChildByNameAndIndex(currentNode, nodeName, index);
-      if (!currentNode) return null;
-    }
-
-    return currentNode;
-  }
-
-  function findChildByNameAndIndex(
-    parent: Node,
-    nodeName: string,
-    index: number
-  ): Node | null {
-    let count = 0;
-    for (const child of Array.from(parent.childNodes)) {
-      if (getNodeName(child) === nodeName) {
-        count++;
-        if (count === index) return child;
-      }
-    }
-    return null;
-  }
-
   function getHighlightedSection(color: string) {
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed || selection.rangeCount === 0)
-      return null;
+    const selection = window.getSelection?.();
+
+    if (!selection || selection.isCollapsed) return null;
 
     const range = selection.getRangeAt(0);
-
-    let startNode = range.startContainer;
-    let endNode = range.endContainer;
-    let startOffset = range.startOffset;
-    let endOffset = range.endOffset;
-
-    if (startNode === endNode && startOffset > endOffset) {
-      [startOffset, endOffset] = [endOffset, startOffset];
-    } else if (startNode !== endNode) {
-      const selectionBackwards = range.collapsed;
-      if (selectionBackwards) {
-        [startNode, endNode] = [endNode, startNode];
-        [startOffset, endOffset] = [endOffset, startOffset];
-      } else {
-        const position = startNode.compareDocumentPosition(endNode);
-        if (position & Node.DOCUMENT_POSITION_PRECEDING) {
-          [startNode, endNode] = [endNode, startNode];
-          [startOffset, endOffset] = [endOffset, startOffset];
-        }
-      }
-    }
-
-    const text = selection.toString();
-    if (!text.trim()) return null;
+    if (!range) return null;
 
     const container = document.getElementById("readable-view");
-    if (!container) return null;
+    if (!container || !container.contains(range.commonAncestorContainer)) {
+      return null;
+    }
 
-    const startXPath = getXPathForNode(startNode, container);
-    const endXPath = getXPathForNode(endNode, container);
-    if (!startXPath || !endXPath) return null;
+    let startOffset = -1;
+    let endOffset = -1;
+    let currentOffset = 0;
+
+    const treeWalker = document.createTreeWalker(
+      container,
+      NodeFilter.SHOW_TEXT
+    );
+    while (treeWalker.nextNode()) {
+      const node = treeWalker.currentNode;
+      const nodeLength = node.textContent?.length ?? 0;
+
+      if (node === range.startContainer) {
+        startOffset = currentOffset + range.startOffset;
+      }
+
+      if (node === range.endContainer) {
+        endOffset = currentOffset + range.endOffset;
+        break;
+      }
+
+      currentOffset += nodeLength;
+    }
+
+    if (startOffset === -1 || endOffset === -1) {
+      return null;
+    }
 
     return {
-      linkId: link?.id as number,
+      linkId: link?.id,
       color,
-      text,
-      startXPath,
+      text: range.toString(),
       startOffset,
-      endXPath,
       endOffset,
     };
   }
 
   function getHighlightedHtml(
     htmlContent: string,
-    highlights: Array<{
-      id: number;
-      color: string;
-      text: string;
-      startXPath: string;
-      startOffset: number;
-      endXPath: string;
-      endOffset: number;
-    }>
-  ) {
-    if (!htmlContent) return "";
-    if (!highlights || !highlights.length) return htmlContent;
-
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlContent, "text/html");
-    const docRoot = doc.body || doc.documentElement;
-    const textNodes = getTextNodesIn(docRoot);
-    type IndexedHighlight = {
-      id: number;
-      color: string;
-      text: string;
-      startXPath: string;
-      startOffset: number;
-      endXPath: string;
-      endOffset: number;
-      startNodeIndex: number;
-      endNodeIndex: number;
-      earliestNodeIndex: number;
-      earliestOffset: number;
-    };
-
-    const indexed: IndexedHighlight[] = highlights.map((hl) => {
-      const startNode = resolveNodeFromXPath(docRoot, hl.startXPath);
-      const endNode = resolveNodeFromXPath(docRoot, hl.endXPath);
-      let startIndex = startNode ? textNodes.indexOf(startNode as Text) : -1;
-      let endIndex = endNode ? textNodes.indexOf(endNode as Text) : -1;
-
-      if (!startNode || startNode.nodeType !== Node.TEXT_NODE) {
-        startIndex = -1;
-      }
-      if (!endNode || endNode.nodeType !== Node.TEXT_NODE) {
-        endIndex = -1;
-      }
-
-      let sIndex = startIndex;
-      let eIndex = endIndex;
-      let sOffset = hl.startOffset;
-      let eOffset = hl.endOffset;
-      if (sIndex > eIndex || (sIndex === eIndex && sOffset > eOffset)) {
-        [sIndex, eIndex] = [eIndex, sIndex];
-        [sOffset, eOffset] = [eOffset, sOffset];
-      }
-
-      const earliestNodeIndex = sIndex;
-      const earliestOffset = sOffset;
-
-      return {
-        ...hl,
-        startNodeIndex: sIndex,
-        endNodeIndex: eIndex,
-        startOffset: sOffset,
-        endOffset: eOffset,
-        earliestNodeIndex,
-        earliestOffset,
-      };
-    });
-
-    indexed.sort((a, b) => {
-      if (a.earliestNodeIndex !== b.earliestNodeIndex) {
-        return b.earliestNodeIndex - a.earliestNodeIndex;
-      }
-      return b.earliestOffset - a.earliestOffset;
-    });
-
-    for (const hl of indexed) {
-      applyRangeHighlight(docRoot, textNodes, hl);
+    highlights: Highlight[]
+  ): string {
+    if (!htmlContent || !highlights || highlights.length === 0) {
+      return htmlContent;
     }
 
-    return docRoot.innerHTML;
+    const container = document.createElement("div");
+    container.innerHTML = htmlContent;
+
+    const sortedHighlights = [...highlights].sort(
+      (a, b) => a.startOffset - b.startOffset
+    );
+
+    for (const highlight of sortedHighlights) {
+      applyHighlight(container, highlight);
+    }
+
+    return container.innerHTML;
   }
 
-  function applyRangeHighlight(
-    docRoot: HTMLElement,
-    textNodes: Text[],
-    hl: {
-      id: number;
-      color: string;
-      startNodeIndex: number;
-      startOffset: number;
-      endNodeIndex: number;
-      endOffset: number;
-    }
-  ) {
-    const { startNodeIndex, endNodeIndex } = hl;
-    if (startNodeIndex < 0 || endNodeIndex < 0) return;
-    if (startNodeIndex >= textNodes.length || endNodeIndex >= textNodes.length)
-      return;
+  function applyHighlight(container: HTMLElement, highlight: Highlight) {
+    let currentOffset = 0;
+    const treeWalker = document.createTreeWalker(
+      container,
+      NodeFilter.SHOW_TEXT
+    );
 
-    for (let i = startNodeIndex; i <= endNodeIndex; i++) {
-      const node = textNodes[i];
-      const nodeLength = node.nodeValue?.length ?? 0;
-      if (nodeLength === 0) continue;
+    const rangesToWrap: Array<{
+      node: Text;
+      start: number;
+      end: number;
+    }> = [];
 
-      let chunkStart = 0;
-      let chunkEnd = nodeLength;
+    while (treeWalker.nextNode()) {
+      const node = treeWalker.currentNode as Text;
+      const nodeLength = node.textContent?.length ?? 0;
+      const nodeStart = currentOffset;
+      const nodeEnd = nodeStart + nodeLength;
 
-      if (i === startNodeIndex) {
-        chunkStart = hl.startOffset;
-      }
-      if (i === endNodeIndex) {
-        chunkEnd = hl.endOffset;
+      if (nodeStart < highlight.endOffset && nodeEnd > highlight.startOffset) {
+        rangesToWrap.push({
+          node,
+          start: Math.max(0, highlight.startOffset - nodeStart),
+          end: Math.min(nodeLength, highlight.endOffset - nodeStart),
+        });
       }
 
-      if (chunkStart < 0) chunkStart = 0;
-      if (chunkEnd > nodeLength) chunkEnd = nodeLength;
-      if (chunkStart >= chunkEnd) continue;
-
-      wrapTextRangeInNode(node, chunkStart, chunkEnd, hl);
+      currentOffset += nodeLength;
     }
-  }
 
-  function wrapTextRangeInNode(
-    textNode: Text,
-    nodeStart: number,
-    nodeEnd: number,
-    hl: { id: number; color: string }
-  ) {
-    const range = document.createRange();
-    range.setStart(textNode, nodeStart);
-    range.setEnd(textNode, nodeEnd);
+    rangesToWrap.forEach(({ node, start, end }) => {
+      if (start > 0) {
+        node.splitText(start);
+        node = node.nextSibling as Text;
+        end -= start;
+      }
 
-    const highlightSpan = document.createElement("span");
-    highlightSpan.setAttribute("data-highlight-id", hl.id.toString());
-    highlightSpan.classList.add("highlighted-span");
+      if (end < node.length) {
+        node.splitText(end);
+      }
 
-    switch (hl.color) {
-      case "yellow":
-        highlightSpan.classList.add("bg-yellow-500");
-        break;
-      case "red":
-        highlightSpan.classList.add("bg-red-500");
-        break;
-      case "blue":
-        highlightSpan.classList.add("bg-blue-500");
-        break;
-      case "green":
-        highlightSpan.classList.add("bg-green-500");
-        break;
-      default:
-        highlightSpan.classList.add("bg-gray-300");
-        break;
-    }
-    highlightSpan.classList.add("bg-opacity-80", "cursor-pointer");
+      const highlightWrapper = document.createElement("span");
+      highlightWrapper.dataset.highlightId = highlight.id.toString();
 
-    range.surroundContents(highlightSpan);
+      highlightWrapper.classList.add("cursor-pointer");
+
+      if (highlight.color === "yellow") {
+        highlightWrapper.classList.add("bg-yellow-500/70");
+      } else if (highlight.color === "red") {
+        highlightWrapper.classList.add("bg-red-500/70");
+      } else if (highlight.color === "blue") {
+        highlightWrapper.classList.add("bg-blue-500/70");
+      } else if (highlight.color === "green") {
+        highlightWrapper.classList.add("bg-green-500/70");
+      }
+
+      node.parentNode?.insertBefore(highlightWrapper, node);
+      highlightWrapper.appendChild(node);
+    });
   }
 
   const highlightedHtml = React.useMemo(() => {
