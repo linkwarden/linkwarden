@@ -28,6 +28,7 @@
     "@aws-sdk/client-s3": "^3.379.1",
     "@headlessui/react": "^1.7.15",
     "@mozilla/readability": "^0.4.4",
+    "@openrouter/ai-sdk-provider": "^0.4.3",
     "@phosphor-icons/core": "^2.1.1",
     "@phosphor-icons/react": "^2.1.7",
     "@prisma/client": "^5.21.1",
