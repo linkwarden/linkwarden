@@ -22,9 +22,12 @@ export default function Navbar() {
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    setSidebar(false);
-    document.body.style.overflow = "auto";
+    if (sidebar) setSidebar(false);
   }, [width, router]);
+
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+  }, [sidebar]);
 
   const toggleSidebar = () => {
     setSidebar(false);
@@ -75,7 +78,7 @@ export default function Navbar() {
                 }}
                 tabIndex={0}
                 role="button"
-                className="whitespace-nowrap"
+                className="whitespace-nowrap flex gap-2"
               >
                 {t("new_link")}
               </div>
@@ -88,7 +91,7 @@ export default function Navbar() {
                 }}
                 tabIndex={0}
                 role="button"
-                className="whitespace-nowrap"
+                className="whitespace-nowrap flex gap-2"
               >
                 {t("upload_file")}
               </div>
@@ -101,7 +104,7 @@ export default function Navbar() {
                 }}
                 tabIndex={0}
                 role="button"
-                className="whitespace-nowrap"
+                className="whitespace-nowrap flex gap-2"
               >
                 {t("new_collection")}
               </div>

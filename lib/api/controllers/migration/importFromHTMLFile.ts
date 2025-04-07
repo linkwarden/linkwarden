@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
+import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "../../verifyCapacity";
 
@@ -33,7 +34,6 @@ export default async function importFromHTMLFile(
   const processedArray = processNodes(jsonData);
 
   for (const item of processedArray) {
-    console.log(item);
     await processBookmarks(userId, item as Element);
   }
 
@@ -81,15 +81,17 @@ async function processBookmarks(
       } else if (item.type === "element" && item.tagName === "a") {
         // process link
 
-        const linkUrl = item?.attributes.find(
+        const rawLinkUrl = item?.attributes.find(
           (e) => e.key.toLowerCase() === "href"
         )?.value;
+        const linkUrl = decodeEntities(rawLinkUrl);
         const linkName = (
           item?.children.find((e) => e.type === "text") as TextNode
         )?.content;
         const linkTags = item?.attributes
           .find((e) => e.key === "tags")
-          ?.value.split(",");
+          ?.value.split(",")
+          .map(decodeEntities);
 
         // set date if available
         const linkDateValue = item?.attributes.find(
@@ -289,4 +291,8 @@ function processNodes(nodes: Node[]) {
 
   nodes.forEach(findAndProcessDL);
   return nodes;
+}
+
+function decodeEntities(encoded: string | undefined): string {
+  return decodeHTML(encoded ?? "");
 }

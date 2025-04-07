@@ -72,13 +72,15 @@ export const UpdateUserSchema = () => {
     newPassword: z.string().min(8).max(2048).optional(),
     oldPassword: z.string().min(8).max(2048).optional(),
     archiveAsScreenshot: z.boolean().optional(),
-    archiveAsPDF: z.boolean().optional(),
     archiveAsMonolith: z.boolean().optional(),
+    archiveAsPDF: z.boolean().optional(),
+    archiveAsReadable: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
     dashboardPinnedLinks: z.boolean().optional(),
     dashboardRecentLinks: z.boolean().optional(),
     aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
+    aiTagExistingLinks: z.boolean().optional(),
     locale: z.string().max(20).optional(),
     isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
@@ -156,6 +158,7 @@ const ACCEPTED_TYPES = [
   "image/jpg",
   "image/png",
   "application/pdf",
+  "text/plain",
 ];
 const NEXT_PUBLIC_MAX_FILE_BUFFER = Number(
   process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
@@ -221,3 +224,38 @@ export const PostRssSubscriptionSchema = z.object({
   collectionId: z.number().optional(),
   collectionName: z.string().max(50).optional(),
 });
+
+export const PostTagSchema = z.object({
+  tags: z.array(
+    z.object({
+      label: z.string().trim().max(50),
+      archiveAsScreenshot: z.boolean().nullish(),
+      archiveAsMonolith: z.boolean().nullish(),
+      archiveAsPDF: z.boolean().nullish(),
+      archiveAsReadable: z.boolean().nullish(),
+      archiveAsWaybackMachine: z.boolean().nullish(),
+      aiTag: z.boolean().nullish(),
+    })
+  ),
+});
+
+export type PostTagSchemaType = z.infer<typeof PostTagSchema>;
+
+export const PostHighlightSchema = z.object({
+  color: z.string().trim().max(50),
+  comment: z.string().trim().max(2048).nullish(),
+  startOffset: z.number(),
+  endOffset: z.number(),
+  text: z.string().trim().max(2048),
+  linkId: z.number(),
+});
+
+export type PostHighlightSchemaType = z.infer<typeof PostHighlightSchema>;
+
+export const LinkArchiveActionSchema = z.object({
+  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
+});
+
+export type LinkArchiveActionSchemaType = z.infer<
+  typeof LinkArchiveActionSchema
+>["action"];

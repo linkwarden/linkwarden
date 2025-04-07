@@ -13,11 +13,7 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@/hooks/store/user";
-import {
-  useGetLink,
-  useUpdateLink,
-  useUpdatePreview,
-} from "@/hooks/store/links";
+import { useGetLink, useUpdateLink, useUpdateFile } from "@/hooks/store/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
@@ -140,7 +136,7 @@ export default function LinkDetails({
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   const updateLink = useUpdateLink();
-  const updatePreview = useUpdatePreview();
+  const updateFile = useUpdateFile();
 
   const submit = async (e?: any) => {
     e?.preventDefault();
@@ -225,7 +221,7 @@ export default function LinkDetails({
             !isPublicRoute && (
               <div className="absolute top-0 bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 duration-100 flex justify-end items-end">
                 <label className="btn btn-xs mb-2 mr-3 opacity-50 hover:opacity-100">
-                  {t("upload_preview_image")}
+                  {t("upload_banner")}
                   <input
                     type="file"
                     accept="image/jpg, image/jpeg, image/png"
@@ -235,7 +231,7 @@ export default function LinkDetails({
 
                       const load = toast.loading(t("updating"));
 
-                      await updatePreview.mutateAsync(
+                      await updateFile.mutateAsync(
                         {
                           linkId: link.id as number,
                           file,
@@ -304,7 +300,7 @@ export default function LinkDetails({
           </div>
         )}
 
-        <div className="max-w-xl sm:px-8 p-5 pb-8 pt-2">
+        <div className="sm:px-8 p-5 pb-8 pt-2">
           {mode === "view" && (
             <div className="text-xl mt-2 pr-7">
               <p
@@ -498,7 +494,7 @@ export default function LinkDetails({
                   className="text-sm text-neutral"
                   title={t("available_formats")}
                 >
-                  {link.url ? t("preserved_formats") : t("file")}
+                  {link.url ? t("preserved_formats") : t("content")}
                 </p>
 
                 {onUpdateArchive &&

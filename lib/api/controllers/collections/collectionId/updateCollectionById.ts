@@ -109,6 +109,11 @@ export default async function updateCollection(
         _count: {
           select: { links: true },
         },
+        links: {
+          select: {
+            id: true,
+          },
+        },
         members: {
           include: {
             user: {
@@ -125,5 +130,20 @@ export default async function updateCollection(
     });
   });
 
-  return { response: updatedCollection, status: 200 };
+  const { links, ...dataResponse } = updatedCollection;
+
+  const linkIds = links.map((link) => link.id);
+
+  await prisma.link.updateMany({
+    where: {
+      id: {
+        in: linkIds,
+      },
+    },
+    data: {
+      indexVersion: null,
+    },
+  });
+
+  return { response: dataResponse, status: 200 };
 }

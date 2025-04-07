@@ -31,6 +31,11 @@ function useOutsideAlerter(
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const clickedElement = event.target as HTMLElement;
+
+      if (clickedElement.closest("[data-ignore-click-away]")) {
+        return;
+      }
+
       if (ref.current && !ref.current.contains(clickedElement)) {
         const refZIndex = getZIndex(ref.current);
         const clickedZIndex = getZIndex(clickedElement);

@@ -9,11 +9,11 @@ const handleMonolith = async (link: Link, content: string) => {
   try {
     let html = execSync(
       `monolith - -I -b "${link.url}" ${
-        process.env.MONOLITH_CUSTOM_OPTIONS || "-j -F -s"
+        process.env.MONOLITH_CUSTOM_OPTIONS || "-j -F -q"
       } -o -`,
       {
         timeout: 120000,
-        maxBuffer: 1024 * 1024 * Number(process.env.MONOLITH_MAX_BUFFER || 5),
+        maxBuffer: 1024 * 1024 * Number(process.env.MONOLITH_MAX_BUFFER || 100),
         input: content,
       }
     );
