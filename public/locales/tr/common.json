@@ -235,7 +235,7 @@
   "pwa_install_prompt": "Daha hızlı erişim ve geliştirilmiş bir deneyim için Linkwarden'ı ana ekranınıza yükleyin. <0>Daha fazla öğren</0>",
   "full_content": "Tam İçerik",
   "slower": "Daha Yavaş",
-  "new_version_announcement": "<0>Linkwarden {{version}}'da</0> nelerin yeni olduğunu görün!",
+  "new_version_announcement": "<0>Linkwarden {{version}}'da</0> nelerin yeni olduğunu görün",
   "creating": "Oluşturuluyor...",
   "upload_file": "Dosya Yükle",
   "file": "Dosya",

@@ -4,7 +4,7 @@ import {
   UpdateTagSchemaType,
 } from "@/lib/shared/schemaValidation";
 
-export default async function updeteTagById(
+export default async function updateTagById(
   userId: number,
   tagId: number,
   body: UpdateTagSchemaType
@@ -54,7 +54,29 @@ export default async function updeteTagById(
     data: {
       name: name,
     },
+    include: {
+      links: {
+        select: {
+          id: true,
+        },
+      },
+    },
   });
 
-  return { response: updatedTag, status: 200 };
+  const { links, ...data } = updatedTag;
+
+  const linkIds = links.map((link) => link.id);
+
+  await prisma.link.updateMany({
+    where: {
+      id: {
+        in: linkIds,
+      },
+    },
+    data: {
+      indexVersion: null,
+    },
+  });
+
+  return { response: data, status: 200 };
 }

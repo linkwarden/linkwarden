@@ -66,9 +66,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     settings: { show },
   } = useLocalSettingsStore();
 
-  const {
-    data: { data: links = [] },
-  } = useLinks();
+  const { links } = useLinks();
   const getLink = useGetLink();
 
   useEffect(() => {

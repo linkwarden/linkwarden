@@ -1,17 +1,14 @@
-import { Collection, Link, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { Page } from "playwright";
 import createFile from "../storage/createFile";
 import { prisma } from "../db";
+import { LinkWithCollectionOwnerAndTags } from "../../../types/global";
+import { ArchivalSettings } from "../archiveHandler";
 
-type LinksAndCollectionAndOwner = Link & {
-  collection: Collection & {
-    owner: User;
-  };
-};
 const handleScreenshotAndPdf = async (
-  link: LinksAndCollectionAndOwner,
+  link: LinkWithCollectionOwnerAndTags,
   page: Page,
-  user: User
+  archivalSettings: ArchivalSettings
 ) => {
   await page.evaluate(autoScroll, Number(process.env.AUTOSCROLL_TIMEOUT) || 30);
 
@@ -22,14 +19,17 @@ const handleScreenshotAndPdf = async (
   if (linkExists) {
     const processingPromises = [];
 
-    if (user.archiveAsScreenshot && !link.image?.startsWith("archive")) {
+    if (
+      archivalSettings.archiveAsScreenshot &&
+      !link.image?.startsWith("archive")
+    ) {
       processingPromises.push(
         page
           .screenshot({ fullPage: true, type: "jpeg" })
           .then(async (screenshot) => {
             if (
               Buffer.byteLength(screenshot) >
-              1024 * 1024 * Number(process.env.SCREENSHOT_MAX_BUFFER || 2)
+              1024 * 1024 * Number(process.env.SCREENSHOT_MAX_BUFFER || 100)
             )
               return console.log(
                 "Error archiving as Screenshot: Buffer size exceeded"
@@ -42,7 +42,7 @@ const handleScreenshotAndPdf = async (
             await prisma.link.update({
               where: { id: link.id },
               data: {
-                image: user.archiveAsScreenshot
+                image: archivalSettings.archiveAsScreenshot
                   ? `archives/${linkExists.collectionId}/${link.id}.jpeg`
                   : undefined,
               },
@@ -56,7 +56,7 @@ const handleScreenshotAndPdf = async (
       bottom: process.env.PDF_MARGIN_BOTTOM || "15px",
     };
 
-    if (user.archiveAsPDF && !link.pdf?.startsWith("archive")) {
+    if (archivalSettings.archiveAsPDF && !link.pdf?.startsWith("archive")) {
       processingPromises.push(
         page
           .pdf({
@@ -68,7 +68,7 @@ const handleScreenshotAndPdf = async (
           .then(async (pdf) => {
             if (
               Buffer.byteLength(pdf) >
-              1024 * 1024 * Number(process.env.PDF_MAX_BUFFER || 2)
+              1024 * 1024 * Number(process.env.PDF_MAX_BUFFER || 100)
             )
               return console.log(
                 "Error archiving as PDF: Buffer size exceeded"
@@ -82,7 +82,7 @@ const handleScreenshotAndPdf = async (
             await prisma.link.update({
               where: { id: link.id },
               data: {
-                pdf: user.archiveAsPDF
+                pdf: archivalSettings.archiveAsPDF
                   ? `archives/${linkExists.collectionId}/${link.id}.pdf`
                   : undefined,
               },

@@ -42,7 +42,7 @@ export default async function fetchTitleAndHeaders(url: string) {
       // regular expression to find the <title> tag
       let match = text.match(/<title.*>([^<]*)<\/title>/);
 
-      const title = match[1] || "";
+      const title = match?.[1] || "";
       const headers = (response as Response)?.headers || null;
 
       return { title, headers };

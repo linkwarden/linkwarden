@@ -5,15 +5,23 @@ import { prisma } from "../db";
 import createFile from "../storage/createFile";
 import { Link } from "@prisma/client";
 
-const handleReadablility = async (content: string, link: Link) => {
+const handleReadability = async (
+  content: string,
+  link: Link,
+  keepContent?: boolean
+) => {
+  const TEXT_CONTENT_LIMIT = Number(process.env.TEXT_CONTENT_LIMIT);
+
   const window = new JSDOM("").window;
   const purify = DOMPurify(window);
   const cleanedUpContent = purify.sanitize(content);
   const dom = new JSDOM(cleanedUpContent, { url: link.url || "" });
+
   const article = new Readability(dom.window.document).parse();
   const articleText = article?.textContent
     .replace(/ +(?= )/g, "") // strip out multiple spaces
-    .replace(/(\r\n|\n|\r)/gm, " "); // strip out line breaks
+    .replace(/(\r\n|\n|\r)/gm, " ") // strip out line breaks
+    .slice(0, TEXT_CONTENT_LIMIT ? TEXT_CONTENT_LIMIT : undefined); // limit characters if TEXT_CONTENT_LIMIT is defined
 
   if (articleText && articleText !== "") {
     const collectionId = (
@@ -23,11 +31,15 @@ const handleReadablility = async (content: string, link: Link) => {
       })
     )?.collectionId;
 
+    if (article && keepContent) {
+      article.content = cleanedUpContent;
+    }
+
     const data = JSON.stringify(article);
 
     if (
       Buffer.byteLength(data, "utf8") >
-      1024 * 1024 * Number(process.env.READABILITY_MAX_BUFFER || 1)
+      1024 * 1024 * Number(process.env.READABILITY_MAX_BUFFER || 100)
     )
       return console.error(
         "Error archiving as Readability: Buffer size exceeded"
@@ -48,4 +60,4 @@ const handleReadablility = async (content: string, link: Link) => {
   }
 };
 
-export default handleReadablility;
+export default handleReadability;

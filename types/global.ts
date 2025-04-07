@@ -58,13 +58,19 @@ export interface AccountSettings extends User {
   };
 }
 
-interface LinksIncludingTags extends Link {
+export interface LinksIncludingTags extends Link {
   tags: Tag[];
 }
 
 export interface PublicCollectionIncludingLinks extends Collection {
   links: LinksIncludingTags[];
 }
+
+export type LinkWithCollectionOwnerAndTags = LinksIncludingTags & {
+  collection: Collection & {
+    owner: User;
+  };
+};
 
 export enum ViewMode {
   Card = "card",
@@ -73,12 +79,10 @@ export enum ViewMode {
 }
 
 export enum Sort {
-  DateNewestFirst,
-  DateOldestFirst,
-  NameAZ,
-  NameZA,
-  DescriptionAZ,
-  DescriptionZA,
+  DateNewestFirst = 0,
+  DateOldestFirst = 1,
+  NameAZ = 2,
+  NameZA = 3,
 }
 
 export type Order = { [key: string]: "asc" | "desc" };
@@ -90,11 +94,6 @@ export type LinkRequestQuery = {
   tagId?: number;
   pinnedOnly?: boolean;
   searchQueryString?: string;
-  searchByName?: boolean;
-  searchByUrl?: boolean;
-  searchByDescription?: boolean;
-  searchByTextContent?: boolean;
-  searchByTags?: boolean;
 };
 
 export type PublicLinkRequestQuery = {
@@ -117,15 +116,15 @@ export type MigrationRequest = {
 };
 
 export enum MigrationFormat {
-  linkwarden,
-  htmlFile,
-  wallabag,
-  omnivore,
+  linkwarden = 0,
+  htmlFile = 1,
+  wallabag = 2,
+  omnivore = 3,
 }
 
 export enum Plan {
-  monthly,
-  yearly,
+  monthly = 0,
+  yearly = 1,
 }
 
 export type DeleteUserBody = {
@@ -137,24 +136,30 @@ export type DeleteUserBody = {
 };
 
 export enum ArchivedFormat {
-  png,
-  jpeg,
-  pdf,
-  readability,
-  monolith,
+  png = 0,
+  jpeg = 1,
+  pdf = 2,
+  readability = 3,
+  monolith = 4,
 }
 
 export enum LinkType {
-  url,
-  pdf,
-  image,
-  monolith,
+  url = 0,
+  pdf = 1,
+  image = 2,
+  monolith = 3,
 }
 
 export enum TokenExpiry {
-  sevenDays,
-  oneMonth,
-  twoMonths,
-  threeMonths,
-  never,
+  sevenDays = 0,
+  oneMonth = 1,
+  twoMonths = 2,
+  threeMonths = 3,
+  never = 4,
 }
+
+export type ResponseObject<T = any> = {
+  success: boolean;
+  message: string;
+  data: T;
+};

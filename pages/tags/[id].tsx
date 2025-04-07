@@ -171,9 +171,7 @@ export default function Index() {
                 </form>
               ) : (
                 <>
-                  <p className="sm:text-3xl text-2xl capitalize">
-                    {activeTag?.name}
-                  </p>
+                  <p className="sm:text-3xl text-2xl">{activeTag?.name}</p>
                   <div className="relative">
                     <div
                       className={`dropdown dropdown-bottom font-normal ${

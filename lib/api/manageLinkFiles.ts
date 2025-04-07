@@ -30,6 +30,34 @@ const removeFiles = async (linkId: number, collectionId: number) => {
   });
 };
 
+const removePreservationFiles = async (
+  linkId: number,
+  collectionId: number
+) => {
+  // PDF
+  await removeFile({
+    filePath: `archives/${collectionId}/${linkId}.pdf`,
+  });
+  // Images
+  await removeFile({
+    filePath: `archives/${collectionId}/${linkId}.png`,
+  });
+  await removeFile({
+    filePath: `archives/${collectionId}/${linkId}.jpeg`,
+  });
+  await removeFile({
+    filePath: `archives/${collectionId}/${linkId}.jpg`,
+  });
+  // HTML
+  await removeFile({
+    filePath: `archives/${collectionId}/${linkId}.html`,
+  });
+  // Readability
+  await removeFile({
+    filePath: `archives/${collectionId}/${linkId}_readability.json`,
+  });
+};
+
 const moveFiles = async (linkId: number, from: number, to: number) => {
   await moveFile(
     `archives/${from}/${linkId}.pdf`,
@@ -67,4 +95,4 @@ const moveFiles = async (linkId: number, from: number, to: number) => {
   );
 };
 
-export { removeFiles, moveFiles };
+export { removeFiles, removePreservationFiles, moveFiles };
