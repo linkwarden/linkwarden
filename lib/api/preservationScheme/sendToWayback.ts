@@ -15,7 +15,7 @@ export default async function sendToWayback(url: string) {
       headers: headers,
     })
     .then((response) => {
-      console.log(response.data);
+      console.log(`Sent ${url} to Wayback Machine`);
     })
     .catch((error) => {
       console.error(error);

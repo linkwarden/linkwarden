@@ -20,8 +20,8 @@ const generatePreview = async (
       const processedBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
 
       if (
-        Buffer.byteLength(processedBuffer) >
-        1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 0.1)
+        Buffer.byteLength(processedBuffer as any) >
+        1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 10)
       ) {
         console.log("Error generating preview: Buffer size exceeded");
         return prisma.link.update({

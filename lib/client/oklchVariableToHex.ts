@@ -8,7 +8,6 @@ const oklchVariableToHex = (variable: string): string => {
     .toGamut({ space: "srgb" })
     .to("srgb")
     .toString({ format: "hex" });
-  console.log(hexColor);
   return hexColor;
 };
 

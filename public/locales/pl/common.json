@@ -236,7 +236,7 @@
   "pwa_install_prompt": "Zainstaluj Linkwarden na swoim ekranie głównym, aby uzyskać szybszy dostęp i poprawić doświadczenia. <0>Dowiedz się więcej</0>",
   "full_content": "Pełna treść",
   "slower": "Wolniej",
-  "new_version_announcement": "Zobacz, co nowego w <0>Linkwarden {{version}}!</0>",
+  "new_version_announcement": "Zobacz, co nowego w <0>Linkwarden {{version}}</0>",
   "creating": "Tworzenie...",
   "upload_file": "Prześlij plik",
   "file": "Plik",

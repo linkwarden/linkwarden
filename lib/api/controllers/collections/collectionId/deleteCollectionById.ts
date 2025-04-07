@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/api/db";
 import getPermission from "@/lib/api/getPermission";
-import { UsersAndCollections } from "@prisma/client";
+import { Link, UsersAndCollections } from "@prisma/client";
 import removeFolder from "@/lib/api/storage/removeFolder";
+import { meiliClient } from "@/lib/api/meilisearchClient";
 
 export default async function deleteCollection(
   userId: number,
@@ -33,6 +34,15 @@ export default async function deleteCollection(
 
     await removeFromOrders(userId, collectionId);
 
+    await prisma.link.updateMany({
+      where: {
+        collectionId,
+      },
+      data: {
+        indexVersion: null,
+      },
+    });
+
     return { response: deletedUsersAndCollectionsRelation, status: 200 };
   } else if (collectionIsAccessible?.ownerId !== userId) {
     return { response: "Collection is not accessible.", status: 401 };
@@ -49,6 +59,24 @@ export default async function deleteCollection(
       },
     });
 
+    removeFolder({ filePath: `archives/${collectionId}` });
+    removeFolder({ filePath: `archives/preview/${collectionId}` });
+
+    await removeFromOrders(userId, collectionId);
+
+    const links = await prisma.link.findMany({
+      where: {
+        collectionId: collectionId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const linkIds = links.map((link) => link.id);
+
+    await meiliClient?.index("links").deleteDocuments(linkIds);
+
     await prisma.link.deleteMany({
       where: {
         collection: {
@@ -57,16 +85,13 @@ export default async function deleteCollection(
       },
     });
 
-    removeFolder({ filePath: `archives/${collectionId}` });
-    removeFolder({ filePath: `archives/preview/${collectionId}` });
-
-    await removeFromOrders(userId, collectionId);
-
-    return await prisma.collection.delete({
+    const collection = await prisma.collection.delete({
       where: {
         id: collectionId,
       },
     });
+
+    return collection;
   });
 
   return { response: deletedCollection, status: 200 };
@@ -87,6 +112,19 @@ async function deleteSubCollections(collectionId: number) {
         },
       },
     });
+
+    const links = await prisma.link.findMany({
+      where: {
+        collectionId: subCollection.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const linkIds = links.map((link) => link.id);
+
+    await meiliClient?.index("links").deleteDocuments(linkIds);
 
     await prisma.link.deleteMany({
       where: {

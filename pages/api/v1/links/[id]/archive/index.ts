@@ -2,12 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/api/db";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { UsersAndCollections } from "@prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import { moveFiles, removeFiles } from "@/lib/api/manageLinkFiles";
-
-const RE_ARCHIVE_LIMIT = Number(process.env.RE_ARCHIVE_LIMIT) || 5;
+import { removeFiles } from "@/lib/api/manageLinkFiles";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
@@ -46,20 +43,6 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    if (
-      link?.lastPreserved &&
-      getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved) <
-        RE_ARCHIVE_LIMIT
-    )
-      return res.status(400).json({
-        response: `This link is currently being saved or has already been preserved. Please retry in ${
-          RE_ARCHIVE_LIMIT -
-          Math.floor(
-            getTimezoneDifferenceInMinutes(new Date(), link?.lastPreserved)
-          )
-        } minutes or create a new one.`,
-      });
-
     if (!link.url || !isValidUrl(link.url))
       return res.status(200).json({
         response: "Invalid URL.",
@@ -75,6 +58,8 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         readable: null,
         monolith: null,
         preview: null,
+        lastPreserved: null,
+        indexVersion: null,
       },
     });
 

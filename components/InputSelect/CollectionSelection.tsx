@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { styles } from "./styles";
-import { Options } from "./types";
+import { Option } from "./types";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
 import { useCollections } from "@/hooks/store/collections";
@@ -35,7 +35,7 @@ export default function CollectionSelection({
 
   const router = useRouter();
 
-  const [options, setOptions] = useState<Options[]>([]);
+  const [options, setOptions] = useState<Option[]>([]);
 
   const collectionId = Number(router.query.id);
 
@@ -49,20 +49,6 @@ export default function CollectionSelection({
       label: activeCollection?.name,
     };
   }
-
-  useEffect(() => {
-    const formatedCollections = collections.map((e) => {
-      return {
-        value: e.id,
-        label: e.name,
-        ownerId: e.ownerId,
-        count: e._count,
-        parentId: e.parentId,
-      };
-    });
-
-    setOptions(formatedCollections);
-  }, [collections]);
 
   const getParentNames = (parentId: number): string[] => {
     const parentNames = [];
@@ -79,6 +65,27 @@ export default function CollectionSelection({
     return parentNames.reverse();
   };
 
+  useEffect(() => {
+    const formattedCollections = collections
+      .map((e) => {
+        return {
+          value: e.id,
+          label: e.name,
+          parentsLabel:
+            ((e.parentId && getParentNames(e.parentId).join(" > ") + " > ") ||
+              "") + e.name,
+          ownerId: e.ownerId,
+          count: e._count,
+          parentId: e.parentId,
+        };
+      })
+      .sort((a, b) => {
+        return a.parentsLabel.localeCompare(b.parentsLabel);
+      });
+
+    setOptions(formattedCollections);
+  }, [collections]);
+
   const customOption = ({ data, innerProps }: any) => {
     return (
       <div
@@ -90,13 +97,7 @@ export default function CollectionSelection({
           <span className="text-sm text-neutral">{data.count?.links}</span>
         </div>
         <div className="text-xs text-gray-600 dark:text-gray-300">
-          {getParentNames(data?.parentId).length > 0 ? (
-            <>
-              {getParentNames(data.parentId).join(" > ")} {">"} {data.label}
-            </>
-          ) : (
-            data.label
-          )}
+          {data.parentsLabel}
         </div>
       </div>
     );

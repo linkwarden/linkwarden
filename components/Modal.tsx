@@ -1,6 +1,7 @@
 import React, { MouseEventHandler, ReactNode, useEffect } from "react";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { Drawer } from "vaul";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 
 type Props = {
   toggleModal: Function;
@@ -16,9 +17,10 @@ export default function Modal({
   dismissible = true,
 }: Props) {
   const [drawerIsOpen, setDrawerIsOpen] = React.useState(true);
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
-    if (window.innerWidth >= 640) {
+    if (width >= 640) {
       document.body.style.overflow = "hidden";
       document.body.style.position = "relative";
       return () => {
@@ -28,7 +30,7 @@ export default function Modal({
     }
   }, []);
 
-  if (window.innerWidth < 640) {
+  if (width < 640) {
     return (
       <Drawer.Root
         open={drawerIsOpen}

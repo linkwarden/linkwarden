@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import TextInput from "./TextInput";
 import Popover from "./Popover";
 import { HexColorPicker } from "react-colorful";
 import { useTranslation } from "next-i18next";
 import IconGrid from "./IconGrid";
 import clsx from "clsx";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 
 type Props = {
   alignment?: string;
@@ -17,6 +19,8 @@ type Props = {
   reset: Function;
   className?: string;
   onClose: Function;
+  top?: number;
+  left?: number;
 };
 
 const IconPopover = ({
@@ -30,17 +34,21 @@ const IconPopover = ({
   reset,
   className,
   onClose,
+  top,
+  left,
 }: Props) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
-  return (
+  const content = (
     <Popover
       onClose={() => onClose()}
       className={clsx(
         className,
-        "fade-in bg-base-200 border border-neutral-content p-3 w-[22.5rem] rounded-lg shadow-md"
+        "fade-in bg-base-200 border border-neutral-content p-3 w-[22.5rem] rounded-lg shadow-md pointer-events-auto",
+        top !== undefined && left !== undefined && `z-[1000]`
       )}
+      style={{ top: top, left: left }}
     >
       <div className="flex flex-col gap-3 w-full h-full">
         <TextInput
@@ -142,6 +150,12 @@ const IconPopover = ({
       </div>
     </Popover>
   );
+
+  if (top !== undefined && left !== undefined) {
+    return ReactDOM.createPortal(content, document.body);
+  }
+
+  return content;
 };
 
 export default IconPopover;

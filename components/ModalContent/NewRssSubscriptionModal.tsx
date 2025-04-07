@@ -25,7 +25,11 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
   const submit = async () => {
     if (submitLoader) return;
 
-    if (!form.name || !form.url || (!form.collectionId && !form.collectionName)) {
+    if (
+      !form.name ||
+      !form.url ||
+      (!form.collectionId && !form.collectionName)
+    ) {
       return toast.error(t("fill_all_fields"));
     }
 
@@ -52,7 +56,6 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
     <Modal toggleModal={onClose}>
       <>
         <p className="text-xl font-thin">{t("create_rss_subscription")}</p>
-
         <div className="divider mb-3 mt-1"></div>
         <div className="flex sm:flex-row flex-col gap-3 items-center">
           <div className="w-full">
@@ -95,7 +98,7 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
             className="btn btn-accent dark:border-violet-400 text-white"
             onClick={submit}
           >
-            {t("create_token")}
+            {t("create_rss_subscription")}
           </button>
         </div>
       </>

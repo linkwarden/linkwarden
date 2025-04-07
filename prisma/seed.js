@@ -279,6 +279,7 @@ async function main() {
           name: link.name,
           url: link.url,
           collectionId: projectAlphaCollection.id,
+          createdById: user2.id,
         },
       });
     }
@@ -306,6 +307,7 @@ async function main() {
             name: link.name,
             url: link.url,
             collectionId: collection.id,
+            createdById: user1.id,
           },
         });
       }
