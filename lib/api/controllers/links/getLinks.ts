@@ -136,7 +136,8 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
   return {
     response: links,
     meta: {
-      nextCursor: nextCursor,
+      cursor: nextCursor,
+      skip: nextCursor ? 1 : undefined,
       take: Math.max(1, Number(process.env.PAGINATION_TAKE_COUNT) || 50),
     },
     status: 200,
