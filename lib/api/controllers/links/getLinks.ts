@@ -128,18 +128,16 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
       },
     },
     orderBy: order,
+    
   });
 
   // Determine the next cursor for pagination
   const nextCursor = links.length > 0 ? links[links.length - 1].id : null;
-
+  links["cursor"] = nextCursor;
+  links["skip"] = nextCursor ? 1 : undefined;
+  links["take"] =  Math.max(1, Number(process.env.PAGINATION_TAKE_COUNT) || 50)
   return {
     response: links,
-    meta: {
-      cursor: nextCursor,
-      skip: nextCursor ? 1 : undefined,
-      take: Math.max(1, Number(process.env.PAGINATION_TAKE_COUNT) || 50),
-    },
     status: 200,
   };
 }
