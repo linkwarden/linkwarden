@@ -90,6 +90,8 @@ export type Order = { [key: string]: "asc" | "desc" };
 export type LinkRequestQuery = {
   sort?: Sort;
   cursor?: number;
+  take?: number;
+  skip?: number;
   collectionId?: number;
   tagId?: number;
   pinnedOnly?: boolean;
@@ -98,6 +100,8 @@ export type LinkRequestQuery = {
 
 export type PublicLinkRequestQuery = {
   cursor?: number;
+  take?: number;
+  skip?: number;
   collectionId: number;
 };
 
