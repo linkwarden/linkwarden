@@ -86,7 +86,7 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
   const links = await prisma.link.findMany({
     take: Number(process.env.PAGINATION_TAKE_COUNT) || 50,
     skip: query.cursor ? 1 : undefined,
-    cursor: query.cursor ? { id: query.cursor } : undefined,
+    cursor: query.cursor ? { id: myCursor, } : undefined,
     where: {
       AND: [
         {
@@ -132,10 +132,8 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
   });
 
   // Determine the next cursor for pagination
-  const nextCursor = links.length > 0 ? links[links.length - 1].id : null;
-  links["cursor"] = nextCursor;
-  links["skip"] = nextCursor ? 1 : undefined;
-  links["take"] =  Math.max(1, Number(process.env.PAGINATION_TAKE_COUNT) || 50)
+  const lastlink = links[(Number(process.env.PAGINATION_TAKE_COUNT) || 50) - 1] // Remember: zero-based index! :)
+  const myCursor = lastlink.id 
   return {
     response: links,
     status: 200,
