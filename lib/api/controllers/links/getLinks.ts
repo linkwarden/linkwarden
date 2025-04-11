@@ -130,5 +130,15 @@ export default async function getLink(userId: number, query: LinkRequestQuery) {
     orderBy: order,
   });
 
-  return { response: links, status: 200 };
+  // Determine the next cursor for pagination
+  const nextCursor = links.length > 0 ? links[links.length - 1].id : null;
+
+  return {
+    response: links,
+    meta: {
+      nextCursor: nextCursor,
+      take: Math.max(1, Number(process.env.PAGINATION_TAKE_COUNT) || 50),
+    },
+    status: 200,
+  };
 }
