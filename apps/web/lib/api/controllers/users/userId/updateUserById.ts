@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { AccountSettings } from "@/types/global";
 import bcrypt from "bcrypt";
 import removeFile from "@/lib/api/storage/removeFile";

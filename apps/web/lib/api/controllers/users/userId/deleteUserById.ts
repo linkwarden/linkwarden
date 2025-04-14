@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import bcrypt from "bcrypt";
 import removeFolder from "@/lib/api/storage/removeFolder";
 import Stripe from "stripe";

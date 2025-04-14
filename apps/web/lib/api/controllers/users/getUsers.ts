@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { User } from "@prisma/client";
 
 export default async function getUsers(user: User) {

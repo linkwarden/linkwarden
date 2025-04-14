@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import rssHandler from "@/lib/api/rssHandler";
 import setCollection from "@/lib/api/setCollection";
 import verifyUser from "@/lib/api/verifyUser";

@@ -1,7 +1,7 @@
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
-import { prisma } from "../db";
+import { prisma } from "@linkwarden/prisma";
 import createFile from "../storage/createFile";
 import { Link } from "@prisma/client";
 

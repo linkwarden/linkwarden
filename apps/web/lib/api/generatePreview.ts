@@ -1,5 +1,5 @@
 import Jimp from "jimp";
-import { prisma } from "./db";
+import { prisma } from "@linkwarden/prisma";
 import createFile from "./storage/createFile";
 
 const generatePreview = async (

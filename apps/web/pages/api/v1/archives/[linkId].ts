@@ -8,7 +8,7 @@ import generatePreview from "@/lib/api/generatePreview";
 import verifyToken from "@/lib/api/verifyToken";
 import verifyUser from "@/lib/api/verifyUser";
 import getPermission from "@/lib/api/getPermission";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { UsersAndCollections } from "@prisma/client";
 import { UploadFileSchema } from "@/lib/shared/schemaValidation";
 import isDemoMode from "@/lib/api/isDemoMode";

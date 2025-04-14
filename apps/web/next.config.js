@@ -19,6 +19,7 @@ const nextConfig = {
 
     minimumCacheTTL: 10,
   },
+  transpilePackages: ["@linkwarden/prisma"],
   env: {
     version,
   },

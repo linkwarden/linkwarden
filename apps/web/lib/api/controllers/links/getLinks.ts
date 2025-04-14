@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { LinkRequestQuery, Order, Sort } from "@/types/global";
 
 export default async function getLink(userId: number, query: LinkRequestQuery) {

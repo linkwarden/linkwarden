@@ -4,7 +4,7 @@ import {
   generateTagsPrompt,
   predefinedTagsPrompt,
 } from "./prompts";
-import { prisma } from "./db";
+import { prisma } from "@linkwarden/prisma";
 import { generateObject, LanguageModelV1 } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { azure } from "@ai-sdk/azure";

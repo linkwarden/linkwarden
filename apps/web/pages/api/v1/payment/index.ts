@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import paymentCheckout from "@/lib/api/paymentCheckout";
 import { Plan } from "@/types/global";
 import { getToken } from "next-auth/jwt";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
   const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;

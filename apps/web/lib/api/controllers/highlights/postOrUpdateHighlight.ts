@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { PostHighlightSchemaType } from "@/lib/shared/schemaValidation";
 
 export default async function postOrUpdateHighlight(

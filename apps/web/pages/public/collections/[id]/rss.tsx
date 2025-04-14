@@ -1,6 +1,6 @@
 import React from "react";
 import { GetServerSideProps } from "next";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import RSS from "rss";
 
 const RSSFeed: React.FC = () => null;

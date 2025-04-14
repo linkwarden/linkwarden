@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import { UsersAndCollections } from "@prisma/client";

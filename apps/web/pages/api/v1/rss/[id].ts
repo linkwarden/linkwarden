@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import verifyUser from "@/lib/api/verifyUser";
 import { NextApiRequest, NextApiResponse } from "next";
 

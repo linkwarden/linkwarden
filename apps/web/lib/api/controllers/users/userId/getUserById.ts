@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 
 export default async function getUserById(userId: number) {
   const user = await prisma.user.findUnique({

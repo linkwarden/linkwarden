@@ -9,7 +9,7 @@ import Button from "@/components/ui/Button";
 import { getLogins } from "./api/v1/logins";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getToken } from "next-auth/jwt";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n } from "next-i18next.config";
 import { Trans, useTranslation } from "next-i18next";

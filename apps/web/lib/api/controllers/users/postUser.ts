@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import { PostUserSchema } from "@/lib/shared/schemaValidation";

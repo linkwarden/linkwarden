@@ -1,4 +1,4 @@
-import { prisma } from "./db";
+import { prisma } from "@linkwarden/prisma";
 import { User } from "@prisma/client";
 import verifySubscription from "./stripe/verifySubscription";
 import bcrypt from "bcrypt";
