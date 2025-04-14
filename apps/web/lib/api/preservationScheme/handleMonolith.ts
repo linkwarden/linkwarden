@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import createFile from "../storage/createFile";
-import { prisma } from "../db";
+import { prisma } from "@linkwarden/prisma";
 import { Link } from "@prisma/client";
 
 const handleMonolith = async (link: Link, content: string) => {

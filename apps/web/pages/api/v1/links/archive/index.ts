@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import verifyUser from "@/lib/api/verifyUser";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { LinkArchiveActionSchema } from "@/lib/shared/schemaValidation";
 import {
   removeFiles,

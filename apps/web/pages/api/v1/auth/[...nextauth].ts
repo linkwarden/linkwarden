@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import sendInvitationRequest from "@/lib/api/sendInvitationRequest";
 import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
 import updateSeats from "@/lib/api/stripe/updateSeats";
@@ -660,11 +660,17 @@ if (process.env.NEXT_PUBLIC_GITLAB_ENABLED === "true") {
       clientId: process.env.GITLAB_CLIENT_ID!,
       clientSecret: process.env.GITLAB_CLIENT_SECRET!,
       authorization: {
-        url: `${process.env.GITLAB_AUTH_URL || 'https://gitlab.com'}/oauth/authorize`,
-        params: { scope: 'read_user' },
+        url: `${
+          process.env.GITLAB_AUTH_URL || "https://gitlab.com"
+        }/oauth/authorize`,
+        params: { scope: "read_user" },
       },
-      token: `${process.env.GITLAB_AUTH_URL || 'https://gitlab.com'}/oauth/token`,
-      userinfo: `${process.env.GITLAB_AUTH_URL || 'https://gitlab.com'}/api/v4/user`,
+      token: `${
+        process.env.GITLAB_AUTH_URL || "https://gitlab.com"
+      }/oauth/token`,
+      userinfo: `${
+        process.env.GITLAB_AUTH_URL || "https://gitlab.com"
+      }/api/v4/user`,
     })
   );
 

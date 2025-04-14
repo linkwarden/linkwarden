@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import getUserById from "@/lib/api/controllers/users/userId/getUserById";
 import updateUserById from "@/lib/api/controllers/users/userId/updateUserById";
 import deleteUserById from "@/lib/api/controllers/users/userId/deleteUserById";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import verifySubscription from "@/lib/api/stripe/verifySubscription";
 import verifyToken from "@/lib/api/verifyToken";
 

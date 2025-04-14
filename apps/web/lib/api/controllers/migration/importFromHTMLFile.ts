@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
 import { decodeHTML } from "entities";

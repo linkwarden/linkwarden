@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n } from "next-i18next.config";
 import { getToken } from "next-auth/jwt";
-import { prisma } from "../api/db";
+import { prisma } from "@linkwarden/prisma";
 
 const getServerSideProps: GetServerSideProps = async (ctx) => {
   const acceptLanguageHeader = ctx.req.headers["accept-language"];

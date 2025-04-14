@@ -1,7 +1,7 @@
 import { RssSubscription } from "@prisma/client";
 import { hasPassedLimit } from "./verifyCapacity";
 import Parser from "rss-parser";
-import { prisma } from "./db";
+import { prisma } from "@linkwarden/prisma";
 
 const rssHandler = async (rssSubscription: RssSubscription, parser: Parser) => {
   try {

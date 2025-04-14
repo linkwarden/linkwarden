@@ -11,7 +11,7 @@ import InstallApp from "@/components/InstallApp";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n } from "next-i18next.config";
 import { getToken } from "next-auth/jwt";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 

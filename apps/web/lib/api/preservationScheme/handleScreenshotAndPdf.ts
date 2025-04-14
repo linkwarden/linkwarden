@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { Page } from "playwright";
 import createFile from "../storage/createFile";
-import { prisma } from "../db";
+import { prisma } from "@linkwarden/prisma";
 import { LinkWithCollectionOwnerAndTags } from "../../../types/global";
 import { ArchivalSettings } from "../archiveHandler";
 

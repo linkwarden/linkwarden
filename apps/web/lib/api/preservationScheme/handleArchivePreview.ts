@@ -2,7 +2,7 @@ import { Collection, Link, User } from "@prisma/client";
 import { Page } from "playwright";
 import generatePreview from "../generatePreview";
 import createFile from "../storage/createFile";
-import { prisma } from "../db";
+import { prisma } from "@linkwarden/prisma";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {

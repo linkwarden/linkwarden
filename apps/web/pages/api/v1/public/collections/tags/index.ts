@@ -1,5 +1,5 @@
 import getTags from "@/lib/api/controllers/tags/getTags";
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { LinkRequestQuery } from "@/types/global";
 import type { NextApiRequest, NextApiResponse } from "next";
 

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import sendPasswordResetRequest from "@/lib/api/sendPasswordResetRequest";
 import { ForgotPasswordSchema } from "@/lib/shared/schemaValidation";
 import type { NextApiRequest, NextApiResponse } from "next";

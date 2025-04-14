@@ -1,14 +1,11 @@
 {
-  "name": "linkwarden",
+  "name": "@linkwarden/web",
   "version": "v2.10.0",
   "main": "index.js",
   "repository": "https://github.com/linkwarden/linkwarden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
   "license": "AGPL-3.0",
   "private": true,
-  "prisma": {
-    "seed": "node ./prisma/seed.js"
-  },
   "scripts": {
     "dev": "concurrently -k -P \"next dev {@}\" \"yarn worker:dev\" --",
     "worker:dev": "nodemon --skip-project scripts/worker.ts",
@@ -27,11 +24,11 @@
     "@auth/prisma-adapter": "^1.0.1",
     "@aws-sdk/client-s3": "^3.379.1",
     "@headlessui/react": "^1.7.15",
+    "@linkwarden/prisma": "*",
     "@mozilla/readability": "^0.4.4",
     "@openrouter/ai-sdk-provider": "^0.4.3",
     "@phosphor-icons/core": "^2.1.1",
     "@phosphor-icons/react": "^2.1.7",
-    "@prisma/client": "^5.21.1",
     "@stripe/stripe-js": "^1.54.1",
     "@tanstack/react-query": "^5.51.15",
     "@tanstack/react-query-devtools": "^5.51.15",
@@ -109,7 +106,6 @@
     "nodemon": "^3.0.2",
     "postcss": "^8.4.26",
     "prettier": "3.1.1",
-    "prisma": "^5.21.1",
     "tailwindcss": "^3.4.10",
     "ts-node": "^10.9.2",
     "typescript": "4.9.4"

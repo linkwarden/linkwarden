@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import crypto from "crypto";
 import { decode, encode } from "next-auth/jwt";
 
