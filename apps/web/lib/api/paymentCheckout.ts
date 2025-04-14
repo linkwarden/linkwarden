@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import verifySubscription from "./stripe/verifySubscription";
-import { prisma } from "./db";
+import { prisma } from "@linkwarden/prisma";
 
 export default async function paymentCheckout(
   stripeSecretKey: string,

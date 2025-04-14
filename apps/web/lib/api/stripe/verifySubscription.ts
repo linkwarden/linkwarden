@@ -1,4 +1,4 @@
-import { prisma } from "../db";
+import { prisma } from "@linkwarden/prisma";
 import { Subscription, User } from "@prisma/client";
 import checkSubscriptionByEmail from "./checkSubscriptionByEmail";
 

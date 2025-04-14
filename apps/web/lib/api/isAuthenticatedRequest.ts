@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
 import { getToken } from "next-auth/jwt";
-import { prisma } from "./db";
+import { prisma } from "@linkwarden/prisma";
 
 type Props = {
   req: NextApiRequest;

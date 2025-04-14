@@ -1,4 +1,4 @@
-import { prisma } from "./db";
+import { prisma } from "@linkwarden/prisma";
 import getPermission from "./getPermission";
 import { UsersAndCollections } from "@prisma/client";
 

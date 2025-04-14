@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { prisma } from "../lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import archiveHandler from "../lib/api/archiveHandler";
 import Parser from "rss-parser";
 import { LinkWithCollectionOwnerAndTags } from "../types/global";

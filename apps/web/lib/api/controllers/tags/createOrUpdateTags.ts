@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import { PostTagSchemaType } from "@/lib/shared/schemaValidation";
 import { TagIncludingLinkCount } from "@/types/global";
 

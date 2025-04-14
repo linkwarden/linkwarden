@@ -1,5 +1,5 @@
 import { Link } from "@prisma/client";
-import { prisma } from "../db";
+import { prisma } from "@linkwarden/prisma";
 import createFile from "../storage/createFile";
 
 const pdfHandler = async ({ url, id }: Link) => {

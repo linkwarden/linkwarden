@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import updateCustomerEmail from "@/lib/api/stripe/updateCustomerEmail";
 import { VerifyEmailSchema } from "@/lib/shared/schemaValidation";
 import type { NextApiRequest, NextApiResponse } from "next";

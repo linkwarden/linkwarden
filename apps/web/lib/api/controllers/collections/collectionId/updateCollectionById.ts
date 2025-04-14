@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/api/db";
+import { prisma } from "@linkwarden/prisma";
 import getPermission from "@/lib/api/getPermission";
 import {
   UpdateCollectionSchema,

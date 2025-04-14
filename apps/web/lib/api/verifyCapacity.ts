@@ -1,4 +1,4 @@
-import { prisma } from "./db";
+import { prisma } from "@linkwarden/prisma";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
