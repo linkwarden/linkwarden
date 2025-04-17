@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Tree, {
   mutateTree,
   moveItemOnTree,
@@ -11,7 +11,7 @@ import Tree, {
 } from "@atlaskit/tree";
 import { Collection } from "@prisma/client";
 import Link from "next/link";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount, LinkIncludingShortenedCollectionAndTags } from "@/types/global";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
@@ -19,9 +19,16 @@ import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
+import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { useUpdateLink } from "@/hooks/store/links";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
+}
+
+interface DragAndDropData {
+  link: LinkIncludingShortenedCollectionAndTags;
+  type: string;
 }
 
 const CollectionListing = () => {
@@ -255,6 +262,10 @@ const CollectionListing = () => {
     });
   };
 
+  const wrappedRenderItem = (itemProps: RenderItemParams) => {
+    return <CollectionItem {...itemProps} currentPath={currentPath} />;
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col gap-4">
@@ -273,7 +284,7 @@ const CollectionListing = () => {
     return (
       <Tree
         tree={tree}
-        renderItem={(itemProps) => renderItem({ ...itemProps }, currentPath)}
+        renderItem={wrappedRenderItem}
         onExpand={onExpand}
         onCollapse={onCollapse}
         onDragEnd={onDragEnd}
@@ -285,20 +296,65 @@ const CollectionListing = () => {
 
 export default CollectionListing;
 
-const renderItem = (
-  { item, onExpand, onCollapse, provided }: RenderItemParams,
-  currentPath: string
-) => {
+const CollectionItem = ({
+  item,
+  onExpand,
+  onCollapse,
+  provided,
+  currentPath
+}: RenderItemParams & { currentPath: string }) => {
   const collection = item.data;
+  const [isOverTarget, setIsOverTarget] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const updateLink = useUpdateLink();
+
+  const isActive = currentPath === `/collections/${collection.id}`;
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const cleanup = dropTargetForElements({
+      element: ref.current,
+      onDragEnter: (params) => {
+        setIsOverTarget(true);
+      },
+      onDragLeave: () => {
+        setIsOverTarget(false);
+      },
+      onDrop: (params) => {
+        const source = params.source as unknown as { data: DragAndDropData };
+
+        const link = source.data.link;
+
+        if (link.collection.id === collection.id) {
+          setIsOverTarget(false);
+          return;
+        }
+
+        updateLink.mutate({
+          ...link,
+          collection: {
+            id: collection.id,
+            name: collection.name,
+            ownerId: collection.ownerId,
+          }
+        });
+        setIsOverTarget(false);
+      }
+    });
+
+    return cleanup;
+  }, [collection]);
 
   return (
     <div ref={provided.innerRef} {...provided.draggableProps} className="mb-1">
       <div
-        className={`${
-          currentPath === `/collections/${collection.id}`
-            ? "bg-primary/20 is-active"
-            : "hover:bg-neutral/20"
-        } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
+        ref={ref}
+        className={`
+          duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md
+          ${isActive ? "bg-primary/20 is-active" : "hover:bg-neutral/20"}
+          ${isOverTarget ? "bg-primary/20" : ""}
+        `}
       >
         {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
 

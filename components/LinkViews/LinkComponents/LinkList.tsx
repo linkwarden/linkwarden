@@ -2,7 +2,8 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
@@ -35,9 +36,11 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   const { t } = useTranslation();
 
   const { data: collections = [] } = useCollections();
+  const ref = useRef<HTMLDivElement>(null);
 
   const { data: user = {} } = useUser();
   const { setSelectedLinks, selectedLinks } = useLinkStore();
+  const [dragging, setDragging] = useState(false);
 
   const {
     settings: { show },
@@ -100,12 +103,28 @@ export default function LinkCardCompact({ link, editMode }: Props) {
 
   const [linkModal, setLinkModal] = useState(false);
 
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const cleanup = draggable({
+      element: ref.current,
+      onDragStart: () => setDragging(true),
+      onDrop: () => setDragging(false),
+      getInitialData: () => ({
+        link: link,
+        type: "link",
+      }),
+    });
+
+    return cleanup;
+  }, [link])
+
   return (
     <>
       <div
-        className={`${selectedStyle} rounded-md border relative group items-center flex ${
-          !isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
-        } duration-200`}
+        ref={ref}
+        className={`${selectedStyle} ${dragging ? "bg-base-300 opacity-50" : "opacity-100"} h-auto rounded-md border relative group items-center flex ${!isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
+          } duration-200`}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)

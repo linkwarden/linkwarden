@@ -51,7 +51,7 @@ export default function Dashboard() {
       account.referredBy === null &&
       // if user is using Linkwarden for more than 3 days
       new Date().getTime() - new Date(account.createdAt).getTime() >
-        3 * 24 * 60 * 60 * 1000
+      3 * 24 * 60 * 60 * 1000
     ) {
       setTimeout(() => {
         setShowsSurveyModal(true);

@@ -8,6 +8,7 @@ import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
+import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import Image from "next/image";
 import {
@@ -115,11 +116,28 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
   const permissions = usePermissions(collection?.id as number);
+  const [dragging, setDragging] = useState(false);
 
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   const [linkModal, setLinkModal] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const cleanup = draggable({
+      element: ref.current,
+      onDragStart: () => setDragging(true),
+      onDrop: () => setDragging(false),
+      getInitialData: () => ({
+        link: link,
+        type: "link",
+      }),
+    });
+
+    return cleanup;
+  }, [link])
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -157,7 +175,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
+      className={`${selectedStyle} ${dragging ? "opacity-50" : "opacity-100"} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
