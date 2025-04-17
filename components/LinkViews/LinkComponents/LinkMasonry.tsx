@@ -4,7 +4,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@/types/global";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
@@ -165,12 +165,14 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
     });
 
     return cleanup;
-  }, [link])
+  }, [link]);
 
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} ${dragging ? "opacity-50" : "opacity-100"} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
+      className={`${selectedStyle} ${
+        dragging ? "opacity-50" : "opacity-100"
+      } border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)

@@ -11,7 +11,10 @@ import Tree, {
 } from "@atlaskit/tree";
 import { Collection } from "@prisma/client";
 import Link from "next/link";
-import { CollectionIncludingMembersAndLinkCount, LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import {
+  CollectionIncludingMembersAndLinkCount,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@/types/global";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
@@ -19,7 +22,7 @@ import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
-import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { useUpdateLink } from "@/hooks/store/links";
 
 interface ExtendedTreeItem extends TreeItem {
@@ -301,7 +304,7 @@ const CollectionItem = ({
   onExpand,
   onCollapse,
   provided,
-  currentPath
+  currentPath,
 }: RenderItemParams & { currentPath: string }) => {
   const collection = item.data;
   const [isOverTarget, setIsOverTarget] = useState(false);
@@ -337,10 +340,10 @@ const CollectionItem = ({
             id: collection.id,
             name: collection.name,
             ownerId: collection.ownerId,
-          }
+          },
         });
         setIsOverTarget(false);
-      }
+      },
     });
 
     return cleanup;

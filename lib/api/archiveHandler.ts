@@ -1,4 +1,11 @@
-import { Browser, BrowserContext, BrowserContextOptions, LaunchOptions, chromium, devices } from "playwright";
+import {
+  Browser,
+  BrowserContext,
+  BrowserContextOptions,
+  LaunchOptions,
+  chromium,
+  devices,
+} from "playwright";
 import { prisma } from "./db";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { AiTaggingMethod } from "@prisma/client";
@@ -251,7 +258,10 @@ export function getBrowserOptions(): LaunchOptions {
     };
   }
 
-  if (process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH && !process.env.PLAYWRIGHT_WS_URL) {
+  if (
+    process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH &&
+    !process.env.PLAYWRIGHT_WS_URL
+  ) {
     browserOptions.executablePath =
       process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
   }
@@ -259,7 +269,10 @@ export function getBrowserOptions(): LaunchOptions {
   return browserOptions;
 }
 
-async function getBrowser(): Promise<{ browser: Browser; context: BrowserContext }> {
+async function getBrowser(): Promise<{
+  browser: Browser;
+  context: BrowserContext;
+}> {
   const browserOptions = getBrowserOptions();
   let browser: Browser;
   let contextOptions: BrowserContextOptions = {

@@ -8,7 +8,7 @@ import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
-import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { draggable } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import Image from "next/image";
 import {
@@ -135,7 +135,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     });
 
     return cleanup;
-  }, [link])
+  }, [link]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -173,7 +173,9 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} ${dragging ? "opacity-50" : "opacity-100"} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
+      className={`${selectedStyle} ${
+        dragging ? "opacity-50" : "opacity-100"
+      } border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
