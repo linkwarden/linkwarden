@@ -5,10 +5,12 @@ import {
   predefinedTagsPrompt,
 } from "./prompts";
 import { prisma } from "./db";
-import { generateObject } from "ai";
+import { generateObject, LanguageModelV1 } from "ai";
 import { openai } from "@ai-sdk/openai";
+import { azure } from "@ai-sdk/azure";
 import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider";
 import { titleCase } from "../shared/utils";
 
@@ -16,9 +18,15 @@ import { titleCase } from "../shared/utils";
 const ensureValidURL = (base: string, path: string) =>
   `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
-const getAIModel = () => {
+const getAIModel = (): LanguageModelV1 => {
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL)
     return openai(process.env.OPENAI_MODEL);
+  if (
+    process.env.AZURE_API_KEY &&
+    process.env.AZURE_RESOURCE_NAME &&
+    process.env.AZURE_MODEL
+  )
+    return azure(process.env.AZURE_MODEL);
   if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL)
     return anthropic(process.env.ANTHROPIC_MODEL);
   if (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && process.env.OLLAMA_MODEL) {
@@ -33,7 +41,13 @@ const getAIModel = () => {
       structuredOutputs: true,
     });
   }
+  if (process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_MODEL) {
+    const openrouter = createOpenRouter({
+      apiKey: process.env.OPENROUTER_API_KEY,
+    });
 
+    return openrouter(process.env.OPENROUTER_MODEL) as LanguageModelV1;
+  }
   throw new Error("No AI provider configured");
 };
 

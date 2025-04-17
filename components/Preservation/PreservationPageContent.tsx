@@ -34,11 +34,7 @@ export default function PreservationPageContent() {
 
   return (
     <div className="w-screen h-screen bg-base-200">
-      <PreservationContent
-        link={link}
-        format={Number(router.query.format)}
-        isExpanded={true}
-      />
+      <PreservationContent link={link} format={Number(router.query.format)} />
     </div>
   );
 }

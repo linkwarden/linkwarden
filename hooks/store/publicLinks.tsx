@@ -1,8 +1,4 @@
-import {
-  InfiniteData,
-  useInfiniteQuery,
-  UseInfiniteQueryResult,
-} from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
   LinkIncludingShortenedCollectionAndTags,
@@ -25,11 +21,6 @@ const usePublicLinks = (params: LinkRequestQuery = {}) => {
         ? true
         : undefined,
     searchQueryString: params.searchQueryString,
-    searchByName: params.searchByName,
-    searchByUrl: params.searchByUrl,
-    searchByDescription: params.searchByDescription,
-    searchByTextContent: params.searchByTextContent,
-    searchByTags: params.searchByTags,
   } as LinkRequestQuery;
 
   const queryString = buildQueryString(queryParamsObject);
@@ -37,23 +28,20 @@ const usePublicLinks = (params: LinkRequestQuery = {}) => {
   const { data, ...rest } = useFetchLinks(queryString);
 
   const links = useMemo(() => {
-    return data?.pages.reduce((acc, page) => {
-      return [...acc, ...page];
-    }, []);
+    return data?.pages?.flatMap((page) => page?.links ?? []) ?? [];
   }, [data]);
+
+  const memoizedData = useMemo(() => ({ ...data, ...rest }), [data, rest]);
 
   return {
     links,
-    data: { ...data, ...rest },
-  } as {
-    links: LinkIncludingShortenedCollectionAndTags[];
-    data: UseInfiniteQueryResult<InfiniteData<any, unknown>, Error>;
+    data: memoizedData,
   };
 };
 
 const useFetchLinks = (params: string) => {
   return useInfiniteQuery({
-    queryKey: ["links", { params }],
+    queryKey: ["publicLinks", { params }],
     queryFn: async (params) => {
       const response = await fetch(
         "/api/v1/public/collections/links?cursor=" +
@@ -62,18 +50,20 @@ const useFetchLinks = (params: string) => {
             ? "&" + (params.queryKey[1] as any).params
             : "")
       );
-
       const data = await response.json();
 
-      return data.response;
+      return {
+        links: data.data.links as LinkIncludingShortenedCollectionAndTags[],
+        nextCursor: data.data.nextCursor as number | null,
+      };
     },
     initialPageParam: 0,
     refetchOnWindowFocus: false,
     getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) {
+      if (lastPage.nextCursor === null) {
         return undefined;
       }
-      return lastPage.at(-1).id;
+      return lastPage.nextCursor;
     },
   });
 };

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/api/db";
 import createFolder from "@/lib/api/storage/createFolder";
 import { JSDOM } from "jsdom";
-import { decodeHTML, DecodingMode } from "entities";
+import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
 import { hasPassedLimit } from "../../verifyCapacity";
 
@@ -294,5 +294,5 @@ function processNodes(nodes: Node[]) {
 }
 
 function decodeEntities(encoded: string | undefined): string {
-  return decodeHTML(encoded ?? "", DecodingMode.Attribute);
+  return decodeHTML(encoded ?? "");
 }

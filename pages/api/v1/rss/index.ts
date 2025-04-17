@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/api/db";
+import rssHandler from "@/lib/api/rssHandler";
 import setCollection from "@/lib/api/setCollection";
 import verifyUser from "@/lib/api/verifyUser";
 import { PostRssSubscriptionSchema } from "@/lib/shared/schemaValidation";
 import { NextApiRequest, NextApiResponse } from "next";
+import Parser from "rss-parser";
 
 export default async function handler(
   req: NextApiRequest,
@@ -76,10 +78,9 @@ export default async function handler(
     });
 
     if (existingRssSubscription) {
-      return {
-        response: "RSS Subscription with that name already exists.",
-        status: 400,
-      };
+      return res
+        .status(400)
+        .json({ response: "RSS Subscription with that name already exists" });
     }
 
     const response = await prisma.rssSubscription.create({
@@ -87,7 +88,6 @@ export default async function handler(
         name,
         url,
         ownerId: user.id,
-        lastBuildDate: new Date(),
         collection: {
           connect: {
             id: linkCollection.id,
@@ -95,6 +95,10 @@ export default async function handler(
         },
       },
     });
+
+    const parser = new Parser();
+
+    await rssHandler(response, parser);
 
     return res.status(200).json({ response });
   }

@@ -1,238 +1,391 @@
-import { formatAvailable } from "@/lib/shared/formatStats";
-import {
-  ArchivedFormat,
-  LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
-import DOMPurify from "dompurify";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "next-i18next";
 import clsx from "clsx";
-import LinkDate from "../LinkViews/LinkComponents/LinkDate";
-import isValidUrl from "@/lib/shared/isValidUrl";
+import { PreservationSkeleton } from "../Skeletons";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import unescapeString from "@/lib/client/unescapeString";
+import isValidUrl from "@/lib/shared/isValidUrl";
+import LinkDate from "../LinkViews/LinkComponents/LinkDate";
 import usePermissions from "@/hooks/usePermissions";
-import { useUpdateFile } from "@/hooks/store/links";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
-import TipTapLink from "@tiptap/extension-link";
-import Highlight from "@tiptap/extension-highlight";
-import TextAlign from "@tiptap/extension-text-align";
-import MenuBar from "../Editor/MenuBar";
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
-import ListItem from "@tiptap/extension-list-item";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  ArchivedFormat,
+} from "@/types/global";
+import ClickAwayHandler from "@/components/ClickAwayHandler";
+import {
+  useGetLinkHighlights,
+  usePostHighlight,
+  useRemoveHighlight,
+} from "@/hooks/store/highlights";
+import { Highlight } from "@prisma/client";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
-  isExpanded: boolean;
-  standalone: boolean;
 };
 
-export default function ReadableView({ link, isExpanded, standalone }: Props) {
+export default function ReadableView({ link }: Props) {
   const { t } = useTranslation();
-  const [linkContent, setLinkContent] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-
-  const editor = useEditor({
-    extensions: [
-      TaskList,
-      TaskItem.configure({
-        nested: true,
-      }),
-      StarterKit,
-      Image,
-      ListItem,
-      Highlight,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-      TipTapLink.configure({
-        openOnClick: false,
-      }),
-    ],
-    immediatelyRender: false,
-    content: linkContent || "<p></p>",
-    editable: false,
-    editorProps: {
-      attributes: {
-        class: clsx(
-          "rounded-md focus:outline-none border-neutral-content focus:border-primary border-solid border p-3 overflow-auto duration-100",
-          isExpanded
-            ? "h-[calc(100vh-7.25rem)]"
-            : standalone
-              ? "h-[calc(100vh-10.75rem)]"
-              : "h-[calc(80vh-10.75rem)]"
-        ),
-      },
-    },
-  });
-
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public");
   const permissions = usePermissions(link?.collection?.id as number);
 
+  const postHighlight = usePostHighlight(link?.id as number);
+  const { data: linkHighlights } = useGetLinkHighlights(link?.id as number);
+  const deleteHighlight = useRemoveHighlight(link?.id as number);
+
+  const [linkContent, setLinkContent] = useState("");
+  const [selectionMenu, setSelectionMenu] = useState<{
+    show: boolean;
+    highlightId: number | null;
+  }>({
+    show: false,
+    highlightId: null,
+  });
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+
   useEffect(() => {
-    const fetchLinkContent = async () => {
-      if (formatAvailable(link, "readable")) {
+    async function fetchLinkContent() {
+      if (link?.readable?.startsWith("archives")) {
         const response = await fetch(
           `/api/v1/archives/${link?.id}?format=${ArchivedFormat.readability}&_=${link.updatedAt}`
         );
-        const data = await response?.json();
-        setLinkContent(data?.content || "");
-      }
-    };
+        const data = await response.json();
 
+        setLinkContent(data?.content ?? "");
+      }
+    }
     fetchLinkContent();
   }, [link]);
 
-  useEffect(() => {
-    if (editor) {
-      editor.setEditable(isEditing);
-    }
-  }, [isEditing, editor]);
+  const handleMouseUp = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const highlightId = Number(target.dataset.highlightId);
+    const selection = window.getSelection();
 
-  useEffect(() => {
-    if (!isEditing && linkContent && editor) {
-      editor.commands.setContent(linkContent, false);
-    }
-  }, [linkContent, isEditing, editor]);
+    if (highlightId) {
+      const rect = target.getBoundingClientRect();
+      setSelectionMenu({
+        show: true,
+        highlightId: highlightId,
+      });
 
-  const startEditing = () => {
-    if (linkContent && editor) {
-      editor.commands.setContent(linkContent, false);
+      setMenuPosition({
+        x: rect.left + window.scrollX + rect.width / 2,
+        y: rect.top + window.scrollY - 5,
+      });
+
+      return;
+    } else if (
+      selection &&
+      selection.rangeCount > 0 &&
+      !selection.isCollapsed
+    ) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+
+      if (rect && rect.width && rect.height) {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const scrollLeft =
+          window.scrollX || document.documentElement.scrollLeft;
+
+        setMenuPosition({
+          x: rect.left + scrollLeft + rect.width / 2,
+          y: rect.top + scrollTop - 5,
+        });
+        setSelectionMenu({
+          show: true,
+          highlightId: selectionMenu.highlightId,
+        });
+      }
     }
-    setIsEditing(true);
   };
 
-  const cancelEditing = () => {
-    if (editor) {
-      editor.commands.setContent(linkContent, false);
+  function getHighlightedSection(color: string) {
+    const selection = window.getSelection?.();
+
+    if (!selection || selection.isCollapsed) return null;
+
+    const range = selection.getRangeAt(0);
+    if (!range) return null;
+
+    const container = document.getElementById("readable-view");
+    if (!container || !container.contains(range.commonAncestorContainer)) {
+      return null;
     }
-    setIsEditing(false);
-  };
 
-  const updateFile = useUpdateFile();
+    let startOffset = -1;
+    let endOffset = -1;
+    let currentOffset = 0;
 
-  const saveChanges = () => {
-    if (!editor) return;
+    const treeWalker = document.createTreeWalker(
+      container,
+      NodeFilter.SHOW_TEXT
+    );
+    while (treeWalker.nextNode()) {
+      const node = treeWalker.currentNode;
+      const nodeLength = node.textContent?.length ?? 0;
 
-    const updatedHTML = DOMPurify.sanitize(editor.getHTML());
-    setLinkContent(updatedHTML);
+      if (node === range.startContainer) {
+        startOffset = currentOffset + range.startOffset;
+      }
 
-    updateFile.mutate({
-      linkId: link.id as number,
-      file: new File([updatedHTML], "updatedContent.txt", {
-        type: "text/plain",
-      }),
+      if (node === range.endContainer) {
+        endOffset = currentOffset + range.endOffset;
+        break;
+      }
+
+      currentOffset += nodeLength;
+    }
+
+    if (startOffset === -1 || endOffset === -1) {
+      return null;
+    }
+
+    return {
+      linkId: link?.id,
+      color,
+      text: range.toString(),
+      startOffset,
+      endOffset,
+    };
+  }
+
+  function getHighlightedHtml(
+    htmlContent: string,
+    highlights: Highlight[]
+  ): string {
+    if (!htmlContent || !highlights || highlights.length === 0) {
+      return htmlContent;
+    }
+
+    const container = document.createElement("div");
+    container.innerHTML = htmlContent;
+
+    const sortedHighlights = [...highlights].sort(
+      (a, b) => a.startOffset - b.startOffset
+    );
+
+    for (const highlight of sortedHighlights) {
+      applyHighlight(container, highlight);
+    }
+
+    return container.innerHTML;
+  }
+
+  function applyHighlight(container: HTMLElement, highlight: Highlight) {
+    let currentOffset = 0;
+    const treeWalker = document.createTreeWalker(
+      container,
+      NodeFilter.SHOW_TEXT
+    );
+
+    const rangesToWrap: Array<{
+      node: Text;
+      start: number;
+      end: number;
+    }> = [];
+
+    while (treeWalker.nextNode()) {
+      const node = treeWalker.currentNode as Text;
+      const nodeLength = node.textContent?.length ?? 0;
+      const nodeStart = currentOffset;
+      const nodeEnd = nodeStart + nodeLength;
+
+      if (nodeStart < highlight.endOffset && nodeEnd > highlight.startOffset) {
+        rangesToWrap.push({
+          node,
+          start: Math.max(0, highlight.startOffset - nodeStart),
+          end: Math.min(nodeLength, highlight.endOffset - nodeStart),
+        });
+      }
+
+      currentOffset += nodeLength;
+    }
+
+    rangesToWrap.forEach(({ node, start, end }) => {
+      if (start > 0) {
+        node.splitText(start);
+        node = node.nextSibling as Text;
+        end -= start;
+      }
+
+      if (end < node.length) {
+        node.splitText(end);
+      }
+
+      const highlightWrapper = document.createElement("span");
+      highlightWrapper.dataset.highlightId = highlight.id.toString();
+
+      highlightWrapper.classList.add("cursor-pointer");
+
+      if (highlight.color === "yellow") {
+        highlightWrapper.classList.add("bg-yellow-500/70");
+      } else if (highlight.color === "red") {
+        highlightWrapper.classList.add("bg-red-500/70");
+      } else if (highlight.color === "blue") {
+        highlightWrapper.classList.add("bg-blue-500/70");
+      } else if (highlight.color === "green") {
+        highlightWrapper.classList.add("bg-green-500/70");
+      }
+
+      node.parentNode?.insertBefore(highlightWrapper, node);
+      highlightWrapper.appendChild(node);
+    });
+  }
+
+  const highlightedHtml = React.useMemo(() => {
+    return getHighlightedHtml(linkContent, linkHighlights || []);
+  }, [linkContent, linkHighlights]);
+
+  const handleHighlightSelection = async (
+    color: "yellow" | "red" | "blue" | "green",
+    highlightId: number | null
+  ) => {
+    let selection = getHighlightedSection(color);
+
+    if (highlightId) {
+      selection =
+        linkHighlights?.find((h) => h.id === selectionMenu.highlightId) ?? null;
+
+      if (selection) selection.color = color;
+    }
+
+    if (!selection && !highlightId) return;
+
+    postHighlight.mutate(selection as Highlight, {
+      onSuccess: (data) => {
+        if (data) {
+          setSelectionMenu({
+            show: true,
+            highlightId: data.id,
+          });
+        }
+      },
     });
   };
 
+  const handleMenuClickOutside = () => {
+    setSelectionMenu({
+      show: false,
+      highlightId: null,
+    });
+
+    if (window.getSelection) {
+      window.getSelection()?.removeAllRanges();
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200">
-      {!isEditing && (
-        <div className="flex gap-3 items-start">
-          <div className="flex flex-col w-full gap-1">
-            <p className="md:text-4xl text-2xl">
-              {unescapeString(
-                link?.name || link?.description || link?.url || ""
-              )}
-            </p>
-            {link?.url && (
-              <Link
-                href={link?.url || ""}
-                title={link?.url}
-                target="_blank"
-                className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
-              >
-                <i className="bi-link-45deg" />
-                {isValidUrl(link?.url || "") &&
-                  new URL(link?.url as string).host}
-              </Link>
-            )}
-          </div>
+    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200 mt-10">
+      <div className="flex gap-3 items-start">
+        <div className="flex flex-col w-full gap-1">
+          <p className="md:text-4xl text-2xl">
+            {unescapeString(link?.name || link?.description || link?.url || "")}
+          </p>
+          {link?.url && (
+            <Link
+              href={link?.url || ""}
+              title={link?.url}
+              target="_blank"
+              className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
+            >
+              <i className="bi-link-45deg" />
+              {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
+            </Link>
+          )}
         </div>
-      )}
+      </div>
 
       <div className="text-sm text-neutral flex justify-between w-full gap-2">
         <LinkDate link={link} />
-        {!isPublicRoute && (permissions === true || permissions?.canUpdate) && (
-          <>
-            {!isEditing && linkContent ? (
-              <button
-                className="flex items-center gap-2 btn btn-ghost btn-sm"
-                onClick={startEditing}
-              >
-                <i className="bi-pencil" />
-                {t("edit")}
-              </button>
-            ) : linkContent ? (
-              <div
-                className={clsx(
-                  "flex items-center gap-2",
-                  isExpanded && "mr-10"
-                )}
-              >
-                <button
-                  className="flex items-center gap-2 btn btn-ghost btn-square btn-sm"
-                  onClick={cancelEditing}
-                >
-                  <i className="bi-x text-xl" />
-                </button>
-                <button
-                  className="flex items-center gap-2 btn btn-primary btn-square btn-sm"
-                  onClick={() => {
-                    saveChanges();
-                    setIsEditing(false);
-                  }}
-                >
-                  <i className="bi-check2 text-xl" />
-                </button>
-              </div>
-            ) : null}
-          </>
-        )}
       </div>
 
       {link?.readable?.startsWith("archives") ? (
         <>
           {linkContent ? (
-            <>
-              {editor && isEditing ? (
-                <div className="w-full reader-view">
-                  <MenuBar editor={editor} />
-                  <EditorContent editor={editor} />
-                </div>
-              ) : (
-                <div
-                  className={clsx(
-                    "p-3 rounded-md w-full",
-                    linkContent && "bg-base-200"
-                  )}
-                >
-                  <div
-                    className="line-break px-1 reader-view read-only"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(linkContent),
+            <div
+              className={clsx("p-3 rounded-md w-full bg-base-200")}
+              onMouseUp={handleMouseUp}
+            >
+              <div
+                id="readable-view"
+                className="line-break px-1 reader-view read-only"
+                dangerouslySetInnerHTML={{ __html: highlightedHtml }}
+              />
+
+              {selectionMenu.show &&
+                !isPublicRoute &&
+                (permissions === true || permissions?.canUpdate) && (
+                  <ClickAwayHandler
+                    onClickOutside={handleMenuClickOutside}
+                    className="absolute bg-base-100 p-2 z-[9999] 
+                               whitespace-nowrap -translate-x-1/2 
+                               -translate-y-full rounded-lg shadow-md border border-neutral-content"
+                    style={{
+                      left: menuPosition.x,
+                      top: menuPosition.y,
                     }}
-                  />
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="p-5 m-auto w-full flex flex-col items-center gap-5">
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-3/4 mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-5/6 mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-3/4 mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-full mr-auto h-4 skeleton rounded-md"></div>
-              <div className="w-5/6 mr-auto h-4 skeleton rounded-md"></div>
+                  >
+                    <div className="flex items-center gap-3 justify-between select-none">
+                      <div className="flex items-center gap-3">
+                        {["yellow", "red", "blue", "green"].map((color) => (
+                          <button
+                            key={color}
+                            onClick={() =>
+                              handleHighlightSelection(
+                                color as "yellow" | "red" | "blue" | "green",
+                                selectionMenu.highlightId
+                              )
+                            }
+                            className={`w-5 h-5 rounded-full ${
+                              color === "yellow"
+                                ? "bg-yellow-300"
+                                : color === "red"
+                                  ? "bg-red-500"
+                                  : color === "blue"
+                                    ? "bg-blue-500"
+                                    : "bg-green-500"
+                            } hover:opacity-70 duration-100 relative`}
+                            title={`${
+                              color.charAt(0).toUpperCase() + color.slice(1)
+                            } Highlight`}
+                          >
+                            {selectionMenu.highlightId &&
+                              linkHighlights?.find(
+                                (h) => h.id === selectionMenu.highlightId
+                              )?.color === color && (
+                                <i className="bi-check2 text-sm text-black absolute inset-0 flex items-center justify-center" />
+                              )}
+                          </button>
+                        ))}
+                      </div>
+
+                      {selectionMenu.highlightId && (
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => {
+                              deleteHighlight.mutate(
+                                selectionMenu.highlightId as number
+                              );
+                              setSelectionMenu({
+                                show: false,
+                                highlightId: null,
+                              });
+                            }}
+                            className="hover:opacity-70 duration-100"
+                            title="Delete"
+                          >
+                            <i className="bi-trash" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </ClickAwayHandler>
+                )}
             </div>
+          ) : (
+            <PreservationSkeleton className="h-fit" />
           )}
         </>
       ) : (

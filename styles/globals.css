@@ -212,6 +212,8 @@
 .reader-view p {
   font-size: 1.15rem;
   line-height: 1.8;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 .reader-view h1 {
   font-size: 2.2rem;

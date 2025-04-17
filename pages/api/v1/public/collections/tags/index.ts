@@ -9,7 +9,7 @@ export default async function collections(
 ) {
   if (req.method === "GET") {
     // Convert the type of the request query to "LinkRequestQuery"
-    const convertedData: Omit<LinkRequestQuery, "tagId"> = {
+    const convertedData: LinkRequestQuery = {
       sort: Number(req.query.sort as string),
       collectionId: req.query.collectionId
         ? Number(req.query.collectionId as string)

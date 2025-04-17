@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import { DeleteUserBody } from "@/types/global";
 import removeFile from "@/lib/api/storage/removeFile";
 import updateSeats from "@/lib/api/stripe/updateSeats";
+import { meiliClient } from "@/lib/api/meilisearchClient";
 
 export default async function deleteUserById(
   userId: number,
@@ -107,66 +108,77 @@ export default async function deleteUserById(
   await prisma
     .$transaction(
       async (prisma) => {
-        // Delete Access Tokens
-        await prisma.accessToken.deleteMany({
-          where: { userId: queryId },
-        });
-
-        // Delete whitelisted users
-        await prisma.whitelistedUser.deleteMany({
-          where: { userId: queryId },
-        });
-
-        // Delete links
-        await prisma.link.deleteMany({
+        const links = await prisma.link.findMany({
           where: { collection: { ownerId: queryId } },
+          select: { id: true },
         });
 
-        // Delete tags
-        await prisma.tag.deleteMany({
-          where: { ownerId: queryId },
-        });
+        const linkIds = links.map((link) => link.id);
 
-        // Find collections that the user owns
+        await meiliClient?.index("links").deleteDocuments(linkIds);
+
         const collections = await prisma.collection.findMany({
           where: { ownerId: queryId },
         });
 
-        for (const collection of collections) {
-          // Delete related users and collections relations
-          await prisma.usersAndCollections.deleteMany({
-            where: { collectionId: collection.id },
-          });
+        await Promise.all(
+          collections.map(async (collection) => {
+            await removeFolder({ filePath: `archives/${collection.id}` });
+            await removeFolder({
+              filePath: `archives/preview/${collection.id}`,
+            });
+          })
+        );
 
-          // Delete archive folders
-          await removeFolder({ filePath: `archives/${collection.id}` });
-
-          await removeFolder({
-            filePath: `archives/preview/${collection.id}`,
-          });
-        }
-
-        // Delete collections after cleaning up related data
-        await prisma.collection.deleteMany({
-          where: { ownerId: queryId },
-        });
-
-        // Delete subscription
-        if (process.env.STRIPE_SECRET_KEY)
-          await prisma.subscription
-            .delete({
-              where: { userId: queryId },
-            })
-            .catch((err) => console.log(err));
-
-        await prisma.usersAndCollections.deleteMany({
-          where: {
-            OR: [{ userId: queryId }, { collection: { ownerId: queryId } }],
-          },
-        });
-
-        // Delete user's avatar
         await removeFile({ filePath: `uploads/avatar/${queryId}.jpg` });
+
+        if (process.env.STRIPE_SECRET_KEY) {
+          const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: "2022-11-15",
+          });
+
+          try {
+            if (user.subscriptions?.id && queryId !== userId) {
+              const subscription = await prisma.subscription.findFirst({
+                where: { userId: queryId },
+                select: { stripeSubscriptionId: true },
+              });
+
+              if (subscription) {
+                await stripe.subscriptions.cancel(
+                  subscription.stripeSubscriptionId,
+                  {
+                    cancellation_details: {
+                      comment: body.cancellation_details?.comment,
+                      feedback: body.cancellation_details?.feedback,
+                    },
+                  }
+                );
+              }
+            } else if (user.subscriptions?.id && queryId === userId) {
+              await stripe.subscriptions.cancel(
+                user.subscriptions.stripeSubscriptionId,
+                {
+                  cancellation_details: {
+                    comment: body.cancellation_details?.comment,
+                    feedback: body.cancellation_details?.feedback,
+                  },
+                }
+              );
+            } else if (
+              user.parentSubscription?.id &&
+              user &&
+              user.emailVerified
+            ) {
+              await updateSeats(
+                user.parentSubscription.stripeSubscriptionId,
+                user.parentSubscription.quantity - 1
+              );
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
 
         // Finally, delete the user
         await prisma.user.delete({
@@ -176,43 +188,6 @@ export default async function deleteUserById(
       { timeout: 20000 }
     )
     .catch((err) => console.log(err));
-
-  if (process.env.STRIPE_SECRET_KEY) {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2022-11-15",
-    });
-
-    try {
-      if (user.subscriptions?.id) {
-        const deleted = await stripe.subscriptions.cancel(
-          user.subscriptions.stripeSubscriptionId,
-          {
-            cancellation_details: {
-              comment: body.cancellation_details?.comment,
-              feedback: body.cancellation_details?.feedback,
-            },
-          }
-        );
-
-        return {
-          response: deleted,
-          status: 200,
-        };
-      } else if (user.parentSubscription?.id && user && user.emailVerified) {
-        await updateSeats(
-          user.parentSubscription.stripeSubscriptionId,
-          user.parentSubscription.quantity - 1
-        );
-
-        return {
-          response: "User account and all related data deleted successfully.",
-          status: 200,
-        };
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
 
   return {
     response: "User account and all related data deleted successfully.",
