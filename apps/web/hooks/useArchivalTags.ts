@@ -1,11 +1,11 @@
-import { Tag } from "@prisma/client";
+import { Tag } from "@linkwarden/prisma/client";
 import {
   ArchivalOptionKeys,
   ArchivalTagOption,
 } from "../components/InputSelect/types";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import isArchivalTag from "@/lib/shared/isArchivalTag";
+import { isArchivalTag } from "@linkwarden/lib";
 
 const useArchivalTags = (initialTags: Tag[]) => {
   const [archivalTags, setArchivalTags] = useState<ArchivalTagOption[]>([]);

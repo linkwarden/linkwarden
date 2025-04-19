@@ -1,9 +1,9 @@
 import { prisma } from "@linkwarden/prisma";
-import createFolder from "@/lib/api/storage/createFolder";
+import { createFolder } from "@linkwarden/filesystem";
 import { JSDOM } from "jsdom";
 import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
-import { hasPassedLimit } from "../../verifyCapacity";
+import { hasPassedLimit } from "@linkwarden/lib";
 
 export default async function importFromHTMLFile(
   userId: number,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
 import Modal from "../Modal";

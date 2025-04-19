@@ -1,4 +1,4 @@
-import { RssSubscription } from "@prisma/client";
+import { RssSubscription } from "@linkwarden/prisma/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 

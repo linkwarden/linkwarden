@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { Sort, TagIncludingLinkCount, ViewMode } from "@/types/global";
+import { Sort, TagIncludingLinkCount, ViewMode } from "@linkwarden/types";
 import { useLinks } from "@/hooks/store/links";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";

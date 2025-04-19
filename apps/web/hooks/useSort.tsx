@@ -2,7 +2,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
   Sort,
-} from "@/types/global";
+} from "@linkwarden/types";
 import { SetStateAction, useEffect } from "react";
 
 type Props<

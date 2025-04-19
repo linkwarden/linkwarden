@@ -1,4 +1,4 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import Image from "next/image";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import React, { useState } from "react";

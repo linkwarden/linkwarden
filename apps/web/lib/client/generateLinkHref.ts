@@ -2,8 +2,8 @@ import {
   AccountSettings,
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
-import { LinksRouteTo } from "@prisma/client";
+} from "@linkwarden/types";
+import { LinksRouteTo } from "@linkwarden/prisma/client";
 import { formatAvailable } from "../shared/formatStats";
 
 export const generateLinkHref = (

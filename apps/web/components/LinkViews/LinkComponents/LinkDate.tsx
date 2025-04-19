@@ -1,4 +1,4 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import React from "react";
 
 export default function LinkDate({

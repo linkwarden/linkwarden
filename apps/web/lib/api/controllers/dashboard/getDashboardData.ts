@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { LinkRequestQuery, Order, Sort } from "@/types/global";
+import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
 
 export default async function getDashboardData(
   userId: number,

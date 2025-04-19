@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { prisma } from "@linkwarden/prisma";
-import archiveHandler from "../lib/api/archiveHandler";
+import archiveHandler from "./lib/archiveHandler";
 import Parser from "rss-parser";
-import { LinkWithCollectionOwnerAndTags } from "../types/global";
-import getLinkBatch from "../lib/api/getLinkBatch";
-import { meiliClient } from "../lib/api/meilisearchClient";
-import rssHandler from "../lib/api/rssHandler";
+import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
+import getLinkBatch from "./lib/getLinkBatch";
+import { meiliClient } from "@linkwarden/lib";
+import { rssHandler } from "@linkwarden/lib";
 
 const archiveTakeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
 const indexTakeCount = Number(process.env.INDEX_TAKE_COUNT || "") || 50;
@@ -269,25 +269,25 @@ async function init() {
 
 init();
 
-const clearIndexes = async () => {
-  console.log("Clearing db indexes...");
+// const clearIndexes = async () => {
+//   console.log("Clearing db indexes...");
 
-  const clearedLinks = await prisma.link.updateMany({
-    where: {},
-    data: {
-      indexVersion: null,
-    },
-  });
+//   const clearedLinks = await prisma.link.updateMany({
+//     where: {},
+//     data: {
+//       indexVersion: null,
+//     },
+//   });
 
-  console.log("Cleared db indexes:", clearedLinks);
+//   console.log("Cleared db indexes:", clearedLinks);
 
-  if (!meiliClient) return;
+//   if (!meiliClient) return;
 
-  const deleteAllDocuments = await meiliClient
-    .index("links")
-    .deleteAllDocuments();
+//   const deleteAllDocuments = await meiliClient
+//     .index("links")
+//     .deleteAllDocuments();
 
-  await meiliClient.index("links").waitForTask(deleteAllDocuments.taskUid, {
-    timeOutMs: 1000000,
-  });
-};
+//   await meiliClient.index("links").waitForTask(deleteAllDocuments.taskUid, {
+//     timeOutMs: 1000000,
+//   });
+// };

@@ -1,4 +1,4 @@
-import { Member } from "@/types/global";
+import { Member } from "@linkwarden/types";
 import { useEffect, useState } from "react";
 import { useCollections } from "./store/collections";
 import { useUser } from "./store/user";

@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
 import s3Client from "./s3Client";
-import removeFile from "./removeFile";
+import { removeFile } from "./removeFile";
 
-export default async function moveFile(from: string, to: string) {
+export async function moveFile(from: string, to: string) {
   if (s3Client) {
     const Bucket = process.env.SPACES_BUCKET_NAME;
 
@@ -28,7 +28,7 @@ export default async function moveFile(from: string, to: string) {
     const storagePath = process.env.STORAGE_FOLDER || "data";
 
     const directory = (file: string) =>
-      path.join(process.cwd(), storagePath + "/" + file);
+      path.join(process.cwd(), "../..", storagePath, file);
 
     fs.rename(directory(from), directory(to), (err) => {
       if (err) console.log("Error copying file:", err);

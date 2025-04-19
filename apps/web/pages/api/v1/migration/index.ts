@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import exportData from "@/lib/api/controllers/migration/exportData";
 import importFromHTMLFile from "@/lib/api/controllers/migration/importFromHTMLFile";
 import importFromLinkwarden from "@/lib/api/controllers/migration/importFromLinkwarden";
-import { MigrationFormat, MigrationRequest } from "@/types/global";
+import { MigrationFormat, MigrationRequest } from "@linkwarden/types";
 import verifyUser from "@/lib/api/verifyUser";
 import importFromWallabag from "@/lib/api/controllers/migration/importFromWallabag";
 import importFromOmnivore from "@/lib/api/controllers/migration/importFromOmnivore";

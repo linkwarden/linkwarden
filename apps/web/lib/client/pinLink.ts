@@ -1,5 +1,5 @@
 import { useUpdateLink } from "@/hooks/store/links";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@/hooks/store/user";

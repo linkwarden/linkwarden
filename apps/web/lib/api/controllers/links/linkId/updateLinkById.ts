@@ -1,13 +1,12 @@
 import { prisma } from "@linkwarden/prisma";
-import { UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import { moveFiles, removeFiles } from "@/lib/api/manageLinkFiles";
+import { moveFiles, removeFiles } from "@linkwarden/filesystem";
 import isValidUrl from "@/lib/shared/isValidUrl";
 import {
   UpdateLinkSchema,
   UpdateLinkSchemaType,
 } from "@/lib/shared/schemaValidation";
-import { meiliClient } from "@/lib/api/meilisearchClient";
 
 export default async function updateLinkById(
   userId: number,

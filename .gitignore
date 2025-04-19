@@ -34,11 +34,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# generated files and folders
-/data
-.idea
-prisma/dev.db
-
 # tests
 /tests
 /test-results/
@@ -55,7 +50,9 @@ certificates
 /blob-report/
 /playwright/.cache/
 
-# meilisearch
+# generated files and folders
+/data
+.idea
+prisma/dev.db
 data.ms
-
 .turbo

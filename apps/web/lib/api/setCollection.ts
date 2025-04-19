@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import getPermission from "./getPermission";
-import { UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
 
 type SetCollectionInput = {
   userId: number;

@@ -4,7 +4,7 @@ import sendVerificationRequest from "@/lib/api/sendVerificationRequest";
 import updateSeats from "@/lib/api/stripe/updateSeats";
 import verifySubscription from "@/lib/api/stripe/verifySubscription";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { User } from "@prisma/client";
+import { User } from "@linkwarden/prisma/client";
 import bcrypt from "bcrypt";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Adapter } from "next-auth/adapters";

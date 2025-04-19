@@ -8,10 +8,11 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn workspace @linkwarden/web dev",
-    "build": "yarn workspaces run build",
-    "start": "yarn workspace @linkwarden/web start",
-    "lint": "yarn workspaces run lint",
+    "web:dev": "yarn workspace @linkwarden/web dev",
+    "web:build": "yarn workspace @linkwarden/web build",
+    "web:start": "yarn workspace @linkwarden/web start",
+    "worker:dev": "yarn workspace @linkwarden/worker dev",
+    "worker:start": "yarn workspace @linkwarden/worker start",
     "format": "yarn workspaces run format"
   },
   "devDependencies": {}

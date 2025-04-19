@@ -1,4 +1,4 @@
-import { MigrationFormat, MigrationRequest } from "@/types/global";
+import { MigrationFormat, MigrationRequest } from "@linkwarden/types";
 import { toast } from "react-hot-toast";
 import JSZip from "jszip";
 

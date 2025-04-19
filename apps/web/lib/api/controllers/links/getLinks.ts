@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { LinkRequestQuery, Order, Sort } from "@/types/global";
+import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
 
 export default async function getLink(userId: number, query: LinkRequestQuery) {
   const POSTGRES_IS_ENABLED =

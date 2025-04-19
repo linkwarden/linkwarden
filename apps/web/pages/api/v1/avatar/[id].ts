@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@linkwarden/prisma";
-import readFile from "@/lib/api/storage/readFile";
+import { readFile } from "@linkwarden/filesystem";
 import verifyToken from "@/lib/api/verifyToken";
 
 export default async function Index(req: NextApiRequest, res: NextApiResponse) {

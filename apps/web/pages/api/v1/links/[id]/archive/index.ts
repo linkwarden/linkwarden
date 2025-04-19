@@ -2,9 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@linkwarden/prisma";
 import verifyUser from "@/lib/api/verifyUser";
 import isValidUrl from "@/lib/shared/isValidUrl";
-import { UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import { removeFiles } from "@/lib/api/manageLinkFiles";
+import { removeFiles } from "@linkwarden/filesystem";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });

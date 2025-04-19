@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { User } from "@prisma/client";
+import { User } from "@linkwarden/prisma/client";
 
 export default async function getUsers(user: User) {
   if (user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1)) {

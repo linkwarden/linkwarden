@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { User } from "@prisma/client";
+import { User } from "@linkwarden/prisma/client";
 import verifySubscription from "./stripe/verifySubscription";
 import bcrypt from "bcrypt";
 

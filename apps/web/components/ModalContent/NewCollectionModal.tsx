@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "@/components/TextInput";
-import { Collection } from "@prisma/client";
+import { Collection } from "@linkwarden/prisma/client";
 import Modal from "../Modal";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useTranslation } from "next-i18next";
 import { useCreateCollection } from "@/hooks/store/collections";
 import toast from "react-hot-toast";

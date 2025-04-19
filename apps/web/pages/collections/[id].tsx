@@ -3,7 +3,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   Sort,
   ViewMode,
-} from "@/types/global";
+} from "@linkwarden/types";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";

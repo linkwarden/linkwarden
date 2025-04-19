@@ -1,8 +1,8 @@
 import { prisma } from "@linkwarden/prisma";
-import { Link, UsersAndCollections } from "@prisma/client";
+import { Link, UsersAndCollections } from "@linkwarden/prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import { removeFiles } from "@/lib/api/manageLinkFiles";
-import { meiliClient } from "@/lib/api/meilisearchClient";
+import { removeFiles } from "@linkwarden/filesystem";
+import { meiliClient } from "@linkwarden/lib";
 
 export default async function deleteLink(userId: number, linkId: number) {
   if (!linkId) return { response: "Please choose a valid link.", status: 401 };

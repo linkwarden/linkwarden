@@ -1,12 +1,12 @@
 import { prisma } from "@linkwarden/prisma";
 import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
-import createFolder from "@/lib/api/storage/createFolder";
+import { createFolder } from "@linkwarden/filesystem";
 import setCollection from "../../setCollection";
 import {
   PostLinkSchema,
   PostLinkSchemaType,
 } from "@/lib/shared/schemaValidation";
-import { hasPassedLimit } from "../../verifyCapacity";
+import { hasPassedLimit } from "@linkwarden/lib";
 
 export default async function postLink(
   body: PostLinkSchemaType,

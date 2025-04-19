@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import s3Client from "./s3Client";
 
-export default async function createFile({
+export async function createFile({
   filePath,
   data,
   isBase64,
@@ -29,7 +29,12 @@ export default async function createFile({
     }
   } else {
     const storagePath = process.env.STORAGE_FOLDER || "data";
-    const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
+    const creationPath = path.join(
+      process.cwd(),
+      "../..",
+      storagePath,
+      filePath
+    );
 
     fs.writeFile(creationPath, data, isBase64 ? "base64" : {}, function (err) {
       if (err) console.log(err);

@@ -3,7 +3,7 @@ import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
 import toast from "react-hot-toast";
-import { RssSubscription } from "@prisma/client";
+import { RssSubscription } from "@linkwarden/prisma/client";
 import { useDeleteRssSubscription } from "@/hooks/store/rss";
 
 type Props = {

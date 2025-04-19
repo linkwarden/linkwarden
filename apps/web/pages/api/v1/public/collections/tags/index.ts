@@ -1,6 +1,6 @@
 import getTags from "@/lib/api/controllers/tags/getTags";
 import { prisma } from "@linkwarden/prisma";
-import { LinkRequestQuery } from "@/types/global";
+import { LinkRequestQuery } from "@linkwarden/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function collections(

@@ -3,7 +3,10 @@ import { hasPassedLimit } from "./verifyCapacity";
 import Parser from "rss-parser";
 import { prisma } from "@linkwarden/prisma";
 
-const rssHandler = async (rssSubscription: RssSubscription, parser: Parser) => {
+export const rssHandler = async (
+  rssSubscription: RssSubscription,
+  parser: Parser
+) => {
   try {
     const feed = await parser.parseURL(rssSubscription.url);
 
@@ -84,5 +87,3 @@ const rssHandler = async (rssSubscription: RssSubscription, parser: Parser) => {
     );
   }
 };
-
-export default rssHandler;

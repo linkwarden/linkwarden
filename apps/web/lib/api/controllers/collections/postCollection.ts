@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import createFolder from "@/lib/api/storage/createFolder";
+import { createFolder } from "@linkwarden/filesystem";
 import {
   PostCollectionSchema,
   PostCollectionSchemaType,
