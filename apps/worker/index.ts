@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { prisma } from "@linkwarden/prisma";
 import archiveHandler from "./lib/archiveHandler";
 import Parser from "rss-parser";

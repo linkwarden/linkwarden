@@ -21,7 +21,6 @@
     "ai": "^4.3.9",
     "axios": "^1.5.1",
     "dompurify": "^3.0.6",
-    "dotenv": "^16.3.1",
     "jsdom": "^22.1.0",
     "meilisearch": "^0.48.2",
     "node-fetch": "^2.7.0",

@@ -6,6 +6,10 @@
   "dependencies": {
     "@prisma/client": "^5.21.1"
   },
+  "scripts": {
+    "generate": "prisma generate",
+    "deploy": "prisma migrate deploy"
+  },
   "devDependencies": {
     "@types/node": "^22.14.0",
     "prisma": "^5.21.1",
