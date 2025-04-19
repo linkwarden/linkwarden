@@ -12,7 +12,8 @@
     "build": "next build",
     "lint": "next lint",
     "e2e": "playwright test e2e",
-    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "postinstall": "playwright install --with-deps chromium"
   },
   "dependencies": {
     "@atlaskit/tree": "^8.8.7",
@@ -42,7 +43,6 @@
     "colorjs.io": "^0.5.2",
     "csstype": "^3.1.2",
     "dompurify": "^3.0.6",
-    "dotenv": "^16.3.1",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.9",
     "formidable": "^3.5.1",

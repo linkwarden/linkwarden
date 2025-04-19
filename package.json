@@ -8,12 +8,22 @@
     "packages/*"
   ],
   "scripts": {
-    "web:dev": "yarn workspace @linkwarden/web dev",
-    "web:build": "yarn workspace @linkwarden/web build",
-    "web:start": "yarn workspace @linkwarden/web start",
-    "worker:dev": "yarn workspace @linkwarden/worker dev",
-    "worker:start": "yarn workspace @linkwarden/worker start",
-    "format": "yarn workspaces run format"
+    "web:dev": "dotenv -- yarn workspace @linkwarden/web dev",
+    "web:build": "dotenv -- yarn workspace @linkwarden/web build",
+    "web:start": "dotenv -- yarn workspace @linkwarden/web start",
+    "worker:dev": "dotenv -- yarn workspace @linkwarden/worker dev",
+    "worker:start": "dotenv -- yarn workspace @linkwarden/worker start",
+    "concurrently:dev": "concurrently \"dotenv -- yarn workspace @linkwarden/web dev\" \"dotenv -- yarn workspace @linkwarden/worker dev\"",
+    "concurrently:start": "concurrently \"dotenv -- yarn workspace @linkwarden/web start\" \"dotenv -- yarn workspace @linkwarden/worker start\"",
+    "prisma:deploy": "dotenv -- yarn workspace @linkwarden/prisma deploy",
+    "prisma:generate": "yarn workspace @linkwarden/prisma generate",
+    "format": "yarn workspaces run format",
+    "postinstall": "yarn workspace @linkwarden/web run postinstall"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "dotenv-cli": "^8.0.0"
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
