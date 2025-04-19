@@ -1,4 +1,4 @@
-import { Tag } from "@prisma/client";
+import { Tag } from "@linkwarden/prisma/client";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";

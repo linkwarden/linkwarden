@@ -163,3 +163,12 @@ export type ResponseObject<T = any> = {
   message: string;
   data: T;
 };
+
+export interface ArchivalSettings {
+  archiveAsScreenshot: boolean;
+  archiveAsMonolith: boolean;
+  archiveAsPDF: boolean;
+  archiveAsReadable: boolean;
+  archiveAsWaybackMachine: boolean;
+  aiTag: boolean;
+}

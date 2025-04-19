@@ -11,14 +11,14 @@ import usePermissions from "@/hooks/usePermissions";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
-} from "@/types/global";
+} from "@linkwarden/types";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import {
   useGetLinkHighlights,
   usePostHighlight,
   useRemoveHighlight,
 } from "@/hooks/store/highlights";
-import { Highlight } from "@prisma/client";
+import { Highlight } from "@linkwarden/prisma/client";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;

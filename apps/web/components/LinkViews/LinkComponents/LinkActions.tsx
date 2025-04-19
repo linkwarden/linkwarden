@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
+} from "@linkwarden/types";
 import usePermissions from "@/hooks/usePermissions";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 import { dropdownTriggerer } from "@/lib/client/utils";

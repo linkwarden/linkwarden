@@ -2,7 +2,7 @@ import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ViewMode,
-} from "@/types/global";
+} from "@linkwarden/types";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import LinkMasonry from "@/components/LinkViews/LinkComponents/LinkMasonry";

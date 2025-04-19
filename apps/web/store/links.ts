@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 
 type ResponseObject = {
   ok: boolean;

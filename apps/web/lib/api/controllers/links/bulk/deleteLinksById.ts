@@ -1,8 +1,8 @@
 import { prisma } from "@linkwarden/prisma";
-import { UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
 import getPermission from "@/lib/api/getPermission";
-import { removeFiles } from "@/lib/api/manageLinkFiles";
-import { meiliClient } from "@/lib/api/meilisearchClient";
+import { removeFiles } from "@linkwarden/filesystem";
+import { meiliClient } from "@linkwarden/lib";
 
 export default async function deleteLinksById(
   userId: number,

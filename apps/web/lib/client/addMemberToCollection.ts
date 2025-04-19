@@ -1,8 +1,11 @@
-import { CollectionIncludingMembersAndLinkCount, Member } from "@/types/global";
+import {
+  CollectionIncludingMembersAndLinkCount,
+  Member,
+} from "@linkwarden/types";
 import getPublicUserData from "./getPublicUserData";
 import { toast } from "react-hot-toast";
 import { TFunction } from "i18next";
-import { User } from "@prisma/client";
+import { User } from "@linkwarden/prisma/client";
 
 const addMemberToCollection = async (
   owner: User,

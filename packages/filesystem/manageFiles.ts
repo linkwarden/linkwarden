@@ -1,5 +1,5 @@
-import moveFile from "./storage/moveFile";
-import removeFile from "./storage/removeFile";
+import { moveFile } from "./moveFile";
+import { removeFile } from "./removeFile";
 
 const removeFiles = async (linkId: number, collectionId: number) => {
   // PDF

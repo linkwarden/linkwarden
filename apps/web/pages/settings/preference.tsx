@@ -6,14 +6,14 @@ import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
+import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
 import { useUpdateUser, useUser } from "@/hooks/store/user";
 import { useConfig } from "@/hooks/store/config";
 import { useTags, useUpdateArchivalTags } from "@/hooks/store/tags";
 import { cn } from "@/lib/client/utils";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useArchivalTags } from "@/hooks/useArchivalTags";
-import isArchivalTag from "@/lib/shared/isArchivalTag";
+import { isArchivalTag } from "@linkwarden/lib";
 
 export default function Preference() {
   const { t } = useTranslation();

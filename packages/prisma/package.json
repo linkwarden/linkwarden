@@ -15,7 +15,5 @@
   "prisma": {
     "seed": "node ./seed.js"
   },
-  "exports": {
-    ".": "./index.ts"
-  }
+  "types": "index.d.ts"
 }

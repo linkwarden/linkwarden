@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
-} from "@/types/global";
+} from "@linkwarden/types";
 import Link from "next/link";
 import {
   atLeastOneFormatAvailable,

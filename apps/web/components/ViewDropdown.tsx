@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 import useLocalSettingsStore from "@/store/localSettings";
-import { ViewMode } from "@/types/global";
+import { ViewMode } from "@linkwarden/types";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 

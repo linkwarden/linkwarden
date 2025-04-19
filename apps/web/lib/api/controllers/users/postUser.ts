@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import { PostUserSchema } from "@/lib/shared/schemaValidation";
 import isAuthenticatedRequest from "../../isAuthenticatedRequest";
-import { Subscription, User } from "@prisma/client";
+import { Subscription, User } from "@linkwarden/prisma/client";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;

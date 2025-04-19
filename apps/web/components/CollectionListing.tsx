@@ -9,9 +9,9 @@ import Tree, {
   TreeSourcePosition,
   TreeDestinationPosition,
 } from "@atlaskit/tree";
-import { Collection } from "@prisma/client";
+import { Collection } from "@linkwarden/prisma/client";
 import Link from "next/link";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";

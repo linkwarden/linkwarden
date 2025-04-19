@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { Subscription, User } from "@prisma/client";
+import { Subscription, User } from "@linkwarden/prisma/client";
 import checkSubscriptionByEmail from "./checkSubscriptionByEmail";
 
 interface UserIncludingSubscription extends User {

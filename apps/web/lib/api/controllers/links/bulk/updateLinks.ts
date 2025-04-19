@@ -1,4 +1,4 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import updateLinkById from "../linkId/updateLinkById";
 import { UpdateLinkSchemaType } from "@/lib/shared/schemaValidation";
 

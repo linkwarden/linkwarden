@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
-import { LinkRequestQuery, Order, Sort } from "@/types/global";
-import { meiliClient } from "../../meilisearchClient";
+import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
+import { meiliClient } from "@linkwarden/lib";
 import {
   buildMeiliFilters,
   buildMeiliQuery,

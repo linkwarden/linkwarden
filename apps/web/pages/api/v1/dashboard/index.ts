@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { LinkRequestQuery } from "@/types/global";
+import { LinkRequestQuery } from "@linkwarden/types";
 import getDashboardData from "@/lib/api/controllers/dashboard/getDashboardData";
 import verifyUser from "@/lib/api/verifyUser";
 

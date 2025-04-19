@@ -2,7 +2,7 @@ import SettingsLayout from "@/layouts/SettingsLayout";
 import React, { useState } from "react";
 import NewTokenModal from "@/components/ModalContent/NewTokenModal";
 import RevokeTokenModal from "@/components/ModalContent/RevokeTokenModal";
-import { AccessToken } from "@prisma/client";
+import { AccessToken } from "@linkwarden/prisma/client";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTokens } from "@/hooks/store/tokens";

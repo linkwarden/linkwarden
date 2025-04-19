@@ -1,6 +1,6 @@
 import { useLinks } from "@/hooks/store/links";
 import MainLayout from "@/layouts/MainLayout";
-import { Sort, ViewMode } from "@/types/global";
+import { Sort, ViewMode } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";

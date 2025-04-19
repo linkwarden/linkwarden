@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { AccessToken } from "@prisma/client";
+import { AccessToken } from "@linkwarden/prisma/client";
 import { useSession } from "next-auth/react";
 
 const useTokens = () => {

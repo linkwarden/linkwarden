@@ -1,7 +1,7 @@
-import { Link } from "@prisma/client";
+import { Link } from "@linkwarden/prisma/client";
 import { prisma } from "@linkwarden/prisma";
-import createFile from "../storage/createFile";
-import generatePreview from "../generatePreview";
+import { createFile } from "@linkwarden/filesystem";
+import { generatePreview } from "@linkwarden/lib";
 
 const imageHandler = async ({ url, id }: Link, extension: string) => {
   const image = await fetch(url as string).then((res) => res.blob());

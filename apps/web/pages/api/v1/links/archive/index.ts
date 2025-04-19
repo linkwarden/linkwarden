@@ -2,12 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import verifyUser from "@/lib/api/verifyUser";
 import { prisma } from "@linkwarden/prisma";
 import { LinkArchiveActionSchema } from "@/lib/shared/schemaValidation";
-import {
-  removeFiles,
-  removePreservationFiles,
-} from "@/lib/api/manageLinkFiles";
-import { ArchivalSettings } from "@/lib/api/archiveHandler";
-import isArchivalTag from "@/lib/shared/isArchivalTag";
+import { removeFiles, removePreservationFiles } from "@linkwarden/filesystem";
+import { ArchivalSettings } from "@linkwarden/types";
+import { isArchivalTag } from "@linkwarden/lib";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });

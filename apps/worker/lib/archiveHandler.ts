@@ -8,10 +8,9 @@ import {
 } from "playwright";
 import { prisma } from "@linkwarden/prisma";
 import sendToWayback from "./preservationScheme/sendToWayback";
-import { AiTaggingMethod } from "@prisma/client";
+import { AiTaggingMethod } from "@linkwarden/prisma/client";
 import fetchHeaders from "./fetchHeaders";
-import createFolder from "./storage/createFolder";
-import { removeFiles } from "./manageLinkFiles";
+import { createFolder, removeFiles } from "@linkwarden/filesystem";
 import handleMonolith from "./preservationScheme/handleMonolith";
 import handleReadability from "./preservationScheme/handleReadability";
 import handleArchivePreview from "./preservationScheme/handleArchivePreview";
@@ -19,19 +18,11 @@ import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf"
 import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
 import autoTagLink from "./autoTagLink";
-import { LinkWithCollectionOwnerAndTags } from "../../types/global";
-import isArchivalTag from "../shared/isArchivalTag";
+import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
+import { isArchivalTag } from "@linkwarden/lib";
+import { ArchivalSettings } from "@linkwarden/types";
 
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
-
-export interface ArchivalSettings {
-  archiveAsScreenshot: boolean;
-  archiveAsMonolith: boolean;
-  archiveAsPDF: boolean;
-  archiveAsReadable: boolean;
-  archiveAsWaybackMachine: boolean;
-  aiTag: boolean;
-}
 
 export default async function archiveHandler(
   link: LinkWithCollectionOwnerAndTags
