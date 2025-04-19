@@ -1,4 +1,4 @@
-import { AiTaggingMethod, User } from "@prisma/client";
+import { AiTaggingMethod, User } from "@linkwarden/prisma/client";
 import {
   existingTagsPrompt,
   generateTagsPrompt,
@@ -12,7 +12,7 @@ import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider";
-import { titleCase } from "../shared/utils";
+import { titleCase } from "@linkwarden/lib";
 
 // Function to concat /api with the base URL properly
 const ensureValidURL = (base: string, path: string) =>

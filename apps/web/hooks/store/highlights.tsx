@@ -5,7 +5,7 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { Highlight } from "@prisma/client";
+import { Highlight } from "@linkwarden/prisma/client";
 import { PostHighlightSchemaType } from "@/lib/shared/schemaValidation";
 
 const useGetLinkHighlights = (

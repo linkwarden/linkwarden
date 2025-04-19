@@ -1,6 +1,6 @@
-import { Link } from "@prisma/client";
+import { Link } from "@linkwarden/prisma/client";
 import { prisma } from "@linkwarden/prisma";
-import createFile from "../storage/createFile";
+import { createFile } from "@linkwarden/filesystem";
 
 const pdfHandler = async ({ url, id }: Link) => {
   const pdf = await fetch(url as string).then((res) => res.blob());

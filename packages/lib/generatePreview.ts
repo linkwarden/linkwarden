@@ -1,8 +1,8 @@
 import Jimp from "jimp";
 import { prisma } from "@linkwarden/prisma";
-import createFile from "./storage/createFile";
+import { createFile } from "@linkwarden/filesystem";
 
-const generatePreview = async (
+export const generatePreview = async (
   buffer: Buffer,
   collectionId: number,
   linkId: number
@@ -48,5 +48,3 @@ const generatePreview = async (
     }
   }
 };
-
-export default generatePreview;

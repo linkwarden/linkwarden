@@ -1,6 +1,6 @@
 import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
 import { useConfig } from "@/hooks/store/config";
-import { User as U } from "@prisma/client";
+import { User as U } from "@linkwarden/prisma/client";
 import { TFunction } from "i18next";
 
 interface User extends U {

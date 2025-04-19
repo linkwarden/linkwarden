@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { CollectionIncludingMembersAndLinkCount } from "@/types/global";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
 
 const useCollections = () => {

@@ -1,11 +1,10 @@
 import { prisma } from "@linkwarden/prisma";
 import bcrypt from "bcrypt";
-import removeFolder from "@/lib/api/storage/removeFolder";
+import { removeFolder, removeFile } from "@linkwarden/filesystem";
 import Stripe from "stripe";
-import { DeleteUserBody } from "@/types/global";
-import removeFile from "@/lib/api/storage/removeFile";
+import { DeleteUserBody } from "@linkwarden/types";
 import updateSeats from "@/lib/api/stripe/updateSeats";
-import { meiliClient } from "@/lib/api/meilisearchClient";
+import { meiliClient } from "@linkwarden/lib";
 
 export default async function deleteUserById(
   userId: number,

@@ -16,7 +16,7 @@ type ReturnContentTypes =
   | "application/pdf"
   | "application/json";
 
-export default async function readFile(filePath: string) {
+export async function readFile(filePath: string) {
   let contentType: ReturnContentTypes;
 
   if (s3Client) {
@@ -83,7 +83,12 @@ export default async function readFile(filePath: string) {
     }
   } else {
     const storagePath = process.env.STORAGE_FOLDER || "data";
-    const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
+    const creationPath = path.join(
+      process.cwd(),
+      "../..",
+      storagePath,
+      filePath
+    );
 
     if (filePath.endsWith(".pdf")) {
       contentType = "application/pdf";

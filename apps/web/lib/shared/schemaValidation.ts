@@ -1,5 +1,5 @@
-import { ArchivedFormat, TokenExpiry } from "@/types/global";
-import { AiTaggingMethod, LinksRouteTo } from "@prisma/client";
+import { ArchivedFormat, TokenExpiry } from "@linkwarden/types";
+import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
 import { z } from "zod";
 
 // const stringField = z.string({

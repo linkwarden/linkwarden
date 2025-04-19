@@ -1,7 +1,7 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useRouter } from "next/router";
 import InviteModal from "@/components/ModalContent/InviteModal";
-import { User as U } from "@prisma/client";
+import { User as U } from "@linkwarden/prisma/client";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";

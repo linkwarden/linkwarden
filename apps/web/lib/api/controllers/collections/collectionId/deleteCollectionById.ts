@@ -1,8 +1,8 @@
 import { prisma } from "@linkwarden/prisma";
 import getPermission from "@/lib/api/getPermission";
-import { Link, UsersAndCollections } from "@prisma/client";
-import removeFolder from "@/lib/api/storage/removeFolder";
-import { meiliClient } from "@/lib/api/meilisearchClient";
+import { Link, UsersAndCollections } from "@linkwarden/prisma/client";
+import { removeFolder } from "@linkwarden/filesystem";
+import { meiliClient } from "@linkwarden/lib";
 
 export default async function deleteCollection(
   userId: number,

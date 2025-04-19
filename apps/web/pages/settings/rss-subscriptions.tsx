@@ -4,7 +4,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useRssSubscriptions } from "@/hooks/store/rss";
 import DeleteRssSubscriptionModal from "@/components/ModalContent/DeleteRssSubscriptionModal";
 import { useState } from "react";
-import { RssSubscription } from "@prisma/client";
+import { RssSubscription } from "@linkwarden/prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
 import { useConfig } from "@/hooks/store/config";
 

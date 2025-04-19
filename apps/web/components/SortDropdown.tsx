@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { Sort } from "@/types/global";
+import { Sort } from "@linkwarden/types";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { TFunction } from "i18next";
 import useLocalSettingsStore from "@/store/localSettings";

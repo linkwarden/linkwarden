@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import paymentCheckout from "@/lib/api/paymentCheckout";
-import { Plan } from "@/types/global";
+import { Plan } from "@linkwarden/types";
 import { getToken } from "next-auth/jwt";
 import { prisma } from "@linkwarden/prisma";
 

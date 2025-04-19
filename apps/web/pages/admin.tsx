@@ -1,5 +1,5 @@
 import NewUserModal from "@/components/ModalContent/NewUserModal";
-import { User as U } from "@prisma/client";
+import { User as U } from "@linkwarden/prisma/client";
 import Link from "next/link";
 import { useState } from "react";
 import { useTranslation } from "next-i18next";

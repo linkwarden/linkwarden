@@ -1,9 +1,8 @@
-import { User } from "@prisma/client";
 import { Page } from "playwright";
-import createFile from "../storage/createFile";
+import { createFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
-import { LinkWithCollectionOwnerAndTags } from "../../../types/global";
-import { ArchivalSettings } from "../archiveHandler";
+import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
+import { ArchivalSettings } from "@linkwarden/types";
 
 const handleScreenshotAndPdf = async (
   link: LinkWithCollectionOwnerAndTags,

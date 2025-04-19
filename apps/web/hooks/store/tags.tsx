@@ -4,9 +4,9 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { TagIncludingLinkCount } from "@/types/global";
+import { TagIncludingLinkCount } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
-import { Tag } from "@prisma/client";
+import { Tag } from "@linkwarden/prisma/client";
 import { ArchivalTagOption } from "@/components/InputSelect/types";
 
 const useTags = (): UseQueryResult<Tag[], Error> => {

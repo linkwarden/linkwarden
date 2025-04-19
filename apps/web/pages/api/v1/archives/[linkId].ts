@@ -1,19 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
-import readFile from "@/lib/api/storage/readFile";
-import createFile from "@/lib/api/storage/createFile";
-import createFolder from "@/lib/api/storage/createFolder";
-import generatePreview from "@/lib/api/generatePreview";
+import { readFile, createFile, createFolder } from "@linkwarden/filesystem";
+import { generatePreview } from "@linkwarden/lib";
 import verifyToken from "@/lib/api/verifyToken";
 import verifyUser from "@/lib/api/verifyUser";
 import getPermission from "@/lib/api/getPermission";
 import { prisma } from "@linkwarden/prisma";
-import { UsersAndCollections } from "@prisma/client";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
 import { UploadFileSchema } from "@/lib/shared/schemaValidation";
 import isDemoMode from "@/lib/api/isDemoMode";
 import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
-import { ArchivedFormat } from "@/types/global";
+import { ArchivedFormat } from "@linkwarden/types";
 
 export const config = {
   api: {

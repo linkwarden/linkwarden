@@ -8,7 +8,7 @@ import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
   LinkRequestQuery,
-} from "@/types/global";
+} from "@linkwarden/types";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";

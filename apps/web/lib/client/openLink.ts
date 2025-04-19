@@ -1,9 +1,9 @@
 import {
   AccountSettings,
   LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
+} from "@linkwarden/types";
 import { generateLinkHref } from "./generateLinkHref";
-import { LinksRouteTo } from "@prisma/client";
+import { LinksRouteTo } from "@linkwarden/prisma/client";
 
 const openLink = (
   link: LinkIncludingShortenedCollectionAndTags,

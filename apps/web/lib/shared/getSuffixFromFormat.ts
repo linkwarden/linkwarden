@@ -1,4 +1,4 @@
-import { ArchivedFormat } from "@/types/global";
+import { ArchivedFormat } from "@linkwarden/types";
 
 export default function getSuffixFromFormat(format: number): string | null {
   switch (format) {

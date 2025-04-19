@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
-import createFolder from "@/lib/api/storage/createFolder";
-import { hasPassedLimit } from "../../verifyCapacity";
+import { createFolder } from "@linkwarden/filesystem";
+import { hasPassedLimit } from "@linkwarden/lib";
 
 type WallabagBackup = {
   is_archived: number;

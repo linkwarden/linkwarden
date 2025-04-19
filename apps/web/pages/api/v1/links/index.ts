@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getLinks from "@/lib/api/controllers/links/getLinks";
 import postLink from "@/lib/api/controllers/links/postLink";
-import { LinkRequestQuery } from "@/types/global";
+import { LinkRequestQuery } from "@linkwarden/types";
 import verifyUser from "@/lib/api/verifyUser";
 import deleteLinksById from "@/lib/api/controllers/links/bulk/deleteLinksById";
 import updateLinks from "@/lib/api/controllers/links/bulk/updateLinks";

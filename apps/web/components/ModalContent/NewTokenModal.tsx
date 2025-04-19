@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
-import { TokenExpiry } from "@/types/global";
+import { TokenExpiry } from "@linkwarden/types";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";

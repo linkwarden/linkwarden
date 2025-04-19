@@ -1,7 +1,7 @@
 import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
+} from "@linkwarden/types";
 import { useEffect, useState } from "react";
 import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";

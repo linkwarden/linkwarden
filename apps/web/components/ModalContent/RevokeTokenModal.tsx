@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
-import { AccessToken } from "@prisma/client";
+import { AccessToken } from "@linkwarden/prisma/client";
 import { useRevokeToken } from "@/hooks/store/tokens";
 import toast from "react-hot-toast";
 

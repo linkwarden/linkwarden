@@ -37,7 +37,7 @@ async function emptyS3Directory(bucket: string, dir: string) {
   }
 }
 
-export default async function removeFolder({ filePath }: { filePath: string }) {
+export async function removeFolder({ filePath }: { filePath: string }) {
   if (s3Client) {
     try {
       await emptyS3Directory(
@@ -49,7 +49,12 @@ export default async function removeFolder({ filePath }: { filePath: string }) {
     }
   } else {
     const storagePath = process.env.STORAGE_FOLDER || "data";
-    const creationPath = path.join(process.cwd(), storagePath + "/" + filePath);
+    const creationPath = path.join(
+      process.cwd(),
+      "../..",
+      storagePath,
+      filePath
+    );
 
     try {
       fs.rmdirSync(creationPath, { recursive: true });

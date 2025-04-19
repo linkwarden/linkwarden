@@ -3,7 +3,7 @@ import { useLinks } from "@/hooks/store/links";
 import MainLayout from "@/layouts/MainLayout";
 import React, { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
-import { Sort, ViewMode } from "@/types/global";
+import { Sort, ViewMode } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import LinkListOptions from "@/components/LinkListOptions";
 import getServerSideProps from "@/lib/client/getServerSideProps";

@@ -9,7 +9,7 @@ import { PreservationSkeleton } from "../Skeletons";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
-} from "@/types/global";
+} from "@linkwarden/types";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,

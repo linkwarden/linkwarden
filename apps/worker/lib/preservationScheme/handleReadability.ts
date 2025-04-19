@@ -2,7 +2,7 @@ import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 import { prisma } from "@linkwarden/prisma";
-import createFile from "../storage/createFile";
+import { createFile } from "@linkwarden/filesystem";
 import { Link } from "@prisma/client";
 
 const handleReadability = async (

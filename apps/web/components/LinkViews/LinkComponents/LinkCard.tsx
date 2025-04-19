@@ -2,7 +2,7 @@ import {
   ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
-} from "@/types/global";
+} from "@linkwarden/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";

@@ -1,9 +1,7 @@
 import { prisma } from "@linkwarden/prisma";
-import { AccountSettings } from "@/types/global";
+import { AccountSettings } from "@linkwarden/types";
 import bcrypt from "bcrypt";
-import removeFile from "@/lib/api/storage/removeFile";
-import createFile from "@/lib/api/storage/createFile";
-import createFolder from "@/lib/api/storage/createFolder";
+import { removeFile, createFile, createFolder } from "@linkwarden/filesystem";
 import sendChangeEmailVerificationRequest from "@/lib/api/sendChangeEmailVerificationRequest";
 import { i18n } from "next-i18next.config";
 import { UpdateUserSchema } from "@/lib/shared/schemaValidation";

@@ -1,4 +1,4 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@/types/global";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import usePinLink from "@/lib/client/pinLink";

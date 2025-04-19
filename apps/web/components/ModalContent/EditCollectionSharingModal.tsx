@@ -5,7 +5,7 @@ import {
   AccountSettings,
   CollectionIncludingMembersAndLinkCount,
   Member,
-} from "@/types/global";
+} from "@linkwarden/types";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import usePermissions from "@/hooks/usePermissions";
 import ProfilePhoto from "../ProfilePhoto";
