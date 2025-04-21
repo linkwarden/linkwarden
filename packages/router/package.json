@@ -1,0 +1,10 @@
+{
+  "name": "@linkwarden/router",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "@tanstack/react-query": "^5.51.15",
+    "@tanstack/react-query-devtools": "^5.51.15"
+  }
+}

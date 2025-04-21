@@ -1,6 +1,6 @@
 {
   "name": "@linkwarden/web",
-  "version": "v2.10.0",
+  "version": "v2.10.1",
   "main": "index.js",
   "repository": "https://github.com/linkwarden/linkwarden.git",
   "author": "Daniel31X13 <daniel31x13@gmail.com>",
@@ -23,6 +23,7 @@
     "@linkwarden/lib": "*",
     "@linkwarden/prisma": "*",
     "@linkwarden/types": "*",
+    "@linkwarden/router": "*",
     "@phosphor-icons/core": "^2.1.1",
     "@phosphor-icons/react": "^2.1.7",
     "@stripe/stripe-js": "^1.54.1",
