@@ -3,7 +3,7 @@ import useLinkStore from "@/store/links";
 import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
-import { useBulkDeleteLinks } from "@/hooks/store/links";
+import { useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 
 type Props = {

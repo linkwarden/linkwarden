@@ -11,7 +11,7 @@ import {
 } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
+import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import getFormatFromContentType from "@/lib/shared/getFormatFromContentType";
 import getLinkTypeFromFormat from "@/lib/shared/getLinkTypeFromFormat";
 

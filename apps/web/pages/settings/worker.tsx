@@ -4,7 +4,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useEffect, useState } from "react";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { LinkArchiveActionSchemaType } from "@/lib/shared/schemaValidation";
+import { LinkArchiveActionSchemaType } from "@linkwarden/lib/schemaValidation";
 import toast from "react-hot-toast";
 
 const useArchiveAction = () => {

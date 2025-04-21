@@ -4,7 +4,7 @@ import Modal from "../Modal";
 import { useRouter } from "next/router";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
-import { useDeleteLink } from "@/hooks/store/links";
+import { useDeleteLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 
 type Props = {

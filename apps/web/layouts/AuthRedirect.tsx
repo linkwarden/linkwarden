@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import useInitialData from "@/hooks/useInitialData";
-import { useUser } from "@/hooks/store/user";
+import { useUser } from "@linkwarden/router/user";
 
 interface Props {
   children: ReactNode;

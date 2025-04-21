@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { useTranslation } from "next-i18next";
-import { useDeleteLink } from "@/hooks/store/links";
+import { useDeleteLink } from "@linkwarden/router/links";
 import Drawer from "../Drawer";
 import LinkDetails from "../LinkDetails";
 import Link from "next/link";

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import verifyUser from "@/lib/api/verifyUser";
 import { prisma } from "@linkwarden/prisma";
-import { LinkArchiveActionSchema } from "@/lib/shared/schemaValidation";
+import { LinkArchiveActionSchema } from "@linkwarden/lib/schemaValidation";
 import { removeFiles, removePreservationFiles } from "@linkwarden/filesystem";
 import { ArchivalSettings } from "@linkwarden/types";
 import { isArchivalTag } from "@linkwarden/lib";

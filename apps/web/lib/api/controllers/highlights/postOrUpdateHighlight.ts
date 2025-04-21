@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { PostHighlightSchemaType } from "@/lib/shared/schemaValidation";
+import { PostHighlightSchemaType } from "@linkwarden/lib/schemaValidation";
 
 export default async function postOrUpdateHighlight(
   userId: number,

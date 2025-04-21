@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import sendPasswordResetRequest from "@/lib/api/sendPasswordResetRequest";
-import { ForgotPasswordSchema } from "@/lib/shared/schemaValidation";
+import { ForgotPasswordSchema } from "@linkwarden/lib/schemaValidation";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function forgotPassword(

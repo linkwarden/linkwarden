@@ -5,8 +5,8 @@ import { Disclosure, Transition } from "@headlessui/react";
 import SidebarHighlightLink from "@/components/SidebarHighlightLink";
 import CollectionListing from "@/components/CollectionListing";
 import { useTranslation } from "next-i18next";
-import { useCollections } from "@/hooks/store/collections";
-import { useTags } from "@/hooks/store/tags";
+import { useCollections } from "@linkwarden/router/collections";
+import { useTags } from "@linkwarden/router/tags";
 
 export default function Sidebar({ className }: { className?: string }) {
   const { t } = useTranslation();

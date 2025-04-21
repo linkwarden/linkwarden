@@ -1,6 +1,6 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import updateLinkById from "../linkId/updateLinkById";
-import { UpdateLinkSchemaType } from "@/lib/shared/schemaValidation";
+import { UpdateLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 
 export default async function updateLinks(
   userId: number,

@@ -3,7 +3,7 @@ import TextInput from "@/components/TextInput";
 import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
-import { useUpdateCollection } from "@/hooks/store/collections";
+import { useUpdateCollection } from "@linkwarden/router/collections";
 import toast from "react-hot-toast";
 import IconPicker from "../IconPicker";
 import { IconWeight } from "@phosphor-icons/react";

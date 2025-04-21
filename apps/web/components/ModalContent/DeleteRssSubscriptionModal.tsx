@@ -4,7 +4,7 @@ import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
 import toast from "react-hot-toast";
 import { RssSubscription } from "@linkwarden/prisma/client";
-import { useDeleteRssSubscription } from "@/hooks/store/rss";
+import { useDeleteRssSubscription } from "@linkwarden/router/rss";
 
 type Props = {
   onClose: Function;

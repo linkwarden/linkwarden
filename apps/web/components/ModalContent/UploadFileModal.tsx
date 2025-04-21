@@ -7,10 +7,10 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
-import { useCollections } from "@/hooks/store/collections";
-import { useUploadFile } from "@/hooks/store/links";
-import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
-import { useConfig } from "@/hooks/store/config";
+import { useCollections } from "@linkwarden/router/collections";
+import { useUploadFile } from "@linkwarden/router/links";
+import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
+import { useConfig } from "@linkwarden/router/config";
 
 type Props = {
   onClose: Function;

@@ -3,7 +3,7 @@ import Modal from "../Modal";
 import TextInput from "../TextInput";
 import { FormEvent, useState } from "react";
 import { useTranslation, Trans } from "next-i18next";
-import { useAddUser } from "@/hooks/store/admin/users";
+import { useAddUser } from "@linkwarden/router/admin/users";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 

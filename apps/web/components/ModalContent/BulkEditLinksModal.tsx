@@ -6,7 +6,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
-import { useBulkEditLinks } from "@/hooks/store/links";
+import { useBulkEditLinks } from "@linkwarden/router/links";
 
 type Props = {
   onClose: Function;

@@ -7,7 +7,7 @@ import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
-import { useUpdateUser, useUser } from "@/hooks/store/user";
+import { useUpdateUser, useUser } from "@linkwarden/router/user";
 
 interface FormData {
   password: string;

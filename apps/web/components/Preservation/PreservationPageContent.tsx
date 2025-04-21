@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useGetLink } from "@/hooks/store/links";
+import { useGetLink } from "@linkwarden/router/links";
 import { PreservationContent } from "./PreservationContent";
 
 export default function PreservationPageContent() {

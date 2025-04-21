@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import verifyUser from "@/lib/api/verifyUser";
-import { PostHighlightSchema } from "@/lib/shared/schemaValidation";
+import { PostHighlightSchema } from "@linkwarden/lib/schemaValidation";
 import postOrUpdateHighlight from "@/lib/api/controllers/highlights/postOrUpdateHighlight";
 
 export default async function highlights(

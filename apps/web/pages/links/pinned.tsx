@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
-import { useLinks } from "@/hooks/store/links";
+import { useLinks } from "@linkwarden/router/links";
 import Links from "@/components/LinkViews/Links";
 
 export default function PinnedLinks() {

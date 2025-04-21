@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import updateCustomerEmail from "@/lib/api/stripe/updateCustomerEmail";
-import { VerifyEmailSchema } from "@/lib/shared/schemaValidation";
+import { VerifyEmailSchema } from "@linkwarden/lib/schemaValidation";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function verifyEmail(

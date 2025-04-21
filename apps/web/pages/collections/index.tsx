@@ -9,7 +9,7 @@ import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
-import { useCollections } from "@/hooks/store/collections";
+import { useCollections } from "@linkwarden/router/collections";
 import { dropdownTriggerer } from "@/lib/client/utils";
 
 export default function Collections() {
