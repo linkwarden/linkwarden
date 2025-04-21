@@ -2,7 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import {
   PostTokenSchemaType,
   PostTokenSchema,
-} from "@/lib/shared/schemaValidation";
+} from "@linkwarden/lib/schemaValidation";
 import { TokenExpiry } from "@linkwarden/types";
 import crypto from "crypto";
 import { decode, encode } from "next-auth/jwt";

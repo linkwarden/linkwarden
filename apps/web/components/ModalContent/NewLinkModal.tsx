@@ -6,10 +6,10 @@ import unescapeString from "@/lib/client/unescapeString";
 import { useRouter } from "next/router";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
-import { useCollections } from "@/hooks/store/collections";
-import { useAddLink } from "@/hooks/store/links";
+import { useCollections } from "@linkwarden/router/collections";
+import { useAddLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
-import { PostLinkSchemaType } from "@/lib/shared/schemaValidation";
+import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 
 type Props = {
   onClose: Function;

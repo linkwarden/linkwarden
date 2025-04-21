@@ -7,7 +7,7 @@ import {
 import { TagIncludingLinkCount } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
 import { Tag } from "@linkwarden/prisma/client";
-import { ArchivalTagOption } from "@/components/InputSelect/types";
+import { ArchivalTagOption } from "@linkwarden/types/inputSelect";
 
 const useTags = (): UseQueryResult<Tag[], Error> => {
   const { status } = useSession();

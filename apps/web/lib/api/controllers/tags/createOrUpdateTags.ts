@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { PostTagSchemaType } from "@/lib/shared/schemaValidation";
+import { PostTagSchemaType } from "@linkwarden/lib/schemaValidation";
 import { TagIncludingLinkCount } from "@linkwarden/types";
 
 export default async function createOrUpdateTags(

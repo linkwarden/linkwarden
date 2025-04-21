@@ -2,7 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import {
   UpdateTagSchema,
   UpdateTagSchemaType,
-} from "@/lib/shared/schemaValidation";
+} from "@linkwarden/lib/schemaValidation";
 
 export default async function updateTagById(
   userId: number,

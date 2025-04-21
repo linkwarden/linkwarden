@@ -6,7 +6,7 @@ import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
-import { useAddToken } from "@/hooks/store/tokens";
+import { useAddToken } from "@linkwarden/router/tokens";
 import CopyButton from "../CopyButton";
 
 type Props = {

@@ -1,12 +1,12 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { useRssSubscriptions } from "@/hooks/store/rss";
+import { useRssSubscriptions } from "@linkwarden/router/rss";
 import DeleteRssSubscriptionModal from "@/components/ModalContent/DeleteRssSubscriptionModal";
 import { useState } from "react";
 import { RssSubscription } from "@linkwarden/prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
-import { useConfig } from "@/hooks/store/config";
+import { useConfig } from "@linkwarden/router/config";
 
 export default function RssSubscriptions() {
   const { t } = useTranslation();

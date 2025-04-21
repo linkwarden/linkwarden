@@ -1,5 +1,5 @@
 import NoLinksFound from "@/components/NoLinksFound";
-import { useLinks } from "@/hooks/store/links";
+import { useLinks } from "@linkwarden/router/links";
 import MainLayout from "@/layouts/MainLayout";
 import React, { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";

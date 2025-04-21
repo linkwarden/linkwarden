@@ -12,8 +12,12 @@ import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
-import { useUser } from "@/hooks/store/user";
-import { useGetLink, useUpdateLink, useUpdateFile } from "@/hooks/store/links";
+import { useUser } from "@linkwarden/router/user";
+import {
+  useGetLink,
+  useUpdateLink,
+  useUpdateFile,
+} from "@linkwarden/router/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";

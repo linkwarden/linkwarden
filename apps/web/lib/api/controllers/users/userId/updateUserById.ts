@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { removeFile, createFile, createFolder } from "@linkwarden/filesystem";
 import sendChangeEmailVerificationRequest from "@/lib/api/sendChangeEmailVerificationRequest";
 import { i18n } from "next-i18next.config";
-import { UpdateUserSchema } from "@/lib/shared/schemaValidation";
+import { UpdateUserSchema } from "@linkwarden/lib/schemaValidation";
 
 const emailEnabled =
   process.env.EMAIL_FROM && process.env.EMAIL_SERVER ? true : false;

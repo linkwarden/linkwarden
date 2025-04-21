@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import { styles } from "./styles";
-import { ArchivalTagOption, Option } from "./types";
-import { useTags } from "@/hooks/store/tags";
+import { ArchivalTagOption, Option } from "@linkwarden/types/inputSelect";
+import { useTags } from "@linkwarden/router/tags";
 import { useTranslation } from "next-i18next";
 
 type Props = {

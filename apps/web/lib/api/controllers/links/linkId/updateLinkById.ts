@@ -6,7 +6,7 @@ import isValidUrl from "@/lib/shared/isValidUrl";
 import {
   UpdateLinkSchema,
   UpdateLinkSchemaType,
-} from "@/lib/shared/schemaValidation";
+} from "@linkwarden/lib/schemaValidation";
 
 export default async function updateLinkById(
   userId: number,

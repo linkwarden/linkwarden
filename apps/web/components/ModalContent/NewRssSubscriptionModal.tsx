@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
-import { useAddRssSubscription } from "@/hooks/store/rss";
+import { useAddRssSubscription } from "@linkwarden/router/rss";
 import toast from "react-hot-toast";
 import TextInput from "../TextInput";
 import CollectionSelection from "../InputSelect/CollectionSelection";

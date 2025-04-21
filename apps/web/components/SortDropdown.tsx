@@ -3,7 +3,7 @@ import { Sort } from "@linkwarden/types";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { TFunction } from "i18next";
 import useLocalSettingsStore from "@/store/localSettings";
-import { resetInfiniteQueryPagination } from "@/hooks/store/links";
+import { resetInfiniteQueryPagination } from "@linkwarden/router/links";
 import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {

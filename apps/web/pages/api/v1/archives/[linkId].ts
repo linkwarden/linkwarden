@@ -8,7 +8,7 @@ import verifyUser from "@/lib/api/verifyUser";
 import getPermission from "@/lib/api/getPermission";
 import { prisma } from "@linkwarden/prisma";
 import { UsersAndCollections } from "@linkwarden/prisma/client";
-import { UploadFileSchema } from "@/lib/shared/schemaValidation";
+import { UploadFileSchema } from "@linkwarden/lib/schemaValidation";
 import isDemoMode from "@/lib/api/isDemoMode";
 import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
 import { ArchivedFormat } from "@linkwarden/types";

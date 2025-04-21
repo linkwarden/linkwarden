@@ -5,7 +5,7 @@ import RevokeTokenModal from "@/components/ModalContent/RevokeTokenModal";
 import { AccessToken } from "@linkwarden/prisma/client";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { useTokens } from "@/hooks/store/tokens";
+import { useTokens } from "@linkwarden/router/tokens";
 
 export default function AccessTokens() {
   const [newTokenModal, setNewTokenModal] = useState(false);

@@ -20,9 +20,9 @@ import EditCollectionSharingModal from "@/components/ModalContent/EditCollection
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
-import { usePublicLinks } from "@/hooks/store/publicLinks";
+import { usePublicLinks } from "@linkwarden/router/publicLinks";
 import Links from "@/components/LinkViews/Links";
-import { usePublicTags } from "@/hooks/store/publicTags";
+import { usePublicTags } from "@linkwarden/router/publicTags";
 
 export default function PublicCollections() {
   const { t } = useTranslation();

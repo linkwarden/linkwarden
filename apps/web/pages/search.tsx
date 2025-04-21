@@ -1,4 +1,4 @@
-import { useLinks } from "@/hooks/store/links";
+import { useLinks } from "@linkwarden/router/links";
 import MainLayout from "@/layouts/MainLayout";
 import { Sort, ViewMode } from "@linkwarden/types";
 import { useRouter } from "next/router";

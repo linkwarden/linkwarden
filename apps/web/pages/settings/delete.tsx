@@ -7,7 +7,7 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { useUser } from "@/hooks/store/user";
+import { useUser } from "@linkwarden/router/user";
 
 export default function Delete() {
   const [password, setPassword] = useState("");

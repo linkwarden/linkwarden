@@ -1,8 +1,5 @@
 import { Tag } from "@linkwarden/prisma/client";
-import {
-  ArchivalOptionKeys,
-  ArchivalTagOption,
-} from "../components/InputSelect/types";
+import { ArchivalOptionKeys, ArchivalTagOption } from "@linkwarden/types/types";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { isArchivalTag } from "@linkwarden/lib";

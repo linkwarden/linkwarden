@@ -1,7 +1,7 @@
 import { prisma } from "@linkwarden/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
-import { PostUserSchema } from "@/lib/shared/schemaValidation";
+import { PostUserSchema } from "@linkwarden/lib/schemaValidation";
 import isAuthenticatedRequest from "../../isAuthenticatedRequest";
 import { Subscription, User } from "@linkwarden/prisma/client";
 

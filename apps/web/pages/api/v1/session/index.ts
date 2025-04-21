@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import verifyByCredentials from "@/lib/api/verifyByCredentials";
 import createSession from "@/lib/api/controllers/session/createSession";
-import { PostSessionSchema } from "@/lib/shared/schemaValidation";
+import { PostSessionSchema } from "@linkwarden/lib/schemaValidation";
 
 export default async function session(
   req: NextApiRequest,

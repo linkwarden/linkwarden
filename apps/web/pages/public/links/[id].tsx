@@ -1,5 +1,5 @@
 import LinkDetails from "@/components/LinkDetails";
-import { useGetLink } from "@/hooks/store/links";
+import { useGetLink } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import getServerSideProps from "@/lib/client/getServerSideProps";

@@ -13,7 +13,7 @@ import { prisma } from "@linkwarden/prisma";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n } from "next-i18next.config";
 import { Trans, useTranslation } from "next-i18next";
-import { useConfig } from "@/hooks/store/config";
+import { useConfig } from "@linkwarden/router/config";
 
 type FormData = {
   name: string;

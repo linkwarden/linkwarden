@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import getTags from "@/lib/api/controllers/tags/getTags";
 import verifyUser from "@/lib/api/verifyUser";
-import { PostTagSchema } from "@/lib/shared/schemaValidation";
+import { PostTagSchema } from "@linkwarden/lib/schemaValidation";
 import createOrUpdateTags from "@/lib/api/controllers/tags/createOrUpdateTags";
 
 export default async function tags(req: NextApiRequest, res: NextApiResponse) {

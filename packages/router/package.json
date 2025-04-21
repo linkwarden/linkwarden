@@ -5,6 +5,12 @@
   "main": "index.ts",
   "dependencies": {
     "@tanstack/react-query": "^5.51.15",
-    "@tanstack/react-query-devtools": "^5.51.15"
+    "@tanstack/react-query-devtools": "^5.51.15",
+    "next-auth": "^4.22.1",
+    "next": "13.4.12",
+    "@linkwarden/lib": "*",
+    "@linkwarden/prisma": "*",
+    "@linkwarden/types": "*",
+    "react": "18.2.0"
   }
 }

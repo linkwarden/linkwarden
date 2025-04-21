@@ -10,12 +10,12 @@ import PageHeader from "@/components/PageHeader";
 import ViewDropdown from "@/components/ViewDropdown";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
-import { useCollections } from "@/hooks/store/collections";
-import { useTags } from "@/hooks/store/tags";
-import { useDashboardData } from "@/hooks/store/dashboardData";
+import { useCollections } from "@linkwarden/router/collections";
+import { useTags } from "@linkwarden/router/tags";
+import { useDashboardData } from "@linkwarden/router/dashboardData";
 import Links from "@/components/LinkViews/Links";
 import useLocalSettingsStore from "@/store/localSettings";
-import { useUpdateUser, useUser } from "@/hooks/store/user";
+import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
 
