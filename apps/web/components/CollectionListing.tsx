@@ -15,8 +15,11 @@ import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
-import { useCollections, useUpdateCollection } from "@/hooks/store/collections";
-import { useUpdateUser, useUser } from "@/hooks/store/user";
+import {
+  useCollections,
+  useUpdateCollection,
+} from "@linkwarden/router/collections";
+import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
 

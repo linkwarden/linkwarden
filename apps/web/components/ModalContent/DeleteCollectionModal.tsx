@@ -6,7 +6,7 @@ import usePermissions from "@/hooks/usePermissions";
 import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
-import { useDeleteCollection } from "@/hooks/store/collections";
+import { useDeleteCollection } from "@linkwarden/router/collections";
 import toast from "react-hot-toast";
 
 type Props = {

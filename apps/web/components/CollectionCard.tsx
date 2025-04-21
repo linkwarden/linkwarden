@@ -13,7 +13,7 @@ import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModa
 import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/user";
+import { useUser } from "@linkwarden/router/user";
 
 export default function CollectionCard({
   collection,

@@ -8,7 +8,7 @@ import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
 import { Sort, ViewMode } from "@linkwarden/types";
-import { useBulkDeleteLinks, useLinks } from "@/hooks/store/links";
+import { useBulkDeleteLinks, useLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 
 type Props = {

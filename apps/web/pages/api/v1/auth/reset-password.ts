@@ -1,7 +1,7 @@
 import { prisma } from "@linkwarden/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
-import { ResetPasswordSchema } from "@/lib/shared/schemaValidation";
+import { ResetPasswordSchema } from "@linkwarden/lib/schemaValidation";
 
 export default async function resetPassword(
   req: NextApiRequest,

@@ -3,7 +3,7 @@ import { createFolder } from "@linkwarden/filesystem";
 import {
   PostCollectionSchema,
   PostCollectionSchemaType,
-} from "@/lib/shared/schemaValidation";
+} from "@linkwarden/lib/schemaValidation";
 
 export default async function postCollection(
   body: PostCollectionSchemaType,

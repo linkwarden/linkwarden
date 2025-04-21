@@ -2,8 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/user";
-import { useConfig } from "@/hooks/store/config";
+import { useUser } from "@linkwarden/router/user";
+import { useConfig } from "@linkwarden/router/config";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
   const { t } = useTranslation();

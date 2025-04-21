@@ -7,7 +7,7 @@ import usePermissions from "@/hooks/usePermissions";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
-import { useDeleteLink, useGetLink } from "@/hooks/store/links";
+import { useDeleteLink, useGetLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";

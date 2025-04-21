@@ -15,10 +15,10 @@ import Button from "@/components/ui/Button";
 import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { useUpdateUser, useUser } from "@/hooks/store/user";
+import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import { z } from "zod";
 import ImportDropdown from "@/components/ImportDropdown";
-import { useConfig } from "@/hooks/store/config";
+import { useConfig } from "@linkwarden/router/config";
 
 export default function Account() {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =

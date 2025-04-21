@@ -17,7 +17,7 @@ import {
   useGetLinkHighlights,
   usePostHighlight,
   useRemoveHighlight,
-} from "@/hooks/store/highlights";
+} from "@linkwarden/router/highlights";
 import { Highlight } from "@linkwarden/prisma/client";
 
 type Props = {

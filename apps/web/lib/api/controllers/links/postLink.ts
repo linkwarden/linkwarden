@@ -5,7 +5,7 @@ import setCollection from "../../setCollection";
 import {
   PostLinkSchema,
   PostLinkSchemaType,
-} from "@/lib/shared/schemaValidation";
+} from "@linkwarden/lib/schemaValidation";
 import { hasPassedLimit } from "@linkwarden/lib";
 
 export default async function postLink(

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import UserListing from "@/components/UserListing";
-import { useUsers } from "@/hooks/store/admin/users";
+import { useUsers } from "@linkwarden/router/admin/users";
 import Divider from "@/components/ui/Divider";
 
 interface User extends U {

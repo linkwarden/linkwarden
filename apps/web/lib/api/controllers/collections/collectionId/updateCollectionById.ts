@@ -3,7 +3,7 @@ import getPermission from "@/lib/api/getPermission";
 import {
   UpdateCollectionSchema,
   UpdateCollectionSchemaType,
-} from "@/lib/shared/schemaValidation";
+} from "@linkwarden/lib/schemaValidation";
 
 export default async function updateCollection(
   userId: number,

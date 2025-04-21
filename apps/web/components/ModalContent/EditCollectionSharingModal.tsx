@@ -13,8 +13,8 @@ import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
-import { useUpdateCollection } from "@/hooks/store/collections";
-import { useUser } from "@/hooks/store/user";
+import { useUpdateCollection } from "@linkwarden/router/collections";
+import { useUser } from "@linkwarden/router/user";
 import CopyButton from "../CopyButton";
 import { useRouter } from "next/router";
 

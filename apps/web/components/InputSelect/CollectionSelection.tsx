@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { styles } from "./styles";
-import { Option } from "./types";
+import { Option } from "@linkwarden/types/inputSelect";
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
-import { useCollections } from "@/hooks/store/collections";
+import { useCollections } from "@linkwarden/router/collections";
 import clsx from "clsx";
 
 type Props = {

@@ -2,7 +2,7 @@ import { prisma } from "@linkwarden/prisma";
 import { rssHandler } from "@linkwarden/lib";
 import setCollection from "@/lib/api/setCollection";
 import verifyUser from "@/lib/api/verifyUser";
-import { PostRssSubscriptionSchema } from "@/lib/shared/schemaValidation";
+import { PostRssSubscriptionSchema } from "@linkwarden/lib/schemaValidation";
 import { NextApiRequest, NextApiResponse } from "next";
 import Parser from "rss-parser";
 

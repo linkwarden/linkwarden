@@ -1,8 +1,8 @@
-import { useUpdateLink } from "@/hooks/store/links";
+import { useUpdateLink } from "@linkwarden/router/links";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@/hooks/store/user";
+import { useUser } from "@linkwarden/router/user";
 
 const usePinLink = () => {
   const { t } = useTranslation();

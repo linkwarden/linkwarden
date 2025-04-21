@@ -2,14 +2,14 @@ import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { Sort, TagIncludingLinkCount, ViewMode } from "@linkwarden/types";
-import { useLinks } from "@/hooks/store/links";
+import { useLinks } from "@linkwarden/router/links";
 import { dropdownTriggerer } from "@/lib/client/utils";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";
-import { useRemoveTag, useTags, useUpdateTag } from "@/hooks/store/tags";
+import { useRemoveTag, useTags, useUpdateTag } from "@linkwarden/router/tags";
 import Links from "@/components/LinkViews/Links";
 import toast from "react-hot-toast";
 

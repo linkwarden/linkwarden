@@ -1,7 +1,7 @@
 import { Member } from "@linkwarden/types";
 import { useEffect, useState } from "react";
-import { useCollections } from "./store/collections";
-import { useUser } from "./store/user";
+import { useCollections } from "@linkwarden/router/collections";
+import { useUser } from "@linkwarden/router/user";
 
 export default function useCollectivePermissions(collectionIds: number[]) {
   const { data: collections = [] } = useCollections();

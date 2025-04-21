@@ -1,10 +1,10 @@
 import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
-import { useDeleteUser } from "@/hooks/store/admin/users";
+import { useDeleteUser } from "@linkwarden/router/admin/users";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useConfig } from "@/hooks/store/config";
+import { useConfig } from "@linkwarden/router/config";
 
 type Props = {
   onClose: Function;
