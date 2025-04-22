@@ -12,8 +12,8 @@ import {
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
-import getFormatFromContentType from "@/lib/shared/getFormatFromContentType";
-import getLinkTypeFromFormat from "@/lib/shared/getLinkTypeFromFormat";
+import getFormatFromContentType from "@linkwarden/lib/getFormatFromContentType";
+import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
 const useLinks = (params: LinkRequestQuery = {}) => {
   const router = useRouter();

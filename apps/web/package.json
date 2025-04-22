@@ -61,7 +61,7 @@
     "node-fetch": "^2.7.0",
     "nodemailer": "^6.9.3",
     "playwright": "^1.45.0",
-    "react": "18.2.0",
+    "react": "18.3.1",
     "react-colorful": "^5.6.1",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.1",
