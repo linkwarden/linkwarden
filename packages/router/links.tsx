@@ -66,13 +66,15 @@ const useFetchLinks = (
   return useInfiniteQuery({
     queryKey: ["links", { params }],
     queryFn: async (params) => {
+      const url =
+        (auth?.instance ? auth?.instance : "") +
+        "/api/v1/search?cursor=" +
+        params.pageParam +
+        ((params.queryKey[1] as any).params
+          ? "&" + (params.queryKey[1] as any).params
+          : "");
       const response = await fetch(
-        auth?.instance +
-          "/api/v1/search?cursor=" +
-          params.pageParam +
-          ((params.queryKey[1] as any).params
-            ? "&" + (params.queryKey[1] as any).params
-            : ""),
+        url,
         auth?.session
           ? {
               headers: {
