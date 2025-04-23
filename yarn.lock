@@ -3381,10 +3381,10 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/rect/-/rect-1.1.1.tgz#78244efe12930c56fd255d7923865857c41ac8cb"
   integrity sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==
 
-"@react-native-menu/menu@^1.1.7":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@react-native-menu/menu/-/menu-1.2.3.tgz#7a6a6748d610ab0d14aa65e1414520a5254aeff6"
-  integrity sha512-sEfiVIivsa0lSelFm9Wbm/RAi+XoEHc75GGhjwvSrj9KSCVvNNXwr9F8l42e1t/lzYvVYzmkYxLG6VKxrDYJiw==
+"@react-native-menu/menu@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@react-native-menu/menu/-/menu-1.2.2.tgz#550d158f1496ae27cb68424d540d74ee08f6c181"
+  integrity sha512-Uk65PAhwNkCVBAqJu5t2H9biV+m0JLwJc7m3v2X2A/W8SFJmUqYabBsLH4fOWKI3a7kkR9QDT6HruliIKSfM8w==
 
 "@react-native/assets-registry@0.76.5":
   version "0.76.5"
@@ -10822,17 +10822,17 @@ react-native-helmet-async@2.0.4:
     react-fast-compare "^3.2.2"
     shallowequal "^1.1.0"
 
-react-native-ios-context-menu@^2.5.3:
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/react-native-ios-context-menu/-/react-native-ios-context-menu-2.5.3.tgz#3e65a6cee50e95a71766ad3ebc3920015eb02318"
-  integrity sha512-RMztfU71XiLuxnmf/eE4/ez6FT4dzFAzrsHEA0+QmMfaQMHjpyEHTfLJvvM++9gygBvLZmHuc/rQgzQzH7ETug==
+react-native-ios-context-menu@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-ios-context-menu/-/react-native-ios-context-menu-3.1.0.tgz#8e5b7054959e6d4629d9aa18e5fe51fc18ccc597"
+  integrity sha512-qdPSXMKUp5lDgmZeUPdv5sgBFhkFrIqma+zsnqJQYOvekb6Qs17yJy1Rqhrj0bJrwuduHzZX0aYbaA8whxqpDw==
   dependencies:
     "@dominicstop/ts-event-emitter" "^1.1.0"
 
-react-native-ios-utilities@^4.5.1:
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/react-native-ios-utilities/-/react-native-ios-utilities-4.5.3.tgz#5af77955147b60f2a3a519fcd36d9e28493d84b9"
-  integrity sha512-bw+bIGMC9tA2GRrQYFyQedV4PWYwgfcX8Lw0puILEeO9uExTbtftYEaj78tgMRpYxwiztjtOlR+rC1Lo93CstA==
+react-native-ios-utilities@5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-ios-utilities/-/react-native-ios-utilities-5.1.2.tgz#78ac76bc07d3464fe746194146c3dea6cff1080a"
+  integrity sha512-H566MdgC1x0vW6D8EKweno1yRj/gQHeWiK0cRmyRexnUSk7oIecy7l2uyxXLYWFs+yvB/YIdLm+s2c19lKGfaw==
 
 react-native-is-edge-to-edge@^1.1.6:
   version "1.1.7"
@@ -13134,10 +13134,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zeego@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/zeego/-/zeego-2.0.4.tgz#2e7709b2a3fdadfe13674a3892d0cc050b999e8c"
-  integrity sha512-mkKfUJmgcSGCTqWXW7ccqap8d8z6guQoLF5/mWlH17Jckd0BaFLVZ74y/uWvfBGaC9OawYVt/1MchPnQ8ieSxg==
+zeego@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/zeego/-/zeego-3.0.6.tgz#26610b97ea0e3e7ee76a651264e3b8636a619f10"
+  integrity sha512-vg0GCMPYg6or/J91bwRnUpIYwz7QnhkyeKOdd3FjvICg+Gzq2D5QhD8k5RUSv1B+048LpNmNYdLm8qJVIbBONw==
   dependencies:
     "@radix-ui/react-context-menu" "^2.0.1"
     "@radix-ui/react-dropdown-menu" "^2.0.1"
