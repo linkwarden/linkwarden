@@ -1512,7 +1512,56 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-menu (1.2.3):
+  - react-native-ios-context-menu (3.1.0):
+    - ContextMenuAuxiliaryPreview (~> 0.5)
+    - DGSwiftUtilities
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - react-native-ios-utilities
+    - React-NativeModulesApple
+    - React-RCTAppDelegate
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-ios-utilities (5.1.2):
+    - ComputableLayout (~> 0.7)
+    - DGSwiftUtilities (~> 0.46)
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTAppDelegate
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-menu (1.2.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1887,15 +1936,6 @@ PODS:
     - React-logger (= 0.76.5)
     - React-perflogger (= 0.76.5)
     - React-utils (= 0.76.5)
-  - ReactNativeIosContextMenu (2.5.3):
-    - ContextMenuAuxiliaryPreview (~> 0.3)
-    - DGSwiftUtilities
-    - ExpoModulesCore
-    - ReactNativeIosUtilities
-  - ReactNativeIosUtilities (4.5.3):
-    - ComputableLayout (~> 0.7)
-    - DGSwiftUtilities (~> 0.46.3)
-    - ExpoModulesCore
   - RNGestureHandler (2.20.2):
     - DoubleConversion
     - glog
@@ -2113,6 +2153,8 @@ DEPENDENCIES:
   - React-logger (from `../../../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../../../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-ios-context-menu (from `../../../node_modules/react-native-ios-context-menu`)
+  - react-native-ios-utilities (from `../../../node_modules/react-native-ios-utilities`)
   - "react-native-menu (from `../../../node_modules/@react-native-menu/menu`)"
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../../../node_modules/react-native-webview`)
@@ -2143,8 +2185,6 @@ DEPENDENCIES:
   - React-utils (from `../../../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../../../node_modules/react-native/ReactCommon`)
-  - ReactNativeIosContextMenu (from `../../../node_modules/react-native-ios-context-menu`)
-  - ReactNativeIosUtilities (from `../../../node_modules/react-native-ios-utilities`)
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
@@ -2275,6 +2315,10 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-ios-context-menu:
+    :path: "../../../node_modules/react-native-ios-context-menu"
+  react-native-ios-utilities:
+    :path: "../../../node_modules/react-native-ios-utilities"
   react-native-menu:
     :path: "../../../node_modules/@react-native-menu/menu"
   react-native-safe-area-context:
@@ -2335,10 +2379,6 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../../../node_modules/react-native/ReactCommon"
-  ReactNativeIosContextMenu:
-    :path: "../../../node_modules/react-native-ios-context-menu"
-  ReactNativeIosUtilities:
-    :path: "../../../node_modules/react-native-ios-utilities"
   RNGestureHandler:
     :path: "../../../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -2410,7 +2450,9 @@ SPEC CHECKSUMS:
   React-logger: 697873f06b8ba436e3cddf28018ab4741e8071b6
   React-Mapbuffer: c174e11bdea12dce07df8669d6c0dc97eb0c7706
   React-microtasksnativemodule: 8a80099ad7391f4e13a48b12796d96680f120dc6
-  react-native-menu: 66bda4e4dc50ef5920c59662c837164fcf13d33d
+  react-native-ios-context-menu: 626eeee8ec17d97ca4afea3340f60c8fb3705d5f
+  react-native-ios-utilities: 0ba38ec0e525de57ca206366ee56ff87c0524073
+  react-native-menu: bd7ae6c2e88ec505a4e0e098f0683b27195b2d12
   react-native-safe-area-context: 458f6b948437afcb59198016b26bbd02ff9c3b47
   react-native-webview: 40b8823be3fac70f0404016e6aed754ef4307517
   React-nativeconfig: f7ab6c152e780b99a8c17448f2d99cf5f69a2311
@@ -2440,8 +2482,6 @@ SPEC CHECKSUMS:
   React-utils: 541c6cca08f32597d4183f00e83eef2ed20d4c54
   ReactCodegen: fca7518fb8bac9ce8573b698a13d9647dbbb78ea
   ReactCommon: a6b87a7591591f7a52d9c0fec3aa05e0620d5dd3
-  ReactNativeIosContextMenu: 4601cc5113ca45bc7295707bf5c76987caac8bd7
-  ReactNativeIosUtilities: 44fa1cb515396b7a73c22f56695aae19bdb76f09
   RNGestureHandler: fc5ce5bf284640d3af6431c3a5c3bc121e98d045
   RNReanimated: 5bc01f4a152370c333d50eef11a4169f7db81a91
   RNScreens: 27587018b2e6082f5172b1ecf158c14a0e8842d6
