@@ -15,11 +15,13 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@linkwarden/router": "*",
+    "@linkwarden/lib": "*",
     "@expo/vector-icons": "^14.0.2",
     "@react-native-menu/menu": "1.2.2",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
-    "@tanstack/react-query": "^5.62.7",
+    "@tanstack/react-query": "^5.51.15",
     "expo": "~52.0.18",
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",

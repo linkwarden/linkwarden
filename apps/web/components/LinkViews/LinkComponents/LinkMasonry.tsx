@@ -66,6 +66,11 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
   } = useLocalSettingsStore();
 
   const { links } = useLinks();
+
+  const router = useRouter();
+
+  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
+
   const getLink = useGetLink();
 
   useEffect(() => {
@@ -112,10 +117,6 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
   const permissions = usePermissions(collection?.id as number);
-
-  const router = useRouter();
-
-  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
