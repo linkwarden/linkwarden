@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
 
 type Auth = {
-  state: "loading" | "authenticated" | "unauthenticated";
+  status: "loading" | "authenticated" | "unauthenticated";
   session: string | null;
   instance: string | null;
 };
@@ -19,7 +19,7 @@ const useAuthStore = create<AuthStore>((set) => ({
   auth: {
     instance: "",
     session: null,
-    state: "loading",
+    status: "loading",
   },
   setAuth: async () => {
     const session = await SecureStore.getItemAsync("TOKEN");
@@ -30,7 +30,7 @@ const useAuthStore = create<AuthStore>((set) => ({
         auth: {
           instance,
           session,
-          state: "authenticated",
+          status: "authenticated",
         },
       });
     } else {
@@ -38,7 +38,7 @@ const useAuthStore = create<AuthStore>((set) => ({
         auth: {
           instance: "",
           session: null,
-          state: "unauthenticated",
+          status: "unauthenticated",
         },
       });
     }
@@ -69,7 +69,7 @@ const useAuthStore = create<AuthStore>((set) => ({
           auth: {
             session,
             instance,
-            state: "authenticated",
+            status: "authenticated",
           },
         });
 
@@ -79,7 +79,7 @@ const useAuthStore = create<AuthStore>((set) => ({
           auth: {
             instance,
             session: null,
-            state: "unauthenticated",
+            status: "unauthenticated",
           },
         });
       }
@@ -91,7 +91,7 @@ const useAuthStore = create<AuthStore>((set) => ({
       auth: {
         instance: "",
         session: null,
-        state: "unauthenticated",
+        status: "unauthenticated",
       },
     });
 

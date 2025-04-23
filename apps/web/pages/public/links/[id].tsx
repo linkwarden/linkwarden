@@ -8,7 +8,9 @@ const Index = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const getLink = useGetLink();
+  let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
+
+  const getLink = useGetLink(isPublicRoute);
 
   useEffect(() => {
     getLink.mutate({ id: Number(id) });

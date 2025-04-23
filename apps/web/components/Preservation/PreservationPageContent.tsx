@@ -5,9 +5,14 @@ import { PreservationContent } from "./PreservationContent";
 
 export default function PreservationPageContent() {
   const router = useRouter();
-  const isPublicRoute = router.pathname.startsWith("/public");
 
-  const { data: link, mutateAsync: fetchLink, error } = useGetLink();
+  let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
+
+  const {
+    data: link,
+    mutateAsync: fetchLink,
+    error,
+  } = useGetLink(isPublicRoute);
 
   useEffect(() => {
     fetchLink({
