@@ -67,6 +67,10 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   } = useLocalSettingsStore();
 
   const { links } = useLinks();
+
+  const router = useRouter();
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+
   const getLink = useGetLink();
 
   useEffect(() => {
@@ -113,9 +117,6 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
   const permissions = usePermissions(collection?.id as number);
-
-  const router = useRouter();
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   const [linkModal, setLinkModal] = useState(false);
 

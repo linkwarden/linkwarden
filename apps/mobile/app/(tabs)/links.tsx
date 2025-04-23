@@ -1,11 +1,16 @@
-import { useLinks } from "@/hooks/store/links";
+import { useLinks } from "@linkwarden/router/links";
 import { View, Text, StyleSheet, VirtualizedList } from "react-native";
 import { Platform } from "react-native";
+import useAuthStore from "@/store/auth";
 
 export default function HomeScreen() {
-  const { links, data } = useLinks({
-    sort: 0,
-  });
+  const { auth } = useAuthStore();
+  const { links, data } = useLinks(
+    {
+      sort: 0,
+    },
+    auth
+  );
 
   const getItem = (data: any, index: number) => data[index];
 
