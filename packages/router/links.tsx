@@ -9,32 +9,30 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   LinkRequestQuery,
 } from "@linkwarden/types";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
-import getFormatFromContentType from "@/lib/shared/getFormatFromContentType";
-import getLinkTypeFromFormat from "@/lib/shared/getLinkTypeFromFormat";
+import getFormatFromContentType from "@linkwarden/lib/getFormatFromContentType";
+import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
-const useLinks = (params: LinkRequestQuery = {}) => {
-  const router = useRouter();
-
+const useLinks = (
+  params: LinkRequestQuery = {},
+  auth?: {
+    status: "loading" | "authenticated" | "unauthenticated";
+    session: string | null;
+    instance: string | null;
+  }
+) => {
   const queryParamsObject = {
     sort: params.sort ?? Number(window.localStorage.getItem("sortBy")) ?? 0,
-    collectionId:
-      params.collectionId ??
-      (router.pathname === "/collections/[id]" ? router.query.id : undefined),
-    tagId:
-      params.tagId ??
-      (router.pathname === "/tags/[id]" ? router.query.id : undefined),
-    pinnedOnly:
-      params.pinnedOnly ??
-      (router.pathname === "/links/pinned" ? true : undefined),
+    collectionId: params.collectionId,
+    tagId: params.tagId,
+    pinnedOnly: params.pinnedOnly ?? undefined,
     searchQueryString: params.searchQueryString,
   } as LinkRequestQuery;
 
   const queryString = buildQueryString(queryParamsObject);
 
-  const { data, ...rest } = useFetchLinks(queryString);
+  const { data, ...rest } = useFetchLinks(queryString, auth);
 
   const links = useMemo(() => {
     return data?.pages?.flatMap((page) => page?.links ?? []) ?? [];
@@ -48,18 +46,42 @@ const useLinks = (params: LinkRequestQuery = {}) => {
   };
 };
 
-const useFetchLinks = (params: string) => {
-  const { status } = useSession();
+const useFetchLinks = (
+  params: string,
+  auth?: {
+    status: "loading" | "authenticated" | "unauthenticated";
+    session: string | null;
+    instance: string | null;
+  }
+) => {
+  let status: "loading" | "authenticated" | "unauthenticated";
+
+  if (!auth) {
+    const session = useSession();
+    status = session.status;
+  } else {
+    status = auth?.status;
+  }
 
   return useInfiniteQuery({
     queryKey: ["links", { params }],
     queryFn: async (params) => {
-      const response = await fetch(
+      const url =
+        (auth?.instance ? auth?.instance : "") +
         "/api/v1/search?cursor=" +
-          params.pageParam +
-          ((params.queryKey[1] as any).params
-            ? "&" + (params.queryKey[1] as any).params
-            : "")
+        params.pageParam +
+        ((params.queryKey[1] as any).params
+          ? "&" + (params.queryKey[1] as any).params
+          : "");
+      const response = await fetch(
+        url,
+        auth?.session
+          ? {
+              headers: {
+                Authorization: `Bearer ${auth.session}`,
+              },
+            }
+          : undefined
       );
       const data = await response.json();
 
@@ -221,19 +243,11 @@ const useDeleteLink = () => {
   });
 };
 
-const useGetLink = () => {
+const useGetLink = (isPublicRoute?: boolean) => {
   const queryClient = useQueryClient();
 
-  const router = useRouter();
-
   return useMutation({
-    mutationFn: async ({
-      id,
-      isPublicRoute = router.pathname.startsWith("/public") ? true : undefined,
-    }: {
-      id: number;
-      isPublicRoute?: boolean;
-    }) => {
+    mutationFn: async ({ id }: { id: number }) => {
       const path = isPublicRoute
         ? `/api/v1/public/links/${id}`
         : `/api/v1/links/${id}`;

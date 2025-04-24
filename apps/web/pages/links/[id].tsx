@@ -1,16 +1,16 @@
 import LinkDetails from "@/components/LinkDetails";
 import { useGetLink } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 
 const Index = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  useState;
+  let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
 
-  const getLink = useGetLink();
+  const getLink = useGetLink(isPublicRoute);
 
   useEffect(() => {
     getLink.mutate({ id: Number(id) });
