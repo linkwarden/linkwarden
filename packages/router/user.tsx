@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 const useUser = () => {
   const { data, status } = useSession();
 
-  const userId = data?.user.id;
+  const userId = (data?.user as any)?.id;
 
   return useQuery({
     queryKey: ["user"],
