@@ -61,8 +61,12 @@ export default function LinkDetails({
   const permissions = usePermissions(link.collection.id as number);
 
   const { t } = useTranslation();
-  const getLink = useGetLink();
   const { data: user = {} } = useUser();
+  const router = useRouter();
+
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+
+  const getLink = useGetLink(isPublicRoute);
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,
@@ -134,10 +138,6 @@ export default function LinkDetails({
       }
     };
   }, [link.monolith]);
-
-  const router = useRouter();
-
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   const updateLink = useUpdateLink();
   const updateFile = useUpdateFile();

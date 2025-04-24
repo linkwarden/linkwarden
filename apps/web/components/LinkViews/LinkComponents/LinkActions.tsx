@@ -31,6 +31,11 @@ export default function LinkActions({
   const { t } = useTranslation();
 
   const permissions = usePermissions(link.collection.id as number);
+
+  const router = useRouter();
+
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+
   const getLink = useGetLink();
 
   const pinLink = usePinLink();
@@ -56,10 +61,6 @@ export default function LinkActions({
       toast.success(t("link_being_archived"));
     } else toast.error(data.response);
   };
-
-  const router = useRouter();
-
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   return (
     <>
