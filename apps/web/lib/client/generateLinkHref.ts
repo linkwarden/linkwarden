@@ -4,7 +4,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
 import { LinksRouteTo } from "@linkwarden/prisma/client";
-import { formatAvailable } from "../shared/formatStats";
+import { formatAvailable } from "@linkwarden/lib/formatStats";
 
 export const generateLinkHref = (
   link: LinkIncludingShortenedCollectionAndTags,

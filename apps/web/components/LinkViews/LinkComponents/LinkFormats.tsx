@@ -1,4 +1,4 @@
-import { formatAvailable } from "@/lib/shared/formatStats";
+import { formatAvailable } from "@linkwarden/lib/formatStats";
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
