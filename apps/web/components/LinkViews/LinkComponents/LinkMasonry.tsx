@@ -71,7 +71,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
   let isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
-  const getLink = useGetLink();
+  const getLink = useGetLink(isPublic);
 
   useEffect(() => {
     if (!editMode) {
