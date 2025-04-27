@@ -17,7 +17,6 @@ export default function PreservationPageContent() {
   useEffect(() => {
     fetchLink({
       id: Number(router.query.id),
-      isPublicRoute,
     });
 
     let interval: NodeJS.Timeout | null = null;
