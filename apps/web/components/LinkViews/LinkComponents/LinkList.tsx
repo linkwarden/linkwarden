@@ -20,7 +20,7 @@ import { useLinks } from "@linkwarden/router/links";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
-import { atLeastOneFormatAvailable } from "@/lib/shared/formatStats";
+import { atLeastOneFormatAvailable } from "@linkwarden/lib/formatStats";
 import LinkFormats from "./LinkFormats";
 import openLink from "@/lib/client/openLink";
 

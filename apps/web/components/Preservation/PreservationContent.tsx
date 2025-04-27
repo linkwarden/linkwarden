@@ -13,7 +13,7 @@ import {
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
-} from "@/lib/shared/formatStats";
+} from "@linkwarden/lib/formatStats";
 
 type Props = {
   link?: LinkIncludingShortenedCollectionAndTags;

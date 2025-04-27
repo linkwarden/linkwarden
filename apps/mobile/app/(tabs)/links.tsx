@@ -1,7 +1,14 @@
 import { useLinks } from "@linkwarden/router/links";
-import { View, Text, StyleSheet, VirtualizedList } from "react-native";
+import {
+  View,
+  StyleSheet,
+  VirtualizedList,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import { Platform } from "react-native";
 import useAuthStore from "@/store/auth";
+import LinkListing from "@/components/LinkListing";
 
 export default function HomeScreen() {
   const { auth } = useAuthStore();
@@ -17,31 +24,31 @@ export default function HomeScreen() {
   const getItemCount = (data: any) => data.length;
 
   return (
-    <VirtualizedList
-      data={links || []}
-      initialNumToRender={4}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <View
-          style={{
-            padding: 20,
-          }}
-        >
-          <Text
+    <View>
+      <VirtualizedList
+        data={links || []}
+        initialNumToRender={4}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <LinkListing link={item} key={item.id.toString()} />
+        )}
+        getItem={getItem}
+        getItemCount={getItemCount}
+        onEndReached={() => data.fetchNextPage()}
+        onEndReachedThreshold={0.5}
+        ItemSeparatorComponent={() => (
+          <View
             style={{
-              fontWeight: "bold",
-              fontSize: 18,
+              height: 1,
+              backgroundColor: "#CED0CE",
+              marginHorizontal: 20,
             }}
-          >
-            {item.name || item.description || item.url}
-          </Text>
-          <Text>{item.url}</Text>
-        </View>
-      )}
-      getItem={getItem}
-      getItemCount={getItemCount}
-      contentContainerStyle={styles.container}
-    />
+          />
+        )}
+        contentContainerStyle={styles.container}
+      />
+      <ActivityIndicator size="large" color="gray" />
+    </View>
   );
 }
 
