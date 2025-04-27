@@ -55,6 +55,7 @@ const LinkListing = ({ link }: Props) => {
               fontWeight: "300",
               fontSize: 14,
             }}
+            numberOfLines={1}
           >
             {shortendURL}
           </Text>
@@ -66,6 +67,7 @@ const LinkListing = ({ link }: Props) => {
             alignItems: "center",
             gap: 5,
             marginTop: 5,
+            marginRight: 20,
             padding: 5,
             alignSelf: "flex-start",
             borderRadius: 5,
