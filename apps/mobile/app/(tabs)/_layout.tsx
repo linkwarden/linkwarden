@@ -4,6 +4,7 @@ import { Platform, TouchableOpacity, useColorScheme } from "react-native";
 import HapticTab from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import * as DropdownMenu from "zeego/dropdown-menu";
+import "react-native-reanimated";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 
 export default function TabLayout() {
@@ -12,13 +13,12 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        // tabBarActiveTintColor: colorScheme === "dark" ? "white" : "black",
+        tabBarActiveTintColor: colorScheme === "dark" ? "white" : "black",
         tabBarButton: HapticTab,
         // headerShown: false,
-        // tabBarBackground: TabBarBackground,
+        tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
             position: "absolute",
           },
           default: {},
