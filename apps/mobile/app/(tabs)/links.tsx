@@ -2,9 +2,9 @@ import { useLinks } from "@linkwarden/router/links";
 import {
   View,
   StyleSheet,
-  VirtualizedList,
   Text,
   ActivityIndicator,
+  FlatList,
 } from "react-native";
 import { Platform } from "react-native";
 import useAuthStore from "@/store/auth";
@@ -19,21 +19,17 @@ export default function HomeScreen() {
     auth
   );
 
-  const getItem = (data: any, index: number) => data[index];
-
-  const getItemCount = (data: any) => data.length;
-
   return (
     <View>
-      <VirtualizedList
+      <FlatList
         data={links || []}
+        onRefresh={() => data.refetch()}
+        refreshing={data.isRefetching}
         initialNumToRender={4}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id?.toString() || ""}
         renderItem={({ item }) => (
-          <LinkListing link={item} key={item.id.toString()} />
+          <LinkListing link={item} key={item.id?.toString()} />
         )}
-        getItem={getItem}
-        getItemCount={getItemCount}
         onEndReached={() => data.fetchNextPage()}
         onEndReachedThreshold={0.5}
         ItemSeparatorComponent={() => (
