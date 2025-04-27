@@ -36,7 +36,7 @@ export default function LinkActions({
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
-  const getLink = useGetLink();
+  const getLink = useGetLink(isPublicRoute);
 
   const pinLink = usePinLink();
 

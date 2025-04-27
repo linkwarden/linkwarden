@@ -71,7 +71,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
-  const getLink = useGetLink();
+  const getLink = useGetLink(isPublicRoute);
 
   useEffect(() => {
     if (!editMode) {
@@ -131,7 +131,6 @@ export default function LinkCard({ link, columns, editMode }: Props) {
       interval = setInterval(async () => {
         getLink.mutateAsync({
           id: link.id as number,
-          isPublicRoute: isPublicRoute,
         });
       }, 5000);
     }
