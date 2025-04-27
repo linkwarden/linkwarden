@@ -13,7 +13,7 @@ import Image from "next/image";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
-} from "@/lib/shared/formatStats";
+} from "@linkwarden/lib/formatStats";
 import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import usePermissions from "@/hooks/usePermissions";

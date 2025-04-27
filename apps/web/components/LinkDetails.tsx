@@ -7,7 +7,7 @@ import Link from "next/link";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
-} from "@/lib/shared/formatStats";
+} from "@linkwarden/lib/formatStats";
 import PreservedFormatRow from "@/components/PreserverdFormatRow";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
