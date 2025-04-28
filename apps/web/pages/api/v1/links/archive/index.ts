@@ -5,6 +5,7 @@ import { LinkArchiveActionSchema } from "@linkwarden/lib/schemaValidation";
 import { removeFiles, removePreservationFiles } from "@linkwarden/filesystem";
 import { ArchivalSettings } from "@linkwarden/types";
 import { isArchivalTag } from "@linkwarden/lib";
+import { AiTaggingMethod } from "@linkwarden/prisma/client";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
@@ -16,13 +17,42 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ response: "Permission denied." });
   }
 
+  if (req.method === "GET") {
+    const totalLinkCount = await prisma.link.count({
+      where: {
+        type: "url",
+        url: { not: null },
+      }
+    });
+
+    const preservedCount = await prisma.link.count({
+      where: {
+        type: "url",
+        url: { not: null },
+        lastPreserved: { not: null }
+      }
+    });
+
+    const remainingCount = totalLinkCount - preservedCount;
+
+    return res.status(200).json({
+      info: {
+        totalLinks: totalLinkCount,
+        archival: {
+          preserved: preservedCount,
+          remaining: remainingCount,
+          percent: Math.round((preservedCount / totalLinkCount) * 100)
+        }
+      },
+    });
+  }
+
   if (req.method === "DELETE") {
     const dataValidation = LinkArchiveActionSchema.safeParse(req.body);
     if (!dataValidation.success) {
       return res.status(400).json({
-        response: `Error: ${
-          dataValidation.error.issues[0].message
-        } [${dataValidation.error.issues[0].path.join(", ")}]`,
+        response: `Error: ${dataValidation.error.issues[0].message
+          } [${dataValidation.error.issues[0].path.join(", ")}]`,
       });
     }
 
@@ -121,24 +151,24 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         > =
           archivalTags.length > 0
             ? {
-                archiveAsScreenshot: archivalTags.some(
-                  (tag) => tag.archiveAsScreenshot
-                ),
-                archiveAsMonolith: archivalTags.some(
-                  (tag) => tag.archiveAsMonolith
-                ),
-                archiveAsPDF: archivalTags.some((tag) => tag.archiveAsPDF),
-                archiveAsReadable: archivalTags.some(
-                  (tag) => tag.archiveAsReadable
-                ),
-              }
+              archiveAsScreenshot: archivalTags.some(
+                (tag) => tag.archiveAsScreenshot
+              ),
+              archiveAsMonolith: archivalTags.some(
+                (tag) => tag.archiveAsMonolith
+              ),
+              archiveAsPDF: archivalTags.some((tag) => tag.archiveAsPDF),
+              archiveAsReadable: archivalTags.some(
+                (tag) => tag.archiveAsReadable
+              ),
+            }
             : {
-                archiveAsScreenshot:
-                  link.createdBy?.archiveAsScreenshot || false,
-                archiveAsMonolith: link.createdBy?.archiveAsMonolith || false,
-                archiveAsPDF: link.createdBy?.archiveAsPDF || false,
-                archiveAsReadable: link.createdBy?.archiveAsReadable || false,
-              };
+              archiveAsScreenshot:
+                link.createdBy?.archiveAsScreenshot || false,
+              archiveAsMonolith: link.createdBy?.archiveAsMonolith || false,
+              archiveAsPDF: link.createdBy?.archiveAsPDF || false,
+              archiveAsReadable: link.createdBy?.archiveAsReadable || false,
+            };
 
         const needsReprocessing =
           (link.image === "unavailable" && shouldArchive.archiveAsScreenshot) ||
@@ -153,7 +183,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
             data: {
               image:
                 shouldArchive.archiveAsScreenshot &&
-                link.image === "unavailable"
+                  link.image === "unavailable"
                   ? null
                   : link.image,
               pdf:
@@ -162,12 +192,12 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
                   : link.pdf,
               readable:
                 shouldArchive.archiveAsReadable &&
-                link.readable === "unavailable"
+                  link.readable === "unavailable"
                   ? null
                   : link.readable,
               monolith:
                 shouldArchive.archiveAsMonolith &&
-                link.monolith === "unavailable"
+                  link.monolith === "unavailable"
                   ? null
                   : link.monolith,
               lastPreserved: null,
