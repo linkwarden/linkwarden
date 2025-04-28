@@ -64,17 +64,24 @@ export default function Worker() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="stat bg-base-100 rounded-lg shadow">
                   <div className="stat-title">{t("total_links")}</div>
-                  <div className="stat-value">{workerStatistics.totalLinks}</div>
+                  <div className="stat-value">
+                    {workerStatistics.totalLinks}
+                  </div>
                 </div>
 
                 <div className="stat bg-base-100 rounded-lg shadow">
                   <div className="stat-title">{t("preserved_links")}</div>
-                  <div className="stat-value">{workerStatistics.archival.preserved}</div>
+                  <div className="stat-value">
+                    {workerStatistics.archival.preserved}
+                  </div>
                 </div>
               </div>
 
               <div className="mt-4">
-                <div className="w-full bg-base-300 rounded-full h-2.5 tooltip tooltip-top" data-tip={`${workerStatistics.archival.percent}%`}>
+                <div
+                  className="w-full bg-base-300 rounded-full h-2.5 tooltip tooltip-top"
+                  data-tip={`${workerStatistics.archival.percent}%`}
+                >
                   <div
                     className="bg-primary h-2.5 rounded-full"
                     style={{ width: `${workerStatistics.archival.percent}%` }}
@@ -82,7 +89,6 @@ export default function Worker() {
                 </div>
               </div>
             </>
-
           ) : (
             <div className="flex justify-center">
               <span className="loading loading-spinner loading-md"></span>

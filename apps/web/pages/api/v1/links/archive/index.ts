@@ -22,15 +22,15 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       where: {
         type: "url",
         url: { not: null },
-      }
+      },
     });
 
     const preservedCount = await prisma.link.count({
       where: {
         type: "url",
         url: { not: null },
-        lastPreserved: { not: null }
-      }
+        lastPreserved: { not: null },
+      },
     });
 
     const remainingCount = totalLinkCount - preservedCount;
@@ -41,8 +41,8 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         archival: {
           preserved: preservedCount,
           remaining: remainingCount,
-          percent: Math.round((preservedCount / totalLinkCount) * 100)
-        }
+          percent: Math.round((preservedCount / totalLinkCount) * 100),
+        },
       },
     });
   }
@@ -51,8 +51,9 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     const dataValidation = LinkArchiveActionSchema.safeParse(req.body);
     if (!dataValidation.success) {
       return res.status(400).json({
-        response: `Error: ${dataValidation.error.issues[0].message
-          } [${dataValidation.error.issues[0].path.join(", ")}]`,
+        response: `Error: ${
+          dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`,
       });
     }
 
@@ -151,24 +152,24 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         > =
           archivalTags.length > 0
             ? {
-              archiveAsScreenshot: archivalTags.some(
-                (tag) => tag.archiveAsScreenshot
-              ),
-              archiveAsMonolith: archivalTags.some(
-                (tag) => tag.archiveAsMonolith
-              ),
-              archiveAsPDF: archivalTags.some((tag) => tag.archiveAsPDF),
-              archiveAsReadable: archivalTags.some(
-                (tag) => tag.archiveAsReadable
-              ),
-            }
+                archiveAsScreenshot: archivalTags.some(
+                  (tag) => tag.archiveAsScreenshot
+                ),
+                archiveAsMonolith: archivalTags.some(
+                  (tag) => tag.archiveAsMonolith
+                ),
+                archiveAsPDF: archivalTags.some((tag) => tag.archiveAsPDF),
+                archiveAsReadable: archivalTags.some(
+                  (tag) => tag.archiveAsReadable
+                ),
+              }
             : {
-              archiveAsScreenshot:
-                link.createdBy?.archiveAsScreenshot || false,
-              archiveAsMonolith: link.createdBy?.archiveAsMonolith || false,
-              archiveAsPDF: link.createdBy?.archiveAsPDF || false,
-              archiveAsReadable: link.createdBy?.archiveAsReadable || false,
-            };
+                archiveAsScreenshot:
+                  link.createdBy?.archiveAsScreenshot || false,
+                archiveAsMonolith: link.createdBy?.archiveAsMonolith || false,
+                archiveAsPDF: link.createdBy?.archiveAsPDF || false,
+                archiveAsReadable: link.createdBy?.archiveAsReadable || false,
+              };
 
         const needsReprocessing =
           (link.image === "unavailable" && shouldArchive.archiveAsScreenshot) ||
@@ -183,7 +184,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
             data: {
               image:
                 shouldArchive.archiveAsScreenshot &&
-                  link.image === "unavailable"
+                link.image === "unavailable"
                   ? null
                   : link.image,
               pdf:
@@ -192,12 +193,12 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
                   : link.pdf,
               readable:
                 shouldArchive.archiveAsReadable &&
-                  link.readable === "unavailable"
+                link.readable === "unavailable"
                   ? null
                   : link.readable,
               monolith:
                 shouldArchive.archiveAsMonolith &&
-                  link.monolith === "unavailable"
+                link.monolith === "unavailable"
                   ? null
                   : link.monolith,
               lastPreserved: null,
