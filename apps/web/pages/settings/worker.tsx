@@ -47,8 +47,6 @@ export default function Worker() {
     });
   };
 
-  console.log(workerStatistics, "workerStatistics");
-
   return (
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">{t("worker")}</p>
