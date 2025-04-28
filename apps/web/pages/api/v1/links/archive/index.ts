@@ -36,7 +36,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     const remainingCount = totalLinkCount - preservedCount;
 
     return res.status(200).json({
-      info: {
+      stats: {
         totalLinks: totalLinkCount,
         archival: {
           preserved: preservedCount,
