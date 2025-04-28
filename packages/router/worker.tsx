@@ -47,7 +47,7 @@ const useArchiveAction = () => {
 			return data;
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["links", "worker-stats"] });
+			queryClient.invalidateQueries({ queryKey: ["worker-stats"] });
 		},
 	});
 };
