@@ -7,6 +7,9 @@
     "apps/*",
     "packages/*"
   ],
+  "prisma": {
+    "schema": "packages/prisma/schema.prisma"
+  },
   "scripts": {
     "web:dev": "dotenv -- yarn workspace @linkwarden/web dev",
     "web:build": "dotenv -- yarn workspace @linkwarden/web build",
