@@ -8,20 +8,14 @@ import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
   LinkRequestQuery,
+  MobileAuth,
 } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import getFormatFromContentType from "@linkwarden/lib/getFormatFromContentType";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
-const useLinks = (
-  params: LinkRequestQuery = {},
-  auth?: {
-    status: "loading" | "authenticated" | "unauthenticated";
-    session: string | null;
-    instance: string | null;
-  }
-) => {
+const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
   const queryParamsObject = {
     sort: params.sort ?? Number(window.localStorage.getItem("sortBy")) ?? 0,
     collectionId: params.collectionId,
@@ -46,14 +40,7 @@ const useLinks = (
   };
 };
 
-const useFetchLinks = (
-  params: string,
-  auth?: {
-    status: "loading" | "authenticated" | "unauthenticated";
-    session: string | null;
-    instance: string | null;
-  }
-) => {
+const useFetchLinks = (params: string, auth?: MobileAuth) => {
   let status: "loading" | "authenticated" | "unauthenticated";
 
   if (!auth) {
@@ -243,16 +230,25 @@ const useDeleteLink = () => {
   });
 };
 
-const useGetLink = (isPublicRoute?: boolean) => {
+const useGetLink = (isPublicRoute?: boolean, auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ id }: { id: number }) => {
-      const path = isPublicRoute
-        ? `/api/v1/public/links/${id}`
-        : `/api/v1/links/${id}`;
+      const path =
+        (auth?.instance ? auth?.instance : "") +
+        (isPublicRoute ? `/api/v1/public/links/${id}` : `/api/v1/links/${id}`);
 
-      const response = await fetch(path);
+      const response = await fetch(
+        path,
+        auth?.session
+          ? {
+              headers: {
+                Authorization: `Bearer ${auth?.session}`,
+              },
+            }
+          : undefined
+      );
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.response);

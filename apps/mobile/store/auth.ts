@@ -1,12 +1,9 @@
 import { create } from "zustand";
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
+import { MobileAuth } from "@linkwarden/types";
 
-type Auth = {
-  status: "loading" | "authenticated" | "unauthenticated";
-  session: string | null;
-  instance: string | null;
-};
+type Auth = MobileAuth;
 
 type AuthStore = {
   auth: Auth;
@@ -73,7 +70,7 @@ const useAuthStore = create<AuthStore>((set) => ({
           },
         });
 
-        router.push("/(tabs)");
+        router.push("/dashboard");
       } else {
         set({
           auth: {

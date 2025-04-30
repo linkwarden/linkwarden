@@ -1,22 +1,47 @@
+import { MobileAuth } from "@linkwarden/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
-const useUser = () => {
-  const { data, status } = useSession();
+const useUser = (auth?: MobileAuth) => {
+  let status: "authenticated" | "loading" | "unauthenticated";
+  let userId: string = "";
 
-  const userId = (data?.user as any)?.id;
+  if (!auth) {
+    const { data, status: s } = useSession();
+    status = s;
+    userId = (data?.user as any)?.id;
+  } else {
+    status = auth.status;
+  }
+
+  const url =
+    (auth?.instance ? auth?.instance : "") +
+    "/api/v1/users" +
+    (userId ? `/${userId}` : "");
 
   return useQuery({
     queryKey: ["user"],
     queryFn: async () => {
-      const response = await fetch(`/api/v1/users/${userId}`);
+      const response = await fetch(
+        url,
+        auth?.session
+          ? {
+              headers: {
+                Authorization: `Bearer ${auth.session}`,
+              },
+            }
+          : undefined
+      );
+
       if (!response.ok) throw new Error("Failed to fetch user data.");
 
       const data = await response.json();
 
       return data.response;
     },
-    enabled: !!userId && status === "authenticated",
+    enabled: !auth
+      ? !!userId && status === "authenticated"
+      : status === "authenticated",
     placeholderData: {},
   });
 };
