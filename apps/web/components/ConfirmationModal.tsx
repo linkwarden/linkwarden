@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import Button from "./ui/Button";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import Modal from "./Modal";
 
 type Props = {
