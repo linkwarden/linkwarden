@@ -4,7 +4,7 @@ import { Platform, TouchableOpacity, useColorScheme } from "react-native";
 import HapticTab from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import * as DropdownMenu from "zeego/dropdown-menu";
-import "react-native-reanimated";
+// import "react-native-reanimated";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 
 export default function TabLayout() {
@@ -13,28 +13,25 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        tabBarBackground: TabBarBackground,
         tabBarActiveTintColor: colorScheme === "dark" ? "white" : "black",
         tabBarButton: HapticTab,
         // headerShown: false,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
           },
           default: {},
         }),
-        headerLeftContainerStyle: {
-          paddingLeft: 20, // Padding for left content
-        },
-        headerRightContainerStyle: {
-          paddingRight: 20, // Padding for right content
-        },
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="dashboard"
         options={{
           title: "Dashboard",
+          headerRightContainerStyle: {
+            paddingRight: 20,
+          },
           headerRight: ({ tintColor }) => (
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
@@ -76,6 +73,9 @@ export default function TabLayout() {
         name="links"
         options={{
           title: "Links",
+          headerSearchBarOptions: {
+            placeholder: "Search",
+          },
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="link" color={color} />
           ),

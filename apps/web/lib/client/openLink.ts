@@ -2,7 +2,7 @@ import {
   AccountSettings,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { generateLinkHref } from "./generateLinkHref";
+import { generateLinkHref } from "@linkwarden/lib/generateLinkHref";
 import { LinksRouteTo } from "@linkwarden/prisma/client";
 
 const openLink = (

@@ -18,7 +18,16 @@ export default function RootLayout() {
           gestureEnabled: false,
         }}
       >
-        <Stack.Screen name="(tabs)" />
+        {/* <Stack.Screen name="(tabs)" /> */}
+        <Stack.Screen
+          name="links/[id]"
+          options={{
+            headerBackTitle: "Back",
+            headerShown: true,
+            gestureEnabled: true,
+            headerTitle: "",
+          }}
+        />
         <Stack.Screen name="login" />
         <Stack.Screen name="+not-found" />
       </Stack>
