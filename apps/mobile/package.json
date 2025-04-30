@@ -18,6 +18,7 @@
     "@expo/vector-icons": "^14.0.2",
     "@linkwarden/lib": "*",
     "@linkwarden/router": "*",
+    "@linkwarden/types": "*",
     "@react-native-menu/menu": "1.2.2",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",

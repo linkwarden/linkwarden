@@ -172,3 +172,9 @@ export interface ArchivalSettings {
   archiveAsWaybackMachine: boolean;
   aiTag: boolean;
 }
+
+export interface MobileAuth {
+  status: "loading" | "authenticated" | "unauthenticated";
+  session: string | null;
+  instance: string | null;
+}

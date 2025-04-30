@@ -5,6 +5,7 @@
   "main": "index.ts",
   "dependencies": {
     "@linkwarden/prisma": "*",
+    "@linkwarden/types": "*",
     "@linkwarden/filesystem": "*",
     "jimp": "^0.22.10",
     "meilisearch": "^0.48.2",

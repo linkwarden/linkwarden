@@ -2,11 +2,10 @@ import { useLinks } from "@linkwarden/router/links";
 import {
   View,
   StyleSheet,
-  Text,
   ActivityIndicator,
   FlatList,
+  Platform,
 } from "react-native";
-import { Platform } from "react-native";
 import useAuthStore from "@/store/auth";
 import LinkListing from "@/components/LinkListing";
 
@@ -22,6 +21,7 @@ export default function HomeScreen() {
   return (
     <View>
       <FlatList
+        ListHeaderComponent={() => <></>}
         data={links || []}
         onRefresh={() => data.refetch()}
         refreshing={data.isRefetching}
