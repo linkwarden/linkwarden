@@ -1,7 +1,7 @@
 import Modal from "../Modal";
 import Button from "../ui/Button";
 import { useTranslation } from "next-i18next";
-import { useDeleteUser } from "@linkwarden/router/admin/users";
+import { useDeleteUser } from "@linkwarden/router/users";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useConfig } from "@linkwarden/router/config";

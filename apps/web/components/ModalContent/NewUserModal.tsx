@@ -3,7 +3,7 @@ import Modal from "../Modal";
 import TextInput from "../TextInput";
 import { FormEvent, useState } from "react";
 import { useTranslation, Trans } from "next-i18next";
-import { useAddUser } from "@linkwarden/router/admin/users";
+import { useAddUser } from "@linkwarden/router/users";
 
 type Props = {
   onClose: Function;
