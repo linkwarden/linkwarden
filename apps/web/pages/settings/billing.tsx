@@ -5,7 +5,7 @@ import { User as U } from "@linkwarden/prisma/client";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { useUsers } from "@linkwarden/router/admin/users";
+import { useUsers } from "@linkwarden/router/users";
 import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
 import { useUser } from "@linkwarden/router/user";
 import { dropdownTriggerer } from "@/lib/client/utils";

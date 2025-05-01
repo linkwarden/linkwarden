@@ -58,7 +58,9 @@ const Tab = ({
         return (
           <button
             key={index}
-            ref={(el) => (tabsRef.current[index] = el)}
+            ref={(el) => {
+              tabsRef.current[index] = el;
+            }}
             className={`${
               isActive ? `` : `hover:opacity-75 duration-100`
             } my-auto cursor-pointer select-none rounded-full px-2 text-center flex gap-1 items-center`}
