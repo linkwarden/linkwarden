@@ -35,20 +35,16 @@ yarn-error.log*
 next-env.d.ts
 
 # tests
-/tests
-/test-results/
-/blob-report/
-/playwright-report/
-/playwright/.cache/
-/playwright/.auth/
+/apps/web/tests
+/apps/web/test-results/
+/apps/web/blob-report/
+/apps/web/playwright-report/
+/apps/web/playwright/.cache/
+/apps/web/playwright/.auth/
 
 # docker
 pgdata
 certificates
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
 
 # generated files and folders
 /data
