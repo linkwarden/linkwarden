@@ -11,38 +11,43 @@ const prisma = new PrismaClient();
 const getLinkBatch = async <T extends Prisma.LinkFindManyArgs>(
   params: T
 ): Promise<Array<Prisma.LinkGetPayload<T>>> => {
-  const { where = {}, take = 10, orderBy, include } = params;
+  try {
+    const { where = {}, take = 10, orderBy, include } = params;
 
-  let oldToNew: any = [];
+    let oldToNew: any = [];
 
-  const firstTake = Math.floor(take / 2);
-  const secondTake = Math.ceil(take / 2);
+    const firstTake = Math.floor(take / 2);
+    const secondTake = Math.ceil(take / 2);
 
-  if (firstTake > 0)
-    oldToNew = await prisma.link.findMany({
-      where,
-      take: firstTake,
-      orderBy: orderBy ?? { id: "asc" },
-      include,
-    });
+    if (firstTake > 0)
+      oldToNew = await prisma.link.findMany({
+        where,
+        take: firstTake,
+        orderBy: orderBy ?? { id: "asc" },
+        include,
+      });
 
-  let newToOld: any = [];
+    let newToOld: any = [];
 
-  if (secondTake > 0)
-    newToOld = await prisma.link.findMany({
-      where,
-      take: secondTake,
-      orderBy: orderBy ?? { id: "desc" },
-      include,
-    });
+    if (secondTake > 0)
+      newToOld = await prisma.link.findMany({
+        where,
+        take: secondTake,
+        orderBy: orderBy ?? { id: "desc" },
+        include,
+      });
 
-  const links = [...oldToNew, ...newToOld]
-    // Make sure we don't process the same link twice
-    .filter((value, index, self) => {
-      return self.findIndex((item) => item.id === value.id) === index;
-    });
+    const links = [...oldToNew, ...newToOld]
+      // Make sure we don't process the same link twice
+      .filter((value, index, self) => {
+        return self.findIndex((item) => item.id === value.id) === index;
+      });
 
-  return links as Array<Prisma.LinkGetPayload<T>>;
+    return links as Array<Prisma.LinkGetPayload<T>>;
+  } catch (error) {
+    console.error("getLinkBatch error, returning empty array instead:", error);
+    return [] as Array<Prisma.LinkGetPayload<T>>;
+  }
 };
 
 export default getLinkBatch;
