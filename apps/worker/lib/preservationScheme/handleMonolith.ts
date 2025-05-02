@@ -13,6 +13,7 @@ const handleMonolith = async (link: Link, content: string) => {
       } -o -`,
       {
         timeout: 120000,
+        killSignal: "SIGKILL",
         maxBuffer: 1024 * 1024 * Number(process.env.MONOLITH_MAX_BUFFER || 100),
         input: content,
       }
