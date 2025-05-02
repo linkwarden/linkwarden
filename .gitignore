@@ -1,5 +1,5 @@
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -7,7 +7,7 @@
 /coverage
 
 # next.js
-/.next/
+.next
 /out/
 
 # production
@@ -34,26 +34,21 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# generated files and folders
-/data
-.idea
-prisma/dev.db
-
 # tests
-/tests
-/test-results/
-/blob-report/
-/playwright-report/
-/playwright/.cache/
-/playwright/.auth/
+/apps/web/tests
+/apps/web/test-results/
+/apps/web/blob-report/
+/apps/web/playwright-report/
+/apps/web/playwright/.cache/
+/apps/web/playwright/.auth/
 
 # docker
 pgdata
 certificates
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
 
-# meilisearch
+# generated files and folders
+/data
+.idea
+prisma/dev.db
 data.ms
+.turbo

@@ -1,0 +1,20 @@
+{
+  "name": "@linkwarden/router",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "@linkwarden/lib": "*",
+    "@linkwarden/prisma": "*",
+    "@linkwarden/types": "*",
+    "@tanstack/react-query": "^5.51.15",
+    "react-hot-toast": "^2.4.1",
+    "@tanstack/react-query-devtools": "^5.51.15",
+    "next": "13.4.12",
+    "next-i18next": "^15.3.0",
+    "next-auth": "^4.22.1"
+  },
+  "peerDependencies": {
+    "react": "18.3.1"
+  }
+}
