@@ -138,7 +138,7 @@ async function setupLinksIndexSchema() {
   await meiliClient
     .index("links")
     .waitForTask(updateFilterableAttributes.taskUid, {
-      timeOutMs: 1000000,
+      timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
     })
     .catch((err) => {
       console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
@@ -151,7 +151,7 @@ async function setupLinksIndexSchema() {
   await meiliClient
     .index("links")
     .waitForTask(updateSortableAttributes.taskUid, {
-      timeOutMs: 1000000,
+      timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
     })
     .catch((err) => {
       console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
@@ -229,7 +229,7 @@ export async function startIndexing() {
     await meiliClient
       .index("links")
       .waitForTask(task.taskUid, {
-        timeOutMs: 300000,
+        timeOutMs: Number(process.env.MEILI_TIMEOUT) || 1000000,
       })
       .catch((err) => {
         console.error("\x1b[34m%s\x1b[0m", `Error indexing links:`, err);
