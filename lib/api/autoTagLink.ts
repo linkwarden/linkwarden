@@ -6,7 +6,7 @@ import {
 } from "./prompts";
 import { prisma } from "./db";
 import { generateObject, LanguageModelV1 } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI, OpenAIProviderSettings } from "@ai-sdk/openai";
 import { azure } from "@ai-sdk/azure";
 import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
@@ -19,8 +19,21 @@ const ensureValidURL = (base: string, path: string) =>
   `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
 const getAIModel = (): LanguageModelV1 => {
-  if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL)
+  if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) {
+    let config: OpenAIProviderSettings = {
+      compatibility: 'strict',
+      baseURL: process.env.OPENAI_API_BASE || "https://api.openai.com/v1",
+      name: process.env.OPENAI_NAME || "openai",
+      ... process.env.OPENAI_PROJECT && {project:  process.env.OPENAI_PROJECT},
+      ... process.env.OPENAI_ORGANIZATION && {organization: process.env.OPENAI_ORGANIZATION},
+    };
+    if (process.env.OPENAI_COMPAT == 'compatible')
+      config.compatibility = 'compatible';
+    
+    let openai = createOpenAI(config);
+
     return openai(process.env.OPENAI_MODEL);
+  }
   if (
     process.env.AZURE_API_KEY &&
     process.env.AZURE_RESOURCE_NAME &&
