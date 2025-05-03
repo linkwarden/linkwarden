@@ -76,6 +76,11 @@ async function startArchiveProcessing() {
       },
     });
 
+    if (links.length === 0) {
+      await delay(archiveIntervalInSeconds);
+      continue;
+    }
+
     const archiveLink = async (link: LinkWithCollectionOwnerAndTags) => {
       try {
         console.log(
@@ -102,6 +107,21 @@ async function startArchiveProcessing() {
     const processingPromises = links.map((e) => archiveLink(e));
 
     await Promise.allSettled(processingPromises);
+
+    const unprocessedLinkCount = await prisma.link.count({
+      where: {
+        lastPreserved: null,
+        url: { not: null },
+      },
+    });
+
+    console.log(
+      "\x1b[34m%s\x1b[0m",
+      `Processed ${links.length} link${
+        links.length === 1 ? "" : "s"
+      }, ${unprocessedLinkCount} left.`
+    );
+
     await delay(archiveIntervalInSeconds);
   }
 }
