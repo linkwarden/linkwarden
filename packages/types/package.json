@@ -1,0 +1,10 @@
+{
+  "name": "@linkwarden/types",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "@linkwarden/prisma": "*",
+    "stripe": "^12.13.0"
+  }
+}
