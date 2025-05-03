@@ -2,7 +2,7 @@
 # Purpose: Uses the Rust image to build monolith
 # Notes:
 #  - Fine to leave extra here, as only the resulting binary is copied out
-FROM docker.io/rust:1.85-bullseye AS monolith-builder
+FROM docker.io/rust:1.86-bullseye AS monolith-builder
 
 RUN set -eux && cargo install --locked monolith
 
@@ -10,7 +10,7 @@ RUN set -eux && cargo install --locked monolith
 # Purpose: Compiles the frontend and
 # Notes:
 #  - Nothing extra should be left here.  All commands should cleanup
-FROM node:18.18-bullseye-slim AS main-app
+FROM node:22.14-bullseye-slim AS main-app
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -18,7 +18,13 @@ RUN mkdir /data
 
 WORKDIR /data
 
-COPY ./package.json ./yarn.lock ./playwright.config.ts ./
+COPY ./apps/web/package.json ./apps/web/playwright.config.ts ./apps/web/
+
+COPY ./apps/worker/package.json ./apps/worker/
+
+COPY ./packages ./packages
+
+COPY ./yarn.lock ./package.json ./
 
 RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
     set -eux && \
@@ -34,14 +40,13 @@ RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
 COPY --from=monolith-builder /usr/local/cargo/bin/monolith /usr/local/bin/monolith
 
 RUN set -eux && \
-    npx playwright install --with-deps chromium && \
     apt-get clean && \
     yarn cache clean
 
 COPY . .
 
-RUN yarn prisma generate && \
-    yarn build
+RUN yarn prisma:generate && \
+    yarn web:build
 
 HEALTHCHECK --interval=30s \
             --timeout=5s \
@@ -51,4 +56,4 @@ HEALTHCHECK --interval=30s \
 
 EXPOSE 3000
 
-CMD yarn prisma migrate deploy && yarn start
+CMD ["sh", "-c", "yarn prisma:deploy && yarn concurrently:start"]

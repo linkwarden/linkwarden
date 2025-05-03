@@ -1,0 +1,14 @@
+{
+  "name": "@linkwarden/lib",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "@linkwarden/prisma": "*",
+    "@linkwarden/types": "*",
+    "@linkwarden/filesystem": "*",
+    "jimp": "^0.22.10",
+    "meilisearch": "^0.48.2",
+    "rss-parser": "^3.13.0"
+  }
+}

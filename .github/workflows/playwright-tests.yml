@@ -119,21 +119,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
-      - name: Install playwright
-        if: steps.cache-playwright.outputs.cache-hit != 'true'
-        run: yarn playwright install --with-deps
-
       - name: Setup project
         run: |
-          yarn prisma generate
-          yarn build
-          yarn prisma migrate deploy
+          yarn prisma:generate
+          yarn web:build
+          yarn prisma:deploy
 
       - name: Start linkwarden server and worker
-        run: yarn start &
+        run: yarn concurrently:start &
 
       - name: Run Tests
-        run: npx playwright test --grep ${{ matrix.test_case }}
+        run: yarn workspace @linkwarden/web playwright test --grep ${{ matrix.test_case }}
 
       - uses: actions/upload-artifact@v4
         if: always()

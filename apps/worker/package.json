@@ -1,0 +1,40 @@
+{
+  "name": "@linkwarden/worker",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx watch index.ts",
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "1.1.5",
+    "@ai-sdk/azure": "1.1.5",
+    "@ai-sdk/openai-compatible": "^0.2.13",
+    "@linkwarden/filesystem": "*",
+    "@linkwarden/lib": "*",
+    "@linkwarden/prisma": "*",
+    "@linkwarden/types": "*",
+    "@mozilla/readability": "^0.4.4",
+    "@openrouter/ai-sdk-provider": "^0.4.3",
+    "ai": "^4.3.9",
+    "axios": "^1.5.1",
+    "dompurify": "^3.0.6",
+    "jsdom": "^22.1.0",
+    "meilisearch": "^0.48.2",
+    "node-fetch": "^2.7.0",
+    "ollama-ai-provider": "^1.2.0",
+    "playwright": "^1.45.0",
+    "rss-parser": "^3.13.0",
+    "socks-proxy-agent": "^8.0.2",
+    "tsx": "^4.19.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@types/node": "^22.14.1",
+    "nodemon": "^3.1.9",
+    "typescript": "^5.8.3"
+  }
+}
