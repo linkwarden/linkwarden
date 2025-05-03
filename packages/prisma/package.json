@@ -8,7 +8,8 @@
   },
   "scripts": {
     "generate": "prisma generate",
-    "deploy": "prisma migrate deploy"
+    "deploy": "prisma migrate deploy",
+    "studio": "prisma studio"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
