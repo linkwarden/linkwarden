@@ -24,7 +24,7 @@ const Tab = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsFirstRender(false);
-    }, 100);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, []);
