@@ -1,17 +1,11 @@
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  Text,
-  // Platform,
-} from "react-native";
+import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 import { WebView } from "react-native-webview";
 import useAuthStore from "@/store/auth";
 import { useLocalSearchParams } from "expo-router";
 import { useGetLink } from "@linkwarden/router/links";
 import { useUser } from "@linkwarden/router/user";
 import { useEffect, useState } from "react";
-// import { generateLinkHref } from "@linkwarden/lib/generateLinkHref";
+import { generateLinkHref } from "@linkwarden/lib/generateLinkHref";
 
 export default function HomeScreen() {
   const { auth } = useAuthStore();
@@ -24,8 +18,9 @@ export default function HomeScreen() {
   useEffect(() => {
     async function fetchLinkData() {
       const link = await getLink.mutateAsync({ id: Number(id) });
-      if (link && link.url) {
-        setUrl(link.url);
+
+      if (link) {
+        setUrl(generateLinkHref(link, user[0], auth.instance, true));
       }
     }
 
@@ -47,7 +42,10 @@ export default function HomeScreen() {
                   flex: 1,
                 }),
           }}
-          source={{ uri: url }}
+          source={{
+            uri: url,
+            headers: { Authorization: `Bearer ${auth.session}` },
+          }}
           onLoadEnd={() => setIsLoading(false)}
         />
       )}
