@@ -57,16 +57,18 @@ export default async function archiveHandler(
     return;
   }
 
+  const abortController = new AbortController();
+
   const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(
-      () =>
-        reject(
-          new Error(
-            `Browser has been open for more than ${BROWSER_TIMEOUT} minutes.`
-          )
-        ),
-      BROWSER_TIMEOUT * 60000
-    );
+    setTimeout(() => {
+      abortController.abort();
+
+      return reject(
+        new Error(
+          `Browser has been open for more than ${BROWSER_TIMEOUT} minutes.`
+        )
+      );
+    }, BROWSER_TIMEOUT * 60000);
   });
 
   const { browser, context } = await getBrowser();
@@ -139,6 +141,15 @@ export default async function archiveHandler(
           if (archivalSettings.archiveAsReadable && !link.readable)
             await handleReadability(content, link);
 
+          // Screenshot/PDF
+          if (
+            (archivalSettings.archiveAsScreenshot && !link.image) ||
+            (archivalSettings.archiveAsPDF && !link.pdf)
+          )
+            await handleScreenshotAndPdf(link, page, archivalSettings);
+
+          await browser.close();
+
           // Auto-tagging
           if (
             archivalSettings.aiTag &&
@@ -152,23 +163,16 @@ export default async function archiveHandler(
           )
             await autoTagLink(user, link.id, metaDescription);
 
-          // Screenshot/PDF
-          if (
-            (archivalSettings.archiveAsScreenshot && !link.image) ||
-            (archivalSettings.archiveAsPDF && !link.pdf)
-          )
-            await handleScreenshotAndPdf(link, page, archivalSettings);
-
           // Monolith
           if (archivalSettings.archiveAsMonolith && !link.monolith && link.url)
-            await handleMonolith(link, content);
+            await handleMonolith(link, content, abortController.signal);
         }
       })(),
       timeoutPromise,
     ]);
   } catch (err) {
-    console.log(err);
-    console.log("Failed Link details:", link);
+    console.log("Failed Link:", link.url);
+    console.log("Reason:", err);
     throw err;
   } finally {
     const finalLink = await prisma.link.findUnique({
@@ -198,7 +202,9 @@ export default async function archiveHandler(
       await removeFiles(link.id, link.collectionId);
     }
 
-    await browser.close();
+    if (browser && browser.isConnected()) {
+      await browser.close();
+    }
   }
 }
 
