@@ -81,13 +81,6 @@ export default async function autoTagLink(
 
   if (!description) return;
 
-  console.log(
-    'Auto tagging "',
-    link.url,
-    '" with the following description: ',
-    description
-  );
-
   let prompt;
 
   let existingTagsNames: string[] = [];
