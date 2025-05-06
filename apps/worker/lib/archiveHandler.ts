@@ -165,7 +165,11 @@ export default async function archiveHandler(
 
           // Monolith
           if (archivalSettings.archiveAsMonolith && !link.monolith && link.url)
-            await handleMonolith(link, content, abortController.signal);
+            await handleMonolith(link, content, abortController.signal).catch(
+              (err) => {
+                console.error(err);
+              }
+            );
         }
       })(),
       timeoutPromise,
