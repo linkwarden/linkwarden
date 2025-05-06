@@ -394,7 +394,7 @@
   "upload_preview_image": "Téléverser la prévisualisation",
   "columns": "Colonnes",
   "default": "Défaut",
-  "invalid_url_guide":"Veuillez entrer une adresse valide pour le lien. (Commence généralement par http/https)",
+  "invalid_url_guide": "Veuillez entrer une adresse valide pour le lien. (Commence généralement par http/https)",
   "email_invalid": "Veuillez entrer une adresse email valide.",
   "username_invalid_guide": "Le nom d’utilisateur doit comporter au minimum 3 caractères, les espaces et les caractères spéciaux ne sont pas autorisés.",
   "team_management": "Gestion d’équipe",

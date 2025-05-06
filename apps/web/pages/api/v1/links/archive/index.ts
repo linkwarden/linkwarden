@@ -16,6 +16,36 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     return res.status(401).json({ response: "Permission denied." });
   }
 
+  if (req.method === "GET") {
+    const totalLinkCount = await prisma.link.count({
+      where: {
+        type: "url",
+        url: { not: null },
+      },
+    });
+
+    const preservedCount = await prisma.link.count({
+      where: {
+        type: "url",
+        url: { not: null },
+        lastPreserved: { not: null },
+      },
+    });
+
+    const remainingCount = totalLinkCount - preservedCount;
+
+    return res.status(200).json({
+      stats: {
+        totalLinks: totalLinkCount,
+        archival: {
+          preserved: preservedCount,
+          remaining: remainingCount,
+          percent: Math.round((preservedCount / totalLinkCount) * 100),
+        },
+      },
+    });
+  }
+
   if (req.method === "DELETE") {
     const dataValidation = LinkArchiveActionSchema.safeParse(req.body);
     if (!dataValidation.success) {

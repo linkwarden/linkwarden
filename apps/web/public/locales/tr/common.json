@@ -252,7 +252,6 @@
   "revoke_token": "Token İptal Et",
   "revoke_confirmation": "Bu Erişim Tokenini iptal etmek istediğinizden emin misiniz? Bu tokeni kullanan uygulamalar veya hizmetler artık Linkwarden'a erişemeyecektir.",
 
-
   "revoke": "İptal Et",
   "sending_request": "İstek Gönderiliyor...",
   "link_being_archived": "Bağlantı arşivleniyor...",

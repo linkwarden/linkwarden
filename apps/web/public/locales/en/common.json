@@ -474,5 +474,9 @@
   "no_broken_preservations": "No broken preservations.",
   "links_are_being_represerved": "Links are being re-preserved...",
   "cancel": "Cancel",
-  "preservation_rules": "Preservation rules:"
+  "preservation_rules": "Preservation rules:",
+  "total_links": "Total Links",
+  "preserved_links": "Preserved Links",
+  "completion": "Completion",
+  "worker_statistics": "Worker Statistics"
 }
