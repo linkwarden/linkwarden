@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import https from "https";
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { SocksProxyAgent } from "socks-proxy-agent";
 
 export default async function fetchTitleAndHeaders(url: string) {
@@ -23,8 +24,10 @@ export default async function fetchTitleAndHeaders(url: string) {
         proxy.password = process.env.PROXY_PASSWORD || "";
       }
 
-      // add socks5 proxy to fetchOpts
-      fetchOpts = { agent: new SocksProxyAgent(proxy.toString()) }; //TODO: add support for http/https proxies
+      const proxyAgent = proxy.protocol.includes("http") ? HttpsProxyAgent : SocksProxyAgent;
+
+      // add socks5/http/https proxy to fetchOpts
+      fetchOpts = { agent: new proxyAgent(proxy.toString()) };
     }
 
     const responsePromise = fetch(url, fetchOpts);
