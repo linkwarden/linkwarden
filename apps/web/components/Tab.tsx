@@ -1,10 +1,10 @@
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useEffect, useRef, useState } from "react";
 
 type Props = {
   tabs: { name?: string; icon?: string }[];
   activeTabIndex: number;
-  setActiveTabIndex: Function;
+  setActiveTabIndex: (i: number) => void;
   className?: string;
   hideName?: boolean;
 };
@@ -16,59 +16,55 @@ const Tab = ({
   className,
   hideName,
 }: Props) => {
-  const tabsRef = useRef<(HTMLElement | null)[]>([]);
-  const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
-  const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const tabsRef = useRef<Array<HTMLElement | null>>([]);
+  const [underline, setUnderline] = useState({ left: 0, width: 0 });
+  const [transitionsOn, setTransitionsOn] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsFirstRender(false);
-    }, 200);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (activeTabIndex === null) {
-      return;
+  // 1) Synchronously measure before paint whenever activeTabIndex changes
+  useLayoutEffect(() => {
+    const el = tabsRef.current[activeTabIndex];
+    if (el) {
+      setUnderline({
+        left: el.offsetLeft,
+        width: el.clientWidth,
+      });
     }
-
-    const setTabPosition = () => {
-      const currentTab = tabsRef.current[activeTabIndex] as HTMLElement;
-      setTabUnderlineLeft(currentTab?.offsetLeft ?? 0);
-      setTabUnderlineWidth(currentTab?.clientWidth ?? 0);
-    };
-
-    setTabPosition();
   }, [activeTabIndex]);
 
+  // 2) After the very first paint, turn transitions on (and never off again)
+  useEffect(() => {
+    setTransitionsOn(true);
+  }, []);
+
   return (
-    <div className={clsx("flew-row flex backdrop-blur-sm h-8 px-1", className)}>
+    <div className={clsx("flex flex-row backdrop-blur-sm h-8 px-1", className)}>
       <span
-        className={`absolute bottom-0 top-0 -z-10 flex overflow-hidden rounded-3xl py-1 ${
-          isFirstRender ? "" : "duration-100"
-        }`}
-        style={{ left: tabUnderlineLeft, width: tabUnderlineWidth }}
+        className={clsx(
+          "absolute bottom-0 top-0 -z-10 flex overflow-hidden rounded-3xl py-1",
+          transitionsOn && "duration-100 ease-out"
+        )}
+        style={{ left: underline.left, width: underline.width }}
       >
         <span className="h-full w-full rounded-3xl bg-primary/50" />
       </span>
-      {tabs.map((tab, index) => {
-        const isActive = activeTabIndex === index;
+
+      {tabs.map((tab, idx) => {
+        const isActive = idx === activeTabIndex;
         return (
           <button
-            key={index}
+            key={idx}
             ref={(el) => {
-              tabsRef.current[index] = el;
+              tabsRef.current[idx] = el;
             }}
-            className={`${
-              isActive ? `` : `hover:opacity-75 duration-100`
-            } my-auto cursor-pointer select-none rounded-full px-2 text-center flex gap-1 items-center`}
-            onClick={() => setActiveTabIndex(index)}
+            className={clsx(
+              "my-auto cursor-pointer select-none rounded-full px-2 flex gap-1 items-center",
+              !isActive && "hover:opacity-75 duration-100"
+            )}
+            onClick={() => setActiveTabIndex(idx)}
             title={tab.name}
           >
-            {tab.icon && <i className={`text-lg ${tab.icon}`}></i>}
-            {!hideName && tab.name && <p>{tab.name}</p>}
+            {tab.icon && <i className={`text-lg ${tab.icon}`} />}
+            {!hideName && tab.name && <span>{tab.name}</span>}
           </button>
         );
       })}
