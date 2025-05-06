@@ -179,8 +179,6 @@ export default async function archiveHandler(
       where: { id: link.id },
     });
 
-    console.log(finalLink);
-
     if (finalLink)
       await prisma.link.update({
         where: { id: link.id },
