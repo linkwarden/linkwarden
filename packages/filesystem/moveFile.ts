@@ -30,8 +30,10 @@ export async function moveFile(from: string, to: string) {
     const directory = (file: string) =>
       path.join(process.cwd(), "../..", storagePath, file);
 
-    fs.rename(directory(from), directory(to), (err) => {
-      if (err) console.log("Error copying file:", err);
-    });
+    if (fs.existsSync(directory(from))) {
+      fs.rename(directory(from), directory(to), (err) => {
+        if (err) console.log("Error copying file:", err);
+      });
+    }
   }
 }
