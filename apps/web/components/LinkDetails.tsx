@@ -472,7 +472,7 @@ export default function LinkDetails({
             {mode === "view" ? (
               <div className="rounded-md p-2 bg-base-200 hyphens-auto">
                 {link.description ? (
-                  <p>{link.description}</p>
+                  <p className="whitespace-pre-wrap">{link.description}</p>
                 ) : (
                   <p className="text-neutral">{t("no_description_provided")}</p>
                 )}
