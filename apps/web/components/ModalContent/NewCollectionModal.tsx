@@ -63,7 +63,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
       {parent?.id ? (
         <>
           <p className="text-xl font-thin">{t("new_sub_collection")}</p>
-          <p className="capitalize text-sm">
+          <p className="text-sm">
             {t("for_collection", { name: parent.name })}
           </p>
         </>
