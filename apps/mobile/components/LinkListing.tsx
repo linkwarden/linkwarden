@@ -1,11 +1,18 @@
-import { View, Text, Image } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Pressable,
+  Platform,
+} from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ArchivedFormat } from "@linkwarden/types";
 import { formatAvailable } from "@linkwarden/lib/formatStats";
 import useAuthStore from "@/store/auth";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -13,6 +20,7 @@ type Props = {
 
 const LinkListing = ({ link }: Props) => {
   const { auth } = useAuthStore();
+  const router = useRouter();
 
   let shortendURL;
 
@@ -25,7 +33,17 @@ const LinkListing = ({ link }: Props) => {
   }
 
   return (
-    <Link href={`/links/${link.id}`}>
+    <Pressable
+      onPress={() => router.push(`/links/${link.id}`)}
+      android_ripple={{ color: "#ddd", borderless: false }}
+      style={({ pressed }) => ({
+        backgroundColor: pressed
+          ? Platform.OS === "android"
+            ? "#fff"
+            : "#eee"
+          : "#fff",
+      })}
+    >
       <View
         style={{
           padding: 20,
@@ -69,13 +87,13 @@ const LinkListing = ({ link }: Props) => {
               alignItems: "center",
               gap: 5,
               marginTop: 5,
-              marginRight: 20,
-              padding: 5,
+              // padding: 5,
+              paddingRight: 5,
               alignSelf: "flex-start",
               borderRadius: 5,
-              backgroundColor: link.collection.color
-                ? `${link.collection.color}33`
-                : "#00000033",
+              // backgroundColor: link.collection.color
+              //   ? `${link.collection.color}33`
+              //   : "#00000033",
             }}
           >
             <IconSymbol
@@ -83,14 +101,7 @@ const LinkListing = ({ link }: Props) => {
               size={16}
               color={link.collection.color || ""}
             />
-
-            <Text
-              style={{
-                fontWeight: "300",
-                fontSize: 12,
-              }}
-              numberOfLines={1}
-            >
+            <Text style={{ fontWeight: "300", fontSize: 12 }} numberOfLines={1}>
               {link.collection.name}
             </Text>
           </View>
@@ -162,7 +173,7 @@ const LinkListing = ({ link }: Props) => {
           </View>
         </View>
       </View>
-    </Link>
+    </Pressable>
   );
 };
 

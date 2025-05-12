@@ -1,19 +1,17 @@
 import { useLinks } from "@linkwarden/router/links";
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  FlatList,
-  Platform,
-} from "react-native";
+import { View, StyleSheet, FlatList, Platform } from "react-native";
 import useAuthStore from "@/store/auth";
 import LinkListing from "@/components/LinkListing";
+import { useLocalSearchParams } from "expo-router";
 
-export default function HomeScreen() {
+export default function LinksScreen() {
   const { auth } = useAuthStore();
+  const { search } = useLocalSearchParams<{ search?: string }>();
+
   const { links, data } = useLinks(
     {
       sort: 0,
+      searchQueryString: search ?? search,
     },
     auth
   );
@@ -36,14 +34,12 @@ export default function HomeScreen() {
           <View
             style={{
               height: 1,
-              backgroundColor: "#CED0CE",
-              marginHorizontal: 20,
+              backgroundColor: "#eee",
             }}
           />
         )}
         contentContainerStyle={styles.container}
       />
-      <ActivityIndicator size="large" color="gray" />
     </View>
   );
 }
