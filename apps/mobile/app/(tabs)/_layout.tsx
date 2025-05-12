@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import React from "react";
 import { Platform, TouchableOpacity, useColorScheme } from "react-native";
 import HapticTab from "@/components/HapticTab";
@@ -9,6 +9,7 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const router = useRouter();
 
   return (
     <Tabs
@@ -75,6 +76,10 @@ export default function TabLayout() {
           title: "Links",
           headerSearchBarOptions: {
             placeholder: "Search",
+            autoCapitalize: "none",
+            onChangeText: (e) => {
+              router.setParams({ search: e.nativeEvent.text });
+            },
           },
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="link" color={color} />
