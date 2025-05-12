@@ -9,7 +9,7 @@ import { generateLinkHref } from "@linkwarden/lib/generateLinkHref";
 
 export default function HomeScreen() {
   const { auth } = useAuthStore();
-  const { id } = useLocalSearchParams();
+  const { id, format } = useLocalSearchParams();
   const getLink = useGetLink(false, auth);
   const { data: user } = useUser(auth);
   const [url, setUrl] = useState<string>();
@@ -19,8 +19,12 @@ export default function HomeScreen() {
     async function fetchLinkData() {
       const link = await getLink.mutateAsync({ id: Number(id) });
 
-      if (link) {
+      if (link && !format) {
         setUrl(generateLinkHref(link, user[0], auth.instance, true));
+      } else if (link && format) {
+        setUrl(
+          auth.instance + "/api/v1/archives/" + link.id + "?format=" + format
+        );
       }
     }
 

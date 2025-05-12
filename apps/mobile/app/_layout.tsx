@@ -15,7 +15,6 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          gestureEnabled: false,
         }}
       >
         {/* <Stack.Screen name="(tabs)" /> */}
@@ -24,7 +23,6 @@ export default function RootLayout() {
           options={{
             headerBackTitle: "Back",
             headerShown: true,
-            gestureEnabled: true,
             headerTitle: "",
           }}
         />
