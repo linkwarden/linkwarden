@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Pressable,
-  Platform,
-} from "react-native";
+import { View, Text, Image, Pressable, Platform } from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { IconSymbol } from "@/components/ui/IconSymbol";
