@@ -15,6 +15,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@builder.io/react-native-render-html": "^6.3.4",
     "@expo/vector-icons": "^14.0.2",
     "@linkwarden/lib": "*",
     "@linkwarden/router": "*",
