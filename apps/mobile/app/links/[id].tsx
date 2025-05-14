@@ -13,7 +13,7 @@ import { useGetLink } from "@linkwarden/router/links";
 import { useUser } from "@linkwarden/router/user";
 import { generateLinkHref } from "@linkwarden/lib/generateLinkHref";
 import { useWindowDimensions } from "react-native";
-import RenderHtml from "@builder.io/react-native-render-html";
+import RenderHtml from "@linkwarden/react-native-render-html";
 import ElementNotSupported from "@/components/ElementNotSupported";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { decode } from "html-entities";

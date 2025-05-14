@@ -1598,21 +1598,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@builder.io/react-native-render-html@^6.3.4":
-  version "6.3.4"
-  resolved "https://registry.yarnpkg.com/@builder.io/react-native-render-html/-/react-native-render-html-6.3.4.tgz#353eeedc7d0f485cbb6e13924fcaa5aaa82e7672"
-  integrity sha512-MH3Kz2Zzg9QnIKv5gje85uZdQwEbID53J0zyvhCc+ZWp7vT9XrVTN/IGAWfxUvfJUpex1Dl7pLfcYkgHIdB9HA==
-  dependencies:
-    "@jsamr/counter-style" "^2.0.1"
-    "@jsamr/react-native-li" "^2.3.0"
-    "@native-html/transient-render-engine" "11.2.3"
-    "@types/ramda" "^0.27.40"
-    "@types/urijs" "^1.19.15"
-    prop-types "^15.5.7"
-    ramda "^0.27.2"
-    stringify-entities "^3.1.0"
-    urijs "^1.19.6"
-
 "@dominicstop/ts-event-emitter@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@dominicstop/ts-event-emitter/-/ts-event-emitter-1.1.0.tgz#1f3d3fa878a1ccab686931280757954719cf88e4"
@@ -2849,6 +2834,21 @@
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@jsamr/react-native-li/-/react-native-li-2.3.1.tgz#12a5b5f6e3971cec77b96bee58104eed0ae9314a"
   integrity sha512-Qbo4NEj48SQ4k8FZJHFE2fgZDKTWaUGmVxcIQh3msg5JezLdTMMHuRRDYctfdHI6L0FZGObmEv3haWbIvmol8w==
+
+"@linkwarden/react-native-render-html@^6.3.4":
+  version "6.3.4"
+  resolved "https://registry.yarnpkg.com/@linkwarden/react-native-render-html/-/react-native-render-html-6.3.4.tgz#80e78e522c3985269e88c1b9386d53365962c4de"
+  integrity sha512-TgUV8PCjdB8ezkZ5aGN/Dl0IdKPYOBqEPEcMRJGPBO/RWcko9yvSGR1VaMz+ZEnK3ABJ5dTUv42WrLlBVRH4Mg==
+  dependencies:
+    "@jsamr/counter-style" "^2.0.1"
+    "@jsamr/react-native-li" "^2.3.0"
+    "@native-html/transient-render-engine" "11.2.3"
+    "@types/ramda" "^0.27.40"
+    "@types/urijs" "^1.19.15"
+    prop-types "^15.5.7"
+    ramda "^0.27.2"
+    stringify-entities "^3.1.0"
+    urijs "^1.19.9"
 
 "@mapbox/node-pre-gyp@^1.0.10":
   version "1.0.10"
@@ -12789,7 +12789,7 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-urijs@^1.19.6:
+urijs@^1.19.9:
   version "1.19.11"
   resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.11.tgz#204b0d6b605ae80bea54bea39280cdb7c9f923cc"
   integrity sha512-HXgFDgDommxn5/bIv0cnQZsPhHDA90NPHD6+c/v21U5+Sx5hoP8+dP9IZXBU1gIfvdRfhG8cel9QNPeionfcCQ==
