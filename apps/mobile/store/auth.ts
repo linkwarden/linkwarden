@@ -57,6 +57,7 @@ const useAuthStore = create<AuthStore>((set) => ({
         "Content-Type": "application/json",
       },
     }).then(async (res) => {
+      console.log("Response", res);
       if (res.ok) {
         const data = await res.json();
         const session = (data as any).response.token;
