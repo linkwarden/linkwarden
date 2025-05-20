@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   ActivityIndicator,
@@ -7,73 +7,104 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import * as FileSystem from "expo-file-system";
+import NetInfo from "@react-native-community/netinfo";
 import useAuthStore from "@/store/auth";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useGetLink } from "@linkwarden/router/links";
 import { useUser } from "@linkwarden/router/user";
 import { generateLinkHref } from "@linkwarden/lib/generateLinkHref";
 import { useWindowDimensions } from "react-native";
 import RenderHtml from "@linkwarden/react-native-render-html";
 import ElementNotSupported from "@/components/ElementNotSupported";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { decode } from "html-entities";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { useLinks } from "@linkwarden/router/links";
+
+const CACHE_DIR = FileSystem.documentDirectory + "archivedData/readable/";
+const htmlPath = (id: string) => `${CACHE_DIR}link_${id}.html`;
+
+async function ensureCacheDir() {
+  const info = await FileSystem.getInfoAsync(CACHE_DIR);
+  if (!info.exists) {
+    await FileSystem.makeDirectoryAsync(CACHE_DIR, { intermediates: true });
+  }
+}
 
 export default function LinkScreen() {
   const { auth } = useAuthStore();
   const { id, format } = useLocalSearchParams();
-  const getLink = useGetLink(false, auth);
   const { data: user } = useUser(auth);
   const [url, setUrl] = useState<string>();
   const [htmlContent, setHtmlContent] = useState<string>("");
-  const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>();
   const [isLoading, setIsLoading] = useState(true);
   const { width } = useWindowDimensions();
   const router = useRouter();
+  const { links } = useLinks(
+    {
+      sort: 0,
+    },
+    auth
+  );
+
+  const link = useMemo(() => {
+    return links?.find((link) => link.id === Number(id));
+  }, [links, id]);
 
   useEffect(() => {
-    async function fetchLinkData() {
-      const link = await getLink.mutateAsync({ id: Number(id) });
+    async function loadCacheOrFetch() {
+      await ensureCacheDir();
+      const htmlFile = htmlPath(id as string);
 
-      setLink(link);
+      const [htmlInfo] = await Promise.all([FileSystem.getInfoAsync(htmlFile)]);
 
-      if (link && format === "3") {
-        const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${format}`;
-        setUrl(apiUrl);
-        try {
-          const response = await fetch(apiUrl, {
-            headers: { Authorization: `Bearer ${auth.session}` },
-          });
-          const html = (await response.json()).content;
-          setHtmlContent(html);
-        } catch (e) {
-          console.error("Failed to fetch HTML content", e);
-        } finally {
-          setIsLoading(false);
-        }
-      } else if (link && !format) {
-        setUrl(generateLinkHref(link, user[0], auth.instance, true));
-      } else if (link && format) {
-        setUrl(`${auth.instance}/api/v1/archives/${link.id}?format=${format}`);
+      if (format === "3" && htmlInfo.exists) {
+        const rawHtml = await FileSystem.readAsStringAsync(htmlFile);
+        setHtmlContent(rawHtml);
+        setIsLoading(false);
+      }
+
+      const net = await NetInfo.fetch();
+      if (net.isConnected) {
+        await fetchLinkData();
       }
     }
 
-    if (user[0]?.id && !url) {
-      fetchLinkData();
+    if (user && user[0]?.id && !url) {
+      loadCacheOrFetch();
     }
   }, [user, url]);
+
+  async function fetchLinkData() {
+    if (link?.id && format === "3") {
+      const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${format}`;
+      setUrl(apiUrl);
+      try {
+        const response = await fetch(apiUrl, {
+          headers: { Authorization: `Bearer ${auth.session}` },
+        });
+        const html = (await response.json()).content;
+        setHtmlContent(html);
+        await FileSystem.writeAsStringAsync(htmlPath(id as string), html, {
+          encoding: FileSystem.EncodingType.UTF8,
+        });
+      } catch (e) {
+        console.error("Failed to fetch HTML content", e);
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (link?.id && !format) {
+      setUrl(generateLinkHref(link, user[0], auth.instance, true));
+    } else if (link?.id && format) {
+      setUrl(`${auth.instance}/api/v1/archives/${link.id}?format=${format}`);
+    }
+  }
 
   return (
     <>
       {format === "3" && htmlContent ? (
         <ScrollView
-          style={{
-            flex: 1,
-            backgroundColor: "#fff",
-          }}
-          contentContainerStyle={{
-            padding: 16,
-          }}
+          style={{ flex: 1, backgroundColor: "#fff" }}
+          contentContainerStyle={{ padding: 16 }}
           nestedScrollEnabled
         >
           <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 10 }}>
@@ -91,11 +122,7 @@ export default function LinkScreen() {
           >
             <IconSymbol name="link" size={16} color="gray" />
             <Text
-              style={{
-                fontSize: 16,
-                color: "gray",
-                paddingRight: 20,
-              }}
+              style={{ fontSize: 16, color: "gray", paddingRight: 20 }}
               numberOfLines={1}
             >
               {link?.url}
@@ -111,12 +138,7 @@ export default function LinkScreen() {
             }}
           >
             <IconSymbol name="calendar" size={16} color="gray" />
-            <Text
-              style={{
-                fontSize: 16,
-                color: "gray",
-              }}
-            >
+            <Text style={{ fontSize: 16, color: "gray" }}>
               {new Date(
                 (link?.importDate || link?.createdAt) as string
               ).toLocaleString("en-US", {
@@ -134,7 +156,7 @@ export default function LinkScreen() {
               marginTop: 10,
               marginBottom: 20,
             }}
-          ></View>
+          />
 
           <RenderHtml
             contentWidth={width}
@@ -147,32 +169,15 @@ export default function LinkScreen() {
               ),
             }}
             tagsStyles={{
-              p: {
-                fontSize: 16,
-                lineHeight: 24,
-                marginVertical: 10,
-              },
+              p: { fontSize: 16, lineHeight: 24, marginVertical: 10 },
             }}
           />
         </ScrollView>
       ) : (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "#fff",
-          }}
-        >
+        <View style={{ flex: 1, backgroundColor: "#fff" }}>
           {url && (
             <WebView
-              style={{
-                ...(isLoading
-                  ? {
-                      opacity: 0,
-                    }
-                  : {
-                      flex: 1,
-                    }),
-              }}
+              style={{ ...(isLoading ? { opacity: 0 } : { flex: 1 }) }}
               source={{
                 uri: url,
                 headers: { Authorization: `Bearer ${auth.session}` },
@@ -198,13 +203,7 @@ export default function LinkScreen() {
           }}
         >
           <ActivityIndicator size="large" color="gray" />
-          <Text
-            style={{
-              fontSize: 16,
-              marginTop: 10,
-              color: "gray",
-            }}
-          >
+          <Text style={{ fontSize: 16, marginTop: 10, color: "gray" }}>
             Loading...
           </Text>
         </View>

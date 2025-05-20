@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { Collection, UsersAndCollections } from "@linkwarden/prisma/client";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
 import getPermission from "@/lib/api/getPermission";
 
 export default async function getLinkById(userId: number, linkId: number) {
