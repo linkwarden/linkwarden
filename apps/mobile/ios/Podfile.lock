@@ -1582,6 +1582,29 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-mmkv (3.2.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-netinfo (11.4.1):
+    - React-Core
   - react-native-safe-area-context (4.12.0):
     - DoubleConversion
     - glog
@@ -2156,6 +2179,8 @@ DEPENDENCIES:
   - react-native-ios-context-menu (from `../../../node_modules/react-native-ios-context-menu`)
   - react-native-ios-utilities (from `../../../node_modules/react-native-ios-utilities`)
   - "react-native-menu (from `../../../node_modules/@react-native-menu/menu`)"
+  - react-native-mmkv (from `../../../node_modules/react-native-mmkv`)
+  - "react-native-netinfo (from `../../../node_modules/@react-native-community/netinfo`)"
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../../../node_modules/react-native-webview`)
   - React-nativeconfig (from `../../../node_modules/react-native/ReactCommon`)
@@ -2321,6 +2346,10 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-ios-utilities"
   react-native-menu:
     :path: "../../../node_modules/@react-native-menu/menu"
+  react-native-mmkv:
+    :path: "../../../node_modules/react-native-mmkv"
+  react-native-netinfo:
+    :path: "../../../node_modules/@react-native-community/netinfo"
   react-native-safe-area-context:
     :path: "../../../node_modules/react-native-safe-area-context"
   react-native-webview:
@@ -2453,6 +2482,8 @@ SPEC CHECKSUMS:
   react-native-ios-context-menu: 626eeee8ec17d97ca4afea3340f60c8fb3705d5f
   react-native-ios-utilities: 0ba38ec0e525de57ca206366ee56ff87c0524073
   react-native-menu: bd7ae6c2e88ec505a4e0e098f0683b27195b2d12
+  react-native-mmkv: 21d0f6ed2d9532f2370cef81eca4ccbef7350441
+  react-native-netinfo: f0a9899081c185db1de5bb2fdc1c88c202a059ac
   react-native-safe-area-context: 458f6b948437afcb59198016b26bbd02ff9c3b47
   react-native-webview: 40b8823be3fac70f0404016e6aed754ef4307517
   React-nativeconfig: f7ab6c152e780b99a8c17448f2d99cf5f69a2311
