@@ -103,42 +103,27 @@ export default function LinkScreen() {
     <>
       {format === "3" && htmlContent ? (
         <ScrollView
-          style={{ flex: 1, backgroundColor: "#fff" }}
-          contentContainerStyle={{ padding: 16 }}
+          className="flex-1 bg-white"
+          contentContainerClassName="p-4"
           nestedScrollEnabled
         >
-          <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 10 }}>
+          <Text className="text-2xl font-bold mb-2.5">
             {decode(link?.name || link?.description || link?.url || "")}
           </Text>
+
           <TouchableOpacity
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 2,
-              marginBottom: 10,
-            }}
+            className="flex-row items-center gap-1 mb-2.5 pr-5"
             onPress={() => router.replace(`/links/${id}`)}
           >
             <IconSymbol name="link" size={16} color="gray" />
-            <Text
-              style={{ fontSize: 16, color: "gray", paddingRight: 20 }}
-              numberOfLines={1}
-            >
+            <Text className="text-base text-gray-500 flex-1" numberOfLines={1}>
               {link?.url}
             </Text>
           </TouchableOpacity>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 2,
-              marginBottom: 10,
-            }}
-          >
+
+          <View className="flex-row items-center gap-1 mb-2.5">
             <IconSymbol name="calendar" size={16} color="gray" />
-            <Text style={{ fontSize: 16, color: "gray" }}>
+            <Text className="text-base text-gray-500">
               {new Date(
                 (link?.importDate || link?.createdAt) as string
               ).toLocaleString("en-US", {
@@ -149,14 +134,7 @@ export default function LinkScreen() {
             </Text>
           </View>
 
-          <View
-            style={{
-              borderTopColor: "#eee",
-              borderTopWidth: 1,
-              marginTop: 10,
-              marginBottom: 20,
-            }}
-          />
+          <View className="border-t border-gray-200 mt-2.5 mb-5" />
 
           <RenderHtml
             contentWidth={width}
@@ -174,10 +152,10 @@ export default function LinkScreen() {
           />
         </ScrollView>
       ) : (
-        <View style={{ flex: 1, backgroundColor: "#fff" }}>
+        <View className="flex-1 bg-white">
           {url && (
             <WebView
-              style={{ ...(isLoading ? { opacity: 0 } : { flex: 1 }) }}
+              className={isLoading ? "opacity-0" : "flex-1"}
               source={{
                 uri: url,
                 headers: { Authorization: `Bearer ${auth.session}` },
@@ -187,25 +165,11 @@ export default function LinkScreen() {
           )}
         </View>
       )}
+
       {isLoading && (
-        <View
-          style={{
-            flex: 1,
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#fff",
-            padding: 20,
-          }}
-        >
+        <View className="absolute inset-0 flex-1 justify-center items-center bg-white p-5">
           <ActivityIndicator size="large" color="gray" />
-          <Text style={{ fontSize: 16, marginTop: 10, color: "gray" }}>
-            Loading...
-          </Text>
+          <Text className="text-base mt-2.5 text-gray-500">Loading...</Text>
         </View>
       )}
     </>
