@@ -3,6 +3,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { mmkvPersister } from "@/lib/queryPersister";
 import { useState } from "react";
+import "../styles/global.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

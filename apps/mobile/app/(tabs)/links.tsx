@@ -25,7 +25,7 @@ export default function LinksScreen() {
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       <FlatList
         ListHeaderComponent={() => <></>}
         data={links || []}
@@ -46,7 +46,6 @@ export default function LinksScreen() {
             }}
           />
         )}
-        contentContainerStyle={styles.container}
       />
     </View>
   );
