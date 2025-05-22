@@ -3,6 +3,14 @@ import { View, StyleSheet, FlatList, Platform } from "react-native";
 import useAuthStore from "@/store/auth";
 import LinkListing from "@/components/LinkListing";
 import { useLocalSearchParams } from "expo-router";
+import React from "react";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+
+const RenderItem = React.memo(
+  ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
+    return <LinkListing link={item} />;
+  }
+);
 
 export default function LinksScreen() {
   const { auth } = useAuthStore();
@@ -26,7 +34,7 @@ export default function LinksScreen() {
         initialNumToRender={4}
         keyExtractor={(item) => item.id?.toString() || ""}
         renderItem={({ item }) => (
-          <LinkListing link={item} key={item.id?.toString()} />
+          <RenderItem item={item} key={item.id?.toString()} />
         )}
         onEndReached={() => data.fetchNextPage()}
         onEndReachedThreshold={0.5}
