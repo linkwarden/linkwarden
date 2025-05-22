@@ -10,19 +10,7 @@ export default function ElementNotSupported({
   onPress: () => void;
 }) {
   return (
-    <View
-      style={{
-        borderTopColor: "#eee",
-        borderTopWidth: 1,
-        borderBottomColor: "#eee",
-        borderBottomWidth: 1,
-        marginVertical: 10,
-        paddingVertical: 20,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <View className="border-y border-gray-200 my-2 py-5 flex justify-center items-center">
       <Text>{message}</Text>
       <Button onPress={onPress} title={buttonTitle} />
     </View>
