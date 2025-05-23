@@ -48,8 +48,8 @@ export default function Subscribe() {
         process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
       }-day free trial, cancel anytime!`}
     >
-      <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
-        <p className="sm:text-3xl text-2xl text-center font-extralight">
+      <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-xl shadow-md border border-neutral-content">
+        <p className="sm:text-3xl text-xl text-center font-extralight">
           {t("subscribe_title")}
         </p>
 

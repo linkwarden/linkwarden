@@ -258,7 +258,7 @@ export default function Login({
     <CenteredForm text={t("sign_in_to_your_account")}>
       <form onSubmit={loginUser}>
         <div
-          className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700"
+          className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-xl shadow-md border border-sky-100 dark:border-neutral-700"
           data-testid="login-form"
         >
           {displayLoginCredential()}

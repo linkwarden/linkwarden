@@ -150,7 +150,7 @@ export default function Index() {
                   <input
                     type="text"
                     autoFocus
-                    className="sm:text-3xl text-2xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
+                    className="sm:text-3xl text-xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
                     value={newTagName}
                     onChange={(e) => setNewTagName(e.target.value)}
                   />
@@ -159,19 +159,19 @@ export default function Index() {
                     id="expand-dropdown"
                     className="btn btn-ghost btn-square btn-sm"
                   >
-                    <i className={"bi-check2 text-neutral text-2xl"}></i>
+                    <i className={"bi-check2 text-neutral text-xl"}></i>
                   </div>
                   <div
                     onClick={() => cancelUpdateTag()}
                     id="expand-dropdown"
                     className="btn btn-ghost btn-square btn-sm"
                   >
-                    <i className={"bi-x text-neutral text-2xl"}></i>
+                    <i className={"bi-x text-neutral text-xl"}></i>
                   </div>
                 </form>
               ) : (
                 <>
-                  <p className="sm:text-3xl text-2xl">{activeTag?.name}</p>
+                  <p className="sm:text-3xl text-xl">{activeTag?.name}</p>
                   <div className="relative">
                     <div
                       className={`dropdown dropdown-bottom font-normal ${
@@ -186,9 +186,7 @@ export default function Index() {
                         onMouseDown={dropdownTriggerer}
                         className="btn btn-ghost btn-sm btn-square text-neutral"
                       >
-                        <i
-                          className={"bi-three-dots text-neutral text-2xl"}
-                        ></i>
+                        <i className={"bi-three-dots text-neutral text-xl"}></i>
                       </div>
                       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
                         <li>

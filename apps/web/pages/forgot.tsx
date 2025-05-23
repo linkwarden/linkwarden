@@ -61,7 +61,7 @@ export default function Forgot() {
   return (
     <CenteredForm>
       <form onSubmit={sendConfirmation}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
             {isEmailSent ? t("email_sent") : t("forgot_password")}
           </p>
