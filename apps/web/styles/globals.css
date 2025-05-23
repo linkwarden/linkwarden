@@ -185,6 +185,18 @@
   .react-select-container .react-select__single-value {
     @apply text-base-content;
   }
+
+  .menu li > *:not(ul):not(.menu-title):not(details),
+  .menu li > details > summary {
+    @apply hover:!bg-base-content/10 hover:!text-inherit active:!bg-base-content/10 active:!text-base-content;
+  }
+  /* .menu {
+    @apply !rounded-md px-0 py-1 min-w-52;
+  }
+  .menu :where(li:not(.menu-title) > *:not(ul):not(details):not(.menu-title)),
+  .menu :where(li:not(.menu-title) > details > summary:not(.menu-title)) {
+    @apply rounded-none py-1;
+  } */
 }
 
 .line-break * {
