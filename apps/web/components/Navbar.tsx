@@ -47,7 +47,7 @@ export default function Navbar() {
         }}
         className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden sm:inline-flex"
       >
-        <i className="bi-list text-2xl leading-none"></i>
+        <i className="bi-list text-xl leading-none"></i>
       </div>
       <SearchBar />
       <div className="flex items-center gap-2">

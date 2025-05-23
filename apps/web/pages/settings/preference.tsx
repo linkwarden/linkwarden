@@ -221,7 +221,7 @@ export default function Preference() {
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>
-                <p className="ml-2 text-2xl">{t(theme)}</p>
+                <p className="ml-2 text-xl">{t(theme)}</p>
               </div>
             ))}
           </div>

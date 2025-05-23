@@ -40,10 +40,10 @@ export default function Drawer({
       >
         <D.Portal>
           <D.Overlay className="fixed inset-0 bg-black/40" />
-          <D.Content className="flex flex-col rounded-t-2xl mt-24 fixed bottom-0 left-0 right-0 z-30 h-[90%] !select-auto focus:outline-none">
+          <D.Content className="flex flex-col rounded-t-xl mt-24 fixed bottom-0 left-0 right-0 z-30 h-[90%] !select-auto focus:outline-none">
             <div
               className={clsx(
-                "p-4 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto",
+                "p-4 bg-base-100 rounded-t-xl flex-1 border-neutral-content border-t overflow-y-auto",
                 className
               )}
               data-testid="mobile-modal-container"

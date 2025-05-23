@@ -57,7 +57,7 @@ export default function Delete() {
 
   return (
     <CenteredForm>
-      <div className="p-4 mx-auto relative flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 bg-base-200 rounded-2xl shadow-md border border-neutral-content">
+      <div className="p-4 mx-auto relative flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 bg-base-200 rounded-xl shadow-md border border-neutral-content">
         <Link
           href="/settings/account"
           className="absolute top-4 left-4 btn btn-ghost btn-square btn-sm"

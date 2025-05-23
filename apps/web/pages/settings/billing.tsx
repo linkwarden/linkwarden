@@ -126,7 +126,7 @@ export default function Billing() {
             className="flex items-center btn btn-accent dark:border-violet-400 text-white btn-sm px-2 h-[2.15rem] relative"
           >
             <p>{t("invite_user")}</p>
-            <i className="bi-plus text-2xl"></i>
+            <i className="bi-plus text-xl"></i>
           </div>
         </div>
       </div>

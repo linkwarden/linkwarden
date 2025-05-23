@@ -44,7 +44,7 @@ export default function Collections() {
                   onMouseDown={dropdownTriggerer}
                   className="btn btn-ghost btn-sm btn-square text-neutral"
                 >
-                  <i className={"bi-three-dots text-neutral text-2xl"}></i>
+                  <i className={"bi-three-dots text-neutral text-xl"}></i>
                 </div>
                 <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
                   <li>
@@ -76,7 +76,7 @@ export default function Collections() {
             })}
 
           <div
-            className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-2xl cursor-pointer flex flex-col gap-4 justify-center items-center group btn"
+            className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-xl cursor-pointer flex flex-col gap-4 justify-center items-center group btn"
             onClick={() => setNewCollectionModal(true)}
           >
             <p className="group-hover:opacity-0 duration-100">
