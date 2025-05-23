@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
@@ -88,10 +88,10 @@ export default function Forgot() {
 
               <Button
                 type="submit"
-                intent="accent"
+                variant="accent"
                 className="mt-2"
                 size="full"
-                loading={submitLoader}
+                disabled={submitLoader}
               >
                 {t("send_reset_link")}
               </Button>

@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import { Plan } from "@linkwarden/types";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
@@ -129,10 +129,10 @@ export default function Subscribe() {
 
         <Button
           type="button"
-          intent="accent"
+          variant="accent"
           size="full"
           onClick={submit}
-          loading={submitLoader}
+          disabled={submitLoader}
         >
           {t("complete_subscription")}
         </Button>

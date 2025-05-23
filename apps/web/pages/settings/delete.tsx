@@ -4,7 +4,7 @@ import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUser } from "@linkwarden/router/user";
@@ -129,8 +129,8 @@ export default function Delete() {
 
         <Button
           className="mx-auto"
-          intent="destructive"
-          loading={submitLoader}
+          variant="destructive"
+          disabled={submitLoader}
           onClick={submit}
         >
           <p className="text-center w-full">{t("delete_your_account")}</p>

@@ -4,7 +4,7 @@ import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
 import Modal from "../Modal";
-import Button from "../ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useDeleteCollection } from "@linkwarden/router/collections";
 import toast from "react-hot-toast";
@@ -95,7 +95,7 @@ export default function DeleteCollectionModal({
         <Button
           disabled={permissions === true && inputField !== collection.name}
           onClick={submit}
-          intent="destructive"
+          variant="destructive"
           className="ml-auto"
         >
           <i className="bi-trash text-xl"></i>
