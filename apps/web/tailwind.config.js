@@ -58,7 +58,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        border: daisyuiColorObj["base-content"],
+        border: daisyuiColorObj["neutral-content"],
         input: daisyuiColorObj["base-content"],
         ring: daisyuiColorObj["base-content"],
         background: daisyuiColorObj["base-100"],
