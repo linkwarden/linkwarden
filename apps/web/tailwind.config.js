@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const plugin = require("tailwindcss/plugin");
+const daisyuiColorObj = require("daisyui/src/theming/index");
 
 module.exports = {
   daisyui: {
@@ -52,5 +53,64 @@ module.exports = {
     plugin(({ addVariant }) => {
       addVariant("dark", '&[data-theme="dark"]');
     }),
+    require("tailwindcss-animate"),
   ],
+  theme: {
+    extend: {
+      colors: {
+        border: daisyuiColorObj["base-content"],
+        input: daisyuiColorObj["base-content"],
+        ring: daisyuiColorObj["base-content"],
+        background: daisyuiColorObj["base-100"],
+        foreground: daisyuiColorObj["base-content"],
+        primary: {
+          DEFAULT: daisyuiColorObj["primary"],
+          foreground: daisyuiColorObj["primary-content"],
+        },
+        secondary: {
+          DEFAULT: daisyuiColorObj["secondary"],
+          foreground: daisyuiColorObj["secondary-content"],
+        },
+        destructive: {
+          DEFAULT: daisyuiColorObj["error"],
+          foreground: daisyuiColorObj["error-content"],
+        },
+        muted: {
+          DEFAULT: daisyuiColorObj["base-300"],
+          foreground: daisyuiColorObj["base-content"],
+        },
+        accent: {
+          DEFAULT: daisyuiColorObj["accent"],
+          foreground: daisyuiColorObj["accent-content"],
+        },
+        popover: {
+          DEFAULT: daisyuiColorObj["base-100"],
+          foreground: daisyuiColorObj["base-content"],
+        },
+        card: {
+          DEFAULT: daisyuiColorObj["base-100"],
+          foreground: daisyuiColorObj["base-content"],
+        },
+      },
+      borderRadius: {
+        lg: "var(--rounded-btn)",
+        md: "calc(var(--rounded-btn) - 2px)",
+        sm: "calc(var(--rounded-btn) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
+    },
+  },
 };
