@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { getLogins } from "./api/v1/logins";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getToken } from "next-auth/jwt";
@@ -130,8 +130,8 @@ export default function Register({
             type="button"
             onClick={() => loginUserButton(value.method)}
             size="full"
-            intent="secondary"
-            loading={submitLoader}
+            variant="metal"
+            disabled={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
               (value.name.toLowerCase() === "apple" && (
@@ -275,8 +275,8 @@ export default function Register({
 
             <Button
               type="submit"
-              loading={submitLoader}
-              intent="accent"
+              variant="accent"
+              disabled={submitLoader}
               size="full"
               data-testid="register-button"
             >

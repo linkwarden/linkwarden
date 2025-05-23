@@ -13,7 +13,7 @@ const ImportDropdown = ({}: Props) => {
         tabIndex={0}
         role="button"
         onMouseDown={dropdownTriggerer}
-        className="inline-flex items-center gap-2 text-sm btn bg-neutral-content text-secondary-foreground hover:bg-neutral-content/80 border border-neutral/30 hover:border hover:border-neutral/30"
+        className="inline-flex items-center gap-2 text-sm btn bg-neutral-content text-base-content hover:bg-neutral-content/80 border border-neutral/30 hover:border hover:border-neutral/30"
         id="import-dropdown"
       >
         <i className="bi-cloud-upload text-xl duration-100"></i>

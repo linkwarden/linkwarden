@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
@@ -196,9 +196,9 @@ export default function Login({
           <Button
             type="submit"
             size="full"
-            intent="accent"
+            variant="accent"
             data-testid="submit-login-button"
-            loading={submitLoader}
+            disabled={submitLoader}
           >
             {t("login")}
           </Button>
@@ -220,8 +220,8 @@ export default function Login({
             type="button"
             onClick={() => loginUserButton(value.method)}
             size="full"
-            intent="secondary"
-            loading={submitLoader}
+            variant="metal"
+            disabled={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
               (value.name.toLowerCase() === "apple" && (
