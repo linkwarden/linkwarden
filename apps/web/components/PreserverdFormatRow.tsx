@@ -51,7 +51,7 @@ export default function PreservedFormatRow({
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-2 items-center">
-        <i className={`${icon} text-2xl text-primary`} />
+        <i className={`${icon} text-xl text-primary`} />
         <p>{name}</p>
       </div>
 

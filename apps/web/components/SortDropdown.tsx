@@ -28,7 +28,7 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
         onMouseDown={dropdownTriggerer}
         className="btn btn-sm btn-square btn-ghost border-none"
       >
-        <i className="bi-chevron-expand text-neutral text-2xl"></i>
+        <i className="bi-chevron-expand text-neutral text-xl"></i>
       </div>
       <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
         <li>
