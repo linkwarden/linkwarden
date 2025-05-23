@@ -3,7 +3,8 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import * as DropdownMenu from "zeego/dropdown-menu";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
-import AddLink from "@/components/Modals/AddLink";
+// import AddLink from "@/components/Modals/AddLink";
+import ModalBase from "@/components/ModalBase";
 
 export default function DashboardScreen() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -39,7 +40,15 @@ export default function DashboardScreen() {
       {/* <TouchableOpacity>
         <IconSymbol size={20} name="plus" color={""} />
       </TouchableOpacity> */}
-      <AddLink isVisible={modalOpen} onClose={() => setModalOpen(false)} />
+      <ModalBase
+        isVisible={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+      >
+        <Text>Hi</Text>
+      </ModalBase>
+      {/* <AddLink isVisible={modalOpen} onClose={() => setModalOpen(false)} /> */}
     </SafeAreaView>
   );
 }
