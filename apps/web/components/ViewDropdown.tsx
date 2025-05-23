@@ -54,40 +54,42 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
         tabIndex={0}
         className="dropdown-content z-[30] menu shadow bg-base-200 min-w-52 border border-neutral-content rounded-xl mt-1"
       >
-        <p className="mb-1 text-sm text-neutral">{t("view")}</p>
-        <div className="p-1 flex w-full justify-between gap-1 border border-neutral-content rounded-[0.625rem]">
-          <button
-            onClick={(e) => onChangeViewMode(ViewMode.Card)}
-            className={`btn w-[31%] btn-sm btn-ghost ${
-              viewMode === ViewMode.Card
-                ? "bg-primary/20 hover:bg-primary/20"
-                : "hover:bg-neutral/20"
-            }`}
-          >
-            <i className="bi-grid text-lg text-neutral"></i>
-          </button>
-          <button
-            onClick={(e) => onChangeViewMode(ViewMode.Masonry)}
-            className={`btn w-[31%] btn-sm btn-ghost ${
-              viewMode === ViewMode.Masonry
-                ? "bg-primary/20 hover:bg-primary/20"
-                : "hover:bg-neutral/20"
-            }`}
-          >
-            <i className="bi-columns-gap text-lg text-neutral"></i>
-          </button>
-          <button
-            onClick={(e) => onChangeViewMode(ViewMode.List)}
-            className={`btn w-[31%] btn-sm btn-ghost ${
-              viewMode === ViewMode.List
-                ? "bg-primary/20 hover:bg-primary/20"
-                : "hover:bg-neutral/20"
-            }`}
-          >
-            <i className="bi-view-stacked text-lg text-neutral"></i>
-          </button>
+        <div className="px-2">
+          <p className="mb-1 text-sm text-neutral">{t("view")}</p>
+          <div className="p-1 flex w-full justify-between gap-1 border border-neutral-content rounded-[0.625rem]">
+            <button
+              onClick={(e) => onChangeViewMode(ViewMode.Card)}
+              className={`btn w-[31%] btn-sm btn-ghost ${
+                viewMode === ViewMode.Card
+                  ? "bg-primary/20 hover:bg-primary/20"
+                  : "hover:bg-neutral/20"
+              }`}
+            >
+              <i className="bi-grid text-lg text-neutral"></i>
+            </button>
+            <button
+              onClick={(e) => onChangeViewMode(ViewMode.Masonry)}
+              className={`btn w-[31%] btn-sm btn-ghost ${
+                viewMode === ViewMode.Masonry
+                  ? "bg-primary/20 hover:bg-primary/20"
+                  : "hover:bg-neutral/20"
+              }`}
+            >
+              <i className="bi-columns-gap text-lg text-neutral"></i>
+            </button>
+            <button
+              onClick={(e) => onChangeViewMode(ViewMode.List)}
+              className={`btn w-[31%] btn-sm btn-ghost ${
+                viewMode === ViewMode.List
+                  ? "bg-primary/20 hover:bg-primary/20"
+                  : "hover:bg-neutral/20"
+              }`}
+            >
+              <i className="bi-view-stacked text-lg text-neutral"></i>
+            </button>
+          </div>
         </div>
-        <p className="mb-1 mt-2 text-sm text-neutral">{t("show")}</p>
+        <p className="mb-1 mt-2 text-sm text-neutral px-2">{t("show")}</p>
         {Object.entries(settings.show)
           .filter((e) =>
             settings.viewMode === ViewMode.List // Hide tags, image, and description checkboxes in list view
@@ -112,7 +114,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
             </li>
           ))}
         {settings.viewMode !== ViewMode.List && (
-          <>
+          <div className="px-2">
             <p className="mb-1 mt-2 text-sm text-neutral">
               {t("columns")}:{" "}
               {settings.columns === 0 ? t("default") : settings.columns}
@@ -139,7 +141,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
                 <span>|</span>
               </div>
             </div>
-          </>
+          </div>
         )}
       </ul>
     </div>
