@@ -4,7 +4,7 @@ import { TokenExpiry } from "@linkwarden/types";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { dropdownTriggerer } from "@/lib/client/utils";
-import Button from "../ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useAddToken } from "@linkwarden/router/tokens";
 import CopyButton from "../CopyButton";
@@ -102,7 +102,7 @@ export default function NewTokenModal({ onClose }: Props) {
                 <Button
                   tabIndex={0}
                   role="button"
-                  intent="secondary"
+                  variant="metal"
                   onMouseDown={dropdownTriggerer}
                   className="whitespace-nowrap w-32"
                 >

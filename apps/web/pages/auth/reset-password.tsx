@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
@@ -92,10 +92,10 @@ export default function ResetPassword() {
               </div>
               <Button
                 type="submit"
-                intent="accent"
+                variant="accent"
                 className="mt-2"
                 size="full"
-                loading={submitLoader}
+                disabled={submitLoader}
               >
                 {t("update_password")}
               </Button>
