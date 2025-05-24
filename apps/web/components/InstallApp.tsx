@@ -1,4 +1,4 @@
-import { isPWA } from "@/lib/client/utils";
+import { isPWA } from "@/lib/utils";
 import React, { useState } from "react";
 import { Trans } from "next-i18next";
 

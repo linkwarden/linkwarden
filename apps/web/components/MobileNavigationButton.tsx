@@ -1,4 +1,4 @@
-import { isPWA } from "@/lib/client/utils";
+import { isPWA } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

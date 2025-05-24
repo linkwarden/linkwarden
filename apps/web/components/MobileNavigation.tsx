@@ -1,4 +1,4 @@
-import { isIphone, isPWA } from "@/lib/client/utils";
+import { isIphone, isPWA } from "@/lib/utils";
 import React from "react";
 import { useState } from "react";
 import NewLinkModal from "./ModalContent/NewLinkModal";
