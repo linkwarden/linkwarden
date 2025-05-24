@@ -1,11 +1,16 @@
 import useLocalSettingsStore from "@/store/localSettings";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import ProfilePhoto from "./ProfilePhoto";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
 import { useConfig } from "@linkwarden/router/config";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();
@@ -22,74 +27,59 @@ export default function ProfileDropdown() {
   };
 
   return (
-    <div className="dropdown dropdown-end">
-      <div
-        tabIndex={0}
-        role="button"
-        onMouseDown={dropdownTriggerer}
-        className="btn btn-circle btn-ghost"
-      >
-        <ProfilePhoto
-          src={user.image ? user.image : undefined}
-          priority={true}
-        />
-      </div>
-      <ul
-        className={`dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1`}
-      >
-        <li>
-          <Link
-            href="/settings/account"
-            onClick={() => (document?.activeElement as HTMLElement)?.blur()}
-            tabIndex={0}
-            role="button"
-            className="whitespace-nowrap"
-          >
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <div className="btn btn-circle btn-ghost">
+          <ProfilePhoto
+            src={user.image ? user.image : undefined}
+            priority={true}
+          />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem asChild>
+          <Link href="/settings/account" className="whitespace-nowrap">
+            <i className="bi-gear"></i>
             {t("settings")}
           </Link>
-        </li>
-        <li className="block sm:hidden">
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
           <div
-            onClick={() => {
-              (document?.activeElement as HTMLElement)?.blur();
-              handleToggle();
-            }}
-            tabIndex={0}
-            role="button"
-            className="whitespace-nowrap"
+            onClick={() => handleToggle()}
+            className="whitespace-nowrap block sm:hidden"
           >
+            {settings.theme === "light" ? (
+              <i className="bi-moon-fill"></i>
+            ) : (
+              <i className="bi-sun-fill"></i>
+            )}
             {t("switch_to", {
               theme: settings.theme === "light" ? t("dark") : t("light"),
             })}
           </div>
-        </li>
+        </DropdownMenuItem>
+
         {isAdmin && (
-          <li>
+          <DropdownMenuItem asChild>
             <Link
               href="/admin"
               onClick={() => (document?.activeElement as HTMLElement)?.blur()}
-              tabIndex={0}
-              role="button"
               className="whitespace-nowrap"
             >
+              <i className="bi-hdd-stack"></i>
               {t("server_administration")}
             </Link>
-          </li>
+          </DropdownMenuItem>
         )}
-        <li>
-          <div
-            onClick={() => {
-              (document?.activeElement as HTMLElement)?.blur();
-              signOut();
-            }}
-            tabIndex={0}
-            role="button"
-            className="whitespace-nowrap"
-          >
+
+        <DropdownMenuItem asChild>
+          <div onClick={() => signOut()} className="whitespace-nowrap">
+            <i className="bi-box-arrow-left" />
             {t("logout")}
           </div>
-        </li>
-      </ul>
-    </div>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

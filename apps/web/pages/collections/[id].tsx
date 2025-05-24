@@ -15,7 +15,6 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
@@ -28,6 +27,13 @@ import Icon from "@/components/Icon";
 import CollectionCard from "@/components/CollectionCard";
 import { IconWeight } from "@phosphor-icons/react";
 import PageHeader from "@/components/PageHeader";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -135,93 +141,88 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="dropdown dropdown-bottom dropdown-end mt-2">
-              <div
-                tabIndex={0}
-                role="button"
-                onMouseDown={dropdownTriggerer}
-                className="btn btn-ghost btn-sm btn-square text-neutral"
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="btn btn-ghost btn-sm btn-square text-neutral mt-2"
+                  onMouseDown={(e) => e.preventDefault()}
+                  title={t("more")}
+                >
+                  <i className="bi-three-dots text-xl"></i>
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                sideOffset={4}
+                align="end"
+                className="bg-base-200 border border-neutral-content rounded-box p-1"
               >
-                <i className="bi-three-dots text-xl" title="More"></i>
-              </div>
-              <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      for (const link of links) {
-                        if (link.url) window.open(link.url, "_blank");
-                      }
-                    }}
-                    className="whitespace-nowrap"
-                  >
-                    {t("open_all_links")}
-                  </div>
-                </li>
+                <DropdownMenuItem
+                  onClick={() => {
+                    for (const link of links) {
+                      if (link.url) window.open(link.url, "_blank");
+                    }
+                  }}
+                >
+                  <i className="bi-box-arrow-up-right"></i>
+                  {t("open_all_links")}
+                </DropdownMenuItem>
+
                 {permissions === true && (
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        setEditCollectionModal(true);
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {t("edit_collection_info")}
-                    </div>
-                  </li>
-                )}
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
+                  <DropdownMenuItem
                     onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      setEditCollectionSharingModal(true);
+                      setEditCollectionModal(true);
                     }}
-                    className="whitespace-nowrap"
                   >
-                    {permissions === true
-                      ? t("share_and_collaborate")
-                      : t("view_team")}
-                  </div>
-                </li>
+                    <i className="bi-pencil-square"></i>
+                    {t("edit_collection_info")}
+                  </DropdownMenuItem>
+                )}
+
+                <DropdownMenuItem
+                  onClick={() => {
+                    setEditCollectionSharingModal(true);
+                  }}
+                >
+                  <i className="bi-globe" />
+                  {permissions === true
+                    ? t("share_and_collaborate")
+                    : t("view_team")}
+                </DropdownMenuItem>
+
                 {permissions === true && (
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        setNewCollectionModal(true);
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {t("create_subcollection")}
-                    </div>
-                  </li>
-                )}
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
+                  <DropdownMenuItem
                     onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      setDeleteCollectionModal(true);
+                      setNewCollectionModal(true);
                     }}
-                    className="whitespace-nowrap"
                   >
-                    {permissions === true
-                      ? t("delete_collection")
-                      : t("leave_collection")}
-                  </div>
-                </li>
-              </ul>
-            </div>
+                    <i className="bi-folder-plus" />
+                    {t("create_subcollection")}
+                  </DropdownMenuItem>
+                )}
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDeleteCollectionModal(true);
+                  }}
+                  className="text-error"
+                >
+                  {permissions === true ? (
+                    <>
+                      <i className="bi-trash" />
+                      {t("delete_collection")}
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi-box-arrow-left" />
+                      {t("leave_collection")}
+                    </>
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
 
