@@ -8,7 +8,7 @@ import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
 import { Sort, ViewMode } from "@linkwarden/types";
-import { useBulkDeleteLinks, useLinks } from "@linkwarden/router/links";
+import { useArchiveAction, useBulkDeleteLinks, useLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -35,6 +35,7 @@ const LinkListOptions = ({
   const { selectedLinks, setSelectedLinks } = useLinkStore();
 
   const deleteLinksById = useBulkDeleteLinks();
+  const refreshPreservations = useArchiveAction();
 
   const { links } = useLinks();
 
@@ -79,6 +80,24 @@ const LinkListOptions = ({
     );
   };
 
+  const bulkRefreshPreservations = async () => {
+    const load = toast.loading(t("sending_request"));
+
+    await refreshPreservations.mutateAsync({
+      linkIds: selectedLinks.map((link) => link.id as number),
+    }, {
+      onSettled: (data, error) => {
+        toast.dismiss(load);
+        if (error) {
+          toast.error(error.message);
+        } else {
+          setSelectedLinks([]);
+          toast.success(t("links_being_archived"));
+        }
+      },
+    })
+  }
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -96,11 +115,10 @@ const LinkListOptions = ({
                     setEditMode(!editMode);
                     setSelectedLinks([]);
                   }}
-                  className={`btn btn-square btn-sm btn-ghost ${
-                    editMode
-                      ? "bg-primary/20 hover:bg-primary/20"
-                      : "hover:bg-neutral/20"
-                  }`}
+                  className={`btn btn-square btn-sm btn-ghost ${editMode
+                    ? "bg-primary/20 hover:bg-primary/20"
+                    : "hover:bg-neutral/20"
+                    }`}
                 >
                   <i className="bi-pencil-fill text-neutral text-xl"></i>
                 </div>
@@ -139,6 +157,13 @@ const LinkListOptions = ({
             )}
           </div>
           <div className="flex gap-3">
+            <button
+              disabled={selectedLinks.length === 0}
+              className="btn btn-sm btn-ghost text-white"
+              onClick={() => bulkRefreshPreservations()}
+            >
+              <i className="bi-arrow-clockwise text-sm" />
+            </button>
             <button
               onClick={() => setBulkEditLinksModal(true)}
               className="btn btn-sm btn-accent text-white w-fit ml-auto"
