@@ -474,5 +474,6 @@
   "no_broken_preservations": "No broken preservations.",
   "links_are_being_represerved": "Links are being re-preserved...",
   "cancel": "Cancel",
-  "preservation_rules": "Preservation rules:"
+  "preservation_rules": "Preservation rules:",
+  "links_being_archived": "Links are being archived..."
 }
