@@ -9,7 +9,7 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
-import { isPWA } from "@/lib/client/utils";
+import { isPWA } from "@/lib/utils";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
