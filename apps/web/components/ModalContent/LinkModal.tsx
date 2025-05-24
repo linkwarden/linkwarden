@@ -7,9 +7,15 @@ import LinkDetails from "../LinkDetails";
 import Link from "next/link";
 import usePermissions from "@/hooks/usePermissions";
 import { useRouter } from "next/router";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import toast from "react-hot-toast";
 import Tab from "../Tab";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 type Props = {
   onClose: Function;
@@ -39,6 +45,24 @@ export default function LinkModal({
   const deleteLink = useDeleteLink();
 
   const [mode, setMode] = useState<"view" | "edit">(activeMode || "view");
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    setTimeout(() => (document.body.style.pointerEvents = ""), 0);
+
+    if (e.shiftKey && link.id) {
+      const loading = toast.loading(t("deleting"));
+      await deleteLink.mutateAsync(link.id, {
+        onSettled: (data, error) => {
+          toast.dismiss(loading);
+          error ? toast.error(error.message) : toast.success(t("deleted"));
+        },
+      });
+      onClose();
+    } else {
+      onDelete();
+      onClose();
+    }
+  };
 
   return (
     <Drawer
@@ -71,87 +95,57 @@ export default function LinkModal({
 
         <div className="flex gap-2">
           {!isPublicRoute && (
-            <div className={`dropdown dropdown-end z-20`}>
-              <div
-                tabIndex={0}
-                role="button"
-                onMouseDown={dropdownTriggerer}
-                className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
+            <DropdownMenu modal={true}>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
+                  title={t("more")}
+                >
+                  <i title="More" className="bi-three-dots text-xl" />
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                align="end"
+                className="bg-base-200 border border-neutral-content rounded-box p-1"
               >
-                <i title="More" className="bi-three-dots text-xl" />
-              </div>
-              <ul
-                className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box`}
-              >
-                {
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        onPin();
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {link?.pinnedBy && link.pinnedBy[0]
-                        ? t("unpin")
-                        : t("pin_to_dashboard")}
-                    </div>
-                  </li>
-                }
+                <DropdownMenuItem
+                  onClick={() => {
+                    (document.activeElement as HTMLElement)?.blur();
+                    onPin();
+                  }}
+                >
+                  <i className="bi-pin" />
+                  {link.pinnedBy?.[0] ? t("unpin") : t("pin_to_dashboard")}
+                </DropdownMenuItem>
+
                 {link.type === "url" &&
                   (permissions === true || permissions?.canUpdate) && (
-                    <li>
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          onUpdateArchive();
-                        }}
-                        className="whitespace-nowrap"
-                      >
-                        {t("refresh_preserved_formats")}
-                      </div>
-                    </li>
-                  )}
-                {(permissions === true || permissions?.canDelete) && (
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={async (e) => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        console.log(e.shiftKey);
-                        if (e.shiftKey) {
-                          const load = toast.loading(t("deleting"));
-
-                          await deleteLink.mutateAsync(link.id as number, {
-                            onSettled: (data, error) => {
-                              toast.dismiss(load);
-
-                              if (error) {
-                                toast.error(error.message);
-                              } else {
-                                toast.success(t("deleted"));
-                              }
-                            },
-                          });
-                          onClose();
-                        } else {
-                          onDelete();
-                          onClose();
-                        }
+                    <DropdownMenuItem
+                      onClick={() => {
+                        (document.activeElement as HTMLElement)?.blur();
+                        onUpdateArchive();
                       }}
-                      className="whitespace-nowrap"
                     >
+                      <i className="bi-arrow-clockwise"></i>
+                      {t("refresh_preserved_formats")}
+                    </DropdownMenuItem>
+                  )}
+
+                {(permissions === true || permissions?.canDelete) && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleDelete}
+                      className="text-error"
+                    >
+                      <i className="bi-trash"></i>
                       {t("delete")}
-                    </div>
-                  </li>
+                    </DropdownMenuItem>
+                  </>
                 )}
-              </ul>
-            </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
           {link.url && (
             <Link

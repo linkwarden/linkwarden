@@ -5,7 +5,6 @@ import {
 } from "@linkwarden/types";
 import usePermissions from "@/hooks/usePermissions";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useDeleteLink, useGetLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
@@ -13,6 +12,13 @@ import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import usePinLink from "@/lib/client/pinLink";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -66,8 +72,7 @@ export default function LinkActions({
     <>
       {isPublicRoute ? (
         <div
-          className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
-          onMouseDown={dropdownTriggerer}
+          className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20 focus:outline-none"
           onClick={() => setLinkModal(true)}
         >
           <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>
@@ -75,99 +80,70 @@ export default function LinkActions({
           </div>
         </div>
       ) : (
-        <div
-          className={`dropdown dropdown-end absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 z-20`}
-        >
-          <div
-            tabIndex={0}
-            role="button"
-            onMouseDown={dropdownTriggerer}
-            className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}
-          >
-            <i title="More" className="bi-three-dots text-xl" />
-          </div>
-          <ul
-            className={
-              "dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1"
-            }
-          >
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  pinLink(link);
-                }}
-                className="whitespace-nowrap"
-              >
-                {link?.pinnedBy && link.pinnedBy[0]
-                  ? t("unpin")
-                  : t("pin_to_dashboard")}
-              </div>
-            </li>
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  setLinkModal(true);
-                }}
-                className="whitespace-nowrap"
-              >
-                {t("show_link_details")}
-              </div>
-            </li>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              onMouseDown={(e) => e.preventDefault()}
+              className={clsx(
+                "absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 btn btn-sm btn-square text-neutral z-20 focus:outline-none",
+                btnStyle
+              )}
+            >
+              <i title="More" className="bi-three-dots text-xl" />
+            </button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent sideOffset={4} align="end" className="mt-1">
+            <DropdownMenuItem onSelect={() => pinLink(link)}>
+              <i className="bi-pin" />
+
+              {link.pinnedBy && link.pinnedBy.length > 0
+                ? t("unpin")
+                : t("pin_to_dashboard")}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onSelect={() => setLinkModal(true)}>
+              <i className="bi-info-circle" />
+
+              {t("show_link_details")}
+            </DropdownMenuItem>
+
             {(permissions === true || permissions?.canUpdate) && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setEditLinkModal(true);
-                  }}
-                  className="whitespace-nowrap"
-                >
-                  {t("edit_link")}
-                </div>
-              </li>
+              <DropdownMenuItem onSelect={() => setEditLinkModal(true)}>
+                <i className="bi-pencil-square" />
+
+                {t("edit_link")}
+              </DropdownMenuItem>
             )}
+
             {(permissions === true || permissions?.canDelete) && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={async (e) => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    console.log(e.shiftKey);
-                    e.shiftKey
-                      ? (async () => {
-                          const load = toast.loading(t("deleting"));
-
-                          await deleteLink.mutateAsync(link.id as number, {
-                            onSettled: (data, error) => {
-                              toast.dismiss(load);
-
-                              if (error) {
-                                toast.error(error.message);
-                              } else {
-                                toast.success(t("deleted"));
-                              }
-                            },
-                          });
-                        })()
-                      : setDeleteLinkModal(true);
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-error"
+                  onSelect={async (e) => {
+                    if ((e as any).shiftKey) {
+                      const load = toast.loading(t("deleting"));
+                      await deleteLink.mutateAsync(link.id as number, {
+                        onSettled: (data, error) => {
+                          toast.dismiss(load);
+                          if (error) toast.error(error.message);
+                          else toast.success(t("deleted"));
+                        },
+                      });
+                    } else {
+                      setDeleteLinkModal(true);
+                    }
                   }}
-                  className="whitespace-nowrap"
                 >
+                  <i className="bi-trash" />
+
                   {t("delete")}
-                </div>
-              </li>
+                </DropdownMenuItem>
+              </>
             )}
-          </ul>
-        </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
       {editLinkModal && (
         <LinkModal

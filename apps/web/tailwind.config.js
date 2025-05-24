@@ -84,7 +84,7 @@ module.exports = {
           foreground: daisyuiColorObj["accent-content"],
         },
         popover: {
-          DEFAULT: daisyuiColorObj["base-100"],
+          DEFAULT: daisyuiColorObj["base-200"],
           foreground: daisyuiColorObj["base-content"],
         },
         card: {

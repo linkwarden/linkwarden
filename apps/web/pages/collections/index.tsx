@@ -10,7 +10,12 @@ import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
-import { dropdownTriggerer } from "@/lib/client/utils";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export default function Collections() {
   const { t } = useTranslation();
@@ -37,28 +42,21 @@ export default function Collections() {
               description={t("collections_you_own")}
             />
             <div className="relative">
-              <div className={"dropdown dropdown-bottom font-normal"}>
-                <div
-                  tabIndex={0}
-                  role="button"
-                  onMouseDown={dropdownTriggerer}
-                  className="btn btn-ghost btn-sm btn-square text-neutral"
-                >
-                  <i className={"bi-three-dots text-neutral text-xl"}></i>
-                </div>
-                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => setNewCollectionModal(true)}
-                      className="whitespace-nowrap"
-                    >
-                      {t("new_collection")}
-                    </div>
-                  </li>
-                </ul>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="btn btn-ghost btn-sm btn-square text-neutral">
+                    <i className={"bi-three-dots text-neutral text-xl"}></i>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="bottom" align="start">
+                  <DropdownMenuItem
+                    onSelect={() => setNewCollectionModal(true)}
+                  >
+                    <i className="bi-folder"></i>
+                    {t("new_collection")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           <div className="flex gap-3 justify-end">
