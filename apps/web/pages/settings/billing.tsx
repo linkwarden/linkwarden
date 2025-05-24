@@ -8,10 +8,16 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUsers } from "@linkwarden/router/users";
 import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
 import { useUser } from "@linkwarden/router/user";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import clsx from "clsx";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface User extends U {
   subscriptions: {
@@ -192,29 +198,28 @@ export default function Billing() {
                 </td>
                 {user.id !== account.id && (
                   <td className="relative">
-                    <div
-                      className={`dropdown dropdown-bottom font-normal dropdown-end absolute right-[0.35rem] top-[0.35rem]`}
-                    >
-                      <div
-                        tabIndex={0}
-                        role="button"
-                        onMouseDown={dropdownTriggerer}
-                        className="btn btn-ghost btn-sm btn-square duration-100"
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          onMouseDown={(e) => e.preventDefault()}
+                          className="btn btn-ghost btn-sm btn-square duration-100"
+                          title={t("more")}
+                        >
+                          <i
+                            className={"bi bi-three-dots text-lg text-neutral"}
+                          ></i>
+                        </button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent
+                        sideOffset={4}
+                        align="end"
+                        className="bg-base-200 border border-neutral-content rounded-box p-1"
                       >
-                        <i
-                          className={"bi bi-three-dots text-lg text-neutral"}
-                        ></i>
-                      </div>
-                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
-                        {!user.emailVerified ? (
-                          <li>
-                            <div
-                              role="button"
-                              tabIndex={0}
+                        {!user.emailVerified && (
+                          <>
+                            <DropdownMenuItem
                               onClick={() => {
-                                (
-                                  document?.activeElement as HTMLElement
-                                )?.blur();
                                 signIn("invite", {
                                   email: user.email,
                                   callbackUrl: "/member-onboarding",
@@ -223,30 +228,28 @@ export default function Billing() {
                                   toast.success(t("resend_invite_success"))
                                 );
                               }}
-                              className="whitespace-nowrap"
                             >
+                              <i className="bi-envelope"></i>
                               {t("resend_invite")}
-                            </div>
-                          </li>
-                        ) : undefined}
-                        <li>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => {
-                              (document?.activeElement as HTMLElement)?.blur();
-                              setDeleteUserModal({
-                                isOpen: true,
-                                userId: user.id,
-                              });
-                            }}
-                            className="whitespace-nowrap"
-                          >
-                            {t("remove_user")}
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                          </>
+                        )}
+
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setDeleteUserModal({
+                              isOpen: true,
+                              userId: user.id,
+                            });
+                          }}
+                          className="text-error"
+                        >
+                          <i className="bi-trash"></i>
+                          {t("remove_user")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </td>
                 )}
               </tr>

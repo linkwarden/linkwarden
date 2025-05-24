@@ -11,12 +11,18 @@ import usePermissions from "@/hooks/usePermissions";
 import ProfilePhoto from "../ProfilePhoto";
 import addMemberToCollection from "@/lib/client/addMemberToCollection";
 import Modal from "../Modal";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUpdateCollection } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
 import CopyButton from "../CopyButton";
 import { useRouter } from "next/router";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
 
 type Props = {
   onClose: Function;
@@ -230,14 +236,27 @@ export default function EditCollectionSharingModal({
               {collection.members
                 .sort((a, b) => (a.userId as number) - (b.userId as number))
                 .map((e, i) => {
-                  const roleLabel =
-                    e.canCreate && e.canUpdate && e.canDelete
-                      ? t("admin")
+                  const roleKey: "viewer" | "contributor" | "admin" =
+                    !e.canCreate && !e.canUpdate && !e.canDelete
+                      ? "viewer"
                       : e.canCreate && !e.canUpdate && !e.canDelete
-                        ? t("contributor")
-                        : !e.canCreate && !e.canUpdate && !e.canDelete
-                          ? t("viewer")
-                          : undefined;
+                        ? "contributor"
+                        : "admin";
+
+                  const handleRoleChange = (newRole: string) => {
+                    const updatedMember = {
+                      ...e,
+                      canCreate: newRole !== "viewer",
+                      canUpdate: newRole === "admin",
+                      canDelete: newRole === "admin",
+                    };
+                    setCollection({
+                      ...collection,
+                      members: collection.members.map((m) =>
+                        m.userId === e.userId ? updatedMember : m
+                      ),
+                    });
+                  };
 
                   return (
                     <React.Fragment key={i}>
@@ -264,54 +283,20 @@ export default function EditCollectionSharingModal({
 
                           <div className={"flex items-center gap-2"}>
                             {permissions === true && !isPublicRoute ? (
-                              <div className="dropdown dropdown-bottom dropdown-end">
-                                <div
-                                  tabIndex={0}
-                                  role="button"
-                                  onMouseDown={dropdownTriggerer}
-                                  className="btn btn-sm btn-primary font-normal"
-                                >
-                                  {roleLabel}
-                                  <i className="bi-chevron-down"></i>
-                                </div>
-                                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
-                                  <li>
-                                    <label
-                                      className="label cursor-pointer flex justify-start"
-                                      tabIndex={0}
-                                      role="button"
-                                    >
-                                      <input
-                                        type="radio"
-                                        name={`role-radio-${e.userId}`}
-                                        className="radio checked:bg-primary"
-                                        checked={
-                                          !e.canCreate &&
-                                          !e.canUpdate &&
-                                          !e.canDelete
-                                        }
-                                        onChange={() => {
-                                          const updatedMember = {
-                                            ...e,
-                                            canCreate: false,
-                                            canUpdate: false,
-                                            canDelete: false,
-                                          };
-                                          const updatedMembers =
-                                            collection.members.map((member) =>
-                                              member.userId === e.userId
-                                                ? updatedMember
-                                                : member
-                                            );
-                                          setCollection({
-                                            ...collection,
-                                            members: updatedMembers,
-                                          });
-                                          (
-                                            document?.activeElement as HTMLElement
-                                          )?.blur();
-                                        }}
-                                      />
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <div className="btn btn-sm btn-primary font-normal">
+                                    {t(roleKey)}
+                                    <i className="bi-chevron-down"></i>
+                                  </div>
+                                </DropdownMenuTrigger>
+
+                                <DropdownMenuContent sideOffset={4} align="end">
+                                  <DropdownMenuRadioGroup
+                                    value={roleKey}
+                                    onValueChange={handleRoleChange}
+                                  >
+                                    <DropdownMenuRadioItem value="viewer">
                                       <div>
                                         <p className="font-bold whitespace-nowrap">
                                           {t("viewer")}
@@ -320,45 +305,9 @@ export default function EditCollectionSharingModal({
                                           {t("viewer_desc")}
                                         </p>
                                       </div>
-                                    </label>
-                                  </li>
-                                  <li>
-                                    <label
-                                      className="label cursor-pointer flex justify-start"
-                                      tabIndex={0}
-                                      role="button"
-                                    >
-                                      <input
-                                        type="radio"
-                                        name={`role-radio-${e.userId}`}
-                                        className="radio checked:bg-primary"
-                                        checked={
-                                          e.canCreate &&
-                                          !e.canUpdate &&
-                                          !e.canDelete
-                                        }
-                                        onChange={() => {
-                                          const updatedMember = {
-                                            ...e,
-                                            canCreate: true,
-                                            canUpdate: false,
-                                            canDelete: false,
-                                          };
-                                          const updatedMembers =
-                                            collection.members.map((member) =>
-                                              member.userId === e.userId
-                                                ? updatedMember
-                                                : member
-                                            );
-                                          setCollection({
-                                            ...collection,
-                                            members: updatedMembers,
-                                          });
-                                          (
-                                            document?.activeElement as HTMLElement
-                                          )?.blur();
-                                        }}
-                                      />
+                                    </DropdownMenuRadioItem>
+
+                                    <DropdownMenuRadioItem value="contributor">
                                       <div>
                                         <p className="font-bold whitespace-nowrap">
                                           {t("contributor")}
@@ -367,45 +316,9 @@ export default function EditCollectionSharingModal({
                                           {t("contributor_desc")}
                                         </p>
                                       </div>
-                                    </label>
-                                  </li>
-                                  <li>
-                                    <label
-                                      className="label cursor-pointer flex justify-start"
-                                      tabIndex={0}
-                                      role="button"
-                                    >
-                                      <input
-                                        type="radio"
-                                        name={`role-radio-${e.userId}`}
-                                        className="radio checked:bg-primary"
-                                        checked={
-                                          e.canCreate &&
-                                          e.canUpdate &&
-                                          e.canDelete
-                                        }
-                                        onChange={() => {
-                                          const updatedMember = {
-                                            ...e,
-                                            canCreate: true,
-                                            canUpdate: true,
-                                            canDelete: true,
-                                          };
-                                          const updatedMembers =
-                                            collection.members.map((member) =>
-                                              member.userId === e.userId
-                                                ? updatedMember
-                                                : member
-                                            );
-                                          setCollection({
-                                            ...collection,
-                                            members: updatedMembers,
-                                          });
-                                          (
-                                            document?.activeElement as HTMLElement
-                                          )?.blur();
-                                        }}
-                                      />
+                                    </DropdownMenuRadioItem>
+
+                                    <DropdownMenuRadioItem value="admin">
                                       <div>
                                         <p className="font-bold whitespace-nowrap">
                                           {t("admin")}
@@ -414,13 +327,13 @@ export default function EditCollectionSharingModal({
                                           {t("admin_desc")}
                                         </p>
                                       </div>
-                                    </label>
-                                  </li>
-                                </ul>
-                              </div>
+                                    </DropdownMenuRadioItem>
+                                  </DropdownMenuRadioGroup>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
                             ) : (
                               <p className="text-sm text-neutral">
-                                {roleLabel}
+                                {t(roleKey)}
                               </p>
                             )}
 

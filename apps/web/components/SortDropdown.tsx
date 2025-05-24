@@ -1,10 +1,16 @@
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Sort } from "@linkwarden/types";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import { TFunction } from "i18next";
 import useLocalSettingsStore from "@/store/localSettings";
 import { resetInfiniteQueryPagination } from "@linkwarden/router/links";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
 
 type Props = {
   sortBy: Sort;
@@ -20,98 +26,41 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
     updateSettings({ sortBy });
   }, [sortBy]);
 
+  const handleValueChange = (value: string) => {
+    resetInfiniteQueryPagination(queryClient, ["links"]);
+    setSort(value as unknown as Sort);
+  };
+
   return (
-    <div className="dropdown dropdown-bottom dropdown-end">
-      <div
-        tabIndex={0}
-        role="button"
-        onMouseDown={dropdownTriggerer}
-        className="btn btn-sm btn-square btn-ghost border-none"
-      >
-        <i className="bi-chevron-expand text-neutral text-xl"></i>
-      </div>
-      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
-        <li>
-          <label
-            className="label cursor-pointer flex justify-start"
-            tabIndex={0}
-            role="button"
-          >
-            <input
-              type="radio"
-              name="sort-radio"
-              className="radio checked:bg-primary"
-              checked={sortBy === Sort.DateNewestFirst}
-              onChange={() => {
-                resetInfiniteQueryPagination(queryClient, ["links"]);
-                setSort(Sort.DateNewestFirst);
-              }}
-            />
-            <span className="label-text whitespace-nowrap">
-              {t("date_newest_first")}
-            </span>
-          </label>
-        </li>
-        <li>
-          <label
-            className="label cursor-pointer flex justify-start"
-            tabIndex={0}
-            role="button"
-          >
-            <input
-              type="radio"
-              name="sort-radio"
-              className="radio checked:bg-primary"
-              checked={sortBy === Sort.DateOldestFirst}
-              onChange={() => {
-                resetInfiniteQueryPagination(queryClient, ["links"]);
-                setSort(Sort.DateOldestFirst);
-              }}
-            />
-            <span className="label-text whitespace-nowrap">
-              {t("date_oldest_first")}
-            </span>
-          </label>
-        </li>
-        <li>
-          <label
-            className="label cursor-pointer flex justify-start"
-            tabIndex={0}
-            role="button"
-          >
-            <input
-              type="radio"
-              name="sort-radio"
-              className="radio checked:bg-primary"
-              checked={sortBy === Sort.NameAZ}
-              onChange={() => {
-                resetInfiniteQueryPagination(queryClient, ["links"]);
-                setSort(Sort.NameAZ);
-              }}
-            />
-            <span className="label-text whitespace-nowrap">{t("name_az")}</span>
-          </label>
-        </li>
-        <li>
-          <label
-            className="label cursor-pointer flex justify-start"
-            tabIndex={0}
-            role="button"
-          >
-            <input
-              type="radio"
-              name="sort-radio"
-              className="radio checked:bg-primary"
-              checked={sortBy === Sort.NameZA}
-              onChange={() => {
-                resetInfiniteQueryPagination(queryClient, ["links"]);
-                setSort(Sort.NameZA);
-              }}
-            />
-            <span className="label-text whitespace-nowrap">{t("name_za")}</span>
-          </label>
-        </li>
-      </ul>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="btn btn-sm btn-square btn-ghost border-none">
+          <i className="bi-chevron-expand text-neutral text-xl"></i>
+        </button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent sideOffset={4} align="end">
+        <DropdownMenuRadioGroup
+          value={sortBy.toString()}
+          onValueChange={handleValueChange}
+        >
+          <DropdownMenuRadioItem value={Sort.DateNewestFirst.toString()}>
+            {t("date_newest_first")}
+          </DropdownMenuRadioItem>
+
+          <DropdownMenuRadioItem value={Sort.DateOldestFirst.toString()}>
+            {t("date_oldest_first")}
+          </DropdownMenuRadioItem>
+
+          <DropdownMenuRadioItem value={Sort.NameAZ.toString()}>
+            {t("name_az")}
+          </DropdownMenuRadioItem>
+
+          <DropdownMenuRadioItem value={Sort.NameZA.toString()}>
+            {t("name_za")}
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
