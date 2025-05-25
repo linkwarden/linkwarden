@@ -44,7 +44,6 @@ async function checkBulkLinkPermissions(userId: number, linkIds: number[]) {
     });
   });
 
-  // Check if all requested links are authorized
   const unauthorizedLinkIds = linkIds.filter(linkId => !linkToCollectionMap.has(linkId));
 
   return {
@@ -58,10 +57,6 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
   if (!user) return;
 
   const isServerAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
-
-  if (!isServerAdmin) {
-    return res.status(401).json({ response: "Permission denied." });
-  }
 
   if (req.method === "DELETE") {
     const dataValidation = LinkArchiveActionSchema.safeParse(req.body);
@@ -111,6 +106,10 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (action === "allAndIgnore") {
+      if (!isServerAdmin) {
+        return res.status(401).json({ response: "Permission denied." });
+      }
+
       const allLinks = await prisma.link.findMany({
         where: {
           type: "url",
@@ -138,6 +137,10 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 
       return res.status(200).json({ response: "Success." });
     } else if (action === "allAndRePreserve") {
+      if (!isServerAdmin) {
+        return res.status(401).json({ response: "Permission denied." });
+      }
+
       const allLinks = await prisma.link.findMany({
         where: {
           type: "url",
@@ -166,6 +169,10 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 
       return res.status(200).json({ response: "Success." });
     } else if (action === "allBroken") {
+      if (!isServerAdmin) {
+        return res.status(401).json({ response: "Permission denied." });
+      }
+
       const brokenArchives = await prisma.link.findMany({
         where: {
           type: "url",
