@@ -22,28 +22,31 @@ export default function Worker() {
     }
   }, [showModal]);
 
-  const submit = async (action: LinkArchiveActionSchemaType['action']) => {
+  const submit = async (action: LinkArchiveActionSchemaType["action"]) => {
     if (!action || submitLoader) return;
     setSubmitLoader(true);
 
     const load = toast.loading(t("deleting"));
 
-    await archiveAction.mutateAsync({ action }, {
-      onSettled: (data, error) => {
-        setSubmitLoader(false);
-        toast.dismiss(load);
+    await archiveAction.mutateAsync(
+      { action },
+      {
+        onSettled: (data, error) => {
+          setSubmitLoader(false);
+          toast.dismiss(load);
 
-        if (error) {
-          toast.error(error.message);
-        } else {
-          if (action === "allAndIgnore") {
-            toast.success(t("deleted"));
+          if (error) {
+            toast.error(error.message);
           } else {
-            toast.success(t("links_are_being_represerved"));
+            if (action === "allAndIgnore") {
+              toast.success(t("deleted"));
+            } else {
+              toast.success(t("links_are_being_represerved"));
+            }
           }
-        }
-      },
-    });
+        },
+      }
+    );
   };
 
   return (
