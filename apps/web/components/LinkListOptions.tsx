@@ -157,13 +157,18 @@ const LinkListOptions = ({
             )}
           </div>
           <div className="flex gap-3">
-            <button
-              disabled={selectedLinks.length === 0}
-              className="btn btn-sm btn-ghost text-white"
-              onClick={() => bulkRefreshPreservations()}
+            <div
+              className="tooltip tooltip-top"
+              data-tip={t("refresh_preserved_formats")}
             >
-              <i className="bi-arrow-clockwise text-sm" />
-            </button>
+              <button
+                disabled={selectedLinks.length === 0}
+                className="btn btn-sm btn-ghost text-white"
+                onClick={() => bulkRefreshPreservations()}
+              >
+                <i className="bi-arrow-clockwise text-sm" />
+              </button>
+            </div>
             <button
               onClick={() => setBulkEditLinksModal(true)}
               className="btn btn-sm btn-accent text-white w-fit ml-auto"
