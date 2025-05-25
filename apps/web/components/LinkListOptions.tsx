@@ -8,7 +8,11 @@ import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
 import { Sort, ViewMode } from "@linkwarden/types";
-import { useArchiveAction, useBulkDeleteLinks, useLinks } from "@linkwarden/router/links";
+import {
+  useArchiveAction,
+  useBulkDeleteLinks,
+  useLinks,
+} from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -83,20 +87,23 @@ const LinkListOptions = ({
   const bulkRefreshPreservations = async () => {
     const load = toast.loading(t("sending_request"));
 
-    await refreshPreservations.mutateAsync({
-      linkIds: selectedLinks.map((link) => link.id as number),
-    }, {
-      onSettled: (data, error) => {
-        toast.dismiss(load);
-        if (error) {
-          toast.error(error.message);
-        } else {
-          setSelectedLinks([]);
-          toast.success(t("links_being_archived"));
-        }
+    await refreshPreservations.mutateAsync(
+      {
+        linkIds: selectedLinks.map((link) => link.id as number),
       },
-    })
-  }
+      {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            setSelectedLinks([]);
+            toast.success(t("links_being_archived"));
+          }
+        },
+      }
+    );
+  };
 
   return (
     <>
@@ -115,10 +122,11 @@ const LinkListOptions = ({
                     setEditMode(!editMode);
                     setSelectedLinks([]);
                   }}
-                  className={`btn btn-square btn-sm btn-ghost ${editMode
-                    ? "bg-primary/20 hover:bg-primary/20"
-                    : "hover:bg-neutral/20"
-                    }`}
+                  className={`btn btn-square btn-sm btn-ghost ${
+                    editMode
+                      ? "bg-primary/20 hover:bg-primary/20"
+                      : "hover:bg-neutral/20"
+                  }`}
                 >
                   <i className="bi-pencil-fill text-neutral text-xl"></i>
                 </div>
