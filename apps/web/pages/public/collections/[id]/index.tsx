@@ -113,7 +113,7 @@ export default function PublicCollections() {
         <div className="lg:w-3/4 max-w-[1500px] w-full mx-auto p-5 bg">
           <div className="flex justify-between gap-2">
             <div className="w-full">
-              <p className="text-4xl font-thin mb-2 capitalize mt-10">
+              <p className="text-4xl font-thin mb-2 mt-10">
                 {collection.name}
               </p>
 
@@ -219,6 +219,7 @@ export default function PublicCollections() {
               setViewMode={setViewMode}
               sortBy={sortBy}
               setSortBy={setSortBy}
+              links={links}
             >
               <SearchBar
                 placeholder={
