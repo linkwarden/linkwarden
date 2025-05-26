@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import Modal from "../Modal";
 import { useRouter } from "next/router";
-import Button from "../ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useDeleteLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
@@ -62,7 +62,7 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
 
         <p>{t("shift_key_tip")}</p>
 
-        <Button className="ml-auto" intent="destructive" onClick={submit}>
+        <Button className="ml-auto" variant="destructive" onClick={submit}>
           <i className="bi-trash text-xl" />
           {t("delete")}
         </Button>

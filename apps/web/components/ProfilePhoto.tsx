@@ -35,7 +35,7 @@ export default function ProfilePhoto({
     >
       <div className="bg-base-100 text-neutral rounded-full w-full h-full ring-2 ring-neutral-content select-none">
         {name ? (
-          <span className="text-2xl capitalize">{name.slice(0, 1)}</span>
+          <span className="text-xl capitalize">{name.slice(0, 1)}</span>
         ) : (
           <i className={`bi-person ${large ? "text-5xl" : "text-xl"}`}></i>
         )}

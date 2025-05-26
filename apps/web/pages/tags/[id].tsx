@@ -3,7 +3,6 @@ import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { Sort, TagIncludingLinkCount, ViewMode } from "@linkwarden/types";
 import { useLinks } from "@linkwarden/router/links";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
 import { useTranslation } from "next-i18next";
@@ -12,6 +11,13 @@ import LinkListOptions from "@/components/LinkListOptions";
 import { useRemoveTag, useTags, useUpdateTag } from "@linkwarden/router/tags";
 import Links from "@/components/LinkViews/Links";
 import toast from "react-hot-toast";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -151,7 +157,7 @@ export default function Index() {
                   <input
                     type="text"
                     autoFocus
-                    className="sm:text-3xl text-2xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
+                    className="sm:text-3xl text-xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
                     value={newTagName}
                     onChange={(e) => setNewTagName(e.target.value)}
                   />
@@ -160,66 +166,61 @@ export default function Index() {
                     id="expand-dropdown"
                     className="btn btn-ghost btn-square btn-sm"
                   >
-                    <i className={"bi-check2 text-neutral text-2xl"}></i>
+                    <i className={"bi-check2 text-neutral text-xl"}></i>
                   </div>
                   <div
                     onClick={() => cancelUpdateTag()}
                     id="expand-dropdown"
                     className="btn btn-ghost btn-square btn-sm"
                   >
-                    <i className={"bi-x text-neutral text-2xl"}></i>
+                    <i className={"bi-x text-neutral text-xl"}></i>
                   </div>
                 </form>
               ) : (
                 <>
-                  <p className="sm:text-3xl text-2xl">{activeTag?.name}</p>
+                  <p className="sm:text-3xl text-xl">{activeTag?.name}</p>
                   <div className="relative">
-                    <div
-                      className={`dropdown dropdown-bottom font-normal ${
-                        activeTag?.name.length && activeTag?.name.length > 8
-                          ? "dropdown-end"
-                          : ""
-                      }`}
-                    >
-                      <div
-                        tabIndex={0}
-                        role="button"
-                        onMouseDown={dropdownTriggerer}
-                        className="btn btn-ghost btn-sm btn-square text-neutral"
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="btn btn-ghost btn-sm btn-square text-neutral"
+                          title={t("more")}
+                        >
+                          <i className="bi-three-dots text-xl"></i>
+                        </button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent
+                        sideOffset={4}
+                        align={
+                          activeTag?.name.length && activeTag?.name.length > 8
+                            ? "end"
+                            : "start"
+                        }
+                        className="bg-base-200 border border-neutral-content rounded-box p-1"
                       >
-                        <i
-                          className={"bi-three-dots text-neutral text-2xl"}
-                        ></i>
-                      </div>
-                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
-                        <li>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => {
-                              (document?.activeElement as HTMLElement)?.blur();
-                              setRenameTag(true);
-                            }}
-                            className="whitespace-nowrap"
-                          >
-                            {t("rename_tag")}
-                          </div>
-                        </li>
-                        <li>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => {
-                              (document?.activeElement as HTMLElement)?.blur();
-                              remove();
-                            }}
-                            className="whitespace-nowrap"
-                          >
-                            {t("delete_tag")}
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setRenameTag(true);
+                          }}
+                        >
+                          <i className="bi-pencil-square"></i>
+                          {t("rename_tag")}
+                        </DropdownMenuItem>
+
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem
+                          onClick={() => {
+                            remove();
+                          }}
+                          className="text-error"
+                        >
+                          <i className="bi-trash "></i>
+                          {t("delete_tag")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </>
               )}

@@ -20,5 +20,5 @@ export const PreservationSkeleton = ({ className }: { className?: string }) => (
 );
 
 export const ImageSkeleton = () => (
-  <div className="w-[80%] h-[80%] bg-neutral-content rounded-2xl mx-auto"></div>
+  <div className="w-[80%] h-[80%] bg-neutral-content rounded-xl mx-auto"></div>
 );
