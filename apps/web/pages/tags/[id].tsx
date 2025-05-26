@@ -140,6 +140,7 @@ export default function Index() {
           setSortBy={setSortBy}
           editMode={editMode}
           setEditMode={setEditMode}
+          links={links}
         >
           <div className="flex gap-3 items-center">
             <div className="flex gap-2 items-center font-thin">

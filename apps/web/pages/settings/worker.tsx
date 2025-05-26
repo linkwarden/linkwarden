@@ -3,33 +3,9 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useEffect, useState } from "react";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LinkArchiveActionSchemaType } from "@linkwarden/lib/schemaValidation";
 import toast from "react-hot-toast";
-
-const useArchiveAction = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (action: LinkArchiveActionSchemaType) => {
-      const response = await fetch("/api/v1/links/archive", {
-        body: JSON.stringify({ action: action }),
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.response);
-
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["links"] });
-    },
-  });
-};
+import { useArchiveAction } from "@linkwarden/router/links";
 
 export default function Worker() {
   const { t } = useTranslation();
@@ -37,7 +13,7 @@ export default function Worker() {
   const [showModal, setShowModal] = useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
   const [action, setAction] = useState<
-    LinkArchiveActionSchemaType | undefined
+    LinkArchiveActionSchemaType["action"] | undefined
   >();
 
   useEffect(() => {
@@ -46,28 +22,31 @@ export default function Worker() {
     }
   }, [showModal]);
 
-  const submit = async (action: LinkArchiveActionSchemaType) => {
+  const submit = async (action: LinkArchiveActionSchemaType["action"]) => {
     if (!action || submitLoader) return;
     setSubmitLoader(true);
 
     const load = toast.loading(t("deleting"));
 
-    await archiveAction.mutateAsync(action, {
-      onSettled: (data, error) => {
-        setSubmitLoader(false);
-        toast.dismiss(load);
+    await archiveAction.mutateAsync(
+      { action },
+      {
+        onSettled: (data, error) => {
+          setSubmitLoader(false);
+          toast.dismiss(load);
 
-        if (error) {
-          toast.error(error.message);
-        } else {
-          if (action === "allAndIgnore") {
-            toast.success(t("deleted"));
+          if (error) {
+            toast.error(error.message);
           } else {
-            toast.success(t("links_are_being_represerved"));
+            if (action === "allAndIgnore") {
+              toast.success(t("deleted"));
+            } else {
+              toast.success(t("links_are_being_represerved"));
+            }
           }
-        }
-      },
-    });
+        },
+      }
+    );
   };
 
   return (
