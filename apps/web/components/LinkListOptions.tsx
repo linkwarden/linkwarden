@@ -7,12 +7,12 @@ import BulkEditLinksModal from "./ModalContent/BulkEditLinksModal";
 import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
-import { Sort, ViewMode } from "@linkwarden/types";
 import {
-  useArchiveAction,
-  useBulkDeleteLinks,
-  useLinks,
-} from "@linkwarden/router/links";
+  LinkIncludingShortenedCollectionAndTags,
+  Sort,
+  ViewMode,
+} from "@linkwarden/types";
+import { useArchiveAction, useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -24,6 +24,7 @@ type Props = {
   setSortBy: Dispatch<SetStateAction<Sort>>;
   editMode?: boolean;
   setEditMode?: (mode: boolean) => void;
+  links: LinkIncludingShortenedCollectionAndTags[];
 };
 
 const LinkListOptions = ({
@@ -35,13 +36,12 @@ const LinkListOptions = ({
   setSortBy,
   editMode,
   setEditMode,
+  links,
 }: Props) => {
   const { selectedLinks, setSelectedLinks } = useLinkStore();
 
   const deleteLinksById = useBulkDeleteLinks();
   const refreshPreservations = useArchiveAction();
-
-  const { links } = useLinks();
 
   const router = useRouter();
 

@@ -6,54 +6,6 @@ import { removeFiles, removePreservationFiles } from "@linkwarden/filesystem";
 import { ArchivalSettings } from "@linkwarden/types";
 import { isArchivalTag } from "@linkwarden/lib";
 
-async function checkBulkLinkPermissions(userId: number, linkIds: number[]) {
-  const collections = await prisma.collection.findMany({
-    where: {
-      OR: [
-        { ownerId: userId },
-        {
-          members: {
-            some: {
-              userId: userId,
-              canDelete: true,
-            },
-          },
-        },
-      ],
-      links: {
-        some: {
-          id: { in: linkIds },
-        },
-      },
-    },
-    select: {
-      id: true,
-      links: {
-        where: {
-          id: { in: linkIds },
-        },
-        select: { id: true },
-      },
-    },
-  });
-
-  const linkToCollectionMap = new Map<number, number>();
-  collections.forEach((collection) => {
-    collection.links.forEach((link) => {
-      linkToCollectionMap.set(link.id, collection.id);
-    });
-  });
-
-  const unauthorizedLinkIds = linkIds.filter(
-    (linkId) => !linkToCollectionMap.has(linkId)
-  );
-
-  return {
-    authorized: unauthorizedLinkIds.length === 0,
-    linkToCollectionMap,
-  };
-}
-
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
   if (!user) return;
@@ -73,25 +25,51 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
     const { action, linkIds } = dataValidation.data;
 
     if (linkIds) {
-      const { authorized, linkToCollectionMap } =
-        await checkBulkLinkPermissions(user.id, linkIds);
-      if (!authorized) {
-        return res.status(401).json({
-          response: "Permission denied.",
-        });
+      const authorizedLinks = await prisma.link.findMany({
+        where: {
+          id: { in: linkIds },
+          url: { not: null },
+          OR: [
+            {
+              collection: {
+                ownerId: user.id,
+              },
+            },
+            {
+              collection: {
+                members: {
+                  some: {
+                    userId: user.id,
+                    canDelete: true,
+                  },
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          id: true,
+          collectionId: true,
+        },
+      });
+
+      if (authorizedLinks.length === 0) {
+        return res.status(401).json({ response: "Permission denied." });
       }
 
-      for (const linkId of linkIds) {
-        const collectionId = linkToCollectionMap.get(linkId);
+      res.status(200).json({ response: "Success." });
+
+      for (const link of authorizedLinks) {
+        const collectionId = link.collectionId;
 
         if (!collectionId) {
-          console.error(`Collection ID not found for link ${linkId}`);
+          console.error(`Collection ID not found for link ${link.id}`);
           continue;
         }
 
-        await removeFiles(linkId, collectionId);
+        await removeFiles(link.id, collectionId);
         await prisma.link.update({
-          where: { id: linkId },
+          where: { id: link.id },
           data: {
             image: null,
             pdf: null,
@@ -103,10 +81,10 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
           },
         });
 
-        console.log("Deleted preservation link:", linkId);
+        console.log("Deleted preservation link:", link.id);
       }
 
-      return res.status(200).json({ response: "Success." });
+      return;
     }
 
     if (action === "allAndIgnore") {
