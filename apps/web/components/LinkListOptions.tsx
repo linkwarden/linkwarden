@@ -192,7 +192,6 @@ const LinkListOptions = ({
             </button>
             <button
               onClick={(e) => {
-                (document?.activeElement as HTMLElement)?.blur();
                 e.shiftKey ? bulkDeleteLinks() : setBulkDeleteLinksModal(true);
               }}
               className="btn btn-sm bg-red-500 hover:bg-red-400 text-white w-fit ml-auto"

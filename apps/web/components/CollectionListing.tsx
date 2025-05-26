@@ -323,7 +323,7 @@ const renderItem = (
               />
             ) : (
               <i
-                className="bi-folder-fill text-2xl"
+                className="bi-folder-fill text-xl"
                 style={{ color: collection.color }}
               ></i>
             )}

@@ -239,7 +239,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
             className="mx-auto mb-3"
             size={30}
           />
-          <p className="text-center text-2xl">{t("preservation_in_queue")}</p>
+          <p className="text-center text-xl">{t("preservation_in_queue")}</p>
           <p className="text-center text-lg">{t("check_back_later")}</p>
         </div>
       ) : (

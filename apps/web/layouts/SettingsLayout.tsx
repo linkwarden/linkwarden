@@ -41,7 +41,7 @@ export default function SettingsLayout({ children }: Props) {
               onClick={toggleSidebar}
               className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"
             >
-              <i className="bi-list text-2xl leading-none"></i>
+              <i className="bi-list text-xl leading-none"></i>
             </div>
 
             <Link

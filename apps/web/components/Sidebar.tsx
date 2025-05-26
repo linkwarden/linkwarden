@@ -147,7 +147,7 @@ export default function Sidebar({ className }: { className?: string }) {
                             : "hover:bg-neutral/20"
                         } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
                       >
-                        <i className="bi-hash text-2xl text-primary drop-shadow"></i>
+                        <i className="bi-hash text-xl text-primary drop-shadow"></i>
                         <p className="truncate w-full pr-7">{e.name}</p>
                         <div className="drop-shadow text-neutral text-xs">
                           {e._count?.links}

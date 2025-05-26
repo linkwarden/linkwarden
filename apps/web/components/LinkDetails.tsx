@@ -188,14 +188,14 @@ export default function LinkDetails({
     <div className={clsx(className)} data-vaul-no-drag>
       <div
         className={clsx(
-          standalone && "sm:border sm:border-neutral-content sm:rounded-2xl p-5"
+          standalone && "sm:border sm:border-neutral-content sm:rounded-xl p-5"
         )}
       >
         <div
           className={clsx(
             "overflow-hidden select-none relative group h-40 opacity-80",
             standalone
-              ? "sm:max-w-xl -mx-5 -mt-5 sm:rounded-t-2xl"
+              ? "sm:max-w-xl -mx-5 -mt-5 sm:rounded-t-xl"
               : "-mx-4 -mt-4"
           )}
         >
@@ -399,7 +399,7 @@ export default function LinkDetails({
                       />
                     ) : (
                       <i
-                        className="bi-folder-fill text-2xl"
+                        className="bi-folder-fill text-xl"
                         style={{ color: link.collection.color }}
                       ></i>
                     )}
@@ -584,7 +584,7 @@ export default function LinkDetails({
                       size={30}
                     />
 
-                    <p className="text-center text-2xl">
+                    <p className="text-center text-xl">
                       {t("preservation_in_queue")}
                     </p>
                     <p className="text-center text-lg">

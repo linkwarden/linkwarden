@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "../Modal";
-import Button from "../ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 
 type Props = {
@@ -56,7 +56,7 @@ export default function SurveyModal({ onClose, submit }: Props) {
 
         <Button
           className="ml-auto mt-3"
-          intent="accent"
+          variant="accent"
           onClick={() => submit(referer, other)}
         >
           {t("submit")}

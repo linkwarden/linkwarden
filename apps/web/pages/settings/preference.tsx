@@ -10,10 +10,10 @@ import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import { useConfig } from "@linkwarden/router/config";
 import { useTags, useUpdateArchivalTags } from "@linkwarden/router/tags";
-import { cn } from "@/lib/client/utils";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useArchivalTags } from "@/hooks/useArchivalTags";
 import { isArchivalTag } from "@linkwarden/lib";
+import clsx from "clsx";
 
 export default function Preference() {
   const { t } = useTranslation();
@@ -221,7 +221,7 @@ export default function Preference() {
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>
-                <p className="ml-2 text-2xl">{t(theme)}</p>
+                <p className="ml-2 text-xl">{t(theme)}</p>
               </div>
             ))}
           </div>
@@ -473,7 +473,7 @@ export default function Preference() {
                           >
                             <button
                               onClick={() => toggleOption(tag, type)}
-                              className={cn(
+                              className={clsx(
                                 "py-1 px-2 btn btn-sm btn-square",
                                 tag[type] ? "btn-primary" : "btn-ghost"
                               )}

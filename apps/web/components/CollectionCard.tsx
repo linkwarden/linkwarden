@@ -11,9 +11,15 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "./ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "./ModalContent/DeleteCollectionModal";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 export default function CollectionCard({
   collection,
@@ -67,63 +73,53 @@ export default function CollectionCard({
 
   return (
     <div className="relative">
-      <div className="dropdown dropdown-bottom dropdown-end absolute top-3 right-3 z-20">
-        <div
-          tabIndex={0}
-          role="button"
-          onMouseDown={dropdownTriggerer}
-          className="btn btn-ghost btn-sm btn-square text-neutral"
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="absolute top-3 right-3 z-20 btn btn-ghost btn-sm btn-square text-neutral">
+            <i title="More" className="bi-three-dots text-xl" />
+          </button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          sideOffset={4}
+          side="bottom"
+          align="end"
+          className="mt-1 z-[30]"
         >
-          <i className="bi-three-dots text-xl" title={t("more")}></i>
-        </div>
-        <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
           {permissions === true && (
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  setEditCollectionModal(true);
-                }}
-                className="whitespace-nowrap"
-              >
-                {t("edit_collection_info")}
-              </div>
-            </li>
+            <DropdownMenuItem onSelect={() => setEditCollectionModal(true)}>
+              <i className="bi-pencil-square" />
+              {t("edit_collection_info")}
+            </DropdownMenuItem>
           )}
-          <li>
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => {
-                (document?.activeElement as HTMLElement)?.blur();
-                setEditCollectionSharingModal(true);
-              }}
-              className="whitespace-nowrap"
-            >
-              {permissions === true
-                ? t("share_and_collaborate")
-                : t("view_team")}
-            </div>
-          </li>
-          <li>
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() => {
-                (document?.activeElement as HTMLElement)?.blur();
-                setDeleteCollectionModal(true);
-              }}
-              className="whitespace-nowrap"
-            >
-              {permissions === true
-                ? t("delete_collection")
-                : t("leave_collection")}
-            </div>
-          </li>
-        </ul>
-      </div>
+
+          <DropdownMenuItem
+            onSelect={() => setEditCollectionSharingModal(true)}
+          >
+            <i className="bi-globe" />
+            {permissions === true ? t("share_and_collaborate") : t("view_team")}
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            onSelect={() => setDeleteCollectionModal(true)}
+            className="text-error"
+          >
+            {permissions === true ? (
+              <>
+                <i className="bi-trash" />
+                {t("delete_collection")}
+              </>
+            ) : (
+              <>
+                <i className="bi-box-arrow-left" />
+                {t("leave_collection")}
+              </>
+            )}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <div
         className="flex items-center absolute bottom-3 left-3 z-10 btn px-2 btn-ghost rounded-full"
         onClick={() => setEditCollectionSharingModal(true)}
