@@ -130,7 +130,7 @@ export default function Index() {
                 ></i>
               )}
 
-              <p className="sm:text-3xl text-2xl capitalize w-full py-1 break-words hyphens-auto font-thin">
+              <p className="sm:text-3xl text-2xl w-full py-1 break-words hyphens-auto font-thin">
                 {activeCollection?.name}
               </p>
             </div>
@@ -338,6 +338,7 @@ export default function Index() {
               ? setEditMode
               : undefined
           }
+          links={links}
         >
           {collections.some((e) => e.parentId === activeCollection?.id) ? (
             <PageHeader

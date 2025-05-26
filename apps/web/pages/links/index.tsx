@@ -43,6 +43,7 @@ export default function Index() {
           setSortBy={setSortBy}
           editMode={editMode}
           setEditMode={setEditMode}
+          links={links}
         >
           <PageHeader
             icon={"bi-link-45deg"}

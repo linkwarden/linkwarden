@@ -7,8 +7,12 @@ import BulkEditLinksModal from "./ModalContent/BulkEditLinksModal";
 import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
-import { Sort, ViewMode } from "@linkwarden/types";
-import { useBulkDeleteLinks, useLinks } from "@linkwarden/router/links";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  Sort,
+  ViewMode,
+} from "@linkwarden/types";
+import { useArchiveAction, useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -20,6 +24,7 @@ type Props = {
   setSortBy: Dispatch<SetStateAction<Sort>>;
   editMode?: boolean;
   setEditMode?: (mode: boolean) => void;
+  links: LinkIncludingShortenedCollectionAndTags[];
 };
 
 const LinkListOptions = ({
@@ -31,12 +36,12 @@ const LinkListOptions = ({
   setSortBy,
   editMode,
   setEditMode,
+  links,
 }: Props) => {
   const { selectedLinks, setSelectedLinks } = useLinkStore();
 
   const deleteLinksById = useBulkDeleteLinks();
-
-  const { links } = useLinks();
+  const refreshPreservations = useArchiveAction();
 
   const router = useRouter();
 
@@ -73,6 +78,27 @@ const LinkListOptions = ({
           } else {
             setSelectedLinks([]);
             toast.success(t("deleted"));
+          }
+        },
+      }
+    );
+  };
+
+  const bulkRefreshPreservations = async () => {
+    const load = toast.loading(t("sending_request"));
+
+    await refreshPreservations.mutateAsync(
+      {
+        linkIds: selectedLinks.map((link) => link.id as number),
+      },
+      {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            setSelectedLinks([]);
+            toast.success(t("links_being_archived"));
           }
         },
       }
@@ -139,6 +165,18 @@ const LinkListOptions = ({
             )}
           </div>
           <div className="flex gap-3">
+            <div
+              className="tooltip tooltip-top"
+              data-tip={t("refresh_preserved_formats")}
+            >
+              <button
+                disabled={selectedLinks.length === 0}
+                className="btn btn-sm btn-ghost text-white"
+                onClick={() => bulkRefreshPreservations()}
+              >
+                <i className="bi-arrow-clockwise text-sm" />
+              </button>
+            </div>
             <button
               onClick={() => setBulkEditLinksModal(true)}
               className="btn btn-sm btn-accent text-white w-fit ml-auto"

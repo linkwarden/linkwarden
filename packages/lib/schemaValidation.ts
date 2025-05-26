@@ -41,12 +41,12 @@ export const PostUserSchema = () => {
     username: emailEnabled
       ? z.string().optional()
       : z
-          .string()
-          .trim()
-          .toLowerCase()
-          .min(3)
-          .max(50)
-          .regex(/^[a-z0-9_-]{3,50}$/),
+        .string()
+        .trim()
+        .toLowerCase()
+        .min(3)
+        .max(50)
+        .regex(/^[a-z0-9_-]{3,50}$/),
     invite: z.boolean().optional(),
   });
 };
@@ -253,9 +253,8 @@ export const PostHighlightSchema = z.object({
 export type PostHighlightSchemaType = z.infer<typeof PostHighlightSchema>;
 
 export const LinkArchiveActionSchema = z.object({
-  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
+  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]).optional(),
+  linkIds: z.array(z.number()).optional()
 });
 
-export type LinkArchiveActionSchemaType = z.infer<
-  typeof LinkArchiveActionSchema
->["action"];
+export type LinkArchiveActionSchemaType = z.infer<typeof LinkArchiveActionSchema>;
