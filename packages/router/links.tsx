@@ -11,7 +11,7 @@ import {
   MobileAuth,
 } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
-import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
+import { LinkArchiveActionSchemaType, PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import getFormatFromContentType from "@linkwarden/lib/getFormatFromContentType";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
@@ -64,10 +64,10 @@ const useFetchLinks = (params: string, auth?: MobileAuth) => {
         url,
         auth?.session
           ? {
-              headers: {
-                Authorization: `Bearer ${auth.session}`,
-              },
-            }
+            headers: {
+              Authorization: `Bearer ${auth.session}`,
+            },
+          }
           : undefined
       );
       const data = await response.json();
@@ -243,10 +243,10 @@ const useGetLink = (isPublicRoute?: boolean, auth?: MobileAuth) => {
         path,
         auth?.session
           ? {
-              headers: {
-                Authorization: `Bearer ${auth?.session}`,
-              },
-            }
+            headers: {
+              Authorization: `Bearer ${auth?.session}`,
+            },
+          }
           : undefined
       );
       const data = await response.json();
@@ -446,8 +446,8 @@ const useUpdateFile = () => {
 
       const res = await fetch(
         `/api/v1/archives/${linkId}?format=` +
-          format +
-          (isPreview ? "&preview=true" : ""),
+        format +
+        (isPreview ? "&preview=true" : ""),
         {
           body: formBody,
           method: "POST",
@@ -508,6 +508,34 @@ const useBulkEditLinks = () => {
   });
 };
 
+const useArchiveAction = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: LinkArchiveActionSchemaType) => {
+      const response = await fetch("/api/v1/links/archive", {
+        body: JSON.stringify({
+          action: payload.action,
+          linkIds: payload.linkIds,
+        }),
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.response);
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+    },
+  });
+};
+
 const resetInfiniteQueryPagination = async (
   queryClient: any,
   queryKey: any
@@ -533,6 +561,7 @@ export {
   useUploadFile,
   useGetLink,
   useBulkEditLinks,
+  useArchiveAction,
   resetInfiniteQueryPagination,
   useUpdateFile,
 };

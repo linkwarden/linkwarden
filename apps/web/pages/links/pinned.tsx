@@ -38,6 +38,7 @@ export default function PinnedLinks() {
           setSortBy={setSortBy}
           editMode={editMode}
           setEditMode={setEditMode}
+          links={links}
         >
           <PageHeader
             icon={"bi-pin-angle"}
