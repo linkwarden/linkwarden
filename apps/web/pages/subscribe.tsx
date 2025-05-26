@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import { Plan } from "@linkwarden/types";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
@@ -48,8 +48,8 @@ export default function Subscribe() {
         process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
       }-day free trial, cancel anytime!`}
     >
-      <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
-        <p className="sm:text-3xl text-2xl text-center font-extralight">
+      <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-xl shadow-md border border-neutral-content">
+        <p className="sm:text-3xl text-xl text-center font-extralight">
           {t("subscribe_title")}
         </p>
 
@@ -129,10 +129,10 @@ export default function Subscribe() {
 
         <Button
           type="button"
-          intent="accent"
+          variant="accent"
           size="full"
           onClick={submit}
-          loading={submitLoader}
+          disabled={submitLoader}
         >
           {t("complete_subscription")}
         </Button>

@@ -206,8 +206,8 @@ export default function Dashboard() {
                   />
                 </div>
               ) : (
-                <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-                  <p className="text-center text-2xl">
+                <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+                  <p className="text-center text-xl">
                     {t("view_added_links_here")}
                   </p>
                   <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
@@ -285,10 +285,10 @@ export default function Dashboard() {
               ) : (
                 <div
                   style={{ flex: "1 1 auto" }}
-                  className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-2xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200"
+                  className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200"
                 >
                   <i className="bi-pin mx-auto text-6xl text-primary"></i>
-                  <p className="text-center text-2xl">
+                  <p className="text-center text-xl">
                     {t("pin_favorite_links_here")}
                   </p>
                   <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">

@@ -153,7 +153,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
+      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
@@ -163,21 +163,21 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
       }
     >
       <div
-        className="rounded-2xl cursor-pointer"
+        className="rounded-xl cursor-pointer"
         onClick={() =>
           !editMode && openLink(link, user, () => setLinkModal(true))
         }
       >
         {show.image && formatAvailable(link, "preview") && (
           <div>
-            <div className="relative rounded-t-2xl overflow-hidden">
+            <div className="relative rounded-t-xl overflow-hidden">
               {formatAvailable(link, "preview") ? (
                 <Image
                   src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
                   width={1280}
                   height={720}
                   alt=""
-                  className={`rounded-t-2xl select-none object-cover z-10 ${imageHeightClass} w-full shadow opacity-80 scale-105`}
+                  className={`rounded-t-xl select-none object-cover z-10 ${imageHeightClass} w-full shadow opacity-80 scale-105`}
                   style={show.icon ? { filter: "blur(1px)" } : undefined}
                   draggable="false"
                   onError={(e) => {
@@ -191,7 +191,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
                 ></div>
               )}
               {show.icon && (
-                <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center rounded-md">
+                <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-xl flex items-center justify-center rounded-md">
                   <LinkIcon link={link} />
                 </div>
               )}
@@ -258,7 +258,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
       </div>
 
       {/* Overlay on hover */}
-      <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-2xl duration-100"></div>
+      <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
       <LinkActions
         link={link}
         collection={collection}

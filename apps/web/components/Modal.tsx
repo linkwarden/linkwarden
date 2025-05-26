@@ -40,9 +40,9 @@ export default function Modal({
       >
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-          <Drawer.Content className="flex flex-col rounded-t-2xl h-[90%] mt-24 fixed bottom-0 left-0 right-0 z-30">
+          <Drawer.Content className="flex flex-col rounded-t-xl h-[90%] mt-24 fixed bottom-0 left-0 right-0 z-30">
             <div
-              className="p-4 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto"
+              className="p-4 bg-base-100 rounded-t-xl flex-1 border-neutral-content border-t overflow-y-auto"
               data-testid="mobile-modal-container"
             >
               <div
@@ -64,12 +64,12 @@ export default function Modal({
       >
         <ClickAwayHandler
           onClickOutside={() => dismissible && toggleModal()}
-          className={`w-full mt-auto sm:m-auto sm:w-11/12 sm:max-w-2xl ${
+          className={`w-full mt-auto sm:m-auto sm:w-11/12 sm:max-w-xl ${
             className || ""
           }`}
         >
           <div
-            className="slide-up mt-auto sm:m-auto relative border-neutral-content rounded-t-2xl sm:rounded-2xl border-t sm:border shadow-2xl p-5 bg-base-100 overflow-y-auto sm:overflow-y-visible"
+            className="slide-up mt-auto sm:m-auto relative border-neutral-content rounded-t-xl sm:rounded-xl border-t sm:border shadow-xl p-5 bg-base-100 overflow-y-auto sm:overflow-y-visible"
             data-testid="modal-container"
           >
             {dismissible && (
@@ -78,7 +78,7 @@ export default function Modal({
                 className="absolute top-4 right-3 btn btn-sm outline-none btn-circle btn-ghost z-10"
               >
                 <i
-                  className="bi-x text-neutral text-2xl"
+                  className="bi-x text-neutral text-xl"
                   data-testid="close-modal-button"
                 ></i>
               </div>
