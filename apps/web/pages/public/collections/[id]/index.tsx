@@ -219,6 +219,7 @@ export default function PublicCollections() {
               setViewMode={setViewMode}
               sortBy={sortBy}
               setSortBy={setSortBy}
+              links={links}
             >
               <SearchBar
                 placeholder={
