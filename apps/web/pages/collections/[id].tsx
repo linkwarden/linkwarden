@@ -338,6 +338,7 @@ export default function Index() {
               ? setEditMode
               : undefined
           }
+          links={links}
         >
           {collections.some((e) => e.parentId === activeCollection?.id) ? (
             <PageHeader
