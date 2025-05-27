@@ -8,7 +8,6 @@ import Link from "next/link";
 import usePermissions from "@/hooks/usePermissions";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import Tab from "../Tab";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -17,6 +16,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Props = {
   onClose: Function;
@@ -79,21 +79,22 @@ export default function LinkModal({
         ></Button>
 
         {(permissions === true || permissions?.canUpdate) && !isPublicRoute && (
-          <Tab
-            tabs={[
-              { name: "View" },
-              {
-                name: "Edit",
-              },
-            ].map((tab) => ({
-              name: tab.name,
-            }))}
-            activeTabIndex={mode === "view" ? 0 : 1}
-            setActiveTabIndex={(index: any) =>
-              setMode(index === 0 ? "view" : "edit")
+          <Tabs
+            value={(mode === "view" ? "view" : "edit").toString()}
+            className="w-fit absolute left-1/2 -translate-x-1/2 rounded-full bg-base-100/50 text-sm shadow-md z-10 opacity-90"
+            onValueChange={(index: any) =>
+              setMode(index === "view" ? "view" : "edit")
             }
-            className="w-fit absolute left-1/2 -translate-x-1/2 rounded-full bg-base-100/50 text-sm shadow-md z-10"
-          />
+          >
+            <TabsList className="rounded-full h-8">
+              <TabsTrigger value="view" className="rounded-full py-0">
+                View
+              </TabsTrigger>
+              <TabsTrigger value="edit" className="rounded-full py-0">
+                Edit
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         )}
 
         <div className="flex gap-2">
