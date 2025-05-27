@@ -9,6 +9,7 @@ import {
 import useLocalSettingsStore from "@/store/localSettings";
 import { ViewMode } from "@linkwarden/types";
 import { useTranslation } from "next-i18next";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   viewMode: ViewMode;
@@ -38,7 +39,6 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
     updateSettings({ columns: Number(e.target.value) });
   };
 
-  // helper to filter which show-settings to display
   const visibleShows = (
     Object.keys(settings.show) as (keyof typeof settings.show)[]
   ).filter((key) => {
@@ -52,19 +52,18 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="btn btn-sm btn-square btn-ghost border-none">
+        <Button variant="ghost" size="icon">
           {viewMode === ViewMode.Card ? (
-            <i className="bi-grid w-4 h-4 text-neutral"></i>
+            <i className="bi-grid text-neutral"></i>
           ) : viewMode === ViewMode.Masonry ? (
-            <i className="bi-columns-gap w-4 h-4 text-neutral"></i>
+            <i className="bi-columns-gap text-neutral"></i>
           ) : (
-            <i className="bi-view-stacked w-4 h-4 text-neutral"></i>
+            <i className="bi-view-stacked text-neutral"></i>
           )}
-        </div>
+        </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent sideOffset={4} align="end">
-        {/* View Mode Buttons */}
         <div className="px-1">
           <p className="text-sm text-neutral">{t("view")}</p>
           <div className="flex gap-1 border-border">
@@ -81,17 +80,20 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
                       );
 
               return (
-                <button
+                <Button
                   key={mode}
+                  variant="ghost"
+                  size="sm"
                   onClick={() => onChangeViewMode(mode)}
-                  className={`flex-1 btn btn-sm btn-ghost ${
-                    viewMode === mode
+                  className={
+                    `flex-1 ` +
+                    (viewMode === mode
                       ? "bg-primary/20 hover:bg-primary/20"
-                      : "hover:bg-neutral/20"
-                  }`}
+                      : "hover:bg-neutral/20")
+                  }
                 >
                   <Icon />
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -99,7 +101,6 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
 
         <DropdownMenuSeparator />
 
-        {/* Show Toggles */}
         <p className="text-sm text-neutral px-1">{t("show")}</p>
         {visibleShows.map((key) => (
           <DropdownMenuCheckboxItem
@@ -114,7 +115,6 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
           </DropdownMenuCheckboxItem>
         ))}
 
-        {/* Columns Slider */}
         {settings.viewMode !== ViewMode.List && (
           <>
             <DropdownMenuSeparator />

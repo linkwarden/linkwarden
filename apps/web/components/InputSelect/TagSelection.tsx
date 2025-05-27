@@ -41,7 +41,7 @@ export default function TagSelection({
   return (
     <CreatableSelect
       isClearable={false}
-      className="react-select-container"
+      className="react-select-container text-sm"
       classNamePrefix="react-select"
       onChange={onChange}
       options={isArchivalSelection ? options : tagOptions}

@@ -2,6 +2,7 @@ import React, { MouseEventHandler, ReactNode, useEffect } from "react";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { Drawer } from "vaul";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   toggleModal: Function;
@@ -73,15 +74,17 @@ export default function Modal({
             data-testid="modal-container"
           >
             {dismissible && (
-              <div
-                onClick={toggleModal as MouseEventHandler<HTMLDivElement>}
-                className="absolute top-4 right-3 btn btn-sm outline-none btn-circle btn-ghost z-10"
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleModal as MouseEventHandler<HTMLButtonElement>}
+                className="absolute top-4 right-3 z-10 rounded-full"
               >
                 <i
                   className="bi-x text-neutral text-xl"
                   data-testid="close-modal-button"
-                ></i>
-              </div>
+                />
+              </Button>
             )}
             {children}
           </div>

@@ -18,6 +18,7 @@ import useLocalSettingsStore from "@/store/localSettings";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
+import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -215,17 +216,15 @@ export default function Dashboard() {
                   </p>
 
                   <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
-                    <div
+                    <Button
                       onClick={() => {
                         setNewLinkModal(true);
                       }}
-                      className="inline-flex items-center gap-2 text-sm btn btn-accent dark:border-violet-400 text-white"
+                      variant="accent"
                     >
                       <i className="bi-plus-lg text-xl"></i>
-                      <span className="group-hover:opacity-0 text-right">
-                        {t("add_link")}
-                      </span>
-                    </div>
+                      {t("add_link")}
+                    </Button>
 
                     <ImportDropdown />
                   </div>

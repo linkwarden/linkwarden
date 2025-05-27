@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 export default function CollectionCard({
   collection,
@@ -75,16 +76,20 @@ export default function CollectionCard({
     <div className="relative">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="absolute top-3 right-3 z-20 btn btn-ghost btn-sm btn-square text-neutral">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-3 right-3 z-20"
+          >
             <i title="More" className="bi-three-dots text-xl" />
-          </button>
+          </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
           sideOffset={4}
           side="bottom"
           align="end"
-          className="mt-1 z-[30]"
+          className="z-[30]"
         >
           {permissions === true && (
             <DropdownMenuItem onSelect={() => setEditCollectionModal(true)}>
@@ -120,8 +125,9 @@ export default function CollectionCard({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
       <div
-        className="flex items-center absolute bottom-3 left-3 z-10 btn px-2 btn-ghost rounded-full"
+        className="flex items-center absolute bottom-3 left-3 z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
         onClick={() => setEditCollectionSharingModal(true)}
       >
         {collectionOwner.id && (

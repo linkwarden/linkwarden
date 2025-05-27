@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import NewLinkModal from "./ModalContent/NewLinkModal";
 import { useTranslation } from "next-i18next";
+import { Button } from "./ui/button";
 
 type Props = {
   text?: string;
@@ -27,17 +28,17 @@ export default function NoLinksFound({ text }: Props) {
       </p>
       <p className="text-center text-sm sm:text-base">{t("start_journey")}</p>
       <div className="text-center w-full mt-4">
-        <div
+        <Button
           onClick={() => {
             setNewLinkModal(true);
           }}
-          className="inline-flex gap-1 relative w-[11rem] items-center btn btn-accent dark:border-violet-400 text-white group"
+          variant="accent"
         >
           <i className="bi-plus-lg text-3xl left-2 group-hover:ml-[4rem] absolute duration-100"></i>
           <span className="group-hover:opacity-0 text-right w-full duration-100">
             {t("create_new_link")}
           </span>
-        </div>
+        </Button>
       </div>
       {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
     </div>

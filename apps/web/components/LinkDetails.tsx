@@ -33,6 +33,7 @@ import IconPopover from "./IconPopover";
 import TextInput from "./TextInput";
 import usePermissions from "@/hooks/usePermissions";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
+import { Button } from "./ui/button";
 
 type Props = {
   className?: string;
@@ -224,39 +225,44 @@ export default function LinkDetails({
             (permissions === true || permissions?.canUpdate) &&
             !isPublicRoute && (
               <div className="absolute top-0 bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 duration-100 flex justify-end items-end">
-                <label className="btn btn-xs mb-2 mr-3 opacity-50 hover:opacity-100">
-                  {t("upload_banner")}
-                  <input
-                    type="file"
-                    accept="image/jpg, image/jpeg, image/png"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
+                <Button
+                  className="mb-2 mr-3 opacity-50 hover:opacity-100 p-0"
+                  size="sm"
+                >
+                  <label className="cursor-pointer py-1 px-2 w-full">
+                    {t("upload_banner")}
+                    <input
+                      type="file"
+                      accept="image/jpg, image/jpeg"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
 
-                      const load = toast.loading(t("updating"));
+                        const load = toast.loading(t("updating"));
 
-                      await updateFile.mutateAsync(
-                        {
-                          linkId: link.id as number,
-                          file,
-                        },
-                        {
-                          onSettled: (data, error) => {
-                            toast.dismiss(load);
-
-                            if (error) {
-                              toast.error(error.message);
-                            } else {
-                              toast.success(t("updated"));
-                              setLink({ updatedAt: data.updatedAt, ...link });
-                            }
+                        await updateFile.mutateAsync(
+                          {
+                            linkId: link.id as number,
+                            file,
                           },
-                        }
-                      );
-                    }}
-                    className="hidden"
-                  />
-                </label>
+                          {
+                            onSettled: (data, error) => {
+                              toast.dismiss(load);
+
+                              if (error) {
+                                toast.error(error.message);
+                              } else {
+                                toast.success(t("updated"));
+                                setLink({ updatedAt: data.updatedAt, ...link });
+                              }
+                            },
+                          }
+                        );
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                </Button>
               </div>
             )}
         </div>
@@ -441,7 +447,7 @@ export default function LinkDetails({
                       <Link
                         href={"/tags/" + tag.id}
                         key={tag.id}
-                        className="bg-base-200 p-1 hover:bg-neutral-content btn btn-xs btn-ghost rounded-md"
+                        className="bg-base-200 py-1 px-2 hover:bg-neutral-content rounded-sm duration-150"
                       >
                         {tag.name}
                       </Link>
@@ -508,12 +514,14 @@ export default function LinkDetails({
                       className="tooltip tooltip-bottom"
                       data-tip={t("refresh_preserved_formats")}
                     >
-                      <button
-                        className="btn btn-xs btn-ghost btn-square text-neutral"
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-neutral"
                         onClick={() => onUpdateArchive()}
                       >
                         <i className="bi-arrow-clockwise text-sm" />
-                      </button>
+                      </Button>
                     </div>
                   )}
               </div>
@@ -650,17 +658,13 @@ export default function LinkDetails({
             <>
               <br />
               <div className="flex justify-end items-center">
-                <button
-                  className={clsx(
-                    "btn btn-accent text-white",
-                    JSON.stringify(activeLink) === JSON.stringify(link)
-                      ? "btn-disabled"
-                      : "dark:border-violet-400"
-                  )}
+                <Button
+                  variant="accent"
+                  disabled={JSON.stringify(activeLink) === JSON.stringify(link)}
                   onClick={submit}
                 >
                   {t("save_changes")}
-                </button>
+                </Button>
               </div>
             </>
           )}

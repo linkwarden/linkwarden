@@ -126,8 +126,9 @@ export default function Login({
                       cloud.linkwarden.app
                     </a>
                   </div>
-                  <div
-                    className="btn btn-sm btn-primary w-full"
+                  <Button
+                    variant="primary"
+                    size="full"
                     onClick={async () => {
                       const load = toast.loading(t("authenticating"));
 
@@ -147,7 +148,7 @@ export default function Login({
                     }}
                   >
                     {t("demo_button")}
-                  </div>
+                  </Button>
                 </div>
               </div>
             )}

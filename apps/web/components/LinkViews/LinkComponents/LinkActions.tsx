@@ -19,6 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -40,7 +41,7 @@ export default function LinkActions({
 
   const router = useRouter();
 
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+  const isPublicRoute = router.pathname.startsWith("/public");
 
   const getLink = useGetLink(isPublicRoute);
 
@@ -71,29 +72,37 @@ export default function LinkActions({
   return (
     <>
       {isPublicRoute ? (
-        <div
-          className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20 focus:outline-none"
+        <Button
+          variant="simple"
+          size="icon"
+          className={clsx(
+            "absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20",
+            btnStyle
+          )}
           onClick={() => setLinkModal(true)}
         >
-          <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>
-            <i title="More" className="bi-info-circle text-xl" />
-          </div>
-        </div>
+          <i title="More" className="bi-info-circle text-xl" />
+        </Button>
       ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
-              onMouseDown={(e) => e.preventDefault()}
+            <Button
+              asChild
+              variant="simple"
+              size="icon"
               className={clsx(
-                "absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 btn btn-sm btn-square text-neutral z-20 focus:outline-none",
+                "absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20",
                 btnStyle
               )}
+              onMouseDown={(e) => e.preventDefault()}
             >
-              <i title="More" className="bi-three-dots text-xl" />
-            </button>
+              <button>
+                <i title="More" className="bi-three-dots text-xl" />
+              </button>
+            </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent sideOffset={4} align="end" className="mt-1">
+          <DropdownMenuContent sideOffset={4} align="end">
             <DropdownMenuItem onSelect={() => pinLink(link)}>
               <i className="bi-pin" />
 

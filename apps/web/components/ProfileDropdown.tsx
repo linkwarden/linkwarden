@@ -11,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();
@@ -29,12 +30,12 @@ export default function ProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <div className="btn btn-circle btn-ghost">
+        <Button variant="ghost" className="rounded-full p-1">
           <ProfilePhoto
             src={user.image ? user.image : undefined}
             priority={true}
           />
-        </div>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem asChild>

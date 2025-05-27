@@ -2,6 +2,7 @@ import useLocalSettingsStore from "@/store/localSettings";
 import { useEffect, useState, ChangeEvent } from "react";
 import { useTranslation } from "next-i18next";
 import clsx from "clsx";
+import { Button } from "./ui/button";
 
 type Props = {
   className?: string;
@@ -33,18 +34,25 @@ export default function ToggleDarkMode({ className, align }: Props) {
         theme: settings.theme === "light" ? "Dark" : "Light",
       })}
     >
-      <label
-        className={`swap swap-rotate btn-square text-neutral btn btn-ghost btn-sm ${className}`}
+      <Button
+        asChild
+        variant="ghost"
+        size="icon"
+        className={`inline-grid swap swap-rotate text-neutral ${
+          className || ""
+        }`}
       >
-        <input
-          type="checkbox"
-          onChange={handleToggle}
-          className="theme-controller"
-          checked={theme === "dark"}
-        />
-        <i className="bi-sun-fill text-xl swap-on"></i>
-        <i className="bi-moon-fill text-xl swap-off"></i>
-      </label>
+        <label>
+          <input
+            type="checkbox"
+            onChange={handleToggle}
+            className="theme-controller"
+            checked={theme === "dark"}
+          />
+          <i className="bi-sun-fill text-xl swap-on"></i>
+          <i className="bi-moon-fill text-xl swap-off"></i>
+        </label>
+      </Button>
     </div>
   );
 }

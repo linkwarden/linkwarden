@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import IconPicker from "../IconPicker";
 import { IconWeight } from "@phosphor-icons/react";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
+import { Button } from "../ui/button";
 
 type Props = {
   onClose: Function;
@@ -107,12 +108,9 @@ export default function EditCollectionModal({
           </div>
         </div>
 
-        <button
-          className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto"
-          onClick={submit}
-        >
+        <Button variant="accent" className="ml-auto" onClick={submit}>
           {t("save_changes")}
-        </button>
+        </Button>
       </div>
     </Modal>
   );

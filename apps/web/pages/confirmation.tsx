@@ -5,6 +5,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { Button } from "@/components/ui/button";
 
 export default function EmailConfirmaion() {
   const router = useRouter();
@@ -52,9 +53,9 @@ export default function EmailConfirmaion() {
         <p>{t("verification_email_sent_desc")}</p>
 
         <div className="mx-auto w-fit mt-3">
-          <div className="btn btn-ghost btn-sm" onClick={resend}>
+          <Button onClick={resend} variant="ghost" size="sm">
             {t("resend_email")}
-          </div>
+          </Button>
         </div>
       </div>
     </CenteredForm>
