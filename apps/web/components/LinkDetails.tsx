@@ -34,6 +34,12 @@ import TextInput from "./TextInput";
 import usePermissions from "@/hooks/usePermissions";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
 import { Button } from "./ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Props = {
   className?: string;
@@ -271,13 +277,21 @@ export default function LinkDetails({
         (permissions === true || permissions?.canUpdate) &&
         !isPublicRoute ? (
           <div className="-mt-14 ml-8 relative w-fit pb-2">
-            <div className="tooltip tooltip-bottom" data-tip={t("change_icon")}>
-              <LinkIcon
-                link={link}
-                className="hover:bg-opacity-70 duration-100 cursor-pointer"
-                onClick={() => setIconPopover(true)}
-              />
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <LinkIcon
+                    link={link}
+                    className="hover:bg-opacity-70 duration-100 cursor-pointer"
+                    onClick={() => setIconPopover(true)}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{t("change_icon")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
             {iconPopover && (
               <IconPopover
                 color={link.color || oklchVariableToHex("--p")}
@@ -509,20 +523,25 @@ export default function LinkDetails({
 
                 {onUpdateArchive &&
                   (permissions === true || permissions?.canUpdate) &&
-                  !isPublicRoute && (
-                    <div
-                      className="tooltip tooltip-bottom"
-                      data-tip={t("refresh_preserved_formats")}
-                    >
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-neutral"
-                        onClick={() => onUpdateArchive()}
-                      >
-                        <i className="bi-arrow-clockwise text-sm" />
-                      </Button>
-                    </div>
+                  !isPublicRoute &&
+                  link.url && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-neutral"
+                            onClick={() => onUpdateArchive()}
+                          >
+                            <i className="bi-arrow-clockwise text-sm" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                          <p>{t("refresh_preserved_formats")}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
               </div>
 

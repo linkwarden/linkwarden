@@ -15,6 +15,12 @@ import {
 import { useArchiveAction, useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Props = {
   children: React.ReactNode;
@@ -165,50 +171,75 @@ const LinkListOptions = ({
             )}
           </div>
           <div className="flex gap-3">
-            <div
-              className="tooltip tooltip-top"
-              data-tip={t("refresh_preserved_formats")}
-            >
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => bulkRefreshPreservations()}
-                disabled={selectedLinks.length === 0}
-                className="text-white"
-              >
-                <i className="bi-arrow-clockwise text-sm" />
-              </Button>
-            </div>
-            <Button
-              onClick={() => setBulkEditLinksModal(true)}
-              variant="accent"
-              size="sm"
-              disabled={
-                selectedLinks.length === 0 ||
-                !(
-                  collectivePermissions === true ||
-                  collectivePermissions?.canUpdate
-                )
-              }
-            >
-              {t("edit")}
-            </Button>
-            <Button
-              onClick={(e) => {
-                e.shiftKey ? bulkDeleteLinks() : setBulkDeleteLinksModal(true);
-              }}
-              variant="destructive"
-              size="sm"
-              disabled={
-                selectedLinks.length === 0 ||
-                !(
-                  collectivePermissions === true ||
-                  collectivePermissions?.canDelete
-                )
-              }
-            >
-              {t("delete")}
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => bulkRefreshPreservations()}
+                    disabled={selectedLinks.length === 0}
+                  >
+                    <i className="bi-arrow-clockwise" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("refresh_preserved_formats")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setBulkEditLinksModal(true)}
+                    variant="ghost"
+                    size="icon"
+                    disabled={
+                      selectedLinks.length === 0 ||
+                      !(
+                        collectivePermissions === true ||
+                        collectivePermissions?.canUpdate
+                      )
+                    }
+                  >
+                    <i className="bi-pencil-square" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("edit")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={(e) => {
+                      e.shiftKey
+                        ? bulkDeleteLinks()
+                        : setBulkDeleteLinksModal(true);
+                    }}
+                    variant="ghost"
+                    size="icon"
+                    disabled={
+                      selectedLinks.length === 0 ||
+                      !(
+                        collectivePermissions === true ||
+                        collectivePermissions?.canDelete
+                      )
+                    }
+                  >
+                    <i className="bi-trash text-error" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p> {t("delete")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       )}

@@ -24,6 +24,12 @@ import { usePublicLinks } from "@linkwarden/router/publicLinks";
 import Links from "@/components/LinkViews/Links";
 import { usePublicTags } from "@linkwarden/router/publicTags";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
@@ -180,34 +186,45 @@ export default function PublicCollections() {
             </div>
 
             <div className="flex flex-col gap-2 items-center mt-10 min-w-fit">
-              <div
-                className="tooltip tooltip-left w-fit"
-                data-tip={t("list_created_with_linkwarden")}
-              >
-                <Link href="https://linkwarden.app/" target="_blank">
-                  <Image
-                    src={`/icon.png`}
-                    width={551}
-                    height={551}
-                    alt={t("linkwarden_icon")}
-                    className="h-8 w-fit mx-auto rounded"
-                  />
-                </Link>
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Link href="https://linkwarden.app/" target="_blank">
+                      <Image
+                        src={`/icon.png`}
+                        width={551}
+                        height={551}
+                        alt={t("linkwarden_icon")}
+                        className="h-8 w-fit mx-auto rounded"
+                      />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>{t("list_created_with_linkwarden")}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
               <ToggleDarkMode align="left" />
 
-              <div className="tooltip tooltip-left" data-tip={t("rss_feed")}>
-                <Button asChild variant="ghost" size="icon">
-                  <Link
-                    href={`/public/collections/${collection.id}/rss`}
-                    target="_blank"
-                    className="text-neutral"
-                  >
-                    <i className="bi bi-rss text-xl"></i>
-                  </Link>
-                </Button>
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button asChild variant="ghost" size="icon">
+                      <Link
+                        href={`/public/collections/${collection.id}/rss`}
+                        target="_blank"
+                        className="text-neutral"
+                      >
+                        <i className="bi bi-rss text-xl"></i>
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>{t("rss_feed")}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
 
