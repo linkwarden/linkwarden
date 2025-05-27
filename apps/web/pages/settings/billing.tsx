@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface User extends U {
   subscriptions: {
@@ -127,13 +128,14 @@ export default function Billing() {
         </div>
 
         <div className="flex gap-3">
-          <div
+          <Button
+            variant="accent"
             onClick={() => setInviteModal(true)}
-            className="flex items-center btn btn-accent dark:border-violet-400 text-white btn-sm px-2 h-[2.15rem] relative"
+            className="flex items-center px-2 h-[2.15rem] relative"
           >
             <p>{t("invite_user")}</p>
             <i className="bi-plus text-xl"></i>
-          </div>
+          </Button>
         </div>
       </div>
 
@@ -200,15 +202,16 @@ export default function Billing() {
                   <td className="relative">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onMouseDown={(e) => e.preventDefault()}
-                          className="btn btn-ghost btn-sm btn-square duration-100"
                           title={t("more")}
                         >
                           <i
                             className={"bi bi-three-dots text-lg text-neutral"}
                           ></i>
-                        </button>
+                        </Button>
                       </DropdownMenuTrigger>
 
                       <DropdownMenuContent

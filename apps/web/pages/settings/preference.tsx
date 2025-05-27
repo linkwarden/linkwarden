@@ -1,6 +1,5 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useState, useEffect } from "react";
-import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
@@ -13,7 +12,7 @@ import { useTags, useUpdateArchivalTags } from "@linkwarden/router/tags";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useArchivalTags } from "@/hooks/useArchivalTags";
 import { isArchivalTag } from "@linkwarden/lib";
-import clsx from "clsx";
+import { Button } from "@/components/ui/button";
 
 export default function Preference() {
   const { t } = useTranslation();
@@ -455,12 +454,14 @@ export default function Preference() {
                       <span className="block sm:text-lg truncate max-w-sm">
                         {tag.label}
                       </span>
-                      <button
-                        className="py-1 px-2 btn btn-sm btn-ghost btn-square hover:bg-red-500"
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => removeTag(tag)}
+                        className="hover:bg-red-500"
                       >
                         <i className="bi-x text-lg leading-none"></i>
-                      </button>
+                      </Button>
                     </div>
                     <div className="flex flex-wrap items-center justify-between gap-1 mt-1">
                       <p className="text-sm">{t("preservation_rules")}</p>
@@ -471,15 +472,18 @@ export default function Preference() {
                             className="tooltip tooltip-top"
                             data-tip={label}
                           >
-                            <button
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() => toggleOption(tag, type)}
-                              className={clsx(
-                                "py-1 px-2 btn btn-sm btn-square",
-                                tag[type] ? "btn-primary" : "btn-ghost"
-                              )}
+                              className={
+                                tag[type]
+                                  ? "bg-primary hover:bg-primary text-primary-foreground hover:text-primary-foreground"
+                                  : ""
+                              }
                             >
                               <i className={`${icon} text-lg leading-none`}></i>
-                            </button>
+                            </Button>
                           </div>
                         ))}
                       </div>
@@ -608,12 +612,14 @@ export default function Preference() {
           </div>
         </div>
 
-        <SubmitButton
+        <Button
           onClick={submit}
-          loading={submitLoader}
-          label={t("save_changes")}
+          disabled={submitLoader}
           className="mt-2 w-full sm:w-fit"
-        />
+          variant="accent"
+        >
+          {t("save_changes")}
+        </Button>
       </div>
     </SettingsLayout>
   );

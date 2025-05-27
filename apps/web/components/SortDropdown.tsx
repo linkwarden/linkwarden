@@ -11,6 +11,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 type Props = {
   sortBy: Sort;
@@ -34,9 +35,9 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="btn btn-sm btn-square btn-ghost border-none">
+        <Button variant="ghost" size="icon">
           <i className="bi-chevron-expand text-neutral text-xl"></i>
-        </button>
+        </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent sideOffset={4} align="end">

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Link from "next/link";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   children: ReactNode;
@@ -37,19 +38,25 @@ export default function SettingsLayout({ children }: Props) {
 
         <div className="w-full min-h-screen p-5 lg:ml-64">
           <div className="gap-2 inline-flex mr-3">
-            <div
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-neutral lg:hidden"
               onClick={toggleSidebar}
-              className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden"
             >
-              <i className="bi-list text-xl leading-none"></i>
-            </div>
+              <i className="bi-list text-xl leading-none" />
+            </Button>
 
-            <Link
-              href="/dashboard"
-              className="text-neutral btn btn-square btn-sm btn-ghost"
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="text-neutral"
             >
-              <i className="bi-chevron-left text-xl"></i>
-            </Link>
+              <Link href="/dashboard">
+                <i className="bi-chevron-left text-xl" />
+              </Link>
+            </Button>
           </div>
 
           {children}

@@ -6,6 +6,7 @@ import ConfirmationModal from "@/components/ConfirmationModal";
 import { LinkArchiveActionSchemaType } from "@linkwarden/lib/schemaValidation";
 import toast from "react-hot-toast";
 import { useArchiveAction } from "@linkwarden/router/links";
+import { Button } from "@/components/ui/button";
 
 export default function Worker() {
   const { t } = useTranslation();
@@ -58,36 +59,39 @@ export default function Worker() {
       <div className="w-full flex flex-col gap-6 justify-between">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <span>{t("regenerate_broken_preservations")}</span>
-          <button
+          <Button
             onClick={() => submit("allBroken")}
-            className={`btn btn-sm ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
+            className="ml-auto"
+            variant="primary"
           >
             {t("confirm")}
-          </button>
+          </Button>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <span>{t("delete_all_preservations_and_regenerate")}</span>
-          <button
-            className={`btn btn-sm ml-auto btn-error text-white tracking-wider w-fit flex items-center gap-2`}
+          <Button
+            className="ml-auto"
+            variant="destructive"
             onClick={() => {
               setAction("allAndRePreserve");
               setShowModal(true);
             }}
           >
             {t("confirm")}
-          </button>
+          </Button>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <span>{t("delete_all_preservations")}</span>
-          <button
-            className={`btn btn-sm ml-auto btn-error text-white tracking-wider w-fit flex items-center gap-2`}
+          <Button
+            className="ml-auto"
+            variant="destructive"
             onClick={() => {
               setAction("allAndIgnore");
               setShowModal(true);
             }}
           >
             {t("confirm")}
-          </button>
+          </Button>
         </div>
       </div>
       {showModal && action && (

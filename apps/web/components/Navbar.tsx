@@ -17,6 +17,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -45,47 +46,52 @@ export default function Navbar() {
 
   return (
     <div className="flex justify-between gap-2 items-center pl-3 pr-4 py-2 border-solid border-b-neutral-content border-b">
-      <div
+      <Button
+        variant="ghost"
+        size="icon"
+        className="text-neutral lg:hidden sm:inline-flex"
         onClick={() => {
           setSidebar(true);
           document.body.style.overflow = "hidden";
         }}
-        className="text-neutral btn btn-square btn-sm btn-ghost lg:hidden sm:inline-flex"
       >
-        <i className="bi-list text-xl leading-none"></i>
-      </div>
+        <i className="bi-list text-xl leading-none" />
+      </Button>
+
       <SearchBar />
+
       <div className="flex items-center gap-2">
         <ToggleDarkMode className="hidden sm:inline-grid" />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="tooltip tooltip-bottom" data-tip={t("create_new")}>
-              <div
-                role="button"
-                className="flex min-w-[3.4rem] items-center btn btn-accent dark:border-violet-400 text-white btn-sm max-h-[2rem] px-2 relative"
+              <Button
+                variant="accent"
+                size="sm"
+                className="min-w-[3.3rem] h-[2rem]"
               >
                 <span>
-                  <i className="bi-plus text-4xl absolute -top-[0.3rem] left-0 pointer-events-none"></i>
+                  <i className="bi-plus text-4xl absolute -top-[0.15rem] left-0 pointer-events-none" />
                 </span>
                 <span>
-                  <i className="bi-caret-down-fill text-xs absolute top-2 right-[0.3rem] pointer-events-none"></i>
+                  <i className="bi-caret-down-fill text-xs absolute top-[0.7rem] right-[0.4rem] pointer-events-none" />
                 </span>
-              </div>
+              </Button>
             </div>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent>
             <DropdownMenuItem onSelect={() => setNewLinkModal(true)}>
-              <i className="bi-link-45deg"></i>
+              <i className="bi-link-45deg" />
               {t("new_link")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => setUploadFileModal(true)}>
-              <i className="bi-file-earmark-arrow-up"></i>
+              <i className="bi-file-earmark-arrow-up" />
               {t("upload_file")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => setNewCollectionModal(true)}>
-              <i className="bi-folder"></i>
+              <i className="bi-folder" />
               {t("new_collection")}
             </DropdownMenuItem>
           </DropdownMenuContent>

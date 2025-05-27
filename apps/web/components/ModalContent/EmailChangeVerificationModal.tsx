@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
+import { Button } from "../ui/button";
 
 type Props = {
   onClose: Function;
@@ -61,12 +62,9 @@ export default function EmailChangeVerificationModal({
         </div>
 
         <div className="flex justify-end items-center">
-          <button
-            className="btn btn-accent dark:border-violet-400 text-white"
-            onClick={() => onSubmit(password)}
-          >
+          <Button variant="accent" onClick={() => onSubmit(password)}>
             {t("confirm")}
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

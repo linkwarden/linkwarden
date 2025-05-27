@@ -23,6 +23,7 @@ import LinkListOptions from "@/components/LinkListOptions";
 import { usePublicLinks } from "@linkwarden/router/publicLinks";
 import Links from "@/components/LinkViews/Links";
 import { usePublicTags } from "@linkwarden/router/publicTags";
+import { Button } from "@/components/ui/button";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
@@ -113,15 +114,13 @@ export default function PublicCollections() {
         <div className="lg:w-3/4 max-w-[1500px] w-full mx-auto p-5 bg">
           <div className="flex justify-between gap-2">
             <div className="w-full">
-              <p className="text-4xl font-thin mb-2 mt-10">
-                {collection.name}
-              </p>
+              <p className="text-4xl font-thin mb-2 mt-10">{collection.name}</p>
 
               <div className="mt-3">
                 <div className={`min-w-[15rem]`}>
                   <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
                     <div
-                      className="flex items-center btn px-2 btn-ghost rounded-full"
+                      className="flex items-center z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
                       onClick={() => setEditCollectionSharingModal(true)}
                     >
                       {collectionOwner.id && (
@@ -139,8 +138,8 @@ export default function PublicCollections() {
                             <ProfilePhoto
                               key={i}
                               src={e.user.image ? e.user.image : undefined}
-                              className="-ml-3"
                               name={e.user.name}
+                              className="-ml-3"
                             />
                           );
                         })
@@ -199,13 +198,15 @@ export default function PublicCollections() {
               <ToggleDarkMode align="left" />
 
               <div className="tooltip tooltip-left" data-tip={t("rss_feed")}>
-                <Link
-                  href={`/public/collections/${collection.id}/rss`}
-                  target="_blank"
-                  className="text-neutral btn btn-ghost btn-sm size-8"
-                >
-                  <i className="bi bi-rss text-xl"></i>
-                </Link>
+                <Button asChild variant="ghost" size="icon">
+                  <Link
+                    href={`/public/collections/${collection.id}/rss`}
+                    target="_blank"
+                    className="text-neutral"
+                  >
+                    <i className="bi bi-rss text-xl"></i>
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

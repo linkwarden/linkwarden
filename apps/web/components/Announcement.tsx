@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React, { MouseEventHandler } from "react";
 import { Trans } from "next-i18next";
+import { Button } from "./ui/button";
 
 type Props = {
   toggleAnnouncementBar: MouseEventHandler<HTMLButtonElement>;
@@ -27,12 +28,9 @@ export default function Announcement({ toggleAnnouncementBar }: Props) {
             ]}
           />
         </p>
-        <button
-          onClick={toggleAnnouncementBar}
-          className="btn btn-ghost btn-square btn-sm"
-        >
+        <Button variant="ghost" size="icon" onClick={toggleAnnouncementBar}>
           <i className="bi-x text-xl"></i>
-        </button>
+        </Button>
       </div>
     </div>
   );

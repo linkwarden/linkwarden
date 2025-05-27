@@ -14,6 +14,7 @@ import {
 } from "@linkwarden/types";
 import { useArchiveAction, useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   children: React.ReactNode;
@@ -116,20 +117,19 @@ const LinkListOptions = ({
               links.length > 0 &&
               editMode !== undefined &&
               setEditMode && (
-                <div
-                  role="button"
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => {
                     setEditMode(!editMode);
                     setSelectedLinks([]);
                   }}
-                  className={`btn btn-square btn-sm btn-ghost ${
-                    editMode
-                      ? "bg-primary/20 hover:bg-primary/20"
-                      : "hover:bg-neutral/20"
-                  }`}
+                  className={
+                    editMode ? "bg-primary/20 hover:bg-primary/20" : ""
+                  }
                 >
-                  <i className="bi-pencil-fill text-neutral text-xl"></i>
-                </div>
+                  <i className="bi-pencil-fill text-neutral text-xl" />
+                </Button>
               )}
             <SortDropdown
               sortBy={sortBy}
@@ -169,17 +169,20 @@ const LinkListOptions = ({
               className="tooltip tooltip-top"
               data-tip={t("refresh_preserved_formats")}
             >
-              <button
-                disabled={selectedLinks.length === 0}
-                className="btn btn-sm btn-ghost text-white"
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => bulkRefreshPreservations()}
+                disabled={selectedLinks.length === 0}
+                className="text-white"
               >
                 <i className="bi-arrow-clockwise text-sm" />
-              </button>
+              </Button>
             </div>
-            <button
+            <Button
               onClick={() => setBulkEditLinksModal(true)}
-              className="btn btn-sm btn-accent text-white w-fit ml-auto"
+              variant="accent"
+              size="sm"
               disabled={
                 selectedLinks.length === 0 ||
                 !(
@@ -189,12 +192,13 @@ const LinkListOptions = ({
               }
             >
               {t("edit")}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={(e) => {
                 e.shiftKey ? bulkDeleteLinks() : setBulkDeleteLinksModal(true);
               }}
-              className="btn btn-sm bg-red-500 hover:bg-red-400 text-white w-fit ml-auto"
+              variant="destructive"
+              size="sm"
               disabled={
                 selectedLinks.length === 0 ||
                 !(
@@ -204,7 +208,7 @@ const LinkListOptions = ({
               }
             >
               {t("delete")}
-            </button>
+            </Button>
           </div>
         </div>
       )}

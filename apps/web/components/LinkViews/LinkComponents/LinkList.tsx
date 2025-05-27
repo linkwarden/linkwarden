@@ -153,11 +153,10 @@ export default function LinkCardCompact({ link, editMode }: Props) {
             </div>
           </div>
         </div>
-        {!isPublic && <LinkPin link={link} btnStyle="btn-ghost" />}
+        {!isPublic && <LinkPin link={link} />}
         <LinkActions
           link={link}
           collection={collection}
-          btnStyle="btn-ghost"
           linkModal={linkModal}
           setLinkModal={(e) => setLinkModal(e)}
         />
