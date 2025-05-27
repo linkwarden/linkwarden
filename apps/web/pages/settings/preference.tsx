@@ -458,7 +458,7 @@ export default function Preference() {
                         variant="ghost"
                         size="icon"
                         onClick={() => removeTag(tag)}
-                        className="hover:bg-red-500"
+                        className="hover:text-error"
                       >
                         <i className="bi-x text-lg leading-none"></i>
                       </Button>
