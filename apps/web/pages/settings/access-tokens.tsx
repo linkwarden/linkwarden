@@ -7,6 +7,12 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTokens } from "@linkwarden/router/tokens";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function AccessTokens() {
   const [newTokenModal, setNewTokenModal] = useState(false);
@@ -58,12 +64,14 @@ export default function AccessTokens() {
                   <tr>
                     <td className={token.isSession ? "text-primary" : ""}>
                       {token.isSession ? (
-                        <div
-                          className="tooltip tooltip-right text-left"
-                          data-tip={t("permanent_session")}
-                        >
-                          {token.name}
-                        </div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger> {token.name}</TooltipTrigger>
+                            <TooltipContent>
+                              <p>{t("permanent_session")}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       ) : (
                         token.name
                       )}

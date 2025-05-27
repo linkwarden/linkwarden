@@ -13,6 +13,12 @@ import TagSelection from "@/components/InputSelect/TagSelection";
 import { useArchivalTags } from "@/hooks/useArchivalTags";
 import { isArchivalTag } from "@linkwarden/lib";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Preference() {
   const { t } = useTranslation();
@@ -467,24 +473,29 @@ export default function Preference() {
                       <p className="text-sm">{t("preservation_rules")}</p>
                       <div className="flex gap-1">
                         {ARCHIVAL_OPTIONS.map(({ type, icon, label }) => (
-                          <div
-                            key={type}
-                            className="tooltip tooltip-top"
-                            data-tip={label}
-                          >
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => toggleOption(tag, type)}
-                              className={
-                                tag[type]
-                                  ? "bg-primary hover:bg-primary text-primary-foreground hover:text-primary-foreground"
-                                  : ""
-                              }
-                            >
-                              <i className={`${icon} text-lg leading-none`}></i>
-                            </Button>
-                          </div>
+                          <TooltipProvider key={type}>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => toggleOption(tag, type)}
+                                  className={
+                                    tag[type]
+                                      ? "bg-primary hover:bg-primary text-primary-foreground hover:text-primary-foreground"
+                                      : ""
+                                  }
+                                >
+                                  <i
+                                    className={`${icon} text-lg leading-none`}
+                                  ></i>
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{label}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         ))}
                       </div>
                     </div>

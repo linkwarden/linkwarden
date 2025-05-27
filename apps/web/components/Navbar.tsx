@@ -18,6 +18,12 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -64,21 +70,28 @@ export default function Navbar() {
         <ToggleDarkMode className="hidden sm:inline-grid" />
 
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="tooltip tooltip-bottom" data-tip={t("create_new")}>
-              <Button
-                variant="accent"
-                size="sm"
-                className="min-w-[3.3rem] h-[2rem]"
-              >
-                <span>
-                  <i className="bi-plus text-4xl absolute -top-[0.15rem] left-0 pointer-events-none" />
-                </span>
-                <span>
-                  <i className="bi-caret-down-fill text-xs absolute top-[0.7rem] right-[0.4rem] pointer-events-none" />
-                </span>
-              </Button>
-            </div>
+          <DropdownMenuTrigger>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button
+                    variant="accent"
+                    size="sm"
+                    className="min-w-[3.4rem] h-[2rem] relative"
+                  >
+                    <span>
+                      <i className="bi-plus text-4xl absolute -top-[0.3rem] left-0 pointer-events-none" />
+                    </span>
+                    <span>
+                      <i className="bi-caret-down-fill text-xs absolute top-[0.6rem] right-[0.4rem] pointer-events-none" />
+                    </span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("create_new")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent>
