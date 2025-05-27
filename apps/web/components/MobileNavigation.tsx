@@ -12,6 +12,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 type Props = {};
 
@@ -38,9 +39,12 @@ export default function MobileNavigation({}: Props) {
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="-mt-4 flex items-center btn btn-accent dark:border-violet-400 text-white btn-circle w-20 h-20 px-2 relative">
+              <Button
+                className="-mt-4 flex items-center w-20 h-20 aspect-square px-2 relative rounded-full"
+                variant="accent"
+              >
                 <i className="bi-plus text-5xl pointer-events-none"></i>
-              </div>
+              </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent>

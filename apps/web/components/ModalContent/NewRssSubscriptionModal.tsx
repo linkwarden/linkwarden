@@ -5,6 +5,7 @@ import { useAddRssSubscription } from "@linkwarden/router/rss";
 import toast from "react-hot-toast";
 import TextInput from "../TextInput";
 import CollectionSelection from "../InputSelect/CollectionSelection";
+import { Button } from "../ui/button";
 
 type Props = {
   onClose: Function;
@@ -94,12 +95,9 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
           />
         </div>
         <div className="flex justify-end items-center mt-5">
-          <button
-            className="btn btn-accent dark:border-violet-400 text-white"
-            onClick={submit}
-          >
+          <Button variant="accent" onClick={submit}>
             {t("create_rss_subscription")}
-          </button>
+          </Button>
         </div>
       </>
     </Modal>

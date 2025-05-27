@@ -23,6 +23,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   onClose: Function;
@@ -97,12 +98,10 @@ export default function EditCollectionSharingModal({
       ...collection,
       members: [...collection.members, newMember],
     });
-
     setMemberIdentifier("");
   };
 
   const router = useRouter();
-
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   return (
@@ -113,7 +112,7 @@ export default function EditCollectionSharingModal({
           : t("team")}
       </p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <div className="divider mb-3 mt-1" />
 
       <div className="flex flex-col gap-3">
         {permissions === true && !isPublicRoute && (
@@ -146,7 +145,7 @@ export default function EditCollectionSharingModal({
         {collection.isPublic && (
           <div>
             <p className="mb-2">{t("sharable_link")}</p>
-            <div className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 bg-base-200 border-neutral-content border-solid border flex items-center gap-2 justify-between">
+            <div className="w-full hide-scrollbar overflow-x-auto whitespace-nowrap rounded-md p-2 bg-base-200 border-neutral-content border flex items-center gap-2 justify-between">
               {publicCollectionURL}
               <CopyButton text={publicCollectionURL} />
             </div>
@@ -154,7 +153,7 @@ export default function EditCollectionSharingModal({
         )}
 
         {permissions === true && !isPublicRoute && (
-          <div className="divider my-3"></div>
+          <div className="divider my-3" />
         )}
 
         {permissions === true && !isPublicRoute && (
@@ -163,7 +162,7 @@ export default function EditCollectionSharingModal({
 
             <div className="flex items-center gap-2">
               <TextInput
-                value={memberIdentifier || ""}
+                value={memberIdentifier}
                 className="bg-base-200"
                 placeholder={t("add_member_placeholder")}
                 onChange={(e) => setMemberIdentifier(e.target.value)}
@@ -171,7 +170,7 @@ export default function EditCollectionSharingModal({
                   e.key === "Enter" &&
                   addMemberToCollection(
                     user,
-                    memberIdentifier.replace(/^@/, "") || "",
+                    memberIdentifier.replace(/^@/, ""),
                     collection,
                     setMemberState,
                     t
@@ -179,20 +178,22 @@ export default function EditCollectionSharingModal({
                 }
               />
 
-              <div
+              <Button
+                variant="accent"
+                size="icon"
+                className="h-10 w-10"
                 onClick={() =>
                   addMemberToCollection(
                     user,
-                    memberIdentifier.replace(/^@/, "") || "",
+                    memberIdentifier.replace(/^@/, ""),
                     collection,
                     setMemberState,
                     t
                   )
                 }
-                className="btn btn-accent dark:border-violet-400 text-white btn-square btn-sm h-10 w-10"
               >
-                <i className="bi-person-add text-xl"></i>
-              </div>
+                <i className="bi-person-add text-xl" />
+              </Button>
             </div>
           </>
         )}
@@ -231,11 +232,11 @@ export default function EditCollectionSharingModal({
                 </div>
               </div>
 
-              <div className="divider my-0 last:hidden h-[3px]"></div>
+              <div className="divider my-0 last:hidden h-[1px]"></div>
 
               {collection.members
                 .sort((a, b) => (a.userId as number) - (b.userId as number))
-                .map((e, i) => {
+                .map((e) => {
                   const roleKey: "viewer" | "contributor" | "admin" =
                     !e.canCreate && !e.canUpdate && !e.canDelete
                       ? "viewer"
@@ -259,109 +260,98 @@ export default function EditCollectionSharingModal({
                   };
 
                   return (
-                    <React.Fragment key={i}>
-                      <div className="relative p-3 bg-base-200 rounded-xl flex gap-2 justify-between border-none">
-                        <div
-                          className={"flex items-center justify-between w-full"}
-                        >
-                          <div className={"flex items-center"}>
-                            <div className={"shrink-0"}>
-                              <ProfilePhoto
-                                src={e.user.image ? e.user.image : undefined}
-                                name={e.user.name}
-                              />
-                            </div>
-                            <div className={"grow ml-2"}>
-                              <p className="text-sm font-semibold">
-                                {e.user.name}
-                              </p>
-                              <p className="text-xs text-neutral">
-                                @{e.user.username}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className={"flex items-center gap-2"}>
-                            {permissions === true && !isPublicRoute ? (
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <div className="btn btn-sm btn-primary font-normal">
-                                    {t(roleKey)}
-                                    <i className="bi-chevron-down"></i>
-                                  </div>
-                                </DropdownMenuTrigger>
-
-                                <DropdownMenuContent sideOffset={4} align="end">
-                                  <DropdownMenuRadioGroup
-                                    value={roleKey}
-                                    onValueChange={handleRoleChange}
-                                  >
-                                    <DropdownMenuRadioItem value="viewer">
-                                      <div>
-                                        <p className="font-bold whitespace-nowrap">
-                                          {t("viewer")}
-                                        </p>
-                                        <p className="whitespace-nowrap">
-                                          {t("viewer_desc")}
-                                        </p>
-                                      </div>
-                                    </DropdownMenuRadioItem>
-
-                                    <DropdownMenuRadioItem value="contributor">
-                                      <div>
-                                        <p className="font-bold whitespace-nowrap">
-                                          {t("contributor")}
-                                        </p>
-                                        <p className="whitespace-nowrap">
-                                          {t("contributor_desc")}
-                                        </p>
-                                      </div>
-                                    </DropdownMenuRadioItem>
-
-                                    <DropdownMenuRadioItem value="admin">
-                                      <div>
-                                        <p className="font-bold whitespace-nowrap">
-                                          {t("admin")}
-                                        </p>
-                                        <p className="whitespace-nowrap">
-                                          {t("admin_desc")}
-                                        </p>
-                                      </div>
-                                    </DropdownMenuRadioItem>
-                                  </DropdownMenuRadioGroup>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            ) : (
-                              <p className="text-sm text-neutral">
-                                {t(roleKey)}
-                              </p>
-                            )}
-
-                            {permissions === true && !isPublicRoute && (
-                              <i
-                                className={
-                                  "bi-x text-xl btn btn-sm btn-square btn-ghost text-neutral hover:text-red-500 dark:hover:text-red-500 duration-100 cursor-pointer"
-                                }
-                                title={t("remove_member")}
-                                onClick={() => {
-                                  const updatedMembers =
-                                    collection.members.filter((member) => {
-                                      return (
-                                        member.user.username !== e.user.username
-                                      );
-                                    });
-                                  setCollection({
-                                    ...collection,
-                                    members: updatedMembers,
-                                  });
-                                }}
-                              />
-                            )}
-                          </div>
+                    <div
+                      key={e.userId}
+                      className="relative p-3 bg-base-200 rounded-xl flex gap-2 justify-between border-none"
+                    >
+                      <div className="flex items-center">
+                        <ProfilePhoto
+                          src={e.user.image ? e.user.image : undefined}
+                          name={e.user.name}
+                        />
+                        <div className="ml-2">
+                          <p className="text-sm font-semibold">{e.user.name}</p>
+                          <p className="text-xs text-neutral">
+                            @{e.user.username}
+                          </p>
                         </div>
                       </div>
-                      <div className="divider my-0 last:hidden h-[3px]"></div>
-                    </React.Fragment>
+
+                      <div className="flex items-center gap-2">
+                        {permissions === true && !isPublicRoute ? (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8">
+                                {t(roleKey)} <i className="bi-chevron-down" />
+                              </Button>
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent sideOffset={4} align="end">
+                              <DropdownMenuRadioGroup
+                                value={roleKey}
+                                onValueChange={handleRoleChange}
+                              >
+                                <DropdownMenuRadioItem value="viewer">
+                                  <div>
+                                    <p className="font-bold whitespace-nowrap">
+                                      {t("viewer")}
+                                    </p>
+                                    <p className="whitespace-nowrap">
+                                      {t("viewer_desc")}
+                                    </p>
+                                  </div>
+                                </DropdownMenuRadioItem>
+
+                                <DropdownMenuRadioItem value="contributor">
+                                  <div>
+                                    <p className="font-bold whitespace-nowrap">
+                                      {t("contributor")}
+                                    </p>
+                                    <p className="whitespace-nowrap">
+                                      {t("contributor_desc")}
+                                    </p>
+                                  </div>
+                                </DropdownMenuRadioItem>
+
+                                <DropdownMenuRadioItem value="admin">
+                                  <div>
+                                    <p className="font-bold whitespace-nowrap">
+                                      {t("admin")}
+                                    </p>
+                                    <p className="whitespace-nowrap">
+                                      {t("admin_desc")}
+                                    </p>
+                                  </div>
+                                </DropdownMenuRadioItem>
+                              </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        ) : (
+                          <p className="text-sm text-neutral">{t(roleKey)}</p>
+                        )}
+
+                        {permissions === true && !isPublicRoute && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-neutral hover:text-red-500"
+                            onClick={() => {
+                              setCollection({
+                                ...collection,
+                                members: collection.members.filter(
+                                  (member) => member.userId !== e.userId
+                                ),
+                              });
+                            }}
+                          >
+                            <i
+                              className="bi-x text-xl"
+                              title={t("remove_member")}
+                            />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   );
                 })}
             </div>
@@ -369,12 +359,13 @@ export default function EditCollectionSharingModal({
         )}
 
         {permissions === true && !isPublicRoute && (
-          <button
-            className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto mt-3"
+          <Button
+            variant="accent"
+            className="w-fit ml-auto mt-3"
             onClick={submit}
           >
             {t("save_changes")}
-          </button>
+          </Button>
         )}
       </div>
     </Modal>

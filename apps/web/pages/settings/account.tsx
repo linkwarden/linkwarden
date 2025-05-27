@@ -5,7 +5,6 @@ import SettingsLayout from "@/layouts/SettingsLayout";
 import TextInput from "@/components/TextInput";
 import { resizeImage } from "@/lib/client/resizeImage";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import SubmitButton from "@/components/SubmitButton";
 import React from "react";
 import Link from "next/link";
 import Checkbox from "@/components/Checkbox";
@@ -287,7 +286,8 @@ export default function Account() {
           )}
         </div>
 
-        <SubmitButton
+        <Button
+          variant="accent"
           onClick={() => {
             if (account.email !== user.email) {
               setEmailChangeVerificationModal(true);
@@ -295,10 +295,11 @@ export default function Account() {
               submit();
             }
           }}
-          loading={submitLoader}
-          label={t("save_changes")}
+          disabled={submitLoader}
           className="mt-2 w-full sm:w-fit"
-        />
+        >
+          {t("save_changes")}
+        </Button>
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">

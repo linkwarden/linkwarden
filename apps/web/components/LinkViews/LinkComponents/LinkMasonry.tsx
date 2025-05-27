@@ -30,6 +30,7 @@ import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
 import LinkFormats from "./LinkFormats";
 import openLink from "@/lib/client/openLink";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -226,16 +227,17 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
           {show.tags && link.tags && link.tags[0] && (
             <div className="flex gap-1 items-center flex-wrap">
               {link.tags.map((e, i) => (
-                <Link
-                  href={"/tags/" + e.id}
-                  key={i}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  className="btn btn-xs btn-ghost truncate max-w-[19rem]"
-                >
-                  #{e.name}
-                </Link>
+                <Button variant="ghost" size="sm" key={i}>
+                  <Link
+                    href={"/tags/" + e.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="truncate max-w-[19rem]"
+                  >
+                    #{e.name}
+                  </Link>
+                </Button>
               ))}
             </div>
           )}

@@ -11,6 +11,7 @@ import LinkListOptions from "@/components/LinkListOptions";
 import { useRemoveTag, useTags, useUpdateTag } from "@linkwarden/router/tags";
 import Links from "@/components/LinkViews/Links";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -150,7 +151,7 @@ export default function Index() {
         >
           <div className="flex gap-3 items-center">
             <div className="flex gap-2 items-center font-thin">
-              <i className={"bi-hash text-primary text-3xl"} />
+              <i className="bi-hash text-primary text-3xl" />
 
               {renameTag ? (
                 <form onSubmit={submit} className="flex items-center gap-2">
@@ -161,20 +162,12 @@ export default function Index() {
                     value={newTagName}
                     onChange={(e) => setNewTagName(e.target.value)}
                   />
-                  <div
-                    onClick={() => submit()}
-                    id="expand-dropdown"
-                    className="btn btn-ghost btn-square btn-sm"
-                  >
-                    <i className={"bi-check2 text-neutral text-xl"}></i>
-                  </div>
-                  <div
-                    onClick={() => cancelUpdateTag()}
-                    id="expand-dropdown"
-                    className="btn btn-ghost btn-square btn-sm"
-                  >
-                    <i className={"bi-x text-neutral text-xl"}></i>
-                  </div>
+                  <Button variant="ghost" size="icon" onClick={submit}>
+                    <i className="bi-check2 text-neutral text-xl" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={cancelUpdateTag}>
+                    <i className="bi-x text-neutral text-xl" />
+                  </Button>
                 </form>
               ) : (
                 <>
@@ -182,12 +175,16 @@ export default function Index() {
                   <div className="relative">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button
-                          className="btn btn-ghost btn-sm btn-square text-neutral"
+                        <Button
+                          asChild
+                          variant="ghost"
+                          size="icon"
                           title={t("more")}
                         >
-                          <i className="bi-three-dots text-xl"></i>
-                        </button>
+                          <button>
+                            <i className="bi-three-dots text-xl text-neutral" />
+                          </button>
+                        </Button>
                       </DropdownMenuTrigger>
 
                       <DropdownMenuContent
@@ -199,24 +196,18 @@ export default function Index() {
                         }
                         className="bg-base-200 border border-neutral-content rounded-box p-1"
                       >
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setRenameTag(true);
-                          }}
-                        >
-                          <i className="bi-pencil-square"></i>
+                        <DropdownMenuItem onClick={() => setRenameTag(true)}>
+                          <i className="bi-pencil-square" />
                           {t("rename_tag")}
                         </DropdownMenuItem>
 
                         <DropdownMenuSeparator />
 
                         <DropdownMenuItem
-                          onClick={() => {
-                            remove();
-                          }}
+                          onClick={remove}
                           className="text-error"
                         >
-                          <i className="bi-trash "></i>
+                          <i className="bi-trash" />
                           {t("delete_tag")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -237,18 +228,10 @@ export default function Index() {
         />
       </div>
       {bulkDeleteLinksModal && (
-        <BulkDeleteLinksModal
-          onClose={() => {
-            setBulkDeleteLinksModal(false);
-          }}
-        />
+        <BulkDeleteLinksModal onClose={() => setBulkDeleteLinksModal(false)} />
       )}
       {bulkEditLinksModal && (
-        <BulkEditLinksModal
-          onClose={() => {
-            setBulkEditLinksModal(false);
-          }}
-        />
+        <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
       )}
     </MainLayout>
   );

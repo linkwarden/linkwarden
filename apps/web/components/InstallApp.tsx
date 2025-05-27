@@ -1,6 +1,7 @@
 import { isPWA } from "@/lib/utils";
 import React, { useState } from "react";
 import { Trans } from "next-i18next";
+import { Button } from "./ui/button";
 
 type Props = {};
 
@@ -38,12 +39,9 @@ const InstallApp = (props: Props) => {
             ]}
           />
         </p>
-        <button
-          onClick={() => setIsOpen(false)}
-          className="btn btn-ghost btn-square btn-sm"
-        >
+        <Button onClick={() => setIsOpen(false)} variant="ghost" size="icon">
           <i className="bi-x text-xl"></i>
-        </button>
+        </Button>
       </div>
     </div>
   ) : (

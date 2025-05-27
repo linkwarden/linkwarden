@@ -4,6 +4,7 @@ import {
 } from "@linkwarden/types";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   name: string;
@@ -22,14 +23,13 @@ export default function PreservedFormatRow({
 }: Props) {
   const router = useRouter();
 
-  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
+  const isPublic = router.pathname.startsWith("/public") ? true : undefined;
 
   const handleDownload = () => {
     const path = `/api/v1/archives/${link?.id}?format=${format}`;
     fetch(path)
       .then((response) => {
         if (response.ok) {
-          // Create a temporary link and click it to trigger the download
           const anchorElement = document.createElement("a");
           anchorElement.href = path;
           anchorElement.download =
@@ -57,23 +57,21 @@ export default function PreservedFormatRow({
 
       <div className="flex gap-1">
         {downloadable || false ? (
-          <div
-            onClick={() => handleDownload()}
-            className="btn btn-sm btn-square btn-ghost"
-          >
+          <Button variant="ghost" size="icon" onClick={handleDownload}>
             <i className="bi-cloud-arrow-down text-xl text-neutral" />
-          </div>
+          </Button>
         ) : undefined}
 
-        <Link
-          href={`${
-            isPublic ? "/public" : ""
-          }/preserved/${link?.id}?format=${format}`}
-          target="_blank"
-          className="btn btn-sm btn-square btn-ghost"
-        >
-          <i className="bi-box-arrow-up-right text-lg text-neutral" />
-        </Link>
+        <Button asChild variant="ghost" size="icon">
+          <Link
+            href={`${
+              isPublic ? "/public" : ""
+            }/preserved/${link?.id}?format=${format}`}
+            target="_blank"
+          >
+            <i className="bi-box-arrow-up-right text-lg text-neutral" />
+          </Link>
+        </Button>
       </div>
     </div>
   );

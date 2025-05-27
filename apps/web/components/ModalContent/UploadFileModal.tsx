@@ -11,6 +11,7 @@ import { useCollections } from "@linkwarden/router/collections";
 import { useUploadFile } from "@linkwarden/router/links";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import { useConfig } from "@linkwarden/router/config";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   onClose: Function;
@@ -25,10 +26,7 @@ export default function UploadFileModal({ onClose }: Props) {
     description: "",
     type: "url",
     tags: [],
-    collection: {
-      id: undefined,
-      name: "",
-    },
+    collection: { id: undefined, name: "" },
   } as PostLinkSchemaType;
 
   const [link, setLink] = useState<PostLinkSchemaType>(initial);
@@ -42,18 +40,11 @@ export default function UploadFileModal({ onClose }: Props) {
 
   const setCollection = (e: any) => {
     if (e?.__isNew__) e.value = undefined;
-
-    setLink({
-      ...link,
-      collection: { id: e?.value, name: e?.label },
-    });
+    setLink({ ...link, collection: { id: e?.value, name: e?.label } });
   };
 
   const setTags = (e: any) => {
-    const tagNames = e.map((e: any) => {
-      return { name: e.label };
-    });
-
+    const tagNames = e.map((e: any) => ({ name: e.label }));
     setLink({ ...link, tags: tagNames });
   };
 
@@ -63,12 +54,11 @@ export default function UploadFileModal({ onClose }: Props) {
       const currentCollection = collections.find(
         (e) => e.id == Number(router.query.id)
       );
-
       if (
         currentCollection &&
         currentCollection.ownerId &&
         router.asPath.startsWith("/collections/")
-      )
+      ) {
         setLink({
           ...initial,
           collection: {
@@ -76,26 +66,22 @@ export default function UploadFileModal({ onClose }: Props) {
             name: currentCollection.name,
           },
         });
-    } else
-      setLink({
-        ...initial,
-        collection: { name: "Unorganized" },
-      });
+      }
+    } else {
+      setLink({ ...initial, collection: { name: "Unorganized" } });
+    }
   }, [router, collections]);
 
   const submit = async () => {
     if (!submitLoader && file) {
       setSubmitLoader(true);
-
       const load = toast.loading(t("creating"));
-
       await uploadFile.mutateAsync(
         { link, file },
         {
           onSettled: (data, error) => {
             setSubmitLoader(false);
             toast.dismiss(load);
-
             if (error) {
               toast.error(error.message);
             } else {
@@ -113,22 +99,21 @@ export default function UploadFileModal({ onClose }: Props) {
       <div className="flex gap-2 items-start">
         <p className="text-xl font-thin">{t("upload_file")}</p>
       </div>
-      <div className="divider mb-3 mt-1"></div>
+      <div className="divider mb-3 mt-1" />
+
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">
           <p className="mb-2">{t("file")}</p>
-          <label className="btn h-10 btn-sm w-full border border-neutral-content hover:border-neutral-content flex justify-between">
+          <label className="h-10 cursor-pointer w-full border border-neutral-content bg-base-200 hover:bg-base-300 duration-150 rounded-md px-2 flex justify-between items-center">
             <input
               type="file"
               accept=".pdf,.png,.jpg,.jpeg"
-              className="cursor-pointer custom-file-input"
+              className="cursor-pointer custom-file-input w-full"
               onChange={(e) => e.target.files && setFile(e.target.files[0])}
             />
           </label>
           <p className="text-xs font-semibold mt-2">
-            {t("file_types", {
-              size: config?.MAX_FILE_BUFFER || 10,
-            })}
+            {t("file_types", { size: config?.MAX_FILE_BUFFER || 10 })}
           </p>
         </div>
         <div className="sm:col-span-2 col-span-5">
@@ -144,6 +129,7 @@ export default function UploadFileModal({ onClose }: Props) {
           )}
         </div>
       </div>
+
       {optionsExpanded && (
         <div className="mt-5">
           <div className="grid sm:grid-cols-2 gap-3">
@@ -174,27 +160,26 @@ export default function UploadFileModal({ onClose }: Props) {
                   setLink({ ...link, description: e.target.value })
                 }
                 placeholder={t("description_placeholder")}
-                className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border outline-none duration-100"
               />
             </div>
           </div>
         </div>
       )}
+
       <div className="flex justify-between items-center mt-5">
-        <div
+        <Button
+          variant="ghost"
+          size="sm"
+          className="flex items-center px-2 w-fit text-sm"
           onClick={() => setOptionsExpanded(!optionsExpanded)}
-          className={`rounded-md cursor-pointer btn btn-sm btn-ghost duration-100 flex items-center px-2 w-fit text-sm`}
         >
-          <p>
-            {optionsExpanded ? t("hide") : t("more")} {t("options")}
-          </p>
-        </div>
-        <button
-          className="btn btn-accent dark:border-violet-400 text-white"
-          onClick={submit}
-        >
+          <p>{optionsExpanded ? t("hide_options") : t("more_options")}</p>
+          <i className={`bi-chevron-${optionsExpanded ? "up" : "down"}`} />
+        </Button>
+        <Button variant="accent" onClick={submit}>
           {t("upload_file")}
-        </button>
+        </Button>
       </div>
     </Modal>
   );

@@ -155,12 +155,9 @@ export default function NewTokenModal({ onClose }: Props) {
           </div>
 
           <div className="flex justify-end items-center mt-5">
-            <button
-              className="btn btn-accent dark:border-violet-400 text-white"
-              onClick={submit}
-            >
+            <Button variant="accent" onClick={submit}>
               {t("create_token")}
-            </button>
+            </Button>
           </div>
         </>
       )}

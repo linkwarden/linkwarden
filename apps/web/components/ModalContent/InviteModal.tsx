@@ -6,6 +6,7 @@ import { useTranslation, Trans } from "next-i18next";
 import { useAddUser } from "@linkwarden/router/users";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { Button } from "../ui/button";
 
 type Props = {
   onClose: Function;
@@ -118,12 +119,9 @@ export default function InviteModal({ onClose }: Props) {
         </div>
 
         <div className="flex justify-between items-center mt-5">
-          <button
-            className="btn btn-accent dark:border-violet-400 text-white ml-auto"
-            type="submit"
-          >
+          <Button variant="accent" className="ml-auto" type="submit">
             {t("send_invitation")}
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

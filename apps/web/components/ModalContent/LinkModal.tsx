@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "../ui/button";
 
 type Props = {
   onClose: Function;
@@ -70,10 +71,12 @@ export default function LinkModal({
       className="sm:h-screen items-center relative"
     >
       <div className="absolute top-3 left-0 right-0 flex justify-between px-3">
-        <div
-          className="bi-x text-xl btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
+        <Button
+          variant="simple"
+          size="icon"
+          className="bi-x text-xl rounded-full text-base-content opacity-50 hover:opacity-100 z-10"
           onClick={() => onClose()}
-        ></div>
+        ></Button>
 
         {(permissions === true || permissions?.canUpdate) && !isPublicRoute && (
           <Tab
@@ -97,12 +100,14 @@ export default function LinkModal({
           {!isPublicRoute && (
             <DropdownMenu modal={true}>
               <DropdownMenuTrigger asChild>
-                <button
-                  className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
+                <Button
+                  variant="simple"
+                  size="icon"
+                  className="rounded-full text-base-content opacity-50 hover:opacity-100 z-10"
                   title={t("more")}
                 >
                   <i title="More" className="bi-three-dots text-xl" />
-                </button>
+                </Button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
@@ -148,11 +153,18 @@ export default function LinkModal({
             </DropdownMenu>
           )}
           {link.url && (
-            <Link
-              href={link.url}
-              target="_blank"
-              className="bi-box-arrow-up-right btn-circle text-base-content opacity-50 hover:opacity-100 btn btn-sm select-none z-10"
-            ></Link>
+            <Button
+              asChild
+              variant="simple"
+              size="icon"
+              className="rounded-full"
+            >
+              <Link
+                href={link.url}
+                target="_blank"
+                className="bi-box-arrow-up-right text-base-content opacity-50 hover:opacity-100 select-none z-10"
+              ></Link>
+            </Button>
           )}
         </div>
       </div>

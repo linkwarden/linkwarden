@@ -34,6 +34,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -133,9 +134,9 @@ export default function Index() {
                 <i
                   className="bi-folder-fill text-3xl"
                   style={{ color: activeCollection.color }}
-                ></i>
+                />
               )}
-              
+
               <p className="sm:text-3xl text-2xl w-full py-1 break-words hyphens-auto font-thin">
                 {activeCollection?.name}
               </p>
@@ -143,13 +144,18 @@ export default function Index() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button
-                  className="btn btn-ghost btn-sm btn-square text-neutral mt-2"
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="icon"
+                  className="mt-2 text-neutral"
                   onMouseDown={(e) => e.preventDefault()}
                   title={t("more")}
                 >
-                  <i className="bi-three-dots text-xl"></i>
-                </button>
+                  <button>
+                    <i className="bi-three-dots text-xl" />
+                  </button>
+                </Button>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
@@ -164,25 +170,21 @@ export default function Index() {
                     }
                   }}
                 >
-                  <i className="bi-box-arrow-up-right"></i>
+                  <i className="bi-box-arrow-up-right" />
                   {t("open_all_links")}
                 </DropdownMenuItem>
 
                 {permissions === true && (
                   <DropdownMenuItem
-                    onClick={() => {
-                      setEditCollectionModal(true);
-                    }}
+                    onClick={() => setEditCollectionModal(true)}
                   >
-                    <i className="bi-pencil-square"></i>
+                    <i className="bi-pencil-square" />
                     {t("edit_collection_info")}
                   </DropdownMenuItem>
                 )}
 
                 <DropdownMenuItem
-                  onClick={() => {
-                    setEditCollectionSharingModal(true);
-                  }}
+                  onClick={() => setEditCollectionSharingModal(true)}
                 >
                   <i className="bi-globe" />
                   {permissions === true
@@ -191,11 +193,7 @@ export default function Index() {
                 </DropdownMenuItem>
 
                 {permissions === true && (
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setNewCollectionModal(true);
-                    }}
-                  >
+                  <DropdownMenuItem onClick={() => setNewCollectionModal(true)}>
                     <i className="bi-folder-plus" />
                     {t("create_subcollection")}
                   </DropdownMenuItem>
@@ -204,9 +202,7 @@ export default function Index() {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
-                  onClick={() => {
-                    setDeleteCollectionModal(true);
-                  }}
+                  onClick={() => setDeleteCollectionModal(true)}
                   className="text-error"
                 >
                   {permissions === true ? (
@@ -227,10 +223,10 @@ export default function Index() {
         )}
 
         {activeCollection && (
-          <div className={`min-w-[15rem]`}>
+          <div className="min-w-[15rem]">
             <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
               <div
-                className="flex items-center btn px-2 btn-ghost rounded-full w-fit"
+                className="flex items-center px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
                 onClick={() => setEditCollectionSharingModal(true)}
               >
                 {collectionOwner.id && (
@@ -240,14 +236,14 @@ export default function Index() {
                   />
                 )}
                 {activeCollection.members
-                  .sort((a, b) => a.userId - b.userId)
+                  .sort((a, b) => (a.userId as number) - (b.userId as number))
                   .map((e, i) => {
                     return (
                       <ProfilePhoto
                         key={i}
                         src={e.user.image ? e.user.image : undefined}
-                        className="-ml-3"
                         name={e.user.name}
+                        className="-ml-3"
                       />
                     );
                   })
@@ -261,63 +257,54 @@ export default function Index() {
                 )}
               </div>
 
-              <p className="text-neutral text-sm">
-                {activeCollection.members.length > 0 &&
-                activeCollection.members.length === 1
-                  ? t("by_author_and_other", {
-                      author: collectionOwner.name,
-                      count: activeCollection.members.length,
-                    })
-                  : activeCollection.members.length > 0 &&
-                      activeCollection.members.length !== 1
-                    ? t("by_author_and_others", {
+              <p className="text-neutral text-sm ml-2">
+                {activeCollection.members.length > 0
+                  ? activeCollection.members.length === 1
+                    ? t("by_author_and_other", {
                         author: collectionOwner.name,
                         count: activeCollection.members.length,
                       })
-                    : t("by_author", {
+                    : t("by_author_and_others", {
                         author: collectionOwner.name,
-                      })}
+                        count: activeCollection.members.length,
+                      })
+                  : t("by_author", { author: collectionOwner.name })}
               </p>
             </div>
           </div>
         )}
 
-        {activeCollection?.description && (
-          <p>{activeCollection?.description}</p>
-        )}
+        {activeCollection?.description && <p>{activeCollection.description}</p>}
 
-        <div className="divider my-0"></div>
+        <div className="divider my-0" />
 
-        {collections.some((e) => e.parentId === activeCollection?.id) ? (
+        {collections.some((e) => e.parentId === activeCollection?.id) && (
           <>
             <PageHeader
-              icon={"bi-folder"}
+              icon="bi-folder"
               title={t("collections")}
-              description={
+              description={t(
                 collections.filter((e) => e.parentId === activeCollection?.id)
                   .length === 1
-                  ? t("showing_count_result", {
-                      count: collections.filter(
-                        (e) => e.parentId === activeCollection?.id
-                      ).length,
-                    })
-                  : t("showing_count_results", {
-                      count: collections.filter(
-                        (e) => e.parentId === activeCollection?.id
-                      ).length,
-                    })
-              }
+                  ? "showing_count_result"
+                  : "showing_count_results",
+                {
+                  count: collections.filter(
+                    (e) => e.parentId === activeCollection?.id
+                  ).length,
+                }
+              )}
               className="scale-90 w-fit"
             />
             <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {collections
                 .filter((e) => e.parentId === activeCollection?.id)
-                .map((e, i) => {
-                  return <CollectionCard key={i} collection={e} />;
-                })}
+                .map((e) => (
+                  <CollectionCard key={e.id} collection={e} />
+                ))}
             </div>
           </>
-        ) : undefined}
+        )}
 
         <LinkListOptions
           t={t}
