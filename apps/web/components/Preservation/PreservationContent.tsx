@@ -3,7 +3,6 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
-import Tab from "../Tab";
 import ReadableView from "@/components/Preservation/ReadableView";
 import { PreservationSkeleton } from "../Skeletons";
 import {
@@ -14,6 +13,13 @@ import {
   atLeastOneFormatAvailable,
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Props = {
   link?: LinkIncludingShortenedCollectionAndTags;
@@ -221,16 +227,44 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
   return (
     <div className="relative bg-base-200">
       {link.url && potentialTabs.length > 1 && (
-        <Tab
-          tabs={potentialTabs.map((tab) => ({
-            icon: tab.icon,
-            name: tab.name,
-          }))}
-          activeTabIndex={validActiveTabIndex}
-          setActiveTabIndex={handleTabChange}
-          className="w-fit absolute left-1/2 -translate-x-1/2 rounded-full bg-base-100 top-2 text-sm shadow-md"
-          hideName
-        />
+        <Tabs
+          value={activeTabIndex.toString()}
+          onValueChange={(val) => handleTabChange(Number(val))}
+          className={
+            "w-fit absolute left-1/2 -translate-x-1/2 bg-base-100 top-2 text-sm shadow-md rounded-full"
+          }
+        >
+          <TabsList className="flex flex-row gap-1 rounded-full h-9">
+            {potentialTabs
+              .map((tab) => ({
+                icon: tab.icon,
+                name: tab.name,
+              }))
+              .map((tab, idx) => (
+                <TooltipProvider key={idx}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <TabsTrigger
+                        value={String(idx)}
+                        className={clsx(
+                          "flex gap-1 items-center rounded-full px-1 py-0"
+                        )}
+                        data-state={
+                          idx === activeTabIndex ? "active" : "inactive"
+                        }
+                      >
+                        {tab.icon && <i className={`text-lg ${tab.icon}`} />}
+                      </TabsTrigger>
+                    </TooltipTrigger>
+
+                    {tab.name && (
+                      <TooltipContent side="bottom">{tab.name}</TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              ))}
+          </TabsList>
+        </Tabs>
       )}
       {!atLeastOneFormatAvailable(link) ? (
         <div className={`w-full h-full flex flex-col justify-center p-10`}>
