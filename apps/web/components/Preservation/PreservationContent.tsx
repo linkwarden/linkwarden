@@ -13,13 +13,7 @@ import {
   atLeastOneFormatAvailable,
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PreservationNavbar from "./PreservationNavbar";
 
 type Props = {
   link?: LinkIncludingShortenedCollectionAndTags;
@@ -51,63 +45,11 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
     format ?? ArchivedFormat.readability
   );
 
-  const screenshotFormat = findAvailableImageFormat(link!);
-
-  const potentialTabs = [
-    {
-      type: "readable" as const,
-      format: ArchivedFormat.readability,
-      icon: "bi-file-earmark-text",
-      name: "Readable",
-    },
-    {
-      type: "image" as const,
-      format: screenshotFormat,
-      icon: "bi-file-earmark-image",
-      name: "Screenshot",
-    },
-    {
-      type: "monolith" as const,
-      format: ArchivedFormat.monolith,
-      icon: "bi-filetype-html",
-      name: "Webpage",
-    },
-    {
-      type: "pdf" as const,
-      format: ArchivedFormat.pdf,
-      icon: "bi-file-earmark-pdf",
-      name: "PDF",
-    },
-  ].filter((tab) => {
-    if (tab.format == null) return false;
-    return formatAvailable(link!, tab.type);
-  });
-
-  const activeTabIndex = potentialTabs.findIndex(
-    (tab) => tab.format === currentFormat
-  );
-
-  function handleTabChange(newIndex: number) {
-    if (newIndex >= potentialTabs.length) return;
-    const newFormat = potentialTabs[newIndex].format!;
-
-    setCurrentFormat(newFormat);
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, format: newFormat },
-      },
-      undefined,
-      { shallow: true }
-    );
-  }
-
   useEffect(() => {
     if (!router.isReady) return;
 
-    const queryVal = router.query.format;
-    if (queryVal) {
-      const qFormat = parseInt(queryVal as string, 10);
+    if (router.query.format) {
+      const query = Number(router.query.format as string);
       const allFormats = [
         ArchivedFormat.readability,
         ArchivedFormat.monolith,
@@ -116,18 +58,16 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         ArchivedFormat.pdf,
       ];
 
-      if (allFormats.includes(qFormat)) {
-        setCurrentFormat(qFormat);
+      if (allFormats.includes(query)) {
+        setCurrentFormat(query);
         return;
       }
     }
 
     if (format !== undefined) {
       setCurrentFormat(format);
-    } else if (potentialTabs.length > 0) {
-      setCurrentFormat(potentialTabs[0].format!);
     }
-  }, [router.query.format, router.isReady, format, potentialTabs]);
+  }, [router.query.format, router.isReady, format]);
 
   useEffect(() => {
     if (prevFormatRef.current !== currentFormat) {
@@ -225,46 +165,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
 
   return (
     <div className="relative bg-base-200">
-      {link.url && potentialTabs.length > 1 && (
-        <Tabs
-          value={activeTabIndex.toString()}
-          onValueChange={(val) => handleTabChange(Number(val))}
-          className={
-            "w-fit absolute left-1/2 -translate-x-1/2 bg-base-100 top-2 text-sm shadow-md rounded-full"
-          }
-        >
-          <TabsList className="flex flex-row gap-1 rounded-full h-9">
-            {potentialTabs
-              .map((tab) => ({
-                icon: tab.icon,
-                name: tab.name,
-              }))
-              .map((tab, idx) => (
-                <TooltipProvider key={idx}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <TabsTrigger
-                        value={String(idx)}
-                        className={clsx(
-                          "flex gap-1 items-center rounded-full aspect-square h-7 w-7"
-                        )}
-                        data-state={
-                          idx === activeTabIndex ? "active" : "inactive"
-                        }
-                      >
-                        {tab.icon && <i className={`text-lg ${tab.icon}`} />}
-                      </TabsTrigger>
-                    </TooltipTrigger>
-
-                    {tab.name && (
-                      <TooltipContent side="bottom">{tab.name}</TooltipContent>
-                    )}
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
-          </TabsList>
-        </Tabs>
-      )}
+      <PreservationNavbar link={link} format={format} />
       {!atLeastOneFormatAvailable(link) ? (
         <div className={`w-full h-full flex flex-col justify-center p-10`}>
           <BeatLoader
