@@ -86,7 +86,6 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
   const activeTabIndex = potentialTabs.findIndex(
     (tab) => tab.format === currentFormat
   );
-  const validActiveTabIndex = activeTabIndex >= 0 ? activeTabIndex : 0;
 
   function handleTabChange(newIndex: number) {
     if (newIndex >= potentialTabs.length) return;
@@ -247,7 +246,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
                       <TabsTrigger
                         value={String(idx)}
                         className={clsx(
-                          "flex gap-1 items-center rounded-full px-1 py-0"
+                          "flex gap-1 items-center rounded-full aspect-square h-7 w-7"
                         )}
                         data-state={
                           idx === activeTabIndex ? "active" : "inactive"
