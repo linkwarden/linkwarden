@@ -93,12 +93,12 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         return (
           <>
             {!monolithLoaded && (
-              <PreservationSkeleton className="max-w-screen-lg h-screen" />
+              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3rem)]" />
             )}
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`}
               className={clsx(
-                "w-full border-none h-screen",
+                "w-full border-none h-[calc(100vh-3rem)]",
                 monolithLoaded ? "block" : "hidden"
               )}
               onLoad={() => setMonolithLoaded(true)}
@@ -110,12 +110,12 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         return (
           <>
             {!pdfLoaded && (
-              <PreservationSkeleton className="max-w-screen-lg h-screen" />
+              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3rem)]" />
             )}
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}&_=${link.updatedAt}`}
               className={clsx(
-                "w-full border-none h-screen",
+                "w-full border-none h-[calc(100vh-3rem)]",
                 pdfLoaded ? "block" : "hidden"
               )}
               onLoad={() => setPdfLoaded(true)}
@@ -128,12 +128,12 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         return (
           <>
             {!imageLoaded && (
-              <PreservationSkeleton className="max-w-screen-lg h-screen" />
+              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3rem)]" />
             )}
             <div
               className={clsx(
                 "overflow-auto flex items-start",
-                imageLoaded && "h-screen"
+                imageLoaded && "h-[calc(100vh-3rem)]"
               )}
             >
               <img
@@ -165,7 +165,6 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
 
   return (
     <div className="relative bg-base-200">
-      <PreservationNavbar link={link} format={format} />
       {!atLeastOneFormatAvailable(link) ? (
         <div className={`w-full h-full flex flex-col justify-center p-10`}>
           <BeatLoader

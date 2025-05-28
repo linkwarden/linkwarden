@@ -34,7 +34,10 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
         if (error) {
           toast.error(error.message);
         } else {
-          if (router.pathname.startsWith("/links/[id]")) {
+          if (
+            router.pathname.startsWith("/links/[id]") ||
+            router.pathname.startsWith("/preserved/[id]")
+          ) {
             router.push("/dashboard");
           }
           toast.success(t("deleted"));
