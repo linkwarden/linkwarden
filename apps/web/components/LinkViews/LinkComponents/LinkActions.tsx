@@ -45,7 +45,10 @@ export default function LinkActions({
 
   const isPublicRoute = router.pathname.startsWith("/public");
 
-  const getLink = useGetLink(isPublicRoute);
+  const { refetch } = useGetLink({
+    id: link.id as number,
+    isPublicRoute,
+  });
 
   const pinLink = usePinLink();
 
@@ -65,7 +68,9 @@ export default function LinkActions({
     toast.dismiss(load);
 
     if (response.ok) {
-      await getLink.mutateAsync({ id: link.id as number });
+      refetch().catch((error) => {
+        console.error("Error fetching link:", error);
+      });
 
       toast.success(t("link_being_archived"));
     } else toast.error(data.response);
