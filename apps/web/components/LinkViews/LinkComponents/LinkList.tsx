@@ -159,6 +159,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           collection={collection}
           linkModal={linkModal}
           setLinkModal={(e) => setLinkModal(e)}
+          className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
       </div>
       <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>

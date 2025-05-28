@@ -277,7 +277,7 @@ export default function ReadableView({ link }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200 mt-10">
+    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200 mt-5">
       <div className="flex gap-3 items-start">
         <div className="flex flex-col w-full gap-1">
           <p className="md:text-4xl text-xl">

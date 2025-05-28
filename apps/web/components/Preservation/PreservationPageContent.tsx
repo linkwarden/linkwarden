@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useGetLink } from "@linkwarden/router/links";
+import { useGetLink, useLinks } from "@linkwarden/router/links";
 import { PreservationContent } from "./PreservationContent";
 
 export default function PreservationPageContent() {
   const router = useRouter();
+  const { links } = useLinks();
 
   let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
 
@@ -34,7 +35,7 @@ export default function PreservationPageContent() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, []);
+  }, [links]);
 
   return (
     <div className="w-screen h-screen bg-base-200">

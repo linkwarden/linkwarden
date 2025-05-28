@@ -250,6 +250,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
         collection={collection}
         linkModal={linkModal}
         setLinkModal={(e) => setLinkModal(e)}
+        className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
       />
       {!isPublicRoute && <LinkPin link={link} />}
     </div>
