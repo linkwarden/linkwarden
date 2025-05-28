@@ -1,7 +1,6 @@
 import LinkDetails from "@/components/LinkDetails";
 import { useGetLink } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 
 const Index = () => {
@@ -10,17 +9,16 @@ const Index = () => {
 
   let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
 
-  const getLink = useGetLink(isPublicRoute);
-
-  useEffect(() => {
-    getLink.mutate({ id: Number(id) });
-  }, []);
+  const { data } = useGetLink({
+    id: Number(id) as number,
+    isPublicRoute,
+  });
 
   return (
     <div className="flex h-screen">
-      {getLink.data ? (
+      {data?.id ? (
         <LinkDetails
-          activeLink={getLink.data}
+          activeLink={data}
           className="sm:max-w-xl sm:m-auto sm:p-5 w-full"
           standalone
         />
