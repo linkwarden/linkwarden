@@ -9,6 +9,7 @@ services:
     env_file: .env
     environment:
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
     restart: always
     # build: . # uncomment to build from source
     image: ghcr.io/linkwarden/linkwarden:latest # comment to build from source
@@ -24,5 +25,7 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
     volumes:
       - ./meili_data:/meili_data
