@@ -17,13 +17,15 @@ import { useRouter } from "next/router";
 import { formatAvailable } from "@linkwarden/lib/formatStats";
 import LinkActions from "../LinkViews/LinkComponents/LinkActions";
 import { useCollections } from "@linkwarden/router/collections";
+import clsx from "clsx";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   format?: ArchivedFormat;
+  className?: string;
 };
 
-const PreservationNavbar = ({ link, format }: Props) => {
+const PreservationNavbar = ({ link, format, className }: Props) => {
   const { data: collections = [] } = useCollections();
 
   const [collection, setCollection] =
@@ -46,17 +48,40 @@ const PreservationNavbar = ({ link, format }: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const handleDownload = () => {
+    const path = `/api/v1/archives/${link?.id}?format=${format}`;
+    fetch(path)
+      .then((response) => {
+        if (response.ok) {
+          const anchorElement = document.createElement("a");
+          anchorElement.href = path;
+          anchorElement.download =
+            format === ArchivedFormat.monolith
+              ? "Webpage"
+              : format === ArchivedFormat.pdf
+                ? "PDF"
+                : "Screenshot";
+          anchorElement.click();
+        } else {
+          console.error("Failed to download file");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   return (
-    <div className="p-2 z-10 bg-base-100 backdrop-blur bg-opacity-80 shadow">
-      <div className="max-w-5xl flex gap-2 justify-between mx-auto">
+    <div className={clsx("p-2 z-10 bg-base-100", className)}>
+      <div className="max-w-6xl flex gap-2 justify-between mx-auto">
         <Button variant="ghost" size="icon" asChild>
           <Link href={`/dashboard`}>
-            <i className="bi-chevron-left text-xl" />
+            <i className="bi-chevron-left text-xl text-neutral" />
           </Link>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger>
-            <Button variant="ghost" className="h-8">
+            <Button variant="ghost" className="h-8 text-neutral">
               {format === ArchivedFormat.readability
                 ? t("readable")
                 : format === ArchivedFormat.monolith
@@ -151,13 +176,29 @@ const PreservationNavbar = ({ link, format }: Props) => {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-        <LinkActions
-          link={link}
-          collection={collection}
-          linkModal={linkModal}
-          setLinkModal={(e) => setLinkModal(e)}
-          ghost
-        />
+
+        <div className="flex gap-2 items-center text-neutral">
+          {format === ArchivedFormat.readability ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="font-extralight text-lg"
+            >
+              Aa
+            </Button>
+          ) : (
+            <Button variant="ghost" size="icon" onClick={handleDownload}>
+              <i className="bi-cloud-arrow-down text-xl" />
+            </Button>
+          )}
+          <LinkActions
+            link={link}
+            collection={collection}
+            linkModal={linkModal}
+            setLinkModal={(e) => setLinkModal(e)}
+            ghost
+          />
+        </div>
       </div>
     </div>
   );
