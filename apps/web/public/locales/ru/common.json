@@ -447,8 +447,6 @@
   "rss_subscription_deleted": "Подписка RSS удалена!",
   "create_rss_subscription": "Создать подписку RSS",
   "rss_feed": "Лента RSS",
-  "dashboard_settings": "Настройки Инфопанели",
-  "choose_whats_displayed_dashboard": "Выберите, что будет отображаться на вашей Инфопанели:",
   "pinned_links": "Закреплённые ссылки",
   "recent_links": "Недавние ссылки",
   "search_results": "Результаты поиска",

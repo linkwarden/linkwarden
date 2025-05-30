@@ -19,6 +19,7 @@ import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
 import { Button } from "@/components/ui/button";
+import DashboardViewDropdown from "@/components/DashboardViewDropdown";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -129,7 +130,10 @@ export default function Dashboard() {
             title={t("dashboard")}
             description={t("dashboard_desc")}
           />
-          <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
+          <div className="flex items-center gap-3">
+            <DashboardViewDropdown />
+            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
+          </div>
         </div>
 
         <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full">
