@@ -150,15 +150,15 @@ model UsersAndCollections {
 }
 
 model Link {
-  id            Int        @id @default(autoincrement())
-  name          String     @default("")
-  type          String     @default("url")
-  description   String     @default("")
+  id            Int         @id @default(autoincrement())
+  name          String      @default("")
+  type          String      @default("url")
+  description   String      @default("")
   highlight     Highlight[]
-  pinnedBy      User[]     @relation("PinnedLinks")
-  createdBy     User?      @relation("CreatedLinks", fields: [createdById], references: [id], onDelete: Cascade)
+  pinnedBy      User[]      @relation("PinnedLinks")
+  createdBy     User?       @relation("CreatedLinks", fields: [createdById], references: [id], onDelete: Cascade)
   createdById   Int?
-  collection    Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collection    Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId  Int
   tags          Tag[]
   icon          String?
@@ -171,12 +171,12 @@ model Link {
   pdf           String?
   readable      String?
   monolith      String?
-  aiTagged      Boolean    @default(false)
+  aiTagged      Boolean     @default(false)
   indexVersion  Int?
   lastPreserved DateTime?
   importDate    DateTime?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @default(now()) @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now()) @updatedAt
 }
 
 model Tag {
