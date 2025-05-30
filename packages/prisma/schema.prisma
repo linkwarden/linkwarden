@@ -61,9 +61,9 @@ model User {
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
   referredBy              String?
+  DashboardSection        DashboardSection[]
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
-  DashboardSection        DashboardSection[]
 }
 
 enum AiTaggingMethod {
@@ -270,4 +270,5 @@ model DashboardSection {
   updatedAt    DateTime             @default(now()) @updatedAt
 
   @@unique([userId, order])
+  @@unique([userId, collectionId])
 }
