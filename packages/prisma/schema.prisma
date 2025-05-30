@@ -53,8 +53,6 @@ model User {
   aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
   aiPredefinedTags        String[]              @default([])
   aiTagExistingLinks      Boolean               @default(false)
-  dashboardRecentLinks    Boolean               @default(true)
-  dashboardPinnedLinks    Boolean               @default(true)
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
@@ -65,6 +63,7 @@ model User {
   referredBy              String?
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
+  DashboardSection        DashboardSection[]
 }
 
 enum AiTaggingMethod {
@@ -81,6 +80,13 @@ enum LinksRouteTo {
   MONOLITH
   SCREENSHOT
   DETAILS
+}
+
+enum DashboardSectionType {
+  STATS
+  RECENT_LINKS
+  PINNED_LINKS
+  COLLECTION
 }
 
 model WhitelistedUser {
@@ -251,4 +257,17 @@ model Highlight {
   text        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model DashboardSection {
+  id           Int                  @id @default(autoincrement())
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  type         DashboardSectionType
+  collectionId Int?
+  order        Int
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @default(now()) @updatedAt
+
+  @@unique([userId, order])
 }
