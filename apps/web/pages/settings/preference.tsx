@@ -382,27 +382,6 @@ export default function Preference() {
 
         <div>
           <p className="capitalize text-3xl font-thin inline">
-            {t("dashboard_settings")}
-          </p>
-          <div className="divider my-3"></div>
-          <p>{t("choose_whats_displayed_dashboard")}</p>
-          <div className="p-3">
-            <Checkbox
-              label={t("pinned_links")}
-              state={dashboardPinnedLinks}
-              onClick={() => setDashboardPinnedLinks(!dashboardPinnedLinks)}
-            />
-
-            <Checkbox
-              label={t("recent_links")}
-              state={dashboardRecentLinks}
-              onClick={() => setDashboardRecentLinks(!dashboardRecentLinks)}
-            />
-          </div>
-        </div>
-
-        <div>
-          <p className="capitalize text-3xl font-thin inline">
             {t("archive_settings")}
           </p>
           <div className="divider my-3"></div>
