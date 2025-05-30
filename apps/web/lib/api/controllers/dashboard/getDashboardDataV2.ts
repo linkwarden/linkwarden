@@ -1,18 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
 
-type Response<D> =
-  | {
-      data: D;
-      message: string;
-      status: number;
-    }
-  | {
-      data: D;
-      message: string;
-      status: number;
-    };
-
 export default async function getDashboardData(
   userId: number,
   query: LinkRequestQuery,
@@ -135,7 +123,6 @@ export default async function getDashboardData(
       orderBy: order || { id: "desc" },
     });
   }
-
   const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
     (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
   );

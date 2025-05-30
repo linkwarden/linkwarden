@@ -450,8 +450,6 @@
   "rss_subscription_deleted": "RSS Subscription deleted!",
   "create_rss_subscription": "Create RSS Subscription",
   "rss_feed": "RSS Feed",
-  "dashboard_settings": "Dashboard Settings",
-  "choose_whats_displayed_dashboard": "Choose what's displayed on your Dashboard:",
   "pinned_links": "Pinned Links",
   "recent_links": "Recent Links",
   "search_results": "Search Results",
@@ -475,5 +473,6 @@
   "links_are_being_represerved": "Links are being re-preserved...",
   "cancel": "Cancel",
   "preservation_rules": "Preservation rules:",
-  "links_being_archived": "Links are being archived..."
+  "links_being_archived": "Links are being archived...",
+  "display_on_dashboard": "Display on Dashboard"
 }
