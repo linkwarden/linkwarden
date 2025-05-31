@@ -123,6 +123,7 @@ export default async function getDashboardData(
       orderBy: order || { id: "desc" },
     });
   }
+
   const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
     (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
   );
@@ -132,9 +133,26 @@ export default async function getDashboardData(
     (link, index, self) => index === self.findIndex((t) => t.id === link.id)
   );
 
+  const pinnedCollections = await prisma.dashboardSection.findMany({
+    where: {
+      userId,
+      type: "COLLECTION",
+    },
+    include: {
+      collection: {
+        include: {
+          links: {
+            take: 16,
+          },
+        }
+      }
+    },
+  });
+
   return {
     data: {
       links: uniqueLinks,
+      pinnedCollections,
       numberOfPinnedLinks,
     },
     message: "Dashboard data fetched successfully.",

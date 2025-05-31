@@ -61,7 +61,7 @@ model User {
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
   referredBy              String?
-  DashboardSection        DashboardSection[]
+  dashboardSections       DashboardSection[]
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
 }
@@ -136,6 +136,7 @@ model Collection {
   rssSubscriptions RssSubscription[]
   createdAt        DateTime              @default(now())
   updatedAt        DateTime              @default(now()) @updatedAt
+  DashboardSection DashboardSection[]
 
   @@index([ownerId])
 }
@@ -263,8 +264,9 @@ model DashboardSection {
   id           Int                  @id @default(autoincrement())
   user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int
-  type         DashboardSectionType
+  collection   Collection?          @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId Int?
+  type         DashboardSectionType
   order        Int
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @default(now()) @updatedAt

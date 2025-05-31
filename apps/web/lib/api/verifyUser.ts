@@ -1,8 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@linkwarden/prisma";
-import { User } from "@linkwarden/prisma/client";
+import { Prisma } from "@linkwarden/prisma/client";
 import verifySubscription from "./stripe/verifySubscription";
 import verifyToken from "./verifyToken";
+
+type UserWithIncludes = Prisma.UserGetPayload<{
+  include: {
+    dashboardSections: true;
+  };
+}>;
 
 type Props = {
   req: NextApiRequest;
@@ -14,7 +20,7 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 export default async function verifyUser({
   req,
   res,
-}: Props): Promise<User | null> {
+}: Props): Promise<UserWithIncludes | null> {
   const token = await verifyToken({ req });
 
   if (typeof token === "string") {
@@ -31,6 +37,7 @@ export default async function verifyUser({
     include: {
       subscriptions: true,
       parentSubscription: true,
+      dashboardSections: true
     },
   });
 
