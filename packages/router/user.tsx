@@ -26,10 +26,10 @@ const useUser = (auth?: MobileAuth) => {
         url,
         auth?.session
           ? {
-              headers: {
-                Authorization: `Bearer ${auth.session}`,
-              },
-            }
+            headers: {
+              Authorization: `Bearer ${auth.session}`,
+            },
+          }
           : undefined
       );
 

@@ -56,9 +56,6 @@ export default function Preference() {
   const [dashboardPinnedLinks, setDashboardPinnedLinks] = useState<boolean>(
     account.dashboardPinnedLinks || false
   );
-  const [dashboardRecentLinks, setDashboardRecentLinks] = useState<boolean>(
-    account.dashboardRecentLinks || false
-  );
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
     account.aiTaggingMethod
@@ -84,7 +81,6 @@ export default function Preference() {
       aiTaggingMethod,
       aiPredefinedTags,
       aiTagExistingLinks,
-      dashboardRecentLinks,
       dashboardPinnedLinks,
     });
   }, [
@@ -99,8 +95,6 @@ export default function Preference() {
     aiTaggingMethod,
     aiPredefinedTags,
     aiTagExistingLinks,
-    dashboardRecentLinks,
-    dashboardPinnedLinks,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -119,8 +113,6 @@ export default function Preference() {
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
       setAiTagExistingLinks(account.aiTagExistingLinks);
-      setDashboardRecentLinks(account.dashboardRecentLinks);
-      setDashboardPinnedLinks(account.dashboardPinnedLinks);
     }
   }, [account]);
 
@@ -136,8 +128,6 @@ export default function Preference() {
       "aiTaggingMethod",
       "aiPredefinedTags",
       "aiTagExistingLinks",
-      "dashboardRecentLinks",
-      "dashboardPinnedLinks",
     ];
 
     const hasChanges = relevantKeys.some((key) => account[key] !== user[key]);
@@ -159,7 +149,7 @@ export default function Preference() {
         newTag.archiveAsPDF !== originalTag.archiveAsPDF ||
         newTag.archiveAsReadable !== originalTag.archiveAsReadable ||
         newTag.archiveAsWaybackMachine !==
-          originalTag.archiveAsWaybackMachine ||
+        originalTag.archiveAsWaybackMachine ||
         newTag.aiTag !== originalTag.aiTag
       );
     });
@@ -218,11 +208,10 @@ export default function Preference() {
             ].map(({ theme, icon, bgColor, textColor, activeColor }) => (
               <div
                 key={theme}
-                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
-                  localStorage.getItem("theme") === theme
-                    ? `outline-primary ${activeColor}`
-                    : textColor
-                }`}
+                className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${localStorage.getItem("theme") === theme
+                  ? `outline-primary ${activeColor}`
+                  : textColor
+                  }`}
                 onClick={() => updateSettings({ theme })}
               >
                 <i className={`${icon} text-3xl`}></i>
@@ -363,9 +352,8 @@ export default function Preference() {
               </div>
             </div>
             <div
-              className={`mb-3 ${
-                aiTaggingMethod === AiTaggingMethod.DISABLED ? "opacity-50" : ""
-              }`}
+              className={`mb-3 ${aiTaggingMethod === AiTaggingMethod.DISABLED ? "opacity-50" : ""
+                }`}
             >
               <Checkbox
                 label={t("generate_tags_for_existing_links")}

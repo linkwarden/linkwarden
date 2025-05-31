@@ -19,7 +19,8 @@ import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
 import { Button } from "@/components/ui/button";
-import DashboardViewDropdown from "@/components/DashboardViewDropdown";
+import DashboardLayoutDropdown from "@/components/DashboardLayoutDropdown";
+import { DashboardSection } from "@linkwarden/prisma/client";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ export default function Dashboard() {
     ...dashboardData
   } = useDashboardData();
   const { data: tags = [] } = useTags();
-  const { data: account = [] } = useUser();
+  const { data: user } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
@@ -45,24 +46,30 @@ export default function Dashboard() {
     );
   }, [collections]);
 
+
   useEffect(() => {
     if (
       process.env.NEXT_PUBLIC_STRIPE === "true" &&
-      account &&
-      account.id &&
-      account.referredBy === null &&
+      user &&
+      user.id &&
+      user.referredBy === null &&
       // if user is using Linkwarden for more than 3 days
-      new Date().getTime() - new Date(account.createdAt).getTime() >
-        3 * 24 * 60 * 60 * 1000
+      new Date().getTime() - new Date(user.createdAt).getTime() >
+      3 * 24 * 60 * 60 * 1000
     ) {
       setTimeout(() => {
         setShowsSurveyModal(true);
       }, 1000);
     }
-  }, [account]);
+  }, [user]);
+
+  const dashboardSections: DashboardSection[] | [] = user?.dashboardSections || [];
+
+  const showRecentLinks = dashboardSections.some(section => section.type === 'RECENT_LINKS');
+  const showPinnedLinks = dashboardSections.some(section => section.type === 'PINNED_LINKS');
 
   const numberOfLinksToShow = useMemo(() => {
-    if (account.dashboardRecentLinks && account.dashboardPinnedLinks) {
+    if (showRecentLinks && showPinnedLinks) {
       if (window.innerWidth > 1900) {
         return 10;
       } else if (window.innerWidth > 1500) {
@@ -77,7 +84,7 @@ export default function Dashboard() {
     } else {
       return 100;
     }
-  }, [account.dashboardRecentLinks, account.dashboardPinnedLinks]);
+  }, [showRecentLinks, showPinnedLinks]);
 
   const [newLinkModal, setNewLinkModal] = useState(false);
 
@@ -87,7 +94,6 @@ export default function Dashboard() {
 
   const [showSurveyModal, setShowsSurveyModal] = useState(false);
 
-  const { data: user } = useUser();
   const updateUser = useUpdateUser();
 
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -131,7 +137,7 @@ export default function Dashboard() {
             description={t("dashboard_desc")}
           />
           <div className="flex items-center gap-3">
-            <DashboardViewDropdown />
+            <DashboardLayoutDropdown />
             <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
@@ -162,7 +168,7 @@ export default function Dashboard() {
           />
         </div>
 
-        {account.dashboardRecentLinks && (
+        {showRecentLinks && (
           <>
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
@@ -202,8 +208,8 @@ export default function Dashboard() {
                     links={links.slice(
                       0,
                       settings.columns &&
-                        account.dashboardRecentLinks &&
-                        account.dashboardPinnedLinks
+                        showRecentLinks &&
+                        showPinnedLinks
                         ? settings.columns * 2
                         : numberOfLinksToShow
                     )}
@@ -238,7 +244,7 @@ export default function Dashboard() {
           </>
         )}
 
-        {account.dashboardPinnedLinks && (
+        {showPinnedLinks && (
           <>
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
@@ -277,8 +283,8 @@ export default function Dashboard() {
                       .slice(
                         0,
                         settings.columns &&
-                          account.dashboardRecentLinks &&
-                          account.dashboardPinnedLinks
+                          showRecentLinks &&
+                          showPinnedLinks
                           ? settings.columns * 2
                           : numberOfLinksToShow
                       )}

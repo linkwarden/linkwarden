@@ -16,8 +16,8 @@ DROP COLUMN "dashboardRecentLinks";
 CREATE TABLE "DashboardSection" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
-    "type" "DashboardSectionType" NOT NULL,
     "collectionId" INTEGER,
+    "type" "DashboardSectionType" NOT NULL,
     "order" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -28,5 +28,11 @@ CREATE TABLE "DashboardSection" (
 -- CreateIndex
 CREATE UNIQUE INDEX "DashboardSection_userId_order_key" ON "DashboardSection"("userId", "order");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "DashboardSection_userId_collectionId_key" ON "DashboardSection"("userId", "collectionId");
+
 -- AddForeignKey
 ALTER TABLE "DashboardSection" ADD CONSTRAINT "DashboardSection_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DashboardSection" ADD CONSTRAINT "DashboardSection_collectionId_fkey" FOREIGN KEY ("collectionId") REFERENCES "Collection"("id") ON DELETE CASCADE ON UPDATE CASCADE;
