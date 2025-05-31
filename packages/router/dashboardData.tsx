@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
 const useDashboardData = () => {
@@ -16,4 +16,26 @@ const useDashboardData = () => {
   });
 };
 
-export { useDashboardData };
+const useUpdateDashboardLayout = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (layout: any) => {
+      const response = await fetch("/api/v2/dashboard", {
+        method: "UPDATE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(layout),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.response);
+      }
+
+      return data;
+    },
+  });
+}
+
+export { useDashboardData, useUpdateDashboardLayout };

@@ -17,6 +17,7 @@ export default async function getUserById(userId: number) {
           user: true,
         },
       },
+      dashboardSections: true,
     },
   });
 
