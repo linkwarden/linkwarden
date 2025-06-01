@@ -6,14 +6,14 @@ export const generatePreview = async (
   buffer: Buffer,
   collectionId: number,
   linkId: number
-) => {
+): Promise<boolean> => {
   if (buffer && collectionId && linkId) {
     try {
       const image = await Jimp.read(buffer);
 
       if (!image) {
         console.log("Error generating preview: Image not found");
-        return;
+        return false;
       }
 
       image.resize(1000, Jimp.AUTO).quality(20);
@@ -24,12 +24,13 @@ export const generatePreview = async (
         1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 10)
       ) {
         console.log("Error generating preview: Buffer size exceeded");
-        return prisma.link.update({
+        prisma.link.update({
           where: { id: linkId },
           data: {
             preview: "unavailable",
           },
         });
+        return false;
       }
 
       await createFile({
@@ -43,8 +44,12 @@ export const generatePreview = async (
           preview: `archives/preview/${collectionId}/${linkId}.jpeg`,
         },
       });
+
+      return true;
     } catch (err) {
       console.error("Error processing the image:", err);
     }
   }
+
+  return false;
 };
