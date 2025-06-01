@@ -8,17 +8,20 @@ import { useTranslation } from "next-i18next";
 import { Button } from "@/components/ui/button";
 import TextInput from "./TextInput";
 import { useCollections } from "@linkwarden/router/collections";
-import { DashboardSection, DashboardSectionType } from "@linkwarden/prisma/client";
+import {
+  DashboardSection,
+  DashboardSectionType,
+} from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
 import { useUpdateDashboardLayout } from "@linkwarden/router/dashboardData";
 import {
   draggable,
   dropTargetForElements,
-  monitorForElements
-} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
-import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
-import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
-import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
+  monitorForElements,
+} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
+import { triggerPostMoveFlash } from "@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash";
 
 interface DashboardSectionOption {
   type: DashboardSectionType;
@@ -39,55 +42,76 @@ export default function DashboardLayoutDropdown() {
 
   const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
 
-  const getSectionOrder = (type: DashboardSectionType, collectionId?: number): number | undefined => {
-    const section = dashboardSections.find(section =>
-      section.type === type &&
-      (type === DashboardSectionType.COLLECTION ? section.collectionId === collectionId : true)
+  const getSectionOrder = (
+    type: DashboardSectionType,
+    collectionId?: number
+  ): number | undefined => {
+    const section = dashboardSections.find(
+      (section) =>
+        section.type === type &&
+        (type === DashboardSectionType.COLLECTION
+          ? section.collectionId === collectionId
+          : true)
     );
     return section?.order;
   };
 
-  const isSectionEnabled = (type: DashboardSectionType, collectionId?: number): boolean => {
-    return dashboardSections.some(section =>
-      section.type === type &&
-      (type === DashboardSectionType.COLLECTION ? section.collectionId === collectionId : true)
+  const isSectionEnabled = (
+    type: DashboardSectionType,
+    collectionId?: number
+  ): boolean => {
+    return dashboardSections.some(
+      (section) =>
+        section.type === type &&
+        (type === DashboardSectionType.COLLECTION
+          ? section.collectionId === collectionId
+          : true)
     );
   };
 
-  const defaultSections: DashboardSectionOption[] = useMemo(() => [
-    {
-      type: DashboardSectionType.STATS,
-      name: t("dashboard_stats"),
-      enabled: isSectionEnabled(DashboardSectionType.STATS),
-      order: getSectionOrder(DashboardSectionType.STATS)
-    },
-    {
-      type: DashboardSectionType.RECENT_LINKS,
-      name: t("recent_links"),
-      enabled: isSectionEnabled(DashboardSectionType.RECENT_LINKS),
-      order: getSectionOrder(DashboardSectionType.RECENT_LINKS)
-    },
-    {
-      type: DashboardSectionType.PINNED_LINKS,
-      name: t("pinned_links"),
-      enabled: isSectionEnabled(DashboardSectionType.PINNED_LINKS),
-      order: getSectionOrder(DashboardSectionType.PINNED_LINKS)
-    },
-  ], [user]);
-
-  const collectionSections = useMemo(() =>
-    collections.map((collection) => ({
-      type: DashboardSectionType.COLLECTION,
-      name: collection.name,
-      collectionId: collection.id,
-      enabled: isSectionEnabled(DashboardSectionType.COLLECTION, collection.id),
-      order: getSectionOrder(DashboardSectionType.COLLECTION, collection.id)
-    })), [collections, user]
+  const defaultSections: DashboardSectionOption[] = useMemo(
+    () => [
+      {
+        type: DashboardSectionType.STATS,
+        name: t("dashboard_stats"),
+        enabled: isSectionEnabled(DashboardSectionType.STATS),
+        order: getSectionOrder(DashboardSectionType.STATS),
+      },
+      {
+        type: DashboardSectionType.RECENT_LINKS,
+        name: t("recent_links"),
+        enabled: isSectionEnabled(DashboardSectionType.RECENT_LINKS),
+        order: getSectionOrder(DashboardSectionType.RECENT_LINKS),
+      },
+      {
+        type: DashboardSectionType.PINNED_LINKS,
+        name: t("pinned_links"),
+        enabled: isSectionEnabled(DashboardSectionType.PINNED_LINKS),
+        order: getSectionOrder(DashboardSectionType.PINNED_LINKS),
+      },
+    ],
+    [user]
   );
 
-  const allSections = useMemo(() => [...defaultSections, ...collectionSections], [
-    collectionSections, defaultSections
-  ]);
+  const collectionSections = useMemo(
+    () =>
+      collections.map((collection) => ({
+        type: DashboardSectionType.COLLECTION,
+        name: collection.name,
+        collectionId: collection.id,
+        enabled: isSectionEnabled(
+          DashboardSectionType.COLLECTION,
+          collection.id
+        ),
+        order: getSectionOrder(DashboardSectionType.COLLECTION, collection.id),
+      })),
+    [collections, user]
+  );
+
+  const allSections = useMemo(
+    () => [...defaultSections, ...collectionSections],
+    [collectionSections, defaultSections]
+  );
 
   const filteredSections = useMemo(() => {
     let sections = allSections;
@@ -101,7 +125,7 @@ export default function DashboardLayoutDropdown() {
 
     // Separate and sort sections
     const enabledSections = sections
-      .filter(section => section.enabled)
+      .filter((section) => section.enabled)
       .sort((a, b) => {
         if (a.order !== undefined && b.order !== undefined) {
           return a.order - b.order;
@@ -111,13 +135,13 @@ export default function DashboardLayoutDropdown() {
         return 0;
       });
 
-    const disabledSections = sections.filter(section => !section.enabled);
+    const disabledSections = sections.filter((section) => !section.enabled);
 
     return [...enabledSections, ...disabledSections];
   }, [allSections, searchTerm]);
 
   const getSectionId = (section: DashboardSectionOption) =>
-    `${section.type}-${section.collectionId || 'default'}`;
+    `${section.type}-${section.collectionId || "default"}`;
 
   // Set up drag and drop
   useEffect(() => {
@@ -131,8 +155,12 @@ export default function DashboardLayoutDropdown() {
 
         if (!sourceId || !destinationId || sourceId === destinationId) return;
 
-        const sourceIndex = filteredSections.findIndex(s => getSectionId(s) === sourceId);
-        const destinationIndex = filteredSections.findIndex(s => getSectionId(s) === destinationId);
+        const sourceIndex = filteredSections.findIndex(
+          (s) => getSectionId(s) === sourceId
+        );
+        const destinationIndex = filteredSections.findIndex(
+          (s) => getSectionId(s) === destinationId
+        );
 
         if (sourceIndex === -1 || destinationIndex === -1) return;
 
@@ -236,10 +264,10 @@ function DraggableListItem({
   isDraggedOver,
   isDragged,
   setIsDraggedOver,
-  setDraggedItem
+  setDraggedItem,
 }: DraggableListItemProps) {
   const [element, setElement] = useState<HTMLElement | null>(null);
-  const sectionId = `${section.type}-${section.collectionId || 'default'}`;
+  const sectionId = `${section.type}-${section.collectionId || "default"}`;
 
   useEffect(() => {
     const el = element;
@@ -268,20 +296,22 @@ function DraggableListItem({
       data-section-id={sectionId}
       className={`
         py-1 px-2 flex items-center justify-between cursor-pointer rounded
-        ${section.enabled ? 'cursor-grab active:cursor-grabbing' : ''}
-        ${isDragged ? 'opacity-50' : ''}
+        ${section.enabled ? "cursor-grab active:cursor-grabbing" : ""}
+        ${isDragged ? "opacity-50" : ""}
       `}
     >
       <div className="flex items-center gap-2">
         <input
-          id={`section-${section.type}-${section.collectionId || 'default'}`}
+          id={`section-${section.type}-${section.collectionId || "default"}`}
           className="checkbox checkbox-primary"
           type="checkbox"
           checked={section.enabled}
           onChange={() => onCheckboxChange(section)}
         />
         <label
-          htmlFor={`section-${section.type}-${section.collectionId || 'default'}`}
+          htmlFor={`section-${section.type}-${
+            section.collectionId || "default"
+          }`}
           className="text-sm cursor-pointer"
         >
           {section.name}
@@ -289,8 +319,9 @@ function DraggableListItem({
       </div>
 
       <i
-        className={`bi-grip-vertical text-neutral ${section.enabled ? 'cursor-grab' : 'opacity-50'
-          }`}
+        className={`bi-grip-vertical text-neutral ${
+          section.enabled ? "cursor-grab" : "opacity-50"
+        }`}
       />
     </li>
   );

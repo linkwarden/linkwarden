@@ -20,7 +20,10 @@ import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
 import { Button } from "@/components/ui/button";
 import DashboardLayoutDropdown from "@/components/DashboardLayoutDropdown";
-import { DashboardSection, DashboardSectionType } from "@linkwarden/prisma/client";
+import {
+  DashboardSection,
+  DashboardSectionType,
+} from "@linkwarden/prisma/client";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -54,7 +57,7 @@ export default function Dashboard() {
       user.referredBy === null &&
       // if user is using Linkwarden for more than 3 days
       new Date().getTime() - new Date(user.createdAt).getTime() >
-      3 * 24 * 60 * 60 * 1000
+        3 * 24 * 60 * 60 * 1000
     ) {
       setTimeout(() => {
         setShowsSurveyModal(true);
@@ -66,19 +69,22 @@ export default function Dashboard() {
 
   // Sort sections by order and filter enabled ones
   const orderedSections = useMemo(() => {
-    return dashboardSections
-      .sort((a, b) => {
-        if (a.order !== undefined && b.order !== undefined) {
-          return a.order - b.order;
-        }
-        if (a.order !== undefined) return -1;
-        if (b.order !== undefined) return 1;
-        return 0;
-      });
+    return dashboardSections.sort((a, b) => {
+      if (a.order !== undefined && b.order !== undefined) {
+        return a.order - b.order;
+      }
+      if (a.order !== undefined) return -1;
+      if (b.order !== undefined) return 1;
+      return 0;
+    });
   }, [dashboardSections]);
 
-  const showRecentLinks = dashboardSections.some(section => section.type === 'RECENT_LINKS');
-  const showPinnedLinks = dashboardSections.some(section => section.type === 'PINNED_LINKS');
+  const showRecentLinks = dashboardSections.some(
+    (section) => section.type === "RECENT_LINKS"
+  );
+  const showPinnedLinks = dashboardSections.some(
+    (section) => section.type === "PINNED_LINKS"
+  );
 
   const numberOfLinksToShow = useMemo(() => {
     if (showRecentLinks && showPinnedLinks) {
@@ -189,8 +195,7 @@ export default function Dashboard() {
 
       <div
         style={{
-          flex:
-            links || dashboardData.isLoading ? "0 1 auto" : "1 1 auto",
+          flex: links || dashboardData.isLoading ? "0 1 auto" : "1 1 auto",
         }}
         className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
       >
@@ -207,9 +212,7 @@ export default function Dashboard() {
             <Links
               links={links.slice(
                 0,
-                settings.columns &&
-                  showRecentLinks &&
-                  showPinnedLinks
+                settings.columns && showRecentLinks && showPinnedLinks
                   ? settings.columns * 2
                   : numberOfLinksToShow
               )}
@@ -218,9 +221,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-            <p className="text-center text-xl">
-              {t("view_added_links_here")}
-            </p>
+            <p className="text-center text-xl">{t("view_added_links_here")}</p>
             <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
               {t("view_added_links_here_desc")}
             </p>
@@ -282,9 +283,7 @@ export default function Dashboard() {
                 .filter((e: any) => e.pinnedBy && e.pinnedBy[0])
                 .slice(
                   0,
-                  settings.columns &&
-                    showRecentLinks &&
-                    showPinnedLinks
+                  settings.columns && showRecentLinks && showPinnedLinks
                     ? settings.columns * 2
                     : numberOfLinksToShow
                 )}
@@ -310,7 +309,7 @@ export default function Dashboard() {
   );
 
   const renderCollectionSection = (section: DashboardSection) => {
-    const collection = collections.find(c => c.id === section.collectionId);
+    const collection = collections.find((c) => c.id === section.collectionId);
     if (!collection) return null;
 
     return (
@@ -341,7 +340,8 @@ export default function Dashboard() {
                 useData={dashboardData}
               />
             </div>
-          ) : links?.filter((link: any) => link.collection.id === collection.id).length > 0 ? (
+          ) : links?.filter((link: any) => link.collection.id === collection.id)
+              .length > 0 ? (
             <div className="w-full">
               <Links
                 links={links
@@ -398,7 +398,11 @@ export default function Dashboard() {
 
         {/* Render sections in their specified order */}
         {orderedSections.map((section, index) => (
-          <div key={`${section.type}-${section.collectionId || 'default'}-${index}`}>
+          <div
+            key={`${section.type}-${
+              section.collectionId || "default"
+            }-${index}`}
+          >
             {renderSection(section)}
           </div>
         ))}
