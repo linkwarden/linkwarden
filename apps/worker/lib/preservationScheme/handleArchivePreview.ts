@@ -19,6 +19,8 @@ const handleArchivePreview = async (
     return metaTag ? (metaTag as any).content : null;
   });
 
+  let previewGenerated = false;
+
   if (ogImageUrl) {
     console.log("Found og:image URL:", ogImageUrl);
 
@@ -28,11 +30,13 @@ const handleArchivePreview = async (
     // Check if imageResponse is not null
     if (imageResponse && !link.preview?.startsWith("archive")) {
       const buffer = await imageResponse.body();
-      generatePreview(buffer, link.collectionId, link.id);
+      previewGenerated = generatePreview(buffer, link.collectionId, link.id);
     }
 
     await page.goBack();
-  } else if (!link.preview?.startsWith("archive")) {
+  }
+
+  if (!previewGenerated && !link.preview?.startsWith("archive")) {
     console.log("No og:image found");
     await page
       .screenshot({ type: "jpeg", quality: 20 })
