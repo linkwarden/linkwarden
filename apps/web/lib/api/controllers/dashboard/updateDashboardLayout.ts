@@ -18,6 +18,7 @@ export default async function updateDashboardLayout(
 
 	const data = dataValidation.data;
 
+	// This can be improved - less queries and not in a loop
 	for (const section of data) {
 
 		const existingSection = await prisma.dashboardSection.findFirst({
@@ -34,8 +35,15 @@ export default async function updateDashboardLayout(
 					id: existingSection.id
 				}
 			})
-		} else if (existingSection) {
-			// update
+		} else if (existingSection && section.enabled) {
+			await prisma.dashboardSection.update({
+				where: {
+					id: existingSection.id
+				},
+				data: {
+					order: section.order
+				}
+			});
 		} else if (section.enabled) {
 			await prisma.dashboardSection.create({
 				data: {
@@ -46,9 +54,7 @@ export default async function updateDashboardLayout(
 				}
 			});
 		}
-
 	}
-
 
 	return {
 		status: 200,

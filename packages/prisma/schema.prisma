@@ -271,6 +271,5 @@ model DashboardSection {
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @default(now()) @updatedAt
 
-  @@unique([userId, order])
   @@unique([userId, collectionId])
 }
