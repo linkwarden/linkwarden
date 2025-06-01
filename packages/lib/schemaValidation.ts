@@ -1,6 +1,7 @@
 import { ArchivedFormat, TokenExpiry } from "@linkwarden/types";
-import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
+import { AiTaggingMethod, LinksRouteTo, DashboardSectionType } from "@linkwarden/prisma/client";
 import { z } from "zod";
+import collection from "@/pages/api/v1/public/collections/[id]";
 
 // const stringField = z.string({
 //   errorMap: (e) => ({
@@ -257,6 +258,13 @@ export const LinkArchiveActionSchema = z.object({
 
 export type LinkArchiveActionSchemaType = z.infer<typeof LinkArchiveActionSchema>;
 
-export const UpdateDashboardLayoutSchema = z.object({
+export const UpdateDashboardLayoutSchema = z.array(
+  z.object({
+    type: z.nativeEnum(DashboardSectionType),
+    collectionId: z.number().optional(),
+    enabled: z.boolean(),
+    order: z.number().optional(),
+  })
+)
 
-});
+export type UpdateDashboardLayoutSchemaType = z.infer<typeof UpdateDashboardLayoutSchema>;
