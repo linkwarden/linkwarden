@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { LinkRequestQuery } from "@linkwarden/types";
 import getDashboardDataV2 from "@/lib/api/controllers/dashboard/getDashboardDataV2";
 import verifyUser from "@/lib/api/verifyUser";
+import { UpdateDashboardLayoutSchema } from "@linkwarden/lib/schemaValidation";
+import updateDashboardLayout from "@/lib/api/controllers/dashboard/updateDashboardLayout";
 
 export default async function dashboard(
   req: NextApiRequest,
@@ -27,5 +29,11 @@ export default async function dashboard(
     );
 
     return res.status(statusCode).json(data);
+  }
+
+  if (req.method === "PUT") {
+    const { status, response } = await updateDashboardLayout(user.id, req.body);
+
+    return res.status(status).json(response);
   }
 }
