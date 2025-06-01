@@ -144,8 +144,8 @@ export default async function getDashboardData(
           links: {
             take: 16,
           },
-        }
-      }
+        },
+      },
     },
   });
 

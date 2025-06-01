@@ -18,8 +18,12 @@ export default async function dashboard(
       cursor: req.query.cursor ? Number(req.query.cursor as string) : undefined,
     };
 
-    const showRecentLinks = user.dashboardSections.some(section => section.type === 'RECENT_LINKS');
-    const showPinnedLinks = user.dashboardSections.some(section => section.type === 'PINNED_LINKS');
+    const showRecentLinks = user.dashboardSections.some(
+      (section) => section.type === "RECENT_LINKS"
+    );
+    const showPinnedLinks = user.dashboardSections.some(
+      (section) => section.type === "PINNED_LINKS"
+    );
 
     const { statusCode, ...data } = await getDashboardDataV2(
       user.id,
