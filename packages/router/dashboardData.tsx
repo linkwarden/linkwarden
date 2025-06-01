@@ -1,3 +1,4 @@
+import { UpdateDashboardLayoutSchemaType } from "@linkwarden/lib/schemaValidation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
@@ -20,11 +21,11 @@ const useUpdateDashboardLayout = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (layout: any) => {
+    mutationFn: async (body: UpdateDashboardLayoutSchemaType) => {
       const response = await fetch("/api/v2/dashboard", {
-        method: "UPDATE",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(layout),
+        body: JSON.stringify(body),
       });
 
       const data = await response.json();
@@ -35,7 +36,11 @@ const useUpdateDashboardLayout = () => {
 
       return data;
     },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
+      await queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+    },
   });
-}
+};
 
 export { useDashboardData, useUpdateDashboardLayout };

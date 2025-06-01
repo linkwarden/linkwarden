@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -10,6 +10,7 @@ import TextInput from "./TextInput";
 import { useCollections } from "@linkwarden/router/collections";
 import { DashboardSection, DashboardSectionType } from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
+import { useUpdateDashboardLayout } from "@linkwarden/router/dashboardData";
 
 interface DashboardSectionOption {
   type: DashboardSectionType;
@@ -23,6 +24,7 @@ export default function DashboardLayoutDropdown() {
   const { t } = useTranslation();
   const { data: user } = useUser();
   const { data: collections = [] } = useCollections();
+  const updateDashboardLayout = useUpdateDashboardLayout();
   const [searchTerm, setSearchTerm] = useState("");
 
   const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
@@ -42,7 +44,7 @@ export default function DashboardLayoutDropdown() {
     );
   };
 
-  const defaultSections: DashboardSectionOption[] = [
+  const defaultSections: DashboardSectionOption[] = useMemo(() => [
     {
       type: DashboardSectionType.STATS,
       name: t("dashboard_stats"),
@@ -61,17 +63,21 @@ export default function DashboardLayoutDropdown() {
       enabled: isSectionEnabled(DashboardSectionType.PINNED_LINKS),
       order: getSectionOrder(DashboardSectionType.PINNED_LINKS)
     },
-  ];
+  ], [user]);
 
-  const collectionSections: DashboardSectionOption[] = collections.map((collection) => ({
-    type: DashboardSectionType.COLLECTION,
-    name: collection.name,
-    collectionId: collection.id,
-    enabled: isSectionEnabled(DashboardSectionType.COLLECTION, collection.id),
-    order: getSectionOrder(DashboardSectionType.COLLECTION, collection.id)
-  }));
+  const collectionSections = useMemo(() =>
+    collections.map((collection) => ({
+      type: DashboardSectionType.COLLECTION,
+      name: collection.name,
+      collectionId: collection.id,
+      enabled: isSectionEnabled(DashboardSectionType.COLLECTION, collection.id),
+      order: getSectionOrder(DashboardSectionType.COLLECTION, collection.id)
+    })), [collections, user]
+  );
 
-  const allSections = [...defaultSections, ...collectionSections];
+  const allSections = useMemo(() => [...defaultSections, ...collectionSections], [
+    collectionSections, defaultSections
+  ]);
 
   const filteredSections = useMemo(() => {
     let sections = allSections;
@@ -100,9 +106,19 @@ export default function DashboardLayoutDropdown() {
     return [...enabledSections, ...disabledSections];
   }, [allSections, searchTerm]);
 
+
   const handleCheckboxChange = (section: DashboardSectionOption) => {
-    // TODO: Implement checkbox change logic
-    console.log('Toggle section:', section);
+    const updatedSections = allSections.map((s) => {
+      if (s.type === section.type && s.collectionId === section.collectionId) {
+        return {
+          ...s,
+          enabled: !s.enabled,
+        };
+      }
+      return s;
+    });
+
+    updateDashboardLayout.mutateAsync(updatedSections)
   };
 
   return (
