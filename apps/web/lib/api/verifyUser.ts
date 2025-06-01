@@ -37,7 +37,7 @@ export default async function verifyUser({
     include: {
       subscriptions: true,
       parentSubscription: true,
-      dashboardSections: true
+      dashboardSections: true,
     },
   });
 
