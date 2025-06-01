@@ -20,7 +20,7 @@ import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
 import { Button } from "@/components/ui/button";
 import DashboardLayoutDropdown from "@/components/DashboardLayoutDropdown";
-import { DashboardSection } from "@linkwarden/prisma/client";
+import { DashboardSection, DashboardSectionType } from "@linkwarden/prisma/client";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -46,7 +46,6 @@ export default function Dashboard() {
     );
   }, [collections]);
 
-
   useEffect(() => {
     if (
       process.env.NEXT_PUBLIC_STRIPE === "true" &&
@@ -63,7 +62,20 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  const dashboardSections: DashboardSection[] | [] = user?.dashboardSections || [];
+  const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
+
+  // Sort sections by order and filter enabled ones
+  const orderedSections = useMemo(() => {
+    return dashboardSections
+      .sort((a, b) => {
+        if (a.order !== undefined && b.order !== undefined) {
+          return a.order - b.order;
+        }
+        if (a.order !== undefined) return -1;
+        if (b.order !== undefined) return 1;
+        return 0;
+      });
+  }, [dashboardSections]);
 
   const showRecentLinks = dashboardSections.some(section => section.type === 'RECENT_LINKS');
   const showPinnedLinks = dashboardSections.some(section => section.type === 'PINNED_LINKS');
@@ -127,6 +139,248 @@ export default function Dashboard() {
     );
   };
 
+  // Component renderers for each section type
+  const renderStatsSection = () => (
+    <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full">
+      <DashboardItem
+        name={numberOfLinks === 1 ? t("link") : t("links")}
+        value={numberOfLinks}
+        icon={"bi-link-45deg"}
+      />
+
+      <DashboardItem
+        name={collections.length === 1 ? t("collection") : t("collections")}
+        value={collections.length}
+        icon={"bi-folder"}
+      />
+
+      <DashboardItem
+        name={tags.length === 1 ? t("tag") : t("tags")}
+        value={tags.length}
+        icon={"bi-hash"}
+      />
+
+      <DashboardItem
+        name={t("pinned")}
+        value={numberOfPinnedLinks}
+        icon={"bi-pin-angle"}
+      />
+    </div>
+  );
+
+  const renderRecentLinksSection = () => (
+    <>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-2 items-center">
+          <PageHeader
+            icon={"bi-clock-history"}
+            title={t("recent")}
+            description={t("recent_links_desc")}
+          />
+        </div>
+        <Link
+          href="/links"
+          className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+        >
+          {t("view_all")}
+          <i className="bi-chevron-right text-sm"></i>
+        </Link>
+      </div>
+
+      <div
+        style={{
+          flex:
+            links || dashboardData.isLoading ? "0 1 auto" : "1 1 auto",
+        }}
+        className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
+      >
+        {dashboardData.isLoading ? (
+          <div className="w-full">
+            <Links
+              layout={viewMode}
+              placeholderCount={settings.columns || 1}
+              useData={dashboardData}
+            />
+          </div>
+        ) : links && links[0] && !dashboardData.isLoading ? (
+          <div className="w-full">
+            <Links
+              links={links.slice(
+                0,
+                settings.columns &&
+                  showRecentLinks &&
+                  showPinnedLinks
+                  ? settings.columns * 2
+                  : numberOfLinksToShow
+              )}
+              layout={viewMode}
+            />
+          </div>
+        ) : (
+          <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+            <p className="text-center text-xl">
+              {t("view_added_links_here")}
+            </p>
+            <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
+              {t("view_added_links_here_desc")}
+            </p>
+
+            <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
+              <Button
+                onClick={() => {
+                  setNewLinkModal(true);
+                }}
+                variant="accent"
+              >
+                <i className="bi-plus-lg text-xl"></i>
+                {t("add_link")}
+              </Button>
+
+              <ImportDropdown />
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+
+  const renderPinnedLinksSection = () => (
+    <>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-2 items-center">
+          <PageHeader
+            icon={"bi-pin-angle"}
+            title={t("pinned")}
+            description={t("pinned_links_desc")}
+          />
+        </div>
+        <Link
+          href="/links/pinned"
+          className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+        >
+          {t("view_all")}
+          <i className="bi-chevron-right text-sm "></i>
+        </Link>
+      </div>
+
+      <div
+        style={{ flex: "1 1 auto" }}
+        className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
+      >
+        {dashboardData.isLoading ? (
+          <div className="w-full">
+            <Links
+              layout={viewMode}
+              placeholderCount={settings.columns || 1}
+              useData={dashboardData}
+            />
+          </div>
+        ) : links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
+          <div className="w-full">
+            <Links
+              links={links
+                .filter((e: any) => e.pinnedBy && e.pinnedBy[0])
+                .slice(
+                  0,
+                  settings.columns &&
+                    showRecentLinks &&
+                    showPinnedLinks
+                    ? settings.columns * 2
+                    : numberOfLinksToShow
+                )}
+              layout={viewMode}
+            />
+          </div>
+        ) : (
+          <div
+            style={{ flex: "1 1 auto" }}
+            className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200"
+          >
+            <i className="bi-pin mx-auto text-6xl text-primary"></i>
+            <p className="text-center text-xl">
+              {t("pin_favorite_links_here")}
+            </p>
+            <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+              {t("pin_favorite_links_here_desc")}
+            </p>
+          </div>
+        )}
+      </div>
+    </>
+  );
+
+  const renderCollectionSection = (section: DashboardSection) => {
+    const collection = collections.find(c => c.id === section.collectionId);
+    if (!collection) return null;
+
+    return (
+      <>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2 items-center">
+            <PageHeader
+              icon={"bi-folder"}
+              title={collection.name}
+              description={`${collection._count?.links || 0} ${t("links")}`}
+            />
+          </div>
+          <Link
+            href={`/collections/${collection.id}`}
+            className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+          >
+            {t("view_all")}
+            <i className="bi-chevron-right text-sm"></i>
+          </Link>
+        </div>
+
+        <div className="flex flex-col 2xl:flex-row items-start 2xl:gap-2">
+          {dashboardData.isLoading ? (
+            <div className="w-full">
+              <Links
+                layout={viewMode}
+                placeholderCount={settings.columns || 1}
+                useData={dashboardData}
+              />
+            </div>
+          ) : links?.filter((link: any) => link.collection.id === collection.id).length > 0 ? (
+            <div className="w-full">
+              <Links
+                links={links
+                  .filter((link: any) => link.collection.id === collection.id)
+                  .slice(0, numberOfLinksToShow)}
+                layout={viewMode}
+              />
+            </div>
+          ) : (
+            <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+              <i className="bi-folder mx-auto text-6xl text-primary"></i>
+              <p className="text-center text-xl">
+                {t("no_links_in_collection")}
+              </p>
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                {collection.name} {t("collection_is_empty")}
+              </p>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  };
+
+  const renderSection = (section: DashboardSection) => {
+    switch (section.type) {
+      case DashboardSectionType.STATS:
+        return renderStatsSection();
+      case DashboardSectionType.RECENT_LINKS:
+        return renderRecentLinksSection();
+      case DashboardSectionType.PINNED_LINKS:
+        return renderPinnedLinksSection();
+      case DashboardSectionType.COLLECTION:
+        return renderCollectionSection(section);
+      default:
+        return null;
+    }
+  };
+
   return (
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
@@ -142,173 +396,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full">
-          <DashboardItem
-            name={numberOfLinks === 1 ? t("link") : t("links")}
-            value={numberOfLinks}
-            icon={"bi-link-45deg"}
-          />
-
-          <DashboardItem
-            name={collections.length === 1 ? t("collection") : t("collections")}
-            value={collections.length}
-            icon={"bi-folder"}
-          />
-
-          <DashboardItem
-            name={tags.length === 1 ? t("tag") : t("tags")}
-            value={tags.length}
-            icon={"bi-hash"}
-          />
-
-          <DashboardItem
-            name={t("pinned")}
-            value={numberOfPinnedLinks}
-            icon={"bi-pin-angle"}
-          />
-        </div>
-
-        {showRecentLinks && (
-          <>
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center">
-                <PageHeader
-                  icon={"bi-clock-history"}
-                  title={t("recent")}
-                  description={t("recent_links_desc")}
-                />
-              </div>
-              <Link
-                href="/links"
-                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
-              >
-                {t("view_all")}
-                <i className="bi-chevron-right text-sm"></i>
-              </Link>
-            </div>
-
-            <div
-              style={{
-                flex:
-                  links || dashboardData.isLoading ? "0 1 auto" : "1 1 auto",
-              }}
-              className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
-            >
-              {dashboardData.isLoading ? (
-                <div className="w-full">
-                  <Links
-                    layout={viewMode}
-                    placeholderCount={settings.columns || 1}
-                    useData={dashboardData}
-                  />
-                </div>
-              ) : links && links[0] && !dashboardData.isLoading ? (
-                <div className="w-full">
-                  <Links
-                    links={links.slice(
-                      0,
-                      settings.columns &&
-                        showRecentLinks &&
-                        showPinnedLinks
-                        ? settings.columns * 2
-                        : numberOfLinksToShow
-                    )}
-                    layout={viewMode}
-                  />
-                </div>
-              ) : (
-                <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-                  <p className="text-center text-xl">
-                    {t("view_added_links_here")}
-                  </p>
-                  <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
-                    {t("view_added_links_here_desc")}
-                  </p>
-
-                  <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
-                    <Button
-                      onClick={() => {
-                        setNewLinkModal(true);
-                      }}
-                      variant="accent"
-                    >
-                      <i className="bi-plus-lg text-xl"></i>
-                      {t("add_link")}
-                    </Button>
-
-                    <ImportDropdown />
-                  </div>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-        {showPinnedLinks && (
-          <>
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center">
-                <PageHeader
-                  icon={"bi-pin-angle"}
-                  title={t("pinned")}
-                  description={t("pinned_links_desc")}
-                />
-              </div>
-              <Link
-                href="/links/pinned"
-                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
-              >
-                {t("view_all")}
-                <i className="bi-chevron-right text-sm "></i>
-              </Link>
-            </div>
-
-            <div
-              style={{ flex: "1 1 auto" }}
-              className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
-            >
-              {dashboardData.isLoading ? (
-                <div className="w-full">
-                  <Links
-                    layout={viewMode}
-                    placeholderCount={settings.columns || 1}
-                    useData={dashboardData}
-                  />
-                </div>
-              ) : links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
-                <div className="w-full">
-                  <Links
-                    links={links
-                      .filter((e: any) => e.pinnedBy && e.pinnedBy[0])
-                      .slice(
-                        0,
-                        settings.columns &&
-                          showRecentLinks &&
-                          showPinnedLinks
-                          ? settings.columns * 2
-                          : numberOfLinksToShow
-                      )}
-                    layout={viewMode}
-                  />
-                </div>
-              ) : (
-                <div
-                  style={{ flex: "1 1 auto" }}
-                  className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200"
-                >
-                  <i className="bi-pin mx-auto text-6xl text-primary"></i>
-                  <p className="text-center text-xl">
-                    {t("pin_favorite_links_here")}
-                  </p>
-                  <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                    {t("pin_favorite_links_here_desc")}
-                  </p>
-                </div>
-              )}
-            </div>
-          </>
-        )}
+        {/* Render sections in their specified order */}
+        {orderedSections.map((section, index) => (
+          <div key={`${section.type}-${section.collectionId || 'default'}-${index}`}>
+            {renderSection(section)}
+          </div>
+        ))}
       </div>
+
       {showSurveyModal && (
         <SurveyModal
           submit={submitSurvey}

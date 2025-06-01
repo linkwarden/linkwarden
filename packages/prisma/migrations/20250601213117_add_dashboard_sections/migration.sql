@@ -26,9 +26,6 @@ CREATE TABLE "DashboardSection" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "DashboardSection_userId_order_key" ON "DashboardSection"("userId", "order");
-
--- CreateIndex
 CREATE UNIQUE INDEX "DashboardSection_userId_collectionId_key" ON "DashboardSection"("userId", "collectionId");
 
 -- AddForeignKey

@@ -11,6 +11,14 @@ import { useCollections } from "@linkwarden/router/collections";
 import { DashboardSection, DashboardSectionType } from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
 import { useUpdateDashboardLayout } from "@linkwarden/router/dashboardData";
+import {
+  draggable,
+  dropTargetForElements,
+  monitorForElements
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
+import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
+import { triggerPostMoveFlash } from '@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash';
 
 interface DashboardSectionOption {
   type: DashboardSectionType;
@@ -26,6 +34,8 @@ export default function DashboardLayoutDropdown() {
   const { data: collections = [] } = useCollections();
   const updateDashboardLayout = useUpdateDashboardLayout();
   const [searchTerm, setSearchTerm] = useState("");
+  const [isDraggedOver, setIsDraggedOver] = useState<string | null>(null);
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
   const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
 
@@ -106,6 +116,52 @@ export default function DashboardLayoutDropdown() {
     return [...enabledSections, ...disabledSections];
   }, [allSections, searchTerm]);
 
+  const getSectionId = (section: DashboardSectionOption) =>
+    `${section.type}-${section.collectionId || 'default'}`;
+
+  // Set up drag and drop
+  useEffect(() => {
+    return monitorForElements({
+      onDrop({ source, location }) {
+        const destination = location.current.dropTargets[0];
+        if (!destination) return;
+
+        const sourceId = source.data?.sectionId as string;
+        const destinationId = destination.data?.sectionId as string;
+
+        if (!sourceId || !destinationId || sourceId === destinationId) return;
+
+        const sourceIndex = filteredSections.findIndex(s => getSectionId(s) === sourceId);
+        const destinationIndex = filteredSections.findIndex(s => getSectionId(s) === destinationId);
+
+        if (sourceIndex === -1 || destinationIndex === -1) return;
+
+        // Only allow reordering within enabled sections
+        const sourceSection = filteredSections[sourceIndex];
+        const destinationSection = filteredSections[destinationIndex];
+
+        if (!sourceSection.enabled || !destinationSection.enabled) return;
+
+        const reorderedSections = reorder({
+          list: filteredSections,
+          startIndex: sourceIndex,
+          finishIndex: destinationIndex,
+        });
+
+        // Update orders for enabled sections only
+        const updatedSections = reorderedSections.map((section, index) => {
+          if (section.enabled) {
+            return { ...section, order: index };
+          }
+          return section;
+        });
+
+        console.log("Reordered sections:", updatedSections);
+
+        updateDashboardLayout.mutateAsync(updatedSections);
+      },
+    });
+  }, [filteredSections, updateDashboardLayout]);
 
   const handleCheckboxChange = (section: DashboardSectionOption) => {
     const updatedSections = allSections.map((s) => {
@@ -118,7 +174,7 @@ export default function DashboardLayoutDropdown() {
       return s;
     });
 
-    updateDashboardLayout.mutateAsync(updatedSections)
+    updateDashboardLayout.mutateAsync(updatedSections);
   };
 
   return (
@@ -142,28 +198,15 @@ export default function DashboardLayoutDropdown() {
 
           <ul className="max-h-60 overflow-y-auto">
             {filteredSections.map((section) => (
-              <li
-                key={section.type + (section.collectionId || 'default')}
-                className="py-1 px-2 flex items-center justify-between cursor-pointer"
-              >
-                <div className="flex items-center gap-2">
-                  <input
-                    id={`section-${section.type}-${section.collectionId || 'default'}`}
-                    className="checkbox checkbox-primary"
-                    type="checkbox"
-                    checked={section.enabled}
-                    onChange={() => handleCheckboxChange(section)}
-                  />
-                  <label
-                    htmlFor={`section-${section.type}-${section.collectionId || 'default'}`}
-                    className="text-sm cursor-pointer"
-                  >
-                    {section.name}
-                  </label>
-                </div>
-
-                <i className="bi-grip-vertical text-neutral" />
-              </li>
+              <DraggableListItem
+                key={getSectionId(section)}
+                section={section}
+                onCheckboxChange={handleCheckboxChange}
+                isDraggedOver={isDraggedOver === getSectionId(section)}
+                isDragged={draggedItem === getSectionId(section)}
+                setIsDraggedOver={setIsDraggedOver}
+                setDraggedItem={setDraggedItem}
+              />
             ))}
 
             {filteredSections.length === 0 && (
@@ -175,5 +218,80 @@ export default function DashboardLayoutDropdown() {
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+interface DraggableListItemProps {
+  section: DashboardSectionOption;
+  onCheckboxChange: (section: DashboardSectionOption) => void;
+  isDraggedOver: boolean;
+  isDragged: boolean;
+  setIsDraggedOver: (id: string | null) => void;
+  setDraggedItem: (id: string | null) => void;
+}
+
+function DraggableListItem({
+  section,
+  onCheckboxChange,
+  isDraggedOver,
+  isDragged,
+  setIsDraggedOver,
+  setDraggedItem
+}: DraggableListItemProps) {
+  const [element, setElement] = useState<HTMLElement | null>(null);
+  const sectionId = `${section.type}-${section.collectionId || 'default'}`;
+
+  useEffect(() => {
+    const el = element;
+    if (!el || !section.enabled) return;
+
+    return combine(
+      draggable({
+        element: el,
+        getInitialData: () => ({ sectionId }),
+        onDragStart: () => setDraggedItem(sectionId),
+        onDrop: () => setDraggedItem(null),
+      }),
+      dropTargetForElements({
+        element: el,
+        getData: () => ({ sectionId }),
+        onDragEnter: () => setIsDraggedOver(sectionId),
+        onDragLeave: () => setIsDraggedOver(null),
+        onDrop: () => setIsDraggedOver(null),
+      })
+    );
+  }, [element, section.enabled, sectionId, setDraggedItem, setIsDraggedOver]);
+
+  return (
+    <li
+      ref={setElement}
+      data-section-id={sectionId}
+      className={`
+        py-1 px-2 flex items-center justify-between cursor-pointer rounded
+        ${section.enabled ? 'cursor-grab active:cursor-grabbing' : ''}
+        ${isDragged ? 'opacity-50' : ''}
+      `}
+    >
+      <div className="flex items-center gap-2">
+        <input
+          id={`section-${section.type}-${section.collectionId || 'default'}`}
+          className="checkbox checkbox-primary"
+          type="checkbox"
+          checked={section.enabled}
+          onChange={() => onCheckboxChange(section)}
+        />
+        <label
+          htmlFor={`section-${section.type}-${section.collectionId || 'default'}`}
+          className="text-sm cursor-pointer"
+        >
+          {section.name}
+        </label>
+      </div>
+
+      <i
+        className={`bi-grip-vertical text-neutral ${section.enabled ? 'cursor-grab' : 'opacity-50'
+          }`}
+      />
+    </li>
   );
 }
