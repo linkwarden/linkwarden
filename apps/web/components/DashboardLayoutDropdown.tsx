@@ -21,7 +21,6 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
-import { triggerPostMoveFlash } from "@atlaskit/pragmatic-drag-and-drop-flourish/trigger-post-move-flash";
 
 interface DashboardSectionOption {
   type: DashboardSectionType;
@@ -140,8 +139,7 @@ export default function DashboardLayoutDropdown() {
     return [...enabledSections, ...disabledSections];
   }, [allSections, searchTerm]);
 
-  const getSectionId = (section: DashboardSectionOption) =>
-    `${section.type}-${section.collectionId || "default"}`;
+  const getSectionId = (section: DashboardSectionOption) => `${section.type}-${section.collectionId || "default"}`;
 
   // Set up drag and drop
   useEffect(() => {
@@ -184,7 +182,7 @@ export default function DashboardLayoutDropdown() {
           return section;
         });
 
-        console.log("Reordered sections:", updatedSections);
+        console.log(updatedSections);
 
         updateDashboardLayout.mutateAsync(updatedSections);
       },
@@ -192,15 +190,23 @@ export default function DashboardLayoutDropdown() {
   }, [filteredSections, updateDashboardLayout]);
 
   const handleCheckboxChange = (section: DashboardSectionOption) => {
+    const enabledSections = allSections.filter(s => s.enabled);
+    const highestOrder = enabledSections.length > 0
+      ? Math.max(...enabledSections.map(s => s.order || 0))
+      : -1;
+
     const updatedSections = allSections.map((s) => {
       if (s.type === section.type && s.collectionId === section.collectionId) {
         return {
           ...s,
           enabled: !s.enabled,
+          order: !s.enabled ? highestOrder + 1 : s.order,
         };
       }
       return s;
     });
+
+    console.log(updatedSections);
 
     updateDashboardLayout.mutateAsync(updatedSections);
   };
@@ -230,7 +236,6 @@ export default function DashboardLayoutDropdown() {
                 key={getSectionId(section)}
                 section={section}
                 onCheckboxChange={handleCheckboxChange}
-                isDraggedOver={isDraggedOver === getSectionId(section)}
                 isDragged={draggedItem === getSectionId(section)}
                 setIsDraggedOver={setIsDraggedOver}
                 setDraggedItem={setDraggedItem}
@@ -252,7 +257,6 @@ export default function DashboardLayoutDropdown() {
 interface DraggableListItemProps {
   section: DashboardSectionOption;
   onCheckboxChange: (section: DashboardSectionOption) => void;
-  isDraggedOver: boolean;
   isDragged: boolean;
   setIsDraggedOver: (id: string | null) => void;
   setDraggedItem: (id: string | null) => void;
@@ -261,7 +265,6 @@ interface DraggableListItemProps {
 function DraggableListItem({
   section,
   onCheckboxChange,
-  isDraggedOver,
   isDragged,
   setIsDraggedOver,
   setDraggedItem,
@@ -309,19 +312,15 @@ function DraggableListItem({
           onChange={() => onCheckboxChange(section)}
         />
         <label
-          htmlFor={`section-${section.type}-${
-            section.collectionId || "default"
-          }`}
-          className="text-sm cursor-pointer"
+          htmlFor={`section-${section.type}-${section.collectionId || "default"}`}
+          className="text-sm select-none"
         >
           {section.name}
         </label>
       </div>
 
       <i
-        className={`bi-grip-vertical text-neutral ${
-          section.enabled ? "cursor-grab" : "opacity-50"
-        }`}
+        className={`bi-grip-vertical text-neutral ${section.enabled ? "cursor-grab" : "opacity-50"}`}
       />
     </li>
   );

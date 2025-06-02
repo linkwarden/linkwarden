@@ -57,7 +57,7 @@ export default function Dashboard() {
       user.referredBy === null &&
       // if user is using Linkwarden for more than 3 days
       new Date().getTime() - new Date(user.createdAt).getTime() >
-        3 * 24 * 60 * 60 * 1000
+      3 * 24 * 60 * 60 * 1000
     ) {
       setTimeout(() => {
         setShowsSurveyModal(true);
@@ -145,7 +145,6 @@ export default function Dashboard() {
     );
   };
 
-  // Component renderers for each section type
   const renderStatsSection = () => (
     <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full">
       <DashboardItem
@@ -176,7 +175,7 @@ export default function Dashboard() {
 
   const renderRecentLinksSection = () => (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-4">
         <div className="flex gap-2 items-center">
           <PageHeader
             icon={"bi-clock-history"}
@@ -220,7 +219,7 @@ export default function Dashboard() {
             />
           </div>
         ) : (
-          <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+          <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
             <p className="text-center text-xl">{t("view_added_links_here")}</p>
             <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
               {t("view_added_links_here_desc")}
@@ -247,7 +246,7 @@ export default function Dashboard() {
 
   const renderPinnedLinksSection = () => (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-4">
         <div className="flex gap-2 items-center">
           <PageHeader
             icon={"bi-pin-angle"}
@@ -314,7 +313,7 @@ export default function Dashboard() {
 
     return (
       <>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-4">
           <div className="flex gap-2 items-center">
             <PageHeader
               icon={"bi-folder"}
@@ -341,7 +340,7 @@ export default function Dashboard() {
               />
             </div>
           ) : links?.filter((link: any) => link.collection.id === collection.id)
-              .length > 0 ? (
+            .length > 0 ? (
             <div className="w-full">
               <Links
                 links={links
@@ -351,13 +350,10 @@ export default function Dashboard() {
               />
             </div>
           ) : (
-            <div className="flex flex-col justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
               <i className="bi-folder mx-auto text-6xl text-primary"></i>
               <p className="text-center text-xl">
                 {t("no_links_in_collection")}
-              </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                {collection.name} {t("collection_is_empty")}
               </p>
             </div>
           )}
@@ -383,7 +379,7 @@ export default function Dashboard() {
 
   return (
     <MainLayout>
-      <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-5">
+      <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <PageHeader
             icon={"bi-house "}
@@ -396,13 +392,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Render sections in their specified order */}
-        {orderedSections.map((section, index) => (
-          <div
-            key={`${section.type}-${
-              section.collectionId || "default"
-            }-${index}`}
-          >
+        {orderedSections.map((section) => (
+          <div key={`${section.type}-${section.collectionId || "default"}`}>
             {renderSection(section)}
           </div>
         ))}

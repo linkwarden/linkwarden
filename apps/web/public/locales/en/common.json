@@ -476,5 +476,6 @@
   "links_being_archived": "Links are being archived...",
   "display_on_dashboard": "Display on Dashboard",
   "dashboard_stats": "Dashboard Stats",
-  "no_results_found": "No results found."
+  "no_results_found": "No results found.",
+  "no_links_in_collection": "No Links in this Collection."
 }
