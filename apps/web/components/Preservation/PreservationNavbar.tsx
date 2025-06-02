@@ -9,6 +9,12 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
@@ -18,6 +24,8 @@ import { formatAvailable } from "@linkwarden/lib/formatStats";
 import LinkActions from "../LinkViews/LinkComponents/LinkActions";
 import { useCollections } from "@linkwarden/router/collections";
 import clsx from "clsx";
+import ToggleDarkMode from "../ToggleDarkMode";
+import { FitWidth, FormatLineSpacing, FormatSize } from "../ui/icons";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -74,11 +82,77 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
   return (
     <div className={clsx("p-2 z-10 bg-base-100", className)}>
       <div className="max-w-6xl flex gap-2 justify-between mx-auto">
-        <Button variant="ghost" size="icon" asChild>
-          <Link href={`/dashboard`}>
-            <i className="bi-chevron-left text-xl text-neutral" />
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href={`/dashboard`}>
+              <i className="bi-chevron-left text-lg text-neutral" />
+            </Link>
+          </Button>
+          {format === ArchivedFormat.readability ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button variant="ghost" size="icon">
+                  <i className="bi-type text-xl text-neutral" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuLabel className="flex items-center justify-between font-normal">
+                  {t("theme")}
+                  <ToggleDarkMode />
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <i className="bi-fonts text-lg leading-none text-neutral" />
+                    {t("font_family")}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>a</DropdownMenuItem>
+                    <DropdownMenuItem>b</DropdownMenuItem>
+                    <DropdownMenuItem>c</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <FormatSize className="text-lg" />
+                    {t("font_size")}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>a</DropdownMenuItem>
+                    <DropdownMenuItem>b</DropdownMenuItem>
+                    <DropdownMenuItem>c</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <FormatLineSpacing className="text-lg" />
+                    {t("line_height")}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>a</DropdownMenuItem>
+                    <DropdownMenuItem>b</DropdownMenuItem>
+                    <DropdownMenuItem>c</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <FitWidth className="text-lg" />
+                    {t("line_width")}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>a</DropdownMenuItem>
+                    <DropdownMenuItem>b</DropdownMenuItem>
+                    <DropdownMenuItem>c</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="ghost" size="icon" onClick={handleDownload}>
+              <i className="bi-cloud-arrow-down text-xl text-neutral" />
+            </Button>
+          )}
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button variant="ghost" className="h-8 text-neutral">
@@ -178,19 +252,6 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
         </DropdownMenu>
 
         <div className="flex gap-2 items-center text-neutral">
-          {format === ArchivedFormat.readability ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="font-extralight text-lg"
-            >
-              Aa
-            </Button>
-          ) : (
-            <Button variant="ghost" size="icon" onClick={handleDownload}>
-              <i className="bi-cloud-arrow-down text-xl" />
-            </Button>
-          )}
           <LinkActions
             link={link}
             collection={collection}

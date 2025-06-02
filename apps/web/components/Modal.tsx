@@ -1,4 +1,5 @@
 import React, { MouseEventHandler, ReactNode, useEffect } from "react";
+import ReactDOM from "react-dom";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { Drawer } from "vaul";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
@@ -58,7 +59,7 @@ export default function Modal({
       </Drawer.Root>
     );
   } else {
-    return (
+    return ReactDOM.createPortal(
       <div
         className="overflow-y-auto pt-2 sm:py-2 fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex justify-center items-center fade-in z-40"
         data-testid="modal-outer"
@@ -89,7 +90,8 @@ export default function Modal({
             {children}
           </div>
         </ClickAwayHandler>
-      </div>
+      </div>,
+      document.body
     );
   }
 }
