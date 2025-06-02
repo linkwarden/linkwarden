@@ -475,5 +475,10 @@
   "links_are_being_represerved": "Links are being re-preserved...",
   "cancel": "Cancel",
   "preservation_rules": "Preservation rules:",
-  "links_being_archived": "Links are being archived..."
+  "links_being_archived": "Links are being archived...",
+  "theme": "Theme",
+  "font_family": "Font Family",
+  "font_size": "Font Size",
+  "line_height": "Line Height",
+  "line_width": "Line Width"
 }
