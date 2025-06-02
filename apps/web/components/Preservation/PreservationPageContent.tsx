@@ -63,7 +63,7 @@ export default function PreservationPageContent() {
   }, [router.query.format]);
 
   return (
-    <div>
+    <div className="relative">
       {link?.id && (
         <PreservationNavbar
           link={link}
