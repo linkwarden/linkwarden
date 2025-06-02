@@ -190,13 +190,20 @@
   .menu li > details > summary {
     @apply hover:!bg-base-content/10 hover:!text-inherit active:!bg-base-content/10 active:!text-base-content;
   }
-  /* .menu {
-    @apply !rounded-md px-0 py-1 min-w-52;
+
+  .alert {
+    @apply rounded-md;
   }
-  .menu :where(li:not(.menu-title) > *:not(ul):not(details):not(.menu-title)),
-  .menu :where(li:not(.menu-title) > details > summary:not(.menu-title)) {
-    @apply rounded-none py-1;
-  } */
+
+  .alert-warning {
+    @apply bg-transparent border-yellow-400/50 text-yellow-400;
+  }
+  .alert-info {
+    @apply bg-transparent border-blue-400/50 text-blue-400;
+  }
+  .alert-note {
+    @apply bg-transparent border-base-content/50 text-base-content;
+  }
 }
 
 .line-break * {

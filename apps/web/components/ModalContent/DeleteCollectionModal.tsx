@@ -23,7 +23,6 @@ export default function DeleteCollectionModal({
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
   const [submitLoader, setSubmitLoader] = useState(false);
   const router = useRouter();
-  const [inputField, setInputField] = useState("");
   const permissions = usePermissions(collection.id as number);
 
   useEffect(() => {
@@ -33,7 +32,6 @@ export default function DeleteCollectionModal({
   const deleteCollection = useDeleteCollection();
 
   const submit = async () => {
-    if (permissions === true && collection.name !== inputField) return;
     if (!submitLoader) {
       setSubmitLoader(true);
       if (!collection) return null;
@@ -70,16 +68,7 @@ export default function DeleteCollectionModal({
       <div className="flex flex-col gap-3">
         {permissions === true ? (
           <>
-            <p>{t("confirm_deletion_prompt", { name: collection.name })}</p>
-            <TextInput
-              value={inputField}
-              onChange={(e) => setInputField(e.target.value)}
-              placeholder={t("type_name_placeholder", {
-                name: collection.name,
-              })}
-              className="w-3/4 mx-auto"
-            />
-
+            {t("collection_deletion_prompt")}
             <div role="alert" className="alert alert-warning">
               <i className="bi-exclamation-triangle text-xl"></i>
               <span>
@@ -92,12 +81,7 @@ export default function DeleteCollectionModal({
           <p>{t("leave_prompt")}</p>
         )}
 
-        <Button
-          disabled={permissions === true && inputField !== collection.name}
-          onClick={submit}
-          variant="destructive"
-          className="ml-auto"
-        >
+        <Button onClick={submit} variant="destructive" className="ml-auto">
           <i className="bi-trash text-xl"></i>
           {permissions === true ? t("delete") : t("leave")}
         </Button>

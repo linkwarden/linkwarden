@@ -343,7 +343,6 @@
   "shift_key_tip": "Przytrzymaj klawisz Shift podczas klikania 'Usuń', aby w przyszłości pominąć to potwierdzenie.",
   "deleting_collection": "Usuwanie...",
   "collection_deleted": "Kolekcja usunięta.",
-  "confirm_deletion_prompt": "Aby potwierdzić, wpisz \"{{name}}\" w polu poniżej:",
   "type_name_placeholder": "Wpisz \"{{name}}\" tutaj.",
   "deletion_warning": "Usunięcie tej kolekcji spowoduje trwałe usunięcie wszystkich jej zawartości i stanie się ona niedostępna dla wszystkich, w tym dla członków z poprzednim dostępem.",
   "leave_prompt": "Kliknij przycisk poniżej, aby opuścić obecną kolekcję.",
