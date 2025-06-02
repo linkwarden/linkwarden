@@ -343,7 +343,6 @@
   "shift_key_tip": "Maintenez la touche Majuscule enfoncée tout en cliquant sur « Supprimer » pour éviter cette confirmation à l’avenir.",
   "deleting_collection": "Suppression...",
   "collection_deleted": "Collection supprimée.",
-  "confirm_deletion_prompt": "Pour confirmer, tapez \"{{name}}\" dans le champ ci-dessous:",
   "type_name_placeholder": "Tapez \"{{name}}\" ici.",
   "deletion_warning": "La suppression de cette collection effacera définitivement tout son contenu et deviendra inaccessible à tous, y compris aux membres qui y ont déjà eu accès.",
   "leave_prompt": "Cliquez sur le bouton ci-dessous pour quitter la collection actuelle.",
