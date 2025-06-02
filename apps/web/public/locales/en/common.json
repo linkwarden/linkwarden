@@ -344,7 +344,7 @@
   "shift_key_tip": "Hold the Shift key while clicking 'Delete' to bypass this confirmation in the future.",
   "deleting_collection": "Deleting...",
   "collection_deleted": "Collection Deleted.",
-  "confirm_deletion_prompt": "To confirm, type \"{{name}}\" in the box below:",
+  "collection_deletion_prompt": "Are you sure you want to delete this Collection?",
   "type_name_placeholder": "Type \"{{name}}\" Here.",
   "deletion_warning": "Deleting this collection will permanently erase all its contents, and it will become inaccessible to everyone, including members with previous access.",
   "leave_prompt": "Click the button below to leave the current collection.",
