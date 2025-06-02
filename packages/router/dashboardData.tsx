@@ -38,7 +38,6 @@ const useUpdateDashboardLayout = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["user"] });
-      await queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
     },
   });
 };

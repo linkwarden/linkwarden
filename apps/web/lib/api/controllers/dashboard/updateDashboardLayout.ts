@@ -13,9 +13,8 @@ export default async function updateDashboardLayout(
   if (!dataValidation.success) {
     console.log(dataValidation.error.issues[0].message);
     return {
-      response: `Error: ${
-        dataValidation.error.issues[0].message
-      } [${dataValidation.error.issues[0].path.join(", ")}]`,
+      response: `Error: ${dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`,
       status: 400,
     };
   }
