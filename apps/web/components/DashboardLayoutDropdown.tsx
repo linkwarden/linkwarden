@@ -36,7 +36,6 @@ export default function DashboardLayoutDropdown() {
   const { data: collections = [] } = useCollections();
   const updateDashboardLayout = useUpdateDashboardLayout();
   const [searchTerm, setSearchTerm] = useState("");
-  const [isDraggedOver, setIsDraggedOver] = useState<string | null>(null);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
 
   const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
@@ -115,14 +114,12 @@ export default function DashboardLayoutDropdown() {
   const filteredSections = useMemo(() => {
     let sections = allSections;
 
-    // Filter by search term
     if (searchTerm.trim()) {
       sections = sections.filter((section) =>
         section.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Separate and sort sections
     const enabledSections = sections
       .filter((section) => section.enabled)
       .sort((a, b) => {
@@ -139,9 +136,11 @@ export default function DashboardLayoutDropdown() {
     return [...enabledSections, ...disabledSections];
   }, [allSections, searchTerm]);
 
-  const getSectionId = (section: DashboardSectionOption) => `${section.type}-${section.collectionId || "default"}`;
+  const getSectionId = (section: DashboardSectionOption) =>
+    `${section.type}-${section.collectionId || "default"}`;
 
   // Set up drag and drop
+  // Improve this visually
   useEffect(() => {
     return monitorForElements({
       onDrop({ source, location }) {
@@ -182,18 +181,17 @@ export default function DashboardLayoutDropdown() {
           return section;
         });
 
-        console.log(updatedSections);
-
         updateDashboardLayout.mutateAsync(updatedSections);
       },
     });
   }, [filteredSections, updateDashboardLayout]);
 
   const handleCheckboxChange = (section: DashboardSectionOption) => {
-    const enabledSections = allSections.filter(s => s.enabled);
-    const highestOrder = enabledSections.length > 0
-      ? Math.max(...enabledSections.map(s => s.order || 0))
-      : -1;
+    const enabledSections = allSections.filter((s) => s.enabled);
+    const highestOrder =
+      enabledSections.length > 0
+        ? Math.max(...enabledSections.map((s) => s.order || 0))
+        : -1;
 
     const updatedSections = allSections.map((s) => {
       if (s.type === section.type && s.collectionId === section.collectionId) {
@@ -205,8 +203,6 @@ export default function DashboardLayoutDropdown() {
       }
       return s;
     });
-
-    console.log(updatedSections);
 
     updateDashboardLayout.mutateAsync(updatedSections);
   };
@@ -237,7 +233,6 @@ export default function DashboardLayoutDropdown() {
                 section={section}
                 onCheckboxChange={handleCheckboxChange}
                 isDragged={draggedItem === getSectionId(section)}
-                setIsDraggedOver={setIsDraggedOver}
                 setDraggedItem={setDraggedItem}
               />
             ))}
@@ -258,7 +253,6 @@ interface DraggableListItemProps {
   section: DashboardSectionOption;
   onCheckboxChange: (section: DashboardSectionOption) => void;
   isDragged: boolean;
-  setIsDraggedOver: (id: string | null) => void;
   setDraggedItem: (id: string | null) => void;
 }
 
@@ -266,7 +260,6 @@ function DraggableListItem({
   section,
   onCheckboxChange,
   isDragged,
-  setIsDraggedOver,
   setDraggedItem,
 }: DraggableListItemProps) {
   const [element, setElement] = useState<HTMLElement | null>(null);
@@ -286,12 +279,9 @@ function DraggableListItem({
       dropTargetForElements({
         element: el,
         getData: () => ({ sectionId }),
-        onDragEnter: () => setIsDraggedOver(sectionId),
-        onDragLeave: () => setIsDraggedOver(null),
-        onDrop: () => setIsDraggedOver(null),
       })
     );
-  }, [element, section.enabled, sectionId, setDraggedItem, setIsDraggedOver]);
+  }, [element, section.enabled, sectionId, setDraggedItem]);
 
   return (
     <li
@@ -312,7 +302,9 @@ function DraggableListItem({
           onChange={() => onCheckboxChange(section)}
         />
         <label
-          htmlFor={`section-${section.type}-${section.collectionId || "default"}`}
+          htmlFor={`section-${section.type}-${
+            section.collectionId || "default"
+          }`}
           className="text-sm select-none"
         >
           {section.name}
@@ -320,7 +312,9 @@ function DraggableListItem({
       </div>
 
       <i
-        className={`bi-grip-vertical text-neutral ${section.enabled ? "cursor-grab" : "opacity-50"}`}
+        className={`bi-grip-vertical text-neutral ${
+          section.enabled ? "cursor-grab" : "opacity-50"
+        }`}
       />
     </li>
   );
