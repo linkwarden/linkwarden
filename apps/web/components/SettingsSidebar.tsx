@@ -11,7 +11,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
 
   const { data: user } = useUser();
   const { data: config } = useConfig();
-  const isAdmin = user.id === (config?.ADMIN || 1);
+  const isAdmin = user?.id === (config?.ADMIN || 1);
 
   const router = useRouter();
   const [active, setActive] = useState("");
@@ -107,7 +107,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </Link>
         )}
 
-        {process.env.NEXT_PUBLIC_STRIPE && !user.parentSubscriptionId && (
+        {process.env.NEXT_PUBLIC_STRIPE && !user?.parentSubscriptionId && (
           <Link href="/settings/billing">
             <div
               className={`${

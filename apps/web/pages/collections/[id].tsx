@@ -10,7 +10,6 @@ import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
-import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
@@ -38,8 +37,6 @@ import { Button } from "@/components/ui/button";
 
 export default function Index() {
   const { t } = useTranslation();
-  const { settings } = useLocalSettingsStore();
-
   const router = useRouter();
 
   const { data: collections = [] } = useCollections();
@@ -64,7 +61,7 @@ export default function Index() {
     );
   }, [router, collections]);
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   const [collectionOwner, setCollectionOwner] = useState<
     Partial<AccountSettings>
@@ -72,20 +69,20 @@ export default function Index() {
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (activeCollection && activeCollection.ownerId !== user.id) {
+      if (activeCollection && activeCollection.ownerId !== user?.id) {
         const owner = await getPublicUserData(
           activeCollection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (activeCollection && activeCollection.ownerId === user.id) {
+      } else if (activeCollection && activeCollection.ownerId === user?.id) {
         setCollectionOwner({
-          id: user.id as number,
-          name: user.name,
-          username: user.username as string,
-          image: user.image as string,
-          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
-          archiveAsMonolith: user.archiveAsScreenshot as boolean,
-          archiveAsPDF: user.archiveAsPDF as boolean,
+          id: user?.id as number,
+          name: user?.name,
+          username: user?.username as string,
+          image: user?.image as string,
+          archiveAsScreenshot: user?.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user?.archiveAsMonolith as boolean,
+          archiveAsPDF: user?.archiveAsPDF as boolean,
         });
       }
     };
@@ -114,8 +111,8 @@ export default function Index() {
         className="p-5 flex gap-3 flex-col"
         style={{
           backgroundImage: `linear-gradient(${activeCollection?.color}20 0%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+            user?.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${user?.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
