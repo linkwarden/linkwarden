@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { PreservationSkeleton } from "../Skeletons";
 import { useTranslation } from "next-i18next";
@@ -19,6 +19,13 @@ import {
   useRemoveHighlight,
 } from "@linkwarden/router/highlights";
 import { Highlight } from "@linkwarden/prisma/client";
+import { useUser } from "@linkwarden/router/user";
+import { Caveat } from "next/font/google";
+import { Bentham } from "next/font/google";
+import { Separator } from "../ui/separator";
+
+const caveat = Caveat({ subsets: ["latin"] });
+const bentham = Bentham({ subsets: ["latin"], weight: "400" });
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -58,40 +65,102 @@ export default function ReadableView({ link }: Props) {
     fetchLinkContent();
   }, [link]);
 
+  const { data: user } = useUser();
+
+  useEffect(() => {
+    if (!user) return;
+    const readerViews = document.getElementsByClassName("reader-view");
+
+    const getFont = () => {
+      if (user.readableFontFamily === "caveat") {
+        return caveat.style.fontFamily;
+      } else if (user.readableFontFamily === "bentham") {
+        return bentham.style.fontFamily;
+      } else return user.readableFontFamily;
+    };
+
+    for (const view of Array.from(readerViews)) {
+      const paragraphs = view.getElementsByTagName("p");
+      for (const paragraph of Array.from(paragraphs)) {
+        paragraph.style.fontSize = user.readableFontSize || "18px";
+        paragraph.style.lineHeight = user.readableLineHeight || "1.8";
+      }
+
+      const paragraphToUserReadableFontSizeRatio =
+        parseInt(user.readableFontSize || "18") / 18;
+
+      const headers1 = view.getElementsByTagName("h1");
+      for (const header of Array.from(headers1)) {
+        header.style.fontSize =
+          35 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers2 = view.getElementsByTagName("h2");
+      for (const header of Array.from(headers2)) {
+        header.style.fontSize =
+          30 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers3 = view.getElementsByTagName("h3");
+      for (const header of Array.from(headers3)) {
+        header.style.fontSize =
+          26 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers4 = view.getElementsByTagName("h4");
+      for (const header of Array.from(headers4)) {
+        header.style.fontSize =
+          21 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers5 = view.getElementsByTagName("h5");
+      for (const header of Array.from(headers5)) {
+        header.style.fontSize =
+          18 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+
+      (view as HTMLElement).style.fontFamily = `${getFont()}`;
+    }
+  }, [
+    user?.theme,
+    user?.readableFontFamily,
+    user?.readableFontSize,
+    user?.readableLineHeight,
+    linkContent,
+  ]);
+
   const handleMouseUp = (e: React.MouseEvent) => {
+    const containerEl = containerRef.current;
+    if (!containerEl) return;
+
+    const containerRect = containerEl.getBoundingClientRect();
     const target = e.target as HTMLElement;
     const highlightId = Number(target.dataset.highlightId);
     const selection = window.getSelection();
 
     if (highlightId) {
       const rect = target.getBoundingClientRect();
+      const relativeX = rect.left - containerRect.left + rect.width / 2;
+      const relativeY = rect.top - containerRect.top - 5;
+
       setSelectionMenu({
         show: true,
         highlightId: highlightId,
       });
-
       setMenuPosition({
-        x: rect.left + window.scrollX + rect.width / 2,
-        y: rect.top + window.scrollY - 5,
+        x: relativeX,
+        y: relativeY,
       });
-
       return;
-    } else if (
-      selection &&
-      selection.rangeCount > 0 &&
-      !selection.isCollapsed
-    ) {
+    }
+
+    if (selection && selection.rangeCount > 0 && !selection.isCollapsed) {
       const range = selection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
 
       if (rect && rect.width && rect.height) {
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const scrollLeft =
-          window.scrollX || document.documentElement.scrollLeft;
+        const relativeX = rect.left - containerRect.left + rect.width / 2;
+        const relativeY = rect.top - containerRect.top - 5;
 
         setMenuPosition({
-          x: rect.left + scrollLeft + rect.width / 2,
-          y: rect.top + scrollTop - 5,
+          x: relativeX,
+          y: relativeY,
         });
         setSelectionMenu({
           show: true,
@@ -276,30 +345,49 @@ export default function ReadableView({ link }: Props) {
     }
   };
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200 mt-5">
-      <div className="flex gap-3 items-start">
-        <div className="flex flex-col w-full gap-1">
-          <p className="md:text-4xl text-xl">
-            {unescapeString(link?.name || link?.description || link?.url || "")}
-          </p>
-          {link?.url && (
-            <Link
-              href={link?.url || ""}
-              title={link?.url}
-              target="_blank"
-              className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
-            >
-              <i className="bi-link-45deg" />
-              {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
-            </Link>
-          )}
-        </div>
+    <div
+      ref={containerRef}
+      className={clsx(
+        "flex flex-col gap-3 items-start p-3 mx-auto bg-base-200 mt-5 relative",
+        user?.readableLineWidth === "narrower"
+          ? "max-w-screen-sm"
+          : user?.readableLineWidth === "narrow"
+            ? "max-w-screen-md"
+            : user?.readableLineWidth === "normal"
+              ? "max-w-screen-lg"
+              : user?.readableLineWidth === "wide"
+                ? "max-w-screen-xl"
+                : user?.readableLineWidth === "wider"
+                  ? "max-w-screen-2xl"
+                  : ""
+      )}
+    >
+      <div className="reader-view">
+        <h1>
+          {unescapeString(link?.name || link?.description || link?.url || "")}
+        </h1>
       </div>
+
+      {link?.url && (
+        <Link
+          href={link?.url || ""}
+          title={link?.url}
+          target="_blank"
+          className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
+        >
+          <i className="bi-link-45deg" />
+          {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
+        </Link>
+      )}
 
       <div className="text-sm text-neutral flex justify-between w-full gap-2">
         <LinkDate link={link} />
       </div>
+
+      <Separator className="mt-5 mb-2" />
 
       {link?.readable?.startsWith("archives") ? (
         <>
@@ -309,7 +397,6 @@ export default function ReadableView({ link }: Props) {
               onMouseUp={handleMouseUp}
             >
               <div
-                id="readable-view"
                 className="line-break px-1 reader-view read-only"
                 dangerouslySetInnerHTML={{ __html: highlightedHtml }}
               />

@@ -9,6 +9,7 @@
   "scripts": {
     "generate": "prisma generate",
     "deploy": "prisma migrate deploy",
+    "dev": "prisma migrate dev",
     "studio": "prisma studio"
   },
   "devDependencies": {

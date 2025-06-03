@@ -51,8 +51,13 @@ model User {
   subscriptions           Subscription?
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
   aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
-  aiPredefinedTags        String[]              @default([])
+  aiPredefinedTags        String[]               @default([])
   aiTagExistingLinks      Boolean               @default(false)
+  theme                   Theme                 @default(dark)
+  readableFontFamily      String?
+  readableFontSize        String?
+  readableLineHeight      String?
+  readableLineWidth       String?
   dashboardRecentLinks    Boolean               @default(true)
   dashboardPinnedLinks    Boolean               @default(true)
   preventDuplicateLinks   Boolean               @default(false)
@@ -65,6 +70,12 @@ model User {
   referredBy              String?
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
+}
+
+enum Theme {
+  dark
+  light
+  auto
 }
 
 enum AiTaggingMethod {
