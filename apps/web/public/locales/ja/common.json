@@ -344,7 +344,6 @@
   "shift_key_tip": "Shiftキーを押しながら「削除」をクリックすると、今後この確認をスキップできます。",
   "deleting_collection": "削除中...",
   "collection_deleted": "コレクションが削除されました。",
-  "confirm_deletion_prompt": "確認のため、以下のボックスに \"{{name}}\" と入力してください:",
   "type_name_placeholder": "ここに \"{{name}}\" を入力してください。",
   "deletion_warning": "このコレクションを削除すると、そのすべての内容が永久に消去され、以前アクセス可能だったメンバーを含め、誰もアクセスできなくなります。",
   "leave_prompt": "現在のコレクションから離れるには、以下のボタンをクリックしてください。",

@@ -57,7 +57,8 @@ export default function SearchBar({ placeholder }: Props) {
             }
           }
         }}
-        className="border border-neutral-content bg-base-200 focus:border-primary py-1 rounded-md pl-9 pr-2 w-full max-w-[15rem] md:focus:w-80 md:w-[15rem] md:max-w-full duration-200 outline-none"
+        style={{ transition: "width 0.2s ease-in-out" }}
+        className="border border-neutral-content bg-base-200 focus:border-primary py-1 rounded-md pl-9 pr-2 w-full max-w-[15rem] md:focus:w-80 md:w-[15rem] md:max-w-full outline-none"
       />
     </div>
   );
