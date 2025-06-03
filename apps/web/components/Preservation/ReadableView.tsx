@@ -397,6 +397,7 @@ export default function ReadableView({ link }: Props) {
               onMouseUp={handleMouseUp}
             >
               <div
+                id="readable-view"
                 className="line-break px-1 reader-view read-only"
                 dangerouslySetInnerHTML={{ __html: highlightedHtml }}
               />
