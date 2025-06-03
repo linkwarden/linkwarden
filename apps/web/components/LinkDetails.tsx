@@ -13,11 +13,7 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@linkwarden/router/user";
-import {
-  useGetLink,
-  useUpdateLink,
-  useUpdateFile,
-} from "@linkwarden/router/links";
+import { useUpdateLink, useUpdateFile } from "@linkwarden/router/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
@@ -73,8 +69,6 @@ export default function LinkDetails({
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
-  const getLink = useGetLink(isPublicRoute);
-
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,
     name: "",
@@ -117,34 +111,6 @@ export default function LinkDetails({
       link.readable
     );
   };
-
-  useEffect(() => {
-    (async () => {
-      await getLink.mutateAsync({
-        id: link.id as number,
-      });
-    })();
-
-    let interval: any;
-
-    if (!isReady()) {
-      interval = setInterval(async () => {
-        await getLink.mutateAsync({
-          id: link.id as number,
-        });
-      }, 5000);
-    } else {
-      if (interval) {
-        clearInterval(interval);
-      }
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [link.monolith]);
 
   const updateLink = useUpdateLink();
   const updateFile = useUpdateFile();
