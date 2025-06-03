@@ -93,12 +93,12 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         return (
           <>
             {!monolithLoaded && (
-              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3rem)]" />
+              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3.1rem)]" />
             )}
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.monolith}&_=${link.updatedAt}`}
               className={clsx(
-                "w-full border-none h-[calc(100vh-3rem)]",
+                "w-full border-none h-[calc(100vh-3.1rem)]",
                 monolithLoaded ? "block" : "hidden"
               )}
               onLoad={() => setMonolithLoaded(true)}
@@ -110,12 +110,12 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         return (
           <>
             {!pdfLoaded && (
-              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3rem)]" />
+              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3.1rem)]" />
             )}
             <iframe
               src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.pdf}&_=${link.updatedAt}`}
               className={clsx(
-                "w-full border-none h-[calc(100vh-3rem)]",
+                "w-full border-none h-[calc(100vh-3.1rem)]",
                 pdfLoaded ? "block" : "hidden"
               )}
               onLoad={() => setPdfLoaded(true)}
@@ -128,12 +128,12 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
         return (
           <>
             {!imageLoaded && (
-              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3rem)]" />
+              <PreservationSkeleton className="max-w-screen-lg h-[calc(100vh-3.1rem)]" />
             )}
             <div
               className={clsx(
                 "overflow-auto flex items-start",
-                imageLoaded && "h-[calc(100vh-3rem)]"
+                imageLoaded && "h-[calc(100vh-3.1rem)]"
               )}
             >
               <img

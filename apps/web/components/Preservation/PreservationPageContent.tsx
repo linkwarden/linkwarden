@@ -63,24 +63,20 @@ export default function PreservationPageContent() {
   }, [router.query.format]);
 
   return (
-    <div className="relative">
+    <div>
       {link?.id && (
         <PreservationNavbar
           link={link}
           format={Number(router.query.format)}
           className={`
-            transform transition-transform duration-200 ease-in-out
-            ${
-              showNavbar
-                ? "translate-y-0"
-                : "-translate-y-full fixed top-0 left-0 right-0"
-            }
+            transform transition-transform duration-200 ease-in-out fixed top-0 left-0 right-0
+            ${showNavbar ? "translate-y-0" : "-translate-y-full"}
           `}
         />
       )}
       <div
         className={`bg-base-200 overflow-y-auto w-screen  ${
-          showNavbar ? "h-[calc(100vh-3rem)]" : "h-screen"
+          showNavbar ? "h-[calc(100vh-3.1rem)] mt-[3.1rem]" : "h-screen"
         }`}
         ref={scrollRef}
       >
