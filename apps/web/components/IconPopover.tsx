@@ -140,6 +140,7 @@ const IconPopover = ({
         </div>
         <div className="flex flex-row gap-2 justify-between items-center mt-2">
           <Button size="sm" variant="ghost" onClick={() => reset()}>
+            <i className="bi-arrow-counterclockwise text-neutral" />
             {t("reset_defaults")}
           </Button>
           <p className="text-neutral text-xs">{t("click_out_to_apply")}</p>

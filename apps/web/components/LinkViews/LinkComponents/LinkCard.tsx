@@ -71,7 +71,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
-  const getLink = useGetLink(isPublicRoute);
+  const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
 
   useEffect(() => {
     if (!editMode) {
@@ -129,8 +129,8 @@ export default function LinkCard({ link, columns, editMode }: Props) {
       link.preview !== "unavailable"
     ) {
       interval = setInterval(async () => {
-        getLink.mutateAsync({
-          id: link.id as number,
+        refetch().catch((error) => {
+          console.error("Error refetching link:", error);
         });
       }, 5000);
     }
@@ -250,6 +250,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
         collection={collection}
         linkModal={linkModal}
         setLinkModal={(e) => setLinkModal(e)}
+        className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
       />
       {!isPublicRoute && <LinkPin link={link} />}
     </div>
