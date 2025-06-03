@@ -68,10 +68,7 @@ export default function PreservationPageContent() {
         <PreservationNavbar
           link={link}
           format={Number(router.query.format)}
-          className={`
-            transform transition-transform duration-200 ease-in-out fixed top-0 left-0 right-0
-            ${showNavbar ? "translate-y-0" : "-translate-y-full"}
-          `}
+          showNavbar={showNavbar}
         />
       )}
       <div
