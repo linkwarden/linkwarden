@@ -28,7 +28,7 @@ export default function Dashboard() {
     ...dashboardData
   } = useDashboardData();
   const { data: tags = [] } = useTags();
-  const { data: account = [] } = useUser();
+  const { data: account } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
 
@@ -61,7 +61,7 @@ export default function Dashboard() {
   }, [account]);
 
   const numberOfLinksToShow = useMemo(() => {
-    if (account.dashboardRecentLinks && account.dashboardPinnedLinks) {
+    if (account?.dashboardRecentLinks && account?.dashboardPinnedLinks) {
       if (window.innerWidth > 1900) {
         return 10;
       } else if (window.innerWidth > 1500) {
@@ -76,7 +76,7 @@ export default function Dashboard() {
     } else {
       return 100;
     }
-  }, [account.dashboardRecentLinks, account.dashboardPinnedLinks]);
+  }, [account?.dashboardRecentLinks, account?.dashboardPinnedLinks]);
 
   const [newLinkModal, setNewLinkModal] = useState(false);
 
@@ -158,7 +158,7 @@ export default function Dashboard() {
           />
         </div>
 
-        {account.dashboardRecentLinks && (
+        {account?.dashboardRecentLinks && (
           <>
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
@@ -234,7 +234,7 @@ export default function Dashboard() {
           </>
         )}
 
-        {account.dashboardPinnedLinks && (
+        {account?.dashboardPinnedLinks && (
           <>
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">

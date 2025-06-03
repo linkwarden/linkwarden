@@ -58,7 +58,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
 
   const { data: collections = [] } = useCollections();
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   const { setSelectedLinks, selectedLinks } = useLinkStore();
 

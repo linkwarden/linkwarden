@@ -32,7 +32,7 @@ const CollectionListing = () => {
   const updateCollection = useUpdateCollection();
   const { data: collections = [], isLoading } = useCollections();
 
-  const { data: user = {}, refetch } = useUser();
+  const { data: user, refetch } = useUser();
   const updateUser = useUpdateUser();
 
   const router = useRouter();
@@ -46,7 +46,7 @@ const CollectionListing = () => {
         collections,
         router,
         tree,
-        user.collectionOrder
+        user?.collectionOrder
       );
     } else return undefined;
   }, [collections, user, router]);
@@ -56,7 +56,7 @@ const CollectionListing = () => {
   }, [initialTree]);
 
   useEffect(() => {
-    if (user.username) {
+    if (user?.username) {
       refetch();
       if (
         (!user.collectionOrder || user.collectionOrder.length === 0) &&
@@ -216,9 +216,9 @@ const CollectionListing = () => {
     );
 
     if (
-      (movedCollection?.ownerId !== user.id &&
+      (movedCollection?.ownerId !== user?.id &&
         destination.parentId !== source.parentId) ||
-      (destinationCollection?.ownerId !== user.id &&
+      (destinationCollection?.ownerId !== user?.id &&
         destination.parentId !== "root")
     ) {
       return toast.error(t("cant_change_collection_you_dont_own"));
