@@ -64,7 +64,7 @@ export default function LinkDetails({
   const permissions = usePermissions(link.collection.id as number);
 
   const { t } = useTranslation();
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
   const router = useRouter();
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
@@ -81,20 +81,20 @@ export default function LinkDetails({
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (link.collection.ownerId !== user.id) {
+      if (link.collection.ownerId !== user?.id) {
         const owner = await getPublicUserData(
           link.collection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (link.collection.ownerId === user.id) {
+      } else if (link.collection.ownerId === user?.id) {
         setCollectionOwner({
-          id: user.id as number,
-          name: user.name,
-          username: user.username as string,
-          image: user.image as string,
-          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
-          archiveAsMonolith: user.archiveAsScreenshot as boolean,
-          archiveAsPDF: user.archiveAsPDF as boolean,
+          id: user?.id as number,
+          name: user?.name as string,
+          username: user?.username as string,
+          image: user?.image as string,
+          archiveAsScreenshot: user?.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user?.archiveAsScreenshot as boolean,
+          archiveAsPDF: user?.archiveAsPDF as boolean,
         });
       }
     };

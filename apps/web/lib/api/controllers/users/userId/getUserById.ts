@@ -45,8 +45,16 @@ export default async function getUserById(userId: number) {
       },
     },
   } as Omit<User, "password"> &
-    Partial<WhitelistedUser> &
-    Partial<Subscription>;
+    Partial<{ subscription: Subscription }> & {
+      parentSubscription: {
+        active: boolean | undefined;
+        user: {
+          email: string | null | undefined;
+        };
+      };
+    } & {
+      whitelistedUsers: string[];
+    };
 
   return { response: data, status: 200 };
 }

@@ -24,7 +24,7 @@ export default function MemberOnboarding() {
     name: "",
   });
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
   const updateUser = useUpdateUser();
 
   async function submit(event: FormEvent<HTMLFormElement>) {

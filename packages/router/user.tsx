@@ -38,8 +38,16 @@ const useUser = (auth?: MobileAuth) => {
       if (!response.ok) throw new Error("Failed to fetch user data.");
 
       const data = (await response.json()).response as Omit<User, "password"> &
-        Partial<WhitelistedUser> &
-        Partial<Subscription>;
+        Partial<{ subscription: Subscription }> & {
+          parentSubscription: {
+            active: boolean | undefined;
+            user: {
+              email: string | null | undefined;
+            };
+          };
+        } & {
+          whitelistedUsers: string[];
+        };
 
       document.querySelector("html")?.setAttribute("data-theme", data.theme);
 
@@ -49,8 +57,16 @@ const useUser = (auth?: MobileAuth) => {
       ? !!userId && status === "authenticated"
       : status === "authenticated",
     placeholderData: {} as Omit<User, "password"> &
-      Partial<WhitelistedUser> &
-      Partial<Subscription>,
+      Partial<{ subscription: Subscription }> & {
+        parentSubscription: {
+          active: boolean | undefined;
+          user: {
+            email: string | null | undefined;
+          };
+        };
+      } & {
+        whitelistedUsers: string[];
+      },
   });
 };
 
@@ -103,8 +119,16 @@ const useUpdateUserPreference = () => {
       if (!response.ok) throw new Error(data.response);
 
       return data.response as Omit<User, "password"> &
-        Partial<WhitelistedUser> &
-        Partial<Subscription>;
+        Partial<{ subscription: Subscription }> & {
+          parentSubscription: {
+            active: boolean | undefined;
+            user: {
+              email: string | null | undefined;
+            };
+          };
+        } & {
+          whitelistedUsers: string[];
+        };
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["user"], data);
