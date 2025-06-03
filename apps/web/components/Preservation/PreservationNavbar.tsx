@@ -35,6 +35,7 @@ const bentham = Bentham({ subsets: ["latin"], weight: "400" });
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   format?: ArchivedFormat;
+  showNavbar: boolean;
   className?: string;
 };
 
@@ -87,7 +88,7 @@ const lineHeights = [
 
 const lineWidth = ["narrower", "narrow", "normal", "wide", "wider", "full"];
 
-const PreservationNavbar = ({ link, format, className }: Props) => {
+const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
   const { data: collections = [] } = useCollections();
   const { data } = useUser();
   const updateUserPreference = useUpdateUserPreference();
@@ -138,7 +139,8 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
   return (
     <div
       className={clsx(
-        "p-2 z-10 bg-base-100 flex gap-2 justify-between",
+        "p-2 z-10 bg-base-100 flex gap-2 justify-between transform transition-transform duration-200 ease-in-out fixed top-0 left-0 right-0",
+        showNavbar ? "translate-y-0" : "-translate-y-full",
         className
       )}
     >
