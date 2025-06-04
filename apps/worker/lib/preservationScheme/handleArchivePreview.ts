@@ -22,22 +22,21 @@ const handleArchivePreview = async (
   let previewGenerated = false;
 
   if (ogImageUrl) {
-    console.log("Found og:image URL:", ogImageUrl);
-
-    // Download the image
     const imageResponse = await page.goto(ogImageUrl);
 
-    // Check if imageResponse is not null
     if (imageResponse && !link.preview?.startsWith("archive")) {
       const buffer = await imageResponse.body();
-      previewGenerated = generatePreview(buffer, link.collectionId, link.id);
+      previewGenerated = await generatePreview(
+        buffer,
+        link.collectionId,
+        link.id
+      );
     }
 
     await page.goBack();
   }
 
   if (!previewGenerated && !link.preview?.startsWith("archive")) {
-    console.log("No og:image found");
     await page
       .screenshot({ type: "jpeg", quality: 20 })
       .then(async (screenshot) => {
