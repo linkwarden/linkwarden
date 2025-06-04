@@ -14,13 +14,17 @@ const handleArchivePreview = async (
   link: LinksAndCollectionAndOwner,
   page: Page
 ) => {
-  const ogImageUrl = await page.evaluate(() => {
+  let ogImageUrl = await page.evaluate(() => {
     const metaTag = document.querySelector('meta[property="og:image"]');
     return metaTag ? (metaTag as any).content : null;
   });
 
   if (ogImageUrl) {
     console.log("Found og:image URL:", ogImageUrl);
+    if (!ogImageUrl.startsWith("http://") && !ogImageUrl.startsWith("https://")) {
+      const origin = await page.evaluate(() => document.location.origin);
+      ogImageUrl = origin + (ogImageUrl.startsWith("/") ? ogImageUrl : ("/" + ogImageUrl));
+    }
 
     // Download the image
     const imageResponse = await page.goto(ogImageUrl);
