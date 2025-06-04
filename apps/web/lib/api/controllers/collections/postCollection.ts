@@ -96,6 +96,7 @@ export default async function postCollection(
   });
 
   createFolder({ filePath: `archives/${newCollection.id}` });
+  createFolder({ filePath: `archives/preview/${newCollection.id}` });
 
   return { response: newCollection, status: 200 };
 }

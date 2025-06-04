@@ -16,6 +16,7 @@
     "concurrently:dev": "concurrently \"dotenv -- yarn workspace @linkwarden/web dev\" \"dotenv -- yarn workspace @linkwarden/worker dev\"",
     "concurrently:start": "concurrently \"dotenv -- yarn workspace @linkwarden/web start\" \"dotenv -- yarn workspace @linkwarden/worker start\"",
     "prisma:deploy": "dotenv -- yarn workspace @linkwarden/prisma deploy",
+    "prisma:dev": "dotenv -- yarn workspace @linkwarden/prisma dev",
     "prisma:generate": "yarn workspace @linkwarden/prisma generate",
     "prisma:studio": "yarn workspace @linkwarden/prisma studio",
     "format": "yarn workspaces run format",

@@ -30,14 +30,17 @@ export default async function getLinkById(userId: number, linkId: number) {
       include: {
         tags: true,
         collection: true,
-        pinnedBy: isCollectionOwner
-          ? {
-              where: { id: userId },
-              select: { id: true },
-            }
-          : undefined,
+        pinnedBy: {
+          where: { id: userId },
+          select: { id: true },
+        },
       },
     });
+
+    // strip out the other users from pinnedBy
+    if (link?.pinnedBy && link.pinnedBy.length > 0) {
+      link.pinnedBy = link.pinnedBy.filter((p) => p.id === userId);
+    }
 
     return { response: link, status: 200 };
   }
