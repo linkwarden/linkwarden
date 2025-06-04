@@ -34,7 +34,10 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
         if (error) {
           toast.error(error.message);
         } else {
-          if (router.pathname.startsWith("/links/[id]")) {
+          if (
+            router.pathname.startsWith("/links/[id]") ||
+            router.pathname.startsWith("/preserved/[id]")
+          ) {
             router.push("/dashboard");
           }
           toast.success(t("deleted"));
@@ -53,14 +56,12 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
       <div className="flex flex-col gap-3">
         <p>{t("link_deletion_confirmation_message")}</p>
 
-        <div role="alert" className="alert alert-warning">
-          <i className="bi-exclamation-triangle text-xl" />
+        <div role="alert" className="alert alert-info">
+          <i className="bi-info-circle text-xl" />
           <span>
-            <b>{t("warning")}:</b> {t("irreversible_warning")}
+            <b>{t("tip")}:</b> {t("shift_key_tip")}
           </span>
         </div>
-
-        <p>{t("shift_key_tip")}</p>
 
         <Button className="ml-auto" variant="destructive" onClick={submit}>
           <i className="bi-trash text-xl" />

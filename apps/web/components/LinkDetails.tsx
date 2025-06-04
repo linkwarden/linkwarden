@@ -13,11 +13,7 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@linkwarden/router/user";
-import {
-  useGetLink,
-  useUpdateLink,
-  useUpdateFile,
-} from "@linkwarden/router/links";
+import { useUpdateLink, useUpdateFile } from "@linkwarden/router/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
@@ -68,12 +64,10 @@ export default function LinkDetails({
   const permissions = usePermissions(link.collection.id as number);
 
   const { t } = useTranslation();
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
   const router = useRouter();
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
-
-  const getLink = useGetLink(isPublicRoute);
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,
@@ -87,20 +81,20 @@ export default function LinkDetails({
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (link.collection.ownerId !== user.id) {
+      if (link.collection.ownerId !== user?.id) {
         const owner = await getPublicUserData(
           link.collection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (link.collection.ownerId === user.id) {
+      } else if (link.collection.ownerId === user?.id) {
         setCollectionOwner({
-          id: user.id as number,
-          name: user.name,
-          username: user.username as string,
-          image: user.image as string,
-          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
-          archiveAsMonolith: user.archiveAsScreenshot as boolean,
-          archiveAsPDF: user.archiveAsPDF as boolean,
+          id: user?.id as number,
+          name: user?.name as string,
+          username: user?.username as string,
+          image: user?.image as string,
+          archiveAsScreenshot: user?.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user?.archiveAsScreenshot as boolean,
+          archiveAsPDF: user?.archiveAsPDF as boolean,
         });
       }
     };
@@ -117,34 +111,6 @@ export default function LinkDetails({
       link.readable
     );
   };
-
-  useEffect(() => {
-    (async () => {
-      await getLink.mutateAsync({
-        id: link.id as number,
-      });
-    })();
-
-    let interval: any;
-
-    if (!isReady()) {
-      interval = setInterval(async () => {
-        await getLink.mutateAsync({
-          id: link.id as number,
-        });
-      }, 5000);
-    } else {
-      if (interval) {
-        clearInterval(interval);
-      }
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [link.monolith]);
 
   const updateLink = useUpdateLink();
   const updateFile = useUpdateFile();
