@@ -58,7 +58,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
   );
 
   const { data: collections = [] } = useCollections();
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   const { setSelectedLinks, selectedLinks } = useLinkStore();
 
@@ -70,9 +70,9 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
   const router = useRouter();
 
-  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
+  let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
 
-  const getLink = useGetLink(isPublic);
+  const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
 
   useEffect(() => {
     if (!editMode) {
@@ -128,7 +128,9 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
       link.preview !== "unavailable"
     ) {
       interval = setInterval(async () => {
-        getLink.mutateAsync({ id: link.id as number });
+        refetch().catch((error) => {
+          console.error("Error refetching link:", error);
+        });
       }, 5000);
     }
 
@@ -248,7 +250,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
             <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
 
             <div className="flex flex-wrap justify-between items-center text-xs text-neutral px-3 pb-1 w-full gap-x-2">
-              {!isPublic && show.collection && (
+              {!isPublicRoute && show.collection && (
                 <div className="cursor-pointer truncate">
                   <LinkCollection link={link} collection={collection} />
                 </div>
@@ -266,8 +268,9 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
         collection={collection}
         linkModal={linkModal}
         setLinkModal={(e) => setLinkModal(e)}
+        className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
       />
-      {!isPublic && <LinkPin link={link} />}
+      {!isPublicRoute && <LinkPin link={link} />}
     </div>
   );
 }

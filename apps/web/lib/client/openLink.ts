@@ -7,7 +7,7 @@ import { LinksRouteTo } from "@linkwarden/prisma/client";
 
 const openLink = (
   link: LinkIncludingShortenedCollectionAndTags,
-  user: AccountSettings,
+  user: any,
   openModal: () => void
 ) => {
   if (user.linksRouteTo === LinksRouteTo.DETAILS) {

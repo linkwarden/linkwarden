@@ -1,4 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
+import { Subscription, User, WhitelistedUser } from "@linkwarden/prisma/client";
 
 export default async function getUserById(userId: number) {
   const user = await prisma.user.findUnique({
@@ -43,7 +44,17 @@ export default async function getUserById(userId: number) {
         email: parentSubscription?.user.email,
       },
     },
-  };
+  } as Omit<User, "password"> &
+    Partial<{ subscription: Subscription }> & {
+      parentSubscription: {
+        active: boolean | undefined;
+        user: {
+          email: string | null | undefined;
+        };
+      };
+    } & {
+      whitelistedUsers: string[];
+    };
 
   return { response: data, status: 200 };
 }

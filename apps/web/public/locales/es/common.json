@@ -343,7 +343,6 @@
   "shift_key_tip": "Mantén presionada la tecla 'Mayúscula' mientras haces clic en 'Eliminar' para omitir esta confirmación en el futuro.",
   "deleting_collection": "Eliminando...",
   "collection_deleted": "Colección eliminada.",
-  "confirm_deletion_prompt": "Para confirmar, escribe \"{{name}}\" en el campo a continuación:",
   "type_name_placeholder": "Escribe \"{{name}}\" aquí.",
   "deletion_warning": "Eliminar esta colección borrará permanentemente todo su contenido, y se volverá inaccesible para todos, incluidos los miembros con acceso previamente.",
   "leave_prompt": "Haz clic en el botón de abajo para abandonar la colección actual.",

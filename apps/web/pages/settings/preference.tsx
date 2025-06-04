@@ -6,7 +6,11 @@ import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
-import { useUpdateUser, useUser } from "@linkwarden/router/user";
+import {
+  useUpdateUser,
+  useUpdateUserPreference,
+  useUser,
+} from "@linkwarden/router/user";
 import { useConfig } from "@linkwarden/router/config";
 import { useTags, useUpdateArchivalTags } from "@linkwarden/router/tags";
 import TagSelection from "@/components/InputSelect/TagSelection";
@@ -23,8 +27,9 @@ import {
 export default function Preference() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
+  const updateUserPreference = useUpdateUserPreference();
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { data: account } = useUser();
+  const { data: account } = useUser() as any;
   const { data: tags } = useTags();
   const updateArchivalTags = useUpdateArchivalTags();
   const {
@@ -223,7 +228,9 @@ export default function Preference() {
                     ? `outline-primary ${activeColor}`
                     : textColor
                 }`}
-                onClick={() => updateSettings({ theme })}
+                onClick={() =>
+                  updateUserPreference.mutate({ theme: theme as any })
+                }
               >
                 <i className={`${icon} text-3xl`}></i>
                 <p className="ml-2 text-xl">{t(theme)}</p>
