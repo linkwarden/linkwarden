@@ -355,6 +355,13 @@ export default function ReadableView({ link }: Props) {
     highlightId: number | null,
     color?: "yellow" | "red" | "blue" | "green"
   ) => {
+    if (
+      !selectionInfo?.text ||
+      selectionInfo.startOffset === -1 ||
+      selectionInfo.endOffset === -1
+    )
+      return;
+
     if (selectionInfo)
       setSelectionInfo({
         ...selectionInfo,
