@@ -45,6 +45,12 @@ export default function ReadableView({ link }: Props) {
   const [isCommenting, setIsCommenting] = useState(false);
   const [commentText, setCommentText] = useState("");
 
+  const [selectionInfo, setSelectionInfo] = useState<{
+    linkId: number | undefined;
+    text: string;
+    startOffset: number;
+    endOffset: number;
+  } | null>(null);
   const [linkContent, setLinkContent] = useState("");
   const [selectionMenu, setSelectionMenu] = useState<{
     show: boolean;
@@ -138,6 +144,8 @@ export default function ReadableView({ link }: Props) {
     const highlightId = Number(target.dataset.highlightId);
     const selection = window.getSelection();
 
+    if (!selectionMenu.show) setSelectionInfo(getHighlightedSection());
+
     if (highlightId) {
       const rect = target.getBoundingClientRect();
       const relativeX = rect.left - containerRect.left + rect.width / 2;
@@ -179,7 +187,7 @@ export default function ReadableView({ link }: Props) {
     }
   };
 
-  function getHighlightedSection(color: string) {
+  function getHighlightedSection() {
     const selection = window.getSelection?.();
 
     if (!selection || selection.isCollapsed) return null;
@@ -222,7 +230,6 @@ export default function ReadableView({ link }: Props) {
 
     return {
       linkId: link?.id,
-      color,
       text: range.toString(),
       startOffset,
       endOffset,
@@ -320,30 +327,35 @@ export default function ReadableView({ link }: Props) {
   }, [linkContent, linkHighlights]);
 
   const handleHighlightSelection = async (
-    color: "yellow" | "red" | "blue" | "green",
-    highlightId: number | null
+    highlightId: number | null,
+    color?: "yellow" | "red" | "blue" | "green"
   ) => {
-    let selection = getHighlightedSection(color);
+    let selection = selectionInfo;
 
     if (highlightId) {
       selection =
         linkHighlights?.find((h) => h.id === selectionMenu.highlightId) ?? null;
-
-      if (selection) selection.color = color;
     }
 
     if (!selection && !highlightId) return;
 
-    postHighlight.mutate(selection as Highlight, {
-      onSuccess: (data) => {
-        if (data) {
-          setSelectionMenu({
-            show: true,
-            highlightId: data.id,
-          });
-        }
-      },
-    });
+    postHighlight.mutate(
+      {
+        ...selection,
+        color: color || "yellow",
+        comment: commentText,
+      } as Highlight,
+      {
+        onSuccess: (data) => {
+          if (data) {
+            setSelectionMenu({
+              show: true,
+              highlightId: data.id,
+            });
+          }
+        },
+      }
+    );
   };
 
   const handleMenuClickOutside = () => {
@@ -449,7 +461,17 @@ export default function ReadableView({ link }: Props) {
                           >
                             {t("cancel")}
                           </Button>
-                          <Button variant="primary" size="sm">
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => {
+                              handleHighlightSelection(
+                                selectionMenu.highlightId
+                              );
+                              setIsCommenting(false);
+                              setCommentText("");
+                            }}
+                          >
                             {t("save")}
                           </Button>
                         </div>
@@ -461,8 +483,8 @@ export default function ReadableView({ link }: Props) {
                             key={color}
                             onClick={() =>
                               handleHighlightSelection(
-                                color as "yellow" | "red" | "blue" | "green",
-                                selectionMenu.highlightId
+                                selectionMenu.highlightId,
+                                color as "yellow" | "red" | "blue" | "green"
                               )
                             }
                             className={`w-5 h-5 rounded-full ${
