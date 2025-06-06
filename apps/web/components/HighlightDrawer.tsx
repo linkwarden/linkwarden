@@ -39,7 +39,7 @@ const HighlightDrawer = ({ onClose }: Props) => {
               <Link key={highlight.id} href={`#highlight-${highlight.id}`}>
                 <div
                   className={clsx(
-                    "p-2 mb-4 border-l-2 duration-150 cursor-pointer",
+                    "p-2 mb-4 border-l-2 duration-150 cursor-pointer flex flex-col gap-1",
                     highlight.color === "yellow"
                       ? "border-yellow-500"
                       : highlight.color === "green"
@@ -63,12 +63,13 @@ const HighlightDrawer = ({ onClose }: Props) => {
                   >
                     {highlight.text}
                   </p>
-                  <span
+                  {highlight.comment && <p>{highlight.comment}</p>}
+                  <p
                     className="text-xs text-neutral"
                     title={String(highlight.createdAt)}
                   >
                     {formattedDate}
-                  </span>
+                  </p>
                 </div>
               </Link>
             );
