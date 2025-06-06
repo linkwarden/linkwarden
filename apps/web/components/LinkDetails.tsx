@@ -190,7 +190,7 @@ export default function LinkDetails({
           ) : link.preview === "unavailable" ? (
             <div className="bg-gray-50 duration-100 h-40"></div>
           ) : (
-            <div className="duration-100 h-40 skeleton rounded-none"></div>
+            <div className="h-40 skeleton rounded-none"></div>
           )}
 
           {!standalone &&
