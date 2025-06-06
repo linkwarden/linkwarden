@@ -284,6 +284,9 @@ export default function ReadableView({ link }: Props) {
       }
 
       const highlightWrapper = document.createElement("span");
+
+      highlightWrapper.id = `highlight-${highlight.id}`;
+
       highlightWrapper.dataset.highlightId = highlight.id.toString();
 
       highlightWrapper.classList.add("cursor-pointer");
