@@ -25,47 +25,56 @@ const HighlightDrawer = ({ onClose }: Props) => {
       <div>
         <h2 className="text-lg font-semibold mb-5">{t("notes_highlights")}</h2>
         {data && data.length > 0 ? (
-          data.map((highlight) => (
-            <Link key={highlight.id} href={`#highlight-${highlight.id}`}>
-              <div
-                className={clsx(
-                  "p-2 mb-4 border-l-2 duration-150 cursor-pointer",
-                  highlight.color === "yellow"
-                    ? "border-yellow-500"
-                    : highlight.color === "green"
-                      ? "border-green-500"
-                      : highlight.color === "blue"
-                        ? "border-blue-500"
-                        : "border-red-500"
-                )}
-              >
-                <p
+          data.map((highlight) => {
+            const formattedDate = new Date(highlight.createdAt).toLocaleString(
+              "en-US",
+              {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              }
+            );
+
+            return (
+              <Link key={highlight.id} href={`#highlight-${highlight.id}`}>
+                <div
                   className={clsx(
-                    "w-fit px-2 rounded-md",
+                    "p-2 mb-4 border-l-2 duration-150 cursor-pointer",
                     highlight.color === "yellow"
-                      ? "bg-yellow-600"
+                      ? "border-yellow-500"
                       : highlight.color === "green"
-                        ? "bg-green-500"
+                        ? "border-green-500"
                         : highlight.color === "blue"
-                          ? "bg-blue-500"
-                          : "bg-red-500"
+                          ? "border-blue-500"
+                          : "border-red-500"
                   )}
                 >
-                  {highlight.text}
-                </p>
-                <span
-                  className="text-xs text-neutral"
-                  title={String(highlight.createdAt)}
-                >
-                  {new Date(highlight.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-            </Link>
-          ))
+                  <p
+                    className={clsx(
+                      "w-fit px-2 rounded-md",
+                      highlight.color === "yellow"
+                        ? "bg-yellow-600"
+                        : highlight.color === "green"
+                          ? "bg-green-500"
+                          : highlight.color === "blue"
+                            ? "bg-blue-500"
+                            : "bg-red-500"
+                    )}
+                  >
+                    {highlight.text}
+                  </p>
+                  <span
+                    className="text-xs text-neutral"
+                    title={String(highlight.createdAt)}
+                  >
+                    {formattedDate}
+                  </span>
+                </div>
+              </Link>
+            );
+          })
         ) : (
-          <div className="text-neutral text-sm">
-            No highlights found for this link.
-          </div>
+          <div className="text-neutral text-sm">{t("no_notes_highlights")}</div>
         )}
       </div>
     </Drawer>
