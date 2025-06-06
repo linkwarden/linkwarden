@@ -43,13 +43,14 @@ export default function ReadableView({ link }: Props) {
   const deleteHighlight = useRemoveHighlight(link?.id as number);
 
   const [isCommenting, setIsCommenting] = useState(false);
-  const [commentText, setCommentText] = useState("");
 
   const [selectionInfo, setSelectionInfo] = useState<{
-    linkId: number | undefined;
+    linkId: number;
     text: string;
     startOffset: number;
     endOffset: number;
+    color: "yellow" | "red" | "blue" | "green";
+    comment?: string;
   } | null>(null);
   const [linkContent, setLinkContent] = useState("");
   const [selectionMenu, setSelectionMenu] = useState<{
@@ -135,6 +136,18 @@ export default function ReadableView({ link }: Props) {
     linkContent,
   ]);
 
+  useEffect(() => {
+    if (selectionMenu.highlightId) {
+      const comment = linkHighlights?.find(
+        (h) => h.id === selectionMenu.highlightId
+      )?.comment;
+
+      if (selectionInfo) {
+        setSelectionInfo({ ...selectionInfo, comment: comment || "" });
+      }
+    }
+  }, [selectionMenu.show, linkHighlights, isCommenting]);
+
   const handleMouseUp = (e: React.MouseEvent) => {
     const containerEl = containerRef.current;
     if (!containerEl) return;
@@ -144,7 +157,16 @@ export default function ReadableView({ link }: Props) {
     const highlightId = Number(target.dataset.highlightId);
     const selection = window.getSelection();
 
-    if (!selectionMenu.show) setSelectionInfo(getHighlightedSection());
+    const info = getHighlightedSection();
+
+    if (!selectionMenu.show)
+      setSelectionInfo({
+        linkId: link.id as number,
+        text: info?.text || "",
+        startOffset: info?.startOffset || -1,
+        endOffset: info?.endOffset || -1,
+        color: "yellow",
+      });
 
     if (highlightId) {
       const rect = target.getBoundingClientRect();
@@ -159,10 +181,6 @@ export default function ReadableView({ link }: Props) {
         x: relativeX,
         y: relativeY,
       });
-      const comment = linkHighlights?.find((h) => h.id === highlightId)
-        ?.comment;
-
-      setCommentText(comment || "");
 
       return;
     }
@@ -229,7 +247,7 @@ export default function ReadableView({ link }: Props) {
     }
 
     return {
-      linkId: link?.id,
+      linkId: link.id as number,
       text: range.toString(),
       startOffset,
       endOffset,
@@ -305,16 +323,23 @@ export default function ReadableView({ link }: Props) {
 
       highlightWrapper.dataset.highlightId = highlight.id.toString();
 
-      highlightWrapper.classList.add("cursor-pointer");
+      highlightWrapper.classList.add(
+        "cursor-pointer",
+        "bg-opacity-60",
+        "hover:bg-opacity-80",
+        "duration-150"
+      );
+
+      if (highlight.comment) highlightWrapper.classList.add("border-b-2");
 
       if (highlight.color === "yellow") {
-        highlightWrapper.classList.add("bg-yellow-500/70");
+        highlightWrapper.classList.add("bg-yellow-500", "border-yellow-500");
       } else if (highlight.color === "red") {
-        highlightWrapper.classList.add("bg-red-500/70");
+        highlightWrapper.classList.add("bg-red-500", "border-red-500");
       } else if (highlight.color === "blue") {
-        highlightWrapper.classList.add("bg-blue-500/70");
+        highlightWrapper.classList.add("bg-blue-500", "border-blue-500");
       } else if (highlight.color === "green") {
-        highlightWrapper.classList.add("bg-green-500/70");
+        highlightWrapper.classList.add("bg-green-500", "border-green-500");
       }
 
       node.parentNode?.insertBefore(highlightWrapper, node);
@@ -330,11 +355,18 @@ export default function ReadableView({ link }: Props) {
     highlightId: number | null,
     color?: "yellow" | "red" | "blue" | "green"
   ) => {
+    if (selectionInfo)
+      setSelectionInfo({
+        ...selectionInfo,
+        color: color as "yellow" | "red" | "blue" | "green",
+      });
+
     let selection = selectionInfo;
 
     if (highlightId) {
-      selection =
-        linkHighlights?.find((h) => h.id === selectionMenu.highlightId) ?? null;
+      selection = (linkHighlights?.find(
+        (h) => h.id === selectionMenu.highlightId
+      ) ?? null) as any;
     }
 
     if (!selection && !highlightId) return;
@@ -342,8 +374,8 @@ export default function ReadableView({ link }: Props) {
     postHighlight.mutate(
       {
         ...selection,
-        color: color || "yellow",
-        comment: commentText,
+        color: color || selectionInfo?.color || "yellow",
+        comment: selectionInfo?.comment,
       } as Highlight,
       {
         onSuccess: (data) => {
@@ -365,7 +397,11 @@ export default function ReadableView({ link }: Props) {
     });
 
     setIsCommenting(false);
-    setCommentText("");
+    if (selectionInfo)
+      setSelectionInfo({
+        ...selectionInfo,
+        comment: "",
+      });
 
     if (window.getSelection) {
       window.getSelection()?.removeAllRanges();
@@ -445,10 +481,16 @@ export default function ReadableView({ link }: Props) {
                     {isCommenting ? (
                       <div>
                         <textarea
-                          value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
+                          value={selectionInfo?.comment}
+                          onChange={(e) => {
+                            if (selectionInfo)
+                              setSelectionInfo({
+                                ...selectionInfo,
+                                comment: e.target.value,
+                              });
+                          }}
                           placeholder={t("link_description_placeholder")}
-                          className="resize-none w-full rounded-md p-2 h-32 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                          className="resize-none w-52 rounded-md p-2 h-32 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
                         />
                         <div className="flex items-center justify-end gap-2">
                           <Button
@@ -456,7 +498,11 @@ export default function ReadableView({ link }: Props) {
                             size="sm"
                             onClick={() => {
                               setIsCommenting(false);
-                              setCommentText("");
+                              if (selectionInfo)
+                                setSelectionInfo({
+                                  ...selectionInfo,
+                                  comment: "",
+                                });
                             }}
                           >
                             {t("cancel")}
@@ -469,7 +515,11 @@ export default function ReadableView({ link }: Props) {
                                 selectionMenu.highlightId
                               );
                               setIsCommenting(false);
-                              setCommentText("");
+                              if (selectionInfo)
+                                setSelectionInfo({
+                                  ...selectionInfo,
+                                  comment: "",
+                                });
                             }}
                           >
                             {t("save")}
