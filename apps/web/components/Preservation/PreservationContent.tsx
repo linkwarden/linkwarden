@@ -13,24 +13,12 @@ import {
   atLeastOneFormatAvailable,
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
-import PreservationNavbar from "./PreservationNavbar";
+import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
 type Props = {
   link?: LinkIncludingShortenedCollectionAndTags;
-  format?: ArchivedFormat;
+  format: ArchivedFormat;
 };
-
-function findAvailableImageFormat(
-  link: LinkIncludingShortenedCollectionAndTags
-) {
-  return formatAvailable(link, "image")
-    ? link?.image?.endsWith(".png")
-      ? ArchivedFormat.png
-      : link?.image?.endsWith(".jpeg") || link?.image?.endsWith(".jpg")
-        ? ArchivedFormat.jpeg
-        : null
-    : null;
-}
 
 export const PreservationContent: React.FC<Props> = ({ link, format }) => {
   const router = useRouter();
@@ -165,8 +153,17 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
 
   return (
     <div className="relative bg-base-200">
-      {!atLeastOneFormatAvailable(link) ? (
-        <div className={`w-full h-full flex flex-col justify-center p-10`}>
+      {formatAvailable(link, getLinkTypeFromFormat(format)) ? (
+        renderFormat()
+      ) : link[getLinkTypeFromFormat(format)] === "unavailable" ? (
+        <div className="w-full h-[calc(100vh-3.1rem)] flex flex-col justify-center p-10">
+          <p className="text-center text-2xl font-bold">404</p>
+          <p className="text-center text-lg">Format not available...</p>
+        </div>
+      ) : (
+        <div
+          className={`w-full h-[calc(100vh-3.1rem)] flex flex-col justify-center p-10`}
+        >
           <BeatLoader
             color="oklch(var(--p))"
             className="mx-auto mb-3"
@@ -175,8 +172,6 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
           <p className="text-center text-xl">{t("preservation_in_queue")}</p>
           <p className="text-center text-lg">{t("check_back_later")}</p>
         </div>
-      ) : (
-        renderFormat()
       )}
     </div>
   );

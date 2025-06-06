@@ -14,7 +14,10 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { formatAvailable } from "@linkwarden/lib/formatStats";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@linkwarden/lib/formatStats";
 import LinkActions from "../LinkViews/LinkComponents/LinkActions";
 import { useCollections } from "@linkwarden/router/collections";
 import clsx from "clsx";
@@ -109,8 +112,12 @@ const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
           )}
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="ghost" className="h-8 text-neutral">
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="h-8 text-neutral"
+              disabled={!atLeastOneFormatAvailable(link) || false}
+            >
               {format === ArchivedFormat.readability
                 ? t("readable")
                 : format === ArchivedFormat.monolith
