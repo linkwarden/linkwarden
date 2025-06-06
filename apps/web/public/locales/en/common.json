@@ -483,5 +483,6 @@
   "line_height": "Line Height",
   "line_width": "Line Width",
   "notes_highlights": "Notes & Highlights",
-  "no_notes_highlights": "No notes or highlights found for this link."
+  "no_notes_highlights": "No notes or highlights found for this link.",
+  "save": "Save"
 }
