@@ -46,7 +46,8 @@ export default async function archiveHandler(
             process.env.OPENAI_API_KEY ||
             process.env.AZURE_API_KEY ||
             process.env.ANTHROPIC_API_KEY ||
-            process.env.OPENROUTER_API_KEY)
+            process.env.OPENROUTER_API_KEY ||
+            process.env.PERPLEXITY_API_KEY)
             ? true
             : undefined,
       },
@@ -152,7 +153,8 @@ export default async function archiveHandler(
               process.env.OPENAI_API_KEY ||
               process.env.AZURE_API_KEY ||
               process.env.ANTHROPIC_API_KEY ||
-              process.env.OPENROUTER_API_KEY)
+              process.env.OPENROUTER_API_KEY ||
+              process.env.PERPLEXITY_API_KEY)
           ) {
             await autoTagLink(user, link.id, metaDescription);
           }
