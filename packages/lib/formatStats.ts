@@ -5,7 +5,7 @@ export function formatAvailable(
   link: Link | LinkIncludingShortenedCollectionAndTags,
   format: "image" | "pdf" | "readable" | "monolith" | "preview"
 ) {
-  return link && link[format] && link[format] !== "unavailable";
+  return Boolean(link && link[format] && link[format] !== "unavailable");
 }
 
 export const atLeastOneFormatAvailable = (
