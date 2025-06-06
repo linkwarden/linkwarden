@@ -53,12 +53,12 @@ const HighlightDrawer = ({ onClose }: Props) => {
                     className={clsx(
                       "w-fit px-2 rounded-md",
                       highlight.color === "yellow"
-                        ? "bg-yellow-600"
+                        ? "bg-yellow-500/70"
                         : highlight.color === "green"
-                          ? "bg-green-500"
+                          ? "bg-green-500/70"
                           : highlight.color === "blue"
-                            ? "bg-blue-500"
-                            : "bg-red-500"
+                            ? "bg-blue-500/70"
+                            : "bg-red-500/70"
                     )}
                   >
                     {highlight.text}

@@ -23,6 +23,7 @@ import { useUser } from "@linkwarden/router/user";
 import { Caveat } from "next/font/google";
 import { Bentham } from "next/font/google";
 import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
 
 const caveat = Caveat({ subsets: ["latin"] });
 const bentham = Bentham({ subsets: ["latin"], weight: "400" });
@@ -40,6 +41,9 @@ export default function ReadableView({ link }: Props) {
   const postHighlight = usePostHighlight(link?.id as number);
   const { data: linkHighlights } = useGetLinkHighlights(link?.id as number);
   const deleteHighlight = useRemoveHighlight(link?.id as number);
+
+  const [isCommenting, setIsCommenting] = useState(false);
+  const [commentText, setCommentText] = useState("");
 
   const [linkContent, setLinkContent] = useState("");
   const [selectionMenu, setSelectionMenu] = useState<{
@@ -147,6 +151,11 @@ export default function ReadableView({ link }: Props) {
         x: relativeX,
         y: relativeY,
       });
+      const comment = linkHighlights?.find((h) => h.id === highlightId)
+        ?.comment;
+
+      setCommentText(comment || "");
+
       return;
     }
 
@@ -343,6 +352,9 @@ export default function ReadableView({ link }: Props) {
       highlightId: null,
     });
 
+    setIsCommenting(false);
+    setCommentText("");
+
     if (window.getSelection) {
       window.getSelection()?.removeAllRanges();
     }
@@ -418,8 +430,32 @@ export default function ReadableView({ link }: Props) {
                       top: menuPosition.y,
                     }}
                   >
-                    <div className="flex items-center gap-3 justify-between select-none">
-                      <div className="flex items-center gap-3">
+                    {isCommenting ? (
+                      <div>
+                        <textarea
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          placeholder={t("link_description_placeholder")}
+                          className="resize-none w-full rounded-md p-2 h-32 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                        />
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setIsCommenting(false);
+                              setCommentText("");
+                            }}
+                          >
+                            {t("cancel")}
+                          </Button>
+                          <Button variant="primary" size="sm">
+                            {t("save")}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 justify-between select-none">
                         {["yellow", "red", "blue", "green"].map((color) => (
                           <button
                             key={color}
@@ -450,10 +486,15 @@ export default function ReadableView({ link }: Props) {
                               )}
                           </button>
                         ))}
-                      </div>
 
-                      {selectionMenu.highlightId && (
-                        <div className="flex items-center gap-3">
+                        <button
+                          className="hover:opacity-70 duration-100"
+                          onClick={() => setIsCommenting(true)}
+                        >
+                          <i className="bi-chat-text" />
+                        </button>
+
+                        {selectionMenu.highlightId && (
                           <button
                             onClick={() => {
                               deleteHighlight.mutate(
@@ -469,9 +510,9 @@ export default function ReadableView({ link }: Props) {
                           >
                             <i className="bi-trash" />
                           </button>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </ClickAwayHandler>
                 )}
             </div>
