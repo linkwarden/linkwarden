@@ -1,10 +1,14 @@
 import React from "react";
 import Drawer from "./Drawer";
-import { useGetLinkHighlights } from "@linkwarden/router/highlights";
+import {
+  useGetLinkHighlights,
+  useRemoveHighlight,
+} from "@linkwarden/router/highlights";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
+import { Button } from "./ui/button";
 
 type Props = {
   onClose: Function;
@@ -15,6 +19,7 @@ const HighlightDrawer = ({ onClose }: Props) => {
   const { t } = useTranslation();
 
   const { data } = useGetLinkHighlights(Number(router.query.id));
+  const removeHighlight = useRemoveHighlight(Number(router.query.id));
 
   return (
     <Drawer
@@ -39,7 +44,7 @@ const HighlightDrawer = ({ onClose }: Props) => {
               <Link key={highlight.id} href={`#highlight-${highlight.id}`}>
                 <div
                   className={clsx(
-                    "p-2 mb-4 border-l-2 duration-150 cursor-pointer flex flex-col gap-1",
+                    "p-2 mb-4 border-l-2 duration-150 cursor-pointer flex flex-col gap-1 relative group",
                     highlight.color === "yellow"
                       ? "border-yellow-500"
                       : highlight.color === "green"
@@ -51,7 +56,7 @@ const HighlightDrawer = ({ onClose }: Props) => {
                 >
                   <p
                     className={clsx(
-                      "w-fit px-2 rounded-md",
+                      "w-fit px-2 rounded-md mr-10",
                       highlight.color === "yellow"
                         ? "bg-yellow-500/70"
                         : highlight.color === "green"
@@ -70,6 +75,18 @@ const HighlightDrawer = ({ onClose }: Props) => {
                   >
                     {formattedDate}
                   </p>
+
+                  <Button
+                    className="absolute top-2 right-2 text-neutral hover:text-red-500 group-hover:opacity-100 opacity-0 transition-opacity duration-150"
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      removeHighlight.mutate(highlight.id);
+                    }}
+                  >
+                    <i className="bi-trash" />
+                  </Button>
                 </div>
               </Link>
             );
