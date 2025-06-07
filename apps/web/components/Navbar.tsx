@@ -110,7 +110,7 @@ export default function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* <ProfileDropdown /> */}
+        <ProfileDropdown />
       </div>
 
       <MobileNavigation />
