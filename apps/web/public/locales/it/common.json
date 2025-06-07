@@ -342,7 +342,6 @@
   "shift_key_tip": "Tieni premuto il tasto Shift mentre clicchi su 'Elimina' per evitare questa conferma in futuro.",
   "deleting_collection": "Eliminazione in corso...",
   "collection_deleted": "Collezione Eliminata.",
-  "confirm_deletion_prompt": "Per confermare, digita \"{{name}}\" nella casella sottostante:",
   "type_name_placeholder": "Digita \"{{name}}\" Qui.",
   "deletion_warning": "L'eliminazione di questa collezione cancellerà permanentemente tutti i suoi contenuti e diventerà inaccessibile a tutti, inclusi i membri con accesso precedente.",
   "leave_prompt": "Clicca il pulsante sottostante per lasciare la collezione corrente.",

@@ -6,7 +6,6 @@ import {
 import React, { useEffect, useState } from "react";
 import ProfilePhoto from "./ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
-import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "./ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "./ModalContent/EditCollectionSharingModal";
@@ -28,8 +27,7 @@ export default function CollectionCard({
   collection: CollectionIncludingMembersAndLinkCount;
 }) {
   const { t } = useTranslation();
-  const { settings } = useLocalSettingsStore();
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   const formattedDate = new Date(collection.createdAt as string).toLocaleString(
     t("locale"),
@@ -48,18 +46,18 @@ export default function CollectionCard({
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (collection && collection.ownerId !== user.id) {
+      if (collection && collection.ownerId !== user?.id) {
         const owner = await getPublicUserData(collection.ownerId as number);
         setCollectionOwner(owner);
-      } else if (collection && collection.ownerId === user.id) {
+      } else if (collection && collection.ownerId === user?.id) {
         setCollectionOwner({
-          id: user.id as number,
-          name: user.name,
-          username: user.username as string,
-          image: user.image as string,
-          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
-          archiveAsMonolith: user.archiveAsMonolith as boolean,
-          archiveAsPDF: user.archiveAsPDF as boolean,
+          id: user?.id as number,
+          name: user?.name,
+          username: user?.username as string,
+          image: user?.image as string,
+          archiveAsScreenshot: user?.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user?.archiveAsMonolith as boolean,
+          archiveAsPDF: user?.archiveAsPDF as boolean,
         });
       }
     };
@@ -161,9 +159,9 @@ export default function CollectionCard({
         href={`/collections/${collection.id}`}
         style={{
           backgroundImage: `linear-gradient(45deg, ${collection.color}30 10%, ${
-            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+            user?.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
           } 50%, ${
-            settings.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
+            user?.theme === "dark" ? "oklch(var(--b2))" : "oklch(var(--b2))"
           } 100%)`,
         }}
         className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"

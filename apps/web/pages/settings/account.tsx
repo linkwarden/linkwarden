@@ -31,8 +31,8 @@ export default function Account() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
   const updateUser = useUpdateUser();
-  const [user, setUser] = useState<AccountSettings>(
-    account.id
+  const [user, setUser] = useState<any>(
+    account?.id
       ? account
       : ({
           // @ts-ignore
@@ -57,7 +57,7 @@ export default function Account() {
   const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState("");
 
   useEffect(() => {
-    if (!account.id) return;
+    if (!account?.id) return;
 
     setUser({
       ...account,
@@ -128,7 +128,7 @@ export default function Account() {
       }
     );
 
-    if (user.locale !== account.locale) {
+    if (user.locale !== account?.locale) {
       setTimeout(() => {
         location.reload();
       }, 1000);
@@ -136,7 +136,7 @@ export default function Account() {
   };
 
   useEffect(() => {
-    setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", "));
+    setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", ") || "");
   }, [account]);
 
   const stringToArray = (str: string) => {
@@ -289,7 +289,7 @@ export default function Account() {
         <Button
           variant="accent"
           onClick={() => {
-            if (account.email !== user.email) {
+            if (account?.email !== user.email) {
               setEmailChangeVerificationModal(true);
             } else {
               submit();
@@ -353,7 +353,7 @@ export default function Account() {
         <EmailChangeVerificationModal
           onClose={() => setEmailChangeVerificationModal(false)}
           onSubmit={submit}
-          oldEmail={account.email || ""}
+          oldEmail={account?.email || ""}
           newEmail={user.email || ""}
         />
       )}

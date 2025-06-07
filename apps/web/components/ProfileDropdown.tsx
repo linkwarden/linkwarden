@@ -3,7 +3,7 @@ import ProfilePhoto from "./ProfilePhoto";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
-import { useUser } from "@linkwarden/router/user";
+import { useUpdateUserPreference, useUser } from "@linkwarden/router/user";
 import { useConfig } from "@linkwarden/router/config";
 import {
   DropdownMenu,
@@ -15,16 +15,17 @@ import { Button } from "./ui/button";
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();
-  const { settings, updateSettings } = useLocalSettingsStore();
-  const { data: user = {} } = useUser();
+  const { settings } = useLocalSettingsStore();
+  const updateUserPreference = useUpdateUserPreference();
+  const { data: user } = useUser();
 
   const { data: config } = useConfig();
 
-  const isAdmin = user.id === (config?.ADMIN || 1);
+  const isAdmin = user?.id === (config?.ADMIN || 1);
 
   const handleToggle = () => {
-    const newTheme = settings.theme === "dark" ? "light" : "dark";
-    updateSettings({ theme: newTheme });
+    const newTheme = user?.theme === "dark" ? "light" : "dark";
+    updateUserPreference.mutate({ theme: newTheme });
   };
 
   return (
@@ -32,7 +33,7 @@ export default function ProfileDropdown() {
       <DropdownMenuTrigger>
         <Button variant="ghost" className="rounded-full p-1">
           <ProfilePhoto
-            src={user.image ? user.image : undefined}
+            src={user?.image ? user?.image : undefined}
             priority={true}
           />
         </Button>
@@ -50,13 +51,13 @@ export default function ProfileDropdown() {
             onClick={() => handleToggle()}
             className="whitespace-nowrap block sm:hidden"
           >
-            {settings.theme === "light" ? (
+            {user?.theme === "light" ? (
               <i className="bi-moon-fill"></i>
             ) : (
               <i className="bi-sun-fill"></i>
             )}
             {t("switch_to", {
-              theme: settings.theme === "light" ? t("dark") : t("light"),
+              theme: user?.theme === "light" ? t("dark") : t("light"),
             })}
           </div>
         </DropdownMenuItem>

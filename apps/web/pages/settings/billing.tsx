@@ -39,7 +39,7 @@ export default function Billing() {
   const { data: users = [] } = useUsers();
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_STRIPE || account.parentSubscriptionId)
+    if (!process.env.NEXT_PUBLIC_STRIPE || account?.parentSubscriptionId)
       router.push("/settings/account");
   }, []);
 
@@ -158,7 +158,7 @@ export default function Billing() {
                 key={index}
                 className={clsx(
                   "group border-b-neutral-content duration-100 w-full relative flex flex-col sm:table-row",
-                  user.id !== account.id &&
+                  user.id !== account?.id &&
                     "hover:bg-neutral-content hover:bg-opacity-30"
                 )}
               >
@@ -198,7 +198,7 @@ export default function Billing() {
                     })}
                   </p>
                 </td>
-                {user.id !== account.id && (
+                {user.id !== account?.id && (
                   <td className="relative">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

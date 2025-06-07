@@ -341,7 +341,6 @@
   "shift_key_tip": "按住 Shift 键并单击“删除”即可在以后绕过此确认。",
   "deleting_collection": "删除中...",
   "collection_deleted": "收藏夹已删除。",
-  "confirm_deletion_prompt": "请确认, 在下面的输入框中输入 \"{{name}}\" :",
   "type_name_placeholder": "在此输入 \"{{name}}\" 。",
   "deletion_warning": "删除此收藏夹将永久清除其所有内容，并且所有人都将无法访问，包括之前具有访问权限的成员。",
   "leave_prompt": "单击下面的按钮离开当前收藏夹。",

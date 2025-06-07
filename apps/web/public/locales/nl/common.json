@@ -342,7 +342,6 @@
   "shift_key_tip": "Houd de Shift-toets ingedrukt terwijl u op 'Verwijderen' klikt om deze bevestiging in de toekomst te omzeilen.",
   "deleting_collection": "Verwijderen...",
   "collection_deleted": "Collectie Verwijderd.",
-  "confirm_deletion_prompt": "Ter bevestiging, typ \"{{name}}\" in het onderstaande vak:",
   "type_name_placeholder": "Typ Hier \"{{name}}\".",
   "deletion_warning": "Als u deze collectie verwijdert, worden alle inhoud permanent gewist, en wordt deze ontoegankelijk voor iedereen, inclusief leden met eerdere toegang.",
   "leave_prompt": "Klik op de onderstaande knop om de huidige collectie te verlaten.",

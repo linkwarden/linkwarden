@@ -53,6 +53,11 @@ model User {
   aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
   aiPredefinedTags        String[]              @default([])
   aiTagExistingLinks      Boolean               @default(false)
+  theme                   Theme                 @default(dark)
+  readableFontFamily      String?
+  readableFontSize        String?
+  readableLineHeight      String?
+  readableLineWidth       String?
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
@@ -64,6 +69,12 @@ model User {
   dashboardSections       DashboardSection[]
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
+}
+
+enum Theme {
+  dark
+  light
+  auto
 }
 
 enum AiTaggingMethod {
