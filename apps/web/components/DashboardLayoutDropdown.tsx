@@ -183,7 +183,7 @@ export default function DashboardLayoutDropdown() {
         updateDashboardLayout.mutateAsync(updatedSections);
       },
     });
-  }, [filteredSections, updateDashboardLayout]);
+  }, [filteredSections]);
 
   const handleCheckboxChange = (section: DashboardSectionOption) => {
     const enabledSections = allSections.filter((s) => s.enabled);
@@ -314,9 +314,8 @@ function DraggableListItem({
           onChange={() => onCheckboxChange(section)}
         />
         <label
-          htmlFor={`section-${section.type}-${
-            section.collectionId || "default"
-          }`}
+          htmlFor={`section-${section.type}-${section.collectionId || "default"
+            }`}
           className="text-sm select-none"
         >
           {section.name}
@@ -324,9 +323,8 @@ function DraggableListItem({
       </div>
 
       <i
-        className={`bi-grip-vertical text-neutral ${
-          section.enabled ? "cursor-grab" : "opacity-50"
-        }`}
+        className={`bi-grip-vertical text-neutral ${section.enabled ? "cursor-grab" : "opacity-50"
+          }`}
       />
     </li>
   );
