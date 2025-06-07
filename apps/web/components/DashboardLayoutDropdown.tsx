@@ -198,7 +198,7 @@ export default function DashboardLayoutDropdown() {
         return {
           ...s,
           enabled: !s.enabled,
-          order: !s.enabled ? highestOrder + 1 : s.order,
+          order: !s.enabled ? highestOrder + 1 : undefined,
         };
       }
       return s;

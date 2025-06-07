@@ -3,6 +3,7 @@ import {
   UpdateDashboardLayoutSchemaType,
 } from "@linkwarden/lib/schemaValidation";
 import { prisma } from "@linkwarden/prisma";
+import { DashboardSection } from "@linkwarden/prisma/client";
 
 export default async function updateDashboardLayout(
   userId: number,
@@ -22,42 +23,75 @@ export default async function updateDashboardLayout(
 
   const data = dataValidation.data;
 
-  // This can be improved - less queries and not in a loop
+  const existingSections = await prisma.dashboardSection.findMany({
+    where: {
+      userId: userId,
+    },
+  });
+
+  const existingSectionsMap = new Map(
+    existingSections.map((section) => [
+      `${section.type}-${section.collectionId || "default"}`,
+      section,
+    ])
+  );
+
+  const sectionsToCreate: Pick<
+    DashboardSection,
+    "userId" | "type" | "collectionId" | "order"
+  >[] = [];
+  const sectionsToUpdate: Partial<DashboardSection>[] = [];
+  const sectionsToDelete: number[] = [];
+
   for (const section of data) {
-    const existingSection = await prisma.dashboardSection.findFirst({
-      where: {
-        userId: userId,
-        type: section.type,
-        collectionId: section.collectionId || undefined,
-      },
-    });
+    const key = `${section.type}-${section.collectionId || "default"}`;
+    const existingSection = existingSectionsMap.get(key);
 
     if (existingSection && !section.enabled) {
-      await prisma.dashboardSection.delete({
-        where: {
-          id: existingSection.id,
-        },
-      });
+      sectionsToDelete.push(existingSection.id);
     } else if (existingSection && section.enabled) {
-      await prisma.dashboardSection.update({
-        where: {
-          id: existingSection.id,
-        },
-        data: {
-          order: section.order,
-        },
+      sectionsToUpdate.push({
+        id: existingSection.id,
+        order: section.order,
       });
     } else if (section.enabled) {
-      await prisma.dashboardSection.create({
-        data: {
-          userId: userId,
-          type: section.type,
-          collectionId: section.collectionId || undefined,
-          order: section.order || 0,
-        },
+      sectionsToCreate.push({
+        userId: userId,
+        type: section.type,
+        collectionId: section.collectionId || null,
+        order: section.order!,
       });
     }
   }
+
+  await prisma.$transaction(async (tx) => {
+    if (sectionsToDelete.length > 0) {
+      await tx.dashboardSection.deleteMany({
+        where: {
+          id: {
+            in: sectionsToDelete,
+          },
+        },
+      });
+    }
+
+    if (sectionsToUpdate.length > 0) {
+      await Promise.all(
+        sectionsToUpdate.map((section: any) =>
+          tx.dashboardSection.update({
+            where: { id: section.id },
+            data: { order: section.order },
+          })
+        )
+      );
+    }
+
+    if (sectionsToCreate.length > 0) {
+      await tx.dashboardSection.createMany({
+        data: sectionsToCreate,
+      });
+    }
+  });
 
   return {
     status: 200,
