@@ -24,6 +24,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { User } from "@linkwarden/prisma/client";
 
 type Props = {
   onClose: Function;
@@ -67,7 +68,7 @@ export default function EditCollectionSharingModal({
     }
   };
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
   const permissions = usePermissions(collection.id as number);
 
   const currentURL = new URL(document.URL);
@@ -169,7 +170,7 @@ export default function EditCollectionSharingModal({
                 onKeyDown={(e) =>
                   e.key === "Enter" &&
                   addMemberToCollection(
-                    user,
+                    user as any,
                     memberIdentifier.replace(/^@/, ""),
                     collection,
                     setMemberState,
@@ -184,7 +185,7 @@ export default function EditCollectionSharingModal({
                 className="h-10 w-10"
                 onClick={() =>
                   addMemberToCollection(
-                    user,
+                    user as any,
                     memberIdentifier.replace(/^@/, ""),
                     collection,
                     setMemberState,

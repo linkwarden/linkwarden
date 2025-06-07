@@ -2,7 +2,6 @@ import { Sort } from "@linkwarden/types";
 import { create } from "zustand";
 
 type LocalSettings = {
-  theme: string;
   viewMode: string;
   color: string;
   show: {
@@ -28,7 +27,6 @@ type LocalSettingsStore = {
 
 const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
   settings: {
-    theme: "",
     viewMode: "",
     color: "",
     show: {
@@ -46,12 +44,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     sortBy: Sort.DateNewestFirst,
   },
   updateSettings: (newSettings) => {
-    const { theme, viewMode, color, sortBy, show, columns } = newSettings;
-
-    if (theme !== undefined && theme !== localStorage.getItem("theme")) {
-      localStorage.setItem("theme", theme);
-      document.querySelector("html")?.setAttribute("data-theme", theme);
-    }
+    const { viewMode, color, sortBy, show, columns } = newSettings;
 
     if (
       viewMode !== undefined &&
@@ -89,9 +82,6 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
     }));
   },
   setSettings: () => {
-    const theme = localStorage.getItem("theme") || "dark";
-    localStorage.setItem("theme", theme);
-
     const color = localStorage.getItem("color") || "--default";
     localStorage.setItem("color", color);
 
@@ -120,7 +110,6 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
 
     set({
       settings: {
-        theme,
         viewMode,
         color,
         show,
@@ -129,7 +118,6 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       },
     });
 
-    document.querySelector("html")?.setAttribute("data-theme", theme);
     document.documentElement.style.setProperty("--p", `var(${color})`);
   },
 }));

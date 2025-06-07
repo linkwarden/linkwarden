@@ -94,7 +94,7 @@ export default function Navbar() {
             </TooltipProvider>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent>
+          <DropdownMenuContent align="end">
             <DropdownMenuItem onSelect={() => setNewLinkModal(true)}>
               <i className="bi-link-45deg" />
               {t("new_link")}

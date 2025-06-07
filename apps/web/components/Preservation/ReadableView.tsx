@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { PreservationSkeleton } from "../Skeletons";
 import { useTranslation } from "next-i18next";
@@ -19,6 +19,14 @@ import {
   useRemoveHighlight,
 } from "@linkwarden/router/highlights";
 import { Highlight } from "@linkwarden/prisma/client";
+import { useUser } from "@linkwarden/router/user";
+import { Caveat } from "next/font/google";
+import { Bentham } from "next/font/google";
+import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
+
+const caveat = Caveat({ subsets: ["latin"] });
+const bentham = Bentham({ subsets: ["latin"], weight: "400" });
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -34,6 +42,16 @@ export default function ReadableView({ link }: Props) {
   const { data: linkHighlights } = useGetLinkHighlights(link?.id as number);
   const deleteHighlight = useRemoveHighlight(link?.id as number);
 
+  const [isCommenting, setIsCommenting] = useState(false);
+
+  const [selectionInfo, setSelectionInfo] = useState<{
+    linkId: number;
+    text: string;
+    startOffset: number;
+    endOffset: number;
+    color: "yellow" | "red" | "blue" | "green";
+    comment?: string;
+  } | null>(null);
   const [linkContent, setLinkContent] = useState("");
   const [selectionMenu, setSelectionMenu] = useState<{
     show: boolean;
@@ -58,40 +76,126 @@ export default function ReadableView({ link }: Props) {
     fetchLinkContent();
   }, [link]);
 
+  const { data: user } = useUser();
+
+  useEffect(() => {
+    if (!user) return;
+    const readerViews = document.getElementsByClassName("reader-view");
+
+    const getFont = () => {
+      if (user.readableFontFamily === "caveat") {
+        return caveat.style.fontFamily;
+      } else if (user.readableFontFamily === "bentham") {
+        return bentham.style.fontFamily;
+      } else return user.readableFontFamily;
+    };
+
+    for (const view of Array.from(readerViews)) {
+      const paragraphs = view.getElementsByTagName("p");
+      for (const paragraph of Array.from(paragraphs)) {
+        paragraph.style.fontSize = user.readableFontSize || "18px";
+        paragraph.style.lineHeight = user.readableLineHeight || "1.8";
+      }
+
+      const paragraphToUserReadableFontSizeRatio =
+        parseInt(user.readableFontSize || "18") / 18;
+
+      const headers1 = view.getElementsByTagName("h1");
+      for (const header of Array.from(headers1)) {
+        header.style.fontSize =
+          35 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers2 = view.getElementsByTagName("h2");
+      for (const header of Array.from(headers2)) {
+        header.style.fontSize =
+          30 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers3 = view.getElementsByTagName("h3");
+      for (const header of Array.from(headers3)) {
+        header.style.fontSize =
+          26 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers4 = view.getElementsByTagName("h4");
+      for (const header of Array.from(headers4)) {
+        header.style.fontSize =
+          21 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers5 = view.getElementsByTagName("h5");
+      for (const header of Array.from(headers5)) {
+        header.style.fontSize =
+          18 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+
+      (view as HTMLElement).style.fontFamily = `${getFont()}`;
+    }
+  }, [
+    user?.theme,
+    user?.readableFontFamily,
+    user?.readableFontSize,
+    user?.readableLineHeight,
+    linkContent,
+  ]);
+
+  useEffect(() => {
+    if (selectionMenu.highlightId) {
+      const comment = linkHighlights?.find(
+        (h) => h.id === selectionMenu.highlightId
+      )?.comment;
+
+      if (selectionInfo) {
+        setSelectionInfo({ ...selectionInfo, comment: comment || "" });
+      }
+    }
+  }, [selectionMenu.show, linkHighlights, isCommenting]);
+
   const handleMouseUp = (e: React.MouseEvent) => {
+    const containerEl = containerRef.current;
+    if (!containerEl) return;
+
+    const containerRect = containerEl.getBoundingClientRect();
     const target = e.target as HTMLElement;
     const highlightId = Number(target.dataset.highlightId);
     const selection = window.getSelection();
 
+    const info = getHighlightedSection();
+
+    if (!selectionMenu.show)
+      setSelectionInfo({
+        linkId: link.id as number,
+        text: info?.text || "",
+        startOffset: info?.startOffset || -1,
+        endOffset: info?.endOffset || -1,
+        color: "yellow",
+      });
+
     if (highlightId) {
       const rect = target.getBoundingClientRect();
+      const relativeX = rect.left - containerRect.left + rect.width / 2;
+      const relativeY = rect.top - containerRect.top - 5;
+
       setSelectionMenu({
         show: true,
         highlightId: highlightId,
       });
-
       setMenuPosition({
-        x: rect.left + window.scrollX + rect.width / 2,
-        y: rect.top + window.scrollY - 5,
+        x: relativeX,
+        y: relativeY,
       });
 
       return;
-    } else if (
-      selection &&
-      selection.rangeCount > 0 &&
-      !selection.isCollapsed
-    ) {
+    }
+
+    if (selection && selection.rangeCount > 0 && !selection.isCollapsed) {
       const range = selection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
 
       if (rect && rect.width && rect.height) {
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const scrollLeft =
-          window.scrollX || document.documentElement.scrollLeft;
+        const relativeX = rect.left - containerRect.left + rect.width / 2;
+        const relativeY = rect.top - containerRect.top - 5;
 
         setMenuPosition({
-          x: rect.left + scrollLeft + rect.width / 2,
-          y: rect.top + scrollTop - 5,
+          x: relativeX,
+          y: relativeY,
         });
         setSelectionMenu({
           show: true,
@@ -101,7 +205,7 @@ export default function ReadableView({ link }: Props) {
     }
   };
 
-  function getHighlightedSection(color: string) {
+  function getHighlightedSection() {
     const selection = window.getSelection?.();
 
     if (!selection || selection.isCollapsed) return null;
@@ -143,8 +247,7 @@ export default function ReadableView({ link }: Props) {
     }
 
     return {
-      linkId: link?.id,
-      color,
+      linkId: link.id as number,
       text: range.toString(),
       startOffset,
       endOffset,
@@ -215,18 +318,28 @@ export default function ReadableView({ link }: Props) {
       }
 
       const highlightWrapper = document.createElement("span");
+
+      highlightWrapper.id = `highlight-${highlight.id}`;
+
       highlightWrapper.dataset.highlightId = highlight.id.toString();
 
-      highlightWrapper.classList.add("cursor-pointer");
+      highlightWrapper.classList.add(
+        "cursor-pointer",
+        "bg-opacity-60",
+        "hover:bg-opacity-80",
+        "duration-150"
+      );
+
+      if (highlight.comment) highlightWrapper.classList.add("border-b-2");
 
       if (highlight.color === "yellow") {
-        highlightWrapper.classList.add("bg-yellow-500/70");
+        highlightWrapper.classList.add("bg-yellow-500", "border-yellow-500");
       } else if (highlight.color === "red") {
-        highlightWrapper.classList.add("bg-red-500/70");
+        highlightWrapper.classList.add("bg-red-500", "border-red-500");
       } else if (highlight.color === "blue") {
-        highlightWrapper.classList.add("bg-blue-500/70");
+        highlightWrapper.classList.add("bg-blue-500", "border-blue-500");
       } else if (highlight.color === "green") {
-        highlightWrapper.classList.add("bg-green-500/70");
+        highlightWrapper.classList.add("bg-green-500", "border-green-500");
       }
 
       node.parentNode?.insertBefore(highlightWrapper, node);
@@ -239,30 +352,49 @@ export default function ReadableView({ link }: Props) {
   }, [linkContent, linkHighlights]);
 
   const handleHighlightSelection = async (
-    color: "yellow" | "red" | "blue" | "green",
-    highlightId: number | null
+    highlightId: number | null,
+    color?: "yellow" | "red" | "blue" | "green"
   ) => {
-    let selection = getHighlightedSection(color);
+    if (
+      !selectionInfo?.text ||
+      selectionInfo.startOffset === -1 ||
+      selectionInfo.endOffset === -1
+    )
+      return;
+
+    if (selectionInfo)
+      setSelectionInfo({
+        ...selectionInfo,
+        color: color as "yellow" | "red" | "blue" | "green",
+      });
+
+    let selection = selectionInfo;
 
     if (highlightId) {
-      selection =
-        linkHighlights?.find((h) => h.id === selectionMenu.highlightId) ?? null;
-
-      if (selection) selection.color = color;
+      selection = (linkHighlights?.find(
+        (h) => h.id === selectionMenu.highlightId
+      ) ?? null) as any;
     }
 
     if (!selection && !highlightId) return;
 
-    postHighlight.mutate(selection as Highlight, {
-      onSuccess: (data) => {
-        if (data) {
-          setSelectionMenu({
-            show: true,
-            highlightId: data.id,
-          });
-        }
-      },
-    });
+    postHighlight.mutate(
+      {
+        ...selection,
+        color: color || selectionInfo?.color || "yellow",
+        comment: selectionInfo?.comment,
+      } as Highlight,
+      {
+        onSuccess: (data) => {
+          if (data) {
+            setSelectionMenu({
+              show: true,
+              highlightId: data.id,
+            });
+          }
+        },
+      }
+    );
   };
 
   const handleMenuClickOutside = () => {
@@ -271,35 +403,61 @@ export default function ReadableView({ link }: Props) {
       highlightId: null,
     });
 
+    setIsCommenting(false);
+    if (selectionInfo)
+      setSelectionInfo({
+        ...selectionInfo,
+        comment: "",
+      });
+
     if (window.getSelection) {
       window.getSelection()?.removeAllRanges();
     }
   };
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="flex flex-col gap-3 items-start p-3 max-w-screen-lg mx-auto bg-base-200 mt-10">
-      <div className="flex gap-3 items-start">
-        <div className="flex flex-col w-full gap-1">
-          <p className="md:text-4xl text-xl">
-            {unescapeString(link?.name || link?.description || link?.url || "")}
-          </p>
-          {link?.url && (
-            <Link
-              href={link?.url || ""}
-              title={link?.url}
-              target="_blank"
-              className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
-            >
-              <i className="bi-link-45deg" />
-              {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
-            </Link>
-          )}
-        </div>
+    <div
+      ref={containerRef}
+      className={clsx(
+        "flex flex-col gap-3 items-start p-3 mx-auto bg-base-200 mt-5 relative",
+        user?.readableLineWidth === "narrower"
+          ? "max-w-screen-sm"
+          : user?.readableLineWidth === "narrow"
+            ? "max-w-screen-md"
+            : user?.readableLineWidth === "normal"
+              ? "max-w-screen-lg"
+              : user?.readableLineWidth === "wide"
+                ? "max-w-screen-xl"
+                : user?.readableLineWidth === "wider"
+                  ? "max-w-screen-2xl"
+                  : ""
+      )}
+    >
+      <div className="reader-view">
+        <h1>
+          {unescapeString(link?.name || link?.description || link?.url || "")}
+        </h1>
       </div>
+
+      {link?.url && (
+        <Link
+          href={link?.url || ""}
+          title={link?.url}
+          target="_blank"
+          className="hover:opacity-60 duration-100 break-all text-sm flex items-center gap-1 text-neutral w-fit"
+        >
+          <i className="bi-link-45deg" />
+          {isValidUrl(link?.url || "") && new URL(link?.url as string).host}
+        </Link>
+      )}
 
       <div className="text-sm text-neutral flex justify-between w-full gap-2">
         <LinkDate link={link} />
       </div>
+
+      <Separator className="mt-5 mb-2" />
 
       {link?.readable?.startsWith("archives") ? (
         <>
@@ -327,15 +485,63 @@ export default function ReadableView({ link }: Props) {
                       top: menuPosition.y,
                     }}
                   >
-                    <div className="flex items-center gap-3 justify-between select-none">
-                      <div className="flex items-center gap-3">
+                    {isCommenting ? (
+                      <div>
+                        <textarea
+                          value={selectionInfo?.comment}
+                          onChange={(e) => {
+                            if (selectionInfo)
+                              setSelectionInfo({
+                                ...selectionInfo,
+                                comment: e.target.value,
+                              });
+                          }}
+                          placeholder={t("link_description_placeholder")}
+                          className="resize-none w-52 rounded-md p-2 h-32 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+                        />
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setIsCommenting(false);
+                              if (selectionInfo)
+                                setSelectionInfo({
+                                  ...selectionInfo,
+                                  comment: "",
+                                });
+                            }}
+                          >
+                            {t("cancel")}
+                          </Button>
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => {
+                              handleHighlightSelection(
+                                selectionMenu.highlightId
+                              );
+                              setIsCommenting(false);
+                              if (selectionInfo)
+                                setSelectionInfo({
+                                  ...selectionInfo,
+                                  comment: "",
+                                });
+                            }}
+                          >
+                            {t("save")}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 justify-between select-none">
                         {["yellow", "red", "blue", "green"].map((color) => (
                           <button
                             key={color}
                             onClick={() =>
                               handleHighlightSelection(
-                                color as "yellow" | "red" | "blue" | "green",
-                                selectionMenu.highlightId
+                                selectionMenu.highlightId,
+                                color as "yellow" | "red" | "blue" | "green"
                               )
                             }
                             className={`w-5 h-5 rounded-full ${
@@ -359,10 +565,15 @@ export default function ReadableView({ link }: Props) {
                               )}
                           </button>
                         ))}
-                      </div>
 
-                      {selectionMenu.highlightId && (
-                        <div className="flex items-center gap-3">
+                        <button
+                          className="hover:opacity-70 duration-100"
+                          onClick={() => setIsCommenting(true)}
+                        >
+                          <i className="bi-chat-text" />
+                        </button>
+
+                        {selectionMenu.highlightId && (
                           <button
                             onClick={() => {
                               deleteHighlight.mutate(
@@ -378,9 +589,9 @@ export default function ReadableView({ link }: Props) {
                           >
                             <i className="bi-trash" />
                           </button>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </ClickAwayHandler>
                 )}
             </div>

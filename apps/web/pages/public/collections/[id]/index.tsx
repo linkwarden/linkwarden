@@ -14,7 +14,6 @@ import ToggleDarkMode from "@/components/ToggleDarkMode";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";
-import useLocalSettingsStore from "@/store/localSettings";
 import SearchBar from "@/components/SearchBar";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import { useTranslation } from "next-i18next";
@@ -30,11 +29,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useUser } from "@linkwarden/router/user";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
 
-  const { settings } = useLocalSettingsStore();
+  const { data: user } = useUser();
 
   const router = useRouter();
 
@@ -103,8 +103,8 @@ export default function PublicCollections() {
         className="h-96"
         style={{
           backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+            user?.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${user?.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {collection && (
