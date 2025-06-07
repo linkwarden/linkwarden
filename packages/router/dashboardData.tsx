@@ -41,7 +41,6 @@ const useUpdateDashboardLayout = () => {
 
       const previousData = queryClient.getQueryData(["user"]);
 
-      console.log("newData", newData);
       queryClient.setQueryData(["user"], (oldData: any) => {
         return {
           ...oldData,
