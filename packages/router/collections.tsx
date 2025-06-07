@@ -101,6 +101,8 @@ const useDeleteCollection = () => {
       return data.response;
     },
     onSuccess: (data) => {
+      // Need to get the updated dashboard order
+      queryClient.invalidateQueries({ queryKey: ["user"] });
       return queryClient.setQueryData(["collections"], (oldData: any) => {
         return oldData.filter((collection: any) => collection.id !== data.id);
       });

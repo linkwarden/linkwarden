@@ -37,6 +37,7 @@ export default function DashboardLayoutDropdown() {
   const updateDashboardLayout = useUpdateDashboardLayout();
   const [searchTerm, setSearchTerm] = useState("");
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [dragOverItem, setDragOverItem] = useState<string | null>(null);
 
   const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
 
@@ -139,8 +140,6 @@ export default function DashboardLayoutDropdown() {
   const getSectionId = (section: DashboardSectionOption) =>
     `${section.type}-${section.collectionId || "default"}`;
 
-  // Set up drag and drop
-  // Improve this visually
   useEffect(() => {
     return monitorForElements({
       onDrop({ source, location }) {
@@ -233,7 +232,9 @@ export default function DashboardLayoutDropdown() {
                 section={section}
                 onCheckboxChange={handleCheckboxChange}
                 isDragged={draggedItem === getSectionId(section)}
+                isDraggingOver={dragOverItem === getSectionId(section)}
                 setDraggedItem={setDraggedItem}
+                setDragOverItem={setDragOverItem}
               />
             ))}
 
@@ -253,14 +254,18 @@ interface DraggableListItemProps {
   section: DashboardSectionOption;
   onCheckboxChange: (section: DashboardSectionOption) => void;
   isDragged: boolean;
+  isDraggingOver: boolean;
   setDraggedItem: (id: string | null) => void;
+  setDragOverItem: (id: string | null) => void;
 }
 
 function DraggableListItem({
   section,
   onCheckboxChange,
   isDragged,
+  isDraggingOver,
   setDraggedItem,
+  setDragOverItem,
 }: DraggableListItemProps) {
   const [element, setElement] = useState<HTMLElement | null>(null);
   const sectionId = `${section.type}-${section.collectionId || "default"}`;
@@ -274,23 +279,30 @@ function DraggableListItem({
         element: el,
         getInitialData: () => ({ sectionId }),
         onDragStart: () => setDraggedItem(sectionId),
-        onDrop: () => setDraggedItem(null),
+        onDrop: () => {
+          setDraggedItem(null);
+          setDragOverItem(null);
+        },
       }),
       dropTargetForElements({
         element: el,
         getData: () => ({ sectionId }),
+        onDragEnter: () => setDragOverItem(sectionId),
+        onDragLeave: () => setDragOverItem(null),
+        onDrop: () => setDragOverItem(null),
       })
     );
-  }, [element, section.enabled, sectionId, setDraggedItem]);
+  }, [element, section.enabled, sectionId, setDraggedItem, setDragOverItem]);
 
   return (
     <li
       ref={setElement}
       data-section-id={sectionId}
       className={`
-        py-1 px-2 flex items-center justify-between cursor-pointer rounded
+        py-1 px-2 flex items-center justify-between cursor-pointer rounded transition-colors
         ${section.enabled ? "cursor-grab active:cursor-grabbing" : ""}
-        ${isDragged ? "opacity-50" : ""}
+        ${isDragged ? "opacity-70" : ""}
+        ${isDraggingOver && !isDragged ? "bg-base-100" : ""}
       `}
     >
       <div className="flex items-center gap-2">
@@ -302,9 +314,8 @@ function DraggableListItem({
           onChange={() => onCheckboxChange(section)}
         />
         <label
-          htmlFor={`section-${section.type}-${
-            section.collectionId || "default"
-          }`}
+          htmlFor={`section-${section.type}-${section.collectionId || "default"
+            }`}
           className="text-sm select-none"
         >
           {section.name}
@@ -312,9 +323,8 @@ function DraggableListItem({
       </div>
 
       <i
-        className={`bi-grip-vertical text-neutral ${
-          section.enabled ? "cursor-grab" : "opacity-50"
-        }`}
+        className={`bi-grip-vertical text-neutral ${section.enabled ? "cursor-grab" : "opacity-50"
+          }`}
       />
     </li>
   );
