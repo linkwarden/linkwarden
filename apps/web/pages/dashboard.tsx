@@ -57,7 +57,7 @@ export default function Dashboard() {
       user.referredBy === null &&
       // if user is using Linkwarden for more than 3 days
       new Date().getTime() - new Date(user.createdAt).getTime() >
-      3 * 24 * 60 * 60 * 1000
+        3 * 24 * 60 * 60 * 1000
     ) {
       setTimeout(() => {
         setShowsSurveyModal(true);
@@ -340,7 +340,7 @@ export default function Dashboard() {
               />
             </div>
           ) : links?.filter((link: any) => link.collection.id === collection.id)
-            .length > 0 ? (
+              .length > 0 ? (
             <div className="w-full">
               <Links
                 links={links
