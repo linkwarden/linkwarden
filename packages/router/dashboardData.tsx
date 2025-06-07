@@ -36,6 +36,24 @@ const useUpdateDashboardLayout = () => {
 
       return data;
     },
+    onMutate: async (newData) => {
+      await queryClient.cancelQueries({ queryKey: ["user"] });
+
+      const previousData = queryClient.getQueryData(["user"]);
+
+      console.log("newData", newData);
+      queryClient.setQueryData(["user"], (oldData: any) => {
+        return {
+          ...oldData,
+          dashboardSections: newData.filter((section) => section.enabled)
+        };
+      });
+
+      return { previousData };
+    },
+    onError: (err, newData, context) => {
+      queryClient.setQueryData(["user"], context?.previousData);
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["user"] });
     },
