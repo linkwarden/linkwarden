@@ -344,7 +344,6 @@
   "shift_key_tip": "按住 Shift 鍵再點選「刪除」可略過後續的確認步驟。",
   "deleting_collection": "正在刪除收藏集...",
   "collection_deleted": "收藏集已刪除。",
-  "confirm_deletion_prompt": "請在下方輸入「{{name}}」以確認：",
   "type_name_placeholder": "在此輸入「{{name}}」。",
   "deletion_warning": "刪除此收藏集將永久移除其所有內容，且任何人都將無法存取，包括先前具有存取權限的成員。",
   "leave_prompt": "點選下方按鈕離開目前的收藏集。",

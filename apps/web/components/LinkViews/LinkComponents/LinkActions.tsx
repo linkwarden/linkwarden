@@ -24,16 +24,18 @@ import { Button } from "@/components/ui/button";
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
-  btnStyle?: string;
   linkModal: boolean;
+  className?: string;
   setLinkModal: (value: boolean) => void;
+  ghost?: boolean;
 };
 
 export default function LinkActions({
   link,
-  btnStyle,
   linkModal,
+  className,
   setLinkModal,
+  ghost,
 }: Props) {
   const { t } = useTranslation();
 
@@ -43,7 +45,10 @@ export default function LinkActions({
 
   const isPublicRoute = router.pathname.startsWith("/public");
 
-  const getLink = useGetLink(isPublicRoute);
+  const { refetch } = useGetLink({
+    id: link.id as number,
+    isPublicRoute,
+  });
 
   const pinLink = usePinLink();
 
@@ -63,7 +68,9 @@ export default function LinkActions({
     toast.dismiss(load);
 
     if (response.ok) {
-      await getLink.mutateAsync({ id: link.id as number });
+      refetch().catch((error) => {
+        console.error("Error fetching link:", error);
+      });
 
       toast.success(t("link_being_archived"));
     } else toast.error(data.response);
@@ -73,12 +80,9 @@ export default function LinkActions({
     <>
       {isPublicRoute ? (
         <Button
-          variant="simple"
+          variant={ghost ? "ghost" : "simple"}
           size="icon"
-          className={clsx(
-            "absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20",
-            btnStyle
-          )}
+          className={clsx(className)}
           onClick={() => setLinkModal(true)}
         >
           <i title="More" className="bi-info-circle text-xl" />
@@ -88,12 +92,9 @@ export default function LinkActions({
           <DropdownMenuTrigger asChild>
             <Button
               asChild
-              variant="simple"
+              variant={ghost ? "ghost" : "simple"}
               size="icon"
-              className={clsx(
-                "absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20",
-                btnStyle
-              )}
+              className={clsx(className)}
               onMouseDown={(e) => e.preventDefault()}
             >
               <button>

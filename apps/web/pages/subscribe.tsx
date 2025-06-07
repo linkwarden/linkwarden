@@ -18,13 +18,13 @@ export default function Subscribe() {
 
   const router = useRouter();
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   useEffect(() => {
     if (
       session.status === "authenticated" &&
-      user.id &&
-      (user?.subscription?.active || user.parentSubscription?.active)
+      user?.id &&
+      (user?.subscription?.active || user?.parentSubscription?.active)
     )
       router.push("/dashboard");
   }, [session.status, user]);

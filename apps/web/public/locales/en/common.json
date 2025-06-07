@@ -341,10 +341,11 @@
   "link_deletion_confirmation_message": "Are you sure you want to delete this Link?",
   "warning": "Warning",
   "irreversible_warning": "This action is irreversible!",
+  "tip": "Tip",
   "shift_key_tip": "Hold the Shift key while clicking 'Delete' to bypass this confirmation in the future.",
   "deleting_collection": "Deleting...",
   "collection_deleted": "Collection Deleted.",
-  "confirm_deletion_prompt": "To confirm, type \"{{name}}\" in the box below:",
+  "collection_deletion_prompt": "Are you sure you want to delete this Collection?",
   "type_name_placeholder": "Type \"{{name}}\" Here.",
   "deletion_warning": "Deleting this collection will permanently erase all its contents, and it will become inaccessible to everyone, including members with previous access.",
   "leave_prompt": "Click the button below to leave the current collection.",
@@ -477,5 +478,13 @@
   "display_on_dashboard": "Display on Dashboard",
   "dashboard_stats": "Dashboard Stats",
   "no_results_found": "No results found.",
-  "no_links_in_collection": "No Links in this Collection."
+  "no_links_in_collection": "No Links in this Collection.",
+  "theme": "Theme",
+  "font_family": "Font Family",
+  "font_size": "Font Size",
+  "line_height": "Line Height",
+  "line_width": "Line Width",
+  "notes_highlights": "Notes & Highlights",
+  "no_notes_highlights": "No notes or highlights found for this link.",
+  "save": "Save"
 }

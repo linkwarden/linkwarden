@@ -1,7 +1,11 @@
 import { ArchivedFormat, TokenExpiry } from "@linkwarden/types";
-import { AiTaggingMethod, LinksRouteTo, DashboardSectionType } from "@linkwarden/prisma/client";
+import {
+  AiTaggingMethod,
+  LinksRouteTo,
+  DashboardSectionType,
+  Theme,
+} from "@linkwarden/prisma/client";
 import { z } from "zod";
-import collection from "@/pages/api/v1/public/collections/[id]";
 
 // const stringField = z.string({
 //   errorMap: (e) => ({
@@ -89,6 +93,28 @@ export const UpdateUserSchema = () => {
     referredBy: z.string().max(100).nullish(),
   });
 };
+
+export const UpdateUserPreferenceSchema = z.object({
+  theme: z.nativeEnum(Theme).optional(),
+  readableFontFamily: z.string().trim().max(100).optional(),
+  readableFontSize: z.string().trim().max(100).optional(),
+  readableLineHeight: z.string().trim().max(100).optional(),
+  readableLineWidth: z.string().trim().max(100).optional(),
+  // archiveAsScreenshot: z.boolean().optional(),
+  // archiveAsMonolith: z.boolean().optional(),
+  // archiveAsPDF: z.boolean().optional(),
+  // archiveAsReadable: z.boolean().optional(),
+  // archiveAsWaybackMachine: z.boolean().optional(),
+  // aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
+  // aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
+  // aiTagExistingLinks: z.boolean().optional(),
+  // preventDuplicateLinks: z.boolean().optional(),
+  // linksRouteTo: z.nativeEnum(LinksRouteTo).optional(),
+});
+
+export type UpdateUserPreferenceSchemaType = z.infer<
+  typeof UpdateUserPreferenceSchema
+>;
 
 export const PostSessionSchema = z.object({
   username: z.string().min(3).max(50),
@@ -253,10 +279,12 @@ export type PostHighlightSchemaType = z.infer<typeof PostHighlightSchema>;
 
 export const LinkArchiveActionSchema = z.object({
   action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]).optional(),
-  linkIds: z.array(z.number()).optional()
+  linkIds: z.array(z.number()).optional(),
 });
 
-export type LinkArchiveActionSchemaType = z.infer<typeof LinkArchiveActionSchema>;
+export type LinkArchiveActionSchemaType = z.infer<
+  typeof LinkArchiveActionSchema
+>;
 
 export const UpdateDashboardLayoutSchema = z.array(
   z.object({
