@@ -9,7 +9,7 @@ import {
 import useLocalSettingsStore from "@/store/localSettings";
 import { ViewMode } from "@linkwarden/types";
 import { useTranslation } from "next-i18next";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   viewMode: ViewMode;

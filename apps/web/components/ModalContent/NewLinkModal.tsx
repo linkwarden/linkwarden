@@ -10,7 +10,7 @@ import { useCollections } from "@linkwarden/router/collections";
 import { useAddLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   onClose: Function;

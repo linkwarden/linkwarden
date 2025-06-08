@@ -10,7 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { FitWidth, FormatLineSpacing, FormatSize } from "@/components/ui/icons";
 import { useUpdateUserPreference, useUser } from "@linkwarden/router/user";
 import { Caveat } from "next/font/google";

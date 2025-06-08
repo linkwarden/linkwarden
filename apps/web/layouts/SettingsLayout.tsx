@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import Link from "next/link";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 interface Props {
   children: ReactNode;

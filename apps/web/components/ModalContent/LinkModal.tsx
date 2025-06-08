@@ -15,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Props = {

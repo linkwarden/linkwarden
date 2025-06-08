@@ -6,7 +6,7 @@ import { AccessToken } from "@linkwarden/prisma/client";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTokens } from "@linkwarden/router/tokens";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   Tooltip,
   TooltipContent,

@@ -30,7 +30,7 @@ import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
 import LinkFormats from "./LinkFormats";
 import openLink from "@/lib/client/openLink";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;

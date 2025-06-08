@@ -11,7 +11,7 @@ import LinkListOptions from "@/components/LinkListOptions";
 import { useRemoveTag, useTags, useUpdateTag } from "@linkwarden/router/tags";
 import Links from "@/components/LinkViews/Links";
 import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuTrigger,

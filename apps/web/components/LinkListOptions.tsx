@@ -14,7 +14,7 @@ import {
 } from "@linkwarden/types";
 import { useArchiveAction, useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   Tooltip,
   TooltipContent,

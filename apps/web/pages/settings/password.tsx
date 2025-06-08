@@ -5,7 +5,7 @@ import TextInput from "@/components/TextInput";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 export default function Password() {
   const { t } = useTranslation();

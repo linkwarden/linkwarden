@@ -3,7 +3,7 @@ import TextInput from "@/components/TextInput";
 import { TokenExpiry } from "@linkwarden/types";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import { useAddToken } from "@linkwarden/router/tokens";
 import CopyButton from "../CopyButton";

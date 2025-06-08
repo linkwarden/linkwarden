@@ -9,7 +9,7 @@ import React from "react";
 import Link from "next/link";
 import Checkbox from "@/components/Checkbox";
 import EmailChangeVerificationModal from "@/components/ModalContent/EmailChangeVerificationModal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";

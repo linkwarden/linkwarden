@@ -5,7 +5,7 @@ import { useAddRssSubscription } from "@linkwarden/router/rss";
 import toast from "react-hot-toast";
 import TextInput from "../TextInput";
 import CollectionSelection from "../InputSelect/CollectionSelection";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 
 type Props = {
   onClose: Function;

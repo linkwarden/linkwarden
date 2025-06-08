@@ -18,7 +18,7 @@ import useLocalSettingsStore from "@/store/localSettings";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 export default function Dashboard() {
   const { t } = useTranslation();

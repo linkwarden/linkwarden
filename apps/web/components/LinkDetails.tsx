@@ -29,7 +29,7 @@ import IconPopover from "./IconPopover";
 import TextInput from "./TextInput";
 import usePermissions from "@/hooks/usePermissions";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 import {
   Tooltip,
   TooltipContent,

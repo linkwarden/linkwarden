@@ -1,7 +1,7 @@
 import { isPWA } from "@/lib/utils";
 import React, { useState } from "react";
 import { Trans } from "next-i18next";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 
 type Props = {};
 

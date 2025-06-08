@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import IconPicker from "../IconPicker";
 import { IconWeight } from "@phosphor-icons/react";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 
 type Props = {
   onClose: Function;

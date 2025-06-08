@@ -6,7 +6,7 @@ import { HexColorPicker } from "react-colorful";
 import { useTranslation } from "next-i18next";
 import IconGrid from "./IconGrid";
 import clsx from "clsx";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 
 type Props = {
   alignment?: string;
