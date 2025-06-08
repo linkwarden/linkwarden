@@ -4,7 +4,7 @@ import {
 } from "@linkwarden/types";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   name: string;

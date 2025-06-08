@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import Modal from "../Modal";
 import { useRouter } from "next/router";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import { useDeleteLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";

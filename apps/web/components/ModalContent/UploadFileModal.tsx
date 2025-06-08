@@ -11,7 +11,7 @@ import { useCollections } from "@linkwarden/router/collections";
 import { useUploadFile } from "@linkwarden/router/links";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import { useConfig } from "@linkwarden/router/config";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   onClose: Function;

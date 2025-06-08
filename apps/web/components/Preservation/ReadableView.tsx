@@ -23,7 +23,7 @@ import { useUser } from "@linkwarden/router/user";
 import { Caveat } from "next/font/google";
 import { Bentham } from "next/font/google";
 import { Separator } from "../ui/separator";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 
 const caveat = Caveat({ subsets: ["latin"] });
 const bentham = Bentham({ subsets: ["latin"], weight: "400" });

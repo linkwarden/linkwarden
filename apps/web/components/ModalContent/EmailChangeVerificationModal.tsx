@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 
 type Props = {
   onClose: Function;

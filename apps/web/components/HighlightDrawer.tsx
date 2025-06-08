@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 
 type Props = {
   onClose: Function;

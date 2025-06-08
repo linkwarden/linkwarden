@@ -7,7 +7,7 @@ import { useState } from "react";
 import { RssSubscription } from "@linkwarden/prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
 import { useConfig } from "@linkwarden/router/config";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 export default function RssSubscriptions() {
   const { t } = useTranslation();

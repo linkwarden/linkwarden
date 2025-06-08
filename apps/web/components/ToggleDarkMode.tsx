@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import { useTranslation } from "next-i18next";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 import {
   Tooltip,
   TooltipContent,

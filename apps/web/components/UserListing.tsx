@@ -2,7 +2,7 @@ import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
 import { useConfig } from "@linkwarden/router/config";
 import { User as U } from "@linkwarden/prisma/client";
 import { TFunction } from "i18next";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 
 interface User extends U {
   subscriptions: {

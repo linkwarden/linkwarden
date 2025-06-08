@@ -22,7 +22,7 @@ import LinkListOptions from "@/components/LinkListOptions";
 import { usePublicLinks } from "@linkwarden/router/publicLinks";
 import Links from "@/components/LinkViews/Links";
 import { usePublicTags } from "@linkwarden/router/publicTags";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   Tooltip,
   TooltipContent,

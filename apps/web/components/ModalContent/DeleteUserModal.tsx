@@ -1,5 +1,5 @@
 import Modal from "../Modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import { useDeleteUser } from "@linkwarden/router/users";
 import { useState } from "react";

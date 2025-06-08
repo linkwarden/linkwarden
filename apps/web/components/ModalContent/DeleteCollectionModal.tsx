@@ -4,7 +4,7 @@ import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
 import Modal from "../Modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import { useDeleteCollection } from "@linkwarden/router/collections";
 import toast from "react-hot-toast";

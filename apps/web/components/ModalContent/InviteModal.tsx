@@ -6,7 +6,7 @@ import { useTranslation, Trans } from "next-i18next";
 import { useAddUser } from "@linkwarden/router/users";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 
 type Props = {
   onClose: Function;

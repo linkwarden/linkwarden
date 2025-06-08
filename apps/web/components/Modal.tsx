@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import ClickAwayHandler from "@/components/ClickAwayHandler";
 import { Drawer } from "vaul";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   toggleModal: Function;

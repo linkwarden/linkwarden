@@ -6,7 +6,7 @@ import ConfirmationModal from "@/components/ConfirmationModal";
 import { LinkArchiveActionSchemaType } from "@linkwarden/lib/schemaValidation";
 import toast from "react-hot-toast";
 import { useArchiveAction } from "@linkwarden/router/links";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 export default function Worker() {
   const { t } = useTranslation();

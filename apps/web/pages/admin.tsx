@@ -7,7 +7,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import UserListing from "@/components/UserListing";
 import { useUsers } from "@linkwarden/router/users";
 import Divider from "@/components/ui/Divider";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 interface User extends U {
   subscriptions: {

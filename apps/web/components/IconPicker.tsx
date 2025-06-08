@@ -4,7 +4,7 @@ import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import IconPopover from "./IconPopover";
 import clsx from "clsx";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 
 type Props = {
   alignment?: string;

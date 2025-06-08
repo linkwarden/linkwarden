@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useBulkEditLinks } from "@linkwarden/router/links";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 
 type Props = {
   onClose: Function;

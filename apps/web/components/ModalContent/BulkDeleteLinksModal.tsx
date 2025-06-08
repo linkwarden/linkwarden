@@ -1,7 +1,7 @@
 import React from "react";
 import useLinkStore from "@/store/links";
 import Modal from "../Modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import { useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";

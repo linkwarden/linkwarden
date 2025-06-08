@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import NewLinkModal from "./ModalContent/NewLinkModal";
 import { useTranslation } from "next-i18next";
-import { Button } from "./ui/button";
+import { Button } from "./ui/Button";
 
 type Props = {
   text?: string;

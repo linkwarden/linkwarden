@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../Modal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { useTranslation } from "next-i18next";
 import { AccessToken } from "@linkwarden/prisma/client";
 import { useRevokeToken } from "@linkwarden/router/tokens";

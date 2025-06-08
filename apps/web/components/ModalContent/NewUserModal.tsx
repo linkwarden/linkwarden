@@ -4,7 +4,7 @@ import TextInput from "../TextInput";
 import { FormEvent, useState } from "react";
 import { useTranslation, Trans } from "next-i18next";
 import { useAddUser } from "@linkwarden/router/users";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 
 type Props = {
   onClose: Function;
