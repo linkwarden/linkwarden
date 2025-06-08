@@ -207,25 +207,27 @@ export default function DashboardLayoutDropdown() {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={true}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
           <i className="bi-sliders2-vertical text-neutral" />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="min-w-72 py-2" align="end">
-        <div className="px-1 flex flex-col gap-1">
-          <p className="text-sm text-neutral">{t("display_on_dashboard")}</p>
+      <DropdownMenuContent className="min-w-72 pt-1 px-0 pb-0" align="end">
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 mx-2">
+            <p className="text-sm text-neutral">{t("display_on_dashboard")}</p>
 
-          <TextInput
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="py-0"
-            placeholder={t("search")}
-          />
+            <TextInput
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="py-0"
+              placeholder={t("search")}
+            />
+          </div>
 
-          <ul className="max-h-60 overflow-y-auto">
+          <ul className="max-h-60 overflow-y-auto px-2 pb-2">
             {filteredSections.map((section) => (
               <DraggableListItem
                 key={getSectionId(section)}
