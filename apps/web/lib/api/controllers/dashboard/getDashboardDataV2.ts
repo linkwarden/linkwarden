@@ -2,14 +2,14 @@ import { prisma } from "@linkwarden/prisma";
 import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
 
 export default async function getDashboardData(
-  userId: number,
-  query: LinkRequestQuery
+  userId: number
+  // query: LinkRequestQuery
 ) {
   let order: Order = { id: "desc" };
-  if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
-  else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
-  else if (query.sort === Sort.NameAZ) order = { name: "asc" };
-  else if (query.sort === Sort.NameZA) order = { name: "desc" };
+  // if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
+  // else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
+  // else if (query.sort === Sort.NameAZ) order = { name: "asc" };
+  // else if (query.sort === Sort.NameZA) order = { name: "desc" };
 
   const dashboardSections = await prisma.dashboardSection.findMany({
     where: {
@@ -67,7 +67,7 @@ export default async function getDashboardData(
 
   if (viewPinned) {
     pinnedLinks = await prisma.link.findMany({
-      take: 16,
+      take: 10,
       where: {
         AND: [
           {
@@ -103,7 +103,7 @@ export default async function getDashboardData(
 
   if (viewRecent) {
     recentlyAddedLinks = await prisma.link.findMany({
-      take: 16,
+      take: 10,
       where: {
         collection: {
           OR: [
@@ -154,6 +154,7 @@ export default async function getDashboardData(
             },
           ],
         },
+        take: 10,
         include: {
           tags: true,
           collection: true,
