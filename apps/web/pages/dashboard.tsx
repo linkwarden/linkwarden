@@ -36,6 +36,16 @@ export default function Dashboard() {
   const { data: user } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
+  const [showRecentLinks, setShowRecentLinks] = useState(false);
+  const [showPinnedLinks, setShowPinnedLinks] = useState(false);
+
+  const [dashboardSections, setDashboardSections] = useState<
+    DashboardSection[]
+  >(user?.dashboardSections || []);
+
+  useEffect(() => {
+    setDashboardSections(user?.dashboardSections || []);
+  }, [user?.dashboardSections]);
 
   const { settings } = useLocalSettingsStore();
 
@@ -65,8 +75,6 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
-
   // Sort sections by order and filter enabled ones
   const orderedSections = useMemo(() => {
     return dashboardSections.sort((a, b) => {
@@ -79,12 +87,17 @@ export default function Dashboard() {
     });
   }, [dashboardSections]);
 
-  const showRecentLinks = dashboardSections.some(
-    (section) => section.type === "RECENT_LINKS"
-  );
-  const showPinnedLinks = dashboardSections.some(
-    (section) => section.type === "PINNED_LINKS"
-  );
+  useEffect(() => {
+    const recentLinks = dashboardSections.some(
+      (section) => section.type === "RECENT_LINKS"
+    );
+    const pinnedLinks = dashboardSections.some(
+      (section) => section.type === "PINNED_LINKS"
+    );
+
+    setShowRecentLinks(recentLinks || false);
+    setShowPinnedLinks(pinnedLinks || false);
+  }, [dashboardSections]);
 
   const numberOfLinksToShow = useMemo(() => {
     if (showRecentLinks && showPinnedLinks) {
@@ -392,7 +405,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {orderedSections.map((section) => (
+        {orderedSections?.map((section) => (
           <div key={`${section.type}-${section.collectionId || "default"}`}>
             {renderSection(section)}
           </div>

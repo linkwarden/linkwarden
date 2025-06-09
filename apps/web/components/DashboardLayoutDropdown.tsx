@@ -1,4 +1,4 @@
-import React, { useState, useMemo, DragEvent } from "react";
+import React, { useState, useMemo, DragEvent, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -35,7 +35,13 @@ export default function DashboardLayoutDropdown() {
     "above" | "below" | null
   >(null);
 
-  const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
+  const [dashboardSections, setDashboardSections] = useState<
+    DashboardSection[]
+  >(user?.dashboardSections || []);
+
+  useEffect(() => {
+    setDashboardSections(user?.dashboardSections || []);
+  }, [user?.dashboardSections]);
 
   const getSectionOrder = (
     type: DashboardSectionType,
