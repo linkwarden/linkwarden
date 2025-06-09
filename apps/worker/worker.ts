@@ -1,3 +1,9 @@
+import { config } from "dotenv";
+import { join } from "path";
+
+// Load environment variables from the root .env file
+config({ path: join(__dirname, "../../.env") });
+
 import { startIndexing } from "./workers/linkIndexing";
 import { startProcessing } from "./workers/linkProcessing";
 import { startRSSPolling } from "./workers/rssPolling";
