@@ -93,13 +93,6 @@ enum LinksRouteTo {
   DETAILS
 }
 
-enum DashboardSectionType {
-  STATS
-  RECENT_LINKS
-  PINNED_LINKS
-  COLLECTION
-}
-
 model WhitelistedUser {
   id        Int      @id @default(autoincrement())
   username  String   @default("")
@@ -283,4 +276,11 @@ model DashboardSection {
   updatedAt    DateTime             @default(now()) @updatedAt
 
   @@unique([userId, collectionId])
+}
+
+enum DashboardSectionType {
+  STATS
+  RECENT_LINKS
+  PINNED_LINKS
+  COLLECTION
 }

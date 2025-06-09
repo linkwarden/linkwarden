@@ -18,24 +18,9 @@ export default async function dashboard(
       cursor: req.query.cursor ? Number(req.query.cursor as string) : undefined,
     };
 
-    const showRecentLinks = user.dashboardSections.some(
-      (section) => section.type === "RECENT_LINKS"
-    );
-
-    const showPinnedLinks = user.dashboardSections.some(
-      (section) => section.type === "PINNED_LINKS"
-    );
-
-    const collectionSections = user.dashboardSections.filter(
-      (section) => section.type === "COLLECTION"
-    );
-
     const { statusCode, ...data } = await getDashboardDataV2(
       user.id,
-      convertedData,
-      showRecentLinks,
-      showPinnedLinks,
-      collectionSections
+      convertedData
     );
 
     return res.status(statusCode).json(data);

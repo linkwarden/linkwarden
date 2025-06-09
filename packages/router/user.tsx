@@ -1,5 +1,9 @@
 import { UpdateUserPreferenceSchemaType } from "@linkwarden/lib/schemaValidation";
-import { DashboardSection, Subscription, User, WhitelistedUser } from "@linkwarden/prisma/client";
+import {
+  DashboardSection,
+  Subscription,
+  User,
+} from "@linkwarden/prisma/client";
 import { MobileAuth } from "@linkwarden/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -28,10 +32,10 @@ const useUser = (auth?: MobileAuth) => {
         url,
         auth?.session
           ? {
-            headers: {
-              Authorization: `Bearer ${auth.session}`,
-            },
-          }
+              headers: {
+                Authorization: `Bearer ${auth.session}`,
+              },
+            }
           : undefined
       );
 

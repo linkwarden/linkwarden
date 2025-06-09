@@ -44,7 +44,7 @@ const useUpdateDashboardLayout = () => {
       queryClient.setQueryData(["user"], (oldData: any) => {
         return {
           ...oldData,
-          dashboardSections: newData.filter((section) => section.enabled)
+          dashboardSections: newData.filter((section) => section.enabled),
         };
       });
 
