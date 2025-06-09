@@ -4,6 +4,7 @@ import {
 } from "@linkwarden/lib/schemaValidation";
 import { prisma } from "@linkwarden/prisma";
 import { DashboardSection } from "@linkwarden/prisma/client";
+import getDashboardData from "./getDashboardDataV2";
 
 export default async function updateDashboardLayout(
   userId: number,
@@ -178,8 +179,10 @@ export default async function updateDashboardLayout(
     }
   });
 
+  const getData = await getDashboardData(userId);
+
   return {
     status: 200,
-    response: parsedData,
+    response: getData,
   };
 }
