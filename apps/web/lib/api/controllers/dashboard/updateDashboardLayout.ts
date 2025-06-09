@@ -8,7 +8,7 @@ import { DashboardSection } from "@linkwarden/prisma/client";
 export default async function updateDashboardLayout(
   userId: number,
   body: UpdateDashboardLayoutSchemaType[]
-): Promise<any> {
+) {
   const dataValidation = UpdateDashboardLayoutSchema.safeParse(body);
 
   if (!dataValidation.success) {
@@ -22,6 +22,27 @@ export default async function updateDashboardLayout(
   }
 
   const data = dataValidation.data;
+
+  let collectionIds = data
+    .map((section) => section.collectionId)
+    .filter((id) => id !== undefined);
+
+  if (collectionIds && collectionIds.length > 0) {
+    collectionIds = (
+      await prisma.collection.findMany({
+        where: {
+          id: {
+            in: collectionIds,
+          },
+          OR: [{ ownerId: userId }, { members: { some: { userId } } }],
+        },
+      })
+    ).map((collection) => collection.id);
+  }
+
+  let parsedData = data.filter((section) =>
+    section.collectionId ? collectionIds.includes(section.collectionId) : true
+  );
 
   const existingSections = await prisma.dashboardSection.findMany({
     where: {
@@ -50,7 +71,7 @@ export default async function updateDashboardLayout(
     order: number;
   }> = [];
 
-  for (const section of data) {
+  for (const section of parsedData) {
     const key = `${section.type}-${section.collectionId || "default"}`;
     const existingSection = existingSectionsMap.get(key);
 
@@ -159,6 +180,6 @@ export default async function updateDashboardLayout(
 
   return {
     status: 200,
-    response: data,
+    response: parsedData,
   };
 }

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, DragEvent } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,13 +14,6 @@ import {
 } from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
 import { useUpdateDashboardLayout } from "@linkwarden/router/dashboardData";
-import {
-  draggable,
-  dropTargetForElements,
-  monitorForElements,
-} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
-import { reorder } from "@atlaskit/pragmatic-drag-and-drop/reorder";
 
 interface DashboardSectionOption {
   type: DashboardSectionType;
@@ -36,8 +29,11 @@ export default function DashboardLayoutDropdown() {
   const { data: collections = [] } = useCollections();
   const updateDashboardLayout = useUpdateDashboardLayout();
   const [searchTerm, setSearchTerm] = useState("");
-  const [draggedItem, setDraggedItem] = useState<string | null>(null);
-  const [dragOverItem, setDragOverItem] = useState<string | null>(null);
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [dragOverPosition, setDragOverPosition] = useState<
+    "above" | "below" | null
+  >(null);
 
   const dashboardSections: DashboardSection[] = user?.dashboardSections || [];
 
@@ -138,58 +134,13 @@ export default function DashboardLayoutDropdown() {
   }, [allSections, searchTerm]);
 
   const getSectionId = (section: DashboardSectionOption) =>
-    `${section.type}-${section.collectionId || "default"}`;
-
-  useEffect(() => {
-    return monitorForElements({
-      onDrop({ source, location }) {
-        const destination = location.current.dropTargets[0];
-        if (!destination) return;
-
-        const sourceId = source.data?.sectionId as string;
-        const destinationId = destination.data?.sectionId as string;
-
-        if (!sourceId || !destinationId || sourceId === destinationId) return;
-
-        const sourceIndex = filteredSections.findIndex(
-          (s) => getSectionId(s) === sourceId
-        );
-        const destinationIndex = filteredSections.findIndex(
-          (s) => getSectionId(s) === destinationId
-        );
-
-        if (sourceIndex === -1 || destinationIndex === -1) return;
-
-        // Only allow reordering within enabled sections
-        const sourceSection = filteredSections[sourceIndex];
-        const destinationSection = filteredSections[destinationIndex];
-
-        if (!sourceSection.enabled || !destinationSection.enabled) return;
-
-        const reorderedSections = reorder({
-          list: filteredSections,
-          startIndex: sourceIndex,
-          finishIndex: destinationIndex,
-        });
-
-        // Update orders for enabled sections only
-        const updatedSections = reorderedSections.map((section, index) => {
-          if (section.enabled) {
-            return { ...section, order: index };
-          }
-          return section;
-        });
-
-        updateDashboardLayout.mutateAsync(updatedSections);
-      },
-    });
-  }, [filteredSections]);
+    `${section.type}-${section.collectionId ?? "default"}`;
 
   const handleCheckboxChange = (section: DashboardSectionOption) => {
     const enabledSections = allSections.filter((s) => s.enabled);
     const highestOrder =
       enabledSections.length > 0
-        ? Math.max(...enabledSections.map((s) => s.order || 0))
+        ? Math.max(...enabledSections.map((s) => s.order ?? 0))
         : -1;
 
     const updatedSections = allSections.map((s) => {
@@ -206,8 +157,29 @@ export default function DashboardLayoutDropdown() {
     updateDashboardLayout.mutateAsync(updatedSections);
   };
 
+  const handleReorder = (sourceId: string, destId: string) => {
+    if (sourceId === destId) return;
+    const sourceIndex = filteredSections.findIndex(
+      (s) => getSectionId(s) === sourceId
+    );
+    const destIndex = filteredSections.findIndex(
+      (s) => getSectionId(s) === destId
+    );
+    if (sourceIndex < 0 || destIndex < 0) return;
+
+    const reordered = [...filteredSections];
+    const [moved] = reordered.splice(sourceIndex, 1);
+    reordered.splice(destIndex, 0, moved);
+
+    const updated = reordered.map((section, idx) =>
+      section.enabled ? { ...section, order: idx } : section
+    );
+
+    updateDashboardLayout.mutateAsync(updated);
+  };
+
   return (
-    <DropdownMenu modal={true}>
+    <DropdownMenu modal>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
           <i className="bi-sliders2-vertical text-neutral" />
@@ -233,10 +205,13 @@ export default function DashboardLayoutDropdown() {
                 key={getSectionId(section)}
                 section={section}
                 onCheckboxChange={handleCheckboxChange}
-                isDragged={draggedItem === getSectionId(section)}
-                isDraggingOver={dragOverItem === getSectionId(section)}
-                setDraggedItem={setDraggedItem}
-                setDragOverItem={setDragOverItem}
+                onReorder={handleReorder}
+                draggedId={draggedId}
+                dragOverId={dragOverId}
+                dragOverPosition={dragOverPosition}
+                setDraggedId={setDraggedId}
+                setDragOverId={setDragOverId}
+                setDragOverPosition={setDragOverPosition}
               />
             ))}
 
@@ -255,61 +230,95 @@ export default function DashboardLayoutDropdown() {
 interface DraggableListItemProps {
   section: DashboardSectionOption;
   onCheckboxChange: (section: DashboardSectionOption) => void;
-  isDragged: boolean;
-  isDraggingOver: boolean;
-  setDraggedItem: (id: string | null) => void;
-  setDragOverItem: (id: string | null) => void;
+  onReorder: (sourceId: string, destId: string) => void;
+  draggedId: string | null;
+  dragOverId: string | null;
+  dragOverPosition: "above" | "below" | null;
+  setDraggedId: (id: string | null) => void;
+  setDragOverId: (id: string | null) => void;
+  setDragOverPosition: (pos: "above" | "below" | null) => void;
 }
 
 function DraggableListItem({
   section,
   onCheckboxChange,
-  isDragged,
-  isDraggingOver,
-  setDraggedItem,
-  setDragOverItem,
+  onReorder,
+  draggedId,
+  dragOverId,
+  dragOverPosition,
+  setDraggedId,
+  setDragOverId,
+  setDragOverPosition,
 }: DraggableListItemProps) {
-  const [element, setElement] = useState<HTMLElement | null>(null);
-  const sectionId = `${section.type}-${section.collectionId || "default"}`;
+  const sectionId = `${section.type}-${section.collectionId ?? "default"}`;
 
-  useEffect(() => {
-    const el = element;
-    if (!el || !section.enabled) return;
+  const handleDragStart = (e: DragEvent<HTMLLIElement>) => {
+    const img = new Image();
+    img.src =
+      "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'/%3e";
+    e.dataTransfer.setDragImage(img, 0, 0);
 
-    return combine(
-      draggable({
-        element: el,
-        getInitialData: () => ({ sectionId }),
-        onDragStart: () => setDraggedItem(sectionId),
-        onDrop: () => {
-          setDraggedItem(null);
-          setDragOverItem(null);
-        },
-      }),
-      dropTargetForElements({
-        element: el,
-        getData: () => ({ sectionId }),
-        onDragEnter: () => setDragOverItem(sectionId),
-        onDragLeave: () => setDragOverItem(null),
-        onDrop: () => setDragOverItem(null),
-      })
-    );
-  }, [element, section.enabled, sectionId, setDraggedItem, setDragOverItem]);
+    e.dataTransfer.setData("text/plain", sectionId);
+    setDraggedId(sectionId);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLLIElement>) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    const pos = e.clientY < midY ? "above" : "below";
+    setDragOverPosition(pos);
+    setDragOverId(sectionId);
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDragLeave = () => {
+    setDragOverId(null);
+    setDragOverPosition(null);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLLIElement>) => {
+    e.preventDefault();
+    const sourceId = e.dataTransfer.getData("text/plain");
+    if (sourceId) {
+      const destId = dragOverPosition === "below" ? sectionId : sectionId;
+      onReorder(sourceId, destId);
+    }
+    setDraggedId(null);
+    setDragOverId(null);
+    setDragOverPosition(null);
+  };
+
+  const indicatorClass =
+    dragOverId === sectionId && dragOverPosition === "above"
+      ? "border-t-2 border-primary"
+      : dragOverId === sectionId && dragOverPosition === "below"
+        ? "border-b-2 border-primary"
+        : "";
 
   return (
     <li
-      ref={setElement}
-      data-section-id={sectionId}
+      draggable={section.enabled}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      onDragEnd={() => {
+        setDraggedId(null);
+        setDragOverId(null);
+        setDragOverPosition(null);
+      }}
       className={`
-        py-1 px-2 flex items-center justify-between cursor-pointer rounded transition-colors
+        py-1 px-2 flex items-center justify-between
         ${section.enabled ? "cursor-grab active:cursor-grabbing" : ""}
-        ${isDragged ? "opacity-70" : ""}
-        ${isDraggingOver && !isDragged ? "bg-base-100" : ""}
+        ${draggedId === sectionId ? "opacity-70" : ""}
+        ${indicatorClass}
       `}
     >
       <div className="flex items-center gap-2">
         <input
-          id={`section-${section.type}-${section.collectionId || "default"}`}
+          id={`section-${section.type}-${section.collectionId ?? "default"}`}
           className="checkbox checkbox-primary"
           type="checkbox"
           checked={section.enabled}
@@ -317,7 +326,7 @@ function DraggableListItem({
         />
         <label
           htmlFor={`section-${section.type}-${
-            section.collectionId || "default"
+            section.collectionId ?? "default"
           }`}
           className="text-sm select-none"
         >
