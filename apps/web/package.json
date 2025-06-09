@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@atlaskit/tree": "^8.8.7",
-    "@atlaskit/pragmatic-drag-and-drop": "^1.7.2",
     "@auth/prisma-adapter": "^1.0.1",
     "@headlessui/react": "^1.7.15",
     "@linkwarden/filesystem": "*",

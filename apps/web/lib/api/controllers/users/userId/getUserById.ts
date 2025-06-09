@@ -1,5 +1,9 @@
 import { prisma } from "@linkwarden/prisma";
-import { Subscription, User } from "@linkwarden/prisma/client";
+import {
+  DashboardSection,
+  Subscription,
+  User,
+} from "@linkwarden/prisma/client";
 
 type GetUserByIdResponse = Omit<User, "password"> &
   Partial<{ subscription: Pick<Subscription, "active" | "quantity"> }> & {
@@ -11,7 +15,8 @@ type GetUserByIdResponse = Omit<User, "password"> &
     };
   } & {
     whitelistedUsers: string[];
-  }
+    dashboardSections: DashboardSection[];
+  };
 
 export default async function getUserById(userId: number) {
   const user = await prisma.user.findUnique({
@@ -57,7 +62,7 @@ export default async function getUserById(userId: number) {
         email: parentSubscription?.user.email,
       },
     },
-  }
+  };
 
   return { response: data, status: 200 };
 }

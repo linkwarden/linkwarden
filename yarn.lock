@@ -127,15 +127,6 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@atlaskit/pragmatic-drag-and-drop@^1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pragmatic-drag-and-drop/-/pragmatic-drag-and-drop-1.7.2.tgz#68a4de4932497941ef4bfac7b08a9a789e37efb1"
-  integrity sha512-GFlFVusm+PpzNwpk4ju8+w9a9pWD5NIGi4DoJ9g6CXTUMlQ4BCsivvmUk+azsV31luEKZtf2J0tg1y3vdltrTQ==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    bind-event-listener "^3.0.0"
-    raf-schd "^4.0.3"
-
 "@atlaskit/tree@^8.8.7":
   version "8.8.7"
   resolved "https://registry.yarnpkg.com/@atlaskit/tree/-/tree-8.8.7.tgz#f895137b063f676a490abb0b5deb939a96f51fd7"
@@ -5389,11 +5380,6 @@ binary-extensions@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
-
-bind-event-listener@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/bind-event-listener/-/bind-event-listener-3.0.0.tgz#c90f9a7fcb65cac21045f810c20ef7e647a74921"
-  integrity sha512-PJvH288AWQhKs2v9zyfYdPzlPqf5bXbGMmhmUIY9x4dAUGIWgomO771oBQNwJnMQSnUIXhKu6sgzpBRXTlvb8Q==
 
 bmp-js@^0.1.0:
   version "0.1.0"
@@ -11099,7 +11085,7 @@ queue@6.0.2:
   dependencies:
     inherits "~2.0.3"
 
-raf-schd@^4.0.0, raf-schd@^4.0.3:
+raf-schd@^4.0.0:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/raf-schd/-/raf-schd-4.0.3.tgz#5d6c34ef46f8b2a0e880a8fcdb743efc5bfdbc1a"
   integrity sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==

@@ -1,31 +1,33 @@
 import { prisma } from "@linkwarden/prisma";
-import { DashboardSection } from "@linkwarden/prisma/client";
 import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
 
 export default async function getDashboardData(
   userId: number,
-  query: LinkRequestQuery,
-  viewRecent: boolean,
-  viewPinned: boolean,
-  collectionSections: DashboardSection[]
+  query: LinkRequestQuery
 ) {
-  let pinnedTake = 0;
-  let recentTake = 0;
-
-  if (viewPinned && viewRecent) {
-    pinnedTake = 16;
-    recentTake = 16;
-  } else if (viewPinned && !viewRecent) {
-    pinnedTake = 32;
-  } else if (!viewPinned && viewRecent) {
-    recentTake = 32;
-  }
-
   let order: Order = { id: "desc" };
   if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
+
+  const dashboardSections = await prisma.dashboardSection.findMany({
+    where: {
+      userId,
+    },
+  });
+
+  const viewPinned = dashboardSections.some(
+    (section) => section.type === "PINNED_LINKS"
+  );
+
+  const viewRecent = dashboardSections.some(
+    (section) => section.type === "RECENT_LINKS"
+  );
+
+  const collectionSections = dashboardSections.filter(
+    (section) => section.type === "COLLECTION"
+  );
 
   const numberOfPinnedLinks = await prisma.link.count({
     where: {
@@ -65,7 +67,7 @@ export default async function getDashboardData(
 
   if (viewPinned) {
     pinnedLinks = await prisma.link.findMany({
-      take: pinnedTake,
+      take: 16,
       where: {
         AND: [
           {
@@ -101,7 +103,7 @@ export default async function getDashboardData(
 
   if (viewRecent) {
     recentlyAddedLinks = await prisma.link.findMany({
-      take: recentTake,
+      take: 16,
       where: {
         collection: {
           OR: [
@@ -171,7 +173,6 @@ export default async function getDashboardData(
     ...collectionLinks,
   ].sort((a, b) => new Date(b.id).getTime() - new Date(a.id).getTime());
 
-  // Make sure links are unique
   const uniqueLinks = links.filter(
     (link, index, self) => index === self.findIndex((t) => t.id === link.id)
   );

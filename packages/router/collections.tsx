@@ -111,10 +111,13 @@ const useDeleteCollection = () => {
 
         return {
           ...oldData,
-          links: oldData.links?.filter((link: any) => link.collectionId !== id) || [],
-          numberOfPinnedLinks: oldData.links?.filter((link: any) =>
-            link.collectionId !== id && link.isPinned
-          ).length || 0
+          links:
+            oldData.links?.filter((link: any) => link.collectionId !== id) ||
+            [],
+          numberOfPinnedLinks:
+            oldData.links?.filter(
+              (link: any) => link.collectionId !== id && link.isPinned
+            ).length || 0,
         };
       });
     },
