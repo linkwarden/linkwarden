@@ -265,7 +265,7 @@ function DraggableListItem({
   const handleDragStart = (e: DragEvent<HTMLLIElement>) => {
     const img = new Image();
     img.src =
-      "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg'/%3e";
+      "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'></svg>";
     e.dataTransfer.setDragImage(img, 0, 0);
 
     e.dataTransfer.setData("text/plain", sectionId);
@@ -338,7 +338,7 @@ function DraggableListItem({
           htmlFor={`section-${section.type}-${
             section.collectionId ?? "default"
           }`}
-          className="text-sm select-none"
+          className="text-sm pointer-events-none"
         >
           {section.name}
         </label>
