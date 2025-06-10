@@ -192,7 +192,10 @@ export default function DashboardLayoutDropdown() {
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="min-w-72 pt-1 px-0 pb-0" align="end">
+      <DropdownMenuContent
+        className="min-w-72 pt-1 px-0 pb-0 select-none"
+        align="end"
+      >
         <div className="flex flex-col gap-1">
           <div className="flex flex-col gap-1 mx-2">
             <p className="text-sm text-neutral">{t("display_on_dashboard")}</p>
