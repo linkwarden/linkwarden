@@ -142,21 +142,37 @@ export default function Dashboard() {
             />
           </div>
         </div>
-        {orderedSections?.map((section, i) => (
-          <Section
-            key={i}
-            sectionData={section}
-            t={t}
-            collection={collections.find((c) => c.id === section.collectionId)}
-            links={links}
-            tags={tags}
-            numberOfLinks={numberOfLinks}
-            collectionsLength={collections.length}
-            numberOfPinnedLinks={numberOfPinnedLinks}
-            dashboardData={dashboardData}
-            setNewLinkModal={setNewLinkModal}
-          />
-        ))}
+        {orderedSections[0] ? (
+          orderedSections?.map((section, i) => (
+            <Section
+              key={i}
+              sectionData={section}
+              t={t}
+              collection={collections.find(
+                (c) => c.id === section.collectionId
+              )}
+              links={links}
+              tags={tags}
+              numberOfLinks={numberOfLinks}
+              collectionsLength={collections.length}
+              numberOfPinnedLinks={numberOfPinnedLinks}
+              dashboardData={dashboardData}
+              setNewLinkModal={setNewLinkModal}
+            />
+          ))
+        ) : (
+          <div className="h-full flex flex-col gap-4">
+            <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+            </div>
+            <div className="skeleton h-full"></div>
+            <div className="skeleton h-full"></div>
+            <div className="skeleton h-full"></div>
+          </div>
+        )}
       </div>
 
       {showSurveyModal && (
