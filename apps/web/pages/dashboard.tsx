@@ -24,6 +24,7 @@ import { DashboardLinks } from "@/components/DashboardLinks";
 import { ViewMode } from "@linkwarden/types";
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
+import Icon from "@/components/Icon";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -124,157 +125,223 @@ export default function Dashboard() {
     );
   };
 
-  const renderStatsSection = () => (
-    <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
-      <DashboardItem
-        name={numberOfLinks === 1 ? t("link") : t("links")}
-        value={numberOfLinks}
-        icon={"bi-link-45deg"}
-      />
-
-      <DashboardItem
-        name={collections.length === 1 ? t("collection") : t("collections")}
-        value={collections.length}
-        icon={"bi-folder"}
-      />
-
-      <DashboardItem
-        name={tags.length === 1 ? t("tag") : t("tags")}
-        value={tags.length}
-        icon={"bi-hash"}
-      />
-
-      <DashboardItem
-        name={t("pinned")}
-        value={numberOfPinnedLinks}
-        icon={"bi-pin-angle"}
-      />
-    </div>
-  );
-
-  const renderRecentLinksSection = () => (
-    <>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-2 items-center">
-          <PageHeader icon={"bi-clock-history"} title={t("recent_links")} />
-        </div>
-        <Link
-          href="/links"
-          className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
-        >
-          {t("view_all")}
-          <i className="bi-chevron-right text-sm"></i>
-        </Link>
-      </div>
-
-      <div
-        style={{
-          flex: links || dashboardData.isLoading ? "0 1 auto" : "1 1 auto",
-        }}
-        className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
-      >
-        {dashboardData.isLoading ||
-        (links && links[0] && !dashboardData.isLoading) ? (
-          <DashboardLinks links={links} isLoading={dashboardData.isLoading} />
-        ) : (
-          <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-            <p className="text-center text-xl">{t("view_added_links_here")}</p>
-            <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
-              {t("view_added_links_here_desc")}
-            </p>
-
-            <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
-              <Button
-                onClick={() => {
-                  setNewLinkModal(true);
-                }}
-                variant="accent"
-              >
-                <i className="bi-plus-lg text-xl"></i>
-                {t("add_link")}
-              </Button>
-
-              <ImportDropdown />
-            </div>
+  return (
+    <MainLayout>
+      <div className="p-5 flex flex-col gap-4 h-full">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <i className="bi-house-fill text-primary" />
+            <p className="font-thin">{t("dashboard")}</p>
           </div>
-        )}
-      </div>
-    </>
-  );
-
-  const renderPinnedLinksSection = () => (
-    <>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex gap-2 items-center">
-          <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
+          <div className="flex items-center gap-2">
+            <DashboardLayoutDropdown />
+            <ViewDropdown
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              dashboard
+            />
+          </div>
         </div>
-        <Link
-          href="/links/pinned"
-          className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
-        >
-          {t("view_all")}
-          <i className="bi-chevron-right text-sm "></i>
-        </Link>
-      </div>
-
-      <div
-        style={{ flex: "1 1 auto" }}
-        className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
-      >
-        {dashboardData.isLoading ||
-        links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
-          <DashboardLinks
-            links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
-            isLoading={dashboardData.isLoading}
+        {orderedSections?.map((section, i) => (
+          <Section
+            key={i}
+            sectionData={section}
+            t={t}
+            collection={collections.find((c) => c.id === section.collectionId)}
+            links={links}
+            tags={tags}
+            numberOfLinks={numberOfLinks}
+            collectionsLength={collections.length}
+            numberOfPinnedLinks={numberOfPinnedLinks}
+            dashboardData={dashboardData}
+            setNewLinkModal={setNewLinkModal}
           />
-        ) : (
-          <div
-            style={{ flex: "1 1 auto" }}
-            className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200"
-          >
-            <i className="bi-pin mx-auto text-6xl text-primary"></i>
-            <p className="text-center text-xl">
-              {t("pin_favorite_links_here")}
-            </p>
-            <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-              {t("pin_favorite_links_here_desc")}
-            </p>
-          </div>
-        )}
+        ))}
       </div>
-    </>
+
+      {showSurveyModal && (
+        <SurveyModal
+          submit={submitSurvey}
+          onClose={() => {
+            setShowsSurveyModal(false);
+          }}
+        />
+      )}
+      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
+    </MainLayout>
   );
+}
 
-  const renderCollectionSection = (section: DashboardSection) => {
-    const collection = collections.find((c) => c.id === section.collectionId);
-    if (!collection) return null;
+export { getServerSideProps };
 
-    return (
-      <>
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex gap-2 items-center">
-            <div className={clsx("flex items-center gap-3")}>
-              <i
-                className={`bi-folder-fill text-primary text-2xl drop-shadow`}
-                style={{ color: collection.color || "#0ea5e9" }}
-              ></i>
-              <div>
-                <p className="text-2xl capitalize font-thin">
-                  {collection.name}
-                </p>
+type SectionProps = {
+  sectionData: DashboardSection;
+  t: (key: string) => string;
+  collection: any;
+  collectionsLength: number;
+  links: any[];
+  tags: any[];
+  numberOfLinks: number;
+  numberOfPinnedLinks: number;
+  dashboardData: any;
+  setNewLinkModal: (value: boolean) => void;
+};
+
+const Section = ({
+  sectionData,
+  t,
+  collection,
+  links,
+  tags,
+  numberOfLinks,
+  collectionsLength,
+  numberOfPinnedLinks,
+  dashboardData,
+  setNewLinkModal,
+}: SectionProps) => {
+  switch (sectionData.type) {
+    case DashboardSectionType.STATS:
+      return (
+        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+          <DashboardItem
+            name={numberOfLinks === 1 ? t("link") : t("links")}
+            value={numberOfLinks}
+            icon={"bi-link-45deg"}
+          />
+
+          <DashboardItem
+            name={collectionsLength === 1 ? t("collection") : t("collections")}
+            value={collectionsLength}
+            icon={"bi-folder"}
+          />
+
+          <DashboardItem
+            name={tags.length === 1 ? t("tag") : t("tags")}
+            value={tags.length}
+            icon={"bi-hash"}
+          />
+
+          <DashboardItem
+            name={t("pinned")}
+            value={numberOfPinnedLinks}
+            icon={"bi-pin-angle"}
+          />
+        </div>
+      );
+    case DashboardSectionType.RECENT_LINKS:
+      return (
+        <>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 items-center">
+              <PageHeader icon={"bi-clock-history"} title={t("recent_links")} />
+            </div>
+            <Link
+              href="/links"
+              className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+            >
+              {t("view_all")}
+              <i className="bi-chevron-right text-sm"></i>
+            </Link>
+          </div>
+
+          {dashboardData.isLoading ||
+          (links && links[0] && !dashboardData.isLoading) ? (
+            <DashboardLinks links={links} isLoading={dashboardData.isLoading} />
+          ) : (
+            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+              <p className="text-center text-xl">
+                {t("view_added_links_here")}
+              </p>
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
+                {t("view_added_links_here_desc")}
+              </p>
+
+              <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
+                <Button
+                  onClick={() => {
+                    setNewLinkModal(true);
+                  }}
+                  variant="accent"
+                >
+                  <i className="bi-plus-lg text-xl"></i>
+                  {t("add_link")}
+                </Button>
+
+                <ImportDropdown />
               </div>
             </div>
+          )}
+        </>
+      );
+    case DashboardSectionType.PINNED_LINKS:
+      return (
+        <>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 items-center">
+              <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
+            </div>
+            <Link
+              href="/links/pinned"
+              className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+            >
+              {t("view_all")}
+              <i className="bi-chevron-right text-sm "></i>
+            </Link>
           </div>
-          <Link
-            href={`/collections/${collection.id}`}
-            className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
-          >
-            {t("view_all")}
-            <i className="bi-chevron-right text-sm"></i>
-          </Link>
-        </div>
 
-        <div className="flex flex-col 2xl:flex-row items-start 2xl:gap-2">
+          {dashboardData.isLoading ||
+          links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
+            <DashboardLinks
+              links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
+              isLoading={dashboardData.isLoading}
+            />
+          ) : (
+            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+              <i className="bi-pin mx-auto text-6xl text-primary"></i>
+              <p className="text-center text-xl">
+                {t("pin_favorite_links_here")}
+              </p>
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                {t("pin_favorite_links_here_desc")}
+              </p>
+            </div>
+          )}
+        </>
+      );
+    case DashboardSectionType.COLLECTION:
+      return (
+        <>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 items-center">
+              <div className={clsx("flex items-center gap-3")}>
+                {collection.icon ? (
+                  <Icon
+                    icon={collection.icon}
+                    color={collection.color || "#0ea5e9"}
+                    className="text-2xl"
+                  />
+                ) : (
+                  <i
+                    className={`bi-folder-fill text-primary text-2xl drop-shadow`}
+                    style={{ color: collection.color || "#0ea5e9" }}
+                  ></i>
+                )}
+                <div>
+                  <p className="text-2xl capitalize font-thin">
+                    {collection.name}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <Link
+              href={`/collections/${collection.id}`}
+              className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
+            >
+              {t("view_all")}
+              <i className="bi-chevron-right text-sm"></i>
+            </Link>
+          </div>
+
           {dashboardData.isLoading ||
           links?.filter((link: any) => link.collection.id === collection.id)
             .length > 0 ? (
@@ -292,64 +359,9 @@ export default function Dashboard() {
               </p>
             </div>
           )}
-        </div>
-      </>
-    );
-  };
-
-  const renderSection = (section: DashboardSection) => {
-    switch (section.type) {
-      case DashboardSectionType.STATS:
-        return renderStatsSection();
-      case DashboardSectionType.RECENT_LINKS:
-        return renderRecentLinksSection();
-      case DashboardSectionType.PINNED_LINKS:
-        return renderPinnedLinksSection();
-      case DashboardSectionType.COLLECTION:
-        return renderCollectionSection(section);
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <MainLayout>
-      <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <i className="bi-house-fill text-primary" />
-            <p className="font-thin">{t("dashboard")}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <DashboardLayoutDropdown />
-            <ViewDropdown
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              dashboard
-            />
-          </div>
-        </div>
-        {orderedSections?.map((section) => (
-          <div key={`${section.type}-${section.collectionId || "default"}`}>
-            {renderSection(section)}
-          </div>
-        ))}
-        {/* <div className="mx-auto w-fit">
-          <DashboardLayoutDropdown />
-        </div> */}
-      </div>
-
-      {showSurveyModal && (
-        <SurveyModal
-          submit={submitSurvey}
-          onClose={() => {
-            setShowsSurveyModal(false);
-          }}
-        />
-      )}
-      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
-    </MainLayout>
-  );
-}
-
-export { getServerSideProps };
+        </>
+      );
+    default:
+      return null;
+  }
+};
