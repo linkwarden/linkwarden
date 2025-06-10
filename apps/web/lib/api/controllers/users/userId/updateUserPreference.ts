@@ -35,6 +35,7 @@ export default async function updateUserPreference(
     include: {
       whitelistedUsers: true,
       subscriptions: true,
+      dashboardSections: true,
       parentSubscription: {
         include: {
           user: true,
