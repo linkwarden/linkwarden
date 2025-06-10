@@ -373,6 +373,9 @@ const Section = ({
               <p className="text-center text-xl">
                 {t("no_link_in_collection")}
               </p>
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                {t("no_link_in_collection_desc")}
+              </p>
             </div>
           )}
         </>
