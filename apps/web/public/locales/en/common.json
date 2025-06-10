@@ -479,6 +479,7 @@
   "dashboard_stats": "Dashboard Stats",
   "no_results_found": "No results found.",
   "no_link_in_collection": "No Link in this Collection",
+  "no_link_in_collection_desc": "This Collection has no Links yet.",
   "theme": "Theme",
   "font_family": "Font Family",
   "font_size": "Font Size",
