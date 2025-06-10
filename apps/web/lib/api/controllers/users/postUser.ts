@@ -109,6 +109,24 @@ export default async function postUser(
                 },
               }
             : undefined,
+        dashboardSections: {
+          createMany: {
+            data: [
+              {
+                order: 0,
+                type: "STATS",
+              },
+              {
+                order: 1,
+                type: "RECENT_LINKS",
+              },
+              {
+                order: 2,
+                type: "PINNED_LINKS",
+              },
+            ],
+          },
+        },
       },
       select: isAdmin
         ? {
