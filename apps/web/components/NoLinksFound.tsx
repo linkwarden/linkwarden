@@ -24,7 +24,7 @@ export default function NoLinksFound({ text }: Props) {
         <path d="M7.009 12.139a7.632 7.632 0 0 1-1.804-1.352A7.568 7.568 0 0 1 3.794 8.86c-1.102.992-1.965 5.054-1.839 5.18.125.126 3.936-.896 5.054-1.902Z" />
       </svg>
       <p className="text-center text-xl sm:text-xl">
-        {text || t("no_links_in_collection")}
+        {text || t("no_link_in_collection")}
       </p>
       <p className="text-center text-sm sm:text-base">{t("start_journey")}</p>
       <div className="text-center w-full mt-4">

@@ -125,7 +125,7 @@ export default function Dashboard() {
   };
 
   const renderStatsSection = () => (
-    <div className="flex gap-3 w-fit">
+    <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
       <DashboardItem
         name={numberOfLinks === 1 ? t("link") : t("links")}
         value={numberOfLinks}
@@ -288,7 +288,7 @@ export default function Dashboard() {
             <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
               <i className="bi-folder mx-auto text-6xl text-primary"></i>
               <p className="text-center text-xl">
-                {t("no_links_in_collection")}
+                {t("no_link_in_collection")}
               </p>
             </div>
           )}
@@ -316,12 +316,11 @@ export default function Dashboard() {
     <MainLayout>
       <div style={{ flex: "1 1 auto" }} className="p-5 flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <PageHeader
-            icon={"bi-house "}
-            title={t("dashboard")}
-            description={t("dashboard_desc")}
-          />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <i className="bi-house-fill text-primary" />
+            <p className="font-thin">{t("dashboard")}</p>
+          </div>
+          <div className="flex items-center gap-2">
             <DashboardLayoutDropdown />
             <ViewDropdown
               viewMode={viewMode}
@@ -330,12 +329,14 @@ export default function Dashboard() {
             />
           </div>
         </div>
-
         {orderedSections?.map((section) => (
           <div key={`${section.type}-${section.collectionId || "default"}`}>
             {renderSection(section)}
           </div>
         ))}
+        {/* <div className="mx-auto w-fit">
+          <DashboardLayoutDropdown />
+        </div> */}
       </div>
 
       {showSurveyModal && (

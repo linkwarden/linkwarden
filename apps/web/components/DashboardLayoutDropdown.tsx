@@ -187,8 +187,9 @@ export default function DashboardLayoutDropdown() {
   return (
     <DropdownMenu modal>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="sm" className="h-8">
           <i className="bi-sliders2-vertical text-neutral" />
+          {t("edit_layout")}
         </Button>
       </DropdownMenuTrigger>
 
@@ -319,7 +320,7 @@ function DraggableListItem({
         setDragOverPosition(null);
       }}
       className={`
-        py-1 px-2 flex items-center justify-between
+        py-1 px-1 flex items-center justify-between
         ${section.enabled ? "cursor-grab active:cursor-grabbing" : ""}
         ${draggedId === sectionId ? "opacity-70" : ""}
         ${indicatorClass}
