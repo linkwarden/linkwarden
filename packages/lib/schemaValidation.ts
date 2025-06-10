@@ -2,6 +2,7 @@ import { ArchivedFormat, TokenExpiry } from "@linkwarden/types";
 import {
   AiTaggingMethod,
   LinksRouteTo,
+  DashboardSectionType,
   Theme,
 } from "@linkwarden/prisma/client";
 import { z } from "zod";
@@ -45,12 +46,12 @@ export const PostUserSchema = () => {
     username: emailEnabled
       ? z.string().optional()
       : z
-          .string()
-          .trim()
-          .toLowerCase()
-          .min(3)
-          .max(50)
-          .regex(/^[a-z0-9_-]{3,50}$/),
+        .string()
+        .trim()
+        .toLowerCase()
+        .min(3)
+        .max(50)
+        .regex(/^[a-z0-9_-]{3,50}$/),
     invite: z.boolean().optional(),
   });
 };
@@ -80,8 +81,6 @@ export const UpdateUserSchema = () => {
     archiveAsPDF: z.boolean().optional(),
     archiveAsReadable: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
-    dashboardPinnedLinks: z.boolean().optional(),
-    dashboardRecentLinks: z.boolean().optional(),
     aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     aiTagExistingLinks: z.boolean().optional(),
@@ -286,3 +285,14 @@ export const LinkArchiveActionSchema = z.object({
 export type LinkArchiveActionSchemaType = z.infer<
   typeof LinkArchiveActionSchema
 >;
+
+export const UpdateDashboardLayoutSchema = z.array(
+  z.object({
+    type: z.nativeEnum(DashboardSectionType),
+    collectionId: z.number().optional(),
+    enabled: z.boolean(),
+    order: z.number().optional(),
+  })
+)
+
+export type UpdateDashboardLayoutSchemaType = z.infer<typeof UpdateDashboardLayoutSchema>;

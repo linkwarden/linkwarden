@@ -61,9 +61,6 @@ export default function Preference() {
   const [dashboardPinnedLinks, setDashboardPinnedLinks] = useState<boolean>(
     account.dashboardPinnedLinks || false
   );
-  const [dashboardRecentLinks, setDashboardRecentLinks] = useState<boolean>(
-    account.dashboardRecentLinks || false
-  );
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
     account.aiTaggingMethod
@@ -89,7 +86,6 @@ export default function Preference() {
       aiTaggingMethod,
       aiPredefinedTags,
       aiTagExistingLinks,
-      dashboardRecentLinks,
       dashboardPinnedLinks,
     });
   }, [
@@ -104,8 +100,6 @@ export default function Preference() {
     aiTaggingMethod,
     aiPredefinedTags,
     aiTagExistingLinks,
-    dashboardRecentLinks,
-    dashboardPinnedLinks,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -124,8 +118,6 @@ export default function Preference() {
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
       setAiTagExistingLinks(account.aiTagExistingLinks);
-      setDashboardRecentLinks(account.dashboardRecentLinks);
-      setDashboardPinnedLinks(account.dashboardPinnedLinks);
     }
   }, [account]);
 
@@ -141,8 +133,6 @@ export default function Preference() {
       "aiTaggingMethod",
       "aiPredefinedTags",
       "aiTagExistingLinks",
-      "dashboardRecentLinks",
-      "dashboardPinnedLinks",
     ];
 
     const hasChanges = relevantKeys.some((key) => account[key] !== user[key]);
@@ -386,27 +376,6 @@ export default function Preference() {
             </div>
           </div>
         )}
-
-        <div>
-          <p className="capitalize text-3xl font-thin inline">
-            {t("dashboard_settings")}
-          </p>
-          <div className="divider my-3"></div>
-          <p>{t("choose_whats_displayed_dashboard")}</p>
-          <div className="p-3">
-            <Checkbox
-              label={t("pinned_links")}
-              state={dashboardPinnedLinks}
-              onClick={() => setDashboardPinnedLinks(!dashboardPinnedLinks)}
-            />
-
-            <Checkbox
-              label={t("recent_links")}
-              state={dashboardRecentLinks}
-              onClick={() => setDashboardRecentLinks(!dashboardRecentLinks)}
-            />
-          </div>
-        </div>
 
         <div>
           <p className="capitalize text-3xl font-thin inline">

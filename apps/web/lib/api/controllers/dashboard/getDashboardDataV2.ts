@@ -1,41 +1,33 @@
 import { prisma } from "@linkwarden/prisma";
 import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
 
-type Response<D> =
-  | {
-      data: D;
-      message: string;
-      status: number;
-    }
-  | {
-      data: D;
-      message: string;
-      status: number;
-    };
-
 export default async function getDashboardData(
-  userId: number,
-  query: LinkRequestQuery,
-  viewRecent: boolean,
-  viewPinned: boolean
+  userId: number
+  // query: LinkRequestQuery
 ) {
-  let pinnedTake = 0;
-  let recentTake = 0;
-
-  if (viewPinned && viewRecent) {
-    pinnedTake = 16;
-    recentTake = 16;
-  } else if (viewPinned && !viewRecent) {
-    pinnedTake = 32;
-  } else if (!viewPinned && viewRecent) {
-    recentTake = 32;
-  }
-
   let order: Order = { id: "desc" };
-  if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
-  else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
-  else if (query.sort === Sort.NameAZ) order = { name: "asc" };
-  else if (query.sort === Sort.NameZA) order = { name: "desc" };
+  // if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
+  // else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
+  // else if (query.sort === Sort.NameAZ) order = { name: "asc" };
+  // else if (query.sort === Sort.NameZA) order = { name: "desc" };
+
+  const dashboardSections = await prisma.dashboardSection.findMany({
+    where: {
+      userId,
+    },
+  });
+
+  const viewPinned = dashboardSections.some(
+    (section) => section.type === "PINNED_LINKS"
+  );
+
+  const viewRecent = dashboardSections.some(
+    (section) => section.type === "RECENT_LINKS"
+  );
+
+  const collectionSections = dashboardSections.filter(
+    (section) => section.type === "COLLECTION"
+  );
 
   const numberOfPinnedLinks = await prisma.link.count({
     where: {
@@ -59,7 +51,7 @@ export default async function getDashboardData(
     },
   });
 
-  if (!viewRecent && !viewPinned) {
+  if (!viewRecent && !viewPinned && collectionSections.length === 0) {
     return {
       data: {
         links: [],
@@ -75,7 +67,7 @@ export default async function getDashboardData(
 
   if (viewPinned) {
     pinnedLinks = await prisma.link.findMany({
-      take: pinnedTake,
+      take: 10,
       where: {
         AND: [
           {
@@ -111,7 +103,7 @@ export default async function getDashboardData(
 
   if (viewRecent) {
     recentlyAddedLinks = await prisma.link.findMany({
-      take: recentTake,
+      take: 10,
       where: {
         collection: {
           OR: [
@@ -136,11 +128,52 @@ export default async function getDashboardData(
     });
   }
 
-  const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
-    (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
-  );
+  let collectionLinks: any[] = [];
 
-  // Make sure links are unique
+  if (collectionSections.length > 0) {
+    const collectionIds = collectionSections
+      .filter((section) => section.collectionId !== null)
+      .map((section) => section.collectionId!);
+
+    if (collectionIds.length > 0) {
+      collectionLinks = await prisma.link.findMany({
+        where: {
+          AND: [
+            {
+              collection: {
+                id: { in: collectionIds },
+                OR: [
+                  { ownerId: userId },
+                  {
+                    members: {
+                      some: { userId },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+        take: 10,
+        include: {
+          tags: true,
+          collection: true,
+          pinnedBy: {
+            where: { id: userId },
+            select: { id: true },
+          },
+        },
+        orderBy: order || { id: "desc" },
+      });
+    }
+  }
+
+  const links = [
+    ...recentlyAddedLinks,
+    ...pinnedLinks,
+    ...collectionLinks,
+  ].sort((a, b) => new Date(b.id).getTime() - new Date(a.id).getTime());
+
   const uniqueLinks = links.filter(
     (link, index, self) => index === self.findIndex((t) => t.id === link.id)
   );

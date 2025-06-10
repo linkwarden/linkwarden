@@ -100,9 +100,25 @@ const useDeleteCollection = () => {
 
       return data.response;
     },
-    onSuccess: (data) => {
-      return queryClient.setQueryData(["collections"], (oldData: any) => {
-        return oldData.filter((collection: any) => collection.id !== data.id);
+    onSuccess: (data, id) => {
+      queryClient.setQueryData(["collections"], (oldData: any) => {
+        return oldData.filter((collection: any) => collection.id !== id);
+      });
+
+      // Update dashboardData query data
+      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          links:
+            oldData.links?.filter((link: any) => link.collectionId !== id) ||
+            [],
+          numberOfPinnedLinks:
+            oldData.links?.filter(
+              (link: any) => link.collectionId !== id && link.isPinned
+            ).length || 0,
+        };
       });
     },
   });
