@@ -37,7 +37,7 @@ export function DashboardLinks({
   isLoading?: boolean;
 }) {
   return (
-    <div className={`flex gap-5 pb-5 overflow-x-auto hide-scrollbar w-full`}>
+    <div className={`flex gap-5 overflow-x-auto hide-scrollbar w-full`}>
       {links?.map((e, i) => {
         return <Card key={i} link={e} />;
       })}
