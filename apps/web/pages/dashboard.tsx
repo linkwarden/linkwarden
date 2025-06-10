@@ -3,17 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "react-hot-toast";
-import { ViewMode } from "@linkwarden/types";
 import DashboardItem from "@/components/DashboardItem";
 import NewLinkModal from "@/components/ModalContent/NewLinkModal";
 import PageHeader from "@/components/PageHeader";
-import ViewDropdown from "@/components/ViewDropdown";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useTags } from "@linkwarden/router/tags";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
-import Links from "@/components/LinkViews/Links";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
@@ -24,6 +21,7 @@ import {
   DashboardSection,
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
+import { DashboardLinks } from "@/components/DashboardLinks";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -99,29 +97,7 @@ export default function Dashboard() {
     setShowPinnedLinks(pinnedLinks || false);
   }, [dashboardSections]);
 
-  const numberOfLinksToShow = useMemo(() => {
-    if (showRecentLinks && showPinnedLinks) {
-      if (window.innerWidth > 1900) {
-        return 10;
-      } else if (window.innerWidth > 1500) {
-        return 8;
-      } else if (window.innerWidth > 880) {
-        return 6;
-      } else if (window.innerWidth > 550) {
-        return 4;
-      } else {
-        return 2;
-      }
-    } else {
-      return 100;
-    }
-  }, [showRecentLinks, showPinnedLinks]);
-
   const [newLinkModal, setNewLinkModal] = useState(false);
-
-  const [viewMode, setViewMode] = useState<ViewMode>(
-    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
-  );
 
   const [showSurveyModal, setShowsSurveyModal] = useState(false);
 
@@ -211,26 +187,9 @@ export default function Dashboard() {
         }}
         className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
       >
-        {dashboardData.isLoading ? (
-          <div className="w-full">
-            <Links
-              layout={viewMode}
-              placeholderCount={settings.columns || 1}
-              useData={dashboardData}
-            />
-          </div>
-        ) : links && links[0] && !dashboardData.isLoading ? (
-          <div className="w-full">
-            <Links
-              links={links.slice(
-                0,
-                settings.columns && showRecentLinks && showPinnedLinks
-                  ? settings.columns * 2
-                  : numberOfLinksToShow
-              )}
-              layout={viewMode}
-            />
-          </div>
+        {dashboardData.isLoading ||
+        (links && links[0] && !dashboardData.isLoading) ? (
+          <DashboardLinks links={links} isLoading={dashboardData.isLoading} />
         ) : (
           <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
             <p className="text-center text-xl">{t("view_added_links_here")}</p>
@@ -280,28 +239,12 @@ export default function Dashboard() {
         style={{ flex: "1 1 auto" }}
         className="flex flex-col 2xl:flex-row items-start 2xl:gap-2"
       >
-        {dashboardData.isLoading ? (
-          <div className="w-full">
-            <Links
-              layout={viewMode}
-              placeholderCount={settings.columns || 1}
-              useData={dashboardData}
-            />
-          </div>
-        ) : links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
-          <div className="w-full">
-            <Links
-              links={links
-                .filter((e: any) => e.pinnedBy && e.pinnedBy[0])
-                .slice(
-                  0,
-                  settings.columns && showRecentLinks && showPinnedLinks
-                    ? settings.columns * 2
-                    : numberOfLinksToShow
-                )}
-              layout={viewMode}
-            />
-          </div>
+        {dashboardData.isLoading ||
+        links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
+          <DashboardLinks
+            links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
+            isLoading={dashboardData.isLoading}
+          />
         ) : (
           <div
             style={{ flex: "1 1 auto" }}
@@ -344,24 +287,15 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col 2xl:flex-row items-start 2xl:gap-2">
-          {dashboardData.isLoading ? (
-            <div className="w-full">
-              <Links
-                layout={viewMode}
-                placeholderCount={settings.columns || 1}
-                useData={dashboardData}
-              />
-            </div>
-          ) : links?.filter((link: any) => link.collection.id === collection.id)
-              .length > 0 ? (
-            <div className="w-full">
-              <Links
-                links={links
-                  .filter((link: any) => link.collection.id === collection.id)
-                  .slice(0, numberOfLinksToShow)}
-                layout={viewMode}
-              />
-            </div>
+          {dashboardData.isLoading ||
+          links?.filter((link: any) => link.collection.id === collection.id)
+            .length > 0 ? (
+            <DashboardLinks
+              links={links.filter(
+                (link: any) => link.collection.id === collection.id
+              )}
+              isLoading={dashboardData.isLoading}
+            />
           ) : (
             <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
               <i className="bi-folder mx-auto text-6xl text-primary"></i>
@@ -401,7 +335,6 @@ export default function Dashboard() {
           />
           <div className="flex items-center gap-3">
             <DashboardLayoutDropdown />
-            <ViewDropdown viewMode={viewMode} setViewMode={setViewMode} />
           </div>
         </div>
 

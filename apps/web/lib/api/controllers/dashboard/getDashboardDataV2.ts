@@ -67,7 +67,7 @@ export default async function getDashboardData(
 
   if (viewPinned) {
     pinnedLinks = await prisma.link.findMany({
-      take: 10,
+      take: 16,
       where: {
         AND: [
           {
@@ -103,7 +103,7 @@ export default async function getDashboardData(
 
   if (viewRecent) {
     recentlyAddedLinks = await prisma.link.findMany({
-      take: 10,
+      take: 16,
       where: {
         collection: {
           OR: [
@@ -154,7 +154,7 @@ export default async function getDashboardData(
             },
           ],
         },
-        take: 10,
+        take: 16,
         include: {
           tags: true,
           collection: true,
