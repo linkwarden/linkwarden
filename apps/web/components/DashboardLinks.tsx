@@ -37,7 +37,9 @@ export function DashboardLinks({
   isLoading?: boolean;
 }) {
   return (
-    <div className={`flex gap-5 overflow-x-auto hide-scrollbar w-full`}>
+    <div
+      className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-72`}
+    >
       {links?.map((e, i) => {
         return <Card key={i} link={e} />;
       })}
@@ -162,7 +164,7 @@ export function Card({ link, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} w-60 border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group`}
+      className={`${selectedStyle} w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
