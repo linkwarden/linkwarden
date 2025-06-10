@@ -11,7 +11,6 @@ import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useTags } from "@linkwarden/router/tags";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
-import useLocalSettingsStore from "@/store/localSettings";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
 import ImportDropdown from "@/components/ImportDropdown";
@@ -22,6 +21,9 @@ import {
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
 import { DashboardLinks } from "@/components/DashboardLinks";
+import { ViewMode } from "@linkwarden/types";
+import ViewDropdown from "@/components/ViewDropdown";
+import clsx from "clsx";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -34,8 +36,6 @@ export default function Dashboard() {
   const { data: user } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
-  const [showRecentLinks, setShowRecentLinks] = useState(false);
-  const [showPinnedLinks, setShowPinnedLinks] = useState(false);
 
   const [dashboardSections, setDashboardSections] = useState<
     DashboardSection[]
@@ -45,7 +45,9 @@ export default function Dashboard() {
     setDashboardSections(user?.dashboardSections || []);
   }, [user?.dashboardSections]);
 
-  const { settings } = useLocalSettingsStore();
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
+  );
 
   useEffect(() => {
     setNumberOfLinks(
@@ -83,18 +85,6 @@ export default function Dashboard() {
       if (b.order !== undefined) return 1;
       return 0;
     });
-  }, [dashboardSections]);
-
-  useEffect(() => {
-    const recentLinks = dashboardSections.some(
-      (section) => section.type === "RECENT_LINKS"
-    );
-    const pinnedLinks = dashboardSections.some(
-      (section) => section.type === "PINNED_LINKS"
-    );
-
-    setShowRecentLinks(recentLinks || false);
-    setShowPinnedLinks(pinnedLinks || false);
   }, [dashboardSections]);
 
   const [newLinkModal, setNewLinkModal] = useState(false);
@@ -135,7 +125,7 @@ export default function Dashboard() {
   };
 
   const renderStatsSection = () => (
-    <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full">
+    <div className="flex gap-3 w-fit">
       <DashboardItem
         name={numberOfLinks === 1 ? t("link") : t("links")}
         value={numberOfLinks}
@@ -166,11 +156,7 @@ export default function Dashboard() {
     <>
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-2 items-center">
-          <PageHeader
-            icon={"bi-clock-history"}
-            title={t("recent")}
-            description={t("recent_links_desc")}
-          />
+          <PageHeader icon={"bi-clock-history"} title={t("recent_links")} />
         </div>
         <Link
           href="/links"
@@ -220,11 +206,7 @@ export default function Dashboard() {
     <>
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-2 items-center">
-          <PageHeader
-            icon={"bi-pin-angle"}
-            title={t("pinned")}
-            description={t("pinned_links_desc")}
-          />
+          <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
         </div>
         <Link
           href="/links/pinned"
@@ -271,15 +253,21 @@ export default function Dashboard() {
       <>
         <div className="flex justify-between items-center mb-4">
           <div className="flex gap-2 items-center">
-            <PageHeader
-              icon={"bi-folder"}
-              title={collection.name}
-              description={`${collection._count?.links || 0} ${t("links")}`}
-            />
+            <div className={clsx("flex items-center gap-3")}>
+              <i
+                className={`bi-folder-fill text-primary text-2xl drop-shadow`}
+                style={{ color: collection.color || "#0ea5e9" }}
+              ></i>
+              <div>
+                <p className="text-2xl capitalize font-thin">
+                  {collection.name}
+                </p>
+              </div>
+            </div>
           </div>
           <Link
             href={`/collections/${collection.id}`}
-            className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+            className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
           >
             {t("view_all")}
             <i className="bi-chevron-right text-sm"></i>
@@ -335,6 +323,11 @@ export default function Dashboard() {
           />
           <div className="flex items-center gap-3">
             <DashboardLayoutDropdown />
+            <ViewDropdown
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              dashboard
+            />
           </div>
         </div>
 

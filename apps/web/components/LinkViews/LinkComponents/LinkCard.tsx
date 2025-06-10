@@ -228,7 +228,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
 
           {(show.collection || show.date) && (
             <div>
-              <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+              <hr className="divider mt-0 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
 
               <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
                 {show.collection && !isPublicRoute && (
