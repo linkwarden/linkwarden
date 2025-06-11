@@ -51,15 +51,13 @@ model User {
   subscriptions           Subscription?
   linksRouteTo            LinksRouteTo          @default(ORIGINAL)
   aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
-  aiPredefinedTags        String[]               @default([])
+  aiPredefinedTags        String[]              @default([])
   aiTagExistingLinks      Boolean               @default(false)
   theme                   Theme                 @default(dark)
   readableFontFamily      String?
   readableFontSize        String?
   readableLineHeight      String?
   readableLineWidth       String?
-  dashboardRecentLinks    Boolean               @default(true)
-  dashboardPinnedLinks    Boolean               @default(true)
   preventDuplicateLinks   Boolean               @default(false)
   archiveAsScreenshot     Boolean               @default(true)
   archiveAsMonolith       Boolean               @default(true)
@@ -68,6 +66,7 @@ model User {
   archiveAsWaybackMachine Boolean               @default(false)
   isPrivate               Boolean               @default(false)
   referredBy              String?
+  dashboardSections       DashboardSection[]
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
 }
@@ -141,6 +140,7 @@ model Collection {
   rssSubscriptions RssSubscription[]
   createdAt        DateTime              @default(now())
   updatedAt        DateTime              @default(now()) @updatedAt
+  DashboardSection DashboardSection[]
 
   @@index([ownerId])
 }
@@ -161,15 +161,15 @@ model UsersAndCollections {
 }
 
 model Link {
-  id            Int        @id @default(autoincrement())
-  name          String     @default("")
-  type          String     @default("url")
-  description   String     @default("")
+  id            Int         @id @default(autoincrement())
+  name          String      @default("")
+  type          String      @default("url")
+  description   String      @default("")
   highlight     Highlight[]
-  pinnedBy      User[]     @relation("PinnedLinks")
-  createdBy     User?      @relation("CreatedLinks", fields: [createdById], references: [id], onDelete: Cascade)
+  pinnedBy      User[]      @relation("PinnedLinks")
+  createdBy     User?       @relation("CreatedLinks", fields: [createdById], references: [id], onDelete: Cascade)
   createdById   Int?
-  collection    Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collection    Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   collectionId  Int
   tags          Tag[]
   icon          String?
@@ -182,12 +182,12 @@ model Link {
   pdf           String?
   readable      String?
   monolith      String?
-  aiTagged      Boolean    @default(false)
+  aiTagged      Boolean     @default(false)
   indexVersion  Int?
   lastPreserved DateTime?
   importDate    DateTime?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @default(now()) @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now()) @updatedAt
 }
 
 model Tag {
@@ -262,4 +262,25 @@ model Highlight {
   text        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model DashboardSection {
+  id           Int                  @id @default(autoincrement())
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  collection   Collection?          @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  collectionId Int?
+  type         DashboardSectionType
+  order        Int
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @default(now()) @updatedAt
+
+  @@unique([userId, collectionId])
+}
+
+enum DashboardSectionType {
+  STATS
+  RECENT_LINKS
+  PINNED_LINKS
+  COLLECTION
 }

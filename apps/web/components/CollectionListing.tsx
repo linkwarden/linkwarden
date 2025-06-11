@@ -57,7 +57,7 @@ const CollectionListing = () => {
 
   useEffect(() => {
     if (user?.username) {
-      refetch();
+      // refetch();
       if (
         (!user.collectionOrder || user.collectionOrder.length === 0) &&
         collections.length > 0

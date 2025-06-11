@@ -16,7 +16,7 @@ export default function LinkDate({
 
   return (
     <div className="flex items-center gap-1 text-neutral min-w-fit">
-      <i className="bi-calendar3 text-lg"></i>
+      <i className="bi-calendar3 text-"></i>
       <p>{formattedDate}</p>
     </div>
   );
