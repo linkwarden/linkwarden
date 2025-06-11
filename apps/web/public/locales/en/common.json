@@ -451,8 +451,6 @@
   "rss_subscription_deleted": "RSS Subscription deleted!",
   "create_rss_subscription": "Create RSS Subscription",
   "rss_feed": "RSS Feed",
-  "dashboard_settings": "Dashboard Settings",
-  "choose_whats_displayed_dashboard": "Choose what's displayed on your Dashboard:",
   "pinned_links": "Pinned Links",
   "recent_links": "Recent Links",
   "search_results": "Search Results",
@@ -477,6 +475,11 @@
   "cancel": "Cancel",
   "preservation_rules": "Preservation rules:",
   "links_being_archived": "Links are being archived...",
+  "display_on_dashboard": "Display on Dashboard",
+  "dashboard_stats": "Dashboard Stats",
+  "no_results_found": "No results found.",
+  "no_link_in_collection": "No Link in this Collection",
+  "no_link_in_collection_desc": "This Collection has no Links yet.",
   "theme": "Theme",
   "font_family": "Font Family",
   "font_size": "Font Size",
@@ -484,5 +487,6 @@
   "line_width": "Line Width",
   "notes_highlights": "Notes & Highlights",
   "no_notes_highlights": "No notes or highlights found for this link.",
-  "save": "Save"
+  "save": "Save",
+  "edit_layout": "Edit Layout"
 }

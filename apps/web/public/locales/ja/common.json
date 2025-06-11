@@ -446,8 +446,6 @@
   "rss_subscription_deleted": "RSSサブスクリプションを削除しました!",
   "create_rss_subscription": "RSSサブスクリプションを作成",
   "rss_feed": "RSSフィード",
-  "dashboard_settings": "ダッシュボード設定",
-  "choose_whats_displayed_dashboard": "ダッシュボードに表示する内容:",
   "pinned_links": "ピン止めしたリンク",
   "recent_links": "最近追加したリンク",
   "search_results": "検索結果",
