@@ -6,6 +6,7 @@ import { MigrationFormat, MigrationRequest } from "@linkwarden/types";
 import verifyUser from "@/lib/api/verifyUser";
 import importFromWallabag from "@/lib/api/controllers/migration/importFromWallabag";
 import importFromOmnivore from "@/lib/api/controllers/migration/importFromOmnivore";
+import importFromPocket from "@/lib/api/controllers/migration/importFromPocket";
 
 export const config = {
   api: {
@@ -48,6 +49,8 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
       data = await importFromWallabag(user.id, request.data);
     else if (request.format === MigrationFormat.omnivore)
       data = await importFromOmnivore(user.id, request.data);
+    else if (request.format === MigrationFormat.pocket)
+      data = await importFromPocket(user.id, request.data);
 
     if (data) return res.status(data.status).json({ response: data.response });
   }
