@@ -326,59 +326,61 @@ const Section = ({
       );
     case DashboardSectionType.COLLECTION:
       return (
-        <>
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2 items-center">
-              <div className={clsx("flex items-center gap-3")}>
-                {collection.icon ? (
-                  <Icon
-                    icon={collection.icon}
-                    color={collection.color || "#0ea5e9"}
-                    className="text-2xl"
-                  />
-                ) : (
-                  <i
-                    className={`bi-folder-fill text-primary text-2xl drop-shadow`}
-                    style={{ color: collection.color || "#0ea5e9" }}
-                  ></i>
-                )}
-                <div>
-                  <p className="text-2xl capitalize font-thin">
-                    {collection.name}
-                  </p>
+        collection?.id && (
+          <>
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 items-center">
+                <div className={clsx("flex items-center gap-3")}>
+                  {collection.icon ? (
+                    <Icon
+                      icon={collection.icon}
+                      color={collection.color || "#0ea5e9"}
+                      className="text-2xl"
+                    />
+                  ) : (
+                    <i
+                      className={`bi-folder-fill text-primary text-2xl drop-shadow`}
+                      style={{ color: collection.color || "#0ea5e9" }}
+                    ></i>
+                  )}
+                  <div>
+                    <p className="text-2xl capitalize font-thin">
+                      {collection.name}
+                    </p>
+                  </div>
                 </div>
               </div>
+              <Link
+                href={`/collections/${collection.id}`}
+                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
+              >
+                {t("view_all")}
+                <i className="bi-chevron-right text-sm"></i>
+              </Link>
             </div>
-            <Link
-              href={`/collections/${collection.id}`}
-              className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
-            >
-              {t("view_all")}
-              <i className="bi-chevron-right text-sm"></i>
-            </Link>
-          </div>
 
-          {dashboardData.isLoading ||
-          links?.filter((link: any) => link.collection.id === collection.id)
-            .length > 0 ? (
-            <DashboardLinks
-              links={links.filter(
-                (link: any) => link.collection.id === collection.id
-              )}
-              isLoading={dashboardData.isLoading}
-            />
-          ) : (
-            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-              <i className="bi-folder mx-auto text-6xl text-primary"></i>
-              <p className="text-center text-xl">
-                {t("no_link_in_collection")}
-              </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                {t("no_link_in_collection_desc")}
-              </p>
-            </div>
-          )}
-        </>
+            {dashboardData.isLoading ||
+            links?.filter((link: any) => link.collection.id === collection.id)
+              .length > 0 ? (
+              <DashboardLinks
+                links={links.filter(
+                  (link: any) => link.collection.id === collection.id
+                )}
+                isLoading={dashboardData.isLoading}
+              />
+            ) : (
+              <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+                <i className="bi-folder mx-auto text-6xl text-primary"></i>
+                <p className="text-center text-xl">
+                  {t("no_link_in_collection")}
+                </p>
+                <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                  {t("no_link_in_collection_desc")}
+                </p>
+              </div>
+            )}
+          </>
+        )
       );
     default:
       return null;
