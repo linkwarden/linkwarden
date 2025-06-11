@@ -36,6 +36,11 @@ const ImportDropdown = ({}: Props) => {
             label: t("from_html"),
           },
           {
+            id: "import-pocket-file",
+            format: MigrationFormat.pocket,
+            label: t("from_pocket"),
+          },
+          {
             id: "import-wallabag-file",
             format: MigrationFormat.wallabag,
             label: t("from_wallabag"),
@@ -61,7 +66,9 @@ const ImportDropdown = ({}: Props) => {
                     ? ".html"
                     : item.id === "import-omnivore-file"
                       ? ".zip"
-                      : ".json"
+                      : item.id === "import-pocket-file"
+                        ? ".csv"
+                        : ".json"
                 }
                 className="hidden"
                 onChange={(e) => importBookmarks(e, item.format)}
