@@ -1,9 +1,10 @@
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import useLocalSettingsStore from "@/store/localSettings";
 import {
   ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
-  LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
@@ -14,47 +15,55 @@ import {
   atLeastOneFormatAvailable,
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
-import LinkIcon from "./LinkIcon";
 import useOnScreen from "@/hooks/useOnScreen";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
-import LinkTypeBadge from "./LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
 import { useGetLink, useLinks } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
-import useLocalSettingsStore from "@/store/localSettings";
-import LinkPin from "./LinkPin";
-import LinkFormats from "./LinkFormats";
 import openLink from "@/lib/client/openLink";
+import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
+import LinkFormats from "./LinkViews/LinkComponents/LinkFormats";
+import LinkTypeBadge from "./LinkViews/LinkComponents/LinkTypeBadge";
+import LinkPin from "./LinkViews/LinkComponents/LinkPin";
+
+export function DashboardLinks({
+  links,
+  isLoading,
+}: {
+  links?: LinkIncludingShortenedCollectionAndTags[];
+  isLoading?: boolean;
+}) {
+  return (
+    <div
+      className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-72`}
+    >
+      {links?.map((e, i) => {
+        return <Card key={i} link={e} />;
+      })}
+
+      {isLoading && (
+        <div className="flex flex-col gap-4">
+          <div className="skeleton h-40 w-full"></div>
+          <div className="skeleton h-3 w-2/3"></div>
+          <div className="skeleton h-3 w-full"></div>
+          <div className="skeleton h-3 w-full"></div>
+          <div className="skeleton h-3 w-1/3"></div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
-  count: number;
-  columns: number;
-  className?: string;
   editMode?: boolean;
 };
 
-export default function LinkCard({ link, columns, editMode }: Props) {
+export function Card({ link, editMode }: Props) {
   const { t } = useTranslation();
-
-  const heightMap = {
-    1: "h-44",
-    2: "h-40",
-    3: "h-36",
-    4: "h-32",
-    5: "h-28",
-    6: "h-24",
-    7: "h-20",
-    8: "h-20",
-  };
-
-  const imageHeightClass = useMemo(
-    () => (columns ? heightMap[columns as keyof typeof heightMap] : "h-40"),
-    [columns]
-  );
 
   const { data: collections = [] } = useCollections();
 
@@ -155,7 +164,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group`}
+      className={`${selectedStyle} w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
@@ -165,23 +174,21 @@ export default function LinkCard({ link, columns, editMode }: Props) {
       }
     >
       <div
-        className="rounded-xl cursor-pointer h-full flex flex-col justify-between"
+        className="rounded-xl cursor-pointer h-full w-60 flex flex-col justify-between"
         onClick={() =>
           !editMode && openLink(link, user, () => setLinkModal(true))
         }
       >
         {show.image && (
           <div>
-            <div
-              className={`relative rounded-t-xl ${imageHeightClass} overflow-hidden`}
-            >
+            <div className={`relative rounded-t-xl h-40 overflow-hidden`}>
               {formatAvailable(link, "preview") ? (
                 <Image
                   src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
                   width={1280}
                   height={720}
                   alt=""
-                  className={`rounded-t-xl select-none object-cover z-10 ${imageHeightClass} w-full shadow opacity-80 scale-105`}
+                  className={`rounded-t-xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105`}
                   style={show.icon ? { filter: "blur(1px)" } : undefined}
                   draggable="false"
                   onError={(e) => {
@@ -190,12 +197,10 @@ export default function LinkCard({ link, columns, editMode }: Props) {
                   }}
                 />
               ) : link.preview === "unavailable" ? (
-                <div
-                  className={`bg-gray-50 ${imageHeightClass} bg-opacity-80`}
-                ></div>
+                <div className={`bg-gray-50 h-40 bg-opacity-80`}></div>
               ) : (
                 <div
-                  className={`${imageHeightClass} bg-opacity-80 skeleton rounded-none`}
+                  className={`h-40 bg-opacity-80 skeleton rounded-none`}
                 ></div>
               )}
               {show.icon && (
@@ -216,9 +221,9 @@ export default function LinkCard({ link, columns, editMode }: Props) {
         )}
 
         <div className="flex flex-col justify-between h-full min-h-24">
-          <div className="p-3 flex flex-col gap-2">
+          <div className="p-3 flex flex-col justify-between h-full gap-2">
             {show.name && (
-              <p className="truncate w-full text-primary text-sm">
+              <p className="line-clamp-2 w-full text-primary text-sm">
                 {unescapeString(link.name)}
               </p>
             )}

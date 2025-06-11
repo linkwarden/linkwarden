@@ -9,6 +9,7 @@ import LinkListOptions from "@/components/LinkListOptions";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import Links from "@/components/LinkViews/Links";
+import clsx from "clsx";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -45,11 +46,15 @@ export default function Index() {
           setEditMode={setEditMode}
           links={links}
         >
-          <PageHeader
-            icon={"bi-link-45deg"}
-            title={t("all_links")}
-            description={t("all_links_desc")}
-          />
+          <div className={clsx("flex items-center gap-3")}>
+            <i
+              className={`bi-link-45deg text-primary text-3xl drop-shadow`}
+            ></i>
+            <div>
+              <p className="text-2xl capitalize font-thin">{t("all_links")}</p>
+              <p className="text-xs sm:text-sm">{t("all_links_desc")}</p>
+            </div>
+          </div>
         </LinkListOptions>
 
         {!data.isLoading && links && !links[0] && (

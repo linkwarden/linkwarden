@@ -1,5 +1,22 @@
 import { prisma } from "@linkwarden/prisma";
-import { Subscription, User, WhitelistedUser } from "@linkwarden/prisma/client";
+import {
+  DashboardSection,
+  Subscription,
+  User,
+} from "@linkwarden/prisma/client";
+
+type GetUserByIdResponse = Omit<User, "password"> &
+  Partial<{ subscription: Pick<Subscription, "active" | "quantity"> }> & {
+    parentSubscription: {
+      active: boolean | undefined;
+      user: {
+        email: string | null | undefined;
+      };
+    };
+  } & {
+    whitelistedUsers: string[];
+    dashboardSections: DashboardSection[];
+  };
 
 export default async function getUserById(userId: number) {
   const user = await prisma.user.findUnique({
@@ -18,6 +35,7 @@ export default async function getUserById(userId: number) {
           user: true,
         },
       },
+      dashboardSections: true,
     },
   });
 
@@ -31,12 +49,12 @@ export default async function getUserById(userId: number) {
   const { password, subscriptions, parentSubscription, ...lessSensitiveInfo } =
     user;
 
-  const data = {
+  const data: GetUserByIdResponse = {
     ...lessSensitiveInfo,
     whitelistedUsers: whitelistedUsernames,
     subscription: {
-      active: subscriptions?.active,
-      quantity: subscriptions?.quantity,
+      active: subscriptions?.active ?? false,
+      quantity: subscriptions?.quantity ?? 0,
     },
     parentSubscription: {
       active: parentSubscription?.active,
@@ -44,17 +62,7 @@ export default async function getUserById(userId: number) {
         email: parentSubscription?.user.email,
       },
     },
-  } as Omit<User, "password"> &
-    Partial<{ subscription: Subscription }> & {
-      parentSubscription: {
-        active: boolean | undefined;
-        user: {
-          email: string | null | undefined;
-        };
-      };
-    } & {
-      whitelistedUsers: string[];
-    };
+  };
 
   return { response: data, status: 200 };
 }

@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -10,17 +9,23 @@ import useLocalSettingsStore from "@/store/localSettings";
 import { ViewMode } from "@linkwarden/types";
 import { useTranslation } from "next-i18next";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 type Props = {
   viewMode: ViewMode;
   setViewMode: React.Dispatch<React.SetStateAction<ViewMode>>;
+  dashboard?: boolean;
 };
 
-export default function ViewDropdown({ viewMode, setViewMode }: Props) {
+export default function ViewDropdown({
+  viewMode,
+  setViewMode,
+  dashboard,
+}: Props) {
   const { settings, updateSettings } = useLocalSettingsStore((s) => s);
   const { t } = useTranslation();
 
-  React.useEffect(() => {
+  useEffect(() => {
     updateSettings({ viewMode });
   }, [viewMode, updateSettings]);
 
@@ -42,9 +47,9 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
   const visibleShows = (
     Object.keys(settings.show) as (keyof typeof settings.show)[]
   ).filter((key) => {
-    if (settings.viewMode === ViewMode.List)
+    if (!dashboard && settings.viewMode === ViewMode.List)
       return key !== "tags" && key !== "image" && key !== "description";
-    if (settings.viewMode === ViewMode.Card)
+    if (dashboard || settings.viewMode === ViewMode.Card)
       return key !== "tags" && key !== "description";
     return true;
   });
@@ -53,7 +58,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
-          {viewMode === ViewMode.Card ? (
+          {dashboard || viewMode === ViewMode.Card ? (
             <i className="bi-grid text-neutral"></i>
           ) : viewMode === ViewMode.Masonry ? (
             <i className="bi-columns-gap text-neutral"></i>
@@ -64,42 +69,48 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent sideOffset={4} align="end">
-        <div className="px-1">
-          <p className="text-sm text-neutral">{t("view")}</p>
-          <div className="flex gap-1 border-border">
-            {[ViewMode.Card, ViewMode.Masonry, ViewMode.List].map((mode) => {
-              const Icon =
-                mode === ViewMode.Card
-                  ? () => <i className="bi-grid w-4 h-4 text-neutral" />
-                  : mode === ViewMode.Masonry
-                    ? () => (
-                        <i className="bi-columns-gap w-4 h-4 text-neutral" />
-                      )
-                    : () => (
-                        <i className="bi-view-stacked w-4 h-4 text-neutral" />
-                      );
+        {!dashboard && (
+          <>
+            <div className="px-1">
+              <p className="text-sm text-neutral">{t("view")}</p>
+              <div className="flex gap-1 border-border">
+                {[ViewMode.Card, ViewMode.Masonry, ViewMode.List].map(
+                  (mode) => {
+                    const Icon =
+                      mode === ViewMode.Card
+                        ? () => <i className="bi-grid w-4 h-4 text-neutral" />
+                        : mode === ViewMode.Masonry
+                          ? () => (
+                              <i className="bi-columns-gap w-4 h-4 text-neutral" />
+                            )
+                          : () => (
+                              <i className="bi-view-stacked w-4 h-4 text-neutral" />
+                            );
 
-              return (
-                <Button
-                  key={mode}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onChangeViewMode(mode)}
-                  className={
-                    `flex-1 ` +
-                    (viewMode === mode
-                      ? "bg-primary/20 hover:bg-primary/20"
-                      : "hover:bg-neutral/20")
+                    return (
+                      <Button
+                        key={mode}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onChangeViewMode(mode)}
+                        className={
+                          `flex-1 ` +
+                          (viewMode === mode
+                            ? "bg-primary/20 hover:bg-primary/20"
+                            : "hover:bg-neutral/20")
+                        }
+                      >
+                        <Icon />
+                      </Button>
+                    );
                   }
-                >
-                  <Icon />
-                </Button>
-              );
-            })}
-          </div>
-        </div>
+                )}
+              </div>
+            </div>
 
-        <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
+          </>
+        )}
 
         <p className="text-sm text-neutral px-1">{t("show")}</p>
         {visibleShows.map((key) => (
@@ -115,7 +126,7 @@ export default function ViewDropdown({ viewMode, setViewMode }: Props) {
           </DropdownMenuCheckboxItem>
         ))}
 
-        {settings.viewMode !== ViewMode.List && (
+        {!dashboard && settings.viewMode !== ViewMode.List && (
           <>
             <DropdownMenuSeparator />
 
