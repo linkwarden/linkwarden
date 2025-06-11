@@ -33,7 +33,7 @@ export default async function updateDashboardLayout(
       await prisma.collection.findMany({
         where: {
           id: {
-            in: collectionIds,
+            in: collectionIds as number[],
           },
           OR: [{ ownerId: userId }, { members: { some: { userId } } }],
         },
