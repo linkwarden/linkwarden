@@ -4,6 +4,9 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 import { SocksProxyAgent } from "socks-proxy-agent";
 
 export default async function fetchTitleAndHeaders(url: string) {
+  if (!url?.startsWith("http://") && !url?.startsWith("https://"))
+    return { title: "", headers: null };
+
   try {
     const httpsAgent = new https.Agent({
       rejectUnauthorized:
