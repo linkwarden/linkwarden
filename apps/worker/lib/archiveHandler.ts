@@ -29,7 +29,10 @@ export default async function archiveHandler(
 ) {
   const user = link.collection?.owner;
 
-  if (process.env.DISABLE_PRESERVATION === "true") {
+  if (
+    process.env.DISABLE_PRESERVATION === "true" ||
+    (!link.url?.startsWith("http://") && !link.url?.startsWith("https://"))
+  ) {
     await prisma.link.update({
       where: { id: link.id },
       data: {
