@@ -8,7 +8,7 @@ export default function dashboardItem({
   icon: string;
 }) {
   return (
-    <div className="flex items-center justify-between w-full rounded-2xl border border-neutral-content p-3 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+    <div className="flex items-center justify-between w-full rounded-xl border border-neutral-content p-3 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
       <div className="w-14 aspect-square flex justify-center items-center bg-primary/20 rounded-xl select-none">
         <i className={`${icon} text-primary text-3xl drop-shadow`}></i>
       </div>

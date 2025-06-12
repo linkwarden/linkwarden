@@ -1,5 +1,10 @@
 import { ArchivedFormat, TokenExpiry } from "@linkwarden/types";
-import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
+import {
+  AiTaggingMethod,
+  LinksRouteTo,
+  DashboardSectionType,
+  Theme,
+} from "@linkwarden/prisma/client";
 import { z } from "zod";
 
 // const stringField = z.string({
@@ -41,12 +46,12 @@ export const PostUserSchema = () => {
     username: emailEnabled
       ? z.string().optional()
       : z
-          .string()
-          .trim()
-          .toLowerCase()
-          .min(3)
-          .max(50)
-          .regex(/^[a-z0-9_-]{3,50}$/),
+        .string()
+        .trim()
+        .toLowerCase()
+        .min(3)
+        .max(50)
+        .regex(/^[a-z0-9_-]{3,50}$/),
     invite: z.boolean().optional(),
   });
 };
@@ -76,8 +81,6 @@ export const UpdateUserSchema = () => {
     archiveAsPDF: z.boolean().optional(),
     archiveAsReadable: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
-    dashboardPinnedLinks: z.boolean().optional(),
-    dashboardRecentLinks: z.boolean().optional(),
     aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     aiTagExistingLinks: z.boolean().optional(),
@@ -90,6 +93,28 @@ export const UpdateUserSchema = () => {
     referredBy: z.string().max(100).nullish(),
   });
 };
+
+export const UpdateUserPreferenceSchema = z.object({
+  theme: z.nativeEnum(Theme).optional(),
+  readableFontFamily: z.string().trim().max(100).optional(),
+  readableFontSize: z.string().trim().max(100).optional(),
+  readableLineHeight: z.string().trim().max(100).optional(),
+  readableLineWidth: z.string().trim().max(100).optional(),
+  // archiveAsScreenshot: z.boolean().optional(),
+  // archiveAsMonolith: z.boolean().optional(),
+  // archiveAsPDF: z.boolean().optional(),
+  // archiveAsReadable: z.boolean().optional(),
+  // archiveAsWaybackMachine: z.boolean().optional(),
+  // aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
+  // aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
+  // aiTagExistingLinks: z.boolean().optional(),
+  // preventDuplicateLinks: z.boolean().optional(),
+  // linksRouteTo: z.nativeEnum(LinksRouteTo).optional(),
+});
+
+export type UpdateUserPreferenceSchemaType = z.infer<
+  typeof UpdateUserPreferenceSchema
+>;
 
 export const PostSessionSchema = z.object({
   username: z.string().min(3).max(50),
@@ -253,9 +278,21 @@ export const PostHighlightSchema = z.object({
 export type PostHighlightSchemaType = z.infer<typeof PostHighlightSchema>;
 
 export const LinkArchiveActionSchema = z.object({
-  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]),
+  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]).optional(),
+  linkIds: z.array(z.number()).optional(),
 });
 
 export type LinkArchiveActionSchemaType = z.infer<
   typeof LinkArchiveActionSchema
->["action"];
+>;
+
+export const UpdateDashboardLayoutSchema = z.array(
+  z.object({
+    type: z.nativeEnum(DashboardSectionType),
+    collectionId: z.number().optional(),
+    enabled: z.boolean(),
+    order: z.number().optional(),
+  })
+)
+
+export type UpdateDashboardLayoutSchemaType = z.infer<typeof UpdateDashboardLayoutSchema>;

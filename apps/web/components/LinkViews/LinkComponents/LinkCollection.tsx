@@ -42,7 +42,7 @@ export default function LinkCollection({
             style={{ color: link.collection.color }}
           ></i>
         )}
-        <p className="truncate capitalize">{collection?.name}</p>
+        <p className="truncate">{collection?.name}</p>
       </Link>
     </>
   ) : null;

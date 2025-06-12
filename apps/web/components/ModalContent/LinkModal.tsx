@@ -7,9 +7,16 @@ import LinkDetails from "../LinkDetails";
 import Link from "next/link";
 import usePermissions from "@/hooks/usePermissions";
 import { useRouter } from "next/router";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import toast from "react-hot-toast";
-import Tab from "../Tab";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Props = {
   onClose: Function;
@@ -40,125 +47,125 @@ export default function LinkModal({
 
   const [mode, setMode] = useState<"view" | "edit">(activeMode || "view");
 
+  const handleDelete = async (e: React.MouseEvent) => {
+    setTimeout(() => (document.body.style.pointerEvents = ""), 0);
+
+    if (e.shiftKey && link.id) {
+      const loading = toast.loading(t("deleting"));
+      await deleteLink.mutateAsync(link.id, {
+        onSettled: (data, error) => {
+          toast.dismiss(loading);
+          error ? toast.error(error.message) : toast.success(t("deleted"));
+        },
+      });
+      onClose();
+    } else {
+      onDelete();
+      onClose();
+    }
+  };
+
   return (
     <Drawer
       toggleDrawer={onClose}
       className="sm:h-screen items-center relative"
     >
       <div className="absolute top-3 left-0 right-0 flex justify-between px-3">
-        <div
-          className="bi-x text-xl btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
+        <Button
+          variant="simple"
+          size="icon"
+          className="bi-x text-xl rounded-full text-base-content opacity-50 hover:opacity-100 z-10"
           onClick={() => onClose()}
-        ></div>
+        ></Button>
 
         {(permissions === true || permissions?.canUpdate) && !isPublicRoute && (
-          <Tab
-            tabs={[
-              { name: "View" },
-              {
-                name: "Edit",
-              },
-            ].map((tab) => ({
-              name: tab.name,
-            }))}
-            activeTabIndex={mode === "view" ? 0 : 1}
-            setActiveTabIndex={(index: any) =>
-              setMode(index === 0 ? "view" : "edit")
+          <Tabs
+            value={(mode === "view" ? "view" : "edit").toString()}
+            className="w-fit absolute left-1/2 -translate-x-1/2 rounded-full bg-base-100/50 text-sm shadow-md z-10 opacity-90"
+            onValueChange={(index: any) =>
+              setMode(index === "view" ? "view" : "edit")
             }
-            className="w-fit absolute left-1/2 -translate-x-1/2 rounded-full bg-base-100/50 text-sm shadow-md z-10"
-          />
+          >
+            <TabsList className="rounded-full h-8">
+              <TabsTrigger value="view" className="rounded-full py-0">
+                View
+              </TabsTrigger>
+              <TabsTrigger value="edit" className="rounded-full py-0">
+                Edit
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         )}
 
         <div className="flex gap-2">
           {!isPublicRoute && (
-            <div className={`dropdown dropdown-end z-20`}>
-              <div
-                tabIndex={0}
-                role="button"
-                onMouseDown={dropdownTriggerer}
-                className="btn btn-sm btn-circle text-base-content opacity-50 hover:opacity-100 z-10"
+            <DropdownMenu modal={true}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="simple"
+                  size="icon"
+                  className="rounded-full text-base-content opacity-50 hover:opacity-100 z-10"
+                  title={t("more")}
+                >
+                  <i title="More" className="bi-three-dots text-xl" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                align="end"
+                className="bg-base-200 border border-neutral-content rounded-box p-1"
               >
-                <i title="More" className="bi-three-dots text-xl" />
-              </div>
-              <ul
-                className={`dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box`}
-              >
-                {
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        onPin();
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {link?.pinnedBy && link.pinnedBy[0]
-                        ? t("unpin")
-                        : t("pin_to_dashboard")}
-                    </div>
-                  </li>
-                }
+                <DropdownMenuItem
+                  onClick={() => {
+                    (document.activeElement as HTMLElement)?.blur();
+                    onPin();
+                  }}
+                >
+                  <i className="bi-pin" />
+                  {link.pinnedBy?.[0] ? t("unpin") : t("pin_to_dashboard")}
+                </DropdownMenuItem>
+
                 {link.type === "url" &&
                   (permissions === true || permissions?.canUpdate) && (
-                    <li>
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          onUpdateArchive();
-                        }}
-                        className="whitespace-nowrap"
-                      >
-                        {t("refresh_preserved_formats")}
-                      </div>
-                    </li>
-                  )}
-                {(permissions === true || permissions?.canDelete) && (
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={async (e) => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        console.log(e.shiftKey);
-                        if (e.shiftKey) {
-                          const load = toast.loading(t("deleting"));
-
-                          await deleteLink.mutateAsync(link.id as number, {
-                            onSettled: (data, error) => {
-                              toast.dismiss(load);
-
-                              if (error) {
-                                toast.error(error.message);
-                              } else {
-                                toast.success(t("deleted"));
-                              }
-                            },
-                          });
-                          onClose();
-                        } else {
-                          onDelete();
-                          onClose();
-                        }
+                    <DropdownMenuItem
+                      onClick={() => {
+                        (document.activeElement as HTMLElement)?.blur();
+                        onUpdateArchive();
                       }}
-                      className="whitespace-nowrap"
                     >
+                      <i className="bi-arrow-clockwise"></i>
+                      {t("refresh_preserved_formats")}
+                    </DropdownMenuItem>
+                  )}
+
+                {(permissions === true || permissions?.canDelete) && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleDelete}
+                      className="text-error"
+                    >
+                      <i className="bi-trash"></i>
                       {t("delete")}
-                    </div>
-                  </li>
+                    </DropdownMenuItem>
+                  </>
                 )}
-              </ul>
-            </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
           {link.url && (
-            <Link
-              href={link.url}
-              target="_blank"
-              className="bi-box-arrow-up-right btn-circle text-base-content opacity-50 hover:opacity-100 btn btn-sm select-none z-10"
-            ></Link>
+            <Button
+              asChild
+              variant="simple"
+              size="icon"
+              className="rounded-full"
+            >
+              <Link
+                href={link.url}
+                target="_blank"
+                className="bi-box-arrow-up-right text-base-content opacity-50 hover:opacity-100 select-none z-10"
+              ></Link>
+            </Button>
           )}
         </div>
       </div>

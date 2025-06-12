@@ -1,7 +1,7 @@
 import React from "react";
 import useLinkStore from "@/store/links";
 import Modal from "../Modal";
-import Button from "../ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
@@ -63,7 +63,7 @@ export default function BulkDeleteLinksModal({ onClose }: Props) {
 
         <p>{t("shift_key_tip")}</p>
 
-        <Button className="ml-auto" intent="destructive" onClick={deleteLink}>
+        <Button className="ml-auto" variant="destructive" onClick={deleteLink}>
           <i className="bi-trash text-xl" />
           {t("delete")}
         </Button>

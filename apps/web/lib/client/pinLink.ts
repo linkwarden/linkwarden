@@ -7,7 +7,7 @@ import { useUser } from "@linkwarden/router/user";
 const usePinLink = () => {
   const { t } = useTranslation();
   const updateLink = useUpdateLink();
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   // Return a function that can be used to pin/unpin the link
   const pinLink = async (link: LinkIncludingShortenedCollectionAndTags) => {
@@ -19,7 +19,9 @@ const usePinLink = () => {
       await updateLink.mutateAsync(
         {
           ...link,
-          pinnedBy: isAlreadyPinned ? [{ id: undefined }] : [{ id: user.id }],
+          pinnedBy: (isAlreadyPinned
+            ? [{ id: undefined }]
+            : [{ id: user?.id }]) as any,
         },
         {
           onSettled: (data, error) => {

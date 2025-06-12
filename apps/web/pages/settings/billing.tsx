@@ -8,10 +8,17 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUsers } from "@linkwarden/router/users";
 import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
 import { useUser } from "@linkwarden/router/user";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import clsx from "clsx";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface User extends U {
   subscriptions: {
@@ -32,7 +39,7 @@ export default function Billing() {
   const { data: users = [] } = useUsers();
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_STRIPE || account.parentSubscriptionId)
+    if (!process.env.NEXT_PUBLIC_STRIPE || account?.parentSubscriptionId)
       router.push("/settings/account");
   }, []);
 
@@ -121,13 +128,14 @@ export default function Billing() {
         </div>
 
         <div className="flex gap-3">
-          <div
+          <Button
+            variant="accent"
             onClick={() => setInviteModal(true)}
-            className="flex items-center btn btn-accent dark:border-violet-400 text-white btn-sm px-2 h-[2.15rem] relative"
+            className="flex items-center px-2 h-[2.15rem] relative"
           >
             <p>{t("invite_user")}</p>
-            <i className="bi-plus text-2xl"></i>
-          </div>
+            <i className="bi-plus text-xl"></i>
+          </Button>
         </div>
       </div>
 
@@ -150,7 +158,7 @@ export default function Billing() {
                 key={index}
                 className={clsx(
                   "group border-b-neutral-content duration-100 w-full relative flex flex-col sm:table-row",
-                  user.id !== account.id &&
+                  user.id !== account?.id &&
                     "hover:bg-neutral-content hover:bg-opacity-30"
                 )}
               >
@@ -190,31 +198,31 @@ export default function Billing() {
                     })}
                   </p>
                 </td>
-                {user.id !== account.id && (
+                {user.id !== account?.id && (
                   <td className="relative">
-                    <div
-                      className={`dropdown dropdown-bottom font-normal dropdown-end absolute right-[0.35rem] top-[0.35rem]`}
-                    >
-                      <div
-                        tabIndex={0}
-                        role="button"
-                        onMouseDown={dropdownTriggerer}
-                        className="btn btn-ghost btn-sm btn-square duration-100"
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onMouseDown={(e) => e.preventDefault()}
+                          title={t("more")}
+                        >
+                          <i
+                            className={"bi bi-three-dots text-lg text-neutral"}
+                          ></i>
+                        </Button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent
+                        sideOffset={4}
+                        align="end"
+                        className="bg-base-200 border border-neutral-content rounded-box p-1"
                       >
-                        <i
-                          className={"bi bi-three-dots text-lg text-neutral"}
-                        ></i>
-                      </div>
-                      <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
-                        {!user.emailVerified ? (
-                          <li>
-                            <div
-                              role="button"
-                              tabIndex={0}
+                        {!user.emailVerified && (
+                          <>
+                            <DropdownMenuItem
                               onClick={() => {
-                                (
-                                  document?.activeElement as HTMLElement
-                                )?.blur();
                                 signIn("invite", {
                                   email: user.email,
                                   callbackUrl: "/member-onboarding",
@@ -223,30 +231,28 @@ export default function Billing() {
                                   toast.success(t("resend_invite_success"))
                                 );
                               }}
-                              className="whitespace-nowrap"
                             >
+                              <i className="bi-envelope"></i>
                               {t("resend_invite")}
-                            </div>
-                          </li>
-                        ) : undefined}
-                        <li>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => {
-                              (document?.activeElement as HTMLElement)?.blur();
-                              setDeleteUserModal({
-                                isOpen: true,
-                                userId: user.id,
-                              });
-                            }}
-                            className="whitespace-nowrap"
-                          >
-                            {t("remove_user")}
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                          </>
+                        )}
+
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setDeleteUserModal({
+                              isOpen: true,
+                              userId: user.id,
+                            });
+                          }}
+                          className="text-error"
+                        >
+                          <i className="bi-trash"></i>
+                          {t("remove_user")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </td>
                 )}
               </tr>

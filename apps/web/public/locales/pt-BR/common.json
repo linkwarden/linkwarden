@@ -364,7 +364,6 @@
   "show": "Exibir",
   "deleting_collection": "Excluindo...",
   "collection_deleted": "Coleção Excluída.",
-  "confirm_deletion_prompt": "Para confirmar, digite \"{{name}}\" na caixa abaixo:",
   "type_name_placeholder": "Digite \"{{name}}\" Aqui.",
   "deletion_warning": "Excluir esta coleção apagará permanentemente todo o seu conteúdo e ela se tornará inacessível para todos, incluindo membros com acesso anterior.",
   "leave_prompt": "Clique no botão abaixo para sair da coleção atual.",
@@ -397,4 +396,4 @@
   "demo_desc_2": "Se você quiser experimentar a versão completa, você pode se inscrever para um teste gratuito em:",
   "demo_button": "Entrar como usuário de demonstração",
   "notes": "Notas"
-  }
+}

@@ -70,7 +70,7 @@ const useAuthStore = create<AuthStore>((set) => ({
           },
         });
 
-        router.push("/dashboard");
+        router.replace("/dashboard");
       } else {
         set({
           auth: {
@@ -92,7 +92,7 @@ const useAuthStore = create<AuthStore>((set) => ({
       },
     });
 
-    router.push("/login");
+    router.replace("/login");
   },
 }));
 

@@ -6,7 +6,7 @@ import { HexColorPicker } from "react-colorful";
 import { useTranslation } from "next-i18next";
 import IconGrid from "./IconGrid";
 import clsx from "clsx";
-import useWindowDimensions from "@/hooks/useWindowDimensions";
+import { Button } from "./ui/button";
 
 type Props = {
   alignment?: string;
@@ -139,12 +139,10 @@ const IconPopover = ({
           </div>
         </div>
         <div className="flex flex-row gap-2 justify-between items-center mt-2">
-          <div
-            className="btn btn-ghost btn-xs w-fit"
-            onClick={reset as React.MouseEventHandler<HTMLDivElement>}
-          >
+          <Button size="sm" variant="ghost" onClick={() => reset()}>
+            <i className="bi-arrow-counterclockwise text-neutral" />
             {t("reset_defaults")}
-          </div>
+          </Button>
           <p className="text-neutral text-xs">{t("click_out_to_apply")}</p>
         </div>
       </div>

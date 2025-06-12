@@ -7,9 +7,20 @@ import BulkEditLinksModal from "./ModalContent/BulkEditLinksModal";
 import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
-import { Sort, ViewMode } from "@linkwarden/types";
-import { useBulkDeleteLinks, useLinks } from "@linkwarden/router/links";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  Sort,
+  ViewMode,
+} from "@linkwarden/types";
+import { useArchiveAction, useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Props = {
   children: React.ReactNode;
@@ -20,6 +31,7 @@ type Props = {
   setSortBy: Dispatch<SetStateAction<Sort>>;
   editMode?: boolean;
   setEditMode?: (mode: boolean) => void;
+  links: LinkIncludingShortenedCollectionAndTags[];
 };
 
 const LinkListOptions = ({
@@ -31,12 +43,12 @@ const LinkListOptions = ({
   setSortBy,
   editMode,
   setEditMode,
+  links,
 }: Props) => {
   const { selectedLinks, setSelectedLinks } = useLinkStore();
 
   const deleteLinksById = useBulkDeleteLinks();
-
-  const { links } = useLinks();
+  const refreshPreservations = useArchiveAction();
 
   const router = useRouter();
 
@@ -79,6 +91,27 @@ const LinkListOptions = ({
     );
   };
 
+  const bulkRefreshPreservations = async () => {
+    const load = toast.loading(t("sending_request"));
+
+    await refreshPreservations.mutateAsync(
+      {
+        linkIds: selectedLinks.map((link) => link.id as number),
+      },
+      {
+        onSettled: (data, error) => {
+          toast.dismiss(load);
+          if (error) {
+            toast.error(error.message);
+          } else {
+            setSelectedLinks([]);
+            toast.success(t("links_being_archived"));
+          }
+        },
+      }
+    );
+  };
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -90,20 +123,19 @@ const LinkListOptions = ({
               links.length > 0 &&
               editMode !== undefined &&
               setEditMode && (
-                <div
-                  role="button"
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => {
                     setEditMode(!editMode);
                     setSelectedLinks([]);
                   }}
-                  className={`btn btn-square btn-sm btn-ghost ${
-                    editMode
-                      ? "bg-primary/20 hover:bg-primary/20"
-                      : "hover:bg-neutral/20"
-                  }`}
+                  className={
+                    editMode ? "bg-primary/20 hover:bg-primary/20" : ""
+                  }
                 >
-                  <i className="bi-pencil-fill text-neutral text-xl"></i>
-                </div>
+                  <i className="bi-pencil-fill text-neutral text-xl" />
+                </Button>
               )}
             <SortDropdown
               sortBy={sortBy}
@@ -139,35 +171,75 @@ const LinkListOptions = ({
             )}
           </div>
           <div className="flex gap-3">
-            <button
-              onClick={() => setBulkEditLinksModal(true)}
-              className="btn btn-sm btn-accent text-white w-fit ml-auto"
-              disabled={
-                selectedLinks.length === 0 ||
-                !(
-                  collectivePermissions === true ||
-                  collectivePermissions?.canUpdate
-                )
-              }
-            >
-              {t("edit")}
-            </button>
-            <button
-              onClick={(e) => {
-                (document?.activeElement as HTMLElement)?.blur();
-                e.shiftKey ? bulkDeleteLinks() : setBulkDeleteLinksModal(true);
-              }}
-              className="btn btn-sm bg-red-500 hover:bg-red-400 text-white w-fit ml-auto"
-              disabled={
-                selectedLinks.length === 0 ||
-                !(
-                  collectivePermissions === true ||
-                  collectivePermissions?.canDelete
-                )
-              }
-            >
-              {t("delete")}
-            </button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => bulkRefreshPreservations()}
+                    disabled={selectedLinks.length === 0}
+                  >
+                    <i className="bi-arrow-clockwise" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("refresh_preserved_formats")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={() => setBulkEditLinksModal(true)}
+                    variant="ghost"
+                    size="icon"
+                    disabled={
+                      selectedLinks.length === 0 ||
+                      !(
+                        collectivePermissions === true ||
+                        collectivePermissions?.canUpdate
+                      )
+                    }
+                  >
+                    <i className="bi-pencil-square" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("edit")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    onClick={(e) => {
+                      e.shiftKey
+                        ? bulkDeleteLinks()
+                        : setBulkDeleteLinksModal(true);
+                    }}
+                    variant="ghost"
+                    size="icon"
+                    disabled={
+                      selectedLinks.length === 0 ||
+                      !(
+                        collectivePermissions === true ||
+                        collectivePermissions?.canDelete
+                      )
+                    }
+                  >
+                    <i className="bi-trash text-error" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p> {t("delete")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       )}

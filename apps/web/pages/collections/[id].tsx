@@ -10,12 +10,10 @@ import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
 import NoLinksFound from "@/components/NoLinksFound";
-import useLocalSettingsStore from "@/store/localSettings";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import EditCollectionModal from "@/components/ModalContent/EditCollectionModal";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import DeleteCollectionModal from "@/components/ModalContent/DeleteCollectionModal";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
@@ -28,11 +26,17 @@ import Icon from "@/components/Icon";
 import CollectionCard from "@/components/CollectionCard";
 import { IconWeight } from "@phosphor-icons/react";
 import PageHeader from "@/components/PageHeader";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export default function Index() {
   const { t } = useTranslation();
-  const { settings } = useLocalSettingsStore();
-
   const router = useRouter();
 
   const { data: collections = [] } = useCollections();
@@ -57,7 +61,7 @@ export default function Index() {
     );
   }, [router, collections]);
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   const [collectionOwner, setCollectionOwner] = useState<
     Partial<AccountSettings>
@@ -65,20 +69,20 @@ export default function Index() {
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (activeCollection && activeCollection.ownerId !== user.id) {
+      if (activeCollection && activeCollection.ownerId !== user?.id) {
         const owner = await getPublicUserData(
           activeCollection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (activeCollection && activeCollection.ownerId === user.id) {
+      } else if (activeCollection && activeCollection.ownerId === user?.id) {
         setCollectionOwner({
-          id: user.id as number,
-          name: user.name,
-          username: user.username as string,
-          image: user.image as string,
-          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
-          archiveAsMonolith: user.archiveAsScreenshot as boolean,
-          archiveAsPDF: user.archiveAsPDF as boolean,
+          id: user?.id as number,
+          name: user?.name,
+          username: user?.username as string,
+          image: user?.image as string,
+          archiveAsScreenshot: user?.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user?.archiveAsMonolith as boolean,
+          archiveAsPDF: user?.archiveAsPDF as boolean,
         });
       }
     };
@@ -107,8 +111,8 @@ export default function Index() {
         className="p-5 flex gap-3 flex-col"
         style={{
           backgroundImage: `linear-gradient(${activeCollection?.color}20 0%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+            user?.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${user?.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {activeCollection && (
@@ -127,109 +131,99 @@ export default function Index() {
                 <i
                   className="bi-folder-fill text-3xl"
                   style={{ color: activeCollection.color }}
-                ></i>
+                />
               )}
 
-              <p className="sm:text-3xl text-2xl capitalize w-full py-1 break-words hyphens-auto font-thin">
+              <p className="sm:text-3xl text-2xl w-full py-1 break-words hyphens-auto font-thin">
                 {activeCollection?.name}
               </p>
             </div>
 
-            <div className="dropdown dropdown-bottom dropdown-end mt-2">
-              <div
-                tabIndex={0}
-                role="button"
-                onMouseDown={dropdownTriggerer}
-                className="btn btn-ghost btn-sm btn-square text-neutral"
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="icon"
+                  className="mt-2 text-neutral"
+                  onMouseDown={(e) => e.preventDefault()}
+                  title={t("more")}
+                >
+                  <button>
+                    <i className="bi-three-dots text-xl" />
+                  </button>
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                sideOffset={4}
+                align="end"
+                className="bg-base-200 border border-neutral-content rounded-box p-1"
               >
-                <i className="bi-three-dots text-xl" title="More"></i>
-              </div>
-              <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      for (const link of links) {
-                        if (link.url) window.open(link.url, "_blank");
-                      }
-                    }}
-                    className="whitespace-nowrap"
-                  >
-                    {t("open_all_links")}
-                  </div>
-                </li>
+                <DropdownMenuItem
+                  onClick={() => {
+                    for (const link of links) {
+                      if (link.url) window.open(link.url, "_blank");
+                    }
+                  }}
+                >
+                  <i className="bi-box-arrow-up-right" />
+                  {t("open_all_links")}
+                </DropdownMenuItem>
+
                 {permissions === true && (
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        setEditCollectionModal(true);
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {t("edit_collection_info")}
-                    </div>
-                  </li>
-                )}
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      setEditCollectionSharingModal(true);
-                    }}
-                    className="whitespace-nowrap"
+                  <DropdownMenuItem
+                    onClick={() => setEditCollectionModal(true)}
                   >
-                    {permissions === true
-                      ? t("share_and_collaborate")
-                      : t("view_team")}
-                  </div>
-                </li>
+                    <i className="bi-pencil-square" />
+                    {t("edit_collection_info")}
+                  </DropdownMenuItem>
+                )}
+
+                <DropdownMenuItem
+                  onClick={() => setEditCollectionSharingModal(true)}
+                >
+                  <i className="bi-globe" />
+                  {permissions === true
+                    ? t("share_and_collaborate")
+                    : t("view_team")}
+                </DropdownMenuItem>
+
                 {permissions === true && (
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => {
-                        (document?.activeElement as HTMLElement)?.blur();
-                        setNewCollectionModal(true);
-                      }}
-                      className="whitespace-nowrap"
-                    >
-                      {t("create_subcollection")}
-                    </div>
-                  </li>
+                  <DropdownMenuItem onClick={() => setNewCollectionModal(true)}>
+                    <i className="bi-folder-plus" />
+                    {t("create_subcollection")}
+                  </DropdownMenuItem>
                 )}
-                <li>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      (document?.activeElement as HTMLElement)?.blur();
-                      setDeleteCollectionModal(true);
-                    }}
-                    className="whitespace-nowrap"
-                  >
-                    {permissions === true
-                      ? t("delete_collection")
-                      : t("leave_collection")}
-                  </div>
-                </li>
-              </ul>
-            </div>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  onClick={() => setDeleteCollectionModal(true)}
+                  className="text-error"
+                >
+                  {permissions === true ? (
+                    <>
+                      <i className="bi-trash" />
+                      {t("delete_collection")}
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi-box-arrow-left" />
+                      {t("leave_collection")}
+                    </>
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
 
         {activeCollection && (
-          <div className={`min-w-[15rem]`}>
+          <div className="min-w-[15rem]">
             <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
               <div
-                className="flex items-center btn px-2 btn-ghost rounded-full w-fit"
+                className="flex items-center px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
                 onClick={() => setEditCollectionSharingModal(true)}
               >
                 {collectionOwner.id && (
@@ -239,14 +233,14 @@ export default function Index() {
                   />
                 )}
                 {activeCollection.members
-                  .sort((a, b) => a.userId - b.userId)
+                  .sort((a, b) => (a.userId as number) - (b.userId as number))
                   .map((e, i) => {
                     return (
                       <ProfilePhoto
                         key={i}
                         src={e.user.image ? e.user.image : undefined}
-                        className="-ml-3"
                         name={e.user.name}
+                        className="-ml-3"
                       />
                     );
                   })
@@ -260,63 +254,54 @@ export default function Index() {
                 )}
               </div>
 
-              <p className="text-neutral text-sm">
-                {activeCollection.members.length > 0 &&
-                activeCollection.members.length === 1
-                  ? t("by_author_and_other", {
-                      author: collectionOwner.name,
-                      count: activeCollection.members.length,
-                    })
-                  : activeCollection.members.length > 0 &&
-                      activeCollection.members.length !== 1
-                    ? t("by_author_and_others", {
+              <p className="text-neutral text-sm ml-2">
+                {activeCollection.members.length > 0
+                  ? activeCollection.members.length === 1
+                    ? t("by_author_and_other", {
                         author: collectionOwner.name,
                         count: activeCollection.members.length,
                       })
-                    : t("by_author", {
+                    : t("by_author_and_others", {
                         author: collectionOwner.name,
-                      })}
+                        count: activeCollection.members.length,
+                      })
+                  : t("by_author", { author: collectionOwner.name })}
               </p>
             </div>
           </div>
         )}
 
-        {activeCollection?.description && (
-          <p>{activeCollection?.description}</p>
-        )}
+        {activeCollection?.description && <p>{activeCollection.description}</p>}
 
-        <div className="divider my-0"></div>
+        <div className="divider my-0" />
 
-        {collections.some((e) => e.parentId === activeCollection?.id) ? (
+        {collections.some((e) => e.parentId === activeCollection?.id) && (
           <>
             <PageHeader
-              icon={"bi-folder"}
+              icon="bi-folder"
               title={t("collections")}
-              description={
+              description={t(
                 collections.filter((e) => e.parentId === activeCollection?.id)
                   .length === 1
-                  ? t("showing_count_result", {
-                      count: collections.filter(
-                        (e) => e.parentId === activeCollection?.id
-                      ).length,
-                    })
-                  : t("showing_count_results", {
-                      count: collections.filter(
-                        (e) => e.parentId === activeCollection?.id
-                      ).length,
-                    })
-              }
+                  ? "showing_count_result"
+                  : "showing_count_results",
+                {
+                  count: collections.filter(
+                    (e) => e.parentId === activeCollection?.id
+                  ).length,
+                }
+              )}
               className="scale-90 w-fit"
             />
             <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {collections
                 .filter((e) => e.parentId === activeCollection?.id)
-                .map((e, i) => {
-                  return <CollectionCard key={i} collection={e} />;
-                })}
+                .map((e) => (
+                  <CollectionCard key={e.id} collection={e} />
+                ))}
             </div>
           </>
-        ) : undefined}
+        )}
 
         <LinkListOptions
           t={t}
@@ -338,6 +323,7 @@ export default function Index() {
               ? setEditMode
               : undefined
           }
+          links={links}
         >
           {collections.some((e) => e.parentId === activeCollection?.id) ? (
             <PageHeader

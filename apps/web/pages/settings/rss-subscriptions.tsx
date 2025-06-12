@@ -7,6 +7,7 @@ import { useState } from "react";
 import { RssSubscription } from "@linkwarden/prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
 import { useConfig } from "@linkwarden/router/config";
+import { Button } from "@/components/ui/button";
 
 export default function RssSubscriptions() {
   const { t } = useTranslation();
@@ -38,14 +39,15 @@ export default function RssSubscriptions() {
           })}
         </p>
 
-        <button
-          className={`btn ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
+        <Button
+          variant="accent"
+          className="ml-auto"
           onClick={() => {
             setNewSubscriptionModal(true);
           }}
         >
           {t("new_rss_subscription")}
-        </button>
+        </Button>
         {rssSubscriptions.length > 0 && (
           <table className="table mt-2 overflow-x-auto">
             <thead>
@@ -63,12 +65,14 @@ export default function RssSubscriptions() {
                   <td>{rssSubscription.url}</td>
                   <td>{rssSubscription.collection.name}</td>
                   <td>
-                    <button
-                      className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="hover:text-error"
                       onClick={() => openDeleteModal(rssSubscription)}
                     >
                       <i className="bi-x text-lg"></i>
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
