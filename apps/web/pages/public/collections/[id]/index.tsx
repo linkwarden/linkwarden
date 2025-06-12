@@ -14,7 +14,6 @@ import ToggleDarkMode from "@/components/ToggleDarkMode";
 import getPublicUserData from "@/lib/client/getPublicUserData";
 import Image from "next/image";
 import Link from "next/link";
-import useLocalSettingsStore from "@/store/localSettings";
 import SearchBar from "@/components/SearchBar";
 import EditCollectionSharingModal from "@/components/ModalContent/EditCollectionSharingModal";
 import { useTranslation } from "next-i18next";
@@ -23,11 +22,19 @@ import LinkListOptions from "@/components/LinkListOptions";
 import { usePublicLinks } from "@linkwarden/router/publicLinks";
 import Links from "@/components/LinkViews/Links";
 import { usePublicTags } from "@linkwarden/router/publicTags";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useUser } from "@linkwarden/router/user";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
 
-  const { settings } = useLocalSettingsStore();
+  const { data: user } = useUser();
 
   const router = useRouter();
 
@@ -96,8 +103,8 @@ export default function PublicCollections() {
         className="h-96"
         style={{
           backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-            settings.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${settings.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+            user?.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${user?.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
         }}
       >
         {collection && (
@@ -113,15 +120,13 @@ export default function PublicCollections() {
         <div className="lg:w-3/4 max-w-[1500px] w-full mx-auto p-5 bg">
           <div className="flex justify-between gap-2">
             <div className="w-full">
-              <p className="text-4xl font-thin mb-2 capitalize mt-10">
-                {collection.name}
-              </p>
+              <p className="text-4xl font-thin mb-2 mt-10">{collection.name}</p>
 
               <div className="mt-3">
                 <div className={`min-w-[15rem]`}>
                   <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
                     <div
-                      className="flex items-center btn px-2 btn-ghost rounded-full"
+                      className="flex items-center z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
                       onClick={() => setEditCollectionSharingModal(true)}
                     >
                       {collectionOwner.id && (
@@ -139,8 +144,8 @@ export default function PublicCollections() {
                             <ProfilePhoto
                               key={i}
                               src={e.user.image ? e.user.image : undefined}
-                              className="-ml-3"
                               name={e.user.name}
+                              className="-ml-3"
                             />
                           );
                         })
@@ -181,32 +186,45 @@ export default function PublicCollections() {
             </div>
 
             <div className="flex flex-col gap-2 items-center mt-10 min-w-fit">
-              <div
-                className="tooltip tooltip-left w-fit"
-                data-tip={t("list_created_with_linkwarden")}
-              >
-                <Link href="https://linkwarden.app/" target="_blank">
-                  <Image
-                    src={`/icon.png`}
-                    width={551}
-                    height={551}
-                    alt={t("linkwarden_icon")}
-                    className="h-8 w-fit mx-auto rounded"
-                  />
-                </Link>
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Link href="https://linkwarden.app/" target="_blank">
+                      <Image
+                        src={`/icon.png`}
+                        width={551}
+                        height={551}
+                        alt={t("linkwarden_icon")}
+                        className="h-8 w-fit mx-auto rounded"
+                      />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>{t("list_created_with_linkwarden")}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
               <ToggleDarkMode align="left" />
 
-              <div className="tooltip tooltip-left" data-tip={t("rss_feed")}>
-                <Link
-                  href={`/public/collections/${collection.id}/rss`}
-                  target="_blank"
-                  className="text-neutral btn btn-ghost btn-sm size-8"
-                >
-                  <i className="bi bi-rss text-xl"></i>
-                </Link>
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button asChild variant="ghost" size="icon">
+                      <Link
+                        href={`/public/collections/${collection.id}/rss`}
+                        target="_blank"
+                        className="text-neutral"
+                      >
+                        <i className="bi bi-rss text-xl"></i>
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>{t("rss_feed")}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
 
@@ -219,6 +237,7 @@ export default function PublicCollections() {
               setViewMode={setViewMode}
               sortBy={sortBy}
               setSortBy={setSortBy}
+              links={links}
             >
               <SearchBar
                 placeholder={
@@ -267,7 +286,7 @@ export default function PublicCollections() {
                               : "bg-neutral-content/20 hover:bg-neutral/20"
                           } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 rounded-md h-8`}
                         >
-                          <i className="bi-hash text-2xl text-primary drop-shadow"></i>
+                          <i className="bi-hash text-xl text-primary drop-shadow"></i>
                           <p className="truncate pr-3">{e}</p>
                         </div>
                       </button>

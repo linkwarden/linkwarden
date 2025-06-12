@@ -209,8 +209,6 @@ export default async function updateUserById(
       archiveAsReadable: data.archiveAsReadable,
       archiveAsWaybackMachine: data.archiveAsWaybackMachine,
       linksRouteTo: data.linksRouteTo,
-      dashboardPinnedLinks: data.dashboardPinnedLinks,
-      dashboardRecentLinks: data.dashboardRecentLinks,
       preventDuplicateLinks: data.preventDuplicateLinks,
       referredBy:
         !user?.referredBy && data.referredBy ? data.referredBy : undefined,
@@ -222,6 +220,7 @@ export default async function updateUserById(
     include: {
       whitelistedUsers: true,
       subscriptions: true,
+      dashboardSections: true,
       parentSubscription: {
         include: {
           user: true,
@@ -234,6 +233,7 @@ export default async function updateUserById(
     whitelistedUsers,
     password,
     subscriptions,
+    dashboardSections,
     parentSubscription,
     ...userInfo
   } = updatedUser;
@@ -291,6 +291,7 @@ export default async function updateUserById(
         email: parentSubscription?.user.email,
       },
     },
+    dashboardSections: dashboardSections,
   };
 
   return { response, status: 200 };

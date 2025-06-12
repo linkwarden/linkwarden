@@ -1,4 +1,4 @@
-import { dropdownTriggerer, isIphone, isPWA } from "@/lib/client/utils";
+import { isIphone, isPWA } from "@/lib/utils";
 import React from "react";
 import { useState } from "react";
 import NewLinkModal from "./ModalContent/NewLinkModal";
@@ -6,6 +6,13 @@ import NewCollectionModal from "./ModalContent/NewCollectionModal";
 import UploadFileModal from "./ModalContent/UploadFileModal";
 import MobileNavigationButton from "./MobileNavigationButton";
 import { useTranslation } from "next-i18next";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 type Props = {};
 
@@ -30,59 +37,31 @@ export default function MobileNavigation({}: Props) {
             href={`/links/pinned`}
             icon={"bi-pin-angle"}
           />
-          <div className="dropdown dropdown-top -mt-4">
-            <div
-              tabIndex={0}
-              role="button"
-              onMouseDown={dropdownTriggerer}
-              className={`flex items-center btn btn-accent dark:border-violet-400 text-white btn-circle w-20 h-20 px-2 relative`}
-            >
-              <span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                className="-mt-4 flex items-center w-20 h-20 aspect-square px-2 relative rounded-full"
+                variant="accent"
+              >
                 <i className="bi-plus text-5xl pointer-events-none"></i>
-              </span>
-            </div>
-            <ul className="dropdown-content z-[1] menu shadow bg-base-200 border border-neutral-content rounded-box mb-1 -ml-12">
-              <li>
-                <div
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setNewLinkModal(true);
-                  }}
-                  tabIndex={0}
-                  role="button"
-                  className="whitespace-nowrap"
-                >
-                  {t("new_link")}
-                </div>
-              </li>
-              <li>
-                <div
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setUploadFileModal(true);
-                  }}
-                  tabIndex={0}
-                  role="button"
-                  className="whitespace-nowrap"
-                >
-                  {t("upload_file")}
-                </div>
-              </li>
-              <li>
-                <div
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setNewCollectionModal(true);
-                  }}
-                  tabIndex={0}
-                  role="button"
-                  className="whitespace-nowrap"
-                >
-                  {t("new_collection")}
-                </div>
-              </li>
-            </ul>
-          </div>
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => setNewLinkModal(true)}>
+                <i className="bi-link-45deg"></i>
+                {t("new_link")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setUploadFileModal(true)}>
+                <i className="bi-file-earmark-arrow-up"></i>
+                {t("upload_file")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setNewCollectionModal(true)}>
+                <i className="bi-folder"></i>
+                {t("new_collection")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <MobileNavigationButton href={`/links`} icon={"bi-link-45deg"} />
           <MobileNavigationButton href={`/collections`} icon={"bi-folder"} />
         </div>

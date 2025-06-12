@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { ReactNode } from "react";
 import { Trans } from "next-i18next";
+import { useUser } from "@linkwarden/router/user";
 
 interface Props {
   text?: string;
@@ -15,7 +16,7 @@ export default function CenteredForm({
   children,
   "data-testid": dataTestId,
 }: Props) {
-  const { settings } = useLocalSettingsStore();
+  const { data: user } = useUser();
 
   return (
     <div
@@ -23,11 +24,9 @@ export default function CenteredForm({
       data-testid={dataTestId}
     >
       <div className="m-auto flex flex-col gap-2 w-full">
-        {settings.theme && (
+        {user?.theme && (
           <Image
-            src={`/linkwarden_${
-              settings.theme === "dark" ? "dark" : "light"
-            }.png`}
+            src={`/linkwarden_${user?.theme === "dark" ? "dark" : "light"}.png`}
             width={640}
             height={136}
             alt="Linkwarden"

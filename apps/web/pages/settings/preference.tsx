@@ -1,25 +1,35 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useState, useEffect } from "react";
-import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
-import { useUpdateUser, useUser } from "@linkwarden/router/user";
+import {
+  useUpdateUser,
+  useUpdateUserPreference,
+  useUser,
+} from "@linkwarden/router/user";
 import { useConfig } from "@linkwarden/router/config";
 import { useTags, useUpdateArchivalTags } from "@linkwarden/router/tags";
-import { cn } from "@/lib/client/utils";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useArchivalTags } from "@/hooks/useArchivalTags";
 import { isArchivalTag } from "@linkwarden/lib";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Preference() {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
+  const updateUserPreference = useUpdateUserPreference();
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { data: account } = useUser();
+  const { data: account } = useUser() as any;
   const { data: tags } = useTags();
   const updateArchivalTags = useUpdateArchivalTags();
   const {
@@ -51,9 +61,6 @@ export default function Preference() {
   const [dashboardPinnedLinks, setDashboardPinnedLinks] = useState<boolean>(
     account.dashboardPinnedLinks || false
   );
-  const [dashboardRecentLinks, setDashboardRecentLinks] = useState<boolean>(
-    account.dashboardRecentLinks || false
-  );
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
     account.aiTaggingMethod
@@ -79,7 +86,6 @@ export default function Preference() {
       aiTaggingMethod,
       aiPredefinedTags,
       aiTagExistingLinks,
-      dashboardRecentLinks,
       dashboardPinnedLinks,
     });
   }, [
@@ -94,8 +100,6 @@ export default function Preference() {
     aiTaggingMethod,
     aiPredefinedTags,
     aiTagExistingLinks,
-    dashboardRecentLinks,
-    dashboardPinnedLinks,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -114,8 +118,6 @@ export default function Preference() {
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
       setAiTagExistingLinks(account.aiTagExistingLinks);
-      setDashboardRecentLinks(account.dashboardRecentLinks);
-      setDashboardPinnedLinks(account.dashboardPinnedLinks);
     }
   }, [account]);
 
@@ -131,8 +133,6 @@ export default function Preference() {
       "aiTaggingMethod",
       "aiPredefinedTags",
       "aiTagExistingLinks",
-      "dashboardRecentLinks",
-      "dashboardPinnedLinks",
     ];
 
     const hasChanges = relevantKeys.some((key) => account[key] !== user[key]);
@@ -218,10 +218,12 @@ export default function Preference() {
                     ? `outline-primary ${activeColor}`
                     : textColor
                 }`}
-                onClick={() => updateSettings({ theme })}
+                onClick={() =>
+                  updateUserPreference.mutate({ theme: theme as any })
+                }
               >
                 <i className={`${icon} text-3xl`}></i>
-                <p className="ml-2 text-2xl">{t(theme)}</p>
+                <p className="ml-2 text-xl">{t(theme)}</p>
               </div>
             ))}
           </div>
@@ -377,27 +379,6 @@ export default function Preference() {
 
         <div>
           <p className="capitalize text-3xl font-thin inline">
-            {t("dashboard_settings")}
-          </p>
-          <div className="divider my-3"></div>
-          <p>{t("choose_whats_displayed_dashboard")}</p>
-          <div className="p-3">
-            <Checkbox
-              label={t("pinned_links")}
-              state={dashboardPinnedLinks}
-              onClick={() => setDashboardPinnedLinks(!dashboardPinnedLinks)}
-            />
-
-            <Checkbox
-              label={t("recent_links")}
-              state={dashboardRecentLinks}
-              onClick={() => setDashboardRecentLinks(!dashboardRecentLinks)}
-            />
-          </div>
-        </div>
-
-        <div>
-          <p className="capitalize text-3xl font-thin inline">
             {t("archive_settings")}
           </p>
           <div className="divider my-3"></div>
@@ -455,32 +436,42 @@ export default function Preference() {
                       <span className="block sm:text-lg truncate max-w-sm">
                         {tag.label}
                       </span>
-                      <button
-                        className="py-1 px-2 btn btn-sm btn-ghost btn-square hover:bg-red-500"
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => removeTag(tag)}
+                        className="hover:text-error"
                       >
                         <i className="bi-x text-lg leading-none"></i>
-                      </button>
+                      </Button>
                     </div>
                     <div className="flex flex-wrap items-center justify-between gap-1 mt-1">
                       <p className="text-sm">{t("preservation_rules")}</p>
                       <div className="flex gap-1">
                         {ARCHIVAL_OPTIONS.map(({ type, icon, label }) => (
-                          <div
-                            key={type}
-                            className="tooltip tooltip-top"
-                            data-tip={label}
-                          >
-                            <button
-                              onClick={() => toggleOption(tag, type)}
-                              className={cn(
-                                "py-1 px-2 btn btn-sm btn-square",
-                                tag[type] ? "btn-primary" : "btn-ghost"
-                              )}
-                            >
-                              <i className={`${icon} text-lg leading-none`}></i>
-                            </button>
-                          </div>
+                          <TooltipProvider key={type}>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => toggleOption(tag, type)}
+                                  className={
+                                    tag[type]
+                                      ? "bg-primary hover:bg-primary text-primary-foreground hover:text-primary-foreground"
+                                      : ""
+                                  }
+                                >
+                                  <i
+                                    className={`${icon} text-lg leading-none`}
+                                  ></i>
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{label}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         ))}
                       </div>
                     </div>
@@ -608,12 +599,14 @@ export default function Preference() {
           </div>
         </div>
 
-        <SubmitButton
+        <Button
           onClick={submit}
-          loading={submitLoader}
-          label={t("save_changes")}
+          disabled={submitLoader}
           className="mt-2 w-full sm:w-fit"
-        />
+          variant="accent"
+        >
+          {t("save_changes")}
+        </Button>
       </div>
     </SettingsLayout>
   );

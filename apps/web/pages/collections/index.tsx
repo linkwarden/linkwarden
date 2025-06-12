@@ -10,7 +10,13 @@ import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
-import { dropdownTriggerer } from "@/lib/client/utils";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 export default function Collections() {
   const { t } = useTranslation();
@@ -37,28 +43,21 @@ export default function Collections() {
               description={t("collections_you_own")}
             />
             <div className="relative">
-              <div className={"dropdown dropdown-bottom font-normal"}>
-                <div
-                  tabIndex={0}
-                  role="button"
-                  onMouseDown={dropdownTriggerer}
-                  className="btn btn-ghost btn-sm btn-square text-neutral"
-                >
-                  <i className={"bi-three-dots text-neutral text-2xl"}></i>
-                </div>
-                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1">
-                  <li>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => setNewCollectionModal(true)}
-                      className="whitespace-nowrap"
-                    >
-                      {t("new_collection")}
-                    </div>
-                  </li>
-                </ul>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="text-neutral" variant="ghost" size="icon">
+                    <i className={"bi-three-dots text-neutral text-xl"}></i>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="bottom" align="start">
+                  <DropdownMenuItem
+                    onSelect={() => setNewCollectionModal(true)}
+                  >
+                    <i className="bi-folder"></i>
+                    {t("new_collection")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           <div className="flex gap-3 justify-end">
@@ -76,13 +75,13 @@ export default function Collections() {
             })}
 
           <div
-            className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-2xl cursor-pointer flex flex-col gap-4 justify-center items-center group btn"
+            className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-xl cursor-pointer flex flex-col gap-4 justify-center items-center group"
             onClick={() => setNewCollectionModal(true)}
           >
             <p className="group-hover:opacity-0 duration-100">
               {t("new_collection")}
             </p>
-            <i className="bi-plus-lg text-5xl group-hover:text-7xl group-hover:-mt-6 text-primary drop-shadow duration-100"></i>
+            <i className="bi-plus-lg text-5xl group-hover:text-7xl group-hover:-mt-10 text-primary drop-shadow duration-100"></i>
           </div>
         </div>
 

@@ -5,6 +5,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { Button } from "@/components/ui/button";
 
 export default function EmailConfirmaion() {
   const router = useRouter();
@@ -36,8 +37,8 @@ export default function EmailConfirmaion() {
 
   return (
     <CenteredForm>
-      <div className="p-4 max-w-[30rem] min-w-80 w-full rounded-2xl shadow-md mx-auto border border-neutral-content bg-base-200">
-        <p className="text-center text-2xl sm:text-3xl font-extralight mb-2 ">
+      <div className="p-4 max-w-[30rem] min-w-80 w-full rounded-xl shadow-md mx-auto border border-neutral-content bg-base-200">
+        <p className="text-center text-xl sm:text-3xl font-extralight mb-2 ">
           {t("check_your_email")}
         </p>
 
@@ -52,9 +53,9 @@ export default function EmailConfirmaion() {
         <p>{t("verification_email_sent_desc")}</p>
 
         <div className="mx-auto w-fit mt-3">
-          <div className="btn btn-ghost btn-sm" onClick={resend}>
+          <Button onClick={resend} variant="ghost" size="sm">
             {t("resend_email")}
-          </div>
+          </Button>
         </div>
       </div>
     </CenteredForm>

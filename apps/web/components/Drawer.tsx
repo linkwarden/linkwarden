@@ -8,6 +8,7 @@ type Props = {
   children: ReactNode;
   className?: string;
   dismissible?: boolean;
+  direction?: "left" | "right";
 };
 
 export default function Drawer({
@@ -15,6 +16,7 @@ export default function Drawer({
   className,
   children,
   dismissible = true,
+  direction,
 }: Props) {
   const [drawerIsOpen, setDrawerIsOpen] = React.useState(true);
   const { width } = useWindowDimensions();
@@ -40,10 +42,10 @@ export default function Drawer({
       >
         <D.Portal>
           <D.Overlay className="fixed inset-0 bg-black/40" />
-          <D.Content className="flex flex-col rounded-t-2xl mt-24 fixed bottom-0 left-0 right-0 z-30 h-[90%] !select-auto focus:outline-none">
+          <D.Content className="flex flex-col rounded-t-xl mt-24 fixed bottom-0 left-0 right-0 z-30 h-[90%] !select-auto focus:outline-none">
             <div
               className={clsx(
-                "p-4 bg-base-100 rounded-t-2xl flex-1 border-neutral-content border-t overflow-y-auto",
+                "p-4 bg-base-100 rounded-t-xl flex-1 border-neutral-content border-t overflow-y-auto",
                 className
               )}
               data-testid="mobile-modal-container"
@@ -62,14 +64,20 @@ export default function Drawer({
         onClose={() => dismissible && setDrawerIsOpen(false)}
         onAnimationEnd={(isOpen) => !isOpen && toggleDrawer()}
         dismissible={dismissible}
-        direction="right"
+        direction={direction || "right"}
       >
         <D.Portal>
           <D.Overlay className="fixed inset-0 bg-black/10 z-20" />
-          <D.Content className="bg-white flex flex-col h-full w-2/5 max-w-6xl min-w-[30rem] mt-24 fixed bottom-0 right-0 z-40 !select-auto focus:outline-none">
+          <D.Content
+            className={clsx(
+              "bg-white flex flex-col h-full w-2/5 max-w-6xl min-w-[30rem] mt-24 fixed bottom-0 z-40 !select-auto focus:outline-none",
+              direction === "left" ? "left-0" : "right-0"
+            )}
+          >
             <div
               className={clsx(
-                "p-4 bg-base-100 flex-1 border-neutral-content border-l overflow-y-auto",
+                "p-4 bg-base-100 flex-1 border-neutral-content overflow-y-auto",
+                direction === "left" ? "border-r" : "border-l",
                 className
               )}
             >

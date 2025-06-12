@@ -32,7 +32,10 @@ export default async function deleteCollection(
         },
       });
 
-    await removeFromOrders(userId, collectionId);
+    await Promise.all([
+      removeFromOrders(userId, collectionId),
+      updateDashboardSectionLayout(userId, collectionId),
+    ]);
 
     await prisma.link.updateMany({
       where: {
@@ -59,10 +62,13 @@ export default async function deleteCollection(
       },
     });
 
-    removeFolder({ filePath: `archives/${collectionId}` });
-    removeFolder({ filePath: `archives/preview/${collectionId}` });
+    await removeFolder({ filePath: `archives/${collectionId}` });
+    await removeFolder({ filePath: `archives/preview/${collectionId}` });
 
-    await removeFromOrders(userId, collectionId);
+    await Promise.all([
+      removeFromOrders(userId, collectionId),
+      updateDashboardSectionLayout(userId, collectionId),
+    ]);
 
     const links = await prisma.link.findMany({
       where: {
@@ -138,8 +144,8 @@ async function deleteSubCollections(collectionId: number) {
       where: { id: subCollection.id },
     });
 
-    removeFolder({ filePath: `archives/${subCollection.id}` });
-    removeFolder({ filePath: `archives/preview/${subCollection.id}` });
+    await removeFolder({ filePath: `archives/${subCollection.id}` });
+    await removeFolder({ filePath: `archives/preview/${subCollection.id}` });
   }
 }
 
@@ -166,4 +172,42 @@ async function removeFromOrders(userId: number, collectionId: number) {
         },
       },
     });
+}
+
+async function updateDashboardSectionLayout(
+  userId: number,
+  collectionId: number
+) {
+  const dashboardSection = await prisma.dashboardSection.findFirst({
+    where: {
+      userId,
+      collectionId,
+    },
+  });
+
+  if (dashboardSection) {
+    const sectionOrder = dashboardSection.order;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.dashboardSection.delete({
+        where: {
+          id: dashboardSection.id,
+        },
+      });
+
+      await tx.dashboardSection.updateMany({
+        where: {
+          userId,
+          order: {
+            gt: sectionOrder,
+          },
+        },
+        data: {
+          order: {
+            decrement: 1,
+          },
+        },
+      });
+    });
+  }
 }

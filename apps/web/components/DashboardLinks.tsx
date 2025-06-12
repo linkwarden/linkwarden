@@ -1,0 +1,263 @@
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import useLocalSettingsStore from "@/store/localSettings";
+import {
+  ArchivedFormat,
+  CollectionIncludingMembersAndLinkCount,
+} from "@linkwarden/types";
+import { useEffect, useRef, useState } from "react";
+import useLinkStore from "@/store/links";
+import unescapeString from "@/lib/client/unescapeString";
+import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
+import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
+import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
+import Image from "next/image";
+import {
+  atLeastOneFormatAvailable,
+  formatAvailable,
+} from "@linkwarden/lib/formatStats";
+import useOnScreen from "@/hooks/useOnScreen";
+import usePermissions from "@/hooks/usePermissions";
+import toast from "react-hot-toast";
+import { useTranslation } from "next-i18next";
+import { useCollections } from "@linkwarden/router/collections";
+import { useUser } from "@linkwarden/router/user";
+import { useGetLink, useLinks } from "@linkwarden/router/links";
+import { useRouter } from "next/router";
+import openLink from "@/lib/client/openLink";
+import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
+import LinkFormats from "./LinkViews/LinkComponents/LinkFormats";
+import LinkTypeBadge from "./LinkViews/LinkComponents/LinkTypeBadge";
+import LinkPin from "./LinkViews/LinkComponents/LinkPin";
+
+export function DashboardLinks({
+  links,
+  isLoading,
+}: {
+  links?: LinkIncludingShortenedCollectionAndTags[];
+  isLoading?: boolean;
+}) {
+  return (
+    <div
+      className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-72`}
+    >
+      {links?.map((e, i) => {
+        return <Card key={i} link={e} />;
+      })}
+
+      {isLoading && (
+        <div className="flex flex-col gap-4">
+          <div className="skeleton h-40 w-full"></div>
+          <div className="skeleton h-3 w-2/3"></div>
+          <div className="skeleton h-3 w-full"></div>
+          <div className="skeleton h-3 w-full"></div>
+          <div className="skeleton h-3 w-1/3"></div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+type Props = {
+  link: LinkIncludingShortenedCollectionAndTags;
+  editMode?: boolean;
+};
+
+export function Card({ link, editMode }: Props) {
+  const { t } = useTranslation();
+
+  const { data: collections = [] } = useCollections();
+
+  const { data: user } = useUser();
+
+  const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  const {
+    settings: { show },
+  } = useLocalSettingsStore();
+
+  const { links } = useLinks();
+
+  const router = useRouter();
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+
+  const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
+
+  useEffect(() => {
+    if (!editMode) {
+      setSelectedLinks([]);
+    }
+  }, [editMode]);
+
+  const handleCheckboxClick = (
+    link: LinkIncludingShortenedCollectionAndTags
+  ) => {
+    if (selectedLinks.includes(link)) {
+      setSelectedLinks(selectedLinks.filter((e) => e !== link));
+    } else {
+      setSelectedLinks([...selectedLinks, link]);
+    }
+  };
+
+  let shortendURL;
+
+  try {
+    if (link.url) {
+      shortendURL = new URL(link.url).host.toLowerCase();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  const [collection, setCollection] =
+    useState<CollectionIncludingMembersAndLinkCount>(
+      collections.find(
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
+    );
+
+  useEffect(() => {
+    setCollection(
+      collections.find(
+        (e) => e.id === link.collection.id
+      ) as CollectionIncludingMembersAndLinkCount
+    );
+  }, [collections, links]);
+
+  const ref = useRef<HTMLDivElement>(null);
+  const isVisible = useOnScreen(ref);
+  const permissions = usePermissions(collection?.id as number);
+
+  const [linkModal, setLinkModal] = useState(false);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (
+      isVisible &&
+      !link.preview?.startsWith("archives") &&
+      link.preview !== "unavailable"
+    ) {
+      interval = setInterval(async () => {
+        refetch().catch((error) => {
+          console.error("Error refetching link:", error);
+        });
+      }, 5000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isVisible, link.preview]);
+
+  const selectedStyle = selectedLinks.some(
+    (selectedLink) => selectedLink.id === link.id
+  )
+    ? "border-primary bg-base-300"
+    : "border-neutral-content";
+
+  const selectable =
+    editMode &&
+    (permissions === true || permissions?.canCreate || permissions?.canDelete);
+
+  return (
+    <div
+      ref={ref}
+      className={`${selectedStyle} w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
+      onClick={() =>
+        selectable
+          ? handleCheckboxClick(link)
+          : editMode
+            ? toast.error(t("link_selection_error"))
+            : undefined
+      }
+    >
+      <div
+        className="rounded-xl cursor-pointer h-full w-60 flex flex-col justify-between"
+        onClick={() =>
+          !editMode && openLink(link, user, () => setLinkModal(true))
+        }
+      >
+        {show.image && (
+          <div>
+            <div className={`relative rounded-t-xl h-40 overflow-hidden`}>
+              {formatAvailable(link, "preview") ? (
+                <Image
+                  src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
+                  width={1280}
+                  height={720}
+                  alt=""
+                  className={`rounded-t-xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105`}
+                  style={show.icon ? { filter: "blur(1px)" } : undefined}
+                  draggable="false"
+                  onError={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.display = "none";
+                  }}
+                />
+              ) : link.preview === "unavailable" ? (
+                <div className={`bg-gray-50 h-40 bg-opacity-80`}></div>
+              ) : (
+                <div
+                  className={`h-40 bg-opacity-80 skeleton rounded-none`}
+                ></div>
+              )}
+              {show.icon && (
+                <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-xl flex items-center justify-center rounded-md">
+                  <LinkIcon link={link} />
+                </div>
+              )}
+              {show.preserved_formats &&
+                link.type === "url" &&
+                atLeastOneFormatAvailable(link) && (
+                  <div className="absolute bottom-0 right-0 m-2 bg-base-200 bg-opacity-60 px-1 rounded-md">
+                    <LinkFormats link={link} />
+                  </div>
+                )}
+            </div>
+            <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
+          </div>
+        )}
+
+        <div className="flex flex-col justify-between h-full min-h-24">
+          <div className="p-3 flex flex-col justify-between h-full gap-2">
+            {show.name && (
+              <p className="line-clamp-2 w-full text-primary text-sm">
+                {unescapeString(link.name)}
+              </p>
+            )}
+
+            {show.link && <LinkTypeBadge link={link} />}
+          </div>
+
+          {(show.collection || show.date) && (
+            <div>
+              <hr className="divider mt-0 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+
+              <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
+                {show.collection && !isPublicRoute && (
+                  <div className="cursor-pointer truncate">
+                    <LinkCollection link={link} collection={collection} />
+                  </div>
+                )}
+                {show.date && <LinkDate link={link} />}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Overlay on hover */}
+      <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
+      <LinkActions
+        link={link}
+        collection={collection}
+        linkModal={linkModal}
+        setLinkModal={(e) => setLinkModal(e)}
+        className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
+      />
+      {!isPublicRoute && <LinkPin link={link} />}
+    </div>
+  );
+}

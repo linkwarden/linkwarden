@@ -14,26 +14,34 @@ const handleArchivePreview = async (
   link: LinksAndCollectionAndOwner,
   page: Page
 ) => {
-  const ogImageUrl = await page.evaluate(() => {
+  let ogImageUrl = await page.evaluate(() => {
     const metaTag = document.querySelector('meta[property="og:image"]');
     return metaTag ? (metaTag as any).content : null;
   });
 
+  let previewGenerated = false;
+  
   if (ogImageUrl) {
-    console.log("Found og:image URL:", ogImageUrl);
+    if (!ogImageUrl.startsWith("http://") && !ogImageUrl.startsWith("https://")) {
+      const origin = await page.evaluate(() => document.location.origin);
+      ogImageUrl = origin + (ogImageUrl.startsWith("/") ? ogImageUrl : ("/" + ogImageUrl));
+    }
 
-    // Download the image
     const imageResponse = await page.goto(ogImageUrl);
 
-    // Check if imageResponse is not null
     if (imageResponse && !link.preview?.startsWith("archive")) {
       const buffer = await imageResponse.body();
-      generatePreview(buffer, link.collectionId, link.id);
+      previewGenerated = await generatePreview(
+        buffer,
+        link.collectionId,
+        link.id
+      );
     }
 
     await page.goBack();
-  } else if (!link.preview?.startsWith("archive")) {
-    console.log("No og:image found");
+  }
+
+  if (!previewGenerated && !link.preview?.startsWith("archive")) {
     await page
       .screenshot({ type: "jpeg", quality: 20 })
       .then(async (screenshot) => {
