@@ -3,33 +3,10 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useEffect, useState } from "react";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LinkArchiveActionSchemaType } from "@linkwarden/lib/schemaValidation";
 import toast from "react-hot-toast";
-
-const useArchiveAction = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (action: LinkArchiveActionSchemaType) => {
-      const response = await fetch("/api/v1/links/archive", {
-        body: JSON.stringify({ action: action }),
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.response);
-
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["links"] });
-    },
-  });
-};
+import { useArchiveAction } from "@linkwarden/router/links";
+import { Button } from "@/components/ui/button";
 
 export default function Worker() {
   const { t } = useTranslation();
@@ -37,7 +14,7 @@ export default function Worker() {
   const [showModal, setShowModal] = useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
   const [action, setAction] = useState<
-    LinkArchiveActionSchemaType | undefined
+    LinkArchiveActionSchemaType["action"] | undefined
   >();
 
   useEffect(() => {
@@ -46,28 +23,31 @@ export default function Worker() {
     }
   }, [showModal]);
 
-  const submit = async (action: LinkArchiveActionSchemaType) => {
+  const submit = async (action: LinkArchiveActionSchemaType["action"]) => {
     if (!action || submitLoader) return;
     setSubmitLoader(true);
 
     const load = toast.loading(t("deleting"));
 
-    await archiveAction.mutateAsync(action, {
-      onSettled: (data, error) => {
-        setSubmitLoader(false);
-        toast.dismiss(load);
+    await archiveAction.mutateAsync(
+      { action },
+      {
+        onSettled: (data, error) => {
+          setSubmitLoader(false);
+          toast.dismiss(load);
 
-        if (error) {
-          toast.error(error.message);
-        } else {
-          if (action === "allAndIgnore") {
-            toast.success(t("deleted"));
+          if (error) {
+            toast.error(error.message);
           } else {
-            toast.success(t("links_are_being_represerved"));
+            if (action === "allAndIgnore") {
+              toast.success(t("deleted"));
+            } else {
+              toast.success(t("links_are_being_represerved"));
+            }
           }
-        }
-      },
-    });
+        },
+      }
+    );
   };
 
   return (
@@ -79,36 +59,39 @@ export default function Worker() {
       <div className="w-full flex flex-col gap-6 justify-between">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <span>{t("regenerate_broken_preservations")}</span>
-          <button
+          <Button
             onClick={() => submit("allBroken")}
-            className={`btn btn-sm ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
+            className="ml-auto"
+            variant="primary"
           >
             {t("confirm")}
-          </button>
+          </Button>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <span>{t("delete_all_preservations_and_regenerate")}</span>
-          <button
-            className={`btn btn-sm ml-auto btn-error text-white tracking-wider w-fit flex items-center gap-2`}
+          <Button
+            className="ml-auto"
+            variant="destructive"
             onClick={() => {
               setAction("allAndRePreserve");
               setShowModal(true);
             }}
           >
             {t("confirm")}
-          </button>
+          </Button>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <span>{t("delete_all_preservations")}</span>
-          <button
-            className={`btn btn-sm ml-auto btn-error text-white tracking-wider w-fit flex items-center gap-2`}
+          <Button
+            className="ml-auto"
+            variant="destructive"
             onClick={() => {
               setAction("allAndIgnore");
               setShowModal(true);
             }}
           >
             {t("confirm")}
-          </button>
+          </Button>
         </div>
       </div>
       {showModal && action && (

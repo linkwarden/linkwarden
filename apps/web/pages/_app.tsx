@@ -8,7 +8,7 @@ import AuthRedirect from "@/layouts/AuthRedirect";
 import toast from "react-hot-toast";
 import { Toaster, ToastBar } from "react-hot-toast";
 import { Session } from "next-auth";
-import { isPWA } from "@/lib/client/utils";
+import { isPWA } from "@/lib/utils";
 // import useInitialData from "@/hooks/useInitialData";
 import { appWithTranslation } from "next-i18next";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";

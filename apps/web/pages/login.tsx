@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
@@ -126,8 +126,9 @@ export default function Login({
                       cloud.linkwarden.app
                     </a>
                   </div>
-                  <div
-                    className="btn btn-sm btn-primary w-full"
+                  <Button
+                    variant="primary"
+                    size="full"
                     onClick={async () => {
                       const load = toast.loading(t("authenticating"));
 
@@ -147,7 +148,7 @@ export default function Login({
                     }}
                   >
                     {t("demo_button")}
-                  </div>
+                  </Button>
                 </div>
               </div>
             )}
@@ -196,9 +197,9 @@ export default function Login({
           <Button
             type="submit"
             size="full"
-            intent="accent"
+            variant="accent"
             data-testid="submit-login-button"
-            loading={submitLoader}
+            disabled={submitLoader}
           >
             {t("login")}
           </Button>
@@ -220,8 +221,8 @@ export default function Login({
             type="button"
             onClick={() => loginUserButton(value.method)}
             size="full"
-            intent="secondary"
-            loading={submitLoader}
+            variant="metal"
+            disabled={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
               (value.name.toLowerCase() === "apple" && (
@@ -258,7 +259,7 @@ export default function Login({
     <CenteredForm text={t("sign_in_to_your_account")}>
       <form onSubmit={loginUser}>
         <div
-          className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700"
+          className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-xl shadow-md border border-sky-100 dark:border-neutral-700"
           data-testid="login-form"
         >
           {displayLoginCredential()}

@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import Button from "./ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import Modal from "./Modal";
 
@@ -28,14 +28,14 @@ export default function ConfirmationModal({
       {children}
       <div className="w-full flex items-center justify-end gap-2 mt-3">
         <Button
-          intent="ghost"
+          variant="ghost"
           className="hover:bg-base-200"
           onClick={() => toggleModal()}
         >
           {t("cancel")}
         </Button>
         <Button
-          intent="destructive"
+          variant="destructive"
           onClick={async () => {
             await onConfirmed();
             toggleModal();

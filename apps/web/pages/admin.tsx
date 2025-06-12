@@ -7,6 +7,7 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import UserListing from "@/components/UserListing";
 import { useUsers } from "@linkwarden/router/users";
 import Divider from "@/components/ui/Divider";
+import { Button } from "@/components/ui/button";
 
 interface User extends U {
   subscriptions: {
@@ -51,12 +52,11 @@ export default function Admin() {
     <div className="max-w-6xl mx-auto p-5">
       <div className="flex sm:flex-row flex-col justify-between gap-2">
         <div className="gap-2 inline-flex items-center">
-          <Link
-            href="/dashboard"
-            className="text-neutral btn btn-square btn-sm btn-ghost"
-          >
-            <i className="bi-chevron-left text-xl"></i>
-          </Link>
+          <Button variant="ghost" size="icon">
+            <Link href="/dashboard" className="text-neutral">
+              <i className="bi-chevron-left text-xl"></i>
+            </Link>
+          </Button>
           <p className="capitalize text-3xl font-thin inline">
             {t("user_administration")}
           </p>
@@ -81,12 +81,14 @@ export default function Admin() {
             />
           </div>
 
-          <div
+          <Button
             onClick={() => setNewUserModal(true)}
-            className="flex items-center btn btn-accent dark:border-violet-400 text-white btn-sm px-2 aspect-square relative"
+            variant="accent"
+            size="icon"
+            className="flex items-center px-2 aspect-square relative"
           >
             <i className="bi-plus text-3xl absolute"></i>
-          </div>
+          </Button>
         </div>
       </div>
 

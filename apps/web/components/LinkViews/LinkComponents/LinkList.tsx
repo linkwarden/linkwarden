@@ -9,7 +9,7 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
-import { isPWA } from "@/lib/client/utils";
+import { isPWA } from "@/lib/utils";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
@@ -36,7 +36,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
 
   const { data: collections = [] } = useCollections();
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
   const { setSelectedLinks, selectedLinks } = useLinkStore();
 
   const {
@@ -153,13 +153,13 @@ export default function LinkCardCompact({ link, editMode }: Props) {
             </div>
           </div>
         </div>
-        {!isPublic && <LinkPin link={link} btnStyle="btn-ghost" />}
+        {!isPublic && <LinkPin link={link} />}
         <LinkActions
           link={link}
           collection={collection}
-          btnStyle="btn-ghost"
           linkModal={linkModal}
           setLinkModal={(e) => setLinkModal(e)}
+          className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
       </div>
       <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>

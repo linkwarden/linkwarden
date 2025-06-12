@@ -252,7 +252,6 @@
   "revoke_token": "Token İptal Et",
   "revoke_confirmation": "Bu Erişim Tokenini iptal etmek istediğinizden emin misiniz? Bu tokeni kullanan uygulamalar veya hizmetler artık Linkwarden'a erişemeyecektir.",
 
-
   "revoke": "İptal Et",
   "sending_request": "İstek Gönderiliyor...",
   "link_being_archived": "Bağlantı arşivleniyor...",
@@ -344,7 +343,6 @@
   "shift_key_tip": "Gelecekte bu onayı atlamak için 'Sil' tuşuna tıklarken Shift tuşunu basılı tutun.",
   "deleting_collection": "Siliniyor...",
   "collection_deleted": "Koleksiyon Silindi.",
-  "confirm_deletion_prompt": "Onaylamak için aşağıdaki kutuya \"{{name}}\" yazın:",
   "type_name_placeholder": "\"{{name}}\" Buraya Yazın.",
   "deletion_warning": "Bu koleksiyonu silmek, tüm içeriğini kalıcı olarak silecek ve önceki erişime sahip üyeler dahil olmak üzere herkese erişilemez hale getirecektir.",
   "leave_prompt": "Mevcut koleksiyondan ayrılmak için aşağıdaki düğmeye tıklayın.",

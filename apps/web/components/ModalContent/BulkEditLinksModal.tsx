@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useBulkEditLinks } from "@linkwarden/router/links";
+import { Button } from "../ui/button";
 
 type Props = {
   onClose: Function;
@@ -100,12 +101,9 @@ export default function BulkEditLinksModal({ onClose }: Props) {
       </div>
 
       <div className="flex justify-end items-center mt-5">
-        <button
-          className="btn btn-accent dark:border-violet-400 text-white"
-          onClick={submit}
-        >
+        <Button variant="accent" onClick={submit}>
           {t("save_changes")}
-        </button>
+        </Button>
       </div>
     </Modal>
   );

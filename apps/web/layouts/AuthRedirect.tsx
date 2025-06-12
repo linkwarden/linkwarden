@@ -14,7 +14,7 @@ export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
   const { status } = useSession();
   const [shouldRenderChildren, setShouldRenderChildren] = useState(false);
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   useInitialData();
 
@@ -23,8 +23,8 @@ export default function AuthRedirect({ children }: Props) {
     const isUnauthenticated = status === "unauthenticated";
     const isPublicPage = router.pathname.startsWith("/public");
     const hasInactiveSubscription =
-      user.id &&
-      !user.subscription?.active &&
+      user?.id &&
+      !user?.subscription?.active &&
       !user.parentSubscription?.active &&
       stripeEnabled;
 
@@ -52,7 +52,7 @@ export default function AuthRedirect({ children }: Props) {
     } else {
       if (isLoggedIn && hasInactiveSubscription) {
         redirectTo("/subscribe");
-      } else if (isLoggedIn && !user.name && user.parentSubscriptionId) {
+      } else if (isLoggedIn && !user?.name && user?.parentSubscriptionId) {
         redirectTo("/member-onboarding");
       } else if (
         isLoggedIn &&

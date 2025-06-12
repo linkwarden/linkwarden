@@ -1,3 +1,9 @@
+import { UpdateUserPreferenceSchemaType } from "@linkwarden/lib/schemaValidation";
+import {
+  DashboardSection,
+  Subscription,
+  User,
+} from "@linkwarden/prisma/client";
 import { MobileAuth } from "@linkwarden/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -35,14 +41,38 @@ const useUser = (auth?: MobileAuth) => {
 
       if (!response.ok) throw new Error("Failed to fetch user data.");
 
-      const data = await response.json();
+      const data = (await response.json()).response as Omit<User, "password"> &
+        Partial<{ subscription: Subscription }> & {
+          parentSubscription: {
+            active: boolean | undefined;
+            user: {
+              email: string | null | undefined;
+            };
+          };
+        } & {
+          whitelistedUsers: string[];
+          dashboardSections: DashboardSection[];
+        };
 
-      return data.response;
+      document.querySelector("html")?.setAttribute("data-theme", data.theme);
+
+      return data;
     },
     enabled: !auth
       ? !!userId && status === "authenticated"
       : status === "authenticated",
-    placeholderData: {},
+    placeholderData: {} as Omit<User, "password"> &
+      Partial<{ subscription: Subscription }> & {
+        parentSubscription: {
+          active: boolean | undefined;
+          user: {
+            email: string | null | undefined;
+          };
+        };
+      } & {
+        whitelistedUsers: string[];
+        dashboardSections: DashboardSection[];
+      },
   });
 };
 
@@ -75,4 +105,48 @@ const useUpdateUser = () => {
   });
 };
 
-export { useUser, useUpdateUser };
+const useUpdateUserPreference = () => {
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
+
+  return useMutation({
+    mutationFn: async (preference: UpdateUserPreferenceSchemaType) => {
+      const response = await fetch(
+        `/api/v1/users/${session?.user.id}/preference`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(preference),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.response);
+
+      return data.response as Omit<User, "password"> &
+        Partial<{ subscription: Subscription }> & {
+          parentSubscription: {
+            active: boolean | undefined;
+            user: {
+              email: string | null | undefined;
+            };
+          };
+        } & {
+          whitelistedUsers: string[];
+        };
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(["user"], data);
+      document.querySelector("html")?.setAttribute("data-theme", data.theme);
+    },
+    onMutate: async (user) => {
+      await queryClient.cancelQueries({ queryKey: ["user"] });
+      queryClient.setQueryData(["user"], (oldData: any) => {
+        return { ...oldData, ...user };
+      });
+    },
+  });
+};
+
+export { useUser, useUpdateUser, useUpdateUserPreference };
