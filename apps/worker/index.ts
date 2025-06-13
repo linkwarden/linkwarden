@@ -1,7 +1,9 @@
 import { spawn } from "node:child_process";
+import { join } from "node:path";
 
 function launch() {
-  const child = spawn("tsx", ["worker.ts"], { stdio: "inherit" });
+  const tsxPath = join(__dirname, "../../node_modules/tsx/dist/cli.mjs");
+  const child = spawn("node", [tsxPath, "worker.ts"], { stdio: "inherit" });
 
   child.on("exit", (code, signal) => {
     console.error(
