@@ -164,7 +164,7 @@ export function Card({ link, editMode }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
+      className={`${selectedStyle} min-w-60 w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
@@ -174,7 +174,7 @@ export function Card({ link, editMode }: Props) {
       }
     >
       <div
-        className="rounded-xl cursor-pointer h-full w-60 flex flex-col justify-between"
+        className="rounded-xl cursor-pointer h-full w-full flex flex-col justify-between"
         onClick={() =>
           !editMode && openLink(link, user, () => setLinkModal(true))
         }
