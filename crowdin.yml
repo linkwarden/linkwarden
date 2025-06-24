@@ -1,0 +1,3 @@
+files:
+  - source: /apps/web/public/locales/en/common.json
+    translation: /apps/web/public/locales/%locale%/common.json
