@@ -5,7 +5,6 @@ import {
   CollectionIncludingMembersAndLinkCount,
 } from "@linkwarden/types";
 import { useEffect, useRef, useState } from "react";
-import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -16,9 +15,6 @@ import {
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
 import useOnScreen from "@/hooks/useOnScreen";
-import usePermissions from "@/hooks/usePermissions";
-import toast from "react-hot-toast";
-import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
 import { useGetLink, useLinks } from "@linkwarden/router/links";
@@ -63,13 +59,9 @@ type Props = {
 };
 
 export function Card({ link, editMode }: Props) {
-  const { t } = useTranslation();
-
   const { data: collections = [] } = useCollections();
 
   const { data: user } = useUser();
-
-  const { setSelectedLinks, selectedLinks } = useLinkStore();
 
   const {
     settings: { show },
@@ -81,22 +73,6 @@ export function Card({ link, editMode }: Props) {
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
-
-  useEffect(() => {
-    if (!editMode) {
-      setSelectedLinks([]);
-    }
-  }, [editMode]);
-
-  const handleCheckboxClick = (
-    link: LinkIncludingShortenedCollectionAndTags
-  ) => {
-    if (selectedLinks.includes(link)) {
-      setSelectedLinks(selectedLinks.filter((e) => e !== link));
-    } else {
-      setSelectedLinks([...selectedLinks, link]);
-    }
-  };
 
   let shortendURL;
 
@@ -125,7 +101,6 @@ export function Card({ link, editMode }: Props) {
 
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
-  const permissions = usePermissions(collection?.id as number);
 
   const [linkModal, setLinkModal] = useState(false);
 
@@ -151,27 +126,10 @@ export function Card({ link, editMode }: Props) {
     };
   }, [isVisible, link.preview]);
 
-  const selectedStyle = selectedLinks.some(
-    (selectedLink) => selectedLink.id === link.id
-  )
-    ? "border-primary bg-base-300"
-    : "border-neutral-content";
-
-  const selectable =
-    editMode &&
-    (permissions === true || permissions?.canCreate || permissions?.canDelete);
-
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} min-w-60 w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
-      onClick={() =>
-        selectable
-          ? handleCheckboxClick(link)
-          : editMode
-            ? toast.error(t("link_selection_error"))
-            : undefined
-      }
+      className={`min-w-60 w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
     >
       <div
         className="rounded-xl cursor-pointer h-full w-full flex flex-col justify-between"
