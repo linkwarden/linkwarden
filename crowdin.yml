@@ -1,7 +1,7 @@
 files:
   [
     {
-      "source": "/public/locales/en/common.json",
-      "translation": "/public/locales/%locale%/common.json",
+      "source": "/apps/web/public/locales/en/common.json",
+      "translation": "/apps/web/public/locales/%locale%/common.json",
     },
   ]
