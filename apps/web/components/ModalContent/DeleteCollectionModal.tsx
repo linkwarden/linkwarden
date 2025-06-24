@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useDeleteCollection } from "@linkwarden/router/collections";
 import toast from "react-hot-toast";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -63,7 +64,7 @@ export default function DeleteCollectionModal({
         {permissions === true ? t("delete_collection") : t("leave_collection")}
       </p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         {permissions === true ? (

@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import Modal from "./Modal";
+import { Separator } from "./ui/separator";
 
 type Props = {
   toggleModal: Function;
@@ -24,7 +25,7 @@ export default function ConfirmationModal({
   return (
     <Modal toggleModal={toggleModal} className={className}>
       <p className="text-xl font-thin">{title}</p>
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="mb-3 mt-1" />
       {children}
       <div className="w-full flex items-center justify-end gap-2 mt-3">
         <Button

@@ -7,6 +7,7 @@ import { useAddUser } from "@linkwarden/router/users";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -69,7 +70,9 @@ export default function InviteModal({ onClose }: Props) {
   return (
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("invite_user")}</p>
-      <div className="divider mb-3 mt-1"></div>
+
+      <Separator className="my-3" />
+
       <p className="mb-3">{t("invite_user_desc")}</p>
       <form onSubmit={submit}>
         {emailEnabled ? (

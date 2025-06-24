@@ -6,8 +6,8 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import UserListing from "@/components/UserListing";
 import { useUsers } from "@linkwarden/router/users";
-import Divider from "@/components/ui/Divider";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 interface User extends U {
   subscriptions: {
@@ -92,7 +92,7 @@ export default function Admin() {
         </div>
       </div>
 
-      <Divider className="my-3" />
+      <Separator className="my-3" />
 
       {searchQuery && filteredUsers && filteredUsers.length > 0 ? (
         <UserListing

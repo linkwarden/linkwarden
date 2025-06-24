@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function EmailConfirmaion() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function EmailConfirmaion() {
           {t("check_your_email")}
         </p>
 
-        <div className="divider my-3"></div>
+        <Separator className="my-3" />
 
         {router.query.email && typeof router.query.email === "string" && (
           <p className="text-center font-bold mb-3 break-all">

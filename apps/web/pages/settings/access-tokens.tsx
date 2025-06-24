@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
 export default function AccessTokens() {
   const [newTokenModal, setNewTokenModal] = useState(false);
@@ -33,7 +34,7 @@ export default function AccessTokens() {
         {t("access_tokens")}
       </p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <p>{t("access_tokens_description")}</p>

@@ -14,6 +14,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -87,7 +88,7 @@ export default function NewTokenModal({ onClose }: Props) {
         <>
           <p className="text-xl font-thin">{t("create_access_token")}</p>
 
-          <div className="divider mb-3 mt-1"></div>
+          <Separator className="my-3" />
 
           <div className="flex sm:flex-row flex-col gap-2 items-center">
             <div className="w-full">

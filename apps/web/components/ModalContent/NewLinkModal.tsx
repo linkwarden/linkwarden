@@ -11,6 +11,7 @@ import { useAddLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import { Button } from "@/components/ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -95,7 +96,9 @@ export default function NewLinkModal({ onClose }: Props) {
   return (
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("create_new_link")}</p>
-      <div className="divider mb-3 mt-1" />
+
+      <Separator className="my-3" />
+
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">
           <p className="mb-2">{t("link")}</p>

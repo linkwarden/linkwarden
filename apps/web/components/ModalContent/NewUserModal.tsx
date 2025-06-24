@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import { useTranslation, Trans } from "next-i18next";
 import { useAddUser } from "@linkwarden/router/users";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -70,7 +71,7 @@ export default function NewUserModal({ onClose }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("create_new_user")}</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <form onSubmit={submit}>
         <div className="grid sm:grid-cols-2 gap-3">

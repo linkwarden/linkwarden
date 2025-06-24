@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useDeleteLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -51,7 +52,7 @@ export default function DeleteLinkModal({ onClose, activeLink }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin text-red-500">{t("delete_link")}</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <p>{t("link_deletion_confirmation_message")}</p>

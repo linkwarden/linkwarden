@@ -6,6 +6,7 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function Password() {
   const { t } = useTranslation();
@@ -56,7 +57,7 @@ export default function Password() {
         {t("change_password")}
       </p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <p className="mb-3">{t("password_change_instructions")}</p>
       <div className="w-full flex flex-col gap-2 justify-between">

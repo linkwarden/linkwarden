@@ -7,6 +7,7 @@ import { LinkArchiveActionSchemaType } from "@linkwarden/lib/schemaValidation";
 import toast from "react-hot-toast";
 import { useArchiveAction } from "@linkwarden/router/links";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function Worker() {
   const { t } = useTranslation();
@@ -54,7 +55,7 @@ export default function Worker() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">{t("worker")}</p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <div className="w-full flex flex-col gap-6 justify-between">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
