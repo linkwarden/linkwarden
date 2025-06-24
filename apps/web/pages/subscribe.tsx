@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
+import { Separator } from "@/components/ui/separator";
 
 export default function Subscribe() {
   const { t } = useTranslation();
@@ -53,7 +54,7 @@ export default function Subscribe() {
           {t("subscribe_title")}
         </p>
 
-        <div className="divider my-0"></div>
+        <Separator />
 
         <div>
           <p>

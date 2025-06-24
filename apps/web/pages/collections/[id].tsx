@@ -34,6 +34,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -273,7 +274,7 @@ export default function Index() {
 
         {activeCollection?.description && <p>{activeCollection.description}</p>}
 
-        <div className="divider my-0" />
+        <Separator />
 
         {collections.some((e) => e.parentId === activeCollection?.id) && (
           <>

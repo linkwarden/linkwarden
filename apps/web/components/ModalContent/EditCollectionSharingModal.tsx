@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { User } from "@linkwarden/prisma/client";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -113,7 +114,7 @@ export default function EditCollectionSharingModal({
           : t("team")}
       </p>
 
-      <div className="divider mb-3 mt-1" />
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         {permissions === true && !isPublicRoute && (
@@ -154,7 +155,7 @@ export default function EditCollectionSharingModal({
         )}
 
         {permissions === true && !isPublicRoute && (
-          <div className="divider my-3" />
+          <Separator className="my-3" />
         )}
 
         {permissions === true && !isPublicRoute && (
@@ -233,7 +234,7 @@ export default function EditCollectionSharingModal({
                 </div>
               </div>
 
-              <div className="divider my-0 last:hidden h-[1px]"></div>
+              <Separator />
 
               {collection.members
                 .sort((a, b) => (a.userId as number) - (b.userId as number))
@@ -261,98 +262,103 @@ export default function EditCollectionSharingModal({
                   };
 
                   return (
-                    <div
-                      key={e.userId}
-                      className="relative p-3 bg-base-200 rounded-xl flex gap-2 justify-between border-none"
-                    >
-                      <div className="flex items-center">
-                        <ProfilePhoto
-                          src={e.user.image ? e.user.image : undefined}
-                          name={e.user.name}
-                        />
-                        <div className="ml-2">
-                          <p className="text-sm font-semibold">{e.user.name}</p>
-                          <p className="text-xs text-neutral">
-                            @{e.user.username}
-                          </p>
+                    <>
+                      <div
+                        key={e.userId}
+                        className="relative p-3 bg-base-200 rounded-xl flex gap-2 justify-between border-none"
+                      >
+                        <div className="flex items-center">
+                          <ProfilePhoto
+                            src={e.user.image ? e.user.image : undefined}
+                            name={e.user.name}
+                          />
+                          <div className="ml-2">
+                            <p className="text-sm font-semibold">
+                              {e.user.name}
+                            </p>
+                            <p className="text-xs text-neutral">
+                              @{e.user.username}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {permissions === true && !isPublicRoute ? (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="h-8">
+                                  {t(roleKey)} <i className="bi-chevron-down" />
+                                </Button>
+                              </DropdownMenuTrigger>
+
+                              <DropdownMenuContent sideOffset={4} align="end">
+                                <DropdownMenuRadioGroup
+                                  value={roleKey}
+                                  onValueChange={handleRoleChange}
+                                >
+                                  <DropdownMenuRadioItem value="viewer">
+                                    <div>
+                                      <p className="font-bold whitespace-nowrap">
+                                        {t("viewer")}
+                                      </p>
+                                      <p className="whitespace-nowrap">
+                                        {t("viewer_desc")}
+                                      </p>
+                                    </div>
+                                  </DropdownMenuRadioItem>
+
+                                  <DropdownMenuRadioItem value="contributor">
+                                    <div>
+                                      <p className="font-bold whitespace-nowrap">
+                                        {t("contributor")}
+                                      </p>
+                                      <p className="whitespace-nowrap">
+                                        {t("contributor_desc")}
+                                      </p>
+                                    </div>
+                                  </DropdownMenuRadioItem>
+
+                                  <DropdownMenuRadioItem value="admin">
+                                    <div>
+                                      <p className="font-bold whitespace-nowrap">
+                                        {t("admin")}
+                                      </p>
+                                      <p className="whitespace-nowrap">
+                                        {t("admin_desc")}
+                                      </p>
+                                    </div>
+                                  </DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          ) : (
+                            <p className="text-sm text-neutral">{t(roleKey)}</p>
+                          )}
+
+                          {permissions === true && !isPublicRoute && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-neutral hover:text-red-500"
+                              onClick={() => {
+                                setCollection({
+                                  ...collection,
+                                  members: collection.members.filter(
+                                    (member) => member.userId !== e.userId
+                                  ),
+                                });
+                              }}
+                            >
+                              <i
+                                className="bi-x text-xl"
+                                title={t("remove_member")}
+                              />
+                            </Button>
+                          )}
                         </div>
                       </div>
-
-                      <div className="flex items-center gap-2">
-                        {permissions === true && !isPublicRoute ? (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8">
-                                {t(roleKey)} <i className="bi-chevron-down" />
-                              </Button>
-                            </DropdownMenuTrigger>
-
-                            <DropdownMenuContent sideOffset={4} align="end">
-                              <DropdownMenuRadioGroup
-                                value={roleKey}
-                                onValueChange={handleRoleChange}
-                              >
-                                <DropdownMenuRadioItem value="viewer">
-                                  <div>
-                                    <p className="font-bold whitespace-nowrap">
-                                      {t("viewer")}
-                                    </p>
-                                    <p className="whitespace-nowrap">
-                                      {t("viewer_desc")}
-                                    </p>
-                                  </div>
-                                </DropdownMenuRadioItem>
-
-                                <DropdownMenuRadioItem value="contributor">
-                                  <div>
-                                    <p className="font-bold whitespace-nowrap">
-                                      {t("contributor")}
-                                    </p>
-                                    <p className="whitespace-nowrap">
-                                      {t("contributor_desc")}
-                                    </p>
-                                  </div>
-                                </DropdownMenuRadioItem>
-
-                                <DropdownMenuRadioItem value="admin">
-                                  <div>
-                                    <p className="font-bold whitespace-nowrap">
-                                      {t("admin")}
-                                    </p>
-                                    <p className="whitespace-nowrap">
-                                      {t("admin_desc")}
-                                    </p>
-                                  </div>
-                                </DropdownMenuRadioItem>
-                              </DropdownMenuRadioGroup>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        ) : (
-                          <p className="text-sm text-neutral">{t(roleKey)}</p>
-                        )}
-
-                        {permissions === true && !isPublicRoute && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-neutral hover:text-red-500"
-                            onClick={() => {
-                              setCollection({
-                                ...collection,
-                                members: collection.members.filter(
-                                  (member) => member.userId !== e.userId
-                                ),
-                              });
-                            }}
-                          >
-                            <i
-                              className="bi-x text-xl"
-                              title={t("remove_member")}
-                            />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
+                      <Separator className="last:hidden" />
+                    </>
                   );
                 })}
             </div>

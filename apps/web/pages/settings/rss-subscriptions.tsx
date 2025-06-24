@@ -8,6 +8,7 @@ import { RssSubscription } from "@linkwarden/prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
 import { useConfig } from "@linkwarden/router/config";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function RssSubscriptions() {
   const { t } = useTranslation();
@@ -31,7 +32,8 @@ export default function RssSubscriptions() {
         {t("rss_subscriptions")}
       </p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
+
       <div className="flex flex-col gap-3">
         <p>
           {t("rss_subscriptions_desc", {

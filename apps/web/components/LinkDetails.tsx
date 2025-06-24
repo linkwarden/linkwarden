@@ -36,6 +36,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Separator } from "./ui/separator";
 
 type Props = {
   className?: string;
@@ -521,7 +522,7 @@ export default function LinkDetails({
                       link={link}
                       downloadable={true}
                     />
-                    <hr className="m-3 border-t border-neutral-content" />
+                    <Separator className="my-3" />
                   </>
                 ) : undefined}
 
@@ -538,7 +539,7 @@ export default function LinkDetails({
                       link={link}
                       downloadable={true}
                     />
-                    <hr className="m-3 border-t border-neutral-content" />
+                    <Separator className="my-3" />
                   </>
                 ) : undefined}
 
@@ -551,7 +552,7 @@ export default function LinkDetails({
                       link={link}
                       downloadable={true}
                     />
-                    <hr className="m-3 border-t border-neutral-content" />
+                    <Separator className="my-3" />
                   </>
                 ) : undefined}
 
@@ -563,7 +564,7 @@ export default function LinkDetails({
                       format={ArchivedFormat.readability}
                       link={link}
                     />
-                    <hr className="m-3 border-t border-neutral-content" />
+                    <Separator className="my-3" />
                   </>
                 ) : undefined}
 

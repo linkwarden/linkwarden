@@ -6,6 +6,7 @@ import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
+import { Separator } from "@/components/ui/separator";
 
 interface FormData {
   email: string;
@@ -66,7 +67,7 @@ export default function Forgot() {
             {isEmailSent ? t("email_sent") : t("forgot_password")}
           </p>
 
-          <div className="divider my-0"></div>
+          <Separator />
 
           {!isEmailSent ? (
             <>

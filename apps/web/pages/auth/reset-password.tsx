@@ -7,6 +7,7 @@ import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
+import { Separator } from "@/components/ui/separator";
 
 interface FormData {
   password: string;
@@ -70,7 +71,7 @@ export default function ResetPassword() {
             {requestSent ? t("password_updated") : t("reset_password")}
           </p>
 
-          <div className="divider my-0"></div>
+          <Separator />
 
           {!requestSent ? (
             <>

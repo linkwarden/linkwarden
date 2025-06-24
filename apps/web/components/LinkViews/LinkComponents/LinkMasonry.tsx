@@ -31,6 +31,7 @@ import { useRouter } from "next/router";
 import LinkFormats from "./LinkFormats";
 import openLink from "@/lib/client/openLink";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -200,7 +201,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
               )}
             </div>
 
-            <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
+            <Separator />
           </div>
         )}
 
@@ -247,7 +248,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
         {(show.collection || show.date) && (
           <div>
-            <hr className="divider mt-0 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+            <Separator className="mb-1" />
 
             <div className="flex flex-wrap justify-between items-center text-xs text-neutral px-3 pb-1 w-full gap-x-2">
               {!isPublicRoute && show.collection && (

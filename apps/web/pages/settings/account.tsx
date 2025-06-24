@@ -24,6 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 
 export default function Account() {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
@@ -149,7 +150,7 @@ export default function Account() {
         {t("accountSettings")}
       </p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-5">
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
@@ -308,7 +309,7 @@ export default function Account() {
             </p>
           </div>
 
-          <div className="divider my-3"></div>
+          <Separator className="my-3" />
 
           <div className="flex gap-3 flex-col">
             <div>
@@ -335,7 +336,7 @@ export default function Account() {
             </p>
           </div>
 
-          <div className="divider my-3"></div>
+          <Separator className="my-3" />
 
           <p>
             {t("delete_account_warning")}

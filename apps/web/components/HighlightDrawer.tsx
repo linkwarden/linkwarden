@@ -9,6 +9,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useTranslation } from "next-i18next";
 import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 type Props = {
   onClose: Function;
@@ -28,7 +29,8 @@ const HighlightDrawer = ({ onClose }: Props) => {
       direction="left"
     >
       <div>
-        <h2 className="text-lg font-semibold mb-5">{t("notes_highlights")}</h2>
+        <h2 className="text-lg font-semibold">{t("notes_highlights")}</h2>
+        <Separator className="my-5" />
         {data && data.length > 0 ? (
           data.map((highlight) => {
             const formattedDate = new Date(highlight.createdAt).toLocaleString(

@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 interface User extends U {
   subscriptions: {
@@ -65,7 +66,7 @@ export default function Billing() {
         {t("billing_settings")}
       </p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <div className="w-full mx-auto flex flex-col gap-3 justify-between">
         <p className="text-md">
@@ -94,7 +95,7 @@ export default function Billing() {
         </p>
       </div>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <div className="flex items-center justify-between gap-2 mb-3 relative">
         <div>
