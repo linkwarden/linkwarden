@@ -8,6 +8,7 @@ import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useBulkEditLinks } from "@linkwarden/router/links";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -70,7 +71,8 @@ export default function BulkEditLinksModal({ onClose }: Props) {
           ? t("edit_link")
           : t("edit_links", { count: selectedLinks.length })}
       </p>
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
+
       <div className="mt-5">
         <div className="grid sm:grid-cols-2 gap-3">
           <div>

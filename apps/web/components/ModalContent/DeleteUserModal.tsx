@@ -5,6 +5,7 @@ import { useDeleteUser } from "@linkwarden/router/users";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useConfig } from "@linkwarden/router/config";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -44,7 +45,7 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
         {isAdmin ? t("delete_user") : t("remove_user")}
       </p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <p>{t("confirm_user_deletion")}</p>

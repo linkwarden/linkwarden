@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useBulkDeleteLinks } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -45,7 +46,7 @@ export default function BulkDeleteLinksModal({ onClose }: Props) {
           : t("delete_links", { count: selectedLinks.length })}
       </p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <p>

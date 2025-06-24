@@ -12,6 +12,7 @@ import { useUploadFile } from "@linkwarden/router/links";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import { useConfig } from "@linkwarden/router/config";
 import { Button } from "@/components/ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -99,7 +100,8 @@ export default function UploadFileModal({ onClose }: Props) {
       <div className="flex gap-2 items-start">
         <p className="text-xl font-thin">{t("upload_file")}</p>
       </div>
-      <div className="divider mb-3 mt-1" />
+
+      <Separator className="my-3" />
 
       <div className="grid grid-flow-row-dense sm:grid-cols-5 gap-3">
         <div className="sm:col-span-3 col-span-5">

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUser } from "@linkwarden/router/user";
+import { Separator } from "@/components/ui/separator";
 
 export default function Delete() {
   const [password, setPassword] = useState("");
@@ -74,7 +75,7 @@ export default function Delete() {
           </p>
         </div>
 
-        <div className="divider my-0"></div>
+        <Separator />
 
         <p>{t("delete_warning")}</p>
 

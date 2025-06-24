@@ -24,6 +24,7 @@ import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import LinkFormats from "./LinkViews/LinkComponents/LinkFormats";
 import LinkTypeBadge from "./LinkViews/LinkComponents/LinkTypeBadge";
 import LinkPin from "./LinkViews/LinkComponents/LinkPin";
+import { Separator } from "./ui/separator";
 
 export function DashboardLinks({
   links,
@@ -174,7 +175,7 @@ export function Card({ link, editMode }: Props) {
                   </div>
                 )}
             </div>
-            <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
+            <Separator />
           </div>
         )}
 
@@ -191,7 +192,7 @@ export function Card({ link, editMode }: Props) {
 
           {(show.collection || show.date) && (
             <div>
-              <hr className="divider mt-0 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+              <Separator className="mb-1" />
 
               <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
                 {show.collection && !isPublicRoute && (

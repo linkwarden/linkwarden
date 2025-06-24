@@ -14,6 +14,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n } from "next-i18next.config";
 import { Trans, useTranslation } from "next-i18next";
 import { useConfig } from "@linkwarden/router/config";
+import { Separator } from "@/components/ui/separator";
 
 type FormData = {
   name: string;
@@ -167,7 +168,7 @@ export default function Register({
               {t("enter_details")}
             </p>
 
-            <div className="divider my-0"></div>
+            <Separator />
 
             <div>
               <p className="text-sm w-fit font-semibold mb-1">
@@ -284,7 +285,11 @@ export default function Register({
             </Button>
 
             {availableLogins.buttonAuths.length > 0 && (
-              <div className="divider my-1">{t("or_continue_with")}</div>
+              <div className="flex items-center gap-2">
+                <Separator className="my-1 flex-1 w-auto" />
+                <p className="whitespace-nowrap">{t("or_continue_with")}</p>
+                <Separator className="my-1 flex-1 w-auto" />
+              </div>
             )}
 
             {displayLoginExternalButton()}

@@ -9,6 +9,7 @@ import IconPicker from "../IconPicker";
 import { IconWeight } from "@phosphor-icons/react";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -55,7 +56,7 @@ export default function EditCollectionModal({
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("edit_collection_info")}</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-3">

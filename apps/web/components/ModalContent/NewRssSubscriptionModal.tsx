@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import TextInput from "../TextInput";
 import CollectionSelection from "../InputSelect/CollectionSelection";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -57,7 +58,9 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
     <Modal toggleModal={onClose}>
       <>
         <p className="text-xl font-thin">{t("create_rss_subscription")}</p>
-        <div className="divider mb-3 mt-1"></div>
+
+        <Separator className="my-3" />
+
         <div className="flex sm:flex-row flex-col gap-3 items-center">
           <div className="w-full">
             <label>{t("name")}</label>

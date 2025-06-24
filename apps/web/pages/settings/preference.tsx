@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
 export default function Preference() {
   const { t } = useTranslation();
@@ -190,7 +191,7 @@ export default function Preference() {
     <SettingsLayout>
       <p className="capitalize text-3xl font-thin inline">{t("preference")}</p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-5">
         <div>
@@ -214,13 +215,14 @@ export default function Preference() {
               <div
                 key={theme}
                 className={`w-full text-center outline-solid outline-neutral-content outline h-20 duration-100 rounded-xl flex items-center justify-center cursor-pointer select-none ${bgColor} ${
-                  localStorage.getItem("theme") === theme
+                  account.theme === theme
                     ? `outline-primary ${activeColor}`
                     : textColor
                 }`}
-                onClick={() =>
-                  updateUserPreference.mutate({ theme: theme as any })
-                }
+                onClick={() => {
+                  updateUserPreference.mutate({ theme: theme as any });
+                  document.documentElement.setAttribute("data-theme", theme);
+                }}
               >
                 <i className={`${icon} text-3xl`}></i>
                 <p className="ml-2 text-xl">{t(theme)}</p>
@@ -260,7 +262,7 @@ export default function Preference() {
               {t("ai_settings")}
             </p>
 
-            <div className="divider my-3"></div>
+            <Separator className="my-3" />
 
             <p>{t("ai_tagging_method")}</p>
 
@@ -381,7 +383,9 @@ export default function Preference() {
           <p className="capitalize text-3xl font-thin inline">
             {t("archive_settings")}
           </p>
-          <div className="divider my-3"></div>
+
+          <Separator className="my-3" />
+
           <p>{t("formats_to_archive")}</p>
           <div className="p-3">
             <Checkbox
@@ -485,7 +489,9 @@ export default function Preference() {
           <p className="capitalize text-3xl font-thin inline">
             {t("link_settings")}
           </p>
-          <div className="divider my-3"></div>
+
+          <Separator className="my-3" />
+
           <div className="mb-3">
             <Checkbox
               label={t("prevent_duplicate_links")}

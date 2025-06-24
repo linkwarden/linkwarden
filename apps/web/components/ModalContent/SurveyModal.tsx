@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "../Modal";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -17,7 +18,7 @@ export default function SurveyModal({ onClose, submit }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("quick_survey")}</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-4">
         <p>{t("how_did_you_discover_linkwarden")}</p>

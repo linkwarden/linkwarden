@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
+import { Separator } from "@/components/ui/separator";
 
 interface FormData {
   password: string;
@@ -70,7 +71,7 @@ export default function MemberOnboarding() {
             {t("invitation_accepted")}
           </p>
 
-          <div className="divider my-0"></div>
+          <Separator />
 
           <p
             style={{

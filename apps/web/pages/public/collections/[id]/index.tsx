@@ -30,6 +30,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useUser } from "@linkwarden/router/user";
+import { Separator } from "@/components/ui/separator";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
@@ -228,7 +229,7 @@ export default function PublicCollections() {
             </div>
           </div>
 
-          <div className="divider mt-5 mb-0"></div>
+          <Separator className="mt-5" />
 
           <div className="flex mb-5 mt-10 flex-col gap-5">
             <LinkListOptions
