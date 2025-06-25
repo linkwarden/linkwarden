@@ -1,11 +1,8 @@
 node_modules
 .next
 /public
-
 *.lock
 *.log
-
 .github
-
 data
 pgdata
