@@ -42,16 +42,13 @@ jobs:
           echo "REMOTE_URL=$(git remote get-url origin)" >> $GITHUB_OUTPUT
 
       - name: Rewrite every commit’s author/committer
-        env:
-          NEW_NAME:  "LinkwardenBot"
-          NEW_EMAIL: "bot@linkwarden.app"
         run: |
           git filter-repo \
-            --name-callback  'return b"${NEW_NAME}"' \
-            --email-callback 'return b"${NEW_EMAIL}"' \
+            --name-callback  'return b"LinkwardenBot"' \
+            --email-callback 'return b"bot@linkwarden.app"' \
             --commit-callback '
-                commit.committer_name  = b"${NEW_NAME}"
-                commit.committer_email = b"${NEW_EMAIL}"
+                commit.committer_name  = b"LinkwardenBot"
+                commit.committer_email = b"bot@linkwarden.app"
             '
 
       - name: Restore origin and recreate tracking branch
