@@ -7,6 +7,8 @@
 <a href="https://twitter.com/LinkwardenHQ"><img src="https://img.shields.io/twitter/follow/linkwarden" alt="Twitter"></a> <a href="https://news.ycombinator.com/item?id=36942308"><img src="https://img.shields.io/badge/Hacker%20News-280-%23FF6600"></img></a>
 
 <a href="https://github.com/linkwarden/linkwarden/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/linkwarden/linkwarden"></a>
+<a href="https://crowdin.com/project/linkwarden">
+<img src="https://badges.crowdin.net/linkwarden/localized.svg" alt="Crowdin" /></a>
 <a href="https://opencollective.com/linkwarden"><img src="https://img.shields.io/opencollective/all/linkwarden" alt="Open Collective"></a>
 
 </div>
@@ -94,7 +96,7 @@ Join and follow us in the following platforms to stay up to date about the most 
 
 ## Suggestions
 
-We _usually_ go after the [popular suggestions](https://github.com/linkwarden/linkwarden/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc). Feel free to open a [new issue](https://github.com/linkwarden/linkwarden/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=) to suggest one - others might be interested too! :)
+We _usually_ go after the [popular suggestions](https://github.com/linkwarden/linkwarden/issues?q=is%3Aissue%20is%3Aopen%20sort%3Areactions-%2B1-desc). Feel free to open a [new issue](https://github.com/linkwarden/linkwarden/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=) to suggest one - others might be interested too! :)
 
 ## Roadmap
 
@@ -111,7 +113,16 @@ Here are some community-maintained projects that are built around Linkwarden:
 
 ## Development
 
-If you want to contribute, Thanks! Start by checking our [public roadmap](https://github.com/orgs/linkwarden/projects/1), there you'll see a [README for contributers](https://github.com/orgs/linkwarden/projects/1?pane=issue&itemId=34708277) for the rest of the info on how to contribute and the main tech stack.
+If you want to contribute, Thanks! Start by choosing one of our [popular suggestions](https://github.com/linkwarden/linkwarden/issues?q=is%3Aissue%20is%3Aopen%20sort%3Areactions-%2B1-desc), just please stay in touch with [@daniel31x13](https://github.com/daniel31x13) before starting.
+
+# Translations
+
+If you want to help us translate Linkwarden to your language, please join our [Crowdin project](https://crowdin.com/project/linkwarden) and start translating. We would love to have your help!
+
+To start translating a new language, please create an issue so we can set it up for you. New languages will be added once they reach at least 50% translation completion.
+
+<a href="https://crowdin.com/project/linkwarden">
+<img src="https://badges.crowdin.net/linkwarden/localized.svg" alt="Crowdin" /></a>
 
 ## Security
 
