@@ -36,9 +36,10 @@ jobs:
         run: |
           pip install --quiet git-filter-repo
 
-      - name: Capture origin URL  # run **before** filter-repo
+      - name: Capture origin URL
         id: save_remote
-        run: echo "REMOTE_URL=$(git remote get-url origin)" >> $GITHUB_OUTPUT
+        run: |
+          echo "REMOTE_URL=$(git remote get-url origin)" >> $GITHUB_OUTPUT
 
       - name: Rewrite every commit’s author/committer
         env:
@@ -55,7 +56,7 @@ jobs:
 
       - name: Restore origin and recreate tracking branch
         run: |
-          git remote add origin "${{ steps.save_remote.outputs.URL }}"
+          git remote add origin "${{ steps.save_remote.outputs.REMOTE_URL }}"
           git fetch origin i18n --depth=1 --no-tags
 
       - name: Push rewritten history
