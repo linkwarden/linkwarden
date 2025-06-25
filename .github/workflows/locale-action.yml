@@ -1,0 +1,54 @@
+name: Manage i18n pull requests
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  rewrite-author:
+    if: github.event.pull_request.head.ref == 'i18n'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout full history of the i18n branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Give up early if the latest commit is already from LinkwardenBot
+        run: |
+          if [ "$(git show -s --format='%an')" = 'LinkwardenBot' ]; then
+            echo "Already rewritten – skipping."
+            exit 0
+          fi
+
+      - name: Set bot identity in local Git config
+        run: |
+          git config user.name  "LinkwardenBot"
+          git config user.email "bot@linkwarden.app"
+
+      - name: Install git-filter-repo (safer & faster than filter-branch)
+        run: |
+          pip install --quiet git-filter-repo
+
+      - name: Rewrite every commit’s author/committer
+        env:
+          NEW_NAME:  "LinkwardenBot"
+          NEW_EMAIL: "bot@linkwarden.app"
+        run: |
+          git filter-repo \
+            --name-callback  'return b"${NEW_NAME}"' \
+            --email-callback 'return b"${NEW_EMAIL}"' \
+            --commit-callback '
+                commit.committer_name  = b"${NEW_NAME}"
+                commit.committer_email = b"${NEW_EMAIL}"
+            '
+
+      - name: Force-push the rewritten branch back to GitHub
+        run: |
+          git push --force-with-lease origin HEAD:${{ github.event.pull_request.head.ref }}
