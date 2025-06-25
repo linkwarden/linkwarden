@@ -1,5 +1,5 @@
 {
-  "user_administration": "User Administration",
+  "user_administration": "Users Administration",
   "search_users": "Search for Users",
   "no_users_found": "No users found.",
   "no_user_found_in_search": "No users found with the given search query.",
@@ -489,5 +489,6 @@
   "notes_highlights": "Notes & Highlights",
   "no_notes_highlights": "No notes or highlights found for this link.",
   "save": "Save",
-  "edit_layout": "Edit Layout"
+  "edit_layout": "Edit Layout",
+  "test": "test"
 }
