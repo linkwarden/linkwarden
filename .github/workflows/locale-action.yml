@@ -53,8 +53,10 @@ jobs:
                 commit.committer_email = b"${NEW_EMAIL}"
             '
 
-      - name: Restore the origin remote  # run **after** filter-repo
-        run: git remote add origin "${{ steps.save_remote.outputs.REMOTE_URL }}"
+      - name: Restore origin and recreate tracking branch
+        run: |
+          git remote add origin "${{ steps.save_remote.outputs.URL }}"
+          git fetch origin i18n --depth=1 --no-tags
 
-      - name: Force-push the rewritten branch
-        run: git push --force-with-lease origin HEAD:${{ github.event.pull_request.head.ref }}
+      - name: Push rewritten history
+        run: git push --force-with-lease origin HEAD:i18n
