@@ -36,6 +36,10 @@ jobs:
         run: |
           pip install --quiet git-filter-repo
 
+      - name: Capture origin URL  # run **before** filter-repo
+        id: save_remote
+        run: echo "REMOTE_URL=$(git remote get-url origin)" >> $GITHUB_OUTPUT
+
       - name: Rewrite every commit’s author/committer
         env:
           NEW_NAME:  "LinkwardenBot"
@@ -49,6 +53,8 @@ jobs:
                 commit.committer_email = b"${NEW_EMAIL}"
             '
 
-      - name: Force-push the rewritten branch back to GitHub
-        run: |
-          git push --force-with-lease origin HEAD:${{ github.event.pull_request.head.ref }}
+      - name: Restore the origin remote  # run **after** filter-repo
+        run: git remote add origin "${{ steps.save_remote.outputs.REMOTE_URL }}"
+
+      - name: Force-push the rewritten branch
+        run: git push --force-with-lease origin HEAD:${{ github.event.pull_request.head.ref }}
