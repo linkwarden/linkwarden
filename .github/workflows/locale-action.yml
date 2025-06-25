@@ -14,47 +14,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout full history of the i18n branch
+      - name: Checkout i18n branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
-      - name: Give up early if the latest commit is already from LinkwardenBot
+      - name: Skip if already rewritten
         run: |
           if [ "$(git show -s --format='%an')" = 'LinkwardenBot' ]; then
             echo "Already rewritten – skipping."
             exit 0
           fi
 
-      - name: Set bot identity in local Git config
+      - name: Configure bot identity
         run: |
           git config user.name  "LinkwardenBot"
           git config user.email "bot@linkwarden.app"
 
-      - name: Install git-filter-repo (safer & faster than filter-branch)
+      - name: Amend just the PR commits
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          pip install --quiet git-filter-repo
-
-      - name: Capture origin URL
-        id: save_remote
-        run: |
-          echo "REMOTE_URL=$(git remote get-url origin)" >> $GITHUB_OUTPUT
-
-      - name: Rewrite every commit’s author/committer
-        run: |
-          git filter-repo \
-            --name-callback  'return b"LinkwardenBot"' \
-            --email-callback 'return b"bot@linkwarden.app"' \
-            --commit-callback '
-                commit.committer_name  = b"LinkwardenBot"
-                commit.committer_email = b"bot@linkwarden.app"
-            '
-
-      - name: Restore origin and recreate tracking branch
-        run: |
-          git remote add origin "${{ steps.save_remote.outputs.REMOTE_URL }}"
-          git fetch origin i18n --depth=1 --no-tags
+          # Rebase everything *after* the PR’s base commit.
+          # --exec runs after each commit is picked, so we can amend in-place.
+          git rebase --committer-date-is-author-date \
+            --exec 'git commit --amend --no-edit --author="LinkwardenBot <bot@linkwarden.app>"' \
+            "$BASE_SHA"
 
       - name: Push rewritten history
         run: git push --force-with-lease origin HEAD:i18n
