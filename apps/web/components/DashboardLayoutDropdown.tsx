@@ -330,7 +330,7 @@ function DraggableListItem({
         setDragOverPosition(null);
       }}
       className={`
-        py-1 px-1 flex items-center justify-between
+        select-none py-1 px-1 flex items-center justify-between
         ${section.enabled ? "cursor-grab active:cursor-grabbing" : ""}
         ${draggedId === sectionId ? "opacity-70" : ""}
         ${indicatorClass}

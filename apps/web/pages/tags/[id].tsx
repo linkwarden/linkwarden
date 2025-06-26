@@ -181,9 +181,7 @@ export default function Index() {
                           size="icon"
                           title={t("more")}
                         >
-                          <button>
-                            <i className="bi-three-dots text-xl text-neutral" />
-                          </button>
+                          <i className="bi-three-dots text-xl text-neutral" />
                         </Button>
                       </DropdownMenuTrigger>
 
