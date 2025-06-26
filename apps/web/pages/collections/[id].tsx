@@ -150,9 +150,7 @@ export default function Index() {
                   onMouseDown={(e) => e.preventDefault()}
                   title={t("more")}
                 >
-                  <button>
-                    <i className="bi-three-dots text-xl" />
-                  </button>
+                  <i className="bi-three-dots text-xl" />
                 </Button>
               </DropdownMenuTrigger>
 

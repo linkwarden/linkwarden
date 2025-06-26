@@ -97,9 +97,7 @@ export default function LinkActions({
               className={clsx(className)}
               onMouseDown={(e) => e.preventDefault()}
             >
-              <button>
-                <i title="More" className="bi-three-dots text-xl" />
-              </button>
+              <i title="More" className="bi-three-dots text-xl" />
             </Button>
           </DropdownMenuTrigger>
 

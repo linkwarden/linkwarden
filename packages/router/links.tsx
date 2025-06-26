@@ -239,9 +239,15 @@ type UseGetLinkParams = {
   id: number;
   isPublicRoute?: boolean;
   auth?: MobileAuth;
+  enabled?: boolean;
 };
 
-const useGetLink = ({ id, isPublicRoute = false, auth }: UseGetLinkParams) => {
+const useGetLink = ({
+  id,
+  isPublicRoute = false,
+  auth,
+  enabled = false,
+}: UseGetLinkParams) => {
   const queryClient = useQueryClient();
 
   return useQuery(
@@ -249,7 +255,7 @@ const useGetLink = ({ id, isPublicRoute = false, auth }: UseGetLinkParams) => {
     {
       queryKey: ["link", id, isPublicRoute],
       placeholderData: {} as LinkIncludingShortenedCollectionAndTags,
-      enabled: id != null,
+      enabled: id != null && enabled,
       queryFn: async () => {
         const base = auth?.instance ?? "";
         const route = isPublicRoute

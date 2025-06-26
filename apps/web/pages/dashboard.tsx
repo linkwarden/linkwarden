@@ -78,15 +78,11 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  // Sort sections by order and filter enabled ones
   const orderedSections = useMemo(() => {
-    return dashboardSections.sort((a, b) => {
-      if (a.order !== undefined && b.order !== undefined) {
-        return a.order - b.order;
-      }
-      if (a.order !== undefined) return -1;
-      if (b.order !== undefined) return 1;
-      return 0;
+    return [...dashboardSections].sort((a, b) => {
+      const orderA = a.order ?? Number.MAX_SAFE_INTEGER;
+      const orderB = b.order ?? Number.MAX_SAFE_INTEGER;
+      return orderA - orderB;
     });
   }, [dashboardSections]);
 
