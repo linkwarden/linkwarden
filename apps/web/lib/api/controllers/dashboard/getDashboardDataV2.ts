@@ -1,15 +1,8 @@
 import { prisma } from "@linkwarden/prisma";
-import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
+import { Order } from "@linkwarden/types";
 
-export default async function getDashboardData(
-  userId: number
-  // query: LinkRequestQuery
-) {
+export default async function getDashboardData(userId: number) {
   let order: Order = { id: "desc" };
-  // if (query.sort === Sort.DateNewestFirst) order = { id: "desc" };
-  // else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
-  // else if (query.sort === Sort.NameAZ) order = { name: "asc" };
-  // else if (query.sort === Sort.NameZA) order = { name: "desc" };
 
   const dashboardSections = await prisma.dashboardSection.findMany({
     where: {
@@ -128,7 +121,7 @@ export default async function getDashboardData(
     });
   }
 
-  let collectionLinks: any[] = [];
+  let collectionLinks: any = {};
 
   if (collectionSections.length > 0) {
     const collectionIds = collectionSections
@@ -136,43 +129,44 @@ export default async function getDashboardData(
       .map((section) => section.collectionId!);
 
     if (collectionIds.length > 0) {
-      collectionLinks = await prisma.link.findMany({
-        where: {
-          AND: [
-            {
-              collection: {
-                id: { in: collectionIds },
-                OR: [
-                  { ownerId: userId },
-                  {
-                    members: {
-                      some: { userId },
+      for (const collectionId of collectionIds) {
+        const links = await prisma.link.findMany({
+          where: {
+            AND: [
+              {
+                collection: {
+                  id: collectionId,
+                  OR: [
+                    { ownerId: userId },
+                    {
+                      members: {
+                        some: { userId },
+                      },
                     },
-                  },
-                ],
+                  ],
+                },
               },
-            },
-          ],
-        },
-        take: 16,
-        include: {
-          tags: true,
-          collection: true,
-          pinnedBy: {
-            where: { id: userId },
-            select: { id: true },
+            ],
           },
-        },
-        orderBy: order || { id: "desc" },
-      });
+          take: 16,
+          include: {
+            tags: true,
+            collection: true,
+            pinnedBy: {
+              where: { id: userId },
+              select: { id: true },
+            },
+          },
+          orderBy: order || { id: "desc" },
+        });
+        collectionLinks[collectionId] = links;
+      }
     }
   }
 
-  const links = [
-    ...recentlyAddedLinks,
-    ...pinnedLinks,
-    ...collectionLinks,
-  ].sort((a, b) => new Date(b.id).getTime() - new Date(a.id).getTime());
+  const links = [...recentlyAddedLinks, ...pinnedLinks].sort(
+    (a, b) => new Date(b.id).getTime() - new Date(a.id).getTime()
+  );
 
   const uniqueLinks = links.filter(
     (link, index, self) => index === self.findIndex((t) => t.id === link.id)
@@ -181,6 +175,7 @@ export default async function getDashboardData(
   return {
     data: {
       links: uniqueLinks,
+      collectionLinks,
       numberOfPinnedLinks,
     },
     message: "Dashboard data fetched successfully.",

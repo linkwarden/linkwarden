@@ -30,7 +30,9 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
   const {
-    data: { links = [], numberOfPinnedLinks } = { links: [] },
+    data: { links = [], numberOfPinnedLinks, collectionLinks = {} } = {
+      links: [],
+    },
     ...dashboardData
   } = useDashboardData();
   const { data: tags = [] } = useTags();
@@ -151,6 +153,11 @@ export default function Dashboard() {
               collection={collections.find(
                 (c) => c.id === section.collectionId
               )}
+              collectionLinks={
+                section.collectionId
+                  ? collectionLinks[section.collectionId]
+                  : []
+              }
               links={links}
               tags={tags}
               numberOfLinks={numberOfLinks}
@@ -200,6 +207,7 @@ type SectionProps = {
   numberOfLinks: number;
   numberOfPinnedLinks: number;
   dashboardData: any;
+  collectionLinks: any[];
   setNewLinkModal: (value: boolean) => void;
 };
 
@@ -213,6 +221,7 @@ const Section = ({
   collectionsLength,
   numberOfPinnedLinks,
   dashboardData,
+  collectionLinks,
   setNewLinkModal,
 }: SectionProps) => {
   switch (sectionData.type) {
@@ -358,14 +367,9 @@ const Section = ({
                 <i className="bi-chevron-right text-sm"></i>
               </Link>
             </div>
-
-            {dashboardData.isLoading ||
-            links?.filter((link: any) => link.collection.id === collection.id)
-              .length > 0 ? (
+            {dashboardData.isLoading || collectionLinks?.length > 0 ? (
               <DashboardLinks
-                links={links.filter(
-                  (link: any) => link.collection.id === collection.id
-                )}
+                links={collectionLinks}
                 isLoading={dashboardData.isLoading}
               />
             ) : (
