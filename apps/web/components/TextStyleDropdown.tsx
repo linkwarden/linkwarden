@@ -89,7 +89,7 @@ const TextStyleDropdown = (props: Props) => {
             <div className="flex items-center gap-2 justify-between w-full">
               <div className="flex items-center gap-2">
                 <i className="bi-fonts text-lg leading-none text-neutral" />
-                {t("font_family")}
+                {t("font_style")}
               </div>
               <p
                 className="text-neutral capitalize"
