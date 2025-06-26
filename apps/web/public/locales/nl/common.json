@@ -1,5 +1,5 @@
 {
-  "user_administration": "Gebruikersbeheer",
+  "user_administration": "Users Administration",
   "search_users": "Zoeken naar Gebruikers",
   "no_users_found": "Geen gebruikers gevonden.",
   "no_user_found_in_search": "Geen gebruikers gevonden met de gegeven zoekopdracht.",
@@ -482,7 +482,7 @@
   "no_link_in_collection": "No Link in this Collection",
   "no_link_in_collection_desc": "This Collection has no Links yet.",
   "theme": "Theme",
-  "font_family": "Font Family",
+  "font_style": "Font Style",
   "font_size": "Font Size",
   "line_height": "Line Height",
   "line_width": "Line Width",
