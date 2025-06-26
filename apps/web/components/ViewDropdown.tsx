@@ -72,7 +72,7 @@ export default function ViewDropdown({
         {!dashboard && (
           <>
             <div className="px-1">
-              <p className="text-sm text-neutral">{t("view")}</p>
+              <p className="text-sm text-neutral mb-1">{t("view")}</p>
               <div className="flex gap-1 border-border">
                 {[ViewMode.Card, ViewMode.Masonry, ViewMode.List].map(
                   (mode) => {
@@ -112,7 +112,7 @@ export default function ViewDropdown({
           </>
         )}
 
-        <p className="text-sm text-neutral px-1">{t("show")}</p>
+        <p className="text-sm text-neutral px-1 mb-1">{t("show")}</p>
         {visibleShows.map((key) => (
           <DropdownMenuCheckboxItem
             key={key}
@@ -131,7 +131,7 @@ export default function ViewDropdown({
             <DropdownMenuSeparator />
 
             <div className="px-1">
-              <p className="text-sm text-neutral">
+              <p className="text-sm text-neutral mb-1">
                 {t("columns")}:{" "}
                 {settings.columns === 0 ? t("default") : settings.columns}
               </p>

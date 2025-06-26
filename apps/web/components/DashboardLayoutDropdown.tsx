@@ -199,7 +199,9 @@ export default function DashboardLayoutDropdown() {
       >
         <div className="flex flex-col gap-1">
           <div className="flex flex-col gap-1 mx-2">
-            <p className="text-sm text-neutral">{t("display_on_dashboard")}</p>
+            <p className="text-sm text-neutral mb-1">
+              {t("display_on_dashboard")}
+            </p>
 
             <TextInput
               value={searchTerm}
@@ -210,20 +212,28 @@ export default function DashboardLayoutDropdown() {
           </div>
 
           <ul className="max-h-60 overflow-y-auto px-2 pb-2">
-            {filteredSections.map((section) => (
-              <DraggableListItem
-                key={getSectionId(section)}
-                section={section}
-                onCheckboxChange={handleCheckboxChange}
-                onReorder={handleReorder}
-                draggedId={draggedId}
-                dragOverId={dragOverId}
-                dragOverPosition={dragOverPosition}
-                setDraggedId={setDraggedId}
-                setDragOverId={setDragOverId}
-                setDragOverPosition={setDragOverPosition}
-              />
-            ))}
+            {filteredSections.map((section) => {
+              const color =
+                section.type === "COLLECTION"
+                  ? collections.find((c) => c.id === section.collectionId)
+                      ?.color
+                  : undefined;
+
+              return (
+                <DraggableListItem
+                  key={getSectionId(section)}
+                  section={{ ...section, color }}
+                  onCheckboxChange={handleCheckboxChange}
+                  onReorder={handleReorder}
+                  draggedId={draggedId}
+                  dragOverId={dragOverId}
+                  dragOverPosition={dragOverPosition}
+                  setDraggedId={setDraggedId}
+                  setDragOverId={setDragOverId}
+                  setDragOverPosition={setDragOverPosition}
+                />
+              );
+            })}
 
             {filteredSections.length === 0 && (
               <li className="text-sm py-2 text-center text-neutral">
@@ -238,7 +248,7 @@ export default function DashboardLayoutDropdown() {
 }
 
 interface DraggableListItemProps {
-  section: DashboardSectionOption;
+  section: DashboardSectionOption & { color?: string };
   onCheckboxChange: (section: DashboardSectionOption) => void;
   onReorder: (sourceId: string, destId: string) => void;
   draggedId: string | null;
@@ -338,15 +348,31 @@ function DraggableListItem({
           htmlFor={`section-${section.type}-${
             section.collectionId ?? "default"
           }`}
-          className="text-sm pointer-events-none"
+          className={`text-sm pointer-events-none ${
+            section.enabled ? "opacity-100" : "opacity-50"
+          }`}
         >
+          <i
+            className={`bi-${
+              section.type === "STATS"
+                ? "bar-chart-line"
+                : section.type === "RECENT_LINKS"
+                  ? "clock"
+                  : section.type === "PINNED_LINKS"
+                    ? "pin"
+                    : "folder-fill"
+            } ${section.type !== "COLLECTION" ? "text-primary" : ""} mr-1`}
+            style={
+              section.type === "COLLECTION" ? { color: section.color } : {}
+            }
+          />
           {section.name}
         </label>
       </div>
 
       <i
         className={`bi-grip-vertical text-neutral ${
-          section.enabled ? "cursor-grab" : "opacity-50"
+          section.enabled ? "opacity-100" : "opacity-50"
         }`}
       />
     </li>
