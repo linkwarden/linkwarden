@@ -1,5 +1,5 @@
 {
-  "user_administration": "Administración de usuarios",
+  "user_administration": "Users Administration",
   "search_users": "Buscar usuarios",
   "no_users_found": "No se ha encontrado el usuario.",
   "no_user_found_in_search": "No se ha encontrado el usuario con esos parámetros de búsqueda.",
@@ -482,7 +482,7 @@
   "no_link_in_collection": "No Link in this Collection",
   "no_link_in_collection_desc": "This Collection has no Links yet.",
   "theme": "Theme",
-  "font_family": "Font Family",
+  "font_style": "Font Style",
   "font_size": "Font Size",
   "line_height": "Line Height",
   "line_width": "Line Width",
