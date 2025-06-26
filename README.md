@@ -117,7 +117,7 @@ If you want to contribute, Thanks! Start by choosing one of our [popular suggest
 
 # Translations
 
-If you want to help us translate Linkwarden to your language, please join our [Crowdin project](https://crowdin.com/project/linkwarden) and start translating. We would love to have your help!
+If you want to help us translate Linkwarden to your language, please check out our [Crowdin page](https://crowdin.com/project/linkwarden) and start translating. We would love to have your help!
 
 To start translating a new language, please create an issue so we can set it up for you. New languages will be added once they reach at least 50% translation completion.
 
