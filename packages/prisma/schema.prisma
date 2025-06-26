@@ -55,7 +55,7 @@ model User {
   aiTagExistingLinks      Boolean               @default(false)
   theme                   Theme                 @default(dark)
   readableFontFamily      String?               @default("sans-serif")
-  readableFontSize        String?               @default("24px")
+  readableFontSize        String?               @default("20px")
   readableLineHeight      String?               @default("1.8")
   readableLineWidth       String?               @default("normal")
   preventDuplicateLinks   Boolean               @default(false)

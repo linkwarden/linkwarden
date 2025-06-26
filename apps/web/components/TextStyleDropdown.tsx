@@ -184,13 +184,13 @@ const TextStyleDropdown = (props: Props) => {
             {t("font_size")}
           </div>
           <div className="flex items-center gap-1">
-            <p className="text-neutral">{data?.readableFontSize || "24px"}</p>
+            <p className="text-neutral">{data?.readableFontSize || "20px"}</p>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => {
                 const currentIndex = fontSizes.indexOf(
-                  data?.readableFontSize || "24px"
+                  data?.readableFontSize || "20px"
                 );
                 if (currentIndex > 0) {
                   updateUserPreference.mutate({
@@ -206,7 +206,7 @@ const TextStyleDropdown = (props: Props) => {
               size="icon"
               onClick={() => {
                 const currentIndex = fontSizes.indexOf(
-                  data?.readableFontSize || "24px"
+                  data?.readableFontSize || "20px"
                 );
                 if (currentIndex < fontSizes.length - 1) {
                   updateUserPreference.mutate({
