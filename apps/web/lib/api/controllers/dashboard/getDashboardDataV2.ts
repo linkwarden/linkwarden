@@ -80,6 +80,9 @@ export default async function getDashboardData(userId: number) {
           },
         ],
       },
+      omit: {
+        textContent: true,
+      },
       include: {
         tags: true,
         collection: true,
@@ -108,6 +111,9 @@ export default async function getDashboardData(userId: number) {
             },
           ],
         },
+      },
+      omit: {
+        textContent: true,
       },
       include: {
         tags: true,
@@ -149,6 +155,9 @@ export default async function getDashboardData(userId: number) {
             ],
           },
           take: 16,
+          omit: {
+            textContent: true,
+          },
           include: {
             tags: true,
             collection: true,

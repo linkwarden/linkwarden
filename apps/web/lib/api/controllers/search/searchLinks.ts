@@ -123,6 +123,9 @@ export default async function searchLinks({
           },
         ],
       },
+      omit: {
+        textContent: true,
+      },
       include: {
         tags: true,
         collection: true,
@@ -221,6 +224,9 @@ export default async function searchLinks({
           ],
         },
       ],
+    },
+    omit: {
+      textContent: true,
     },
     include: {
       tags: true,

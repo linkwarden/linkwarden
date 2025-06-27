@@ -4,7 +4,8 @@
   "private": true,
   "main": "index.ts",
   "dependencies": {
-    "@prisma/client": "^5.21.1"
+    "@prisma/client": "^6.10.1",
+    "prisma": "^6.10.1"
   },
   "scripts": {
     "generate": "prisma generate",
