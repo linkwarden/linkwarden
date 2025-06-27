@@ -6,6 +6,7 @@ import {
   chromium,
   devices,
 } from "playwright";
+import axios from 'axios';
 import { prisma } from "@linkwarden/prisma";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { AiTaggingMethod } from "@linkwarden/prisma/client";
@@ -46,12 +47,12 @@ export default async function archiveHandler(
         // To prevent re-archiving the same link
         aiTagged:
           user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
-          !link.aiTagged &&
-          (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
-            process.env.OPENAI_API_KEY ||
-            process.env.AZURE_API_KEY ||
-            process.env.ANTHROPIC_API_KEY ||
-            process.env.OPENROUTER_API_KEY)
+            !link.aiTagged &&
+            (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
+              process.env.OPENAI_API_KEY ||
+              process.env.AZURE_API_KEY ||
+              process.env.ANTHROPIC_API_KEY ||
+              process.env.OPENROUTER_API_KEY)
             ? true
             : undefined,
       },
@@ -75,6 +76,22 @@ export default async function archiveHandler(
   });
 
   const { browser, context } = await getBrowser();
+
+  const captchaSolve = await solveCaptcha(link.url);
+
+  if (captchaSolve.status === 'error') {
+    console.error('Error solving captcha');
+  } else if (captchaSolve.status === 'fail') {
+    console.warn('Failed solving captcha');
+  } else if (captchaSolve.status === 'skip') {
+    console.info('Skip solving captcha');
+  } else {
+    if (captchaSolve.solution) {
+      console.info('Solving captcha');
+      await context.addCookies(captchaSolve.solution.cookies);
+    }
+  }
+
   const page = await context.newPage();
 
   createFolder({ filePath: `archives/preview/${link.collectionId}` });
@@ -85,25 +102,25 @@ export default async function archiveHandler(
   const archivalSettings: ArchivalSettings =
     archivalTags.length > 0
       ? {
-          archiveAsScreenshot: archivalTags.some(
-            (tag) => tag.archiveAsScreenshot
-          ),
-          archiveAsMonolith: archivalTags.some((tag) => tag.archiveAsMonolith),
-          archiveAsPDF: archivalTags.some((tag) => tag.archiveAsPDF),
-          archiveAsReadable: archivalTags.some((tag) => tag.archiveAsReadable),
-          archiveAsWaybackMachine: archivalTags.some(
-            (tag) => tag.archiveAsWaybackMachine
-          ),
-          aiTag: archivalTags.some((tag) => tag.aiTag),
-        }
+        archiveAsScreenshot: archivalTags.some(
+          (tag) => tag.archiveAsScreenshot
+        ),
+        archiveAsMonolith: archivalTags.some((tag) => tag.archiveAsMonolith),
+        archiveAsPDF: archivalTags.some((tag) => tag.archiveAsPDF),
+        archiveAsReadable: archivalTags.some((tag) => tag.archiveAsReadable),
+        archiveAsWaybackMachine: archivalTags.some(
+          (tag) => tag.archiveAsWaybackMachine
+        ),
+        aiTag: archivalTags.some((tag) => tag.aiTag),
+      }
       : {
-          archiveAsScreenshot: user.archiveAsScreenshot,
-          archiveAsMonolith: user.archiveAsMonolith,
-          archiveAsPDF: user.archiveAsPDF,
-          archiveAsReadable: user.archiveAsReadable,
-          archiveAsWaybackMachine: user.archiveAsWaybackMachine,
-          aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
-        };
+        archiveAsScreenshot: user.archiveAsScreenshot,
+        archiveAsMonolith: user.archiveAsMonolith,
+        archiveAsPDF: user.archiveAsPDF,
+        archiveAsReadable: user.archiveAsReadable,
+        archiveAsWaybackMachine: user.archiveAsWaybackMachine,
+        aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
+      };
 
   try {
     await Promise.race([
@@ -198,7 +215,7 @@ export default async function archiveHandler(
           preview: !finalLink.preview ? "unavailable" : undefined,
           aiTagged:
             user.aiTaggingMethod !== AiTaggingMethod.DISABLED &&
-            !finalLink.aiTagged
+              !finalLink.aiTagged
               ? true
               : undefined,
         },
@@ -268,7 +285,52 @@ export function getBrowserOptions(): LaunchOptions {
       process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
   }
 
+  browserOptions.headless = false;
+
   return browserOptions;
+}
+
+async function solveCaptcha(url: string, maxTimeout: number = 60000): Promise<{
+    status: string,
+    solution?: {
+        cookies: {
+            name: string,
+            value: string,
+            domain: string,
+            path: string,
+            secure: boolean,
+            expires?: number,
+            httpOnly?: boolean,
+            sameSite?: "Strict"|"Lax"|"None"
+        }[],
+        [key: string]: any;
+    }
+}> {
+    if (process.env.FLARESOLVERR_URL) {
+        try {
+            const response = await axios.post(process.env.FLARESOLVERR_URL,
+                {
+                    cmd: 'request.get',
+                    url,
+                    maxTimeout
+                },
+                {
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            )
+    
+            if (response.status !== 200) {
+                return { status: 'fail' };
+            }
+    
+            return { status: response.data.status, solution: response.data.solution };
+        } catch (error) {
+            console.error('Error during captcha solving:', error);
+            return { status: 'error' };
+        }
+    }
+
+    return { status: 'skip' };
 }
 
 async function getBrowser(): Promise<{
