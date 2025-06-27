@@ -121,7 +121,7 @@ export default async function archiveHandler(
         archiveAsWaybackMachine: user.archiveAsWaybackMachine,
         aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
       };
-  
+
   let newLinkName = '';
   try {
     await Promise.race([
@@ -210,7 +210,7 @@ export default async function archiveHandler(
       if (newLinkName === '' || finalLink.name === newLinkName || finalLink.name !== 'Just a moment...') {
         newLinkName = finalLink.name;
       }
-      
+
       await prisma.link.update({
         where: { id: link.id },
         data: {
@@ -298,46 +298,46 @@ export function getBrowserOptions(): LaunchOptions {
 }
 
 async function solveCaptcha(url: string, maxTimeout: number = 60000): Promise<{
-    status: string,
-    solution?: {
-        cookies: {
-            name: string,
-            value: string,
-            domain: string,
-            path: string,
-            secure: boolean,
-            expires?: number,
-            httpOnly?: boolean,
-            sameSite?: "Strict"|"Lax"|"None"
-        }[],
-        [key: string]: any;
-    }
+  status: string,
+  solution?: {
+    cookies: {
+      name: string,
+      value: string,
+      domain: string,
+      path: string,
+      secure: boolean,
+      expires?: number,
+      httpOnly?: boolean,
+      sameSite?: "Strict" | "Lax" | "None"
+    }[],
+    [key: string]: any;
+  }
 }> {
-    if (process.env.FLARESOLVERR_URL) {
-        try {
-            const response = await axios.post(process.env.FLARESOLVERR_URL,
-                {
-                    cmd: 'request.get',
-                    url,
-                    maxTimeout
-                },
-                {
-                    headers: { 'Content-Type': 'application/json' }
-                }
-            )
-    
-            if (response.status !== 200) {
-                return { status: 'fail' };
-            }
-    
-            return { status: response.data.status, solution: response.data.solution };
-        } catch (error) {
-            console.error('Error during captcha solving:', error);
-            return { status: 'error' };
+  if (process.env.FLARESOLVERR_URL) {
+    try {
+      const response = await axios.post(process.env.FLARESOLVERR_URL,
+        {
+          cmd: 'request.get',
+          url,
+          maxTimeout
+        },
+        {
+          headers: { 'Content-Type': 'application/json' }
         }
-    }
+      )
 
-    return { status: 'skip' };
+      if (response.status !== 200) {
+        return { status: 'fail' };
+      }
+
+      return { status: response.data.status, solution: response.data.solution };
+    } catch (error) {
+      console.error('Error during captcha solving:', error);
+      return { status: 'error' };
+    }
+  }
+
+  return { status: 'skip' };
 }
 
 async function getBrowser(): Promise<{
