@@ -121,7 +121,8 @@ export default async function archiveHandler(
         archiveAsWaybackMachine: user.archiveAsWaybackMachine,
         aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
       };
-
+  
+  let newLinkName = '';
   try {
     await Promise.race([
       (async () => {
@@ -144,6 +145,7 @@ export default async function archiveHandler(
           // archive url
 
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
+          newLinkName = await page.title();
 
           const metaDescription = await page.evaluate(() => {
             const description = document.querySelector(
@@ -203,10 +205,15 @@ export default async function archiveHandler(
       where: { id: link.id },
     });
 
+    if (newLinkName === '' || link.name === newLinkName || link.name !== 'Just a moment...') {
+      newLinkName = link.name;
+    }
+
     if (finalLink)
       await prisma.link.update({
         where: { id: link.id },
         data: {
+          name: newLinkName,
           lastPreserved: new Date().toISOString(),
           readable: !finalLink.readable ? "unavailable" : undefined,
           image: !finalLink.image ? "unavailable" : undefined,
