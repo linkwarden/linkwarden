@@ -188,6 +188,8 @@ model Link {
   importDate    DateTime?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @default(now()) @updatedAt
+
+  @@index([collectionId])
 }
 
 model Tag {
