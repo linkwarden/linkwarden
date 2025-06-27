@@ -310,7 +310,6 @@ async function solveCaptcha(url: string, maxTimeout: number = 60000): Promise<{
       httpOnly?: boolean,
       sameSite?: "Strict" | "Lax" | "None"
     }[],
-    [key: string]: any;
   }
 }> {
   if (process.env.FLARESOLVERR_URL) {
