@@ -17,6 +17,12 @@ export default async function tags(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (req.method === "POST") {
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     const dataValidation = PostTagSchema.safeParse(req.body);
 
     if (!dataValidation.success) {
