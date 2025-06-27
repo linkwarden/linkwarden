@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useAddRssSubscription } from "@linkwarden/router/rss";
@@ -54,12 +54,30 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
     });
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useLayoutEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <Modal toggleModal={onClose}>
       <>
         <p className="text-xl font-thin">{t("create_rss_subscription")}</p>
 
         <Separator className="my-3" />
+
+        <div className="w-full mb-3">
+          <label>{t("link")}</label>
+          <TextInput
+            ref={inputRef}
+            type="text"
+            placeholder="https://example.com/rss"
+            className="bg-base-200 mt-2"
+            value={form.url}
+            onChange={(e) => setForm({ ...form, url: e.target.value })}
+          />
+        </div>
 
         <div className="flex sm:flex-row flex-col gap-3 items-center">
           <div className="w-full">
@@ -87,16 +105,7 @@ export default function NewRssSubscriptionModal({ onClose }: Props) {
             />
           </div>
         </div>
-        <div className="w-full mt-3">
-          <label>{t("link")}</label>
-          <TextInput
-            type="text"
-            placeholder="https://example.com/rss"
-            className="bg-base-200 mt-2"
-            value={form.url}
-            onChange={(e) => setForm({ ...form, url: e.target.value })}
-          />
-        </div>
+
         <div className="flex justify-end items-center mt-5">
           <Button variant="accent" onClick={submit}>
             {t("create_rss_subscription")}

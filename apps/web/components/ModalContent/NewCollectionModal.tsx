@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import TextInput from "@/components/TextInput";
 import { Collection } from "@linkwarden/prisma/client";
 import Modal from "../Modal";
@@ -60,6 +60,12 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
     });
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useLayoutEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <Modal toggleModal={onClose}>
       {parent?.id ? (
@@ -103,6 +109,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
             <div className="w-full">
               <p className="mb-2">{t("name")}</p>
               <TextInput
+                ref={inputRef}
                 className="bg-base-200"
                 value={collection.name}
                 placeholder={t("collection_name_placeholder")}

@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import Modal from "../Modal";
 import TextInput from "../TextInput";
-import { FormEvent, useState } from "react";
+import { FormEvent, useLayoutEffect, useRef, useState } from "react";
 import { useTranslation, Trans } from "next-i18next";
 import { useAddUser } from "@linkwarden/router/users";
 import Link from "next/link";
@@ -67,6 +67,12 @@ export default function InviteModal({ onClose }: Props) {
     }
   }
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useLayoutEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("invite_user")}</p>
@@ -78,6 +84,7 @@ export default function InviteModal({ onClose }: Props) {
         {emailEnabled ? (
           <div>
             <TextInput
+              ref={inputRef}
               placeholder={t("placeholder_email")}
               className="bg-base-200"
               onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -93,6 +100,7 @@ export default function InviteModal({ onClose }: Props) {
               )}
             </p>
             <TextInput
+              ref={inputRef}
               placeholder={t("placeholder_john")}
               className="bg-base-200"
               onChange={(e) => setForm({ ...form, username: e.target.value })}

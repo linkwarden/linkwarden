@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import TextInput from "@/components/TextInput";
 import { TokenExpiry } from "@linkwarden/types";
 import toast from "react-hot-toast";
@@ -69,6 +69,12 @@ export default function NewTokenModal({ onClose }: Props) {
     }
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useLayoutEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <Modal toggleModal={onClose}>
       {newToken ? (
@@ -95,6 +101,7 @@ export default function NewTokenModal({ onClose }: Props) {
               <p className="mb-2">{t("name")}</p>
 
               <TextInput
+                ref={inputRef}
                 value={token.name}
                 onChange={(e) => setToken({ ...token, name: e.target.value })}
                 placeholder={t("token_name_placeholder")}
