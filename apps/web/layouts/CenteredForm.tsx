@@ -24,9 +24,17 @@ export default function CenteredForm({
       data-testid={dataTestId}
     >
       <div className="m-auto flex flex-col gap-2 w-full">
-        {user?.theme && (
+        {user?.theme === "light" ? (
           <Image
-            src={`/linkwarden_${user?.theme === "dark" ? "dark" : "light"}.png`}
+            src={"/linkwarden_light.png"}
+            width={640}
+            height={136}
+            alt="Linkwarden"
+            className="h-12 w-fit mx-auto"
+          />
+        ) : (
+          <Image
+            src={"/linkwarden_dark.png"}
             width={640}
             height={136}
             alt="Linkwarden"
