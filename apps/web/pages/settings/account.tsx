@@ -5,13 +5,11 @@ import SettingsLayout from "@/layouts/SettingsLayout";
 import TextInput from "@/components/TextInput";
 import { resizeImage } from "@/lib/client/resizeImage";
 import ProfilePhoto from "@/components/ProfilePhoto";
-import SubmitButton from "@/components/SubmitButton";
 import React from "react";
 import Link from "next/link";
 import Checkbox from "@/components/Checkbox";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import EmailChangeVerificationModal from "@/components/ModalContent/EmailChangeVerificationModal";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { i18n } from "next-i18next.config";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
@@ -19,6 +17,14 @@ import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import { z } from "zod";
 import ImportDropdown from "@/components/ImportDropdown";
 import { useConfig } from "@linkwarden/router/config";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 
 export default function Account() {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
@@ -26,8 +32,8 @@ export default function Account() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser();
   const updateUser = useUpdateUser();
-  const [user, setUser] = useState<AccountSettings>(
-    account.id
+  const [user, setUser] = useState<any>(
+    account?.id
       ? account
       : ({
           // @ts-ignore
@@ -52,7 +58,7 @@ export default function Account() {
   const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState("");
 
   useEffect(() => {
-    if (!account.id) return;
+    if (!account?.id) return;
 
     setUser({
       ...account,
@@ -123,7 +129,7 @@ export default function Account() {
       }
     );
 
-    if (user.locale !== account.locale) {
+    if (user.locale !== account?.locale) {
       setTimeout(() => {
         location.reload();
       }, 1000);
@@ -131,7 +137,7 @@ export default function Account() {
   };
 
   useEffect(() => {
-    setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", "));
+    setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", ") || "");
   }, [account]);
 
   const stringToArray = (str: string) => {
@@ -144,7 +150,7 @@ export default function Account() {
         {t("accountSettings")}
       </p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-5">
         <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
@@ -206,25 +212,21 @@ export default function Account() {
                 large={true}
               />
 
-              <div className="dropdown dropdown-bottom">
-                <Button
-                  tabIndex={0}
-                  role="button"
-                  size="small"
-                  intent="secondary"
-                  onMouseDown={dropdownTriggerer}
-                  className="text-sm"
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="metal" size="sm" className="text-sm">
+                    <i className="bi-pencil-square text-md"></i>
+                    {t("edit")}
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="start"
+                  className="bg-base-200 border border-neutral-content rounded-box p-1"
                 >
-                  <i className="bi-pencil-square text-md duration-100"></i>
-                  {t("edit")}
-                </Button>
-                <ul className="shadow menu dropdown-content z-[1] bg-base-200 border border-neutral-content rounded-box mt-1">
-                  <li>
-                    <label
-                      tabIndex={0}
-                      role="button"
-                      className="whitespace-nowrap"
-                    >
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <i className="bi-upload text-md"></i>
+                    <label className="w-full flex items-center justify-between cursor-pointer whitespace-nowrap">
                       {t("upload_new_photo")}
                       <input
                         type="file"
@@ -235,26 +237,27 @@ export default function Account() {
                         onChange={handleImageUpload}
                       />
                     </label>
-                  </li>
+                  </DropdownMenuItem>
+
                   {user.image && (
-                    <li>
-                      <div
-                        tabIndex={0}
-                        role="button"
-                        onClick={() =>
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => {
                           setUser({
                             ...user,
                             image: "",
-                          })
-                        }
-                        className="whitespace-nowrap"
+                          });
+                        }}
+                        className="text-error"
                       >
+                        <i className="bi-trash text-md"></i>
                         {t("remove_photo")}
-                      </div>
-                    </li>
+                      </DropdownMenuItem>
+                    </>
                   )}
-                </ul>
-              </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -284,18 +287,20 @@ export default function Account() {
           )}
         </div>
 
-        <SubmitButton
+        <Button
+          variant="accent"
           onClick={() => {
-            if (account.email !== user.email) {
+            if (account?.email !== user.email) {
               setEmailChangeVerificationModal(true);
             } else {
               submit();
             }
           }}
-          loading={submitLoader}
-          label={t("save_changes")}
+          disabled={submitLoader}
           className="mt-2 w-full sm:w-fit"
-        />
+        >
+          {t("save_changes")}
+        </Button>
 
         <div>
           <div className="flex items-center gap-2 w-full rounded-md h-8">
@@ -304,7 +309,7 @@ export default function Account() {
             </p>
           </div>
 
-          <div className="divider my-3"></div>
+          <Separator className="my-3" />
 
           <div className="flex gap-3 flex-col">
             <div>
@@ -315,7 +320,7 @@ export default function Account() {
             <div>
               <p className="mb-2">{t("download_data")}</p>
               <Link className="w-fit" href="/api/v1/migration">
-                <div className="select-none relative duration-200 rounded-lg text-sm text-center w-fit flex justify-center items-center gap-2 disabled:pointer-events-none disabled:opacity-50 bg-neutral-content text-secondary-foreground hover:bg-neutral-content/80 border border-neutral/30 h-10 px-4 py-2">
+                <div className="select-none relative duration-200 rounded-lg text-sm text-center w-fit flex justify-center items-center gap-2 disabled:pointer-events-none disabled:opacity-50 bg-neutral-content text-base-content hover:bg-neutral-content/80 border border-neutral/30 h-10 px-4 py-2">
                   <i className="bi-cloud-download text-xl duration-100"></i>
                   <p>{t("export_data")}</p>
                 </div>
@@ -331,7 +336,7 @@ export default function Account() {
             </p>
           </div>
 
-          <div className="divider my-3"></div>
+          <Separator className="my-3" />
 
           <p>
             {t("delete_account_warning")}
@@ -349,7 +354,7 @@ export default function Account() {
         <EmailChangeVerificationModal
           onClose={() => setEmailChangeVerificationModal(false)}
           onSubmit={submit}
-          oldEmail={account.email || ""}
+          oldEmail={account?.email || ""}
           newEmail={user.email || ""}
         />
       )}

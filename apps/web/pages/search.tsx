@@ -44,6 +44,7 @@ export default function Search() {
           setSortBy={setSortBy}
           editMode={editMode}
           setEditMode={setEditMode}
+          links={links}
         >
           <PageHeader icon={"bi-search"} title={t("search_results")} />
         </LinkListOptions>

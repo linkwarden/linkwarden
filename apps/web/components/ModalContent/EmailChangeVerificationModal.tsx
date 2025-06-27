@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import TextInput from "@/components/TextInput";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -23,7 +25,7 @@ export default function EmailChangeVerificationModal({
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("confirm_password")}</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-5">
         <p>
@@ -61,12 +63,9 @@ export default function EmailChangeVerificationModal({
         </div>
 
         <div className="flex justify-end items-center">
-          <button
-            className="btn btn-accent dark:border-violet-400 text-white"
-            onClick={() => onSubmit(password)}
-          >
+          <Button variant="accent" onClick={() => onSubmit(password)}>
             {t("confirm")}
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

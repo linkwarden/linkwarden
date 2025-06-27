@@ -6,6 +6,14 @@ import { AccessToken } from "@linkwarden/prisma/client";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTokens } from "@linkwarden/router/tokens";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
 export default function AccessTokens() {
   const [newTokenModal, setNewTokenModal] = useState(false);
@@ -26,19 +34,20 @@ export default function AccessTokens() {
         {t("access_tokens")}
       </p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <p>{t("access_tokens_description")}</p>
 
-        <button
-          className={`btn ml-auto btn-accent dark:border-violet-400 text-white tracking-wider w-fit flex items-center gap-2`}
+        <Button
+          className="ml-auto"
+          variant="accent"
           onClick={() => {
             setNewTokenModal(true);
           }}
         >
           {t("new_token")}
-        </button>
+        </Button>
 
         {tokens.length > 0 && (
           <table className="table mt-2 overflow-x-auto">
@@ -56,12 +65,14 @@ export default function AccessTokens() {
                   <tr>
                     <td className={token.isSession ? "text-primary" : ""}>
                       {token.isSession ? (
-                        <div
-                          className="tooltip tooltip-right text-left"
-                          data-tip={t("permanent_session")}
-                        >
-                          {token.name}
-                        </div>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger> {token.name}</TooltipTrigger>
+                            <TooltipContent>
+                              <p>{t("permanent_session")}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       ) : (
                         token.name
                       )}
@@ -84,12 +95,14 @@ export default function AccessTokens() {
                       })}
                     </td>
                     <td>
-                      <button
-                        className="btn btn-sm btn-ghost btn-square hover:bg-red-500"
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hover:text-error"
                         onClick={() => openRevokeModal(token as AccessToken)}
                       >
                         <i className="bi-x text-lg"></i>
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 </React.Fragment>

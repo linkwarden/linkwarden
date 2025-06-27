@@ -1,0 +1,45 @@
+name: Manage i18n pull requests
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  rewrite-author:
+    if: github.event.pull_request.head.ref == 'i18n'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout i18n branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Skip if already rewritten
+        run: |
+          if [ "$(git show -s --format='%an')" = 'LinkwardenBot' ]; then
+            echo "Already rewritten – skipping."
+            exit 0
+          fi
+
+      - name: Configure bot identity
+        run: |
+          git config user.name  "LinkwardenBot"
+          git config user.email "bot@linkwarden.app"
+
+      - name: Amend just the PR commits
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git rebase --committer-date-is-author-date \
+            --exec 'git commit --amend --no-edit --allow-empty \
+                    --author="LinkwardenBot <bot@linkwarden.app>"' \
+            "$BASE_SHA"
+
+      - name: Push rewritten history
+        run: git push --force-with-lease origin HEAD:i18n

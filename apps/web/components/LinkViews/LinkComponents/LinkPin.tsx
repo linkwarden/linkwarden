@@ -2,6 +2,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import usePinLink from "@/lib/client/pinLink";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -16,19 +17,19 @@ export default function LinkPin({ link, btnStyle }: Props) {
   const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0] ? true : false;
 
   return (
-    <div
-      className="absolute top-3 right-[3.25rem] group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
+    <Button
+      variant="simple"
+      size="icon"
+      className={clsx(
+        "absolute top-3 right-[3.25rem] group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral",
+        btnStyle
+      )}
       onClick={() => pinLink(link)}
     >
-      <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>
-        <i
-          title="Pin"
-          className={clsx(
-            "text-xl",
-            isAlreadyPinned ? "bi-pin-fill" : "bi-pin"
-          )}
-        />
-      </div>
-    </div>
+      <i
+        title="Pin"
+        className={clsx("text-xl", isAlreadyPinned ? "bi-pin-fill" : "bi-pin")}
+      />
+    </Button>
   );
 }

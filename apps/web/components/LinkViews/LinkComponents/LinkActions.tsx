@@ -5,7 +5,6 @@ import {
 } from "@linkwarden/types";
 import usePermissions from "@/hooks/usePermissions";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
-import { dropdownTriggerer } from "@/lib/client/utils";
 import { useTranslation } from "next-i18next";
 import { useDeleteLink, useGetLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
@@ -13,20 +12,30 @@ import LinkModal from "@/components/ModalContent/LinkModal";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import usePinLink from "@/lib/client/pinLink";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
-  btnStyle?: string;
   linkModal: boolean;
+  className?: string;
   setLinkModal: (value: boolean) => void;
+  ghost?: boolean;
 };
 
 export default function LinkActions({
   link,
-  btnStyle,
   linkModal,
+  className,
   setLinkModal,
+  ghost,
 }: Props) {
   const { t } = useTranslation();
 
@@ -34,9 +43,12 @@ export default function LinkActions({
 
   const router = useRouter();
 
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+  const isPublicRoute = router.pathname.startsWith("/public");
 
-  const getLink = useGetLink(isPublicRoute);
+  const { refetch } = useGetLink({
+    id: link.id as number,
+    isPublicRoute,
+  });
 
   const pinLink = usePinLink();
 
@@ -56,7 +68,9 @@ export default function LinkActions({
     toast.dismiss(load);
 
     if (response.ok) {
-      await getLink.mutateAsync({ id: link.id as number });
+      refetch().catch((error) => {
+        console.error("Error fetching link:", error);
+      });
 
       toast.success(t("link_being_archived"));
     } else toast.error(data.response);
@@ -65,109 +79,79 @@ export default function LinkActions({
   return (
     <>
       {isPublicRoute ? (
-        <div
-          className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100"
-          onMouseDown={dropdownTriggerer}
+        <Button
+          variant={ghost ? "ghost" : "simple"}
+          size="icon"
+          className={clsx(className)}
           onClick={() => setLinkModal(true)}
         >
-          <div className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}>
-            <i title="More" className="bi-info-circle text-xl" />
-          </div>
-        </div>
+          <i title="More" className="bi-info-circle text-xl" />
+        </Button>
       ) : (
-        <div
-          className={`dropdown dropdown-end absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 z-20`}
-        >
-          <div
-            tabIndex={0}
-            role="button"
-            onMouseDown={dropdownTriggerer}
-            className={clsx("btn btn-sm btn-square text-neutral", btnStyle)}
-          >
-            <i title="More" className="bi-three-dots text-xl" />
-          </div>
-          <ul
-            className={
-              "dropdown-content z-[20] menu shadow bg-base-200 border border-neutral-content rounded-box mt-1"
-            }
-          >
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  pinLink(link);
-                }}
-                className="whitespace-nowrap"
-              >
-                {link?.pinnedBy && link.pinnedBy[0]
-                  ? t("unpin")
-                  : t("pin_to_dashboard")}
-              </div>
-            </li>
-            <li>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  (document?.activeElement as HTMLElement)?.blur();
-                  setLinkModal(true);
-                }}
-                className="whitespace-nowrap"
-              >
-                {t("show_link_details")}
-              </div>
-            </li>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              asChild
+              variant={ghost ? "ghost" : "simple"}
+              size="icon"
+              className={clsx(className)}
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              <i title="More" className="bi-three-dots text-xl" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent sideOffset={4} align="end">
+            <DropdownMenuItem onSelect={() => pinLink(link)}>
+              <i className="bi-pin" />
+
+              {link.pinnedBy && link.pinnedBy.length > 0
+                ? t("unpin")
+                : t("pin_to_dashboard")}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onSelect={() => setLinkModal(true)}>
+              <i className="bi-info-circle" />
+
+              {t("show_link_details")}
+            </DropdownMenuItem>
+
             {(permissions === true || permissions?.canUpdate) && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    setEditLinkModal(true);
-                  }}
-                  className="whitespace-nowrap"
-                >
-                  {t("edit_link")}
-                </div>
-              </li>
+              <DropdownMenuItem onSelect={() => setEditLinkModal(true)}>
+                <i className="bi-pencil-square" />
+
+                {t("edit_link")}
+              </DropdownMenuItem>
             )}
+
             {(permissions === true || permissions?.canDelete) && (
-              <li>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={async (e) => {
-                    (document?.activeElement as HTMLElement)?.blur();
-                    console.log(e.shiftKey);
-                    e.shiftKey
-                      ? (async () => {
-                          const load = toast.loading(t("deleting"));
-
-                          await deleteLink.mutateAsync(link.id as number, {
-                            onSettled: (data, error) => {
-                              toast.dismiss(load);
-
-                              if (error) {
-                                toast.error(error.message);
-                              } else {
-                                toast.success(t("deleted"));
-                              }
-                            },
-                          });
-                        })()
-                      : setDeleteLinkModal(true);
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-error"
+                  onSelect={async (e) => {
+                    if ((e as any).shiftKey) {
+                      const load = toast.loading(t("deleting"));
+                      await deleteLink.mutateAsync(link.id as number, {
+                        onSettled: (data, error) => {
+                          toast.dismiss(load);
+                          if (error) toast.error(error.message);
+                          else toast.success(t("deleted"));
+                        },
+                      });
+                    } else {
+                      setDeleteLinkModal(true);
+                    }
                   }}
-                  className="whitespace-nowrap"
                 >
+                  <i className="bi-trash" />
+
                   {t("delete")}
-                </div>
-              </li>
+                </DropdownMenuItem>
+              </>
             )}
-          </ul>
-        </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
       {editLinkModal && (
         <LinkModal

@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import TextInput from "./TextInput";
-import Popover from "./Popover";
-import { HexColorPicker } from "react-colorful";
 import { useTranslation } from "next-i18next";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
-import IconGrid from "./IconGrid";
 import IconPopover from "./IconPopover";
 import clsx from "clsx";
+import { Button } from "./ui/button";
 
 type Props = {
   alignment?: string;
@@ -39,9 +36,11 @@ const IconPicker = ({
 
   return (
     <div className="relative">
-      <div
+      <Button
         onClick={() => setIconPicker(!iconPicker)}
-        className="btn btn-square w-20 h-20"
+        variant="ghost"
+        className="w-20 h-20"
+        size="icon"
       >
         {iconName ? (
           <Icon
@@ -55,7 +54,7 @@ const IconPicker = ({
         ) : (
           <i className="bi-folder-fill text-6xl" style={{ color: color }}></i>
         )}
-      </div>
+      </Button>
       {iconPicker && (
         <IconPopover
           alignment={alignment}

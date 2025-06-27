@@ -1,11 +1,12 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useState } from "react";
-import SubmitButton from "@/components/SubmitButton";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function Password() {
   const { t } = useTranslation();
@@ -56,7 +57,7 @@ export default function Password() {
         {t("change_password")}
       </p>
 
-      <div className="divider my-3"></div>
+      <Separator className="my-3" />
 
       <p className="mb-3">{t("password_change_instructions")}</p>
       <div className="w-full flex flex-col gap-2 justify-between">
@@ -80,12 +81,14 @@ export default function Password() {
           type="password"
         />
 
-        <SubmitButton
+        <Button
           onClick={submit}
-          loading={submitLoader}
-          label={t("save_changes")}
+          disabled={submitLoader}
+          variant="accent"
           className="mt-3 w-full sm:w-fit"
-        />
+        >
+          {t("save_changes")}
+        </Button>
       </div>
     </SettingsLayout>
   );

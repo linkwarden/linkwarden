@@ -2,6 +2,7 @@ import {
   useInfiniteQuery,
   useQueryClient,
   useMutation,
+  useQuery,
 } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
@@ -11,7 +12,10 @@ import {
   MobileAuth,
 } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
-import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
+import {
+  LinkArchiveActionSchemaType,
+  PostLinkSchemaType,
+} from "@linkwarden/lib/schemaValidation";
 import getFormatFromContentType from "@linkwarden/lib/getFormatFromContentType";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
@@ -179,6 +183,7 @@ const useUpdateLink = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["link", data.id] });
       queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
@@ -230,86 +235,92 @@ const useDeleteLink = () => {
   });
 };
 
-const useGetLink = (isPublicRoute?: boolean, auth?: MobileAuth) => {
+type UseGetLinkParams = {
+  id: number;
+  isPublicRoute?: boolean;
+  auth?: MobileAuth;
+  enabled?: boolean;
+};
+
+const useGetLink = ({
+  id,
+  isPublicRoute = false,
+  auth,
+  enabled = false,
+}: UseGetLinkParams) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({ id }: { id: number }) => {
-      const path =
-        (auth?.instance ? auth?.instance : "") +
-        (isPublicRoute ? `/api/v1/public/links/${id}` : `/api/v1/links/${id}`);
+  return useQuery(
+    // unique key for this link
+    {
+      queryKey: ["link", id, isPublicRoute],
+      placeholderData: {} as LinkIncludingShortenedCollectionAndTags,
+      enabled: id != null && enabled,
+      queryFn: async () => {
+        const base = auth?.instance ?? "";
+        const route = isPublicRoute
+          ? `/api/v1/public/links/${id}`
+          : `/api/v1/links/${id}`;
+        const url = `${base}${route}`;
 
-      const response = await fetch(
-        path,
-        auth?.session
-          ? {
-              headers: {
-                Authorization: `Bearer ${auth?.session}`,
-              },
-            }
-          : undefined
-      );
-      const data = await response.json();
+        const res = await fetch(
+          url,
+          auth?.session
+            ? {
+                headers: { Authorization: `Bearer ${auth.session}` },
+              }
+            : undefined
+        );
+        const payload = await res.json();
+        if (!res.ok) {
+          throw new Error(payload.response ?? "Failed to fetch link");
+        }
 
-      if (!response.ok) throw new Error(data.response);
+        const data =
+          payload.response as LinkIncludingShortenedCollectionAndTags;
 
-      return data.response;
-    },
-    onSuccess: (data: LinkIncludingShortenedCollectionAndTags) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData?.links) return undefined;
-        return {
-          ...oldData,
-          links: oldData.links.map((e: any) => (e.id === data.id ? data : e)),
-        };
-      });
-
-      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-        if (!oldData) return undefined;
-
-        const newPages = oldData.pages?.map((page: any) => {
-          if (!page?.links) {
-            return page;
-          }
-
+        // update dashboardData.links
+        queryClient.setQueryData(["dashboardData"], (old: any) => {
+          if (!old?.links) return old;
           return {
-            ...page,
-            links: page.links.map((item: any) =>
-              item.id === data.id ? data : item
-            ),
+            ...old,
+            links: old.links.map((l: any) => (l.id === data.id ? data : l)),
           };
         });
 
-        return {
-          ...oldData,
-          pages: newPages,
-        };
-      });
-
-      queryClient.setQueriesData(
-        { queryKey: ["publicLinks"] },
-        (oldData: any) => {
-          if (!oldData) return undefined;
-          const newPages = oldData.pages?.map((page: any) => {
-            if (!page?.links) {
-              return page;
-            }
-            return {
-              ...page,
-              links: page.links.map((item: any) =>
-                item.id === data.id ? data : item
-              ),
-            };
-          });
-
+        // update paginated "links"
+        queryClient.setQueriesData({ queryKey: ["links"] }, (old: any) => {
+          if (!old?.pages) return old;
           return {
-            ...oldData,
-            pages: newPages,
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              links: page.links.map((l: any) => (l.id === data.id ? data : l)),
+            })),
           };
-        }
-      );
-    },
-  });
+        });
+
+        // update paginated "publicLinks"
+        queryClient.setQueriesData(
+          { queryKey: ["publicLinks"] },
+          (old: any) => {
+            if (!old?.pages) return old;
+            return {
+              ...old,
+              pages: old.pages.map((page: any) => ({
+                ...page,
+                links: page.links.map((l: any) =>
+                  l.id === data.id ? data : l
+                ),
+              })),
+            };
+          }
+        );
+
+        return data;
+      },
+    }
+  );
 };
 
 const useBulkDeleteLinks = () => {
@@ -508,6 +519,34 @@ const useBulkEditLinks = () => {
   });
 };
 
+const useArchiveAction = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: LinkArchiveActionSchemaType) => {
+      const response = await fetch("/api/v1/links/archive", {
+        body: JSON.stringify({
+          action: payload.action,
+          linkIds: payload.linkIds,
+        }),
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.response);
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+    },
+  });
+};
+
 const resetInfiniteQueryPagination = async (
   queryClient: any,
   queryKey: any
@@ -533,6 +572,7 @@ export {
   useUploadFile,
   useGetLink,
   useBulkEditLinks,
+  useArchiveAction,
   resetInfiniteQueryPagination,
   useUpdateFile,
 };

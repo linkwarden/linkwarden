@@ -4,6 +4,8 @@ import TextInput from "../TextInput";
 import { FormEvent, useState } from "react";
 import { useTranslation, Trans } from "next-i18next";
 import { useAddUser } from "@linkwarden/router/users";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -69,7 +71,7 @@ export default function NewUserModal({ onClose }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("create_new_user")}</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <form onSubmit={submit}>
         <div className="grid sm:grid-cols-2 gap-3">
@@ -132,12 +134,9 @@ export default function NewUserModal({ onClose }: Props) {
         </div>
 
         <div className="flex justify-between items-center mt-5">
-          <button
-            className="btn btn-accent dark:border-violet-400 text-white ml-auto"
-            type="submit"
-          >
+          <Button variant="accent" className="ml-auto" type="submit">
             {t("create_user")}
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

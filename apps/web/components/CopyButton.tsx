@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Button } from "./ui/button";
 
 type Props = {
   text: string;
@@ -20,11 +21,7 @@ const CopyButton: React.FC<Props> = ({ text }) => {
   };
 
   return (
-    <button
-      type="button"
-      className="text-xl text-neutral btn btn-sm btn-square btn-ghost"
-      onClick={handleCopy}
-    >
+    <Button variant="ghost" type="button" size="icon" onClick={handleCopy}>
       {copied ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +53,7 @@ const CopyButton: React.FC<Props> = ({ text }) => {
           />
         </svg>
       )}
-    </button>
+    </Button>
   );
 };
 

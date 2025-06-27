@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import TextInput from "@/components/TextInput";
 import { TokenExpiry } from "@linkwarden/types";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
-import { dropdownTriggerer } from "@/lib/client/utils";
-import Button from "../ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useAddToken } from "@linkwarden/router/tokens";
 import CopyButton from "../CopyButton";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -62,6 +69,12 @@ export default function NewTokenModal({ onClose }: Props) {
     }
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useLayoutEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <Modal toggleModal={onClose}>
       {newToken ? (
@@ -81,13 +94,14 @@ export default function NewTokenModal({ onClose }: Props) {
         <>
           <p className="text-xl font-thin">{t("create_access_token")}</p>
 
-          <div className="divider mb-3 mt-1"></div>
+          <Separator className="my-3" />
 
           <div className="flex sm:flex-row flex-col gap-2 items-center">
             <div className="w-full">
               <p className="mb-2">{t("name")}</p>
 
               <TextInput
+                ref={inputRef}
                 value={token.name}
                 onChange={(e) => setToken({ ...token, name: e.target.value })}
                 placeholder={t("token_name_placeholder")}
@@ -98,143 +112,60 @@ export default function NewTokenModal({ onClose }: Props) {
             <div className="w-full sm:w-fit">
               <p className="mb-2">{t("expires_in")}</p>
 
-              <div className="dropdown dropdown-bottom dropdown-end w-full">
-                <Button
-                  tabIndex={0}
-                  role="button"
-                  intent="secondary"
-                  onMouseDown={dropdownTriggerer}
-                  className="whitespace-nowrap w-32"
-                >
-                  {getLabel(token.expires)}
-                </Button>
-                <ul className="dropdown-content z-[30] menu shadow bg-base-200 border border-neutral-content rounded-xl mt-1">
-                  <li>
-                    <label
-                      className="label cursor-pointer flex justify-start"
-                      tabIndex={0}
-                      role="button"
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="metal" className="whitespace-nowrap w-32">
+                    {getLabel(token.expires)}
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent>
+                  <DropdownMenuRadioGroup
+                    value={token.expires.toString()}
+                    onValueChange={(e) =>
+                      setToken({
+                        ...token,
+                        expires: Number(e),
+                      })
+                    }
+                  >
+                    <DropdownMenuRadioItem
+                      value={TokenExpiry.sevenDays.toString()}
                     >
-                      <input
-                        type="radio"
-                        name="sort-radio"
-                        className="radio checked:bg-primary"
-                        checked={token.expires === TokenExpiry.sevenDays}
-                        onChange={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          setToken({
-                            ...token,
-                            expires: TokenExpiry.sevenDays,
-                          });
-                        }}
-                      />
-                      <span className="label-text whitespace-nowrap">
-                        {t("7_days")}
-                      </span>
-                    </label>
-                  </li>
-                  <li>
-                    <label
-                      className="label cursor-pointer flex justify-start"
-                      tabIndex={0}
-                      role="button"
+                      {t("7_days")}
+                    </DropdownMenuRadioItem>
+
+                    <DropdownMenuRadioItem
+                      value={TokenExpiry.oneMonth.toString()}
                     >
-                      <input
-                        type="radio"
-                        name="sort-radio"
-                        className="radio checked:bg-primary"
-                        checked={token.expires === TokenExpiry.oneMonth}
-                        onChange={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          setToken({ ...token, expires: TokenExpiry.oneMonth });
-                        }}
-                      />
-                      <span className="label-text whitespace-nowrap">
-                        {t("30_days")}
-                      </span>
-                    </label>
-                  </li>
-                  <li>
-                    <label
-                      className="label cursor-pointer flex justify-start"
-                      tabIndex={0}
-                      role="button"
+                      {t("30_days")}
+                    </DropdownMenuRadioItem>
+
+                    <DropdownMenuRadioItem
+                      value={TokenExpiry.twoMonths.toString()}
                     >
-                      <input
-                        type="radio"
-                        name="sort-radio"
-                        className="radio checked:bg-primary"
-                        checked={token.expires === TokenExpiry.twoMonths}
-                        onChange={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          setToken({
-                            ...token,
-                            expires: TokenExpiry.twoMonths,
-                          });
-                        }}
-                      />
-                      <span className="label-text whitespace-nowrap">
-                        {t("60_days")}
-                      </span>
-                    </label>
-                  </li>
-                  <li>
-                    <label
-                      className="label cursor-pointer flex justify-start"
-                      tabIndex={0}
-                      role="button"
+                      {t("60_days")}
+                    </DropdownMenuRadioItem>
+
+                    <DropdownMenuRadioItem
+                      value={TokenExpiry.threeMonths.toString()}
                     >
-                      <input
-                        type="radio"
-                        name="sort-radio"
-                        className="radio checked:bg-primary"
-                        checked={token.expires === TokenExpiry.threeMonths}
-                        onChange={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          setToken({
-                            ...token,
-                            expires: TokenExpiry.threeMonths,
-                          });
-                        }}
-                      />
-                      <span className="label-text whitespace-nowrap">
-                        {t("90_days")}
-                      </span>
-                    </label>
-                  </li>
-                  <li>
-                    <label
-                      className="label cursor-pointer flex justify-start"
-                      tabIndex={0}
-                      role="button"
-                    >
-                      <input
-                        type="radio"
-                        name="sort-radio"
-                        className="radio checked:bg-primary"
-                        checked={token.expires === TokenExpiry.never}
-                        onChange={() => {
-                          (document?.activeElement as HTMLElement)?.blur();
-                          setToken({ ...token, expires: TokenExpiry.never });
-                        }}
-                      />
-                      <span className="label-text whitespace-nowrap">
-                        {t("no_expiration")}
-                      </span>
-                    </label>
-                  </li>
-                </ul>
-              </div>
+                      {t("90_days")}
+                    </DropdownMenuRadioItem>
+
+                    <DropdownMenuRadioItem value={TokenExpiry.never.toString()}>
+                      {t("no_expiration")}
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
           <div className="flex justify-end items-center mt-5">
-            <button
-              className="btn btn-accent dark:border-violet-400 text-white"
-              onClick={submit}
-            >
+            <Button variant="accent" onClick={submit}>
               {t("create_token")}
-            </button>
+            </Button>
           </div>
         </>
       )}

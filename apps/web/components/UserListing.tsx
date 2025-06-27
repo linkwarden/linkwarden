@@ -2,6 +2,7 @@ import DeleteUserModal from "@/components/ModalContent/DeleteUserModal";
 import { useConfig } from "@linkwarden/router/config";
 import { User as U } from "@linkwarden/prisma/client";
 import { TFunction } from "i18next";
+import { Button } from "./ui/button";
 
 interface User extends U {
   subscriptions: {
@@ -65,14 +66,16 @@ const UserListing: React.FC<UserListingProps> = ({
               )}
               <td>{new Date(user.createdAt).toLocaleString()}</td>
               <td className="relative">
-                <button
-                  className="btn btn-sm btn-ghost duration-100 hidden group-hover:block absolute z-20 right-[0.35rem] top-[0.35rem]"
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hidden group-hover:block hover:text-error absolute z-20 right-[0.35rem] top-[0.35rem]"
                   onClick={() =>
                     setDeleteUserModal({ isOpen: true, userId: user.id })
                   }
                 >
                   <i className="bi bi-trash"></i>
-                </button>
+                </Button>
               </td>
             </tr>
           ))}

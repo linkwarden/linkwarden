@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../Modal";
-import Button from "../ui/Button";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { AccessToken } from "@linkwarden/prisma/client";
 import { useRevokeToken } from "@linkwarden/router/tokens";
 import toast from "react-hot-toast";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -42,12 +43,12 @@ export default function DeleteTokenModal({ onClose, activeToken }: Props) {
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin text-red-500">{t("revoke_token")}</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <p>{t("revoke_confirmation")}</p>
 
-        <Button className="ml-auto" intent="destructive" onClick={deleteLink}>
+        <Button className="ml-auto" variant="destructive" onClick={deleteLink}>
           <i className="bi-trash text-xl" />
           {t("revoke")}
         </Button>
