@@ -205,11 +205,12 @@ export default async function archiveHandler(
       where: { id: link.id },
     });
 
-    if (newLinkName === '' || link.name === newLinkName || link.name !== 'Just a moment...') {
-      newLinkName = link.name;
-    }
-
-    if (finalLink)
+    if (finalLink) {
+      // Replace the captcha-blocked link name if it has not been updated by user, else keep the same name
+      if (newLinkName === '' || finalLink.name === newLinkName || finalLink.name !== 'Just a moment...') {
+        newLinkName = finalLink.name;
+      }
+      
       await prisma.link.update({
         where: { id: link.id },
         data: {
@@ -227,6 +228,7 @@ export default async function archiveHandler(
               : undefined,
         },
       });
+    }
     else {
       await removeFiles(link.id, link.collectionId);
     }
