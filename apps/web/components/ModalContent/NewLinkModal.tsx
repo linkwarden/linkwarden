@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import CollectionSelection from "@/components/InputSelect/CollectionSelection";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import TextInput from "@/components/TextInput";
@@ -31,6 +31,7 @@ export default function NewLinkModal({ onClose }: Props) {
     },
   } as PostLinkSchemaType;
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const [link, setLink] = useState<PostLinkSchemaType>(initial);
   const addLink = useAddLink();
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -74,6 +75,10 @@ export default function NewLinkModal({ onClose }: Props) {
       });
   }, []);
 
+  useLayoutEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   const submit = async () => {
     if (!submitLoader) {
       setSubmitLoader(true);
@@ -103,6 +108,7 @@ export default function NewLinkModal({ onClose }: Props) {
         <div className="sm:col-span-3 col-span-5">
           <p className="mb-2">{t("link")}</p>
           <TextInput
+            ref={inputRef}
             value={link.url || ""}
             onChange={(e) => setLink({ ...link, url: e.target.value })}
             placeholder={t("link_url_placeholder")}
