@@ -1,30 +1,38 @@
 import { PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
-import fs from "fs";
+import { promises as fs } from "fs";
 import path from "path";
 import s3Client from "./s3Client";
 
 export async function createFile({
   filePath,
   data,
-  isBase64,
+  isBase64 = false,
 }: {
   filePath: string;
   data: Buffer | string;
   isBase64?: boolean;
-}) {
+}): Promise<boolean> {
+  let bufferData: Buffer;
+  if (isBase64 && typeof data === "string") {
+    bufferData = Buffer.from(data, "base64");
+  } else if (typeof data === "string") {
+    bufferData = Buffer.from(data, "utf8");
+  } else {
+    bufferData = data;
+  }
+
   if (s3Client) {
     const bucketParams: PutObjectCommandInput = {
-      Bucket: process.env.SPACES_BUCKET_NAME,
+      Bucket: process.env.SPACES_BUCKET_NAME!,
       Key: filePath,
-      Body: isBase64 ? Buffer.from(data as string, "base64") : data,
+      Body: new Uint8Array(bufferData),
     };
 
     try {
       await s3Client.send(new PutObjectCommand(bucketParams));
-
       return true;
     } catch (err) {
-      console.log("Error", err);
+      console.error("Error uploading to S3:", err);
       return false;
     }
   } else {
@@ -36,10 +44,13 @@ export async function createFile({
       filePath
     );
 
-    fs.writeFile(creationPath, data, isBase64 ? "base64" : {}, function (err) {
-      if (err) console.log(err);
-    });
-
-    return true;
+    try {
+      await fs.mkdir(path.dirname(creationPath), { recursive: true });
+      await fs.writeFile(creationPath, new Uint8Array(bufferData));
+      return true;
+    } catch (err) {
+      console.error("Error writing file:", err);
+      return false;
+    }
   }
 }
