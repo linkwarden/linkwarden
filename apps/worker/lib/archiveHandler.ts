@@ -294,8 +294,6 @@ export function getBrowserOptions(): LaunchOptions {
       process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
   }
 
-  browserOptions.headless = false;
-
   return browserOptions;
 }
 
