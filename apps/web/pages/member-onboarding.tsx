@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
+import { Separator } from "@/components/ui/separator";
 
 interface FormData {
   password: string;
@@ -24,7 +25,7 @@ export default function MemberOnboarding() {
     name: "",
   });
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
   const updateUser = useUpdateUser();
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -65,12 +66,12 @@ export default function MemberOnboarding() {
   return (
     <CenteredForm>
       <form onSubmit={submit}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
             {t("invitation_accepted")}
           </p>
 
-          <div className="divider my-0"></div>
+          <Separator />
 
           <p
             style={{
@@ -134,10 +135,10 @@ export default function MemberOnboarding() {
 
           <Button
             type="submit"
-            intent="accent"
+            variant="accent"
             className="mt-2"
             size="full"
-            loading={submitLoader}
+            disabled={submitLoader}
           >
             {t("continue_to_dashboard")}
           </Button>

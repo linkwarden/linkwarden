@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import IconPicker from "../IconPicker";
 import { IconWeight } from "@phosphor-icons/react";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -54,7 +56,7 @@ export default function EditCollectionModal({
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">{t("edit_collection_info")}</p>
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-3">
@@ -107,12 +109,9 @@ export default function EditCollectionModal({
           </div>
         </div>
 
-        <button
-          className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto"
-          onClick={submit}
-        >
+        <Button variant="accent" className="ml-auto" onClick={submit}>
           {t("save_changes")}
-        </button>
+        </Button>
       </div>
     </Modal>
   );

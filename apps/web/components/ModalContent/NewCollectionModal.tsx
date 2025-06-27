@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import TextInput from "@/components/TextInput";
 import { Collection } from "@linkwarden/prisma/client";
 import Modal from "../Modal";
@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 import IconPicker from "../IconPicker";
 import { IconWeight } from "@phosphor-icons/react";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type Props = {
   onClose: Function;
@@ -58,12 +60,18 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
     });
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useLayoutEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <Modal toggleModal={onClose}>
       {parent?.id ? (
         <>
           <p className="text-xl font-thin">{t("new_sub_collection")}</p>
-          <p className="capitalize text-sm">
+          <p className="text-sm">
             {t("for_collection", { name: parent.name })}
           </p>
         </>
@@ -71,7 +79,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
         <p className="text-xl font-thin">{t("create_new_collection")}</p>
       )}
 
-      <div className="divider mb-3 mt-1"></div>
+      <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-3">
@@ -101,6 +109,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
             <div className="w-full">
               <p className="mb-2">{t("name")}</p>
               <TextInput
+                ref={inputRef}
                 className="bg-base-200"
                 value={collection.name}
                 placeholder={t("collection_name_placeholder")}
@@ -124,12 +133,9 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
           </div>
         </div>
 
-        <button
-          className="btn btn-accent dark:border-violet-400 text-white w-fit ml-auto"
-          onClick={submit}
-        >
+        <Button variant="accent" className="ml-auto" onClick={submit}>
           {t("create_collection_button")}
-        </button>
+        </Button>
       </div>
     </Modal>
   );

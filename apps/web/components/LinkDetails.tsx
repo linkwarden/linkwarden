@@ -13,11 +13,7 @@ import getPublicUserData from "@/lib/client/getPublicUserData";
 import { useTranslation } from "next-i18next";
 import { BeatLoader } from "react-spinners";
 import { useUser } from "@linkwarden/router/user";
-import {
-  useGetLink,
-  useUpdateLink,
-  useUpdateFile,
-} from "@linkwarden/router/links";
+import { useUpdateLink, useUpdateFile } from "@linkwarden/router/links";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
 import CopyButton from "./CopyButton";
 import { useRouter } from "next/router";
@@ -33,6 +29,14 @@ import IconPopover from "./IconPopover";
 import TextInput from "./TextInput";
 import usePermissions from "@/hooks/usePermissions";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
+import { Button } from "./ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Separator } from "./ui/separator";
 
 type Props = {
   className?: string;
@@ -61,12 +65,10 @@ export default function LinkDetails({
   const permissions = usePermissions(link.collection.id as number);
 
   const { t } = useTranslation();
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
   const router = useRouter();
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
-
-  const getLink = useGetLink(isPublicRoute);
 
   const [collectionOwner, setCollectionOwner] = useState({
     id: null as unknown as number,
@@ -80,20 +82,20 @@ export default function LinkDetails({
 
   useEffect(() => {
     const fetchOwner = async () => {
-      if (link.collection.ownerId !== user.id) {
+      if (link.collection.ownerId !== user?.id) {
         const owner = await getPublicUserData(
           link.collection.ownerId as number
         );
         setCollectionOwner(owner);
-      } else if (link.collection.ownerId === user.id) {
+      } else if (link.collection.ownerId === user?.id) {
         setCollectionOwner({
-          id: user.id as number,
-          name: user.name,
-          username: user.username as string,
-          image: user.image as string,
-          archiveAsScreenshot: user.archiveAsScreenshot as boolean,
-          archiveAsMonolith: user.archiveAsScreenshot as boolean,
-          archiveAsPDF: user.archiveAsPDF as boolean,
+          id: user?.id as number,
+          name: user?.name as string,
+          username: user?.username as string,
+          image: user?.image as string,
+          archiveAsScreenshot: user?.archiveAsScreenshot as boolean,
+          archiveAsMonolith: user?.archiveAsScreenshot as boolean,
+          archiveAsPDF: user?.archiveAsPDF as boolean,
         });
       }
     };
@@ -110,34 +112,6 @@ export default function LinkDetails({
       link.readable
     );
   };
-
-  useEffect(() => {
-    (async () => {
-      await getLink.mutateAsync({
-        id: link.id as number,
-      });
-    })();
-
-    let interval: any;
-
-    if (!isReady()) {
-      interval = setInterval(async () => {
-        await getLink.mutateAsync({
-          id: link.id as number,
-        });
-      }, 5000);
-    } else {
-      if (interval) {
-        clearInterval(interval);
-      }
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [link.monolith]);
 
   const updateLink = useUpdateLink();
   const updateFile = useUpdateFile();
@@ -188,14 +162,14 @@ export default function LinkDetails({
     <div className={clsx(className)} data-vaul-no-drag>
       <div
         className={clsx(
-          standalone && "sm:border sm:border-neutral-content sm:rounded-2xl p-5"
+          standalone && "sm:border sm:border-neutral-content sm:rounded-xl p-5"
         )}
       >
         <div
           className={clsx(
             "overflow-hidden select-none relative group h-40 opacity-80",
             standalone
-              ? "sm:max-w-xl -mx-5 -mt-5 sm:rounded-t-2xl"
+              ? "sm:max-w-xl -mx-5 -mt-5 sm:rounded-t-xl"
               : "-mx-4 -mt-4"
           )}
         >
@@ -217,46 +191,51 @@ export default function LinkDetails({
           ) : link.preview === "unavailable" ? (
             <div className="bg-gray-50 duration-100 h-40"></div>
           ) : (
-            <div className="duration-100 h-40 skeleton rounded-none"></div>
+            <div className="h-40 skeleton rounded-none"></div>
           )}
 
           {!standalone &&
             (permissions === true || permissions?.canUpdate) &&
             !isPublicRoute && (
               <div className="absolute top-0 bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 duration-100 flex justify-end items-end">
-                <label className="btn btn-xs mb-2 mr-3 opacity-50 hover:opacity-100">
-                  {t("upload_banner")}
-                  <input
-                    type="file"
-                    accept="image/jpg, image/jpeg, image/png"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
+                <Button
+                  className="mb-2 mr-3 opacity-50 hover:opacity-100 p-0"
+                  size="sm"
+                >
+                  <label className="cursor-pointer py-1 px-2 w-full">
+                    {t("upload_banner")}
+                    <input
+                      type="file"
+                      accept="image/jpg, image/jpeg"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
 
-                      const load = toast.loading(t("updating"));
+                        const load = toast.loading(t("updating"));
 
-                      await updateFile.mutateAsync(
-                        {
-                          linkId: link.id as number,
-                          file,
-                        },
-                        {
-                          onSettled: (data, error) => {
-                            toast.dismiss(load);
-
-                            if (error) {
-                              toast.error(error.message);
-                            } else {
-                              toast.success(t("updated"));
-                              setLink({ updatedAt: data.updatedAt, ...link });
-                            }
+                        await updateFile.mutateAsync(
+                          {
+                            linkId: link.id as number,
+                            file,
                           },
-                        }
-                      );
-                    }}
-                    className="hidden"
-                  />
-                </label>
+                          {
+                            onSettled: (data, error) => {
+                              toast.dismiss(load);
+
+                              if (error) {
+                                toast.error(error.message);
+                              } else {
+                                toast.success(t("updated"));
+                                setLink({ updatedAt: data.updatedAt, ...link });
+                              }
+                            },
+                          }
+                        );
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                </Button>
               </div>
             )}
         </div>
@@ -265,13 +244,21 @@ export default function LinkDetails({
         (permissions === true || permissions?.canUpdate) &&
         !isPublicRoute ? (
           <div className="-mt-14 ml-8 relative w-fit pb-2">
-            <div className="tooltip tooltip-bottom" data-tip={t("change_icon")}>
-              <LinkIcon
-                link={link}
-                className="hover:bg-opacity-70 duration-100 cursor-pointer"
-                onClick={() => setIconPopover(true)}
-              />
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <LinkIcon
+                    link={link}
+                    className="hover:bg-opacity-70 duration-100 cursor-pointer"
+                    onClick={() => setIconPopover(true)}
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{t("change_icon")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
             {iconPopover && (
               <IconPopover
                 color={link.color || oklchVariableToHex("--p")}
@@ -399,7 +386,7 @@ export default function LinkDetails({
                       />
                     ) : (
                       <i
-                        className="bi-folder-fill text-2xl"
+                        className="bi-folder-fill text-xl"
                         style={{ color: link.collection.color }}
                       ></i>
                     )}
@@ -441,7 +428,7 @@ export default function LinkDetails({
                       <Link
                         href={"/tags/" + tag.id}
                         key={tag.id}
-                        className="bg-base-200 p-1 hover:bg-neutral-content btn btn-xs btn-ghost rounded-md"
+                        className="bg-base-200 py-1 px-2 hover:bg-neutral-content rounded-sm duration-150"
                       >
                         {tag.name}
                       </Link>
@@ -503,18 +490,25 @@ export default function LinkDetails({
 
                 {onUpdateArchive &&
                   (permissions === true || permissions?.canUpdate) &&
-                  !isPublicRoute && (
-                    <div
-                      className="tooltip tooltip-bottom"
-                      data-tip={t("refresh_preserved_formats")}
-                    >
-                      <button
-                        className="btn btn-xs btn-ghost btn-square text-neutral"
-                        onClick={() => onUpdateArchive()}
-                      >
-                        <i className="bi-arrow-clockwise text-sm" />
-                      </button>
-                    </div>
+                  !isPublicRoute &&
+                  link.url && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-neutral"
+                            onClick={() => onUpdateArchive()}
+                          >
+                            <i className="bi-arrow-clockwise text-sm" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">
+                          <p>{t("refresh_preserved_formats")}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
               </div>
 
@@ -528,7 +522,7 @@ export default function LinkDetails({
                       link={link}
                       downloadable={true}
                     />
-                    <hr className="m-3 border-t border-neutral-content" />
+                    <Separator className="my-3" />
                   </>
                 ) : undefined}
 
@@ -545,7 +539,7 @@ export default function LinkDetails({
                       link={link}
                       downloadable={true}
                     />
-                    <hr className="m-3 border-t border-neutral-content" />
+                    <Separator className="my-3" />
                   </>
                 ) : undefined}
 
@@ -558,7 +552,7 @@ export default function LinkDetails({
                       link={link}
                       downloadable={true}
                     />
-                    <hr className="m-3 border-t border-neutral-content" />
+                    <Separator className="my-3" />
                   </>
                 ) : undefined}
 
@@ -570,7 +564,7 @@ export default function LinkDetails({
                       format={ArchivedFormat.readability}
                       link={link}
                     />
-                    <hr className="m-3 border-t border-neutral-content" />
+                    <Separator className="my-3" />
                   </>
                 ) : undefined}
 
@@ -584,7 +578,7 @@ export default function LinkDetails({
                       size={30}
                     />
 
-                    <p className="text-center text-2xl">
+                    <p className="text-center text-xl">
                       {t("preservation_in_queue")}
                     </p>
                     <p className="text-center text-lg">
@@ -650,17 +644,13 @@ export default function LinkDetails({
             <>
               <br />
               <div className="flex justify-end items-center">
-                <button
-                  className={clsx(
-                    "btn btn-accent text-white",
-                    JSON.stringify(activeLink) === JSON.stringify(link)
-                      ? "btn-disabled"
-                      : "dark:border-violet-400"
-                  )}
+                <Button
+                  variant="accent"
+                  disabled={JSON.stringify(activeLink) === JSON.stringify(link)}
                   onClick={submit}
                 >
                   {t("save_changes")}
-                </button>
+                </Button>
               </div>
             </>
           )}

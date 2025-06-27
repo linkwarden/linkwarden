@@ -6,7 +6,7 @@ import { useUser } from "@linkwarden/router/user";
 export default function usePermissions(collectionId: number) {
   const { data: collections = [] } = useCollections();
 
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   const [permissions, setPermissions] = useState<Member | true>();
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function usePermissions(collectionId: number) {
 
     if (collection) {
       let getPermission: Member | undefined = collection.members.find(
-        (e) => e.userId === user.id
+        (e) => e.userId === user?.id
       );
 
       if (
@@ -24,7 +24,7 @@ export default function usePermissions(collectionId: number) {
       )
         getPermission = undefined;
 
-      setPermissions(user.id === collection.ownerId || getPermission);
+      setPermissions(user?.id === collection.ownerId || getPermission);
     }
   }, [user, collections, collectionId]);
 

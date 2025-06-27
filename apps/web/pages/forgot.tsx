@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import Link from "next/link";
@@ -6,6 +6,7 @@ import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
+import { Separator } from "@/components/ui/separator";
 
 interface FormData {
   email: string;
@@ -61,12 +62,12 @@ export default function Forgot() {
   return (
     <CenteredForm>
       <form onSubmit={sendConfirmation}>
-        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
+        <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-xl shadow-md border border-neutral-content">
           <p className="text-3xl text-center font-extralight">
             {isEmailSent ? t("email_sent") : t("forgot_password")}
           </p>
 
-          <div className="divider my-0"></div>
+          <Separator />
 
           {!isEmailSent ? (
             <>
@@ -88,10 +89,10 @@ export default function Forgot() {
 
               <Button
                 type="submit"
-                intent="accent"
+                variant="accent"
                 className="mt-2"
                 size="full"
-                loading={submitLoader}
+                disabled={submitLoader}
               >
                 {t("send_reset_link")}
               </Button>

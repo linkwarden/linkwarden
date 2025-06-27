@@ -30,6 +30,8 @@ import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
 import LinkFormats from "./LinkFormats";
 import openLink from "@/lib/client/openLink";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -57,7 +59,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
   );
 
   const { data: collections = [] } = useCollections();
-  const { data: user = {} } = useUser();
+  const { data: user } = useUser();
 
   const { setSelectedLinks, selectedLinks } = useLinkStore();
 
@@ -69,9 +71,9 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
   const router = useRouter();
 
-  let isPublic = router.pathname.startsWith("/public") ? true : undefined;
+  let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
 
-  const getLink = useGetLink(isPublic);
+  const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
 
   useEffect(() => {
     if (!editMode) {
@@ -127,7 +129,9 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
       link.preview !== "unavailable"
     ) {
       interval = setInterval(async () => {
-        getLink.mutateAsync({ id: link.id as number });
+        refetch().catch((error) => {
+          console.error("Error refetching link:", error);
+        });
       }, 5000);
     }
 
@@ -153,7 +157,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
   return (
     <div
       ref={ref}
-      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-2xl relative group`}
+      className={`${selectedStyle} border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group`}
       onClick={() =>
         selectable
           ? handleCheckboxClick(link)
@@ -163,21 +167,21 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
       }
     >
       <div
-        className="rounded-2xl cursor-pointer"
+        className="rounded-xl cursor-pointer"
         onClick={() =>
           !editMode && openLink(link, user, () => setLinkModal(true))
         }
       >
         {show.image && formatAvailable(link, "preview") && (
           <div>
-            <div className="relative rounded-t-2xl overflow-hidden">
+            <div className="relative rounded-t-xl overflow-hidden">
               {formatAvailable(link, "preview") ? (
                 <Image
                   src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}
                   width={1280}
                   height={720}
                   alt=""
-                  className={`rounded-t-2xl select-none object-cover z-10 ${imageHeightClass} w-full shadow opacity-80 scale-105`}
+                  className={`rounded-t-xl select-none object-cover z-10 ${imageHeightClass} w-full shadow opacity-80 scale-105`}
                   style={show.icon ? { filter: "blur(1px)" } : undefined}
                   draggable="false"
                   onError={(e) => {
@@ -191,13 +195,13 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
                 ></div>
               )}
               {show.icon && (
-                <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-2xl flex items-center justify-center rounded-md">
+                <div className="absolute top-0 left-0 right-0 bottom-0 rounded-t-xl flex items-center justify-center rounded-md">
                   <LinkIcon link={link} />
                 </div>
               )}
             </div>
 
-            <hr className="divider my-0 border-t border-neutral-content h-[1px]" />
+            <Separator />
           </div>
         )}
 
@@ -226,16 +230,17 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
           {show.tags && link.tags && link.tags[0] && (
             <div className="flex gap-1 items-center flex-wrap">
               {link.tags.map((e, i) => (
-                <Link
-                  href={"/tags/" + e.id}
-                  key={i}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                  className="btn btn-xs btn-ghost truncate max-w-[19rem]"
-                >
-                  #{e.name}
-                </Link>
+                <Button variant="ghost" size="sm" key={i}>
+                  <Link
+                    href={"/tags/" + e.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="truncate max-w-[19rem]"
+                  >
+                    #{e.name}
+                  </Link>
+                </Button>
               ))}
             </div>
           )}
@@ -243,10 +248,10 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
         {(show.collection || show.date) && (
           <div>
-            <hr className="divider mt-2 mb-1 last:hidden border-t border-neutral-content h-[1px]" />
+            <Separator className="mb-1" />
 
             <div className="flex flex-wrap justify-between items-center text-xs text-neutral px-3 pb-1 w-full gap-x-2">
-              {!isPublic && show.collection && (
+              {!isPublicRoute && show.collection && (
                 <div className="cursor-pointer truncate">
                   <LinkCollection link={link} collection={collection} />
                 </div>
@@ -258,14 +263,15 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
       </div>
 
       {/* Overlay on hover */}
-      <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-2xl duration-100"></div>
+      <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
       <LinkActions
         link={link}
         collection={collection}
         linkModal={linkModal}
         setLinkModal={(e) => setLinkModal(e)}
+        className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
       />
-      {!isPublic && <LinkPin link={link} />}
+      {!isPublicRoute && <LinkPin link={link} />}
     </div>
   );
 }

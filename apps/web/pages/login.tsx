@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import CenteredForm from "@/layouts/CenteredForm";
 import { signIn } from "next-auth/react";
@@ -14,6 +14,7 @@ import { getToken } from "next-auth/jwt";
 import { prisma } from "@linkwarden/prisma";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import { Separator } from "@/components/ui/separator";
 
 interface FormData {
   username: string;
@@ -91,7 +92,8 @@ export default function Login({
           <p className="text-3xl text-black dark:text-white text-center font-extralight">
             {t("enter_credentials")}
           </p>
-          <hr className="border-1 border-sky-100 dark:border-neutral-700" />
+
+          <Separator />
 
           {process.env.NEXT_PUBLIC_DEMO === "true" &&
             process.env.NEXT_PUBLIC_DEMO_USERNAME &&
@@ -126,8 +128,9 @@ export default function Login({
                       cloud.linkwarden.app
                     </a>
                   </div>
-                  <div
-                    className="btn btn-sm btn-primary w-full"
+                  <Button
+                    variant="primary"
+                    size="full"
                     onClick={async () => {
                       const load = toast.loading(t("authenticating"));
 
@@ -147,7 +150,7 @@ export default function Login({
                     }}
                   >
                     {t("demo_button")}
-                  </div>
+                  </Button>
                 </div>
               </div>
             )}
@@ -196,15 +199,19 @@ export default function Login({
           <Button
             type="submit"
             size="full"
-            intent="accent"
+            variant="accent"
             data-testid="submit-login-button"
-            loading={submitLoader}
+            disabled={submitLoader}
           >
             {t("login")}
           </Button>
 
           {availableLogins.buttonAuths.length > 0 && (
-            <div className="divider my-1">{t("or_continue_with")}</div>
+            <div className="flex items-center gap-2">
+              <Separator className="my-1 flex-1 w-auto" />
+              <p className="whitespace-nowrap">{t("or_continue_with")}</p>
+              <Separator className="my-1 flex-1 w-auto" />
+            </div>
           )}
         </>
       );
@@ -220,8 +227,8 @@ export default function Login({
             type="button"
             onClick={() => loginUserButton(value.method)}
             size="full"
-            intent="secondary"
-            loading={submitLoader}
+            variant="metal"
+            disabled={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
               (value.name.toLowerCase() === "apple" && (
@@ -258,7 +265,7 @@ export default function Login({
     <CenteredForm text={t("sign_in_to_your_account")}>
       <form onSubmit={loginUser}>
         <div
-          className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-2xl shadow-md border border-sky-100 dark:border-neutral-700"
+          className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-slate-50 dark:bg-neutral-800 rounded-xl shadow-md border border-sky-100 dark:border-neutral-700"
           data-testid="login-form"
         >
           {displayLoginCredential()}

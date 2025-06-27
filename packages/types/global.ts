@@ -120,6 +120,7 @@ export enum MigrationFormat {
   htmlFile = 1,
   wallabag = 2,
   omnivore = 3,
+  pocket = 4,
 }
 
 export enum Plan {

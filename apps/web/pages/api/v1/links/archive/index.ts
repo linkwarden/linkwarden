@@ -12,10 +12,6 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
 
   const isServerAdmin = user.id === Number(process.env.NEXT_PUBLIC_ADMIN || 1);
 
-  if (!isServerAdmin) {
-    return res.status(401).json({ response: "Permission denied." });
-  }
-
   if (req.method === "DELETE") {
     const dataValidation = LinkArchiveActionSchema.safeParse(req.body);
     if (!dataValidation.success) {
@@ -26,9 +22,76 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
-    const { action } = dataValidation.data;
+    const { action, linkIds } = dataValidation.data;
+
+    if (linkIds) {
+      const authorizedLinks = await prisma.link.findMany({
+        where: {
+          id: { in: linkIds },
+          url: { not: null },
+          OR: [
+            {
+              collection: {
+                ownerId: user.id,
+              },
+            },
+            {
+              collection: {
+                members: {
+                  some: {
+                    userId: user.id,
+                    canDelete: true,
+                  },
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          id: true,
+          collectionId: true,
+        },
+      });
+
+      if (authorizedLinks.length === 0) {
+        return res.status(401).json({ response: "Permission denied." });
+      }
+
+      res.status(200).json({ response: "Success." });
+
+      for (const link of authorizedLinks) {
+        const collectionId = link.collectionId;
+
+        if (!collectionId) {
+          console.error(`Collection ID not found for link ${link.id}`);
+          continue;
+        }
+
+        await removeFiles(link.id, collectionId);
+        await prisma.link.update({
+          where: { id: link.id },
+          data: {
+            image: null,
+            pdf: null,
+            readable: null,
+            monolith: null,
+            preview: null,
+            lastPreserved: null,
+            indexVersion: null,
+          },
+        });
+
+        console.log("Deleted preservation link:", link.id);
+      }
+
+      return;
+    }
 
     if (action === "allAndIgnore") {
+      if (!isServerAdmin) {
+        return res.status(401).json({ response: "Permission denied." });
+      }
+
       const allLinks = await prisma.link.findMany({
         where: {
           type: "url",
@@ -39,8 +102,6 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
       });
 
       for (const link of allLinks) {
-        console.log("Deleted preservation link:", link.id);
-
         await removePreservationFiles(link.id, link.collectionId);
         await prisma.link.update({
           where: { id: link.id },
@@ -52,10 +113,16 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
             monolith: "unavailable",
           },
         });
+
+        console.log("Deleted preservation link:", link.id);
       }
 
       return res.status(200).json({ response: "Success." });
     } else if (action === "allAndRePreserve") {
+      if (!isServerAdmin) {
+        return res.status(401).json({ response: "Permission denied." });
+      }
+
       const allLinks = await prisma.link.findMany({
         where: {
           type: "url",
@@ -65,8 +132,6 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         },
       });
       for (const link of allLinks) {
-        console.log("Deleted preservation link:", link.id);
-
         await removeFiles(link.id, link.collectionId);
         await prisma.link.update({
           where: { id: link.id },
@@ -80,10 +145,16 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
             indexVersion: null,
           },
         });
+
+        console.log("Deleted preservation link:", link.id);
       }
 
       return res.status(200).json({ response: "Success." });
     } else if (action === "allBroken") {
+      if (!isServerAdmin) {
+        return res.status(401).json({ response: "Permission denied." });
+      }
+
       const brokenArchives = await prisma.link.findMany({
         where: {
           type: "url",

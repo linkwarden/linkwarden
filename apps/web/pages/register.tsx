@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import CenteredForm from "@/layouts/CenteredForm";
 import TextInput from "@/components/TextInput";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { getLogins } from "./api/v1/logins";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getToken } from "next-auth/jwt";
@@ -14,6 +14,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { i18n } from "next-i18next.config";
 import { Trans, useTranslation } from "next-i18next";
 import { useConfig } from "@linkwarden/router/config";
+import { Separator } from "@/components/ui/separator";
 
 type FormData = {
   name: string;
@@ -130,8 +131,8 @@ export default function Register({
             type="button"
             onClick={() => loginUserButton(value.method)}
             size="full"
-            intent="secondary"
-            loading={submitLoader}
+            variant="metal"
+            disabled={submitLoader}
           >
             {value.name.toLowerCase() === "google" ||
               (value.name.toLowerCase() === "apple" && (
@@ -157,17 +158,17 @@ export default function Register({
       data-testid="registration-form"
     >
       {config?.DISABLE_REGISTRATION ? (
-        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-2xl shadow-md border border-neutral-content">
+        <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-xl shadow-md border border-neutral-content">
           <p>{t("registration_disabled")}</p>
         </div>
       ) : (
         <form onSubmit={registerUser}>
-          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-base-200 rounded-2xl shadow-md border border-neutral-content">
+          <div className="p-4 flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full mx-auto bg-base-200 rounded-xl shadow-md border border-neutral-content">
             <p className="text-3xl text-center font-extralight">
               {t("enter_details")}
             </p>
 
-            <div className="divider my-0"></div>
+            <Separator />
 
             <div>
               <p className="text-sm w-fit font-semibold mb-1">
@@ -275,8 +276,8 @@ export default function Register({
 
             <Button
               type="submit"
-              loading={submitLoader}
-              intent="accent"
+              variant="accent"
+              disabled={submitLoader}
               size="full"
               data-testid="register-button"
             >
@@ -284,7 +285,11 @@ export default function Register({
             </Button>
 
             {availableLogins.buttonAuths.length > 0 && (
-              <div className="divider my-1">{t("or_continue_with")}</div>
+              <div className="flex items-center gap-2">
+                <Separator className="my-1 flex-1 w-auto" />
+                <p className="whitespace-nowrap">{t("or_continue_with")}</p>
+                <Separator className="my-1 flex-1 w-auto" />
+              </div>
             )}
 
             {displayLoginExternalButton()}
