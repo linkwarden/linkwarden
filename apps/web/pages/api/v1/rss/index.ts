@@ -31,6 +31,13 @@ export default async function handler(
   }
 
   if (req.method === "POST") {
+    if (process.env.NEXT_PUBLIC_DEMO === "true") {
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+    }
+
     const dataValidation = PostRssSubscriptionSchema.safeParse(req.body);
 
     if (!dataValidation.success) {
