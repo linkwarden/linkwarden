@@ -20,8 +20,6 @@ export default async function importFromPocket(
     skipEmptyLines: true,
   }).data as PocketBackup;
 
-  console.log("tags", data);
-
   const backup = data.filter((e) => e.url);
 
   let totalImports = backup.length;
