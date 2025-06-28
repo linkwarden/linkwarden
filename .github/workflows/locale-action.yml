@@ -36,10 +36,7 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          git rebase --committer-date-is-author-date \
-            --exec 'git commit --amend --no-edit --allow-empty \
-                    --author="LinkwardenBot <bot@linkwarden.app>"' \
-            "$BASE_SHA"
+          git rebase --committer-date-is-author-date --exec 'git commit --amend --no-edit --allow-empty --author="LinkwardenBot <bot@linkwarden.app>"' "$BASE_SHA"
 
       - name: Push rewritten history
         run: git push --force-with-lease origin HEAD:i18n
