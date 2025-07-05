@@ -443,7 +443,7 @@
   "auto_generate_tags": "Autogenerar etiquetas",
   "auto_generate_tags_desc": "Autogenerar etiquetas relevantes basadas en el contenido de cada enlace.",
   "disabled": "Desactivado",
-  "ai_tagging_disabled_desc": "El etiquetado AI esta desactivado.",
+  "ai_tagging_disabled_desc": "El etiquetado AI está desactivado.",
   "tag_selection_placeholder": "Seleccionar o añadir etiquetas personalizadas…",
   "rss_subscriptions": "Suscripciones RSS",
   "rss_subscriptions_desc": "Las suscripciones RSS son una forma de mantenerse al día con sus sitios web y blogs favoritos. Linkwarden obtendrá automáticamente los últimos artículos cada {{number}} minutos desde los feeds que proporciones.",
