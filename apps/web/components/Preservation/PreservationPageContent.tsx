@@ -18,6 +18,7 @@ export default function PreservationPageContent() {
   const { data: link, refetch } = useGetLink({
     id: Number(router.query.id),
     isPublicRoute,
+    enabled: true,
   });
 
   useEffect(() => {
