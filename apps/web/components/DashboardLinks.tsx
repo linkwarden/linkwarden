@@ -37,18 +37,16 @@ export function DashboardLinks({
     <div
       className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-72`}
     >
-      {links?.map((e, i) => {
-        return <Card key={i} link={e} />;
-      })}
-
-      {isLoading && (
-        <div className="flex flex-col gap-4">
+      {isLoading ? (
+        <div className="flex flex-col gap-4 min-w-60 w-60">
           <div className="skeleton h-40 w-full"></div>
           <div className="skeleton h-3 w-2/3"></div>
           <div className="skeleton h-3 w-full"></div>
           <div className="skeleton h-3 w-full"></div>
           <div className="skeleton h-3 w-1/3"></div>
         </div>
+      ) : (
+        links?.map((e, i) => <Card key={i} link={e} />)
       )}
     </div>
   );
