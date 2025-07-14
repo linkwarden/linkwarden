@@ -59,7 +59,7 @@ export default async function handleMonolith(
         return reject(new Error("Monolith produced an empty file"));
       }
 
-      const max = 1024 * 1024 * Number(process.env.MONOLITH_MAX_BUFFER || 6);
+      const max = 1024 * 1024 * Number(process.env.MONOLITH_MAX_BUFFER || 100);
       if (html.length > max) {
         return reject(new Error("Monolith output exceeded buffer limit"));
       }
