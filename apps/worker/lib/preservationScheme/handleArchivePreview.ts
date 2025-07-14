@@ -51,7 +51,7 @@ const handleArchivePreview = async (
       .then(async (screenshot) => {
         if (
           Buffer.byteLength(screenshot) >
-          1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 100)
+          1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 10)
         )
           return console.log("Error generating preview: Buffer size exceeded");
 
