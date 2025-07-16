@@ -129,8 +129,13 @@ export default function LinkModal({
                   (permissions === true || permissions?.canUpdate) && (
                     <DropdownMenuItem
                       onClick={() => {
-                        (document.activeElement as HTMLElement)?.blur();
+                        setTimeout(
+                          () => (document.body.style.pointerEvents = ""),
+                          0
+                        );
+
                         onUpdateArchive();
+                        onClose();
                       }}
                     >
                       <i className="bi-arrow-clockwise"></i>
@@ -176,7 +181,12 @@ export default function LinkModal({
           className="sm:mt-0 -mt-11"
           mode={mode}
           setMode={(mode: "view" | "edit") => setMode(mode)}
-          onUpdateArchive={onUpdateArchive}
+          onUpdateArchive={() => {
+            setTimeout(() => (document.body.style.pointerEvents = ""), 0);
+
+            onUpdateArchive();
+            onClose();
+          }}
         />
       </div>
     </Drawer>
