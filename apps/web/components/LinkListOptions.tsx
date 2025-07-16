@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ConfirmationModal from "./ConfirmationModal";
 
 type Props = {
   children: React.ReactNode;
@@ -54,6 +55,8 @@ const LinkListOptions = ({
 
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
+  const [bulkRefreshPreservationsModal, setBulkRefreshPreservationsModal] =
+    useState(false);
 
   useEffect(() => {
     if (editMode && setEditMode) return setEditMode(false);
@@ -84,6 +87,7 @@ const LinkListOptions = ({
             toast.error(error.message);
           } else {
             setSelectedLinks([]);
+            setEditMode?.(false);
             toast.success(t("deleted"));
           }
         },
@@ -105,6 +109,7 @@ const LinkListOptions = ({
             toast.error(error.message);
           } else {
             setSelectedLinks([]);
+            setEditMode?.(false);
             toast.success(t("links_being_archived"));
           }
         },
@@ -177,7 +182,7 @@ const LinkListOptions = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => bulkRefreshPreservations()}
+                    onClick={() => setBulkRefreshPreservationsModal(true)}
                     disabled={selectedLinks.length === 0}
                   >
                     <i className="bi-arrow-clockwise" />
@@ -248,6 +253,7 @@ const LinkListOptions = ({
         <BulkDeleteLinksModal
           onClose={() => {
             setBulkDeleteLinksModal(false);
+            setEditMode?.(false);
           }}
         />
       )}
@@ -256,8 +262,29 @@ const LinkListOptions = ({
         <BulkEditLinksModal
           onClose={() => {
             setBulkEditLinksModal(false);
+            setEditMode?.(false);
           }}
         />
+      )}
+
+      {bulkRefreshPreservationsModal && (
+        <ConfirmationModal
+          toggleModal={() => {
+            setBulkRefreshPreservationsModal(false);
+          }}
+          onConfirmed={async () => {
+            await bulkRefreshPreservations();
+          }}
+          title={t("refresh_preserved_formats")}
+        >
+          <p className="mb-5">
+            {selectedLinks.length === 1
+              ? t("refresh_preserved_formats_confirmation_desc")
+              : t("refresh_multiple_preserved_formats_confirmation_desc", {
+                  count: selectedLinks.length,
+                })}
+          </p>
+        </ConfirmationModal>
       )}
     </>
   );

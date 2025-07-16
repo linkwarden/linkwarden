@@ -74,64 +74,6 @@ export default function ReadableView({ link }: Props) {
   const { data: user } = useUser();
 
   useEffect(() => {
-    if (!user) return;
-    const readerViews = document.getElementsByClassName("reader-view");
-
-    const getFont = () => {
-      if (user.readableFontFamily === "caveat") {
-        return caveat.style.fontFamily;
-      } else if (user.readableFontFamily === "bentham") {
-        return bentham.style.fontFamily;
-      } else return user.readableFontFamily;
-    };
-
-    for (const view of Array.from(readerViews)) {
-      const paragraphs = view.getElementsByTagName("p");
-      for (const paragraph of Array.from(paragraphs)) {
-        paragraph.style.fontSize = user.readableFontSize || "18px";
-        paragraph.style.lineHeight = user.readableLineHeight || "1.8";
-      }
-
-      const paragraphToUserReadableFontSizeRatio =
-        parseInt(user.readableFontSize || "18") / 18;
-
-      const headers1 = view.getElementsByTagName("h1");
-      for (const header of Array.from(headers1)) {
-        header.style.fontSize =
-          35 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-      const headers2 = view.getElementsByTagName("h2");
-      for (const header of Array.from(headers2)) {
-        header.style.fontSize =
-          30 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-      const headers3 = view.getElementsByTagName("h3");
-      for (const header of Array.from(headers3)) {
-        header.style.fontSize =
-          26 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-      const headers4 = view.getElementsByTagName("h4");
-      for (const header of Array.from(headers4)) {
-        header.style.fontSize =
-          21 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-      const headers5 = view.getElementsByTagName("h5");
-      for (const header of Array.from(headers5)) {
-        header.style.fontSize =
-          18 * paragraphToUserReadableFontSizeRatio + "px";
-      }
-
-      (view as HTMLElement).style.fontFamily = `${getFont()}`;
-    }
-  }, [
-    user?.theme,
-    user?.readableFontFamily,
-    user?.readableFontSize,
-    user?.readableLineHeight,
-    linkContent,
-  ]);
-
-  useEffect(() => {
     if (selectionInfo?.highlightId) {
       const comment = linkHighlights?.find(
         (h) => h.id === selectionInfo.highlightId
@@ -343,12 +285,69 @@ export default function ReadableView({ link }: Props) {
     return getHighlightedHtml(linkContent, linkHighlights || []);
   }, [linkContent, linkHighlights]);
 
+  useEffect(() => {
+    if (!user) return;
+    const readerViews = document.getElementsByClassName("reader-view");
+
+    const getFont = () => {
+      if (user.readableFontFamily === "caveat") {
+        return caveat.style.fontFamily;
+      } else if (user.readableFontFamily === "bentham") {
+        return bentham.style.fontFamily;
+      } else return user.readableFontFamily;
+    };
+
+    for (const view of Array.from(readerViews)) {
+      const paragraphs = view.getElementsByTagName("p");
+      for (const paragraph of Array.from(paragraphs)) {
+        paragraph.style.fontSize = user.readableFontSize || "18px";
+        paragraph.style.lineHeight = user.readableLineHeight || "1.8";
+      }
+
+      const paragraphToUserReadableFontSizeRatio =
+        parseInt(user.readableFontSize || "18") / 18;
+
+      const headers1 = view.getElementsByTagName("h1");
+      for (const header of Array.from(headers1)) {
+        header.style.fontSize =
+          35 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers2 = view.getElementsByTagName("h2");
+      for (const header of Array.from(headers2)) {
+        header.style.fontSize =
+          30 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers3 = view.getElementsByTagName("h3");
+      for (const header of Array.from(headers3)) {
+        header.style.fontSize =
+          26 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers4 = view.getElementsByTagName("h4");
+      for (const header of Array.from(headers4)) {
+        header.style.fontSize =
+          21 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+      const headers5 = view.getElementsByTagName("h5");
+      for (const header of Array.from(headers5)) {
+        header.style.fontSize =
+          18 * paragraphToUserReadableFontSizeRatio + "px";
+      }
+
+      (view as HTMLElement).style.fontFamily = `${getFont()}`;
+    }
+  }, [
+    user?.theme,
+    user?.readableFontFamily,
+    user?.readableFontSize,
+    user?.readableLineHeight,
+    highlightedHtml,
+    linkContent,
+  ]);
+
   const handleHighlightSelection = async (
     highlightId?: number | null,
     color?: "yellow" | "red" | "blue" | "green"
   ) => {
-    console.log(selectionInfo);
-
     if (
       !highlightId &&
       (!selectionInfo?.text ||

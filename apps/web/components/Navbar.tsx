@@ -67,10 +67,10 @@ export default function Navbar() {
       <SearchBar />
 
       <div className="flex items-center gap-2">
-        <ToggleDarkMode className="hidden sm:inline-grid" />
+        <ToggleDarkMode hideInMobile />
 
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className="hidden sm:inline-grid">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
