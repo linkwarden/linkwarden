@@ -20,11 +20,15 @@ const handleArchivePreview = async (
   });
 
   let previewGenerated = false;
-  
+
   if (ogImageUrl) {
-    if (!ogImageUrl.startsWith("http://") && !ogImageUrl.startsWith("https://")) {
+    if (
+      !ogImageUrl.startsWith("http://") &&
+      !ogImageUrl.startsWith("https://")
+    ) {
       const origin = await page.evaluate(() => document.location.origin);
-      ogImageUrl = origin + (ogImageUrl.startsWith("/") ? ogImageUrl : ("/" + ogImageUrl));
+      ogImageUrl =
+        origin + (ogImageUrl.startsWith("/") ? ogImageUrl : "/" + ogImageUrl);
     }
 
     const imageResponse = await page.goto(ogImageUrl);

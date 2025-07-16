@@ -10,11 +10,11 @@ import {
 import { useUpdateUserPreference, useUser } from "@linkwarden/router/user";
 
 type Props = {
-  className?: string;
+  hideInMobile?: boolean;
   align?: "left" | "right" | "top" | "bottom";
 };
 
-export default function ToggleDarkMode({ className, align }: Props) {
+export default function ToggleDarkMode({ hideInMobile, align }: Props) {
   const { t } = useTranslation();
   const { data } = useUser();
   const updateUserPreference = useUpdateUserPreference();
@@ -28,14 +28,12 @@ export default function ToggleDarkMode({ className, align }: Props) {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger className={hideInMobile ? "hidden sm:inline-grid" : ""}>
           <Button
             asChild
             variant="ghost"
             size="icon"
-            className={`inline-grid swap swap-rotate text-neutral ${
-              className || ""
-            }`}
+            className={"inline-grid swap swap-rotate text-neutral"}
           >
             <label>
               <input
