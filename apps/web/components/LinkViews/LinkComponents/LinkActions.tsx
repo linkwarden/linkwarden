@@ -20,6 +20,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -54,6 +55,8 @@ export default function LinkActions({
 
   const [editLinkModal, setEditLinkModal] = useState(false);
   const [deleteLinkModal, setDeleteLinkModal] = useState(false);
+  const [refreshPreservationsModal, setRefreshPreservationsModal] =
+    useState(false);
 
   const deleteLink = useDeleteLink();
 
@@ -169,11 +172,26 @@ export default function LinkActions({
           activeLink={link}
         />
       )}
+      {refreshPreservationsModal && (
+        <ConfirmationModal
+          toggleModal={() => {
+            setRefreshPreservationsModal(false);
+          }}
+          onConfirmed={async () => {
+            await updateArchive();
+          }}
+          title={t("refresh_preserved_formats")}
+        >
+          <p className="mb-5">
+            {t("refresh_preserved_formats_confirmation_desc")}
+          </p>
+        </ConfirmationModal>
+      )}
       {linkModal && (
         <LinkModal
           onClose={() => setLinkModal(false)}
           onPin={() => pinLink(link)}
-          onUpdateArchive={updateArchive}
+          onUpdateArchive={() => setRefreshPreservationsModal(true)}
           onDelete={() => setDeleteLinkModal(true)}
           link={link}
         />
