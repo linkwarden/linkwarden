@@ -489,5 +489,7 @@
   "notes_highlights": "Notes & Surlignements",
   "no_notes_highlights": "Aucune note ou surlignement trouvé pour ce lien.",
   "save": "Sauvegarder",
-  "edit_layout": "Modifier la mise en page"
+  "edit_layout": "Modifier la mise en page",
+  "refresh_multiple_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve {{count}} links.",
+  "refresh_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve this link."
 }
