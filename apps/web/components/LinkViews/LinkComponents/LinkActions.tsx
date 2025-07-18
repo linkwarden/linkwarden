@@ -85,7 +85,7 @@ export default function LinkActions({
         <Button
           variant={ghost ? "ghost" : "simple"}
           size="icon"
-          className={clsx(className)}
+          className={clsx(className, "cursor-pointer")}
           onClick={() => setLinkModal(true)}
         >
           <i title="More" className="bi-info-circle text-xl" />
@@ -97,7 +97,7 @@ export default function LinkActions({
               asChild
               variant={ghost ? "ghost" : "simple"}
               size="icon"
-              className={clsx(className)}
+              className={clsx(className, "cursor-pointer")}
               onMouseDown={(e) => e.preventDefault()}
             >
               <i title="More" className="bi-three-dots text-xl" />
