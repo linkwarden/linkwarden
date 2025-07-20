@@ -1244,14 +1244,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     callbacks: {
       async signIn({ user, account, profile, email, credentials }) {
-        if (
-          !(user as User).emailVerified &&
-          !email?.verificationRequest
-          // && (account?.provider === "email" || account?.provider === "google")
-        ) {
-          // Email is being verified for the first time...
-          console.log("Email is being verified for the first time...");
-
+        if (!(user as User).emailVerified && !email?.verificationRequest) {
           const parentSubscriptionId = (user as User).parentSubscriptionId;
 
           if (parentSubscriptionId) {
@@ -1358,6 +1351,24 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
               },
               data: {
                 emailVerified: new Date(),
+                dashboardSections: {
+                  createMany: {
+                    data: [
+                      {
+                        order: 0,
+                        type: "STATS",
+                      },
+                      {
+                        order: 1,
+                        type: "RECENT_LINKS",
+                      },
+                      {
+                        order: 2,
+                        type: "PINNED_LINKS",
+                      },
+                    ],
+                  },
+                },
               },
             });
           }
