@@ -20,10 +20,9 @@ const useUser = (auth?: MobileAuth) => {
     status = auth.status;
   }
 
-  const url =
-    (auth?.instance ? auth?.instance : "") +
-    "/api/v1/users" +
-    (userId ? `/${userId}` : "");
+  const url = auth
+    ? auth?.instance + "/api/v1/users/me"
+    : "/api/v1/users/" + userId;
 
   return useQuery({
     queryKey: ["user"],
@@ -54,7 +53,8 @@ const useUser = (auth?: MobileAuth) => {
           dashboardSections: DashboardSection[];
         };
 
-      document.querySelector("html")?.setAttribute("data-theme", data.theme);
+      if (!auth)
+        document.querySelector("html")?.setAttribute("data-theme", data.theme);
 
       return data;
     },
