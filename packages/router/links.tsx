@@ -105,7 +105,7 @@ const buildQueryString = (params: LinkRequestQuery) => {
     .join("&");
 };
 
-const useAddLink = () => {
+const useAddLink = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -118,13 +118,19 @@ const useAddLink = () => {
         }
       }
 
-      const response = await fetch("/api/v1/links", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(link),
-      });
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + "/api/v1/links",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+          body: JSON.stringify(link),
+        }
+      );
 
       const data = await response.json();
 
@@ -192,14 +198,22 @@ const useUpdateLink = () => {
   });
 };
 
-const useDeleteLink = () => {
+const useDeleteLink = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/v1/links/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + `/api/v1/links/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+        }
+      );
 
       const data = await response.json();
 
