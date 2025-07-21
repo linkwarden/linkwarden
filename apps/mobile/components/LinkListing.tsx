@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable, Platform } from "react-native";
+import { View, Text, Image, Pressable, Platform, Alert } from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -10,6 +10,7 @@ import {
 import useAuthStore from "@/store/auth";
 import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";
+import { useDeleteLink } from "@linkwarden/router/links";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -18,6 +19,8 @@ type Props = {
 const LinkListing = ({ link }: Props) => {
   const { auth } = useAuthStore();
   const router = useRouter();
+
+  const deleteLink = useDeleteLink(auth);
 
   let shortendURL;
 
@@ -43,7 +46,7 @@ const LinkListing = ({ link }: Props) => {
           onPress={() => router.push(`/links/${link.id}`)}
           android_ripple={{ color: "#ddd", borderless: false }}
         >
-          <View className="flex-row justify-between">
+          <View className="flex-row justify-between w-full">
             <View className="w-[70%] flex-col justify-between">
               <Text numberOfLines={2} className="font-medium text-lg">
                 {decode(link.name || link.description || link.url)}
@@ -179,7 +182,23 @@ const LinkListing = ({ link }: Props) => {
         <ContextMenu.Item
           key="delete-link"
           onSelect={() => {
-            /* delete link */
+            return Alert.alert(
+              "Delete Link",
+              "Are you sure you want to delete this link? This action cannot be undone.",
+              [
+                {
+                  text: "Cancel",
+                  style: "cancel",
+                },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: () => {
+                    deleteLink.mutate(link.id as number);
+                  },
+                },
+              ]
+            );
           }}
         >
           <ContextMenu.ItemTitle>Delete</ContextMenu.ItemTitle>

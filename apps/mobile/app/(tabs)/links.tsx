@@ -39,12 +39,7 @@ export default function LinksScreen() {
         onEndReached={() => data.fetchNextPage()}
         onEndReachedThreshold={0.5}
         ItemSeparatorComponent={() => (
-          <View
-            style={{
-              height: 1,
-              backgroundColor: "#eee",
-            }}
-          />
+          <View className="bg-[#eee] h-[1px] w-[100px]" />
         )}
       />
     </View>

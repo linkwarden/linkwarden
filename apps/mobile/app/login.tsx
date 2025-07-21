@@ -1,13 +1,8 @@
+import { Button } from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import useAuthStore from "@/store/auth";
-import { Link } from "expo-router";
 import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function HomeScreen() {
   const { signIn } = useAuthStore();
@@ -28,39 +23,21 @@ export default function HomeScreen() {
           gap: 10,
         }}
       >
-        <TextInput
-          style={{
-            height: 40,
-            width: 250,
-            borderRadius: 5,
-            padding: 10,
-            borderColor: "gray",
-            borderWidth: 1,
-          }}
+        <Input
+          className="w-72"
           placeholder="Username"
           value={form.user}
           onChangeText={(text) => setForm({ ...form, user: text })}
         />
-        <TextInput
-          style={{
-            height: 40,
-            width: 250,
-            borderRadius: 5,
-            padding: 10,
-            borderColor: "gray",
-            borderWidth: 1,
-          }}
+        <Input
+          className="w-72"
           placeholder="Password"
           secureTextEntry
           value={form.password}
           onChangeText={(text) => setForm({ ...form, password: text })}
         />
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#000000",
-            padding: 10,
-            borderRadius: 5,
-          }}
+        <Button
+          variant="accent"
           onPress={() =>
             signIn(
               form.user,
@@ -69,8 +46,8 @@ export default function HomeScreen() {
             )
           }
         >
-          <Text style={{ color: "#fff", textAlign: "center" }}>Login</Text>
-        </TouchableOpacity>
+          Login
+        </Button>
       </View>
     </View>
   );
@@ -81,5 +58,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#ffffff",
   },
 });
