@@ -11,6 +11,7 @@ import useAuthStore from "@/store/auth";
 import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";
 import { useDeleteLink } from "@linkwarden/router/links";
+import { SheetManager } from "react-native-actions-sheet";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -109,6 +110,28 @@ const LinkListing = ({ link }: Props) => {
           <ContextMenu.ItemTitle>Open Link</ContextMenu.ItemTitle>
         </ContextMenu.Item>
 
+        {link.url && (
+          <ContextMenu.Item
+            key="copy-url"
+            onSelect={() => {
+              /* copy URL */
+            }}
+          >
+            <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
+          </ContextMenu.Item>
+        )}
+
+        <ContextMenu.Item
+          key="edit-link"
+          onSelect={() => {
+            SheetManager.show("edit-link-sheet", {
+              payload: { id: link.id as number },
+            });
+          }}
+        >
+          <ContextMenu.ItemTitle>Edit Link</ContextMenu.ItemTitle>
+        </ContextMenu.Item>
+
         {link.url && atLeastOneFormatAvailable(link) && (
           <ContextMenu.Sub>
             <ContextMenu.SubTrigger key="preserved-formats">
@@ -171,14 +194,6 @@ const LinkListing = ({ link }: Props) => {
           </ContextMenu.Sub>
         )}
 
-        <ContextMenu.Item
-          key="copy-url"
-          onSelect={() => {
-            /* copy URL */
-          }}
-        >
-          <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
-        </ContextMenu.Item>
         <ContextMenu.Item
           key="delete-link"
           onSelect={() => {
