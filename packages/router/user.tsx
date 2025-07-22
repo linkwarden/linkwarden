@@ -112,7 +112,7 @@ const useUpdateUserPreference = () => {
   return useMutation({
     mutationFn: async (preference: UpdateUserPreferenceSchemaType) => {
       const response = await fetch(
-        `/api/v1/users/${session?.user.id}/preference`,
+        `/api/v1/users/${(session?.user as any)?.id}/preference`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
