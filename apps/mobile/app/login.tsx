@@ -46,7 +46,7 @@ export default function HomeScreen() {
             )
           }
         >
-          Login
+          <Text className="text-white">Login</Text>
         </Button>
       </View>
     </View>

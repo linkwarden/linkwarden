@@ -125,7 +125,7 @@ const LinkListing = ({ link }: Props) => {
           key="edit-link"
           onSelect={() => {
             SheetManager.show("edit-link-sheet", {
-              payload: { id: link.id as number },
+              payload: { link: link },
             });
           }}
         >

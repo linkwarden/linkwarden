@@ -168,18 +168,24 @@ const useAddLink = (auth?: MobileAuth) => {
   });
 };
 
-const useUpdateLink = () => {
+const useUpdateLink = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (link: LinkIncludingShortenedCollectionAndTags) => {
-      const response = await fetch(`/api/v1/links/${link.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(link),
-      });
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + `/api/v1/links/${link.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+          body: JSON.stringify(link),
+        }
+      );
 
       const data = await response.json();
 
