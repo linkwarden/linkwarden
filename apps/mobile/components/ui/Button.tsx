@@ -14,12 +14,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-slate-500",
+        default: "bg-slate-500 text-white",
         primary: "bg-primary text-primary-foreground",
-        accent: "bg-violet-600 border border-violet-400",
-        destructive: "bg-destructive",
+        accent: "bg-violet-600 border border-violet-400 text-white",
+        destructive: "bg-destructive text-white",
         outline: "border",
         secondary: "bg-secondary text-secondary-foreground",
+        input:
+          "bg-gray-100 rounded-lg px-4 justify-between flex-row font-normal",
         metal: "bg-neutral-content text-base-content border border-neutral/30",
         ghost: "",
         simple: "bg-base-200",
@@ -42,16 +44,8 @@ const buttonVariants = cva(
 
 export type ButtonProps = TouchableOpacityProps &
   VariantProps<typeof buttonVariants> & {
-    /**
-     * Render this instead of children when loading.
-     * Disables the button while true.
-     */
     isLoading?: boolean;
-    /** Optional icon element, placed before the text */
-    icon?: React.ReactNode;
-    /** Contents of the button */
     children: React.ReactNode;
-    /** Merge additional Tailwind classes */
     className?: string;
   };
 
@@ -65,7 +59,6 @@ export const Button = forwardRef<
       size,
       className,
       isLoading = false,
-      icon,
       children,
       disabled,
       ...props
@@ -82,25 +75,7 @@ export const Button = forwardRef<
         disabled={disabled || isLoading}
         {...props}
       >
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <View className="flex-row items-center">
-            {icon && <View className="mr-2">{icon}</View>}
-            <Text
-              className={cn(
-                "text-sm font-medium",
-                variant === "default" ||
-                  variant === "accent" ||
-                  variant === "destructive"
-                  ? "text-white"
-                  : "text-black"
-              )}
-            >
-              {children}
-            </Text>
-          </View>
-        )}
+        {isLoading ? <ActivityIndicator /> : children}
       </TouchableOpacity>
     );
   }

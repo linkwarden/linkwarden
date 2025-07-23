@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { useRef, useState } from "react";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import Input from "@/components/ui/Input";
@@ -40,7 +40,7 @@ export default function AddLinkSheet() {
           variant="accent"
           className="mb-2"
         >
-          Save to Linkwarden
+          <Text className="text-white">Save to Linkwarden</Text>
         </Button>
 
         <Button
@@ -51,7 +51,7 @@ export default function AddLinkSheet() {
           variant="outline"
           className="mb-2"
         >
-          Cancel
+          <Text>Cancel</Text>
         </Button>
       </View>
     </ActionSheet>

@@ -5,6 +5,10 @@ import {
 } from "react-native-actions-sheet";
 import AddLinkSheet from "./AddLinkSheet";
 import EditLinkSheet from "./EditLinkSheet";
+import {
+  CollectionIncludingMembersAndLinkCount,
+  LinkIncludingShortenedCollectionAndTags,
+} from "@linkwarden/types";
 
 registerSheet("add-link-sheet", AddLinkSheet);
 registerSheet("edit-link-sheet", EditLinkSheet);
@@ -14,14 +18,16 @@ declare module "react-native-actions-sheet" {
     "add-link-sheet": SheetDefinition;
     "edit-link-sheet": SheetDefinition<{
       payload: {
-        id: number;
+        link: LinkIncludingShortenedCollectionAndTags;
       };
-      // routes: {
-      //   main: RouteDefinition;
-      //   collections: RouteDefinition<{
-      //     data: string;
-      //   }>;
-      // };
+      routes: {
+        main: RouteDefinition<{
+          link: LinkIncludingShortenedCollectionAndTags;
+        }>;
+        collections: RouteDefinition<{
+          link: LinkIncludingShortenedCollectionAndTags;
+        }>;
+      };
     }>;
   }
 }

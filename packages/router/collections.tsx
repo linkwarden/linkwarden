@@ -1,14 +1,33 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
+import {
+  CollectionIncludingMembersAndLinkCount,
+  MobileAuth,
+} from "@linkwarden/types";
 import { useSession } from "next-auth/react";
 
-const useCollections = () => {
-  const { status } = useSession();
+const useCollections = (auth?: MobileAuth) => {
+  let status: "loading" | "authenticated" | "unauthenticated";
+
+  if (!auth) {
+    const session = useSession();
+    status = session.status;
+  } else {
+    status = auth?.status;
+  }
 
   return useQuery({
     queryKey: ["collections"],
     queryFn: async (): Promise<CollectionIncludingMembersAndLinkCount[]> => {
-      const response = await fetch("/api/v1/collections");
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + "/api/v1/collections",
+        auth?.session
+          ? {
+              headers: {
+                Authorization: `Bearer ${auth.session}`,
+              },
+            }
+          : undefined
+      );
       const data = await response.json();
       return data.response;
     },
