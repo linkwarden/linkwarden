@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";
 import { useDeleteLink } from "@linkwarden/router/links";
 import { SheetManager } from "react-native-actions-sheet";
+import * as Clipboard from "expo-clipboard";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -113,8 +114,8 @@ const LinkListing = ({ link }: Props) => {
         {link.url && (
           <ContextMenu.Item
             key="copy-url"
-            onSelect={() => {
-              /* copy URL */
+            onSelect={async () => {
+              await Clipboard.setStringAsync(link.url as string);
             }}
           >
             <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
