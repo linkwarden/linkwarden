@@ -13,12 +13,14 @@ import * as ContextMenu from "zeego/context-menu";
 import { useDeleteLink } from "@linkwarden/router/links";
 import { SheetManager } from "react-native-actions-sheet";
 import * as Clipboard from "expo-clipboard";
+import { cn } from "@linkwarden/lib/utils";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
+  dashboard?: boolean;
 };
 
-const LinkListing = ({ link }: Props) => {
+const LinkListing = ({ link, dashboard }: Props) => {
   const { auth } = useAuthStore();
   const router = useRouter();
 
@@ -42,14 +44,23 @@ const LinkListing = ({ link }: Props) => {
     >
       <ContextMenu.Trigger asChild>
         <Pressable
-          className={`p-5 flex-row justify-between bg-white ${
-            Platform.OS === "android" ? "active:bg-white" : "active:bg-gray-200"
-          }`}
+          className={cn(
+            "p-5 flex-row justify-between bg-white",
+            Platform.OS === "android"
+              ? "active:bg-white"
+              : "active:bg-gray-200",
+            dashboard && "rounded-xl"
+          )}
           onPress={() => router.push(`/links/${link.id}`)}
           android_ripple={{ color: "#ddd", borderless: false }}
         >
-          <View className="flex-row justify-between w-full">
-            <View className="w-[70%] flex-col justify-between">
+          <View
+            className={cn(
+              "flex-row justify-between",
+              dashboard ? "w-80" : "w-full"
+            )}
+          >
+            <View className="w-[65%] flex-col justify-between">
               <Text numberOfLines={2} className="font-medium text-lg">
                 {decode(link.name || link.description || link.url)}
               </Text>

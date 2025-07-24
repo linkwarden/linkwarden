@@ -3,10 +3,8 @@ import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
 import { MobileAuth } from "@linkwarden/types";
 
-type Auth = MobileAuth;
-
 type AuthStore = {
-  auth: Auth;
+  auth: MobileAuth;
   signIn: (username: string, password: string, instance?: string) => void;
   signOut: () => void;
   setAuth: () => void;
@@ -70,7 +68,7 @@ const useAuthStore = create<AuthStore>((set) => ({
           },
         });
 
-        router.replace("/dashboard");
+        router.replace("/(tabs)/(dashboard)");
       } else {
         set({
           auth: {

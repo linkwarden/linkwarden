@@ -1,14 +1,31 @@
 import { UpdateDashboardLayoutSchemaType } from "@linkwarden/lib/schemaValidation";
+import { MobileAuth } from "@linkwarden/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
-const useDashboardData = () => {
-  const { status } = useSession();
+const useDashboardData = (auth?: MobileAuth) => {
+  let status: "loading" | "authenticated" | "unauthenticated";
+
+  if (!auth) {
+    const session = useSession();
+    status = session.status;
+  } else {
+    status = auth?.status;
+  }
 
   return useQuery({
     queryKey: ["dashboardData"],
     queryFn: async () => {
-      const response = await fetch("/api/v2/dashboard");
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + "/api/v2/dashboard",
+        auth?.session
+          ? {
+              headers: {
+                Authorization: `Bearer ${auth.session}`,
+              },
+            }
+          : undefined
+      );
       const data = await response.json();
 
       return data.data;
