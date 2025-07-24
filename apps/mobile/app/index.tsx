@@ -10,7 +10,7 @@ export default function HomeScreen() {
   }, []);
 
   if (auth.session) {
-    return <Redirect href="/dashboard" />;
+    return <Redirect href="/(tabs)/(dashboard)" />;
   } else {
     return <Redirect href="/login" />;
   }
