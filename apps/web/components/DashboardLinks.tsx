@@ -65,6 +65,7 @@ type Props = {
 };
 
 export function Card({ link, editMode, dashboardType }: Props) {
+  const [linkDropdownMenuOpen, setLinkDropdownMenuOpen] = useState(false);
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${link.id}-${dashboardType}`,
     data: {
@@ -239,7 +240,12 @@ export function Card({ link, editMode, dashboardType }: Props) {
           collection={collection}
           linkModal={linkModal}
           setLinkModal={(e) => setLinkModal(e)}
-          className="absolute top-3 right-3 group-hover:opacity-100 opacity-0 duration-100 text-neutral z-20"
+          onLinkDropdownMenuOpen={(e) => setLinkDropdownMenuOpen(e)}
+          dropdownMenuOpen={linkDropdownMenuOpen}
+          className={cn(
+            "absolute top-3 right-3 group-hover:opacity-100 opacity-0 duration-100 text-neutral z-20",
+            linkDropdownMenuOpen && "opacity-100"
+          )}
         />
         {!isPublicRoute && <LinkPin link={link} />}
       </div>

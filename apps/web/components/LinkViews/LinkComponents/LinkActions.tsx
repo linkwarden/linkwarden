@@ -29,6 +29,8 @@ type Props = {
   className?: string;
   setLinkModal: (value: boolean) => void;
   ghost?: boolean;
+  onLinkDropdownMenuOpen: (value: boolean) => void;
+  dropdownMenuOpen: boolean;
 };
 
 export default function LinkActions({
@@ -37,6 +39,8 @@ export default function LinkActions({
   className,
   setLinkModal,
   ghost,
+  onLinkDropdownMenuOpen,
+  dropdownMenuOpen,
 }: Props) {
   const { t } = useTranslation();
 
@@ -91,7 +95,10 @@ export default function LinkActions({
           <i title="More" className="bi-info-circle text-xl" />
         </Button>
       ) : (
-        <DropdownMenu>
+        <DropdownMenu
+          open={dropdownMenuOpen}
+          onOpenChange={onLinkDropdownMenuOpen}
+        >
           <DropdownMenuTrigger asChild>
             <Button
               asChild
