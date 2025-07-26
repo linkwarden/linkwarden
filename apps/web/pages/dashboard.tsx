@@ -20,11 +20,21 @@ import {
   DashboardSection,
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
-import { DashboardLinks } from "@/components/DashboardLinks";
+import { DashboardLinks, Card } from "@/components/DashboardLinks";
 import { ViewMode } from "@linkwarden/types";
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+} from "@dnd-kit/core";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { closestCenter } from "@dnd-kit/core";
+import Droppable from "@/components/Droppable";
+import { useUpdateLink } from "@linkwarden/router/links";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -39,6 +49,7 @@ export default function Dashboard() {
   const { data: user } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const [dashboardSections, setDashboardSections] = useState<
     DashboardSection[]
@@ -91,8 +102,30 @@ export default function Dashboard() {
   const [showSurveyModal, setShowsSurveyModal] = useState(false);
 
   const updateUser = useUpdateUser();
+  const updateLink = useUpdateLink();
 
   const [submitLoader, setSubmitLoader] = useState(false);
+
+  // Function to render the dragged item
+  const renderDraggedItem = () => {
+    if (!activeId) return null;
+
+    const linkIdMatch = activeId.match(/^(.+)-(.+)$/);
+    if (!linkIdMatch) return null;
+
+    const linkId = linkIdMatch[1];
+
+    const linkToRender = links.find((link: any) => {
+      return link.id.toString() === linkId;
+    });
+    if (!linkToRender) return null;
+
+    return (
+      <div className="w-60 border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg">
+        <Card link={linkToRender} />
+      </div>
+    );
+  };
 
   const submitSurvey = async (referer: string, other?: string) => {
     if (submitLoader) return;
@@ -123,71 +156,146 @@ export default function Dashboard() {
     );
   };
 
-  return (
-    <MainLayout>
-      <div className="p-5 flex flex-col gap-4 h-full">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <i className="bi-house-fill text-primary" />
-            <p className="font-thin">{t("dashboard")}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <DashboardLayoutDropdown />
-            <ViewDropdown
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              dashboard
-            />
-          </div>
-        </div>
-        {orderedSections[0] ? (
-          orderedSections?.map((section, i) => (
-            <Section
-              key={i}
-              sectionData={section}
-              t={t}
-              collection={collections.find(
-                (c) => c.id === section.collectionId
-              )}
-              collectionLinks={
-                section.collectionId
-                  ? collectionLinks[section.collectionId]
-                  : []
-              }
-              links={links}
-              tags={tags}
-              numberOfLinks={numberOfLinks}
-              collectionsLength={collections.length}
-              numberOfPinnedLinks={numberOfPinnedLinks}
-              dashboardData={dashboardData}
-              setNewLinkModal={setNewLinkModal}
-            />
-          ))
-        ) : (
-          <div className="h-full flex flex-col gap-4">
-            <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-            </div>
-            <div className="skeleton h-full"></div>
-            <div className="skeleton h-full"></div>
-            <div className="skeleton h-full"></div>
-          </div>
-        )}
-      </div>
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
 
-      {showSurveyModal && (
-        <SurveyModal
-          submit={submitSurvey}
-          onClose={() => {
-            setShowsSurveyModal(false);
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    setActiveId(null);
+
+    if (!over) return;
+
+    const targetSectionId = over.id as string;
+    const collectionId = over.data.current?.collectionId as number;
+    const ownerId = over.data.current?.ownerId as string;
+    const collectionName = over.data.current?.collectionName as string;
+
+    const linkId = active.data.current?.linkId;
+
+    // Find the link in the current data
+    const linkToMove = links.find((link: any) => link.id === linkId);
+
+    if (!linkToMove) return;
+
+    // Handle different target section types
+    if (targetSectionId === "recent-links-section") {
+      console.log(`Moving link ${linkId} to recent links section`);
+      // Handle moving to recent links (might need special logic)
+    } else if (targetSectionId === "pinned-links-section") {
+      console.log(`Moving link ${linkId} to pinned links section`);
+      // Handle pinning/unpinning the link
+    } else {
+      // This is a collection section
+      // const targetCollectionId = parseInt(targetSectionId);
+      if (linkToMove.collection.id === collectionId) {
+        toast.error("This link is already in the target collection.");
+      } else {
+        const load = toast.loading(t("moving"));
+        await updateLink.mutateAsync(
+          {
+            ...linkToMove,
+            collection: { id: collectionId, ownerId, name: collectionName },
+          },
+          {
+            onSettled: (_, error) => {
+              toast.dismiss(load);
+              if (error) {
+                toast.error(error.message);
+              } else {
+                toast.success(t("updated"));
+              }
+            },
+          }
+        );
+      }
+    }
+  };
+
+  return (
+    <DndContext
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToWindowEdges]}
+    >
+      <MainLayout>
+        <DragOverlay
+          dropAnimation={null}
+          style={{
+            zIndex: 9999,
+            pointerEvents: "none",
           }}
-        />
-      )}
-      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
-    </MainLayout>
+        >
+          {renderDraggedItem()}
+        </DragOverlay>
+        <div className="p-5 flex flex-col gap-4 h-full">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <i className="bi-house-fill text-primary" />
+              <p className="font-thin">{t("dashboard")}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <DashboardLayoutDropdown />
+              <ViewDropdown
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                dashboard
+              />
+            </div>
+          </div>
+          {orderedSections[0] ? (
+            orderedSections?.map((section, i) => (
+              <Section
+                key={i}
+                sectionData={section}
+                t={t}
+                collection={collections.find(
+                  (c) => c.id === section.collectionId
+                )}
+                collectionLinks={
+                  section.collectionId
+                    ? collectionLinks[section.collectionId]
+                    : []
+                }
+                links={links}
+                tags={tags}
+                numberOfLinks={numberOfLinks}
+                collectionsLength={collections.length}
+                numberOfPinnedLinks={numberOfPinnedLinks}
+                dashboardData={dashboardData}
+                setNewLinkModal={setNewLinkModal}
+              />
+            ))
+          ) : (
+            <div className="h-full flex flex-col gap-4">
+              <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+                <div className="skeleton h-20 w-full"></div>
+                <div className="skeleton h-20 w-full"></div>
+                <div className="skeleton h-20 w-full"></div>
+                <div className="skeleton h-20 w-full"></div>
+              </div>
+              <div className="skeleton h-full"></div>
+              <div className="skeleton h-full"></div>
+              <div className="skeleton h-full"></div>
+            </div>
+          )}
+        </div>
+
+        {showSurveyModal && (
+          <SurveyModal
+            submit={submitSurvey}
+            onClose={() => {
+              setShowsSurveyModal(false);
+            }}
+          />
+        )}
+        {newLinkModal && (
+          <NewLinkModal onClose={() => setNewLinkModal(false)} />
+        )}
+      </MainLayout>
+    </DndContext>
   );
 }
 
@@ -251,135 +359,156 @@ const Section = ({
       );
     case DashboardSectionType.RECENT_LINKS:
       return (
-        <>
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2 items-center">
-              <PageHeader icon={"bi-clock-history"} title={t("recent_links")} />
-            </div>
-            <Link
-              href="/links"
-              className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
-            >
-              {t("view_all")}
-              <i className="bi-chevron-right text-sm"></i>
-            </Link>
-          </div>
-
-          {dashboardData.isLoading ||
-          (links && links[0] && !dashboardData.isLoading) ? (
-            <DashboardLinks links={links} isLoading={dashboardData.isLoading} />
-          ) : (
-            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-              <p className="text-center text-xl">
-                {t("view_added_links_here")}
-              </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
-                {t("view_added_links_here_desc")}
-              </p>
-
-              <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
-                <Button
-                  onClick={() => {
-                    setNewLinkModal(true);
-                  }}
-                  variant="accent"
-                >
-                  <i className="bi-plus-lg text-xl"></i>
-                  {t("add_link")}
-                </Button>
-
-                <ImportDropdown />
-              </div>
-            </div>
-          )}
-        </>
-      );
-    case DashboardSectionType.PINNED_LINKS:
-      return (
-        <>
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2 items-center">
-              <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
-            </div>
-            <Link
-              href="/links/pinned"
-              className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
-            >
-              {t("view_all")}
-              <i className="bi-chevron-right text-sm "></i>
-            </Link>
-          </div>
-
-          {dashboardData.isLoading ||
-          links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
-            <DashboardLinks
-              links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
-              isLoading={dashboardData.isLoading}
-            />
-          ) : (
-            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-              <i className="bi-pin mx-auto text-6xl text-primary"></i>
-              <p className="text-center text-xl">
-                {t("pin_favorite_links_here")}
-              </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                {t("pin_favorite_links_here_desc")}
-              </p>
-            </div>
-          )}
-        </>
-      );
-    case DashboardSectionType.COLLECTION:
-      return (
-        collection?.id && (
-          <>
+        <Droppable id="recent-links-section">
+          <div>
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
-                <div className={clsx("flex items-center gap-3")}>
-                  {collection.icon ? (
-                    <Icon
-                      icon={collection.icon}
-                      color={collection.color || "#0ea5e9"}
-                      className="text-2xl"
-                    />
-                  ) : (
-                    <i
-                      className={`bi-folder-fill text-primary text-2xl drop-shadow`}
-                      style={{ color: collection.color || "#0ea5e9" }}
-                    ></i>
-                  )}
-                  <div>
-                    <p className="text-2xl capitalize font-thin">
-                      {collection.name}
-                    </p>
-                  </div>
-                </div>
+                <PageHeader
+                  icon={"bi-clock-history"}
+                  title={t("recent_links")}
+                />
               </div>
               <Link
-                href={`/collections/${collection.id}`}
-                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
+                href="/links"
+                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
               >
                 {t("view_all")}
                 <i className="bi-chevron-right text-sm"></i>
               </Link>
             </div>
-            {dashboardData.isLoading || collectionLinks?.length > 0 ? (
+
+            {dashboardData.isLoading ||
+            (links && links[0] && !dashboardData.isLoading) ? (
               <DashboardLinks
-                links={collectionLinks}
+                type="recent"
+                links={links}
                 isLoading={dashboardData.isLoading}
               />
             ) : (
               <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-                <i className="bi-folder mx-auto text-6xl text-primary"></i>
                 <p className="text-center text-xl">
-                  {t("no_link_in_collection")}
+                  {t("view_added_links_here")}
+                </p>
+                <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
+                  {t("view_added_links_here_desc")}
+                </p>
+
+                <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
+                  <Button
+                    onClick={() => {
+                      setNewLinkModal(true);
+                    }}
+                    variant="accent"
+                  >
+                    <i className="bi-plus-lg text-xl"></i>
+                    {t("add_link")}
+                  </Button>
+
+                  <ImportDropdown />
+                </div>
+              </div>
+            )}
+          </div>
+        </Droppable>
+      );
+    case DashboardSectionType.PINNED_LINKS:
+      return (
+        <Droppable id="pinned-links-section">
+          <div>
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 items-center">
+                <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
+              </div>
+              <Link
+                href="/links/pinned"
+                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+              >
+                {t("view_all")}
+                <i className="bi-chevron-right text-sm "></i>
+              </Link>
+            </div>
+
+            {dashboardData.isLoading ||
+            links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
+              <DashboardLinks
+                links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
+                isLoading={dashboardData.isLoading}
+              />
+            ) : (
+              <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+                <i className="bi-pin mx-auto text-6xl text-primary"></i>
+                <p className="text-center text-xl">
+                  {t("pin_favorite_links_here")}
                 </p>
                 <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                  {t("no_link_in_collection_desc")}
+                  {t("pin_favorite_links_here_desc")}
                 </p>
               </div>
             )}
-          </>
+          </div>
+        </Droppable>
+      );
+    case DashboardSectionType.COLLECTION:
+      return (
+        collection?.id && (
+          <Droppable
+            id={collection.id}
+            data={{
+              collectionId: collection?.id,
+              collectionName: collection?.name,
+              ownerId: collection?.ownerId,
+            }}
+          >
+            <div>
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2 items-center">
+                  <div className={clsx("flex items-center gap-3")}>
+                    {collection.icon ? (
+                      <Icon
+                        icon={collection.icon}
+                        color={collection.color || "#0ea5e9"}
+                        className="text-2xl"
+                      />
+                    ) : (
+                      <i
+                        className={`bi-folder-fill text-primary text-2xl drop-shadow`}
+                        style={{ color: collection.color || "#0ea5e9" }}
+                      ></i>
+                    )}
+                    <div>
+                      <p className="text-2xl capitalize font-thin">
+                        {collection.name}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <Link
+                  href={`/collections/${collection.id}`}
+                  className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
+                >
+                  {t("view_all")}
+                  <i className="bi-chevron-right text-sm"></i>
+                </Link>
+              </div>
+              {dashboardData.isLoading || collectionLinks?.length > 0 ? (
+                <DashboardLinks
+                  type="collection"
+                  links={collectionLinks}
+                  isLoading={dashboardData.isLoading}
+                />
+              ) : (
+                <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+                  <i className="bi-folder mx-auto text-6xl text-primary"></i>
+                  <p className="text-center text-xl">
+                    {t("no_link_in_collection")}
+                  </p>
+                  <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                    {t("no_link_in_collection_desc")}
+                  </p>
+                </div>
+              )}
+            </div>
+          </Droppable>
         )
       );
     default:
