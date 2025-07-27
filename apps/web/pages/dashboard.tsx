@@ -32,9 +32,9 @@ import {
   DragOverlay,
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { closestCenter } from "@dnd-kit/core";
 import Droppable from "@/components/Droppable";
 import { useUpdateLink } from "@linkwarden/router/links";
+import usePinLink from "@/lib/client/pinLink";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -47,6 +47,7 @@ export default function Dashboard() {
   } = useDashboardData();
   const { data: tags = [] } = useTags();
   const { data: user } = useUser();
+  const pinLink = usePinLink();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -179,37 +180,31 @@ export default function Dashboard() {
 
     if (!linkToMove) return;
 
-    // Handle different target section types
-    if (targetSectionId === "recent-links-section") {
-      console.log(`Moving link ${linkId} to recent links section`);
-      // Handle moving to recent links (might need special logic)
-    } else if (targetSectionId === "pinned-links-section") {
+    // Handle pinning/unpinning the link
+    if (targetSectionId === "pinned-links-section") {
       console.log(`Moving link ${linkId} to pinned links section`);
-      // Handle pinning/unpinning the link
-    } else {
-      // This is a collection section
-      // const targetCollectionId = parseInt(targetSectionId);
-      if (linkToMove.collection.id === collectionId) {
-        toast.error("This link is already in the target collection.");
-      } else {
-        const load = toast.loading(t("moving"));
-        await updateLink.mutateAsync(
-          {
-            ...linkToMove,
-            collection: { id: collectionId, ownerId, name: collectionName },
-          },
-          {
-            onSettled: (_, error) => {
-              toast.dismiss(load);
-              if (error) {
-                toast.error(error.message);
-              } else {
-                toast.success(t("updated"));
-              }
-            },
-          }
-        );
+      if (Array.isArray(linkToMove.pinnedBy) && !linkToMove.pinnedBy.length) {
+        pinLink(linkToMove);
       }
+      // Handle moving the link to a different collection
+    } else if (linkToMove.collection.id !== collectionId) {
+      const load = toast.loading(t("moving"));
+      await updateLink.mutateAsync(
+        {
+          ...linkToMove,
+          collection: { id: collectionId, ownerId, name: collectionName },
+        },
+        {
+          onSettled: (_, error) => {
+            toast.dismiss(load);
+            if (error) {
+              toast.error(error.message);
+            } else {
+              toast.success(t("updated"));
+            }
+          },
+        }
+      );
     }
   };
 
@@ -217,7 +212,6 @@ export default function Dashboard() {
     <DndContext
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      collisionDetection={closestCenter}
       modifiers={[restrictToWindowEdges]}
     >
       <MainLayout>
@@ -359,7 +353,7 @@ const Section = ({
       );
     case DashboardSectionType.RECENT_LINKS:
       return (
-        <Droppable id="recent-links-section">
+        <>
           <div>
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
@@ -409,7 +403,7 @@ const Section = ({
               </div>
             )}
           </div>
-        </Droppable>
+        </>
       );
     case DashboardSectionType.PINNED_LINKS:
       return (
