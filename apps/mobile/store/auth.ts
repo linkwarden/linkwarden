@@ -68,7 +68,7 @@ const useAuthStore = create<AuthStore>((set) => ({
           },
         });
 
-        router.replace("/(tabs)/(dashboard)");
+        router.replace("/(tabs)/dashboard");
       } else {
         set({
           auth: {

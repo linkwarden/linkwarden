@@ -10,10 +10,11 @@ import {
 import useAuthStore from "@/store/auth";
 import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";
-import { useDeleteLink } from "@linkwarden/router/links";
+import { useDeleteLink, useUpdateLink } from "@linkwarden/router/links";
 import { SheetManager } from "react-native-actions-sheet";
 import * as Clipboard from "expo-clipboard";
 import { cn } from "@linkwarden/lib/utils";
+import { useUser } from "@linkwarden/router/user";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -23,6 +24,8 @@ type Props = {
 const LinkListing = ({ link, dashboard }: Props) => {
   const { auth } = useAuthStore();
   const router = useRouter();
+  const updateLink = useUpdateLink(auth);
+  const { data: user } = useUser(auth);
 
   const deleteLink = useDeleteLink(auth);
 
@@ -37,11 +40,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
   }
 
   return (
-    <ContextMenu.Root
-      onOpenChange={() => {
-        /* track open/close if needed */
-      }}
-    >
+    <ContextMenu.Root>
       <ContextMenu.Trigger asChild>
         <Pressable
           className={cn(
@@ -132,6 +131,25 @@ const LinkListing = ({ link, dashboard }: Props) => {
             <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
           </ContextMenu.Item>
         )}
+
+        <ContextMenu.Item
+          key="pin-link"
+          onSelect={async () => {
+            const isAlreadyPinned =
+              link?.pinnedBy && link.pinnedBy[0] ? true : false;
+
+            await updateLink.mutateAsync({
+              ...link,
+              pinnedBy: (isAlreadyPinned
+                ? [{ id: undefined }]
+                : [{ id: user?.id }]) as any,
+            });
+          }}
+        >
+          <ContextMenu.ItemTitle>
+            {link.pinnedBy && link.pinnedBy[0] ? "Unpin Link" : "Pin Link"}
+          </ContextMenu.ItemTitle>
+        </ContextMenu.Item>
 
         <ContextMenu.Item
           key="edit-link"
