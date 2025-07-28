@@ -21,7 +21,10 @@ import {
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
 import { DashboardLinks, Card } from "@/components/DashboardLinks";
-import { ViewMode } from "@linkwarden/types";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  ViewMode,
+} from "@linkwarden/types";
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
@@ -30,6 +33,7 @@ import {
   DragEndEvent,
   DragStartEvent,
   DragOverlay,
+  DragOverEvent,
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import Droppable from "@/components/Droppable";
@@ -50,7 +54,9 @@ export default function Dashboard() {
   const pinLink = usePinLink();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [linkCollectionExists, setLinkCollectionExists] = useState(false);
+  const [activeLink, setActiveLink] =
+    useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   const [dashboardSections, setDashboardSections] = useState<
     DashboardSection[]
@@ -109,16 +115,12 @@ export default function Dashboard() {
 
   // Function to render the dragged item
   const renderDraggedItem = () => {
-    if (!activeId) return null;
-
-    const linkIdMatch = activeId.match(/^(.+)-(.+)$/);
-    if (!linkIdMatch) return null;
-
-    const linkId = linkIdMatch[1];
+    if (!activeLink) return null;
 
     const linkToRender = links.find((link: any) => {
-      return link.id.toString() === linkId;
+      return link.id === activeLink.id;
     });
+
     if (!linkToRender) return null;
 
     return (
@@ -158,31 +160,44 @@ export default function Dashboard() {
   };
 
   const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
+    const draggedLink = links.find(
+      (link: any) => link.id === event.active.data.current?.linkId
+    );
+    setActiveLink(draggedLink || null);
+  };
+
+  const handleDragOver = (event: DragOverEvent) => {
+    const { over } = event;
+    if (!over || !activeLink) return;
+
+    // Find the link in the current data
+    const linkToMove = links.find((link: any) => link.id === activeLink.id);
+
+    if (!linkToMove) return;
+
+    if (linkToMove.collection.id === activeLink.collectionId) {
+      setLinkCollectionExists(true);
+    } else {
+      setLinkCollectionExists(false);
+    }
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    setActiveId(null);
-
-    if (!over) return;
+    const { over } = event;
+    if (!over || !activeLink) return;
 
     const targetSectionId = over.id as string;
     const collectionId = over.data.current?.collectionId as number;
     const ownerId = over.data.current?.ownerId as string;
     const collectionName = over.data.current?.collectionName as string;
 
-    const linkId = active.data.current?.linkId;
-
     // Find the link in the current data
-    const linkToMove = links.find((link: any) => link.id === linkId);
+    const linkToMove = links.find((link: any) => link.id === activeLink.id);
 
     if (!linkToMove) return;
 
     // Handle pinning/unpinning the link
     if (targetSectionId === "pinned-links-section") {
-      console.log(`Moving link ${linkId} to pinned links section`);
       if (Array.isArray(linkToMove.pinnedBy) && !linkToMove.pinnedBy.length) {
         pinLink(linkToMove);
       }
@@ -206,19 +221,21 @@ export default function Dashboard() {
         }
       );
     }
+    setActiveLink(null);
+    setLinkCollectionExists(false);
   };
 
   return (
     <DndContext
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
       modifiers={[restrictToWindowEdges]}
     >
       <MainLayout>
         <DragOverlay
-          dropAnimation={null}
           style={{
-            zIndex: 9999,
+            zIndex: 100,
             pointerEvents: "none",
           }}
         >
