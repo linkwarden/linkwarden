@@ -150,11 +150,10 @@ export function Card({ link, editMode, dashboardType }: Props) {
       <span
         {...listeners}
         {...attributes}
-        className="absolute z-50 opacity-0 top-3 left-2 group-hover:opacity-60 w-6 h-6 transition-opacity duration-200 cursor-grab  p-1 rounded bg-base-100/80 group-hover:hover:opacity-100 inline-flex items-center justify-center"
+        className="absolute z-50 opacity-0 top-3 left-2 group-hover:opacity-60 w-8 h-8 transition-opacity duration-200 cursor-grab  p-1 rounded bg-base-100/80 group-hover:hover:opacity-100 inline-flex items-center justify-center touch-none"
         title="Drag to reorder"
       >
-        {/* <GripIcon className="h-4 w-4" /> */}
-        <i className="bi-grip-vertical" />
+        <i className="bi-grip-vertical text-xl" />
       </span>
       <div
         ref={ref}

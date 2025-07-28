@@ -126,8 +126,8 @@ export default function Dashboard() {
 
     return (
       <div className="w-60 border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg relative">
-        <span className="absolute z-50 top-3 left-2 w-6 h-6 p-1 rounded bg-base-100/80 inline-flex items-center justify-center">
-          <i className="bi-grip-vertical" />
+        <span className="absolute z-50 top-3 left-2 w-8 h-8 p-1 rounded bg-base-100/80 inline-flex items-center justify-center">
+          <i className="bi-grip-vertical text-xl" />
         </span>
         <Card link={linkToRender} />
       </div>
@@ -246,7 +246,7 @@ export default function Dashboard() {
         });
       }
 
-      const load = toast.loading(t("moving"));
+      const load = toast.loading(t("updating"));
       await updateLink.mutateAsync(updatedLink, {
         onSettled: (_, error) => {
           toast.dismiss(load);
@@ -379,6 +379,7 @@ const Section = ({
   collectionLinks,
   setNewLinkModal,
 }: SectionProps) => {
+  console.log("links", links);
   switch (sectionData.type) {
     case DashboardSectionType.STATS:
       return (
