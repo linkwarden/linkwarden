@@ -39,6 +39,7 @@ import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import Droppable from "@/components/Droppable";
 import { useUpdateLink } from "@linkwarden/router/links";
 import usePinLink from "@/lib/client/pinLink";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -52,6 +53,7 @@ export default function Dashboard() {
   const { data: tags = [] } = useTags();
   const { data: user } = useUser();
   const pinLink = usePinLink();
+  const queryClient = useQueryClient();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
   const [activeLink, setActiveLink] =
@@ -192,6 +194,9 @@ export default function Dashboard() {
 
     if (!linkToMove) return;
 
+    // Immediately hide the drag overlay
+    setActiveLink(null);
+
     // Handle pinning/unpinning the link
     if (targetSectionId === "pinned-links-section") {
       if (Array.isArray(linkToMove.pinnedBy) && !linkToMove.pinnedBy.length) {
@@ -199,25 +204,62 @@ export default function Dashboard() {
       }
       // Handle moving the link to a different collection
     } else if (linkToMove.collection.id !== collectionId) {
+      // Optimistically update the link's collection immediately
+      const updatedLink = {
+        ...linkToMove,
+        collection: { id: collectionId, ownerId, name: collectionName },
+      };
+
+      // Optimistically update the dashboard data cache
+      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+        if (!oldData?.links) return oldData;
+        return {
+          ...oldData,
+          links: oldData.links.map((link: any) =>
+            link.id === updatedLink.id ? updatedLink : link
+          ),
+        };
+      });
+
+      // Optimistically update the collection links cache
+      if (collectionId) {
+        queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+          if (!oldData?.collectionLinks) return oldData;
+
+          const oldCollectionId = linkToMove.collection.id;
+
+          return {
+            ...oldData,
+            collectionLinks: {
+              ...oldData.collectionLinks,
+              // Remove from old collection
+              [oldCollectionId]: (
+                oldData.collectionLinks[oldCollectionId] || []
+              ).filter((link: any) => link.id !== updatedLink.id),
+              // Add to new collection
+              [collectionId]: [
+                ...(oldData.collectionLinks[collectionId] || []),
+                updatedLink,
+              ],
+            },
+          };
+        });
+      }
+
       const load = toast.loading(t("moving"));
-      await updateLink.mutateAsync(
-        {
-          ...linkToMove,
-          collection: { id: collectionId, ownerId, name: collectionName },
+      await updateLink.mutateAsync(updatedLink, {
+        onSettled: (_, error) => {
+          toast.dismiss(load);
+          if (error) {
+            // If there's an error, invalidate queries to restore the original state
+            queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+            toast.error(error.message);
+          } else {
+            toast.success(t("updated"));
+          }
         },
-        {
-          onSettled: (_, error) => {
-            toast.dismiss(load);
-            if (error) {
-              toast.error(error.message);
-            } else {
-              toast.success(t("updated"));
-            }
-          },
-        }
-      );
+      });
     }
-    setActiveLink(null);
   };
 
   return (
@@ -228,14 +270,17 @@ export default function Dashboard() {
       modifiers={[restrictToWindowEdges]}
     >
       <MainLayout>
-        <DragOverlay
-          style={{
-            zIndex: 100,
-            pointerEvents: "none",
-          }}
-        >
-          {renderDraggedItem()}
-        </DragOverlay>
+        {!!activeLink && (
+          // when drag end, immediately hide the overlay
+          <DragOverlay
+            style={{
+              zIndex: 100,
+              pointerEvents: "none",
+            }}
+          >
+            {renderDraggedItem()}
+          </DragOverlay>
+        )}
         <div className="p-5 flex flex-col gap-4 h-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
