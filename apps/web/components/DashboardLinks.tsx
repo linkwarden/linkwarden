@@ -27,7 +27,6 @@ import LinkPin from "./LinkViews/LinkComponents/LinkPin";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@linkwarden/lib";
-import { Button } from "./ui/button";
 import { GripIcon } from "lucide-react";
 
 export function DashboardLinks({
@@ -142,9 +141,21 @@ export function Card({ link, editMode, dashboardType }: Props) {
   return (
     <div
       ref={setNodeRef}
-      className={cn(isDragging ? "opacity-30" : "opacity-100")}
+      className={cn(
+        isDragging ? "opacity-30" : "opacity-100",
+        "relative group"
+      )}
       id={`${link.id}-${dashboardType}`}
     >
+      <span
+        {...listeners}
+        {...attributes}
+        className="absolute z-50 opacity-0 top-3 left-2 group-hover:opacity-60 w-6 h-6 transition-opacity duration-200 cursor-grab  p-1 rounded bg-base-100/80 group-hover:hover:opacity-100 inline-flex items-center justify-center"
+        title="Drag to reorder"
+      >
+        {/* <GripIcon className="h-4 w-4" /> */}
+        <i className="bi-grip-vertical" />
+      </span>
       <div
         ref={ref}
         className={`min-w-60 w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
@@ -158,15 +169,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
           {show.image && (
             <div>
               <div className={`relative rounded-t-xl h-40 overflow-hidden`}>
-                <Button
-                  size="icon"
-                  className="absolute z-50 opacity-0 top-2 left-2 group-hover:opacity-100"
-                  variant="ghost"
-                  {...listeners}
-                  {...attributes}
-                >
-                  <GripIcon />
-                </Button>
                 {formatAvailable(link, "preview") ? (
                   <Image
                     src={`/api/v1/archives/${link.id}?format=${ArchivedFormat.jpeg}&preview=true&updatedAt=${link.updatedAt}`}

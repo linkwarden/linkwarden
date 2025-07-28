@@ -54,7 +54,6 @@ export default function Dashboard() {
   const pinLink = usePinLink();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
-  const [linkCollectionExists, setLinkCollectionExists] = useState(false);
   const [activeLink, setActiveLink] =
     useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
@@ -124,7 +123,10 @@ export default function Dashboard() {
     if (!linkToRender) return null;
 
     return (
-      <div className="w-60 border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg">
+      <div className="w-60 border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg relative">
+        <span className="absolute z-50 top-3 left-2 w-6 h-6 p-1 rounded bg-base-100/80 inline-flex items-center justify-center">
+          <i className="bi-grip-vertical" />
+        </span>
         <Card link={linkToRender} />
       </div>
     );
@@ -174,12 +176,6 @@ export default function Dashboard() {
     const linkToMove = links.find((link: any) => link.id === activeLink.id);
 
     if (!linkToMove) return;
-
-    if (linkToMove.collection.id === activeLink.collectionId) {
-      setLinkCollectionExists(true);
-    } else {
-      setLinkCollectionExists(false);
-    }
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -222,7 +218,6 @@ export default function Dashboard() {
       );
     }
     setActiveLink(null);
-    setLinkCollectionExists(false);
   };
 
   return (
