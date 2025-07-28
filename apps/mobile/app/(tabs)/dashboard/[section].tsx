@@ -2,9 +2,10 @@ import { useLinks } from "@linkwarden/router/links";
 import { View, StyleSheet, FlatList, Platform } from "react-native";
 import useAuthStore from "@/store/auth";
 import LinkListing from "@/components/LinkListing";
-import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import { useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { useCollections } from "@linkwarden/router/collections";
 
 const RenderItem = React.memo(
   ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
@@ -14,19 +15,43 @@ const RenderItem = React.memo(
 
 export default function LinksScreen() {
   const { auth } = useAuthStore();
-  const { search } = useLocalSearchParams<{ search?: string }>();
+  const { search, section, collectionId } = useLocalSearchParams<{
+    search?: string;
+    section?: "pinned-links" | "recent-links" | "collection";
+    collectionId?: string;
+  }>();
+
+  const navigation = useNavigation();
+  const collections = useCollections(auth);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle:
+        section === "pinned-links"
+          ? "Pinned Links"
+          : section === "recent-links"
+            ? "Recent Links"
+            : section === "collection"
+              ? collections.data?.find((c) => c.id?.toString() === collectionId)
+                  ?.name || "Collection"
+              : "Links",
+    });
+  }, [section, navigation]);
 
   const { links, data } = useLinks(
     {
       sort: 0,
-      searchQueryString: search ?? search,
+      searchQueryString: decodeURIComponent(search ?? ""),
+      collectionId: Number(collectionId),
+      pinnedOnly: section === "pinned-links",
     },
     auth
   );
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} className="h-full">
       <FlatList
+        contentInsetAdjustmentBehavior="automatic"
         ListHeaderComponent={() => <></>}
         data={links || []}
         onRefresh={() => data.refetch()}

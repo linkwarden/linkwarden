@@ -21,6 +21,7 @@ import clsx from "clsx";
 import DashboardItem from "@/components/DashboardItem";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import LinkListing from "@/components/LinkListing";
+import { useRouter } from "expo-router";
 
 export default function DashboardScreen() {
   const { auth } = useAuthStore();
@@ -130,6 +131,8 @@ const Section: React.FC<SectionProps> = ({
   dashboardData,
   collectionLinks = [],
 }) => {
+  const router = useRouter();
+
   switch (sectionData.type) {
     case DashboardSectionType.STATS:
       return (
@@ -139,11 +142,13 @@ const Section: React.FC<SectionProps> = ({
               name={numberOfLinks === 1 ? "Link" : "Links"}
               value={numberOfLinks}
               icon="link.circle.fill"
+              color="#9c00cc"
             />
             <DashboardItem
               name={collectionsLength === 1 ? "Collection" : "Collections"}
               value={collectionsLength}
               icon="folder.circle.fill"
+              color="#0096cc"
             />
           </View>
           <View className="flex-row gap-4">
@@ -151,11 +156,13 @@ const Section: React.FC<SectionProps> = ({
               name={tagsLength === 1 ? "Tag" : "Tags"}
               value={tagsLength}
               icon="tag.circle.fill"
+              color="#00cc99"
             />
             <DashboardItem
               name={"Pinned Links"}
               value={numberOfPinnedLinks}
               icon="pin.circle.fill"
+              color="#cc6d00"
             />
           </View>
         </View>
@@ -173,7 +180,7 @@ const Section: React.FC<SectionProps> = ({
             </View>
             <TouchableOpacity
               className="flex-row items-center text-sm gap-1"
-              // onPress={() => navigation.navigate('Links')}
+              onPress={() => router.navigate("/(tabs)/dashboard/recent-links")}
             >
               <Text className="text-[#3478f6]">View All</Text>
               <IconSymbol size={15} name="chevron.right" color={"#3478f6"} />
@@ -229,7 +236,7 @@ const Section: React.FC<SectionProps> = ({
             </View>
             <TouchableOpacity
               className="flex-row items-center text-sm gap-1"
-              // onPress={() => navigation.navigate("PinnedLinks")}
+              onPress={() => router.navigate("/(tabs)/dashboard/pinned-links")}
             >
               <Text className="text-[#3478f6]">View All</Text>
               <IconSymbol size={15} name="chevron.right" color={"#3478f6"} />
@@ -283,9 +290,11 @@ const Section: React.FC<SectionProps> = ({
             </View>
             <TouchableOpacity
               className="flex-row items-center text-sm gap-1 whitespace-nowrap"
-              // onPress={() =>
-              //   navigation.navigate("Collection", { id: collection.id })
-              // }
+              onPress={() =>
+                router.navigate(
+                  `/(tabs)/dashboard/collection?collectionId=${collection.id}`
+                )
+              }
             >
               <Text className="text-[#3478f6]">View All</Text>
               <IconSymbol size={15} name="chevron.right" color={"#3478f6"} />
