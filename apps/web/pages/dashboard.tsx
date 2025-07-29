@@ -181,13 +181,15 @@ export default function Dashboard() {
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
-    const { over } = event;
+    const { over, active } = event;
     if (!over || !activeLink) return;
 
     const targetSectionId = over.id as string;
     const collectionId = over.data.current?.collectionId as number;
     const ownerId = over.data.current?.ownerId as string;
     const collectionName = over.data.current?.collectionName as string;
+
+    const isFromRecentSection = active.data.current?.dashboardType === "recent";
 
     // Find the link in the current data
     const linkToMove = links.find((link: any) => link.id === activeLink.id);
@@ -259,6 +261,9 @@ export default function Dashboard() {
           }
         },
       });
+    } else if (isFromRecentSection) {
+      // show error if link is dragged from recent section to the target collection which it already belongs to
+      toast.error(t("link_already_in_collection"));
     }
   };
 
@@ -379,7 +384,6 @@ const Section = ({
   collectionLinks,
   setNewLinkModal,
 }: SectionProps) => {
-  console.log("links", links);
   switch (sectionData.type) {
     case DashboardSectionType.STATS:
       return (
@@ -506,9 +510,9 @@ const Section = ({
           <Droppable
             id={collection.id}
             data={{
-              collectionId: collection?.id,
-              collectionName: collection?.name,
-              ownerId: collection?.ownerId,
+              collectionId: collection.id,
+              collectionName: collection.name,
+              ownerId: collection.ownerId,
             }}
           >
             <div>

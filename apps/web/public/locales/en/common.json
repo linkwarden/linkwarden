@@ -208,6 +208,7 @@
   "password_successfully_updated": "Your password has been successfully updated.",
   "user_already_member": "User already exists.",
   "you_are_already_collection_owner": "You are already the collection owner.",
+  "link_already_in_collection": "Link is already in this collection.",
   "date_newest_first": "Date (Newest First)",
   "date_oldest_first": "Date (Oldest First)",
   "name_az": "Name (A-Z)",

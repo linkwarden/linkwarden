@@ -27,7 +27,6 @@ import LinkPin from "./LinkViews/LinkComponents/LinkPin";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@linkwarden/lib";
-import { GripIcon } from "lucide-react";
 
 export function DashboardLinks({
   links,
@@ -69,6 +68,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
     id: `${link.id}-${dashboardType}`,
     data: {
       linkId: link.id,
+      dashboardType,
     },
   });
   const { data: collections = [] } = useCollections();
