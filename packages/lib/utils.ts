@@ -1,3 +1,6 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export function titleCase(str: string) {
   var splitStr = str.toLowerCase().split(" ");
   for (var i = 0; i < splitStr.length; i++) {
@@ -9,4 +12,8 @@ export function titleCase(str: string) {
 
 export function delay(sec: number) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }

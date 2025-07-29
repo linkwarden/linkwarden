@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable, Platform } from "react-native";
+import { View, Text, Image, Pressable, Platform, Alert } from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -10,14 +10,24 @@ import {
 import useAuthStore from "@/store/auth";
 import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";
+import { useDeleteLink, useUpdateLink } from "@linkwarden/router/links";
+import { SheetManager } from "react-native-actions-sheet";
+import * as Clipboard from "expo-clipboard";
+import { cn } from "@linkwarden/lib/utils";
+import { useUser } from "@linkwarden/router/user";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
+  dashboard?: boolean;
 };
 
-const LinkListing = ({ link }: Props) => {
+const LinkListing = ({ link, dashboard }: Props) => {
   const { auth } = useAuthStore();
   const router = useRouter();
+  const updateLink = useUpdateLink(auth);
+  const { data: user } = useUser(auth);
+
+  const deleteLink = useDeleteLink(auth);
 
   let shortendURL;
 
@@ -30,21 +40,26 @@ const LinkListing = ({ link }: Props) => {
   }
 
   return (
-    <ContextMenu.Root
-      onOpenChange={() => {
-        /* track open/close if needed */
-      }}
-    >
+    <ContextMenu.Root>
       <ContextMenu.Trigger asChild>
         <Pressable
-          className={`p-5 flex-row justify-between bg-white ${
-            Platform.OS === "android" ? "active:bg-white" : "active:bg-gray-200"
-          }`}
+          className={cn(
+            "p-5 flex-row justify-between bg-white",
+            Platform.OS === "android"
+              ? "active:bg-white"
+              : "active:bg-gray-200",
+            dashboard && "rounded-xl"
+          )}
           onPress={() => router.push(`/links/${link.id}`)}
           android_ripple={{ color: "#ddd", borderless: false }}
         >
-          <View className="flex-row justify-between">
-            <View className="w-[70%] flex-col justify-between">
+          <View
+            className={cn(
+              "flex-row justify-between",
+              dashboard ? "w-80" : "w-full"
+            )}
+          >
+            <View className="w-[65%] flex-col justify-between">
               <Text numberOfLines={2} className="font-medium text-lg">
                 {decode(link.name || link.description || link.url)}
               </Text>
@@ -104,6 +119,47 @@ const LinkListing = ({ link }: Props) => {
           onSelect={() => router.push(`/links/${link.id}`)}
         >
           <ContextMenu.ItemTitle>Open Link</ContextMenu.ItemTitle>
+        </ContextMenu.Item>
+
+        {link.url && (
+          <ContextMenu.Item
+            key="copy-url"
+            onSelect={async () => {
+              await Clipboard.setStringAsync(link.url as string);
+            }}
+          >
+            <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
+          </ContextMenu.Item>
+        )}
+
+        <ContextMenu.Item
+          key="pin-link"
+          onSelect={async () => {
+            const isAlreadyPinned =
+              link?.pinnedBy && link.pinnedBy[0] ? true : false;
+
+            await updateLink.mutateAsync({
+              ...link,
+              pinnedBy: (isAlreadyPinned
+                ? [{ id: undefined }]
+                : [{ id: user?.id }]) as any,
+            });
+          }}
+        >
+          <ContextMenu.ItemTitle>
+            {link.pinnedBy && link.pinnedBy[0] ? "Unpin Link" : "Pin Link"}
+          </ContextMenu.ItemTitle>
+        </ContextMenu.Item>
+
+        <ContextMenu.Item
+          key="edit-link"
+          onSelect={() => {
+            SheetManager.show("edit-link-sheet", {
+              payload: { link: link },
+            });
+          }}
+        >
+          <ContextMenu.ItemTitle>Edit Link</ContextMenu.ItemTitle>
         </ContextMenu.Item>
 
         {link.url && atLeastOneFormatAvailable(link) && (
@@ -169,17 +225,25 @@ const LinkListing = ({ link }: Props) => {
         )}
 
         <ContextMenu.Item
-          key="copy-url"
-          onSelect={() => {
-            /* copy URL */
-          }}
-        >
-          <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
-        </ContextMenu.Item>
-        <ContextMenu.Item
           key="delete-link"
           onSelect={() => {
-            /* delete link */
+            return Alert.alert(
+              "Delete Link",
+              "Are you sure you want to delete this link? This action cannot be undone.",
+              [
+                {
+                  text: "Cancel",
+                  style: "cancel",
+                },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: () => {
+                    deleteLink.mutate(link.id as number);
+                  },
+                },
+              ]
+            );
           }}
         >
           <ContextMenu.ItemTitle>Delete</ContextMenu.ItemTitle>

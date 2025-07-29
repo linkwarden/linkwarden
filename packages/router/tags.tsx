@@ -4,18 +4,34 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { TagIncludingLinkCount } from "@linkwarden/types";
+import { MobileAuth, TagIncludingLinkCount } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
 import { Tag } from "@linkwarden/prisma/client";
 import { ArchivalTagOption } from "@linkwarden/types/inputSelect";
 
-const useTags = (): UseQueryResult<Tag[], Error> => {
-  const { status } = useSession();
+const useTags = (auth?: MobileAuth): UseQueryResult<Tag[], Error> => {
+  let status: "loading" | "authenticated" | "unauthenticated";
+
+  if (!auth) {
+    const session = useSession();
+    status = session.status;
+  } else {
+    status = auth?.status;
+  }
 
   return useQuery({
     queryKey: ["tags"],
     queryFn: async () => {
-      const response = await fetch("/api/v1/tags");
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + "/api/v1/tags",
+        auth?.session
+          ? {
+              headers: {
+                Authorization: `Bearer ${auth.session}`,
+              },
+            }
+          : undefined
+      );
       if (!response.ok) throw new Error("Failed to fetch tags.");
 
       const data = await response.json();

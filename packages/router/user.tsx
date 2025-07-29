@@ -20,10 +20,9 @@ const useUser = (auth?: MobileAuth) => {
     status = auth.status;
   }
 
-  const url =
-    (auth?.instance ? auth?.instance : "") +
-    "/api/v1/users" +
-    (userId ? `/${userId}` : "");
+  const url = auth
+    ? auth?.instance + "/api/v1/users/me"
+    : "/api/v1/users/" + userId;
 
   return useQuery({
     queryKey: ["user"],
@@ -54,7 +53,8 @@ const useUser = (auth?: MobileAuth) => {
           dashboardSections: DashboardSection[];
         };
 
-      document.querySelector("html")?.setAttribute("data-theme", data.theme);
+      if (!auth)
+        document.querySelector("html")?.setAttribute("data-theme", data.theme);
 
       return data;
     },
@@ -112,7 +112,7 @@ const useUpdateUserPreference = () => {
   return useMutation({
     mutationFn: async (preference: UpdateUserPreferenceSchemaType) => {
       const response = await fetch(
-        `/api/v1/users/${session?.user.id}/preference`,
+        `/api/v1/users/${(session?.user as any)?.id}/preference`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
