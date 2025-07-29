@@ -9,6 +9,8 @@
     "@linkwarden/filesystem": "*",
     "jimp": "^0.22.10",
     "meilisearch": "^0.48.2",
-    "rss-parser": "^3.13.0"
+    "rss-parser": "^3.13.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.0"
   }
 }

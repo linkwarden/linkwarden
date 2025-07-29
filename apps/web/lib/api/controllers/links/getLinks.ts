@@ -2,6 +2,13 @@ import { prisma } from "@linkwarden/prisma";
 import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
 
 export default async function getLink(userId: number, query: LinkRequestQuery) {
+  if (process.env.DISABLE_DEPRECATED_ROUTES === "true")
+    return {
+      response:
+        "This route is deprecated, please use the new /api/v1/search route instead, for more info please refer to the api documentation.",
+      status: 400,
+    };
+
   const POSTGRES_IS_ENABLED =
     process.env.DATABASE_URL?.startsWith("postgresql");
 

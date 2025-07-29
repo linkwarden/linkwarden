@@ -69,7 +69,7 @@ export default function LinkScreen() {
       }
     }
 
-    if (user && user[0]?.id && !url) {
+    if (user && user.id && !url) {
       loadCacheOrFetch();
     }
   }, [user, url]);
@@ -92,8 +92,10 @@ export default function LinkScreen() {
       } finally {
         setIsLoading(false);
       }
-    } else if (link?.id && !format) {
-      setUrl(generateLinkHref(link, user[0], auth.instance, true));
+    } else if (link?.id && !format && user) {
+      setUrl(
+        generateLinkHref(link, { ...user, password: "" }, auth.instance, true)
+      );
     } else if (link?.id && format) {
       setUrl(`${auth.instance}/api/v1/archives/${link.id}?format=${format}`);
     }

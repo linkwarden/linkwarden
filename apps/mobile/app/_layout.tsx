@@ -4,6 +4,8 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { mmkvPersister } from "@/lib/queryPersister";
 import { useState } from "react";
 import "../styles/global.css";
+import { SheetProvider } from "react-native-actions-sheet";
+import "@/components/ActionSheets/Sheets";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,25 +30,27 @@ export default function RootLayout() {
       }}
       onSuccess={() => setIsLoading(false)}
     >
-      {!isLoading && (
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          {/* <Stack.Screen name="(tabs)" /> */}
-          <Stack.Screen
-            name="links/[id]"
-            options={{
-              headerBackTitle: "Back",
-              headerShown: true,
-              headerTitle: "",
+      <SheetProvider>
+        {!isLoading && (
+          <Stack
+            screenOptions={{
+              headerShown: false,
             }}
-          />
-          <Stack.Screen name="login" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      )}
+          >
+            {/* <Stack.Screen name="(tabs)" /> */}
+            <Stack.Screen
+              name="links/[id]"
+              options={{
+                headerBackTitle: "Back",
+                headerShown: true,
+                headerTitle: "",
+              }}
+            />
+            <Stack.Screen name="login" />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        )}
+      </SheetProvider>
     </PersistQueryClientProvider>
   );
 }
