@@ -11,7 +11,7 @@ export default function RootLayout() {
         headerTransparent: true,
         headerBlurEffect: "systemUltraThinMaterial",
         headerLargeStyle: {
-          backgroundColor: "white",
+          backgroundColor: "#f2f2f2",
         },
       }}
     />

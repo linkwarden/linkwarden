@@ -28,6 +28,7 @@
     "@tanstack/react-query-persist-client": "^5.51.15",
     "class-variance-authority": "^0.7.1",
     "expo": "~52.0.18",
+    "expo-application": "~6.0.2",
     "expo-blur": "~14.0.1",
     "expo-clipboard": "~7.0.1",
     "expo-constants": "~17.0.3",

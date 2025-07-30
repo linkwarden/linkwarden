@@ -16,7 +16,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-slate-500 text-white",
         primary: "bg-primary text-primary-foreground",
-        accent: "bg-violet-600 border border-violet-400 text-white",
+        accent: "bg-accent border border-violet-400 text-white",
         destructive: "bg-destructive text-white",
         outline: "border",
         secondary: "bg-secondary text-secondary-foreground",
