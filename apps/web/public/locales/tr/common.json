@@ -399,7 +399,7 @@
   "default": "Varsayılan",
   "invalid_url_guide": "Lütfen bağlantı için geçerli bir Adres giriniz. (Bu adres http/https ile başlamalı)",
   "email_invalid": "Lütfen geçerli bir e posta adresi giriniz.",
-  "username_invalid_guide": "Username has to be at least 3 characters, no spaces and special characters are allowed.",
+  "username_invalid_guide": "Kullanıcı adı en az 3 karakterden oluşmalıdır, boşluk ve özel karakter kullanımı uygun değildir.",
   "team_management": "Ekip Yönetimi",
   "invite_user": "Kullanıcı Davet Et",
   "invite_users": "Kullanıcıları Davet Et",
