@@ -418,7 +418,7 @@
   "seat_purchased": "{{count}} seat purchased",
   "date_added": "Date Added",
   "resend_invite": "Resend Invitation",
-  "resend_invite_success": "Invitation Resent!",
+  "resend_invite_success": "Convite reenviado!",
   "remove_user": "Remove User",
   "continue_to_dashboard": "Continue to Dashboard",
   "confirm_user_removal_desc": "They will need to have a subscription to access Linkwarden again.",
