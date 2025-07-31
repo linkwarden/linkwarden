@@ -185,7 +185,7 @@ export default function LinkScreen() {
 
       {isLoading && (
         <View className="absolute inset-0 flex-1 justify-center items-center bg-base-100 p-5">
-          <ActivityIndicator size="large" color="gray" />
+          <ActivityIndicator size="large" />
           <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
         </View>
       )}
