@@ -18,6 +18,8 @@ import {
 } from "@linkwarden/types";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useCollections } from "@linkwarden/router/collections";
+import { rawTheme, ThemeName } from "@/lib/colors";
+import { useColorScheme } from "nativewind";
 
 const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { auth } = useAuthStore();
@@ -29,6 +31,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
   >(props.payload?.link);
   const editLink = useUpdateLink(auth);
   const router = useSheetRouter("edit-link-sheet");
+  const { colorScheme } = useColorScheme();
 
   useEffect(() => {
     if (params?.link) {
@@ -65,11 +68,15 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
             name="folder.fill"
             color={link?.collection.color || "gray"}
           />
-          <Text numberOfLines={1} className="w-[90%]">
+          <Text numberOfLines={1} className="w-[90%] text-base-content">
             {link?.collection.name}
           </Text>
         </View>
-        <IconSymbol size={16} name="chevron.right" color={"gray"} />
+        <IconSymbol
+          size={16}
+          name="chevron.right"
+          color={rawTheme[colorScheme as ThemeName]["neutral"]}
+        />
       </Button>
 
       {/* <Button variant="input" className="mb-4 h-auto">
@@ -124,7 +131,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         variant="outline"
         className="mb-2"
       >
-        <Text>Cancel</Text>
+        <Text className="text-base-content">Cancel</Text>
       </Button>
     </View>
   );
@@ -141,6 +148,7 @@ const Collections = () => {
   >("edit-link-sheet", "collections");
   const params = useSheetRouteParams("edit-link-sheet", "collections");
   const collections = useCollections(auth);
+  const { colorScheme } = useColorScheme();
 
   const filteredCollections = useMemo(() => {
     if (!collections.data) return [];
@@ -175,15 +183,19 @@ const Collections = () => {
               name="folder.fill"
               color={collection.color || "gray"}
             />
-            <Text numberOfLines={1} className="w-full">
+            <Text numberOfLines={1} className="w-full text-base-content">
               {collection.name}
             </Text>
           </View>
           <View className="flex-row items-center gap-2">
             {params.link?.collection.id === collection.id && (
-              <IconSymbol size={16} name="checkmark" color="" />
+              <IconSymbol
+                size={16}
+                name="checkmark"
+                color={rawTheme[colorScheme as ThemeName].primary}
+              />
             )}
-            <Text className="text-gray-600">
+            <Text className="text-neutral">
               {collection._count?.links ?? 0}
             </Text>
           </View>
@@ -207,7 +219,10 @@ const Collections = () => {
         keyExtractor={(e, i) => i.toString()}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text style={{ textAlign: "center", color: "#666", marginTop: 20 }}>
+          <Text
+            style={{ textAlign: "center", marginTop: 20 }}
+            className="text-neutral"
+          >
             No collections match “{searchQuery}”
           </Text>
         }
@@ -229,12 +244,17 @@ const routes: Route[] = [
 ];
 
 export default function EditLinkSheet() {
+  const { colorScheme } = useColorScheme();
+
   return (
     <ActionSheet
       gestureEnabled
       enableRouterBackNavigation={true}
       routes={routes}
       initialRoute="main"
+      containerStyle={{
+        backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+      }}
     />
   );
 }

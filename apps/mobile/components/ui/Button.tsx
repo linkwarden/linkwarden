@@ -18,10 +18,10 @@ const buttonVariants = cva(
         primary: "bg-primary text-base-content",
         accent: "bg-accent border border-violet-400 text-white",
         destructive: "bg-destructive text-white",
-        outline: "border",
+        outline: "border border-base-content",
         secondary: "bg-secondary text-secondary-foreground",
         input:
-          "bg-gray-100 rounded-lg px-4 justify-between flex-row font-normal",
+          "bg-base-200 rounded-lg px-4 justify-between flex-row font-normal",
         metal: "bg-neutral-content text-base-content border border-neutral/30",
         ghost: "",
         simple: "bg-base-200",

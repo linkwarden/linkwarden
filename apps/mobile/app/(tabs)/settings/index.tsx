@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { nativeApplicationVersion } from "expo-application";
 import { useColorScheme } from "nativewind";
+import { rawTheme, ThemeName } from "@/lib/colors";
 
 export default function SettingsScreen() {
   const { signOut, auth } = useAuthStore();
@@ -86,7 +87,11 @@ export default function SettingsScreen() {
                 <Text className="text-orange-500">Light</Text>
               </View>
               {colorScheme === "light" ? (
-                <IconSymbol name="checkmark" size={20} color="#3478f6" />
+                <IconSymbol
+                  name="checkmark"
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].primary}
+                />
               ) : null}
             </TouchableOpacity>
             <View className="h-px bg-neutral-content ml-12" />
@@ -99,7 +104,11 @@ export default function SettingsScreen() {
                 <Text className="text-blue-600">Dark</Text>
               </View>
               {colorScheme === "dark" ? (
-                <IconSymbol name="checkmark" size={20} color="#3478f6" />
+                <IconSymbol
+                  name="checkmark"
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].primary}
+                />
               ) : null}
             </TouchableOpacity>
           </View>

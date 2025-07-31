@@ -31,7 +31,11 @@ export default function RootLayout() {
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
                 <TouchableOpacity>
-                  <IconSymbol size={20} name="plus" color={"#3478f6"} />
+                  <IconSymbol
+                    size={20}
+                    name="plus"
+                    color={rawTheme[colorScheme as ThemeName].primary}
+                  />
                 </TouchableOpacity>
               </DropdownMenu.Trigger>
 
