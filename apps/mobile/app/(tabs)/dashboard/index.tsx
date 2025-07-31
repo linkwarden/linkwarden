@@ -64,7 +64,12 @@ export default function DashboardScreen() {
   }, [dashboardSections]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={styles.container}
+      collapsable={false}
+      collapsableChildren={false}
+      className="bg-base-100"
+    >
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -77,6 +82,7 @@ export default function DashboardScreen() {
           gap: 15,
           paddingVertical: 20,
         }}
+        className="bg-base-100"
         contentInsetAdjustmentBehavior="automatic"
       >
         {orderedSections.map((sectionData) => {
@@ -175,7 +181,9 @@ const Section: React.FC<SectionProps> = ({
             <View className="flex-row gap-2 items-center">
               <View className={"flex-row items-center gap-2"}>
                 <IconSymbol size={30} name="clock" color={""} />
-                <Text className="text-2xl capitalize">Recent Links</Text>
+                <Text className="text-2xl capitalize text-base-content">
+                  Recent Links
+                </Text>
               </View>
             </View>
             <TouchableOpacity
@@ -206,9 +214,9 @@ const Section: React.FC<SectionProps> = ({
               }}
             />
           ) : (
-            <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 bg-white mx-5">
+            <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
               <IconSymbol size={40} name="clock" color={""} />
-              <Text className="text-center text-xl text-gray-500">
+              <Text className="text-center text-xl text-neutral">
                 No Recent Links
               </Text>
 
@@ -231,7 +239,9 @@ const Section: React.FC<SectionProps> = ({
             <View className="flex-row gap-2 items-center">
               <View className={"flex-row items-center gap-2"}>
                 <IconSymbol size={30} name="pin" color={""} />
-                <Text className="text-2xl capitalize">Pinned Links</Text>
+                <Text className="text-2xl capitalize text-base-content">
+                  Pinned Links
+                </Text>
               </View>
             </View>
             <TouchableOpacity
@@ -262,9 +272,9 @@ const Section: React.FC<SectionProps> = ({
               }}
             />
           ) : (
-            <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 bg-white mx-5">
+            <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
               <IconSymbol size={40} name="pin" color={""} />
-              <Text className="text-center text-xl text-gray-500">
+              <Text className="text-center text-xl text-neutral">
                 No Pinned Links
               </Text>
             </View>
@@ -283,7 +293,10 @@ const Section: React.FC<SectionProps> = ({
                   name="folder.fill"
                   color={collection.color || "#0ea5e9"}
                 />
-                <Text className="text-2xl capitalize w-full" numberOfLines={1}>
+                <Text
+                  className="text-2xl capitalize w-full text-base-content"
+                  numberOfLines={1}
+                >
                   {collection.name}
                 </Text>
               </View>

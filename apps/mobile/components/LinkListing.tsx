@@ -15,6 +15,8 @@ import { SheetManager } from "react-native-actions-sheet";
 import * as Clipboard from "expo-clipboard";
 import { cn } from "@linkwarden/lib/utils";
 import { useUser } from "@linkwarden/router/user";
+import { rawTheme, ThemeName } from "@/lib/colors";
+import { useColorScheme } from "nativewind";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -26,6 +28,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
   const router = useRouter();
   const updateLink = useUpdateLink(auth);
   const { data: user } = useUser(auth);
+  const { colorScheme } = useColorScheme();
 
   const deleteLink = useDeleteLink(auth);
 
@@ -44,10 +47,9 @@ const LinkListing = ({ link, dashboard }: Props) => {
       <ContextMenu.Trigger asChild>
         <Pressable
           className={cn(
-            "p-5 flex-row justify-between bg-white",
-            Platform.OS === "android"
-              ? "active:bg-white"
-              : "active:bg-gray-200",
+            "p-5 flex-row justify-between",
+            dashboard ? "bg-base-200" : "bg-base-100",
+            Platform.OS !== "android" && "active:bg-base-200/50",
             dashboard && "rounded-xl"
           )}
           onPress={() => router.push(`/links/${link.id}`)}
@@ -60,12 +62,18 @@ const LinkListing = ({ link, dashboard }: Props) => {
             )}
           >
             <View className="w-[65%] flex-col justify-between">
-              <Text numberOfLines={2} className="font-medium text-lg">
+              <Text
+                numberOfLines={2}
+                className="font-medium text-lg text-base-content"
+              >
                 {decode(link.name || link.description || link.url)}
               </Text>
 
               {shortendURL && (
-                <Text numberOfLines={1} className="mt-1.5 font-light text-sm">
+                <Text
+                  numberOfLines={1}
+                  className="mt-1.5 font-light text-sm text-base-content"
+                >
                   {shortendURL}
                 </Text>
               )}
@@ -76,7 +84,10 @@ const LinkListing = ({ link, dashboard }: Props) => {
                   size={16}
                   color={link.collection.color || ""}
                 />
-                <Text numberOfLines={1} className="font-light text-xs">
+                <Text
+                  numberOfLines={1}
+                  className="font-light text-xs text-base-content"
+                >
                   {link.collection.name}
                 </Text>
               </View>
@@ -99,8 +110,15 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 )}
               </View>
               <View className="flex flex-row gap-1 items-center mt-5 self-start">
-                <IconSymbol name="calendar" size={16} color="gray" />
-                <Text numberOfLines={1} className="font-light text-xs">
+                <IconSymbol
+                  name="calendar"
+                  size={16}
+                  color={rawTheme[colorScheme as ThemeName]["neutral"]}
+                />
+                <Text
+                  numberOfLines={1}
+                  className="font-light text-xs text-base-content"
+                >
                   {new Date(link.createdAt as string).toLocaleString("en-US", {
                     year: "numeric",
                     month: "short",

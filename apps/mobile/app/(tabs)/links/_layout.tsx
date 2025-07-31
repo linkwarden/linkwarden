@@ -1,7 +1,10 @@
 import { Stack, useRouter } from "expo-router";
+import { useColorScheme } from "nativewind";
+import { rawTheme, ThemeName } from "@/lib/colors";
 
 export default function RootLayout() {
   const router = useRouter();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Stack
@@ -9,7 +12,9 @@ export default function RootLayout() {
         headerTitle: "Links",
         headerLargeTitle: true,
         headerTransparent: true,
-        headerBlurEffect: "systemUltraThinMaterial",
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
+        headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerSearchBarOptions: {
           placeholder: "Search",
           autoCapitalize: "none",
@@ -20,7 +25,7 @@ export default function RootLayout() {
           },
         },
         headerLargeStyle: {
-          backgroundColor: "white",
+          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
         },
       }}
     />

@@ -14,7 +14,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>Login</Text>
+      <Text className="text-base-content">Login</Text>
       <View
         style={{
           flexDirection: "column",
@@ -58,6 +58,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
   },
 });

@@ -1,27 +1,32 @@
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { rawTheme, ThemeName } from "@/lib/colors";
 import { Stack, useRouter } from "expo-router";
+import { useColorScheme } from "nativewind";
 import { TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
 export default function RootLayout() {
   const router = useRouter();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Stack
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: true,
-        headerBlurEffect: "systemUltraThinMaterial",
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
+        headerTintColor: colorScheme === "dark" ? "white" : "black",
+        headerLargeStyle: {
+          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+        },
       }}
     >
       <Stack.Screen
         name="index"
         options={{
           headerTitle: "Dashboard",
-          headerLargeStyle: {
-            backgroundColor: "#f2f2f2",
-          },
           headerRight: () => (
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
@@ -61,9 +66,6 @@ export default function RootLayout() {
         options={{
           headerTitle: "Links",
           headerBackTitle: "Back",
-          headerLargeStyle: {
-            backgroundColor: "white",
-          },
           headerSearchBarOptions: {
             placeholder: "Search",
             autoCapitalize: "none",

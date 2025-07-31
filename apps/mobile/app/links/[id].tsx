@@ -19,6 +19,8 @@ import ElementNotSupported from "@/components/ElementNotSupported";
 import { decode } from "html-entities";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useLinks } from "@linkwarden/router/links";
+import { useColorScheme } from "nativewind";
+import { rawTheme, ThemeName } from "@/lib/colors";
 
 const CACHE_DIR = FileSystem.documentDirectory + "archivedData/readable/";
 const htmlPath = (id: string) => `${CACHE_DIR}link_${id}.html`;
@@ -39,6 +41,8 @@ export default function LinkScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const { width } = useWindowDimensions();
   const router = useRouter();
+  const { colorScheme } = useColorScheme();
+
   const { links } = useLinks(
     {
       sort: 0,
@@ -105,11 +109,11 @@ export default function LinkScreen() {
     <>
       {format === "3" && htmlContent ? (
         <ScrollView
-          className="flex-1 bg-white"
+          className="flex-1 bg-base-100"
           contentContainerClassName="p-4"
           nestedScrollEnabled
         >
-          <Text className="text-2xl font-bold mb-2.5">
+          <Text className="text-2xl font-bold mb-2.5 text-base-content">
             {decode(link?.name || link?.description || link?.url || "")}
           </Text>
 
@@ -117,15 +121,23 @@ export default function LinkScreen() {
             className="flex-row items-center gap-1 mb-2.5 pr-5"
             onPress={() => router.replace(`/links/${id}`)}
           >
-            <IconSymbol name="link" size={16} color="gray" />
-            <Text className="text-base text-gray-500 flex-1" numberOfLines={1}>
+            <IconSymbol
+              name="link"
+              size={16}
+              color={rawTheme[colorScheme as ThemeName]["neutral"]}
+            />
+            <Text className="text-base text-neutral flex-1" numberOfLines={1}>
               {link?.url}
             </Text>
           </TouchableOpacity>
 
           <View className="flex-row items-center gap-1 mb-2.5">
-            <IconSymbol name="calendar" size={16} color="gray" />
-            <Text className="text-base text-gray-500">
+            <IconSymbol
+              name="calendar"
+              size={16}
+              color={rawTheme[colorScheme as ThemeName]["neutral"]}
+            />
+            <Text className="text-base text-neutral">
               {new Date(
                 (link?.importDate || link?.createdAt) as string
               ).toLocaleString("en-US", {
@@ -136,7 +148,7 @@ export default function LinkScreen() {
             </Text>
           </View>
 
-          <View className="border-t border-gray-200 mt-2.5 mb-5" />
+          <View className="border-t border-neutral-content mt-2.5 mb-5" />
 
           <RenderHtml
             contentWidth={width}
@@ -151,10 +163,13 @@ export default function LinkScreen() {
             tagsStyles={{
               p: { fontSize: 16, lineHeight: 24, marginVertical: 10 },
             }}
+            baseStyle={{
+              color: rawTheme[colorScheme as ThemeName]["base-content"],
+            }}
           />
         </ScrollView>
       ) : (
-        <View className="flex-1 bg-white">
+        <View className="flex-1 bg-base-100">
           {url && (
             <WebView
               className={isLoading ? "opacity-0" : "flex-1"}
@@ -169,9 +184,9 @@ export default function LinkScreen() {
       )}
 
       {isLoading && (
-        <View className="absolute inset-0 flex-1 justify-center items-center bg-white p-5">
+        <View className="absolute inset-0 flex-1 justify-center items-center bg-base-100 p-5">
           <ActivityIndicator size="large" color="gray" />
-          <Text className="text-base mt-2.5 text-gray-500">Loading...</Text>
+          <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
         </View>
       )}
     </>

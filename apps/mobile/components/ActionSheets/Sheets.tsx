@@ -5,10 +5,7 @@ import {
 } from "react-native-actions-sheet";
 import AddLinkSheet from "./AddLinkSheet";
 import EditLinkSheet from "./EditLinkSheet";
-import {
-  CollectionIncludingMembersAndLinkCount,
-  LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 
 registerSheet("add-link-sheet", AddLinkSheet);
 registerSheet("edit-link-sheet", EditLinkSheet);

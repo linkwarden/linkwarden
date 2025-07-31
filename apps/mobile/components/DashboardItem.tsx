@@ -14,19 +14,19 @@ export default function DashboardItem({
   color: string;
 }) {
   return (
-    <View className="flex-1 flex-col gap-2 rounded-xl bg-white p-3">
+    <View className="flex-1 flex-col gap-2 rounded-xl bg-base-200 p-3">
       <View className="flex-row justify-between">
         <View className="flex-col gap-2 items-start">
           <IconSymbol name={icon} size={40} color={color} />
         </View>
         <Text
-          className="text-4xl text-primary mt-0.5 text-right max-w-[75%]"
+          className="text-4xl text-base-content mt-0.5 text-right max-w-[75%]"
           numberOfLines={1}
         >
           {value || 0}
         </Text>
       </View>
-      <Text className="font-semibold text-gray-500">{name}</Text>
+      <Text className="font-semibold text-neutral">{name}</Text>
     </View>
   );
 }

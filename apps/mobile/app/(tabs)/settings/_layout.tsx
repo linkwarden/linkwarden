@@ -1,7 +1,9 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
+import { useColorScheme } from "nativewind";
+import { rawTheme, ThemeName } from "@/lib/colors";
 
 export default function RootLayout() {
-  const router = useRouter();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Stack
@@ -9,9 +11,11 @@ export default function RootLayout() {
         headerTitle: "Settings",
         headerLargeTitle: true,
         headerTransparent: true,
-        headerBlurEffect: "systemUltraThinMaterial",
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
+        headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerLargeStyle: {
-          backgroundColor: "#f2f2f2",
+          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
         },
       }}
     />

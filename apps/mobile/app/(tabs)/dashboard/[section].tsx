@@ -49,7 +49,12 @@ export default function LinksScreen() {
   );
 
   return (
-    <View style={styles.container} className="h-full">
+    <View
+      style={styles.container}
+      className="h-full bg-base-100"
+      collapsable={false}
+      collapsableChildren={false}
+    >
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         ListHeaderComponent={() => <></>}
@@ -63,9 +68,7 @@ export default function LinksScreen() {
         )}
         onEndReached={() => data.fetchNextPage()}
         onEndReachedThreshold={0.5}
-        ItemSeparatorComponent={() => (
-          <View className="bg-[#eee] h-[1px] w-[100px]" />
-        )}
+        ItemSeparatorComponent={() => <View className="bg-base-200 h-px" />}
       />
     </View>
   );

@@ -1,13 +1,14 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, TouchableOpacity, useColorScheme } from "react-native";
+import { Platform, TouchableOpacity } from "react-native";
 import HapticTab from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 // import "react-native-reanimated";
 import TabBarBackground from "@/components/ui/TabBarBackground";
+import { useColorScheme } from "nativewind";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Tabs
@@ -19,8 +20,13 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
+            borderTopWidth: 0,
+            elevation: 0,
           },
-          default: {},
+          default: {
+            borderTopWidth: 0,
+            elevation: 0,
+          },
         }),
       }}
     >

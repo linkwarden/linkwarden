@@ -2,13 +2,14 @@ import { Stack } from "expo-router";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { mmkvPersister } from "@/lib/queryPersister";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../styles/global.css";
 import { SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
 import { useColorScheme } from "nativewind";
 import { lightTheme, darkTheme } from "../lib/theme";
 import { View } from "react-native";
+import { rawTheme, ThemeName } from "@/lib/colors";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,8 +24,7 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
-  const { colorScheme, setColorScheme } = useColorScheme();
-  const themeStyle = colorScheme === "dark" ? darkTheme : lightTheme;
+  const { colorScheme } = useColorScheme();
 
   return (
     <PersistQueryClientProvider
@@ -35,27 +35,39 @@ export default function RootLayout() {
       }}
       onSuccess={() => setIsLoading(false)}
     >
-      <SheetProvider>
-        {!isLoading && (
-          <View style={[{ flex: 1 }, themeStyle]}>
-            {!isLoading && (
-              <Stack screenOptions={{ headerShown: false }}>
-                {/* <Stack.Screen name="(tabs)" /> */}
-                <Stack.Screen
-                  name="links/[id]"
-                  options={{
-                    headerShown: true,
-                    headerBackTitle: "Back",
-                    headerTitle: "",
-                  }}
-                />
-                <Stack.Screen name="login" />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-            )}
-          </View>
-        )}
-      </SheetProvider>
+      <View
+        style={[{ flex: 1 }, colorScheme === "dark" ? darkTheme : lightTheme]}
+      >
+        <SheetProvider>
+          {!isLoading && (
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                headerStyle: {
+                  backgroundColor:
+                    rawTheme[colorScheme as ThemeName]["base-200"],
+                },
+                contentStyle: {
+                  backgroundColor:
+                    rawTheme[colorScheme as ThemeName]["base-100"],
+                },
+              }}
+            >
+              {/* <Stack.Screen name="(tabs)" /> */}
+              <Stack.Screen
+                name="links/[id]"
+                options={{
+                  headerShown: true,
+                  headerBackTitle: "Back",
+                  headerTitle: "",
+                }}
+              />
+              <Stack.Screen name="login" />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          )}
+        </SheetProvider>
+      </View>
     </PersistQueryClientProvider>
   );
 }
