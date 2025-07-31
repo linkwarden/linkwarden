@@ -84,7 +84,9 @@ export default function SettingsScreen() {
             >
               <View className="flex-row items-center gap-2">
                 <IconSymbol name="sun.max.fill" size={20} color="orange" />
-                <Text className="text-orange-500">Light</Text>
+                <Text className="text-orange-500 dark:text-orange-400">
+                  Light
+                </Text>
               </View>
               {colorScheme === "light" ? (
                 <IconSymbol
@@ -101,7 +103,7 @@ export default function SettingsScreen() {
             >
               <View className="flex-row items-center gap-2">
                 <IconSymbol name="moon.fill" size={20} color="royalblue" />
-                <Text className="text-blue-600">Dark</Text>
+                <Text className="text-blue-600 dark:text-blue-400">Dark</Text>
               </View>
               {colorScheme === "dark" ? (
                 <IconSymbol
