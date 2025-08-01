@@ -18,7 +18,7 @@ import RenderHtml from "@linkwarden/react-native-render-html";
 import ElementNotSupported from "@/components/ElementNotSupported";
 import { decode } from "html-entities";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { useLinks } from "@linkwarden/router/links";
+import { useGetLink } from "@linkwarden/router/links";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 
@@ -43,16 +43,7 @@ export default function LinkScreen() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 
-  const { links } = useLinks(
-    {
-      sort: 0,
-    },
-    auth
-  );
-
-  const link = useMemo(() => {
-    return links?.find((link) => link.id === Number(id));
-  }, [links, id]);
+  const { data: link } = useGetLink({ id: Number(id), auth, enabled: true });
 
   useEffect(() => {
     async function loadCacheOrFetch() {
@@ -73,10 +64,10 @@ export default function LinkScreen() {
       }
     }
 
-    if (user && user.id && !url) {
+    if (user?.id && link?.id && !url) {
       loadCacheOrFetch();
     }
-  }, [user, url]);
+  }, [user, link]);
 
   async function fetchLinkData() {
     if (link?.id && format === "3") {
@@ -168,18 +159,21 @@ export default function LinkScreen() {
             }}
           />
         </ScrollView>
+      ) : url ? (
+        <WebView
+          className={isLoading ? "opacity-0" : "flex-1"}
+          source={{
+            uri: url,
+            headers: format ? { Authorization: `Bearer ${auth.session}` } : {},
+          }}
+          onLoadEnd={() => setIsLoading(false)}
+        />
       ) : (
-        <View className="flex-1 bg-base-100">
-          {url && (
-            <WebView
-              className={isLoading ? "opacity-0" : "flex-1"}
-              source={{
-                uri: url,
-                headers: { Authorization: `Bearer ${auth.session}` },
-              }}
-              onLoadEnd={() => setIsLoading(false)}
-            />
-          )}
+        <View className="flex-1 justify-center items-center bg-base-100 p-5">
+          <Text className="text-base text-neutral">
+            No link data available. Please check your network connection or try
+            again later.
+          </Text>
         </View>
       )}
 
