@@ -405,7 +405,7 @@
   "invite_users": "Kullanıcıları Davet Et",
   "invite_user_desc": "Takımınıza bir kişiyi davet etmek için aşağıya e-posta adresini giriniz:",
   "invite_user_note": "Please note that once the invitation is accepted, an additional seat will be purchased and your account will automatically be billed for this addition.",
-  "invite_user_price": "The cost of each seat is ${{price}} per month or ${{priceAnnual}} per year, depending on your current subscription plan.",
+  "invite_user_price": "Her bir alanın maliyeti abonelik planınıza bağlı olarak aylık {{price}} TL veya yıllık ${{priceAnnual}} TL'dir.",
   "send_invitation": "Send Invitation",
   "learn_more": "Learn more",
   "invitation_desc": "{{owner}} sizi Likwarden'a katılmaya davet etti.",
