@@ -10,15 +10,24 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  Appearance,
 } from "react-native";
 import { nativeApplicationVersion } from "expo-application";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { useEffect, useState } from "react";
 
 export default function SettingsScreen() {
   const { signOut, auth } = useAuthStore();
   const { data: user } = useUser(auth);
   const { colorScheme, setColorScheme } = useColorScheme();
+  const [override, setOverride] = useState<"light" | "dark" | "system">(
+    "system"
+  );
+
+  useEffect(() => {
+    setColorScheme(override);
+  }, [override]);
 
   return (
     <View
@@ -71,24 +80,15 @@ export default function SettingsScreen() {
         <View>
           <Text className="mb-4 mx-4 mt-6 text-neutral">Theme</Text>
           <View className="bg-base-200 rounded-xl flex-col">
-            <TouchableOpacity className="flex-row gap-2 items-center justify-between py-3 px-4">
+            <TouchableOpacity
+              className="flex-row gap-2 items-center justify-between py-3 px-4"
+              onPress={() => setOverride("system")}
+            >
               <View className="flex-row items-center gap-2">
                 <IconSymbol name="iphone" size={20} color="gray" />
                 <Text className="text-neutral">System Defaults</Text>
               </View>
-            </TouchableOpacity>
-            <View className="h-px bg-neutral-content ml-12" />
-            <TouchableOpacity
-              className="flex-row gap-2 items-center justify-between py-3 px-4"
-              onPress={() => setColorScheme("light")}
-            >
-              <View className="flex-row items-center gap-2">
-                <IconSymbol name="sun.max.fill" size={20} color="orange" />
-                <Text className="text-orange-500 dark:text-orange-400">
-                  Light
-                </Text>
-              </View>
-              {colorScheme === "light" ? (
+              {override === "system" ? (
                 <IconSymbol
                   name="checkmark"
                   size={20}
@@ -99,13 +99,32 @@ export default function SettingsScreen() {
             <View className="h-px bg-neutral-content ml-12" />
             <TouchableOpacity
               className="flex-row gap-2 items-center justify-between py-3 px-4"
-              onPress={() => setColorScheme("dark")}
+              onPress={() => setOverride("light")}
+            >
+              <View className="flex-row items-center gap-2">
+                <IconSymbol name="sun.max.fill" size={20} color="orange" />
+                <Text className="text-orange-500 dark:text-orange-400">
+                  Light
+                </Text>
+              </View>
+              {override === "light" ? (
+                <IconSymbol
+                  name="checkmark"
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].primary}
+                />
+              ) : null}
+            </TouchableOpacity>
+            <View className="h-px bg-neutral-content ml-12" />
+            <TouchableOpacity
+              className="flex-row gap-2 items-center justify-between py-3 px-4"
+              onPress={() => setOverride("dark")}
             >
               <View className="flex-row items-center gap-2">
                 <IconSymbol name="moon.fill" size={20} color="royalblue" />
                 <Text className="text-blue-600 dark:text-blue-400">Dark</Text>
               </View>
-              {colorScheme === "dark" ? (
+              {override === "dark" ? (
                 <IconSymbol
                   name="checkmark"
                   size={20}
