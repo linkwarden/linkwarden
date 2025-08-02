@@ -212,9 +212,23 @@ export default function Dashboard() {
     // Immediately hide the drag overlay
     setActiveLink(null);
 
-    // Handle pinning/unpinning the link
+    // Handle pinning the link
     if (targetSectionId === "pinned-links-section") {
       if (Array.isArray(linkToMove.pinnedBy) && !linkToMove.pinnedBy.length) {
+        // optimistically update the link's pinned state
+        const updatedLink = {
+          ...linkToMove,
+          pinnedBy: [user?.id],
+        };
+        queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+          if (!oldData?.links) return oldData;
+          return {
+            ...oldData,
+            links: oldData.links.map((link: any) =>
+              link.id === updatedLink.id ? updatedLink : link
+            ),
+          };
+        });
         pinLink(linkToMove);
       }
       // Handle moving the link to a different collection
