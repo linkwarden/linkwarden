@@ -514,6 +514,10 @@ const Section = ({
               <DashboardLinks
                 links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
                 isLoading={dashboardData.isLoading}
+                isDropping={
+                  droppingCollection === "pinned-links" &&
+                  activeLink?.pinnedBy?.length === 0
+                }
               />
             ) : (
               <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
