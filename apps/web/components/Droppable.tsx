@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/core";
 
 const Droppable = ({
@@ -21,11 +22,11 @@ const Droppable = ({
   return (
     <div
       ref={setNodeRef}
-      className={`${
-        isOver
-          ? "bg-primary/10 border-2 border-dashed border-primary rounded-lg"
-          : ""
-      } transition-colors duration-200 p-2 min-h-20`}
+      className={cn(
+        isOver &&
+          "bg-primary/10 border-2 border-dashed border-primary rounded-lg",
+        "transition-colors duration-200"
+      )}
       style={{
         position: "relative",
         zIndex: isOver ? 1 : "auto",

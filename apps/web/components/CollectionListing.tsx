@@ -22,6 +22,7 @@ import {
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
+import Droppable from "./Droppable";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
@@ -295,54 +296,67 @@ const renderItem = (
   const collection = item.data;
 
   return (
-    <div ref={provided.innerRef} {...provided.draggableProps} className="mb-1">
+    <Droppable
+      id={`side-bar-collection-${collection.id}`}
+      data={{
+        collectionName: collection.name,
+        collectionId: collection.id,
+        ownerId: collection.ownerId,
+      }}
+    >
       <div
-        className={`${
-          currentPath === `/collections/${collection.id}`
-            ? "bg-primary/20 is-active"
-            : "hover:bg-neutral/20"
-        } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        className="mb-1"
       >
-        {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
-
-        <Link
-          href={`/collections/${collection.id}`}
-          className="w-full"
-          {...provided.dragHandleProps}
+        <div
+          className={`${
+            currentPath === `/collections/${collection.id}`
+              ? "bg-primary/20 is-active"
+              : "hover:bg-neutral/20"
+          } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
         >
-          <div
-            className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+          {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
+
+          <Link
+            href={`/collections/${collection.id}`}
+            className="w-full"
+            {...provided.dragHandleProps}
           >
-            {collection.icon ? (
-              <Icon
-                icon={collection.icon}
-                size={30}
-                weight={(collection.iconWeight || "regular") as IconWeight}
-                color={collection.color}
-                className="-mr-[0.15rem]"
-              />
-            ) : (
-              <i
-                className="bi-folder-fill text-xl"
-                style={{ color: collection.color }}
-              ></i>
-            )}
+            <div
+              className={`py-1 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
+            >
+              {collection.icon ? (
+                <Icon
+                  icon={collection.icon}
+                  size={30}
+                  weight={(collection.iconWeight || "regular") as IconWeight}
+                  color={collection.color}
+                  className="-mr-[0.15rem]"
+                />
+              ) : (
+                <i
+                  className="bi-folder-fill text-xl"
+                  style={{ color: collection.color }}
+                ></i>
+              )}
 
-            <p className="truncate w-full">{collection.name}</p>
+              <p className="truncate w-full">{collection.name}</p>
 
-            {collection.isPublic && (
-              <i
-                className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
-                title="This collection is being shared publicly."
-              ></i>
-            )}
-            <div className="drop-shadow text-neutral text-xs">
-              {collection._count?.links}
+              {collection.isPublic && (
+                <i
+                  className="bi-globe2 text-sm text-black/50 dark:text-white/50 drop-shadow"
+                  title="This collection is being shared publicly."
+                ></i>
+              )}
+              <div className="drop-shadow text-neutral text-xs">
+                {collection._count?.links}
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </div>
       </div>
-    </div>
+    </Droppable>
   );
 };
 
