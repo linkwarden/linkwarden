@@ -204,7 +204,12 @@ export default function Dashboard() {
 
     if (!linkToMove) return;
 
-    setDroppingCollection(over.data.current?.collectionName as string);
+    const targetId = over.id as string;
+    if (!targetId.includes("side-bar")) {
+      // when dragging over a collection on dashboard but not side bar, set the dropping collection
+      // this will be used to show link placeholder on target collection
+      setDroppingCollection(over.data.current?.collectionName as string);
+    }
   };
   const handleDragOverCancel = () => {
     // Reset the dropping collection when dragging is cancelled
@@ -572,7 +577,7 @@ const Section = ({
       return (
         collection?.id && (
           <Droppable
-            id={collection.id}
+            id={`dashboard-${collection.id}`}
             data={{
               collectionId: collection.id,
               collectionName: collection.name,

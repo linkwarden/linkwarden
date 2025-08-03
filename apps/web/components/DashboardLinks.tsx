@@ -159,14 +159,13 @@ export function Card({ link, editMode, dashboardType }: Props) {
       ref={setNodeRef}
       className={cn(
         isDragging ? "opacity-30" : "opacity-100",
-        "relative group"
+        "relative group touch-manipulation select-none"
       )}
-      id={`${link.id}-${dashboardType}`}
+      {...listeners}
+      {...attributes}
     >
       <span
-        {...listeners}
-        {...attributes}
-        className="absolute z-50 opacity-0 top-3 left-2 group-hover:opacity-60 w-8 h-8 transition-opacity duration-200 cursor-grab  p-1 rounded bg-base-100/80 group-hover:hover:opacity-100 inline-flex items-center justify-center touch-none"
+        className="absolute z-50 opacity-0 top-3 left-2 group-hover:opacity-60 w-8 h-8 transition-opacity duration-200 cursor-grab  p-1 rounded bg-base-100/80 group-hover:hover:opacity-100 inline-flex items-center justify-center"
         title="Drag to reorder"
       >
         <i className="bi-grip-vertical text-xl" />
