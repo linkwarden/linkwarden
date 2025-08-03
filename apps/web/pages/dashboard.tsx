@@ -34,6 +34,10 @@ import {
   DragStartEvent,
   DragOverlay,
   DragOverEvent,
+  useSensor,
+  MouseSensor,
+  TouchSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import Droppable from "@/components/Droppable";
@@ -54,6 +58,22 @@ export default function Dashboard() {
   const { data: user } = useUser();
   const pinLink = usePinLink();
   const queryClient = useQueryClient();
+
+  const mouseSensor = useSensor(MouseSensor, {
+    // Require the mouse to move by 10 pixels before activating
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+  const touchSensor = useSensor(TouchSensor, {
+    // Press delay of 250ms, with tolerance of 5px of movement
+    activationConstraint: {
+      delay: 200,
+      tolerance: 5,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor);
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
   const [activeLink, setActiveLink] =
@@ -301,6 +321,7 @@ export default function Dashboard() {
       onDragOver={handleDragOver}
       onDragCancel={handleDragOverCancel}
       modifiers={[restrictToWindowEdges]}
+      sensors={sensors}
     >
       <MainLayout>
         {!!activeLink && (
