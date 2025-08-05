@@ -1,6 +1,7 @@
 import { Stack, useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { Platform } from "react-native";
 
 export default function RootLayout() {
   const router = useRouter();
@@ -11,7 +12,8 @@ export default function RootLayout() {
       screenOptions={{
         headerTitle: "Links",
         headerLargeTitle: true,
-        headerTransparent: true,
+        headerTransparent: Platform.OS === "ios" ? true : false,
+        headerShadowVisible: false,
         headerBlurEffect:
           colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerTintColor: colorScheme === "dark" ? "white" : "black",

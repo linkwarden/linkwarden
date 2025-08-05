@@ -22,9 +22,11 @@ export default function TabLayout() {
             position: "absolute",
             borderTopWidth: 0,
             elevation: 0,
+            backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
           },
           default: {
             borderTopWidth: 0,
+            backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
             elevation: 0,
           },
         }),

@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { Platform } from "react-native";
 
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
@@ -10,7 +11,8 @@ export default function RootLayout() {
       screenOptions={{
         headerTitle: "Settings",
         headerLargeTitle: true,
-        headerTransparent: true,
+        headerTransparent: Platform.OS === "ios" ? true : false,
+        headerShadowVisible: false,
         headerBlurEffect:
           colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerTintColor: colorScheme === "dark" ? "white" : "black",

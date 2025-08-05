@@ -42,6 +42,8 @@ export default function RootLayout() {
           {!isLoading && (
             <Stack
               screenOptions={{
+                navigationBarColor:
+                  rawTheme[colorScheme as ThemeName]["base-200"],
                 headerShown: false,
                 headerStyle: {
                   backgroundColor:

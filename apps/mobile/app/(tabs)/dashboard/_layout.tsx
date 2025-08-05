@@ -2,7 +2,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { Stack, useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { TouchableOpacity } from "react-native";
+import { Platform, TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
@@ -14,7 +14,8 @@ export default function RootLayout() {
     <Stack
       screenOptions={{
         headerLargeTitle: true,
-        headerTransparent: true,
+        headerTransparent: Platform.OS === "ios" ? true : false,
+        headerShadowVisible: false,
         headerBlurEffect:
           colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerTintColor: colorScheme === "dark" ? "white" : "black",

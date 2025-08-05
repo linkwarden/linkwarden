@@ -52,6 +52,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
             Platform.OS !== "android" && "active:bg-base-200/50",
             dashboard && "rounded-xl"
           )}
+          onLongPress={() => {}}
           onPress={() => router.push(`/links/${link.id}`)}
           android_ripple={{ color: "#ddd", borderless: false }}
         >
