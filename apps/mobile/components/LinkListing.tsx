@@ -1,7 +1,6 @@
 import { View, Text, Image, Pressable, Platform, Alert } from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ArchivedFormat } from "@linkwarden/types";
 import {
   atLeastOneFormatAvailable,
@@ -17,6 +16,7 @@ import { cn } from "@linkwarden/lib/utils";
 import { useUser } from "@linkwarden/router/user";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
+import { CalendarDays, Folder } from "lucide-react-native";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -79,9 +79,9 @@ const LinkListing = ({ link, dashboard }: Props) => {
               )}
 
               <View className="flex flex-row gap-1 items-center mt-1.5 pr-1.5 self-start rounded-md">
-                <IconSymbol
-                  name="folder.fill"
+                <Folder
                   size={16}
+                  fill={link.collection.color || ""}
                   color={link.collection.color || ""}
                 />
                 <Text
@@ -110,8 +110,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 )}
               </View>
               <View className="flex flex-row gap-1 items-center mt-5 self-start">
-                <IconSymbol
-                  name="calendar"
+                <CalendarDays
                   size={16}
                   color={rawTheme[colorScheme as ThemeName]["neutral"]}
                 />

@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
 import useAuthStore from "@/store/auth";
@@ -24,6 +23,14 @@ import LinkListing from "@/components/LinkListing";
 import { useRouter } from "expo-router";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
+import {
+  Clock8,
+  ChevronRight,
+  Pin,
+  Folder,
+  Hash,
+  Link,
+} from "lucide-react-native";
 
 export default function DashboardScreen() {
   const { auth } = useAuthStore();
@@ -100,13 +107,13 @@ export default function DashboardScreen() {
               <DashboardItem
                 name={numberOfLinks === 1 ? "Link" : "Links"}
                 value={numberOfLinks}
-                icon="link.circle.fill"
+                icon={<Link size={23} color="white" />}
                 color="#9c00cc"
               />
               <DashboardItem
                 name={collectionsLength === 1 ? "Collection" : "Collections"}
                 value={collectionsLength}
-                icon="folder.circle.fill"
+                icon={<Folder size={23} color="white" fill="white" />}
                 color="#0096cc"
               />
             </View>
@@ -114,13 +121,13 @@ export default function DashboardScreen() {
               <DashboardItem
                 name={tagsLength === 1 ? "Tag" : "Tags"}
                 value={tagsLength}
-                icon="tag.circle.fill"
+                icon={<Hash size={23} color="white" />}
                 color="#00cc99"
               />
               <DashboardItem
                 name={"Pinned Links"}
                 value={numberOfPinnedLinks}
-                icon="pin.circle.fill"
+                icon={<Pin size={23} color="white" fill="white" />}
                 color="#cc6d00"
               />
             </View>
@@ -133,9 +140,8 @@ export default function DashboardScreen() {
             <View className="flex-row justify-between items-center px-5">
               <View className="flex-row gap-2 items-center">
                 <View className={"flex-row items-center gap-2"}>
-                  <IconSymbol
+                  <Clock8
                     size={30}
-                    name="clock"
                     color={rawTheme[colorScheme as ThemeName].primary}
                   />
                   <Text className="text-2xl capitalize text-base-content">
@@ -150,9 +156,8 @@ export default function DashboardScreen() {
                 }
               >
                 <Text className="text-primary">View All</Text>
-                <IconSymbol
+                <ChevronRight
                   size={15}
-                  name="chevron.right"
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
               </TouchableOpacity>
@@ -178,9 +183,8 @@ export default function DashboardScreen() {
               />
             ) : (
               <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
-                <IconSymbol
+                <Clock8
                   size={40}
-                  name="clock"
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
                 <Text className="text-center text-xl text-neutral">
@@ -205,9 +209,8 @@ export default function DashboardScreen() {
             <View className="flex-row justify-between items-center px-5">
               <View className="flex-row gap-2 items-center">
                 <View className={"flex-row items-center gap-2"}>
-                  <IconSymbol
+                  <Pin
                     size={30}
-                    name="pin"
                     color={rawTheme[colorScheme as ThemeName].primary}
                   />
                   <Text className="text-2xl capitalize text-base-content">
@@ -222,9 +225,8 @@ export default function DashboardScreen() {
                 }
               >
                 <Text className="text-primary">View All</Text>
-                <IconSymbol
+                <ChevronRight
                   size={15}
-                  name="chevron.right"
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
               </TouchableOpacity>
@@ -252,9 +254,8 @@ export default function DashboardScreen() {
               />
             ) : (
               <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
-                <IconSymbol
+                <Pin
                   size={40}
-                  name="pin"
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
                 <Text className="text-center text-xl text-neutral">
@@ -271,9 +272,9 @@ export default function DashboardScreen() {
             <View className="flex-row justify-between items-center px-5">
               <View className="flex-row gap-2 items-center max-w-[60%]">
                 <View className={clsx("flex-row items-center gap-2")}>
-                  <IconSymbol
+                  <Folder
                     size={30}
-                    name="folder.fill"
+                    fill={collection.color || "#0ea5e9"}
                     color={collection.color || "#0ea5e9"}
                   />
                   <Text
@@ -293,9 +294,8 @@ export default function DashboardScreen() {
                 }
               >
                 <Text className="text-primary">View All</Text>
-                <IconSymbol
+                <ChevronRight
                   size={15}
-                  name="chevron.right"
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
               </TouchableOpacity>

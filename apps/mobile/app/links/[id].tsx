@@ -17,10 +17,10 @@ import { useWindowDimensions } from "react-native";
 import RenderHtml from "@linkwarden/react-native-render-html";
 import ElementNotSupported from "@/components/ElementNotSupported";
 import { decode } from "html-entities";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useGetLink } from "@linkwarden/router/links";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { CalendarDays, Link } from "lucide-react-native";
 
 const CACHE_DIR = FileSystem.documentDirectory + "archivedData/readable/";
 const htmlPath = (id: string) => `${CACHE_DIR}link_${id}.html`;
@@ -112,8 +112,7 @@ export default function LinkScreen() {
             className="flex-row items-center gap-1 mb-2.5 pr-5"
             onPress={() => router.replace(`/links/${id}`)}
           >
-            <IconSymbol
-              name="link"
+            <Link
               size={16}
               color={rawTheme[colorScheme as ThemeName]["neutral"]}
             />
@@ -123,8 +122,7 @@ export default function LinkScreen() {
           </TouchableOpacity>
 
           <View className="flex-row items-center gap-1 mb-2.5">
-            <IconSymbol
-              name="calendar"
+            <CalendarDays
               size={16}
               color={rawTheme[colorScheme as ThemeName]["neutral"]}
             />

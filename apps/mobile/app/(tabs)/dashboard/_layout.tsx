@@ -1,6 +1,6 @@
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { Stack, useRouter } from "expo-router";
+import { Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
@@ -31,9 +31,8 @@ export default function RootLayout() {
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
                 <TouchableOpacity>
-                  <IconSymbol
-                    size={20}
-                    name="plus"
+                  <Plus
+                    size={21}
                     color={rawTheme[colorScheme as ThemeName].primary}
                   />
                 </TouchableOpacity>

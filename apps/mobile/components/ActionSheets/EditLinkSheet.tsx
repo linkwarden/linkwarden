@@ -16,10 +16,10 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { IconSymbol } from "../ui/IconSymbol";
 import { useCollections } from "@linkwarden/router/collections";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
+import { Folder, ChevronRight, Check } from "lucide-react-native";
 
 const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { auth } = useAuthStore();
@@ -63,18 +63,17 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         onPress={() => router?.navigate("collections", { link })}
       >
         <View className="flex-row items-center gap-2 w-[90%]">
-          <IconSymbol
+          <Folder
             size={20}
-            name="folder.fill"
+            fill={link?.collection.color || "gray"}
             color={link?.collection.color || "gray"}
           />
           <Text numberOfLines={1} className="w-[90%] text-base-content">
             {link?.collection.name}
           </Text>
         </View>
-        <IconSymbol
+        <ChevronRight
           size={16}
-          name="chevron.right"
           color={rawTheme[colorScheme as ThemeName]["neutral"]}
         />
       </Button>
@@ -94,7 +93,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         ) : (
           <Text className="text-gray-500">No tags</Text>
         )}
-        <IconSymbol size={16} name="chevron.right" color={"gray"} />
+        <ChevronRight size={16} color={"gray"} />
       </Button> */}
 
       <Input
@@ -178,9 +177,9 @@ const Collections = () => {
       return (
         <Button variant="input" className="mb-2" onPress={onSelect}>
           <View className="flex-row items-center gap-2 w-[75%]">
-            <IconSymbol
+            <Folder
               size={20}
-              name="folder.fill"
+              fill={collection.color || "gray"}
               color={collection.color || "gray"}
             />
             <Text numberOfLines={1} className="w-full text-base-content">
@@ -189,9 +188,8 @@ const Collections = () => {
           </View>
           <View className="flex-row items-center gap-2">
             {params.link?.collection.id === collection.id && (
-              <IconSymbol
+              <Check
                 size={16}
-                name="checkmark"
                 color={rawTheme[colorScheme as ThemeName].primary}
               />
             )}

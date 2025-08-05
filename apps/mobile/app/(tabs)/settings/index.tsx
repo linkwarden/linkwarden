@@ -1,21 +1,19 @@
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import useAuthStore from "@/store/auth";
 import { useUser } from "@linkwarden/router/user";
 import {
   View,
   Text,
   StyleSheet,
-  Button,
   ScrollView,
   TouchableOpacity,
   Platform,
   Alert,
-  Appearance,
 } from "react-native";
 import { nativeApplicationVersion } from "expo-application";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useEffect, useState } from "react";
+import { Check, LogOut, Moon, Smartphone, Sun } from "lucide-react-native";
 
 export default function SettingsScreen() {
   const { signOut, auth } = useAuthStore();
@@ -69,11 +67,7 @@ export default function SettingsScreen() {
             }
           >
             <Text className="flex-1 text-base text-red-500">Sign Out</Text>
-            <IconSymbol
-              name="rectangle.portrait.and.arrow.right"
-              size={18}
-              color="red"
-            />
+            <LogOut size={18} color="red" />
           </TouchableOpacity>
         </View>
 
@@ -85,12 +79,11 @@ export default function SettingsScreen() {
               onPress={() => setOverride("system")}
             >
               <View className="flex-row items-center gap-2">
-                <IconSymbol name="iphone" size={20} color="gray" />
+                <Smartphone size={20} color="gray" />
                 <Text className="text-neutral">System Defaults</Text>
               </View>
               {override === "system" ? (
-                <IconSymbol
-                  name="checkmark"
+                <Check
                   size={20}
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
@@ -102,14 +95,13 @@ export default function SettingsScreen() {
               onPress={() => setOverride("light")}
             >
               <View className="flex-row items-center gap-2">
-                <IconSymbol name="sun.max.fill" size={20} color="orange" />
+                <Sun size={20} color="orange" />
                 <Text className="text-orange-500 dark:text-orange-400">
                   Light
                 </Text>
               </View>
               {override === "light" ? (
-                <IconSymbol
-                  name="checkmark"
+                <Check
                   size={20}
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
@@ -121,12 +113,11 @@ export default function SettingsScreen() {
               onPress={() => setOverride("dark")}
             >
               <View className="flex-row items-center gap-2">
-                <IconSymbol name="moon.fill" size={20} color="royalblue" />
+                <Moon size={20} color="royalblue" />
                 <Text className="text-blue-600 dark:text-blue-400">Dark</Text>
               </View>
               {override === "dark" ? (
-                <IconSymbol
-                  name="checkmark"
+                <Check
                   size={20}
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
