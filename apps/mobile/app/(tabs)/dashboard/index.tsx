@@ -23,7 +23,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import LinkListing from "@/components/LinkListing";
 import { useRouter } from "expo-router";
 import { rawTheme, ThemeName } from "@/lib/colors";
-import { colorScheme, useColorScheme } from "nativewind";
+import { useColorScheme } from "nativewind";
 
 export default function DashboardScreen() {
   const { auth } = useAuthStore();
@@ -33,11 +33,13 @@ export default function DashboardScreen() {
     },
     ...dashboardData
   } = useDashboardData(auth);
-  const { data: user } = useUser(auth);
+  const { data: user, ...userData } = useUser(auth);
   const { data: collections = [] } = useCollections(auth);
   const { data: tags = [] } = useTags(auth);
 
   const { colorScheme } = useColorScheme();
+
+  const router = useRouter();
 
   const [dashboardSections, setDashboardSections] = useState<
     DashboardSection[]
@@ -90,8 +92,6 @@ export default function DashboardScreen() {
     dashboardData,
     collectionLinks = [],
   }) => {
-    const router = useRouter();
-
     switch (sectionData.type) {
       case DashboardSectionType.STATS:
         return (
@@ -349,8 +349,11 @@ export default function DashboardScreen() {
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={dashboardData.isLoading}
-            onRefresh={dashboardData.refetch}
+            refreshing={dashboardData.isLoading || userData.isLoading}
+            onRefresh={() => {
+              dashboardData.refetch();
+              userData.refetch();
+            }}
           />
         }
         contentContainerStyle={{
@@ -362,26 +365,24 @@ export default function DashboardScreen() {
         contentInsetAdjustmentBehavior="automatic"
       >
         {orderedSections.map((sectionData) => {
-          const collection = collections.find(
-            (c) => c.id === sectionData.collectionId
-          );
-
           return (
             <Section
               key={sectionData.id}
               sectionData={sectionData}
-              collection={collection}
+              collection={collections.find(
+                (c) => c.id === sectionData.collectionId
+              )}
+              collectionLinks={
+                sectionData.collectionId
+                  ? collectionLinks[sectionData.collectionId]
+                  : []
+              }
               links={links}
               tagsLength={tags.length}
               numberOfLinks={numberOfLinks}
               collectionsLength={collections.length}
               numberOfPinnedLinks={numberOfPinnedLinks}
               dashboardData={dashboardData}
-              collectionLinks={
-                sectionData.collectionId
-                  ? collectionLinks[sectionData.collectionId]
-                  : []
-              }
             />
           );
         })}
