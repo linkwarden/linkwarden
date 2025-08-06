@@ -20,13 +20,13 @@ export default function AddLinkSheet() {
       ref={actionSheetRef}
       gestureEnabled
       containerStyle={{
-        backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+        backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
     >
       <View className="px-8 py-5">
         <Input
           placeholder="e.g. https://example.com"
-          className="mb-4"
+          className="mb-4 bg-base-100"
           value={link}
           onChangeText={setLink}
         />

@@ -4,7 +4,7 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { mmkvPersister } from "@/lib/queryPersister";
 import { useState } from "react";
 import "../styles/global.css";
-import { SheetProvider } from "react-native-actions-sheet";
+import { SheetManager, SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
 import { useColorScheme } from "nativewind";
 import { lightTheme, darkTheme } from "../lib/theme";
@@ -44,7 +44,7 @@ export default function RootLayout() {
             <Stack
               screenOptions={{
                 navigationBarColor:
-                  rawTheme[colorScheme as ThemeName]["base-100"],
+                  rawTheme[colorScheme as ThemeName]["base-200"],
                 headerShown: false,
                 contentStyle: {
                   backgroundColor:

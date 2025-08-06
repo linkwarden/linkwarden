@@ -43,7 +43,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
     <View className="px-8 py-5">
       <Input
         placeholder="Name"
-        className="mb-4"
+        className="mb-4 bg-base-100"
         value={link?.name || ""}
         onChangeText={(text) => link?.id && setLink({ ...link, name: text })}
       />
@@ -51,7 +51,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
       {props.payload?.link?.url && (
         <Input
           placeholder="URL"
-          className="mb-4"
+          className="mb-4 bg-base-100"
           value={link?.url || ""}
           onChangeText={(text) => link?.id && setLink({ ...link, url: text })}
         />
@@ -98,8 +98,9 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
 
       <Input
         multiline
+        textAlignVertical="top"
         placeholder="Description"
-        className="mb-4 h-28"
+        className="mb-4 h-28 bg-base-100"
         value={link?.description || ""}
         onChangeText={(text) =>
           link?.id && setLink({ ...link, description: text })
@@ -207,7 +208,7 @@ const Collections = () => {
     <View className="px-8 py-5 max-h-[80vh]">
       <Input
         placeholder="Search collections"
-        className="mb-4"
+        className="mb-4 bg-base-100"
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
@@ -251,7 +252,7 @@ export default function EditLinkSheet() {
       routes={routes}
       initialRoute="main"
       containerStyle={{
-        backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+        backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
     />
   );

@@ -19,7 +19,6 @@ export default function RootLayout() {
         headerLargeStyle: {
           backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
         },
-        navigationBarColor: rawTheme[colorScheme as ThemeName]["base-200"],
         headerStyle: {
           backgroundColor:
             Platform.OS === "ios"
