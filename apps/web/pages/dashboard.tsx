@@ -95,11 +95,6 @@ export default function Dashboard() {
     DashboardSection[]
   >(user?.dashboardSections || []);
 
-  // State to track the collection being dropped on
-  const [droppingCollection, setDroppingCollection] = useState<string | null>(
-    null
-  );
-
   useEffect(() => {
     setDashboardSections(user?.dashboardSections || []);
   }, [user?.dashboardSections]);
@@ -188,25 +183,12 @@ export default function Dashboard() {
     setActiveLink(draggedLink || null);
   };
 
-  const handleDragOver = (event: DragOverEvent) => {
-    const { over } = event;
-    if (!over || !activeLink) return;
-
-    const targetId = over.id as string;
-    if (!targetId.includes("side-bar")) {
-      // when dragging over a collection on dashboard but not side bar, set the dropping collection
-      // this will be used to show link placeholder on target collection
-      setDroppingCollection(over.data.current?.collectionName as string);
-    }
-  };
   const handleDragOverCancel = () => {
     // Reset the dropping collection when dragging is cancelled
-    setDroppingCollection(null);
     setActiveLink(null);
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
-    setDroppingCollection(null);
     const { over, active } = event;
     if (!over || !activeLink) return;
 
@@ -310,7 +292,6 @@ export default function Dashboard() {
     <DndContext
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      onDragOver={handleDragOver}
       onDragCancel={handleDragOverCancel}
       modifiers={[restrictToWindowEdges, snapCenterToCursor]}
       sensors={sensors}
@@ -366,8 +347,6 @@ export default function Dashboard() {
                 numberOfPinnedLinks={numberOfPinnedLinks}
                 dashboardData={dashboardData}
                 setNewLinkModal={setNewLinkModal}
-                droppingCollection={droppingCollection}
-                activeLink={activeLink}
               />
             ))
           ) : (
@@ -415,8 +394,6 @@ type SectionProps = {
   dashboardData: any;
   collectionLinks: any[];
   setNewLinkModal: (value: boolean) => void;
-  droppingCollection?: string | null;
-  activeLink: LinkIncludingShortenedCollectionAndTags | null;
 };
 
 const Section = ({
@@ -431,8 +408,6 @@ const Section = ({
   dashboardData,
   collectionLinks,
   setNewLinkModal,
-  droppingCollection,
-  activeLink,
 }: SectionProps) => {
   switch (sectionData.type) {
     case DashboardSectionType.STATS:
@@ -544,10 +519,6 @@ const Section = ({
               <DashboardLinks
                 links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
                 isLoading={dashboardData.isLoading}
-                isDropping={
-                  droppingCollection === "pinned-links" &&
-                  activeLink?.pinnedBy?.length === 0
-                }
               />
             ) : (
               <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
@@ -610,10 +581,6 @@ const Section = ({
                 type="collection"
                 links={collectionLinks}
                 isLoading={dashboardData.isLoading}
-                isDropping={
-                  droppingCollection === collection.name &&
-                  activeLink?.collection.name !== collection.name
-                }
               />
             ) : (
               <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200 min-h-72">

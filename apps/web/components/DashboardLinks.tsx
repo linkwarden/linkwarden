@@ -28,27 +28,14 @@ import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@linkwarden/lib";
 
-const PlaceholderCard = () => {
-  return (
-    <div className="w-60 border-2 border-dashed border-neutral-content bg-base/80 rounded-xl flex items-center justify-center h-72">
-      <div className="flex flex-col items-center gap-2 text-primary/70">
-        <i className="bi-plus-circle text-4xl"></i>
-        <p className="text-sm font-medium">Drop link here</p>
-      </div>
-    </div>
-  );
-};
-
 export function DashboardLinks({
   links,
   isLoading,
   type,
-  isDropping,
 }: {
   links?: LinkIncludingShortenedCollectionAndTags[];
   isLoading?: boolean;
   type?: "collection" | "recent";
-  isDropping?: boolean;
 }) {
   return (
     <div
@@ -63,10 +50,7 @@ export function DashboardLinks({
           <div className="skeleton h-3 w-1/3"></div>
         </div>
       ) : (
-        <>
-          {links?.map((e, i) => <Card key={i} link={e} dashboardType={type} />)}
-          {isDropping && <PlaceholderCard />}
-        </>
+        links?.map((e, i) => <Card key={i} link={e} dashboardType={type} />)
       )}
     </div>
   );
