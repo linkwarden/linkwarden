@@ -26,8 +26,8 @@ import {
 } from "@dnd-kit/core";
 import { useQueryClient } from "@tanstack/react-query";
 import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
-import useLocalSettingsStore from "@/store/localSettings";
 import { customCollisionDetectionAlgorithm } from "@/lib/utils";
+import { snapCenterToCursor } from "@dnd-kit/modifiers";
 
 export default function Index() {
   const [activeLink, setActiveLink] =
@@ -61,18 +61,17 @@ export default function Index() {
       tolerance: 5,
     },
   });
-  const settings = useLocalSettingsStore((state) => state.settings);
 
   const renderDraggedItem = () => {
     if (!activeLink) return null;
 
     return (
-      <div className="border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg relative">
+      <div className="w-80 border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg relative">
         <span className="absolute z-50 top-3 left-2 w-8 h-8 p-1 rounded bg-base-100/80 inline-flex items-center justify-center">
           <i className="bi-grip-vertical text-xl" />
         </span>
         {viewMode === ViewMode.Card && (
-          <LinkCard link={activeLink} columns={settings.columns} />
+          <LinkCard link={activeLink} columns={2} />
         )}
       </div>
     );
@@ -144,14 +143,10 @@ export default function Index() {
       onDragCancel={handleDragOverCancel}
       sensors={sensors}
       collisionDetection={customCollisionDetectionAlgorithm}
+      modifiers={[snapCenterToCursor]}
     >
       <MainLayout>
-        <DragOverlay
-          style={{
-            zIndex: 100,
-            pointerEvents: "none",
-          }}
-        >
+        <DragOverlay className="z-50 pointer-events-none">
           {renderDraggedItem()}
         </DragOverlay>
         <div className="p-5 flex flex-col gap-5 w-full h-full">
