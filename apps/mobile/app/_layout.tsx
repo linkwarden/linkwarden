@@ -43,7 +43,7 @@ export default function RootLayout() {
             <Stack
               screenOptions={{
                 navigationBarColor:
-                  rawTheme[colorScheme as ThemeName]["base-200"],
+                  rawTheme[colorScheme as ThemeName]["base-100"],
                 statusBarStyle: Platform.OS === "android" ? "dark" : undefined,
                 headerShown: false,
                 contentStyle: {

@@ -25,7 +25,6 @@ export default function SettingsScreen() {
   );
 
   useEffect(() => {
-    console.log(colorScheme);
     setColorScheme(override);
   }, [override]);
 

@@ -1,1 +1,3 @@
-<resources/>
+<resources>
+  <color name="colorBase">#ffffff</color>
+</resources>
