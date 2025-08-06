@@ -25,9 +25,18 @@ export default function RootLayout() {
               search: encodeURIComponent(e.nativeEvent.text),
             });
           },
+          headerIconColor: colorScheme === "dark" ? "white" : "black",
         },
         headerLargeStyle: {
           backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+        },
+        headerStyle: {
+          backgroundColor:
+            Platform.OS === "ios"
+              ? "transparent"
+              : colorScheme === "dark"
+                ? rawTheme["dark"]["base-100"]
+                : "white",
         },
       }}
     />

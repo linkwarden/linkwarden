@@ -54,7 +54,10 @@ const LinkListing = ({ link, dashboard }: Props) => {
           )}
           onLongPress={() => {}}
           onPress={() => router.push(`/links/${link.id}`)}
-          android_ripple={{ color: "#ddd", borderless: false }}
+          android_ripple={{
+            color: colorScheme === "dark" ? "rgba(255,255,255,0.2)" : "#ddd",
+            borderless: false,
+          }}
         >
           <View
             className={cn(

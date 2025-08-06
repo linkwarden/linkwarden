@@ -19,6 +19,14 @@ export default function RootLayout() {
         headerLargeStyle: {
           backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
         },
+        headerStyle: {
+          backgroundColor:
+            Platform.OS === "ios"
+              ? "transparent"
+              : colorScheme === "dark"
+                ? rawTheme["dark"]["base-100"]
+                : "white",
+        },
       }}
     />
   );

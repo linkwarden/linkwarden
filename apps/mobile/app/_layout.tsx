@@ -8,7 +8,7 @@ import { SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
 import { useColorScheme } from "nativewind";
 import { lightTheme, darkTheme } from "../lib/theme";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { rawTheme, ThemeName } from "@/lib/colors";
 
 const queryClient = new QueryClient({
@@ -44,11 +44,8 @@ export default function RootLayout() {
               screenOptions={{
                 navigationBarColor:
                   rawTheme[colorScheme as ThemeName]["base-200"],
+                statusBarStyle: Platform.OS === "android" ? "dark" : undefined,
                 headerShown: false,
-                headerStyle: {
-                  backgroundColor:
-                    rawTheme[colorScheme as ThemeName]["base-200"],
-                },
                 contentStyle: {
                   backgroundColor:
                     rawTheme[colorScheme as ThemeName]["base-100"],

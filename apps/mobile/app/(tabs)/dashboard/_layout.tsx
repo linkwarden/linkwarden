@@ -22,6 +22,14 @@ export default function RootLayout() {
         headerLargeStyle: {
           backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
         },
+        headerStyle: {
+          backgroundColor:
+            Platform.OS === "ios"
+              ? "transparent"
+              : colorScheme === "dark"
+                ? rawTheme["dark"]["base-100"]
+                : "white",
+        },
       }}
     >
       <Stack.Screen
@@ -73,6 +81,7 @@ export default function RootLayout() {
           headerSearchBarOptions: {
             placeholder: "Search",
             autoCapitalize: "none",
+            headerIconColor: colorScheme === "dark" ? "white" : "black",
             onChangeText: (e) => {
               router.setParams({
                 search: encodeURIComponent(e.nativeEvent.text),

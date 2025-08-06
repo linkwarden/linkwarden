@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  Appearance,
 } from "react-native";
 import { nativeApplicationVersion } from "expo-application";
 import { useColorScheme } from "nativewind";
@@ -20,10 +21,11 @@ export default function SettingsScreen() {
   const { data: user } = useUser(auth);
   const { colorScheme, setColorScheme } = useColorScheme();
   const [override, setOverride] = useState<"light" | "dark" | "system">(
-    "system"
+    Appearance.getColorScheme() || "system"
   );
 
   useEffect(() => {
+    console.log(colorScheme);
     setColorScheme(override);
   }, [override]);
 
