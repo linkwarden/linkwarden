@@ -440,79 +440,73 @@ const Section = ({
     case DashboardSectionType.RECENT_LINKS:
       return (
         <>
-          <div>
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center">
-                <PageHeader
-                  icon={"bi-clock-history"}
-                  title={t("recent_links")}
-                />
-              </div>
-              <Link
-                href="/links"
-                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
-              >
-                {t("view_all")}
-                <i className="bi-chevron-right text-sm"></i>
-              </Link>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 items-center">
+              <PageHeader icon={"bi-clock-history"} title={t("recent_links")} />
             </div>
-
-            {dashboardData.isLoading ||
-            (links && links[0] && !dashboardData.isLoading) ? (
-              <DashboardLinks
-                type="recent"
-                links={links}
-                isLoading={dashboardData.isLoading}
-              />
-            ) : (
-              <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-                <p className="text-center text-xl">
-                  {t("view_added_links_here")}
-                </p>
-                <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
-                  {t("view_added_links_here_desc")}
-                </p>
-
-                <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
-                  <Button
-                    onClick={() => {
-                      setNewLinkModal(true);
-                    }}
-                    variant="accent"
-                  >
-                    <i className="bi-plus-lg text-xl"></i>
-                    {t("add_link")}
-                  </Button>
-
-                  <ImportDropdown />
-                </div>
-              </div>
-            )}
+            <Link
+              href="/links"
+              className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+            >
+              {t("view_all")}
+              <i className="bi-chevron-right text-sm"></i>
+            </Link>
           </div>
+
+          {dashboardData.isLoading ||
+          (links && links[0] && !dashboardData.isLoading) ? (
+            <DashboardLinks
+              type="recent"
+              links={links}
+              isLoading={dashboardData.isLoading}
+            />
+          ) : (
+            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+              <p className="text-center text-xl">
+                {t("view_added_links_here")}
+              </p>
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm mt-2">
+                {t("view_added_links_here_desc")}
+              </p>
+
+              <div className="text-center w-full mt-4 flex flex-wrap gap-4 justify-center">
+                <Button
+                  onClick={() => {
+                    setNewLinkModal(true);
+                  }}
+                  variant="accent"
+                >
+                  <i className="bi-plus-lg text-xl"></i>
+                  {t("add_link")}
+                </Button>
+
+                <ImportDropdown />
+              </div>
+            </div>
+          )}
         </>
       );
     case DashboardSectionType.PINNED_LINKS:
       return (
-        <Droppable
-          id="pinned-links-section"
-          data={{
-            collectionName: "pinned-links",
-          }}
-        >
-          <div>
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center">
-                <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
-              </div>
-              <Link
-                href="/links/pinned"
-                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
-              >
-                {t("view_all")}
-                <i className="bi-chevron-right text-sm "></i>
-              </Link>
+        <>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2 items-center">
+              <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
             </div>
-
+            <Link
+              href="/links/pinned"
+              className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer"
+            >
+              {t("view_all")}
+              <i className="bi-chevron-right text-sm "></i>
+            </Link>
+          </div>
+          <Droppable
+            id="pinned-links-section"
+            data={{
+              collectionName: "pinned-links",
+            }}
+          >
             {dashboardData.isLoading ||
             links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
               <DashboardLinks
@@ -530,21 +524,13 @@ const Section = ({
                 </p>
               </div>
             )}
-          </div>
-        </Droppable>
+          </Droppable>
+        </>
       );
     case DashboardSectionType.COLLECTION:
       return (
         collection?.id && (
-          <Droppable
-            id={`dashboard-${collection.id}`}
-            data={{
-              collectionId: collection.id,
-              collectionName: collection.name,
-              ownerId: collection.ownerId,
-            }}
-            className="flex flex-col gap-4"
-          >
+          <>
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
                 <div className={clsx("flex items-center gap-3")}>
@@ -575,24 +561,33 @@ const Section = ({
                 <i className="bi-chevron-right text-sm"></i>
               </Link>
             </div>
-            {dashboardData.isLoading || collectionLinks?.length > 0 ? (
-              <DashboardLinks
-                type="collection"
-                links={collectionLinks}
-                isLoading={dashboardData.isLoading}
-              />
-            ) : (
-              <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200 min-h-72">
-                <i className="bi-folder mx-auto text-6xl text-primary"></i>
-                <p className="text-center text-xl">
-                  {t("no_link_in_collection")}
-                </p>
-                <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                  {t("no_link_in_collection_desc")}
-                </p>
-              </div>
-            )}
-          </Droppable>
+            <Droppable
+              id={`dashboard-${collection.id}`}
+              data={{
+                collectionId: collection.id,
+                collectionName: collection.name,
+                ownerId: collection.ownerId,
+              }}
+            >
+              {dashboardData.isLoading || collectionLinks?.length > 0 ? (
+                <DashboardLinks
+                  type="collection"
+                  links={collectionLinks}
+                  isLoading={dashboardData.isLoading}
+                />
+              ) : (
+                <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200 min-h-72">
+                  <i className="bi-folder mx-auto text-6xl text-primary"></i>
+                  <p className="text-center text-xl">
+                    {t("no_link_in_collection")}
+                  </p>
+                  <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                    {t("no_link_in_collection_desc")}
+                  </p>
+                </div>
+              )}
+            </Droppable>
+          </>
         )
       );
     default:
