@@ -147,12 +147,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
       {...listeners}
       {...attributes}
     >
-      <span
-        className="absolute z-50 opacity-0 top-3 left-2 group-hover:opacity-60 w-8 h-8 transition-opacity duration-200 cursor-grab  p-1 rounded bg-base-100/80 group-hover:hover:opacity-100 inline-flex items-center justify-center"
-        title="Drag to reorder"
-      >
-        <i className="bi-grip-vertical text-xl" />
-      </span>
       <div
         ref={ref}
         className={`min-w-60 w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group h-full`}
