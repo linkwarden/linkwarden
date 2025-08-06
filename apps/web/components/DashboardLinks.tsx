@@ -146,7 +146,7 @@ export function Card({ link, editMode }: Props) {
                   height={720}
                   alt=""
                   className={`rounded-t-xl select-none object-cover z-10 h-40 w-full shadow opacity-80 scale-105`}
-                  style={show.icon ? { filter: "blur(1px)" } : undefined}
+                  style={show.icon ? { filter: "blur(0.5px)" } : undefined}
                   draggable="false"
                   onError={(e) => {
                     const target = e.target as HTMLElement;

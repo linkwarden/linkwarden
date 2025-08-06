@@ -183,7 +183,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
                   height={720}
                   alt=""
                   className={`rounded-t-xl select-none object-cover z-10 ${imageHeightClass} w-full shadow opacity-80 scale-105`}
-                  style={show.icon ? { filter: "blur(1px)" } : undefined}
+                  style={show.icon ? { filter: "blur(0.5px)" } : undefined}
                   draggable="false"
                   onError={(e) => {
                     const target = e.target as HTMLElement;

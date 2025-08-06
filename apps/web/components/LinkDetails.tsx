@@ -181,7 +181,7 @@ export default function LinkDetails({
               alt=""
               className="object-cover scale-105 object-center h-full"
               style={{
-                filter: "blur(1px)",
+                filter: "blur(0.5px)",
               }}
               onError={(e) => {
                 const target = e.target as HTMLElement;
