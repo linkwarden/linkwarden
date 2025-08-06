@@ -25,9 +25,9 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { useQueryClient } from "@tanstack/react-query";
-import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import { customCollisionDetectionAlgorithm } from "@/lib/utils";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
+import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 
 export default function Index() {
   const [activeLink, setActiveLink] =
@@ -62,21 +62,6 @@ export default function Index() {
     },
   });
 
-  const renderDraggedItem = () => {
-    if (!activeLink) return null;
-
-    return (
-      <div className="w-80 border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg relative">
-        <span className="absolute z-50 top-3 left-2 w-8 h-8 p-1 rounded bg-base-100/80 inline-flex items-center justify-center">
-          <i className="bi-grip-vertical text-xl" />
-        </span>
-        {viewMode === ViewMode.Card && (
-          <LinkCard link={activeLink} columns={2} />
-        )}
-      </div>
-    );
-  };
-
   const sensors = useSensors(mouseSensor, touchSensor);
 
   const router = useRouter();
@@ -108,6 +93,12 @@ export default function Index() {
 
     // Immediately hide the drag overlay
     setActiveLink(null);
+
+    // if the link dropped over the same collection, toast
+    if (activeLink.collection.id === collectionId) {
+      toast.error(t("link_already_in_collection"));
+      return;
+    }
 
     // Handle moving the link to a different collection
     if (activeLink.collection.id !== collectionId) {
@@ -146,9 +137,13 @@ export default function Index() {
       modifiers={[snapCenterToCursor]}
     >
       <MainLayout>
-        <DragOverlay className="z-50 pointer-events-none">
-          {renderDraggedItem()}
-        </DragOverlay>
+        {!!activeLink && (
+          <DragOverlay className="z-50 pointer-events-none">
+            <div className="w-fit h-fit">
+              <LinkIcon link={activeLink} />
+            </div>
+          </DragOverlay>
+        )}
         <div className="p-5 flex flex-col gap-5 w-full h-full">
           <LinkListOptions
             t={t}
