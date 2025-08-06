@@ -87,7 +87,6 @@ export function CardView({
           <LinkCard
             key={i}
             link={e}
-            count={i}
             editMode={editMode}
             columns={columnCount}
           />
