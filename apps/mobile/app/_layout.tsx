@@ -10,6 +10,7 @@ import { useColorScheme } from "nativewind";
 import { lightTheme, darkTheme } from "../lib/theme";
 import { Platform, View } from "react-native";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { StatusBar } from "expo-status-bar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,12 +45,18 @@ export default function RootLayout() {
               screenOptions={{
                 navigationBarColor:
                   rawTheme[colorScheme as ThemeName]["base-100"],
-                statusBarStyle: Platform.OS === "android" ? "dark" : undefined,
                 headerShown: false,
                 contentStyle: {
                   backgroundColor:
                     rawTheme[colorScheme as ThemeName]["base-100"],
                 },
+                ...Platform.select({
+                  android: {
+                    statusBarStyle: colorScheme === "dark" ? "light" : "dark",
+                    statusBarBackgroundColor:
+                      rawTheme[colorScheme as ThemeName]["base-100"],
+                  },
+                }),
               }}
             >
               {/* <Stack.Screen name="(tabs)" /> */}
