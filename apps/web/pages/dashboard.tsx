@@ -20,7 +20,7 @@ import {
   DashboardSection,
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
-import { DashboardLinks, Card } from "@/components/DashboardLinks";
+import { DashboardLinks } from "@/components/DashboardLinks";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ViewMode,
@@ -39,12 +39,13 @@ import {
   TouchSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 import Droppable from "@/components/Droppable";
 import { useUpdateLink } from "@linkwarden/router/links";
 import usePinLink from "@/lib/client/pinLink";
 import { useQueryClient } from "@tanstack/react-query";
 import { customCollisionDetectionAlgorithm } from "@/lib/utils";
+import { LinkIcon } from "lucide-react";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -151,19 +152,6 @@ export default function Dashboard() {
   const [submitLoader, setSubmitLoader] = useState(false);
 
   // Function to render the dragged item
-  const renderDraggedItem = () => {
-    if (!activeLink) return null;
-
-    return (
-      <div className="w-60 border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg relative">
-        <span className="absolute z-50 top-3 left-2 w-8 h-8 p-1 rounded bg-base-100/80 inline-flex items-center justify-center">
-          <i className="bi-grip-vertical text-xl" />
-        </span>
-        <Card link={activeLink} />
-      </div>
-    );
-  };
-
   const submitSurvey = async (referer: string, other?: string) => {
     if (submitLoader) return;
 
@@ -324,7 +312,7 @@ export default function Dashboard() {
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
       onDragCancel={handleDragOverCancel}
-      modifiers={[restrictToWindowEdges]}
+      modifiers={[restrictToWindowEdges, snapCenterToCursor]}
       sensors={sensors}
       collisionDetection={customCollisionDetectionAlgorithm}
     >
@@ -337,7 +325,9 @@ export default function Dashboard() {
               pointerEvents: "none",
             }}
           >
-            {renderDraggedItem()}
+            <div className="size-20 rounded-md bg-base-100/80 flex items-center justify-center">
+              <LinkIcon />
+            </div>
           </DragOverlay>
         )}
         <div className="p-5 flex flex-col gap-4 h-full">
@@ -583,60 +573,59 @@ const Section = ({
               collectionName: collection.name,
               ownerId: collection.ownerId,
             }}
+            className="flex flex-col gap-4"
           >
-            <div>
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2 items-center">
-                  <div className={clsx("flex items-center gap-3")}>
-                    {collection.icon ? (
-                      <Icon
-                        icon={collection.icon}
-                        color={collection.color || "#0ea5e9"}
-                        className="text-2xl"
-                      />
-                    ) : (
-                      <i
-                        className={`bi-folder-fill text-primary text-2xl drop-shadow`}
-                        style={{ color: collection.color || "#0ea5e9" }}
-                      ></i>
-                    )}
-                    <div>
-                      <p className="text-2xl capitalize font-thin">
-                        {collection.name}
-                      </p>
-                    </div>
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 items-center">
+                <div className={clsx("flex items-center gap-3")}>
+                  {collection.icon ? (
+                    <Icon
+                      icon={collection.icon}
+                      color={collection.color || "#0ea5e9"}
+                      className="text-2xl"
+                    />
+                  ) : (
+                    <i
+                      className={`bi-folder-fill text-primary text-2xl drop-shadow`}
+                      style={{ color: collection.color || "#0ea5e9" }}
+                    ></i>
+                  )}
+                  <div>
+                    <p className="text-2xl capitalize font-thin">
+                      {collection.name}
+                    </p>
                   </div>
                 </div>
-                <Link
-                  href={`/collections/${collection.id}`}
-                  className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
-                >
-                  {t("view_all")}
-                  <i className="bi-chevron-right text-sm"></i>
-                </Link>
               </div>
-              {dashboardData.isLoading || collectionLinks?.length > 0 ? (
-                <DashboardLinks
-                  type="collection"
-                  links={collectionLinks}
-                  isLoading={dashboardData.isLoading}
-                  isDropping={
-                    droppingCollection === collection.name &&
-                    activeLink?.collection.name !== collection.name
-                  }
-                />
-              ) : (
-                <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200 min-h-72">
-                  <i className="bi-folder mx-auto text-6xl text-primary"></i>
-                  <p className="text-center text-xl">
-                    {t("no_link_in_collection")}
-                  </p>
-                  <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                    {t("no_link_in_collection_desc")}
-                  </p>
-                </div>
-              )}
+              <Link
+                href={`/collections/${collection.id}`}
+                className="flex items-center text-sm text-black/75 dark:text-white/75 gap-2 cursor-pointer whitespace-nowrap"
+              >
+                {t("view_all")}
+                <i className="bi-chevron-right text-sm"></i>
+              </Link>
             </div>
+            {dashboardData.isLoading || collectionLinks?.length > 0 ? (
+              <DashboardLinks
+                type="collection"
+                links={collectionLinks}
+                isLoading={dashboardData.isLoading}
+                isDropping={
+                  droppingCollection === collection.name &&
+                  activeLink?.collection.name !== collection.name
+                }
+              />
+            ) : (
+              <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200 min-h-72">
+                <i className="bi-folder mx-auto text-6xl text-primary"></i>
+                <p className="text-center text-xl">
+                  {t("no_link_in_collection")}
+                </p>
+                <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                  {t("no_link_in_collection_desc")}
+                </p>
+              </div>
+            )}
           </Droppable>
         )
       );

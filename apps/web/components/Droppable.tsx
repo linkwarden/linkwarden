@@ -5,6 +5,7 @@ const Droppable = ({
   children,
   id,
   data,
+  className,
 }: {
   children: React.ReactNode;
   id: string;
@@ -13,6 +14,7 @@ const Droppable = ({
     collectionName?: string;
     ownerId?: string;
   };
+  className?: string;
 }) => {
   const { setNodeRef, isOver } = useDroppable({
     id,
@@ -24,8 +26,9 @@ const Droppable = ({
       ref={setNodeRef}
       className={cn(
         isOver &&
-          "bg-primary/10 border-2 border-dashed border-primary rounded-lg",
-        "transition-colors duration-200"
+          "bg-primary/10 outline-2 outline-dashed outline-primary rounded-lg",
+        "transition-colors duration-200",
+        className
       )}
       style={{
         position: "relative",

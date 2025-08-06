@@ -171,7 +171,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
       </span>
       <div
         ref={ref}
-        className={`min-w-60 w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group`}
+        className={`min-w-60 w-60 border border-solid border-neutral-content bg-base-200 duration-100 rounded-xl relative group h-full`}
       >
         <div
           className="rounded-xl cursor-pointer h-full w-full flex flex-col justify-between"
