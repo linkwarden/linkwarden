@@ -21,7 +21,7 @@ export default function LinkPin({ link, btnStyle }: Props) {
       variant="simple"
       size="icon"
       className={clsx(
-        "absolute top-3 right-[3.25rem] group-hover:opacity-100 opacity-0 duration-100 text-neutral",
+        "absolute top-3 right-[3.25rem] group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral",
         btnStyle
       )}
       onClick={() => pinLink(link)}
