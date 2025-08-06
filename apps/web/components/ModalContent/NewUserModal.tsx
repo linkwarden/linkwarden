@@ -6,6 +6,7 @@ import { useTranslation, Trans } from "next-i18next";
 import { useAddUser } from "@linkwarden/router/users";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { useConfig } from "@linkwarden/router/config";
 
 type Props = {
   onClose: Function;
@@ -18,10 +19,10 @@ type FormData = {
   password: string;
 };
 
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
-
 export default function NewUserModal({ onClose }: Props) {
   const { t } = useTranslation();
+  const { data: config } = useConfig();
+  const emailEnabled = config?.EMAIL_PROVIDER;
 
   const addUser = useAddUser();
 
