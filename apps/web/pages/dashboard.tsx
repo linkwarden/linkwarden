@@ -33,7 +33,6 @@ import {
   DragEndEvent,
   DragStartEvent,
   DragOverlay,
-  DragOverEvent,
   useSensor,
   MouseSensor,
   TouchSensor,
@@ -45,7 +44,7 @@ import { useUpdateLink } from "@linkwarden/router/links";
 import usePinLink from "@/lib/client/pinLink";
 import { useQueryClient } from "@tanstack/react-query";
 import { customCollisionDetectionAlgorithm } from "@/lib/utils";
-import { LinkIcon } from "lucide-react";
+import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -306,8 +305,8 @@ export default function Dashboard() {
               pointerEvents: "none",
             }}
           >
-            <div className="size-20 rounded-md bg-base-100/80 flex items-center justify-center">
-              <LinkIcon />
+            <div className="w-fit h-fit">
+              <LinkIcon link={activeLink} />
             </div>
           </DragOverlay>
         )}
