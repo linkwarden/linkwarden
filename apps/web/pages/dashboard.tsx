@@ -57,6 +57,16 @@ export default function Dashboard() {
     },
     ...dashboardData
   } = useDashboardData();
+
+  /**
+   * Get a combined list of all links, including those from collections.
+   * Dupplications are fine since this is used for finding dragged link
+   */
+  const allLinks = useMemo(() => {
+    const _collectionLinks = Object.values(collectionLinks).flat();
+    return [...links, ..._collectionLinks];
+  }, [collectionLinks, links]);
+
   const { data: tags = [] } = useTags();
   const { data: user } = useUser();
   const pinLink = usePinLink();
@@ -146,18 +156,12 @@ export default function Dashboard() {
   const renderDraggedItem = () => {
     if (!activeLink) return null;
 
-    const linkToRender = links.find((link: any) => {
-      return link.id === activeLink.id;
-    });
-
-    if (!linkToRender) return null;
-
     return (
       <div className="w-60 border border-solid border-neutral-content bg-base-200 rounded-xl shadow-lg relative">
         <span className="absolute z-50 top-3 left-2 w-8 h-8 p-1 rounded bg-base-100/80 inline-flex items-center justify-center">
           <i className="bi-grip-vertical text-xl" />
         </span>
-        <Card link={linkToRender} />
+        <Card link={activeLink} />
       </div>
     );
   };
@@ -192,7 +196,7 @@ export default function Dashboard() {
   };
 
   const handleDragStart = (event: DragStartEvent) => {
-    const draggedLink = links.find(
+    const draggedLink = allLinks.find(
       (link: any) => link.id === event.active.data.current?.linkId
     );
     setActiveLink(draggedLink || null);
@@ -201,11 +205,6 @@ export default function Dashboard() {
   const handleDragOver = (event: DragOverEvent) => {
     const { over } = event;
     if (!over || !activeLink) return;
-
-    // Find the link in the current data
-    const linkToMove = links.find((link: any) => link.id === activeLink.id);
-
-    if (!linkToMove) return;
 
     const targetId = over.id as string;
     if (!targetId.includes("side-bar")) {
@@ -227,25 +226,20 @@ export default function Dashboard() {
 
     const targetSectionId = over.id as string;
     const collectionId = over.data.current?.collectionId as number;
-    const ownerId = over.data.current?.ownerId as string;
     const collectionName = over.data.current?.collectionName as string;
+    const ownerId = over.data.current?.ownerId as number;
 
     const isFromRecentSection = active.data.current?.dashboardType === "recent";
-
-    // Find the link in the current data
-    const linkToMove = links.find((link: any) => link.id === activeLink.id);
-
-    if (!linkToMove) return;
 
     // Immediately hide the drag overlay
     setActiveLink(null);
 
     // Handle pinning the link
     if (targetSectionId === "pinned-links-section") {
-      if (Array.isArray(linkToMove.pinnedBy) && !linkToMove.pinnedBy.length) {
+      if (Array.isArray(activeLink.pinnedBy) && !activeLink.pinnedBy.length) {
         // optimistically update the link's pinned state
         const updatedLink = {
-          ...linkToMove,
+          ...activeLink,
           pinnedBy: [user?.id],
         };
         queryClient.setQueryData(["dashboardData"], (oldData: any) => {
@@ -257,14 +251,18 @@ export default function Dashboard() {
             ),
           };
         });
-        pinLink(linkToMove);
+        pinLink(activeLink);
       }
       // Handle moving the link to a different collection
-    } else if (linkToMove.collection.id !== collectionId) {
+    } else if (activeLink.collection.id !== collectionId) {
       // Optimistically update the link's collection immediately
-      const updatedLink = {
-        ...linkToMove,
-        collection: { id: collectionId, ownerId, name: collectionName },
+      const updatedLink: LinkIncludingShortenedCollectionAndTags = {
+        ...activeLink,
+        collection: {
+          id: collectionId,
+          name: collectionName,
+          ownerId,
+        },
       };
 
       // Optimistically update the dashboard data cache
@@ -283,7 +281,7 @@ export default function Dashboard() {
         queryClient.setQueryData(["dashboardData"], (oldData: any) => {
           if (!oldData?.collectionLinks) return oldData;
 
-          const oldCollectionId = linkToMove.collection.id;
+          const oldCollectionId = activeLink.collection.id!;
 
           return {
             ...oldData,
