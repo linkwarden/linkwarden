@@ -9,7 +9,6 @@ export const removeCookieBannersAndOverlays = () => {
   // Create style element with CSS rules to hide cookie banners and modals
   const style = document.createElement('style');
   style.textContent = `
-
     /* Hide native dialog elements and elements with ARIA roles */
     dialog,
     [role="dialog"],
@@ -23,33 +22,51 @@ export const removeCookieBannersAndOverlays = () => {
     [class*="backdrop"],
     [class*="overlay"],
     [class*="modal"],
-    [class*="dialog"] {
+    [class*="dialog"],
+    [class*="cookie"] {
       opacity: 0 !important;
     }
     
-    /* Hide known cookie banner IDs and classes */
-    #cookieChoiceInfo,
-    #cookie-banner,
-    #cookie-notice,
-    #cookieConsent,
-    #CybotCookiebotDialog,
-    .cc-banner,
-    .cc-window,
-    .optanon-alert-box-wrapper,
-    .ot-sdk-container,
-    #onetrust-banner-sdk,
-    .osano-cm-window,
-    .fc-consent-root,
-    .didomi-popup,
-    .cky-consent-container,
-    [class*="cookie-banner"],
-    [class*="cookie-consent"],
-    [id*="cookie-banner"],
-    [id*="cookie-consent"] {
+    /* Hide elements with cookie/consent/banner in ID */
+    [id*="cookie"],
+    [id*="consent"],
+    [id*="banner"],
+    [id*="gdpr"],
+    [id*="privacy"] {
       opacity: 0 !important;
+    }
+    
+    /* Remove modal/overlay states from body element */
+    body.modal-open,
+    body[class*="modal"],
+    body[class*="overlay"],
+    body[class*="scroll-lock"],
+    body[class*="no-scroll"],
+    body[class*="cookie"] {
+      overflow: auto !important;
+      position: static !important;
+      height: auto !important;
     }
   `;
   
   // Inject the CSS into the page
   document.head.appendChild(style);
+
+  // Remove body classes related to modals and overlays.
+  // Hiding modal and overlay classes could otherwise result in an empty page.
+  const bodyClasses = document.body.className;
+  const modalRelatedClasses = bodyClasses.split(' ').filter(cls => 
+    cls.includes('modal') || 
+    cls.includes('overlay') || 
+    cls.includes('scroll') || 
+    cls.includes('no-scroll') ||
+    cls.includes('lock') ||
+    cls.includes('cookie') ||
+    cls.includes('consent') ||
+    cls.includes('banner')
+  );
+  
+  modalRelatedClasses.forEach(cls => {
+    document.body.classList.remove(cls);
+  });
 };
