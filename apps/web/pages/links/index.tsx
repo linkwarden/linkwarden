@@ -11,22 +11,9 @@ import { useRouter } from "next/router";
 import LinkListOptions from "@/components/LinkListOptions";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
-import { toast } from "react-hot-toast";
 import Links from "@/components/LinkViews/Links";
 import clsx from "clsx";
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { customCollisionDetectionAlgorithm } from "@/lib/utils";
-import { snapCenterToCursor } from "@dnd-kit/modifiers";
-import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
+import DragNDrop from "@/components/DragNDrop";
 
 export default function Index() {
   const [activeLink, setActiveLink] =
@@ -44,24 +31,6 @@ export default function Index() {
     sort: sortBy,
   });
 
-  const updateLink = useUpdateLink();
-
-  const mouseSensor = useSensor(MouseSensor, {
-    // Require the mouse to move by 10 pixels before activating
-    activationConstraint: {
-      distance: 10,
-    },
-  });
-  const touchSensor = useSensor(TouchSensor, {
-    // Press delay of 250ms, with tolerance of 5px of movement
-    activationConstraint: {
-      delay: 200,
-      tolerance: 5,
-    },
-  });
-
-  const sensors = useSensors(mouseSensor, touchSensor);
-
   const router = useRouter();
 
   const [editMode, setEditMode] = useState(false);
@@ -70,73 +39,13 @@ export default function Index() {
     if (editMode) return setEditMode(false);
   }, [router]);
 
-  const handleDragStart = (event: DragStartEvent) => {
-    const draggedLink = links.find(
-      (link: any) => link.id === event.active.data.current?.linkId
-    );
-    setActiveLink(draggedLink || null);
-  };
-
-  const handleDragOverCancel = () => {
-    setActiveLink(null);
-  };
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { over } = event;
-    if (!over || !activeLink) return;
-
-    const collectionId = over.data.current?.collectionId as number;
-    const collectionName = over.data.current?.collectionName as string;
-    const ownerId = over.data.current?.ownerId as number;
-
-    // Immediately hide the drag overlay
-    setActiveLink(null);
-
-    // if the link dropped over the same collection, toast
-    if (activeLink.collection.id === collectionId) {
-      toast.error(t("link_already_in_collection"));
-      return;
-    }
-
-    const updatedLink: LinkIncludingShortenedCollectionAndTags = {
-      ...activeLink,
-      collection: {
-        id: collectionId,
-        name: collectionName,
-        ownerId,
-      },
-    };
-
-    const load = toast.loading(t("updating"));
-    await updateLink.mutateAsync(updatedLink, {
-      onSettled: (_, error) => {
-        toast.dismiss(load);
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success(t("updated"));
-        }
-      },
-    });
-  };
-
   return (
-    <DndContext
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragCancel={handleDragOverCancel}
-      sensors={sensors}
-      collisionDetection={customCollisionDetectionAlgorithm}
-      modifiers={[snapCenterToCursor]}
+    <DragNDrop
+      links={links}
+      activeLink={activeLink}
+      setActiveLink={setActiveLink}
     >
       <MainLayout>
-        {!!activeLink && (
-          <DragOverlay className="z-50 pointer-events-none">
-            <div className="w-fit h-fit">
-              <LinkIcon link={activeLink} />
-            </div>
-          </DragOverlay>
-        )}
         <div className="p-5 flex flex-col gap-5 w-full h-full">
           <LinkListOptions
             t={t}
@@ -173,7 +82,7 @@ export default function Index() {
           />
         </div>
       </MainLayout>
-    </DndContext>
+    </DragNDrop>
   );
 }
 

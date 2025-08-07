@@ -300,8 +300,8 @@ const renderItem = (
     <Droppable
       id={`side-bar-collection-${collection.id}`}
       data={{
-        collectionName: collection.name,
-        collectionId: collection.id,
+        name: collection.name,
+        id: collection.id,
         ownerId: collection.ownerId,
       }}
       className="group"

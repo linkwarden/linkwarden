@@ -28,23 +28,12 @@ import {
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
-import {
-  DndContext,
-  DragEndEvent,
-  DragStartEvent,
-  DragOverlay,
-  useSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { DragEndEvent } from "@dnd-kit/core";
 import Droppable from "@/components/Droppable";
 import { useUpdateLink } from "@linkwarden/router/links";
 import usePinLink from "@/lib/client/pinLink";
 import { useQueryClient } from "@tanstack/react-query";
-import { customCollisionDetectionAlgorithm } from "@/lib/utils";
-import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
+import DragNDrop from "@/components/DragNDrop";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -69,22 +58,6 @@ export default function Dashboard() {
   const { data: user } = useUser();
   const pinLink = usePinLink();
   const queryClient = useQueryClient();
-
-  const mouseSensor = useSensor(MouseSensor, {
-    // Require the mouse to move by 10 pixels before activating
-    activationConstraint: {
-      distance: 10,
-    },
-  });
-  const touchSensor = useSensor(TouchSensor, {
-    // Press delay of 250ms, with tolerance of 5px of movement
-    activationConstraint: {
-      delay: 200,
-      tolerance: 5,
-    },
-  });
-
-  const sensors = useSensors(mouseSensor, touchSensor);
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
   const [activeLink, setActiveLink] =
@@ -173,18 +146,6 @@ export default function Dashboard() {
         },
       }
     );
-  };
-
-  const handleDragStart = (event: DragStartEvent) => {
-    const draggedLink = allLinks.find(
-      (link: any) => link.id === event.active.data.current?.linkId
-    );
-    setActiveLink(draggedLink || null);
-  };
-
-  const handleDragOverCancel = () => {
-    // Reset the dropping collection when dragging is cancelled
-    setActiveLink(null);
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -288,28 +249,13 @@ export default function Dashboard() {
   };
 
   return (
-    <DndContext
-      onDragStart={handleDragStart}
+    <DragNDrop
       onDragEnd={handleDragEnd}
-      onDragCancel={handleDragOverCancel}
-      modifiers={[restrictToWindowEdges, snapCenterToCursor]}
-      sensors={sensors}
-      collisionDetection={customCollisionDetectionAlgorithm}
+      links={allLinks}
+      activeLink={activeLink}
+      setActiveLink={setActiveLink}
     >
       <MainLayout>
-        {!!activeLink && (
-          // when drag end, immediately hide the overlay
-          <DragOverlay
-            style={{
-              zIndex: 100,
-              pointerEvents: "none",
-            }}
-          >
-            <div className="w-fit h-fit">
-              <LinkIcon link={activeLink} />
-            </div>
-          </DragOverlay>
-        )}
         <div className="p-5 flex flex-col gap-4 h-full">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -375,7 +321,7 @@ export default function Dashboard() {
           <NewLinkModal onClose={() => setNewLinkModal(false)} />
         )}
       </MainLayout>
-    </DndContext>
+    </DragNDrop>
   );
 }
 

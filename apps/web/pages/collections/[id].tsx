@@ -21,7 +21,7 @@ import { useTranslation } from "next-i18next";
 import LinkListOptions from "@/components/LinkListOptions";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
-import { useLinks, useUpdateLink } from "@linkwarden/router/links";
+import { useLinks } from "@linkwarden/router/links";
 import Links from "@/components/LinkViews/Links";
 import Icon from "@/components/Icon";
 import CollectionCard from "@/components/CollectionCard";
@@ -36,25 +36,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import toast from "react-hot-toast";
-import { customCollisionDetectionAlgorithm } from "@/lib/utils";
-import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
-import { snapCenterToCursor } from "@dnd-kit/modifiers";
+import DragNDrop from "@/components/DragNDrop";
 
 export default function Index() {
   const { t } = useTranslation();
   const router = useRouter();
-  const updateLink = useUpdateLink();
 
   const { data: collections = [] } = useCollections();
 
@@ -69,22 +55,6 @@ export default function Index() {
 
   const [activeLink, setActiveLink] =
     useState<LinkIncludingShortenedCollectionAndTags | null>(null);
-
-  const mouseSensor = useSensor(MouseSensor, {
-    // Require the mouse to move by 10 pixels before activating
-    activationConstraint: {
-      distance: 10,
-    },
-  });
-  const touchSensor = useSensor(TouchSensor, {
-    // Press delay of 250ms, with tolerance of 5px of movement
-    activationConstraint: {
-      delay: 200,
-      tolerance: 5,
-    },
-  });
-
-  const sensors = useSensors(mouseSensor, touchSensor);
 
   const [activeCollection, setActiveCollection] =
     useState<CollectionIncludingMembersAndLinkCount>();
@@ -141,73 +111,13 @@ export default function Index() {
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
 
-  const handleDragStart = (event: DragStartEvent) => {
-    const draggedLink = links.find(
-      (link: any) => link.id === event.active.data.current?.linkId
-    );
-    setActiveLink(draggedLink || null);
-  };
-
-  const handleDragOverCancel = () => {
-    setActiveLink(null);
-  };
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { over } = event;
-    if (!over || !activeLink) return;
-
-    const collectionId = over.data.current?.collectionId as number;
-    const collectionName = over.data.current?.collectionName as string;
-    const ownerId = over.data.current?.ownerId as number;
-
-    // Immediately hide the drag overlay
-    setActiveLink(null);
-
-    // if the link dropped over the same collection, toast
-    if (activeLink.collection.id === collectionId) {
-      toast.error(t("link_already_in_collection"));
-      return;
-    }
-
-    const updatedLink: LinkIncludingShortenedCollectionAndTags = {
-      ...activeLink,
-      collection: {
-        id: collectionId,
-        name: collectionName,
-        ownerId,
-      },
-    };
-
-    const load = toast.loading(t("updating"));
-    await updateLink.mutateAsync(updatedLink, {
-      onSettled: (_, error) => {
-        toast.dismiss(load);
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success(t("updated"));
-        }
-      },
-    });
-  };
-
   return (
-    <DndContext
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onDragCancel={handleDragOverCancel}
-      sensors={sensors}
-      collisionDetection={customCollisionDetectionAlgorithm}
-      modifiers={[snapCenterToCursor]}
+    <DragNDrop
+      links={links}
+      activeLink={activeLink}
+      setActiveLink={setActiveLink}
     >
       <MainLayout>
-        {!!activeLink && (
-          <DragOverlay className="z-50 pointer-events-none">
-            <div className="w-fit h-fit">
-              <LinkIcon link={activeLink} />
-            </div>
-          </DragOverlay>
-        )}
         <div
           className="p-5 flex gap-3 flex-col"
           style={{
@@ -494,7 +404,7 @@ export default function Index() {
           </>
         )}
       </MainLayout>
-    </DndContext>
+    </DragNDrop>
   );
 }
 

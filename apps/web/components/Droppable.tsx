@@ -13,6 +13,7 @@ const Droppable = ({
     collectionId?: string;
     collectionName?: string;
     ownerId?: string;
+    type?: "collection" | "tag";
   };
   className?: string;
 }) => {
