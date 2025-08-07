@@ -31,6 +31,7 @@ import openLink from "@/lib/client/openLink";
 import { Separator } from "@/components/ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -41,11 +42,15 @@ type Props = {
 
 export default function LinkCard({ link, columns, editMode }: Props) {
   const { t } = useTranslation();
+
+  // we don't want to use the draggable feature for screen under 1023px since the sidebar is hidden
+  const isSmallScreen = useMediaQuery("(max-width: 1023px)");
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
     },
+    disabled: isSmallScreen,
   });
 
   const heightMap = {
