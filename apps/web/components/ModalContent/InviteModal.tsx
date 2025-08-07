@@ -8,6 +8,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { useConfig } from "@linkwarden/router/config";
 
 type Props = {
   onClose: Function;
@@ -19,10 +20,10 @@ type FormData = {
   invite: boolean;
 };
 
-const emailEnabled = process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true";
-
 export default function InviteModal({ onClose }: Props) {
   const { t } = useTranslation();
+  const { data: config } = useConfig();
+  const emailEnabled = config?.EMAIL_PROVIDER;
 
   const addUser = useAddUser();
 
