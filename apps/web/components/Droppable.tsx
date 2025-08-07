@@ -21,6 +21,7 @@ const Droppable = ({
     data,
   });
 
+  const extraProps = isOver ? { "data-over": "" } : {};
   return (
     <div
       ref={setNodeRef}
@@ -30,6 +31,7 @@ const Droppable = ({
         "transition-colors duration-200",
         className
       )}
+      {...extraProps}
       style={{
         position: "relative",
         zIndex: isOver ? 1 : "auto",

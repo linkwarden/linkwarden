@@ -23,6 +23,7 @@ import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import Droppable from "./Droppable";
+import { cn } from "@linkwarden/lib";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
@@ -303,6 +304,7 @@ const renderItem = (
         collectionId: collection.id,
         ownerId: collection.ownerId,
       }}
+      className="group"
     >
       <div
         ref={provided.innerRef}
@@ -310,11 +312,12 @@ const renderItem = (
         className="mb-1"
       >
         <div
-          className={`${
+          className={cn(
             currentPath === `/collections/${collection.id}`
               ? "bg-primary/20 is-active"
-              : "hover:bg-neutral/20"
-          } duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md`}
+              : "group-[&:not([data-over])]:hover:bg-neutral/20",
+            "duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md"
+          )}
         >
           {Dropdown(item as ExtendedTreeItem, onExpand, onCollapse)}
 
