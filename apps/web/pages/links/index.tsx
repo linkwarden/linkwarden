@@ -100,31 +100,28 @@ export default function Index() {
       return;
     }
 
-    // Handle moving the link to a different collection
-    if (activeLink.collection.id !== collectionId) {
-      const updatedLink: LinkIncludingShortenedCollectionAndTags = {
-        ...activeLink,
-        collection: {
-          id: collectionId,
-          name: collectionName,
-          ownerId,
-        },
-      };
+    const updatedLink: LinkIncludingShortenedCollectionAndTags = {
+      ...activeLink,
+      collection: {
+        id: collectionId,
+        name: collectionName,
+        ownerId,
+      },
+    };
 
-      const load = toast.loading(t("updating"));
-      await updateLink.mutateAsync(updatedLink, {
-        onSettled: (_, error) => {
-          toast.dismiss(load);
-          if (error) {
-            // If there's an error, invalidate queries to restore the original state
-            queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
-            toast.error(error.message);
-          } else {
-            toast.success(t("updated"));
-          }
-        },
-      });
-    }
+    const load = toast.loading(t("updating"));
+    await updateLink.mutateAsync(updatedLink, {
+      onSettled: (_, error) => {
+        toast.dismiss(load);
+        if (error) {
+          // If there's an error, invalidate queries to restore the original state
+          queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+          toast.error(error.message);
+        } else {
+          toast.success(t("updated"));
+        }
+      },
+    });
   };
 
   return (
