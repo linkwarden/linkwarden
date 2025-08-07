@@ -10,8 +10,14 @@ const Droppable = ({
   children: React.ReactNode;
   id: string;
   data?: {
-    collectionId?: string;
-    collectionName?: string;
+    /**
+     * Id of collection or tag to drop into.
+     */
+    id?: string;
+    /**
+     * Name of collection or tag to drop into.
+     */
+    name?: string;
     ownerId?: string;
     type?: "collection" | "tag";
   };

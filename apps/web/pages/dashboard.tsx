@@ -153,14 +153,46 @@ export default function Dashboard() {
     if (!over || !activeLink) return;
 
     const targetSectionId = over.id as string;
-    const collectionId = over.data.current?.collectionId as number;
-    const collectionName = over.data.current?.collectionName as string;
+    const collectionId = over.data.current?.id as number;
+    const collectionName = over.data.current?.name as string;
     const ownerId = over.data.current?.ownerId as number;
 
     const isFromRecentSection = active.data.current?.dashboardType === "recent";
 
     // Immediately hide the drag overlay
     setActiveLink(null);
+    if (over.data.current?.type === "tag") {
+      const isTagAlreadyExists = activeLink.tags.some(
+        (tag) => tag.name === over.data.current?.name
+      );
+      if (isTagAlreadyExists) {
+        toast.error(t("tag_already_added"));
+        return;
+      }
+      // to match the tags structure required to update the link
+      const allTags: { name: string }[] = activeLink.tags.map((tag) => ({
+        name: tag.name,
+      }));
+      const newTags = [...allTags, { name: over.data.current?.name as string }];
+      const updatedLink = {
+        ...activeLink,
+        tags: newTags as any,
+      };
+      const load = toast.loading(t("updating"));
+      await updateLink.mutateAsync(updatedLink, {
+        onSettled: (_, error) => {
+          toast.dismiss(load);
+          if (error) {
+            // If there's an error, invalidate queries to restore the original state
+            queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+            toast.error(error.message);
+          } else {
+            toast.success(t("updated"));
+          }
+        },
+      });
+      return;
+    }
 
     // Handle pinning the link
     if (targetSectionId === "pinned-links-section") {
@@ -450,7 +482,7 @@ const Section = ({
           <Droppable
             id="pinned-links-section"
             data={{
-              collectionName: "pinned-links",
+              name: "pinned-links",
             }}
           >
             {dashboardData.isLoading ||
@@ -510,9 +542,10 @@ const Section = ({
             <Droppable
               id={`dashboard-${collection.id}`}
               data={{
-                collectionId: collection.id,
-                collectionName: collection.name,
+                id: collection.id,
+                name: collection.name,
                 ownerId: collection.ownerId,
+                type: "collection",
               }}
             >
               {dashboardData.isLoading || collectionLinks?.length > 0 ? (

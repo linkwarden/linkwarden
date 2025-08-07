@@ -17,6 +17,7 @@ import { useUpdateLink } from "@linkwarden/router/links";
 import { useTranslation } from "react-i18next";
 import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
 import { customCollisionDetectionAlgorithm } from "@/lib/utils";
+import { useUpdateTag } from "@linkwarden/router/tags";
 
 interface DragNDropProps {
   children: React.ReactNode;
@@ -52,6 +53,7 @@ export default function DragNDrop({
   onDragEnd: onDragEndProp,
 }: DragNDropProps) {
   const { t } = useTranslation();
+  const updateTag = useUpdateTag();
   const updateLink = useUpdateLink();
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -89,27 +91,49 @@ export default function DragNDrop({
     const { over } = event;
     if (!over || !activeLink) return;
 
-    const collectionId = over.data.current?.collectionId as number;
-    const collectionName = over.data.current?.collectionName as string;
-    const ownerId = over.data.current?.ownerId as number;
+    let updatedLink: LinkIncludingShortenedCollectionAndTags | null = null;
 
-    // Immediately hide the drag overlay
-    setActiveLink(null);
+    // if the link is dropped over a tag
+    if (over.data.current?.type === "tag") {
+      const isTagAlreadyExists = activeLink.tags.some(
+        (tag) => tag.name === over.data.current?.name
+      );
+      if (isTagAlreadyExists) {
+        toast.error(t("tag_already_added"));
+        return;
+      }
+      // to match the tags structure required to update the link
+      const allTags: { name: string }[] = activeLink.tags.map((tag) => ({
+        name: tag.name,
+      }));
+      const newTags = [...allTags, { name: over.data.current?.name as string }];
+      updatedLink = {
+        ...activeLink,
+        tags: newTags as any,
+      };
+    } else {
+      const collectionId = over.data.current?.id as number;
+      const collectionName = over.data.current?.name as string;
+      const ownerId = over.data.current?.ownerId as number;
 
-    // if the link dropped over the same collection, toast
-    if (activeLink.collection.id === collectionId) {
-      toast.error(t("link_already_in_collection"));
-      return;
+      // Immediately hide the drag overlay
+      setActiveLink(null);
+
+      // if the link dropped over the same collection, toast
+      if (activeLink.collection.id === collectionId) {
+        toast.error(t("link_already_in_collection"));
+        return;
+      }
+
+      updatedLink = {
+        ...activeLink,
+        collection: {
+          id: collectionId,
+          name: collectionName,
+          ownerId,
+        },
+      };
     }
-
-    const updatedLink: LinkIncludingShortenedCollectionAndTags = {
-      ...activeLink,
-      collection: {
-        id: collectionId,
-        name: collectionName,
-        ownerId,
-      },
-    };
 
     const load = toast.loading(t("updating"));
     await updateLink.mutateAsync(updatedLink, {
@@ -128,7 +152,7 @@ export default function DragNDrop({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragOverCancel}
-      modifiers={[restrictToWindowEdges, snapCenterToCursor]}
+      modifiers={[snapCenterToCursor]}
       sensors={sensorProp ? sensorProp : sensors}
       collisionDetection={customCollisionDetectionAlgorithm}
     >
