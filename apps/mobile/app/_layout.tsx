@@ -4,13 +4,12 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { mmkvPersister } from "@/lib/queryPersister";
 import { useState } from "react";
 import "../styles/global.css";
-import { SheetManager, SheetProvider } from "react-native-actions-sheet";
+import { SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
 import { useColorScheme } from "nativewind";
 import { lightTheme, darkTheme } from "../lib/theme";
 import { Platform, View } from "react-native";
 import { rawTheme, ThemeName } from "@/lib/colors";
-import { StatusBar } from "expo-status-bar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +32,10 @@ export default function RootLayout() {
       persistOptions={{
         persister: mmkvPersister,
         maxAge: Infinity,
+        dehydrateOptions: {
+          shouldDehydrateMutation: () => true,
+          shouldDehydrateQuery: () => true,
+        },
       }}
       onSuccess={() => setIsLoading(false)}
     >
