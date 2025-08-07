@@ -22,7 +22,6 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { customCollisionDetectionAlgorithm } from "@/lib/utils";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
@@ -58,7 +57,6 @@ export default function PinnedLinks() {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  const queryClient = useQueryClient();
   const updateLink = useUpdateLink();
   const [activeLink, setActiveLink] =
     useState<LinkIncludingShortenedCollectionAndTags | null>(null);
@@ -106,8 +104,6 @@ export default function PinnedLinks() {
       onSettled: (_, error) => {
         toast.dismiss(load);
         if (error) {
-          // If there's an error, invalidate queries to restore the original state
-          queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
           toast.error(error.message);
         } else {
           toast.success(t("updated"));

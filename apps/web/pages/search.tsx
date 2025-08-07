@@ -22,7 +22,6 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { customCollisionDetectionAlgorithm } from "@/lib/utils";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
@@ -46,7 +45,6 @@ export default function Search() {
     useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   const updateLink = useUpdateLink();
-  const queryClient = useQueryClient();
 
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
@@ -114,8 +112,6 @@ export default function Search() {
       onSettled: (_, error) => {
         toast.dismiss(load);
         if (error) {
-          // If there's an error, invalidate queries to restore the original state
-          queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
           toast.error(error.message);
         } else {
           toast.success(t("updated"));
