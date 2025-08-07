@@ -150,11 +150,9 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     };
   }, [isVisible, link.preview]);
 
-  const selectedStyle = selectedLinks.some(
+  const isLinkSelected = selectedLinks.some(
     (selectedLink) => selectedLink.id === link.id
-  )
-    ? "border-primary bg-base-300"
-    : "border-neutral-content";
+  );
 
   const selectable =
     editMode &&
@@ -166,8 +164,8 @@ export default function LinkCard({ link, columns, editMode }: Props) {
       {...listeners}
       {...attributes}
       className={cn(
-        selectedStyle,
         "border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group",
+        isLinkSelected && "border-primary bg-base-300",
         isDragging ? "opacity-30" : "opacity-100",
         "relative group touch-manipulation select-none"
       )}
