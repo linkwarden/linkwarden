@@ -7,6 +7,7 @@ import CollectionListing from "@/components/CollectionListing";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useTags } from "@linkwarden/router/tags";
+import { TagListing } from "./TagListing";
 
 export default function Sidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
@@ -134,36 +135,8 @@ export default function Sidebar({ className }: { className?: string }) {
                 <div className="skeleton h-4 w-full"></div>
                 <div className="skeleton h-4 w-full"></div>
               </div>
-            ) : tags[0] ? (
-              tags
-                .sort((a: any, b: any) => a.name.localeCompare(b.name))
-                .map((e: any, i: any) => {
-                  return (
-                    <Link key={i} href={`/tags/${e.id}`}>
-                      <div
-                        className={`${
-                          active === `/tags/${e.id}`
-                            ? "bg-primary/20"
-                            : "hover:bg-neutral/20"
-                        } duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8`}
-                      >
-                        <i className="bi-hash text-xl text-primary drop-shadow"></i>
-                        <p className="truncate w-full pr-7">{e.name}</p>
-                        <div className="drop-shadow text-neutral text-xs">
-                          {e._count?.links}
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })
             ) : (
-              <div
-                className={`duration-100 py-1 px-2 flex items-center gap-2 w-full rounded-md h-8 capitalize`}
-              >
-                <p className="text-neutral text-xs font-semibold truncate w-full pr-7">
-                  {t("you_have_no_tags")}
-                </p>
-              </div>
+              <TagListing tags={tags} active={active} />
             )}
           </Disclosure.Panel>
         </Transition>
