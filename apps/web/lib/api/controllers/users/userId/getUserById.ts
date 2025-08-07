@@ -64,7 +64,5 @@ export default async function getUserById(userId: number) {
     },
   };
 
-  console.log("User data fetched successfully:", user.dashboardSections);
-
   return { response: data, status: 200 };
 }
