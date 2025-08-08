@@ -54,20 +54,11 @@ export default function RootLayout() {
                 >
                   <DropdownMenu.ItemTitle>New Link</DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  key="new-collection"
-                  onSelect={() => alert("Item 2 selected")}
-                >
+                <DropdownMenu.Item key="more-options" disabled>
                   <DropdownMenu.ItemTitle>
-                    New Collection
+                    More Coming Soon!
                   </DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
-                {/* <DropdownMenu.Item
-                key="upload-file"
-                onSelect={() => alert("Item 3 selected")}
-              >
-                <DropdownMenu.ItemTitle>Upload File</DropdownMenu.ItemTitle>
-              </DropdownMenu.Item> */}
               </DropdownMenu.Content>
             </DropdownMenu.Root>
           ),
