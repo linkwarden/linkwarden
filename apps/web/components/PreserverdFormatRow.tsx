@@ -13,6 +13,7 @@ type Props = {
   format: ArchivedFormat;
   link: LinkIncludingShortenedCollectionAndTags;
   downloadable?: boolean;
+  replaceable?: boolean;
 };
 
 export default function PreservedFormatRow({
@@ -21,6 +22,7 @@ export default function PreservedFormatRow({
   format,
   link,
   downloadable,
+  replaceable,
 }: Props) {
   const router = useRouter();
 
@@ -63,13 +65,21 @@ export default function PreservedFormatRow({
           </Button>
         ) : undefined}
 
-        {!isPublic && format === ArchivedFormat.monolith ? (
+        {!isPublic && replaceable ? (
           <Button asChild variant="ghost" size="icon">
             <label className="cursor-pointer">
               <i className="bi-cloud-arrow-up text-xl text-neutral" />
               <input
                 type="file"
-                accept="text/html,.html"
+                accept={
+                  format === ArchivedFormat.monolith
+                    ? "text/html,.html"
+                    : format === ArchivedFormat.pdf
+                    ? "application/pdf,.pdf"
+                    : format === ArchivedFormat.png || format === ArchivedFormat.jpeg
+                    ? "image/png,image/jpeg,.png,.jpg,.jpeg"
+                    : undefined
+                }
                 className="hidden"
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
@@ -86,12 +96,12 @@ export default function PreservedFormatRow({
                   );
 
                   if (res.ok) {
-                    toast.success("Replaced webpage HTML");
+                    toast.success("Replaced file");
                     // refresh page data
                     router.replace(router.asPath);
                   } else {
                     const data = await res.json().catch(() => ({}));
-                    toast.error(data?.response || "Failed to replace HTML");
+                    toast.error(data?.response || "Failed to replace file");
                   }
                 }}
               />
