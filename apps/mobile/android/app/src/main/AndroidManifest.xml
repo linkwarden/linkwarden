@@ -24,14 +24,9 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="linkwarden"/>
+        <data android:scheme="myapp"/>
         <data android:scheme="com.anonymous.mobileapp"/>
         <data android:scheme="exp+mobile-app"/>
-      </intent-filter>
-      <intent-filter>
-        <action android:name="android.intent.action.SEND"/>
-        <data android:mimeType="text/*"/>
-        <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
   </application>

@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { mmkvPersister } from "@/lib/queryPersister";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../styles/global.css";
 import { SheetProvider } from "react-native-actions-sheet";
 import "@/components/ActionSheets/Sheets";
@@ -10,7 +10,6 @@ import { useColorScheme } from "nativewind";
 import { lightTheme, darkTheme } from "../lib/theme";
 import { Platform, View } from "react-native";
 import { rawTheme, ThemeName } from "@/lib/colors";
-import { useShareIntent } from "expo-share-intent";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,15 +25,6 @@ const queryClient = new QueryClient({
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const { colorScheme } = useColorScheme();
-  const { hasShareIntent, shareIntent, resetShareIntent, error } =
-    useShareIntent();
-
-  useEffect(() => {
-    if (hasShareIntent) {
-      console.log("Received share intent:", shareIntent);
-      resetShareIntent();
-    }
-  }, [hasShareIntent, shareIntent]);
 
   return (
     <PersistQueryClientProvider

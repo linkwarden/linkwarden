@@ -20,7 +20,7 @@
     "prisma:generate": "yarn workspace @linkwarden/prisma generate",
     "prisma:studio": "yarn workspace @linkwarden/prisma studio",
     "format": "yarn workspaces run format",
-    "postinstall": "yarn workspace @linkwarden/web run postinstall && patch-package"
+    "postinstall": "yarn workspace @linkwarden/web run postinstall"
   },
   "resolutions": {
     "@types/react": "18.3.20",
@@ -30,7 +30,6 @@
     "dotenv-cli": "^8.0.0"
   },
   "dependencies": {
-    "concurrently": "^9.1.2",
-    "patch-package": "^8.0.0"
+    "concurrently": "^9.1.2"
   }
 }

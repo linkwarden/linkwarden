@@ -9,8 +9,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "expo lint",
-    "postinstall": "patch-package"
+    "lint": "expo lint"
   },
   "jest": {
     "preset": "jest-expo"
@@ -37,10 +36,9 @@
     "expo-file-system": "~18.0.12",
     "expo-font": "~13.0.1",
     "expo-haptics": "~14.0.0",
-    "expo-linking": "~7.0.5",
+    "expo-linking": "~7.0.3",
     "expo-router": "4.0.20",
     "expo-secure-store": "~14.0.0",
-    "expo-share-intent": "^3.2.3",
     "expo-splash-screen": "~0.29.18",
     "expo-status-bar": "~2.0.0",
     "expo-symbols": "~0.2.0",
@@ -49,7 +47,6 @@
     "html-entities": "^2.6.0",
     "lucide-react-native": "^0.536.0",
     "nativewind": "^4.1.23",
-    "patch-package": "^8.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.9",
