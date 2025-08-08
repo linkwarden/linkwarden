@@ -249,8 +249,6 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const isImage = mimetype?.includes("image");
       const isHTML = mimetype === "text/html";
 
-      console.log("isPDF", isPDF);
-
       if (isImage) {
         const collectionId = collectionPermissions.id;
         createFolder({ filePath: `archives/preview/${collectionId}` });
@@ -277,9 +275,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
           pdf: isPDF
             ? `archives/${collectionPermissions.id}/${linkId + suffix}`
             : undefined,
-          monolith: isHTML && !isPreview
-            ? `archives/${collectionPermissions.id}/${linkId + suffix}`
-            : undefined,
+          monolith:
+            isHTML && !isPreview
+              ? `archives/${collectionPermissions.id}/${linkId + suffix}`
+              : undefined,
           updatedAt: new Date().toISOString(),
         },
       });

@@ -44,7 +44,7 @@ type Props = {
   standalone?: boolean;
   mode?: "view" | "edit";
   setMode?: Function;
-  onUpdateArchive?: Function;
+  onUpdateArchive?: () => void;
 };
 
 export default function LinkDetails({
@@ -499,7 +499,7 @@ export default function LinkDetails({
                             variant="ghost"
                             size="sm"
                             className="text-neutral"
-                            onClick={() => onUpdateArchive()}
+                            onClick={onUpdateArchive}
                           >
                             <i className="bi-arrow-clockwise text-sm" />
                           </Button>
@@ -521,7 +521,10 @@ export default function LinkDetails({
                       format={ArchivedFormat.monolith}
                       link={link}
                       downloadable={true}
-                      replaceable={!isPublicRoute && (permissions === true || permissions?.canUpdate)}
+                      replaceable={
+                        !isPublicRoute &&
+                        (permissions === true || permissions?.canUpdate)
+                      }
                     />
                     <Separator className="my-3" />
                   </>
@@ -539,7 +542,10 @@ export default function LinkDetails({
                       }
                       link={link}
                       downloadable={true}
-                      replaceable={!isPublicRoute && (permissions === true || permissions?.canUpdate)}
+                      replaceable={
+                        !isPublicRoute &&
+                        (permissions === true || permissions?.canUpdate)
+                      }
                     />
                     <Separator className="my-3" />
                   </>
@@ -553,7 +559,10 @@ export default function LinkDetails({
                       format={ArchivedFormat.pdf}
                       link={link}
                       downloadable={true}
-                      replaceable={!isPublicRoute && (permissions === true || permissions?.canUpdate)}
+                      replaceable={
+                        !isPublicRoute &&
+                        (permissions === true || permissions?.canUpdate)
+                      }
                     />
                     <Separator className="my-3" />
                   </>
