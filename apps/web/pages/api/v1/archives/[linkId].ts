@@ -227,6 +227,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         "image/png",
         "image/jpg",
         "image/jpeg",
+        "text/html",
       ];
       const fileBuffer = validateFile(
         files.file[0],
@@ -246,6 +247,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const { mimetype } = files.file[0];
       const isPDF = mimetype?.includes("pdf");
       const isImage = mimetype?.includes("image");
+      const isHTML = mimetype === "text/html";
 
       console.log("isPDF", isPDF);
 
@@ -273,6 +275,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
               ? `archives/${collectionPermissions.id}/${linkId + suffix}`
               : undefined,
           pdf: isPDF
+            ? `archives/${collectionPermissions.id}/${linkId + suffix}`
+            : undefined,
+          monolith: isHTML && !isPreview
             ? `archives/${collectionPermissions.id}/${linkId + suffix}`
             : undefined,
           updatedAt: new Date().toISOString(),

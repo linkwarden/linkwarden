@@ -5,6 +5,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 type Props = {
   name: string;
@@ -59,6 +60,42 @@ export default function PreservedFormatRow({
         {downloadable || false ? (
           <Button variant="ghost" size="icon" onClick={handleDownload}>
             <i className="bi-cloud-arrow-down text-xl text-neutral" />
+          </Button>
+        ) : undefined}
+
+        {!isPublic && format === ArchivedFormat.monolith ? (
+          <Button asChild variant="ghost" size="icon">
+            <label className="cursor-pointer">
+              <i className="bi-cloud-arrow-up text-xl text-neutral" />
+              <input
+                type="file"
+                accept="text/html,.html"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const formBody = new FormData();
+                  formBody.append("file", file);
+
+                  const res = await fetch(
+                    `/api/v1/archives/${link?.id}?format=${format}`,
+                    {
+                      method: "POST",
+                      body: formBody,
+                    }
+                  );
+
+                  if (res.ok) {
+                    toast.success("Replaced webpage HTML");
+                    // refresh page data
+                    router.replace(router.asPath);
+                  } else {
+                    const data = await res.json().catch(() => ({}));
+                    toast.error(data?.response || "Failed to replace HTML");
+                  }
+                }}
+              />
+            </label>
           </Button>
         ) : undefined}
 
