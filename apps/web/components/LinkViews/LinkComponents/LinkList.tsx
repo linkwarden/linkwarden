@@ -115,8 +115,6 @@ export default function LinkCardCompact({ link, editMode }: Props) {
     <>
       <div
         ref={setNodeRef}
-        {...attributes}
-        {...listeners}
         className={cn(
           "rounded-md border relative group items-center flex",
           selectedStyle,
@@ -137,6 +135,8 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          {...attributes}
+          {...listeners}
         >
           {show.icon && (
             <div className="shrink-0">

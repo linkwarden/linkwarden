@@ -168,8 +168,6 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
   return (
     <div
       ref={setNodeRef}
-      {...listeners}
-      {...attributes}
       className={cn(
         "border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group",
         isLinkSelected && "border-primary bg-base-300"
@@ -188,6 +186,8 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          {...listeners}
+          {...attributes}
         >
           {show.image && formatAvailable(link, "preview") && (
             <div>
