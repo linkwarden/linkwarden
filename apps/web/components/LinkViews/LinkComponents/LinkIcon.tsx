@@ -45,7 +45,7 @@ export default function LinkIcon({
       ) : link.type === "url" && url ? (
         <>
           <Image
-            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=32`}
+            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=64`}
             width={64}
             height={64}
             alt=""
