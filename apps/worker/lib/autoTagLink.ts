@@ -10,6 +10,7 @@ import {
   createOpenAICompatible,
   OpenAICompatibleProviderSettings,
 } from "@ai-sdk/openai-compatible";
+import { perplexity } from "@ai-sdk/perplexity";
 import { azure } from "@ai-sdk/azure";
 import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
@@ -60,6 +61,9 @@ const getAIModel = (): LanguageModelV1 => {
     });
 
     return openrouter(process.env.OPENROUTER_MODEL) as LanguageModelV1;
+  }
+  if (process.env.PERPLEXITY_API_KEY) {
+    return perplexity(process.env.PERPLEXITY_MODEL || "sonar-pro");
   }
   throw new Error("No AI provider configured");
 };
