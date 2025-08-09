@@ -208,6 +208,7 @@
   "password_successfully_updated": "您的密碼已成功更新。",
   "user_already_member": "使用者已存在。",
   "you_are_already_collection_owner": "您已是此收藏集的擁有者。",
+  "link_already_in_collection": "This link is already in this collection.",
   "date_newest_first": "日期（新到舊）",
   "date_oldest_first": "日期（舊到新）",
   "name_az": "名稱（A-Z）",
@@ -491,5 +492,6 @@
   "save": "Save",
   "edit_layout": "Edit Layout",
   "refresh_multiple_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve {{count}} links.",
-  "refresh_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve this link."
+  "refresh_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve this link.",
+  "tag_already_added": "This tag is already added."
 }

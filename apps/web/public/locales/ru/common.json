@@ -208,6 +208,7 @@
   "password_successfully_updated": "Ваш пароль успешно обновлен.",
   "user_already_member": "Пользователь уже существует.",
   "you_are_already_collection_owner": "Вы уже являетесь владельцем коллекции.",
+  "link_already_in_collection": "This link is already in this collection.",
   "date_newest_first": "Дата (сначала новые)",
   "date_oldest_first": "Дата (сначала старые)",
   "name_az": "Название (А-Я)",
@@ -491,5 +492,6 @@
   "save": "Сохранить",
   "edit_layout": "Редактировать макет",
   "refresh_multiple_preserved_formats_confirmation_desc": "Это приведет к удалению сохраненных форматов и восстановлению ссылок (кол-во: {{count}}).",
-  "refresh_preserved_formats_confirmation_desc": "Это приведет к удалению сохраненных форматов и сохранению ссылки повторно."
+  "refresh_preserved_formats_confirmation_desc": "Это приведет к удалению сохраненных форматов и сохранению ссылки повторно.",
+  "tag_already_added": "This tag is already added."
 }

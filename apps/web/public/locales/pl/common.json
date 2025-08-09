@@ -208,6 +208,7 @@
   "password_successfully_updated": "Twoje hasło zostało pomyślnie zaktualizowane.",
   "user_already_member": "Użytkownik już istnieje.",
   "you_are_already_collection_owner": "Jesteś już właścicielem kolekcji.",
+  "link_already_in_collection": "This link is already in this collection.",
   "date_newest_first": "Data (od najnowszych)",
   "date_oldest_first": "Data (od najstarszych)",
   "name_az": "Nazwa (A-Z)",
@@ -491,5 +492,6 @@
   "save": "Save",
   "edit_layout": "Edit Layout",
   "refresh_multiple_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve {{count}} links.",
-  "refresh_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve this link."
+  "refresh_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve this link.",
+  "tag_already_added": "This tag is already added."
 }
