@@ -60,7 +60,7 @@ export default function DashboardScreen() {
 
   useEffect(() => {
     setNumberOfLinks(
-      collections.reduce(
+      collections?.reduce?.(
         (accumulator, collection) =>
           accumulator + (collection._count as any).links,
         0
