@@ -59,9 +59,14 @@ const useUpdateDashboardLayout = () => {
       const previousData = queryClient.getQueryData(["user"]);
 
       queryClient.setQueryData(["user"], (oldData: any) => {
+        // Filter enabled sections and preserve their order
+        const enabledSections = newData
+          .filter((section) => section.enabled)
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
         return {
           ...oldData,
-          dashboardSections: newData.filter((section) => section.enabled),
+          dashboardSections: enabledSections,
         };
       });
 

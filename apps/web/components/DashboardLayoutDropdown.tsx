@@ -1,4 +1,4 @@
-import React, { useState, useMemo, DragEvent, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,6 +14,22 @@ import {
 } from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
 import { useUpdateDashboardLayout } from "@linkwarden/router/dashboardData";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  DndContext,
+  DragEndEvent,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
+import { cn } from "@linkwarden/lib";
 
 interface DashboardSectionOption {
   type: DashboardSectionType;
@@ -29,11 +45,20 @@ export default function DashboardLayoutDropdown() {
   const { data: collections = [] } = useCollections();
   const updateDashboardLayout = useUpdateDashboardLayout();
   const [searchTerm, setSearchTerm] = useState("");
-  const [draggedId, setDraggedId] = useState<string | null>(null);
-  const [dragOverId, setDragOverId] = useState<string | null>(null);
-  const [dragOverPosition, setDragOverPosition] = useState<
-    "above" | "below" | null
-  >(null);
+  const mouseSensor = useSensor(MouseSensor, {
+    // Require the mouse to move by 10 pixels before activating
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+  const touchSensor = useSensor(TouchSensor, {
+    // Press delay of 200ms, with tolerance of 5px of movement
+    activationConstraint: {
+      delay: 200,
+      tolerance: 5,
+    },
+  });
+  const sensors = useSensors(mouseSensor, touchSensor);
 
   const [dashboardSections, setDashboardSections] = useState<
     DashboardSection[]
@@ -165,24 +190,61 @@ export default function DashboardLayoutDropdown() {
 
   const handleReorder = (sourceId: string, destId: string) => {
     if (sourceId === destId) return;
-    const sourceIndex = filteredSections.findIndex(
+
+    // Get only enabled sections for reordering
+    const enabledSections = filteredSections.filter((s) => s.enabled);
+
+    const sourceIndex = enabledSections.findIndex(
       (s) => getSectionId(s) === sourceId
     );
-    const destIndex = filteredSections.findIndex(
+    const destIndex = enabledSections.findIndex(
       (s) => getSectionId(s) === destId
     );
     if (sourceIndex < 0 || destIndex < 0) return;
 
-    const reordered = [...filteredSections];
-    const [moved] = reordered.splice(sourceIndex, 1);
-    reordered.splice(destIndex, 0, moved);
+    // Reorder only the enabled sections
+    const reorderedEnabled = [...enabledSections];
+    const [moved] = reorderedEnabled.splice(sourceIndex, 1);
+    reorderedEnabled.splice(destIndex, 0, moved);
 
-    const updated = reordered.map((section, idx) =>
-      section.enabled ? { ...section, order: idx } : section
-    );
+    // Assign new order values based on the reordered enabled sections
+    const reorderedWithNewOrders = reorderedEnabled.map((section, idx) => ({
+      ...section,
+      order: idx,
+    }));
+
+    // Get disabled sections and combine with reordered enabled sections
+    const disabledSections = filteredSections.filter((s) => !s.enabled);
+    const updated = [...reorderedWithNewOrders, ...disabledSections];
 
     updateDashboardLayout.mutateAsync(updated);
   };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const sourceId = active.id as string;
+    const destId = over.id as string;
+
+    // Only allow reordering enabled sections
+    const sourceSection = filteredSections.find(
+      (s) => getSectionId(s) === sourceId
+    );
+    const destSection = filteredSections.find(
+      (s) => getSectionId(s) === destId
+    );
+    if (sourceSection?.enabled && destSection?.enabled) {
+      handleReorder(sourceId, destId);
+    }
+  };
+
+  // Only include enabled sections in the sortable context
+  const sortableItems = filteredSections
+    .filter((section) => section.enabled)
+    .map(getSectionId);
 
   return (
     <DropdownMenu modal>
@@ -210,37 +272,40 @@ export default function DashboardLayoutDropdown() {
               placeholder={t("search")}
             />
           </div>
+          <DndContext
+            modifiers={[restrictToParentElement]}
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
+          >
+            <SortableContext
+              items={sortableItems}
+              strategy={verticalListSortingStrategy}
+            >
+              <ul className="max-h-60 overflow-y-auto px-2 pb-2">
+                {filteredSections.map((section) => {
+                  const color =
+                    section.type === "COLLECTION"
+                      ? collections.find((c) => c.id === section.collectionId)
+                          ?.color
+                      : undefined;
 
-          <ul className="max-h-60 overflow-y-auto px-2 pb-2">
-            {filteredSections.map((section) => {
-              const color =
-                section.type === "COLLECTION"
-                  ? collections.find((c) => c.id === section.collectionId)
-                      ?.color
-                  : undefined;
+                  return (
+                    <DraggableListItem
+                      key={getSectionId(section)}
+                      section={{ ...section, color }}
+                      onCheckboxChange={handleCheckboxChange}
+                    />
+                  );
+                })}
 
-              return (
-                <DraggableListItem
-                  key={getSectionId(section)}
-                  section={{ ...section, color }}
-                  onCheckboxChange={handleCheckboxChange}
-                  onReorder={handleReorder}
-                  draggedId={draggedId}
-                  dragOverId={dragOverId}
-                  dragOverPosition={dragOverPosition}
-                  setDraggedId={setDraggedId}
-                  setDragOverId={setDragOverId}
-                  setDragOverPosition={setDragOverPosition}
-                />
-              );
-            })}
-
-            {filteredSections.length === 0 && (
-              <li className="text-sm py-2 text-center text-neutral">
-                {t("no_results_found")}
-              </li>
-            )}
-          </ul>
+                {filteredSections.length === 0 && (
+                  <li className="text-sm py-2 text-center text-neutral">
+                    {t("no_results_found")}
+                  </li>
+                )}
+              </ul>
+            </SortableContext>
+          </DndContext>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -250,91 +315,44 @@ export default function DashboardLayoutDropdown() {
 interface DraggableListItemProps {
   section: DashboardSectionOption & { color?: string };
   onCheckboxChange: (section: DashboardSectionOption) => void;
-  onReorder: (sourceId: string, destId: string) => void;
-  draggedId: string | null;
-  dragOverId: string | null;
-  dragOverPosition: "above" | "below" | null;
-  setDraggedId: (id: string | null) => void;
-  setDragOverId: (id: string | null) => void;
-  setDragOverPosition: (pos: "above" | "below" | null) => void;
 }
 
 function DraggableListItem({
   section,
   onCheckboxChange,
-  onReorder,
-  draggedId,
-  dragOverId,
-  dragOverPosition,
-  setDraggedId,
-  setDragOverId,
-  setDragOverPosition,
 }: DraggableListItemProps) {
   const sectionId = `${section.type}-${section.collectionId ?? "default"}`;
 
-  const handleDragStart = (e: DragEvent<HTMLLIElement>) => {
-    const img = new Image();
-    img.src =
-      "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'></svg>";
-    e.dataTransfer.setDragImage(img, 0, 0);
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: sectionId,
+    disabled: !section.enabled,
+  });
 
-    e.dataTransfer.setData("text/plain", sectionId);
-    setDraggedId(sectionId);
-    e.dataTransfer.effectAllowed = "move";
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
   };
-
-  const handleDragOver = (e: DragEvent<HTMLLIElement>) => {
-    e.preventDefault();
-    const rect = e.currentTarget.getBoundingClientRect();
-    const midY = rect.top + rect.height / 2;
-    const pos = e.clientY < midY ? "above" : "below";
-    setDragOverPosition(pos);
-    setDragOverId(sectionId);
-    e.dataTransfer.dropEffect = "move";
-  };
-
-  const handleDragLeave = () => {
-    setDragOverId(null);
-    setDragOverPosition(null);
-  };
-
-  const handleDrop = (e: DragEvent<HTMLLIElement>) => {
-    e.preventDefault();
-    const sourceId = e.dataTransfer.getData("text/plain");
-    if (sourceId) {
-      const destId = dragOverPosition === "below" ? sectionId : sectionId;
-      onReorder(sourceId, destId);
-    }
-    setDraggedId(null);
-    setDragOverId(null);
-    setDragOverPosition(null);
-  };
-
-  const indicatorClass =
-    dragOverId === sectionId && dragOverPosition === "above"
-      ? "border-t-2 border-primary"
-      : dragOverId === sectionId && dragOverPosition === "below"
-        ? "border-b-2 border-primary"
-        : "";
 
   return (
     <li
-      draggable={section.enabled}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      onDragEnd={() => {
-        setDraggedId(null);
-        setDragOverId(null);
-        setDragOverPosition(null);
-      }}
-      className={`
-        select-none py-1 px-1 flex items-center justify-between
-        ${section.enabled ? "cursor-grab active:cursor-grabbing" : ""}
-        ${draggedId === sectionId ? "opacity-70" : ""}
-        ${indicatorClass}
-      `}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={cn(
+        "select-none py-1 px-1 flex items-center justify-between",
+        section.enabled
+          ? "cursor-grab active:cursor-grabbing"
+          : "cursor-default",
+        isDragging && "opacity-50"
+      )}
     >
       <div className="flex items-center gap-2">
         <input
