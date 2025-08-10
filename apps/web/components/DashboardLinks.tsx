@@ -144,8 +144,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
         isDragging ? "opacity-30" : "opacity-100",
         "relative group touch-manipulation select-none"
       )}
-      {...listeners}
-      {...attributes}
     >
       <div
         ref={ref}
@@ -156,6 +154,8 @@ export function Card({ link, editMode, dashboardType }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          {...listeners}
+          {...attributes}
         >
           {show.image && (
             <div>
