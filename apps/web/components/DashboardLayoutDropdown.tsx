@@ -190,21 +190,32 @@ export default function DashboardLayoutDropdown() {
 
   const handleReorder = (sourceId: string, destId: string) => {
     if (sourceId === destId) return;
-    const sourceIndex = filteredSections.findIndex(
+
+    // Get only enabled sections for reordering
+    const enabledSections = filteredSections.filter((s) => s.enabled);
+
+    const sourceIndex = enabledSections.findIndex(
       (s) => getSectionId(s) === sourceId
     );
-    const destIndex = filteredSections.findIndex(
+    const destIndex = enabledSections.findIndex(
       (s) => getSectionId(s) === destId
     );
     if (sourceIndex < 0 || destIndex < 0) return;
 
-    const reordered = [...filteredSections];
-    const [moved] = reordered.splice(sourceIndex, 1);
-    reordered.splice(destIndex, 0, moved);
+    // Reorder only the enabled sections
+    const reorderedEnabled = [...enabledSections];
+    const [moved] = reorderedEnabled.splice(sourceIndex, 1);
+    reorderedEnabled.splice(destIndex, 0, moved);
 
-    const updated = reordered.map((section, idx) =>
-      section.enabled ? { ...section, order: idx } : section
-    );
+    // Assign new order values based on the reordered enabled sections
+    const reorderedWithNewOrders = reorderedEnabled.map((section, idx) => ({
+      ...section,
+      order: idx,
+    }));
+
+    // Get disabled sections and combine with reordered enabled sections
+    const disabledSections = filteredSections.filter((s) => !s.enabled);
+    const updated = [...reorderedWithNewOrders, ...disabledSections];
 
     updateDashboardLayout.mutateAsync(updated);
   };
