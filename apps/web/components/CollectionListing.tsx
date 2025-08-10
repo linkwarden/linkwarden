@@ -24,12 +24,14 @@ import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import Droppable from "./Droppable";
 import { cn } from "@linkwarden/lib";
+import { Active, useDndContext } from "@dnd-kit/core";
 
 interface ExtendedTreeItem extends TreeItem {
   data: Collection;
 }
 
 const CollectionListing = () => {
+  const { active: droppableActive } = useDndContext();
   const { t } = useTranslation();
   const updateCollection = useUpdateCollection();
   const { data: collections = [], isLoading } = useCollections();
@@ -278,7 +280,9 @@ const CollectionListing = () => {
     return (
       <Tree
         tree={tree}
-        renderItem={(itemProps) => renderItem({ ...itemProps }, currentPath)}
+        renderItem={(itemProps) =>
+          renderItem({ ...itemProps }, currentPath, droppableActive)
+        }
         onExpand={onExpand}
         onCollapse={onCollapse}
         onDragEnd={onDragEnd}
@@ -292,7 +296,8 @@ export default CollectionListing;
 
 const renderItem = (
   { item, onExpand, onCollapse, provided }: RenderItemParams,
-  currentPath: string
+  currentPath: string,
+  droppableActive: Active | null
 ) => {
   const collection = item.data;
 
@@ -315,7 +320,9 @@ const renderItem = (
           className={cn(
             currentPath === `/collections/${collection.id}`
               ? "bg-primary/20 is-active"
-              : "group-[&:not([data-over])]:hover:bg-neutral/20",
+              : droppableActive
+                ? "select-none"
+                : "hover:bg-neutral/20",
             "duration-100 flex gap-1 items-center pr-2 pl-1 rounded-md"
           )}
         >

@@ -28,17 +28,15 @@ const Droppable = ({
     data,
   });
 
-  const extraProps = isOver ? { "data-over": "" } : {};
   return (
     <div
       ref={setNodeRef}
       className={cn(
         isOver &&
           "bg-primary/10 outline-2 outline-dashed outline-primary rounded-lg",
-        "transition-colors duration-200",
         className
       )}
-      {...extraProps}
+      data-over={isOver ? "true" : undefined}
       style={{
         position: "relative",
         zIndex: isOver ? 1 : "auto",
