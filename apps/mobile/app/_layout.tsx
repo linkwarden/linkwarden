@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 60 * 24, // never refetch for 24h
-      refetchOnMount: false,
+      refetchOnMount: true,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     },
@@ -37,7 +37,10 @@ export default function RootLayout() {
           shouldDehydrateQuery: () => true,
         },
       }}
-      onSuccess={() => setIsLoading(false)}
+      onSuccess={() => {
+        setIsLoading(false);
+        queryClient.invalidateQueries();
+      }}
     >
       <View
         style={[{ flex: 1 }, colorScheme === "dark" ? darkTheme : lightTheme]}
