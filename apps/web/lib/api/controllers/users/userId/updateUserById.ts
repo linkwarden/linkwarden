@@ -101,7 +101,11 @@ export default async function updateUserById(
     where: { id: userId },
   });
 
-  if (user && user.email && data.email && data.email !== user.email) {
+  if (
+    (user && user.email && data.email && data.email !== user.email) ||
+    // setting up email for the first time
+    (user && !user.email && data.email)
+  ) {
     if (!data.password) {
       return {
         response: "Invalid password.",
@@ -127,11 +131,12 @@ export default async function updateUserById(
       };
     }
 
-    sendChangeEmailVerificationRequest(
-      user.email,
-      data.email,
-      data.name?.trim() || user.name || "Linkwarden User"
-    );
+    sendChangeEmailVerificationRequest({
+      oldEmail: user.email,
+      newEmail: data.email,
+      username: user.username,
+      user: data.name?.trim() || user.name || "Linkwarden User",
+    });
   }
 
   // Password Settings
