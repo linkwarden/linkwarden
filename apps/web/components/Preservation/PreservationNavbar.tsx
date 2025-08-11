@@ -25,6 +25,7 @@ import ToggleDarkMode from "../ToggleDarkMode";
 import TextStyleDropdown from "../TextStyleDropdown";
 import HighlightDrawer from "../HighlightDrawer";
 import toast from "react-hot-toast";
+import usePermissions from "@/hooks/usePermissions";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -35,6 +36,7 @@ type Props = {
 
 const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
   const { data: collections = [] } = useCollections();
+  const permissions = usePermissions(link.collection.id as number);
 
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
@@ -105,6 +107,10 @@ const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
       });
   };
 
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+  const canUploadAsset =
+    (permissions === true || permissions?.canUpdate) && !isPublicRoute;
+
   return (
     <>
       <div
@@ -123,31 +129,33 @@ const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
           {format === ArchivedFormat.readability ? (
             <TextStyleDropdown />
           ) : (
-            <div>
+            <>
               <Button variant="ghost" size="icon" onClick={handleDownload}>
                 <i className="bi-cloud-arrow-down text-xl text-neutral" />
               </Button>
-              <Button asChild variant="ghost" size="icon">
-                <label className="cursor-pointer">
-                  <i className="bi-cloud-arrow-up text-xl text-neutral" />
-                  <input
-                    type="file"
-                    accept={
-                      format === ArchivedFormat.monolith
-                        ? "text/html,.html"
-                        : format === ArchivedFormat.pdf
-                          ? "application/pdf,.pdf"
-                          : format === ArchivedFormat.png ||
-                              format === ArchivedFormat.jpeg
-                            ? "image/png,image/jpeg,.png,.jpg,.jpeg"
-                            : undefined
-                    }
-                    className="hidden"
-                    onChange={handleFileUpload}
-                  />
-                </label>
-              </Button>
-            </div>
+              {canUploadAsset && (
+                <Button asChild variant="ghost" size="icon">
+                  <label className="cursor-pointer">
+                    <i className="bi-cloud-arrow-up text-xl text-neutral" />
+                    <input
+                      type="file"
+                      accept={
+                        format === ArchivedFormat.monolith
+                          ? "text/html,.html"
+                          : format === ArchivedFormat.pdf
+                            ? "application/pdf,.pdf"
+                            : format === ArchivedFormat.png ||
+                                format === ArchivedFormat.jpeg
+                              ? "image/png,image/jpeg,.png,.jpg,.jpeg"
+                              : undefined
+                      }
+                      className="hidden"
+                      onChange={handleFileUpload}
+                    />
+                  </label>
+                </Button>
+              )}
+            </>
           )}
           {format === ArchivedFormat.readability && (
             <Button
