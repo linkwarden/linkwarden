@@ -227,7 +227,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         "image/png",
         "image/jpg",
         "image/jpeg",
+        "text/html",
       ];
+
       const fileBuffer = validateFile(
         files.file[0],
         NEXT_PUBLIC_MAX_FILE_BUFFER,
@@ -246,8 +248,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const { mimetype } = files.file[0];
       const isPDF = mimetype?.includes("pdf");
       const isImage = mimetype?.includes("image");
-
-      console.log("isPDF", isPDF);
+      const isHTML = mimetype === "text/html";
 
       if (isImage) {
         const collectionId = collectionPermissions.id;
@@ -275,6 +276,11 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
           pdf: isPDF
             ? `archives/${collectionPermissions.id}/${linkId + suffix}`
             : undefined,
+          monolith:
+            isHTML && !isPreview
+              ? `archives/${collectionPermissions.id}/${linkId + suffix}`
+              : undefined,
+          clientSide: true,
           updatedAt: new Date().toISOString(),
         },
       });
