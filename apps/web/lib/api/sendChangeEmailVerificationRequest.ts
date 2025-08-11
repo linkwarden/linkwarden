@@ -28,10 +28,9 @@ export default async function sendChangeEmailVerificationRequest({
       },
     });
     await prisma.user.update({
-      where: {
-        email: oldEmail?.toLowerCase(),
-        username: username ? username.toLowerCase() : undefined,
-      },
+      where: oldEmail
+        ? { email: oldEmail.toLowerCase() }
+        : { username: username!.toLowerCase() },
       data: {
         unverifiedNewEmail: newEmail?.toLowerCase(),
       },
