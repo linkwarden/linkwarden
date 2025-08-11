@@ -74,11 +74,11 @@ const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
       } else {
         const data = await res.json().catch(() => ({}));
         console.error("Failed to replace file:", data);
-        toast.error("Failed to replace file");
+        toast.error(t("failed_to_replace_file"));
       }
     } catch (error) {
       console.error("Failed to replace file:", error);
-      toast.error("Failed to replace file");
+      toast.error("failed_to_replace_file");
     }
   };
 
