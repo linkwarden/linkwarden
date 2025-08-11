@@ -521,10 +521,6 @@ export default function LinkDetails({
                       format={ArchivedFormat.monolith}
                       link={link}
                       downloadable={true}
-                      replaceable={
-                        !isPublicRoute &&
-                        (permissions === true || permissions?.canUpdate)
-                      }
                     />
                     <Separator className="my-3" />
                   </>
@@ -542,10 +538,6 @@ export default function LinkDetails({
                       }
                       link={link}
                       downloadable={true}
-                      replaceable={
-                        !isPublicRoute &&
-                        (permissions === true || permissions?.canUpdate)
-                      }
                     />
                     <Separator className="my-3" />
                   </>
@@ -559,10 +551,6 @@ export default function LinkDetails({
                       format={ArchivedFormat.pdf}
                       link={link}
                       downloadable={true}
-                      replaceable={
-                        !isPublicRoute &&
-                        (permissions === true || permissions?.canUpdate)
-                      }
                     />
                     <Separator className="my-3" />
                   </>

@@ -5,7 +5,6 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
 
 type Props = {
   name: string;
@@ -13,7 +12,6 @@ type Props = {
   format: ArchivedFormat;
   link: LinkIncludingShortenedCollectionAndTags;
   downloadable?: boolean;
-  replaceable?: boolean;
 };
 
 export default function PreservedFormatRow({
@@ -22,7 +20,6 @@ export default function PreservedFormatRow({
   format,
   link,
   downloadable,
-  replaceable,
 }: Props) {
   const router = useRouter();
 
@@ -64,51 +61,6 @@ export default function PreservedFormatRow({
             <i className="bi-cloud-arrow-down text-xl text-neutral" />
           </Button>
         ) : undefined}
-
-        {!isPublic && replaceable ? (
-          <Button asChild variant="ghost" size="icon">
-            <label className="cursor-pointer">
-              <i className="bi-cloud-arrow-up text-xl text-neutral" />
-              <input
-                type="file"
-                accept={
-                  format === ArchivedFormat.monolith
-                    ? "text/html,.html"
-                    : format === ArchivedFormat.pdf
-                    ? "application/pdf,.pdf"
-                    : format === ArchivedFormat.png || format === ArchivedFormat.jpeg
-                    ? "image/png,image/jpeg,.png,.jpg,.jpeg"
-                    : undefined
-                }
-                className="hidden"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  const formBody = new FormData();
-                  formBody.append("file", file);
-
-                  const res = await fetch(
-                    `/api/v1/archives/${link?.id}?format=${format}`,
-                    {
-                      method: "POST",
-                      body: formBody,
-                    }
-                  );
-
-                  if (res.ok) {
-                    toast.success("Replaced file");
-                    // refresh page data
-                    router.replace(router.asPath);
-                  } else {
-                    const data = await res.json().catch(() => ({}));
-                    toast.error(data?.response || "Failed to replace file");
-                  }
-                }}
-              />
-            </label>
-          </Button>
-        ) : undefined}
-
         <Button asChild variant="ghost" size="icon">
           <Link
             href={`${
