@@ -229,6 +229,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         "image/jpeg",
         "text/html",
       ];
+
       const fileBuffer = validateFile(
         files.file[0],
         NEXT_PUBLIC_MAX_FILE_BUFFER,
@@ -279,6 +280,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
             isHTML && !isPreview
               ? `archives/${collectionPermissions.id}/${linkId + suffix}`
               : undefined,
+          clientSide: true,
           updatedAt: new Date().toISOString(),
         },
       });
