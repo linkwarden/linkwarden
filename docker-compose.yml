@@ -14,7 +14,9 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
     restart: always
-    # build: . # uncomment to build from source
+    # build: # uncomment section and one of 'context' lines below to build from source
+    #   context: .
+    #   context: https://github.com/linkwarden/linkwarden.git#dev
     image: ghcr.io/linkwarden/linkwarden:latest # comment to build from source
     ports:
       - 3000:3000
