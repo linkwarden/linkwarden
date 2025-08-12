@@ -86,9 +86,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.mobileapp'
+    namespace 'com.anonymous.linkwarden'
     defaultConfig {
-        applicationId 'com.anonymous.mobileapp'
+        applicationId 'com.anonymous.linkwarden'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -24,9 +24,27 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="myapp"/>
-        <data android:scheme="com.anonymous.mobileapp"/>
-        <data android:scheme="exp+mobile-app"/>
+        <data android:scheme="linkwarden"/>
+        <data android:scheme="com.anonymous.linkwarden"/>
+        <data android:scheme="exp+linkwarden"/>
+        <data android:scheme="linkwarden"/>
+        <data android:scheme="com.anonymous.linkwarden"/>
+        <data android:scheme="exp+linkwarden"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.SEND"/>
+        <data android:mimeType="text/*"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.SEND"/>
+        <data android:mimeType="text/*"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.SEND"/>
+        <data android:mimeType="text/*"/>
+        <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
   </application>

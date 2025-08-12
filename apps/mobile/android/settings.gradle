@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'mobile-app'
+rootProject.name = 'Linkwarden'
 
 dependencyResolutionManagement {
   versionCatalogs {

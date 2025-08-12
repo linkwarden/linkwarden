@@ -1,4 +1,4 @@
-package com.anonymous.mobileapp
+package com.anonymous.linkwarden
 
 import android.app.Application
 import android.content.res.Configuration

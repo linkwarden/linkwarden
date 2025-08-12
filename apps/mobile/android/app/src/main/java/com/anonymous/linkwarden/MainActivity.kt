@@ -1,4 +1,4 @@
-package com.anonymous.mobileapp
+package com.anonymous.linkwarden
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

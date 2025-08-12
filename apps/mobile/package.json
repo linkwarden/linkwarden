@@ -1,10 +1,9 @@
 {
-  "name": "mobile-app",
+  "name": "@linkwarden/mobile",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -36,9 +35,10 @@
     "expo-file-system": "~18.0.12",
     "expo-font": "~13.0.1",
     "expo-haptics": "~14.0.0",
-    "expo-linking": "~7.0.3",
+    "expo-linking": "~7.0.5",
     "expo-router": "4.0.20",
     "expo-secure-store": "~14.0.0",
+    "expo-share-intent": "^3.2.3",
     "expo-splash-screen": "~0.29.18",
     "expo-status-bar": "~2.0.0",
     "expo-symbols": "~0.2.0",
