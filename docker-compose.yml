@@ -3,6 +3,12 @@ services:
     image: postgres:16-alpine
     env_file: .env
     restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      start_period: 20s
+      start_interval: 1s
+      timeout: 1s
     volumes:
       - type: bind
         source: ./pgdata
@@ -26,8 +32,13 @@ services:
         target: /data/data
         read_only: false
     depends_on:
-      - postgres
-      - meilisearch
+      postgres:
+        condition: service_healthy
+        required: true
+      meilisearch:
+        condition: service_started
+        required: true
+
   meilisearch:
     image: getmeili/meilisearch:v1.12.8
     restart: always
