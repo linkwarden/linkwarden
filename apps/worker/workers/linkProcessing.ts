@@ -1,41 +1,23 @@
 import { prisma } from "@linkwarden/prisma";
 import archiveHandler from "../lib/archiveHandler";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
-import getLinkBatch from "../lib/getLinkBatch";
 import { delay } from "@linkwarden/lib";
+import { getLinkBatchFairly } from "../lib/getLinkBatchFairly";
 
-const takeCount = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
+const ARCHIVE_TAKE_COUNT = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
+const ARCHIVE_USER_TAKE_COUNT =
+  Number(process.env.ARCHIVE_USER_TAKE_COUNT || "") || 1;
+const ARCHIVE_PER_USER_CAP =
+  Number(process.env.ARCHIVE_PER_USER_CAP || "") || 5;
 
 export async function startProcessing(interval = 10) {
   console.log("\x1b[34m%s\x1b[0m", "Starting link processing...");
   while (true) {
-    const links = await getLinkBatch({
-      where: {
-        url: { not: null },
-        OR: [
-          {
-            lastPreserved: null,
-          },
-          {
-            createdBy: {
-              aiTagExistingLinks: true,
-              NOT: {
-                aiTaggingMethod: "DISABLED",
-              },
-            },
-            aiTagged: false,
-          },
-        ],
-      },
-      take: takeCount,
-      include: {
-        collection: {
-          include: {
-            owner: true,
-          },
-        },
-        tags: true,
-      },
+    const links = await getLinkBatchFairly({
+      usersPerRound: ARCHIVE_USER_TAKE_COUNT,
+      perUserCap: ARCHIVE_PER_USER_CAP,
+      batchLimit: ARCHIVE_TAKE_COUNT,
+      overfetchFactor: 3,
     });
 
     if (links.length === 0) {
