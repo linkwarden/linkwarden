@@ -4,7 +4,11 @@ services:
     env_file: .env
     restart: always
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - type: bind
+        source: ./pgdata
+        target: /var/lib/postgresql/data
+        read_only: false
+
   linkwarden:
     env_file: .env
     environment:
@@ -15,7 +19,10 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./data:/data/data
+      - type: bind
+        source: ./data
+        target: /data/data
+        read_only: false
     depends_on:
       - postgres
       - meilisearch
@@ -25,4 +32,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./meili_data:/meili_data
+      - type: bind
+        source: ./meili_data
+        target: /meili_data
+        read_only: false
