@@ -1,9 +1,4 @@
-import {
-  Browser,
-  BrowserContext,
-  BrowserContextOptions,
-  devices,
-} from "playwright";
+import { Browser } from "playwright";
 import { prisma } from "@linkwarden/prisma";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { AiTaggingMethod } from "@linkwarden/prisma/client";
