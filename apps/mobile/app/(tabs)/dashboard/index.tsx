@@ -344,7 +344,7 @@ export default function DashboardScreen() {
       style={styles.container}
       collapsable={false}
       collapsableChildren={false}
-      className="bg-base-100"
+      className="bg-base-100 h-full"
     >
       <ScrollView
         refreshControl={
