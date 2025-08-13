@@ -2,11 +2,11 @@ import { prisma } from "@linkwarden/prisma";
 import archiveHandler from "../lib/archiveHandler";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
 import { delay } from "@linkwarden/lib";
-import { getLinkBatchFairly } from "../lib/getLinkBatchFairly";
+import getLinkBatchFairly from "../lib/getLinkBatchFairly";
 
 const ARCHIVE_TAKE_COUNT = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
-const ARCHIVE_USER_TAKE_COUNT =
-  Number(process.env.ARCHIVE_USER_TAKE_COUNT || "") || 1;
+const ARCHIVE_MIN_USER_TAKE_COUNT =
+  Number(process.env.ARCHIVE_MIN_USER_TAKE_COUNT || "") || 1;
 const ARCHIVE_PER_USER_CAP =
   Number(process.env.ARCHIVE_PER_USER_CAP || "") || 5;
 
@@ -14,10 +14,9 @@ export async function startProcessing(interval = 10) {
   console.log("\x1b[34m%s\x1b[0m", "Starting link processing...");
   while (true) {
     const links = await getLinkBatchFairly({
-      usersPerRound: ARCHIVE_USER_TAKE_COUNT,
-      perUserCap: ARCHIVE_PER_USER_CAP,
-      batchLimit: ARCHIVE_TAKE_COUNT,
-      overfetchFactor: 3,
+      leastNumberOfUsersPerBatch: ARCHIVE_MIN_USER_TAKE_COUNT,
+      perUserLimit: ARCHIVE_PER_USER_CAP,
+      maxBatchLinks: ARCHIVE_TAKE_COUNT,
     });
 
     if (links.length === 0) {
@@ -29,7 +28,7 @@ export async function startProcessing(interval = 10) {
       try {
         console.log(
           "\x1b[34m%s\x1b[0m",
-          `Processing link ${link.url} for user ${link.collection.ownerId}`
+          `- Link ${link.url} for user ${link.collection.ownerId}`
         );
 
         await archiveHandler(link);
