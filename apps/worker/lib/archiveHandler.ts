@@ -2,8 +2,6 @@ import {
   Browser,
   BrowserContext,
   BrowserContextOptions,
-  LaunchOptions,
-  chromium,
   devices,
 } from "playwright";
 import { prisma } from "@linkwarden/prisma";
@@ -21,11 +19,13 @@ import autoTagLink from "./autoTagLink";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
 import { isArchivalTag } from "@linkwarden/lib";
 import { ArchivalSettings } from "@linkwarden/types";
+import { getDefaultContextOptions } from "./browser";
 
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 
 export default async function archiveHandler(
-  link: LinkWithCollectionOwnerAndTags
+  link: LinkWithCollectionOwnerAndTags,
+  browser: Browser
 ) {
   const user = link.collection?.owner;
 
@@ -56,17 +56,14 @@ export default async function archiveHandler(
             : undefined,
       },
     });
-
     return;
   }
 
   const abortController = new AbortController();
-
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {
       abortController.abort();
-
-      return reject(
+      reject(
         new Error(
           `Browser has been open for more than ${BROWSER_TIMEOUT} minutes.`
         )
@@ -74,14 +71,14 @@ export default async function archiveHandler(
     }, BROWSER_TIMEOUT * 60000);
   });
 
-  const { browser, context } = await getBrowser();
+  const contextOptions = getDefaultContextOptions();
+  const context = await browser.newContext(contextOptions);
   const page = await context.newPage();
 
   createFolder({ filePath: `archives/preview/${link.collectionId}` });
   createFolder({ filePath: `archives/${link.collectionId}` });
 
   const archivalTags = link.tags.filter(isArchivalTag);
-
   const archivalSettings: ArchivalSettings =
     archivalTags.length > 0
       ? {
@@ -114,18 +111,17 @@ export default async function archiveHandler(
         );
 
         // send to archive.org
-        if (archivalSettings.archiveAsWaybackMachine && link.url)
+        if (archivalSettings.archiveAsWaybackMachine && link.url) {
           sendToWayback(link.url);
+        }
 
         if (linkType === "image" && !link.image) {
-          await imageHandler(link, imageExtension); // archive image (jpeg/png)
+          await imageHandler(link, imageExtension);
           return;
         } else if (linkType === "pdf" && !link.pdf) {
-          await pdfHandler(link); // archive pdf
+          await pdfHandler(link);
           return;
         } else if (link.url) {
-          // archive url
-
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
 
           const metaDescription = await page.evaluate(() => {
@@ -148,10 +144,9 @@ export default async function archiveHandler(
           if (
             (archivalSettings.archiveAsScreenshot && !link.image) ||
             (archivalSettings.archiveAsPDF && !link.pdf)
-          )
+          ) {
             await handleScreenshotAndPdf(link, page, archivalSettings);
-
-          await browser.close();
+          }
 
           // Auto-tagging
           if (
@@ -163,16 +158,22 @@ export default async function archiveHandler(
               process.env.AZURE_API_KEY ||
               process.env.ANTHROPIC_API_KEY ||
               process.env.OPENROUTER_API_KEY)
-          )
+          ) {
             await autoTagLink(user, link.id, metaDescription);
+          }
 
           // Monolith
-          if (archivalSettings.archiveAsMonolith && !link.monolith && link.url)
+          if (
+            archivalSettings.archiveAsMonolith &&
+            !link.monolith &&
+            link.url
+          ) {
             await handleMonolith(link, content, abortController.signal).catch(
               (err) => {
                 console.error(err);
               }
             );
+          }
         }
       })(),
       timeoutPromise,
@@ -186,7 +187,7 @@ export default async function archiveHandler(
       where: { id: link.id },
     });
 
-    if (finalLink)
+    if (finalLink) {
       await prisma.link.update({
         where: { id: link.id },
         data: {
@@ -203,13 +204,11 @@ export default async function archiveHandler(
               : undefined,
         },
       });
-    else {
+    } else {
       await removeFiles(link.id, link.collectionId);
     }
 
-    if (browser && browser.isConnected()) {
-      await browser.close();
-    }
+    await context?.close().catch(() => {});
   }
 }
 
@@ -239,60 +238,8 @@ async function determineLinkType(
 
   await prisma.link.update({
     where: { id: linkId },
-    data: {
-      type: linkType,
-    },
+    data: { type: linkType },
   });
 
   return { linkType, imageExtension };
-}
-
-// Construct browser launch options based on environment variables.
-export function getBrowserOptions(): LaunchOptions {
-  let browserOptions: LaunchOptions = {};
-
-  if (process.env.PROXY) {
-    browserOptions.proxy = {
-      server: process.env.PROXY,
-      bypass: process.env.PROXY_BYPASS,
-      username: process.env.PROXY_USERNAME,
-      password: process.env.PROXY_PASSWORD,
-    };
-  }
-
-  if (
-    process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH &&
-    !process.env.PLAYWRIGHT_WS_URL
-  ) {
-    browserOptions.executablePath =
-      process.env.PLAYWRIGHT_LAUNCH_OPTIONS_EXECUTABLE_PATH;
-  }
-
-  return browserOptions;
-}
-
-async function getBrowser(): Promise<{
-  browser: Browser;
-  context: BrowserContext;
-}> {
-  const browserOptions = getBrowserOptions();
-  let browser: Browser;
-  let contextOptions: BrowserContextOptions = {
-    ...devices["Desktop Chrome"],
-    ignoreHTTPSErrors: process.env.IGNORE_HTTPS_ERRORS === "true",
-  };
-
-  if (process.env.PLAYWRIGHT_WS_URL) {
-    browser = await chromium.connectOverCDP(process.env.PLAYWRIGHT_WS_URL);
-    contextOptions = {
-      ...contextOptions,
-      ...browserOptions,
-    };
-  } else {
-    browser = await chromium.launch(browserOptions);
-  }
-
-  const context = await browser.newContext(contextOptions);
-
-  return { browser, context };
 }
