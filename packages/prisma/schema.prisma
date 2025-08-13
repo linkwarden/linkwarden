@@ -67,7 +67,7 @@ model User {
   isPrivate               Boolean               @default(false)
   referredBy              String?
   dashboardSections       DashboardSection[]
-  lastPickedAt            DateTime              @default(now())
+  lastPickedAt            DateTime?
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
 }
