@@ -14,8 +14,6 @@ export async function startProcessing(interval = 10) {
   console.log("\x1b[34m%s\x1b[0m", "Starting link processing...");
   while (true) {
     const links = await getLinkBatchFairly({
-      leastNumberOfUsersPerBatch: ARCHIVE_MIN_USER_TAKE_COUNT,
-      perUserLimit: ARCHIVE_PER_USER_CAP,
       maxBatchLinks: ARCHIVE_TAKE_COUNT,
     });
 
