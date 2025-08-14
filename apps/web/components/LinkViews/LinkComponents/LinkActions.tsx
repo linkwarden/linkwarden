@@ -132,8 +132,8 @@ export default function LinkActions({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-error"
-                  onSelect={async (e) => {
-                    if ((e as any).shiftKey) {
+                  onClick={async (e) => {
+                    if (e.shiftKey) {
                       const load = toast.loading(t("deleting"));
                       await deleteLink.mutateAsync(link.id as number, {
                         onSettled: (data, error) => {

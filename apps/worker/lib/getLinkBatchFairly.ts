@@ -108,13 +108,6 @@ export default async function getLinkBatchFairly({
     }
   }
 
-  console.log(
-    "\x1b[34m%s\x1b[0m",
-    `Processing ${
-      pickedLinkIds.length
-    } links for the following users: ${Array.from(pickedUserIds).join(", ")}`
-  );
-
   if (pickedLinkIds.length === 0) return [];
 
   const now = new Date();
@@ -135,5 +128,13 @@ export default async function getLinkBatchFairly({
   pickedLinkIds.forEach((id, i) => order.set(id, i));
   batch.sort((a, b) => order.get(a.id)! - order.get(b.id)!);
 
+  console.log(
+    "\x1b[34m%s\x1b[0m",
+    `Processing ${batch.length} ${
+      batch.length > 1 ? "links" : "link"
+    } for the following ${
+      pickedUserIds.size > 1 ? "userIds" : "userId"
+    }: ${Array.from(pickedUserIds).join(", ")}`
+  );
   return batch;
 }
