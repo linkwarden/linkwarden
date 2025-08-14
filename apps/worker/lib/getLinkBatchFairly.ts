@@ -32,7 +32,9 @@ export default async function getLinkBatchFairly({
 
   while (candidateUserIds.length < maxBatchLinks) {
     const baseUserWhere: Prisma.UserWhereInput = {
-      subscriptions: { is: { active: true } },
+      subscriptions: process.env.STRIPE_SECRET_KEY
+        ? { is: { active: true } }
+        : undefined,
     };
     const userWhere: Prisma.UserWhereInput =
       lastPickedAtCursor && lastIdCursor
