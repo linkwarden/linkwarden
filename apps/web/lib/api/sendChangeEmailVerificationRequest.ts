@@ -5,25 +5,32 @@ import Handlebars from "handlebars";
 import { readFileSync } from "fs";
 import path from "path";
 
-export default async function sendChangeEmailVerificationRequest(
-  oldEmail: string,
-  newEmail: string,
-  user: string
-) {
+export default async function sendChangeEmailVerificationRequest({
+  oldEmail,
+  newEmail,
+  username,
+  user,
+}: {
+  oldEmail?: string | null;
+  newEmail: string;
+  username?: string | null;
+  user: string;
+}) {
   const token = randomBytes(32).toString("hex");
 
   await prisma.$transaction(async () => {
     await prisma.verificationToken.create({
       data: {
-        identifier: oldEmail?.toLowerCase(),
+        // either old email or username must exist
+        identifier: oldEmail?.toLowerCase() ?? username!.toLowerCase(),
         token,
         expires: new Date(Date.now() + 24 * 3600 * 1000), // 1 day
       },
     });
     await prisma.user.update({
-      where: {
-        email: oldEmail?.toLowerCase(),
-      },
+      where: oldEmail
+        ? { email: oldEmail.toLowerCase() }
+        : { username: username!.toLowerCase() },
       data: {
         unverifiedNewEmail: newEmail?.toLowerCase(),
       },

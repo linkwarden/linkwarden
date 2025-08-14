@@ -36,21 +36,23 @@ export default async function verifyEmail(
       },
     });
 
-    const oldEmail = verifyToken?.identifier;
+    const identifier = verifyToken?.identifier;
 
-    if (!oldEmail) {
+    if (!identifier) {
       return res.status(400).json({
         response: "Invalid token.",
       });
     }
 
-    // Ensure email isn't in use
+    // Find user by either email or username
     const findNewEmail = await prisma.user.findFirst({
       where: {
-        email: oldEmail,
+        OR: [{ email: identifier }, { username: identifier }],
       },
       select: {
         unverifiedNewEmail: true,
+        email: true,
+        username: true,
       },
     });
 
@@ -83,27 +85,33 @@ export default async function verifyEmail(
     await prisma.account.deleteMany({
       where: {
         user: {
-          email: oldEmail,
+          OR: [{ email: identifier }, { username: identifier }],
         },
       },
     });
 
     // Update email in db
-    await prisma.user.update({
+    await prisma.user.updateMany({
       where: {
-        email: oldEmail,
+        OR: [{ email: identifier }, { username: identifier }],
       },
       data: {
         email: newEmail.toLowerCase().trim(),
         unverifiedNewEmail: null,
+        emailVerified: new Date(),
       },
     });
 
     // Apply to Stripe
     const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
-    if (STRIPE_SECRET_KEY)
-      await updateCustomerEmail(STRIPE_SECRET_KEY, oldEmail, newEmail);
+    if (STRIPE_SECRET_KEY && findNewEmail.email) {
+      await updateCustomerEmail(
+        STRIPE_SECRET_KEY,
+        findNewEmail.email,
+        newEmail
+      );
+    }
 
     // Clean up existing tokens
     await prisma.verificationToken.delete({
@@ -114,7 +122,7 @@ export default async function verifyEmail(
 
     await prisma.verificationToken.deleteMany({
       where: {
-        identifier: oldEmail,
+        identifier: identifier,
       },
     });
 
