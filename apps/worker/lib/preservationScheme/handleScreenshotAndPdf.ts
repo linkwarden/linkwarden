@@ -3,12 +3,16 @@ import { createFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
 import { ArchivalSettings } from "@linkwarden/types";
+import { removeCookieBannersAndOverlays } from "./removeCookieBanners";
 
 const handleScreenshotAndPdf = async (
   link: LinkWithCollectionOwnerAndTags,
   page: Page,
   archivalSettings: ArchivalSettings
 ) => {
+  // Remove cookie banners and overlays before taking screenshot
+  await page.evaluate(removeCookieBannersAndOverlays);
+  
   await page.evaluate(autoScroll, Number(process.env.AUTOSCROLL_TIMEOUT) || 30);
 
   // Check if the user hasn't deleted the link by the time we're done scrolling
