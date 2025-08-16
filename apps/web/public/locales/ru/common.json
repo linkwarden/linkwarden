@@ -493,5 +493,5 @@
   "edit_layout": "Редактировать макет",
   "refresh_multiple_preserved_formats_confirmation_desc": "Это приведет к удалению сохраненных форматов и восстановлению ссылок (кол-во: {{count}}).",
   "refresh_preserved_formats_confirmation_desc": "Это приведет к удалению сохраненных форматов и сохранению ссылки повторно.",
-  "tag_already_added": "This tag is already added."
+  "tag_already_added": "Этот тег уже добавлен."
 }
