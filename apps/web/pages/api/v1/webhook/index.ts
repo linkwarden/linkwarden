@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import Stripe from "stripe";
 import handleSubscription from "@/lib/api/stripe/handleSubscription";
+import stripeSDK from "@/lib/api/stripe/stripeSDK";
 
 export const config = {
   api: {
@@ -45,9 +45,7 @@ export default async function webhook(
 
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2022-11-15",
-  });
+  const stripe = stripeSDK();
 
   const signature = req.headers["stripe-signature"] as any;
 
@@ -59,9 +57,13 @@ export default async function webhook(
     return res.status(400).send("Webhook signature verification failed.");
   }
 
-  // Handle the event based on its type
   const eventType = event.type;
   const data = event.data.object;
+
+  const item = data?.items?.data?.[0];
+  const periodStart = item?.current_period_start ?? null;
+  const periodEnd = item?.current_period_end ?? null;
+  const quantity = item?.quantity ?? 1;
 
   try {
     switch (eventType) {
@@ -69,9 +71,9 @@ export default async function webhook(
         await handleSubscription({
           id: data.id,
           active: data.status === "active" || data.status === "trialing",
-          quantity: data?.quantity ?? 1,
-          periodStart: data.current_period_start,
-          periodEnd: data.current_period_end,
+          quantity,
+          periodStart,
+          periodEnd,
           action: "customer.subscription.created",
         });
         break;
@@ -80,9 +82,9 @@ export default async function webhook(
         await handleSubscription({
           id: data.id,
           active: data.status === "active" || data.status === "trialing",
-          quantity: data?.quantity ?? 1,
-          periodStart: data.current_period_start,
-          periodEnd: data.current_period_end,
+          quantity,
+          periodStart,
+          periodEnd,
           action: "customer.subscription.updated",
         });
         break;
@@ -91,9 +93,9 @@ export default async function webhook(
         await handleSubscription({
           id: data.id,
           active: false,
-          quantity: data?.lines?.data[0]?.quantity ?? 1,
-          periodStart: data.current_period_start,
-          periodEnd: data.current_period_end,
+          quantity,
+          periodStart,
+          periodEnd,
           action: "customer.subscription.deleted",
         });
         break;

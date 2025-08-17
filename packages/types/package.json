@@ -5,6 +5,6 @@
   "main": "index.ts",
   "dependencies": {
     "@linkwarden/prisma": "*",
-    "stripe": "^12.13.0"
+    "stripe": "^18.4.0"
   }
 }
