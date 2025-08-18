@@ -335,6 +335,13 @@ export function getLogins() {
       name: process.env.STRAVA_CUSTOM_NAME ?? "Strava",
     });
   }
+  // Synology
+  if (process.env.NEXT_PUBLIC_SYNOLOGY_ENABLED === "true") {
+    buttonAuths.push({
+      method: "synology",
+      name: process.env.SYNOLOGY_CUSTOM_NAME ?? "Synology",
+    });
+  }
   // Todoist
   if (process.env.NEXT_PUBLIC_TODOIST_ENABLED === "true") {
     buttonAuths.push({
