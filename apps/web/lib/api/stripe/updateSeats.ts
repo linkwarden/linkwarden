@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import stripeSDK from "./stripeSDK";
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
@@ -7,9 +8,7 @@ const updateSeats = async (subscriptionId: string, seats: number) => {
     return;
   }
 
-  const stripe = new Stripe(STRIPE_SECRET_KEY, {
-    apiVersion: "2022-11-15",
-  });
+  const stripe = stripeSDK();
 
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
