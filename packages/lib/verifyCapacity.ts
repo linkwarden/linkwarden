@@ -1,7 +1,7 @@
 import { prisma } from "@linkwarden/prisma";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
-const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
+const stripeEnabled = process.env.STRIPE_SECRET_KEY;
 
 export const hasPassedLimit = async (
   userId: number,
@@ -10,9 +10,7 @@ export const hasPassedLimit = async (
   if (!stripeEnabled) {
     const totalLinks = await prisma.link.count({
       where: {
-        createdBy: {
-          id: userId,
-        },
+        createdById: userId,
       },
     });
 
@@ -21,9 +19,9 @@ export const hasPassedLimit = async (
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    include: {
-      parentSubscription: true,
-      subscriptions: true,
+    select: {
+      parentSubscriptionId: true,
+      subscriptions: { select: { id: true, quantity: true } },
     },
   });
 
@@ -31,29 +29,47 @@ export const hasPassedLimit = async (
     return true;
   }
 
-  if (
-    user.parentSubscription ||
-    (user.subscriptions && user.subscriptions?.quantity > 1)
-  ) {
-    const subscription = user.parentSubscription || user.subscriptions;
+  const subscriptionId = user?.parentSubscriptionId ?? user?.subscriptions?.id;
+  let quantity = user?.subscriptions?.quantity;
 
-    if (!subscription) {
+  if (!quantity) {
+    quantity = (
+      await prisma.subscription.findUnique({
+        where: { id: subscriptionId },
+        select: { quantity: true },
+      })
+    )?.quantity;
+  }
+
+  if (!subscriptionId || !quantity) return true;
+
+  if (user.parentSubscriptionId) {
+    const childCount = await prisma.user.count({
+      where: { parentSubscriptionId: subscriptionId },
+    });
+
+    if (!childCount || childCount + 1 > quantity) {
       return true;
     }
+  }
 
+  if (
+    user.parentSubscriptionId ||
+    (user.subscriptions && user.subscriptions?.quantity > 1)
+  ) {
     // Calculate the total allowed links for the organization
-    const totalCapacity = subscription.quantity * MAX_LINKS_PER_USER;
+    const totalCapacity = quantity * MAX_LINKS_PER_USER;
 
     const totalLinks = await prisma.link.count({
       where: {
         createdBy: {
           OR: [
             {
-              parentSubscriptionId: subscription.id || undefined,
+              parentSubscriptionId: subscriptionId || undefined,
             },
             {
               subscriptions: {
-                id: subscription.id || undefined,
+                id: subscriptionId || undefined,
               },
             },
           ],
@@ -65,9 +81,7 @@ export const hasPassedLimit = async (
   } else {
     const totalLinks = await prisma.link.count({
       where: {
-        createdBy: {
-          id: userId,
-        },
+        createdById: userId,
       },
     });
 
