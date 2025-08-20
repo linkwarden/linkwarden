@@ -1,15 +1,9 @@
-import Stripe from "stripe";
 import verifySubscription from "./stripe/verifySubscription";
 import { prisma } from "@linkwarden/prisma";
+import stripeSDK from "./stripe/stripeSDK";
 
-export default async function paymentCheckout(
-  stripeSecretKey: string,
-  email: string,
-  priceId: string
-) {
-  const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: "2022-11-15",
-  });
+export default async function paymentCheckout(email: string, priceId: string) {
+  const stripe = stripeSDK();
 
   const user = await prisma.user.findUnique({
     where: {

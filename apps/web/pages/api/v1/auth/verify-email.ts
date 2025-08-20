@@ -102,8 +102,7 @@ export default async function verifyEmail(
     // Apply to Stripe
     const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 
-    if (STRIPE_SECRET_KEY)
-      await updateCustomerEmail(STRIPE_SECRET_KEY, oldEmail, newEmail);
+    if (STRIPE_SECRET_KEY) await updateCustomerEmail(oldEmail, newEmail);
 
     // Clean up existing tokens
     await prisma.verificationToken.delete({
