@@ -1,13 +1,10 @@
-import Stripe from "stripe";
+import stripeSDK from "./stripeSDK";
 
 export default async function updateCustomerEmail(
-  stripeSecretKey: string,
   email: string,
   newEmail: string
 ) {
-  const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: "2022-11-15",
-  });
+  const stripe = stripeSDK();
 
   const listByEmail = await stripe.customers.list({
     email: email.toLowerCase(),
