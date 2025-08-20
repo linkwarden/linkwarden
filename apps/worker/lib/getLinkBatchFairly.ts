@@ -47,8 +47,6 @@ export default async function getLinkBatchFairly({
     take: maxBatchLinks,
   });
 
-  console.log(users);
-
   if (users.length === 0) return [];
 
   const linkUserMap = new Map<number, number>();
