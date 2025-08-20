@@ -28,23 +28,26 @@ export default async function getLinkBatchFairly({
 
   const users = await prisma.user.findMany({
     where: {
-      OR: [
-        {
-          subscriptions: process.env.STRIPE_SECRET_KEY
-            ? { is: { active: true } }
-            : undefined,
+      createdLinks: {
+        some: {
+          ...baseLinkWhere,
         },
-        {
-          parentSubscription: process.env.STRIPE_SECRET_KEY
-            ? { is: { active: true } }
-            : undefined,
-        },
-      ],
+      },
+      ...(process.env.STRIPE_SECRET_KEY
+        ? {
+            OR: [
+              { subscriptions: { is: { active: true } } },
+              { parentSubscription: { is: { active: true } } },
+            ],
+          }
+        : {}),
     },
-    orderBy: [{ lastPickedAt: "asc" }, { id: "asc" }],
+    orderBy: [{ lastPickedAt: { sort: "asc", nulls: "first" } }, { id: "asc" }],
     select: { id: true, lastPickedAt: true },
     take: maxBatchLinks,
   });
+
+  console.log(users);
 
   if (users.length === 0) return [];
 
@@ -61,11 +64,9 @@ export default async function getLinkBatchFairly({
     linkUserMap.set(user.id, userLinks.length);
   }
 
-  const usersWithLinks = [...linkUserMap.values()]
-    .flat()
-    .filter((count) => count > 0);
-
-  const pickedLinkIds: number[] = [];
+  const uniqueUsersWithLinks = Array.from(linkUserMap.entries())
+    .filter(([, count]) => count > 0)
+    .map(([userId]) => userId);
 
   // Pick one `linksPerUser` from the `linkUserMap` recursively until we reach the `maxBatchLinks` OR run out of links
   const linksPerUser = Math.max(1, Math.floor(maxBatchLinks / users.length));
@@ -126,7 +127,7 @@ export default async function getLinkBatchFairly({
 
   const now = new Date();
   await prisma.user.updateMany({
-    where: { id: { in: usersWithLinks } },
+    where: { id: { in: uniqueUsersWithLinks } },
     data: { lastPickedAt: now },
   });
 
@@ -139,140 +140,9 @@ export default async function getLinkBatchFairly({
     `Processing ${batch.length} ${
       batch.length > 1 ? "links" : "link"
     } for the following ${
-      usersWithLinks.length > 1 ? "userIds" : "userId"
-    }: ${usersWithLinks.join(", ")}`
+      uniqueUsersWithLinks.length > 1 ? "userIds" : "userId"
+    }: ${uniqueUsersWithLinks.join(", ")}`
   );
-
-  return batch;
-}
-
-export async function oldGetLinkBatchFairly({
-  maxBatchLinks,
-}: PickLinksOptions) {
-  if (maxBatchLinks <= 0) return [];
-
-  const baseLinkWhere: Prisma.LinkWhereInput = {
-    url: { not: null },
-    OR: [
-      { lastPreserved: null },
-      {
-        createdBy: {
-          is: {
-            aiTagExistingLinks: true,
-            NOT: { aiTaggingMethod: "DISABLED" },
-          },
-        },
-        aiTagged: false,
-      },
-    ],
-  };
-
-  const candidateUserIds: number[] = [];
-  let lastPickedAtCursor: Date | null = null;
-  let lastIdCursor: number | null = null;
-
-  while (candidateUserIds.length < maxBatchLinks) {
-    const baseUserWhere: Prisma.UserWhereInput = {
-      subscriptions: { is: { active: true } },
-    };
-    const userWhere: Prisma.UserWhereInput =
-      lastPickedAtCursor && lastIdCursor
-        ? {
-            AND: [
-              baseUserWhere,
-              {
-                OR: [
-                  { lastPickedAt: { gt: lastPickedAtCursor } },
-                  {
-                    AND: [
-                      { lastPickedAt: { equals: lastPickedAtCursor } },
-                      { id: { gt: lastIdCursor } },
-                    ],
-                  },
-                ],
-              },
-            ],
-          }
-        : baseUserWhere;
-
-    const users = await prisma.user.findMany({
-      where: userWhere,
-      orderBy: [{ lastPickedAt: "asc" }, { id: "asc" }],
-      select: { id: true, lastPickedAt: true },
-    });
-
-    if (users.length === 0) break;
-
-    for (const u of users) {
-      if (candidateUserIds.length >= maxBatchLinks) break;
-
-      const oneLink = await prisma.link.findFirst({
-        where: { ...baseLinkWhere, collection: { is: { ownerId: u.id } } },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-        select: { id: true },
-      });
-
-      if (oneLink) candidateUserIds.push(u.id);
-    }
-
-    const tail = users[users.length - 1];
-    lastPickedAtCursor = tail.lastPickedAt;
-    lastIdCursor = tail.id;
-  }
-
-  if (candidateUserIds.length === 0) return [];
-
-  const U = candidateUserIds.length;
-  const perUserCap = Math.ceil(maxBatchLinks / U);
-
-  const pickedLinkIds: number[] = [];
-  const pickedUserIds = new Set<number>();
-
-  for (const userId of candidateUserIds) {
-    if (pickedLinkIds.length >= maxBatchLinks) break;
-
-    const remaining = maxBatchLinks - pickedLinkIds.length;
-    const take = Math.min(perUserCap, remaining);
-
-    const links = await prisma.link.findMany({
-      where: { ...baseLinkWhere, collection: { is: { ownerId: userId } } },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      take,
-      select: { id: true },
-    });
-
-    if (links.length > 0) {
-      for (const l of links) pickedLinkIds.push(l.id);
-      pickedUserIds.add(userId);
-    }
-  }
-
-  console.log(
-    "\x1b[34m%s\x1b[0m",
-    `Processing ${
-      pickedLinkIds.length
-    } links for the following users: ${Array.from(pickedUserIds).join(", ")}`
-  );
-
-  if (pickedLinkIds.length === 0) return [];
-
-  const now = new Date();
-  await prisma.user.updateMany({
-    where: { id: { in: Array.from(pickedUserIds) } },
-    data: { lastPickedAt: now },
-  });
-
-  const batch = await prisma.link.findMany({
-    where: { id: { in: pickedLinkIds } },
-    include: {
-      collection: { include: { owner: true } },
-      tags: true,
-    },
-  });
-
-  const order = new Map<number, number>();
-  pickedLinkIds.forEach((id, i) => order.set(id, i));
-  batch.sort((a, b) => order.get(a.id)! - order.get(b.id)!);
 
   return batch;
 }
