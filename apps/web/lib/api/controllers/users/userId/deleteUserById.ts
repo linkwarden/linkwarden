@@ -1,10 +1,10 @@
 import { prisma } from "@linkwarden/prisma";
 import bcrypt from "bcrypt";
 import { removeFolder, removeFile } from "@linkwarden/filesystem";
-import Stripe from "stripe";
 import { DeleteUserBody } from "@linkwarden/types";
 import updateSeats from "@/lib/api/stripe/updateSeats";
 import { meiliClient } from "@linkwarden/lib";
+import stripeSDK from "@/lib/api/stripe/stripeSDK";
 
 export default async function deleteUserById(
   userId: number,
@@ -132,9 +132,7 @@ export default async function deleteUserById(
         await removeFile({ filePath: `uploads/avatar/${queryId}.jpg` });
 
         if (process.env.STRIPE_SECRET_KEY) {
-          const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-            apiVersion: "2022-11-15",
-          });
+          const stripe = stripeSDK();
 
           try {
             if (user.subscriptions?.id && queryId !== userId) {

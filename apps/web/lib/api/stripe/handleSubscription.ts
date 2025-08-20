@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { prisma } from "@linkwarden/prisma";
+import stripeSDK from "./stripeSDK";
 
 type Data = {
   id: string;
@@ -41,12 +42,7 @@ export default async function handleSubscription({
     });
     return;
   } else {
-    if (!process.env.STRIPE_SECRET_KEY)
-      throw new Error("Missing Stripe secret key");
-
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2022-11-15",
-    });
+    const stripe = stripeSDK();
 
     const subscription = await stripe.subscriptions.retrieve(id);
     const customerId = subscription.customer;

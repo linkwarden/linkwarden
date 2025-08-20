@@ -1258,7 +1258,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             // Count child users with verified email under a specific subscription, excluding the current user
             const verifiedChildUsersCount = await prisma.user.count({
               where: {
-                parentSubscriptionId: parentSubscriptionId,
+                parentSubscriptionId,
                 id: {
                   not: user.id as number,
                 },

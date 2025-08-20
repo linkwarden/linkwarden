@@ -31,11 +31,7 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
     PRICE_ID = YEARLY_PRICE_ID;
 
   if (req.method === "GET") {
-    const users = await paymentCheckout(
-      STRIPE_SECRET_KEY,
-      email as string,
-      PRICE_ID
-    );
+    const users = await paymentCheckout(email as string, PRICE_ID);
     return res.status(users.status).json({ response: users.response });
   }
 }
