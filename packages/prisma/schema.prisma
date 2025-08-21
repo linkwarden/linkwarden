@@ -56,6 +56,7 @@ model User {
   aiDescriptionMethod     AiDescriptionMethod   @default(DISABLED)
   aiDescribeExistingLinks Boolean               @default(false)
   aiCharacterCount        Int                   @default(75)
+  aiAnalyzeFirstChars     Int                   @default(3000)
   theme                   Theme                 @default(dark)
   readableFontFamily      String?               @default("sans-serif")
   readableFontSize        String?               @default("20px")
@@ -90,7 +91,8 @@ enum AiTaggingMethod {
 
 enum AiDescriptionMethod {
   DISABLED
-  GENERATE
+  GENERATE_FULL
+  GENERATE_FAST
 }
 
 enum LinksRouteTo {
