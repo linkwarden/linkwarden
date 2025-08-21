@@ -53,6 +53,8 @@ model User {
   aiTaggingMethod         AiTaggingMethod       @default(DISABLED)
   aiPredefinedTags        String[]              @default([])
   aiTagExistingLinks      Boolean               @default(false)
+  aiDescriptionMethod     AiDescriptionMethod   @default(DISABLED)
+  aiCharacterCount        Int                   @default(75)
   theme                   Theme                 @default(dark)
   readableFontFamily      String?               @default("sans-serif")
   readableFontSize        String?               @default("20px")
@@ -83,6 +85,11 @@ enum AiTaggingMethod {
   GENERATE
   EXISTING
   PREDEFINED
+}
+
+enum AiDescriptionMethod {
+  DISABLED
+  GENERATE
 }
 
 enum LinksRouteTo {
@@ -184,6 +191,7 @@ model Link {
   readable      String?
   monolith      String?
   aiTagged      Boolean     @default(false)
+  aiDescribed   Boolean     @default(false)
   indexVersion  Int?
   lastPreserved DateTime?
   importDate    DateTime?
