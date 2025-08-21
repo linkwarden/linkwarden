@@ -54,6 +54,7 @@ model User {
   aiPredefinedTags        String[]              @default([])
   aiTagExistingLinks      Boolean               @default(false)
   aiDescriptionMethod     AiDescriptionMethod   @default(DISABLED)
+  aiDescribeExistingLinks Boolean               @default(false)
   aiCharacterCount        Int                   @default(75)
   theme                   Theme                 @default(dark)
   readableFontFamily      String?               @default("sans-serif")
