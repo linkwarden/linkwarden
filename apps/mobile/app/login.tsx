@@ -1,16 +1,21 @@
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import useAuthStore from "@/store/auth";
+import { Redirect } from "expo-router";
 import { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 export default function HomeScreen() {
-  const { signIn } = useAuthStore();
+  const { auth, signIn } = useAuthStore();
   const [form, setForm] = useState({
     user: "",
     password: "",
     instance: "",
   });
+
+  if (auth.status === "authenticated") {
+    return <Redirect href="/dashboard" />;
+  }
 
   return (
     <View style={styles.container}>

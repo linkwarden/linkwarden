@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Stack, usePathname, useRouter } from "expo-router";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { mmkvPersister } from "@/lib/queryPersister";
@@ -11,11 +11,12 @@ import { lightTheme, darkTheme } from "../lib/theme";
 import { Platform, View } from "react-native";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useShareIntent } from "expo-share-intent";
+import useDataStore from "@/store/data";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 60 * 24, // never refetch for 24h
+      staleTime: 1000 * 60 * 60 * 24,
       refetchOnMount: true,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
@@ -26,16 +27,38 @@ const queryClient = new QueryClient({
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const { colorScheme } = useColorScheme();
-  const { hasShareIntent, shareIntent, resetShareIntent, error } =
+  const { hasShareIntent, shareIntent, error, resetShareIntent } =
     useShareIntent();
+  const { updateData } = useDataStore();
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (hasShareIntent) {
-      // Handle the share intent
-      console.log("Received share intent:", shareIntent);
+    const needsRewrite =
+      ((typeof pathname === "string" && pathname.startsWith("/dataUrl=")) ||
+        hasShareIntent) &&
+      pathname !== "/incoming";
+
+    if (hasShareIntent && shareIntent.webUrl) {
+      updateData({
+        shareIntent: {
+          hasShareIntent: true,
+          url: shareIntent.webUrl || "",
+        },
+      });
+
       resetShareIntent();
     }
-  }, [hasShareIntent, shareIntent, resetShareIntent]);
+
+    if (needsRewrite) {
+      router.replace("/incoming");
+    }
+    if (hasShareIntent) {
+      resetShareIntent();
+      router.replace("/incoming");
+    }
+  }, [hasShareIntent, pathname]);
 
   return (
     <PersistQueryClientProvider

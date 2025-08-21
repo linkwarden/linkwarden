@@ -179,3 +179,10 @@ export interface MobileAuth {
   session: string | null;
   instance: string | null;
 }
+
+export interface MobileData {
+  shareIntent: {
+    hasShareIntent: boolean;
+    url: string;
+  };
+}
