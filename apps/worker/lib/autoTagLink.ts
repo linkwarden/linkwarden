@@ -21,7 +21,8 @@ import { titleCase } from "@linkwarden/lib";
 const ensureValidURL = (base: string, path: string) =>
   `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
-const getAIModel = (): LanguageModelV1 => {
+// const getAIModel = (): LanguageModelV1 => { -- error when ran...
+export const getAIModel = (): LanguageModelV1 => {
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) {
     let config: OpenAICompatibleProviderSettings = {
       baseURL:
