@@ -4,6 +4,7 @@ import {
   LinksRouteTo,
   DashboardSectionType,
   Theme,
+  AiDescriptionMethod,
 } from "@linkwarden/prisma/client";
 import { z } from "zod";
 
@@ -84,6 +85,9 @@ export const UpdateUserSchema = () => {
     aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     aiTagExistingLinks: z.boolean().optional(),
+    aiDescriptionMethod: z.nativeEnum(AiDescriptionMethod).optional(),
+    aiCharacterCount: z.number().int().optional(),
+    aiDescribeExistingLinks: z.boolean().optional(),
     locale: z.string().max(20).optional(),
     isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
