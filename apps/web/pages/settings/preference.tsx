@@ -5,7 +5,7 @@ import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
+import { AiTaggingMethod, LinksRouteTo, AiDescriptionMethod, } from "@linkwarden/prisma/client";
 import {
   useUpdateUser,
   useUpdateUserPreference,
@@ -66,6 +66,15 @@ export default function Preference() {
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
     account.aiTaggingMethod
   );
+  const [aiDescriptionMethod, setAiDescriptionMethod] = useState<AiDescriptionMethod>(
+    account.aiDescriptionMethod
+  );
+  const [aiCharacterCount, setAiCharacterCount] = useState<number>(
+    account.aiCharacterCount ?? 75
+  );
+  const [aiDescribeExistingLinks, setAiDescribeExistingLinks] = useState<boolean>(
+    account.aiDescribeExistingLinks ?? false
+  );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
   const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
     account.aiTagExistingLinks ?? false
@@ -87,6 +96,9 @@ export default function Preference() {
       aiTaggingMethod,
       aiPredefinedTags,
       aiTagExistingLinks,
+      aiDescriptionMethod,
+      aiCharacterCount,
+      aiDescribeExistingLinks,
       dashboardPinnedLinks,
     });
   }, [
@@ -101,6 +113,9 @@ export default function Preference() {
     aiTaggingMethod,
     aiPredefinedTags,
     aiTagExistingLinks,
+    aiDescriptionMethod,
+    aiCharacterCount,
+    aiDescribeExistingLinks,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -119,6 +134,9 @@ export default function Preference() {
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
       setAiTagExistingLinks(account.aiTagExistingLinks);
+      setAiDescriptionMethod(account.aiDescriptionMethod);
+      setAiCharacterCount(account.aiCharacterCount);
+      setAiDescribeExistingLinks(account.aiDescribeExistingLinks);
     }
   }, [account]);
 
@@ -134,6 +152,9 @@ export default function Preference() {
       "aiTaggingMethod",
       "aiPredefinedTags",
       "aiTagExistingLinks",
+      "aiDescriptionMethod",
+      "aiCharacterCount",
+      "aiDescribeExistingLinks",
     ];
 
     const hasChanges = relevantKeys.some((key) => account[key] !== user[key]);
@@ -376,6 +397,85 @@ export default function Preference() {
                 disabled={aiTaggingMethod === AiTaggingMethod.DISABLED}
               />
             </div>
+	    <p className="text-md mt-4">{t("ai_description_method")}</p>
+
+		<div className="p-3">
+		  <label className="label cursor-pointer flex gap-2 justify-start w-fit">
+		    <input
+		      type="radio"
+		      name="ai-description-method-radio"
+		      className="radio checked:bg-primary"
+		      value="DISABLED"
+		      checked={aiDescriptionMethod === AiDescriptionMethod.DISABLED}
+		      onChange={() =>
+			setAiDescriptionMethod(AiDescriptionMethod.DISABLED)
+		      }
+		    />
+		    <span className="label-text">{t("disabled")}</span>
+		  </label>
+		  <p className="text-neutral text-sm pl-5">
+		    {t("ai_description_disabled_desc")}
+		  </p>
+
+		  <label className="label cursor-pointer flex gap-2 justify-start w-fit">
+		    <input
+		      type="radio"
+		      name="ai-description-method-radio"
+		      className="radio checked:bg-primary"
+		      value="GENERATE"
+		      checked={aiDescriptionMethod === AiDescriptionMethod.GENERATE}
+		      onChange={() =>
+			setAiDescriptionMethod(AiDescriptionMethod.GENERATE)
+		      }
+		    />
+		    <span className="label-text">{t("auto_generate_descriptions")}</span>
+		  </label>
+		  <p className="text-neutral text-sm pl-5">
+		    {t("auto_generate_descriptions_desc")}
+		  </p>
+		</div>
+
+		<div
+		  className={`mb-3 ${
+		    aiDescriptionMethod === AiDescriptionMethod.DISABLED
+		      ? "opacity-50"
+		      : ""
+		  }`}
+		>
+		  <label htmlFor="ai-char-count" className="label">
+		    <span className="label-text">{t("ai_description_length")}</span>
+		  </label>
+		  <input
+		    id="ai-char-count"
+		    type="number"
+		    className="input input-bordered w-full max-w-xs"
+		    value={aiCharacterCount}
+		    onChange={(e) =>
+		      setAiCharacterCount(parseInt(e.target.value, 10) || 75)
+		    }
+		    disabled={aiDescriptionMethod === AiDescriptionMethod.DISABLED}
+		  />
+		  <p className="text-neutral text-sm mt-1">
+		    {t("ai_description_length_desc")}
+		  </p>
+		</div>
+		
+		<div
+		  className={`mb-3 ${
+		    aiDescriptionMethod === AiDescriptionMethod.DISABLED ? "opacity-50" : ""
+		  }`}
+		>
+		  <Checkbox
+		    label={t("generate_descriptions_for_existing_links")}
+		    state={aiDescribeExistingLinks}
+		    onClick={() =>
+		      aiDescriptionMethod !== AiDescriptionMethod.DISABLED &&
+		      setAiDescribeExistingLinks(!aiDescribeExistingLinks)
+		    }
+		    disabled={aiDescriptionMethod === AiDescriptionMethod.DISABLED}
+		  />
+		</div>
+
           </div>
         )}
 
