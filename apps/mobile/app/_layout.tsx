@@ -107,6 +107,8 @@ export default function RootLayout() {
                   headerBackTitle: "Back",
                   headerTitle: "",
                   headerTintColor: colorScheme === "dark" ? "white" : "black",
+                  navigationBarColor:
+                    rawTheme[colorScheme as ThemeName]["base-100"],
                   headerStyle: {
                     backgroundColor:
                       Platform.OS === "ios"
