@@ -21,8 +21,10 @@ import { titleCase } from "@linkwarden/lib";
 const ensureValidURL = (base: string, path: string) =>
   `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
-// const getAIModel = (): LanguageModelV1 => { -- error when ran...
-export const getAIModel = (): LanguageModelV1 => {
+export const getAIModel = (
+  modelType: "tagging" | "description"
+): LanguageModelV1 => {
+  // OpenAI, Azure, etc. untouched
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) {
     let config: OpenAICompatibleProviderSettings = {
       baseURL:
@@ -30,9 +32,7 @@ export const getAIModel = (): LanguageModelV1 => {
       name: process.env.CUSTOM_OPENAI_NAME || "openai",
       apiKey: process.env.OPENAI_API_KEY,
     };
-
     const openaiCompatibleModel = createOpenAICompatible(config);
-
     return openaiCompatibleModel(process.env.OPENAI_MODEL);
   }
   if (
@@ -43,37 +43,62 @@ export const getAIModel = (): LanguageModelV1 => {
     return azure(process.env.AZURE_MODEL);
   if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL)
     return anthropic(process.env.ANTHROPIC_MODEL);
+
+  // User controlled timeout and increased timeout by default for batch description processing
   if (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && process.env.OLLAMA_MODEL) {
+    const browserTimeout = Number(process.env.BROWSER_TIMEOUT) || 0;
+
+    const getTimeout = () => {
+      // fixed timeout for tagging
+      if (modelType === "tagging") {
+        return 3 * 60 * 1000; // more than enough
+      }
+      
+      // console descriptions: batch can be slow esp on slower hardware
+      const defaultDescriptionTimeout = 15;
+      const finalTimeout = Math.max(defaultDescriptionTimeout, browserTimeout);
+
+      if (browserTimeout > 0 && browserTimeout > defaultDescriptionTimeout) {
+        // process single link user configured
+        console.log(
+          `[AI Config] Processing description. Timeout increased to user-defined ${finalTimeout} minutes.`
+        );
+      } else {
+        // process batch or single default timeout
+        console.log(
+          `[AI Config] Processing description. Using default ${finalTimeout} minute timeout.`
+        );
+      }
+      return finalTimeout * 60 * 1000;
+    };
+
+    const modelToUse =
+      modelType === "description" && process.env.OLLAMA_DESCRIPTION_MODEL
+        ? process.env.OLLAMA_DESCRIPTION_MODEL
+        : process.env.OLLAMA_MODEL;
+
     const ollama = createOllama({
       baseURL: ensureValidURL(
         process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL,
         "api"
       ),
       fetchOptions: {
-        // slower machines need more overhead for batch processing depending on model chosen
-        timeout: (() => {
-          const defaultAiTimeout = 15; // up ceiling for all
-          const browserTimeout = Number(process.env.BROWSER_TIMEOUT) || 0;
-    
-          // possible override based on docker compose
-          const finalTimeout = Math.max(defaultAiTimeout, browserTimeout);
-    
-          console.log(`[AI Config] Setting AI client timeout to ${finalTimeout} minutes.`);
-          return finalTimeout * 60 * 1000;
-        })(),
+        timeout: getTimeout(),
       },
-    });  
-    return ollama(process.env.OLLAMA_MODEL, {
+    });
+    return ollama(modelToUse, {
       structuredOutputs: true,
     });
   }
+
+  // OpenRouter untouched
   if (process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_MODEL) {
     const openrouter = createOpenRouter({
       apiKey: process.env.OPENROUTER_API_KEY,
     });
-
     return openrouter(process.env.OPENROUTER_MODEL) as LanguageModelV1;
   }
+
   throw new Error("No AI provider configured");
 };
 
@@ -138,7 +163,7 @@ export default async function autoTagLink(
   }
 
   const { object } = await generateObject({
-    model: getAIModel(),
+    model: getAIModel("tagging"),
     prompt: prompt,
     output: "array",
     schema: z.string(),
