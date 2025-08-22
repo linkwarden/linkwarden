@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import useAuthStore from "@/store/auth";
 import useDataStore from "@/store/data";
 import { Check } from "lucide-react-native";
@@ -32,14 +32,16 @@ export default function IncomingScreen() {
         },
       });
       router.replace("/dashboard");
-    }, 3000);
+    }, 2000);
     return () => clearTimeout(timeout);
   }, []);
+
+  if (auth.status === "unauthenticated") return <Redirect href="/login" />;
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.subtitle}>{String(data?.shareIntent.url)}</Text>
-      {auth.status !== "unauthenticated" && data?.shareIntent.url ? (
+      {data?.shareIntent.url ? (
         <View style={styles.center}>
           <Check size={140} style={styles.check} />
           <Text style={styles.title}>Link Saved!</Text>
