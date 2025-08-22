@@ -6,7 +6,6 @@ import {
 } from "playwright";
 import { prisma } from "@linkwarden/prisma";
 import sendToWayback from "./preservationScheme/sendToWayback";
-import { AiTaggingMethod } from "@linkwarden/prisma/client";
 import { AiTaggingMethod, AiDescriptionMethod } from "@linkwarden/prisma/client";
 import fetchHeaders from "./fetchHeaders";
 import { createFolder, removeFiles } from "@linkwarden/filesystem";
@@ -94,6 +93,7 @@ export default async function archiveHandler(
             (tag) => tag.archiveAsWaybackMachine
           ),
           aiTag: archivalTags.some((tag) => tag.aiTag),
+	  aiDescribe: user.aiDescriptionMethod !== AiDescriptionMethod.DISABLED,
         }
       : {
           archiveAsScreenshot: user.archiveAsScreenshot,
@@ -102,6 +102,7 @@ export default async function archiveHandler(
           archiveAsReadable: user.archiveAsReadable,
           archiveAsWaybackMachine: user.archiveAsWaybackMachine,
           aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
+	  aiDescribe: user.aiDescriptionMethod !== AiDescriptionMethod.DISABLED,
         };
 
   try {
@@ -150,6 +151,12 @@ export default async function archiveHandler(
             await handleScreenshotAndPdf(link, page, archivalSettings);
           }
 
+	  console.log("--- DEBUGGING AUTO-DESCRIPTION ---");
+	  console.log("User Setting (aiDescriptionMethod):", user.aiDescriptionMethod);
+	  console.log("Link has description already?:", !!link.description);
+	  console.log("Link already processed (aiDescribed)?:", link.aiDescribed);
+	  console.log("--- END DEBUGGING BLOCK ---");
+
           // Auto-tagging
           if (
             archivalSettings.aiTag &&
@@ -166,7 +173,7 @@ export default async function archiveHandler(
 
 	  // Auto-describing
           if (
-            user.aiDescriptionMethod !== AiDescriptionMethod.DISABLED &&
+	    archivalSettings.aiDescribe &&
             !link.description &&
             !link.aiDescribed &&
             (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
