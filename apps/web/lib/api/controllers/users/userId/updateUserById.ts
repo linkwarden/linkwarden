@@ -233,6 +233,31 @@ export default async function updateUserById(
     },
   });
 
+if (data.aiDescribeExistingLinks && !user?.aiDescribeExistingLinks) {
+  console.log(`[API] User ${userId} triggered a bulk description job.`);
+
+  // find links and reset 'lastPreserved' date
+  // worker pick up again
+  await prisma.link.updateMany({
+    where: {
+      createdById: userId,
+      aiDescribed: false,
+      description: {
+        equals: '',
+      },
+    },
+    data: {
+      lastPreserved: null,
+    },
+  });
+
+  // reset UI flag to prevent rerun
+  await prisma.user.update({
+    where: { id: userId },
+    data: { aiDescribeExistingLinks: false },
+  });
+}
+
   const {
     whitelistedUsers,
     password,
