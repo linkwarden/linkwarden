@@ -86,6 +86,7 @@ export const UpdateUserSchema = () => {
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     aiTagExistingLinks: z.boolean().optional(),
     aiDescriptionMethod: z.nativeEnum(AiDescriptionMethod).optional(),
+    aiAnalyzeFirstChars: z.number().int().optional(),
     aiCharacterCount: z.number().int().optional(),
     aiDescribeExistingLinks: z.boolean().optional(),
     locale: z.string().max(20).optional(),
