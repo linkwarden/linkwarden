@@ -49,11 +49,20 @@ export const getAIModel = (): LanguageModelV1 => {
         process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL,
         "api"
       ),
-      fetchOptions: {            // headroom for slower hardware bulk processing ai descript
-        timeout: 15 * 60 * 1000, // 15 minutes in millisecond -> ?? update env var to match BROWSER_TIMEOUT=15s ??
+      fetchOptions: {
+        // slower machines need more overhead for batch processing depending on model chosen
+        timeout: (() => {
+          const defaultAiTimeout = 15; // up ceiling for all
+          const browserTimeout = Number(process.env.BROWSER_TIMEOUT) || 0;
+    
+          // possible override based on docker compose
+          const finalTimeout = Math.max(defaultAiTimeout, browserTimeout);
+    
+          console.log(`[AI Config] Setting AI client timeout to ${finalTimeout} minutes.`);
+          return finalTimeout * 60 * 1000;
+        })(),
       },
-    });
-
+    });  
     return ollama(process.env.OLLAMA_MODEL, {
       structuredOutputs: true,
     });
