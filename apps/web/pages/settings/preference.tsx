@@ -69,6 +69,9 @@ export default function Preference() {
   const [aiDescriptionMethod, setAiDescriptionMethod] = useState<AiDescriptionMethod>(
     account.aiDescriptionMethod
   );
+  const [aiAnalyzeFirstChars, setAiAnalyzeFirstChars] = useState<number>(
+    account.aiAnalyzeFirstChars ?? 3000
+  );
   const [aiCharacterCount, setAiCharacterCount] = useState<number>(
     account.aiCharacterCount ?? 75
   );
@@ -97,6 +100,7 @@ export default function Preference() {
       aiPredefinedTags,
       aiTagExistingLinks,
       aiDescriptionMethod,
+      aiAnalyzeFirstChars,
       aiCharacterCount,
       aiDescribeExistingLinks,
       dashboardPinnedLinks,
@@ -114,6 +118,7 @@ export default function Preference() {
     aiPredefinedTags,
     aiTagExistingLinks,
     aiDescriptionMethod,
+    aiAnalyzeFirstChars,
     aiCharacterCount,
     aiDescribeExistingLinks,
   ]);
@@ -135,6 +140,7 @@ export default function Preference() {
       setAiPredefinedTags(account.aiPredefinedTags);
       setAiTagExistingLinks(account.aiTagExistingLinks);
       setAiDescriptionMethod(account.aiDescriptionMethod);
+      setAiAnalyzeFirstChars(account.aiAnalyzeFirstChars);
       setAiCharacterCount(account.aiCharacterCount);
       setAiDescribeExistingLinks(account.aiDescribeExistingLinks);
     }
@@ -153,6 +159,7 @@ export default function Preference() {
       "aiPredefinedTags",
       "aiTagExistingLinks",
       "aiDescriptionMethod",
+      "aiAnalyzeFirstChars",
       "aiCharacterCount",
       "aiDescribeExistingLinks",
     ];
@@ -400,46 +407,44 @@ export default function Preference() {
 	    <p className="text-md mt-4">{t("ai_description_method")}</p>
 
 		<div className="p-3">
-		  <label className="label cursor-pointer flex gap-2 justify-start w-fit">
-		    <input
-		      type="radio"
-		      name="ai-description-method-radio"
-		      className="radio checked:bg-primary"
-		      value="DISABLED"
-		      checked={aiDescriptionMethod === AiDescriptionMethod.DISABLED}
-		      onChange={() =>
-			setAiDescriptionMethod(AiDescriptionMethod.DISABLED)
-		      }
-		    />
-		    <span className="label-text">{t("disabled")}</span>
-		  </label>
-		  <p className="text-neutral text-sm pl-5">
-		    {t("ai_description_disabled_desc")}
-		  </p>
-
-		  <label className="label cursor-pointer flex gap-2 justify-start w-fit">
-		    <input
-		      type="radio"
-		      name="ai-description-method-radio"
-		      className="radio checked:bg-primary"
-		      value="GENERATE"
-		      checked={aiDescriptionMethod === AiDescriptionMethod.GENERATE}
-		      onChange={() =>
-			setAiDescriptionMethod(AiDescriptionMethod.GENERATE)
-		      }
-		    />
-		    <span className="label-text">{t("auto_generate_descriptions")}</span>
-		  </label>
-		  <p className="text-neutral text-sm pl-5">
-		    {t("auto_generate_descriptions_desc")}
-		  </p>
+		<Select
+		  value={aiDescriptionMethod}
+		  onValueChange={(value) => setAiDescriptionMethod(value)}
+		>
+		  <SelectTrigger className="w-[280px]">
+		    <SelectValue placeholder="Select method" />
+		  </SelectTrigger>
+		  <SelectContent>
+		    <SelectItem value="DISABLED">{t("disabled")}</SelectItem>
+		    <SelectItem value="GENERATE_FAST">{t("generate_fast_desc")}</SelectItem>
+		    <SelectItem value="GENERATE_FULL">{t("generate_full_desc")}</SelectItem>
+		  </SelectContent>
+		</Select>
 		</div>
+
+		{aiDescriptionMethod === "GENERATE_FAST" && (
+		  <div className="mb-3">
+		    <label htmlFor="ai-analyze-chars" className="label">
+		      <span className="label-text">{t("ai_analyze_first_chars")}</span>
+		    </label>
+		    <input
+		      id="ai-analyze-chars"
+		      type="number"
+		      className="input input-bordered w-full max-w-xs"
+		      value={aiAnalyzeFirstChars}
+		      onChange={(e) =>
+			setAiAnalyzeFirstChars(parseInt(e.target.value, 10) || 3000)
+		      }
+		    />
+		    <p className="text-neutral text-sm mt-1">
+		      {t("ai_analyze_first_chars_desc")}
+		    </p>
+		  </div>
+		)}
 
 		<div
 		  className={`mb-3 ${
-		    aiDescriptionMethod === AiDescriptionMethod.DISABLED
-		      ? "opacity-50"
-		      : ""
+		    aiDescriptionMethod === "DISABLED" ? "opacity-50" : ""
 		  }`}
 		>
 		  <label htmlFor="ai-char-count" className="label">
@@ -453,28 +458,29 @@ export default function Preference() {
 		    onChange={(e) =>
 		      setAiCharacterCount(parseInt(e.target.value, 10) || 75)
 		    }
-		    disabled={aiDescriptionMethod === AiDescriptionMethod.DISABLED}
+		    disabled={aiDescriptionMethod === "DISABLED"}
 		  />
 		  <p className="text-neutral text-sm mt-1">
 		    {t("ai_description_length_desc")}
 		  </p>
 		</div>
-		
+
 		<div
 		  className={`mb-3 ${
-		    aiDescriptionMethod === AiDescriptionMethod.DISABLED ? "opacity-50" : ""
+		    aiDescriptionMethod === "DISABLED" ? "opacity-50" : ""
 		  }`}
 		>
 		  <Checkbox
 		    label={t("generate_descriptions_for_existing_links")}
 		    state={aiDescribeExistingLinks}
 		    onClick={() =>
-		      aiDescriptionMethod !== AiDescriptionMethod.DISABLED &&
+		      aiDescriptionMethod !== "DISABLED" &&
 		      setAiDescribeExistingLinks(!aiDescribeExistingLinks)
 		    }
-		    disabled={aiDescriptionMethod === AiDescriptionMethod.DISABLED}
+		    disabled={aiDescriptionMethod === "DISABLED"}
 		  />
 		</div>
+
 
           </div>
         )}
