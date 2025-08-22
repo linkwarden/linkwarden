@@ -36,7 +36,8 @@
         }
       ],
       "expo-secure-store",
-      "expo-share-intent"
+      "expo-share-intent",
+      "./plugins/with-daynight-transparent-nav"
     ],
     "experiments": {
       "typedRoutes": true

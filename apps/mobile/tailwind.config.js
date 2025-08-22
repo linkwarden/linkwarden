@@ -13,6 +13,7 @@ const hexToRgb = (hex) => {
 module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
+  darkMode: "media",
   theme: {
     extend: {
       colors: Object.fromEntries(
