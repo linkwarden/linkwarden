@@ -25,7 +25,7 @@ export default async function autoDescribeLink(
   // bail if...
   if (link.description) return; // has a description
   if (link.aiDescribed) return;  // processed before
-  if (user.aiDescriptionMethod !== "GENERATE") return; // off in prefs
+  if (user.aiDescriptionMethod === "DISABLED") return; // off in prefs
 
   const rawContent = link.textContent;
   let cleanContent: string | undefined = metaDescription;
@@ -50,7 +50,7 @@ export default async function autoDescribeLink(
       }    
     } catch (e) {
       console.log(`[AutoDescribe] Readability failed for link ${linkId}, falling back to raw text.`);
-      cleanContent = rawContent; // ...else raw text
+      contentToProcess = rawContent; // ...else raw text
     }
   } else { // setting GENERATE_FULL
     contentToProcess = rawContent;
