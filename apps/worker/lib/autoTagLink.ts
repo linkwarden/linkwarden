@@ -49,6 +49,9 @@ export const getAIModel = (): LanguageModelV1 => {
         process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL,
         "api"
       ),
+      fetchOptions: {            // headroom for slower hardware bulk processing ai descript
+        timeout: 15 * 60 * 1000, // 15 minutes in millisecond -> ?? update env var to match BROWSER_TIMEOUT=15s ??
+      },
     });
 
     return ollama(process.env.OLLAMA_MODEL, {
