@@ -1,4 +1,9 @@
-import { Stack, usePathname, useRouter } from "expo-router";
+import {
+  Stack,
+  usePathname,
+  useRootNavigationState,
+  useRouter,
+} from "expo-router";
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { mmkvPersister } from "@/lib/queryPersister";
@@ -12,6 +17,7 @@ import { Platform, View } from "react-native";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useShareIntent } from "expo-share-intent";
 import useDataStore from "@/store/data";
+import useAuthStore from "@/store/auth";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,16 +35,21 @@ export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const { hasShareIntent, shareIntent, error, resetShareIntent } =
     useShareIntent();
-  const { updateData } = useDataStore();
+  const { updateData, setData, data } = useDataStore();
 
   const router = useRouter();
   const pathname = usePathname();
 
+  const { setAuth } = useAuthStore();
+  const rootNavState = useRootNavigationState();
+
   useEffect(() => {
-    const needsRewrite =
-      ((typeof pathname === "string" && pathname.startsWith("/dataUrl=")) ||
-        hasShareIntent) &&
-      pathname !== "/incoming";
+    setAuth();
+    setData();
+  }, []);
+
+  useEffect(() => {
+    if (!rootNavState?.key) return;
 
     if (hasShareIntent && shareIntent.webUrl) {
       updateData({
@@ -51,6 +62,11 @@ export default function RootLayout() {
       resetShareIntent();
     }
 
+    const needsRewrite =
+      ((typeof pathname === "string" && pathname.startsWith("/dataUrl=")) ||
+        hasShareIntent) &&
+      pathname !== "/incoming";
+
     if (needsRewrite) {
       router.replace("/incoming");
     }
@@ -58,7 +74,13 @@ export default function RootLayout() {
       resetShareIntent();
       router.replace("/incoming");
     }
-  }, [hasShareIntent, pathname]);
+  }, [
+    rootNavState?.key,
+    hasShareIntent,
+    pathname,
+    shareIntent?.webUrl,
+    data.shareIntent,
+  ]);
 
   return (
     <PersistQueryClientProvider

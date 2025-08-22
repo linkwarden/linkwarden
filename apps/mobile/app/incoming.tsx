@@ -5,6 +5,7 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { Redirect, useRouter } from "expo-router";
 import useAuthStore from "@/store/auth";
@@ -22,26 +23,28 @@ export default function IncomingScreen() {
   const { colorScheme } = useColorScheme();
 
   useEffect(() => {
-    addLink.mutate(
-      { url: data.shareIntent.url },
-      {
-        onSuccess: () => {
-          setTimeout(() => {
-            updateData({
-              shareIntent: {
-                hasShareIntent: false,
-                url: "",
-              },
-            });
-            router.replace("/dashboard");
-          }, 1000);
-        },
-        onError: (error) => {
-          console.error("Error adding link:", error);
-        },
-      }
-    );
-  }, []);
+    if (auth.status === "authenticated" && data.shareIntent.url)
+      addLink.mutate(
+        { url: data.shareIntent.url },
+        {
+          onSuccess: () => {
+            setTimeout(() => {
+              updateData({
+                shareIntent: {
+                  hasShareIntent: false,
+                  url: "",
+                },
+              });
+              router.replace("/dashboard");
+            }, 1000);
+          },
+          onError: (error) => {
+            Alert.alert("Error", "There was an error adding the link.");
+            console.error("Error adding link:", error);
+          },
+        }
+      );
+  }, [auth, data.shareIntent.url]);
 
   if (auth.status === "unauthenticated") return <Redirect href="/login" />;
 

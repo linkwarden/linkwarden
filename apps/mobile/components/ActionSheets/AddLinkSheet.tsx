@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { useRef, useState } from "react";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import Input from "@/components/ui/Input";
@@ -41,6 +41,7 @@ export default function AddLinkSheet() {
                   setLink("");
                 },
                 onError: (error) => {
+                  Alert.alert("Error", "There was an error adding the link.");
                   console.error("Error adding link:", error);
                 },
               }

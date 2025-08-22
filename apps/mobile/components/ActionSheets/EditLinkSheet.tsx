@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
@@ -114,7 +114,8 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
               SheetManager.hide("edit-link-sheet");
             },
             onError: (error) => {
-              console.error("Error adding link:", error);
+              Alert.alert("Error", "There was an error editing the link.");
+              console.error("Error editing link:", error);
             },
           })
         }
