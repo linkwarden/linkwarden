@@ -186,4 +186,5 @@ export interface MobileData {
     url: string;
   };
   theme: "light" | "dark" | "system";
+  preferredFormat: ArchivedFormat | null;
 }

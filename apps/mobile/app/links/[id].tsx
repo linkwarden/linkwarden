@@ -150,7 +150,7 @@ export default function LinkScreen() {
               ),
             }}
             tagsStyles={{
-              p: { fontSize: 16, lineHeight: 24, marginVertical: 10 },
+              p: { fontSize: 18, lineHeight: 28, marginVertical: 10 },
             }}
             baseStyle={{
               color: rawTheme[colorScheme as ThemeName]["base-content"],

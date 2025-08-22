@@ -111,11 +111,9 @@ export default function RootLayout() {
                     rawTheme[colorScheme as ThemeName]["base-100"],
                   headerStyle: {
                     backgroundColor:
-                      Platform.OS === "ios"
-                        ? "transparent"
-                        : colorScheme === "dark"
-                          ? rawTheme["dark"]["base-100"]
-                          : "white",
+                      colorScheme === "dark"
+                        ? rawTheme["dark"]["base-100"]
+                        : "white",
                   },
                 }}
               />

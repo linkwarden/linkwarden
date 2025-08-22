@@ -17,6 +17,7 @@ import { useUser } from "@linkwarden/router/user";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { CalendarDays, Folder } from "lucide-react-native";
+import useDataStore from "@/store/data";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -29,6 +30,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
   const updateLink = useUpdateLink(auth);
   const { data: user } = useUser(auth);
   const { colorScheme } = useColorScheme();
+  const { data } = useDataStore();
 
   const deleteLink = useDeleteLink(auth);
 
@@ -53,7 +55,13 @@ const LinkListing = ({ link, dashboard }: Props) => {
             dashboard && "rounded-xl"
           )}
           onLongPress={() => {}}
-          onPress={() => router.push(`/links/${link.id}`)}
+          onPress={() =>
+            router.push(
+              data.preferredFormat
+                ? `/links/${link.id}?format=${data.preferredFormat}`
+                : `/links/${link.id}`
+            )
+          }
           android_ripple={{
             color: colorScheme === "dark" ? "rgba(255,255,255,0.2)" : "#ddd",
             borderless: false,

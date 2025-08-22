@@ -16,6 +16,7 @@ const useDataStore = create<DataStore>((set, get) => ({
       url: "",
     },
     theme: "light",
+    preferredFormat: null,
   },
   setData: async () => {
     const dataString = JSON.parse((await AsyncStorage.getItem("data")) || "{}");

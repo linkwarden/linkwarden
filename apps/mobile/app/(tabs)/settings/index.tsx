@@ -13,8 +13,17 @@ import { nativeApplicationVersion } from "expo-application";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useEffect, useState } from "react";
-import { Check, LogOut, Moon, Smartphone, Sun } from "lucide-react-native";
+import {
+  Check,
+  FileText,
+  Globe,
+  LogOut,
+  Moon,
+  Smartphone,
+  Sun,
+} from "lucide-react-native";
 import useDataStore from "@/store/data";
+import { ArchivedFormat } from "@/types/global";
 
 export default function SettingsScreen() {
   const { signOut, auth } = useAuthStore();
@@ -41,6 +50,7 @@ export default function SettingsScreen() {
         contentContainerStyle={{
           padding: 20,
         }}
+        contentContainerClassName="flex-col gap-6"
         contentInsetAdjustmentBehavior="automatic"
       >
         <View className="bg-base-200 rounded-xl px-4 py-3">
@@ -75,14 +85,17 @@ export default function SettingsScreen() {
         </View>
 
         <View>
-          <Text className="mb-4 mx-4 mt-6 text-neutral">Theme</Text>
+          <Text className="mb-4 mx-4 text-neutral">Theme</Text>
           <View className="bg-base-200 rounded-xl flex-col">
             <TouchableOpacity
               className="flex-row gap-2 items-center justify-between py-3 px-4"
               onPress={() => setOverride("system")}
             >
               <View className="flex-row items-center gap-2">
-                <Smartphone size={20} color="gray" />
+                <Smartphone
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].neutral}
+                />
                 <Text className="text-neutral">System Defaults</Text>
               </View>
               {override === "system" ? (
@@ -128,7 +141,61 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           </View>
         </View>
-        <Text className="mt-4 mx-auto text-sm text-neutral">
+
+        <View>
+          <Text className="mb-4 mx-4 text-neutral">
+            Default Behavior for Opening Links
+          </Text>
+          <View className="bg-base-200 rounded-xl flex-col">
+            <TouchableOpacity
+              className="flex-row gap-2 items-center justify-between py-3 px-4"
+              onPress={() =>
+                updateData({
+                  preferredFormat: null,
+                })
+              }
+            >
+              <View className="flex-row items-center gap-2">
+                <Globe
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].neutral}
+                />
+                <Text className="text-base-content">Open original content</Text>
+              </View>
+              {data.preferredFormat === null ? (
+                <Check
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].primary}
+                />
+              ) : null}
+            </TouchableOpacity>
+            <View className="h-px bg-neutral-content ml-12" />
+            <TouchableOpacity
+              className="flex-row gap-2 items-center justify-between py-3 px-4"
+              onPress={() =>
+                updateData({
+                  preferredFormat: ArchivedFormat.readability,
+                })
+              }
+            >
+              <View className="flex-row items-center gap-2">
+                <FileText
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].neutral}
+                />
+                <Text className="text-base-content">Open reader view</Text>
+              </View>
+              {data.preferredFormat === ArchivedFormat.readability ? (
+                <Check
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].primary}
+                />
+              ) : null}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <Text className="mx-auto text-sm text-neutral">
           Linkwarden for {Platform.OS === "ios" ? "iOS" : "Android"}{" "}
           {nativeApplicationVersion}
         </Text>
