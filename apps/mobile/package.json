@@ -19,6 +19,7 @@
     "@linkwarden/react-native-render-html": "^6.3.4",
     "@linkwarden/router": "*",
     "@linkwarden/types": "*",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/netinfo": "11.4.1",
     "@react-native-menu/menu": "1.2.2",
     "@react-navigation/bottom-tabs": "^7.0.0",

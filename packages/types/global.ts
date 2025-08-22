@@ -185,4 +185,5 @@ export interface MobileData {
     hasShareIntent: boolean;
     url: string;
   };
+  theme: "light" | "dark" | "system";
 }

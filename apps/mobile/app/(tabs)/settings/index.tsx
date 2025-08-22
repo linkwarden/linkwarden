@@ -8,24 +8,26 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
-  Appearance,
 } from "react-native";
 import { nativeApplicationVersion } from "expo-application";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useEffect, useState } from "react";
 import { Check, LogOut, Moon, Smartphone, Sun } from "lucide-react-native";
+import useDataStore from "@/store/data";
 
 export default function SettingsScreen() {
   const { signOut, auth } = useAuthStore();
   const { data: user } = useUser(auth);
   const { colorScheme, setColorScheme } = useColorScheme();
+  const { data, updateData } = useDataStore();
   const [override, setOverride] = useState<"light" | "dark" | "system">(
-    Appearance.getColorScheme() || "system"
+    data.theme || "system"
   );
 
   useEffect(() => {
     setColorScheme(override);
+    updateData({ theme: override });
   }, [override]);
 
   return (
