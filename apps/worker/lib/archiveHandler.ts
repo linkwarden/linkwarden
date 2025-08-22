@@ -151,12 +151,6 @@ export default async function archiveHandler(
             await handleScreenshotAndPdf(link, page, archivalSettings);
           }
 
-	  console.log("--- DEBUGGING AUTO-DESCRIPTION ---");
-	  console.log("User Setting (aiDescriptionMethod):", user.aiDescriptionMethod);
-	  console.log("Link has description already?:", !!link.description);
-	  console.log("Link already processed (aiDescribed)?:", link.aiDescribed);
-	  console.log("--- END DEBUGGING BLOCK ---");
-
           // Auto-tagging
           if (
             archivalSettings.aiTag &&
