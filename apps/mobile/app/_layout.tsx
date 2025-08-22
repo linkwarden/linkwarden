@@ -106,9 +106,25 @@ export default function RootLayout() {
                   headerShown: true,
                   headerBackTitle: "Back",
                   headerTitle: "",
+                  headerTintColor: colorScheme === "dark" ? "white" : "black",
+                  headerStyle: {
+                    backgroundColor:
+                      Platform.OS === "ios"
+                        ? "transparent"
+                        : colorScheme === "dark"
+                          ? rawTheme["dark"]["base-100"]
+                          : "white",
+                  },
                 }}
               />
               <Stack.Screen name="login" />
+              <Stack.Screen
+                name="incoming"
+                options={{
+                  navigationBarColor:
+                    rawTheme[colorScheme as ThemeName]["base-100"],
+                }}
+              />
               <Stack.Screen name="+not-found" />
             </Stack>
           )}

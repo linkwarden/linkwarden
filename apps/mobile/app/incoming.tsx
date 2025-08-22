@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -10,46 +10,58 @@ import { Redirect, useRouter } from "expo-router";
 import useAuthStore from "@/store/auth";
 import useDataStore from "@/store/data";
 import { Check } from "lucide-react-native";
+import { useAddLink } from "@linkwarden/router/links";
+import { rawTheme, ThemeName } from "@/lib/colors";
+import { useColorScheme } from "nativewind";
 
 export default function IncomingScreen() {
   const { auth } = useAuthStore();
   const router = useRouter();
   const { data, updateData } = useDataStore();
+  const addLink = useAddLink(auth);
+  const { colorScheme } = useColorScheme();
 
   useEffect(() => {
-    if (auth.status === "unauthenticated") {
-      router.replace("/login");
-      return;
-    }
-  }, []);
-
-  useEffect(() => {
-    let timeout = setTimeout(() => {
-      updateData({
-        shareIntent: {
-          hasShareIntent: false,
-          url: "",
+    addLink.mutate(
+      { url: data.shareIntent.url },
+      {
+        onSuccess: () => {
+          setTimeout(() => {
+            updateData({
+              shareIntent: {
+                hasShareIntent: false,
+                url: "",
+              },
+            });
+            router.replace("/dashboard");
+          }, 1000);
         },
-      });
-      router.replace("/dashboard");
-    }, 2000);
-    return () => clearTimeout(timeout);
+        onError: (error) => {
+          console.error("Error adding link:", error);
+        },
+      }
+    );
   }, []);
 
   if (auth.status === "unauthenticated") return <Redirect href="/login" />;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.subtitle}>{String(data?.shareIntent.url)}</Text>
+    <SafeAreaView className="flex-1 bg-base-100">
       {data?.shareIntent.url ? (
-        <View style={styles.center}>
-          <Check size={140} style={styles.check} />
-          <Text style={styles.title}>Link Saved!</Text>
+        <View className="flex-1 items-center justify-center">
+          <Check
+            size={140}
+            className="mb-3 text-base-content"
+            color={rawTheme[colorScheme as ThemeName].primary}
+          />
+          <Text className="text-2xl font-semibold text-base-content">
+            Link Saved!
+          </Text>
         </View>
       ) : (
-        <View style={styles.center}>
+        <View className="flex-1 items-center justify-center">
           <ActivityIndicator size="large" />
-          <Text style={styles.subtitle}>
+          <Text className="mt-3 text-base text-base-content opacity-70">
             One sec… {String(data?.shareIntent.url)}
           </Text>
         </View>
