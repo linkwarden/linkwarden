@@ -234,7 +234,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
             </div>
           )}
 
-          <div className="flex flex-col justify-between h-full min-h-24">
+          <div className="flex flex-col justify-between h-full min-h-11">
             <div className="p-3 flex flex-col gap-2">
               {show.name && (
                 <p className="truncate w-full text-primary text-sm">
