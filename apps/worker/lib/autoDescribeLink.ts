@@ -17,8 +17,8 @@ export default async function autoDescribeLink(
     where: { id: linkId },
   });
 
-  if (!link) {
-    console.log(`[AutoDescribe] Link ${linkId} not found.`);
+  if (!link || !link.url) {
+    console.log(`[AutoDescribe] Link ${linkId} not found or has no URL.`);
     return;
   }
 
@@ -30,26 +30,36 @@ export default async function autoDescribeLink(
   const rawContent = link.textContent;
   let cleanContent: string | undefined = metaDescription;
 
-  if (rawContent) {
+  if (!rawContent) return;
+
+  let contentToProcess = "";
+  // User selects how many first chars to summarize > fallback to db default (3000)
+  // lower powered machines likely benefit from env var BROWSER_TIMEOUT=10 if using raw
+  let sliceLimit = user.aiAnalyzeFirstChars || 3000;
+
+  if (user.aiDescriptionMethod === "GENERATE_FAST") {
     try {
       const doc = new JSDOM(rawContent, { url: link.url });
       const reader = new Readability(doc.window.document);
       const article = reader.parse();
-
-      // if mozilla finds good content use else raw > solve for low powered pc taking 5+m on complex pages
-      // lower powered machines likely benefit from env var BROWSER_TIMEOUT=10
-      if (article && article.textContent.trim().length > (metaDescription?.length || 0)) {
-        cleanContent = article.textContent;
-      }
+      
+      if (article && article.textContent) {
+        contentToProcess = article.textContent;
+      } else {
+        contentToProcess = rawContent;
+      }    
     } catch (e) {
       console.log(`[AutoDescribe] Readability failed for link ${linkId}, falling back to raw text.`);
       cleanContent = rawContent; // ...else raw text
     }
+  } else { // setting GENERATE_FULL
+    contentToProcess = rawContent;
+    sliceLimit = 25000;
   }
 
 
   const charCount = user.aiCharacterCount || 75;
-  const prompt = generateDescriptionPrompt(cleanContent.slice(0, 8000), charCount); // slice to reasonable length
+  const prompt = generateDescriptionPrompt(contentToProcess.slice(0, sliceLimit), charCount); // slice to set length
 
   try {
     const { object: description } = await generateObject({
@@ -72,7 +82,7 @@ export default async function autoDescribeLink(
       where: { id: linkId },
       data: {
         description: finalDescription,
-        aiDescribed: true, // Copy ai tag code > flag as processed
+        aiDescribed: true, // Mirror ai tag logic > flag as processed
       },
     });
   } catch (err) {
