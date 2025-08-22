@@ -416,7 +416,7 @@ export default function Preference() {
 		<div className="p-3">
 		<Select
 		  value={aiDescriptionMethod}
-		  onValueChange={(value) => setAiDescriptionMethod(value)}
+		  onValueChange={(value) => setAiDescriptionMethod(value as AiDescriptionMethod)}
 		>
 		  <SelectTrigger className="w-[280px]">
 		    <SelectValue placeholder="Select method" />
