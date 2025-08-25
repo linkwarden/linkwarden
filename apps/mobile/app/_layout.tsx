@@ -4,7 +4,6 @@ import {
   useRootNavigationState,
   useRouter,
 } from "expo-router";
-import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { mmkvPersister } from "@/lib/queryPersister";
 import { useState, useEffect } from "react";
@@ -18,6 +17,8 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useShareIntent } from "expo-share-intent";
 import useDataStore from "@/store/data";
 import useAuthStore from "@/store/auth";
+import { QueryClient } from "@tanstack/react-query";
+import * as FileSystem from "expo-file-system";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,13 +41,27 @@ export default function RootLayout() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { setAuth } = useAuthStore();
+  const { auth, setAuth } = useAuthStore();
   const rootNavState = useRootNavigationState();
 
   useEffect(() => {
     setAuth();
     setData();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (auth.status === "unauthenticated") {
+        queryClient.cancelQueries();
+        queryClient.clear();
+        mmkvPersister.removeClient?.();
+
+        const CACHE_DIR =
+          FileSystem.documentDirectory + "archivedData/readable/";
+        await FileSystem.deleteAsync(CACHE_DIR, { idempotent: true });
+      }
+    })();
+  }, [auth.status]);
 
   useEffect(() => {
     if (!rootNavState?.key) return;
