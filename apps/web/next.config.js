@@ -23,14 +23,21 @@ const nextConfig = {
   env: {
     version,
   },
-  webpack(config) {
+  webpack(config, { isServer }) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
     };
 
+    if (isServer) {
+      config.externals.push({
+        sharp: "commonjs sharp",
+      });
+    }
+  
     return config;
   },
+
 };
 
 module.exports = nextConfig;
