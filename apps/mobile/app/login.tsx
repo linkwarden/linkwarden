@@ -5,13 +5,7 @@ import useAuthStore from "@/store/auth";
 import { Redirect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { useState } from "react";
-import {
-  View,
-  Text,
-  Dimensions,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Dimensions, TouchableOpacity } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 export default function HomeScreen() {
@@ -69,6 +63,7 @@ export default function HomeScreen() {
             className="w-full text-xl p-3 leading-tight"
             textAlignVertical="center"
             placeholder="Access Token"
+            secureTextEntry
             value={form.token}
             onChangeText={(text) => setForm({ ...form, token: text })}
           />
