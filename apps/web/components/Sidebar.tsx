@@ -52,18 +52,12 @@ export default function Sidebar({ className }: { className?: string }) {
         className || ""
       }`}
     >
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-col gap-1">
         <SidebarHighlightLink
           title={t("dashboard")}
           href={`/dashboard`}
           icon={"bi-house"}
           active={active === `/dashboard`}
-        />
-        <SidebarHighlightLink
-          title={t("pinned")}
-          href={`/links/pinned`}
-          icon={"bi-pin-angle"}
-          active={active === `/links/pinned`}
         />
         <SidebarHighlightLink
           title={t("all_links")}
@@ -72,10 +66,22 @@ export default function Sidebar({ className }: { className?: string }) {
           active={active === `/links`}
         />
         <SidebarHighlightLink
+          title={t("pinned_links")}
+          href={`/links/pinned`}
+          icon={"bi-pin-angle"}
+          active={active === `/links/pinned`}
+        />
+        <SidebarHighlightLink
           title={t("all_collections")}
           href={`/collections`}
           icon={"bi-folder"}
           active={active === `/collections`}
+        />
+        <SidebarHighlightLink
+          title={t("all_tags")}
+          href={`/tags`}
+          icon={"bi-hash"}
+          active={active === `/tags`}
         />
       </div>
 

@@ -16,21 +16,11 @@ export default function SidebarHighlightLink({
       <div
         title={title}
         className={`${
-          active || false
-            ? "bg-primary/20"
-            : "bg-neutral-content/20 hover:bg-neutral/20"
-        } duration-200 px-3 py-2 cursor-pointer gap-2 w-full rounded-lg capitalize`}
+          active || false ? "bg-primary/20" : "hover:bg-neutral/20"
+        } duration-200 px-3 py-1 cursor-pointer flex items-center gap-2 w-full rounded-lg capitalize`}
       >
-        <div
-          className={
-            "w-10 h-10 inline-flex items-center justify-center bg-black/10 dark:bg-white/5 rounded-full"
-          }
-        >
-          <i className={`${icon} text-primary text-xl drop-shadow`}></i>
-        </div>
-        <div className={"mt-1"}>
-          <p className="truncate w-full font-semibold text-xs">{title}</p>
-        </div>
+        <i className={`${icon} text-primary text-xl drop-shadow`}></i>
+        <p className="truncate w-full font-semibold text-sm">{title}</p>
       </div>
     </Link>
   );

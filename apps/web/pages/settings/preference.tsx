@@ -12,7 +12,7 @@ import {
   useUser,
 } from "@linkwarden/router/user";
 import { useConfig } from "@linkwarden/router/config";
-import { useTags, useUpdateArchivalTags } from "@linkwarden/router/tags";
+import { useTags, useUpsertTags } from "@linkwarden/router/tags";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useArchivalTags } from "@/hooks/useArchivalTags";
 import { isArchivalTag } from "@linkwarden/lib";
@@ -32,7 +32,7 @@ export default function Preference() {
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser() as any;
   const { data: tags } = useTags();
-  const updateArchivalTags = useUpdateArchivalTags();
+  const upsertTags = useUpsertTags();
   const {
     ARCHIVAL_OPTIONS,
     archivalTags,
@@ -172,8 +172,7 @@ export default function Preference() {
       const promises = [];
 
       if (hasAccountChanges) promises.push(updateUser.mutateAsync({ ...user }));
-      if (hasTagChanges)
-        promises.push(updateArchivalTags.mutateAsync(archivalTags));
+      if (hasTagChanges) promises.push(upsertTags.mutateAsync(archivalTags));
 
       if (promises.length > 0) {
         await Promise.all(promises);

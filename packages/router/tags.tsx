@@ -8,6 +8,7 @@ import { MobileAuth, TagIncludingLinkCount } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
 import { Tag } from "@linkwarden/prisma/client";
 import { ArchivalTagOption } from "@linkwarden/types/inputSelect";
+import { TagBulkDeletionSchemaType } from "@linkwarden/lib/schemaValidation";
 
 const useTags = (auth?: MobileAuth): UseQueryResult<Tag[], Error> => {
   let status: "loading" | "authenticated" | "unauthenticated";
@@ -69,7 +70,7 @@ const useUpdateTag = () => {
   });
 };
 
-const useUpdateArchivalTags = () => {
+const useUpsertTags = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -129,4 +130,35 @@ const useRemoveTag = () => {
   });
 };
 
-export { useTags, useUpdateTag, useUpdateArchivalTags, useRemoveTag };
+const useBulkTagDeletion = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (body: TagBulkDeletionSchemaType) => {
+      const response = await fetch(`/api/v1/tags/bulk-delete`, {
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "DELETE",
+      });
+
+      const responseData = await response.json();
+      if (!response.ok) throw new Error(responseData.response);
+
+      return responseData.response;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+    },
+  });
+};
+
+export {
+  useTags,
+  useUpdateTag,
+  useUpsertTags,
+  useRemoveTag,
+  useBulkTagDeletion,
+};
