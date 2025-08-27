@@ -208,7 +208,7 @@
   "password_successfully_updated": "Ваш пароль успешно обновлен.",
   "user_already_member": "Пользователь уже существует.",
   "you_are_already_collection_owner": "Вы уже являетесь владельцем коллекции.",
-  "link_already_in_collection": "This link is already in this collection.",
+  "link_already_in_collection": "Эта ссылка уже в этой коллекции.",
   "date_newest_first": "Дата (сначала новые)",
   "date_oldest_first": "Дата (сначала старые)",
   "name_az": "Название (А-Я)",
