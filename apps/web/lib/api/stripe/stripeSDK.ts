@@ -8,7 +8,8 @@ export default function stripeSDK() {
   }
 
   const stripe = new Stripe(secretKey, {
-    apiVersion: "2025-07-30.basil",
+    // @ts-ignore
+    apiVersion: process.env.STRIPE_API_VERSION || "2025-07-30.basil",
   });
 
   return stripe;
