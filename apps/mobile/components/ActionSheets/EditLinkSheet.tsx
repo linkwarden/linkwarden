@@ -249,6 +249,9 @@ export default function EditLinkSheet() {
   return (
     <ActionSheet
       gestureEnabled
+      indicatorStyle={{
+        backgroundColor: rawTheme[colorScheme as ThemeName]["neutral-content"],
+      }}
       enableRouterBackNavigation={true}
       routes={routes}
       initialRoute="main"

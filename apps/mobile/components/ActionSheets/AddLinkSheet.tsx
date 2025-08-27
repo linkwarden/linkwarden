@@ -19,6 +19,9 @@ export default function AddLinkSheet() {
     <ActionSheet
       ref={actionSheetRef}
       gestureEnabled
+      indicatorStyle={{
+        backgroundColor: rawTheme[colorScheme as ThemeName]["neutral-content"],
+      }}
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
