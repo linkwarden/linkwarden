@@ -160,7 +160,7 @@ export default function LinkActions({
         <LinkModal
           onClose={() => setEditLinkModal(false)}
           onPin={() => pinLink(link)}
-          onUpdateArchive={updateArchive}
+          onUpdateArchive={() => setRefreshPreservationsModal(true)}
           onDelete={() => setDeleteLinkModal(true)}
           link={link}
           activeMode="edit"

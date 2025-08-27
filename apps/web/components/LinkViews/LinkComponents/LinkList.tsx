@@ -9,7 +9,7 @@ import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
-import { isPWA } from "@/lib/utils";
+import { cn, isPWA } from "@/lib/utils";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
@@ -23,6 +23,8 @@ import { useRouter } from "next/router";
 import { atLeastOneFormatAvailable } from "@linkwarden/lib/formatStats";
 import LinkFormats from "./LinkFormats";
 import openLink from "@/lib/client/openLink";
+import { useDraggable } from "@dnd-kit/core";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -33,6 +35,15 @@ type Props = {
 
 export default function LinkCardCompact({ link, editMode }: Props) {
   const { t } = useTranslation();
+
+  const isSmallScreen = useMediaQuery("(max-width: 1023px)");
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: link.id?.toString() ?? "",
+    data: {
+      linkId: link.id,
+    },
+    disabled: isSmallScreen,
+  });
 
   const { data: collections = [] } = useCollections();
 
@@ -103,9 +114,14 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   return (
     <>
       <div
-        className={`${selectedStyle} rounded-md border relative group items-center flex ${
-          !isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1"
-        } duration-200`}
+        ref={setNodeRef}
+        className={cn(
+          "rounded-md border relative group items-center flex",
+          selectedStyle,
+          !isPWA() ? "hover:bg-base-300 px-2 py-1" : "py-1",
+          isDragging ? "opacity-30" : "opacity-100",
+          "duration-200, touch-manipulation select-none"
+        )}
         onClick={() =>
           selectable
             ? handleCheckboxClick(link)
@@ -119,6 +135,8 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          {...attributes}
+          {...listeners}
         >
           {show.icon && (
             <div className="shrink-0">

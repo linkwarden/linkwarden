@@ -1,7 +1,6 @@
 import { View, Text, Image, Pressable, Platform, Alert } from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { ArchivedFormat } from "@linkwarden/types";
 import {
   atLeastOneFormatAvailable,
@@ -15,6 +14,10 @@ import { SheetManager } from "react-native-actions-sheet";
 import * as Clipboard from "expo-clipboard";
 import { cn } from "@linkwarden/lib/utils";
 import { useUser } from "@linkwarden/router/user";
+import { rawTheme, ThemeName } from "@/lib/colors";
+import { useColorScheme } from "nativewind";
+import { CalendarDays, Folder } from "lucide-react-native";
+import useDataStore from "@/store/data";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -26,6 +29,8 @@ const LinkListing = ({ link, dashboard }: Props) => {
   const router = useRouter();
   const updateLink = useUpdateLink(auth);
   const { data: user } = useUser(auth);
+  const { colorScheme } = useColorScheme();
+  const { data } = useDataStore();
 
   const deleteLink = useDeleteLink(auth);
 
@@ -44,14 +49,23 @@ const LinkListing = ({ link, dashboard }: Props) => {
       <ContextMenu.Trigger asChild>
         <Pressable
           className={cn(
-            "p-5 flex-row justify-between bg-white",
-            Platform.OS === "android"
-              ? "active:bg-white"
-              : "active:bg-gray-200",
+            "p-5 flex-row justify-between",
+            dashboard ? "bg-base-200" : "bg-base-100",
+            Platform.OS !== "android" && "active:bg-base-200/50",
             dashboard && "rounded-xl"
           )}
-          onPress={() => router.push(`/links/${link.id}`)}
-          android_ripple={{ color: "#ddd", borderless: false }}
+          onLongPress={() => {}}
+          onPress={() =>
+            router.push(
+              data.preferredFormat
+                ? `/links/${link.id}?format=${data.preferredFormat}`
+                : `/links/${link.id}`
+            )
+          }
+          android_ripple={{
+            color: colorScheme === "dark" ? "rgba(255,255,255,0.2)" : "#ddd",
+            borderless: false,
+          }}
         >
           <View
             className={cn(
@@ -60,23 +74,32 @@ const LinkListing = ({ link, dashboard }: Props) => {
             )}
           >
             <View className="w-[65%] flex-col justify-between">
-              <Text numberOfLines={2} className="font-medium text-lg">
+              <Text
+                numberOfLines={2}
+                className="font-medium text-lg text-base-content"
+              >
                 {decode(link.name || link.description || link.url)}
               </Text>
 
               {shortendURL && (
-                <Text numberOfLines={1} className="mt-1.5 font-light text-sm">
+                <Text
+                  numberOfLines={1}
+                  className="mt-1.5 font-light text-sm text-base-content"
+                >
                   {shortendURL}
                 </Text>
               )}
 
               <View className="flex flex-row gap-1 items-center mt-1.5 pr-1.5 self-start rounded-md">
-                <IconSymbol
-                  name="folder.fill"
+                <Folder
                   size={16}
+                  fill={link.collection.color || ""}
                   color={link.collection.color || ""}
                 />
-                <Text numberOfLines={1} className="font-light text-xs">
+                <Text
+                  numberOfLines={1}
+                  className="font-light text-xs text-base-content"
+                >
                   {link.collection.name}
                 </Text>
               </View>
@@ -99,8 +122,14 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 )}
               </View>
               <View className="flex flex-row gap-1 items-center mt-5 self-start">
-                <IconSymbol name="calendar" size={16} color="gray" />
-                <Text numberOfLines={1} className="font-light text-xs">
+                <CalendarDays
+                  size={16}
+                  color={rawTheme[colorScheme as ThemeName]["neutral"]}
+                />
+                <Text
+                  numberOfLines={1}
+                  className="font-light text-xs text-base-content"
+                >
                   {new Date(link.createdAt as string).toLocaleString("en-US", {
                     year: "numeric",
                     month: "short",

@@ -15,13 +15,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-slate-500 text-white",
-        primary: "bg-primary text-primary-foreground",
-        accent: "bg-violet-600 border border-violet-400 text-white",
+        primary: "bg-primary text-base-content",
+        accent: "bg-accent border border-violet-400 text-white",
         destructive: "bg-destructive text-white",
-        outline: "border",
+        outline: "border border-base-content",
         secondary: "bg-secondary text-secondary-foreground",
         input:
-          "bg-gray-100 rounded-lg px-4 justify-between flex-row font-normal",
+          "bg-base-100 rounded-lg px-4 justify-between flex-row font-normal",
         metal: "bg-neutral-content text-base-content border border-neutral/30",
         ghost: "",
         simple: "bg-base-200",
@@ -30,7 +30,7 @@ const buttonVariants = cva(
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-8 px-2 py-1 text-xs",
-        lg: "h-11 px-8",
+        lg: "h-12 px-8",
         full: "w-full px-4 py-2",
         icon: "h-8 w-8",
       },

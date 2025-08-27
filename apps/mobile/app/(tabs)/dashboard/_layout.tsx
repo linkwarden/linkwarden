@@ -1,32 +1,49 @@
-import { IconSymbol } from "@/components/ui/IconSymbol";
+import { rawTheme, ThemeName } from "@/lib/colors";
 import { Stack, useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native";
+import { Plus } from "lucide-react-native";
+import { useColorScheme } from "nativewind";
+import { Platform, TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
 export default function RootLayout() {
   const router = useRouter();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Stack
       screenOptions={{
         headerLargeTitle: true,
-        headerTransparent: true,
-        headerBlurEffect: "systemUltraThinMaterial",
+        headerTransparent: Platform.OS === "ios" ? true : false,
+        headerShadowVisible: false,
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
+        headerTintColor: colorScheme === "dark" ? "white" : "black",
+        headerLargeStyle: {
+          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+        },
+        headerStyle: {
+          backgroundColor:
+            Platform.OS === "ios"
+              ? "transparent"
+              : colorScheme === "dark"
+                ? rawTheme["dark"]["base-100"]
+                : "white",
+        },
       }}
     >
       <Stack.Screen
         name="index"
         options={{
           headerTitle: "Dashboard",
-          headerLargeStyle: {
-            backgroundColor: "#f2f2f2",
-          },
           headerRight: () => (
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
                 <TouchableOpacity>
-                  <IconSymbol size={20} name="plus" color={"#3478f6"} />
+                  <Plus
+                    size={21}
+                    color={rawTheme[colorScheme as ThemeName].primary}
+                  />
                 </TouchableOpacity>
               </DropdownMenu.Trigger>
 
@@ -37,20 +54,11 @@ export default function RootLayout() {
                 >
                   <DropdownMenu.ItemTitle>New Link</DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  key="new-collection"
-                  onSelect={() => alert("Item 2 selected")}
-                >
+                <DropdownMenu.Item key="more-options" disabled>
                   <DropdownMenu.ItemTitle>
-                    New Collection
+                    More Coming Soon!
                   </DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
-                {/* <DropdownMenu.Item
-                key="upload-file"
-                onSelect={() => alert("Item 3 selected")}
-              >
-                <DropdownMenu.ItemTitle>Upload File</DropdownMenu.ItemTitle>
-              </DropdownMenu.Item> */}
               </DropdownMenu.Content>
             </DropdownMenu.Root>
           ),
@@ -61,12 +69,10 @@ export default function RootLayout() {
         options={{
           headerTitle: "Links",
           headerBackTitle: "Back",
-          headerLargeStyle: {
-            backgroundColor: "white",
-          },
           headerSearchBarOptions: {
             placeholder: "Search",
             autoCapitalize: "none",
+            headerIconColor: colorScheme === "dark" ? "white" : "black",
             onChangeText: (e) => {
               router.setParams({
                 search: encodeURIComponent(e.nativeEvent.text),

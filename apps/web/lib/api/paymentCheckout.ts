@@ -44,14 +44,22 @@ export default async function paymentCheckout(email: string, priceId: string) {
     customer_email: isExistingCustomer ? undefined : email.toLowerCase(),
     success_url: `${process.env.BASE_URL}/dashboard`,
     cancel_url: `${process.env.BASE_URL}/login`,
-    automatic_tax: {
-      enabled: true,
-    },
     subscription_data: {
       trial_period_days: NEXT_PUBLIC_TRIAL_PERIOD_DAYS
         ? Number(NEXT_PUBLIC_TRIAL_PERIOD_DAYS)
         : 14,
     },
+    ...(process.env.MANAGED_PAYMENTS_ENABLED === "true"
+      ? {
+          managed_payments: {
+            enabled: true,
+          },
+        }
+      : {
+          automatic_tax: {
+            enabled: true,
+          },
+        }),
   });
 
   return { response: session.url, status: 200 };

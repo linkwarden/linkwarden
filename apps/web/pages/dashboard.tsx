@@ -21,10 +21,19 @@ import {
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
 import { DashboardLinks } from "@/components/DashboardLinks";
-import { ViewMode } from "@linkwarden/types";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  ViewMode,
+} from "@linkwarden/types";
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
+import { DragEndEvent } from "@dnd-kit/core";
+import Droppable from "@/components/Droppable";
+import { useUpdateLink } from "@linkwarden/router/links";
+import usePinLink from "@/lib/client/pinLink";
+import { useQueryClient } from "@tanstack/react-query";
+import DragNDrop from "@/components/DragNDrop";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -35,10 +44,24 @@ export default function Dashboard() {
     },
     ...dashboardData
   } = useDashboardData();
+
+  /**
+   * Get a combined list of all links, including those from collections.
+   * Dupplications are fine since this is used for finding dragged link
+   */
+  const allLinks = useMemo(() => {
+    const _collectionLinks = Object.values(collectionLinks).flat();
+    return [...links, ..._collectionLinks];
+  }, [collectionLinks, links]);
+
   const { data: tags = [] } = useTags();
   const { data: user } = useUser();
+  const pinLink = usePinLink();
+  const queryClient = useQueryClient();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
+  const [activeLink, setActiveLink] =
+    useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   const [dashboardSections, setDashboardSections] = useState<
     DashboardSection[]
@@ -91,9 +114,11 @@ export default function Dashboard() {
   const [showSurveyModal, setShowsSurveyModal] = useState(false);
 
   const updateUser = useUpdateUser();
+  const updateLink = useUpdateLink();
 
   const [submitLoader, setSubmitLoader] = useState(false);
 
+  // Function to render the dragged item
   const submitSurvey = async (referer: string, other?: string) => {
     if (submitLoader) return;
 
@@ -123,71 +148,212 @@ export default function Dashboard() {
     );
   };
 
-  return (
-    <MainLayout>
-      <div className="p-5 flex flex-col gap-4 h-full">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <i className="bi-house-fill text-primary" />
-            <p className="font-thin">{t("dashboard")}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <DashboardLayoutDropdown />
-            <ViewDropdown
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              dashboard
-            />
-          </div>
-        </div>
-        {orderedSections[0] ? (
-          orderedSections?.map((section, i) => (
-            <Section
-              key={i}
-              sectionData={section}
-              t={t}
-              collection={collections.find(
-                (c) => c.id === section.collectionId
-              )}
-              collectionLinks={
-                section.collectionId
-                  ? collectionLinks[section.collectionId]
-                  : []
-              }
-              links={links}
-              tags={tags}
-              numberOfLinks={numberOfLinks}
-              collectionsLength={collections.length}
-              numberOfPinnedLinks={numberOfPinnedLinks}
-              dashboardData={dashboardData}
-              setNewLinkModal={setNewLinkModal}
-            />
-          ))
-        ) : (
-          <div className="h-full flex flex-col gap-4">
-            <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-              <div className="skeleton h-20 w-full"></div>
-            </div>
-            <div className="skeleton h-full"></div>
-            <div className="skeleton h-full"></div>
-            <div className="skeleton h-full"></div>
-          </div>
-        )}
-      </div>
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { over, active } = event;
+    if (!over || !activeLink) return;
 
-      {showSurveyModal && (
-        <SurveyModal
-          submit={submitSurvey}
-          onClose={() => {
-            setShowsSurveyModal(false);
-          }}
-        />
-      )}
-      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
-    </MainLayout>
+    const targetSectionId = over.id as string;
+    const collectionId = over.data.current?.id as number;
+    const collectionName = over.data.current?.name as string;
+    const ownerId = over.data.current?.ownerId as number;
+
+    const isFromRecentSection = active.data.current?.dashboardType === "recent";
+
+    // Immediately hide the drag overlay
+    setActiveLink(null);
+    if (over.data.current?.type === "tag") {
+      const isTagAlreadyExists = activeLink.tags.some(
+        (tag) => tag.name === over.data.current?.name
+      );
+      if (isTagAlreadyExists) {
+        toast.error(t("tag_already_added"));
+        return;
+      }
+      // to match the tags structure required to update the link
+      const allTags: { name: string }[] = activeLink.tags.map((tag) => ({
+        name: tag.name,
+      }));
+      const newTags = [...allTags, { name: over.data.current?.name as string }];
+      const updatedLink = {
+        ...activeLink,
+        tags: newTags as any,
+      };
+      const load = toast.loading(t("updating"));
+      await updateLink.mutateAsync(updatedLink, {
+        onSettled: (_, error) => {
+          toast.dismiss(load);
+          if (error) {
+            // If there's an error, invalidate queries to restore the original state
+            queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+            toast.error(error.message);
+          } else {
+            toast.success(t("updated"));
+          }
+        },
+      });
+      return;
+    }
+
+    // Handle pinning the link
+    if (targetSectionId === "pinned-links-section") {
+      if (Array.isArray(activeLink.pinnedBy) && !activeLink.pinnedBy.length) {
+        // optimistically update the link's pinned state
+        const updatedLink = {
+          ...activeLink,
+          pinnedBy: [user?.id],
+        };
+        queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+          if (!oldData?.links) return oldData;
+          return {
+            ...oldData,
+            links: oldData.links.map((link: any) =>
+              link.id === updatedLink.id ? updatedLink : link
+            ),
+          };
+        });
+        pinLink(activeLink);
+      }
+      // Handle moving the link to a different collection
+    } else if (activeLink.collection.id !== collectionId) {
+      // Optimistically update the link's collection immediately
+      const updatedLink: LinkIncludingShortenedCollectionAndTags = {
+        ...activeLink,
+        collection: {
+          id: collectionId,
+          name: collectionName,
+          ownerId,
+        },
+      };
+
+      // Optimistically update the dashboard data cache
+      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+        if (!oldData?.links) return oldData;
+        return {
+          ...oldData,
+          links: oldData.links.map((link: any) =>
+            link.id === updatedLink.id ? updatedLink : link
+          ),
+        };
+      });
+
+      // Optimistically update the collection links cache
+      if (collectionId) {
+        queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+          if (!oldData?.collectionLinks) return oldData;
+
+          const oldCollectionId = activeLink.collection.id!;
+
+          return {
+            ...oldData,
+            collectionLinks: {
+              ...oldData.collectionLinks,
+              // Remove from old collection
+              [oldCollectionId]: (
+                oldData.collectionLinks[oldCollectionId] || []
+              ).filter((link: any) => link.id !== updatedLink.id),
+              // Add to new collection
+              [collectionId]: [
+                ...(oldData.collectionLinks[collectionId] || []),
+                updatedLink,
+              ],
+            },
+          };
+        });
+      }
+
+      const load = toast.loading(t("updating"));
+      await updateLink.mutateAsync(updatedLink, {
+        onSettled: (_, error) => {
+          toast.dismiss(load);
+          if (error) {
+            // If there's an error, invalidate queries to restore the original state
+            queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+            toast.error(error.message);
+          } else {
+            toast.success(t("updated"));
+          }
+        },
+      });
+    } else if (isFromRecentSection) {
+      // show error if link is dragged from recent section to the target collection which it already belongs to
+      toast.error(t("link_already_in_collection"));
+    }
+  };
+
+  return (
+    <DragNDrop
+      onDragEnd={handleDragEnd}
+      links={allLinks}
+      activeLink={activeLink}
+      setActiveLink={setActiveLink}
+    >
+      <MainLayout>
+        <div className="p-5 flex flex-col gap-4 h-full">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <i className="bi-house-fill text-primary" />
+              <p className="font-thin">{t("dashboard")}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <DashboardLayoutDropdown />
+              <ViewDropdown
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                dashboard
+              />
+            </div>
+          </div>
+          {orderedSections[0] ? (
+            orderedSections?.map((section, i) => (
+              <Section
+                key={i}
+                sectionData={section}
+                t={t}
+                collection={collections.find(
+                  (c) => c.id === section.collectionId
+                )}
+                collectionLinks={
+                  section.collectionId
+                    ? collectionLinks[section.collectionId]
+                    : []
+                }
+                links={links}
+                tags={tags}
+                numberOfLinks={numberOfLinks}
+                collectionsLength={collections.length}
+                numberOfPinnedLinks={numberOfPinnedLinks}
+                dashboardData={dashboardData}
+                setNewLinkModal={setNewLinkModal}
+              />
+            ))
+          ) : (
+            <div className="h-full flex flex-col gap-4">
+              <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+                <div className="skeleton h-20 w-full"></div>
+                <div className="skeleton h-20 w-full"></div>
+                <div className="skeleton h-20 w-full"></div>
+                <div className="skeleton h-20 w-full"></div>
+              </div>
+              <div className="skeleton h-full"></div>
+              <div className="skeleton h-full"></div>
+              <div className="skeleton h-full"></div>
+            </div>
+          )}
+        </div>
+
+        {showSurveyModal && (
+          <SurveyModal
+            submit={submitSurvey}
+            onClose={() => {
+              setShowsSurveyModal(false);
+            }}
+          />
+        )}
+        {newLinkModal && (
+          <NewLinkModal onClose={() => setNewLinkModal(false)} />
+        )}
+      </MainLayout>
+    </DragNDrop>
   );
 }
 
@@ -267,7 +433,11 @@ const Section = ({
 
           {dashboardData.isLoading ||
           (links && links[0] && !dashboardData.isLoading) ? (
-            <DashboardLinks links={links} isLoading={dashboardData.isLoading} />
+            <DashboardLinks
+              type="recent"
+              links={links}
+              isLoading={dashboardData.isLoading}
+            />
           ) : (
             <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
               <p className="text-center text-xl">
@@ -309,24 +479,30 @@ const Section = ({
               <i className="bi-chevron-right text-sm "></i>
             </Link>
           </div>
-
-          {dashboardData.isLoading ||
-          links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
-            <DashboardLinks
-              links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
-              isLoading={dashboardData.isLoading}
-            />
-          ) : (
-            <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-              <i className="bi-pin mx-auto text-6xl text-primary"></i>
-              <p className="text-center text-xl">
-                {t("pin_favorite_links_here")}
-              </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                {t("pin_favorite_links_here_desc")}
-              </p>
-            </div>
-          )}
+          <Droppable
+            id="pinned-links-section"
+            data={{
+              name: "pinned-links",
+            }}
+          >
+            {dashboardData.isLoading ||
+            links?.some((e: any) => e.pinnedBy && e.pinnedBy[0]) ? (
+              <DashboardLinks
+                links={links.filter((e: any) => e.pinnedBy && e.pinnedBy[0])}
+                isLoading={dashboardData.isLoading}
+              />
+            ) : (
+              <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
+                <i className="bi-pin mx-auto text-6xl text-primary"></i>
+                <p className="text-center text-xl">
+                  {t("pin_favorite_links_here")}
+                </p>
+                <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                  {t("pin_favorite_links_here_desc")}
+                </p>
+              </div>
+            )}
+          </Droppable>
         </>
       );
     case DashboardSectionType.COLLECTION:
@@ -363,22 +539,33 @@ const Section = ({
                 <i className="bi-chevron-right text-sm"></i>
               </Link>
             </div>
-            {dashboardData.isLoading || collectionLinks?.length > 0 ? (
-              <DashboardLinks
-                links={collectionLinks}
-                isLoading={dashboardData.isLoading}
-              />
-            ) : (
-              <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200">
-                <i className="bi-folder mx-auto text-6xl text-primary"></i>
-                <p className="text-center text-xl">
-                  {t("no_link_in_collection")}
-                </p>
-                <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                  {t("no_link_in_collection_desc")}
-                </p>
-              </div>
-            )}
+            <Droppable
+              id={`dashboard-${collection.id}`}
+              data={{
+                id: collection.id,
+                name: collection.name,
+                ownerId: collection.ownerId,
+                type: "collection",
+              }}
+            >
+              {dashboardData.isLoading || collectionLinks?.length > 0 ? (
+                <DashboardLinks
+                  type="collection"
+                  links={collectionLinks}
+                  isLoading={dashboardData.isLoading}
+                />
+              ) : (
+                <div className="flex flex-col gap-2 justify-center h-full border border-solid border-neutral-content w-full mx-auto p-10 rounded-xl bg-base-200 bg-gradient-to-tr from-neutral-content/70 to-50% to-base-200 min-h-72">
+                  <i className="bi-folder mx-auto text-6xl text-primary"></i>
+                  <p className="text-center text-xl">
+                    {t("no_link_in_collection")}
+                  </p>
+                  <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                    {t("no_link_in_collection_desc")}
+                  </p>
+                </div>
+              )}
+            </Droppable>
           </>
         )
       );

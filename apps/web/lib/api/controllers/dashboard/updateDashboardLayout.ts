@@ -3,7 +3,6 @@ import {
   UpdateDashboardLayoutSchemaType,
 } from "@linkwarden/lib/schemaValidation";
 import { prisma } from "@linkwarden/prisma";
-import { DashboardSection } from "@linkwarden/prisma/client";
 import getDashboardData from "./getDashboardDataV2";
 
 export default async function updateDashboardLayout(
@@ -45,136 +44,29 @@ export default async function updateDashboardLayout(
     section.collectionId ? collectionIds.includes(section.collectionId) : true
   );
 
-  const existingSections = await prisma.dashboardSection.findMany({
-    where: {
-      userId: userId,
-    },
-  });
+  // No need to track individual changes since we're doing a full replace
 
-  const existingSectionsMap = new Map(
-    existingSections.map((section) => [
-      `${section.type}-${section.collectionId || "default"}`,
-      section,
-    ])
-  );
+  await prisma.$transaction(async (tx) => {
+    // Delete all existing dashboard sections for this user
+    await tx.dashboardSection.deleteMany({
+      where: {
+        userId,
+      },
+    });
 
-  const sectionsToCreate: Pick<
-    DashboardSection,
-    "userId" | "type" | "collectionId" | "order"
-  >[] = [];
-  const sectionsToUpdate: Array<{
-    id: number;
-    newOrder: number;
-    oldOrder: number;
-  }> = [];
-  const sectionsToDelete: Array<{
-    id: number;
-    order: number;
-  }> = [];
-
-  for (const section of parsedData) {
-    const key = `${section.type}-${section.collectionId || "default"}`;
-    const existingSection = existingSectionsMap.get(key);
-
-    if (existingSection && !section.enabled) {
-      sectionsToDelete.push({
-        id: existingSection.id,
-        order: existingSection.order,
-      });
-    } else if (existingSection && section.enabled) {
-      if (existingSection.order !== section.order) {
-        sectionsToUpdate.push({
-          id: existingSection.id,
-          newOrder: section.order!,
-          oldOrder: existingSection.order,
-        });
-      }
-    } else if (section.enabled) {
-      sectionsToCreate.push({
+    // Create all enabled sections with their new order values
+    const sectionsToCreateOrUpdate = parsedData
+      .filter((section) => section.enabled)
+      .map((section) => ({
         userId: userId,
         type: section.type,
         collectionId: section.collectionId || null,
         order: section.order!,
-      });
-    }
-  }
+      }));
 
-  await prisma.$transaction(async (tx) => {
-    for (const sectionToDelete of sectionsToDelete) {
-      await tx.dashboardSection.delete({
-        where: {
-          id: sectionToDelete.id,
-        },
-      });
-
-      // Decrement order for all sections with order greater than deleted section
-      await tx.dashboardSection.updateMany({
-        where: {
-          userId,
-          order: {
-            gt: sectionToDelete.order,
-          },
-        },
-        data: {
-          order: {
-            decrement: 1,
-          },
-        },
-      });
-    }
-
-    // Handle order updates - need to be careful about conflicts
-    for (const sectionToUpdate of sectionsToUpdate) {
-      const { id, newOrder, oldOrder } = sectionToUpdate;
-
-      if (newOrder > oldOrder) {
-        // Moving down: decrement order for sections between oldOrder and newOrder
-        await tx.dashboardSection.updateMany({
-          where: {
-            userId,
-            order: {
-              gt: oldOrder,
-              lte: newOrder,
-            },
-            id: {
-              not: id,
-            },
-          },
-          data: {
-            order: {
-              decrement: 1,
-            },
-          },
-        });
-      } else if (newOrder < oldOrder) {
-        await tx.dashboardSection.updateMany({
-          where: {
-            userId,
-            order: {
-              gte: newOrder,
-              lt: oldOrder,
-            },
-            id: {
-              not: id,
-            },
-          },
-          data: {
-            order: {
-              increment: 1,
-            },
-          },
-        });
-      }
-
-      await tx.dashboardSection.update({
-        where: { id },
-        data: { order: newOrder },
-      });
-    }
-
-    if (sectionsToCreate.length > 0) {
+    if (sectionsToCreateOrUpdate.length > 0) {
       await tx.dashboardSection.createMany({
-        data: sectionsToCreate,
+        data: sectionsToCreateOrUpdate,
       });
     }
   });

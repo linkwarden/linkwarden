@@ -1,6 +1,10 @@
 import { useLinks } from "@linkwarden/router/links";
 import MainLayout from "@/layouts/MainLayout";
-import { Sort, ViewMode } from "@linkwarden/types";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  Sort,
+  ViewMode,
+} from "@linkwarden/types";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
@@ -8,6 +12,7 @@ import LinkListOptions from "@/components/LinkListOptions";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import Links from "@/components/LinkViews/Links";
+import DragNDrop from "@/components/DragNDrop";
 
 export default function Search() {
   const { t } = useTranslation();
@@ -23,6 +28,8 @@ export default function Search() {
   );
 
   const [editMode, setEditMode] = useState(false);
+  const [activeLink, setActiveLink] =
+    useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   useEffect(() => {
     if (editMode) return setEditMode(false);
@@ -34,31 +41,37 @@ export default function Search() {
   });
 
   return (
-    <MainLayout>
-      <div className="p-5 flex flex-col gap-5 w-full h-full">
-        <LinkListOptions
-          t={t}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          links={links}
-        >
-          <PageHeader icon={"bi-search"} title={t("search_results")} />
-        </LinkListOptions>
+    <DragNDrop
+      links={links}
+      activeLink={activeLink}
+      setActiveLink={setActiveLink}
+    >
+      <MainLayout>
+        <div className="p-5 flex flex-col gap-5 w-full h-full">
+          <LinkListOptions
+            t={t}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            editMode={editMode}
+            setEditMode={setEditMode}
+            links={links}
+          >
+            <PageHeader icon={"bi-search"} title={t("search_results")} />
+          </LinkListOptions>
 
-        {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}
-        <Links
-          editMode={editMode}
-          links={links}
-          layout={viewMode}
-          placeholderCount={1}
-          useData={data}
-        />
-      </div>
-    </MainLayout>
+          {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}
+          <Links
+            editMode={editMode}
+            links={links}
+            layout={viewMode}
+            placeholderCount={1}
+            useData={data}
+          />
+        </div>
+      </MainLayout>
+    </DragNDrop>
   );
 }
 

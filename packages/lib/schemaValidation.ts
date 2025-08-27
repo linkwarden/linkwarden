@@ -46,12 +46,12 @@ export const PostUserSchema = () => {
     username: emailEnabled
       ? z.string().optional()
       : z
-        .string()
-        .trim()
-        .toLowerCase()
-        .min(3)
-        .max(50)
-        .regex(/^[a-z0-9_-]{3,50}$/),
+          .string()
+          .trim()
+          .toLowerCase()
+          .min(3)
+          .max(50)
+          .regex(/^[a-z0-9_-]{3,50}$/),
     invite: z.boolean().optional(),
   });
 };
@@ -184,6 +184,7 @@ const ACCEPTED_TYPES = [
   "image/png",
   "application/pdf",
   "text/plain",
+  "text/html",
 ];
 const NEXT_PUBLIC_MAX_FILE_BUFFER = Number(
   process.env.NEXT_PUBLIC_MAX_FILE_BUFFER || 10
@@ -201,7 +202,8 @@ export const UploadFileSchema = z.object({
       (files) => ACCEPTED_TYPES.includes(files?.[0]?.mimetype),
       `Only ${ACCEPTED_TYPES.join(", ")} files are accepted.`
     ),
-  id: z.number(),
+  id: z.number().optional(),
+  url: z.string().trim().max(2048).url().optional(),
   format: z.nativeEnum(ArchivedFormat),
 });
 
@@ -293,6 +295,8 @@ export const UpdateDashboardLayoutSchema = z.array(
     enabled: z.boolean(),
     order: z.number().optional(),
   })
-)
+);
 
-export type UpdateDashboardLayoutSchemaType = z.infer<typeof UpdateDashboardLayoutSchema>;
+export type UpdateDashboardLayoutSchemaType = z.infer<
+  typeof UpdateDashboardLayoutSchema
+>;

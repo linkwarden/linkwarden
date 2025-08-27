@@ -139,14 +139,6 @@ const useAddLink = (auth?: MobileAuth) => {
       return data.response;
     },
     onSuccess: (data: LinkIncludingShortenedCollectionAndTags[]) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData?.links) return undefined;
-        return {
-          ...oldData,
-          links: [data, ...oldData?.links],
-        };
-      });
-
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
         if (!oldData) return undefined;
         return {
@@ -161,6 +153,7 @@ const useAddLink = (auth?: MobileAuth) => {
         };
       });
 
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });
@@ -228,14 +221,6 @@ const useDeleteLink = (auth?: MobileAuth) => {
       return data.response;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData?.links) return undefined;
-        return {
-          ...oldData,
-          links: oldData.links.filter((e: any) => e.id !== data.id),
-        };
-      });
-
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
         if (!oldData?.pages?.[0]) return undefined;
 
@@ -248,6 +233,7 @@ const useDeleteLink = (auth?: MobileAuth) => {
         };
       });
 
+      queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["tags"] });
       queryClient.invalidateQueries({ queryKey: ["publicLinks"] });

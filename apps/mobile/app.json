@@ -1,23 +1,23 @@
 {
   "expo": {
-    "name": "mobile-app",
-    "slug": "mobile-app",
+    "name": "Linkwarden",
+    "slug": "linkwarden",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "linkwarden",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.mobile-app"
+      "bundleIdentifier": "com.anonymous.linkwarden"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.mobileapp"
+      "package": "com.anonymous.linkwarden"
     },
     "web": {
       "bundler": "metro",
@@ -35,10 +35,21 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-share-intent",
+      "./plugins/with-daynight-transparent-nav"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#ffffff",
+      "barStyle": "dark-content",
+      "translucent": false
+    },
+    "androidNavigationBar": {
+      "backgroundColor": "#ffffff",
+      "barStyle": "dark-content"
     }
   }
 }

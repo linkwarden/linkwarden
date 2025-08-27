@@ -5,7 +5,6 @@ import LinkListing from "@/components/LinkListing";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
-import { useHeaderHeight } from "@react-navigation/elements";
 
 const RenderItem = React.memo(
   ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
@@ -16,7 +15,6 @@ const RenderItem = React.memo(
 export default function LinksScreen() {
   const { auth } = useAuthStore();
   const { search } = useLocalSearchParams<{ search?: string }>();
-  const headerHeight = useHeaderHeight();
 
   const { links, data } = useLinks(
     {
@@ -27,7 +25,12 @@ export default function LinksScreen() {
   );
 
   return (
-    <View style={styles.container} className="h-full">
+    <View
+      style={styles.container}
+      className="h-full bg-base-100"
+      collapsable={false}
+      collapsableChildren={false}
+    >
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         ListHeaderComponent={() => <></>}
@@ -42,7 +45,7 @@ export default function LinksScreen() {
         onEndReached={() => data.fetchNextPage()}
         onEndReachedThreshold={0.5}
         ItemSeparatorComponent={() => (
-          <View className="bg-[#eee] h-[1px] w-[100px]" />
+          <View className="bg-neutral-content h-px" />
         )}
       />
     </View>

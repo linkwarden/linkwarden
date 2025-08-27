@@ -1,0 +1,14 @@
+diff --git a/node_modules/xcode/lib/pbxProject.js b/node_modules/xcode/lib/pbxProject.js
+index 068548a..b478056 100644
+--- a/node_modules/xcode/lib/pbxProject.js
++++ b/node_modules/xcode/lib/pbxProject.js
+@@ -1678,8 +1678,7 @@ function correctForFrameworksPath(file, project) {
+ 
+ function correctForPath(file, project, group) {
+     var r_group_dir = new RegExp('^' + group + '[\\\\/]');
+-
+-    if (project.pbxGroupByName(group).path)
++    if (project.pbxGroupByName(group)&&project.pbxGroupByName(group).path)
+         file.path = file.path.replace(r_group_dir, '');
+ 
+     return file;

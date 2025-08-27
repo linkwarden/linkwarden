@@ -1,26 +1,34 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, TouchableOpacity, useColorScheme } from "react-native";
+import { Platform } from "react-native";
 import HapticTab from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-// import "react-native-reanimated";
 import TabBarBackground from "@/components/ui/TabBarBackground";
+import { useColorScheme } from "nativewind";
+import { rawTheme, ThemeName } from "@/lib/colors";
+import { House, Link, Settings } from "lucide-react-native";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
         tabBarBackground: TabBarBackground,
-        tabBarActiveTintColor: colorScheme === "dark" ? "white" : "black",
+        tabBarActiveTintColor: rawTheme[colorScheme as ThemeName].primary,
+        tabBarInactiveTintColor: rawTheme[colorScheme as ThemeName].neutral,
         tabBarButton: HapticTab,
-        // headerShown: false,
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
+            borderTopWidth: 0,
+            elevation: 0,
+            backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
           },
-          default: {},
+          default: {
+            borderTopWidth: 0,
+            backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
+            elevation: 0,
+          },
         }),
       }}
     >
@@ -29,9 +37,7 @@ export default function TabLayout() {
         options={{
           title: "Dashboard",
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <House size={26} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -39,9 +45,7 @@ export default function TabLayout() {
         options={{
           title: "Links",
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="link" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <Link size={26} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -49,9 +53,7 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="gearshape.fill" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <Settings size={26} color={color} />,
         }}
       />
     </Tabs>

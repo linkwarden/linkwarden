@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
@@ -16,8 +16,10 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { IconSymbol } from "../ui/IconSymbol";
 import { useCollections } from "@linkwarden/router/collections";
+import { rawTheme, ThemeName } from "@/lib/colors";
+import { useColorScheme } from "nativewind";
+import { Folder, ChevronRight, Check } from "lucide-react-native";
 
 const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { auth } = useAuthStore();
@@ -29,6 +31,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
   >(props.payload?.link);
   const editLink = useUpdateLink(auth);
   const router = useSheetRouter("edit-link-sheet");
+  const { colorScheme } = useColorScheme();
 
   useEffect(() => {
     if (params?.link) {
@@ -40,7 +43,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
     <View className="px-8 py-5">
       <Input
         placeholder="Name"
-        className="mb-4"
+        className="mb-4 bg-base-100"
         value={link?.name || ""}
         onChangeText={(text) => link?.id && setLink({ ...link, name: text })}
       />
@@ -48,7 +51,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
       {props.payload?.link?.url && (
         <Input
           placeholder="URL"
-          className="mb-4"
+          className="mb-4 bg-base-100"
           value={link?.url || ""}
           onChangeText={(text) => link?.id && setLink({ ...link, url: text })}
         />
@@ -60,16 +63,19 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         onPress={() => router?.navigate("collections", { link })}
       >
         <View className="flex-row items-center gap-2 w-[90%]">
-          <IconSymbol
+          <Folder
             size={20}
-            name="folder.fill"
+            fill={link?.collection.color || "gray"}
             color={link?.collection.color || "gray"}
           />
-          <Text numberOfLines={1} className="w-[90%]">
+          <Text numberOfLines={1} className="w-[90%] text-base-content">
             {link?.collection.name}
           </Text>
         </View>
-        <IconSymbol size={16} name="chevron.right" color={"gray"} />
+        <ChevronRight
+          size={16}
+          color={rawTheme[colorScheme as ThemeName]["neutral"]}
+        />
       </Button>
 
       {/* <Button variant="input" className="mb-4 h-auto">
@@ -87,13 +93,14 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         ) : (
           <Text className="text-gray-500">No tags</Text>
         )}
-        <IconSymbol size={16} name="chevron.right" color={"gray"} />
+        <ChevronRight size={16} color={"gray"} />
       </Button> */}
 
       <Input
         multiline
+        textAlignVertical="top"
         placeholder="Description"
-        className="mb-4 h-28"
+        className="mb-4 h-28 bg-base-100"
         value={link?.description || ""}
         onChangeText={(text) =>
           link?.id && setLink({ ...link, description: text })
@@ -107,7 +114,8 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
               SheetManager.hide("edit-link-sheet");
             },
             onError: (error) => {
-              console.error("Error adding link:", error);
+              Alert.alert("Error", "There was an error editing the link.");
+              console.error("Error editing link:", error);
             },
           })
         }
@@ -124,7 +132,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         variant="outline"
         className="mb-2"
       >
-        <Text>Cancel</Text>
+        <Text className="text-base-content">Cancel</Text>
       </Button>
     </View>
   );
@@ -141,6 +149,7 @@ const Collections = () => {
   >("edit-link-sheet", "collections");
   const params = useSheetRouteParams("edit-link-sheet", "collections");
   const collections = useCollections(auth);
+  const { colorScheme } = useColorScheme();
 
   const filteredCollections = useMemo(() => {
     if (!collections.data) return [];
@@ -170,20 +179,23 @@ const Collections = () => {
       return (
         <Button variant="input" className="mb-2" onPress={onSelect}>
           <View className="flex-row items-center gap-2 w-[75%]">
-            <IconSymbol
+            <Folder
               size={20}
-              name="folder.fill"
+              fill={collection.color || "gray"}
               color={collection.color || "gray"}
             />
-            <Text numberOfLines={1} className="w-full">
+            <Text numberOfLines={1} className="w-full text-base-content">
               {collection.name}
             </Text>
           </View>
           <View className="flex-row items-center gap-2">
             {params.link?.collection.id === collection.id && (
-              <IconSymbol size={16} name="checkmark" color="" />
+              <Check
+                size={16}
+                color={rawTheme[colorScheme as ThemeName].primary}
+              />
             )}
-            <Text className="text-gray-600">
+            <Text className="text-neutral">
               {collection._count?.links ?? 0}
             </Text>
           </View>
@@ -197,7 +209,7 @@ const Collections = () => {
     <View className="px-8 py-5 max-h-[80vh]">
       <Input
         placeholder="Search collections"
-        className="mb-4"
+        className="mb-4 bg-base-100"
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
@@ -207,7 +219,10 @@ const Collections = () => {
         keyExtractor={(e, i) => i.toString()}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text style={{ textAlign: "center", color: "#666", marginTop: 20 }}>
+          <Text
+            style={{ textAlign: "center", marginTop: 20 }}
+            className="text-neutral"
+          >
             No collections match “{searchQuery}”
           </Text>
         }
@@ -229,12 +244,20 @@ const routes: Route[] = [
 ];
 
 export default function EditLinkSheet() {
+  const { colorScheme } = useColorScheme();
+
   return (
     <ActionSheet
       gestureEnabled
+      indicatorStyle={{
+        backgroundColor: rawTheme[colorScheme as ThemeName]["neutral-content"],
+      }}
       enableRouterBackNavigation={true}
       routes={routes}
       initialRoute="main"
+      containerStyle={{
+        backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
+      }}
     />
   );
 }

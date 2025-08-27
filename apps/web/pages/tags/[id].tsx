@@ -1,7 +1,12 @@
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
-import { Sort, TagIncludingLinkCount, ViewMode } from "@linkwarden/types";
+import {
+  LinkIncludingShortenedCollectionAndTags,
+  Sort,
+  TagIncludingLinkCount,
+  ViewMode,
+} from "@linkwarden/types";
 import { useLinks } from "@linkwarden/router/links";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";
@@ -19,6 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import DragNDrop from "@/components/DragNDrop";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -40,6 +46,8 @@ export default function Index() {
   const [bulkDeleteLinksModal, setBulkDeleteLinksModal] = useState(false);
   const [bulkEditLinksModal, setBulkEditLinksModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [activeLink, setActiveLink] =
+    useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   useEffect(() => {
     if (editMode) return setEditMode(false);
@@ -137,101 +145,113 @@ export default function Index() {
   );
 
   return (
-    <MainLayout>
-      <div className="p-5 flex flex-col gap-5 w-full">
-        <LinkListOptions
-          t={t}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          links={links}
-        >
-          <div className="flex gap-3 items-center">
-            <div className="flex gap-2 items-center font-thin">
-              <i className="bi-hash text-primary text-3xl" />
+    <DragNDrop
+      links={links}
+      activeLink={activeLink}
+      setActiveLink={setActiveLink}
+    >
+      <MainLayout>
+        <div className="p-5 flex flex-col gap-5 w-full">
+          <LinkListOptions
+            t={t}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            editMode={editMode}
+            setEditMode={setEditMode}
+            links={links}
+          >
+            <div className="flex gap-3 items-center">
+              <div className="flex gap-2 items-center font-thin">
+                <i className="bi-hash text-primary text-3xl" />
 
-              {renameTag ? (
-                <form onSubmit={submit} className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    autoFocus
-                    className="sm:text-3xl text-xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
-                    value={newTagName}
-                    onChange={(e) => setNewTagName(e.target.value)}
-                  />
-                  <Button variant="ghost" size="icon" onClick={submit}>
-                    <i className="bi-check2 text-neutral text-xl" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={cancelUpdateTag}>
-                    <i className="bi-x text-neutral text-xl" />
-                  </Button>
-                </form>
-              ) : (
-                <>
-                  <p className="sm:text-3xl text-xl">{activeTag?.name}</p>
-                  <div className="relative">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          asChild
-                          variant="ghost"
-                          size="icon"
-                          title={t("more")}
+                {renameTag ? (
+                  <form onSubmit={submit} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      autoFocus
+                      className="sm:text-3xl text-xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
+                      value={newTagName}
+                      onChange={(e) => setNewTagName(e.target.value)}
+                    />
+                    <Button variant="ghost" size="icon" onClick={submit}>
+                      <i className="bi-check2 text-neutral text-xl" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={cancelUpdateTag}
+                    >
+                      <i className="bi-x text-neutral text-xl" />
+                    </Button>
+                  </form>
+                ) : (
+                  <>
+                    <p className="sm:text-3xl text-xl">{activeTag?.name}</p>
+                    <div className="relative">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            asChild
+                            variant="ghost"
+                            size="icon"
+                            title={t("more")}
+                          >
+                            <i className="bi-three-dots text-xl text-neutral" />
+                          </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent
+                          sideOffset={4}
+                          align={
+                            activeTag?.name.length && activeTag?.name.length > 8
+                              ? "end"
+                              : "start"
+                          }
+                          className="bg-base-200 border border-neutral-content rounded-box p-1"
                         >
-                          <i className="bi-three-dots text-xl text-neutral" />
-                        </Button>
-                      </DropdownMenuTrigger>
+                          <DropdownMenuItem onClick={() => setRenameTag(true)}>
+                            <i className="bi-pencil-square" />
+                            {t("rename_tag")}
+                          </DropdownMenuItem>
 
-                      <DropdownMenuContent
-                        sideOffset={4}
-                        align={
-                          activeTag?.name.length && activeTag?.name.length > 8
-                            ? "end"
-                            : "start"
-                        }
-                        className="bg-base-200 border border-neutral-content rounded-box p-1"
-                      >
-                        <DropdownMenuItem onClick={() => setRenameTag(true)}>
-                          <i className="bi-pencil-square" />
-                          {t("rename_tag")}
-                        </DropdownMenuItem>
+                          <DropdownMenuSeparator />
 
-                        <DropdownMenuSeparator />
-
-                        <DropdownMenuItem
-                          onClick={remove}
-                          className="text-error"
-                        >
-                          <i className="bi-trash" />
-                          {t("delete_tag")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </>
-              )}
+                          <DropdownMenuItem
+                            onClick={remove}
+                            className="text-error"
+                          >
+                            <i className="bi-trash" />
+                            {t("delete_tag")}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </LinkListOptions>
+          </LinkListOptions>
 
-        <Links
-          editMode={editMode}
-          links={links}
-          layout={viewMode}
-          placeholderCount={1}
-          useData={data}
-        />
-      </div>
-      {bulkDeleteLinksModal && (
-        <BulkDeleteLinksModal onClose={() => setBulkDeleteLinksModal(false)} />
-      )}
-      {bulkEditLinksModal && (
-        <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
-      )}
-    </MainLayout>
+          <Links
+            editMode={editMode}
+            links={links}
+            layout={viewMode}
+            placeholderCount={1}
+            useData={data}
+          />
+        </div>
+        {bulkDeleteLinksModal && (
+          <BulkDeleteLinksModal
+            onClose={() => setBulkDeleteLinksModal(false)}
+          />
+        )}
+        {bulkEditLinksModal && (
+          <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
+        )}
+      </MainLayout>
+    </DragNDrop>
   );
 }
 

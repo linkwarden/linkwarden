@@ -44,7 +44,7 @@ type Props = {
   standalone?: boolean;
   mode?: "view" | "edit";
   setMode?: Function;
-  onUpdateArchive?: Function;
+  onUpdateArchive?: () => void;
 };
 
 export default function LinkDetails({
@@ -499,7 +499,7 @@ export default function LinkDetails({
                             variant="ghost"
                             size="sm"
                             className="text-neutral"
-                            onClick={() => onUpdateArchive()}
+                            onClick={onUpdateArchive}
                           >
                             <i className="bi-arrow-clockwise text-sm" />
                           </Button>

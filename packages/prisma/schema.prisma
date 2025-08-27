@@ -183,6 +183,7 @@ model Link {
   pdf           String?
   readable      String?
   monolith      String?
+  clientSide    Boolean     @default(false)
   aiTagged      Boolean     @default(false)
   indexVersion  Int?
   lastPreserved DateTime?

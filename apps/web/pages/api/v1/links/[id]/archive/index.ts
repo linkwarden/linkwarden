@@ -60,6 +60,7 @@ export default async function links(req: NextApiRequest, res: NextApiResponse) {
         preview: null,
         lastPreserved: null,
         indexVersion: null,
+        clientSide: false,
       },
     });
 
