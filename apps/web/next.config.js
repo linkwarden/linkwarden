@@ -22,6 +22,7 @@ const nextConfig = {
   transpilePackages: ["@linkwarden/prisma"],
   env: {
     version,
+    MIN_LINKS_PER_TAG: process.env.MIN_LINKS_PER_TAG,
   },
   webpack(config) {
     config.resolve.fallback = {
