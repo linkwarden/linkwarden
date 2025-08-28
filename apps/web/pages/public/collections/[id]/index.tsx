@@ -104,8 +104,8 @@ export default function PublicCollections() {
         className="h-96"
         style={{
           backgroundImage: `linear-gradient(${collection?.color}30 10%, ${
-            user?.theme === "dark" ? "#262626" : "#f3f4f6"
-          } 13rem, ${user?.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+            user?.theme === "light" ? "#f3f4f6" : "#262626"
+          } 13rem, ${user?.theme === "light" ? "#ffffff" : "#171717"} 100%)`,
         }}
       >
         {collection && (
