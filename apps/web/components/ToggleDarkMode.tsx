@@ -25,6 +25,8 @@ export default function ToggleDarkMode({ hideInMobile, align }: Props) {
     });
   };
 
+  if (!data?.theme) return <></>;
+
   return (
     <TooltipProvider>
       <Tooltip>
