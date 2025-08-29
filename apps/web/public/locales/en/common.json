@@ -493,5 +493,7 @@
   "edit_layout": "Edit Layout",
   "refresh_multiple_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve {{count}} links.",
   "refresh_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve this link.",
-  "tag_already_added": "This tag is already added."
+  "tag_already_added": "This tag is already added.",
+  "delete_unused_tags_desc": "Delete all tags with {{count}} or fewer links, applies to all users.",
+  "delete_unused_tags_confirm": "Are you sure you want to delete all tags with {{count}} or fewer links? This action is irreversible."
 }
