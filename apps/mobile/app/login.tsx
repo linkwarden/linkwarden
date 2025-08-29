@@ -4,8 +4,8 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import useAuthStore from "@/store/auth";
 import { Redirect } from "expo-router";
 import { useColorScheme } from "nativewind";
-import { useState } from "react";
-import { View, Text, Dimensions, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, Dimensions, TouchableOpacity, Image } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 export default function HomeScreen() {
@@ -17,16 +17,67 @@ export default function HomeScreen() {
     user: "",
     password: "",
     token: "",
-    instance: "",
+    instance: auth.instance || "https://cloud.linkwarden.app",
   });
+
+  const [showInstanceField, setShowInstanceField] = useState(
+    form.instance !== "https://cloud.linkwarden.app"
+  );
+
+  useEffect(() => {
+    setForm((prev) => ({
+      ...prev,
+      instance: auth.instance || "https://cloud.linkwarden.app",
+    }));
+  }, [auth.instance]);
+
+  useEffect(() => {
+    setShowInstanceField(form.instance !== "https://cloud.linkwarden.app");
+  }, [form.instance]);
+
+  useEffect(() => {
+    setForm((prev) => ({
+      ...prev,
+      token: "",
+      user: "",
+      password: "",
+    }));
+  }, [method]);
 
   if (auth.status === "authenticated") {
     return <Redirect href="/dashboard" />;
   }
 
   return (
-    <View className="flex-col justify-end h-full bg-primary">
+    <View className="flex-col justify-end h-full bg-primary relative">
+      <View className="my-auto">
+        <Image
+          source={require("@/assets/images/linkwarden.png")}
+          className="w-[120px] h-[120px] mx-auto"
+        />
+      </View>
       <Text className="text-base-100 text-7xl font-bold ml-8">Login</Text>
+      <View>
+        <Text className="text-base-100 text-2xl mx-8 mt-3" numberOfLines={1}>
+          Login to{" "}
+          {form.instance === "https://cloud.linkwarden.app"
+            ? "cloud.linkwarden.app"
+            : form.instance}
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            if (showInstanceField) {
+              setForm({ ...form, instance: "https://cloud.linkwarden.app" });
+            }
+            setShowInstanceField(!showInstanceField);
+          }}
+          className="mx-8 mt-2 w-fit"
+        >
+          <Text className="text-neutral-content text-sm w-fit">
+            {!showInstanceField ? "Change host" : "Use default host"}
+          </Text>
+        </TouchableOpacity>
+      </View>
       <Svg
         viewBox="0 0 1440 320"
         width={Dimensions.get("screen").width}
@@ -38,19 +89,28 @@ export default function HomeScreen() {
           d="M0,256L48,234.7C96,213,192,171,288,176C384,181,480,235,576,266.7C672,299,768,309,864,277.3C960,245,1056,171,1152,122.7C1248,75,1344,53,1392,42.7L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
         />
       </Svg>
-      <View className="flex-col justify-end h-1/3 bg-base-100 -mt-2 pb-10 gap-4 w-full px-4">
+      <View className="flex-col justify-end h-auto duration-100 pt-10 bg-base-100 -mt-2 pb-10 gap-4 w-full px-4">
+        {showInstanceField && (
+          <Input
+            className="w-full text-xl p-3 leading-tight h-12"
+            textAlignVertical="center"
+            placeholder="Instance URL"
+            selectTextOnFocus={false}
+            value={form.instance}
+            onChangeText={(text) => setForm({ ...form, instance: text })}
+          />
+        )}
         {method === "password" ? (
           <>
             <Input
-              className="w-full text-xl p-3 leading-tight"
+              className="w-full text-xl p-3 leading-tight h-12"
               textAlignVertical="center"
               placeholder="Email or Username"
               value={form.user}
               onChangeText={(text) => setForm({ ...form, user: text })}
             />
-
             <Input
-              className="w-full text-xl p-3 leading-tight"
+              className="w-full text-xl p-3 leading-tight h-12"
               textAlignVertical="center"
               placeholder="Password"
               secureTextEntry
@@ -60,7 +120,7 @@ export default function HomeScreen() {
           </>
         ) : (
           <Input
-            className="w-full text-xl p-3 leading-tight"
+            className="w-full text-xl p-3 leading-tight h-12"
             textAlignVertical="center"
             placeholder="Access Token"
             secureTextEntry
@@ -77,8 +137,8 @@ export default function HomeScreen() {
         >
           <Text className="text-primary w-fit text-center">
             {method === "password"
-              ? "Login with Access Token instead"
-              : "Login with Username/Password instead"}
+              ? "Login with Access Token"
+              : "Login with Username/Password"}
           </Text>
         </TouchableOpacity>
 
@@ -86,11 +146,7 @@ export default function HomeScreen() {
           variant="accent"
           size="lg"
           onPress={() =>
-            signIn(
-              form.user,
-              form.password,
-              form.instance ? form.instance : undefined
-            )
+            signIn(form.user, form.password, form.instance, form.token)
           }
         >
           <Text className="text-white">Login</Text>
