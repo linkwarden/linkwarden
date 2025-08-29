@@ -602,6 +602,22 @@ export default function Preference() {
                 {t("open_screenshot_if_available")}
               </span>
             </label>
+
+	    <label
+ 	      className="label cursor-pointer flex gap-2 justify-start w-fit"
+	      tabIndex={0}
+	      role="button"
+	    >
+	      <input
+	        type="radio"
+	        name="link-preference-radio"
+	        className="radio checked:bg-primary"
+	        value="Copy"
+	        checked={linksRouteTo === LinksRouteTo.COPY}
+	        onChange={() => setLinksRouteTo(LinksRouteTo.COPY)}
+	      />
+	      <span className="label-text">{t("copy_link_to_clipboard")}</span>
+	    </label>
           </div>
         </div>
 
