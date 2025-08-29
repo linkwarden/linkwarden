@@ -10,6 +10,7 @@ import { UploadFileSchema } from "@linkwarden/lib/schemaValidation";
 import isDemoMode from "@/lib/api/isDemoMode";
 import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
 import setCollection from "@/lib/api/setCollection";
+import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
 
 export const config = {
   api: {
@@ -145,9 +146,11 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       if (!collection) {
         throw new Error("Collection not found.");
       }
+      const { title = "" } = url ? await fetchTitleAndHeaders(url) : {};
 
       const link = await prisma.link.create({
         data: {
+          name: title,
           createdBy: {
             connect: {
               id: user.id,
