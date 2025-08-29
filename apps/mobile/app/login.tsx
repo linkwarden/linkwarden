@@ -71,9 +71,9 @@ export default function HomeScreen() {
             }
             setShowInstanceField(!showInstanceField);
           }}
-          className="mx-8 mt-2 w-fit"
+          className="mx-8 mt-2 self-start"
         >
-          <Text className="text-neutral-content text-sm w-fit">
+          <Text className="text-neutral-content text-sm">
             {!showInstanceField ? "Change host" : "Use default host"}
           </Text>
         </TouchableOpacity>
