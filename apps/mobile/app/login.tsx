@@ -6,6 +6,7 @@ import { Redirect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { useEffect, useState } from "react";
 import { View, Text, Dimensions, TouchableOpacity, Image } from "react-native";
+import { SheetManager } from "react-native-actions-sheet";
 import Svg, { Path } from "react-native-svg";
 
 export default function HomeScreen() {
@@ -145,13 +146,18 @@ export default function HomeScreen() {
         <Button
           variant="accent"
           size="lg"
-          onPress={() =>
-            signIn(form.user, form.password, form.instance, form.token)
-          }
+          onPress={() => {
+            if (((form.user && form.password) || form.token) && form.instance) {
+              signIn(form.user, form.password, form.instance, form.token);
+            }
+          }}
         >
           <Text className="text-white">Login</Text>
         </Button>
-        <TouchableOpacity className="w-fit mx-auto">
+        <TouchableOpacity
+          className="w-fit mx-auto"
+          onPress={() => SheetManager.show("support-sheet")}
+        >
           <Text className="text-neutral text-center w-fit">Need help?</Text>
         </TouchableOpacity>
       </View>
