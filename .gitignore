@@ -51,4 +51,4 @@ certificates
 .idea
 prisma/dev.db
 data.ms
-.turbo
+.turbo.env
