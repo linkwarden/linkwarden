@@ -1,6 +1,6 @@
 import { Collection, Link, User } from "@linkwarden/prisma/client";
 import { Page } from "playwright";
-import { generatePreview } from "@linkwarden/lib";
+import { generatePreview } from "../generatePreview";
 import { createFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
 

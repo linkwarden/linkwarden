@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
 import { createFile, createFolder } from "@linkwarden/filesystem";
-import { generatePreview } from "@linkwarden/lib";
+import { generatePreview } from "@/lib/server/generatePreview";
 import verifyUser from "@/lib/api/verifyUser";
 import { prisma } from "@linkwarden/prisma";
 import { UsersAndCollections } from "@linkwarden/prisma/client";
