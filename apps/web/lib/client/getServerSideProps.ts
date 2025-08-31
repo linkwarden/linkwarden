@@ -21,6 +21,7 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
       return {
         props: {
           ...(await serverSideTranslations(user.locale ?? "en", ["common"])),
+	  minLinksPerTag: process.env.MIN_LINKS_PER_TAG || "0",
         },
       };
     }
@@ -50,6 +51,7 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       ...(await serverSideTranslations(bestMatch ?? "en", ["common"])),
+      minLinksPerTag: process.env.MIN_LINKS_PER_TAG || "0",
     },
   };
 };

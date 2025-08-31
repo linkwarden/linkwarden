@@ -9,7 +9,7 @@ import { useArchiveAction } from "@linkwarden/router/links";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-export default function Worker() {
+export default function Worker({ minLinksPerTag }: { minLinksPerTag: string }) {
   const { t } = useTranslation();
   const archiveAction = useArchiveAction();
   const [showModal, setShowModal] = useState(false);
@@ -17,6 +17,7 @@ export default function Worker() {
   const [action, setAction] = useState<
     LinkArchiveActionSchemaType["action"] | undefined
   >();
+  const linkCountThreshold = parseInt(minLinksPerTag, 10) || 0;
 
   useEffect(() => {
     if (showModal === false) {
@@ -49,6 +50,37 @@ export default function Worker() {
         },
       }
     );
+  };
+
+  const handleTagCleanup = async () => {
+    if (
+      !window.confirm(
+	t("delete_unused_tags_confirm", {
+	  count: linkCountThreshold,
+        })
+      )
+    ) {
+      return;
+    }
+
+    const promise = fetch("/api/v1/tags/cleanup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ threshold: linkCountThreshold }),
+    }).then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => {
+          throw new Error(err.message || "An unknown error occurred");
+        });
+      }
+      return res.json();
+    });
+
+    toast.promise(promise, {
+      loading: t("deleting"),
+      success: (data) => data.message || t("deleted"),
+      error: (err) => err.message,
+    });
   };
 
   return (
@@ -90,6 +122,20 @@ export default function Worker() {
               setAction("allAndIgnore");
               setShowModal(true);
             }}
+          >
+            {t("confirm")}
+          </Button>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <span>
+            {t("delete_unused_tags_desc", {
+	      count: linkCountThreshold,
+            })}
+          </span>
+          <Button
+            className="ml-auto"
+            variant="destructive"
+            onClick={handleTagCleanup}
           >
             {t("confirm")}
           </Button>
