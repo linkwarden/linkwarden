@@ -4,6 +4,7 @@ import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
 import { delay } from "@linkwarden/lib";
 import getLinkBatchFairly from "../lib/getLinkBatchFairly";
 import { launchBrowser } from "../lib/browser";
+import { countUnprocessedBillableLinks } from "../lib/countUnprocessedBillableLinks";
 
 const ARCHIVE_TAKE_COUNT = Number(process.env.ARCHIVE_TAKE_COUNT || "") || 5;
 const BROWSER_MAX_AGE_MS = 30 * 60 * 1000; // 30 minutes
@@ -70,9 +71,7 @@ export async function linkProcessing(interval = 10) {
     const processingPromises = links.map((e) => archiveLink(e));
     await Promise.allSettled(processingPromises);
 
-    const unprocessedLinkCount = await prisma.link.count({
-      where: { lastPreserved: null, url: { not: null } },
-    });
+    const unprocessedLinkCount = await countUnprocessedBillableLinks();
 
     console.log(
       "\x1b[34m%s\x1b[0m",
