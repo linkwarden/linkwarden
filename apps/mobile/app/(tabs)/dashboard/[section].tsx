@@ -6,6 +6,9 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { useCollections } from "@linkwarden/router/collections";
+import Spinner from "@/components/ui/Spinner";
+import { rawTheme, ThemeName } from "@/lib/colors";
+import { useColorScheme } from "nativewind";
 
 const RenderItem = React.memo(
   ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
@@ -20,6 +23,7 @@ export default function LinksScreen() {
     section?: "pinned-links" | "recent-links" | "collection";
     collectionId?: string;
   }>();
+  const { colorScheme } = useColorScheme();
 
   const navigation = useNavigation();
   const collections = useCollections(auth);
@@ -59,8 +63,16 @@ export default function LinksScreen() {
         contentInsetAdjustmentBehavior="automatic"
         ListHeaderComponent={() => <></>}
         data={links || []}
-        onRefresh={() => data.refetch()}
-        refreshing={data.isRefetching}
+        refreshControl={
+          <Spinner
+            refreshing={data.isRefetching}
+            onRefresh={() => data.refetch()}
+            progressBackgroundColor={
+              rawTheme[colorScheme as ThemeName]["base-200"]
+            }
+            colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
+          />
+        }
         initialNumToRender={4}
         keyExtractor={(item) => item.id?.toString() || ""}
         renderItem={({ item }) => (

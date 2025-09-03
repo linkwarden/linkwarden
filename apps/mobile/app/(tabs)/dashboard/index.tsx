@@ -1,7 +1,6 @@
 import {
   FlatList,
   Platform,
-  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -31,6 +30,7 @@ import {
   Hash,
   Link,
 } from "lucide-react-native";
+import Spinner from "@/components/ui/Spinner";
 
 export default function DashboardScreen() {
   const { auth } = useAuthStore();
@@ -240,7 +240,6 @@ export default function DashboardScreen() {
                 data={
                   links.filter((e: any) => e.pinnedBy && e.pinnedBy[0]) || []
                 }
-                // onRefresh={() => data.refetch()}
                 refreshing={dashboardData.isLoading}
                 initialNumToRender={2}
                 keyExtractor={(item) => item.id?.toString() || ""}
@@ -306,7 +305,6 @@ export default function DashboardScreen() {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 data={collectionLinks || []}
-                // onRefresh={() => data.refetch()}
                 refreshing={dashboardData.isLoading}
                 initialNumToRender={2}
                 keyExtractor={(item) => item.id?.toString() || ""}
@@ -348,12 +346,16 @@ export default function DashboardScreen() {
     >
       <ScrollView
         refreshControl={
-          <RefreshControl
+          <Spinner
             refreshing={dashboardData.isLoading || userData.isLoading}
             onRefresh={() => {
               dashboardData.refetch();
               userData.refetch();
             }}
+            progressBackgroundColor={
+              rawTheme[colorScheme as ThemeName]["base-200"]
+            }
+            colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
           />
         }
         contentContainerStyle={{
