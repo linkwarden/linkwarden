@@ -72,7 +72,7 @@ export default function HomeScreen() {
             }
             setShowInstanceField(!showInstanceField);
           }}
-          className="mx-8 mt-2 self-start"
+          className="mx-8 mt-1 self-start"
         >
           <Text className="text-neutral-content text-sm">
             {!showInstanceField ? "Change host" : "Use default host"}
