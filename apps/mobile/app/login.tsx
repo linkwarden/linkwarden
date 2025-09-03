@@ -75,7 +75,7 @@ export default function HomeScreen() {
           className="mx-8 mt-1 self-start"
         >
           <Text className="text-neutral-content text-sm">
-            {!showInstanceField ? "Change host" : "Use default host"}
+            {!showInstanceField ? "Change server" : "Use official server"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -152,7 +152,7 @@ export default function HomeScreen() {
             }
           }}
         >
-          <Text className="text-white">Login</Text>
+          <Text className="text-white text-xl">Login</Text>
         </Button>
         <TouchableOpacity
           className="w-fit mx-auto"

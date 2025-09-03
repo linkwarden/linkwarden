@@ -111,7 +111,7 @@ const useAuthStore = create<AuthStore>((set) => ({
       },
     });
 
-    router.replace("/login");
+    router.replace("/");
   },
 }));
 

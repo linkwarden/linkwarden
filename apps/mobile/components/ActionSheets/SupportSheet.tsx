@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { useState } from "react";
 import ActionSheet from "react-native-actions-sheet";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
@@ -7,9 +8,14 @@ import { Button } from "../ui/Button";
 
 export default function SupportSheet() {
   const { colorScheme } = useColorScheme();
+  const [copied, setCopied] = useState(false);
 
   async function handleEmailPress() {
     await Clipboard.setStringAsync("support@linkwarden.app");
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   }
 
   return (
@@ -29,7 +35,9 @@ export default function SupportSheet() {
           to us at support@linkwarden.app
         </Text>
         <Button onPress={handleEmailPress} variant="outline">
-          <Text className="text-base-content">Copy Support Email</Text>
+          <Text className="text-base-content">
+            {copied ? "Copied!" : "Copy Support Email"}
+          </Text>
         </Button>
       </View>
     </ActionSheet>
