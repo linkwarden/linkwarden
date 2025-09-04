@@ -14,6 +14,7 @@ type Props = {
   className?: string;
   spellCheck?: boolean;
   "data-testid"?: string;
+  name: string;
 };
 
 const TextInput = forwardRef<HTMLInputElement, Props>(
@@ -28,6 +29,7 @@ const TextInput = forwardRef<HTMLInputElement, Props>(
       className,
       spellCheck,
       "data-testid": dataTestId,
+      name,
     },
     ref
   ) => {
@@ -48,6 +50,7 @@ const TextInput = forwardRef<HTMLInputElement, Props>(
           outline-none focus:border-primary duration-100
           ${className ?? ""}
         `}
+        name={name}
       />
     );
   }
