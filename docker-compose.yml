@@ -3,26 +3,49 @@ services:
     image: postgres:16-alpine
     env_file: .env
     restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      start_period: 20s
+      start_interval: 1s
+      timeout: 1s
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - type: bind
+        source: ./pgdata
+        target: /var/lib/postgresql/data
+        read_only: false
+
   linkwarden:
     env_file: .env
     environment:
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
     restart: always
-    # build: . # uncomment to build from source
+    # build: # uncomment section and one of 'context' lines below to build from source
+    #   context: .
+    #   context: https://github.com/linkwarden/linkwarden.git#dev
     image: ghcr.io/linkwarden/linkwarden:latest # comment to build from source
     ports:
       - 3000:3000
     volumes:
-      - ./data:/data/data
+      - type: bind
+        source: ./data
+        target: /data/data
+        read_only: false
     depends_on:
-      - postgres
-      - meilisearch
+      postgres:
+        condition: service_healthy
+        required: true
+      meilisearch:
+        condition: service_started
+        required: true
+
   meilisearch:
     image: getmeili/meilisearch:v1.12.8
     restart: always
     env_file:
       - .env
     volumes:
-      - ./meili_data:/meili_data
+      - type: bind
+        source: ./meili_data
+        target: /meili_data
+        read_only: false
