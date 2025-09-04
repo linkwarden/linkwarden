@@ -48,7 +48,7 @@
   "pinned_links_desc": "Your pinned Links",
   "pin_favorite_links_here": "Pin Your Favorite Links Here!",
   "pin_favorite_links_here_desc": "You can Pin your favorite Links by clicking on the three dots on each Link and clicking Pin to Dashboard.",
-  "sending_password_link": "Sending password recovery link...",
+  "sending_password_link": "Se trimite link-ul de recuperare a parolei...",
   "password_email_prompt": "Enter your email so we can send you a link to create a new password.",
   "send_reset_link": "Send Reset Link",
   "reset_email_sent_desc": "Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.",
