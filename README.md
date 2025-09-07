@@ -12,7 +12,7 @@
 <a href="https://opencollective.com/linkwarden"><img src="https://img.shields.io/opencollective/all/linkwarden" alt="Open Collective"></a>
 
 </div>
-
+test
 <div align='center'>
 
 [« LAUNCH DEMO »](https://demo.linkwarden.app)
