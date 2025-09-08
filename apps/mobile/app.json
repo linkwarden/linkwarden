@@ -10,14 +10,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.linkwarden"
+      "bundleIdentifier": "app.linkwarden"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.linkwarden"
+      "package": "app.linkwarden"
     },
     "web": {
       "bundler": "metro",
