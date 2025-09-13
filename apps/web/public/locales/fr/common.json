@@ -208,7 +208,7 @@
   "password_successfully_updated": "Votre mot de passe a été mis à jour avec succès.",
   "user_already_member": "L’utilisateur existe déjà.",
   "you_are_already_collection_owner": "Vous êtes déjà le propriétaire de la collection.",
-  "link_already_in_collection": "This link is already in this collection.",
+  "link_already_in_collection": "Ce lien est déjà dans cette collection.",
   "date_newest_first": "Date (la plus récente en premier)",
   "date_oldest_first": "Date (la plus ancienne en premier)",
   "name_az": "Nom (A-Z)",
@@ -491,7 +491,7 @@
   "no_notes_highlights": "Aucune note ou surlignement trouvé pour ce lien.",
   "save": "Sauvegarder",
   "edit_layout": "Modifier la mise en page",
-  "refresh_multiple_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve {{count}} links.",
-  "refresh_preserved_formats_confirmation_desc": "This will delete the current preserved formats and re-preserve this link.",
-  "tag_already_added": "This tag is already added."
+  "refresh_multiple_preserved_formats_confirmation_desc": "Ceci supprimera les formats actuellement conservés et conservera de nouveau {{count}} liens.",
+  "refresh_preserved_formats_confirmation_desc": "Ceci supprimera les formats actuellement conservés et conservera de nouveau ce lien.",
+  "tag_already_added": "Cette étiquette a déjà été ajoutée."
 }
