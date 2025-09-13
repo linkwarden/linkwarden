@@ -405,7 +405,7 @@
   "invite_user": "Invite User",
   "invite_users": "Invite Users",
   "invite_user_desc": "To invite someone to your team, please enter their email address below:",
-  "invite_user_note": "",
+  "invite_user_note": "Please note that once the invitation is accepted, an additional seat will be purchased and your account will automatically be billed for this addition.",
   "invite_user_price": "The cost of each seat is ${{price}} per month or ${{priceAnnual}} per year, depending on your current subscription plan.",
   "send_invitation": "Send Invitation",
   "learn_more": "Learn more",
