@@ -92,6 +92,7 @@ enum LinksRouteTo {
   MONOLITH
   SCREENSHOT
   DETAILS
+  COPY
 }
 
 model WhitelistedUser {
