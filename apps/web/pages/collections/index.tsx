@@ -1,10 +1,9 @@
 import CollectionCard from "@/components/CollectionCard";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
 import SortDropdown from "@/components/SortDropdown";
 import { Sort } from "@linkwarden/types";
-import useSort from "@/hooks/useSort";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
@@ -21,14 +20,35 @@ import { Button } from "@/components/ui/button";
 export default function Collections() {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
-  const [sortBy, setSortBy] = useState<Sort>(
-    Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
-  );
-  const [sortedCollections, setSortedCollections] = useState(collections);
+  const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
   const { data } = useSession();
 
-  useSort({ sortBy, setData: setSortedCollections, data: collections });
+  const sortKey: Sort =
+    typeof sortBy === "string" ? (Number(sortBy) as Sort) : sortBy;
+
+  const compare = useMemo(() => {
+    switch (sortKey) {
+      case Sort.NameAZ:
+        return (a: any, b: any) => a.name.localeCompare(b.name);
+      case Sort.NameZA:
+        return (a: any, b: any) => b.name.localeCompare(a.name);
+      case Sort.DateOldestFirst:
+        return (a: any, b: any) =>
+          new Date(a.createdAt as string).getTime() -
+          new Date(b.createdAt as string).getTime();
+      case Sort.DateNewestFirst:
+      default:
+        return (a: any, b: any) =>
+          new Date(b.createdAt as string).getTime() -
+          new Date(a.createdAt as string).getTime();
+    }
+  }, [sortKey]);
+
+  const sortedCollections = useMemo(
+    () => [...collections].sort(compare),
+    [collections, compare]
+  );
 
   const [newCollectionModal, setNewCollectionModal] = useState(false);
 
@@ -70,9 +90,9 @@ export default function Collections() {
         <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
           {sortedCollections
             .filter((e) => e.ownerId === data?.user.id && e.parentId === null)
-            .map((e, i) => {
-              return <CollectionCard key={i} collection={e} />;
-            })}
+            .map((e) => (
+              <CollectionCard key={e.id} collection={e} />
+            ))}
 
           <div
             className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-xl cursor-pointer flex flex-col gap-4 justify-center items-center group"
@@ -96,9 +116,9 @@ export default function Collections() {
             <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {sortedCollections
                 .filter((e) => e.ownerId !== data?.user.id)
-                .map((e, i) => {
-                  return <CollectionCard key={i} collection={e} />;
-                })}
+                .map((e) => (
+                  <CollectionCard key={e.id} collection={e} />
+                ))}
             </div>
           </>
         )}

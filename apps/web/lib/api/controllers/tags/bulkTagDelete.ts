@@ -19,74 +19,36 @@ export default async function bulkTagDelete(
     };
   }
 
-  const { numberOfLinks, allTags } = dataValidation.data;
+  const { tagIds } = dataValidation.data;
 
   let deletedTag: number;
   let affectedLinks: number[];
 
-  if (allTags) {
-    affectedLinks = (
-      await prisma.link.findMany({
-        where: {
-          tags: {
-            some: {
-              ownerId: userId,
-            },
+  affectedLinks = (
+    await prisma.link.findMany({
+      where: {
+        tags: {
+          some: {
+            ownerId: userId,
           },
         },
-        select: {
-          id: true,
-        },
-      })
-    ).map((link) => link.id);
-
-    deletedTag = (
-      await prisma.tag.deleteMany({
-        where: {
-          ownerId: userId,
-        },
-      })
-    ).count;
-  } else {
-    const tags = await prisma.tag.findMany({
-      where: {
-        ownerId: userId,
       },
       select: {
         id: true,
-        links: {
-          select: {
-            id: true,
-          },
-        },
-        _count: {
-          select: {
-            links: true,
-          },
+      },
+    })
+  ).map((link) => link.id);
+
+  deletedTag = (
+    await prisma.tag.deleteMany({
+      where: {
+        ownerId: userId,
+        id: {
+          in: tagIds,
         },
       },
-    });
-
-    const tagsToDelete = tags
-      .filter((tag) => tag._count.links === (numberOfLinks ?? 0))
-      .map((tag) => tag.id);
-
-    const links = tags
-      .filter((tag) => tag._count.links === (numberOfLinks ?? 0))
-      .map((tag) => tag.links);
-
-    affectedLinks = links.flat().map((link) => link.id);
-
-    deletedTag = (
-      await prisma.tag.deleteMany({
-        where: {
-          id: {
-            in: tagsToDelete,
-          },
-        },
-      })
-    ).count;
-  }
+    })
+  ).count;
 
   await prisma.link.updateMany({
     where: {

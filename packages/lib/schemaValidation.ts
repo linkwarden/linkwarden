@@ -269,11 +269,17 @@ export const PostTagSchema = z.object({
 export type PostTagSchemaType = z.infer<typeof PostTagSchema>;
 
 export const TagBulkDeletionSchema = z.object({
-  numberOfLinks: z.number().min(0).optional(),
-  allTags: z.boolean().optional(),
+  tagIds: z.array(z.number()).min(1),
 });
 
 export type TagBulkDeletionSchemaType = z.infer<typeof TagBulkDeletionSchema>;
+
+export const MergeTagsSchema = z.object({
+  newTagName: z.string().trim().max(50),
+  tagIds: z.array(z.number()).min(1),
+});
+
+export type MergeTagsSchemaType = z.infer<typeof MergeTagsSchema>;
 
 export const PostHighlightSchema = z.object({
   color: z.string().trim().max(50),

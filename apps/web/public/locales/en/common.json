@@ -502,5 +502,16 @@
   "delete_all_tags": "Delete all Tags",
   "bulk_delete_tags": "Bulk Delete Tags",
   "count_tags_deleted": "{{count}} Tags Deleted",
-  "count_tag_deleted": "{{count}} Tag Deleted"
+  "count_tag_deleted": "{{count}} Tag Deleted",
+  "tag_name_placeholder": "e.g. Technology",
+  "link_count_high_low": "Link count (high to low)",
+  "link_count_low_high": "Link count (low to high)",
+  "tags_selected": "{{count}} Tags selected",
+  "tag_selected": "1 Tag selected",
+  "merge_tags": "Merge Tags",
+  "merge_count_tags": "Merge {{count}} Tags",
+  "rename_tag_instruction": "Please provide a name for the final tag.",
+  "merging": "Merging...",
+  "delete_tags": "Delete {{count}} Tags",
+  "tags_deletion_confirmation_message": "Are you sure you want to delete {{count}} Tags? This will remove the tags from all links."
 }

@@ -63,6 +63,7 @@ export default function NewTagModal({ onClose }: Props) {
           value={tag.label}
           onChange={(e) => setTag({ ...tag, label: e.target.value })}
           className="bg-base-200"
+          placeholder={t("tag_name_placeholder")}
         />
       </div>
 

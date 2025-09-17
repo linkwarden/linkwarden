@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
@@ -60,25 +59,25 @@ export default function Sidebar({ className }: { className?: string }) {
           active={active === `/dashboard`}
         />
         <SidebarHighlightLink
-          title={t("all_links")}
+          title={t("links")}
           href={`/links`}
           icon={"bi-link-45deg"}
           active={active === `/links`}
         />
         <SidebarHighlightLink
-          title={t("pinned_links")}
+          title={t("pinned")}
           href={`/links/pinned`}
           icon={"bi-pin-angle"}
           active={active === `/links/pinned`}
         />
         <SidebarHighlightLink
-          title={t("all_collections")}
+          title={t("collections")}
           href={`/collections`}
           icon={"bi-folder"}
           active={active === `/collections`}
         />
         <SidebarHighlightLink
-          title={t("all_tags")}
+          title={t("tags")}
           href={`/tags`}
           icon={"bi-hash"}
           active={active === `/tags`}

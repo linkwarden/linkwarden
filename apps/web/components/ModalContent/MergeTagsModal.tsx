@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "../Modal";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import toast from "react-hot-toast";
 import { Separator } from "../ui/separator";
-import { useBulkTagDeletion } from "@linkwarden/router/tags";
+import { useMergeTags } from "@linkwarden/router/tags";
+import TextInput from "../TextInput";
 
 type Props = {
   onClose: Function;
@@ -12,21 +13,24 @@ type Props = {
   setSelectedTags: (tags: number[]) => void;
 };
 
-export default function BulkDeleteTagsModal({
+export default function MergeTagsModal({
   onClose,
   selectedTags,
   setSelectedTags,
 }: Props) {
   const { t } = useTranslation();
 
-  const deleteTagsById = useBulkTagDeletion();
+  const [newTagName, setNewTagName] = useState("");
 
-  const deleteTag = async () => {
-    const load = toast.loading(t("deleting"));
+  const mergeTags = useMergeTags();
 
-    await deleteTagsById.mutateAsync(
+  const merge = async () => {
+    const load = toast.loading(t("merging"));
+
+    await mergeTags.mutateAsync(
       {
         tagIds: selectedTags,
+        newTagName,
       },
       {
         onSettled: (data, error) => {
@@ -46,26 +50,24 @@ export default function BulkDeleteTagsModal({
 
   return (
     <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin text-red-500">
-        {selectedTags.length === 1
-          ? t("delete_tag")
-          : t("delete_tags", { count: selectedTags.length })}
+      <p className="text-xl font-thin">
+        {t("merge_count_tags", { count: selectedTags.length })}
       </p>
 
       <Separator className="my-3" />
 
       <div className="flex flex-col gap-3">
-        <p>
-          {selectedTags.length === 1
-            ? t("tag_deletion_confirmation_message")
-            : t("tags_deletion_confirmation_message", {
-                count: selectedTags.length,
-              })}
-        </p>
+        <p>{t("rename_tag_instruction")}</p>
 
-        <Button className="ml-auto" variant="destructive" onClick={deleteTag}>
-          <i className="bi-trash text-xl" />
-          {t("delete")}
+        <TextInput
+          value={newTagName}
+          onChange={(e) => setNewTagName(e.target.value)}
+          placeholder={t("tag_name_placeholder")}
+        />
+
+        <Button className="ml-auto" variant="accent" onClick={merge}>
+          <i className="bi-intersect text-xl" />
+          {t("merge_tags")}
         </Button>
       </div>
     </Modal>
