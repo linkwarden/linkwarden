@@ -1,59 +1,24 @@
-import React, {
-  forwardRef,
-  ChangeEventHandler,
-  KeyboardEventHandler,
-} from "react";
+import { cn } from "@linkwarden/lib";
+import React, { forwardRef } from "react";
 
-type Props = {
-  autoFocus?: boolean;
-  value?: string;
-  type?: string;
-  placeholder?: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
-  className?: string;
-  spellCheck?: boolean;
-  "data-testid"?: string;
-};
+export type TextInputProps = React.ComponentPropsWithoutRef<"input">;
 
-const TextInput = forwardRef<HTMLInputElement, Props>(
-  (
-    {
-      autoFocus,
-      value,
-      type,
-      placeholder,
-      onChange,
-      onKeyDown,
-      className,
-      spellCheck,
-      "data-testid": dataTestId,
-    },
-    ref
-  ) => {
+const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
+  ({ className, type = "text", ...rest }, ref) => {
     return (
       <input
         ref={ref}
-        data-testid={dataTestId}
-        spellCheck={spellCheck}
-        autoFocus={autoFocus}
-        type={type ?? "text"}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        className={`
-          w-full rounded-md p-2
-          border-neutral-content border-solid border
-          outline-none focus:border-primary duration-100
-          ${className ?? ""}
-        `}
+        type={type}
+        className={cn(
+          "w-full rounded-md p-2 border-neutral-content border-solid border outline-none focus:border-primary duration-100",
+          className
+        )}
+        {...rest}
       />
     );
   }
 );
 
-// Give it a display name for easier debugging
 TextInput.displayName = "TextInput";
 
 export default TextInput;

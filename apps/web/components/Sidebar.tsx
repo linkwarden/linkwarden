@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
@@ -52,12 +51,18 @@ export default function Sidebar({ className }: { className?: string }) {
         className || ""
       }`}
     >
-      <div className="grid grid-cols-2 gap-2">
+      <div className="flex flex-col gap-1">
         <SidebarHighlightLink
           title={t("dashboard")}
           href={`/dashboard`}
           icon={"bi-house"}
           active={active === `/dashboard`}
+        />
+        <SidebarHighlightLink
+          title={t("links")}
+          href={`/links`}
+          icon={"bi-link-45deg"}
+          active={active === `/links`}
         />
         <SidebarHighlightLink
           title={t("pinned")}
@@ -66,16 +71,16 @@ export default function Sidebar({ className }: { className?: string }) {
           active={active === `/links/pinned`}
         />
         <SidebarHighlightLink
-          title={t("all_links")}
-          href={`/links`}
-          icon={"bi-link-45deg"}
-          active={active === `/links`}
-        />
-        <SidebarHighlightLink
-          title={t("all_collections")}
+          title={t("collections")}
           href={`/collections`}
           icon={"bi-folder"}
           active={active === `/collections`}
+        />
+        <SidebarHighlightLink
+          title={t("tags")}
+          href={`/tags`}
+          icon={"bi-hash"}
+          active={active === `/tags`}
         />
       </div>
 

@@ -206,6 +206,7 @@ model Tag {
   archiveAsReadable       Boolean?
   archiveAsWaybackMachine Boolean?
   aiTag                   Boolean?
+  aiGenerated             Boolean  @default(false)
   createdAt               DateTime @default(now())
   updatedAt               DateTime @default(now()) @updatedAt
 
