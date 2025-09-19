@@ -2,6 +2,10 @@ import verifySubscription from "./stripe/verifySubscription";
 import { prisma } from "@linkwarden/prisma";
 import stripeSDK from "./stripe/stripeSDK";
 
+const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
+const MANAGED_PAYMENTS_ENABLED =
+  process.env.MANAGED_PAYMENTS_ENABLED === "true";
+
 export default async function paymentCheckout(email: string, priceId: string) {
   const stripe = stripeSDK();
 
@@ -44,12 +48,16 @@ export default async function paymentCheckout(email: string, priceId: string) {
     customer_email: isExistingCustomer ? undefined : email.toLowerCase(),
     success_url: `${process.env.BASE_URL}/dashboard`,
     cancel_url: `${process.env.BASE_URL}/login`,
-    subscription_data: {
-      trial_period_days: NEXT_PUBLIC_TRIAL_PERIOD_DAYS
-        ? Number(NEXT_PUBLIC_TRIAL_PERIOD_DAYS)
-        : 14,
-    },
-    ...(process.env.MANAGED_PAYMENTS_ENABLED === "true"
+    ...(REQUIRE_CC
+      ? {
+          subscription_data: {
+            trial_period_days: NEXT_PUBLIC_TRIAL_PERIOD_DAYS
+              ? Number(NEXT_PUBLIC_TRIAL_PERIOD_DAYS)
+              : 14,
+          },
+        }
+      : {}),
+    ...(MANAGED_PAYMENTS_ENABLED
       ? {
           managed_payments: {
             enabled: true,

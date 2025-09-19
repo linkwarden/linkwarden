@@ -46,6 +46,17 @@ export default async function verifyUser({
     return null;
   }
 
+  if (
+    !user.emailVerified &&
+    process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true"
+  ) {
+    res.status(401).json({
+      response:
+        "Email not verified, please verify your email to continue using Linkwarden.",
+    });
+    return null;
+  }
+
   if (STRIPE_SECRET_KEY) {
     const subscribedUser = await verifySubscription(user);
 

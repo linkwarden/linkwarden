@@ -9,6 +9,11 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
+
+const TRIAL_PERIOD_DAYS =
+  Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS) || 14;
+const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
 export default function Subscribe() {
   const { t } = useTranslation();
@@ -20,6 +25,18 @@ export default function Subscribe() {
   const router = useRouter();
 
   const { data: user } = useUser();
+
+  const [daysLeft, setDaysLeft] = useState<number>(0);
+
+  useEffect(() => {
+    if (user?.createdAt) {
+      const trialEndTime =
+        new Date(user.createdAt).getTime() +
+        (1 + Number(TRIAL_PERIOD_DAYS)) * 86400000; // Add 1 to account for the current day
+
+      setDaysLeft(Math.floor((trialEndTime - Date.now()) / 86400000));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (
@@ -45,9 +62,13 @@ export default function Subscribe() {
 
   return (
     <CenteredForm
-      text={`Start with a ${
-        process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
-      }-day free trial, cancel anytime!`}
+      text={
+        daysLeft <= 0
+          ? "Your free trial has ended, subscribe to continue."
+          : `You have ${REQUIRE_CC ? 14 : daysLeft || 0} ${
+              !REQUIRE_CC && daysLeft === 1 ? "day" : "days"
+            } left in your free trial.`
+      }
     >
       <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-xl shadow-md border border-neutral-content">
         <p className="sm:text-3xl text-xl text-center font-extralight">
@@ -116,11 +137,11 @@ export default function Subscribe() {
             <p className="text-sm">
               {plan === Plan.monthly
                 ? t("total_monthly_desc", {
-                    count: Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS),
+                    count: REQUIRE_CC ? 14 : daysLeft,
                     monthlyPrice: "4",
                   })
                 : t("total_annual_desc", {
-                    count: Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS),
+                    count: REQUIRE_CC ? 14 : daysLeft,
                     annualPrice: "36",
                   })}
             </p>
@@ -138,12 +159,21 @@ export default function Subscribe() {
           {t("complete_subscription")}
         </Button>
 
-        <div
-          onClick={() => signOut()}
-          className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
-        >
-          {t("sign_out")}
-        </div>
+        {REQUIRE_CC ? (
+          <div
+            onClick={() => signOut()}
+            className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
+          >
+            {t("sign_out")}
+          </div>
+        ) : (
+          <Link
+            className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
+            href="/dashboard"
+          >
+            {t("subscribe_later")}
+          </Link>
+        )}
       </div>
     </CenteredForm>
   );

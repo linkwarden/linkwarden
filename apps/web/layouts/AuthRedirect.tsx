@@ -8,7 +8,9 @@ interface Props {
   children: ReactNode;
 }
 
-const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE === "true";
+const STRIPE_ENABLED = process.env.NEXT_PUBLIC_STRIPE === "true";
+const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
+const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
 export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
@@ -22,11 +24,19 @@ export default function AuthRedirect({ children }: Props) {
     const isLoggedIn = status === "authenticated";
     const isUnauthenticated = status === "unauthenticated";
     const isPublicPage = router.pathname.startsWith("/public");
+
+    const trialEndTime =
+      new Date(user?.createdAt || 0).getTime() +
+      (1 + Number(TRIAL_PERIOD_DAYS)) * 86400000; // Add 1 to account for the current day
+
+    const daysLeft = Math.floor((trialEndTime - Date.now()) / 86400000);
+
     const hasInactiveSubscription =
       user?.id &&
       !user?.subscription?.active &&
       !user.parentSubscription?.active &&
-      stripeEnabled;
+      STRIPE_ENABLED &&
+      (REQUIRE_CC || daysLeft <= 0);
 
     // There are better ways of doing this... but this one works for now
     const routes = [

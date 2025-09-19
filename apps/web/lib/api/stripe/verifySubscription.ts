@@ -7,10 +7,25 @@ interface UserIncludingSubscription extends User {
   parentSubscription: Subscription | null;
 }
 
+const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
+const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
+
 export default async function verifySubscription(
   user?: UserIncludingSubscription | null
 ) {
-  if (!user || (!user.subscriptions && !user.parentSubscription)) {
+  if (!user) return null;
+
+  const trialEndTime =
+    new Date(user.createdAt).getTime() +
+    (1 + Number(TRIAL_PERIOD_DAYS)) * 86400000; // Add 1 to account for the current day
+
+  const daysLeft = Math.floor((trialEndTime - Date.now()) / 86400000);
+
+  if (
+    !user.subscriptions &&
+    !user.parentSubscription &&
+    (REQUIRE_CC || daysLeft <= 0)
+  ) {
     return null;
   }
 
@@ -19,8 +34,9 @@ export default async function verifySubscription(
   }
 
   if (
-    !user.subscriptions?.active ||
-    new Date() > user.subscriptions.currentPeriodEnd
+    (!user.subscriptions?.active ||
+      new Date() > user.subscriptions.currentPeriodEnd) &&
+    (REQUIRE_CC || daysLeft <= 0)
   ) {
     const subscription = await checkSubscriptionByEmail(user.email as string);
 
