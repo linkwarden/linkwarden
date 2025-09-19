@@ -499,7 +499,7 @@
   "create_new_tag": "Create New Tag",
   "tag_deletion_confirmation_message": "Are you sure you want to delete this Tag?",
   "delete_tags_by_number_of_links": "Delete Tags with <0/> Links",
-  "delete_all_tags": "Delete all Tags",
+  "delete_all_tags": "删除所有标签",
   "bulk_delete_tags": "Bulk Delete Tags",
   "count_tags_deleted": "{{count}} Tags Deleted",
   "count_tag_deleted": "{{count}} Tag Deleted",
