@@ -5,6 +5,7 @@ import stripeSDK from "./stripe/stripeSDK";
 const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 const MANAGED_PAYMENTS_ENABLED =
   process.env.MANAGED_PAYMENTS_ENABLED === "true";
+const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
 
 export default async function paymentCheckout(email: string, priceId: string) {
   const stripe = stripeSDK();
@@ -19,9 +20,22 @@ export default async function paymentCheckout(email: string, priceId: string) {
     },
   });
 
+  if (!user) {
+    return { response: "User not found", status: 404 };
+  }
+
+  const trialEndTime =
+    new Date(user.createdAt).getTime() +
+    (1 + Number(TRIAL_PERIOD_DAYS)) * 86400000; // Add 1 to account for the current day
+
+  const daysLeft = Math.floor((trialEndTime - Date.now()) / 86400000);
+
   const subscription = await verifySubscription(user);
 
-  if (subscription) {
+  if (
+    subscription?.subscriptions?.active ||
+    subscription?.parentSubscription?.active
+  ) {
     // To prevent users from creating multiple subscriptions
     return { response: "/dashboard", status: 200 };
   }
@@ -56,7 +70,13 @@ export default async function paymentCheckout(email: string, priceId: string) {
               : 14,
           },
         }
-      : {}),
+      : daysLeft > 0
+        ? {
+            subscription_data: {
+              trial_period_days: daysLeft,
+            },
+          }
+        : {}),
     ...(MANAGED_PAYMENTS_ENABLED
       ? {
           managed_payments: {

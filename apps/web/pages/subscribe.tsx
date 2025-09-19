@@ -10,6 +10,7 @@ import { Trans, useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const TRIAL_PERIOD_DAYS =
   Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS) || 14;
@@ -149,31 +150,40 @@ export default function Subscribe() {
           </fieldset>
         </div>
 
-        <Button
-          type="button"
-          variant="accent"
-          size="full"
-          onClick={submit}
-          disabled={submitLoader}
+        <div
+          className={cn(
+            "flex gap-3",
+            REQUIRE_CC || daysLeft <= 0 ? "flex-col" : "flex-row-reverse"
+          )}
         >
-          {t("complete_subscription")}
-        </Button>
+          <Button
+            type="button"
+            variant="accent"
+            size="full"
+            onClick={submit}
+            disabled={submitLoader}
+          >
+            {t("complete_subscription")}
+          </Button>
 
-        {REQUIRE_CC ? (
-          <div
-            onClick={() => signOut()}
-            className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
-          >
-            {t("sign_out")}
-          </div>
-        ) : (
-          <Link
-            className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
-            href="/dashboard"
-          >
-            {t("subscribe_later")}
-          </Link>
-        )}
+          {REQUIRE_CC || daysLeft <= 0 ? (
+            <div
+              onClick={() => signOut()}
+              className="w-fit mx-auto cursor-pointer text-neutral font-semibold "
+            >
+              {t("sign_out")}
+            </div>
+          ) : (
+            <Button
+              className=""
+              variant="metal"
+              size="full"
+              onClick={() => router.push("/dashboard")}
+            >
+              {t("subscribe_later")}
+            </Button>
+          )}
+        </div>
       </div>
     </CenteredForm>
   );
