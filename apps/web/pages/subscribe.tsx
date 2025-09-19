@@ -152,8 +152,8 @@ export default function Subscribe() {
 
         <div
           className={cn(
-            "flex gap-3",
-            REQUIRE_CC || daysLeft <= 0 ? "flex-col" : "flex-row-reverse"
+            "flex gap-3 flex-col",
+            REQUIRE_CC || daysLeft <= 0 ? "" : "sm:flex-row-reverse"
           )}
         >
           <Button
