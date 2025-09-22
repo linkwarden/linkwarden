@@ -521,5 +521,6 @@
   "create_your_first_collection_desc": "Collections are like folders for your Links which can then be shared with others.",
   "this_tag_has_no_links": "This Tag Has No Links",
   "this_tag_has_no_links_desc": "Use this Tag while creating or editing Links!",
-  "accept_promotional_emails": "Get notified about new features and offers via email."
+  "accept_promotional_emails": "Get notified about new features and offers via email.",
+  "trial_left_prompt": "You have {{count}} days left in your free trial. <0>Subscribe</0>"
 }

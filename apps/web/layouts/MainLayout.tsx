@@ -3,6 +3,7 @@ import Announcement from "@/components/Announcement";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode, useEffect, useState } from "react";
 import getLatestVersion from "@/lib/client/getLatestVersion";
+import Subscribe from "@/components/Subscribe";
 
 interface Props {
   children: ReactNode;
@@ -46,6 +47,7 @@ export default function MainLayout({ children }: Props) {
       >
         <Navbar />
         {children}
+        <Subscribe />
       </div>
     </div>
   );
