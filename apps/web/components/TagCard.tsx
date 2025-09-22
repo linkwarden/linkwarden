@@ -1,5 +1,4 @@
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "next-i18next";
 import {
   DropdownMenu,
@@ -39,16 +38,16 @@ export default function TagCard({
   return (
     <div
       className={cn(
-        "relative rounded-xl p-2 flex gap-2 flex-col shadow-md cursor-pointer hover:shadow-none hover:bg-opacity-70 duration-200 border border-neutral-content",
+        "relative rounded-xl p-2 shadow-md cursor-pointer hover:shadow-none hover:bg-opacity-70 duration-200 border border-neutral-content",
         editMode ? "bg-base-300" : "bg-base-200",
         selected && "border-primary"
       )}
-      onClick={() =>
-        editMode ? onSelect(tag.id) : router.push(`/tags/${tag.id}`)
-      }
     >
       {editMode ? (
-        <Checkbox checked={selected} className="absolute top-3 right-3 z-20" />
+        <Checkbox
+          checked={selected}
+          className="absolute top-3 right-3 z-20 pointer-events-none"
+        />
       ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -79,25 +78,32 @@ export default function TagCard({
         </DropdownMenu>
       )}
 
-      <h2 className="truncate leading-tight py-1 pr-8" title={tag.name}>
-        {tag.name}
-      </h2>
+      <div
+        className="flex gap-2 flex-col"
+        onClick={() =>
+          editMode ? onSelect(tag.id) : router.push(`/tags/${tag.id}`)
+        }
+      >
+        <h2 className="truncate leading-tight py-1 pr-8" title={tag.name}>
+          {tag.name}
+        </h2>
 
-      <div className="flex justify-between items-center mt-auto">
-        <div className="text-xs flex gap-1 items-center">
-          <i
-            className="bi-calendar3 text-neutral"
-            title={t("collection_publicly_shared")}
-          ></i>
-          {formattedDate}
-        </div>
+        <div className="flex justify-between items-center mt-auto">
+          <div className="text-xs flex gap-1 items-center">
+            <i
+              className="bi-calendar3 text-neutral"
+              title={t("collection_publicly_shared")}
+            ></i>
+            {formattedDate}
+          </div>
 
-        <div className="text-xs flex gap-1 items-center">
-          <i
-            className="bi-link-45deg text-lg leading-none text-neutral"
-            title={t("collection_publicly_shared")}
-          ></i>
-          {tag._count?.links}
+          <div className="text-xs flex gap-1 items-center">
+            <i
+              className="bi-link-45deg text-lg leading-none text-neutral"
+              title={t("collection_publicly_shared")}
+            ></i>
+            {tag._count?.links}
+          </div>
         </div>
       </div>
 

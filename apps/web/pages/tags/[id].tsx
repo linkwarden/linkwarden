@@ -151,7 +151,7 @@ export default function Index() {
       setActiveLink={setActiveLink}
     >
       <MainLayout>
-        <div className="p-5 flex flex-col gap-5 w-full">
+        <div className="p-5 flex flex-col gap-5 w-full h-full">
           <LinkListOptions
             t={t}
             viewMode={viewMode}
@@ -241,6 +241,20 @@ export default function Index() {
             placeholderCount={1}
             useData={data}
           />
+
+          {!data.isLoading && links && !links[0] && (
+            <div
+              style={{ flex: "1 1 auto" }}
+              className="flex flex-col gap-2 justify-center h-full w-full mx-auto p-10"
+            >
+              <p className="text-center text-xl">
+                {t("this_tag_has_no_links")}
+              </p>
+              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+                {t("this_tag_has_no_links_desc")}
+              </p>
+            </div>
+          )}
         </div>
         {bulkDeleteLinksModal && (
           <BulkDeleteLinksModal

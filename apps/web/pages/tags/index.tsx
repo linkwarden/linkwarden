@@ -8,7 +8,6 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
@@ -35,7 +34,7 @@ enum TagSort {
 
 export default function Tags() {
   const { t } = useTranslation();
-  const { data: tags = [] } = useTags();
+  const { data: tags = [], isLoading } = useTags();
 
   const [sortBy, setSortBy] = useState<TagSort>(TagSort.DateNewestFirst);
   const [newTagModal, setNewTagModal] = useState(false);
@@ -78,21 +77,22 @@ export default function Tags() {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <PageHeader icon={"bi-hash"} title={t("tags")} />
-            <div className="relative">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="text-neutral" variant="ghost" size="icon">
-                    <i className={"bi-three-dots text-neutral text-xl"}></i>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setNewTagModal(true)}
+                  >
+                    <i className="bi-plus-lg text-xl text-neutral"></i>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side="bottom" align="start">
-                  <DropdownMenuItem onSelect={() => setNewTagModal(true)}>
-                    <i className="bi-plus-lg" />
-                    {t("new_tag")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{t("new_tag")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <div className="flex gap-3 justify-end">
@@ -238,6 +238,26 @@ export default function Tags() {
             />
           ))}
         </div>
+
+        {!isLoading && tags && !tags[0] && (
+          <div
+            style={{ flex: "1 1 auto" }}
+            className="flex flex-col gap-2 justify-center h-full w-full mx-auto p-10"
+          >
+            <p className="text-center text-xl">{t("create_your_first_tag")}</p>
+            <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+              {t("create_your_first_tag_desc")}
+            </p>
+            <Button
+              className="mx-auto mt-5"
+              variant={"accent"}
+              onClick={() => setNewTagModal(true)}
+            >
+              <i className="bi-plus-lg text-xl mr-2" />
+              {t("new_tag")}
+            </Button>
+          </div>
+        )}
       </div>
 
       {newTagModal && <NewTagModal onClose={() => setNewTagModal(false)} />}
