@@ -28,6 +28,9 @@ export default async function mergeTags(
       where: {
         tags: {
           some: {
+            id: {
+              in: tagIds,
+            },
             ownerId: userId,
           },
         },
