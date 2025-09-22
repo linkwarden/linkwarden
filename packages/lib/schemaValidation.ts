@@ -52,7 +52,8 @@ export const PostUserSchema = () => {
           .min(3)
           .max(50)
           .regex(/^[a-z0-9_-]{3,50}$/),
-    invite: z.boolean().optional(),
+    invite: z.boolean().default(false),
+    acceptPromotionalEmails: z.boolean().default(false),
   });
 };
 
