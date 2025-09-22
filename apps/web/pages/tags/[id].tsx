@@ -192,12 +192,7 @@ export default function Index() {
                     <div className="relative">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button
-                            asChild
-                            variant="ghost"
-                            size="icon"
-                            title={t("more")}
-                          >
+                          <Button variant="ghost" size="icon" title={t("more")}>
                             <i className="bi-three-dots text-xl text-neutral" />
                           </Button>
                         </DropdownMenuTrigger>
