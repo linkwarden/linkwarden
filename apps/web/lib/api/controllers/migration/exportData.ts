@@ -9,7 +9,12 @@ export default async function exportData(userId: number) {
           rssSubscriptions: true,
           links: {
             omit: {
-              textContent: true, // Exclude text content to reduce payload size
+              textContent: true, // Exclude to reduce payload size
+              preview: true,
+              image: true,
+              readable: true,
+              monolith: true,
+              pdf: true,
             },
             include: {
               tags: true,
