@@ -58,7 +58,7 @@ export default function MainLayout({ children }: Props) {
           sidebarIsCollapsed
             ? "lg:w-[calc(100%-56px)]"
             : "lg:w-[calc(100%-320px)]"
-        } w-full sm:pb-0 pb-20 flex flex-col min-h-screen`}
+        } w-full sm:pb-0 pb-20 flex flex-col h-screen overflow-y-auto`}
       >
         <Navbar />
         {children}
