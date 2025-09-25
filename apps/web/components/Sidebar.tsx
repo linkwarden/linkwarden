@@ -125,7 +125,9 @@ export default function Sidebar({
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    {sidebarIsCollapsed ? t("show_sidebar") : t("hide_sidebar")}
+                    {sidebarIsCollapsed
+                      ? t("expand_sidebar")
+                      : t("shrink_sidebar")}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -185,7 +187,7 @@ export default function Sidebar({
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                {sidebarIsCollapsed ? t("show_sidebar") : t("hide_sidebar")}
+                {sidebarIsCollapsed ? t("expand_sidebar") : t("shrink_sidebar")}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

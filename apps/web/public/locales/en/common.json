@@ -522,6 +522,6 @@
   "this_tag_has_no_links": "This Tag Has No Links",
   "this_tag_has_no_links_desc": "Use this Tag while creating or editing Links!",
   "accept_promotional_emails": "Get notified about new features and offers via email.",
-  "show_sidebar": "Show Sidebar",
-  "hide_sidebar": "Hide Sidebar"
+  "expand_sidebar": "Expand Sidebar",
+  "shrink_sidebar": "Shrink Sidebar"
 }
