@@ -5,6 +5,9 @@ type PickLinksOptions = {
   maxBatchLinks: number;
 };
 
+const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
+const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
+
 export default async function getLinkBatchFairly({
   maxBatchLinks,
 }: PickLinksOptions) {
@@ -38,7 +41,24 @@ export default async function getLinkBatchFairly({
             OR: [
               { subscriptions: { is: { active: true } } },
               { parentSubscription: { is: { active: true } } },
+              ...(REQUIRE_CC
+                ? []
+                : [
+                    {
+                      createdAt: {
+                        gte: new Date(
+                          new Date().getTime() -
+                            Number(TRIAL_PERIOD_DAYS) * 86400000
+                        ),
+                      },
+                    },
+                  ]),
             ],
+          }
+        : {}),
+      ...(process.env.NEXT_PUBLIC_EMAIL_PROVIDER === "true"
+        ? {
+            emailVerified: { not: null },
           }
         : {}),
     },

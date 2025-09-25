@@ -268,7 +268,7 @@ export default function DashboardLayoutDropdown() {
             <TextInput
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="py-0"
+              className="py-0 bg-base-100"
               placeholder={t("search")}
             />
           </div>

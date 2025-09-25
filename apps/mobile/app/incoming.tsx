@@ -46,7 +46,7 @@ export default function IncomingScreen() {
       );
   }, [auth, data.shareIntent.url]);
 
-  if (auth.status === "unauthenticated") return <Redirect href="/login" />;
+  if (auth.status === "unauthenticated") return <Redirect href="/" />;
 
   return (
     <SafeAreaView className="flex-1 bg-base-100">

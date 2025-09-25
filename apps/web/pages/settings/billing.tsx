@@ -32,6 +32,8 @@ type UserModal = {
   userId: number | null;
 };
 
+const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
+
 export default function Billing() {
   const router = useRouter();
   const { t } = useTranslation();
@@ -40,9 +42,20 @@ export default function Billing() {
   const { data: users = [] } = useUsers();
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_STRIPE || account?.parentSubscriptionId)
+    if (!process.env.NEXT_PUBLIC_STRIPE || account?.parentSubscriptionId) {
       router.push("/settings/account");
-  }, []);
+    } else if (account?.createdAt) {
+      const trialEndTime =
+        new Date(account.createdAt).getTime() +
+        (1 + Number(TRIAL_PERIOD_DAYS)) * 86400000; // Add 1 to account for the current day
+
+      const daysLeft = Math.floor((trialEndTime - Date.now()) / 86400000);
+
+      if (daysLeft > 0 && !account.subscription?.active) {
+        router.push("/subscribe");
+      }
+    }
+  }, [account]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>();

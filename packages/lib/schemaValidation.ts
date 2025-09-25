@@ -5,7 +5,7 @@ import {
   DashboardSectionType,
   Theme,
 } from "@linkwarden/prisma/client";
-import { z } from "zod";
+import { number, z } from "zod";
 
 // const stringField = z.string({
 //   errorMap: (e) => ({
@@ -52,7 +52,8 @@ export const PostUserSchema = () => {
           .min(3)
           .max(50)
           .regex(/^[a-z0-9_-]{3,50}$/),
-    invite: z.boolean().optional(),
+    invite: z.boolean().default(false),
+    acceptPromotionalEmails: z.boolean().default(false),
   });
 };
 
@@ -267,6 +268,19 @@ export const PostTagSchema = z.object({
 });
 
 export type PostTagSchemaType = z.infer<typeof PostTagSchema>;
+
+export const TagBulkDeletionSchema = z.object({
+  tagIds: z.array(z.number()).min(1),
+});
+
+export type TagBulkDeletionSchemaType = z.infer<typeof TagBulkDeletionSchema>;
+
+export const MergeTagsSchema = z.object({
+  newTagName: z.string().trim().max(50),
+  tagIds: z.array(z.number()).min(1),
+});
+
+export type MergeTagsSchemaType = z.infer<typeof MergeTagsSchema>;
 
 export const PostHighlightSchema = z.object({
   color: z.string().trim().max(50),

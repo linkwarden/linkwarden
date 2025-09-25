@@ -68,6 +68,7 @@ model User {
   referredBy              String?
   dashboardSections       DashboardSection[]
   lastPickedAt            DateTime?
+  acceptPromotionalEmails Boolean               @default(false)
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
 }
@@ -206,6 +207,7 @@ model Tag {
   archiveAsReadable       Boolean?
   archiveAsWaybackMachine Boolean?
   aiTag                   Boolean?
+  aiGenerated             Boolean  @default(false)
   createdAt               DateTime @default(now())
   updatedAt               DateTime @default(now()) @updatedAt
 

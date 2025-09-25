@@ -79,7 +79,7 @@ export default function CollectionCard({
             size="icon"
             className="absolute top-3 right-3 z-20"
           >
-            <i title="More" className="bi-three-dots text-xl" />
+            <i title="More" className="bi-three-dots text-xl text-neutral" />
           </Button>
         </DropdownMenuTrigger>
 

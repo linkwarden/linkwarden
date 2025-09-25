@@ -18,12 +18,14 @@ import {
   FileText,
   Globe,
   LogOut,
+  Mail,
   Moon,
   Smartphone,
   Sun,
 } from "lucide-react-native";
 import useDataStore from "@/store/data";
 import { ArchivedFormat } from "@/types/global";
+import * as Clipboard from "expo-clipboard";
 
 export default function SettingsScreen() {
   const { signOut, auth } = useAuthStore();
@@ -191,6 +193,29 @@ export default function SettingsScreen() {
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
               ) : null}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View>
+          <Text className="mb-4 mx-4 text-neutral">Contact Us</Text>
+          <View className="bg-base-200 rounded-xl flex-col">
+            <TouchableOpacity
+              className="flex-row gap-2 items-center justify-between py-3 px-4"
+              onPress={async () => {
+                await Clipboard.setStringAsync("support@linkwarden.app");
+                Alert.alert("Copied to clipboard", "support@linkwarden.app");
+              }}
+            >
+              <View className="flex-row items-center gap-2">
+                <Mail
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].neutral}
+                />
+                <Text className="text-base-content">
+                  support@linkwarden.app
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>

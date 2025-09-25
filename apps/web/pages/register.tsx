@@ -15,6 +15,7 @@ import { i18n } from "next-i18next.config";
 import { Trans, useTranslation } from "next-i18next";
 import { useConfig } from "@linkwarden/router/config";
 import { Separator } from "@/components/ui/separator";
+import Checkbox from "@/components/Checkbox";
 
 type FormData = {
   name: string;
@@ -22,6 +23,7 @@ type FormData = {
   email?: string;
   password: string;
   passwordConfirmation: string;
+  acceptPromotionalEmails: boolean;
 };
 
 export default function Register({
@@ -39,6 +41,7 @@ export default function Register({
     email: config?.EMAIL_PROVIDER ? "" : undefined,
     password: "",
     passwordConfirmation: "",
+    acceptPromotionalEmails: false,
   });
 
   async function registerUser(event: FormEvent<HTMLFormElement>) {
@@ -251,27 +254,41 @@ export default function Register({
             </div>
 
             {process.env.NEXT_PUBLIC_STRIPE && (
-              <div className="text-xs text-neutral mb-3">
-                <p>
-                  <Trans
-                    i18nKey="sign_up_agreement"
-                    components={[
-                      <Link
-                        href="https://linkwarden.app/tos"
-                        className="font-semibold"
-                        data-testid="terms-of-service-link"
-                        key={0}
-                      />,
-                      <Link
-                        href="https://linkwarden.app/privacy-policy"
-                        className="font-semibold"
-                        data-testid="privacy-policy-link"
-                        key={1}
-                      />,
-                    ]}
-                  />
-                </p>
-              </div>
+              <>
+                <Checkbox
+                  className="p-0"
+                  label={t("accept_promotional_emails")}
+                  state={form.acceptPromotionalEmails}
+                  onClick={(e) =>
+                    setForm({
+                      ...form,
+                      acceptPromotionalEmails: e.target.checked,
+                    })
+                  }
+                />
+
+                <div className="text-xs text-neutral mb-3">
+                  <p>
+                    <Trans
+                      i18nKey="sign_up_agreement"
+                      components={[
+                        <Link
+                          href="https://linkwarden.app/tos"
+                          className="font-semibold"
+                          data-testid="terms-of-service-link"
+                          key={0}
+                        />,
+                        <Link
+                          href="https://linkwarden.app/privacy-policy"
+                          className="font-semibold"
+                          data-testid="privacy-policy-link"
+                          key={1}
+                        />,
+                      ]}
+                    />
+                  </p>
+                </div>
+              </>
             )}
 
             <Button

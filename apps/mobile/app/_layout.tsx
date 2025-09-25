@@ -170,6 +170,21 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="index"
+                options={{
+                  navigationBarColor:
+                    rawTheme[colorScheme as ThemeName]["base-100"],
+                  ...Platform.select({
+                    android: {
+                      statusBarStyle:
+                        colorScheme === "light" ? "light" : "dark",
+                      statusBarBackgroundColor:
+                        rawTheme[colorScheme as ThemeName]["primary"],
+                    },
+                  }),
+                }}
+              />
+              <Stack.Screen
                 name="incoming"
                 options={{
                   navigationBarColor:

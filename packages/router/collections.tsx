@@ -29,7 +29,9 @@ const useCollections = (auth?: MobileAuth) => {
           : undefined
       );
       const data = await response.json();
-      return data.response;
+
+      if (Array.isArray(data.response)) return data.response;
+      else return [];
     },
     enabled: status === "authenticated",
   });

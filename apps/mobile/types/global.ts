@@ -35,9 +35,9 @@ export type LinkIncludingShortenedCollectionAndTags = {
 };
 
 export enum ArchivedFormat {
-  png,
-  jpeg,
-  pdf,
-  readability,
-  monolith,
+  png = 0,
+  jpeg = 1,
+  pdf = 2,
+  readability = 3,
+  monolith = 4,
 }
