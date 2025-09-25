@@ -2,6 +2,8 @@ import { prisma } from "@linkwarden/prisma";
 
 const MAX_LINKS_PER_USER = Number(process.env.MAX_LINKS_PER_USER) || 30000;
 const stripeEnabled = process.env.STRIPE_SECRET_KEY;
+const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
+const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
 export const hasPassedLimit = async (
   userId: number,
@@ -22,11 +24,28 @@ export const hasPassedLimit = async (
     select: {
       parentSubscriptionId: true,
       subscriptions: { select: { id: true, quantity: true } },
+      createdAt: true,
     },
   });
 
   if (!user) {
     return true;
+  }
+
+  const trialEndTime =
+    new Date(user.createdAt).getTime() +
+    (1 + Number(TRIAL_PERIOD_DAYS)) * 86400000; // Add 1 to account for the current day
+
+  const daysLeft = Math.floor((trialEndTime - Date.now()) / 86400000);
+
+  if (!REQUIRE_CC && daysLeft > 0) {
+    const totalLinks = await prisma.link.count({
+      where: {
+        createdById: userId,
+      },
+    });
+
+    return MAX_LINKS_PER_USER - (numberOfImports + totalLinks) < 0;
   }
 
   const subscriptionId = user?.parentSubscriptionId ?? user?.subscriptions?.id;

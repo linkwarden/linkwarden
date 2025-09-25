@@ -8,6 +8,14 @@ export default async function exportData(userId: number) {
         include: {
           rssSubscriptions: true,
           links: {
+            omit: {
+              textContent: true, // Exclude to reduce payload size
+              preview: true,
+              image: true,
+              readable: true,
+              monolith: true,
+              pdf: true,
+            },
             include: {
               tags: true,
             },

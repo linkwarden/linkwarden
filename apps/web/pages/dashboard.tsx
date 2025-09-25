@@ -288,7 +288,7 @@ export default function Dashboard() {
       setActiveLink={setActiveLink}
     >
       <MainLayout>
-        <div className="p-5 flex flex-col gap-4 h-full">
+        <div className="p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <i className="bi-house-fill text-primary" />

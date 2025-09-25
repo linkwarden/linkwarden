@@ -30,7 +30,7 @@ export default function CenteredForm({
             width={640}
             height={136}
             alt="Linkwarden"
-            className="h-12 w-fit mx-auto"
+            className="h-12 w-auto mx-auto"
           />
         ) : (
           <Image
@@ -38,7 +38,7 @@ export default function CenteredForm({
             width={640}
             height={136}
             alt="Linkwarden"
-            className="h-12 w-fit mx-auto"
+            className="h-12 w-auto mx-auto"
           />
         )}
         {text && (

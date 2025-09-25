@@ -34,8 +34,8 @@ export default function NoLinksFound({ text }: Props) {
           }}
           variant="accent"
         >
-          <i className="bi-plus-lg text-3xl left-2 group-hover:ml-[4rem] absolute duration-100"></i>
-          <span className="group-hover:opacity-0 text-right w-full duration-100">
+          <i className="bi-plus-lg text-xl duration-100"></i>
+          <span className="group-hover:opacity-0 w-full duration-100">
             {t("create_new_link")}
           </span>
         </Button>

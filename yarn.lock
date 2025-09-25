@@ -3221,12 +3221,12 @@
     tiny-glob "^0.2.9"
     tslib "^2.4.0"
 
-"@playwright/test@^1.45.0":
-  version "1.45.0"
-  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.45.0.tgz#790a66165a46466c0d7099dd260881802f5aba7e"
-  integrity sha512-TVYsfMlGAaxeUllNkywbwek67Ncf8FRGn8ZlRdO291OL3NjG9oMbfVhyP82HQF0CZLMrYsvesqoUekxdWuF9Qw==
+"@playwright/test@^1.55.0":
+  version "1.55.0"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.55.0.tgz#080fa6d9ee6d749ff523b1c18259572d0268b963"
+  integrity sha512-04IXzPwHrW69XusN/SIdDdKZBzMfOT9UNT/YiJit/xpy2VuAoB8NHc8Aplb96zsWDddLnbkPL3TsmrS04ZU2xQ==
   dependencies:
-    playwright "1.45.0"
+    playwright "1.55.0"
 
 "@prisma/client@^6.10.1":
   version "6.10.1"
@@ -11188,17 +11188,17 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-playwright-core@1.45.0:
-  version "1.45.0"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.45.0.tgz#5741a670b7c9060ce06852c0051d84736fb94edc"
-  integrity sha512-lZmHlFQ0VYSpAs43dRq1/nJ9G/6SiTI7VPqidld9TDefL9tX87bTKExWZZUF5PeRyqtXqd8fQi2qmfIedkwsNQ==
+playwright-core@1.55.0:
+  version "1.55.0"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.55.0.tgz#ec8a9f8ef118afb3e86e0f46f1393e3bea32adf4"
+  integrity sha512-GvZs4vU3U5ro2nZpeiwyb0zuFaqb9sUiAJuyrWpcGouD8y9/HLgGbNRjIph7zU9D3hnPaisMl9zG9CgFi/biIg==
 
-playwright@1.45.0, playwright@^1.45.0:
-  version "1.45.0"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.45.0.tgz#400c709c64438690f13705cb9c88ef93089c5c27"
-  integrity sha512-4z3ac3plDfYzGB6r0Q3LF8POPR20Z8D0aXcxbJvmfMgSSq1hkcgvFRXJk9rUq5H/MJ0Ktal869hhOdI/zUTeLA==
+playwright@1.55.0, playwright@^1.55.0:
+  version "1.55.0"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.55.0.tgz#7aca7ac3ffd9e083a8ad8b2514d6f9ba401cc78b"
+  integrity sha512-sdCWStblvV1YU909Xqx0DhOjPZE4/5lJsIS84IfN9dAZfcl/CIZ5O8l3o0j7hPMjDvqoTF8ZUcc+i/GL5erstA==
   dependencies:
-    playwright-core "1.45.0"
+    playwright-core "1.55.0"
   optionalDependencies:
     fsevents "2.3.2"
 

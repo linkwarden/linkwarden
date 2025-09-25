@@ -39,7 +39,7 @@ export function DashboardLinks({
 }) {
   return (
     <div
-      className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-72`}
+      className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit`}
     >
       {isLoading ? (
         <div className="flex flex-col gap-4 min-w-60 w-60">
@@ -198,7 +198,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
             </div>
           )}
 
-          <div className="flex flex-col justify-between h-full min-h-24">
+          <div className="flex flex-col justify-between h-full min-h-11">
             <div className="p-3 flex flex-col justify-between h-full gap-2">
               {show.name && (
                 <p className="line-clamp-2 w-full text-primary text-sm">

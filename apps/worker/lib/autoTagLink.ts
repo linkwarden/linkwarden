@@ -170,6 +170,7 @@ export default async function autoTagLink(
                   id: user.id,
                 },
               },
+              aiGenerated: true,
             },
           })),
         },

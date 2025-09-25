@@ -37,7 +37,8 @@ export default async function postUser(
     };
   }
 
-  const { name, email, password, invite } = dataValidation.data;
+  const { name, email, password, invite, acceptPromotionalEmails } =
+    dataValidation.data;
   let { username } = dataValidation.data;
 
   if (invite && (!stripeEnabled || !emailEnabled)) {
@@ -109,6 +110,7 @@ export default async function postUser(
                 },
               }
             : undefined,
+        acceptPromotionalEmails: acceptPromotionalEmails || false,
         dashboardSections: {
           createMany: {
             data: [
