@@ -58,7 +58,7 @@ export default function Navbar() {
   const [uploadFileModal, setUploadFileModal] = useState(false);
 
   const [daysLeft, setDaysLeft] = useState<number>(0);
-  const [isTrialling, setIsTrialling] = useState<boolean>(false);
+  const [isTrialing, setIsTrialing] = useState<boolean>(false);
 
   useEffect(() => {
     if (user?.createdAt) {
@@ -71,17 +71,17 @@ export default function Navbar() {
   }, [user]);
 
   useEffect(() => {
-    const isTrialling =
+    const isTrialing =
       user?.id &&
       !user?.subscription?.active &&
       !user.parentSubscription?.active;
 
-    setIsTrialling(Boolean(isTrialling));
+    setIsTrialing(Boolean(isTrialing));
   }, [user, daysLeft]);
 
   return (
     <>
-      {STRIPE_ENABLED && isTrialling && (
+      {STRIPE_ENABLED && isTrialing && (
         <Link
           href="/subscribe"
           className="w-full text-sm cursor-pointer select-none bg-base-200"
