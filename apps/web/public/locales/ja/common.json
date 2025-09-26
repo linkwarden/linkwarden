@@ -523,5 +523,7 @@
   "this_tag_has_no_links_desc": "Use this Tag while creating or editing Links!",
   "accept_promotional_emails": "Get notified about new features and offers via email.",
   "expand_sidebar": "Expand Sidebar",
-  "shrink_sidebar": "Shrink Sidebar"
+  "shrink_sidebar": "Shrink Sidebar",
+  "trial_left_plural": "Trial ends in {{count}} days. Subscribe.",
+  "trial_left_singular": "Trial ends in 1 day. Subscribe."
 }
