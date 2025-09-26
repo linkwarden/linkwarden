@@ -9,7 +9,6 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const TRIAL_PERIOD_DAYS =
