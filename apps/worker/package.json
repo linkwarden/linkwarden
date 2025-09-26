@@ -12,6 +12,7 @@
     "@ai-sdk/anthropic": "1.1.5",
     "@ai-sdk/azure": "1.1.5",
     "@ai-sdk/openai-compatible": "^0.2.13",
+    "@ai-sdk/perplexity": "1.1.9",
     "@linkwarden/filesystem": "*",
     "@linkwarden/lib": "*",
     "@linkwarden/prisma": "*",
