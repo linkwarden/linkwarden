@@ -513,5 +513,15 @@
   "rename_tag_instruction": "Please provide a name for the final tag.",
   "merging": "Merging...",
   "delete_tags": "Delete {{count}} Tags",
-  "tags_deletion_confirmation_message": "Are you sure you want to delete {{count}} Tags? This will remove the tags from all links."
+  "tags_deletion_confirmation_message": "Are you sure you want to delete {{count}} Tags? This will remove the tags from all links.",
+  "subscribe_later": "Subscribe Later?",
+  "create_your_first_tag": "Create Your First Tag!",
+  "create_your_first_tag_desc": "Tags help you categorize and find your Links easily. You can create Tags based on topics, projects, or any system that works for you.",
+  "create_your_first_collection": "Create Your First Collection!",
+  "create_your_first_collection_desc": "Collections are like folders for your Links which can then be shared with others.",
+  "this_tag_has_no_links": "This Tag Has No Links",
+  "this_tag_has_no_links_desc": "Use this Tag while creating or editing Links!",
+  "accept_promotional_emails": "Get notified about new features and offers via email.",
+  "expand_sidebar": "Expand Sidebar",
+  "shrink_sidebar": "Shrink Sidebar"
 }
