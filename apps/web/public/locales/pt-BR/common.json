@@ -504,7 +504,7 @@
   "count_tags_deleted": "{{count}} Etiquetas deletadas",
   "count_tag_deleted": "{{count}} Etiqueta deletada",
   "tag_name_placeholder": "ex. Tecnologia",
-  "link_count_high_low": "Contagem de links (do maior para o menor)",
+  "link_count_high_low": "Qtd. de links (do maior para o menor)",
   "link_count_low_high": "Contagem de links (do menor para o maior)",
   "tags_selected": "{{count}} Etiquetas selecionadas",
   "tag_selected": "Uma etiqueta selecionada",
@@ -519,11 +519,11 @@
   "create_your_first_tag_desc": "As etiquetas ajudam você a categorizar e encontrar seus links facilmente. Você pode criar etiquetas baseadas em tópicos, projetos ou qualquer sistema que funcione para você.",
   "create_your_first_collection": "Crie Sua Primeira Coleção!",
   "create_your_first_collection_desc": "Coleções são como pastas para seus links, que podem ser compartilhadas com outras pessoas.",
-  "this_tag_has_no_links": "Esta etiqueta Não possui Links",
+  "this_tag_has_no_links": "Esta etiqueta não possui links",
   "this_tag_has_no_links_desc": "Use esta etiqueta enquanto cria ou edita Links!",
   "accept_promotional_emails": "Seja notificado sobre novos recursos e ofertas por e-mail.",
   "expand_sidebar": "Expandir barra lateral",
   "shrink_sidebar": "Encolher barra lateral",
   "trial_left_plural": "O período de teste termina em {{count}} dias. Inscreva-se.",
-  "trial_left_singular": "O período de teste termina em 1 dia. Assinante."
+  "trial_left_singular": "O período de teste termina em 1 dia. Inscreva-se."
 }
