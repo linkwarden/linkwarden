@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useCopyText } from "@/hooks/useCopyText";
+import React from "react";
 import { Button } from "./ui/button";
 
 type Props = {
@@ -6,15 +7,11 @@ type Props = {
 };
 
 const CopyButton: React.FC<Props> = ({ text }) => {
-  const [copied, setCopied] = useState(false);
+  const { copy, copied } = useCopyText();
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => {
-        setCopied(false);
-      }, 1000);
+      await copy(text);
     } catch (err) {
       console.log(err);
     }
