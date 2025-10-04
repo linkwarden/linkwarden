@@ -163,6 +163,7 @@ export default function Login({
             </p>
 
             <TextInput
+              name="username"
               autoFocus={true}
               placeholder="johnny"
               value={form.username}
