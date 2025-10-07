@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import formidable from "formidable";
 import fs from "fs";
 import { readFile, createFile, createFolder } from "@linkwarden/filesystem";
-import { generatePreview } from "@linkwarden/lib";
+import { generatePreview } from "@/lib/server/generatePreview";
 import verifyToken from "@/lib/api/verifyToken";
 import verifyUser from "@/lib/api/verifyUser";
 import getPermission from "@/lib/api/getPermission";

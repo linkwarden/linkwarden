@@ -88,6 +88,7 @@
     "react-window": "^1.8.10",
     "rss": "^1.2.2",
     "rss-parser": "^3.13.0",
+    "sharp": "^0.34.3",
     "socks-proxy-agent": "^8.0.2",
     "stripe": "^18.4.0",
     "tailwind-merge": "^3.3.0",

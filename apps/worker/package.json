@@ -29,6 +29,7 @@
     "ollama-ai-provider": "^1.2.0",
     "playwright": "^1.55.0",
     "rss-parser": "^3.13.0",
+    "sharp": "^0.34.3",
     "socks-proxy-agent": "^8.0.2",
     "tsx": "^4.19.3",
     "zod": "^3.23.8"
