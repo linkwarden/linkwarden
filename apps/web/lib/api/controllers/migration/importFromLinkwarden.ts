@@ -67,6 +67,7 @@ export default async function importFromLinkwarden(
                 name: link.name?.trim().slice(0, 254),
                 description: link.description?.trim().slice(0, 254),
                 importDate: new Date(link.importDate || link.createdAt),
+                relevance: link.relevance,
                 collection: {
                   connect: {
                     id: newCollection.id,

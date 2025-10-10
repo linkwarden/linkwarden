@@ -44,5 +44,9 @@ export default function useSort<
             new Date(b.createdAt as string).getTime()
         )
       );
+    if (sortBy === Sort.RelevantFirst)
+      setData(dataArray.sort((a, b) => a.relevance - b.relevance));
+    else if (sortBy === Sort.LessRelevantFirst)
+      setData(dataArray.sort((a, b) => b.relevance - a.relevance));
   }, [sortBy, data]);
 }
