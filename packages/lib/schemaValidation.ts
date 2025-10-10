@@ -129,6 +129,7 @@ export const PostLinkSchema = z.object({
   name: z.string().trim().max(2048).optional(),
   description: z.string().trim().max(2048).optional(),
   image: z.enum(["jpeg", "png"]).optional(),
+  relevance: z.number(),
   collection: z
     .object({
       id: z.number().optional(),
@@ -166,6 +167,7 @@ export const UpdateLinkSchema = z.object({
       name: z.string().trim().max(50),
     })
   ),
+  relevance: z.number().nullish(),
   pinnedBy: z
     .array(
       z

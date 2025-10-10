@@ -32,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import LinkRelvance from "./LinkRelevance";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -229,6 +230,11 @@ export default function LinkCard({ link, columns, editMode }: Props) {
                       <LinkFormats link={link} />
                     </div>
                   )}
+                {show.relevance ? (
+                  <div className="absolute bottom-2 right-2 z-10">
+                    <LinkRelvance relevance={link.relevance} />
+                  </div>
+                ) : null}
               </div>
               <Separator />
             </div>

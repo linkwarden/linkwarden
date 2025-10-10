@@ -28,6 +28,8 @@ export default async function searchLinks({
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
+  else if (query.sort === Sort.RelevantFirst) order = { relevance: "desc" };
+  else if (query.sort === Sort.LessRelevantFirst) order = { relevance: "asc" };
 
   const tagCondition = [];
   if (query.tagId) {
@@ -78,7 +80,11 @@ export default async function searchLinks({
               ? ["name:asc"]
               : query.sort === Sort.NameZA
                 ? ["name:desc"]
-                : ["id:desc"],
+                : query.sort === Sort.RelevantFirst
+                  ? ["relevance:desc"]
+                  : query.sort === Sort.LessRelevantFirst
+                    ? ["relevance:asc"]
+                    : ["id:desc"],
     });
 
     if (meiliResp.hits.length === 0) {
