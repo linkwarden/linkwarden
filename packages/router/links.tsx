@@ -46,9 +46,9 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
 
 const useFetchLinks = (params: string, auth?: MobileAuth) => {
   let status: "loading" | "authenticated" | "unauthenticated";
+  const session = useSession();
 
   if (!auth) {
-    const session = useSession();
     status = session.status;
   } else {
     status = auth?.status;

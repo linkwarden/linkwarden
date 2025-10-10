@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "../ui/separator";
+import RatingInput from "../RatingInput";
 
 type Props = {
   onClose: Function;
@@ -29,6 +30,7 @@ export default function NewLinkModal({ onClose }: Props) {
       id: undefined,
       name: "",
     },
+    relevance: 0,
   } as PostLinkSchemaType;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -157,6 +159,14 @@ export default function NewLinkModal({ onClose }: Props) {
               }
               placeholder={t("link_description_placeholder")}
               className="resize-none w-full h-32 rounded-md p-2 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <p className="mb-2">{t("Relevance")}</p>
+            <RatingInput
+              value={link.relevance}
+              editable
+              onChange={(relevance) => setLink({ ...link, relevance })}
             />
           </div>
         </div>

@@ -213,6 +213,8 @@
   "date_oldest_first": "Date (Oldest First)",
   "name_az": "Name (A-Z)",
   "name_za": "Name (Z-A)",
+  "relevant_first": "Relevance first",
+  "less_relevant_first": "Less relevant first",
   "description_az": "Description (A-Z)",
   "description_za": "Description (Z-A)",
   "all_rights_reserved": "© {{date}} <0>Linkwarden</0>. All rights reserved.",
@@ -525,5 +527,6 @@
   "expand_sidebar": "Expand Sidebar",
   "shrink_sidebar": "Shrink Sidebar",
   "trial_left_plural": "Trial ends in {{count}} days. Subscribe.",
-  "trial_left_singular": "Trial ends in 1 day. Subscribe."
+  "trial_left_singular": "Trial ends in 1 day. Subscribe.",
+  "relevance" : "Relevance"
 }

@@ -151,6 +151,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const link = await prisma.link.create({
         data: {
           name: title,
+          relevance: 0,
           createdBy: {
             connect: {
               id: user.id,
