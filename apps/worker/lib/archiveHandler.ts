@@ -3,7 +3,7 @@ import { prisma } from "@linkwarden/prisma";
 import sendToWayback from "./preservationScheme/sendToWayback";
 import { AiTaggingMethod } from "@linkwarden/prisma/client";
 import fetchHeaders from "./fetchHeaders";
-import { createFolder, removeFiles } from "@linkwarden/filesystem";
+import { createFolder, readFile, removeFiles } from "@linkwarden/filesystem";
 import handleMonolith from "./preservationScheme/handleMonolith";
 import handleReadability from "./preservationScheme/handleReadability";
 import handleArchivePreview from "./preservationScheme/handleArchivePreview";
@@ -118,6 +118,22 @@ export default async function archiveHandler(
           return;
         } else if (link.url) {
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
+
+          // Handle Monolith being sent in beforehand while making sure other values line up
+          if (link.monolith) {
+            // Use Monolith content instead of page
+            const file = await readFile(link.monolith);
+
+            if (file.contentType == "text/html") {
+              const fileContent = file.file;
+
+              if (typeof fileContent === "string") {
+                await page.setContent(fileContent, { waitUntil: "domcontentloaded" });
+              } else {
+                await page.setContent(fileContent.toString("utf-8"), { waitUntil: "domcontentloaded" });
+              }
+            }
+          }
 
           const metaDescription = await page.evaluate(() => {
             const description = document.querySelector(
