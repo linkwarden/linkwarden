@@ -30,7 +30,10 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
 
   const queryString = buildQueryString(queryParamsObject);
 
-  const { data, ...rest } = useFetchLinks(queryString, auth);
+  const { data, refetch, isRefetching, ...rest } = useFetchLinks(
+    queryString,
+    auth
+  );
 
   const links = useMemo(() => {
     return data?.pages?.flatMap((page) => page?.links ?? []) ?? [];
@@ -41,6 +44,8 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
   return {
     links,
     data: memoizedData,
+    refetch,
+    isRefetching,
   };
 };
 

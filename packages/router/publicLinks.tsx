@@ -25,7 +25,7 @@ const usePublicLinks = (params: LinkRequestQuery = {}) => {
 
   const queryString = buildQueryString(queryParamsObject);
 
-  const { data, ...rest } = useFetchLinks(queryString);
+  const { data, refetch, isRefetching, ...rest } = useFetchLinks(queryString);
 
   const links = useMemo(() => {
     return data?.pages?.flatMap((page) => page?.links ?? []) ?? [];
@@ -36,6 +36,8 @@ const usePublicLinks = (params: LinkRequestQuery = {}) => {
   return {
     links,
     data: memoizedData,
+    refetch,
+    isRefetching,
   };
 };
 
