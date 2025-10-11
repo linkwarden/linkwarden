@@ -72,7 +72,7 @@ export default async function postLink(
   }
 
   const { title = "", headers = new Headers() } = link.url
-    ? await fetchTitleAndHeaders(link.url)
+    ? await fetchTitleAndHeaders(link.url, null)
     : {};
 
   const name =
