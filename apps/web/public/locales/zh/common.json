@@ -514,7 +514,7 @@
   "merging": "Merging...",
   "delete_tags": "Delete {{count}} Tags",
   "tags_deletion_confirmation_message": "Are you sure you want to delete {{count}} Tags? This will remove the tags from all links.",
-  "subscribe_later": "Subscribe Later?",
+  "subscribe_later": "以后再订阅？",
   "create_your_first_tag": "Create Your First Tag!",
   "create_your_first_tag_desc": "Tags help you categorize and find your Links easily. You can create Tags based on topics, projects, or any system that works for you.",
   "create_your_first_collection": "Create Your First Collection!",
