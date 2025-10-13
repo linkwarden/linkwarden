@@ -43,6 +43,9 @@ export async function trialEndEmailWorker() {
     const candidates = await prisma.user.findMany({
       where: {
         trialEndEmailSent: false,
+        emailVerified: {
+          not: null,
+        },
         createdAt: { lte: cutoff, gte: new Date("2025-09-25") }, // safety upper bound to avoid processing old users
       },
       orderBy: { createdAt: "asc" },
