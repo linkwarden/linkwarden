@@ -157,10 +157,9 @@
                 visibility: hidden;
                 width: 0;
               "
-              >You recently requested to change the email address associated
-              with your Linkwarden account. To verify your new email address,
-              please click the button below.</span
             >
+              Upgrade your account to continue using Linkwarden.
+            </span>
             <table
               role="presentation"
               border="0"
@@ -188,6 +187,7 @@
                     vertical-align: top;
                     box-sizing: border-box;
                     padding: 24px;
+                    width: fit-content;
                   "
                   valign="top"
                 >
@@ -200,8 +200,9 @@
                       margin-bottom: 16px;
                     "
                   >
-                    Verify your new Linkwarden email address
+                    Your Linkwarden free trial has ended
                   </h1>
+
                   <p
                     style="
                       font-family: Helvetica, sans-serif;
@@ -211,32 +212,7 @@
                       margin-bottom: 16px;
                     "
                   >
-                    Hi {{user}}!
-                  </p>
-                  <p
-                    style="
-                      font-family: Helvetica, sans-serif;
-                      font-size: 14px;
-                      font-weight: normal;
-                      margin: 0;
-                      margin-bottom: 16px;
-                    "
-                  >
-                    You recently requested to change the email address
-                    associated with your
-                    <a href="{{baseUrl}}">Linkwarden</a> account. To verify your
-                    new email address, please click the button below.
-                  </p>
-                  <p
-                    style="
-                      font-family: Helvetica, sans-serif;
-                      font-size: 14px;
-                      font-weight: normal;
-                      margin: 0;
-                      margin-bottom: 5px;
-                    "
-                  >
-                    <b>Old Email:</b>
+                    Hi {{name}},
                   </p>
 
                   <p
@@ -248,19 +224,8 @@
                       margin-bottom: 16px;
                     "
                   >
-                    {{oldEmail}}
-                  </p>
-
-                  <p
-                    style="
-                      font-family: Helvetica, sans-serif;
-                      font-size: 14px;
-                      font-weight: normal;
-                      margin: 0;
-                      margin-bottom: 5px;
-                    "
-                  >
-                    <b>New Email:</b>
+                    Thanks for trying Linkwarden! Your free trial has now ended,
+                    and some features are no longer available.
                   </p>
 
                   <p
@@ -272,7 +237,8 @@
                       margin-bottom: 16px;
                     "
                   >
-                    {{newEmail}}
+                    To continue saving, organizing, and accessing your links,
+                    please upgrade your account.
                   </p>
 
                   <table
@@ -331,7 +297,7 @@
                                   bgcolor="#0867ec"
                                 >
                                   <a
-                                    href="{{verifyUrl}}"
+                                    href="{{url}}"
                                     target="_blank"
                                     style="
                                       border-radius: 8px;
@@ -347,7 +313,7 @@
                                       background-color: #00335a;
                                       color: #ffffff;
                                     "
-                                    >Verify Email</a
+                                    >Upgrade your account</a
                                   >
                                 </td>
                               </tr>
@@ -357,6 +323,67 @@
                       </tr>
                     </tbody>
                   </table>
+
+                  <p
+                    style="
+                      font-family: Helvetica, sans-serif;
+                      font-size: 14px;
+                      font-weight: normal;
+                      margin: 0;
+                      margin-bottom: 16px;
+                    "
+                  >
+                    Your support helps us improve the product and provide you
+                    with the best possible service.
+                  </p>
+
+                  <p
+                    style="
+                      font-family: Helvetica, sans-serif;
+                      font-size: 14px;
+                      font-weight: normal;
+                      margin: 0;
+                      margin-bottom: 16px;
+                    "
+                  >
+                    Have questions? Just reply, we’re happy to help!
+                  </p>
+
+                  <hr
+                    style="
+                      border: none;
+                      border-top: 1px solid #eaebed;
+                      margin-bottom: 24px;
+                      width: 100%;
+                    "
+                  />
+
+                  <p
+                    style="
+                      font-family: Helvetica, sans-serif;
+                      font-size: 12px;
+                      font-weight: normal;
+                      margin: 0;
+                      margin-bottom: 5px;
+                      color: #868686;
+                    "
+                  >
+                    If you’re having trouble clicking the button, click on the
+                    following link:
+                  </p>
+
+                  <span
+                    style="
+                      font-family: Helvetica, sans-serif;
+                      font-size: 10px;
+                      font-weight: normal;
+                      margin: 0;
+                      margin-bottom: 16px;
+                      word-break: break-all;
+                    "
+                  >
+                    {{url}}
+                  </span>
                 </td>
               </tr>
 

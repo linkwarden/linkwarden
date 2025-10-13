@@ -69,6 +69,7 @@ model User {
   dashboardSections       DashboardSection[]
   lastPickedAt            DateTime?
   acceptPromotionalEmails Boolean               @default(false)
+  trialEndEmailSent       Boolean               @default(false)
   createdAt               DateTime              @default(now())
   updatedAt               DateTime              @default(now()) @updatedAt
 }

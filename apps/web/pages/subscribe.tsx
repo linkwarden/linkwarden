@@ -121,32 +121,38 @@ export default function Subscribe() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 justify-center items-center">
+        <div className="flex flex-col gap-2 justify-center items-center min-h-36">
           <p className="text-3xl">
             ${plan === Plan.monthly ? "4" : "3"}
             <span className="text-base text-neutral">/mo</span>
           </p>
+
           <p className="font-semibold">
             {plan === Plan.monthly ? t("billed_monthly") : t("billed_yearly")}
           </p>
-          <fieldset className="w-full flex-col flex justify-evenly px-4 pb-4 pt-1 rounded-md border border-neutral-content">
-            <legend className="w-fit font-extralight px-2 border border-neutral-content rounded-md text-xl">
-              {t("total")}
-            </legend>
 
-            <p className="text-sm">
-              {plan === Plan.monthly
-                ? t("total_monthly_desc", {
-                    count: REQUIRE_CC ? 14 : daysLeft,
-                    monthlyPrice: "4",
-                  })
-                : t("total_annual_desc", {
-                    count: REQUIRE_CC ? 14 : daysLeft,
-                    annualPrice: "36",
-                  })}
-            </p>
-            <p className="text-sm">{t("plus_tax")}</p>
-          </fieldset>
+          {daysLeft > 0 ? (
+            <fieldset className="w-full max-h-fit flex-col flex gap-2 px-4 pb-4 pt-2 rounded-md border border-neutral-content">
+              <legend className="w-fit font-extralight px-2 border border-neutral-content rounded-md text-xl">
+                {t("total")}
+              </legend>
+
+              <p className="text-sm">
+                {plan === Plan.monthly
+                  ? t("total_monthly_desc", {
+                      count: REQUIRE_CC ? 14 : daysLeft,
+                      monthlyPrice: "4",
+                    })
+                  : t("total_annual_desc", {
+                      count: REQUIRE_CC ? 14 : daysLeft,
+                      annualPrice: "36",
+                    })}
+              </p>
+              <p className="text-sm">{t("plus_tax")}</p>
+            </fieldset>
+          ) : (
+            <p className="text-xs">{t("plus_tax")}</p>
+          )}
         </div>
 
         <div

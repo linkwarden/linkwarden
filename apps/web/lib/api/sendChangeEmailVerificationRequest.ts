@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { prisma } from "@linkwarden/prisma";
-import transporter from "./transporter";
+import transporter from "@linkwarden/lib/transporter";
 import Handlebars from "handlebars";
 import { readFileSync } from "fs";
 import path from "path";

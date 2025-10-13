@@ -31,6 +31,7 @@
     "rss-parser": "^3.13.0",
     "socks-proxy-agent": "^8.0.2",
     "tsx": "^4.19.3",
+    "handlebars": "^4.7.8",
     "zod": "^3.23.8"
   },
   "devDependencies": {
