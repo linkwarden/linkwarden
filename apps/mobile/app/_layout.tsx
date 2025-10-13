@@ -19,6 +19,7 @@ import useDataStore from "@/store/data";
 import useAuthStore from "@/store/auth";
 import { QueryClient } from "@tanstack/react-query";
 import * as FileSystem from "expo-file-system";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -116,85 +117,87 @@ export default function RootLayout() {
       <View
         style={[{ flex: 1 }, colorScheme === "dark" ? darkTheme : lightTheme]}
       >
-        <SheetProvider>
-          {!isLoading && (
-            <Stack
-              screenOptions={{
-                navigationBarColor:
-                  rawTheme[colorScheme as ThemeName]["base-200"],
-                headerShown: false,
-                contentStyle: {
-                  backgroundColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                },
-                ...Platform.select({
-                  android: {
-                    statusBarStyle: colorScheme === "dark" ? "light" : "dark",
-                    statusBarBackgroundColor:
+        <KeyboardProvider>
+          <SheetProvider>
+            {!isLoading && (
+              <Stack
+                screenOptions={{
+                  navigationBarColor:
+                    rawTheme[colorScheme as ThemeName]["base-200"],
+                  headerShown: false,
+                  contentStyle: {
+                    backgroundColor:
                       rawTheme[colorScheme as ThemeName]["base-100"],
                   },
-                }),
-              }}
-            >
-              {/* <Stack.Screen name="(tabs)" /> */}
-              <Stack.Screen
-                name="links/[id]"
-                options={{
-                  headerShown: true,
-                  headerBackTitle: "Back",
-                  headerTitle: "",
-                  headerTintColor: colorScheme === "dark" ? "white" : "black",
-                  navigationBarColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                  headerStyle: {
-                    backgroundColor:
-                      colorScheme === "dark"
-                        ? rawTheme["dark"]["base-100"]
-                        : "white",
-                  },
-                }}
-              />
-              <Stack.Screen
-                name="login"
-                options={{
-                  navigationBarColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
                   ...Platform.select({
                     android: {
-                      statusBarStyle:
-                        colorScheme === "light" ? "light" : "dark",
+                      statusBarStyle: colorScheme === "dark" ? "light" : "dark",
                       statusBarBackgroundColor:
-                        rawTheme[colorScheme as ThemeName]["primary"],
+                        rawTheme[colorScheme as ThemeName]["base-100"],
                     },
                   }),
                 }}
-              />
-              <Stack.Screen
-                name="index"
-                options={{
-                  navigationBarColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                  ...Platform.select({
-                    android: {
-                      statusBarStyle:
-                        colorScheme === "light" ? "light" : "dark",
-                      statusBarBackgroundColor:
-                        rawTheme[colorScheme as ThemeName]["primary"],
+              >
+                {/* <Stack.Screen name="(tabs)" /> */}
+                <Stack.Screen
+                  name="links/[id]"
+                  options={{
+                    headerShown: true,
+                    headerBackTitle: "Back",
+                    headerTitle: "",
+                    headerTintColor: colorScheme === "dark" ? "white" : "black",
+                    navigationBarColor:
+                      rawTheme[colorScheme as ThemeName]["base-100"],
+                    headerStyle: {
+                      backgroundColor:
+                        colorScheme === "dark"
+                          ? rawTheme["dark"]["base-100"]
+                          : "white",
                     },
-                  }),
-                }}
-              />
-              <Stack.Screen
-                name="incoming"
-                options={{
-                  navigationBarColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                }}
-              />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          )}
-        </SheetProvider>
+                  }}
+                />
+                <Stack.Screen
+                  name="login"
+                  options={{
+                    navigationBarColor:
+                      rawTheme[colorScheme as ThemeName]["base-100"],
+                    ...Platform.select({
+                      android: {
+                        statusBarStyle:
+                          colorScheme === "light" ? "light" : "dark",
+                        statusBarBackgroundColor:
+                          rawTheme[colorScheme as ThemeName]["primary"],
+                      },
+                    }),
+                  }}
+                />
+                <Stack.Screen
+                  name="index"
+                  options={{
+                    navigationBarColor:
+                      rawTheme[colorScheme as ThemeName]["base-100"],
+                    ...Platform.select({
+                      android: {
+                        statusBarStyle:
+                          colorScheme === "light" ? "light" : "dark",
+                        statusBarBackgroundColor:
+                          rawTheme[colorScheme as ThemeName]["primary"],
+                      },
+                    }),
+                  }}
+                />
+                <Stack.Screen
+                  name="incoming"
+                  options={{
+                    navigationBarColor:
+                      rawTheme[colorScheme as ThemeName]["base-100"],
+                  }}
+                />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            )}
+          </SheetProvider>
+        </KeyboardProvider>
       </View>
     </PersistQueryClientProvider>
   );

@@ -10,7 +10,16 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.linkwarden"
+      "bundleIdentifier": "app.linkwarden",
+      "entitlements": {
+        "com.apple.security.application-groups": ["group.app.linkwarden"]
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -41,8 +50,26 @@
         }
       ],
       "expo-secure-store",
-      "expo-share-intent",
-      "./plugins/with-daynight-transparent-nav"
+      [
+        "expo-share-intent",
+        {
+          "iosAppGroupIdentifier": "group.app.linkwarden"
+        }
+      ],
+      "./plugins/with-daynight-transparent-nav",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}",
+            "allowBackup": false,
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -55,6 +82,15 @@
     "androidNavigationBar": {
       "backgroundColor": "#ffffff",
       "barStyle": "dark-content"
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "34f82639-7a25-4ebe-81c8-2db521b612cf"
+      }
+    },
+    "owner": "linkwarden"
   }
 }

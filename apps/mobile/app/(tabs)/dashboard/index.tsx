@@ -8,10 +8,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
 import useAuthStore from "@/store/auth";
-import React, { useEffect, useMemo, useState } from "react";
-import { DashboardSection, DashboardSectionType } from "@prisma/client";
+import { DashboardSection } from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
 import { useCollections } from "@linkwarden/router/collections";
 import { useTags } from "@linkwarden/router/tags";
@@ -31,6 +31,13 @@ import {
   Link,
 } from "lucide-react-native";
 import Spinner from "@/components/ui/Spinner";
+
+// Don't remove this, spent a couple of days to figure out why the app crashes in production :|
+type DashboardSectionType =
+  | "STATS"
+  | "RECENT_LINKS"
+  | "PINNED_LINKS"
+  | "COLLECTION";
 
 export default function DashboardScreen() {
   const { auth } = useAuthStore();
@@ -76,6 +83,12 @@ export default function DashboardScreen() {
     });
   }, [dashboardSections]);
 
+  const RenderItem = React.memo(
+    ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
+      return <LinkListing link={item} dashboard />;
+    }
+  );
+
   interface SectionProps {
     sectionData: { type: DashboardSectionType };
     collection?: any;
@@ -100,7 +113,7 @@ export default function DashboardScreen() {
     collectionLinks = [],
   }) => {
     switch (sectionData.type) {
-      case DashboardSectionType.STATS:
+      case "STATS":
         return (
           <View className="flex-col gap-4 max-w-full px-5">
             <View className="flex-row gap-4">
@@ -134,7 +147,7 @@ export default function DashboardScreen() {
           </View>
         );
 
-      case DashboardSectionType.RECENT_LINKS:
+      case "RECENT_LINKS":
         return (
           <>
             <View className="flex-row justify-between items-center px-5">
@@ -203,7 +216,7 @@ export default function DashboardScreen() {
           </>
         );
 
-      case DashboardSectionType.PINNED_LINKS:
+      case "PINNED_LINKS":
         return (
           <>
             <View className="flex-row justify-between items-center px-5">
@@ -265,7 +278,7 @@ export default function DashboardScreen() {
           </>
         );
 
-      case DashboardSectionType.COLLECTION:
+      case "COLLECTION":
         return collection?.id ? (
           <>
             <View className="flex-row justify-between items-center px-5">
@@ -330,12 +343,6 @@ export default function DashboardScreen() {
         return null;
     }
   };
-
-  const RenderItem = React.memo(
-    ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
-      return <LinkListing link={item} dashboard />;
-    }
-  );
 
   return (
     <SafeAreaView
