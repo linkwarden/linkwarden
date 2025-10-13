@@ -1,5 +1,4 @@
 import { prisma } from "@linkwarden/prisma";
-import { User } from "@linkwarden/prisma/client";
 import transporter from "@linkwarden/lib/transporter";
 import Handlebars from "handlebars";
 import { readFileSync } from "fs";
