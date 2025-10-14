@@ -51,7 +51,7 @@ export default async function sendChangeEmailVerificationRequest(
       baseUrl: process.env.BASE_URL,
       oldEmail,
       newEmail,
-      verifyUrl: `${process.env.BASE_URL}/auth/verify-email?token=${token}`,
+      url: `${process.env.BASE_URL}/auth/verify-email?token=${token}`,
     }),
   });
 }

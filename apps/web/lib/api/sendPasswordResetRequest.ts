@@ -37,7 +37,6 @@ export default async function sendPasswordResetRequest(
     subject: "Linkwarden: Reset password instructions",
     html: emailTemplate({
       user,
-      baseUrl: process.env.BASE_URL,
       url: `${process.env.BASE_URL}/auth/reset-password?token=${token}`,
     }),
   });

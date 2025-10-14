@@ -7,7 +7,7 @@ import path from "path";
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const batchSize = 10;
-const pauseMs = 60000;
+const pauseMs = 30000;
 
 /**
  * Runs the "trial ended" notifier in batches.
