@@ -4,7 +4,10 @@ import http from "http";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { SocksProxyAgent } from "socks-proxy-agent";
 
-export default async function fetchTitleAndHeaders(url: string) {
+export default async function fetchTitleAndHeaders(
+  url: string,
+  content?: string
+) {
   if (!url?.startsWith("http://") && !url?.startsWith("https://"))
     return { title: "", headers: null };
 
@@ -48,13 +51,20 @@ export default async function fetchTitleAndHeaders(url: string) {
     const response = await Promise.race([responsePromise, timeoutPromise]);
 
     if ((response as any)?.status) {
-      const text = await (response as any).text();
+      let text: string;
+
+      if (content) {
+        text = content;
+      } else {
+        text = await (response as any).text();
+      }
+
+      const headers = (response as Response)?.headers || null;
 
       // regular expression to find the <title> tag
       let match = text.match(/<title.*>([^<]*)<\/title>/);
 
       const title = match?.[1] || "";
-      const headers = (response as Response)?.headers || null;
 
       return { title, headers };
     } else {
