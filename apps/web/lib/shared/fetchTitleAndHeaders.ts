@@ -3,7 +3,10 @@ import https from "https";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { SocksProxyAgent } from "socks-proxy-agent";
 
-export default async function fetchTitleAndHeaders(url: string, content: string | null) {
+export default async function fetchTitleAndHeaders(
+  url: string,
+  content?: string
+) {
   if (!url?.startsWith("http://") && !url?.startsWith("https://"))
     return { title: "", headers: null };
 
@@ -48,14 +51,19 @@ export default async function fetchTitleAndHeaders(url: string, content: string 
       let text: string;
 
       if (content) {
-        text = content
+        text = content;
       } else {
-        text = await (response as any).text()
+        text = await (response as any).text();
       }
 
       const headers = (response as Response)?.headers || null;
 
-      return await fetchTitleAndHeadersFromContent(text, headers);
+      // regular expression to find the <title> tag
+      let match = text.match(/<title.*>([^<]*)<\/title>/);
+
+      const title = match?.[1] || "";
+
+      return { title, headers };
     } else {
       return { title: "", headers: null };
     }
@@ -63,13 +71,4 @@ export default async function fetchTitleAndHeaders(url: string, content: string 
     console.log(err);
     return { title: "", headers: null };
   }
-}
-
-export async function fetchTitleAndHeadersFromContent(content: string, headers: Headers) {
-  // regular expression to find the <title> tag
-  let match = content.match(/<title.*>([^<]*)<\/title>/);
-
-  const title = match?.[1] || "";
-
-  return { title, headers };
 }

@@ -153,7 +153,12 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const isImage = mimetype?.includes("image");
       const isHTML = mimetype === "text/html";
 
-      const { title = "" } = url ? await fetchTitleAndHeaders(url, isHTML && !isPreview ? fileBuffer.toString("utf-8") : null) : {};
+      const { title = "" } = url
+        ? await fetchTitleAndHeaders(
+            url,
+            isHTML && !isPreview ? fileBuffer.toString("utf-8") : undefined
+          )
+        : {};
 
       const link = await prisma.link.create({
         data: {
