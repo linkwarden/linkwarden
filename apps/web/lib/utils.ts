@@ -38,3 +38,18 @@ export function customCollisionDetectionAlgorithm(args: any) {
   // If there are no collisions with the pointer, return rectangle intersections
   return rectIntersection(args);
 }
+
+/**
+ * Formats a duration from nanoseconds into a human-readable string.
+ * @param nanoseconds The duration in nanoseconds.
+ * @returns A string in the format "X m XX s".
+ */
+export function formatDuration(nanoseconds: number): string {
+  if (!nanoseconds) return "0 m 0 s";
+
+  const totalSeconds = nanoseconds / 1_000_000_000;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${minutes} m ${Math.round(seconds)} s`;
+}

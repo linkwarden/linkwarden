@@ -5,7 +5,7 @@ import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
+import { AiTaggingMethod, LinksRouteTo, AiDescriptionMethod, } from "@linkwarden/prisma/client";
 import {
   useUpdateUser,
   useUpdateUserPreference,
@@ -24,6 +24,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Preference() {
   const { t } = useTranslation();
@@ -66,6 +73,18 @@ export default function Preference() {
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
     account.aiTaggingMethod
   );
+  const [aiDescriptionMethod, setAiDescriptionMethod] = useState<AiDescriptionMethod>(
+    account.aiDescriptionMethod
+  );
+  const [aiAnalyzeFirstChars, setAiAnalyzeFirstChars] = useState<number>(
+    account.aiAnalyzeFirstChars ?? 3000
+  );
+  const [aiCharacterCount, setAiCharacterCount] = useState<number>(
+    account.aiCharacterCount ?? 75
+  );
+  const [aiDescribeExistingLinks, setAiDescribeExistingLinks] = useState<boolean>(
+    account.aiDescribeExistingLinks ?? false
+  );
   const [aiPredefinedTags, setAiPredefinedTags] = useState<string[]>();
   const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
     account.aiTagExistingLinks ?? false
@@ -87,6 +106,10 @@ export default function Preference() {
       aiTaggingMethod,
       aiPredefinedTags,
       aiTagExistingLinks,
+      aiDescriptionMethod,
+      aiAnalyzeFirstChars,
+      aiCharacterCount,
+      aiDescribeExistingLinks,
       dashboardPinnedLinks,
     });
   }, [
@@ -101,6 +124,10 @@ export default function Preference() {
     aiTaggingMethod,
     aiPredefinedTags,
     aiTagExistingLinks,
+    aiDescriptionMethod,
+    aiAnalyzeFirstChars,
+    aiCharacterCount,
+    aiDescribeExistingLinks,
   ]);
 
   function objectIsEmpty(obj: object) {
@@ -119,6 +146,10 @@ export default function Preference() {
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
       setAiTagExistingLinks(account.aiTagExistingLinks);
+      setAiDescriptionMethod(account.aiDescriptionMethod);
+      setAiAnalyzeFirstChars(account.aiAnalyzeFirstChars);
+      setAiCharacterCount(account.aiCharacterCount);
+      setAiDescribeExistingLinks(account.aiDescribeExistingLinks);
     }
   }, [account]);
 
@@ -134,6 +165,10 @@ export default function Preference() {
       "aiTaggingMethod",
       "aiPredefinedTags",
       "aiTagExistingLinks",
+      "aiDescriptionMethod",
+      "aiAnalyzeFirstChars",
+      "aiCharacterCount",
+      "aiDescribeExistingLinks",
     ];
 
     const hasChanges = relevantKeys.some((key) => account[key] !== user[key]);
@@ -375,6 +410,84 @@ export default function Preference() {
                 disabled={aiTaggingMethod === AiTaggingMethod.DISABLED}
               />
             </div>
+	    <p className="text-md mt-4">{t("ai_description_method")}</p>
+
+		<div className="p-3">
+		<Select
+		  value={aiDescriptionMethod}
+		  onValueChange={(value) => setAiDescriptionMethod(value as AiDescriptionMethod)}
+		>
+		  <SelectTrigger className="w-[280px]">
+		    <SelectValue placeholder="Select method" />
+		  </SelectTrigger>
+		  <SelectContent>
+		    <SelectItem value="DISABLED">{t("disabled")}</SelectItem>
+		    <SelectItem value="GENERATE_FAST">{t("generate_fast_desc")}</SelectItem>
+		    <SelectItem value="GENERATE_FULL">{t("generate_full_desc")}</SelectItem>
+		  </SelectContent>
+		</Select>
+		</div>
+
+		{aiDescriptionMethod === "GENERATE_FAST" && (
+		  <div className="mb-3">
+		    <label htmlFor="ai-analyze-chars" className="label">
+		      <span className="label-text">{t("ai_analyze_first_chars")}</span>
+		    </label>
+		    <input
+		      id="ai-analyze-chars"
+		      type="number"
+		      className="input input-bordered w-full max-w-xs"
+		      value={aiAnalyzeFirstChars}
+		      onChange={(e) =>
+			setAiAnalyzeFirstChars(parseInt(e.target.value, 10) || 3000)
+		      }
+		    />
+		    <p className="text-neutral text-sm mt-1">
+		      {t("ai_analyze_first_chars_desc")}
+		    </p>
+		  </div>
+		)}
+
+		<div
+		  className={`mb-3 ${
+		    aiDescriptionMethod === "DISABLED" ? "opacity-50" : ""
+		  }`}
+		>
+		  <label htmlFor="ai-char-count" className="label">
+		    <span className="label-text">{t("ai_description_length")}</span>
+		  </label>
+		  <input
+		    id="ai-char-count"
+		    type="number"
+		    className="input input-bordered w-full max-w-xs"
+		    value={aiCharacterCount}
+		    onChange={(e) =>
+		      setAiCharacterCount(parseInt(e.target.value, 10) || 75)
+		    }
+		    disabled={aiDescriptionMethod === "DISABLED"}
+		  />
+		  <p className="text-neutral text-sm mt-1">
+		    {t("ai_description_length_desc")}
+		  </p>
+		</div>
+
+		<div
+		  className={`mb-3 ${
+		    aiDescriptionMethod === "DISABLED" ? "opacity-50" : ""
+		  }`}
+		>
+		  <Checkbox
+		    label={t("generate_descriptions_for_existing_links")}
+		    state={aiDescribeExistingLinks}
+		    onClick={() =>
+		      aiDescriptionMethod !== "DISABLED" &&
+		      setAiDescribeExistingLinks(!aiDescribeExistingLinks)
+		    }
+		    disabled={aiDescriptionMethod === "DISABLED"}
+		  />
+		</div>
+
+
           </div>
         )}
 
