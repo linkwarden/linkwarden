@@ -162,6 +162,11 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
             },
           },
           url,
+
+          // temporarily prevent archiveHandler and other processes from overwriting the file while we're uploading it
+          lastPreserved: new Date(0).toISOString(),
+          aiTagged: true,
+          indexVersion: 1,
         },
       });
 
@@ -203,6 +208,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
               : undefined,
           clientSide: true,
           updatedAt: new Date().toISOString(),
+
+          lastPreserved: null,
+          aiTagged: false,
+          indexVersion: null,
         },
       });
 
