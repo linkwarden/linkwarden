@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { prisma } from "@linkwarden/prisma";
-import transporter from "./transporter";
+import transporter from "@linkwarden/lib/transporter";
 import Handlebars from "handlebars";
 import { readFileSync } from "fs";
 import path from "path";
@@ -37,7 +37,6 @@ export default async function sendPasswordResetRequest(
     subject: "Linkwarden: Reset password instructions",
     html: emailTemplate({
       user,
-      baseUrl: process.env.BASE_URL,
       url: `${process.env.BASE_URL}/auth/reset-password?token=${token}`,
     }),
   });

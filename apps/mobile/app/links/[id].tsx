@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   ActivityIndicator,
@@ -12,7 +12,6 @@ import NetInfo from "@react-native-community/netinfo";
 import useAuthStore from "@/store/auth";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useUser } from "@linkwarden/router/user";
-import { generateLinkHref } from "@linkwarden/lib/generateLinkHref";
 import { useWindowDimensions } from "react-native";
 import RenderHtml from "@linkwarden/react-native-render-html";
 import ElementNotSupported from "@/components/ElementNotSupported";
@@ -70,6 +69,7 @@ export default function LinkScreen() {
   }, [user, link]);
 
   async function fetchLinkData() {
+    // readable
     if (link?.id && format === "3") {
       const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${format}`;
       setUrl(apiUrl);
@@ -87,11 +87,15 @@ export default function LinkScreen() {
       } finally {
         setIsLoading(false);
       }
-    } else if (link?.id && !format && user) {
-      setUrl(
-        generateLinkHref(link, { ...user, password: "" }, auth.instance, true)
-      );
-    } else if (link?.id && format) {
+    }
+
+    // original
+    else if (link?.id && !format && user && link.url) {
+      setUrl(link.url);
+    }
+
+    // other formats
+    else if (link?.id && format) {
       setUrl(`${auth.instance}/api/v1/archives/${link.id}?format=${format}`);
     }
   }

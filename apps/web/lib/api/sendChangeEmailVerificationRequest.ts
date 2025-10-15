@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { prisma } from "@linkwarden/prisma";
-import transporter from "./transporter";
+import transporter from "@linkwarden/lib/transporter";
 import Handlebars from "handlebars";
 import { readFileSync } from "fs";
 import path from "path";
@@ -51,7 +51,7 @@ export default async function sendChangeEmailVerificationRequest(
       baseUrl: process.env.BASE_URL,
       oldEmail,
       newEmail,
-      verifyUrl: `${process.env.BASE_URL}/auth/verify-email?token=${token}`,
+      url: `${process.env.BASE_URL}/auth/verify-email?token=${token}`,
     }),
   });
 }

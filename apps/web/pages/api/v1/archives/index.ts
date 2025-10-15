@@ -146,7 +146,19 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       if (!collection) {
         throw new Error("Collection not found.");
       }
-      const { title = "" } = url ? await fetchTitleAndHeaders(url) : {};
+
+      // Generate a preview if it's an image
+      const { mimetype } = files.file[0];
+      const isPDF = mimetype?.includes("pdf");
+      const isImage = mimetype?.includes("image");
+      const isHTML = mimetype === "text/html";
+
+      const { title = "" } = url
+        ? await fetchTitleAndHeaders(
+            url,
+            isHTML && !isPreview ? fileBuffer.toString("utf-8") : undefined
+          )
+        : {};
 
       const link = await prisma.link.create({
         data: {
@@ -162,14 +174,13 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
             },
           },
           url,
+
+          // temporarily prevent archiveHandler and other processes from overwriting the file while we're uploading it
+          lastPreserved: new Date(0).toISOString(),
+          aiTagged: true,
+          indexVersion: 1,
         },
       });
-
-      // Generate a preview if it's an image
-      const { mimetype } = files.file[0];
-      const isPDF = mimetype?.includes("pdf");
-      const isImage = mimetype?.includes("image");
-      const isHTML = mimetype === "text/html";
 
       if (isImage) {
         const collectionId = collection.id;
@@ -203,6 +214,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
               : undefined,
           clientSide: true,
           updatedAt: new Date().toISOString(),
+
+          lastPreserved: null,
+          aiTagged: false,
+          indexVersion: null,
         },
       });
 

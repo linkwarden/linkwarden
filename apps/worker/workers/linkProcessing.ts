@@ -1,4 +1,3 @@
-import { prisma } from "@linkwarden/prisma";
 import archiveHandler from "../lib/archiveHandler";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
 import { delay } from "@linkwarden/lib";

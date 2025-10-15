@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import path from "path";
 import Handlebars from "handlebars";
-import transporter from "./transporter";
+import transporter from "@linkwarden/lib/transporter";
 
 type Params = {
   identifier: string;
