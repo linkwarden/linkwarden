@@ -37,6 +37,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "./ui/separator";
+import RatingInput from "./RatingInput";
 
 type Props = {
   className?: string;
@@ -474,6 +475,20 @@ export default function LinkDetails({
                 className="resize-none w-full rounded-md p-2 h-32 border-neutral-content bg-base-200 focus:border-primary border-solid border outline-none duration-100"
               />
             )}
+          </div>
+
+          <br />
+
+          <div className="relative">
+            <p className="text-sm mb-2 text-neutral relative w-fit flex justify-between">
+              {t("relevance")}
+            </p>
+
+            <RatingInput
+              editable={mode === "edit"}
+              value={link.relevance}
+              onChange={(relevance) => setLink({ ...link, relevance })}
+            />
           </div>
 
           {mode === "view" && (

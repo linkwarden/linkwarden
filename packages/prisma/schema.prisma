@@ -192,6 +192,7 @@ model Link {
   importDate    DateTime?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @default(now()) @updatedAt
+  relevance     Int
 
   @@index([collectionId])
 }

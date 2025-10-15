@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useUser } from "@linkwarden/router/user";
 import { Separator } from "@/components/ui/separator";
+import { ArrowsClockwise } from "@phosphor-icons/react";
+import { cn } from "@linkwarden/lib";
 
 export default function PublicCollections() {
   const { t } = useTranslation();
@@ -62,7 +64,7 @@ export default function PublicCollections() {
 
   const { data: tags } = usePublicTags();
 
-  const { links, data } = usePublicLinks({
+  const { links, data, refetch, isRefetching } = usePublicLinks({
     sort: sortBy,
     searchQueryString: router.query.q
       ? decodeURIComponent(router.query.q as string)
@@ -97,6 +99,11 @@ export default function PublicCollections() {
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
 
+  const handleRefreshLinks = () => {
+    if (isRefetching) return;
+    refetch();
+  };
+
   if (!collection) return <></>;
   else
     return (
@@ -121,7 +128,24 @@ export default function PublicCollections() {
         <div className="lg:w-3/4 max-w-[1500px] w-full mx-auto p-5 bg">
           <div className="flex justify-between gap-2">
             <div className="w-full">
-              <p className="text-4xl font-thin mb-2 mt-10">{collection.name}</p>
+              <div className="flex items-center gap-2.5 mt-10">
+                <p className="text-4xl font-thin mb-2">{collection.name}</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <ArrowsClockwise
+                        size={20}
+                        className={cn(
+                          "cursor-pointer",
+                          isRefetching ? "opacity-50" : ""
+                        )}
+                        onClick={handleRefreshLinks}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>Refresh</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
 
               <div className="mt-3">
                 <div className={`min-w-[15rem]`}>
