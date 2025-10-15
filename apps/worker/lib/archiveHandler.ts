@@ -120,7 +120,7 @@ export default async function archiveHandler(
           await page.goto(link.url, { waitUntil: "domcontentloaded" });
 
           // Handle Monolith being sent in beforehand while making sure other values line up
-          if (link.monolith) {
+          if (link.monolith?.endsWith(".html")) {
             // Use Monolith content instead of page
             const file = await readFile(link.monolith);
 
@@ -128,9 +128,13 @@ export default async function archiveHandler(
               const fileContent = file.file;
 
               if (typeof fileContent === "string") {
-                await page.setContent(fileContent, { waitUntil: "domcontentloaded" });
+                await page.setContent(fileContent, {
+                  waitUntil: "domcontentloaded",
+                });
               } else {
-                await page.setContent(fileContent.toString("utf-8"), { waitUntil: "domcontentloaded" });
+                await page.setContent(fileContent.toString("utf-8"), {
+                  waitUntil: "domcontentloaded",
+                });
               }
             }
           }
