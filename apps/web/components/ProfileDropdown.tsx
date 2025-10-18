@@ -30,8 +30,12 @@ export default function ProfileDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="ghost" className="rounded-full p-1">
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="rounded-full p-1"
+          aria-label={t("user_menu")}
+        >
           <ProfilePhoto
             src={user?.image ? user?.image : undefined}
             priority={true}
