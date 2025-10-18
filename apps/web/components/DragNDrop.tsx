@@ -3,6 +3,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  KeyboardSensor,
   MouseSensor,
   SensorDescriptor,
   SensorOptions,
@@ -69,7 +70,16 @@ export default function DragNDrop({
     },
   });
 
-  const sensors = useSensors(mouseSensor, touchSensor);
+  const keyboardSensor = useSensor(KeyboardSensor, {
+    // Restrict keyboard-initiated dragging to Space only (avoid Enter)
+    keyboardCodes: {
+      start: ["Space"],
+      cancel: ["Escape"],
+      end: ["Space"],
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
   const handleDragStart = (event: DragStartEvent) => {
     const draggedLink = links.find(
