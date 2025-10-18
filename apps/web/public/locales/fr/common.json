@@ -525,5 +525,5 @@
   "expand_sidebar": "Expand Sidebar",
   "shrink_sidebar": "Shrink Sidebar",
   "trial_left_plural": "Trial ends in {{count}} days. Subscribe.",
-  "trial_left_singular": "Trial ends in 1 day. Subscribe."
+  "trial_left_singular": "La période d'essai se termine dans 1 jour."
 }
