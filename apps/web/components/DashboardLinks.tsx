@@ -37,22 +37,23 @@ export function DashboardLinks({
   isLoading?: boolean;
   type?: "collection" | "recent";
 }) {
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-4 min-w-60 w-60">
+        <div className="skeleton h-40 w-full"></div>
+        <div className="skeleton h-3 w-2/3"></div>
+        <div className="skeleton h-3 w-full"></div>
+        <div className="skeleton h-3 w-full"></div>
+        <div className="skeleton h-3 w-1/3"></div>
+      </div>
+    );
+  }
   return (
-    <div
+    <ul
       className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit`}
     >
-      {isLoading ? (
-        <div className="flex flex-col gap-4 min-w-60 w-60">
-          <div className="skeleton h-40 w-full"></div>
-          <div className="skeleton h-3 w-2/3"></div>
-          <div className="skeleton h-3 w-full"></div>
-          <div className="skeleton h-3 w-full"></div>
-          <div className="skeleton h-3 w-1/3"></div>
-        </div>
-      ) : (
-        links?.map((e, i) => <Card key={i} link={e} dashboardType={type} />)
-      )}
-    </div>
+      {links?.map((e, i) => <Card key={i} link={e} dashboardType={type} />)}
+    </ul>
   );
 }
 
@@ -138,7 +139,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
   }, [isVisible, link.preview]);
 
   return (
-    <div
+    <li
       ref={setNodeRef}
       className={cn(
         isDragging ? "opacity-30" : "opacity-100",
@@ -237,6 +238,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
         />
         {!isPublicRoute && <LinkPin link={link} />}
       </div>
-    </div>
+    </li>
   );
 }
