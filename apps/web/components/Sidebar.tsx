@@ -120,6 +120,7 @@ export default function Sidebar({
                       variant="ghost"
                       onClick={toggleSidebar}
                       size={"icon"}
+                      aria-label={t("shrink_sidebar")}
                     >
                       <i className={`bi-layout-sidebar`} />
                     </Button>
@@ -182,7 +183,12 @@ export default function Sidebar({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" onClick={toggleSidebar} size={"icon"}>
+                <Button
+                  variant="ghost"
+                  onClick={toggleSidebar}
+                  size={"icon"}
+                  aria-label={t("expand_sidebar")}
+                >
                   <i className={`bi-layout-sidebar`} />
                 </Button>
               </TooltipTrigger>

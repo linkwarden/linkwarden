@@ -27,6 +27,7 @@ import LinkPin from "./LinkViews/LinkComponents/LinkPin";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@linkwarden/lib";
+import { useTranslation } from "react-i18next";
 
 export function DashboardLinks({
   links,
@@ -72,6 +73,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
     },
   });
   const { data: collections = [] } = useCollections();
+  const { t } = useTranslation();
 
   const { data: user } = useUser();
 
@@ -138,6 +140,17 @@ export function Card({ link, editMode, dashboardType }: Props) {
     };
   }, [isVisible, link.preview]);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key to open link
+    if (e.key === "Enter") {
+      !editMode && openLink(link, user, () => setLinkModal(true));
+      return;
+    }
+
+    // Leave other key events to dnd-kit
+    listeners?.onKeyDown(e);
+  };
+
   return (
     <li
       ref={setNodeRef}
@@ -155,8 +168,13 @@ export function Card({ link, editMode, dashboardType }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          aria-label={`${unescapeString(link.name)} - ${
+            shortendURL ?? link.url
+          }`}
+          role="button"
           {...listeners}
-          {...attributes}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
         >
           {show.image && (
             <div>
@@ -202,9 +220,9 @@ export function Card({ link, editMode, dashboardType }: Props) {
           <div className="flex flex-col justify-between h-full min-h-11">
             <div className="p-3 flex flex-col justify-between h-full gap-2">
               {show.name && (
-                <p className="line-clamp-2 w-full text-primary text-sm">
+                <h4 className="line-clamp-2 w-full text-primary text-sm">
                   {unescapeString(link.name)}
-                </p>
+                </h4>
               )}
 
               {show.link && <LinkTypeBadge link={link} />}

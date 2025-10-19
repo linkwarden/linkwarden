@@ -30,9 +30,11 @@ export default function LinkFormats({
             e.stopPropagation();
           }}
           className="hover:opacity-70 duration-100"
+          aria-label={`${t("view")} ${t("webpage")}`}
         >
           <i
             className="bi-filetype-html text-md leading-none"
+            aria-hidden="true"
             title={t("webpage")}
           ></i>
         </Link>
@@ -49,9 +51,11 @@ export default function LinkFormats({
             e.stopPropagation();
           }}
           className="hover:opacity-70 duration-100"
+          aria-label={`${t("view")} ${t("image")}`}
         >
           <i
             className="bi-file-earmark-image text-md leading-none"
+            aria-hidden="true"
             title={t("image")}
           ></i>
         </Link>
@@ -66,9 +70,11 @@ export default function LinkFormats({
             e.stopPropagation();
           }}
           className="hover:opacity-70 duration-100"
+          aria-label={`${t("view")} ${t("pdf")}`}
         >
           <i
             className="bi-file-earmark-pdf text-md leading-none"
+            aria-hidden="true"
             title={t("pdf")}
           ></i>
         </Link>
@@ -83,9 +89,11 @@ export default function LinkFormats({
             e.stopPropagation();
           }}
           className="hover:opacity-70 duration-100"
+          aria-label={`${t("view")} ${t("readable")}`}
         >
           <i
             className="bi-file-earmark-text text-md leading-none"
+            aria-hidden="true"
             title={t("readable")}
           ></i>
         </Link>

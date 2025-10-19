@@ -16,8 +16,8 @@ export default function PageHeader({
     <div className={clsx("flex items-center gap-3", className)}>
       <i className={`${icon} text-primary text-2xl drop-shadow`}></i>
       <div>
-        <h1 className="text-2xl capitalize font-thin">{title}</h1>
-        <p className="text-xs sm:text-sm">{description}</p>
+        <h2 className="text-2xl capitalize font-thin">{title}</h2>
+        {description && <p className="text-xs sm:text-sm">{description}</p>}
       </div>
     </div>
   );
