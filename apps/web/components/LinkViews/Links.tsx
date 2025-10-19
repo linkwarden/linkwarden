@@ -6,13 +6,10 @@ import {
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import LinkMasonry from "@/components/LinkViews/LinkComponents/LinkMasonry";
-import Masonry from "react-masonry-css";
-import resolveConfig from "tailwindcss/resolveConfig";
-import tailwindConfig from "../../tailwind.config.js";
+import Masonry from "@/components/Masonry";
 import { useMemo } from "react";
 import LinkList from "@/components/LinkViews/LinkComponents/LinkList";
 import useLocalSettingsStore from "@/store/localSettings";
-import { cn } from "@/lib/utils";
 
 export function CardView({
   links,
@@ -131,17 +128,6 @@ export function MasonryView({
 }) {
   const settings = useLocalSettingsStore((state) => state.settings);
 
-  const gridMap = {
-    1: "grid-cols-1",
-    2: "grid-cols-2",
-    3: "grid-cols-3",
-    4: "grid-cols-4",
-    5: "grid-cols-5",
-    6: "grid-cols-6",
-    7: "grid-cols-7",
-    8: "grid-cols-8",
-  };
-
   const getColumnCount = () => {
     const width = window.innerWidth;
     if (width >= 1901) return 5;
@@ -153,11 +139,6 @@ export function MasonryView({
 
   const [columnCount, setColumnCount] = useState(
     settings.columns || getColumnCount()
-  );
-
-  const gridColClass = useMemo(
-    () => gridMap[columnCount as keyof typeof gridMap],
-    [columnCount]
   );
 
   useEffect(() => {
@@ -181,8 +162,6 @@ export function MasonryView({
     };
   }, [settings.columns]);
 
-  const fullConfig = resolveConfig(tailwindConfig as any);
-
   const breakpointColumnsObj = useMemo(() => {
     return {
       default: 5,
@@ -198,8 +177,8 @@ export function MasonryView({
       breakpointCols={
         settings.columns === 0 ? breakpointColumnsObj : columnCount
       }
-      columnClassName="flex flex-col gap-5 !w-full"
-      className={`${gridColClass} grid gap-5 pb-5`}
+      columnClassName="[list-style:none] p-0 m-0"
+      className="pb-5"
     >
       {links?.map((e, i) => {
         return (
