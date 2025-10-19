@@ -57,7 +57,7 @@ export default function ViewDropdown({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" aria-label={t("view_settings")}>
           {dashboard || viewMode === ViewMode.Card ? (
             <i className="bi-grid text-neutral"></i>
           ) : viewMode === ViewMode.Masonry ? (

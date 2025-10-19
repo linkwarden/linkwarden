@@ -29,6 +29,9 @@ export default function LinkFormats({
           onClick={(e) => {
             e.stopPropagation();
           }}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+          }}
           className="hover:opacity-70 duration-100"
           aria-label={`${t("view")} ${t("webpage")}`}
         >
@@ -50,6 +53,9 @@ export default function LinkFormats({
           onClick={(e) => {
             e.stopPropagation();
           }}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+          }}
           className="hover:opacity-70 duration-100"
           aria-label={`${t("view")} ${t("image")}`}
         >
@@ -69,6 +75,9 @@ export default function LinkFormats({
           onClick={(e) => {
             e.stopPropagation();
           }}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+          }}
           className="hover:opacity-70 duration-100"
           aria-label={`${t("view")} ${t("pdf")}`}
         >
@@ -86,6 +95,9 @@ export default function LinkFormats({
           }`}
           target="_blank"
           onClick={(e) => {
+            e.stopPropagation();
+          }}
+          onKeyDown={(e) => {
             e.stopPropagation();
           }}
           className="hover:opacity-70 duration-100"

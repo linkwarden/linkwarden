@@ -47,7 +47,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
   // we don't want to use the draggable feature for screen under 1023px since the sidebar is hidden
   const isSmallScreen = useMediaQuery("(max-width: 1023px)");
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  const { listeners, setNodeRef } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
@@ -163,6 +163,16 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key to open link
+    if (e.key === "Enter") {
+      !editMode && openLink(link, user, () => setLinkModal(true));
+      return;
+    }
+
+    // Leave other key events to dnd-kit
+    listeners?.onKeyDown(e);
+  };
   const [linkModal, setLinkModal] = useState(false);
 
   return (
@@ -186,8 +196,11 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          role="button"
+          tabIndex={0}
+          aria-label={`${unescapeString(link.name)} - ${shortendURL}`}
           {...listeners}
-          {...attributes}
+          onKeyDown={handleKeyDown}
         >
           {show.image && formatAvailable(link, "preview") && (
             <div>

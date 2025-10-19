@@ -145,9 +145,9 @@ export default function Index() {
                   />
                 )}
 
-                <p className="sm:text-3xl text-2xl w-full py-1 break-words hyphens-auto font-thin">
+                <h1 className="sm:text-3xl text-2xl w-full py-1 break-words hyphens-auto font-thin">
                   {activeCollection?.name}
-                </p>
+                </h1>
               </div>
 
               <DropdownMenu>

@@ -168,9 +168,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
-          aria-label={`${unescapeString(link.name)} - ${
-            shortendURL ?? link.url
-          }`}
+          aria-label={`${unescapeString(link.name)} - ${shortendURL}`}
           role="button"
           {...listeners}
           onKeyDown={handleKeyDown}

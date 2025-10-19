@@ -138,6 +138,11 @@ const LinkListOptions = ({
                   className={
                     editMode ? "bg-primary/20 hover:bg-primary/20" : ""
                   }
+                  aria-label={
+                    editMode
+                      ? t("exit_bulk_edit_mode")
+                      : t("enter_bulk_edit_mode")
+                  }
                 >
                   <i className="bi-pencil-fill text-neutral text-xl" />
                 </Button>

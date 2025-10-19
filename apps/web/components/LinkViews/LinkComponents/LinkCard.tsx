@@ -45,7 +45,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
 
   // we don't want to use the draggable feature for screen under 1023px since the sidebar is hidden
   const isSmallScreen = useMediaQuery("(max-width: 1023px)");
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  const { listeners, setNodeRef, isDragging } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
@@ -155,6 +155,17 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     };
   }, [isVisible, link.preview]);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key to open link
+    if (e.key === "Enter") {
+      !editMode && openLink(link, user, () => setLinkModal(true));
+      return;
+    }
+
+    // Leave other key events to dnd-kit
+    listeners?.onKeyDown(e);
+  };
+
   const isLinkSelected = selectedLinks.some(
     (selectedLink) => selectedLink.id === link.id
   );
@@ -186,8 +197,11 @@ export default function LinkCard({ link, columns, editMode }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          role="button"
+          tabIndex={0}
+          aria-label={`${unescapeString(link.name)} - ${shortendURL}`}
           {...listeners}
-          {...attributes}
+          onKeyDown={handleKeyDown}
         >
           {show.image && (
             <div>

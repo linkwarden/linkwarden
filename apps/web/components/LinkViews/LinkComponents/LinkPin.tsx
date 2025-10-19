@@ -27,7 +27,7 @@ export default function LinkPin({ link, btnStyle }: Props) {
         btnStyle
       )}
       onClick={() => pinLink(link)}
-      aria-label={t("pin_link")}
+      aria-label={isAlreadyPinned ? t("unpin_link") : t("pin_link")}
     >
       <i
         title="Pin"

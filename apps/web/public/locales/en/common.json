@@ -528,5 +528,15 @@
   "trial_left_singular": "Trial ends in 1 day. Subscribe.",
   "skip_to_main_content": "Skip to main content",
   "skip_to_search": "Skip to search",
-  "user_menu": "User Menu"
+  "user_menu": "User Menu",
+  "pin_link": "Pin Link",
+  "unpin_link": "Unpin Link",
+  "statistics": "Statistics",
+  "enter_bulk_edit_mode": "Enter bulk edit mode",
+  "exit_bulk_edit_mode": "Exit bulk edit mode",
+  "sort_links": "Sort Links",
+  "view_settings": "View Settings",
+  "card_view": "Card View",
+  "list_view": "List View",
+  "masonry_view": "Masonry View"
 }

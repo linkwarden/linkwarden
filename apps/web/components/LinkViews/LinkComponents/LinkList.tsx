@@ -37,7 +37,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   const { t } = useTranslation();
 
   const isSmallScreen = useMediaQuery("(max-width: 1023px)");
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  const { listeners, setNodeRef, isDragging } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
@@ -49,6 +49,16 @@ export default function LinkCardCompact({ link, editMode }: Props) {
 
   const { data: user } = useUser();
   const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  let shortenedURL;
+
+  try {
+    if (link.url) {
+      shortenedURL = new URL(link.url).host.toLowerCase();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 
   const {
     settings: { show },
@@ -93,6 +103,17 @@ export default function LinkCardCompact({ link, editMode }: Props) {
     );
   }, [collections, links]);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key to open link
+    if (e.key === "Enter") {
+      !editMode && openLink(link, user, () => setLinkModal(true));
+      return;
+    }
+
+    // Leave other key events to dnd-kit
+    listeners?.onKeyDown(e);
+  };
+
   const permissions = usePermissions(collection?.id as number);
 
   const selectedStyle = selectedLinks.some(
@@ -135,8 +156,11 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
-          {...attributes}
+          role="button"
+          tabIndex={0}
+          aria-label={`${unescapeString(link.name)} - ${shortenedURL}`}
           {...listeners}
+          onKeyDown={handleKeyDown}
         >
           {show.icon && (
             <div className="shrink-0">

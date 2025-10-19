@@ -291,8 +291,8 @@ export default function Dashboard() {
         <div className="p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <i className="bi-house-fill text-primary" />
-              <p className="font-thin">{t("dashboard")}</p>
+              <i className="bi-house-fill text-primary" aria-hidden="true" />
+              <h1 className="font-thin">{t("dashboard")}</h1>
             </div>
             <div className="flex items-center gap-2">
               <DashboardLayoutDropdown />
@@ -389,7 +389,8 @@ const Section = ({
   switch (sectionData.type) {
     case DashboardSectionType.STATS:
       return (
-        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+        <section className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+          <h2 className="sr-only">{t("statistics")}</h2>
           <DashboardItem
             name={numberOfLinks === 1 ? t("link") : t("links")}
             value={numberOfLinks}
@@ -413,11 +414,11 @@ const Section = ({
             value={numberOfPinnedLinks}
             icon={"bi-pin-angle"}
           />
-        </div>
+        </section>
       );
     case DashboardSectionType.RECENT_LINKS:
       return (
-        <>
+        <section className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <div className="flex gap-2 items-center">
               <PageHeader icon={"bi-clock-history"} title={t("recent_links")} />
@@ -462,11 +463,11 @@ const Section = ({
               </div>
             </div>
           )}
-        </>
+        </section>
       );
     case DashboardSectionType.PINNED_LINKS:
       return (
-        <>
+        <section className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <div className="flex gap-2 items-center">
               <PageHeader icon={"bi-pin-angle"} title={t("pinned_links")} />
@@ -503,12 +504,12 @@ const Section = ({
               </div>
             )}
           </Droppable>
-        </>
+        </section>
       );
     case DashboardSectionType.COLLECTION:
       return (
         collection?.id && (
-          <>
+          <section className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center">
                 <div className={clsx("flex items-center gap-3")}>
@@ -525,9 +526,9 @@ const Section = ({
                     ></i>
                   )}
                   <div>
-                    <p className="text-2xl capitalize font-thin">
+                    <h3 className="text-2xl capitalize font-thin">
                       {collection.name}
-                    </p>
+                    </h3>
                   </div>
                 </div>
               </div>
@@ -566,7 +567,7 @@ const Section = ({
                 </div>
               )}
             </Droppable>
-          </>
+          </section>
         )
       );
     default:
