@@ -112,7 +112,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   const [linkModal, setLinkModal] = useState(false);
 
   return (
-    <>
+    <li className="group">
       <div
         ref={setNodeRef}
         className={cn(
@@ -143,7 +143,6 @@ export default function LinkCardCompact({ link, editMode }: Props) {
               <LinkIcon link={link} hideBackground />
             </div>
           )}
-
           <div className="w-[calc(100%-56px)] ml-2">
             {show.name && (
               <div className="flex gap-1 mr-20">
@@ -180,7 +179,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
       </div>
-      <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
-    </>
+      <div className="group-last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
+    </li>
   );
 }

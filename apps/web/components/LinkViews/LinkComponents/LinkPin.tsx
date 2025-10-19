@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import usePinLink from "@/lib/client/pinLink";
 import { Button } from "@/components/ui/button";
+import { t } from "i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -25,6 +26,7 @@ export default function LinkPin({ link, btnStyle }: Props) {
         btnStyle
       )}
       onClick={() => pinLink(link)}
+      aria-label={t("pin_link")}
     >
       <i
         title="Pin"

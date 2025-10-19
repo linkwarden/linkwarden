@@ -281,6 +281,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
         {/* Overlay on hover */}
         <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
+        {!isPublicRoute && <LinkPin link={link} />}
         <LinkActions
           link={link}
           collection={collection}
@@ -288,7 +289,6 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
-        {!isPublicRoute && <LinkPin link={link} />}
       </div>
     </div>
   );

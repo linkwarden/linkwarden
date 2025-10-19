@@ -94,11 +94,11 @@ export default function LinkActions({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              asChild
               variant={ghost ? "ghost" : "simple"}
               size="icon"
               className={clsx(className, "cursor-pointer")}
               onMouseDown={(e) => e.preventDefault()}
+              aria-label={t("more_options")}
             >
               <i title="More" className="bi-three-dots text-xl" />
             </Button>
