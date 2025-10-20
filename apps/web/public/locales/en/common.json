@@ -537,5 +537,6 @@
   "view_settings": "View Settings",
   "card_view": "Card View",
   "list_view": "List View",
-  "masonry_view": "Masonry View"
+  "masonry_view": "Masonry View",
+  "number_of_columns": "Number of Columns"
 }
