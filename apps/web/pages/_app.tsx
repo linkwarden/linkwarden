@@ -69,13 +69,6 @@ function App({
           <link rel="manifest" href="/site.webmanifest" />
         </Head>
         <a
-          href="#search-box"
-          className="absolute opacity-0 focus:opacity-100 z-50 underline left-0 top-0 p-4 -translate-y-80 focus:translate-y-0 bg-base-200"
-          aria-label={t("skip_to_search")}
-        >
-          {t("skip_to_search")}
-        </a>
-        <a
           href="#main-content"
           className="absolute opacity-0 focus:opacity-100 z-50 underline left-0 top-0 p-4 -translate-y-80 focus:translate-y-0 bg-base-200"
           aria-label={t("skip_to_main_content")}
