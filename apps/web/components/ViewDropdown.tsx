@@ -48,9 +48,16 @@ export default function ViewDropdown({
     Object.keys(settings.show) as (keyof typeof settings.show)[]
   ).filter((key) => {
     if (!dashboard && settings.viewMode === ViewMode.List)
-      return key !== "tags" && key !== "image" && key !== "description";
+      return (
+        key !== "tags" &&
+        key !== "image" &&
+        key !== "description" &&
+        key !== "relevance"
+      );
     if (dashboard || settings.viewMode === ViewMode.Card)
       return key !== "tags" && key !== "description";
+
+    if (settings.viewMode === ViewMode.Masonry) return key !== "relevance";
     return true;
   });
 

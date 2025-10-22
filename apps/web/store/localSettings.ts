@@ -14,6 +14,7 @@ type LocalSettings = {
     collection: boolean;
     preserved_formats: boolean;
     date: boolean;
+    relevance: boolean;
   };
   columns: number;
   sortBy?: Sort;
@@ -39,6 +40,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       collection: true,
       preserved_formats: true,
       date: true,
+      relevance: true,
     },
     columns: 0,
     sortBy: Sort.DateNewestFirst,
@@ -102,6 +104,7 @@ const useLocalSettingsStore = create<LocalSettingsStore>((set) => ({
       collection: true,
       preserved_formats: true,
       date: true,
+      relevance: true,
     };
     const show = storedShow
       ? { ...defaultShow, ...JSON.parse(storedShow) }
