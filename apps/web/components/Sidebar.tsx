@@ -65,7 +65,7 @@ export default function Sidebar({
   }, [router, collections]);
 
   return (
-    <div
+    <nav
       id="sidebar"
       className={cn(
         "bg-base-200 h-screen overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20",
@@ -268,6 +268,6 @@ export default function Sidebar({
           </Disclosure>
         </>
       )}
-    </div>
+    </nav>
   );
 }

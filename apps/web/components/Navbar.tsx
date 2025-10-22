@@ -74,7 +74,7 @@ export default function Navbar() {
   }, [user, daysLeft]);
 
   return (
-    <>
+    <header>
       {STRIPE_ENABLED && isTrialing && (
         <Link
           href="/subscribe"
@@ -164,6 +164,6 @@ export default function Navbar() {
           <UploadFileModal onClose={() => setUploadFileModal(false)} />
         )}
       </div>
-    </>
+    </header>
   );
 }

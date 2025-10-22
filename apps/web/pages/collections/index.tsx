@@ -55,12 +55,14 @@ export default function Collections() {
   return (
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full h-full">
+        <PageHeader icon={"bi-folder"} title={t("collections")} titleTag="h1" />
         <div className="flex justify-between">
           <div className="flex items-center gap-3">
             <PageHeader
               icon={"bi-folder"}
-              title={t("collections")}
+              title={t("your_collections")}
               description={t("collections_you_own")}
+              titleTag="h2"
             />
             <TooltipProvider>
               <Tooltip>
@@ -69,6 +71,7 @@ export default function Collections() {
                     variant="ghost"
                     size="icon"
                     onClick={() => setNewCollectionModal(true)}
+                    aria-label={t("new_collection")}
                   >
                     <i className="bi-plus-lg text-xl text-neutral"></i>
                   </Button>
@@ -107,23 +110,36 @@ export default function Collections() {
             </Button>
           </div>
         ) : (
-          <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+          <ul className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
             {sortedCollections
               .filter((e) => e.ownerId === data?.user.id && e.parentId === null)
               .map((e) => (
-                <CollectionCard key={e.id} collection={e} />
+                <li key={e.id}>
+                  <CollectionCard collection={e} />
+                </li>
               ))}
 
-            <div
-              className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content p-5 bg-base-200 self-stretch min-h-[12rem] rounded-xl cursor-pointer flex flex-col gap-4 justify-center items-center group"
-              onClick={() => setNewCollectionModal(true)}
-            >
-              <p className="group-hover:opacity-0 duration-100">
-                {t("new_collection")}
-              </p>
-              <i className="bi-plus-lg text-5xl group-hover:text-7xl group-hover:-mt-10 text-primary drop-shadow duration-100"></i>
-            </div>
-          </div>
+            <li className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content bg-base-200 self-stretch min-h-[12rem] rounded-xl cursor-pointer flex flex-col gap-4 justify-center items-center group focus:outline-none focus:ring-2 focus:ring-primary">
+              <div
+                onClick={() => setNewCollectionModal(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setNewCollectionModal(true);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={t("new_collection")}
+                className="flex p-5 items-center justify-center flex-col h-full w-full"
+              >
+                <p className="group-hover:opacity-0 duration-100">
+                  {t("new_collection")}
+                </p>
+                <i className="bi-plus-lg text-5xl group-hover:text-7xl group-hover:-mt-10 text-primary drop-shadow duration-100"></i>
+              </div>
+            </li>
+          </ul>
         )}
 
         {sortedCollections.filter((e) => e.ownerId !== data?.user.id)[0] && (
@@ -132,15 +148,18 @@ export default function Collections() {
               icon={"bi-folder"}
               title={t("other_collections")}
               description={t("other_collections_desc")}
+              titleTag="h2"
             />
 
-            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+            <ul className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {sortedCollections
                 .filter((e) => e.ownerId !== data?.user.id)
                 .map((e) => (
-                  <CollectionCard key={e.id} collection={e} />
+                  <li key={e.id}>
+                    <CollectionCard collection={e} />
+                  </li>
                 ))}
-            </div>
+            </ul>
           </>
         )}
       </div>
