@@ -5,6 +5,7 @@ import { DeleteUserBody } from "@linkwarden/types";
 import updateSeats from "@/lib/api/stripe/updateSeats";
 import { meiliClient } from "@linkwarden/lib";
 import stripeSDK from "@/lib/api/stripe/stripeSDK";
+import transporter from "@linkwarden/lib/transporter";
 
 export default async function deleteUserById(
   userId: number,
@@ -133,6 +134,23 @@ export default async function deleteUserById(
 
         if (process.env.STRIPE_SECRET_KEY) {
           const stripe = stripeSDK();
+
+          // Send an email about cancellation reason if provided
+          if (
+            body.cancellation_details?.comment ||
+            body.cancellation_details?.feedback ||
+            user.acceptPromotionalEmails
+          )
+            await transporter.sendMail({
+              from: process.env.EMAIL_FROM,
+              to: "hello@linkwarden.app",
+              subject: "Linkwarden User Cancellation",
+              text: `User: ${user.email}\nFeedback: ${
+                body.cancellation_details?.feedback || "N/A"
+              }\nComment: ${
+                body.cancellation_details?.comment || "N/A"
+              }\nPromotional Emails: ${String(user.acceptPromotionalEmails)}`,
+            });
 
           try {
             if (user.subscriptions?.id && queryId !== userId) {
