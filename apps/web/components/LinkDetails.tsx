@@ -156,6 +156,14 @@ export default function LinkDetails({
     setLink({ ...link, tags: tagNames });
   };
 
+  const handleIconPopoverOpenChange = (open: boolean) => {
+    setIconPopover(open);
+    if (!open) {
+      setIconPopover(false);
+      submit();
+    }
+  };
+
   const [iconPopover, setIconPopover] = useState(false);
 
   return (
@@ -244,46 +252,34 @@ export default function LinkDetails({
         (permissions === true || permissions?.canUpdate) &&
         !isPublicRoute ? (
           <div className="-mt-14 ml-8 relative w-fit pb-2">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <LinkIcon
-                    link={link}
-                    className="hover:bg-opacity-70 duration-100 cursor-pointer"
-                    onClick={() => setIconPopover(true)}
-                  />
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{t("change_icon")}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            {iconPopover && (
-              <IconPopover
-                color={link.color || oklchVariableToHex("--p")}
-                setColor={(color: string) => setLink({ ...link, color })}
-                weight={(link.iconWeight || "regular") as IconWeight}
-                setWeight={(iconWeight: string) =>
-                  setLink({ ...link, iconWeight })
-                }
-                iconName={link.icon as string}
-                setIconName={(icon: string) => setLink({ ...link, icon })}
-                reset={() =>
-                  setLink({
-                    ...link,
-                    color: "",
-                    icon: "",
-                    iconWeight: "",
-                  })
-                }
-                className="top-12"
-                onClose={() => {
-                  setIconPopover(false);
-                  submit();
-                }}
-              />
-            )}
+            <IconPopover
+              color={link.color || oklchVariableToHex("--p")}
+              setColor={(color: string) => setLink({ ...link, color })}
+              weight={(link.iconWeight || "regular") as IconWeight}
+              setWeight={(iconWeight: string) =>
+                setLink({ ...link, iconWeight })
+              }
+              iconName={link.icon as string}
+              setIconName={(icon: string) => setLink({ ...link, icon })}
+              reset={() =>
+                setLink({
+                  ...link,
+                  color: "",
+                  icon: "",
+                  iconWeight: "",
+                })
+              }
+              className="top-12"
+              open={iconPopover}
+              onOpenChange={handleIconPopoverOpenChange}
+            >
+              <Button variant="ghost" className="size-fit p-0">
+                <LinkIcon
+                  link={link}
+                  className="hover:bg-opacity-70 duration-100 cursor-pointer"
+                />
+              </Button>
+            </IconPopover>
           </div>
         ) : (
           <div className="-mt-14 ml-8 relative w-fit pb-2">
