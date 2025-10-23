@@ -210,46 +210,52 @@ export default function CollectionCard({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <div
-        className="flex items-center absolute bottom-3 left-3 z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 focus:bg-base-content/20 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-200"
-        onClick={() => setEditCollectionSharingModal(true)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            setEditCollectionSharingModal(true);
-          }
-        }}
-        role="button"
-        tabIndex={0}
-        aria-label={t("share_and_collaborate")}
+      <EditCollectionSharingModal
+        open={editCollectionSharingModal}
+        onOpenChange={setEditCollectionSharingModal}
+        activeCollection={collection}
       >
-        {collectionOwner.id && (
-          <ProfilePhoto
-            src={collectionOwner.image || undefined}
-            name={collectionOwner.name}
-          />
-        )}
-        {collection.members
-          .sort((a, b) => (a.userId as number) - (b.userId as number))
-          .map((e, i) => {
-            return (
-              <ProfilePhoto
-                key={i}
-                src={e.user.image ? e.user.image : undefined}
-                name={e.user.name}
-                className="-ml-3"
-              />
-            );
-          })
-          .slice(0, 3)}
-        {collection.members.length - 3 > 0 && (
-          <div className={`avatar drop-shadow-md placeholder -ml-3`}>
-            <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
-              <span>+{collection.members.length - 3}</span>
+        <div
+          className="flex items-center absolute bottom-3 left-3 z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 focus:bg-base-content/20 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-200"
+          onClick={() => setEditCollectionSharingModal(true)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setEditCollectionSharingModal(true);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label={t("share_and_collaborate")}
+        >
+          {collectionOwner.id && (
+            <ProfilePhoto
+              src={collectionOwner.image || undefined}
+              name={collectionOwner.name}
+            />
+          )}
+          {collection.members
+            .sort((a, b) => (a.userId as number) - (b.userId as number))
+            .map((e, i) => {
+              return (
+                <ProfilePhoto
+                  key={i}
+                  src={e.user.image ? e.user.image : undefined}
+                  name={e.user.name}
+                  className="-ml-3"
+                />
+              );
+            })
+            .slice(0, 3)}
+          {collection.members.length - 3 > 0 && (
+            <div className={`avatar drop-shadow-md placeholder -ml-3`}>
+              <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
+                <span>+{collection.members.length - 3}</span>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </EditCollectionSharingModal>
     </div>
   );
 }

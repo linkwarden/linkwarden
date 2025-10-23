@@ -73,6 +73,14 @@ export default function Navbar() {
     setIsTrialing(Boolean(isTrialing));
   }, [user, daysLeft]);
 
+  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
+  const handleDropdownMenuOpenChange = (open: boolean) => {
+    setDropdownMenuOpen(open);
+    if (!open) {
+      setNewCollectionModal(false);
+    }
+  };
+
   return (
     <header>
       {STRIPE_ENABLED && isTrialing && (
@@ -106,7 +114,10 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <ToggleDarkMode />
 
-          <DropdownMenu>
+          <DropdownMenu
+            open={dropdownMenuOpen}
+            onOpenChange={handleDropdownMenuOpenChange}
+          >
             <DropdownMenuTrigger asChild className="hidden sm:inline-grid">
               <Button
                 variant="accent"
@@ -133,10 +144,15 @@ export default function Navbar() {
                 <i className="bi-file-earmark-arrow-up" />
                 {t("upload_file")}
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setNewCollectionModal(true)}>
-                <i className="bi-folder" />
-                {t("new_collection")}
-              </DropdownMenuItem>
+              <NewCollectionModal
+                onOpenChange={setNewCollectionModal}
+                open={newCollectionModal}
+              >
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <i className="bi-folder" />
+                  {t("new_collection")}
+                </DropdownMenuItem>
+              </NewCollectionModal>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -156,9 +172,6 @@ export default function Navbar() {
         )}
         {newLinkModal && (
           <NewLinkModal onClose={() => setNewLinkModal(false)} />
-        )}
-        {newCollectionModal && (
-          <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
         )}
         {uploadFileModal && (
           <UploadFileModal onClose={() => setUploadFileModal(false)} />

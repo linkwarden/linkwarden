@@ -126,41 +126,49 @@ export default function PublicCollections() {
               <div className="mt-3">
                 <div className={`min-w-[15rem]`}>
                   <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
-                    <div
-                      className="flex items-center z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
-                      onClick={() => setEditCollectionSharingModal(true)}
+                    <EditCollectionSharingModal
+                      open={editCollectionSharingModal}
+                      onOpenChange={setEditCollectionSharingModal}
+                      activeCollection={collection}
                     >
-                      {collectionOwner.id && (
-                        <ProfilePhoto
-                          src={collectionOwner.image || undefined}
-                          name={collectionOwner.name}
-                        />
-                      )}
-                      {collection.members
-                        .sort(
-                          (a, b) => (a.userId as number) - (b.userId as number)
-                        )
-                        .map((e, i) => {
-                          return (
-                            <ProfilePhoto
-                              key={i}
-                              src={e.user.image ? e.user.image : undefined}
-                              name={e.user.name}
-                              className="-ml-3"
-                            />
-                          );
-                        })
-                        .slice(0, 3)}
-                      {collection.members.length - 3 > 0 && (
-                        <div
-                          className={`avatar drop-shadow-md placeholder -ml-3`}
-                        >
-                          <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
-                            <span>+{collection.members.length - 3}</span>
+                      <div
+                        className="flex items-center z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
+                        role="button"
+                        aria-label={t("share_and_collaborate")}
+                      >
+                        {collectionOwner.id && (
+                          <ProfilePhoto
+                            src={collectionOwner.image || undefined}
+                            name={collectionOwner.name}
+                          />
+                        )}
+                        {collection.members
+                          .sort(
+                            (a, b) =>
+                              (a.userId as number) - (b.userId as number)
+                          )
+                          .map((e, i) => {
+                            return (
+                              <ProfilePhoto
+                                key={i}
+                                src={e.user.image ? e.user.image : undefined}
+                                name={e.user.name}
+                                className="-ml-3"
+                              />
+                            );
+                          })
+                          .slice(0, 3)}
+                        {collection.members.length - 3 > 0 && (
+                          <div
+                            className={`avatar drop-shadow-md placeholder -ml-3`}
+                          >
+                            <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
+                              <span>+{collection.members.length - 3}</span>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    </EditCollectionSharingModal>
 
                     <p className="text-neutral text-sm">
                       {collection.members.length > 0 &&
@@ -318,12 +326,6 @@ export default function PublicCollections() {
         </p> */}
           </div>
         </div>
-        {editCollectionSharingModal && (
-          <EditCollectionSharingModal
-            onClose={() => setEditCollectionSharingModal(false)}
-            activeCollection={collection}
-          />
-        )}
       </div>
     );
 }

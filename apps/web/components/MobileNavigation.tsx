@@ -21,6 +21,14 @@ export default function MobileNavigation({}: Props) {
   const [newLinkModal, setNewLinkModal] = useState(false);
   const [newCollectionModal, setNewCollectionModal] = useState(false);
   const [uploadFileModal, setUploadFileModal] = useState(false);
+  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
+
+  const handleDropdownOpenChange = (open: boolean) => {
+    setDropdownMenuOpen(open);
+    if (!open) {
+      setNewCollectionModal(false);
+    }
+  };
 
   return (
     <>
@@ -37,7 +45,10 @@ export default function MobileNavigation({}: Props) {
             href={`/links/pinned`}
             icon={"bi-pin-angle"}
           />
-          <DropdownMenu>
+          <DropdownMenu
+            open={dropdownMenuOpen}
+            onOpenChange={handleDropdownOpenChange}
+          >
             <DropdownMenuTrigger asChild>
               <Button
                 className="-mt-4 flex items-center w-20 h-20 aspect-square px-2 relative rounded-full"
@@ -56,10 +67,15 @@ export default function MobileNavigation({}: Props) {
                 <i className="bi-file-earmark-arrow-up"></i>
                 {t("upload_file")}
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setNewCollectionModal(true)}>
-                <i className="bi-folder"></i>
-                {t("new_collection")}
-              </DropdownMenuItem>
+              <NewCollectionModal
+                open={newCollectionModal}
+                onOpenChange={setNewCollectionModal}
+              >
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <i className="bi-folder"></i>
+                  {t("new_collection")}
+                </DropdownMenuItem>
+              </NewCollectionModal>
             </DropdownMenuContent>
           </DropdownMenu>
           <MobileNavigationButton href={`/links`} icon={"bi-link-45deg"} />
@@ -67,9 +83,6 @@ export default function MobileNavigation({}: Props) {
         </div>
       </div>
       {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
-      {newCollectionModal && (
-        <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
-      )}
       {uploadFileModal && (
         <UploadFileModal onClose={() => setUploadFileModal(false)} />
       )}
