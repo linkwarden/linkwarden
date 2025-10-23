@@ -41,6 +41,7 @@ import DragNDrop from "@/components/DragNDrop";
 export default function Index() {
   const { t } = useTranslation();
   const router = useRouter();
+  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
 
   const { data: collections = [] } = useCollections();
 
@@ -111,6 +112,16 @@ export default function Index() {
     (localStorage.getItem("viewMode") as ViewMode) || ViewMode.Card
   );
 
+  const handleDropdownOpenChange = (open: boolean) => {
+    setDropdownMenuOpen(open);
+    if (!open) {
+      setDeleteCollectionModal(false);
+      setEditCollectionSharingModal(false);
+      setEditCollectionModal(false);
+      setNewCollectionModal(false);
+    }
+  };
+
   return (
     <DragNDrop
       links={links}
@@ -137,10 +148,12 @@ export default function Index() {
                       (activeCollection.iconWeight || "regular") as IconWeight
                     }
                     color={activeCollection.color}
+                    aria-hidden="true"
                   />
                 ) : (
                   <i
                     className="bi-folder-fill text-3xl"
+                    aria-hidden="true"
                     style={{ color: activeCollection.color }}
                   />
                 )}
@@ -150,15 +163,18 @@ export default function Index() {
                 </h1>
               </div>
 
-              <DropdownMenu>
+              <DropdownMenu
+                open={dropdownMenuOpen}
+                onOpenChange={handleDropdownOpenChange}
+              >
                 <DropdownMenuTrigger asChild>
                   <Button
-                    asChild
                     variant="ghost"
                     size="icon"
                     className="mt-2 text-neutral"
                     onMouseDown={(e) => e.preventDefault()}
                     title={t("more")}
+                    aria-label={`${t("more_options")}`}
                   >
                     <i className="bi-three-dots text-xl" />
                   </Button>
@@ -181,50 +197,78 @@ export default function Index() {
                   </DropdownMenuItem>
 
                   {permissions === true && (
-                    <DropdownMenuItem
-                      onClick={() => setEditCollectionModal(true)}
+                    <EditCollectionModal
+                      open={editCollectionModal}
+                      onOpenChange={setEditCollectionModal}
+                      activeCollection={activeCollection}
                     >
-                      <i className="bi-pencil-square" />
-                      {t("edit_collection_info")}
-                    </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <i className="bi-pencil-square" />
+                        {t("edit_collection_info")}
+                      </DropdownMenuItem>
+                    </EditCollectionModal>
                   )}
 
-                  <DropdownMenuItem
-                    onClick={() => setEditCollectionSharingModal(true)}
+                  <EditCollectionSharingModal
+                    open={editCollectionSharingModal}
+                    onOpenChange={setEditCollectionSharingModal}
+                    activeCollection={activeCollection}
                   >
-                    <i className="bi-globe" />
-                    {permissions === true
-                      ? t("share_and_collaborate")
-                      : t("view_team")}
-                  </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <i className="bi-globe" />
+                      {permissions === true
+                        ? t("share_and_collaborate")
+                        : t("view_team")}
+                    </DropdownMenuItem>
+                  </EditCollectionSharingModal>
 
                   {permissions === true && (
-                    <DropdownMenuItem
-                      onClick={() => setNewCollectionModal(true)}
+                    <NewCollectionModal
+                      open={newCollectionModal}
+                      onOpenChange={setNewCollectionModal}
+                      parent={activeCollection}
                     >
-                      <i className="bi-folder-plus" />
-                      {t("create_subcollection")}
-                    </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onSelect={(e) => {
+                          e.preventDefault();
+                        }}
+                      >
+                        <i className="bi-folder-plus" />
+                        {t("create_subcollection")}
+                      </DropdownMenuItem>
+                    </NewCollectionModal>
                   )}
 
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem
-                    onClick={() => setDeleteCollectionModal(true)}
-                    className="text-error"
+                  <DeleteCollectionModal
+                    open={deleteCollectionModal}
+                    onOpenChange={setDeleteCollectionModal}
+                    activeCollection={activeCollection}
                   >
-                    {permissions === true ? (
-                      <>
-                        <i className="bi-trash" />
-                        {t("delete_collection")}
-                      </>
-                    ) : (
-                      <>
-                        <i className="bi-box-arrow-left" />
-                        {t("leave_collection")}
-                      </>
-                    )}
-                  </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-error"
+                      onSelect={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      {permissions === true ? (
+                        <>
+                          <i className="bi-trash" />
+                          {t("delete_collection")}
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi-box-arrow-left" />
+                          {t("leave_collection")}
+                        </>
+                      )}
+                    </DropdownMenuItem>
+                  </DeleteCollectionModal>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -375,34 +419,6 @@ export default function Index() {
           />
           {!data.isLoading && links && !links[0] && <NoLinksFound />}
         </div>
-        {activeCollection && (
-          <>
-            {editCollectionModal && (
-              <EditCollectionModal
-                onClose={() => setEditCollectionModal(false)}
-                activeCollection={activeCollection}
-              />
-            )}
-            {editCollectionSharingModal && (
-              <EditCollectionSharingModal
-                onClose={() => setEditCollectionSharingModal(false)}
-                activeCollection={activeCollection}
-              />
-            )}
-            {newCollectionModal && (
-              <NewCollectionModal
-                onClose={() => setNewCollectionModal(false)}
-                parent={activeCollection}
-              />
-            )}
-            {deleteCollectionModal && (
-              <DeleteCollectionModal
-                onClose={() => setDeleteCollectionModal(false)}
-                activeCollection={activeCollection}
-              />
-            )}
-          </>
-        )}
       </MainLayout>
     </DragNDrop>
   );

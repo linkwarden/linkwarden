@@ -16,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
 export default function Collections() {
   const { t } = useTranslation();
@@ -56,6 +57,7 @@ export default function Collections() {
     <MainLayout>
       <div className="p-5 flex flex-col gap-5 w-full h-full">
         <PageHeader icon={"bi-folder"} title={t("collections")} titleTag="h1" />
+        <Separator />
         <div className="flex justify-between">
           <div className="flex items-center gap-3">
             <PageHeader
@@ -64,23 +66,20 @@ export default function Collections() {
               description={t("collections_you_own")}
               titleTag="h2"
             />
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setNewCollectionModal(true)}
-                    aria-label={t("new_collection")}
-                  >
-                    <i className="bi-plus-lg text-xl text-neutral"></i>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{t("new_collection")}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <NewCollectionModal
+              open={newCollectionModal}
+              onOpenChange={setNewCollectionModal}
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setNewCollectionModal(true)}
+                aria-label={t("new_collection")}
+                title={t("new_collection")}
+              >
+                <i className="bi-plus-lg text-xl text-neutral"></i>
+              </Button>
+            </NewCollectionModal>
           </div>
           <div className="flex gap-3 justify-end">
             <div className="relative mt-2">
@@ -163,9 +162,6 @@ export default function Collections() {
           </>
         )}
       </div>
-      {newCollectionModal && (
-        <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
-      )}
     </MainLayout>
   );
 }

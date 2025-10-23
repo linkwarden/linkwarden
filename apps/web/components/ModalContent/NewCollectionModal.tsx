@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import TextInput from "@/components/TextInput";
 import { Collection } from "@linkwarden/prisma/client";
-import Modal from "../Modal";
 import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useTranslation } from "next-i18next";
 import { useCreateCollection } from "@linkwarden/router/collections";
@@ -11,13 +10,28 @@ import { IconWeight } from "@phosphor-icons/react";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 type Props = {
-  onClose: Function;
   parent?: CollectionIncludingMembersAndLinkCount;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  children: React.ReactNode;
 };
 
-export default function NewCollectionModal({ onClose, parent }: Props) {
+export default function NewCollectionModal({
+  parent,
+  open,
+  onOpenChange,
+  children,
+}: Props) {
   const { t } = useTranslation();
 
   const initial = {
@@ -53,7 +67,7 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
         if (error) {
           toast.error(error.message);
         } else {
-          onClose();
+          onOpenChange(false);
           toast.success(t("created"));
         }
       },
@@ -67,76 +81,90 @@ export default function NewCollectionModal({ onClose, parent }: Props) {
   }, []);
 
   return (
-    <Modal toggleModal={onClose}>
-      {parent?.id ? (
-        <>
-          <p className="text-xl font-thin">{t("new_sub_collection")}</p>
-          <p className="text-sm">
-            {t("for_collection", { name: parent.name })}
-          </p>
-        </>
-      ) : (
-        <p className="text-xl font-thin">{t("create_new_collection")}</p>
-      )}
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          {parent?.id ? (
+            <>
+              <DialogTitle className="text-xl font-thin">
+                {t("new_sub_collection")}
+              </DialogTitle>
+              <DialogDescription className="text-sm">
+                {t("for_collection", { name: parent.name })}
+              </DialogDescription>
+            </>
+          ) : (
+            <DialogTitle className="text-xl font-thin">
+              {t("create_new_collection")}
+            </DialogTitle>
+          )}
+        </DialogHeader>
 
-      <Separator className="my-3" />
+        <Separator className="my-3" />
 
-      <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-3">
-          <div className="flex gap-3 items-end">
-            <IconPicker
-              color={collection.color || oklchVariableToHex("--p")}
-              setColor={(color: string) =>
-                setCollection({ ...collection, color })
-              }
-              weight={(collection.iconWeight || "regular") as IconWeight}
-              setWeight={(iconWeight: string) =>
-                setCollection({ ...collection, iconWeight })
-              }
-              iconName={collection.icon as string}
-              setIconName={(icon: string) =>
-                setCollection({ ...collection, icon })
-              }
-              reset={() =>
-                setCollection({
-                  ...collection,
-                  color: oklchVariableToHex("--p"),
-                  icon: "",
-                  iconWeight: "",
-                })
-              }
-            />
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3 items-end">
+              <IconPicker
+                color={collection.color || oklchVariableToHex("--p")}
+                setColor={(color: string) =>
+                  setCollection({ ...collection, color })
+                }
+                weight={(collection.iconWeight || "regular") as IconWeight}
+                setWeight={(iconWeight: string) =>
+                  setCollection({ ...collection, iconWeight })
+                }
+                iconName={collection.icon as string}
+                setIconName={(icon: string) =>
+                  setCollection({ ...collection, icon })
+                }
+                reset={() =>
+                  setCollection({
+                    ...collection,
+                    color: oklchVariableToHex("--p"),
+                    icon: "",
+                    iconWeight: "",
+                  })
+                }
+              />
+              <div className="w-full">
+                <p className="mb-2">{t("name")}</p>
+                <TextInput
+                  ref={inputRef}
+                  className="bg-base-200"
+                  value={collection.name}
+                  placeholder={t("collection_name_placeholder")}
+                  onChange={(e) =>
+                    setCollection({ ...collection, name: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
             <div className="w-full">
-              <p className="mb-2">{t("name")}</p>
-              <TextInput
-                ref={inputRef}
-                className="bg-base-200"
-                value={collection.name}
-                placeholder={t("collection_name_placeholder")}
+              <p className="mb-2">{t("description")}</p>
+              <textarea
+                className="w-full h-32 resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
+                placeholder={t("collection_description_placeholder")}
+                value={collection.description}
                 onChange={(e) =>
-                  setCollection({ ...collection, name: e.target.value })
+                  setCollection({ ...collection, description: e.target.value })
                 }
               />
             </div>
           </div>
 
-          <div className="w-full">
-            <p className="mb-2">{t("description")}</p>
-            <textarea
-              className="w-full h-32 resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
-              placeholder={t("collection_description_placeholder")}
-              value={collection.description}
-              onChange={(e) =>
-                setCollection({ ...collection, description: e.target.value })
-              }
-            />
-          </div>
+          <Button
+            variant="accent"
+            className="ml-auto"
+            onClick={submit}
+            aria-label={t("create_collection_button")}
+          >
+            {t("create_collection_button")}
+          </Button>
         </div>
-
-        <Button variant="accent" className="ml-auto" onClick={submit}>
-          {t("create_collection_button")}
-        </Button>
-      </div>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 }

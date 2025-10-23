@@ -15,14 +15,21 @@ function PopoverTrigger({
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
 }
 
+interface PopoverContentProps
+  extends React.ComponentProps<typeof PopoverPrimitive.Content> {
+  disablePortal?: boolean;
+}
+
 function PopoverContent({
   className,
   align = "center",
   sideOffset = 4,
+  disablePortal = false,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+}: PopoverContentProps) {
+  const Portal = disablePortal ? React.Fragment : PopoverPrimitive.Portal;
   return (
-    <PopoverPrimitive.Portal>
+    <Portal>
       <PopoverPrimitive.Content
         data-slot="popover-content"
         align={align}
@@ -33,7 +40,7 @@ function PopoverContent({
         )}
         {...props}
       />
-    </PopoverPrimitive.Portal>
+    </Portal>
   );
 }
 
