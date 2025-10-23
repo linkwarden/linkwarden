@@ -133,7 +133,14 @@ export default function PublicCollections() {
                     >
                       <div
                         className="flex items-center z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setEditCollectionSharingModal(true);
+                          }
+                        }}
                         role="button"
+                        tabIndex={0}
                         aria-label={t("share_and_collaborate")}
                       >
                         {collectionOwner.id && (

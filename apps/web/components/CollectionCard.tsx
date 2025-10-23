@@ -217,7 +217,6 @@ export default function CollectionCard({
       >
         <div
           className="flex items-center absolute bottom-3 left-3 z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 focus:bg-base-content/20 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-200"
-          onClick={() => setEditCollectionSharingModal(true)}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
