@@ -539,5 +539,6 @@
   "list_view": "List View",
   "masonry_view": "Masonry View",
   "number_of_columns": "Number of Columns",
-  "your_collections": "Your Collections"
+  "your_collections": "Your Collections",
+  "go_to_dashboard": "Go to Linkwarden Dashboard"
 }

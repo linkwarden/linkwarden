@@ -17,6 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function Sidebar({
   className,
@@ -82,34 +83,33 @@ export default function Sidebar({
         )}
       >
         <div className="flex items-center justify-between mb-4">
-          {sidebarIsCollapsed ? (
-            <Image
-              src={"/icon.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden Icon"
-              className="h-8 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-            />
-          ) : user?.theme === "light" ? (
-            <Image
-              src={"/linkwarden_light.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden"
-              className="h-9 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-            />
-          ) : (
-            <Image
-              src={"/linkwarden_dark.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden"
-              className="h-9 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-            />
-          )}
+          <Link aria-label={t("go_to_dashboard")} href={"/dashboard"}>
+            {sidebarIsCollapsed ? (
+              <Image
+                src={"/icon.png"}
+                width={640}
+                height={136}
+                alt="Linkwarden Icon"
+                className="h-8 w-auto"
+              />
+            ) : user?.theme === "light" ? (
+              <Image
+                src={"/linkwarden_light.png"}
+                width={640}
+                height={136}
+                alt="Linkwarden"
+                className="h-9 w-auto"
+              />
+            ) : (
+              <Image
+                src={"/linkwarden_dark.png"}
+                width={640}
+                height={136}
+                alt="Linkwarden"
+                className="h-9 w-auto"
+              />
+            )}
+          </Link>
 
           {!sidebarIsCollapsed && (
             <div className="hidden lg:block">
