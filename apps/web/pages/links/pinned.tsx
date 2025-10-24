@@ -54,6 +54,7 @@ export default function PinnedLinks() {
               icon={"bi-pin-angle"}
               title={t("pinned")}
               description={t("pinned_links_desc")}
+              titleTag="h1"
             />
           </LinkListOptions>
 

@@ -10,7 +10,7 @@ import { Toaster, ToastBar } from "react-hot-toast";
 import { Session } from "next-auth";
 import { isPWA } from "@/lib/utils";
 // import useInitialData from "@/hooks/useInitialData";
-import { appWithTranslation } from "next-i18next";
+import { appWithTranslation, useTranslation } from "next-i18next";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -36,6 +36,7 @@ function App({
       document.getElementsByTagName("head")[0].appendChild(meta);
     }
   }, []);
+  const { t } = useTranslation();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -98,6 +99,13 @@ function App({
               </ToastBar>
             )}
           </Toaster>
+          <a
+            href="#main-content"
+            className="absolute opacity-0 focus:opacity-100 z-50 underline left-0 top-0 p-4 -translate-y-80 focus:translate-y-0 bg-base-200"
+            aria-label={t("skip_to_main_content")}
+          >
+            {t("skip_to_main_content")}
+          </a>
           <Component {...pageProps} />
           {/* </GetData> */}
         </AuthRedirect>

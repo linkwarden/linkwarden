@@ -37,7 +37,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   const { t } = useTranslation();
 
   const isSmallScreen = useMediaQuery("(max-width: 1023px)");
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  const { listeners, setNodeRef, isDragging } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
@@ -49,6 +49,16 @@ export default function LinkCardCompact({ link, editMode }: Props) {
 
   const { data: user } = useUser();
   const { setSelectedLinks, selectedLinks } = useLinkStore();
+
+  let shortenedURL;
+
+  try {
+    if (link.url) {
+      shortenedURL = new URL(link.url).host.toLowerCase();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 
   const {
     settings: { show },
@@ -93,6 +103,17 @@ export default function LinkCardCompact({ link, editMode }: Props) {
     );
   }, [collections, links]);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key to open link
+    if (e.key === "Enter") {
+      !editMode && openLink(link, user, () => setLinkModal(true));
+      return;
+    }
+
+    // Leave other key events to dnd-kit
+    listeners?.onKeyDown(e);
+  };
+
   const permissions = usePermissions(collection?.id as number);
 
   const selectedStyle = selectedLinks.some(
@@ -112,7 +133,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
   const [linkModal, setLinkModal] = useState(false);
 
   return (
-    <>
+    <li className="group">
       <div
         ref={setNodeRef}
         className={cn(
@@ -135,15 +156,17 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
-          {...attributes}
+          role="button"
+          tabIndex={0}
+          aria-label={`${unescapeString(link.name)} - ${shortenedURL}`}
           {...listeners}
+          onKeyDown={handleKeyDown}
         >
           {show.icon && (
             <div className="shrink-0">
               <LinkIcon link={link} hideBackground />
             </div>
           )}
-
           <div className="w-[calc(100%-56px)] ml-2">
             {show.name && (
               <div className="flex gap-1 mr-20">
@@ -180,7 +203,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
       </div>
-      <div className="last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
-    </>
+      <div className="group-last:hidden rounded-none my-0 mx-1 border-t border-base-300 h-[1px]"></div>
+    </li>
   );
 }

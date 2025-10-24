@@ -79,6 +79,7 @@ export default function LinkActions({
     } else toast.error(data.response);
   };
 
+  const isLinkPinned = link.pinnedBy && link.pinnedBy.length > 0;
   return (
     <>
       {isPublicRoute ? (
@@ -94,33 +95,40 @@ export default function LinkActions({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              asChild
               variant={ghost ? "ghost" : "simple"}
               size="icon"
               className={clsx(className, "cursor-pointer")}
               onMouseDown={(e) => e.preventDefault()}
+              aria-label={t("more_options")}
             >
               <i title="More" className="bi-three-dots text-xl" />
             </Button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent sideOffset={4} align="end">
-            <DropdownMenuItem onSelect={() => pinLink(link)}>
+            <DropdownMenuItem
+              onSelect={() => pinLink(link)}
+              aria-label={isLinkPinned ? t("unpin") : t("pin_to_dashboard")}
+            >
               <i className="bi-pin" />
 
-              {link.pinnedBy && link.pinnedBy.length > 0
-                ? t("unpin")
-                : t("pin_to_dashboard")}
+              {isLinkPinned ? t("unpin") : t("pin_to_dashboard")}
             </DropdownMenuItem>
 
-            <DropdownMenuItem onSelect={() => setLinkModal(true)}>
+            <DropdownMenuItem
+              onSelect={() => setLinkModal(true)}
+              aria-label={t("show_link_details")}
+            >
               <i className="bi-info-circle" />
 
               {t("show_link_details")}
             </DropdownMenuItem>
 
             {(permissions === true || permissions?.canUpdate) && (
-              <DropdownMenuItem onSelect={() => setEditLinkModal(true)}>
+              <DropdownMenuItem
+                onSelect={() => setEditLinkModal(true)}
+                aria-label={t("edit_link")}
+              >
                 <i className="bi-pencil-square" />
 
                 {t("edit_link")}
@@ -146,6 +154,7 @@ export default function LinkActions({
                       setDeleteLinkModal(true);
                     }
                   }}
+                  aria-label={t("delete")}
                 >
                   <i className="bi-trash" />
 

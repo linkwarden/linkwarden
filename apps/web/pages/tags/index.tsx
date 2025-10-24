@@ -76,7 +76,7 @@ export default function Tags() {
       <div className="p-5 flex flex-col gap-5 w-full h-full">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <PageHeader icon={"bi-hash"} title={t("tags")} />
+            <PageHeader icon={"bi-hash"} title={t("tags")} titleTag="h1" />
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

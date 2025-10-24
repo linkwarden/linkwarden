@@ -60,11 +60,12 @@ export default function Index() {
             <div className={clsx("flex items-center gap-3")}>
               <i
                 className={`bi-link-45deg text-primary text-3xl drop-shadow`}
-              ></i>
+                aria-hidden="true"
+              />
               <div>
-                <p className="text-2xl capitalize font-thin">
+                <h1 className="text-2xl capitalize font-thin">
                   {t("all_links")}
-                </p>
+                </h1>
                 <p className="text-xs sm:text-sm">{t("all_links_desc")}</p>
               </div>
             </div>

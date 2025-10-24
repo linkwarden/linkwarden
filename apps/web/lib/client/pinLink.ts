@@ -13,7 +13,7 @@ const usePinLink = () => {
   const pinLink = async (link: LinkIncludingShortenedCollectionAndTags) => {
     const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0] ? true : false;
 
-    const load = toast.loading(t("updating"));
+    const toastId = toast.loading(t("updating"));
 
     try {
       await updateLink.mutateAsync(
@@ -25,20 +25,21 @@ const usePinLink = () => {
         },
         {
           onSettled: (data, error) => {
-            toast.dismiss(load);
-
             if (error) {
-              toast.error(error.message);
+              toast.error(error.message, { id: toastId });
             } else {
               toast.success(
-                isAlreadyPinned ? t("link_unpinned") : t("link_pinned")
+                isAlreadyPinned ? t("link_unpinned") : t("link_pinned"),
+                {
+                  id: toastId,
+                }
               );
             }
           },
         }
       );
     } catch (e) {
-      toast.dismiss(load);
+      toast.dismiss(toastId);
       console.error(e);
     }
   };
