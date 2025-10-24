@@ -1,7 +1,7 @@
 import { Browser } from "playwright";
 import { prisma } from "@linkwarden/prisma";
 import sendToWayback from "./preservationScheme/sendToWayback";
-import { AiTaggingMethod } from "@linkwarden/prisma/client";
+import { AiTaggingMethod, AiDescriptionMethod } from "@linkwarden/prisma/client";
 import fetchHeaders from "./fetchHeaders";
 import { createFolder, readFile, removeFiles } from "@linkwarden/filesystem";
 import handleMonolith from "./preservationScheme/handleMonolith";
@@ -11,6 +11,7 @@ import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf"
 import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
 import autoTagLink from "./autoTagLink";
+import autoDescribeLink from "./autoDescribeLink";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
 import { isArchivalTag } from "@linkwarden/lib";
 import { ArchivalSettings } from "@linkwarden/types";
@@ -88,6 +89,7 @@ export default async function archiveHandler(
             (tag) => tag.archiveAsWaybackMachine
           ),
           aiTag: archivalTags.some((tag) => tag.aiTag),
+	  aiDescribe: user.aiDescriptionMethod !== AiDescriptionMethod.DISABLED,
         }
       : {
           archiveAsScreenshot: user.archiveAsScreenshot,
@@ -96,6 +98,7 @@ export default async function archiveHandler(
           archiveAsReadable: user.archiveAsReadable,
           archiveAsWaybackMachine: user.archiveAsWaybackMachine,
           aiTag: user.aiTaggingMethod !== AiTaggingMethod.DISABLED,
+	  aiDescribe: user.aiDescriptionMethod !== AiDescriptionMethod.DISABLED,
         };
 
   try {
@@ -177,6 +180,20 @@ export default async function archiveHandler(
               process.env.PERPLEXITY_API_KEY)
           ) {
             await autoTagLink(user, link.id, metaDescription);
+          }
+
+	  // Auto-describing
+          if (
+	    archivalSettings.aiDescribe &&
+            !link.description &&
+            !link.aiDescribed &&
+            (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL ||
+              process.env.OPENAI_API_KEY ||
+              process.env.AZURE_API_KEY ||
+              process.env.ANTHROPIC_API_KEY ||
+              process.env.OPENROUTER_API_KEY)
+          ) {
+            await autoDescribeLink(user, link.id, metaDescription);
           }
 
           // Monolith
