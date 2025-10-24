@@ -494,10 +494,10 @@
   "refresh_multiple_preserved_formats_confirmation_desc": "Ceci supprimera les formats actuellement conservés et conservera de nouveau {{count}} liens.",
   "refresh_preserved_formats_confirmation_desc": "Ceci supprimera les formats actuellement conservés et conservera de nouveau ce lien.",
   "tag_already_added": "Cette étiquette a déjà été ajoutée.",
-  "all_tags": "All Tags",
-  "new_tag": "New Tag",
-  "create_new_tag": "Create New Tag",
-  "tag_deletion_confirmation_message": "Are you sure you want to delete this Tag?",
+  "all_tags": "Toutes les étiquettes",
+  "new_tag": "Nouvelle étiquette",
+  "create_new_tag": "Créer une nouvelle étiquette",
+  "tag_deletion_confirmation_message": "Voulez-vous vraiment supprimer cette Étiquette?",
   "delete_tags_by_number_of_links": "Delete Tags with <0/> Links",
   "delete_all_tags": "Delete all Tags",
   "bulk_delete_tags": "Bulk Delete Tags",
@@ -525,5 +525,5 @@
   "expand_sidebar": "Expand Sidebar",
   "shrink_sidebar": "Shrink Sidebar",
   "trial_left_plural": "Trial ends in {{count}} days. Subscribe.",
-  "trial_left_singular": "Trial ends in 1 day. Subscribe."
+  "trial_left_singular": "La période d'essai se termine dans 1 jour."
 }

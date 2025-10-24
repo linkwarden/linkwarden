@@ -63,11 +63,15 @@ export default function Subscribe() {
   return (
     <CenteredForm
       text={
-        daysLeft <= 0
-          ? "Your free trial has ended, subscribe to continue."
-          : `You have ${REQUIRE_CC ? 14 : daysLeft || 0} ${
-              !REQUIRE_CC && daysLeft === 1 ? "day" : "days"
-            } left in your free trial.`
+        REQUIRE_CC
+          ? `Start with a ${
+              process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14
+            }-day free trial, cancel anytime!`
+          : daysLeft <= 0
+            ? "Your free trial has ended, subscribe to continue."
+            : `You have ${daysLeft} ${
+                daysLeft === 1 ? "day" : "days"
+              } left in your free trial.`
       }
     >
       <div className="p-4 mx-auto flex flex-col gap-3 justify-between max-w-[30rem] min-w-80 w-full bg-base-200 rounded-xl shadow-md border border-neutral-content">
@@ -131,7 +135,7 @@ export default function Subscribe() {
             {plan === Plan.monthly ? t("billed_monthly") : t("billed_yearly")}
           </p>
 
-          {daysLeft > 0 ? (
+          {REQUIRE_CC || daysLeft > 0 ? (
             <fieldset className="w-full max-h-fit flex-col flex gap-2 px-4 pb-4 pt-2 rounded-md border border-neutral-content">
               <legend className="w-fit font-extralight px-2 border border-neutral-content rounded-md text-xl">
                 {t("total")}
