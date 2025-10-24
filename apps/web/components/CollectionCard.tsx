@@ -68,6 +68,11 @@ export default function CollectionCard({
   const [editCollectionModal, setEditCollectionModal] = useState(false);
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
+  // we need a separate state for the avatar trigger to open sharing modal
+  const [
+    editCollectionSharingModalAvatar,
+    setEditCollectionSharingModalAvatar,
+  ] = useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
 
@@ -211,8 +216,8 @@ export default function CollectionCard({
       </DropdownMenu>
 
       <EditCollectionSharingModal
-        open={editCollectionSharingModal}
-        onOpenChange={setEditCollectionSharingModal}
+        open={editCollectionSharingModalAvatar}
+        onOpenChange={setEditCollectionSharingModalAvatar}
         activeCollection={collection}
       >
         <div
