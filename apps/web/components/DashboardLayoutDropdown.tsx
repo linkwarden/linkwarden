@@ -30,6 +30,7 @@ import {
 } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { cn } from "@linkwarden/lib";
+import toast from "react-hot-toast";
 
 interface DashboardSectionOption {
   type: DashboardSectionType;
@@ -185,7 +186,13 @@ export default function DashboardLayoutDropdown() {
       return s;
     });
 
-    updateDashboardLayout.mutateAsync(updatedSections);
+    updateDashboardLayout.mutateAsync(updatedSections, {
+      onSettled: (data, error) => {
+        if (error) {
+          toast.error(error.message);
+        }
+      },
+    });
   };
 
   const handleReorder = (sourceId: string, destId: string) => {
@@ -217,7 +224,13 @@ export default function DashboardLayoutDropdown() {
     const disabledSections = filteredSections.filter((s) => !s.enabled);
     const updated = [...reorderedWithNewOrders, ...disabledSections];
 
-    updateDashboardLayout.mutateAsync(updated);
+    updateDashboardLayout.mutateAsync(updated, {
+      onSettled: (data, error) => {
+        if (error) {
+          toast.error(error.message);
+        }
+      },
+    });
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
