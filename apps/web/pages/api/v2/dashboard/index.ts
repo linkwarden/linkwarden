@@ -26,6 +26,12 @@ export default async function dashboard(
   }
 
   if (req.method === "PUT") {
+    if (process.env.NEXT_PUBLIC_DEMO === "true")
+      return res.status(400).json({
+        response:
+          "This action is disabled because this is a read-only demo of Linkwarden.",
+      });
+
     const { status, response } = await updateDashboardLayout(user.id, req.body);
 
     return res.status(status).json(response);
