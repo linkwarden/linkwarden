@@ -17,6 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function Sidebar({
   className,
@@ -65,7 +66,7 @@ export default function Sidebar({
   }, [router, collections]);
 
   return (
-    <div
+    <nav
       id="sidebar"
       className={cn(
         "bg-base-200 h-screen overflow-y-auto border-solid border border-base-200 border-r-neutral-content p-2 z-20",
@@ -82,34 +83,33 @@ export default function Sidebar({
         )}
       >
         <div className="flex items-center justify-between mb-4">
-          {sidebarIsCollapsed ? (
-            <Image
-              src={"/icon.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden Icon"
-              className="h-8 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-            />
-          ) : user?.theme === "light" ? (
-            <Image
-              src={"/linkwarden_light.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden"
-              className="h-9 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-            />
-          ) : (
-            <Image
-              src={"/linkwarden_dark.png"}
-              width={640}
-              height={136}
-              alt="Linkwarden"
-              className="h-9 w-auto cursor-pointer"
-              onClick={() => router.push("/dashboard")}
-            />
-          )}
+          <Link aria-label={t("go_to_dashboard")} href={"/dashboard"}>
+            {sidebarIsCollapsed ? (
+              <Image
+                src={"/icon.png"}
+                width={640}
+                height={136}
+                alt="Linkwarden Icon"
+                className="h-8 w-auto"
+              />
+            ) : user?.theme === "light" ? (
+              <Image
+                src={"/linkwarden_light.png"}
+                width={640}
+                height={136}
+                alt="Linkwarden"
+                className="h-9 w-auto"
+              />
+            ) : (
+              <Image
+                src={"/linkwarden_dark.png"}
+                width={640}
+                height={136}
+                alt="Linkwarden"
+                className="h-9 w-auto"
+              />
+            )}
+          </Link>
 
           {!sidebarIsCollapsed && (
             <div className="hidden lg:block">
@@ -120,6 +120,7 @@ export default function Sidebar({
                       variant="ghost"
                       onClick={toggleSidebar}
                       size={"icon"}
+                      aria-label={t("shrink_sidebar")}
                     >
                       <i className={`bi-layout-sidebar`} />
                     </Button>
@@ -182,7 +183,12 @@ export default function Sidebar({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" onClick={toggleSidebar} size={"icon"}>
+                <Button
+                  variant="ghost"
+                  onClick={toggleSidebar}
+                  size={"icon"}
+                  aria-label={t("expand_sidebar")}
+                >
                   <i className={`bi-layout-sidebar`} />
                 </Button>
               </TooltipTrigger>
@@ -262,6 +268,6 @@ export default function Sidebar({
           </Disclosure>
         </>
       )}
-    </div>
+    </nav>
   );
 }

@@ -35,7 +35,7 @@ export default function SortDropdown({ sortBy, setSort, t }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" aria-label={t("sort_links")}>
           <i className="bi-chevron-expand text-neutral text-xl"></i>
         </Button>
       </DropdownMenuTrigger>

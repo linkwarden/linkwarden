@@ -61,7 +61,7 @@ export default function MainLayout({ children }: Props) {
         } w-full sm:pb-0 pb-20 flex flex-col h-screen overflow-y-auto`}
       >
         <Navbar />
-        {children}
+        <main id="main-content">{children}</main>
       </div>
     </div>
   );

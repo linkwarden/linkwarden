@@ -1,62 +1,40 @@
-import { ChangeEvent } from "react";
 import { useTranslation } from "next-i18next";
 import { Button } from "./ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useUpdateUserPreference, useUser } from "@linkwarden/router/user";
+import { cn } from "@/lib/utils";
 
-type Props = {
-  hideInMobile?: boolean;
-  align?: "left" | "right" | "top" | "bottom";
-};
-
-export default function ToggleDarkMode({ hideInMobile, align }: Props) {
+export default function ToggleDarkMode() {
   const { t } = useTranslation();
   const { data } = useUser();
   const updateUserPreference = useUpdateUserPreference();
 
-  const handleToggle = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleToggle = () => {
     updateUserPreference.mutateAsync({
-      theme: e.target.checked ? "dark" : "light",
+      theme: data?.theme === "light" ? "dark" : "light",
     });
   };
 
   if (!data?.theme) return <></>;
 
+  const isDarkMode = data.theme === "dark";
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger className={hideInMobile ? "hidden sm:inline-grid" : ""}>
-          <Button
-            asChild
-            variant="ghost"
-            size="icon"
-            className={"inline-grid swap swap-rotate text-neutral"}
-          >
-            <label>
-              <input
-                type="checkbox"
-                onChange={handleToggle}
-                className="theme-controller"
-                checked={data?.theme === "dark"}
-              />
-              <i className="bi-sun-fill text-xl swap-on"></i>
-              <i className="bi-moon-fill text-xl swap-off"></i>
-            </label>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side={align || "bottom"}>
-          <p>
-            {t("switch_to", {
-              theme: data?.theme === "light" ? "Dark" : "Light",
-            })}
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Button
+      variant="ghost"
+      size="icon"
+      className={cn(
+        "inline-grid swap swap-rotate text-neutral",
+        isDarkMode && "swap-active"
+      )}
+      aria-label={t("switch_to", {
+        theme: data?.theme === "light" ? "Dark" : "Light",
+      })}
+      onClick={handleToggle}
+      title={t("switch_to", {
+        theme: data?.theme === "light" ? "Dark" : "Light",
+      })}
+    >
+      <i className="bi-sun-fill text-xl swap-on" />
+      <i className="bi-moon-fill text-xl swap-off" />
+    </Button>
   );
 }
