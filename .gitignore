@@ -52,3 +52,5 @@ certificates
 prisma/dev.db
 data.ms
 .turbo
+
+service-account-file.json
