@@ -43,7 +43,7 @@ export default function HomeScreen() {
       <Svg
         viewBox="0 0 1440 320"
         width={Dimensions.get("screen").width}
-        height={100}
+        height={Dimensions.get("screen").width * (320 / 1440) + 2}
       >
         <Path
           fill={rawTheme[colorScheme as ThemeName]["base-100"]}
