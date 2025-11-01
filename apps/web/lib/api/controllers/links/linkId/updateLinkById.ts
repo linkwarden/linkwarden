@@ -134,6 +134,7 @@ export default async function updateLinkById(
         readable: oldLink?.url !== data.url ? null : undefined,
         monolith: oldLink?.url !== data.url ? null : undefined,
         preview: oldLink?.url !== data.url ? null : undefined,
+        relevance: data.relevance || 0,
         indexVersion: null,
         collection: {
           connect: {

@@ -10,6 +10,8 @@ export default async function getDashboardData(
   else if (query.sort === Sort.DateOldestFirst) order = { id: "asc" };
   else if (query.sort === Sort.NameAZ) order = { name: "asc" };
   else if (query.sort === Sort.NameZA) order = { name: "desc" };
+  else if (query.sort === Sort.RelevantFirst) order = { relevance: "desc" };
+  else if (query.sort === Sort.LessRelevantFirst) order = { relevance: "asc" };
 
   const pinnedLinks = await prisma.link.findMany({
     take: 10,

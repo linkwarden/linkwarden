@@ -97,6 +97,7 @@ export default async function postLink(
       url: link.url?.trim() || null,
       name,
       description: link.description,
+      relevance: link.relevance,
       type: linkType,
       createdBy: {
         connect: {

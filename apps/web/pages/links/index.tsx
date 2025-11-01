@@ -1,5 +1,5 @@
 import NoLinksFound from "@/components/NoLinksFound";
-import { useLinks, useUpdateLink } from "@linkwarden/router/links";
+import { useLinks } from "@linkwarden/router/links";
 import MainLayout from "@/layouts/MainLayout";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,6 +14,14 @@ import { useTranslation } from "next-i18next";
 import Links from "@/components/LinkViews/Links";
 import clsx from "clsx";
 import DragNDrop from "@/components/DragNDrop";
+import { ArrowsClockwise } from "@phosphor-icons/react";
+import { cn } from "@linkwarden/lib";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Index() {
   const [activeLink, setActiveLink] =
@@ -27,13 +35,18 @@ export default function Index() {
     Number(localStorage.getItem("sortBy")) ?? Sort.DateNewestFirst
   );
 
-  const { links, data } = useLinks({
+  const { links, refetch, isRefetching, data } = useLinks({
     sort: sortBy,
   });
 
   const router = useRouter();
 
   const [editMode, setEditMode] = useState(false);
+
+  const handleRefreshLinks = () => {
+    if (isRefetching) return;
+    refetch();
+  };
 
   useEffect(() => {
     if (editMode) return setEditMode(false);
@@ -62,9 +75,26 @@ export default function Index() {
                 className={`bi-link-45deg text-primary text-3xl drop-shadow`}
               ></i>
               <div>
-                <p className="text-2xl capitalize font-thin">
-                  {t("all_links")}
-                </p>
+                <div className="flex gap-2 items-center">
+                  <p className="text-2xl capitalize font-thin">
+                    {t("all_links")}
+                  </p>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <ArrowsClockwise
+                          className={cn(
+                            "cursor-pointer",
+                            isRefetching ? "opacity-50" : ""
+                          )}
+                          onClick={handleRefreshLinks}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Refresh</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+
                 <p className="text-xs sm:text-sm">{t("all_links_desc")}</p>
               </div>
             </div>
