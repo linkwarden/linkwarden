@@ -14,6 +14,8 @@ FROM node:22.14-bullseye-slim AS main-app
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+ENV HOME=/data/home
+
 RUN mkdir /data
 
 WORKDIR /data
@@ -29,9 +31,12 @@ COPY ./yarn.lock ./package.json ./
 RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
     set -eux && \
     yarn install --network-timeout 10000000 && \
-    # Install curl for healthcheck, and ca-certificates to prevent monolith from failing to retrieve resources due to invalid certificates
+    # Install:
+    #  - curl for healthcheck
+    #  - ca-certificates to prevent monolith from failing to retrieve resources due to invalid certificates
+    #  - gosu for privilege dropping
     apt-get update && \
-    apt-get install -yqq --no-install-recommends curl ca-certificates && \
+    apt-get install -yqq --no-install-recommends curl ca-certificates gosu && \
     apt-get autoremove && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -56,4 +61,5 @@ HEALTHCHECK --interval=30s \
 
 EXPOSE 3000
 
+ENTRYPOINT ["/data/entrypoint.sh"]
 CMD ["sh", "-c", "yarn prisma:deploy && yarn concurrently:start"]

@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
+    user: '${PUID:-0}:${PGID:-0}'
     env_file: .env
     restart: always
     volumes:
@@ -21,6 +22,7 @@ services:
       - meilisearch
   meilisearch:
     image: getmeili/meilisearch:v1.12.8
+    user: '${PUID:-0}:${PGID:-0}'
     restart: always
     env_file:
       - .env
