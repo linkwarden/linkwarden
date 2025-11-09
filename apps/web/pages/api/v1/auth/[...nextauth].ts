@@ -350,6 +350,9 @@ if (process.env.NEXT_PUBLIC_AUTHENTIK_ENABLED === "true") {
       clientId: process.env.AUTHENTIK_CLIENT_ID!,
       clientSecret: process.env.AUTHENTIK_CLIENT_SECRET!,
       issuer: process.env.AUTHENTIK_ISSUER,
+      httpOptions: {
+        timeout: parseInt(process.env.AUTHENTIK_HTTP_TIMEOUT || "10000", 10),
+      },
       profile: (profile) => {
         return {
           id: profile.sub,
