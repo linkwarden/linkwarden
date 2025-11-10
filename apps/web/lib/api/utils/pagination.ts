@@ -12,8 +12,8 @@ import {
   PaginationOptions,
   ParsedPagination,
   PaginatedResponse,
-} from './types';
-import { parseSort } from './sorting';
+} from "./types";
+import { parseSort } from "./sorting";
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 100;
@@ -52,7 +52,7 @@ export function parsePagination(
   const {
     defaultLimit = DEFAULT_LIMIT,
     maxLimit = MAX_LIMIT,
-    defaultSort = [{ id: 'desc' }],
+    defaultSort = [{ id: "desc" }],
     allowedSortColumns,
   } = options;
 
@@ -66,11 +66,12 @@ export function parsePagination(
   }
 
   // Parse cursor
-  const cursor = params.cursor !== undefined ? Number(params.cursor) : undefined;
+  const cursor =
+    params.cursor !== undefined ? Number(params.cursor) : undefined;
 
   // Validate cursor is a valid number
   if (cursor !== undefined && (isNaN(cursor) || cursor < 0)) {
-    throw new Error('Invalid cursor value');
+    throw new Error("Invalid cursor value");
   }
 
   // Parse sort
@@ -116,9 +117,8 @@ export function buildPaginatedResponse<T extends { id: number }>(
   limit: number
 ): PaginatedResponse<T> {
   const hasMore = items.length === limit;
-  const nextCursor = hasMore && items.length > 0
-    ? items[items.length - 1].id
-    : null;
+  const nextCursor =
+    hasMore && items.length > 0 ? items[items.length - 1].id : null;
 
   return {
     items,
