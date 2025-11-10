@@ -57,7 +57,7 @@ export type PaginationOptions = {
   maxLimit?: number;
 
   /** Default sort order if none specified */
-  defaultSort?: Array<{ [key: string]: 'asc' | 'desc' }>;
+  defaultSort?: Array<{ [key: string]: "asc" | "desc" }>;
 
   /** Whitelist of columns that can be sorted (security) */
   allowedSortColumns?: string[];
@@ -77,7 +77,7 @@ export type ParsedPagination = {
   cursor?: { id: number };
 
   /** Prisma orderBy array */
-  orderBy: Array<{ [key: string]: 'asc' | 'desc' }>;
+  orderBy: Array<{ [key: string]: "asc" | "desc" }>;
 };
 
 /**

@@ -34,16 +34,24 @@ export function parseSort(
   sort?: string,
   dir?: string,
   allowedColumns?: string[],
-  defaultSort: Array<{ [key: string]: 'asc' | 'desc' }> = [{ id: 'desc' }]
-): Array<{ [key: string]: 'asc' | 'desc' }> {
+  defaultSort: Array<{ [key: string]: "asc" | "desc" }> = [{ id: "desc" }]
+): Array<{ [key: string]: "asc" | "desc" }> {
   if (!sort) {
     return ensureIdInSort(defaultSort);
   }
 
-  const columns = sort.split(',').map(s => s.trim()).filter(Boolean);
-  const directions = dir ? dir.split(',').map(d => d.trim()).filter(Boolean) : [];
+  const columns = sort
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const directions = dir
+    ? dir
+        .split(",")
+        .map((d) => d.trim())
+        .filter(Boolean)
+    : [];
 
-  const result: Array<{ [key: string]: 'asc' | 'desc' }> = [];
+  const result: Array<{ [key: string]: "asc" | "desc" }> = [];
 
   for (let i = 0; i < columns.length; i++) {
     const column = columns[i];
@@ -54,14 +62,14 @@ export function parseSort(
     }
 
     // Get direction: use index if available, otherwise use last, otherwise default to 'asc'
-    let direction = directions[i] || directions[directions.length - 1] || 'asc';
+    let direction = directions[i] || directions[directions.length - 1] || "asc";
 
     // Validate direction
-    if (direction !== 'asc' && direction !== 'desc') {
-      direction = 'asc'; // Fallback to asc for invalid directions
+    if (direction !== "asc" && direction !== "desc") {
+      direction = "asc"; // Fallback to asc for invalid directions
     }
 
-    result.push({ [column]: direction as 'asc' | 'desc' });
+    result.push({ [column]: direction as "asc" | "desc" });
   }
 
   // If no valid columns after filtering, use default
@@ -83,12 +91,12 @@ export function parseSort(
  * @returns orderBy with id added if not present
  */
 function ensureIdInSort(
-  orderBy: Array<{ [key: string]: 'asc' | 'desc' }>
-): Array<{ [key: string]: 'asc' | 'desc' }> {
-  const hasId = orderBy.some(o => 'id' in o);
+  orderBy: Array<{ [key: string]: "asc" | "desc" }>
+): Array<{ [key: string]: "asc" | "desc" }> {
+  const hasId = orderBy.some((o) => "id" in o);
 
   if (!hasId) {
-    return [...orderBy, { id: 'desc' }];
+    return [...orderBy, { id: "desc" }];
   }
 
   return orderBy;
@@ -116,21 +124,21 @@ export function parseSortWithLegacy(
   sort?: string | number,
   dir?: string,
   allowedColumns?: string[]
-): Array<{ [key: string]: 'asc' | 'desc' }> {
+): Array<{ [key: string]: "asc" | "desc" }> {
   // Check if it's a legacy enum value
-  if (typeof sort === 'number' || (sort && !isNaN(Number(sort)))) {
+  if (typeof sort === "number" || (sort && !isNaN(Number(sort)))) {
     const enumValue = Number(sort);
     switch (enumValue) {
       case 0: // DateNewestFirst
-        return [{ id: 'desc' }];
+        return [{ id: "desc" }];
       case 1: // DateOldestFirst
-        return [{ id: 'asc' }];
+        return [{ id: "asc" }];
       case 2: // NameAZ
-        return [{ name: 'asc' }, { id: 'desc' }];
+        return [{ name: "asc" }, { id: "desc" }];
       case 3: // NameZA
-        return [{ name: 'desc' }, { id: 'desc' }];
+        return [{ name: "desc" }, { id: "desc" }];
       default:
-        return [{ id: 'desc' }];
+        return [{ id: "desc" }];
     }
   }
 
@@ -149,12 +157,12 @@ export function parseSortWithLegacy(
  * // Returns: "name ASC, id DESC"
  */
 export function orderByToString(
-  orderBy: Array<{ [key: string]: 'asc' | 'desc' }>
+  orderBy: Array<{ [key: string]: "asc" | "desc" }>
 ): string {
   return orderBy
-    .map(o => {
+    .map((o) => {
       const [key, dir] = Object.entries(o)[0];
       return `${key} ${dir.toUpperCase()}`;
     })
-    .join(', ');
+    .join(", ");
 }
