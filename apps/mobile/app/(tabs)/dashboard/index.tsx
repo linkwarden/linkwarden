@@ -22,9 +22,8 @@ export default function DashboardScreen() {
     ...dashboardData
   } = useDashboardData(auth);
   const { data: user, ...userData } = useUser(auth);
-  const { data: collections = [], refetch: refetchCollections } =
-    useCollections(auth);
-  const { data: tags = [], refetch: refetchTags } = useTags(auth);
+  const { data: collections = [], ...collectionsData } = useCollections(auth);
+  const { data: tags = [], ...tagsData } = useTags(auth);
 
   const { colorScheme } = useColorScheme();
 
@@ -62,12 +61,17 @@ export default function DashboardScreen() {
     <ScrollView
       refreshControl={
         <Spinner
-          refreshing={dashboardData.isLoading || userData.isLoading}
+          refreshing={
+            dashboardData.isRefetching ||
+            userData.isRefetching ||
+            collectionsData.isRefetching ||
+            tagsData.isRefetching
+          }
           onRefresh={() => {
             dashboardData.refetch();
             userData.refetch();
-            refetchCollections();
-            refetchTags();
+            collectionsData.refetch();
+            tagsData.refetch();
           }}
           progressBackgroundColor={
             rawTheme[colorScheme as ThemeName]["base-200"]
