@@ -59,60 +59,49 @@ export default function DashboardScreen() {
   }, [dashboardSections]);
 
   return (
-    <SafeAreaView
-      style={styles.container}
-      collapsable={false}
-      collapsableChildren={false}
-      className="bg-base-100 h-full"
+    <ScrollView
+      refreshControl={
+        <Spinner
+          refreshing={dashboardData.isLoading || userData.isLoading}
+          onRefresh={() => {
+            dashboardData.refetch();
+            userData.refetch();
+            refetchCollections();
+            refetchTags();
+          }}
+          progressBackgroundColor={
+            rawTheme[colorScheme as ThemeName]["base-200"]
+          }
+          colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
+        />
+      }
+      contentContainerStyle={styles.container}
+      className="bg-base-100"
+      contentInsetAdjustmentBehavior="automatic"
     >
-      <ScrollView
-        refreshControl={
-          <Spinner
-            refreshing={dashboardData.isLoading || userData.isLoading}
-            onRefresh={() => {
-              dashboardData.refetch();
-              userData.refetch();
-              refetchCollections();
-              refetchTags();
-            }}
-            progressBackgroundColor={
-              rawTheme[colorScheme as ThemeName]["base-200"]
+      {orderedSections.map((sectionData) => {
+        return (
+          <DashboardSection
+            key={sectionData.id}
+            sectionData={sectionData}
+            collection={collections.find(
+              (c) => c.id === sectionData.collectionId
+            )}
+            collectionLinks={
+              sectionData.collectionId
+                ? collectionLinks[sectionData.collectionId]
+                : []
             }
-            colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
+            links={links}
+            tagsLength={tags.length}
+            numberOfLinks={numberOfLinks}
+            collectionsLength={collections.length}
+            numberOfPinnedLinks={numberOfPinnedLinks}
+            dashboardData={dashboardData}
           />
-        }
-        contentContainerStyle={{
-          flexDirection: "column",
-          gap: 15,
-          paddingVertical: 20,
-        }}
-        className="bg-base-100"
-        contentInsetAdjustmentBehavior="automatic"
-      >
-        {orderedSections.map((sectionData) => {
-          return (
-            <DashboardSection
-              key={sectionData.id}
-              sectionData={sectionData}
-              collection={collections.find(
-                (c) => c.id === sectionData.collectionId
-              )}
-              collectionLinks={
-                sectionData.collectionId
-                  ? collectionLinks[sectionData.collectionId]
-                  : []
-              }
-              links={links}
-              tagsLength={tags.length}
-              numberOfLinks={numberOfLinks}
-              collectionsLength={collections.length}
-              numberOfPinnedLinks={numberOfPinnedLinks}
-              dashboardData={dashboardData}
-            />
-          );
-        })}
-      </ScrollView>
-    </SafeAreaView>
+        );
+      })}
+    </ScrollView>
   );
 }
 
@@ -120,7 +109,14 @@ const styles = StyleSheet.create({
   container: Platform.select({
     ios: {
       paddingBottom: 49,
+      flexDirection: "column",
+      gap: 15,
+      paddingVertical: 20,
     },
-    default: {},
+    default: {
+      flexDirection: "column",
+      gap: 15,
+      paddingVertical: 20,
+    },
   }),
 });
