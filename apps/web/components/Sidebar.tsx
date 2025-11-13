@@ -44,7 +44,10 @@ export default function Sidebar({
   const { data: collections } = useCollections();
 
   // Use infinite query with name sorting for sidebar
-  const { tags, data: tagsData } = useTagsInfinite({ sort: "name", dir: "asc" });
+  const { tags, data: tagsData } = useTagsInfinite({
+    sort: "name",
+    dir: "asc",
+  });
   const [active, setActive] = useState("");
 
   const router = useRouter();

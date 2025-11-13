@@ -80,7 +80,7 @@ export default function Tags() {
   const sortParams = mapSortToParams(sortBy);
   const { tags, data } = useTagsInfinite({
     ...sortParams,
-    search: debouncedSearch || undefined
+    search: debouncedSearch || undefined,
   });
 
   const { ref, inView } = useInView();

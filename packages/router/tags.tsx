@@ -9,7 +9,7 @@ import { useMemo } from "react";
 import {
   MobileAuth,
   TagIncludingLinkCount,
-  PaginatedTags
+  PaginatedTags,
 } from "@linkwarden/types";
 import { useSession } from "next-auth/react";
 import { ArchivalTagOption } from "@linkwarden/types/inputSelect";
@@ -242,7 +242,9 @@ const useMergeTags = () => {
 };
 
 // Infinite scroll version for tags page - similar to useLinks
-const useTagsInfinite = (params: { sort?: string; dir?: string; search?: string } = {}) => {
+const useTagsInfinite = (
+  params: { sort?: string; dir?: string; search?: string } = {}
+) => {
   const session = useSession();
 
   const { data, ...rest } = useInfiniteQuery({
