@@ -3,7 +3,9 @@ import {
   useMutation,
   useQueryClient,
   UseQueryResult,
+  useInfiniteQuery,
 } from "@tanstack/react-query";
+import { useMemo } from "react";
 import {
   MobileAuth,
   TagIncludingLinkCount,
@@ -239,9 +241,53 @@ const useMergeTags = () => {
   });
 };
 
+// Infinite scroll version for tags page - similar to useLinks
+const useTagsInfinite = (params: { sort?: string; dir?: string } = {}) => {
+  const session = useSession();
+
+  const { data, ...rest } = useInfiniteQuery({
+    queryKey: ["tags-infinite", params],
+    queryFn: async ({ pageParam }) => {
+      const queryParams = new URLSearchParams();
+      queryParams.append("limit", "50");
+      if (pageParam) queryParams.append("cursor", String(pageParam));
+      if (params.sort) queryParams.append("sort", params.sort);
+      if (params.dir) queryParams.append("dir", params.dir);
+
+      const response = await fetch(`/api/v1/tags?${queryParams.toString()}`);
+      if (!response.ok) throw new Error("Failed to fetch tags.");
+
+      const data = await response.json();
+      return {
+        tags: data.response.items as TagIncludingLinkCount[],
+        nextCursor: data.response.nextCursor as number | null,
+      };
+    },
+    initialPageParam: undefined as number | undefined,
+    refetchOnWindowFocus: false,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.nextCursor === null) {
+        return undefined;
+      }
+      return lastPage.nextCursor;
+    },
+    enabled: session.status === "authenticated",
+  });
+
+  const tags = useMemo(() => {
+    return data?.pages?.flatMap((page) => page?.tags ?? []) ?? [];
+  }, [data]);
+
+  return {
+    tags,
+    data: { ...data, ...rest },
+  };
+};
+
 export {
   useTags,
   useTagsPaginated,
+  useTagsInfinite,
   useUpdateTag,
   useUpsertTags,
   useRemoveTag,
