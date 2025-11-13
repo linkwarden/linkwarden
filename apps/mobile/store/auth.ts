@@ -10,10 +10,10 @@ type AuthStore = {
     username: string,
     password: string,
     instance: string,
-    token: string
-  ) => void;
-  signOut: () => void;
-  setAuth: () => void;
+    token?: string
+  ) => Promise<void>;
+  signOut: () => Promise<void>;
+  setAuth: () => Promise<void>;
 };
 
 const useAuthStore = create<AuthStore>((set) => ({

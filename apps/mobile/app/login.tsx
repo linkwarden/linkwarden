@@ -17,6 +17,7 @@ export default function HomeScreen() {
   const { auth, signIn } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const [method, setMethod] = useState<"password" | "token">("password");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [form, setForm] = useState({
     user: "",
@@ -161,12 +162,20 @@ export default function HomeScreen() {
             <Button
               variant="accent"
               size="lg"
-              onPress={() => {
+              isLoading={isLoading}
+              onPress={async () => {
                 if (
                   ((form.user && form.password) || form.token) &&
                   form.instance
                 ) {
-                  signIn(form.user, form.password, form.instance, form.token);
+                  setIsLoading(true);
+                  await signIn(
+                    form.user,
+                    form.password,
+                    form.instance,
+                    form.token
+                  );
+                  setIsLoading(false);
                 }
               }}
             >

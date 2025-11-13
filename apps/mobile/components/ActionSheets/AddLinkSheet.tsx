@@ -50,6 +50,7 @@ export default function AddLinkSheet() {
               }
             )
           }
+          isLoading={addLink.isPending}
           variant="accent"
           className="mb-2"
         >

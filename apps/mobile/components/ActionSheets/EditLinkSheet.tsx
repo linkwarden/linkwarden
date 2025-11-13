@@ -119,6 +119,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
             },
           })
         }
+        isLoading={editLink.isPending}
         variant="accent"
         className="mb-2"
       >
