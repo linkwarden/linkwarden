@@ -1,5 +1,12 @@
 import { useLinks } from "@linkwarden/router/links";
-import { View, StyleSheet, FlatList, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Platform,
+  ActivityIndicator,
+  Text,
+} from "react-native";
 import useAuthStore from "@/store/auth";
 import LinkListing from "@/components/LinkListing";
 import { useLocalSearchParams, useNavigation } from "expo-router";
@@ -59,29 +66,43 @@ export default function LinksScreen() {
       collapsable={false}
       collapsableChildren={false}
     >
-      <FlatList
-        contentInsetAdjustmentBehavior="automatic"
-        ListHeaderComponent={() => <></>}
-        data={links || []}
-        refreshControl={
-          <Spinner
-            refreshing={data.isRefetching}
-            onRefresh={() => data.refetch()}
-            progressBackgroundColor={
-              rawTheme[colorScheme as ThemeName]["base-200"]
-            }
-            colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
-          />
-        }
-        initialNumToRender={4}
-        keyExtractor={(item) => item.id?.toString() || ""}
-        renderItem={({ item }) => (
-          <RenderItem item={item} key={item.id?.toString()} />
-        )}
-        onEndReached={() => data.fetchNextPage()}
-        onEndReachedThreshold={0.5}
-        ItemSeparatorComponent={() => <View className="bg-base-200 h-px" />}
-      />
+      {data.isLoading ? (
+        <View className="flex justify-center h-full items-center">
+          <ActivityIndicator size="large" />
+          <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
+        </View>
+      ) : (
+        <FlatList
+          contentInsetAdjustmentBehavior="automatic"
+          ListHeaderComponent={() => <></>}
+          data={links || []}
+          refreshControl={
+            <Spinner
+              refreshing={data.isRefetching}
+              onRefresh={() => data.refetch()}
+              progressBackgroundColor={
+                rawTheme[colorScheme as ThemeName]["base-200"]
+              }
+              colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
+            />
+          }
+          initialNumToRender={4}
+          keyExtractor={(item) => item.id?.toString() || ""}
+          renderItem={({ item }) => (
+            <RenderItem item={item} key={item.id?.toString()} />
+          )}
+          onEndReached={() => data.fetchNextPage()}
+          onEndReachedThreshold={0.5}
+          ItemSeparatorComponent={() => <View className="bg-base-200 h-px" />}
+          ListEmptyComponent={
+            <View className="flex justify-center py-10 items-center">
+              <Text className="text-center text-xl text-neutral">
+                Nothing found...
+              </Text>
+            </View>
+          }
+        />
+      )}
     </View>
   );
 }
