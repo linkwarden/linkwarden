@@ -27,9 +27,7 @@ export function TagListing({ tags, active }: TagListingProps) {
 
   return (
     <>
-      {tags
-        .sort((a: any, b: any) => a.name.localeCompare(b.name))
-        .map((e: any, i: any) => {
+      {tags.map((e: any, i: any) => {
           return (
             <Droppable
               id={`tag-${e.id}`}
