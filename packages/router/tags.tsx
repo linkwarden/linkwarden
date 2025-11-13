@@ -4,16 +4,30 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { MobileAuth, TagIncludingLinkCount } from "@linkwarden/types";
+import {
+  MobileAuth,
+  TagIncludingLinkCount,
+  PaginatedTags
+} from "@linkwarden/types";
 import { useSession } from "next-auth/react";
-import { Tag } from "@linkwarden/prisma/client";
 import { ArchivalTagOption } from "@linkwarden/types/inputSelect";
 import {
   MergeTagsSchemaType,
   TagBulkDeletionSchemaType,
 } from "@linkwarden/lib/schemaValidation";
 
-const useTags = (auth?: MobileAuth): UseQueryResult<Tag[], Error> => {
+type UseTagsOptions = {
+  cursor?: number;
+  limit?: number;
+  paginated?: boolean;
+};
+
+// Backward compatible version - returns all tags as array
+// Uses same query key as useTagsPaginated but extracts items
+const useTags = (
+  auth?: MobileAuth,
+  options: UseTagsOptions = {}
+): UseQueryResult<TagIncludingLinkCount[], Error> => {
   let status: "loading" | "authenticated" | "unauthenticated";
 
   if (!auth) {
@@ -23,11 +37,70 @@ const useTags = (auth?: MobileAuth): UseQueryResult<Tag[], Error> => {
     status = auth?.status;
   }
 
+  const { cursor, limit = 1000 } = options;
+
   return useQuery({
-    queryKey: ["tags"],
+    queryKey: ["tags-paginated", { cursor, limit }],
     queryFn: async () => {
+      const params = new URLSearchParams();
+      if (limit) params.append("limit", String(limit));
+      if (cursor) params.append("cursor", String(cursor));
+
+      const url =
+        (auth?.instance ? auth?.instance : "") +
+        "/api/v1/tags?" +
+        params.toString();
+
       const response = await fetch(
-        (auth?.instance ? auth?.instance : "") + "/api/v1/tags",
+        url,
+        auth?.session
+          ? {
+              headers: {
+                Authorization: `Bearer ${auth.session}`,
+              },
+            }
+          : undefined
+      );
+      if (!response.ok) throw new Error("Failed to fetch tags.");
+
+      const data = await response.json();
+      // Return just the items array for backward compatibility
+      return data.response.items;
+    },
+    enabled: status === "authenticated",
+  });
+};
+
+// New paginated version - returns full paginated response
+const useTagsPaginated = (
+  auth?: MobileAuth,
+  options: UseTagsOptions = {}
+): UseQueryResult<PaginatedTags, Error> => {
+  let status: "loading" | "authenticated" | "unauthenticated";
+
+  if (!auth) {
+    const session = useSession();
+    status = session.status;
+  } else {
+    status = auth?.status;
+  }
+
+  const { cursor, limit = 50 } = options;
+
+  return useQuery({
+    queryKey: ["tags-paginated", { cursor, limit }],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (limit) params.append("limit", String(limit));
+      if (cursor) params.append("cursor", String(cursor));
+
+      const url =
+        (auth?.instance ? auth?.instance : "") +
+        "/api/v1/tags?" +
+        params.toString();
+
+      const response = await fetch(
+        url,
         auth?.session
           ? {
               headers: {
@@ -63,12 +136,9 @@ const useUpdateTag = () => {
 
       return data.response;
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["tags"], (oldData: any) =>
-        oldData.map((tag: TagIncludingLinkCount) =>
-          tag.id === data.id ? data : tag
-        )
-      );
+    onSuccess: () => {
+      // Invalidate tags queries to refetch with updated data
+      queryClient.invalidateQueries({ queryKey: ["tags-paginated"] });
     },
   });
 };
@@ -91,22 +161,9 @@ const useUpsertTags = () => {
 
       return data.response;
     },
-    onSuccess: (data: TagIncludingLinkCount[]) => {
-      queryClient.setQueryData(
-        ["tags"],
-        (oldData: TagIncludingLinkCount[] = []) => {
-          const updatedTags = oldData.map((tag) => {
-            const updatedTag = data.find((t) => t.id === tag.id);
-            return updatedTag ? { ...tag, ...updatedTag } : tag;
-          });
-
-          const newTags = data.filter(
-            (t) => !oldData.some((tag) => tag.id === t.id)
-          );
-
-          return [...updatedTags, ...newTags];
-        }
-      );
+    onSuccess: () => {
+      // Invalidate tags queries to refetch with updated data
+      queryClient.invalidateQueries({ queryKey: ["tags-paginated"] });
     },
   });
 };
@@ -125,10 +182,9 @@ const useRemoveTag = () => {
 
       return data.response;
     },
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData(["tags"], (oldData: any) =>
-        oldData.filter((tag: TagIncludingLinkCount) => tag.id !== variables)
-      );
+    onSuccess: () => {
+      // Invalidate tags queries to refetch with updated data
+      queryClient.invalidateQueries({ queryKey: ["tags-paginated"] });
     },
   });
 };
@@ -151,8 +207,8 @@ const useBulkTagDeletion = () => {
 
       return responseData.response;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["tags"] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tags-paginated"] });
       queryClient.invalidateQueries({ queryKey: ["links"] });
     },
   });
@@ -176,8 +232,8 @@ const useMergeTags = () => {
 
       return responseData.response;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["tags"] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tags-paginated"] });
       queryClient.invalidateQueries({ queryKey: ["links"] });
     },
   });
@@ -185,6 +241,7 @@ const useMergeTags = () => {
 
 export {
   useTags,
+  useTagsPaginated,
   useUpdateTag,
   useUpsertTags,
   useRemoveTag,
