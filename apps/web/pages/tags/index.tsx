@@ -23,6 +23,7 @@ import {
 import BulkDeleteTagsModal from "@/components/ModalContent/BulkDeleteTagsModal";
 import MergeTagsModal from "@/components/ModalContent/MergeTagsModal";
 import { useInView } from "react-intersection-observer";
+import { toast } from "react-hot-toast";
 
 enum TagSort {
   DateNewestFirst = 0,
@@ -63,8 +64,24 @@ export default function Tags() {
   const [bulkDeleteModal, setBulkDeleteModal] = useState(false);
   const [mergeTagsModal, setMergeTagsModal] = useState(false);
 
+  // Search state
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  // Debounce search input (1 second delay)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchInput);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
   const sortParams = mapSortToParams(sortBy);
-  const { tags, data } = useTagsInfinite(sortParams);
+  const { tags, data } = useTagsInfinite({
+    ...sortParams,
+    search: debouncedSearch || undefined
+  });
 
   const { ref, inView } = useInView();
 
@@ -160,6 +177,31 @@ export default function Tags() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
+
+        {/* Search bar */}
+        <div className="flex items-center relative group">
+          <label
+            htmlFor="tag-search-box"
+            className="inline-flex items-center w-fit absolute left-1 pointer-events-none rounded-md p-1 text-primary"
+          >
+            <i className="bi-search"></i>
+          </label>
+
+          <input
+            id="tag-search-box"
+            type="text"
+            placeholder={t("search_for_tag_names")}
+            value={searchInput}
+            onChange={(e) => {
+              if (e.target.value.includes("%")) {
+                toast.error(t("search_query_invalid_symbol"));
+              }
+              setSearchInput(e.target.value.replace("%", ""));
+            }}
+            style={{ transition: "width 0.2s ease-in-out" }}
+            className="border border-neutral-content bg-base-200 focus:border-primary py-1 rounded-md pl-9 pr-2 w-full max-w-[15rem] md:focus:w-80 md:w-[15rem] md:max-w-full outline-none"
+          />
         </div>
 
         {tags && editMode && tags.length > 0 && (

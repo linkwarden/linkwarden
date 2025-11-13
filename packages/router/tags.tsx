@@ -242,7 +242,7 @@ const useMergeTags = () => {
 };
 
 // Infinite scroll version for tags page - similar to useLinks
-const useTagsInfinite = (params: { sort?: string; dir?: string } = {}) => {
+const useTagsInfinite = (params: { sort?: string; dir?: string; search?: string } = {}) => {
   const session = useSession();
 
   const { data, ...rest } = useInfiniteQuery({
@@ -253,6 +253,7 @@ const useTagsInfinite = (params: { sort?: string; dir?: string } = {}) => {
       if (pageParam) queryParams.append("cursor", String(pageParam));
       if (params.sort) queryParams.append("sort", params.sort);
       if (params.dir) queryParams.append("dir", params.dir);
+      if (params.search) queryParams.append("search", params.search);
 
       const response = await fetch(`/api/v1/tags?${queryParams.toString()}`);
       if (!response.ok) throw new Error("Failed to fetch tags.");
