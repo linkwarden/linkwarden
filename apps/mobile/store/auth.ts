@@ -3,6 +3,9 @@ import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
 import { MobileAuth } from "@linkwarden/types";
 import { Alert } from "react-native";
+import * as FileSystem from "expo-file-system";
+
+const CACHE_DIR = FileSystem.documentDirectory + "archivedData/";
 
 type AuthStore = {
   auth: MobileAuth;
@@ -102,6 +105,7 @@ const useAuthStore = create<AuthStore>((set) => ({
   signOut: async () => {
     await SecureStore.deleteItemAsync("TOKEN");
     await SecureStore.deleteItemAsync("INSTANCE");
+    await FileSystem.deleteAsync(CACHE_DIR, { idempotent: true });
 
     set({
       auth: {

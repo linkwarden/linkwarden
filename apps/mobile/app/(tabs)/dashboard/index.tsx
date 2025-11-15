@@ -83,14 +83,18 @@ export default function DashboardScreen() {
       className="bg-base-100"
       contentInsetAdjustmentBehavior="automatic"
     >
-      {orderedSections.map((sectionData) => {
+      {orderedSections.map((sectionData, i) => {
+        if (!collections || !collections[0]) return <></>;
+
+        const collection = collections.find(
+          (c) => c.id === sectionData.collectionId
+        );
+
         return (
           <DashboardSection
-            key={sectionData.id}
+            key={i}
             sectionData={sectionData}
-            collection={collections.find(
-              (c) => c.id === sectionData.collectionId
-            )}
+            collection={collection}
             collectionLinks={
               sectionData.collectionId
                 ? collectionLinks[sectionData.collectionId]

@@ -20,6 +20,7 @@ import { useGetLink } from "@linkwarden/router/links";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { CalendarDays, Link } from "lucide-react-native";
+import useTmpStore from "@/store/tmp";
 
 const CACHE_DIR = FileSystem.documentDirectory + "archivedData/readable/";
 const htmlPath = (id: string) => `${CACHE_DIR}link_${id}.html`;
@@ -43,6 +44,23 @@ export default function LinkScreen() {
   const { colorScheme } = useColorScheme();
 
   const { data: link } = useGetLink({ id: Number(id), auth, enabled: true });
+
+  const { updateTmp } = useTmpStore();
+
+  useEffect(() => {
+    if (link?.id && user?.id)
+      updateTmp({
+        link,
+        user: {
+          id: user.id,
+        },
+      });
+
+    return () =>
+      updateTmp({
+        link: null,
+      });
+  }, [link, user]);
 
   useEffect(() => {
     async function loadCacheOrFetch() {

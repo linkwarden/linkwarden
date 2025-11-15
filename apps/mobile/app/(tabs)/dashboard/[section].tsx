@@ -10,7 +10,7 @@ import {
 import useAuthStore from "@/store/auth";
 import LinkListing from "@/components/LinkListing";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { useCollections } from "@linkwarden/router/collections";
 import Spinner from "@/components/ui/Spinner";
