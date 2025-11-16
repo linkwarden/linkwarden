@@ -1,24 +1,18 @@
-import { Href, router } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function DashboardItem({
   name,
   value,
   icon,
   color,
-  to,
 }: {
   name: string;
   value: number;
   icon: React.ReactNode;
   color: string;
-  to: Href;
 }) {
   return (
-    <TouchableOpacity
-      className="flex-1 flex-col gap-2 rounded-xl bg-base-200 p-3"
-      onPress={() => router.navigate(to as Href)}
-    >
+    <View className="flex-1 flex-col gap-2 rounded-xl bg-base-200 p-3">
       <View className="flex-row justify-between">
         <View
           className="flex-col gap-2 rounded-full aspect-square flex justify-center items-center"
@@ -36,6 +30,6 @@ export default function DashboardItem({
         </Text>
       </View>
       <Text className="font-semibold text-neutral">{name}</Text>
-    </TouchableOpacity>
+    </View>
   );
 }
