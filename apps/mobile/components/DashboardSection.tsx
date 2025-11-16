@@ -60,12 +60,14 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               value={numberOfLinks}
               icon={<Link size={23} color="white" />}
               color="#9c00cc"
+              to="/(tabs)/links"
             />
             <DashboardItem
               name={collectionsLength === 1 ? "Collection" : "Collections"}
               value={collectionsLength}
               icon={<Folder size={23} color="white" fill="white" />}
               color="#0096cc"
+              to="/(tabs)/collections"
             />
           </View>
           <View className="flex-row gap-4">
@@ -74,12 +76,14 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               value={tagsLength}
               icon={<Hash size={23} color="white" />}
               color="#00cc99"
+              to="/(tabs)/tags"
             />
             <DashboardItem
               name={"Pinned Links"}
               value={numberOfPinnedLinks}
               icon={<Pin size={23} color="white" fill="white" />}
               color="#cc6d00"
+              to="/dashboard/pinned-links"
             />
           </View>
         </View>
