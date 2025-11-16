@@ -56,7 +56,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
           )}
           onLongPress={() => {}}
           onPress={() =>
-            router.push(
+            router.navigate(
               data.preferredFormat
                 ? `/links/${link.id}?format=${data.preferredFormat}`
                 : `/links/${link.id}`
@@ -145,7 +145,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
       <ContextMenu.Content avoidCollisions>
         <ContextMenu.Item
           key="open-link"
-          onSelect={() => router.push(`/links/${link.id}`)}
+          onSelect={() => router.navigate(`/links/${link.id}`)}
         >
           <ContextMenu.ItemTitle>Open Link</ContextMenu.ItemTitle>
         </ContextMenu.Item>
@@ -201,7 +201,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 <ContextMenu.Item
                   key="preserved-formats-webpage"
                   onSelect={() =>
-                    router.push(
+                    router.navigate(
                       `/links/${link.id}?format=${ArchivedFormat.monolith}`
                     )
                   }
@@ -213,7 +213,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 <ContextMenu.Item
                   key="preserved-formats-screenshot"
                   onSelect={() =>
-                    router.push(
+                    router.navigate(
                       `/links/${link.id}?format=${
                         link.image?.endsWith(".png")
                           ? ArchivedFormat.png
@@ -229,7 +229,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 <ContextMenu.Item
                   key="preserved-formats-pdf"
                   onSelect={() =>
-                    router.push(
+                    router.navigate(
                       `/links/${link.id}?format=${ArchivedFormat.pdf}`
                     )
                   }
@@ -241,7 +241,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 <ContextMenu.Item
                   key="preserved-formats-readable"
                   onSelect={() =>
-                    router.push(
+                    router.navigate(
                       `/links/${link.id}?format=${ArchivedFormat.readability}`
                     )
                   }

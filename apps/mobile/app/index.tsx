@@ -55,7 +55,7 @@ export default function HomeScreen() {
         <Button
           variant="accent"
           size="lg"
-          onPress={() => router.push("/login")}
+          onPress={() => router.navigate("/login")}
         >
           <Text className="text-white text-xl">Get Started</Text>
         </Button>

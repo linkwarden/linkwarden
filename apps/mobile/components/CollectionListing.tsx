@@ -31,7 +31,7 @@ const CollectionListing = ({ collection }: Props) => {
             Platform.OS !== "android" && "active:bg-base-200/50"
           )}
           onLongPress={() => {}}
-          onPress={() => router.push(`/collections/${collection.id}`)}
+          onPress={() => router.navigate(`/collections/${collection.id}`)}
           android_ripple={{
             color: colorScheme === "dark" ? "rgba(255,255,255,0.2)" : "#ddd",
             borderless: false,

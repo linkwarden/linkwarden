@@ -17,7 +17,7 @@ export default function DashboardItem({
   return (
     <TouchableOpacity
       className="flex-1 flex-col gap-2 rounded-xl bg-base-200 p-3"
-      onPress={() => router.push(to as Href)}
+      onPress={() => router.navigate(to as Href)}
     >
       <View className="flex-row justify-between">
         <View

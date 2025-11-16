@@ -31,7 +31,7 @@ const TagListing = ({ tag }: Props) => {
             Platform.OS !== "android" && "active:bg-base-200/50"
           )}
           onLongPress={() => {}}
-          onPress={() => router.push(`/tags/${tag.id}`)}
+          onPress={() => router.navigate(`/tags/${tag.id}`)}
           android_ripple={{
             color: colorScheme === "dark" ? "rgba(255,255,255,0.2)" : "#ddd",
             borderless: false,
