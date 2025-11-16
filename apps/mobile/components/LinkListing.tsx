@@ -1,4 +1,12 @@
-import { View, Text, Image, Pressable, Platform, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  Platform,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { ArchivedFormat } from "@linkwarden/types";
@@ -116,6 +124,11 @@ const LinkListing = ({ link, dashboard }: Props) => {
                       },
                     }}
                     className="rounded-md h-[60px] w-[90px] object-cover scale-105"
+                  />
+                ) : !link.preview ? (
+                  <ActivityIndicator
+                    size="small"
+                    className="h-[60px] w-[90px]"
                   />
                 ) : (
                   <View className="h-[60px] w-[90px]" />
