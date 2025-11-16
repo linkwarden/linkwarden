@@ -109,17 +109,23 @@ const useUpdateCollection = () => {
   });
 };
 
-const useDeleteCollection = () => {
+const useDeleteCollection = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/v1/collections/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + `/api/v1/collections/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+        }
+      );
 
       const data = await response.json();
 

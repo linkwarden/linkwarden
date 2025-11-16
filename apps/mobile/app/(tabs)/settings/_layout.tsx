@@ -3,7 +3,7 @@ import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { Platform } from "react-native";
 
-export default function RootLayout() {
+export default function Layout() {
   const { colorScheme } = useColorScheme();
 
   return (

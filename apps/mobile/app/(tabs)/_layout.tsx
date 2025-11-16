@@ -5,7 +5,7 @@ import HapticTab from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
-import { House, Link, Settings } from "lucide-react-native";
+import { Folder, House, Link, Settings } from "lucide-react-native";
 
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();
@@ -46,6 +46,14 @@ export default function TabLayout() {
           title: "Links",
           headerShown: false,
           tabBarIcon: ({ color }) => <Link size={26} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="collections"
+        options={{
+          title: "Collections",
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Folder size={26} color={color} />,
         }}
       />
       <Tabs.Screen

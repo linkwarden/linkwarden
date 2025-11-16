@@ -6,7 +6,7 @@ import { Platform, TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
-export default function RootLayout() {
+export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 

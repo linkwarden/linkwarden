@@ -10,7 +10,7 @@ export default function Layout() {
   return (
     <Stack
       screenOptions={{
-        headerTitle: "Links",
+        headerTitle: "Collections",
         headerLargeTitle: true,
         headerTransparent: Platform.OS === "ios" ? true : false,
         headerShadowVisible: false,
