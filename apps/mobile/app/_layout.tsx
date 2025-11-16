@@ -236,9 +236,10 @@ const RootComponent = ({
                             <DropdownMenu.Item
                               key="share"
                               onSelect={async () => {
-                                // share url
                                 await Share.share({
-                                  url: tmp.link?.url as string,
+                                  ...(Platform.OS === "android"
+                                    ? { message: tmp.link?.url as string }
+                                    : { url: tmp.link?.url as string }),
                                 });
                               }}
                             >
