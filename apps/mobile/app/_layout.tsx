@@ -207,7 +207,13 @@ const RootComponent = ({
                               }
                             />
                           ) : (
-                            <Chromium />
+                            <Chromium
+                              stroke={
+                                rawTheme[colorScheme as ThemeName][
+                                  "base-content"
+                                ]
+                              }
+                            />
                           )}
                         </TouchableOpacity>
                       )}
