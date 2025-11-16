@@ -37,7 +37,11 @@ type DashboardSectionProps = {
   numberOfLinks: number;
   collectionsLength: number;
   numberOfPinnedLinks: number;
-  dashboardData: { isLoading: boolean; refetch: Function };
+  dashboardData: {
+    isLoading: boolean;
+    refetch: Function;
+    isRefetching: boolean;
+  };
   collectionLinks?: any[];
 };
 
@@ -144,7 +148,10 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
                   (e) => e.item
                 ) as LinkIncludingShortenedCollectionAndTags[];
 
-                if (links.some((e) => e.id && !e.preview)) {
+                if (
+                  !dashboardData.isRefetching &&
+                  links.some((e) => e.id && !e.preview)
+                ) {
                   dashboardData.refetch();
                 }
               }}
@@ -224,7 +231,10 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
                   (e) => e.item
                 ) as LinkIncludingShortenedCollectionAndTags[];
 
-                if (links.some((e) => e.id && !e.preview)) {
+                if (
+                  !dashboardData.isRefetching &&
+                  links.some((e) => e.id && !e.preview)
+                ) {
                   dashboardData.refetch();
                 }
               }}
@@ -303,7 +313,10 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
                   (e) => e.item
                 ) as LinkIncludingShortenedCollectionAndTags[];
 
-                if (links.some((e) => e.id && !e.preview)) {
+                if (
+                  !dashboardData.isRefetching &&
+                  links.some((e) => e.id && !e.preview)
+                ) {
                   dashboardData.refetch();
                 }
               }}
