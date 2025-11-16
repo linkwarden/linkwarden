@@ -23,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/maskable_logo.jpeg",
         "backgroundColor": "#ffffff"
       },
       "package": "app.linkwarden"
