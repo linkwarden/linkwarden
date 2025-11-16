@@ -1,31 +1,12 @@
 import { useLinks } from "@linkwarden/router/links";
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  Platform,
-  Text,
-  ActivityIndicator,
-  ViewToken,
-} from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import useAuthStore from "@/store/auth";
-import LinkListing from "@/components/LinkListing";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect } from "react";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
-import Spinner from "@/components/ui/Spinner";
-import { rawTheme, ThemeName } from "@/lib/colors";
-import { useColorScheme } from "nativewind";
 import { useCollections } from "@linkwarden/router/collections";
-
-const RenderItem = React.memo(
-  ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
-    return <LinkListing link={item} />;
-  }
-);
+import Links from "@/components/Links";
 
 export default function LinksScreen() {
-  const { colorScheme } = useColorScheme();
   const { auth } = useAuthStore();
   const { search, id } = useLocalSearchParams<{
     search?: string;
@@ -66,60 +47,7 @@ export default function LinksScreen() {
       collapsable={false}
       collapsableChildren={false}
     >
-      {data.isLoading ? (
-        <View className="flex justify-center h-full items-center">
-          <ActivityIndicator size="large" />
-          <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
-        </View>
-      ) : (
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          ListHeaderComponent={() => <></>}
-          data={links || []}
-          refreshControl={
-            <Spinner
-              refreshing={data.isRefetching}
-              onRefresh={() => data.refetch()}
-              progressBackgroundColor={
-                rawTheme[colorScheme as ThemeName]["base-200"]
-              }
-              colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
-            />
-          }
-          refreshing={data.isRefetching}
-          initialNumToRender={4}
-          keyExtractor={(item) => item.id?.toString() || ""}
-          renderItem={({ item }) => (
-            <RenderItem item={item} key={item.id?.toString()} />
-          )}
-          onEndReached={() => data.fetchNextPage()}
-          onEndReachedThreshold={0.5}
-          ItemSeparatorComponent={() => (
-            <View className="bg-neutral-content h-px" />
-          )}
-          ListEmptyComponent={
-            <View className="flex justify-center py-10 items-center">
-              <Text className="text-center text-xl text-neutral">
-                Nothing found...
-              </Text>
-            </View>
-          }
-          onViewableItemsChanged={({
-            viewableItems,
-          }: {
-            viewableItems: ViewToken[];
-          }) => {
-            const links = viewableItems.map(
-              (e) => e.item
-            ) as LinkIncludingShortenedCollectionAndTags[];
-
-            if (links.some((e) => e.id && !e.preview)) {
-              data.refetch();
-            }
-          }}
-          viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
-        />
-      )}
+      <Links links={links} data={data} />
     </View>
   );
 }
