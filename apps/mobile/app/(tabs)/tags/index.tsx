@@ -1,4 +1,3 @@
-import { useLinks } from "@linkwarden/router/links";
 import {
   View,
   StyleSheet,
@@ -8,55 +7,32 @@ import {
   ActivityIndicator,
 } from "react-native";
 import useAuthStore from "@/store/auth";
-import LinkListing from "@/components/LinkListing";
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useEffect } from "react";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import TagListing from "@/components/TagListing";
+import { useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { useCollections } from "@linkwarden/router/collections";
+import { TagIncludingLinkCount } from "@linkwarden/types";
+import { useTags } from "@linkwarden/router/tags";
 
-const RenderItem = React.memo(
-  ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
-    return <LinkListing link={item} />;
-  }
-);
-
-export default function LinksScreen() {
+export default function TagsScreen() {
   const { colorScheme } = useColorScheme();
   const { auth } = useAuthStore();
-  const { search, id } = useLocalSearchParams<{
-    search?: string;
-    id: string;
-  }>();
+  const { search } = useLocalSearchParams<{ search?: string }>();
 
-  const { links, data } = useLinks(
-    {
-      sort: 0,
-      searchQueryString: decodeURIComponent(search ?? ""),
-      collectionId: Number(id),
-    },
-    auth
-  );
+  const tags = useTags(auth);
 
-  const collections = useCollections(auth);
-
-  const navigation = useNavigation();
+  const [filteredTags, setFilteredTags] = useState<TagIncludingLinkCount[]>([]);
 
   useEffect(() => {
-    const activeCollection = collections.data?.filter(
-      (e) => e.id === Number(id)
-    )[0];
+    const filter =
+      tags.data?.filter((e) =>
+        e.name.includes(decodeURIComponent(search || ""))
+      ) || [];
 
-    if (activeCollection?.name)
-      navigation?.setOptions?.({
-        headerTitle: activeCollection?.name,
-        headerSearchBarOptions: {
-          placeholder: `Search ${activeCollection.name}`,
-        },
-      });
-  }, [navigation]);
+    setFilteredTags(filter);
+  }, [search, tags.data]);
 
   return (
     <View
@@ -65,7 +41,7 @@ export default function LinksScreen() {
       collapsable={false}
       collapsableChildren={false}
     >
-      {data.isLoading ? (
+      {tags.isLoading ? (
         <View className="flex justify-center h-full items-center">
           <ActivityIndicator size="large" />
           <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
@@ -74,24 +50,21 @@ export default function LinksScreen() {
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           ListHeaderComponent={() => <></>}
-          data={links || []}
+          data={filteredTags}
           refreshControl={
             <Spinner
-              refreshing={data.isRefetching}
-              onRefresh={() => data.refetch()}
+              refreshing={tags.isRefetching}
+              onRefresh={() => tags.refetch()}
               progressBackgroundColor={
                 rawTheme[colorScheme as ThemeName]["base-200"]
               }
               colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
             />
           }
-          refreshing={data.isRefetching}
+          refreshing={tags.isRefetching}
           initialNumToRender={4}
           keyExtractor={(item) => item.id?.toString() || ""}
-          renderItem={({ item }) => (
-            <RenderItem item={item} key={item.id?.toString()} />
-          )}
-          onEndReached={() => data.fetchNextPage()}
+          renderItem={({ item }) => <TagListing tag={item} />}
           onEndReachedThreshold={0.5}
           ItemSeparatorComponent={() => (
             <View className="bg-neutral-content h-px" />

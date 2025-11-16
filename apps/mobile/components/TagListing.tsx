@@ -1,25 +1,25 @@
 import { View, Text, Pressable, Platform, Alert } from "react-native";
 import { decode } from "html-entities";
-import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
+import { TagIncludingLinkCount } from "@linkwarden/types";
 import useAuthStore from "@/store/auth";
 import { useRouter } from "expo-router";
 import * as ContextMenu from "zeego/context-menu";
 import { cn } from "@linkwarden/lib/utils";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { CalendarDays, Folder, Link } from "lucide-react-native";
-import { useDeleteCollection } from "@linkwarden/router/collections";
+import { CalendarDays, Hash, Link } from "lucide-react-native";
+import { useRemoveTag } from "@linkwarden/router/tags";
 
 type Props = {
-  collection: CollectionIncludingMembersAndLinkCount;
+  tag: TagIncludingLinkCount;
 };
 
-const CollectionListing = ({ collection }: Props) => {
+const TagListing = ({ tag }: Props) => {
   const { auth } = useAuthStore();
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 
-  const deleteCollection = useDeleteCollection(auth);
+  const deleteCollection = useRemoveTag(auth);
 
   return (
     <ContextMenu.Root>
@@ -31,7 +31,7 @@ const CollectionListing = ({ collection }: Props) => {
             Platform.OS !== "android" && "active:bg-base-200/50"
           )}
           onLongPress={() => {}}
-          onPress={() => router.push(`/collections/${collection.id}`)}
+          onPress={() => router.push(`/tags/${tag.id}`)}
           android_ripple={{
             color: colorScheme === "dark" ? "rgba(255,255,255,0.2)" : "#ddd",
             borderless: false,
@@ -40,26 +40,17 @@ const CollectionListing = ({ collection }: Props) => {
           <View className="w-full">
             <View className="w-[90%] flex-col justify-between gap-3">
               <View className="flex flex-row gap-2 items-center pr-1.5 self-start rounded-md">
-                <Folder
+                <Hash
                   size={16}
-                  fill={collection.color || ""}
-                  color={collection.color || ""}
+                  color={rawTheme[colorScheme as ThemeName]["primary"]}
                 />
                 <Text
                   numberOfLines={2}
                   className="font-medium text-lg text-base-content"
                 >
-                  {decode(collection.name)}
+                  {decode(tag.name)}
                 </Text>
               </View>
-              {collection.description && (
-                <Text
-                  numberOfLines={2}
-                  className="font-light text-sm text-base-content"
-                >
-                  {decode(collection.description)}
-                </Text>
-              )}
             </View>
 
             <View className="flex-row gap-3">
@@ -72,14 +63,11 @@ const CollectionListing = ({ collection }: Props) => {
                   numberOfLines={1}
                   className="font-light text-xs text-base-content"
                 >
-                  {new Date(collection.createdAt as string).toLocaleString(
-                    "en-US",
-                    {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    }
-                  )}
+                  {new Date(tag.createdAt).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </Text>
               </View>
               <View className="flex flex-row gap-1 items-center mt-5 self-start">
@@ -91,7 +79,7 @@ const CollectionListing = ({ collection }: Props) => {
                   numberOfLines={1}
                   className="font-light text-xs text-base-content"
                 >
-                  {collection._count?.links}
+                  {tag._count?.links}
                 </Text>
               </View>
             </View>
@@ -101,11 +89,11 @@ const CollectionListing = ({ collection }: Props) => {
 
       <ContextMenu.Content avoidCollisions>
         <ContextMenu.Item
-          key="delete-collection"
+          key="delete-tag"
           onSelect={() => {
             return Alert.alert(
-              "Delete Collection",
-              "Are you sure you want to delete this collection? This action cannot be undone.",
+              "Delete Tag",
+              "Are you sure you want to delete this Tag? This action cannot be undone.",
               [
                 {
                   text: "Cancel",
@@ -115,7 +103,7 @@ const CollectionListing = ({ collection }: Props) => {
                   text: "Delete",
                   style: "destructive",
                   onPress: () => {
-                    deleteCollection.mutate(collection.id as number);
+                    deleteCollection.mutate(tag.id as number);
                   },
                 },
               ]
@@ -129,4 +117,4 @@ const CollectionListing = ({ collection }: Props) => {
   );
 };
 
-export default CollectionListing;
+export default TagListing;

@@ -10,7 +10,7 @@ import {
 import useAuthStore from "@/store/auth";
 import LinkListing from "@/components/LinkListing";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { useCollections } from "@linkwarden/router/collections";
 import Spinner from "@/components/ui/Spinner";
@@ -35,19 +35,28 @@ export default function LinksScreen() {
   const navigation = useNavigation();
   const collections = useCollections(auth);
 
+  const title = useMemo(() => {
+    if (section === "pinned-links") return "Pinned Links";
+    if (section === "recent-links") return "Recent Links";
+
+    if (section === "collection") {
+      return (
+        collections.data?.find((c) => c.id?.toString() === collectionId)
+          ?.name || "Collection"
+      );
+    }
+
+    return "Links";
+  }, [section, collections.data, collectionId]);
+
   useEffect(() => {
     navigation.setOptions({
-      headerTitle:
-        section === "pinned-links"
-          ? "Pinned Links"
-          : section === "recent-links"
-            ? "Recent Links"
-            : section === "collection"
-              ? collections.data?.find((c) => c.id?.toString() === collectionId)
-                  ?.name || "Collection"
-              : "Links",
+      headerTitle: title,
+      headerSearchBarOptions: {
+        placeholder: `Search ${title}`,
+      },
     });
-  }, [section, navigation]);
+  }, [title, navigation]);
 
   const { links, data } = useLinks(
     {

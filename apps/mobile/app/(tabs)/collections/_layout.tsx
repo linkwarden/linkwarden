@@ -18,7 +18,7 @@ export default function Layout() {
           colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerSearchBarOptions: {
-          placeholder: "Search",
+          placeholder: "Search Collections",
           autoCapitalize: "none",
           onChangeText: (e) => {
             router.setParams({

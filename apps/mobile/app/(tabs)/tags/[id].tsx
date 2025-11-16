@@ -15,7 +15,7 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { useCollections } from "@linkwarden/router/collections";
+import { useTags } from "@linkwarden/router/tags";
 
 const RenderItem = React.memo(
   ({ item }: { item: LinkIncludingShortenedCollectionAndTags }) => {
@@ -35,25 +35,23 @@ export default function LinksScreen() {
     {
       sort: 0,
       searchQueryString: decodeURIComponent(search ?? ""),
-      collectionId: Number(id),
+      tagId: Number(id),
     },
     auth
   );
 
-  const collections = useCollections(auth);
+  const tags = useTags(auth);
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    const activeCollection = collections.data?.filter(
-      (e) => e.id === Number(id)
-    )[0];
+    const activeTag = tags.data?.filter((e) => e.id === Number(id))[0];
 
-    if (activeCollection?.name)
+    if (activeTag?.name)
       navigation?.setOptions?.({
-        headerTitle: activeCollection?.name,
+        headerTitle: activeTag?.name,
         headerSearchBarOptions: {
-          placeholder: `Search ${activeCollection.name}`,
+          placeholder: `Search ${activeTag.name}`,
         },
       });
   }, [navigation]);
