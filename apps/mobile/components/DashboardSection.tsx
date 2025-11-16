@@ -1,4 +1,10 @@
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewToken,
+} from "react-native";
 import React from "react";
 import clsx from "clsx";
 import DashboardItem from "@/components/DashboardItem";
@@ -31,7 +37,7 @@ type DashboardSectionProps = {
   numberOfLinks: number;
   collectionsLength: number;
   numberOfPinnedLinks: number;
-  dashboardData: { isLoading: boolean };
+  dashboardData: { isLoading: boolean; refetch: Function };
   collectionLinks?: any[];
 };
 
@@ -129,6 +135,20 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               contentContainerStyle={{
                 paddingHorizontal: 20,
               }}
+              onViewableItemsChanged={({
+                viewableItems,
+              }: {
+                viewableItems: ViewToken[];
+              }) => {
+                const links = viewableItems.map(
+                  (e) => e.item
+                ) as LinkIncludingShortenedCollectionAndTags[];
+
+                if (links.some((e) => e.id && !e.preview)) {
+                  dashboardData.refetch();
+                }
+              }}
+              viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
             />
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
@@ -195,6 +215,20 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               contentContainerStyle={{
                 paddingHorizontal: 20,
               }}
+              onViewableItemsChanged={({
+                viewableItems,
+              }: {
+                viewableItems: ViewToken[];
+              }) => {
+                const links = viewableItems.map(
+                  (e) => e.item
+                ) as LinkIncludingShortenedCollectionAndTags[];
+
+                if (links.some((e) => e.id && !e.preview)) {
+                  dashboardData.refetch();
+                }
+              }}
+              viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
             />
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">
@@ -260,6 +294,20 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
               contentContainerStyle={{
                 paddingHorizontal: 20,
               }}
+              onViewableItemsChanged={({
+                viewableItems,
+              }: {
+                viewableItems: ViewToken[];
+              }) => {
+                const links = viewableItems.map(
+                  (e) => e.item
+                ) as LinkIncludingShortenedCollectionAndTags[];
+
+                if (links.some((e) => e.id && !e.preview)) {
+                  dashboardData.refetch();
+                }
+              }}
+              viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
             />
           ) : (
             <View className="flex-col gap-2 justify-center items-center h-40 p-10 rounded-xl bg-base-200 mx-5">

@@ -6,6 +6,7 @@ import {
   Platform,
   Text,
   ActivityIndicator,
+  ViewToken,
 } from "react-native";
 import useAuthStore from "@/store/auth";
 import LinkListing from "@/components/LinkListing";
@@ -80,6 +81,20 @@ export default function LinksScreen() {
               </Text>
             </View>
           }
+          onViewableItemsChanged={({
+            viewableItems,
+          }: {
+            viewableItems: ViewToken[];
+          }) => {
+            const links = viewableItems.map(
+              (e) => e.item
+            ) as LinkIncludingShortenedCollectionAndTags[];
+
+            if (links.some((e) => e.id && !e.preview)) {
+              data.refetch();
+            }
+          }}
+          viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
         />
       )}
     </View>
