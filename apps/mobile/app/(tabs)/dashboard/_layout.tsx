@@ -54,9 +54,12 @@ export default function RootLayout() {
                 >
                   <DropdownMenu.ItemTitle>New Link</DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item key="more-options" disabled>
+                <DropdownMenu.Item
+                  key="new-collection"
+                  onSelect={() => SheetManager.show("new-collection-sheet")}
+                >
                   <DropdownMenu.ItemTitle>
-                    More Coming Soon!
+                    New Collection
                   </DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
