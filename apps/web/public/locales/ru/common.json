@@ -511,7 +511,7 @@
   "merge_tags": "Объединить теги",
   "merge_count_tags": "Объединить {{count}} тегов",
   "rename_tag_instruction": "Please provide a name for the final tag.",
-  "merging": "Merging...",
+  "merging": "Объединение...",
   "delete_tags": "Delete {{count}} Tags",
   "tags_deletion_confirmation_message": "Are you sure you want to delete {{count}} Tags? This will remove the tags from all links.",
   "subscribe_later": "Subscribe Later?",
