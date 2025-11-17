@@ -6,6 +6,7 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  Linking,
 } from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
@@ -157,21 +158,29 @@ const LinkListing = ({ link, dashboard }: Props) => {
 
       <ContextMenu.Content avoidCollisions>
         <ContextMenu.Item
-          key="open-link"
+          key="open-in-app"
           onSelect={() => router.navigate(`/links/${link.id}`)}
         >
           <ContextMenu.ItemTitle>Open Link</ContextMenu.ItemTitle>
         </ContextMenu.Item>
 
-        {link.url && (
-          <ContextMenu.Item
-            key="copy-url"
-            onSelect={async () => {
-              await Clipboard.setStringAsync(link.url as string);
-            }}
-          >
-            <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
-          </ContextMenu.Item>
+        {link?.url && (
+          <>
+            <ContextMenu.Item
+              key="open-in-browser"
+              onSelect={() => Linking.openURL(link.url as string)}
+            >
+              <ContextMenu.ItemTitle>Open in Browser</ContextMenu.ItemTitle>
+            </ContextMenu.Item>
+            <ContextMenu.Item
+              key="copy-url"
+              onSelect={async () => {
+                await Clipboard.setStringAsync(link.url as string);
+              }}
+            >
+              <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
+            </ContextMenu.Item>
+          </>
         )}
 
         <ContextMenu.Item
