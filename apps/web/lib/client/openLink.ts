@@ -1,8 +1,5 @@
-import {
-  AccountSettings,
-  LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
-import { generateLinkHref } from "@linkwarden/lib/generateLinkHref";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import getFormatBasedOnPreference from "@linkwarden/lib/getFormatBasedOnPreference";
 import { LinksRouteTo } from "@linkwarden/prisma/client";
 
 const openLink = (
@@ -13,7 +10,17 @@ const openLink = (
   if (user.linksRouteTo === LinksRouteTo.DETAILS) {
     openModal();
   } else {
-    window.open(generateLinkHref(link, user), "_blank");
+    const format = getFormatBasedOnPreference({
+      link,
+      preference: user.linksRouteTo,
+    });
+
+    window.open(
+      format !== null
+        ? `/preserved/${link?.id}?format=${format}`
+        : (link.url as string),
+      "_blank"
+    );
   }
 };
 

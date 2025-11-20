@@ -11,6 +11,8 @@ import {
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { ArchivedFormat } from "@linkwarden/types";
+import getFormatBasedOnPreference from "@linkwarden/lib/getFormatBasedOnPreference";
+import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
@@ -64,13 +66,27 @@ const LinkListing = ({ link, dashboard }: Props) => {
             dashboard && "rounded-xl"
           )}
           onLongPress={() => {}}
-          onPress={() =>
-            router.navigate(
-              data.preferredFormat
-                ? `/links/${link.id}?format=${data.preferredFormat}`
-                : `/links/${link.id}`
-            )
-          }
+          onPress={() => {
+            if (user) {
+              const format = getFormatBasedOnPreference({
+                link,
+                preference: user.linksRouteTo,
+              });
+
+              data.preferredBrowser === "app"
+                ? router.navigate(
+                    format !== null
+                      ? `/links/${link.id}?format=${format}`
+                      : `/links/${link.id}`
+                  )
+                : Linking.openURL(
+                    format !== null
+                      ? auth.instance +
+                          `/preserved/${link?.id}?format=${format}`
+                      : (link.url as string)
+                  );
+            }
+          }}
           android_ripple={{
             color: colorScheme === "dark" ? "rgba(255,255,255,0.2)" : "#ddd",
             borderless: false,
@@ -158,20 +174,30 @@ const LinkListing = ({ link, dashboard }: Props) => {
 
       <ContextMenu.Content avoidCollisions>
         <ContextMenu.Item
-          key="open-in-app"
-          onSelect={() => router.navigate(`/links/${link.id}`)}
-        >
-          <ContextMenu.ItemTitle>Open Link</ContextMenu.ItemTitle>
-        </ContextMenu.Item>
+          key="open-original"
+          onSelect={() => {
+            if (user && link) {
+              const format = getOriginalFormat(link);
 
+              data.preferredBrowser === "app"
+                ? router.navigate(
+                    format !== null
+                      ? `/links/${link.id}?format=${format}`
+                      : `/links/${link.id}`
+                  )
+                : Linking.openURL(
+                    format !== null
+                      ? auth.instance +
+                          `/preserved/${link?.id}?format=${format}`
+                      : (link.url as string)
+                  );
+            }
+          }}
+        >
+          <ContextMenu.ItemTitle>Open Original</ContextMenu.ItemTitle>
+        </ContextMenu.Item>
         {link?.url && (
           <>
-            <ContextMenu.Item
-              key="open-in-browser"
-              onSelect={() => Linking.openURL(link.url as string)}
-            >
-              <ContextMenu.ItemTitle>Open in Browser</ContextMenu.ItemTitle>
-            </ContextMenu.Item>
             <ContextMenu.Item
               key="copy-url"
               onSelect={async () => {

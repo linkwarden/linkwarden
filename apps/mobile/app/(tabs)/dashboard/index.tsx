@@ -84,7 +84,7 @@ export default function DashboardScreen() {
       contentInsetAdjustmentBehavior="automatic"
     >
       {orderedSections.map((sectionData, i) => {
-        if (!collections || !collections[0]) return <></>;
+        if (!collections || !collections[0]) return null;
 
         const collection = collections.find(
           (c) => c.id === sectionData.collectionId
@@ -92,7 +92,7 @@ export default function DashboardScreen() {
 
         return (
           <DashboardSection
-            key={i}
+            key={sectionData.id}
             sectionData={sectionData}
             collection={collection}
             collectionLinks={

@@ -21,6 +21,7 @@ import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { CalendarDays, Link } from "lucide-react-native";
 import useTmpStore from "@/store/tmp";
+import { ArchivedFormat } from "@/types/global";
 
 const CACHE_DIR = FileSystem.documentDirectory + "archivedData/readable/";
 const htmlPath = (id: string) => `${CACHE_DIR}link_${id}.html`;
@@ -105,16 +106,10 @@ export default function LinkScreen() {
       } finally {
         setIsLoading(false);
       }
-    }
-
-    // original
-    else if (link?.id && !format && user && link.url) {
-      setUrl(link.url);
-    }
-
-    // other formats
-    else if (link?.id && format) {
+    } else if (link?.id && format) {
       setUrl(`${auth.instance}/api/v1/archives/${link.id}?format=${format}`);
+    } else if (link?.id) {
+      setUrl(link.url as string);
     }
   }
 
@@ -184,7 +179,10 @@ export default function LinkScreen() {
           className={isLoading ? "opacity-0" : "flex-1"}
           source={{
             uri: url,
-            headers: format ? { Authorization: `Bearer ${auth.session}` } : {},
+            headers:
+              format || link?.type !== "url"
+                ? { Authorization: `Bearer ${auth.session}` }
+                : {},
           }}
           onLoadEnd={() => setIsLoading(false)}
         />
