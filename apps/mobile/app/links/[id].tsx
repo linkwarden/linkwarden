@@ -21,7 +21,6 @@ import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { CalendarDays, Link } from "lucide-react-native";
 import useTmpStore from "@/store/tmp";
-import { ArchivedFormat } from "@/types/global";
 
 const CACHE_DIR = FileSystem.documentDirectory + "archivedData/readable/";
 const htmlPath = (id: string) => `${CACHE_DIR}link_${id}.html`;
