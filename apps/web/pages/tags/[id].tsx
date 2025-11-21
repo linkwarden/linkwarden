@@ -30,7 +30,9 @@ export default function Index() {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data: tags = [] } = useTags();
+  const { data: tagsData = { tags: [], total: 0 } } = useTags();
+  const tags = tagsData.tags;
+  const totalTagCount = tagsData.total || 0;
   const updateTag = useUpdateTag();
   const removeTag = useRemoveTag();
 
@@ -61,13 +63,16 @@ export default function Index() {
   useEffect(() => {
     const tag = tags.find((e: any) => e.id === Number(router.query.id));
 
-    if (tags.length > 0 && !tag?.id) {
+    // Only redirect if we have loaded all tags and the tag doesn't exist
+    // With pagination, tags might not all be loaded, so we check against total count
+    const allTagsLoaded = tags.length >= totalTagCount;
+    if (allTagsLoaded && tags.length > 0 && !tag?.id) {
       router.push("/dashboard");
       return;
     }
 
     setActiveTag(tag);
-  }, [router, tags, Number(router.query.id), setActiveTag]);
+  }, [router, tags, totalTagCount, Number(router.query.id), setActiveTag]);
 
   useEffect(() => {
     setNewTagName(activeTag?.name);

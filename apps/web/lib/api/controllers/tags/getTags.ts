@@ -52,8 +52,11 @@ export default async function getTags(params: TagPaginationParams) {
     };
   }
 
+  // Get total count for the where clause
+  const total = await prisma.tag.count({ where: whereClause });
+
   // Use pagination utility
-  const response = await paginate(
+  const paginatedData = await paginate(
     params,
     async (pagination) => {
       return await prisma.tag.findMany({
@@ -82,6 +85,12 @@ export default async function getTags(params: TagPaginationParams) {
       defaultSort: [{ name: "asc" }],
     }
   );
+
+  // Add total count to the response
+  const response = {
+    ...paginatedData,
+    total,
+  };
 
   return { response, status: 200 };
 }

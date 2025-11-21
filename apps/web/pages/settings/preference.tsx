@@ -31,7 +31,8 @@ export default function Preference() {
   const updateUserPreference = useUpdateUserPreference();
   const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser() as any;
-  const { data: tags } = useTags();
+  const { data: tagsData = { tags: [], total: 0 } } = useTags();
+  const tags = tagsData.tags;
   const upsertTags = useUpsertTags();
   const {
     ARCHIVAL_OPTIONS,

@@ -24,12 +24,18 @@ type UseTagsOptions = {
   paginated?: boolean;
 };
 
+// Result type for useTags hook
+type UseTagsResult = {
+  tags: TagIncludingLinkCount[];
+  total?: number;
+};
+
 // Backward compatible version - returns all tags as array
-// Uses same query key as useTagsPaginated but extracts items
+// Uses same query key as useTagsPaginated but extracts items and includes total count
 const useTags = (
   auth?: MobileAuth,
   options: UseTagsOptions = {}
-): UseQueryResult<TagIncludingLinkCount[], Error> => {
+): UseQueryResult<UseTagsResult, Error> => {
   let status: "loading" | "authenticated" | "unauthenticated";
 
   if (!auth) {
@@ -66,8 +72,11 @@ const useTags = (
       if (!response.ok) throw new Error("Failed to fetch tags.");
 
       const data = await response.json();
-      // Return just the items array for backward compatibility
-      return data.response.items;
+      // Return items array and total for backward compatibility
+      return {
+        tags: data.response.items,
+        total: data.response.total,
+      };
     },
     enabled: status === "authenticated",
   });

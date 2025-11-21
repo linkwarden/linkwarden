@@ -24,7 +24,9 @@ export default function DashboardScreen() {
   const { data: user, ...userData } = useUser(auth);
   const { data: collections = [], refetch: refetchCollections } =
     useCollections(auth);
-  const { data: tags = [], refetch: refetchTags } = useTags(auth);
+  const { data: tagsData = { tags: [], total: 0 } } = useTags(auth);
+  const tags = tagsData.tags;
+  const totalTagCount = tagsData.total || tags.length;
 
   const { colorScheme } = useColorScheme();
 
@@ -103,7 +105,7 @@ export default function DashboardScreen() {
                   : []
               }
               links={links}
-              tagsLength={tags.length}
+              tagsLength={totalTagCount}
               numberOfLinks={numberOfLinks}
               collectionsLength={collections.length}
               numberOfPinnedLinks={numberOfPinnedLinks}
