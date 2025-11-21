@@ -27,37 +27,35 @@ export function TagListing({ tags, active }: TagListingProps) {
 
   return (
     <>
-      {tags
-        .sort((a: any, b: any) => a.name.localeCompare(b.name))
-        .map((e: any, i: any) => {
-          return (
-            <Droppable
-              id={`tag-${e.id}`}
-              key={i}
-              className="group"
-              data={{ type: "tag", id: e.id, name: e.name }}
-            >
-              <Link key={i} href={`/tags/${e.id}`}>
-                <div
-                  className={cn(
-                    active === `/tags/${e.id}`
-                      ? "bg-primary/20"
-                      : droppableActive
-                        ? "select-none"
-                        : "hover:bg-neutral/20",
-                    "duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8"
-                  )}
-                >
-                  <i className="bi-hash text-xl text-primary drop-shadow"></i>
-                  <p className="truncate w-full pr-7">{e.name}</p>
-                  <div className="drop-shadow text-neutral text-xs">
-                    {e._count?.links}
-                  </div>
+      {tags.map((e: any, i: any) => {
+        return (
+          <Droppable
+            id={`tag-${e.id}`}
+            key={i}
+            className="group"
+            data={{ type: "tag", id: e.id, name: e.name }}
+          >
+            <Link key={i} href={`/tags/${e.id}`}>
+              <div
+                className={cn(
+                  active === `/tags/${e.id}`
+                    ? "bg-primary/20"
+                    : droppableActive
+                      ? "select-none"
+                      : "hover:bg-neutral/20",
+                  "duration-100 py-1 px-2 cursor-pointer flex items-center gap-2 w-full rounded-md h-8"
+                )}
+              >
+                <i className="bi-hash text-xl text-primary drop-shadow"></i>
+                <p className="truncate w-full pr-7">{e.name}</p>
+                <div className="drop-shadow text-neutral text-xs">
+                  {e._count?.links}
                 </div>
-              </Link>
-            </Droppable>
-          );
-        })}
+              </div>
+            </Link>
+          </Droppable>
+        );
+      })}
     </>
   );
 }

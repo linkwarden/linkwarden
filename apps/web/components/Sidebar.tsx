@@ -5,7 +5,7 @@ import SidebarHighlightLink from "@/components/SidebarHighlightLink";
 import CollectionListing from "@/components/CollectionListing";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
-import { useTags } from "@linkwarden/router/tags";
+import { useTagsInfinite } from "@linkwarden/router/tags";
 import { TagListing } from "./TagListing";
 import { Button } from "./ui/button";
 import { useUser } from "@linkwarden/router/user";
@@ -17,6 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useInView } from "react-intersection-observer";
 
 export default function Sidebar({
   className,
@@ -42,12 +43,25 @@ export default function Sidebar({
 
   const { data: collections } = useCollections();
 
-  const { data: tags = [], isLoading } = useTags();
+  // Use infinite query with name sorting for sidebar
+  const { tags, data: tagsData } = useTagsInfinite({
+    sort: "name",
+    dir: "asc",
+  });
   const [active, setActive] = useState("");
 
   const router = useRouter();
 
   const { data: user } = useUser();
+
+  // Infinite scroll for tags
+  const { ref: tagsScrollRef, inView: tagsInView } = useInView();
+
+  useEffect(() => {
+    if (tagsInView && tagsData?.fetchNextPage && tagsData?.hasNextPage) {
+      tagsData.fetchNextPage();
+    }
+  }, [tagsData, tagsInView]);
 
   useEffect(() => {
     localStorage.setItem("tagDisclosure", tagDisclosure ? "true" : "false");
@@ -248,14 +262,21 @@ export default function Sidebar({
               leaveTo="transform opacity-0 -translate-y-3"
             >
               <Disclosure.Panel className="flex flex-col gap-1">
-                {isLoading ? (
+                {tagsData?.isLoading ? (
                   <div className="flex flex-col gap-4">
                     <div className="skeleton h-4 w-full"></div>
                     <div className="skeleton h-4 w-full"></div>
                     <div className="skeleton h-4 w-full"></div>
                   </div>
                 ) : (
-                  <TagListing tags={tags} active={active} />
+                  <>
+                    <TagListing tags={tags} active={active} />
+                    {tagsData?.hasNextPage && (
+                      <div ref={tagsScrollRef} className="py-2 text-center">
+                        <div className="skeleton h-4 w-full"></div>
+                      </div>
+                    )}
+                  </>
                 )}
               </Disclosure.Panel>
             </Transition>

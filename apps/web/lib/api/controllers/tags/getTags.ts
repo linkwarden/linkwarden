@@ -1,58 +1,87 @@
 import { prisma } from "@linkwarden/prisma";
+import { paginate } from "../../utils/pagination";
+import { TagPaginationParams } from "../../utils/types";
 
-export default async function getTags({
-  userId,
-  collectionId,
-}: {
-  userId?: number;
-  collectionId?: number;
-}) {
-  if (userId) {
-    const tags = await prisma.tag.findMany({
-      where: {
-        OR: [
-          { ownerId: userId }, // Tags owned by the user
-          {
-            links: {
-              some: {
-                collection: {
-                  members: {
-                    some: {
-                      userId, // Tags from collections where the user is a member
-                    },
-                  },
+export default async function getTags(params: TagPaginationParams) {
+  const { userId, collectionId } = params;
+
+  if (!userId) {
+    // userId is required
+    return { response: [], status: 400 };
+  }
+
+  const POSTGRES_IS_ENABLED =
+    process.env.DATABASE_URL?.startsWith("postgresql");
+
+  // Build where clause
+  const whereClause: any = {
+    OR: [
+      { ownerId: userId }, // Tags owned by the user
+      {
+        links: {
+          some: {
+            collection: {
+              members: {
+                some: {
+                  userId, // Tags from collections where the user is a member
                 },
               },
             },
           },
-        ],
-      },
-      include: {
-        _count: {
-          select: { links: true },
         },
       },
-      // orderBy: {
-      //   links: {
-      //     _count: "desc",
-      //   },
-      // },
-    });
+    ],
+  };
 
-    return { response: tags, status: 200 };
-  } else if (collectionId) {
-    const tags = await prisma.tag.findMany({
-      where: {
-        links: {
-          some: {
-            collection: {
-              id: collectionId,
-            },
+  // Add search filter if provided
+  if (params.search) {
+    whereClause.name = {
+      contains: params.search,
+      mode: POSTGRES_IS_ENABLED ? "insensitive" : undefined,
+    };
+  }
+
+  // Add collection filter if provided
+  if (collectionId) {
+    whereClause.links = {
+      some: {
+        collection: {
+          id: collectionId,
+        },
+      },
+    };
+  }
+
+  // Use pagination utility
+  const response = await paginate(
+    params,
+    async (pagination) => {
+      return await prisma.tag.findMany({
+        ...pagination,
+        where: whereClause,
+        include: {
+          _count: {
+            select: { links: true },
           },
         },
-      },
-    });
+        // NOTE: Sorting by links._count is commented out due to Prisma bug
+        // See doc/instructions/get-tags-sorting-issue.md for details
+        // When combined with complex WHERE clauses (like OR above), Prisma
+        // fails to correctly order by relation count.
+        // orderBy: {
+        //   links: {
+        //     _count: "desc",
+        //   },
+        // },
+      });
+    },
+    {
+      defaultLimit: 50,
+      maxLimit: 100,
+      allowedSortColumns: ["name", "id", "createdAt"],
+      defaultSort: [{ name: "asc" }],
+    }
+  );
 
-    return { response: tags, status: 200 };
-  }
+  return { response, status: 200 };
 }

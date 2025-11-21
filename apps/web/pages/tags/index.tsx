@@ -2,7 +2,7 @@ import MainLayout from "@/layouts/MainLayout";
 import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
-import { useTags } from "@linkwarden/router/tags";
+import { useTagsInfinite } from "@linkwarden/router/tags";
 import TagCard from "@/components/TagCard";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import NewTagModal from "@/components/ModalContent/NewTagModal";
 import {
   Tooltip,
@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/tooltip";
 import BulkDeleteTagsModal from "@/components/ModalContent/BulkDeleteTagsModal";
 import MergeTagsModal from "@/components/ModalContent/MergeTagsModal";
+import { useInView } from "react-intersection-observer";
+import { toast } from "react-hot-toast";
 
 enum TagSort {
   DateNewestFirst = 0,
@@ -32,41 +34,62 @@ enum TagSort {
   LinkCountLowHigh = 5,
 }
 
+// Map frontend TagSort enum to backend sort/dir params
+const mapSortToParams = (sort: TagSort): { sort: string; dir: string } => {
+  switch (sort) {
+    case TagSort.NameAZ:
+      return { sort: "name", dir: "asc" };
+    case TagSort.NameZA:
+      return { sort: "name", dir: "desc" };
+    case TagSort.DateOldestFirst:
+      return { sort: "createdAt", dir: "asc" };
+    case TagSort.LinkCountHighLow:
+      // Note: Link count sorting disabled due to Prisma bug
+      // Fallback to date newest
+      return { sort: "createdAt", dir: "desc" };
+    case TagSort.LinkCountLowHigh:
+      // Note: Link count sorting disabled due to Prisma bug
+      // Fallback to date oldest
+      return { sort: "createdAt", dir: "asc" };
+    case TagSort.DateNewestFirst:
+    default:
+      return { sort: "createdAt", dir: "desc" };
+  }
+};
+
 export default function Tags() {
   const { t } = useTranslation();
-  const { data: tags = [], isLoading } = useTags();
-
-  const [sortBy, setSortBy] = useState<TagSort>(TagSort.DateNewestFirst);
+  const [sortBy, setSortBy] = useState<TagSort>(TagSort.NameAZ);
   const [newTagModal, setNewTagModal] = useState(false);
   const [bulkDeleteModal, setBulkDeleteModal] = useState(false);
   const [mergeTagsModal, setMergeTagsModal] = useState(false);
 
-  const tagTime = (tag: any) => {
-    if (tag?.createdAt) return new Date(tag.createdAt as string).getTime();
-    return typeof tag?.id === "number" ? tag.id : 0;
-  };
-  const linkCount = (tag: any) =>
-    tag?.linkCount ?? tag?.linksCount ?? tag?._count?.links ?? 0;
+  // Search state
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const compare = useMemo(() => {
-    switch (sortBy) {
-      case TagSort.NameAZ:
-        return (a: any, b: any) => (a?.name ?? "").localeCompare(b?.name ?? "");
-      case TagSort.NameZA:
-        return (a: any, b: any) => (b?.name ?? "").localeCompare(a?.name ?? "");
-      case TagSort.DateOldestFirst:
-        return (a: any, b: any) => tagTime(a) - tagTime(b);
-      case TagSort.LinkCountHighLow:
-        return (a: any, b: any) => linkCount(b) - linkCount(a);
-      case TagSort.LinkCountLowHigh:
-        return (a: any, b: any) => linkCount(a) - linkCount(b);
-      case TagSort.DateNewestFirst:
-      default:
-        return (a: any, b: any) => tagTime(b) - tagTime(a);
+  // Debounce search input (1 second delay)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchInput);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const sortParams = mapSortToParams(sortBy);
+  const { tags, data } = useTagsInfinite({
+    ...sortParams,
+    search: debouncedSearch || undefined,
+  });
+
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && data?.fetchNextPage && data?.hasNextPage) {
+      data.fetchNextPage();
     }
-  }, [sortBy]);
-
-  const sortedTags = useMemo(() => tags.slice().sort(compare), [tags, compare]);
+  }, [data, inView]);
 
   const [editMode, setEditMode] = useState(false);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
@@ -156,6 +179,31 @@ export default function Tags() {
           </div>
         </div>
 
+        {/* Search bar */}
+        <div className="flex items-center relative group">
+          <label
+            htmlFor="tag-search-box"
+            className="inline-flex items-center w-fit absolute left-1 pointer-events-none rounded-md p-1 text-primary"
+          >
+            <i className="bi-search"></i>
+          </label>
+
+          <input
+            id="tag-search-box"
+            type="text"
+            placeholder={t("search_for_tag_names")}
+            value={searchInput}
+            onChange={(e) => {
+              if (e.target.value.includes("%")) {
+                toast.error(t("search_query_invalid_symbol"));
+              }
+              setSearchInput(e.target.value.replace("%", ""));
+            }}
+            style={{ transition: "width 0.2s ease-in-out" }}
+            className="border border-neutral-content bg-base-200 focus:border-primary py-1 rounded-md pl-9 pr-2 w-full max-w-[15rem] md:focus:w-80 md:w-[15rem] md:max-w-full outline-none"
+          />
+        </div>
+
         {tags && editMode && tags.length > 0 && (
           <div className="w-full flex justify-between items-center min-h-[32px]">
             <div className="flex gap-3 ml-3">
@@ -223,7 +271,7 @@ export default function Tags() {
         )}
 
         <div className="grid 2xl:grid-cols-6 xl:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-5">
-          {sortedTags.map((tag: any) => (
+          {tags.map((tag: any) => (
             <TagCard
               key={tag.id}
               tag={tag}
@@ -237,9 +285,23 @@ export default function Tags() {
               }}
             />
           ))}
+
+          {/* Loading placeholders */}
+          {(data?.hasNextPage || data?.isLoading) &&
+            Array.from({ length: 12 }, (_, i) => i + 1).map((e, i) => (
+              <div
+                key={`placeholder-${i}`}
+                ref={e === 1 ? ref : undefined}
+                className="flex flex-col gap-2"
+              >
+                <div className="skeleton h-24 w-full"></div>
+                <div className="skeleton h-3 w-2/3"></div>
+                <div className="skeleton h-3 w-1/3"></div>
+              </div>
+            ))}
         </div>
 
-        {!isLoading && tags && !tags[0] && (
+        {!data?.isLoading && tags && !tags[0] && (
           <div
             style={{ flex: "1 1 auto" }}
             className="flex flex-col gap-2 justify-center h-full w-full mx-auto p-10"
