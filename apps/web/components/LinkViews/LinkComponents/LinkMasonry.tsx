@@ -104,16 +104,6 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
     }
   };
 
-  let shortendURL;
-
-  try {
-    if (link.url) {
-      shortendURL = new URL(link.url).host.toLowerCase();
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
       collections.find(

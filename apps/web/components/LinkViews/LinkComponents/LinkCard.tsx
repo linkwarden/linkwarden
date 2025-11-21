@@ -102,16 +102,6 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     }
   };
 
-  let shortendURL;
-
-  try {
-    if (link.url) {
-      shortendURL = new URL(link.url).host.toLowerCase();
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
       collections.find(

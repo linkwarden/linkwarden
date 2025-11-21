@@ -22,7 +22,7 @@ import LinkListing from "@/components/LinkListing";
 import { useColorScheme } from "nativewind";
 import { useRouter } from "expo-router";
 
-// Don't remove this, spent a couple of days to figure out why the app crashes in production :|
+// Don't use prisma client's DashboardSectionType, it'll crash in production (React Native)
 type DashboardSectionType =
   | "STATS"
   | "RECENT_LINKS"

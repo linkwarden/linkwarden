@@ -1,13 +1,11 @@
 import { Platform, ScrollView, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
 import useAuthStore from "@/store/auth";
-import { DashboardSection as PrismaDashboardSection } from "@linkwarden/prisma/client";
+import { DashboardSection as DashboardSectionType } from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
 import { useCollections } from "@linkwarden/router/collections";
 import { useTags } from "@linkwarden/router/tags";
-import { useRouter } from "expo-router";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import Spinner from "@/components/ui/Spinner";
@@ -27,10 +25,8 @@ export default function DashboardScreen() {
 
   const { colorScheme } = useColorScheme();
 
-  const router = useRouter();
-
   const [dashboardSections, setDashboardSections] = useState<
-    PrismaDashboardSection[]
+    DashboardSectionType[]
   >(user?.dashboardSections || []);
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);

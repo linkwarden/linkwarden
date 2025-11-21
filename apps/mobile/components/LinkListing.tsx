@@ -29,6 +29,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { CalendarDays, Folder } from "lucide-react-native";
 import useDataStore from "@/store/data";
+import { useEffect, useState } from "react";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -45,15 +46,17 @@ const LinkListing = ({ link, dashboard }: Props) => {
 
   const deleteLink = useDeleteLink(auth);
 
-  let shortendURL;
+  const [url, setUrl] = useState("");
 
-  try {
-    if (link.url) {
-      shortendURL = new URL(link.url).host.toLowerCase();
+  useEffect(() => {
+    try {
+      if (link.url) {
+        setUrl(new URL(link.url).host.toLowerCase());
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
-  }
+  }, [link]);
 
   return (
     <ContextMenu.Root>
@@ -106,12 +109,12 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 {decode(link.name || link.description || link.url)}
               </Text>
 
-              {shortendURL && (
+              {url && (
                 <Text
                   numberOfLines={1}
                   className="mt-1.5 font-light text-sm text-base-content"
                 >
-                  {shortendURL}
+                  {url}
                 </Text>
               )}
 
@@ -176,7 +179,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
         <ContextMenu.Item
           key="open-original"
           onSelect={() => {
-            if (user && link) {
+            if (link) {
               const format = getOriginalFormat(link);
 
               data.preferredBrowser === "app"
