@@ -38,6 +38,13 @@ export default function Collections() {
           new Date(a.createdAt as string).getTime() -
           new Date(b.createdAt as string).getTime();
       case Sort.DateNewestFirst:
+        return (a: any, b: any) =>
+          new Date(b.createdAt as string).getTime() -
+          new Date(a.createdAt as string).getTime();
+      case Sort.RelevantFirst:
+        return (a: any, b: any) => b.relevance - a.relevance;
+      case Sort.LessRelevantFirst:
+        return (a: any, b: any) => a.relevance - b.relevance;
       default:
         return (a: any, b: any) =>
           new Date(b.createdAt as string).getTime() -

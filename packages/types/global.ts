@@ -24,6 +24,7 @@ export interface LinkIncludingShortenedCollectionAndTags
   }[];
   updatedAt?: string;
   collection: OptionalExcluding<Collection, "name" | "ownerId">;
+  relevance: number;
 }
 
 export interface Member {
@@ -43,6 +44,7 @@ export interface CollectionIncludingMembersAndLinkCount
   updatedAt?: string;
   _count?: { links: number };
   members: Member[];
+  relevance: number;
 }
 
 export interface TagIncludingLinkCount extends Tag {
@@ -83,6 +85,8 @@ export enum Sort {
   DateOldestFirst = 1,
   NameAZ = 2,
   NameZA = 3,
+  RelevantFirst = 4,
+  LessRelevantFirst = 5,
 }
 
 export type Order = { [key: string]: "asc" | "desc" };
