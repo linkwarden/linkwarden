@@ -37,6 +37,7 @@ import {
 import { useDeleteLink, useUpdateLink } from "@linkwarden/router/links";
 import { deleteLinkCache } from "@/lib/cache";
 import { queryClient } from "@/lib/queryClient";
+import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -166,32 +167,39 @@ const RootComponent = ({
                   },
                   headerRight: () => (
                     <View className="flex-row gap-5">
-                      {tmp.link?.url && (
-                        <TouchableOpacity
-                          onPress={() =>
-                            Linking.openURL(tmp.link?.url as string)
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (tmp.link) {
+                            if (tmp.link.url) {
+                              return Linking.openURL(tmp.link.url);
+                            } else {
+                              const format = getOriginalFormat(tmp.link);
+
+                              return Linking.openURL(
+                                format !== null
+                                  ? auth.instance +
+                                      `/preserved/${tmp.link.id}?format=${format}`
+                                  : tmp.link.url || ""
+                              );
+                            }
                           }
-                        >
-                          {Platform.OS === "ios" ? (
-                            <Compass
-                              size={21}
-                              color={
-                                rawTheme[colorScheme as ThemeName][
-                                  "base-content"
-                                ]
-                              }
-                            />
-                          ) : (
-                            <Chromium
-                              stroke={
-                                rawTheme[colorScheme as ThemeName][
-                                  "base-content"
-                                ]
-                              }
-                            />
-                          )}
-                        </TouchableOpacity>
-                      )}
+                        }}
+                      >
+                        {Platform.OS === "ios" ? (
+                          <Compass
+                            size={21}
+                            color={
+                              rawTheme[colorScheme as ThemeName]["base-content"]
+                            }
+                          />
+                        ) : (
+                          <Chromium
+                            stroke={
+                              rawTheme[colorScheme as ThemeName]["base-content"]
+                            }
+                          />
+                        )}
+                      </TouchableOpacity>
                       <DropdownMenu.Root>
                         <DropdownMenu.Trigger>
                           <TouchableOpacity>
