@@ -7,6 +7,7 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
   linkwarden:
+    user: '${PUID:-0}:${PGID:-0}'
     env_file: .env
     environment:
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
