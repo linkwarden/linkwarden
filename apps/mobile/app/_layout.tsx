@@ -25,8 +25,6 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useShareIntent } from "expo-share-intent";
 import useDataStore from "@/store/data";
 import useAuthStore from "@/store/auth";
-import { QueryClient } from "@tanstack/react-query";
-import * as FileSystem from "expo-file-system";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as DropdownMenu from "zeego/dropdown-menu";
 import { Compass, Ellipsis } from "lucide-react-native";
@@ -37,17 +35,8 @@ import {
   MobileAuth,
 } from "@linkwarden/types";
 import { useDeleteLink, useUpdateLink } from "@linkwarden/router/links";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 60 * 24,
-      refetchOnMount: true,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-    },
-  },
-});
+import { deleteLinkCache } from "@/lib/cache";
+import { queryClient } from "@/lib/queryClient";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -65,20 +54,6 @@ export default function RootLayout() {
     setAuth();
     setData();
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (auth.status === "unauthenticated") {
-        queryClient.cancelQueries();
-        queryClient.clear();
-        mmkvPersister.removeClient?.();
-
-        const CACHE_DIR =
-          FileSystem.documentDirectory + "archivedData/readable/";
-        await FileSystem.deleteAsync(CACHE_DIR, { idempotent: true });
-      }
-    })();
-  }, [auth.status]);
 
   useEffect(() => {
     if (!rootNavState?.key) return;
@@ -307,7 +282,14 @@ const RootComponent = ({
                                       style: "destructive",
                                       onPress: () => {
                                         deleteLink.mutate(
-                                          tmp.link?.id as number
+                                          tmp.link?.id as number,
+                                          {
+                                            onSuccess: async () => {
+                                              await deleteLinkCache(
+                                                tmp.link?.id as number
+                                              );
+                                            },
+                                          }
                                         );
                                         // go back
                                         router.back();

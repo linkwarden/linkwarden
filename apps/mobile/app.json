@@ -56,7 +56,6 @@
           "iosAppGroupIdentifier": "group.app.linkwarden"
         }
       ],
-      "./plugins/with-daynight-transparent-nav",
       [
         "expo-build-properties",
         {
@@ -69,7 +68,9 @@
             "buildToolsVersion": "35.0.0"
           }
         }
-      ]
+      ],
+      "./plugins/with-daynight-transparent-nav",
+      "./plugins/file-sharing"
     ],
     "experiments": {
       "typedRoutes": true

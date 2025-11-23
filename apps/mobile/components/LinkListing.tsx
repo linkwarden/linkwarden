@@ -30,6 +30,7 @@ import { useColorScheme } from "nativewind";
 import { CalendarDays, Folder } from "lucide-react-native";
 import useDataStore from "@/store/data";
 import { useEffect, useState } from "react";
+import { deleteLinkCache } from "@/lib/cache";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -319,7 +320,11 @@ const LinkListing = ({ link, dashboard }: Props) => {
                   text: "Delete",
                   style: "destructive",
                   onPress: () => {
-                    deleteLink.mutate(link.id as number);
+                    deleteLink.mutate(link.id as number, {
+                      onSuccess: async () => {
+                        await deleteLinkCache(link.id as number);
+                      },
+                    });
                   },
                 },
               ]

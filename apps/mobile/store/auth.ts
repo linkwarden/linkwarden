@@ -4,6 +4,9 @@ import { router } from "expo-router";
 import { MobileAuth } from "@linkwarden/types";
 import { Alert } from "react-native";
 import * as FileSystem from "expo-file-system";
+import { queryClient } from "@/lib/queryClient";
+import { mmkvPersister } from "@/lib/queryPersister";
+import { clearCache } from "@/lib/cache";
 
 const CACHE_DIR = FileSystem.documentDirectory + "archivedData/";
 
@@ -105,7 +108,12 @@ const useAuthStore = create<AuthStore>((set) => ({
   signOut: async () => {
     await SecureStore.deleteItemAsync("TOKEN");
     await SecureStore.deleteItemAsync("INSTANCE");
-    await FileSystem.deleteAsync(CACHE_DIR, { idempotent: true });
+
+    queryClient.cancelQueries();
+    queryClient.clear();
+    mmkvPersister.removeClient?.();
+
+    await clearCache();
 
     set({
       auth: {
