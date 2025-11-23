@@ -5,6 +5,7 @@ import useAuthStore from "@/store/auth";
 import { ArchivedFormat } from "@linkwarden/types";
 import { Link as LinkType } from "@linkwarden/prisma/client";
 import WebView from "react-native-webview";
+import { Image, Platform, ScrollView } from "react-native";
 
 type Props = {
   link: LinkType;
@@ -19,6 +20,17 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
 
   const { auth } = useAuthStore();
   const [content, setContent] = useState<string>("");
+  const [dimension, setDimension] = useState<{
+    width: number;
+    height: number;
+  }>();
+
+  useEffect(() => {
+    if (content)
+      Image.getSize(content, (width, height) => {
+        setDimension({ width, height });
+      });
+  }, [content]);
 
   useEffect(() => {
     async function loadCacheOrFetch() {
@@ -59,15 +71,34 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
     loadCacheOrFetch();
   }, [link]);
 
-  return (
-    content && (
-      <WebView
-        style={{
-          flex: 1,
-        }}
-        source={{
-          baseUrl: content,
-          html: `
+  if (Platform.OS === "ios")
+    return (
+      content &&
+      dimension && (
+        <ScrollView maximumZoomScale={10}>
+          <Image
+            source={{ uri: content }}
+            onLoadEnd={() => setIsLoading(false)}
+            style={{
+              width: "100%",
+              height: "auto",
+              aspectRatio: dimension.width / dimension.height,
+            }}
+            resizeMode="contain"
+          />
+        </ScrollView>
+      )
+    );
+  else
+    return (
+      content && (
+        <WebView
+          style={{
+            flex: 1,
+          }}
+          source={{
+            baseUrl: content,
+            html: `
             <!DOCTYPE html>
             <html>
               <head>
@@ -90,16 +121,16 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
               </body>
             </html>
           `,
-        }}
-        scalesPageToFit
-        originWhitelist={["*"]}
-        mixedContentMode="always"
-        javaScriptEnabled={true}
-        allowFileAccess={true}
-        allowFileAccessFromFileURLs={true}
-        allowUniversalAccessFromFileURLs={true}
-        onLoadEnd={() => setIsLoading(false)}
-      />
-    )
-  );
+          }}
+          scalesPageToFit
+          originWhitelist={["*"]}
+          mixedContentMode="always"
+          javaScriptEnabled={true}
+          allowFileAccess={true}
+          allowFileAccessFromFileURLs={true}
+          allowUniversalAccessFromFileURLs={true}
+          onLoadEnd={() => setIsLoading(false)}
+        />
+      )
+    );
 }
