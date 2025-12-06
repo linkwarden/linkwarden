@@ -15,6 +15,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "../ui/separator";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 
 type Props = {
   onClose: Function;
@@ -22,6 +23,7 @@ type Props = {
 
 export default function NewTokenModal({ onClose }: Props) {
   const { t } = useTranslation();
+  const { width } = useWindowDimensions();
   const [newToken, setNewToken] = useState("");
   const addToken = useAddToken();
 
@@ -112,53 +114,75 @@ export default function NewTokenModal({ onClose }: Props) {
             <div className="w-full sm:w-fit">
               <p className="mb-2">{t("expires_in")}</p>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="metal" className="whitespace-nowrap w-32">
-                    {getLabel(token.expires)}
-                  </Button>
-                </DropdownMenuTrigger>
+              {width < 640 ? (
+                <select
+                  aria-label={t("expires_in")}
+                  className="w-full rounded-md p-2 border-neutral-content border-solid border outline-none focus:border-primary duration-100 bg-base-200 h-10"
+                  value={token.expires}
+                  onChange={(e) =>
+                    setToken({
+                      ...token,
+                      expires: Number(e.target.value),
+                    })
+                  }
+                >
+                  <option value={TokenExpiry.sevenDays}>{t("7_days")}</option>
+                  <option value={TokenExpiry.oneMonth}>{t("30_days")}</option>
+                  <option value={TokenExpiry.twoMonths}>{t("60_days")}</option>
+                  <option value={TokenExpiry.threeMonths}>{t("90_days")}</option>
+                  <option value={TokenExpiry.never}>{t("no_expiration")}</option>
+                </select>
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="metal" className="whitespace-nowrap w-32">
+                      {getLabel(token.expires)}
+                    </Button>
+                  </DropdownMenuTrigger>
 
-                <DropdownMenuContent>
-                  <DropdownMenuRadioGroup
-                    value={token.expires.toString()}
-                    onValueChange={(e) =>
-                      setToken({
-                        ...token,
-                        expires: Number(e),
-                      })
-                    }
-                  >
-                    <DropdownMenuRadioItem
-                      value={TokenExpiry.sevenDays.toString()}
+                  <DropdownMenuContent>
+                    <DropdownMenuRadioGroup
+                      value={token.expires.toString()}
+                      onValueChange={(e) =>
+                        setToken({
+                          ...token,
+                          expires: Number(e),
+                        })
+                      }
                     >
-                      {t("7_days")}
-                    </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={TokenExpiry.sevenDays.toString()}
+                      >
+                        {t("7_days")}
+                      </DropdownMenuRadioItem>
 
-                    <DropdownMenuRadioItem
-                      value={TokenExpiry.oneMonth.toString()}
-                    >
-                      {t("30_days")}
-                    </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={TokenExpiry.oneMonth.toString()}
+                      >
+                        {t("30_days")}
+                      </DropdownMenuRadioItem>
 
-                    <DropdownMenuRadioItem
-                      value={TokenExpiry.twoMonths.toString()}
-                    >
-                      {t("60_days")}
-                    </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={TokenExpiry.twoMonths.toString()}
+                      >
+                        {t("60_days")}
+                      </DropdownMenuRadioItem>
 
-                    <DropdownMenuRadioItem
-                      value={TokenExpiry.threeMonths.toString()}
-                    >
-                      {t("90_days")}
-                    </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem
+                        value={TokenExpiry.threeMonths.toString()}
+                      >
+                        {t("90_days")}
+                      </DropdownMenuRadioItem>
 
-                    <DropdownMenuRadioItem value={TokenExpiry.never.toString()}>
-                      {t("no_expiration")}
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                      <DropdownMenuRadioItem
+                        value={TokenExpiry.never.toString()}
+                      >
+                        {t("no_expiration")}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </div>
 
