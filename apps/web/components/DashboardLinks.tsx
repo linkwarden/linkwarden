@@ -85,16 +85,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
 
   const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
 
-  let shortendURL;
-
-  try {
-    if (link.url) {
-      shortendURL = new URL(link.url).host.toLowerCase();
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(
       collections.find(

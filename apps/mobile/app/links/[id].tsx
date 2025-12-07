@@ -1,172 +1,93 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  ActivityIndicator,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, ActivityIndicator, Text, Platform } from "react-native";
 import { WebView } from "react-native-webview";
-import * as FileSystem from "expo-file-system";
-import NetInfo from "@react-native-community/netinfo";
 import useAuthStore from "@/store/auth";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useUser } from "@linkwarden/router/user";
-import { useWindowDimensions } from "react-native";
-import RenderHtml from "@linkwarden/react-native-render-html";
-import ElementNotSupported from "@/components/ElementNotSupported";
-import { decode } from "html-entities";
 import { useGetLink } from "@linkwarden/router/links";
-import { useColorScheme } from "nativewind";
-import { rawTheme, ThemeName } from "@/lib/colors";
-import { CalendarDays, Link } from "lucide-react-native";
-
-const CACHE_DIR = FileSystem.documentDirectory + "archivedData/readable/";
-const htmlPath = (id: string) => `${CACHE_DIR}link_${id}.html`;
-
-async function ensureCacheDir() {
-  const info = await FileSystem.getInfoAsync(CACHE_DIR);
-  if (!info.exists) {
-    await FileSystem.makeDirectoryAsync(CACHE_DIR, { intermediates: true });
-  }
-}
+import useTmpStore from "@/store/tmp";
+import { ArchivedFormat } from "@linkwarden/types";
+import ReadableFormat from "@/components/Formats/ReadableFormat";
+import ImageFormat from "@/components/Formats/ImageFormat";
+import PdfFormat from "@/components/Formats/PdfFormat";
+import WebpageFormat from "@/components/Formats/WebpageFormat";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function LinkScreen() {
   const { auth } = useAuthStore();
   const { id, format } = useLocalSearchParams();
   const { data: user } = useUser(auth);
   const [url, setUrl] = useState<string>();
-  const [htmlContent, setHtmlContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
-  const { width } = useWindowDimensions();
-  const router = useRouter();
-  const { colorScheme } = useColorScheme();
 
   const { data: link } = useGetLink({ id: Number(id), auth, enabled: true });
 
+  const { updateTmp } = useTmpStore();
+
   useEffect(() => {
-    async function loadCacheOrFetch() {
-      await ensureCacheDir();
-      const htmlFile = htmlPath(id as string);
+    if (link?.id && user?.id)
+      updateTmp({
+        link,
+        user: {
+          id: user.id,
+        },
+      });
 
-      const [htmlInfo] = await Promise.all([FileSystem.getInfoAsync(htmlFile)]);
+    return () =>
+      updateTmp({
+        link: null,
+      });
+  }, [link, user]);
 
-      if (format === "3" && htmlInfo.exists) {
-        const rawHtml = await FileSystem.readAsStringAsync(htmlFile);
-        setHtmlContent(rawHtml);
-        setIsLoading(false);
+  useEffect(() => {
+    if (user?.id && link?.id && format) {
+      setUrl(`${auth.instance}/api/v1/archives/${link.id}?format=${format}`);
+    } else if (!url) {
+      if (link?.url) {
+        setUrl(link.url);
       }
-
-      const net = await NetInfo.fetch();
-      if (net.isConnected) {
-        await fetchLinkData();
-      }
-    }
-
-    if (user?.id && link?.id && !url) {
-      loadCacheOrFetch();
     }
   }, [user, link]);
 
-  async function fetchLinkData() {
-    // readable
-    if (link?.id && format === "3") {
-      const apiUrl = `${auth.instance}/api/v1/archives/${link.id}?format=${format}`;
-      setUrl(apiUrl);
-      try {
-        const response = await fetch(apiUrl, {
-          headers: { Authorization: `Bearer ${auth.session}` },
-        });
-        const html = (await response.json()).content;
-        setHtmlContent(html);
-        await FileSystem.writeAsStringAsync(htmlPath(id as string), html, {
-          encoding: FileSystem.EncodingType.UTF8,
-        });
-      } catch (e) {
-        console.error("Failed to fetch HTML content", e);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    // original
-    else if (link?.id && !format && user && link.url) {
-      setUrl(link.url);
-    }
-
-    // other formats
-    else if (link?.id && format) {
-      setUrl(`${auth.instance}/api/v1/archives/${link.id}?format=${format}`);
-    }
-  }
+  const insets = useSafeAreaInsets();
 
   return (
-    <>
-      {format === "3" && htmlContent ? (
-        <ScrollView
-          className="flex-1 bg-base-100"
-          contentContainerClassName="p-4"
-          nestedScrollEnabled
-        >
-          <Text className="text-2xl font-bold mb-2.5 text-base-content">
-            {decode(link?.name || link?.description || link?.url || "")}
-          </Text>
-
-          <TouchableOpacity
-            className="flex-row items-center gap-1 mb-2.5 pr-5"
-            onPress={() => router.replace(`/links/${id}`)}
-          >
-            <Link
-              size={16}
-              color={rawTheme[colorScheme as ThemeName]["neutral"]}
-            />
-            <Text className="text-base text-neutral flex-1" numberOfLines={1}>
-              {link?.url}
-            </Text>
-          </TouchableOpacity>
-
-          <View className="flex-row items-center gap-1 mb-2.5">
-            <CalendarDays
-              size={16}
-              color={rawTheme[colorScheme as ThemeName]["neutral"]}
-            />
-            <Text className="text-base text-neutral">
-              {new Date(
-                (link?.importDate || link?.createdAt) as string
-              ).toLocaleString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
-            </Text>
-          </View>
-
-          <View className="border-t border-neutral-content mt-2.5 mb-5" />
-
-          <RenderHtml
-            contentWidth={width}
-            source={{ html: htmlContent }}
-            renderers={{
-              table: () => (
-                <ElementNotSupported
-                  onPress={() => router.replace(`/links/${id}`)}
-                />
-              ),
-            }}
-            tagsStyles={{
-              p: { fontSize: 18, lineHeight: 28, marginVertical: 10 },
-            }}
-            baseStyle={{
-              color: rawTheme[colorScheme as ThemeName]["base-content"],
-            }}
-          />
-        </ScrollView>
+    <View
+      className="flex-1"
+      style={{ paddingBottom: Platform.OS === "android" ? insets.bottom : 0 }}
+    >
+      {link?.id && Number(format) === ArchivedFormat.readability ? (
+        <ReadableFormat
+          link={link as any}
+          setIsLoading={(state) => setIsLoading(state)}
+        />
+      ) : link?.id &&
+        (Number(format) === ArchivedFormat.jpeg ||
+          Number(format) === ArchivedFormat.png) ? (
+        <ImageFormat
+          link={link as any}
+          setIsLoading={(state) => setIsLoading(state)}
+          format={Number(format)}
+        />
+      ) : link?.id && Number(format) === ArchivedFormat.pdf ? (
+        <PdfFormat
+          link={link as any}
+          setIsLoading={(state) => setIsLoading(state)}
+        />
+      ) : link?.id && Number(format) === ArchivedFormat.monolith ? (
+        <WebpageFormat
+          link={link as any}
+          setIsLoading={(state) => setIsLoading(state)}
+        />
       ) : url ? (
         <WebView
           className={isLoading ? "opacity-0" : "flex-1"}
           source={{
             uri: url,
-            headers: format ? { Authorization: `Bearer ${auth.session}` } : {},
+            headers:
+              format || link?.type !== "url"
+                ? { Authorization: `Bearer ${auth.session}` }
+                : {},
           }}
           onLoadEnd={() => setIsLoading(false)}
         />
@@ -185,6 +106,6 @@ export default function LinkScreen() {
           <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
         </View>
       )}
-    </>
+    </View>
   );
 }

@@ -6,7 +6,7 @@ import { Platform, TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
-export default function RootLayout() {
+export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 
@@ -54,9 +54,12 @@ export default function RootLayout() {
                 >
                   <DropdownMenu.ItemTitle>New Link</DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item key="more-options" disabled>
+                <DropdownMenu.Item
+                  key="new-collection"
+                  onSelect={() => SheetManager.show("new-collection-sheet")}
+                >
                   <DropdownMenu.ItemTitle>
-                    More Coming Soon!
+                    New Collection
                   </DropdownMenu.ItemTitle>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>

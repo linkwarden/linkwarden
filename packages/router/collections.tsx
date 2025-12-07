@@ -37,18 +37,24 @@ const useCollections = (auth?: MobileAuth) => {
   });
 };
 
-const useCreateCollection = () => {
+const useCreateCollection = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (body: any) => {
-      const response = await fetch("/api/v1/collections", {
-        body: JSON.stringify(body),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      });
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + "/api/v1/collections",
+        {
+          body: JSON.stringify(body),
+          headers: {
+            "Content-Type": "application/json",
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+          method: "POST",
+        }
+      );
 
       const data = await response.json();
 
@@ -103,17 +109,23 @@ const useUpdateCollection = () => {
   });
 };
 
-const useDeleteCollection = () => {
+const useDeleteCollection = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/v1/collections/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + `/api/v1/collections/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+        }
+      );
 
       const data = await response.json();
 

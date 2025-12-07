@@ -42,3 +42,5 @@ ios/
 android/
 
 service-account-file.json
+
+.env.local

@@ -111,14 +111,22 @@ const useUpsertTags = () => {
   });
 };
 
-const useRemoveTag = () => {
+const useRemoveTag = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (tagId: number) => {
-      const response = await fetch(`/api/v1/tags/${tagId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        (auth?.instance ? auth?.instance : "") + `/api/v1/tags/${tagId}`,
+        {
+          method: "DELETE",
+          headers: {
+            ...(auth?.session
+              ? { Authorization: `Bearer ${auth.session}` }
+              : {}),
+          },
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.response);

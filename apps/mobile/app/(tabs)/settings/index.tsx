@@ -14,9 +14,9 @@ import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useEffect, useState } from "react";
 import {
+  AppWindowMac,
   Check,
-  FileText,
-  Globe,
+  ExternalLink,
   LogOut,
   Mail,
   Moon,
@@ -24,7 +24,6 @@ import {
   Sun,
 } from "lucide-react-native";
 import useDataStore from "@/store/data";
-import { ArchivedFormat } from "@/types/global";
 import * as Clipboard from "expo-clipboard";
 
 export default function SettingsScreen() {
@@ -145,26 +144,24 @@ export default function SettingsScreen() {
         </View>
 
         <View>
-          <Text className="mb-4 mx-4 text-neutral">
-            Default Behavior for Opening Links
-          </Text>
+          <Text className="mb-4 mx-4 text-neutral">Preferred Browser</Text>
           <View className="bg-base-200 rounded-xl flex-col">
             <TouchableOpacity
               className="flex-row gap-2 items-center justify-between py-3 px-4"
               onPress={() =>
                 updateData({
-                  preferredFormat: null,
+                  preferredBrowser: "app",
                 })
               }
             >
               <View className="flex-row items-center gap-2">
-                <Globe
+                <AppWindowMac
                   size={20}
                   color={rawTheme[colorScheme as ThemeName].neutral}
                 />
-                <Text className="text-base-content">Open original content</Text>
+                <Text className="text-base-content">In app browser</Text>
               </View>
-              {data.preferredFormat === null ? (
+              {data.preferredBrowser === "app" ? (
                 <Check
                   size={20}
                   color={rawTheme[colorScheme as ThemeName].primary}
@@ -176,18 +173,20 @@ export default function SettingsScreen() {
               className="flex-row gap-2 items-center justify-between py-3 px-4"
               onPress={() =>
                 updateData({
-                  preferredFormat: ArchivedFormat.readability,
+                  preferredBrowser: "system",
                 })
               }
             >
               <View className="flex-row items-center gap-2">
-                <FileText
+                <ExternalLink
                   size={20}
                   color={rawTheme[colorScheme as ThemeName].neutral}
                 />
-                <Text className="text-base-content">Open reader view</Text>
+                <Text className="text-base-content">
+                  System default browser
+                </Text>
               </View>
-              {data.preferredFormat === ArchivedFormat.readability ? (
+              {data.preferredBrowser === "system" ? (
                 <Check
                   size={20}
                   color={rawTheme[colorScheme as ThemeName].primary}
@@ -230,7 +229,13 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: Platform.select({
+    ios: {
+      flex: 1,
+      paddingBottom: 83,
+    },
+    default: {
+      flex: 1,
+    },
+  }),
 });

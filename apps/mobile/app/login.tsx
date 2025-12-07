@@ -9,14 +9,16 @@ import { View, Text, Dimensions, TouchableOpacity, Image } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import Svg, { Path } from "react-native-svg";
 import {
-  KeyboardAwareScrollView,
+  KeyboardStickyView,
   KeyboardToolbar,
 } from "react-native-keyboard-controller";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { auth, signIn } = useAuthStore();
   const { colorScheme } = useColorScheme();
   const [method, setMethod] = useState<"password" | "token">("password");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [form, setForm] = useState({
     user: "",
@@ -55,10 +57,7 @@ export default function HomeScreen() {
 
   return (
     <>
-      <KeyboardAwareScrollView
-        bottomOffset={62}
-        contentContainerClassName="flex-col justify-end h-full bg-base-100 relative"
-      >
+      <KeyboardStickyView className="flex-col justify-end h-full bg-base-100 relative">
         <View className="flex-col justify-end h-full bg-primary relative">
           <View className="my-auto">
             <Image
@@ -97,7 +96,7 @@ export default function HomeScreen() {
           <Svg
             viewBox="0 0 1440 320"
             width={Dimensions.get("screen").width}
-            height={100}
+            height={Dimensions.get("screen").width * (320 / 1440) + 2}
           >
             <Path
               fill={rawTheme[colorScheme as ThemeName]["base-100"]}
@@ -105,7 +104,10 @@ export default function HomeScreen() {
               d="M0,256L48,234.7C96,213,192,171,288,176C384,181,480,235,576,266.7C672,299,768,309,864,277.3C960,245,1056,171,1152,122.7C1248,75,1344,53,1392,42.7L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
             />
           </Svg>
-          <View className="flex-col justify-end h-auto duration-100 pt-10 bg-base-100 -mt-2 pb-10 gap-4 w-full px-4">
+          <SafeAreaView
+            edges={["bottom"]}
+            className="flex-col justify-end h-auto duration-100 pt-10 bg-base-100 -mt-2 pb-10 gap-4 w-full px-4"
+          >
             {showInstanceField && (
               <Input
                 className="w-full text-xl p-3 leading-tight h-12"
@@ -161,12 +163,20 @@ export default function HomeScreen() {
             <Button
               variant="accent"
               size="lg"
-              onPress={() => {
+              isLoading={isLoading}
+              onPress={async () => {
                 if (
                   ((form.user && form.password) || form.token) &&
                   form.instance
                 ) {
-                  signIn(form.user, form.password, form.instance, form.token);
+                  setIsLoading(true);
+                  await signIn(
+                    form.user,
+                    form.password,
+                    form.instance,
+                    form.token
+                  );
+                  setIsLoading(false);
                 }
               }}
             >
@@ -178,9 +188,9 @@ export default function HomeScreen() {
             >
               <Text className="text-neutral text-center w-fit">Need help?</Text>
             </TouchableOpacity>
-          </View>
+          </SafeAreaView>
         </View>
-      </KeyboardAwareScrollView>
+      </KeyboardStickyView>
       <KeyboardToolbar />
     </>
   );

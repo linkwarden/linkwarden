@@ -5,7 +5,7 @@ import HapticTab from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
-import { House, Link, Settings } from "lucide-react-native";
+import { Folder, Hash, House, Link, Settings } from "lucide-react-native";
 
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();
@@ -23,11 +23,15 @@ export default function TabLayout() {
             borderTopWidth: 0,
             elevation: 0,
             backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
+            paddingLeft: 5,
+            paddingRight: 5,
           },
           default: {
             borderTopWidth: 0,
             backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
             elevation: 0,
+            paddingLeft: 5,
+            paddingRight: 5,
           },
         }),
       }}
@@ -37,7 +41,7 @@ export default function TabLayout() {
         options={{
           title: "Dashboard",
           headerShown: false,
-          tabBarIcon: ({ color }) => <House size={26} color={color} />,
+          tabBarIcon: ({ color }) => <House size={24} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -45,7 +49,23 @@ export default function TabLayout() {
         options={{
           title: "Links",
           headerShown: false,
-          tabBarIcon: ({ color }) => <Link size={26} color={color} />,
+          tabBarIcon: ({ color }) => <Link size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="collections"
+        options={{
+          title: "Collections",
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Folder size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="tags"
+        options={{
+          title: "Tags",
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Hash size={24} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -53,7 +73,7 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           headerShown: false,
-          tabBarIcon: ({ color }) => <Settings size={26} color={color} />,
+          tabBarIcon: ({ color }) => <Settings size={24} color={color} />,
         }}
       />
     </Tabs>

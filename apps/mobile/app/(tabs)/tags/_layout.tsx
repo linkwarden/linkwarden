@@ -10,7 +10,7 @@ export default function Layout() {
   return (
     <Stack
       screenOptions={{
-        headerTitle: "Links",
+        headerTitle: "Tags",
         headerLargeTitle: true,
         headerTransparent: Platform.OS === "ios" ? true : false,
         headerShadowVisible: false,
@@ -18,7 +18,7 @@ export default function Layout() {
           colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerSearchBarOptions: {
-          placeholder: "Search Links",
+          placeholder: "Search Tags",
           autoCapitalize: "none",
           onChangeText: (e) => {
             router.setParams({

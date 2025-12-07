@@ -1,20 +1,23 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function LinkTypeBadge({
   link,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
 }) {
-  let shortendURL;
+  const [url, setUrl] = useState("");
 
-  if (link.type === "url" && link.url) {
-    try {
-      shortendURL = new URL(link.url).host.toLowerCase();
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    if (link.type === "url" && link.url) {
+      try {
+        setUrl(new URL(link.url).host.toLowerCase());
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }
+  }, [link]);
 
   const typeIcon = () => {
     switch (link.type) {
@@ -27,7 +30,7 @@ export default function LinkTypeBadge({
     }
   };
 
-  return link.url && shortendURL ? (
+  return link.url && url ? (
     <Link
       href={link.url || ""}
       target="_blank"
@@ -38,7 +41,7 @@ export default function LinkTypeBadge({
       className="flex gap-1 item-center select-none text-neutral hover:opacity-70 duration-100 max-w-full w-fit"
     >
       <i className="bi-link-45deg text-lg leading-none"></i>
-      <p className="text-xs truncate">{shortendURL}</p>
+      <p className="text-xs truncate">{url}</p>
     </Link>
   ) : (
     <div className="flex gap-1 item-center select-none text-neutral duration-100 max-w-full w-fit">

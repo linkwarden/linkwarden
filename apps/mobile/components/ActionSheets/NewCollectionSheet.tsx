@@ -3,17 +3,20 @@ import { useRef, useState } from "react";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import Input from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { useAddLink } from "@linkwarden/router/links";
 import useAuthStore from "@/store/auth";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
+import { useCreateCollection } from "@linkwarden/router/collections";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function AddLinkSheet() {
+export default function NewCollectionSheet() {
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const { auth } = useAuthStore();
-  const addLink = useAddLink(auth);
-  const [link, setLink] = useState("");
+  const createCollection = useCreateCollection(auth);
+  const [collection, setCollection] = useState({
+    name: "",
+    description: "",
+  });
   const { colorScheme } = useColorScheme();
 
   const insets = useSafeAreaInsets();
@@ -32,39 +35,51 @@ export default function AddLinkSheet() {
     >
       <View className="px-8 py-5">
         <Input
-          placeholder="e.g. https://example.com"
+          placeholder="Name"
           className="mb-4 bg-base-100"
-          value={link}
-          onChangeText={setLink}
+          value={collection.name}
+          onChangeText={(text) => setCollection({ ...collection, name: text })}
+        />
+
+        <Input
+          placeholder="Description"
+          className="mb-4 bg-base-100"
+          value={collection.description}
+          onChangeText={(text) =>
+            setCollection({ ...collection, description: text })
+          }
         />
 
         <Button
           onPress={() =>
-            addLink.mutate(
-              { url: link },
+            createCollection.mutate(
+              { name: collection.name, description: collection.description },
               {
                 onSuccess: () => {
                   actionSheetRef.current?.hide();
-                  setLink("");
+                  setCollection({ name: "", description: "" });
                 },
                 onError: (error) => {
-                  Alert.alert("Error", "There was an error adding the link.");
-                  console.error("Error adding link:", error);
+                  Alert.alert(
+                    "Error",
+                    "There was an error creating the collection."
+                  );
+                  console.error("Error creating collection:", error);
                 },
               }
             )
           }
-          isLoading={addLink.isPending}
+          isLoading={createCollection.isPending}
           variant="accent"
           className="mb-2"
         >
-          <Text className="text-white">Save to Linkwarden</Text>
+          <Text className="text-white">Save Collection</Text>
         </Button>
 
         <Button
           onPress={() => {
             actionSheetRef.current?.hide();
-            setLink("");
+            setCollection({ name: "", description: "" });
           }}
           variant="outline"
           className="mb-2"

@@ -23,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/maskable_logo.jpeg",
         "backgroundColor": "#ffffff"
       },
       "package": "app.linkwarden"
@@ -56,7 +56,6 @@
           "iosAppGroupIdentifier": "group.app.linkwarden"
         }
       ],
-      "./plugins/with-daynight-transparent-nav",
       [
         "expo-build-properties",
         {
@@ -66,10 +65,21 @@
             "allowBackup": false,
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0"
+            "buildToolsVersion": "35.0.0",
+            "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      [
+        "react-native-edge-to-edge",
+        {
+          "android": {
+            "parentTheme": "Default",
+            "enforceNavigationBarContrast": false
+          }
+        }
+      ],
+      "./plugins/with-daynight-transparent-nav"
     ],
     "experiments": {
       "typedRoutes": true

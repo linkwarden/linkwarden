@@ -1,4 +1,4 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, Platform } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
@@ -20,6 +20,8 @@ import { useCollections } from "@linkwarden/router/collections";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { Folder, ChevronRight, Check } from "lucide-react-native";
+import useTmpStore from "@/store/tmp";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { auth } = useAuthStore();
@@ -38,6 +40,8 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
       setLink(params.link);
     }
   }, [params?.link]);
+
+  const { tmp, updateTmp } = useTmpStore();
 
   return (
     <View className="px-8 py-5">
@@ -111,6 +115,11 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         onPress={() =>
           editLink.mutate(link as LinkIncludingShortenedCollectionAndTags, {
             onSuccess: () => {
+              if (link && tmp.link)
+                updateTmp({
+                  link,
+                });
+
               SheetManager.hide("edit-link-sheet");
             },
             onError: (error) => {
@@ -119,6 +128,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
             },
           })
         }
+        isLoading={editLink.isPending}
         variant="accent"
         className="mb-2"
       >
@@ -246,6 +256,8 @@ const routes: Route[] = [
 export default function EditLinkSheet() {
   const { colorScheme } = useColorScheme();
 
+  const insets = useSafeAreaInsets();
+
   return (
     <ActionSheet
       gestureEnabled
@@ -258,6 +270,7 @@ export default function EditLinkSheet() {
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
+      safeAreaInsets={insets}
     />
   );
 }

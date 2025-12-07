@@ -1,7 +1,18 @@
-import { View, Text, Image, Pressable, Platform, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  Platform,
+  Alert,
+  ActivityIndicator,
+  Linking,
+} from "react-native";
 import { decode } from "html-entities";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import { ArchivedFormat } from "@linkwarden/types";
+import getFormatBasedOnPreference from "@linkwarden/lib/getFormatBasedOnPreference";
+import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
 import {
   atLeastOneFormatAvailable,
   formatAvailable,
@@ -18,6 +29,8 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { CalendarDays, Folder } from "lucide-react-native";
 import useDataStore from "@/store/data";
+import { useEffect, useState } from "react";
+import { deleteLinkCache } from "@/lib/cache";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -34,15 +47,17 @@ const LinkListing = ({ link, dashboard }: Props) => {
 
   const deleteLink = useDeleteLink(auth);
 
-  let shortendURL;
+  const [url, setUrl] = useState("");
 
-  try {
-    if (link.url) {
-      shortendURL = new URL(link.url).host.toLowerCase();
+  useEffect(() => {
+    try {
+      if (link.url) {
+        setUrl(new URL(link.url).host.toLowerCase());
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
-  }
+  }, [link]);
 
   return (
     <ContextMenu.Root>
@@ -55,13 +70,27 @@ const LinkListing = ({ link, dashboard }: Props) => {
             dashboard && "rounded-xl"
           )}
           onLongPress={() => {}}
-          onPress={() =>
-            router.push(
-              data.preferredFormat
-                ? `/links/${link.id}?format=${data.preferredFormat}`
-                : `/links/${link.id}`
-            )
-          }
+          onPress={() => {
+            if (user) {
+              const format = getFormatBasedOnPreference({
+                link,
+                preference: user.linksRouteTo,
+              });
+
+              data.preferredBrowser === "app"
+                ? router.navigate(
+                    format !== null
+                      ? `/links/${link.id}?format=${format}`
+                      : `/links/${link.id}`
+                  )
+                : Linking.openURL(
+                    format !== null
+                      ? auth.instance +
+                          `/preserved/${link?.id}?format=${format}`
+                      : (link.url as string)
+                  );
+            }
+          }}
           android_ripple={{
             color: colorScheme === "dark" ? "rgba(255,255,255,0.2)" : "#ddd",
             borderless: false,
@@ -81,12 +110,12 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 {decode(link.name || link.description || link.url)}
               </Text>
 
-              {shortendURL && (
+              {url && (
                 <Text
                   numberOfLines={1}
                   className="mt-1.5 font-light text-sm text-base-content"
                 >
-                  {shortendURL}
+                  {url}
                 </Text>
               )}
 
@@ -117,6 +146,11 @@ const LinkListing = ({ link, dashboard }: Props) => {
                     }}
                     className="rounded-md h-[60px] w-[90px] object-cover scale-105"
                   />
+                ) : !link.preview ? (
+                  <ActivityIndicator
+                    size="small"
+                    className="h-[60px] w-[90px]"
+                  />
                 ) : (
                   <View className="h-[60px] w-[90px]" />
                 )}
@@ -144,21 +178,39 @@ const LinkListing = ({ link, dashboard }: Props) => {
 
       <ContextMenu.Content avoidCollisions>
         <ContextMenu.Item
-          key="open-link"
-          onSelect={() => router.push(`/links/${link.id}`)}
-        >
-          <ContextMenu.ItemTitle>Open Link</ContextMenu.ItemTitle>
-        </ContextMenu.Item>
+          key="open-original"
+          onSelect={() => {
+            if (link) {
+              const format = getOriginalFormat(link);
 
-        {link.url && (
-          <ContextMenu.Item
-            key="copy-url"
-            onSelect={async () => {
-              await Clipboard.setStringAsync(link.url as string);
-            }}
-          >
-            <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
-          </ContextMenu.Item>
+              data.preferredBrowser === "app"
+                ? router.navigate(
+                    format !== null
+                      ? `/links/${link.id}?format=${format}`
+                      : `/links/${link.id}`
+                  )
+                : Linking.openURL(
+                    format !== null
+                      ? auth.instance +
+                          `/preserved/${link?.id}?format=${format}`
+                      : (link.url as string)
+                  );
+            }
+          }}
+        >
+          <ContextMenu.ItemTitle>Open Original</ContextMenu.ItemTitle>
+        </ContextMenu.Item>
+        {link?.url && (
+          <>
+            <ContextMenu.Item
+              key="copy-url"
+              onSelect={async () => {
+                await Clipboard.setStringAsync(link.url as string);
+              }}
+            >
+              <ContextMenu.ItemTitle>Copy URL</ContextMenu.ItemTitle>
+            </ContextMenu.Item>
+          </>
         )}
 
         <ContextMenu.Item
@@ -201,7 +253,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 <ContextMenu.Item
                   key="preserved-formats-webpage"
                   onSelect={() =>
-                    router.push(
+                    router.navigate(
                       `/links/${link.id}?format=${ArchivedFormat.monolith}`
                     )
                   }
@@ -213,7 +265,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 <ContextMenu.Item
                   key="preserved-formats-screenshot"
                   onSelect={() =>
-                    router.push(
+                    router.navigate(
                       `/links/${link.id}?format=${
                         link.image?.endsWith(".png")
                           ? ArchivedFormat.png
@@ -229,7 +281,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 <ContextMenu.Item
                   key="preserved-formats-pdf"
                   onSelect={() =>
-                    router.push(
+                    router.navigate(
                       `/links/${link.id}?format=${ArchivedFormat.pdf}`
                     )
                   }
@@ -241,7 +293,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 <ContextMenu.Item
                   key="preserved-formats-readable"
                   onSelect={() =>
-                    router.push(
+                    router.navigate(
                       `/links/${link.id}?format=${ArchivedFormat.readability}`
                     )
                   }
@@ -268,7 +320,11 @@ const LinkListing = ({ link, dashboard }: Props) => {
                   text: "Delete",
                   style: "destructive",
                   onPress: () => {
-                    deleteLink.mutate(link.id as number);
+                    deleteLink.mutate(link.id as number, {
+                      onSuccess: async () => {
+                        await deleteLinkCache(link.id as number);
+                      },
+                    });
                   },
                 },
               ]
