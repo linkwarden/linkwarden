@@ -1,4 +1,4 @@
-import { Alert, Text, View } from "react-native";
+import { Alert, Platform, Text, View } from "react-native";
 import { useRef, useState } from "react";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import Input from "@/components/ui/Input";
@@ -7,6 +7,7 @@ import { useAddLink } from "@linkwarden/router/links";
 import useAuthStore from "@/store/auth";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function AddLinkSheet() {
   const actionSheetRef = useRef<ActionSheetRef>(null);
@@ -14,6 +15,8 @@ export default function AddLinkSheet() {
   const addLink = useAddLink(auth);
   const [link, setLink] = useState("");
   const { colorScheme } = useColorScheme();
+
+  const insets = useSafeAreaInsets();
 
   return (
     <ActionSheet
@@ -25,6 +28,7 @@ export default function AddLinkSheet() {
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
+      safeAreaInsets={insets}
     >
       <View className="px-8 py-5">
         <Input

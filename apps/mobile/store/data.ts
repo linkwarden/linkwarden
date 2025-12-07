@@ -15,13 +15,13 @@ const useDataStore = create<DataStore>((set, get) => ({
       hasShareIntent: false,
       url: "",
     },
-    theme: "system",
+    theme: "light",
     preferredBrowser: "app",
   },
   setData: async () => {
     const dataString = JSON.parse((await AsyncStorage.getItem("data")) || "{}");
 
-    colorScheme.set(dataString.theme || "system");
+    colorScheme.set(dataString.theme || "light");
 
     if (dataString)
       set((state) => ({ data: { ...state.data, ...dataString } }));

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ActivityIndicator, Text } from "react-native";
+import { View, ActivityIndicator, Text, Platform } from "react-native";
 import { WebView } from "react-native-webview";
 import useAuthStore from "@/store/auth";
 import { useLocalSearchParams } from "expo-router";
@@ -11,6 +11,7 @@ import ReadableFormat from "@/components/Formats/ReadableFormat";
 import ImageFormat from "@/components/Formats/ImageFormat";
 import PdfFormat from "@/components/Formats/PdfFormat";
 import WebpageFormat from "@/components/Formats/WebpageFormat";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function LinkScreen() {
   const { auth } = useAuthStore();
@@ -48,8 +49,13 @@ export default function LinkScreen() {
     }
   }, [user, link]);
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <>
+    <View
+      className="flex-1"
+      style={{ paddingBottom: Platform.OS === "android" ? insets.bottom : 0 }}
+    >
       {link?.id && Number(format) === ArchivedFormat.readability ? (
         <ReadableFormat
           link={link as any}
@@ -100,6 +106,6 @@ export default function LinkScreen() {
           <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
         </View>
       )}
-    </>
+    </View>
   );
 }

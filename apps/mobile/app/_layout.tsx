@@ -38,6 +38,7 @@ import { useDeleteLink, useUpdateLink } from "@linkwarden/router/links";
 import { deleteLinkCache } from "@/lib/cache";
 import { queryClient } from "@/lib/queryClient";
 import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -130,23 +131,18 @@ const RootComponent = ({
     >
       <KeyboardProvider>
         <SheetProvider>
+          <StatusBar
+            style={colorScheme === "dark" ? "light" : "dark"}
+            backgroundColor={rawTheme[colorScheme as ThemeName]["base-100"]}
+          />
           {!isLoading && (
             <Stack
               screenOptions={{
-                navigationBarColor:
-                  rawTheme[colorScheme as ThemeName]["base-200"],
                 headerShown: false,
                 contentStyle: {
                   backgroundColor:
                     rawTheme[colorScheme as ThemeName]["base-100"],
                 },
-                ...Platform.select({
-                  android: {
-                    statusBarStyle: colorScheme === "dark" ? "light" : "dark",
-                    statusBarBackgroundColor:
-                      rawTheme[colorScheme as ThemeName]["base-100"],
-                  },
-                }),
               }}
             >
               {/* <Stack.Screen name="(tabs)" /> */}
@@ -157,8 +153,6 @@ const RootComponent = ({
                   headerBackTitle: "Back",
                   headerTitle: "",
                   headerTintColor: colorScheme === "dark" ? "white" : "black",
-                  navigationBarColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
                   headerStyle: {
                     backgroundColor:
                       colorScheme === "dark"
@@ -318,43 +312,9 @@ const RootComponent = ({
                   ),
                 }}
               />
-              <Stack.Screen
-                name="login"
-                options={{
-                  navigationBarColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                  ...Platform.select({
-                    android: {
-                      statusBarStyle:
-                        colorScheme === "light" ? "light" : "dark",
-                      statusBarBackgroundColor:
-                        rawTheme[colorScheme as ThemeName]["primary"],
-                    },
-                  }),
-                }}
-              />
-              <Stack.Screen
-                name="index"
-                options={{
-                  navigationBarColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                  ...Platform.select({
-                    android: {
-                      statusBarStyle:
-                        colorScheme === "light" ? "light" : "dark",
-                      statusBarBackgroundColor:
-                        rawTheme[colorScheme as ThemeName]["primary"],
-                    },
-                  }),
-                }}
-              />
-              <Stack.Screen
-                name="incoming"
-                options={{
-                  navigationBarColor:
-                    rawTheme[colorScheme as ThemeName]["base-100"],
-                }}
-              />
+              <Stack.Screen name="login" />
+              <Stack.Screen name="index" />
+              <Stack.Screen name="incoming" />
               <Stack.Screen name="+not-found" />
             </Stack>
           )}

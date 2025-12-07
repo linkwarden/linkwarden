@@ -1,4 +1,4 @@
-import { Alert, Text, View } from "react-native";
+import { Alert, Platform, Text, View } from "react-native";
 import { useRef, useState } from "react";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import Input from "@/components/ui/Input";
@@ -7,6 +7,7 @@ import useAuthStore from "@/store/auth";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { useCreateCollection } from "@linkwarden/router/collections";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function NewCollectionSheet() {
   const actionSheetRef = useRef<ActionSheetRef>(null);
@@ -18,6 +19,8 @@ export default function NewCollectionSheet() {
   });
   const { colorScheme } = useColorScheme();
 
+  const insets = useSafeAreaInsets();
+
   return (
     <ActionSheet
       ref={actionSheetRef}
@@ -28,6 +31,7 @@ export default function NewCollectionSheet() {
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
+      safeAreaInsets={insets}
     >
       <View className="px-8 py-5">
         <Input

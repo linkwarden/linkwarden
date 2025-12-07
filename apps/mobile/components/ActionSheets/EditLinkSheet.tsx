@@ -1,4 +1,4 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, Platform } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
@@ -21,6 +21,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { Folder, ChevronRight, Check } from "lucide-react-native";
 import useTmpStore from "@/store/tmp";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { auth } = useAuthStore();
@@ -255,6 +256,8 @@ const routes: Route[] = [
 export default function EditLinkSheet() {
   const { colorScheme } = useColorScheme();
 
+  const insets = useSafeAreaInsets();
+
   return (
     <ActionSheet
       gestureEnabled
@@ -267,6 +270,7 @@ export default function EditLinkSheet() {
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
       }}
+      safeAreaInsets={insets}
     />
   );
 }
