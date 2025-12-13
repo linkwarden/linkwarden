@@ -46,7 +46,7 @@
     "@types/react": "18.3.20",
     "@types/react-dom": "18.3.7",
     "@types/rss": "^0.0.32",
-    "axios": "^1.5.1",
+    "axios": "^1.12.0",
     "bcrypt": "^5.1.0",
     "bootstrap-icons": "^1.11.2",
     "class-variance-authority": "^0.7.1",
@@ -67,8 +67,8 @@
     "jszip": "^3.10.1",
     "lucide-react": "^0.511.0",
     "micro": "^10.0.1",
-    "next": "13.4.12",
-    "next-auth": "^4.22.1",
+    "next": "14.2.35",
+    "next-auth": "^4.24.12",
     "next-i18next": "^15.3.0",
     "node-fetch": "^2.7.0",
     "papaparse": "^5.5.3",
@@ -92,7 +92,7 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.1",
-    "zod": "^3.23.8",
+    "zod": "^4.1.13",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
