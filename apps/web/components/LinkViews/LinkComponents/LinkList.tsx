@@ -1,8 +1,5 @@
-import {
-  CollectionIncludingMembersAndLinkCount,
-  LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
-import { useEffect, useState } from "react";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { useEffect, useMemo, useState } from "react";
 import useLinkStore from "@/store/links";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
@@ -16,7 +13,6 @@ import LinkTypeBadge from "./LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
-import { useLinks } from "@linkwarden/router/links";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
 import { useRouter } from "next/router";
@@ -54,8 +50,6 @@ export default function LinkCardCompact({ link, editMode }: Props) {
     settings: { show },
   } = useLocalSettingsStore();
 
-  const { links } = useLinks();
-
   useEffect(() => {
     if (!editMode) {
       setSelectedLinks([]);
@@ -78,20 +72,9 @@ export default function LinkCardCompact({ link, editMode }: Props) {
     }
   };
 
-  const [collection, setCollection] =
-    useState<CollectionIncludingMembersAndLinkCount>(
-      collections.find(
-        (e) => e.id === link.collection.id
-      ) as CollectionIncludingMembersAndLinkCount
-    );
-
-  useEffect(() => {
-    setCollection(
-      collections.find(
-        (e) => e.id === link.collection.id
-      ) as CollectionIncludingMembersAndLinkCount
-    );
-  }, [collections, links]);
+  const collection = useMemo(() => {
+    return collections.find((c) => c.id === link.collection.id);
+  }, [collections, link.collection.id]);
 
   const permissions = usePermissions(collection?.id as number);
 
@@ -163,7 +146,7 @@ export default function LinkCardCompact({ link, editMode }: Props) {
             <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-2 text-xs text-neutral">
               <div className="flex items-center gap-x-3 text-neutral flex-wrap">
                 {show.link && <LinkTypeBadge link={link} />}
-                {show.collection && (
+                {show.collection && collection && (
                   <LinkCollection link={link} collection={collection} />
                 )}
                 {show.date && <LinkDate link={link} />}
@@ -174,7 +157,6 @@ export default function LinkCardCompact({ link, editMode }: Props) {
         {!isPublic && <LinkPin link={link} />}
         <LinkActions
           link={link}
-          collection={collection}
           linkModal={linkModal}
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"

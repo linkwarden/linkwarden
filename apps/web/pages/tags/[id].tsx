@@ -233,7 +233,6 @@ export default function Index() {
             editMode={editMode}
             links={links}
             layout={viewMode}
-            placeholderCount={1}
             useData={data}
           />
 

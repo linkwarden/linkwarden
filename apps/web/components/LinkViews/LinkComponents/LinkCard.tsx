@@ -1,6 +1,5 @@
 import {
   ArchivedFormat,
-  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -22,7 +21,7 @@ import LinkTypeBadge from "./LinkTypeBadge";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
-import { useGetLink, useLinks } from "@linkwarden/router/links";
+import { useGetLink } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
@@ -79,8 +78,6 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     settings: { show },
   } = useLocalSettingsStore();
 
-  const { links } = useLinks();
-
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
@@ -102,20 +99,9 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     }
   };
 
-  const [collection, setCollection] =
-    useState<CollectionIncludingMembersAndLinkCount>(
-      collections.find(
-        (e) => e.id === link.collection.id
-      ) as CollectionIncludingMembersAndLinkCount
-    );
-
-  useEffect(() => {
-    setCollection(
-      collections.find(
-        (e) => e.id === link.collection.id
-      ) as CollectionIncludingMembersAndLinkCount
-    );
-  }, [collections, links]);
+  const collection = useMemo(() => {
+    return collections.find((c) => c.id === link.collection.id);
+  }, [collections, link.collection.id]);
 
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
@@ -241,7 +227,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
                 <Separator className="mb-1" />
 
                 <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
-                  {show.collection && !isPublicRoute && (
+                  {show.collection && !isPublicRoute && collection && (
                     <div className="cursor-pointer truncate">
                       <LinkCollection link={link} collection={collection} />
                     </div>
@@ -257,7 +243,6 @@ export default function LinkCard({ link, columns, editMode }: Props) {
         <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
         <LinkActions
           link={link}
-          collection={collection}
           linkModal={linkModal}
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"

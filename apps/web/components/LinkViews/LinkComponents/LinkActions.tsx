@@ -24,7 +24,6 @@ import ConfirmationModal from "@/components/ConfirmationModal";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
-  collection: CollectionIncludingMembersAndLinkCount;
   linkModal: boolean;
   className?: string;
   setLinkModal: (value: boolean) => void;
