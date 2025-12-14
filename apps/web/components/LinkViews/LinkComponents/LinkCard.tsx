@@ -197,6 +197,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
                       const target = e.target as HTMLElement;
                       target.style.display = "none";
                     }}
+                    unoptimized
                   />
                 ) : link.preview === "unavailable" ? (
                   <div

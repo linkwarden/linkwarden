@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import { createFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
-import { Link } from "@prisma/client";
+import { Link } from "@linkwarden/prisma/client";
 
 export default async function handleMonolith(
   link: Link,

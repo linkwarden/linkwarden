@@ -21,7 +21,7 @@
     "@openrouter/ai-sdk-provider": "^0.4.3",
     "ai": "^5.0.113",
     "axios": "^1.5.1",
-    "dompurify": "^3.0.6",
+    "dompurify": "^3.2.4",
     "https-proxy-agent": "^7.0.6",
     "jsdom": "^22.1.0",
     "meilisearch": "^0.48.2",

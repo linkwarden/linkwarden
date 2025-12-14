@@ -163,6 +163,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
                       const target = e.target as HTMLElement;
                       target.style.display = "none";
                     }}
+                    unoptimized
                   />
                 ) : link.preview === "unavailable" ? (
                   <div className={`bg-gray-50 h-40 bg-opacity-80`}></div>

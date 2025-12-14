@@ -195,6 +195,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
                       const target = e.target as HTMLElement;
                       target.style.display = "none";
                     }}
+                    unoptimized
                   />
                 ) : link.preview === "unavailable" ? null : (
                   <div
