@@ -156,7 +156,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
             : undefined
       }
     >
-      <div ref={ref}>
+      <div ref={ref} className="h-full">
         <div
           className="rounded-xl cursor-pointer h-full flex flex-col justify-between"
           onClick={() =>
