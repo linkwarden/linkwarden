@@ -3,7 +3,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -15,12 +15,10 @@ import {
 } from "@linkwarden/lib/formatStats";
 import Link from "next/link";
 import LinkIcon from "./LinkIcon";
-import useOnScreen from "@/hooks/useOnScreen";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
 import { useUser } from "@linkwarden/router/user";
-import { useGetLink } from "@linkwarden/router/links";
 import useLocalSettingsStore from "@/store/localSettings";
 import clsx from "clsx";
 import LinkPin from "./LinkPin";
@@ -70,33 +68,8 @@ export default function LinkMasonry({
     settings: { show },
   } = useLocalSettingsStore();
 
-  const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
-
   const ref = useRef<HTMLDivElement>(null);
-  const isVisible = useOnScreen(ref);
   const permissions = usePermissions(collection?.id as number);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-
-    if (
-      isVisible &&
-      !link.preview?.startsWith("archives") &&
-      link.preview !== "unavailable"
-    ) {
-      interval = setInterval(async () => {
-        refetch().catch((error) => {
-          console.error("Error refetching link:", error);
-        });
-      }, 5000);
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isVisible, link.preview]);
 
   const selectable =
     editMode &&
