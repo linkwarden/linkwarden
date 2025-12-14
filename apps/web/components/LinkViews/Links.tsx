@@ -1,5 +1,6 @@
 import LinkCard from "@/components/LinkViews/LinkComponents/LinkCard";
 import {
+  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
   ViewMode,
 } from "@linkwarden/types";
@@ -10,19 +11,34 @@ import Masonry from "react-masonry-css";
 import { useMemo } from "react";
 import LinkList from "@/components/LinkViews/LinkComponents/LinkList";
 import useLocalSettingsStore from "@/store/localSettings";
+import { useCollections } from "@linkwarden/router/collections";
+import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next";
+import { TFunction } from "i18next";
+import useLinkStore from "@/store/links";
 
 function CardView({
   links,
+  collectionsById,
+  isPublicRoute,
+  t,
+  isSelected,
+  toggleSelected,
   editMode,
   isLoading,
   hasNextPage,
   placeHolderRef,
 }: {
-  links?: LinkIncludingShortenedCollectionAndTags[];
-  editMode?: boolean;
-  isLoading?: boolean;
-  hasNextPage?: boolean;
-  placeHolderRef?: any;
+  links: LinkIncludingShortenedCollectionAndTags[];
+  collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
+  isPublicRoute: boolean;
+  t: TFunction<"translation", undefined>;
+  isSelected: (id: number) => boolean;
+  toggleSelected: (id: number) => void;
+  editMode: boolean;
+  isLoading: boolean;
+  hasNextPage: boolean;
+  placeHolderRef: any;
 }) {
   const settings = useLocalSettingsStore((state) => state.settings);
 
@@ -55,6 +71,23 @@ function CardView({
     [columnCount]
   );
 
+  const heightMap = {
+    1: "h-44",
+    2: "h-40",
+    3: "h-36",
+    4: "h-32",
+    5: "h-28",
+    6: "h-24",
+    7: "h-20",
+    8: "h-20",
+  };
+
+  const imageHeightClass = useMemo(
+    () =>
+      columnCount ? heightMap[columnCount as keyof typeof heightMap] : "h-40",
+    [columnCount]
+  );
+
   useEffect(() => {
     const handleResize = () => {
       if (settings.columns === 0) {
@@ -79,12 +112,20 @@ function CardView({
   return (
     <div className={`${gridColClass} grid gap-5 pb-5`}>
       {links?.map((e) => {
+        const collection = collectionsById.get(e.collection.id as number);
+        const selected = isSelected(e.id as number);
+
         return (
           <LinkCard
             key={e.id}
             link={e}
+            collection={collection as CollectionIncludingMembersAndLinkCount}
+            isPublicRoute={isPublicRoute}
+            t={t}
+            isSelected={selected}
+            toggleSelected={toggleSelected}
             editMode={editMode}
-            columns={columnCount}
+            imageHeightClass={imageHeightClass}
           />
         );
       })}
@@ -104,16 +145,26 @@ function CardView({
 
 function MasonryView({
   links,
+  collectionsById,
+  isPublicRoute,
+  t,
+  isSelected,
+  toggleSelected,
   editMode,
   isLoading,
   hasNextPage,
   placeHolderRef,
 }: {
-  links?: LinkIncludingShortenedCollectionAndTags[];
-  editMode?: boolean;
-  isLoading?: boolean;
-  hasNextPage?: boolean;
-  placeHolderRef?: any;
+  links: LinkIncludingShortenedCollectionAndTags[];
+  collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
+  isPublicRoute: boolean;
+  t: TFunction<"translation", undefined>;
+  isSelected: (id: number) => boolean;
+  toggleSelected: (id: number) => void;
+  editMode: boolean;
+  isLoading: boolean;
+  hasNextPage: boolean;
+  placeHolderRef: any;
 }) {
   const settings = useLocalSettingsStore((state) => state.settings);
 
@@ -143,6 +194,23 @@ function MasonryView({
 
   const gridColClass = useMemo(
     () => gridMap[columnCount as keyof typeof gridMap],
+    [columnCount]
+  );
+
+  const heightMap = {
+    1: "h-44",
+    2: "h-40",
+    3: "h-36",
+    4: "h-32",
+    5: "h-28",
+    6: "h-24",
+    7: "h-20",
+    8: "h-20",
+  };
+
+  const imageHeightClass = useMemo(
+    () =>
+      columnCount ? heightMap[columnCount as keyof typeof heightMap] : "h-40",
     [columnCount]
   );
 
@@ -178,12 +246,20 @@ function MasonryView({
       className={`${gridColClass} grid gap-5 pb-5`}
     >
       {links?.map((e) => {
+        const collection = collectionsById.get(e.collection.id as number);
+        const selected = isSelected(e.id as number);
+
         return (
           <LinkMasonry
             key={e.id}
             link={e}
+            collection={collection as CollectionIncludingMembersAndLinkCount}
+            isPublicRoute={isPublicRoute}
+            t={t}
+            isSelected={selected}
+            toggleSelected={toggleSelected}
+            imageHeightClass={imageHeightClass}
             editMode={editMode}
-            columns={columnCount}
           />
         );
       })}
@@ -203,22 +279,46 @@ function MasonryView({
 
 function ListView({
   links,
+  collectionsById,
+  isPublicRoute,
+  t,
+  isSelected,
+  toggleSelected,
   editMode,
   isLoading,
   hasNextPage,
   placeHolderRef,
 }: {
-  links?: LinkIncludingShortenedCollectionAndTags[];
-  editMode?: boolean;
-  isLoading?: boolean;
-  placeholders?: number[];
-  hasNextPage?: boolean;
-  placeHolderRef?: any;
+  links: LinkIncludingShortenedCollectionAndTags[];
+  collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
+  isPublicRoute: boolean;
+  t: TFunction<"translation", undefined>;
+  isSelected: (id: number) => boolean;
+  toggleSelected: (id: number) => void;
+  editMode: boolean;
+  isLoading: boolean;
+  hasNextPage: boolean;
+  placeHolderRef: any;
 }) {
   return (
     <div className="flex flex-col">
       {links?.map((e, i) => {
-        return <LinkList key={e.id} link={e} count={i} editMode={editMode} />;
+        const collection = collectionsById.get(e.collection.id as number);
+        const selected = isSelected(e.id as number);
+
+        return (
+          <LinkList
+            key={e.id}
+            link={e}
+            collection={collection as CollectionIncludingMembersAndLinkCount}
+            isPublicRoute={isPublicRoute}
+            t={t}
+            isSelected={selected}
+            toggleSelected={toggleSelected}
+            count={i}
+            editMode={editMode}
+          />
+        );
       })}
 
       {(hasNextPage || isLoading) && (
@@ -248,17 +348,43 @@ export default function Links({
 }) {
   const { ref, inView } = useInView();
 
+  const { t } = useTranslation();
+  const router = useRouter();
+
+  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
+
   useEffect(() => {
     if (inView && useData?.fetchNextPage && useData?.hasNextPage) {
       useData.fetchNextPage();
     }
   }, [useData?.fetchNextPage, useData?.hasNextPage, inView]);
 
+  const { data: collections = [] } = useCollections();
+
+  const collectionsById = useMemo(() => {
+    const m = new Map<number, (typeof collections)[number]>();
+    for (const c of collections) m.set(c.id as any, c);
+    return m;
+  }, [collections]);
+
+  const { clearSelected, isSelected, toggleSelected } = useLinkStore();
+
+  useEffect(() => {
+    if (!editMode) {
+      clearSelected();
+    }
+  }, [editMode]);
+
   if (layout === ViewMode.List) {
     return (
       <ListView
-        links={links}
-        editMode={editMode}
+        links={links || []}
+        collectionsById={collectionsById}
+        isPublicRoute={isPublicRoute}
+        t={t}
+        toggleSelected={toggleSelected}
+        isSelected={isSelected}
+        editMode={editMode || false}
         isLoading={useData?.isLoading}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}
@@ -267,8 +393,13 @@ export default function Links({
   } else if (layout === ViewMode.Masonry) {
     return (
       <MasonryView
-        links={links}
-        editMode={editMode}
+        links={links || []}
+        collectionsById={collectionsById}
+        isPublicRoute={isPublicRoute}
+        t={t}
+        toggleSelected={toggleSelected}
+        isSelected={isSelected}
+        editMode={editMode || false}
         isLoading={useData?.isLoading}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}
@@ -278,8 +409,13 @@ export default function Links({
     // Default to card view
     return (
       <CardView
-        links={links}
-        editMode={editMode}
+        links={links || []}
+        collectionsById={collectionsById}
+        isPublicRoute={isPublicRoute}
+        t={t}
+        toggleSelected={toggleSelected}
+        isSelected={isSelected}
+        editMode={editMode || false}
         isLoading={useData?.isLoading}
         hasNextPage={useData?.hasNextPage}
         placeHolderRef={ref}

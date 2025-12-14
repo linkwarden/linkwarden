@@ -494,7 +494,7 @@ const useBulkEditLinks = () => {
       newData,
       removePreviousTags,
     }: {
-      links: LinkIncludingShortenedCollectionAndTags[];
+      links: Pick<LinkIncludingShortenedCollectionAndTags, "id">[];
       newData: Pick<
         LinkIncludingShortenedCollectionAndTags,
         "tags" | "collectionId"

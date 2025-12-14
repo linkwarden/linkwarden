@@ -11,7 +11,8 @@ import {
 export default async function updateLinkById(
   userId: number,
   linkId: number,
-  body: UpdateLinkSchemaType
+  body: UpdateLinkSchemaType,
+  removePreviousTags?: boolean
 ) {
   const dataValidation = UpdateLinkSchema.safeParse(body);
 
@@ -105,6 +106,30 @@ export default async function updateLinkById(
       },
     });
 
+    const uniqueTags = (() => {
+      const seen = new Set<string>();
+      return (data.tags ?? []).filter((t) => {
+        const key = t.name;
+        if (!key) return false;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    })();
+
+    const tagConnectOrCreate = uniqueTags.map((tag) => ({
+      where: {
+        name_ownerId: {
+          name: tag.name,
+          ownerId: data.collection.ownerId,
+        },
+      },
+      create: {
+        name: tag.name,
+        owner: { connect: { id: data.collection.ownerId } },
+      },
+    }));
+
     if (
       data.url &&
       oldLink &&
@@ -140,25 +165,14 @@ export default async function updateLinkById(
             id: data.collection.id,
           },
         },
-        tags: {
-          set: [],
-          connectOrCreate: data.tags.map((tag) => ({
-            where: {
-              name_ownerId: {
-                name: tag.name,
-                ownerId: data.collection.ownerId,
-              },
+        tags: removePreviousTags
+          ? {
+              set: [],
+              connectOrCreate: tagConnectOrCreate,
+            }
+          : {
+              connectOrCreate: tagConnectOrCreate,
             },
-            create: {
-              name: tag.name,
-              owner: {
-                connect: {
-                  id: data.collection.ownerId,
-                },
-              },
-            },
-          })),
-        },
         pinnedBy: data?.pinnedBy
           ? data.pinnedBy[0]?.id === userId
             ? { connect: { id: userId } }

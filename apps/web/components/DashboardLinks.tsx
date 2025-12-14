@@ -27,6 +27,7 @@ import LinkPin from "./LinkViews/LinkComponents/LinkPin";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@linkwarden/lib";
+import { useTranslation } from "next-i18next";
 
 export function DashboardLinks({
   links,
@@ -63,6 +64,8 @@ type Props = {
 };
 
 export function Card({ link, editMode, dashboardType }: Props) {
+  const { t } = useTranslation();
+
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${link.id}-${dashboardType}`,
     data: {
@@ -221,7 +224,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
         <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
         <LinkActions
           link={link}
-          collection={collection}
+          t={t}
           linkModal={linkModal}
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"

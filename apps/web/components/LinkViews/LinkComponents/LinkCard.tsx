@@ -1,9 +1,9 @@
 import {
   ArchivedFormat,
+  CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { useEffect, useMemo, useRef, useState } from "react";
-import useLinkStore from "@/store/links";
+import { useEffect, useRef, useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -18,11 +18,8 @@ import useOnScreen from "@/hooks/useOnScreen";
 import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
-import { useTranslation } from "next-i18next";
-import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
 import { useGetLink } from "@linkwarden/router/links";
-import { useRouter } from "next/router";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
 import LinkFormats from "./LinkFormats";
@@ -31,17 +28,29 @@ import { Separator } from "@/components/ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import { TFunction } from "i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
-  columns: number;
-  className?: string;
+  collection: CollectionIncludingMembersAndLinkCount;
+  isPublicRoute: boolean;
+  t: TFunction<"translation", undefined>;
+  isSelected: boolean;
+  toggleSelected: (id: number) => void;
+  imageHeightClass: string;
   editMode?: boolean;
 };
 
-export default function LinkCard({ link, columns, editMode }: Props) {
-  const { t } = useTranslation();
-
+export default function LinkCard({
+  link,
+  collection,
+  isPublicRoute,
+  t,
+  isSelected,
+  toggleSelected,
+  imageHeightClass,
+  editMode,
+}: Props) {
   // we don't want to use the draggable feature for screen under 1023px since the sidebar is hidden
   const isSmallScreen = useMediaQuery("(max-width: 1023px)");
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
@@ -52,56 +61,13 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     disabled: isSmallScreen,
   });
 
-  const heightMap = {
-    1: "h-44",
-    2: "h-40",
-    3: "h-36",
-    4: "h-32",
-    5: "h-28",
-    6: "h-24",
-    7: "h-20",
-    8: "h-20",
-  };
-
-  const imageHeightClass = useMemo(
-    () => (columns ? heightMap[columns as keyof typeof heightMap] : "h-40"),
-    [columns]
-  );
-
-  const { data: collections = [] } = useCollections();
-
   const { data: user } = useUser();
-
-  const { setSelectedLinks, selectedLinks } = useLinkStore();
 
   const {
     settings: { show },
   } = useLocalSettingsStore();
 
-  const router = useRouter();
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
-
   const { refetch } = useGetLink({ id: link.id as number, isPublicRoute });
-
-  useEffect(() => {
-    if (!editMode) {
-      setSelectedLinks([]);
-    }
-  }, [editMode]);
-
-  const handleCheckboxClick = (
-    link: LinkIncludingShortenedCollectionAndTags
-  ) => {
-    if (selectedLinks.includes(link)) {
-      setSelectedLinks(selectedLinks.filter((e) => e !== link));
-    } else {
-      setSelectedLinks([...selectedLinks, link]);
-    }
-  };
-
-  const collection = useMemo(() => {
-    return collections.find((c) => c.id === link.collection.id);
-  }, [collections, link.collection.id]);
 
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
@@ -131,10 +97,6 @@ export default function LinkCard({ link, columns, editMode }: Props) {
     };
   }, [isVisible, link.preview]);
 
-  const isLinkSelected = selectedLinks.some(
-    (selectedLink) => selectedLink.id === link.id
-  );
-
   const selectable =
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
@@ -144,13 +106,13 @@ export default function LinkCard({ link, columns, editMode }: Props) {
       ref={setNodeRef}
       className={cn(
         "border border-solid border-neutral-content bg-base-200 shadow-md hover:shadow-none duration-100 rounded-xl relative group",
-        isLinkSelected && "border-primary bg-base-300",
+        isSelected && "border-primary bg-base-300",
         isDragging ? "opacity-30" : "opacity-100",
         "relative group touch-manipulation select-none"
       )}
       onClick={() =>
         selectable
-          ? handleCheckboxClick(link)
+          ? toggleSelected(link.id as number)
           : editMode
             ? toast.error(t("link_selection_error"))
             : undefined
@@ -244,6 +206,7 @@ export default function LinkCard({ link, columns, editMode }: Props) {
         <LinkActions
           link={link}
           linkModal={linkModal}
+          t={t}
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
