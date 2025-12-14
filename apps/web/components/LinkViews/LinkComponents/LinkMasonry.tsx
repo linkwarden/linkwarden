@@ -47,7 +47,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
   // we don't want to use the draggable feature for screen under 1023px since the sidebar is hidden
   const isSmallScreen = useMediaQuery("(max-width: 1023px)");
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+  const { listeners, setNodeRef } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
@@ -153,6 +153,16 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
     editMode &&
     (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key to open link
+    if (e.key === "Enter") {
+      !editMode && openLink(link, user, () => setLinkModal(true));
+      return;
+    }
+
+    // Leave other key events to dnd-kit
+    listeners?.onKeyDown(e);
+  };
   const [linkModal, setLinkModal] = useState(false);
 
   return (
@@ -176,8 +186,11 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          role="button"
+          tabIndex={0}
+          aria-label={`${unescapeString(link.name)} - ${shortendURL}`}
           {...listeners}
-          {...attributes}
+          onKeyDown={handleKeyDown}
         >
           {show.image && formatAvailable(link, "preview") && (
             <div>
@@ -271,6 +284,7 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
 
         {/* Overlay on hover */}
         <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
+        {!isPublicRoute && <LinkPin link={link} />}
         <LinkActions
           link={link}
           collection={collection}
@@ -278,7 +292,6 @@ export default function LinkMasonry({ link, editMode, columns }: Props) {
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
-        {!isPublicRoute && <LinkPin link={link} />}
       </div>
     </div>
   );

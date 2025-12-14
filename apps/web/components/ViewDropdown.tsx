@@ -1,15 +1,13 @@
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import useLocalSettingsStore from "@/store/localSettings";
 import { ViewMode } from "@linkwarden/types";
 import { useTranslation } from "next-i18next";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Checkbox } from "./ui/checkbox";
+import { Label } from "./ui/label";
+import { Separator } from "./ui/separator";
 
 type Props = {
   viewMode: ViewMode;
@@ -55,9 +53,9 @@ export default function ViewDropdown({
   });
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label={t("view_settings")}>
           {dashboard || viewMode === ViewMode.Card ? (
             <i className="bi-grid text-neutral"></i>
           ) : viewMode === ViewMode.Masonry ? (
@@ -66,85 +64,92 @@ export default function ViewDropdown({
             <i className="bi-view-stacked text-neutral"></i>
           )}
         </Button>
-      </DropdownMenuTrigger>
+      </PopoverTrigger>
 
-      <DropdownMenuContent sideOffset={4} align="end">
+      <PopoverContent sideOffset={4} align="end" className="w-44 px-0">
         {!dashboard && (
           <>
-            <div className="px-1">
-              <p className="text-sm text-neutral mb-1">{t("view")}</p>
-              <div className="flex gap-1 border-border">
-                {[ViewMode.Card, ViewMode.Masonry, ViewMode.List].map(
-                  (mode) => {
-                    const Icon =
-                      mode === ViewMode.Card
-                        ? () => <i className="bi-grid w-4 h-4 text-neutral" />
-                        : mode === ViewMode.Masonry
-                          ? () => (
-                              <i className="bi-columns-gap w-4 h-4 text-neutral" />
-                            )
-                          : () => (
-                              <i className="bi-view-stacked w-4 h-4 text-neutral" />
-                            );
+            <p className="px-2 text-sm text-neutral mb-1">{t("view")}</p>
+            <div className="px-4 flex gap-1 border-border" role="radiogroup">
+              {[ViewMode.Card, ViewMode.Masonry, ViewMode.List].map((mode) => {
+                const Icon =
+                  mode === ViewMode.Card
+                    ? () => <i className="bi-grid w-4 h-4 text-neutral" />
+                    : mode === ViewMode.Masonry
+                      ? () => (
+                          <i className="bi-columns-gap w-4 h-4 text-neutral" />
+                        )
+                      : () => (
+                          <i className="bi-view-stacked w-4 h-4 text-neutral" />
+                        );
 
-                    return (
-                      <Button
-                        key={mode}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onChangeViewMode(mode)}
-                        className={
-                          `flex-1 ` +
-                          (viewMode === mode
-                            ? "bg-primary/20 hover:bg-primary/20"
-                            : "hover:bg-neutral/20")
-                        }
-                      >
-                        <Icon />
-                      </Button>
-                    );
-                  }
-                )}
-              </div>
+                return (
+                  <Button
+                    key={mode}
+                    role="radio"
+                    aria-checked={viewMode === mode}
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onChangeViewMode(mode)}
+                    aria-label={t(`${mode}_view`)}
+                    className={cn(
+                      "flex-1",
+                      viewMode === mode
+                        ? "bg-primary/20 hover:bg-primary/20"
+                        : "hover:bg-neutral/20"
+                    )}
+                  >
+                    <Icon />
+                  </Button>
+                );
+              })}
             </div>
-
-            <DropdownMenuSeparator />
+            <Separator className="my-1" />
           </>
         )}
 
-        <p className="text-sm text-neutral px-1 mb-1">{t("show")}</p>
+        <p className="px-2 text-sm text-neutral mb-1">{t("show")}</p>
         {visibleShows.map((key) => (
-          <DropdownMenuCheckboxItem
-            key={key}
-            checked={settings.show[key]}
-            onSelect={(e) => {
-              e.preventDefault();
-              toggleShow(key);
-            }}
-          >
-            {t(key)}
-          </DropdownMenuCheckboxItem>
+          <div key={key} className="flex items-center gap-2 py-1.5 px-2">
+            <Checkbox
+              checked={settings.show[key]}
+              id={key}
+              onCheckedChange={() => {
+                toggleShow(key);
+              }}
+            />
+            <Label htmlFor={key} className="flex-1">
+              {t(key)}
+            </Label>
+          </div>
         ))}
 
         {!dashboard && settings.viewMode !== ViewMode.List && (
           <>
-            <DropdownMenuSeparator />
+            <Separator className="my-1" />
 
-            <div className="px-1">
+            <div className="px-2">
               <p className="text-sm text-neutral mb-1">
                 {t("columns")}:{" "}
                 {settings.columns === 0 ? t("default") : settings.columns}
               </p>
               <input
                 type="range"
+                aria-label={t("number_of_columns")}
                 min={0}
                 max={8}
                 step={1}
                 value={settings.columns}
+                aria-valuemin={0}
+                aria-valuemax={8}
+                aria-valuenow={settings.columns}
                 onChange={onColumnsChange}
                 className="range range-xs range-primary w-full"
               />
-              <div className="flex justify-between text-xs text-neutral select-none px-1">
+              <div
+                className="flex justify-between text-xs text-neutral select-none px-1"
+                aria-hidden="true"
+              >
                 {Array.from({ length: 9 }).map((_, i) => (
                   <span key={i}>|</span>
                 ))}
@@ -152,7 +157,7 @@ export default function ViewDropdown({
             </div>
           </>
         )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </PopoverContent>
+    </Popover>
   );
 }

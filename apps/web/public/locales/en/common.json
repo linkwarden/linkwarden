@@ -525,5 +525,20 @@
   "expand_sidebar": "Expand Sidebar",
   "shrink_sidebar": "Shrink Sidebar",
   "trial_left_plural": "Trial ends in {{count}} days. Subscribe.",
-  "trial_left_singular": "Trial ends in 1 day. Subscribe."
+  "trial_left_singular": "Trial ends in 1 day. Subscribe.",
+  "skip_to_main_content": "Skip to main content",
+  "user_menu": "User Menu",
+  "pin_link": "Pin Link",
+  "unpin_link": "Unpin Link",
+  "statistics": "Statistics",
+  "enter_bulk_edit_mode": "Enter bulk edit mode",
+  "exit_bulk_edit_mode": "Exit bulk edit mode",
+  "sort_links": "Sort Links",
+  "view_settings": "View Settings",
+  "card_view": "Card View",
+  "list_view": "List View",
+  "masonry_view": "Masonry View",
+  "number_of_columns": "Number of Columns",
+  "your_collections": "Your Collections",
+  "go_to_dashboard": "Go to Linkwarden Dashboard"
 }

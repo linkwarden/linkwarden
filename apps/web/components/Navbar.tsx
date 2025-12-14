@@ -18,12 +18,6 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useUser } from "@linkwarden/router/user";
 import Link from "next/link";
 
@@ -79,8 +73,16 @@ export default function Navbar() {
     setIsTrialing(Boolean(isTrialing));
   }, [user, daysLeft]);
 
+  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
+  const handleDropdownMenuOpenChange = (open: boolean) => {
+    setDropdownMenuOpen(open);
+    if (!open) {
+      setNewCollectionModal(false);
+    }
+  };
+
   return (
-    <>
+    <header>
       {STRIPE_ENABLED && isTrialing && (
         <Link
           href="/subscribe"
@@ -110,31 +112,27 @@ export default function Navbar() {
         <SearchBar />
 
         <div className="flex items-center gap-2">
-          <ToggleDarkMode hideInMobile />
+          <ToggleDarkMode />
 
-          <DropdownMenu>
-            <DropdownMenuTrigger className="hidden sm:inline-grid">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Button
-                      variant="accent"
-                      size="sm"
-                      className="min-w-[3.4rem] h-[2rem] relative"
-                    >
-                      <span>
-                        <i className="bi-plus text-4xl absolute -top-[0.3rem] left-0 pointer-events-none" />
-                      </span>
-                      <span>
-                        <i className="bi-caret-down-fill text-xs absolute top-[0.6rem] right-[0.4rem] pointer-events-none" />
-                      </span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{t("create_new")}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+          <DropdownMenu
+            open={dropdownMenuOpen}
+            onOpenChange={handleDropdownMenuOpenChange}
+          >
+            <DropdownMenuTrigger asChild className="hidden sm:inline-grid">
+              <Button
+                variant="accent"
+                size="sm"
+                className="min-w-[3.4rem] h-[2rem] relative"
+                aria-label={t("create_new")}
+                title={t("create_new")}
+              >
+                <span>
+                  <i className="bi-plus text-4xl absolute -top-[0.3rem] left-0 pointer-events-none" />
+                </span>
+                <span>
+                  <i className="bi-caret-down-fill text-xs absolute top-[0.6rem] right-[0.4rem] pointer-events-none" />
+                </span>
+              </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
@@ -146,10 +144,15 @@ export default function Navbar() {
                 <i className="bi-file-earmark-arrow-up" />
                 {t("upload_file")}
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setNewCollectionModal(true)}>
-                <i className="bi-folder" />
-                {t("new_collection")}
-              </DropdownMenuItem>
+              <NewCollectionModal
+                onOpenChange={setNewCollectionModal}
+                open={newCollectionModal}
+              >
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  <i className="bi-folder" />
+                  {t("new_collection")}
+                </DropdownMenuItem>
+              </NewCollectionModal>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -170,13 +173,10 @@ export default function Navbar() {
         {newLinkModal && (
           <NewLinkModal onClose={() => setNewLinkModal(false)} />
         )}
-        {newCollectionModal && (
-          <NewCollectionModal onClose={() => setNewCollectionModal(false)} />
-        )}
         {uploadFileModal && (
           <UploadFileModal onClose={() => setUploadFileModal(false)} />
         )}
       </div>
-    </>
+    </header>
   );
 }

@@ -27,6 +27,7 @@ import LinkPin from "./LinkViews/LinkComponents/LinkPin";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@linkwarden/lib";
+import { useTranslation } from "react-i18next";
 
 export function DashboardLinks({
   links,
@@ -37,22 +38,23 @@ export function DashboardLinks({
   isLoading?: boolean;
   type?: "collection" | "recent";
 }) {
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-4 min-w-60 w-60">
+        <div className="skeleton h-40 w-full"></div>
+        <div className="skeleton h-3 w-2/3"></div>
+        <div className="skeleton h-3 w-full"></div>
+        <div className="skeleton h-3 w-full"></div>
+        <div className="skeleton h-3 w-1/3"></div>
+      </div>
+    );
+  }
   return (
-    <div
+    <ul
       className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit`}
     >
-      {isLoading ? (
-        <div className="flex flex-col gap-4 min-w-60 w-60">
-          <div className="skeleton h-40 w-full"></div>
-          <div className="skeleton h-3 w-2/3"></div>
-          <div className="skeleton h-3 w-full"></div>
-          <div className="skeleton h-3 w-full"></div>
-          <div className="skeleton h-3 w-1/3"></div>
-        </div>
-      ) : (
-        links?.map((e, i) => <Card key={i} link={e} dashboardType={type} />)
-      )}
-    </div>
+      {links?.map((e, i) => <Card key={i} link={e} dashboardType={type} />)}
+    </ul>
   );
 }
 
@@ -71,6 +73,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
     },
   });
   const { data: collections = [] } = useCollections();
+  const { t } = useTranslation();
 
   const { data: user } = useUser();
 
@@ -127,8 +130,19 @@ export function Card({ link, editMode, dashboardType }: Props) {
     };
   }, [isVisible, link.preview]);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Handle Enter key to open link
+    if (e.key === "Enter") {
+      !editMode && openLink(link, user, () => setLinkModal(true));
+      return;
+    }
+
+    // Leave other key events to dnd-kit
+    listeners?.onKeyDown(e);
+  };
+
   return (
-    <div
+    <li
       ref={setNodeRef}
       className={cn(
         isDragging ? "opacity-30" : "opacity-100",
@@ -144,8 +158,11 @@ export function Card({ link, editMode, dashboardType }: Props) {
           onClick={() =>
             !editMode && openLink(link, user, () => setLinkModal(true))
           }
+          aria-label={`${unescapeString(link.name)} - ${shortendURL}`}
+          role="button"
           {...listeners}
-          {...attributes}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
         >
           {show.image && (
             <div>
@@ -191,9 +208,9 @@ export function Card({ link, editMode, dashboardType }: Props) {
           <div className="flex flex-col justify-between h-full min-h-11">
             <div className="p-3 flex flex-col justify-between h-full gap-2">
               {show.name && (
-                <p className="line-clamp-2 w-full text-primary text-sm">
+                <h4 className="line-clamp-2 w-full text-primary text-sm">
                   {unescapeString(link.name)}
-                </p>
+                </h4>
               )}
 
               {show.link && <LinkTypeBadge link={link} />}
@@ -218,6 +235,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
 
         {/* Overlay on hover */}
         <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
+        {!isPublicRoute && <LinkPin link={link} />}
         <LinkActions
           link={link}
           collection={collection}
@@ -225,8 +243,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"
         />
-        {!isPublicRoute && <LinkPin link={link} />}
       </div>
-    </div>
+    </li>
   );
 }

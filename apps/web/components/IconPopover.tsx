@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import TextInput from "./TextInput";
-import Popover from "./Popover";
 import { HexColorPicker } from "react-colorful";
 import { useTranslation } from "next-i18next";
 import IconGrid from "./IconGrid";
-import clsx from "clsx";
 import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 type Props = {
   alignment?: string;
@@ -18,9 +16,13 @@ type Props = {
   setWeight: Function;
   reset: Function;
   className?: string;
-  onClose: Function;
-  top?: number;
-  left?: number;
+  hideDefaultIcon?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  /**
+   * Trigger element for the popover
+   */
+  children: React.ReactNode;
 };
 
 const IconPopover = ({
@@ -32,25 +34,17 @@ const IconPopover = ({
   weight,
   setWeight,
   reset,
-  className,
-  onClose,
-  top,
-  left,
+  children,
+  open,
+  onOpenChange,
 }: Props) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
-  const content = (
-    <Popover
-      onClose={() => onClose()}
-      className={clsx(
-        className,
-        "fade-in bg-base-200 border border-neutral-content p-3 w-[22.5rem] rounded-lg shadow-md pointer-events-auto",
-        top !== undefined && left !== undefined && `z-[1000]`
-      )}
-      style={{ top: top, left: left }}
-    >
-      <div className="flex flex-col gap-3 w-full h-full">
+  return (
+    <Popover open={open} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
+      <PopoverContent className="w-[22.5rem]" disablePortal>
         <TextInput
           className="p-2 rounded w-full h-7 text-sm"
           placeholder={t("search")}
@@ -145,15 +139,10 @@ const IconPopover = ({
           </Button>
           <p className="text-neutral text-xs">{t("click_out_to_apply")}</p>
         </div>
-      </div>
+        {/* </div> */}
+      </PopoverContent>
     </Popover>
   );
-
-  if (top !== undefined && left !== undefined) {
-    return ReactDOM.createPortal(content, document.body);
-  }
-
-  return content;
 };
 
 export default IconPopover;

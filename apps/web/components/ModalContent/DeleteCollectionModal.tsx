@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from "react";
-import TextInput from "@/components/TextInput";
 import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
-import Modal from "../Modal";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";
 import { useDeleteCollection } from "@linkwarden/router/collections";
 import toast from "react-hot-toast";
 import { Separator } from "../ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 type Props = {
-  onClose: Function;
   activeCollection: CollectionIncludingMembersAndLinkCount;
+  children: React.ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
 export default function DeleteCollectionModal({
-  onClose,
   activeCollection,
+  children,
+  onOpenChange,
+  open,
 }: Props) {
   const { t } = useTranslation();
   const [collection, setCollection] =
@@ -49,7 +58,7 @@ export default function DeleteCollectionModal({
           if (error) {
             toast.error(error.message);
           } else {
-            onClose();
+            onOpenChange(false);
             toast.success(t("deleted"));
             router.push("/collections");
           }
@@ -59,34 +68,53 @@ export default function DeleteCollectionModal({
   };
 
   return (
-    <Modal toggleModal={onClose}>
-      <p className="text-xl font-thin text-red-500">
-        {permissions === true ? t("delete_collection") : t("leave_collection")}
-      </p>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent aria-describedby="delete-collection-prompt">
+        <DialogHeader className="text-xl font-thin text-red-500">
+          <DialogTitle>
+            {permissions === true
+              ? t("delete_collection")
+              : t("leave_collection")}
+          </DialogTitle>
+        </DialogHeader>
 
-      <Separator className="my-3" />
+        <Separator className="my-3" aria-hidden="true" />
 
-      <div className="flex flex-col gap-3">
-        {permissions === true ? (
-          <>
-            {t("collection_deletion_prompt")}
-            <div role="alert" className="alert alert-warning">
-              <i className="bi-exclamation-triangle text-xl"></i>
-              <span>
-                <b>{t("warning")}: </b>
-                {t("deletion_warning")}
-              </span>
+        <div className="flex flex-col gap-3">
+          {permissions === true ? (
+            <div id="delete-collection-prompt">
+              {t("collection_deletion_prompt")}
+              <div className="alert alert-warning">
+                <i
+                  className="bi-exclamation-triangle text-xl"
+                  aria-hidden="true"
+                ></i>
+                <span>
+                  <b>{t("warning")}: </b>
+                  {t("deletion_warning")}
+                </span>
+              </div>
             </div>
-          </>
-        ) : (
-          <p>{t("leave_prompt")}</p>
-        )}
+          ) : (
+            <p>{t("leave_prompt")}</p>
+          )}
 
-        <Button onClick={submit} variant="destructive" className="ml-auto">
-          <i className="bi-trash text-xl"></i>
-          {permissions === true ? t("delete") : t("leave")}
-        </Button>
-      </div>
-    </Modal>
+          <Button
+            onClick={submit}
+            variant="destructive"
+            className="ml-auto"
+            aria-label={
+              permissions === true
+                ? t("delete_collection")
+                : t("leave_collection")
+            }
+          >
+            <i className="bi-trash text-xl"></i>
+            {permissions === true ? t("delete") : t("leave")}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

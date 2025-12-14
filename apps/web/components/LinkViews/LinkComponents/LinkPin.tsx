@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 import usePinLink from "@/lib/client/pinLink";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -12,6 +13,7 @@ type Props = {
 export default function LinkPin({ link, btnStyle }: Props) {
   const pinLink = usePinLink();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
   const isAlreadyPinned = link?.pinnedBy && link.pinnedBy[0] ? true : false;
@@ -25,6 +27,7 @@ export default function LinkPin({ link, btnStyle }: Props) {
         btnStyle
       )}
       onClick={() => pinLink(link)}
+      aria-label={isAlreadyPinned ? t("unpin_link") : t("pin_link")}
     >
       <i
         title="Pin"

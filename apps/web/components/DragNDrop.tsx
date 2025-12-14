@@ -3,6 +3,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  KeyboardSensor,
   MouseSensor,
   SensorDescriptor,
   SensorOptions,
@@ -69,7 +70,16 @@ export default function DragNDrop({
     },
   });
 
-  const sensors = useSensors(mouseSensor, touchSensor);
+  const keyboardSensor = useSensor(KeyboardSensor, {
+    // Restrict keyboard-initiated dragging to Space only (avoid Enter)
+    keyboardCodes: {
+      start: ["Space"],
+      cancel: ["Escape"],
+      end: ["Space"],
+    },
+  });
+
+  const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
   const handleDragStart = (event: DragStartEvent) => {
     const draggedLink = links.find(
@@ -83,69 +93,78 @@ export default function DragNDrop({
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
-    // If an onDragEnd prop is provided, use it instead of the default behavior
-    if (onDragEndProp) {
-      onDragEndProp(event);
-      return;
-    }
-    const { over } = event;
-    if (!over || !activeLink) return;
-
-    let updatedLink: LinkIncludingShortenedCollectionAndTags | null = null;
-
-    // if the link is dropped over a tag
-    if (over.data.current?.type === "tag") {
-      const isTagAlreadyExists = activeLink.tags.some(
-        (tag) => tag.name === over.data.current?.name
-      );
-      if (isTagAlreadyExists) {
-        toast.error(t("tag_already_added"));
+    let toastId = "";
+    try {
+      // If an onDragEnd prop is provided, use it instead of the default behavior
+      if (onDragEndProp) {
+        onDragEndProp(event);
         return;
       }
-      // to match the tags structure required to update the link
-      const allTags: { name: string }[] = activeLink.tags.map((tag) => ({
-        name: tag.name,
-      }));
-      const newTags = [...allTags, { name: over.data.current?.name as string }];
-      updatedLink = {
-        ...activeLink,
-        tags: newTags as any,
-      };
-    } else {
-      const collectionId = over.data.current?.id as number;
-      const collectionName = over.data.current?.name as string;
-      const ownerId = over.data.current?.ownerId as number;
+      const { over } = event;
+      if (!over || !activeLink) return;
 
-      // Immediately hide the drag overlay
-      setActiveLink(null);
+      let updatedLink: LinkIncludingShortenedCollectionAndTags | null = null;
 
-      // if the link dropped over the same collection, toast
-      if (activeLink.collection.id === collectionId) {
-        toast.error(t("link_already_in_collection"));
-        return;
-      }
-
-      updatedLink = {
-        ...activeLink,
-        collection: {
-          id: collectionId,
-          name: collectionName,
-          ownerId,
-        },
-      };
-    }
-
-    const load = toast.loading(t("updating"));
-    await updateLink.mutateAsync(updatedLink, {
-      onSettled: (_, error) => {
-        toast.dismiss(load);
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success(t("updated"));
+      toastId = toast.loading(t("updating"));
+      // if the link is dropped over a tag
+      if (over.data.current?.type === "tag") {
+        const isTagAlreadyExists = activeLink.tags.some(
+          (tag) => tag.name === over.data.current?.name
+        );
+        if (isTagAlreadyExists) {
+          throw new Error(t("tag_already_added"));
+          // toast.error(t("tag_already_added"));
+          // return;
         }
-      },
-    });
+        // to match the tags structure required to update the link
+        const allTags: { name: string }[] = activeLink.tags.map((tag) => ({
+          name: tag.name,
+        }));
+        const newTags = [
+          ...allTags,
+          { name: over.data.current?.name as string },
+        ];
+        updatedLink = {
+          ...activeLink,
+          tags: newTags as any,
+        };
+      } else {
+        const collectionId = over.data.current?.id as number;
+        const collectionName = over.data.current?.name as string;
+        const ownerId = over.data.current?.ownerId as number;
+
+        // Immediately hide the drag overlay
+        setActiveLink(null);
+
+        // if the link dropped over the same collection, toast
+        if (activeLink.collection.id === collectionId) {
+          throw new Error(t("link_already_in_collection"));
+          // toast.error(t("link_already_in_collection"));
+          // return;
+        }
+
+        updatedLink = {
+          ...activeLink,
+          collection: {
+            id: collectionId,
+            name: collectionName,
+            ownerId,
+          },
+        };
+      }
+
+      await updateLink.mutateAsync(updatedLink, {
+        onSettled: (_, error) => {
+          if (error) {
+            toast.error(error.message, { id: toastId });
+          } else {
+            toast.success(t("updated"), { id: toastId });
+          }
+        },
+      });
+    } catch (error) {
+      toast.error((error as Error).message, { id: toastId });
+    }
   };
   return (
     <DndContext

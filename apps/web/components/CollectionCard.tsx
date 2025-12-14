@@ -16,8 +16,8 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 
@@ -68,93 +68,25 @@ export default function CollectionCard({
   const [editCollectionModal, setEditCollectionModal] = useState(false);
   const [editCollectionSharingModal, setEditCollectionSharingModal] =
     useState(false);
+  // we need a separate state for the avatar trigger to open sharing modal
+  const [
+    editCollectionSharingModalAvatar,
+    setEditCollectionSharingModalAvatar,
+  ] = useState(false);
   const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
+  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
+
+  const handleDropdownOpenChange = (open: boolean) => {
+    setDropdownMenuOpen(open);
+    if (!open) {
+      setDeleteCollectionModal(false);
+      setEditCollectionModal(false);
+      setEditCollectionSharingModal(false);
+    }
+  };
 
   return (
     <div className="relative">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-3 right-3 z-20"
-          >
-            <i title="More" className="bi-three-dots text-xl text-neutral" />
-          </Button>
-        </DropdownMenuTrigger>
-
-        <DropdownMenuContent
-          sideOffset={4}
-          side="bottom"
-          align="end"
-          className="z-[30]"
-        >
-          {permissions === true && (
-            <DropdownMenuItem onSelect={() => setEditCollectionModal(true)}>
-              <i className="bi-pencil-square" />
-              {t("edit_collection_info")}
-            </DropdownMenuItem>
-          )}
-
-          <DropdownMenuItem
-            onSelect={() => setEditCollectionSharingModal(true)}
-          >
-            <i className="bi-globe" />
-            {permissions === true ? t("share_and_collaborate") : t("view_team")}
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            onSelect={() => setDeleteCollectionModal(true)}
-            className="text-error"
-          >
-            {permissions === true ? (
-              <>
-                <i className="bi-trash" />
-                {t("delete_collection")}
-              </>
-            ) : (
-              <>
-                <i className="bi-box-arrow-left" />
-                {t("leave_collection")}
-              </>
-            )}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <div
-        className="flex items-center absolute bottom-3 left-3 z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
-        onClick={() => setEditCollectionSharingModal(true)}
-      >
-        {collectionOwner.id && (
-          <ProfilePhoto
-            src={collectionOwner.image || undefined}
-            name={collectionOwner.name}
-          />
-        )}
-        {collection.members
-          .sort((a, b) => (a.userId as number) - (b.userId as number))
-          .map((e, i) => {
-            return (
-              <ProfilePhoto
-                key={i}
-                src={e.user.image ? e.user.image : undefined}
-                name={e.user.name}
-                className="-ml-3"
-              />
-            );
-          })
-          .slice(0, 3)}
-        {collection.members.length - 3 > 0 && (
-          <div className={`avatar drop-shadow-md placeholder -ml-3`}>
-            <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
-              <span>+{collection.members.length - 3}</span>
-            </div>
-          </div>
-        )}
-      </div>
       <Link
         href={`/collections/${collection.id}`}
         style={{
@@ -165,12 +97,13 @@ export default function CollectionCard({
           } 100%)`,
         }}
         className="card card-compact shadow-md hover:shadow-none duration-200 border border-neutral-content"
+        aria-label={`${t("collection")} ${collection.name}`}
       >
         <div className="card-body flex flex-col justify-between min-h-[12rem]">
           <div className="flex justify-between">
-            <p className="card-title break-words line-clamp-2 w-full">
+            <h3 className="card-title break-words line-clamp-2 w-full">
               {collection.name}
-            </p>
+            </h3>
             <div className="w-8 h-8 ml-10"></div>
           </div>
 
@@ -202,24 +135,131 @@ export default function CollectionCard({
           </div>
         </div>
       </Link>
-      {editCollectionModal && (
-        <EditCollectionModal
-          onClose={() => setEditCollectionModal(false)}
-          activeCollection={collection}
-        />
-      )}
-      {editCollectionSharingModal && (
-        <EditCollectionSharingModal
-          onClose={() => setEditCollectionSharingModal(false)}
-          activeCollection={collection}
-        />
-      )}
-      {deleteCollectionModal && (
-        <DeleteCollectionModal
-          onClose={() => setDeleteCollectionModal(false)}
-          activeCollection={collection}
-        />
-      )}
+      <DropdownMenu
+        open={dropdownMenuOpen}
+        onOpenChange={handleDropdownOpenChange}
+      >
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-3 right-3 z-20"
+            aria-label={t("more_options")}
+          >
+            <i title="More" className="bi-three-dots text-xl text-neutral" />
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent
+          sideOffset={4}
+          side="bottom"
+          align="end"
+          className="z-[30]"
+        >
+          {permissions === true && (
+            <EditCollectionModal
+              activeCollection={collection}
+              open={editCollectionModal}
+              onOpenChange={setEditCollectionModal}
+            >
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <i className="bi-pencil-square" />
+                {t("edit_collection_info")}
+              </DropdownMenuItem>
+            </EditCollectionModal>
+          )}
+
+          <EditCollectionSharingModal
+            activeCollection={collection}
+            open={editCollectionSharingModal}
+            onOpenChange={setEditCollectionSharingModal}
+          >
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <i className="bi-globe" />
+              {permissions === true
+                ? t("share_and_collaborate")
+                : t("view_team")}
+            </DropdownMenuItem>
+          </EditCollectionSharingModal>
+
+          <DropdownMenuSeparator aria-hidden="true" />
+
+          <DeleteCollectionModal
+            activeCollection={collection}
+            open={deleteCollectionModal}
+            onOpenChange={setDeleteCollectionModal}
+          >
+            <DropdownMenuItem
+              className="text-error"
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              {permissions === true ? (
+                <>
+                  <i className="bi-trash" />
+                  {t("delete_collection")}
+                </>
+              ) : (
+                <>
+                  <i className="bi-box-arrow-left" />
+                  {t("leave_collection")}
+                </>
+              )}
+            </DropdownMenuItem>
+          </DeleteCollectionModal>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <EditCollectionSharingModal
+        open={editCollectionSharingModalAvatar}
+        onOpenChange={setEditCollectionSharingModalAvatar}
+        activeCollection={collection}
+      >
+        <div
+          className="flex items-center absolute bottom-3 left-3 z-10 px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 focus:bg-base-content/20 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-200"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setEditCollectionSharingModal(true);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label={t("share_and_collaborate")}
+        >
+          {collectionOwner.id && (
+            <ProfilePhoto
+              src={collectionOwner.image || undefined}
+              name={collectionOwner.name}
+            />
+          )}
+          {collection.members
+            .sort((a, b) => (a.userId as number) - (b.userId as number))
+            .map((e, i) => {
+              return (
+                <ProfilePhoto
+                  key={i}
+                  src={e.user.image ? e.user.image : undefined}
+                  name={e.user.name}
+                  className="-ml-3"
+                />
+              );
+            })
+            .slice(0, 3)}
+          {collection.members.length - 3 > 0 && (
+            <div className={`avatar drop-shadow-md placeholder -ml-3`}>
+              <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
+                <span>+{collection.members.length - 3}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </EditCollectionSharingModal>
     </div>
   );
 }

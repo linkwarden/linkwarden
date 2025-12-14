@@ -11,7 +11,6 @@ export default function LinkIcon({
   link,
   className,
   hideBackground,
-  onClick,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   className?: string;
@@ -31,9 +30,9 @@ export default function LinkIcon({
   const [faviconLoaded, setFaviconLoaded] = useState(false);
 
   return (
-    <div onClick={() => onClick && onClick()}>
+    <>
       {link.icon ? (
-        <div className={iconClasses}>
+        <span className={iconClasses}>
           <Icon
             icon={link.icon}
             size={30}
@@ -41,7 +40,7 @@ export default function LinkIcon({
             color={link.color || oklchVariableToHex("--p")}
             className="m-auto"
           />
-        </div>
+        </span>
       ) : link.type === "url" && url ? (
         <>
           <Image
@@ -82,7 +81,7 @@ export default function LinkIcon({
       //   />
       // )
       undefined}
-    </div>
+    </>
   );
 }
 
@@ -94,13 +93,13 @@ const LinkPlaceholderIcon = ({
   icon: string;
 }) => {
   return (
-    <div
+    <span
       className={clsx(
         iconClasses,
         "aspect-square text-4xl text-[oklch(var(--p))]"
       )}
     >
       <i className={`${icon} m-auto`}></i>
-    </div>
+    </span>
   );
 };

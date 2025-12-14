@@ -325,3 +325,9 @@
 .read-only ul[data-type="taskList"] {
   pointer-events: none;
 }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}

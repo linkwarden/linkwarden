@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "next-i18next";
+import { Button } from "./ui/button";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import IconPopover from "./IconPopover";
-import clsx from "clsx";
-import { Button } from "./ui/button";
 
 type Props = {
   alignment?: string;
@@ -14,34 +13,34 @@ type Props = {
   setIconName: Function;
   weight: "light" | "regular" | "bold" | "fill" | "duotone" | "thin";
   setWeight: Function;
-  hideDefaultIcon?: boolean;
   reset: Function;
   className?: string;
+  hideDefaultIcon?: boolean;
 };
 
 const IconPicker = ({
-  alignment,
   color,
   setColor,
   iconName,
   setIconName,
   weight,
   setWeight,
-  hideDefaultIcon,
-  className,
   reset,
+  hideDefaultIcon,
 }: Props) => {
   const { t } = useTranslation();
-  const [iconPicker, setIconPicker] = useState(false);
 
   return (
-    <div className="relative">
-      <Button
-        onClick={() => setIconPicker(!iconPicker)}
-        variant="ghost"
-        className="w-20 h-20"
-        size="icon"
-      >
+    <IconPopover
+      color={color}
+      setColor={setColor}
+      iconName={iconName}
+      setIconName={setIconName}
+      weight={weight}
+      setWeight={setWeight}
+      reset={reset}
+    >
+      <Button variant="ghost" className="size-20">
         {iconName ? (
           <Icon
             icon={iconName}
@@ -55,24 +54,7 @@ const IconPicker = ({
           <i className="bi-folder-fill text-6xl" style={{ color: color }}></i>
         )}
       </Button>
-      {iconPicker && (
-        <IconPopover
-          alignment={alignment}
-          color={color}
-          setColor={setColor}
-          iconName={iconName}
-          setIconName={setIconName}
-          weight={weight}
-          setWeight={setWeight}
-          reset={reset}
-          onClose={() => setIconPicker(false)}
-          className={clsx(
-            className,
-            alignment || "lg:-translate-x-1/3 top-20 left-0"
-          )}
-        />
-      )}
-    </div>
+    </IconPopover>
   );
 };
 
