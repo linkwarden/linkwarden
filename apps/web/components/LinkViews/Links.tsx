@@ -16,12 +16,16 @@ import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { TFunction } from "i18next";
 import useLinkStore from "@/store/links";
+import useMediaQuery from "@/hooks/useMediaQuery";
+import { useUser } from "@linkwarden/router/user";
 
 function CardView({
   links,
   collectionsById,
   isPublicRoute,
   t,
+  user,
+  disableDraggable,
   isSelected,
   toggleSelected,
   editMode,
@@ -33,6 +37,8 @@ function CardView({
   collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
   isPublicRoute: boolean;
   t: TFunction<"translation", undefined>;
+  user: any;
+  disableDraggable: boolean;
   isSelected: (id: number) => boolean;
   toggleSelected: (id: number) => void;
   editMode: boolean;
@@ -122,6 +128,8 @@ function CardView({
             collection={collection as CollectionIncludingMembersAndLinkCount}
             isPublicRoute={isPublicRoute}
             t={t}
+            user={user}
+            disableDraggable={disableDraggable}
             isSelected={selected}
             toggleSelected={toggleSelected}
             editMode={editMode}
@@ -148,6 +156,8 @@ function MasonryView({
   collectionsById,
   isPublicRoute,
   t,
+  disableDraggable,
+  user,
   isSelected,
   toggleSelected,
   editMode,
@@ -159,6 +169,8 @@ function MasonryView({
   collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
   isPublicRoute: boolean;
   t: TFunction<"translation", undefined>;
+  disableDraggable: boolean;
+  user: any;
   isSelected: (id: number) => boolean;
   toggleSelected: (id: number) => void;
   editMode: boolean;
@@ -256,6 +268,8 @@ function MasonryView({
             collection={collection as CollectionIncludingMembersAndLinkCount}
             isPublicRoute={isPublicRoute}
             t={t}
+            disableDraggable={disableDraggable}
+            user={user}
             isSelected={selected}
             toggleSelected={toggleSelected}
             imageHeightClass={imageHeightClass}
@@ -282,6 +296,8 @@ function ListView({
   collectionsById,
   isPublicRoute,
   t,
+  disableDraggable,
+  user,
   isSelected,
   toggleSelected,
   editMode,
@@ -293,6 +309,8 @@ function ListView({
   collectionsById: Map<number, CollectionIncludingMembersAndLinkCount>;
   isPublicRoute: boolean;
   t: TFunction<"translation", undefined>;
+  disableDraggable: boolean;
+  user: any;
   isSelected: (id: number) => boolean;
   toggleSelected: (id: number) => void;
   editMode: boolean;
@@ -313,6 +331,8 @@ function ListView({
             collection={collection as CollectionIncludingMembersAndLinkCount}
             isPublicRoute={isPublicRoute}
             t={t}
+            disableDraggable={disableDraggable}
+            user={user}
             isSelected={selected}
             toggleSelected={toggleSelected}
             count={i}
@@ -357,7 +377,7 @@ export default function Links({
     if (inView && useData?.fetchNextPage && useData?.hasNextPage) {
       useData.fetchNextPage();
     }
-  }, [useData?.fetchNextPage, useData?.hasNextPage, inView]);
+  }, [useData, inView]);
 
   const { data: collections = [] } = useCollections();
 
@@ -397,6 +417,10 @@ export default function Links({
     };
   }, [links]);
 
+  const disableDraggable = useMediaQuery("(max-width: 1023px)");
+
+  const { data: user } = useUser();
+
   if (layout === ViewMode.List) {
     return (
       <ListView
@@ -404,6 +428,8 @@ export default function Links({
         collectionsById={collectionsById}
         isPublicRoute={isPublicRoute}
         t={t}
+        disableDraggable={disableDraggable}
+        user={user}
         toggleSelected={toggleSelected}
         isSelected={isSelected}
         editMode={editMode || false}
@@ -419,6 +445,8 @@ export default function Links({
         collectionsById={collectionsById}
         isPublicRoute={isPublicRoute}
         t={t}
+        disableDraggable={disableDraggable}
+        user={user}
         toggleSelected={toggleSelected}
         isSelected={isSelected}
         editMode={editMode || false}
@@ -435,6 +463,8 @@ export default function Links({
         collectionsById={collectionsById}
         isPublicRoute={isPublicRoute}
         t={t}
+        user={user}
+        disableDraggable={disableDraggable}
         toggleSelected={toggleSelected}
         isSelected={isSelected}
         editMode={editMode || false}

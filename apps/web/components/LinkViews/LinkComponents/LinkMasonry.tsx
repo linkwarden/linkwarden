@@ -15,10 +15,8 @@ import {
 } from "@linkwarden/lib/formatStats";
 import Link from "next/link";
 import LinkIcon from "./LinkIcon";
-import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
-import { useUser } from "@linkwarden/router/user";
 import useLocalSettingsStore from "@/store/localSettings";
 import clsx from "clsx";
 import LinkPin from "./LinkPin";
@@ -27,7 +25,6 @@ import openLink from "@/lib/client/openLink";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useDraggable } from "@dnd-kit/core";
-import useMediaQuery from "@/hooks/useMediaQuery";
 import { cn } from "@linkwarden/lib";
 import { TFunction } from "i18next";
 
@@ -36,6 +33,8 @@ type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
   isPublicRoute: boolean;
   t: TFunction<"translation", undefined>;
+  disableDraggable: boolean;
+  user: any;
   isSelected: boolean;
   toggleSelected: (id: number) => void;
   imageHeightClass: string;
@@ -47,33 +46,26 @@ export default function LinkMasonry({
   collection,
   isPublicRoute,
   t,
+  disableDraggable,
+  user,
   isSelected,
   toggleSelected,
   imageHeightClass,
   editMode,
 }: Props) {
-  // we don't want to use the draggable feature for screen under 1023px since the sidebar is hidden
-  const isSmallScreen = useMediaQuery("(max-width: 1023px)");
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
     },
-    disabled: isSmallScreen,
+    disabled: disableDraggable,
   });
-
-  const { data: user } = useUser();
 
   const {
     settings: { show },
   } = useLocalSettingsStore();
 
   const ref = useRef<HTMLDivElement>(null);
-  const permissions = usePermissions(collection?.id as number);
-
-  const selectable =
-    editMode &&
-    (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
   const [linkModal, setLinkModal] = useState(false);
 
@@ -85,7 +77,7 @@ export default function LinkMasonry({
         isSelected && "border-primary bg-base-300"
       )}
       onClick={() =>
-        selectable
+        editMode
           ? toggleSelected(link.id as number)
           : editMode
             ? toast.error(t("link_selection_error"))

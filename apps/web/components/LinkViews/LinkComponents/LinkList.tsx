@@ -9,17 +9,14 @@ import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
 import LinkCollection from "@/components/LinkViews/LinkComponents/LinkCollection";
 import LinkIcon from "@/components/LinkViews/LinkComponents/LinkIcon";
 import { cn, isPWA } from "@/lib/utils";
-import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
-import { useUser } from "@linkwarden/router/user";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
 import { atLeastOneFormatAvailable } from "@linkwarden/lib/formatStats";
 import LinkFormats from "./LinkFormats";
 import openLink from "@/lib/client/openLink";
 import { useDraggable } from "@dnd-kit/core";
-import useMediaQuery from "@/hooks/useMediaQuery";
 import { TFunction } from "i18next";
 
 type Props = {
@@ -27,6 +24,8 @@ type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
   isPublicRoute: boolean;
   t: TFunction<"translation", undefined>;
+  disableDraggable: boolean;
+  user: any;
   isSelected: boolean;
   toggleSelected: (id: number) => void;
   count: number;
@@ -39,30 +38,23 @@ export default function LinkList({
   collection,
   isPublicRoute,
   t,
+  disableDraggable,
+  user,
   isSelected,
   toggleSelected,
   editMode,
 }: Props) {
-  const isSmallScreen = useMediaQuery("(max-width: 1023px)");
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
     },
-    disabled: isSmallScreen,
+    disabled: disableDraggable,
   });
-
-  const { data: user } = useUser();
 
   const {
     settings: { show },
   } = useLocalSettingsStore();
-
-  const permissions = usePermissions(collection?.id as number);
-
-  const selectable =
-    editMode &&
-    (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
   const [linkModal, setLinkModal] = useState(false);
 
@@ -80,7 +72,7 @@ export default function LinkList({
           "duration-200, touch-manipulation select-none"
         )}
         onClick={() =>
-          selectable
+          editMode
             ? toggleSelected(link.id as number)
             : editMode
               ? toast.error(t("link_selection_error"))

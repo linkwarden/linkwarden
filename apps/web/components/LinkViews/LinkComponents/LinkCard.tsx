@@ -14,10 +14,8 @@ import {
   formatAvailable,
 } from "@linkwarden/lib/formatStats";
 import LinkIcon from "./LinkIcon";
-import usePermissions from "@/hooks/usePermissions";
 import toast from "react-hot-toast";
 import LinkTypeBadge from "./LinkTypeBadge";
-import { useUser } from "@linkwarden/router/user";
 import useLocalSettingsStore from "@/store/localSettings";
 import LinkPin from "./LinkPin";
 import LinkFormats from "./LinkFormats";
@@ -25,7 +23,6 @@ import openLink from "@/lib/client/openLink";
 import { Separator } from "@/components/ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
-import useMediaQuery from "@/hooks/useMediaQuery";
 import { TFunction } from "i18next";
 
 type Props = {
@@ -33,6 +30,8 @@ type Props = {
   collection: CollectionIncludingMembersAndLinkCount;
   isPublicRoute: boolean;
   t: TFunction<"translation", undefined>;
+  user: any;
+  disableDraggable: boolean;
   isSelected: boolean;
   toggleSelected: (id: number) => void;
   imageHeightClass: string;
@@ -44,35 +43,28 @@ export default function LinkCard({
   collection,
   isPublicRoute,
   t,
+  user,
+  disableDraggable,
   isSelected,
   toggleSelected,
   imageHeightClass,
   editMode,
 }: Props) {
-  // we don't want to use the draggable feature for screen under 1023px since the sidebar is hidden
-  const isSmallScreen = useMediaQuery("(max-width: 1023px)");
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
     },
-    disabled: isSmallScreen,
+    disabled: disableDraggable,
   });
-
-  const { data: user } = useUser();
 
   const {
     settings: { show },
   } = useLocalSettingsStore();
 
   const ref = useRef<HTMLDivElement>(null);
-  const permissions = usePermissions(collection?.id as number);
 
   const [linkModal, setLinkModal] = useState(false);
-
-  const selectable =
-    editMode &&
-    (permissions === true || permissions?.canCreate || permissions?.canDelete);
 
   return (
     <div
@@ -84,7 +76,7 @@ export default function LinkCard({
         "relative group touch-manipulation select-none"
       )}
       onClick={() =>
-        selectable
+        editMode
           ? toggleSelected(link.id as number)
           : editMode
             ? toast.error(t("link_selection_error"))
