@@ -28,15 +28,13 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
     0;
 
   const queryString = useMemo(() => {
-    const queryParamsObject: LinkRequestQuery = {
+    return buildQueryString({
       sort,
       collectionId: params.collectionId,
       tagId: params.tagId,
       pinnedOnly: params.pinnedOnly ?? undefined,
       searchQueryString: params.searchQueryString,
-    };
-
-    return buildQueryString(queryParamsObject);
+    });
   }, [
     sort,
     params.collectionId,
@@ -45,17 +43,15 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
     params.searchQueryString,
   ]);
 
-  const { data, ...rest } = useFetchLinks(queryString, auth);
+  const query = useFetchLinks(queryString, auth);
 
   const links = useMemo(() => {
-    return data?.pages?.flatMap((page) => page?.links ?? []) ?? [];
-  }, [data?.pages.at(-1)?.nextCursor]);
-
-  const memoizedData = useMemo(() => ({ ...data, ...rest }), [data, rest]);
+    return query.data?.pages?.flatMap((p) => p.links ?? []) ?? [];
+  }, [query.dataUpdatedAt]);
 
   return {
     links,
-    data: memoizedData,
+    data: query,
   };
 };
 

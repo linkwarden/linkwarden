@@ -3,7 +3,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -41,7 +41,7 @@ type Props = {
   editMode?: boolean;
 };
 
-export default function LinkMasonry({
+function LinkMasonry({
   link,
   collection,
   isPublicRoute,
@@ -202,3 +202,5 @@ export default function LinkMasonry({
     </div>
   );
 }
+
+export default React.memo(LinkMasonry);

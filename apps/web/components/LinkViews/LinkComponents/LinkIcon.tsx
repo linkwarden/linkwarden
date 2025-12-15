@@ -7,7 +7,7 @@ import { IconWeight } from "@phosphor-icons/react";
 import clsx from "clsx";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
 
-export default function LinkIcon({
+function LinkIcon({
   link,
   className,
   hideBackground,
@@ -104,3 +104,5 @@ const LinkPlaceholderIcon = ({
     </div>
   );
 };
+
+export default React.memo(LinkIcon);

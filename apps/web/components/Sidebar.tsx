@@ -6,7 +6,7 @@ import CollectionListing from "@/components/CollectionListing";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
 import { useTags } from "@linkwarden/router/tags";
-import { TagListing } from "./TagListing";
+import TagListing from "./TagListing";
 import { Button } from "./ui/button";
 import { useUser } from "@linkwarden/router/user";
 import Image from "next/image";

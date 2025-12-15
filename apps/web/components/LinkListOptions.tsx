@@ -45,13 +45,8 @@ const LinkListOptions = ({
   setEditMode,
   links,
 }: Props) => {
-  const {
-    selectedIds,
-    setSelected,
-    clearSelected,
-    isSelected,
-    selectionCount,
-  } = useLinkStore();
+  const { selectedIds, setSelected, clearSelected, selectionCount } =
+    useLinkStore();
 
   const deleteLinksById = useBulkDeleteLinks();
   const refreshPreservations = useArchiveAction();

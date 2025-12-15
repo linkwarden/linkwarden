@@ -374,15 +374,17 @@ export default function Links({
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
   useEffect(() => {
-    if (
-      inView &&
-      !useData.isFetching &&
-      useData?.fetchNextPage &&
-      useData?.hasNextPage
-    ) {
-      useData.fetchNextPage();
-    }
-  }, [useData, inView]);
+    if (!inView) return;
+    if (!useData.hasNextPage) return;
+    if (useData.isFetchingNextPage) return;
+
+    useData.fetchNextPage();
+  }, [
+    inView,
+    useData.hasNextPage,
+    useData.isFetchingNextPage,
+    useData.fetchNextPage,
+  ]);
 
   const { data: collections = [] } = useCollections();
 

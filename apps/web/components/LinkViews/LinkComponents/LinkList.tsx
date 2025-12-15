@@ -2,7 +2,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { useState } from "react";
+import React, { useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -33,7 +33,7 @@ type Props = {
   editMode?: boolean;
 };
 
-export default function LinkList({
+function LinkList({
   link,
   collection,
   isPublicRoute,
@@ -137,3 +137,5 @@ export default function LinkList({
     </>
   );
 }
+
+export default React.memo(LinkList);

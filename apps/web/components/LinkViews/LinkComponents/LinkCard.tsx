@@ -3,7 +3,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
 } from "@linkwarden/types";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";
 import LinkDate from "@/components/LinkViews/LinkComponents/LinkDate";
@@ -38,7 +38,7 @@ type Props = {
   editMode?: boolean;
 };
 
-export default function LinkCard({
+function LinkCard({
   link,
   collection,
   isPublicRoute,
@@ -184,3 +184,5 @@ export default function LinkCard({
     </div>
   );
 }
+
+export default React.memo(LinkCard);
