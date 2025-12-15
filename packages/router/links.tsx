@@ -49,7 +49,7 @@ const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
 
   const links = useMemo(() => {
     return data?.pages?.flatMap((page) => page?.links ?? []) ?? [];
-  }, [data]);
+  }, [data?.pages.at(-1)?.nextCursor]);
 
   const memoizedData = useMemo(() => ({ ...data, ...rest }), [data, rest]);
 

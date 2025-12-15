@@ -54,7 +54,7 @@ export default function LinkIcon({
               faviconLoaded ? "" : "absolute opacity-0"
             )}
             draggable="false"
-            onLoadingComplete={() => setFaviconLoaded(true)}
+            onLoad={() => setFaviconLoaded(true)}
             onError={() => setFaviconLoaded(false)}
           />
           {!faviconLoaded && (

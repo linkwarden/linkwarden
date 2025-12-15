@@ -215,7 +215,7 @@ const PreservationNavbar = ({ link, format, className }: Props) => {
           <ToggleDarkMode />
           <LinkActions
             link={link}
-            collection={collection}
+            t={t}
             linkModal={linkModal}
             setLinkModal={(e) => setLinkModal(e)}
             ghost

@@ -175,7 +175,11 @@ export default function LinkMasonry({
               <div className="flex flex-wrap justify-between items-center text-xs text-neutral px-3 pb-1 w-full gap-x-2">
                 {!isPublicRoute && show.collection && collection && (
                   <div className="cursor-pointer truncate">
-                    <LinkCollection link={link} collection={collection} />
+                    <LinkCollection
+                      link={link}
+                      collection={collection}
+                      isPublicRoute={isPublicRoute}
+                    />
                   </div>
                 )}
                 {show.date && <LinkDate link={link} />}

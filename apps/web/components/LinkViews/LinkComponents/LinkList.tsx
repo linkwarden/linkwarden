@@ -113,7 +113,11 @@ export default function LinkList({
               <div className="flex items-center gap-x-3 text-neutral flex-wrap">
                 {show.link && <LinkTypeBadge link={link} />}
                 {show.collection && collection && (
-                  <LinkCollection link={link} collection={collection} />
+                  <LinkCollection
+                    link={link}
+                    collection={collection}
+                    isPublicRoute={isPublicRoute}
+                  />
                 )}
                 {show.date && <LinkDate link={link} />}
               </div>

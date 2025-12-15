@@ -11,14 +11,12 @@ import React from "react";
 export default function LinkCollection({
   link,
   collection,
+  isPublicRoute,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
+  isPublicRoute: boolean;
 }) {
-  const router = useRouter();
-
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
-
   return !isPublicRoute && collection?.name ? (
     <>
       <Link

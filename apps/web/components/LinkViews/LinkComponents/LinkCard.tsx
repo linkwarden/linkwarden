@@ -156,7 +156,11 @@ export default function LinkCard({
                 <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
                   {show.collection && !isPublicRoute && collection && (
                     <div className="cursor-pointer truncate">
-                      <LinkCollection link={link} collection={collection} />
+                      <LinkCollection
+                        link={link}
+                        collection={collection}
+                        isPublicRoute={isPublicRoute}
+                      />
                     </div>
                   )}
                   {show.date && <LinkDate link={link} />}

@@ -210,7 +210,11 @@ export function Card({ link, editMode, dashboardType }: Props) {
                 <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
                   {show.collection && !isPublicRoute && (
                     <div className="cursor-pointer truncate">
-                      <LinkCollection link={link} collection={collection} />
+                      <LinkCollection
+                        link={link}
+                        collection={collection}
+                        isPublicRoute={false}
+                      />
                     </div>
                   )}
                   {show.date && <LinkDate link={link} />}
