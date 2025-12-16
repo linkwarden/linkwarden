@@ -20,7 +20,7 @@ export default function Announcement({ toggleAnnouncementBar }: Props) {
             values={{ version: announcementId }}
             components={[
               <Link
-                href={`https://blog.linkwarden.app/releases/${announcementId}`}
+                href={`https://linkwarden.app/blog/releases/${announcementId}`}
                 target="_blank"
                 className="underline decoration-dotted underline-offset-4 hover:text-primary duration-100"
                 key={0}
