@@ -180,6 +180,7 @@ model Link {
   color         String?
   url           String?
   textContent   String?
+  favicon       String?
   preview       String?
   image         String?
   pdf           String?
