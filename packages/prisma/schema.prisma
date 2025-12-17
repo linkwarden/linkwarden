@@ -180,7 +180,6 @@ model Link {
   color         String?
   url           String?
   textContent   String?
-  favicon       String?
   preview       String?
   image         String?
   pdf           String?
@@ -291,4 +290,18 @@ enum DashboardSectionType {
   RECENT_LINKS
   PINNED_LINKS
   COLLECTION
+}
+
+model AppMigration {
+  id         Int                 @id @default(autoincrement())
+  name       String              @unique
+  status     AppMigrationStatus
+  finishedAt DateTime?
+  createdAt  DateTime            @default(now())
+}
+
+enum AppMigrationStatus {
+  APPLIED
+  PENDING
+  FAILED
 }

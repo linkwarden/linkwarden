@@ -8,9 +8,6 @@ const nextConfig = {
   staticPageGenerationTimeout: 1000,
   images: {
     remotePatterns: [
-      // For fetching the favicons
-      { hostname: "t2.gstatic.com" },
-
       // For profile pictures (Google OAuth)
       { hostname: "*.googleusercontent.com" },
     ],
