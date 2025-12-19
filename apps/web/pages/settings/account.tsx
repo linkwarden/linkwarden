@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEvent, ReactElement } from "react";
 import { AccountSettings } from "@linkwarden/types";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
@@ -25,8 +25,9 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { NextPageWithLayout } from "../_app";
 
-export default function Account() {
+const Page: NextPageWithLayout = () => {
   const [emailChangeVerificationModal, setEmailChangeVerificationModal] =
     useState(false);
   const [submitLoader, setSubmitLoader] = useState(false);
@@ -145,7 +146,7 @@ export default function Account() {
   };
 
   return (
-    <SettingsLayout>
+    <>
       <p className="capitalize text-3xl font-thin inline">
         {t("accountSettings")}
       </p>
@@ -358,8 +359,14 @@ export default function Account() {
           newEmail={user.email || ""}
         />
       )}
-    </SettingsLayout>
+    </>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <SettingsLayout>{page}</SettingsLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

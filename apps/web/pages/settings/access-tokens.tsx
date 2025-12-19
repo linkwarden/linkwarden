@@ -1,5 +1,5 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import NewTokenModal from "@/components/ModalContent/NewTokenModal";
 import RevokeTokenModal from "@/components/ModalContent/RevokeTokenModal";
 import { AccessToken } from "@linkwarden/prisma/client";
@@ -14,8 +14,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { NextPageWithLayout } from "../_app";
 
-export default function AccessTokens() {
+const Page: NextPageWithLayout = () => {
   const [newTokenModal, setNewTokenModal] = useState(false);
   const [revokeTokenModal, setRevokeTokenModal] = useState(false);
   const [selectedToken, setSelectedToken] = useState<AccessToken | null>(null);
@@ -29,7 +30,7 @@ export default function AccessTokens() {
   const { data: tokens = [] } = useTokens();
 
   return (
-    <SettingsLayout>
+    <>
       <p className="capitalize text-3xl font-thin inline">
         {t("access_tokens")}
       </p>
@@ -124,8 +125,14 @@ export default function AccessTokens() {
           activeToken={selectedToken}
         />
       )}
-    </SettingsLayout>
+    </>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <SettingsLayout>{page}</SettingsLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

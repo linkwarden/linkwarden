@@ -2,7 +2,7 @@ import SettingsLayout from "@/layouts/SettingsLayout";
 import { useRouter } from "next/router";
 import InviteModal from "@/components/ModalContent/InviteModal";
 import { User as U } from "@linkwarden/prisma/client";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUsers } from "@linkwarden/router/users";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { NextPageWithLayout } from "../_app";
 
 interface User extends U {
   subscriptions: {
@@ -34,7 +35,7 @@ type UserModal = {
 
 const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
 
-export default function Billing() {
+const Page: NextPageWithLayout = () => {
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -74,7 +75,7 @@ export default function Billing() {
   const [inviteModal, setInviteModal] = useState(false);
 
   return (
-    <SettingsLayout>
+    <>
       <p className="capitalize text-3xl font-thin inline">
         {t("billing_settings")}
       </p>
@@ -289,8 +290,14 @@ export default function Billing() {
           userId={deleteUserModal.userId}
         />
       )}
-    </SettingsLayout>
+    </>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <SettingsLayout>{page}</SettingsLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };
