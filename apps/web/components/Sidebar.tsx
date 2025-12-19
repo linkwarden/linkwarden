@@ -90,6 +90,7 @@ export default function Sidebar({
               alt="Linkwarden Icon"
               className="h-8 w-auto cursor-pointer"
               onClick={() => router.push("/dashboard")}
+              priority
             />
           ) : user?.theme === "light" ? (
             <Image
@@ -99,6 +100,7 @@ export default function Sidebar({
               alt="Linkwarden"
               className="h-9 w-auto cursor-pointer"
               onClick={() => router.push("/dashboard")}
+              priority
             />
           ) : (
             <Image
@@ -108,6 +110,7 @@ export default function Sidebar({
               alt="Linkwarden"
               className="h-9 w-auto cursor-pointer"
               onClick={() => router.push("/dashboard")}
+              priority
             />
           )}
 
