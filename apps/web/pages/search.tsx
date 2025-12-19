@@ -6,15 +6,16 @@ import {
   ViewMode,
 } from "@linkwarden/types";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import LinkListOptions from "@/components/LinkListOptions";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import Links from "@/components/LinkViews/Links";
 import DragNDrop from "@/components/DragNDrop";
+import { NextPageWithLayout } from "./_app";
 
-export default function Search() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
 
   const router = useRouter();
@@ -46,32 +47,36 @@ export default function Search() {
       activeLink={activeLink}
       setActiveLink={setActiveLink}
     >
-      <MainLayout>
-        <div className="p-5 flex flex-col gap-5 w-full h-full">
-          <LinkListOptions
-            t={t}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            editMode={editMode}
-            setEditMode={setEditMode}
-            links={links}
-          >
-            <PageHeader icon={"bi-search"} title={t("search_results")} />
-          </LinkListOptions>
+      <div className="p-5 flex flex-col gap-5 w-full h-full">
+        <LinkListOptions
+          t={t}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          links={links}
+        >
+          <PageHeader icon={"bi-search"} title={t("search_results")} />
+        </LinkListOptions>
 
-          {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}
-          <Links
-            editMode={editMode}
-            links={links}
-            layout={viewMode}
-            useData={data}
-          />
-        </div>
-      </MainLayout>
+        {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}
+        <Links
+          editMode={editMode}
+          links={links}
+          layout={viewMode}
+          useData={data}
+        />
+      </div>
     </DragNDrop>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <MainLayout>{page}</MainLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

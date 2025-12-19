@@ -6,7 +6,7 @@ import {
   ViewMode,
 } from "@linkwarden/types";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import usePermissions from "@/hooks/usePermissions";
@@ -37,8 +37,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import DragNDrop from "@/components/DragNDrop";
+import { NextPageWithLayout } from "../_app";
 
-export default function Index() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -117,294 +118,294 @@ export default function Index() {
       activeLink={activeLink}
       setActiveLink={setActiveLink}
     >
-      <MainLayout>
-        <div
-          className="p-5 flex gap-3 flex-col"
-          style={{
-            backgroundImage: `linear-gradient(${activeCollection?.color}20 0%, ${
-              user?.theme === "dark" ? "#262626" : "#f3f4f6"
-            } 13rem, ${user?.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
-          }}
-        >
-          {activeCollection && (
-            <div className="flex gap-3 items-start justify-between">
-              <div className="flex items-center gap-2">
-                {activeCollection.icon ? (
-                  <Icon
-                    icon={activeCollection.icon}
-                    size={45}
-                    weight={
-                      (activeCollection.iconWeight || "regular") as IconWeight
+      <div
+        className="p-5 flex gap-3 flex-col"
+        style={{
+          backgroundImage: `linear-gradient(${activeCollection?.color}20 0%, ${
+            user?.theme === "dark" ? "#262626" : "#f3f4f6"
+          } 13rem, ${user?.theme === "dark" ? "#171717" : "#ffffff"} 100%)`,
+        }}
+      >
+        {activeCollection && (
+          <div className="flex gap-3 items-start justify-between">
+            <div className="flex items-center gap-2">
+              {activeCollection.icon ? (
+                <Icon
+                  icon={activeCollection.icon}
+                  size={45}
+                  weight={
+                    (activeCollection.iconWeight || "regular") as IconWeight
+                  }
+                  color={activeCollection.color}
+                />
+              ) : (
+                <i
+                  className="bi-folder-fill text-3xl"
+                  style={{ color: activeCollection.color }}
+                />
+              )}
+
+              <p className="sm:text-3xl text-2xl w-full py-1 break-words hyphens-auto font-thin">
+                {activeCollection?.name}
+              </p>
+            </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="icon"
+                  className="mt-2 text-neutral"
+                  onMouseDown={(e) => e.preventDefault()}
+                  title={t("more")}
+                >
+                  <i className="bi-three-dots text-xl" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                sideOffset={4}
+                align="end"
+                className="bg-base-200 border border-neutral-content rounded-box p-1"
+              >
+                <DropdownMenuItem
+                  onClick={() => {
+                    for (const link of links) {
+                      if (link.url) window.open(link.url, "_blank");
                     }
-                    color={activeCollection.color}
-                  />
-                ) : (
-                  <i
-                    className="bi-folder-fill text-3xl"
-                    style={{ color: activeCollection.color }}
-                  />
+                  }}
+                >
+                  <i className="bi-box-arrow-up-right" />
+                  {t("open_all_links")}
+                </DropdownMenuItem>
+
+                {permissions === true && (
+                  <DropdownMenuItem
+                    onClick={() => setEditCollectionModal(true)}
+                  >
+                    <i className="bi-pencil-square" />
+                    {t("edit_collection_info")}
+                  </DropdownMenuItem>
                 )}
 
-                <p className="sm:text-3xl text-2xl w-full py-1 break-words hyphens-auto font-thin">
-                  {activeCollection?.name}
-                </p>
-              </div>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    asChild
-                    variant="ghost"
-                    size="icon"
-                    className="mt-2 text-neutral"
-                    onMouseDown={(e) => e.preventDefault()}
-                    title={t("more")}
-                  >
-                    <i className="bi-three-dots text-xl" />
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent
-                  sideOffset={4}
-                  align="end"
-                  className="bg-base-200 border border-neutral-content rounded-box p-1"
-                >
-                  <DropdownMenuItem
-                    onClick={() => {
-                      for (const link of links) {
-                        if (link.url) window.open(link.url, "_blank");
-                      }
-                    }}
-                  >
-                    <i className="bi-box-arrow-up-right" />
-                    {t("open_all_links")}
-                  </DropdownMenuItem>
-
-                  {permissions === true && (
-                    <DropdownMenuItem
-                      onClick={() => setEditCollectionModal(true)}
-                    >
-                      <i className="bi-pencil-square" />
-                      {t("edit_collection_info")}
-                    </DropdownMenuItem>
-                  )}
-
-                  <DropdownMenuItem
-                    onClick={() => setEditCollectionSharingModal(true)}
-                  >
-                    <i className="bi-globe" />
-                    {permissions === true
-                      ? t("share_and_collaborate")
-                      : t("view_team")}
-                  </DropdownMenuItem>
-
-                  {permissions === true && (
-                    <DropdownMenuItem
-                      onClick={() => setNewCollectionModal(true)}
-                    >
-                      <i className="bi-folder-plus" />
-                      {t("create_subcollection")}
-                    </DropdownMenuItem>
-                  )}
-
-                  <DropdownMenuSeparator />
-
-                  <DropdownMenuItem
-                    onClick={() => setDeleteCollectionModal(true)}
-                    className="text-error"
-                  >
-                    {permissions === true ? (
-                      <>
-                        <i className="bi-trash" />
-                        {t("delete_collection")}
-                      </>
-                    ) : (
-                      <>
-                        <i className="bi-box-arrow-left" />
-                        {t("leave_collection")}
-                      </>
-                    )}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          )}
-
-          {activeCollection && (
-            <div className="min-w-[15rem]">
-              <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
-                <div
-                  className="flex items-center px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
+                <DropdownMenuItem
                   onClick={() => setEditCollectionSharingModal(true)}
                 >
-                  {collectionOwner.id && (
-                    <ProfilePhoto
-                      src={collectionOwner.image || undefined}
-                      name={collectionOwner.name}
-                    />
-                  )}
-                  {activeCollection.members
-                    .sort((a, b) => (a.userId as number) - (b.userId as number))
-                    .map((e, i) => {
-                      return (
-                        <ProfilePhoto
-                          key={i}
-                          src={e.user.image ? e.user.image : undefined}
-                          name={e.user.name}
-                          className="-ml-3"
-                        />
-                      );
-                    })
-                    .slice(0, 3)}
-                  {activeCollection.members.length - 3 > 0 && (
-                    <div className={`avatar drop-shadow-md placeholder -ml-3`}>
-                      <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
-                        <span>+{activeCollection.members.length - 3}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  <i className="bi-globe" />
+                  {permissions === true
+                    ? t("share_and_collaborate")
+                    : t("view_team")}
+                </DropdownMenuItem>
 
-                <p className="text-neutral text-sm ml-2">
-                  {activeCollection.members.length > 0
-                    ? activeCollection.members.length === 1
-                      ? t("by_author_and_other", {
-                          author: collectionOwner.name,
-                          count: activeCollection.members.length,
-                        })
-                      : t("by_author_and_others", {
-                          author: collectionOwner.name,
-                          count: activeCollection.members.length,
-                        })
-                    : t("by_author", { author: collectionOwner.name })}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {activeCollection?.description && (
-            <p>{activeCollection.description}</p>
-          )}
-
-          <Separator />
-
-          {collections.some((e) => e.parentId === activeCollection?.id) && (
-            <>
-              <PageHeader
-                icon="bi-folder"
-                title={t("collections")}
-                description={t(
-                  collections.filter((e) => e.parentId === activeCollection?.id)
-                    .length === 1
-                    ? "showing_count_result"
-                    : "showing_count_results",
-                  {
-                    count: collections.filter(
-                      (e) => e.parentId === activeCollection?.id
-                    ).length,
-                  }
+                {permissions === true && (
+                  <DropdownMenuItem onClick={() => setNewCollectionModal(true)}>
+                    <i className="bi-folder-plus" />
+                    {t("create_subcollection")}
+                  </DropdownMenuItem>
                 )}
-                className="scale-90 w-fit"
-              />
-              <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
-                {collections
-                  .filter((e) => e.parentId === activeCollection?.id)
-                  .map((e) => (
-                    <CollectionCard key={e.id} collection={e} />
-                  ))}
-              </div>
-            </>
-          )}
 
-          <LinkListOptions
-            t={t}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            editMode={
-              permissions === true ||
-              permissions?.canUpdate ||
-              permissions?.canDelete
-                ? editMode
-                : undefined
-            }
-            setEditMode={
-              permissions === true ||
-              permissions?.canUpdate ||
-              permissions?.canDelete
-                ? setEditMode
-                : undefined
-            }
-            links={links}
-          >
-            {collections.some((e) => e.parentId === activeCollection?.id) ? (
-              <PageHeader
-                icon={"bi-link-45deg"}
-                title={t("links")}
-                description={
-                  activeCollection?._count?.links === 1
-                    ? t("showing_count_result", {
-                        count: activeCollection?._count?.links,
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  onClick={() => setDeleteCollectionModal(true)}
+                  className="text-error"
+                >
+                  {permissions === true ? (
+                    <>
+                      <i className="bi-trash" />
+                      {t("delete_collection")}
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi-box-arrow-left" />
+                      {t("leave_collection")}
+                    </>
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
+
+        {activeCollection && (
+          <div className="min-w-[15rem]">
+            <div className="flex gap-1 justify-center sm:justify-end items-center w-fit">
+              <div
+                className="flex items-center px-1 py-1 rounded-full cursor-pointer hover:bg-base-content/20 transition-colors duration-200"
+                onClick={() => setEditCollectionSharingModal(true)}
+              >
+                {collectionOwner.id && (
+                  <ProfilePhoto
+                    src={collectionOwner.image || undefined}
+                    name={collectionOwner.name}
+                  />
+                )}
+                {activeCollection.members
+                  .sort((a, b) => (a.userId as number) - (b.userId as number))
+                  .map((e, i) => {
+                    return (
+                      <ProfilePhoto
+                        key={i}
+                        src={e.user.image ? e.user.image : undefined}
+                        name={e.user.name}
+                        className="-ml-3"
+                      />
+                    );
+                  })
+                  .slice(0, 3)}
+                {activeCollection.members.length - 3 > 0 && (
+                  <div className={`avatar drop-shadow-md placeholder -ml-3`}>
+                    <div className="bg-base-100 text-neutral rounded-full w-8 h-8 ring-2 ring-neutral-content">
+                      <span>+{activeCollection.members.length - 3}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-neutral text-sm ml-2">
+                {activeCollection.members.length > 0
+                  ? activeCollection.members.length === 1
+                    ? t("by_author_and_other", {
+                        author: collectionOwner.name,
+                        count: activeCollection.members.length,
                       })
-                    : t("showing_count_results", {
-                        count: activeCollection?._count?.links,
+                    : t("by_author_and_others", {
+                        author: collectionOwner.name,
+                        count: activeCollection.members.length,
                       })
+                  : t("by_author", { author: collectionOwner.name })}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {activeCollection?.description && <p>{activeCollection.description}</p>}
+
+        <Separator />
+
+        {collections.some((e) => e.parentId === activeCollection?.id) && (
+          <>
+            <PageHeader
+              icon="bi-folder"
+              title={t("collections")}
+              description={t(
+                collections.filter((e) => e.parentId === activeCollection?.id)
+                  .length === 1
+                  ? "showing_count_result"
+                  : "showing_count_results",
+                {
+                  count: collections.filter(
+                    (e) => e.parentId === activeCollection?.id
+                  ).length,
                 }
-                className="scale-90 w-fit"
-              />
-            ) : (
-              <p>
-                {activeCollection?._count?.links === 1
+              )}
+              className="scale-90 w-fit"
+            />
+            <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
+              {collections
+                .filter((e) => e.parentId === activeCollection?.id)
+                .map((e) => (
+                  <CollectionCard key={e.id} collection={e} />
+                ))}
+            </div>
+          </>
+        )}
+
+        <LinkListOptions
+          t={t}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          editMode={
+            permissions === true ||
+            permissions?.canUpdate ||
+            permissions?.canDelete
+              ? editMode
+              : undefined
+          }
+          setEditMode={
+            permissions === true ||
+            permissions?.canUpdate ||
+            permissions?.canDelete
+              ? setEditMode
+              : undefined
+          }
+          links={links}
+        >
+          {collections.some((e) => e.parentId === activeCollection?.id) ? (
+            <PageHeader
+              icon={"bi-link-45deg"}
+              title={t("links")}
+              description={
+                activeCollection?._count?.links === 1
                   ? t("showing_count_result", {
                       count: activeCollection?._count?.links,
                     })
                   : t("showing_count_results", {
                       count: activeCollection?._count?.links,
-                    })}
-              </p>
-            )}
-          </LinkListOptions>
+                    })
+              }
+              className="scale-90 w-fit"
+            />
+          ) : (
+            <p>
+              {activeCollection?._count?.links === 1
+                ? t("showing_count_result", {
+                    count: activeCollection?._count?.links,
+                  })
+                : t("showing_count_results", {
+                    count: activeCollection?._count?.links,
+                  })}
+            </p>
+          )}
+        </LinkListOptions>
 
-          <Links
-            editMode={editMode}
-            links={links}
-            layout={viewMode}
-            useData={data}
-          />
-          {!data.isLoading && links && !links[0] && <NoLinksFound />}
-        </div>
-        {activeCollection && (
-          <>
-            {editCollectionModal && (
-              <EditCollectionModal
-                onClose={() => setEditCollectionModal(false)}
-                activeCollection={activeCollection}
-              />
-            )}
-            {editCollectionSharingModal && (
-              <EditCollectionSharingModal
-                onClose={() => setEditCollectionSharingModal(false)}
-                activeCollection={activeCollection}
-              />
-            )}
-            {newCollectionModal && (
-              <NewCollectionModal
-                onClose={() => setNewCollectionModal(false)}
-                parent={activeCollection}
-              />
-            )}
-            {deleteCollectionModal && (
-              <DeleteCollectionModal
-                onClose={() => setDeleteCollectionModal(false)}
-                activeCollection={activeCollection}
-              />
-            )}
-          </>
-        )}
-      </MainLayout>
+        <Links
+          editMode={editMode}
+          links={links}
+          layout={viewMode}
+          useData={data}
+        />
+        {!data.isLoading && links && !links[0] && <NoLinksFound />}
+      </div>
+      {activeCollection && (
+        <>
+          {editCollectionModal && (
+            <EditCollectionModal
+              onClose={() => setEditCollectionModal(false)}
+              activeCollection={activeCollection}
+            />
+          )}
+          {editCollectionSharingModal && (
+            <EditCollectionSharingModal
+              onClose={() => setEditCollectionSharingModal(false)}
+              activeCollection={activeCollection}
+            />
+          )}
+          {newCollectionModal && (
+            <NewCollectionModal
+              onClose={() => setNewCollectionModal(false)}
+              parent={activeCollection}
+            />
+          )}
+          {deleteCollectionModal && (
+            <DeleteCollectionModal
+              onClose={() => setDeleteCollectionModal(false)}
+              activeCollection={activeCollection}
+            />
+          )}
+        </>
+      )}
     </DragNDrop>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <MainLayout>{page}</MainLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

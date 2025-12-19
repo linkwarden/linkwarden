@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import { useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -34,8 +34,9 @@ import { useUpdateLink } from "@linkwarden/router/links";
 import usePinLink from "@/lib/client/pinLink";
 import { useQueryClient } from "@tanstack/react-query";
 import DragNDrop from "@/components/DragNDrop";
+import { NextPageWithLayout } from "./_app";
 
-export default function Dashboard() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
   const {
@@ -287,75 +288,77 @@ export default function Dashboard() {
       activeLink={activeLink}
       setActiveLink={setActiveLink}
     >
-      <MainLayout>
-        <div className="p-5 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <i className="bi-house-fill text-primary" />
-              <p className="font-thin">{t("dashboard")}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <DashboardLayoutDropdown />
-              <ViewDropdown
-                viewMode={viewMode}
-                setViewMode={setViewMode}
-                dashboard
-              />
-            </div>
+      <div className="p-5 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <i className="bi-house-fill text-primary" />
+            <p className="font-thin">{t("dashboard")}</p>
           </div>
-          {orderedSections[0] ? (
-            orderedSections?.map((section, i) => (
-              <Section
-                key={i}
-                sectionData={section}
-                t={t}
-                collection={collections.find(
-                  (c) => c.id === section.collectionId
-                )}
-                collectionLinks={
-                  section.collectionId
-                    ? collectionLinks[section.collectionId]
-                    : []
-                }
-                links={links}
-                tags={tags}
-                numberOfLinks={numberOfLinks}
-                collectionsLength={collections.length}
-                numberOfPinnedLinks={numberOfPinnedLinks}
-                dashboardData={dashboardData}
-                setNewLinkModal={setNewLinkModal}
-              />
-            ))
-          ) : (
-            <div className="h-full flex flex-col gap-4">
-              <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
-                <div className="skeleton h-20 w-full"></div>
-                <div className="skeleton h-20 w-full"></div>
-                <div className="skeleton h-20 w-full"></div>
-                <div className="skeleton h-20 w-full"></div>
-              </div>
-              <div className="skeleton h-full"></div>
-              <div className="skeleton h-full"></div>
-              <div className="skeleton h-full"></div>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <DashboardLayoutDropdown />
+            <ViewDropdown
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              dashboard
+            />
+          </div>
         </div>
+        {orderedSections[0] ? (
+          orderedSections?.map((section, i) => (
+            <Section
+              key={i}
+              sectionData={section}
+              t={t}
+              collection={collections.find(
+                (c) => c.id === section.collectionId
+              )}
+              collectionLinks={
+                section.collectionId
+                  ? collectionLinks[section.collectionId]
+                  : []
+              }
+              links={links}
+              tags={tags}
+              numberOfLinks={numberOfLinks}
+              collectionsLength={collections.length}
+              numberOfPinnedLinks={numberOfPinnedLinks}
+              dashboardData={dashboardData}
+              setNewLinkModal={setNewLinkModal}
+            />
+          ))
+        ) : (
+          <div className="h-full flex flex-col gap-4">
+            <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+            </div>
+            <div className="skeleton h-full"></div>
+            <div className="skeleton h-full"></div>
+            <div className="skeleton h-full"></div>
+          </div>
+        )}
+      </div>
 
-        {showSurveyModal && (
-          <SurveyModal
-            submit={submitSurvey}
-            onClose={() => {
-              setShowsSurveyModal(false);
-            }}
-          />
-        )}
-        {newLinkModal && (
-          <NewLinkModal onClose={() => setNewLinkModal(false)} />
-        )}
-      </MainLayout>
+      {showSurveyModal && (
+        <SurveyModal
+          submit={submitSurvey}
+          onClose={() => {
+            setShowsSurveyModal(false);
+          }}
+        />
+      )}
+      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
     </DragNDrop>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <MainLayout>{page}</MainLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };
 

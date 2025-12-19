@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, ReactElement, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import {
   LinkIncludingShortenedCollectionAndTags,
@@ -25,8 +25,9 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import DragNDrop from "@/components/DragNDrop";
+import { NextPageWithLayout } from "../_app";
 
-export default function Index() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -150,117 +151,113 @@ export default function Index() {
       activeLink={activeLink}
       setActiveLink={setActiveLink}
     >
-      <MainLayout>
-        <div className="p-5 flex flex-col gap-5 w-full h-full">
-          <LinkListOptions
-            t={t}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            editMode={editMode}
-            setEditMode={setEditMode}
-            links={links}
-          >
-            <div className="flex gap-3 items-center">
-              <div className="flex gap-2 items-center font-thin">
-                <i className="bi-hash text-primary text-3xl" />
+      <div className="p-5 flex flex-col gap-5 w-full h-full">
+        <LinkListOptions
+          t={t}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          links={links}
+        >
+          <div className="flex gap-3 items-center">
+            <div className="flex gap-2 items-center font-thin">
+              <i className="bi-hash text-primary text-3xl" />
 
-                {renameTag ? (
-                  <form onSubmit={submit} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      autoFocus
-                      className="sm:text-3xl text-xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
-                      value={newTagName}
-                      onChange={(e) => setNewTagName(e.target.value)}
-                    />
-                    <Button variant="ghost" size="icon" onClick={submit}>
-                      <i className="bi-check2 text-neutral text-xl" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={cancelUpdateTag}
-                    >
-                      <i className="bi-x text-neutral text-xl" />
-                    </Button>
-                  </form>
-                ) : (
-                  <>
-                    <p className="sm:text-3xl text-xl">{activeTag?.name}</p>
-                    <div className="relative">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" title={t("more")}>
-                            <i className="bi-three-dots text-xl text-neutral" />
-                          </Button>
-                        </DropdownMenuTrigger>
+              {renameTag ? (
+                <form onSubmit={submit} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    autoFocus
+                    className="sm:text-3xl text-xl bg-transparent h-10 w-3/4 outline-none border-b border-b-neutral-content"
+                    value={newTagName}
+                    onChange={(e) => setNewTagName(e.target.value)}
+                  />
+                  <Button variant="ghost" size="icon" onClick={submit}>
+                    <i className="bi-check2 text-neutral text-xl" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={cancelUpdateTag}>
+                    <i className="bi-x text-neutral text-xl" />
+                  </Button>
+                </form>
+              ) : (
+                <>
+                  <p className="sm:text-3xl text-xl">{activeTag?.name}</p>
+                  <div className="relative">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" title={t("more")}>
+                          <i className="bi-three-dots text-xl text-neutral" />
+                        </Button>
+                      </DropdownMenuTrigger>
 
-                        <DropdownMenuContent
-                          sideOffset={4}
-                          align={
-                            activeTag?.name.length && activeTag?.name.length > 8
-                              ? "end"
-                              : "start"
-                          }
-                          className="bg-base-200 border border-neutral-content rounded-box p-1"
+                      <DropdownMenuContent
+                        sideOffset={4}
+                        align={
+                          activeTag?.name.length && activeTag?.name.length > 8
+                            ? "end"
+                            : "start"
+                        }
+                        className="bg-base-200 border border-neutral-content rounded-box p-1"
+                      >
+                        <DropdownMenuItem onClick={() => setRenameTag(true)}>
+                          <i className="bi-pencil-square" />
+                          {t("rename_tag")}
+                        </DropdownMenuItem>
+
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem
+                          onClick={remove}
+                          className="text-error"
                         >
-                          <DropdownMenuItem onClick={() => setRenameTag(true)}>
-                            <i className="bi-pencil-square" />
-                            {t("rename_tag")}
-                          </DropdownMenuItem>
-
-                          <DropdownMenuSeparator />
-
-                          <DropdownMenuItem
-                            onClick={remove}
-                            className="text-error"
-                          >
-                            <i className="bi-trash" />
-                            {t("delete_tag")}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </>
-                )}
-              </div>
+                          <i className="bi-trash" />
+                          {t("delete_tag")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </>
+              )}
             </div>
-          </LinkListOptions>
+          </div>
+        </LinkListOptions>
 
-          <Links
-            editMode={editMode}
-            links={links}
-            layout={viewMode}
-            useData={data}
-          />
+        <Links
+          editMode={editMode}
+          links={links}
+          layout={viewMode}
+          useData={data}
+        />
 
-          {!data.isLoading && links && !links[0] && (
-            <div
-              style={{ flex: "1 1 auto" }}
-              className="flex flex-col gap-2 justify-center h-full w-full mx-auto p-10"
-            >
-              <p className="text-center text-xl">
-                {t("this_tag_has_no_links")}
-              </p>
-              <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
-                {t("this_tag_has_no_links_desc")}
-              </p>
-            </div>
-          )}
-        </div>
-        {bulkDeleteLinksModal && (
-          <BulkDeleteLinksModal
-            onClose={() => setBulkDeleteLinksModal(false)}
-          />
+        {!data.isLoading && links && !links[0] && (
+          <div
+            style={{ flex: "1 1 auto" }}
+            className="flex flex-col gap-2 justify-center h-full w-full mx-auto p-10"
+          >
+            <p className="text-center text-xl">{t("this_tag_has_no_links")}</p>
+            <p className="text-center mx-auto max-w-96 w-fit text-neutral text-sm">
+              {t("this_tag_has_no_links_desc")}
+            </p>
+          </div>
         )}
-        {bulkEditLinksModal && (
-          <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
-        )}
-      </MainLayout>
+      </div>
+      {bulkDeleteLinksModal && (
+        <BulkDeleteLinksModal onClose={() => setBulkDeleteLinksModal(false)} />
+      )}
+      {bulkEditLinksModal && (
+        <BulkEditLinksModal onClose={() => setBulkEditLinksModal(false)} />
+      )}
     </DragNDrop>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <MainLayout>{page}</MainLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };
