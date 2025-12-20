@@ -51,7 +51,11 @@ export default function CenteredForm({
             values={{ date: new Date().getFullYear() }}
             i18nKey="all_rights_reserved"
             components={[
-              <Link href="https://linkwarden.app" className="font-semibold" />,
+              <Link
+                href="https://linkwarden.app"
+                className="font-semibold"
+                key="linkwarden-website-key"
+              />,
             ]}
           />
         </p>
