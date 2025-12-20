@@ -57,6 +57,7 @@ function LinkMasonry({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
+      link,
     },
     disabled: disableDraggable,
   });

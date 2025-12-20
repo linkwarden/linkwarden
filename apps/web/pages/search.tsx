@@ -12,7 +12,6 @@ import LinkListOptions from "@/components/LinkListOptions";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import Links from "@/components/LinkViews/Links";
-import DragNDrop from "@/components/DragNDrop";
 import { NextPageWithLayout } from "./_app";
 
 const Page: NextPageWithLayout = () => {
@@ -42,34 +41,28 @@ const Page: NextPageWithLayout = () => {
   });
 
   return (
-    <DragNDrop
-      links={links}
-      activeLink={activeLink}
-      setActiveLink={setActiveLink}
-    >
-      <div className="p-5 flex flex-col gap-5 w-full h-full">
-        <LinkListOptions
-          t={t}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          links={links}
-        >
-          <PageHeader icon={"bi-search"} title={t("search_results")} />
-        </LinkListOptions>
+    <div className="p-5 flex flex-col gap-5 w-full h-full">
+      <LinkListOptions
+        t={t}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        editMode={editMode}
+        setEditMode={setEditMode}
+        links={links}
+      >
+        <PageHeader icon={"bi-search"} title={t("search_results")} />
+      </LinkListOptions>
 
-        {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}
-        <Links
-          editMode={editMode}
-          links={links}
-          layout={viewMode}
-          useData={data}
-        />
-      </div>
-    </DragNDrop>
+      {!data.isLoading && links && !links[0] && <p>{t("nothing_found")}</p>}
+      <Links
+        editMode={editMode}
+        links={links}
+        layout={viewMode}
+        useData={data}
+      />
+    </div>
   );
 };
 

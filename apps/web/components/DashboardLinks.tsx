@@ -70,6 +70,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
     id: `${link.id}-${dashboardType}`,
     data: {
       linkId: link.id,
+      link,
       dashboardType,
     },
   });

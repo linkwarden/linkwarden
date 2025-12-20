@@ -15,9 +15,11 @@ import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import toast from "react-hot-toast";
 import { useUpdateLink } from "@linkwarden/router/links";
 import { useTranslation } from "react-i18next";
-import { restrictToWindowEdges, snapCenterToCursor } from "@dnd-kit/modifiers";
+import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { customCollisionDetectionAlgorithm } from "@/lib/utils";
-import { useUpdateTag } from "@linkwarden/router/tags";
+import usePinLink from "@/lib/client/pinLink";
+import { useQueryClient } from "@tanstack/react-query";
+import { useUser } from "@linkwarden/router/user";
 
 interface DragNDropProps {
   children: React.ReactNode;
@@ -28,7 +30,6 @@ interface DragNDropProps {
   /**
    * All links available for drag and drop
    */
-  links: LinkIncludingShortenedCollectionAndTags[];
   setActiveLink: (link: LinkIncludingShortenedCollectionAndTags | null) => void;
   /**
    * Override the default sensors used for drag and drop.
@@ -47,14 +48,15 @@ interface DragNDropProps {
 export default function DragNDrop({
   children,
   activeLink,
-  links,
   setActiveLink,
   sensors: sensorProp,
   onDragEnd: onDragEndProp,
 }: DragNDropProps) {
   const { t } = useTranslation();
-  const updateTag = useUpdateTag();
   const updateLink = useUpdateLink();
+  const pinLink = usePinLink();
+  const { data: user } = useUser();
+  const queryClient = useQueryClient();
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
     activationConstraint: {
@@ -72,10 +74,10 @@ export default function DragNDrop({
   const sensors = useSensors(mouseSensor, touchSensor);
 
   const handleDragStart = (event: DragStartEvent) => {
-    const draggedLink = links.find(
-      (link: any) => link.id === event.active.data.current?.linkId
+    setActiveLink(
+      (event.active.data.current
+        ?.link as LinkIncludingShortenedCollectionAndTags) ?? null
     );
-    setActiveLink(draggedLink || null);
   };
 
   const handleDragOverCancel = () => {
@@ -83,70 +85,169 @@ export default function DragNDrop({
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
-    // If an onDragEnd prop is provided, use it instead of the default behavior
     if (onDragEndProp) {
       onDragEndProp(event);
       return;
     }
-    const { over } = event;
+
+    const { over, active } = event;
     if (!over || !activeLink) return;
 
-    let updatedLink: LinkIncludingShortenedCollectionAndTags | null = null;
+    const overData = over.data.current;
+    const targetId = String(over.id);
 
-    // if the link is dropped over a tag
-    if (over.data.current?.type === "tag") {
-      const isTagAlreadyExists = activeLink.tags.some(
-        (tag) => tag.name === over.data.current?.name
+    const isFromRecentSection = active.data.current?.dashboardType === "recent";
+
+    setActiveLink(null);
+
+    const mutateWithToast = async (
+      updatedLink: LinkIncludingShortenedCollectionAndTags,
+      opts?: { invalidateDashboardOnError?: boolean }
+    ) => {
+      const load = toast.loading(t("updating"));
+      await updateLink.mutateAsync(updatedLink, {
+        onSettled: async (_, error) => {
+          toast.dismiss(load);
+          if (error) {
+            if (
+              opts?.invalidateDashboardOnError &&
+              typeof queryClient !== "undefined"
+            ) {
+              await queryClient.invalidateQueries({
+                queryKey: ["dashboardData"],
+              });
+            }
+            toast.error(error.message);
+          } else {
+            toast.success(t("updated"));
+          }
+        },
+      });
+    };
+
+    // DROP ON TAG
+    if (overData?.type === "tag") {
+      const tagName = overData?.name as string | undefined;
+      if (!tagName) return;
+
+      const isTagAlreadyExists = activeLink.tags?.some(
+        (tag) => tag.name === tagName
       );
       if (isTagAlreadyExists) {
         toast.error(t("tag_already_added"));
         return;
       }
-      // to match the tags structure required to update the link
-      const allTags: { name: string }[] = activeLink.tags.map((tag) => ({
-        name: tag.name,
-      }));
-      const newTags = [...allTags, { name: over.data.current?.name as string }];
-      updatedLink = {
+
+      const allTags: { name: string }[] = (activeLink.tags ?? []).map(
+        (tag) => ({
+          name: tag.name,
+        })
+      );
+
+      const updatedLink: LinkIncludingShortenedCollectionAndTags = {
         ...activeLink,
-        tags: newTags as any,
+        tags: [...allTags, { name: tagName }] as any,
       };
-    } else {
-      const collectionId = over.data.current?.id as number;
-      const collectionName = over.data.current?.name as string;
-      const ownerId = over.data.current?.ownerId as number;
 
-      // Immediately hide the drag overlay
-      setActiveLink(null);
-
-      // if the link dropped over the same collection, toast
-      if (activeLink.collection.id === collectionId) {
-        toast.error(t("link_already_in_collection"));
-        return;
-      }
-
-      updatedLink = {
-        ...activeLink,
-        collection: {
-          id: collectionId,
-          name: collectionName,
-          ownerId,
-        },
-      };
+      await mutateWithToast(updatedLink, {
+        invalidateDashboardOnError: typeof queryClient !== "undefined",
+      });
+      return;
     }
 
-    const load = toast.loading(t("updating"));
-    await updateLink.mutateAsync(updatedLink, {
-      onSettled: (_, error) => {
-        toast.dismiss(load);
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success(t("updated"));
+    // DROP ON DASHBOARD "PINNED" SECTION
+    const isPinnedSection = targetId === "pinned-links-section";
+
+    const canPin =
+      typeof pinLink === "function" &&
+      typeof user !== "undefined" &&
+      typeof user?.id !== "undefined";
+
+    if (isPinnedSection && canPin) {
+      if (Array.isArray(activeLink.pinnedBy) && !activeLink.pinnedBy.length) {
+        if (typeof queryClient !== "undefined") {
+          const optimisticallyPinned = {
+            ...activeLink,
+            pinnedBy: [user!.id],
+          };
+
+          queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+            if (!oldData?.links) return oldData;
+            return {
+              ...oldData,
+              links: oldData.links.map((l: any) =>
+                l.id === optimisticallyPinned.id ? optimisticallyPinned : l
+              ),
+            };
+          });
         }
+
+        pinLink(activeLink);
+      }
+      return;
+    }
+
+    // DROP ON COLLECTION (dashboard + sidebar)
+    const collectionId = overData?.id as number | undefined;
+    const collectionName = overData?.name as string | undefined;
+    const ownerId = overData?.ownerId as number | undefined;
+
+    if (!collectionId || !collectionName || typeof ownerId === "undefined")
+      return;
+
+    const isSameCollection = activeLink.collection?.id === collectionId;
+    if (isSameCollection) {
+      if (isFromRecentSection) toast.error(t("link_already_in_collection"));
+      return;
+    }
+
+    const updatedLink: LinkIncludingShortenedCollectionAndTags = {
+      ...activeLink,
+      collection: {
+        id: collectionId,
+        name: collectionName,
+        ownerId,
       },
+    };
+
+    if (typeof queryClient !== "undefined") {
+      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+        if (!oldData?.links) return oldData;
+        return {
+          ...oldData,
+          links: oldData.links.map((l: any) =>
+            l.id === updatedLink.id ? updatedLink : l
+          ),
+        };
+      });
+
+      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+        if (!oldData?.collectionLinks) return oldData;
+
+        const oldCollectionId = activeLink.collection?.id;
+        if (!oldCollectionId) return oldData;
+
+        return {
+          ...oldData,
+          collectionLinks: {
+            ...oldData.collectionLinks,
+            [oldCollectionId]: (
+              oldData.collectionLinks[oldCollectionId] || []
+            ).filter((l: any) => l.id !== updatedLink.id),
+            [collectionId]: [
+              ...(oldData.collectionLinks[collectionId] || []),
+              updatedLink,
+            ],
+          },
+        };
+      });
+    }
+
+    await mutateWithToast(updatedLink, {
+      invalidateDashboardOnError: typeof queryClient !== "undefined",
     });
   };
+
   return (
     <DndContext
       onDragStart={handleDragStart}

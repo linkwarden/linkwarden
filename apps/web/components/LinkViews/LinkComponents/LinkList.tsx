@@ -48,6 +48,7 @@ function LinkList({
     id: link.id?.toString() ?? "",
     data: {
       linkId: link.id,
+      link,
     },
     disabled: disableDraggable,
   });
