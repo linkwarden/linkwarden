@@ -6,3 +6,9 @@ docker-compose.yml
 Dockerfile
 README.md
 .yarn/install-state.gz
+./apps/mobile
+**/.next/cache
+**/.next/cache/**
+data
+data.ms
+.git

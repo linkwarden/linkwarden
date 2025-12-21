@@ -56,7 +56,8 @@ RUN set -eux && \
 COPY . .
 
 RUN yarn prisma:generate && \
-    yarn web:build
+    yarn web:build && \
+    rm -rf apps/web/.next/cache
 
 HEALTHCHECK --interval=30s \
             --timeout=5s \
