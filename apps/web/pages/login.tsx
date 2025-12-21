@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
-import CenteredForm from "@/layouts/CenteredForm";
+import CenteredForm from "@/components/CenteredForm";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import React, { useState, FormEvent } from "react";

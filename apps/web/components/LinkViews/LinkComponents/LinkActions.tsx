@@ -1,11 +1,7 @@
 import { useState } from "react";
-import {
-  CollectionIncludingMembersAndLinkCount,
-  LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import usePermissions from "@/hooks/usePermissions";
 import DeleteLinkModal from "@/components/ModalContent/DeleteLinkModal";
-import { useTranslation } from "next-i18next";
 import { useDeleteLink, useGetLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
 import LinkModal from "@/components/ModalContent/LinkModal";
@@ -21,25 +17,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ConfirmationModal";
+import { TFunction } from "i18next";
 
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
-  collection: CollectionIncludingMembersAndLinkCount;
   linkModal: boolean;
-  className?: string;
   setLinkModal: (value: boolean) => void;
+  t: TFunction<"translation", undefined>;
+  className?: string;
   ghost?: boolean;
 };
 
 export default function LinkActions({
   link,
   linkModal,
-  className,
+  t,
   setLinkModal,
+  className,
   ghost,
 }: Props) {
-  const { t } = useTranslation();
-
   const permissions = usePermissions(link.collection.id as number);
 
   const router = useRouter();

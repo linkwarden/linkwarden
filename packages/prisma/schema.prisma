@@ -291,3 +291,17 @@ enum DashboardSectionType {
   PINNED_LINKS
   COLLECTION
 }
+
+model AppMigration {
+  id         Int                 @id @default(autoincrement())
+  name       String              @unique
+  status     AppMigrationStatus
+  finishedAt DateTime?
+  createdAt  DateTime            @default(now())
+}
+
+enum AppMigrationStatus {
+  APPLIED
+  PENDING
+  FAILED
+}

@@ -1,4 +1,4 @@
-import { RssSubscription } from "@prisma/client";
+import { RssSubscription } from "@linkwarden/prisma/client";
 import { hasPassedLimit } from "./verifyCapacity";
 import Parser from "rss-parser";
 import { prisma } from "@linkwarden/prisma";

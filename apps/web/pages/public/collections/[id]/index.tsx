@@ -306,7 +306,6 @@ export default function PublicCollections() {
                 }) as any
               }
               layout={viewMode}
-              placeholderCount={1}
               useData={data}
             />
             {!data.isLoading && links && !links[0] && (

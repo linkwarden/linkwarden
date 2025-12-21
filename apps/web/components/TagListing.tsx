@@ -9,9 +9,13 @@ interface TagListingProps {
   tags: Tag[];
   active?: string;
 }
-export function TagListing({ tags, active }: TagListingProps) {
+
+export default function TagListing({ tags, active }: TagListingProps) {
   const { active: droppableActive } = useDndContext();
   const { t } = useTranslation();
+
+  const ctx = useDndContext();
+  console.log("DndContext active?", ctx.active);
 
   if (!tags[0]) {
     return (

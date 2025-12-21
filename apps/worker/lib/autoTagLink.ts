@@ -5,7 +5,8 @@ import {
   predefinedTagsPrompt,
 } from "./prompts";
 import { prisma } from "@linkwarden/prisma";
-import { generateObject, LanguageModelV1 } from "ai";
+import { generateObject } from "ai";
+import { LanguageModelV2 } from "@ai-sdk/provider";
 import {
   createOpenAICompatible,
   OpenAICompatibleProviderSettings,
@@ -15,14 +16,14 @@ import { azure } from "@ai-sdk/azure";
 import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { createOllama } from "ollama-ai-provider";
+import { createOllama } from "ollama-ai-provider-v2";
 import { titleCase } from "@linkwarden/lib";
 
 // Function to concat /api with the base URL properly
 const ensureValidURL = (base: string, path: string) =>
   `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
-const getAIModel = (): LanguageModelV1 => {
+const getAIModel = (): LanguageModelV2 => {
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) {
     let config: OpenAICompatibleProviderSettings = {
       baseURL:
@@ -51,16 +52,14 @@ const getAIModel = (): LanguageModelV1 => {
       ),
     });
 
-    return ollama(process.env.OLLAMA_MODEL, {
-      structuredOutputs: true,
-    });
+    return ollama(process.env.OLLAMA_MODEL);
   }
   if (process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_MODEL) {
     const openrouter = createOpenRouter({
       apiKey: process.env.OPENROUTER_API_KEY,
     });
 
-    return openrouter(process.env.OPENROUTER_MODEL) as LanguageModelV1;
+    return openrouter(process.env.OPENROUTER_MODEL) as LanguageModelV2;
   }
   if (process.env.PERPLEXITY_API_KEY) {
     return perplexity(process.env.PERPLEXITY_MODEL || "sonar-pro");

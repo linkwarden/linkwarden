@@ -1,15 +1,16 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import { LinkArchiveActionSchemaType } from "@linkwarden/lib/schemaValidation";
 import toast from "react-hot-toast";
 import { useArchiveAction } from "@linkwarden/router/links";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { NextPageWithLayout } from "../_app";
 
-export default function Worker() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const archiveAction = useArchiveAction();
   const [showModal, setShowModal] = useState(false);
@@ -52,7 +53,7 @@ export default function Worker() {
   };
 
   return (
-    <SettingsLayout>
+    <>
       <p className="capitalize text-3xl font-thin inline">{t("worker")}</p>
 
       <Separator className="my-3" />
@@ -114,8 +115,14 @@ export default function Worker() {
           </div>
         </ConfirmationModal>
       )}
-    </SettingsLayout>
+    </>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <SettingsLayout>{page}</SettingsLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

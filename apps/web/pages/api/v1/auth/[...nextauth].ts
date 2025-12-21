@@ -139,7 +139,7 @@ if (emailEnabled) {
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       maxAge: 1200,
-      async sendVerificationRequest({ identifier, url, provider, token }) {
+      async sendVerificationRequest({ identifier, url, provider, token }: any) {
         const recentVerificationRequestsCount =
           await prisma.verificationToken.count({
             where: {
@@ -160,13 +160,13 @@ if (emailEnabled) {
           token,
         });
       },
-    }),
+    } as any),
     EmailProvider({
       id: "invite",
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       maxAge: 1200,
-      async sendVerificationRequest({ identifier, url, provider, token }) {
+      async sendVerificationRequest({ identifier, url, provider, token }: any) {
         const parentSubscriptionEmail = (
           await prisma.user.findFirst({
             where: {
@@ -210,7 +210,7 @@ if (emailEnabled) {
           token,
         });
       },
-    })
+    } as any)
   );
 }
 

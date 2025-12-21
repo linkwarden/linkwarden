@@ -3,7 +3,7 @@ import { JSDOM } from "jsdom";
 import DOMPurify from "dompurify";
 import { prisma } from "@linkwarden/prisma";
 import { createFile } from "@linkwarden/filesystem";
-import { Link } from "@prisma/client";
+import { Link } from "@linkwarden/prisma/client";
 
 const handleReadability = async (
   content: string,
@@ -19,7 +19,7 @@ const handleReadability = async (
 
   const article = new Readability(dom.window.document).parse();
   const articleText = article?.textContent
-    .replace(/ +(?= )/g, "") // strip out multiple spaces
+    ?.replace(/ +(?= )/g, "") // strip out multiple spaces
     .replace(/(\r\n|\n|\r)/gm, " ") // strip out line breaks
     .slice(0, TEXT_CONTENT_LIMIT ? TEXT_CONTENT_LIMIT : undefined); // limit characters if TEXT_CONTENT_LIMIT is defined
 

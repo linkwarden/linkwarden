@@ -3,14 +3,15 @@ import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useRssSubscriptions } from "@linkwarden/router/rss";
 import DeleteRssSubscriptionModal from "@/components/ModalContent/DeleteRssSubscriptionModal";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { RssSubscription } from "@linkwarden/prisma/client";
 import NewRssSubscriptionModal from "@/components/ModalContent/NewRssSubscriptionModal";
 import { useConfig } from "@linkwarden/router/config";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { NextPageWithLayout } from "../_app";
 
-export default function RssSubscriptions() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const { data: rssSubscriptions = [] } = useRssSubscriptions();
 
@@ -27,7 +28,7 @@ export default function RssSubscriptions() {
   const { data: config } = useConfig();
 
   return (
-    <SettingsLayout>
+    <>
       <p className="capitalize text-3xl font-thin inline">
         {t("rss_subscriptions")}
       </p>
@@ -96,8 +97,14 @@ export default function RssSubscriptions() {
           }}
         />
       )}
-    </SettingsLayout>
+    </>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <SettingsLayout>{page}</SettingsLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

@@ -36,11 +36,10 @@ const CollectionListing = () => {
   const updateCollection = useUpdateCollection();
   const { data: collections = [], isLoading } = useCollections();
 
-  const { data: user, refetch } = useUser();
+  const { data: user } = useUser();
   const updateUser = useUpdateUser();
 
   const router = useRouter();
-  const currentPath = router.asPath;
 
   const [tree, setTree] = useState<TreeData | undefined>();
 
@@ -53,7 +52,7 @@ const CollectionListing = () => {
         user?.collectionOrder
       );
     } else return undefined;
-  }, [collections, user, router]);
+  }, [collections, user]);
 
   useEffect(() => {
     setTree(initialTree);
@@ -281,7 +280,7 @@ const CollectionListing = () => {
       <Tree
         tree={tree}
         renderItem={(itemProps) =>
-          renderItem({ ...itemProps }, currentPath, droppableActive)
+          renderItem({ ...itemProps }, router.asPath, droppableActive)
         }
         onExpand={onExpand}
         onCollapse={onCollapse}

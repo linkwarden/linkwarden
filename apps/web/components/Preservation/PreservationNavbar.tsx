@@ -28,11 +28,10 @@ import HighlightDrawer from "../HighlightDrawer";
 type Props = {
   link: LinkIncludingShortenedCollectionAndTags;
   format?: ArchivedFormat;
-  showNavbar: boolean;
   className?: string;
 };
 
-const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
+const PreservationNavbar = ({ link, format, className }: Props) => {
   const { data: collections = [] } = useCollections();
 
   const [collection, setCollection] =
@@ -83,8 +82,7 @@ const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
     <>
       <div
         className={clsx(
-          "p-2 z-10 bg-base-100 flex gap-2 justify-between transform transition-transform duration-200 ease-in-out fixed top-0 left-0 right-0",
-          showNavbar ? "translate-y-0" : "-translate-y-full",
+          "p-2 z-10 bg-base-100 flex gap-2 justify-between fixed top-0 left-0 right-0",
           className
         )}
       >
@@ -217,7 +215,7 @@ const PreservationNavbar = ({ link, format, showNavbar, className }: Props) => {
           <ToggleDarkMode />
           <LinkActions
             link={link}
-            collection={collection}
+            t={t}
             linkModal={linkModal}
             setLinkModal={(e) => setLinkModal(e)}
             ghost

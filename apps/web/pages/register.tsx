@@ -3,7 +3,7 @@ import React, { useState, FormEvent } from "react";
 import { toast } from "react-hot-toast";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
-import CenteredForm from "@/layouts/CenteredForm";
+import CenteredForm from "@/components/CenteredForm";
 import TextInput from "@/components/TextInput";
 import { Button } from "@/components/ui/button";
 import { getLogins } from "./api/v1/logins";

@@ -61,12 +61,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Use Node.js and Enable Yarn 4
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
-          cache: 'yarn'
+          node-version: "20"
 
+      - name: Enable Yarn 4
+        run: |
+          sudo rm -f /usr/bin/yarn /usr/bin/yarnpkg || true
+          corepack enable
+          corepack prepare yarn@4.12.0 --activate
+          yarn --version
+          
       - name: Initialize PostgreSQL
         run: |
           echo "Initializing Databases"
@@ -74,7 +80,7 @@ jobs:
           psql -h localhost -U postgres -d postgres -c "CREATE DATABASE ${{ env.TEST_POSTGRES_DATABASE }} OWNER ${{ env.TEST_POSTGRES_USER }};"
 
       - name: Install packages
-        run: yarn install -y
+        run: yarn install --immutable
 
       - name: Cache playwright dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest

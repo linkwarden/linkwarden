@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
-import CenteredForm from "@/layouts/CenteredForm";
+import CenteredForm from "@/components/CenteredForm";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

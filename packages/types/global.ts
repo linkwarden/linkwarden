@@ -1,4 +1,4 @@
-import { Collection, Link, Tag, User } from "@prisma/client";
+import { Collection, Link, Tag, User } from "@linkwarden/prisma/client";
 import Stripe from "stripe";
 
 type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &

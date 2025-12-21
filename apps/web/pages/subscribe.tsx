@@ -2,7 +2,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
-import CenteredForm from "@/layouts/CenteredForm";
+import CenteredForm from "@/components/CenteredForm";
 import { Plan } from "@linkwarden/types";
 import { Button } from "@/components/ui/button";
 import getServerSideProps from "@/lib/client/getServerSideProps";

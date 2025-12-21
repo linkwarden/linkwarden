@@ -57,6 +57,7 @@ export default function ProfilePhoto({
           draggable={false}
           onError={() => setImage("")}
           className="aspect-square rounded-full"
+          unoptimized
         />
       </div>
     </div>

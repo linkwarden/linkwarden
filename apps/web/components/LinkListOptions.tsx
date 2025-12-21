@@ -4,7 +4,6 @@ import ViewDropdown from "./ViewDropdown";
 import { TFunction } from "i18next";
 import BulkDeleteLinksModal from "./ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "./ModalContent/BulkEditLinksModal";
-import useCollectivePermissions from "@/hooks/useCollectivePermissions";
 import { useRouter } from "next/router";
 import useLinkStore from "@/store/links";
 import {
@@ -46,7 +45,8 @@ const LinkListOptions = ({
   setEditMode,
   links,
 }: Props) => {
-  const { selectedLinks, setSelectedLinks } = useLinkStore();
+  const { selectedIds, setSelected, clearSelected, selectionCount } =
+    useLinkStore();
 
   const deleteLinksById = useBulkDeleteLinks();
   const refreshPreservations = useArchiveAction();
@@ -62,45 +62,42 @@ const LinkListOptions = ({
     if (editMode && setEditMode) return setEditMode(false);
   }, [router]);
 
-  const collectivePermissions = useCollectivePermissions(
-    selectedLinks.map((link) => link.collectionId as number)
-  );
-
   const handleSelectAll = () => {
-    if (selectedLinks.length === links.length) {
-      setSelectedLinks([]);
+    if (selectionCount === links.length) {
+      clearSelected();
     } else {
-      setSelectedLinks(links.map((link) => link));
+      setSelected(links.map((link) => link.id as number));
     }
   };
 
   const bulkDeleteLinks = async () => {
     const load = toast.loading(t("deleting"));
 
-    await deleteLinksById.mutateAsync(
-      selectedLinks.map((link) => link.id as number),
-      {
-        onSettled: (data, error) => {
-          toast.dismiss(load);
+    const ids = Object.keys(selectedIds).map(Number);
 
-          if (error) {
-            toast.error(error.message);
-          } else {
-            setSelectedLinks([]);
-            setEditMode?.(false);
-            toast.success(t("deleted"));
-          }
-        },
-      }
-    );
+    await deleteLinksById.mutateAsync(ids, {
+      onSettled: (data, error) => {
+        toast.dismiss(load);
+
+        if (error) {
+          toast.error(error.message);
+        } else {
+          clearSelected();
+          setEditMode?.(false);
+          toast.success(t("deleted"));
+        }
+      },
+    });
   };
 
   const bulkRefreshPreservations = async () => {
     const load = toast.loading(t("sending_request"));
 
+    const ids = Object.keys(selectedIds).map(Number);
+
     await refreshPreservations.mutateAsync(
       {
-        linkIds: selectedLinks.map((link) => link.id as number),
+        linkIds: ids,
       },
       {
         onSettled: (data, error) => {
@@ -108,7 +105,7 @@ const LinkListOptions = ({
           if (error) {
             toast.error(error.message);
           } else {
-            setSelectedLinks([]);
+            clearSelected();
             setEditMode?.(false);
             toast.success(t("links_being_archived"));
           }
@@ -133,7 +130,7 @@ const LinkListOptions = ({
                   size="icon"
                   onClick={() => {
                     setEditMode(!editMode);
-                    setSelectedLinks([]);
+                    clearSelected();
                   }}
                   className={
                     editMode ? "bg-primary/20 hover:bg-primary/20" : ""
@@ -161,15 +158,15 @@ const LinkListOptions = ({
               type="checkbox"
               className="checkbox checkbox-primary"
               onChange={() => handleSelectAll()}
-              checked={
-                selectedLinks.length === links.length && links.length > 0
-              }
+              checked={selectionCount === links.length && links.length > 0}
             />
-            {selectedLinks.length > 0 ? (
+            {selectionCount > 0 ? (
               <span>
-                {selectedLinks.length === 1
+                {selectionCount === 1
                   ? t("link_selected")
-                  : t("links_selected", { count: selectedLinks.length })}
+                  : t("links_selected", {
+                      count: selectionCount,
+                    })}
               </span>
             ) : (
               <span>{t("nothing_selected")}</span>
@@ -183,7 +180,7 @@ const LinkListOptions = ({
                     variant="ghost"
                     size="icon"
                     onClick={() => setBulkRefreshPreservationsModal(true)}
-                    disabled={selectedLinks.length === 0}
+                    disabled={selectionCount === 0}
                   >
                     <i className="bi-arrow-clockwise" />
                   </Button>
@@ -201,13 +198,7 @@ const LinkListOptions = ({
                     onClick={() => setBulkEditLinksModal(true)}
                     variant="ghost"
                     size="icon"
-                    disabled={
-                      selectedLinks.length === 0 ||
-                      !(
-                        collectivePermissions === true ||
-                        collectivePermissions?.canUpdate
-                      )
-                    }
+                    disabled={selectionCount === 0}
                   >
                     <i className="bi-pencil-square" />
                   </Button>
@@ -229,13 +220,7 @@ const LinkListOptions = ({
                     }}
                     variant="ghost"
                     size="icon"
-                    disabled={
-                      selectedLinks.length === 0 ||
-                      !(
-                        collectivePermissions === true ||
-                        collectivePermissions?.canDelete
-                      )
-                    }
+                    disabled={selectionCount === 0}
                   >
                     <i className="bi-trash text-error" />
                   </Button>
@@ -278,10 +263,10 @@ const LinkListOptions = ({
           title={t("refresh_preserved_formats")}
         >
           <p className="mb-5">
-            {selectedLinks.length === 1
+            {selectionCount === 1
               ? t("refresh_preserved_formats_confirmation_desc")
               : t("refresh_multiple_preserved_formats_confirmation_desc", {
-                  count: selectedLinks.length,
+                  count: selectionCount,
                 })}
           </p>
         </ConfirmationModal>

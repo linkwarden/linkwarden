@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
-import CenteredForm from "@/layouts/CenteredForm";
+import CenteredForm from "@/components/CenteredForm";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";

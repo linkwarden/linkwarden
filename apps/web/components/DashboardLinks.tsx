@@ -27,6 +27,7 @@ import LinkPin from "./LinkViews/LinkComponents/LinkPin";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@linkwarden/lib";
+import { useTranslation } from "next-i18next";
 
 export function DashboardLinks({
   links,
@@ -63,10 +64,13 @@ type Props = {
 };
 
 export function Card({ link, editMode, dashboardType }: Props) {
+  const { t } = useTranslation();
+
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `${link.id}-${dashboardType}`,
     data: {
       linkId: link.id,
+      link,
       dashboardType,
     },
   });
@@ -163,6 +167,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
                       const target = e.target as HTMLElement;
                       target.style.display = "none";
                     }}
+                    unoptimized
                   />
                 ) : link.preview === "unavailable" ? (
                   <div className={`bg-gray-50 h-40 bg-opacity-80`}></div>
@@ -206,7 +211,11 @@ export function Card({ link, editMode, dashboardType }: Props) {
                 <div className="flex justify-between items-center text-xs text-neutral px-3 pb-1 gap-2">
                   {show.collection && !isPublicRoute && (
                     <div className="cursor-pointer truncate">
-                      <LinkCollection link={link} collection={collection} />
+                      <LinkCollection
+                        link={link}
+                        collection={collection}
+                        isPublicRoute={false}
+                      />
                     </div>
                   )}
                   {show.date && <LinkDate link={link} />}
@@ -220,7 +229,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
         <div className="absolute pointer-events-none top-0 left-0 right-0 bottom-0 bg-base-100 bg-opacity-0 group-hover:bg-opacity-20 group-focus-within:opacity-20 rounded-xl duration-100"></div>
         <LinkActions
           link={link}
-          collection={collection}
+          t={t}
           linkModal={linkModal}
           setLinkModal={(e) => setLinkModal(e)}
           className="absolute top-3 right-3 group-hover:opacity-100 group-focus-within:opacity-100 opacity-0 duration-100 text-neutral z-20"

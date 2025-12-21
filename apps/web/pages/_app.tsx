@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { ReactElement, ReactNode, useEffect } from "react";
 import "@/styles/globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { SessionProvider } from "next-auth/react";
@@ -13,6 +13,7 @@ import { isPWA } from "@/lib/utils";
 import { appWithTranslation } from "next-i18next";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { NextPage } from "next";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,12 +23,19 @@ const queryClient = new QueryClient({
   },
 });
 
-function App({
-  Component,
-  pageProps,
-}: AppProps<{
-  session: Session;
-}>) {
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type PageProps = { session?: Session | null };
+
+type AppPropsWithLayout = AppProps<PageProps> & {
+  Component: NextPageWithLayout<PageProps>;
+};
+
+function App({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? ((page) => page);
+
   useEffect(() => {
     if (isPWA()) {
       const meta = document.createElement("meta");
@@ -98,7 +106,7 @@ function App({
               </ToastBar>
             )}
           </Toaster>
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
           {/* </GetData> */}
         </AuthRedirect>
       </SessionProvider>

@@ -24,7 +24,7 @@ export const generatePreview = async (
         1024 * 1024 * Number(process.env.PREVIEW_MAX_BUFFER || 10)
       ) {
         console.log("Error generating preview: Buffer size exceeded");
-        prisma.link.update({
+        await prisma.link.update({
           where: { id: linkId },
           data: {
             preview: "unavailable",
