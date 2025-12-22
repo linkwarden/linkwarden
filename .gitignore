@@ -51,6 +51,7 @@ certificates
 /data
 /data.ms
 meilisearch
+meili_data
 .idea
 prisma/dev.db
 .turbo
