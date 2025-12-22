@@ -20,27 +20,38 @@ import getFormatFromContentType from "@linkwarden/lib/getFormatFromContentType";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
 const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
-  const queryParamsObject = {
-    sort: params.sort ?? Number(window.localStorage.getItem("sortBy")) ?? 0,
-    collectionId: params.collectionId,
-    tagId: params.tagId,
-    pinnedOnly: params.pinnedOnly ?? undefined,
-    searchQueryString: params.searchQueryString,
-  } as LinkRequestQuery;
+  const sort =
+    params.sort ??
+    (typeof window !== "undefined"
+      ? Number(window.localStorage.getItem("sortBy"))
+      : 0) ??
+    0;
 
-  const queryString = buildQueryString(queryParamsObject);
+  const queryString = useMemo(() => {
+    return buildQueryString({
+      sort,
+      collectionId: params.collectionId,
+      tagId: params.tagId,
+      pinnedOnly: params.pinnedOnly ?? undefined,
+      searchQueryString: params.searchQueryString,
+    });
+  }, [
+    sort,
+    params.collectionId,
+    params.tagId,
+    params.pinnedOnly,
+    params.searchQueryString,
+  ]);
 
-  const { data, ...rest } = useFetchLinks(queryString, auth);
+  const query = useFetchLinks(queryString, auth);
 
   const links = useMemo(() => {
-    return data?.pages?.flatMap((page) => page?.links ?? []) ?? [];
-  }, [data]);
-
-  const memoizedData = useMemo(() => ({ ...data, ...rest }), [data, rest]);
+    return query.data?.pages?.flatMap((p) => p.links ?? []) ?? [];
+  }, [query.dataUpdatedAt]);
 
   return {
     links,
-    data: memoizedData,
+    data: query,
   };
 };
 
@@ -83,12 +94,7 @@ const useFetchLinks = (params: string, auth?: MobileAuth) => {
     },
     initialPageParam: 0,
     refetchOnWindowFocus: false,
-    getNextPageParam: (lastPage) => {
-      if (lastPage.nextCursor === null) {
-        return undefined;
-      }
-      return lastPage.nextCursor;
-    },
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     enabled: status === "authenticated",
   });
 };
@@ -494,7 +500,7 @@ const useBulkEditLinks = () => {
       newData,
       removePreviousTags,
     }: {
-      links: LinkIncludingShortenedCollectionAndTags[];
+      links: Pick<LinkIncludingShortenedCollectionAndTags, "id">[];
       newData: Pick<
         LinkIncludingShortenedCollectionAndTags,
         "tags" | "collectionId"

@@ -1,5 +1,5 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactElement } from "react";
 import { toast } from "react-hot-toast";
 import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
@@ -24,8 +24,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { NextPageWithLayout } from "../_app";
 
-export default function Preference() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
   const updateUserPreference = useUpdateUserPreference();
@@ -187,7 +188,7 @@ export default function Preference() {
   };
 
   return (
-    <SettingsLayout>
+    <>
       <p className="capitalize text-3xl font-thin inline">{t("preference")}</p>
 
       <Separator className="my-3" />
@@ -613,8 +614,14 @@ export default function Preference() {
           {t("save_changes")}
         </Button>
       </div>
-    </SettingsLayout>
+    </>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <SettingsLayout>{page}</SettingsLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

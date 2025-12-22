@@ -1,5 +1,5 @@
 import SettingsLayout from "@/layouts/SettingsLayout";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
 import { useTranslation } from "next-i18next";
@@ -7,8 +7,9 @@ import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { NextPageWithLayout } from "../_app";
 
-export default function Password() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
 
   const [oldPassword, setOldPassword] = useState("");
@@ -52,7 +53,7 @@ export default function Password() {
   };
 
   return (
-    <SettingsLayout>
+    <>
       <p className="capitalize text-3xl font-thin inline">
         {t("change_password")}
       </p>
@@ -90,8 +91,14 @@ export default function Password() {
           {t("save_changes")}
         </Button>
       </div>
-    </SettingsLayout>
+    </>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <SettingsLayout>{page}</SettingsLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

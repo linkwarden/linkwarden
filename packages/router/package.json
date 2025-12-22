@@ -8,11 +8,11 @@
     "@linkwarden/prisma": "*",
     "@linkwarden/types": "*",
     "@tanstack/react-query": "^5.51.15",
-    "react-hot-toast": "^2.4.1",
     "@tanstack/react-query-devtools": "^5.51.15",
-    "next": "13.4.12",
+    "next": "14.2.35",
+    "next-auth": "^4.22.1",
     "next-i18next": "^15.3.0",
-    "next-auth": "^4.22.1"
+    "react-hot-toast": "^2.4.1"
   },
   "peerDependencies": {
     "react": "18.3.1"

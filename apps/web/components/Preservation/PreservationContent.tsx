@@ -66,6 +66,16 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
     }
   }, [currentFormat]);
 
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    if (img.complete && img.naturalWidth > 0) {
+      setImageLoaded(true);
+    }
+  }, [currentFormat, link?.id, link?.updatedAt]);
+
   if (!link?.id) return null;
 
   const renderFormat = () => {
@@ -126,6 +136,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
             >
               <img
                 alt=""
+                ref={imgRef}
                 src={`/api/v1/archives/${link.id}?format=${currentFormat}`}
                 className={clsx("w-fit mx-auto", !imageLoaded && "hidden")}
                 onLoad={(e) => {

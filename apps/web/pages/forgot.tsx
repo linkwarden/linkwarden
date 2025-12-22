@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
-import CenteredForm from "@/layouts/CenteredForm";
+import CenteredForm from "@/components/CenteredForm";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";

@@ -1,6 +1,6 @@
 {
   "name": "linkwarden",
-  "packageManager": "yarn@1.22.0",
+  "packageManager": "yarn@4.12.0+sha512.f45ab632439a67f8bc759bf32ead036a1f413287b9042726b7cc4818b7b49e14e9423ba49b18f9e06ea4941c1ad062385b1d8760a8d5091a1a31e5f6219afca8",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
@@ -11,6 +11,7 @@
     "web:dev": "dotenv -- yarn workspace @linkwarden/web dev",
     "web:build": "dotenv -- yarn workspace @linkwarden/web build",
     "web:start": "dotenv -- yarn workspace @linkwarden/web start",
+    "update:browserslist-db": "npx update-browserslist-db@latest",
     "worker:dev": "dotenv -- yarn workspace @linkwarden/worker dev",
     "worker:start": "dotenv -- yarn workspace @linkwarden/worker start",
     "concurrently:dev": "concurrently \"dotenv -- yarn workspace @linkwarden/web dev\" \"dotenv -- yarn workspace @linkwarden/worker dev\"",
@@ -23,8 +24,8 @@
     "postinstall": "yarn workspace @linkwarden/web run postinstall && patch-package"
   },
   "resolutions": {
-    "@types/react": "18.3.20",
-    "@types/react-dom": "18.3.7"
+    "@types/react": "18.3.1",
+    "@types/react-dom": "18.3.1"
   },
   "devDependencies": {
     "dotenv-cli": "^8.0.0"

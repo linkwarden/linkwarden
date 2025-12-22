@@ -5,20 +5,17 @@ import {
 } from "@linkwarden/types";
 import { IconWeight } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 
-export default function LinkCollection({
+function LinkCollection({
   link,
   collection,
+  isPublicRoute,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
   collection: CollectionIncludingMembersAndLinkCount;
+  isPublicRoute: boolean;
 }) {
-  const router = useRouter();
-
-  const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
-
   return !isPublicRoute && collection?.name ? (
     <>
       <Link
@@ -47,3 +44,5 @@ export default function LinkCollection({
     </>
   ) : null;
 }
+
+export default React.memo(LinkCollection);

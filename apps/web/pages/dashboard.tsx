@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import { useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -34,8 +34,9 @@ import { useUpdateLink } from "@linkwarden/router/links";
 import usePinLink from "@/lib/client/pinLink";
 import { useQueryClient } from "@tanstack/react-query";
 import DragNDrop from "@/components/DragNDrop";
+import { NextPageWithLayout } from "./_app";
 
-export default function Dashboard() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
   const {
@@ -45,19 +46,8 @@ export default function Dashboard() {
     ...dashboardData
   } = useDashboardData();
 
-  /**
-   * Get a combined list of all links, including those from collections.
-   * Dupplications are fine since this is used for finding dragged link
-   */
-  const allLinks = useMemo(() => {
-    const _collectionLinks = Object.values(collectionLinks).flat();
-    return [...links, ..._collectionLinks];
-  }, [collectionLinks, links]);
-
   const { data: tags = [] } = useTags();
   const { data: user } = useUser();
-  const pinLink = usePinLink();
-  const queryClient = useQueryClient();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
   const [activeLink, setActiveLink] =
@@ -148,214 +138,79 @@ export default function Dashboard() {
     );
   };
 
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { over, active } = event;
-    if (!over || !activeLink) return;
-
-    const targetSectionId = over.id as string;
-    const collectionId = over.data.current?.id as number;
-    const collectionName = over.data.current?.name as string;
-    const ownerId = over.data.current?.ownerId as number;
-
-    const isFromRecentSection = active.data.current?.dashboardType === "recent";
-
-    // Immediately hide the drag overlay
-    setActiveLink(null);
-    if (over.data.current?.type === "tag") {
-      const isTagAlreadyExists = activeLink.tags.some(
-        (tag) => tag.name === over.data.current?.name
-      );
-      if (isTagAlreadyExists) {
-        toast.error(t("tag_already_added"));
-        return;
-      }
-      // to match the tags structure required to update the link
-      const allTags: { name: string }[] = activeLink.tags.map((tag) => ({
-        name: tag.name,
-      }));
-      const newTags = [...allTags, { name: over.data.current?.name as string }];
-      const updatedLink = {
-        ...activeLink,
-        tags: newTags as any,
-      };
-      const load = toast.loading(t("updating"));
-      await updateLink.mutateAsync(updatedLink, {
-        onSettled: (_, error) => {
-          toast.dismiss(load);
-          if (error) {
-            // If there's an error, invalidate queries to restore the original state
-            queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
-            toast.error(error.message);
-          } else {
-            toast.success(t("updated"));
-          }
-        },
-      });
-      return;
-    }
-
-    // Handle pinning the link
-    if (targetSectionId === "pinned-links-section") {
-      if (Array.isArray(activeLink.pinnedBy) && !activeLink.pinnedBy.length) {
-        // optimistically update the link's pinned state
-        const updatedLink = {
-          ...activeLink,
-          pinnedBy: [user?.id],
-        };
-        queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-          if (!oldData?.links) return oldData;
-          return {
-            ...oldData,
-            links: oldData.links.map((link: any) =>
-              link.id === updatedLink.id ? updatedLink : link
-            ),
-          };
-        });
-        pinLink(activeLink);
-      }
-      // Handle moving the link to a different collection
-    } else if (activeLink.collection.id !== collectionId) {
-      // Optimistically update the link's collection immediately
-      const updatedLink: LinkIncludingShortenedCollectionAndTags = {
-        ...activeLink,
-        collection: {
-          id: collectionId,
-          name: collectionName,
-          ownerId,
-        },
-      };
-
-      // Optimistically update the dashboard data cache
-      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData?.links) return oldData;
-        return {
-          ...oldData,
-          links: oldData.links.map((link: any) =>
-            link.id === updatedLink.id ? updatedLink : link
-          ),
-        };
-      });
-
-      // Optimistically update the collection links cache
-      if (collectionId) {
-        queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-          if (!oldData?.collectionLinks) return oldData;
-
-          const oldCollectionId = activeLink.collection.id!;
-
-          return {
-            ...oldData,
-            collectionLinks: {
-              ...oldData.collectionLinks,
-              // Remove from old collection
-              [oldCollectionId]: (
-                oldData.collectionLinks[oldCollectionId] || []
-              ).filter((link: any) => link.id !== updatedLink.id),
-              // Add to new collection
-              [collectionId]: [
-                ...(oldData.collectionLinks[collectionId] || []),
-                updatedLink,
-              ],
-            },
-          };
-        });
-      }
-
-      const load = toast.loading(t("updating"));
-      await updateLink.mutateAsync(updatedLink, {
-        onSettled: (_, error) => {
-          toast.dismiss(load);
-          if (error) {
-            // If there's an error, invalidate queries to restore the original state
-            queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
-            toast.error(error.message);
-          } else {
-            toast.success(t("updated"));
-          }
-        },
-      });
-    } else if (isFromRecentSection) {
-      // show error if link is dragged from recent section to the target collection which it already belongs to
-      toast.error(t("link_already_in_collection"));
-    }
-  };
-
   return (
-    <DragNDrop
-      onDragEnd={handleDragEnd}
-      links={allLinks}
-      activeLink={activeLink}
-      setActiveLink={setActiveLink}
-    >
-      <MainLayout>
-        <div className="p-5 flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <i className="bi-house-fill text-primary" />
-              <p className="font-thin">{t("dashboard")}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <DashboardLayoutDropdown />
-              <ViewDropdown
-                viewMode={viewMode}
-                setViewMode={setViewMode}
-                dashboard
-              />
-            </div>
+    <>
+      <div className="p-5 flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <i className="bi-house-fill text-primary" />
+            <p className="font-thin">{t("dashboard")}</p>
           </div>
-          {orderedSections[0] ? (
-            orderedSections?.map((section, i) => (
-              <Section
-                key={i}
-                sectionData={section}
-                t={t}
-                collection={collections.find(
-                  (c) => c.id === section.collectionId
-                )}
-                collectionLinks={
-                  section.collectionId
-                    ? collectionLinks[section.collectionId]
-                    : []
-                }
-                links={links}
-                tags={tags}
-                numberOfLinks={numberOfLinks}
-                collectionsLength={collections.length}
-                numberOfPinnedLinks={numberOfPinnedLinks}
-                dashboardData={dashboardData}
-                setNewLinkModal={setNewLinkModal}
-              />
-            ))
-          ) : (
-            <div className="h-full flex flex-col gap-4">
-              <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
-                <div className="skeleton h-20 w-full"></div>
-                <div className="skeleton h-20 w-full"></div>
-                <div className="skeleton h-20 w-full"></div>
-                <div className="skeleton h-20 w-full"></div>
-              </div>
-              <div className="skeleton h-full"></div>
-              <div className="skeleton h-full"></div>
-              <div className="skeleton h-full"></div>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <DashboardLayoutDropdown />
+            <ViewDropdown
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              dashboard
+            />
+          </div>
         </div>
+        {orderedSections[0] ? (
+          orderedSections?.map((section, i) => (
+            <Section
+              key={i}
+              sectionData={section}
+              t={t}
+              collection={collections.find(
+                (c) => c.id === section.collectionId
+              )}
+              collectionLinks={
+                section.collectionId
+                  ? collectionLinks[section.collectionId]
+                  : []
+              }
+              links={links}
+              tags={tags}
+              numberOfLinks={numberOfLinks}
+              collectionsLength={collections.length}
+              numberOfPinnedLinks={numberOfPinnedLinks}
+              dashboardData={dashboardData}
+              setNewLinkModal={setNewLinkModal}
+            />
+          ))
+        ) : (
+          <div className="h-full flex flex-col gap-4">
+            <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+              <div className="skeleton h-20 w-full"></div>
+            </div>
+            <div className="skeleton h-full"></div>
+            <div className="skeleton h-full"></div>
+            <div className="skeleton h-full"></div>
+          </div>
+        )}
+      </div>
 
-        {showSurveyModal && (
-          <SurveyModal
-            submit={submitSurvey}
-            onClose={() => {
-              setShowsSurveyModal(false);
-            }}
-          />
-        )}
-        {newLinkModal && (
-          <NewLinkModal onClose={() => setNewLinkModal(false)} />
-        )}
-      </MainLayout>
-    </DragNDrop>
+      {showSurveyModal && (
+        <SurveyModal
+          submit={submitSurvey}
+          onClose={() => {
+            setShowsSurveyModal(false);
+          }}
+        />
+      )}
+      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
+    </>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <MainLayout>{page}</MainLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };
 

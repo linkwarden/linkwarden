@@ -28,7 +28,7 @@ export const VerifyEmailSchema = z.object({
 
 export const PostTokenSchema = z.object({
   name: z.string().max(50),
-  expires: z.nativeEnum(TokenExpiry),
+  expires: z.enum(TokenExpiry),
 });
 
 export type PostTokenSchemaType = z.infer<typeof PostTokenSchema>;
@@ -82,21 +82,21 @@ export const UpdateUserSchema = () => {
     archiveAsPDF: z.boolean().optional(),
     archiveAsReadable: z.boolean().optional(),
     archiveAsWaybackMachine: z.boolean().optional(),
-    aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
+    aiTaggingMethod: z.enum(AiTaggingMethod).optional(),
     aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
     aiTagExistingLinks: z.boolean().optional(),
     locale: z.string().max(20).optional(),
     isPrivate: z.boolean().optional(),
     preventDuplicateLinks: z.boolean().optional(),
     collectionOrder: z.array(z.number()).optional(),
-    linksRouteTo: z.nativeEnum(LinksRouteTo).optional(),
+    linksRouteTo: z.enum(LinksRouteTo).optional(),
     whitelistedUsers: z.array(z.string().max(50)).optional(),
     referredBy: z.string().max(100).nullish(),
   });
 };
 
 export const UpdateUserPreferenceSchema = z.object({
-  theme: z.nativeEnum(Theme).optional(),
+  theme: z.enum(Theme).optional(),
   readableFontFamily: z.string().trim().max(100).optional(),
   readableFontSize: z.string().trim().max(100).optional(),
   readableLineHeight: z.string().trim().max(100).optional(),
@@ -106,11 +106,11 @@ export const UpdateUserPreferenceSchema = z.object({
   // archiveAsPDF: z.boolean().optional(),
   // archiveAsReadable: z.boolean().optional(),
   // archiveAsWaybackMachine: z.boolean().optional(),
-  // aiTaggingMethod: z.nativeEnum(AiTaggingMethod).optional(),
+  // aiTaggingMethod: z.enum(AiTaggingMethod).optional(),
   // aiPredefinedTags: z.array(z.string().max(20).trim()).max(20).optional(),
   // aiTagExistingLinks: z.boolean().optional(),
   // preventDuplicateLinks: z.boolean().optional(),
-  // linksRouteTo: z.nativeEnum(LinksRouteTo).optional(),
+  // linksRouteTo: z.enum(LinksRouteTo).optional(),
 });
 
 export type UpdateUserPreferenceSchemaType = z.infer<
@@ -205,7 +205,7 @@ export const UploadFileSchema = z.object({
     ),
   id: z.number().optional(),
   url: z.string().trim().max(2048).url().optional(),
-  format: z.nativeEnum(ArchivedFormat),
+  format: z.enum(ArchivedFormat),
 });
 
 export const PostCollectionSchema = z.object({
@@ -304,7 +304,7 @@ export type LinkArchiveActionSchemaType = z.infer<
 
 export const UpdateDashboardLayoutSchema = z.array(
   z.object({
-    type: z.nativeEnum(DashboardSectionType),
+    type: z.enum(DashboardSectionType),
     collectionId: z.number().optional(),
     enabled: z.boolean(),
     order: z.number().optional(),

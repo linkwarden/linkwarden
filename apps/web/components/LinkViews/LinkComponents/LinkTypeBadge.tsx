@@ -1,8 +1,8 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function LinkTypeBadge({
+function LinkTypeBadge({
   link,
 }: {
   link: LinkIncludingShortenedCollectionAndTags;
@@ -50,3 +50,5 @@ export default function LinkTypeBadge({
     </div>
   );
 }
+
+export default React.memo(LinkTypeBadge);

@@ -187,6 +187,7 @@ export default function LinkDetails({
                 const target = e.target as HTMLElement;
                 target.style.display = "none";
               }}
+              unoptimized
             />
           ) : link.preview === "unavailable" ? (
             <div className="bg-gray-50 duration-100 h-40"></div>

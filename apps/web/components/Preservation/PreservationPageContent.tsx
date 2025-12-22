@@ -3,15 +3,12 @@ import { useRouter } from "next/router";
 import { useGetLink, useLinks } from "@linkwarden/router/links";
 import { PreservationContent } from "./PreservationContent";
 import PreservationNavbar from "./PreservationNavbar";
-import { ArchivedFormat } from "@linkwarden/types";
 
 export default function PreservationPageContent() {
   const router = useRouter();
   const { links } = useLinks();
 
-  const [showNavbar, setShowNavbar] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const lastScrollTop = useRef(0);
 
   let isPublicRoute = router.pathname.startsWith("/public") ? true : undefined;
 
@@ -41,41 +38,13 @@ export default function PreservationPageContent() {
     };
   }, [links]);
 
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const onScroll = () => {
-      const st = container.scrollTop;
-      // if scrolling down and beyond a small threshold, hide
-      if (st - 10 > lastScrollTop.current) {
-        if (Number(router.query.format) === ArchivedFormat.readability)
-          setShowNavbar(false);
-      }
-      // if scrolling up, show
-      else if (st < lastScrollTop.current - 10) {
-        setShowNavbar(true);
-      }
-      lastScrollTop.current = st <= 0 ? 0 : st; // for Mobile or negative
-    };
-
-    container.addEventListener("scroll", onScroll, { passive: true });
-    return () => container.removeEventListener("scroll", onScroll);
-  }, [router.query.format]);
-
   return (
     <div>
       {link?.id && (
-        <PreservationNavbar
-          link={link}
-          format={Number(router.query.format)}
-          showNavbar={showNavbar}
-        />
+        <PreservationNavbar link={link} format={Number(router.query.format)} />
       )}
       <div
-        className={`bg-base-200 overflow-y-auto w-screen  ${
-          showNavbar ? "h-[calc(100vh-3.1rem)] mt-[3.1rem]" : "h-screen"
-        }`}
+        className={`bg-base-200 overflow-y-auto w-screen h-[calc(100vh-3.1rem)] mt-[3.1rem]`}
         ref={scrollRef}
       >
         <PreservationContent link={link} format={Number(router.query.format)} />

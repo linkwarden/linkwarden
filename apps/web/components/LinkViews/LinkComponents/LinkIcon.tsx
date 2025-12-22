@@ -7,7 +7,7 @@ import { IconWeight } from "@phosphor-icons/react";
 import clsx from "clsx";
 import oklchVariableToHex from "@/lib/client/oklchVariableToHex";
 
-export default function LinkIcon({
+function LinkIcon({
   link,
   className,
   hideBackground,
@@ -45,17 +45,17 @@ export default function LinkIcon({
       ) : link.type === "url" && url ? (
         <>
           <Image
-            src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${link.url}&size=64`}
+            src={`/api/v1/getFavicon?url=${encodeURIComponent(url.origin)}`}
             width={64}
             height={64}
             alt=""
+            unoptimized
             className={clsx(
               iconClasses,
               faviconLoaded ? "" : "absolute opacity-0"
             )}
             draggable="false"
-            onLoadingComplete={() => setFaviconLoaded(true)}
-            onError={() => setFaviconLoaded(false)}
+            onLoad={() => setFaviconLoaded(true)}
           />
           {!faviconLoaded && (
             <LinkPlaceholderIcon
@@ -104,3 +104,5 @@ const LinkPlaceholderIcon = ({
     </div>
   );
 };
+
+export default React.memo(LinkIcon);

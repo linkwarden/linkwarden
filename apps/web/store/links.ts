@@ -1,44 +1,42 @@
 import { create } from "zustand";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
-
-type ResponseObject = {
-  ok: boolean;
-  data: object | string;
-};
 
 type LinkStore = {
-  selectedLinks: LinkIncludingShortenedCollectionAndTags[];
-  setSelectedLinks: (links: LinkIncludingShortenedCollectionAndTags[]) => void;
-  updateLinks: (
-    links: LinkIncludingShortenedCollectionAndTags[],
-    removePreviousTags: boolean,
-    newData: Pick<
-      LinkIncludingShortenedCollectionAndTags,
-      "tags" | "collectionId"
-    >
-  ) => Promise<ResponseObject>;
+  selectedIds: Record<number, true>;
+  isSelected: (id: number) => boolean;
+  toggleSelected: (id: number) => void;
+  clearSelected: () => void;
+  setSelected: (ids: number[]) => void;
+  selectionCount: number;
 };
 
-const useLinkStore = create<LinkStore>()((set) => ({
-  selectedLinks: [],
-  setSelectedLinks: (links) => set({ selectedLinks: links }),
-  updateLinks: async (links, removePreviousTags, newData) => {
-    const response = await fetch("/api/v1/links", {
-      body: JSON.stringify({ links, removePreviousTags, newData }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "PUT",
-    });
+const useLinkStore = create<LinkStore>()((set, get) => ({
+  selectedIds: {},
 
-    const data = await response.json();
+  isSelected: (id) => !!get().selectedIds[id],
 
-    if (response.ok) {
-      // Update the selected links with the new data
-    }
+  toggleSelected: (id) =>
+    set((state) => {
+      const next = { ...state.selectedIds };
 
-    return { ok: response.ok, data: data.response };
-  },
+      if (next[id]) {
+        delete next[id];
+        return { selectedIds: next, selectionCount: state.selectionCount - 1 };
+      } else {
+        next[id] = true;
+        return { selectedIds: next, selectionCount: state.selectionCount + 1 };
+      }
+    }),
+
+  clearSelected: () => set({ selectedIds: {}, selectionCount: 0 }),
+
+  setSelected: (ids) =>
+    set(() => {
+      const next: Record<number, true> = {};
+      for (let i = 0; i < ids.length; i++) next[ids[i]] = true;
+      return { selectedIds: next, selectionCount: Object.keys(next).length };
+    }),
+
+  selectionCount: 0,
 }));
 
 export default useLinkStore;

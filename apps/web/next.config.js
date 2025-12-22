@@ -7,14 +7,9 @@ const nextConfig = {
   reactStrictMode: true,
   staticPageGenerationTimeout: 1000,
   images: {
-    // For fetching the favicons
-    domains: ["t2.gstatic.com"],
-
-    // For profile pictures (Google OAuth)
     remotePatterns: [
-      {
-        hostname: "*.googleusercontent.com",
-      },
+      // For profile pictures (Google OAuth)
+      { hostname: "*.googleusercontent.com" },
     ],
 
     minimumCacheTTL: 10,

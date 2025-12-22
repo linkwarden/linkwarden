@@ -10,13 +10,25 @@ RUN set -eux && cargo install --locked monolith
 # Purpose: Compiles the frontend and
 # Notes:
 #  - Nothing extra should be left here.  All commands should cleanup
-FROM node:22.14-bullseye-slim AS main-app
+FROM node:20.19.6-bullseye-slim AS main-app
+
+ENV YARN_HTTP_TIMEOUT=10000000
+
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+
+ENV PRISMA_HIDE_UPDATE_MESSAGE=1
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN mkdir /data
 
 WORKDIR /data
+
+RUN corepack enable
+
+COPY ./.yarnrc.yml ./
+
+COPY ./.yarn ./.yarn
 
 COPY ./apps/web/package.json ./apps/web/playwright.config.ts ./apps/web/
 
@@ -28,7 +40,7 @@ COPY ./yarn.lock ./package.json ./
 
 RUN --mount=type=cache,sharing=locked,target=/usr/local/share/.cache/yarn \
     set -eux && \
-    yarn install --network-timeout 10000000 && \
+    yarn workspaces focus linkwarden @linkwarden/web @linkwarden/worker && \
     # Install curl for healthcheck, and ca-certificates to prevent monolith from failing to retrieve resources due to invalid certificates
     apt-get update && \
     apt-get install -yqq --no-install-recommends curl ca-certificates && \
@@ -46,7 +58,8 @@ RUN set -eux && \
 COPY . .
 
 RUN yarn prisma:generate && \
-    yarn web:build
+    yarn web:build && \
+    rm -rf apps/web/.next/cache
 
 HEALTHCHECK --interval=30s \
             --timeout=5s \

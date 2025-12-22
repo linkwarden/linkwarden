@@ -16,7 +16,7 @@ type Props = {
 
 export default function BulkEditLinksModal({ onClose }: Props) {
   const { t } = useTranslation();
-  const { selectedLinks, setSelectedLinks } = useLinkStore();
+  const { selectedIds, clearSelected, selectionCount } = useLinkStore();
   const [submitLoader, setSubmitLoader] = useState(false);
   const [removePreviousTags, setRemovePreviousTags] = useState(false);
   const [updatedValues, setUpdatedValues] = useState<
@@ -40,9 +40,13 @@ export default function BulkEditLinksModal({ onClose }: Props) {
 
       const load = toast.loading(t("updating"));
 
+      const links = Object.keys(selectedIds).map((k) => ({
+        id: Number(k),
+      }));
+
       await updateLinks.mutateAsync(
         {
-          links: selectedLinks,
+          links,
           newData: updatedValues,
           removePreviousTags,
         },
@@ -54,7 +58,7 @@ export default function BulkEditLinksModal({ onClose }: Props) {
             if (error) {
               toast.error(error.message);
             } else {
-              setSelectedLinks([]);
+              clearSelected();
               onClose();
               toast.success(t("updated"));
             }
@@ -67,9 +71,9 @@ export default function BulkEditLinksModal({ onClose }: Props) {
   return (
     <Modal toggleModal={onClose}>
       <p className="text-xl font-thin">
-        {selectedLinks.length === 1
+        {selectionCount === 1
           ? t("edit_link")
-          : t("edit_links", { count: selectedLinks.length })}
+          : t("edit_links", { count: selectionCount })}
       </p>
       <Separator className="my-3" />
 

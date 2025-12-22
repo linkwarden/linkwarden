@@ -130,7 +130,10 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     : `archives/${collection.id}/${linkId + suffix}`;
 
   const { file, contentType, status } = await readFile(filePath);
-  res.setHeader("Content-Type", contentType).status(status as number);
+  res
+    .setHeader("Content-Type", contentType)
+    .setHeader("Cache-Control", "private, max-age=31536000, immutable")
+    .status(status as number);
   return res.send(file);
 }
 

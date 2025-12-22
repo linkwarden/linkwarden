@@ -1,11 +1,7 @@
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
 import React from "react";
 
-export default function LinkDate({
-  link,
-}: {
-  link: LinkIncludingShortenedCollectionAndTags;
-}) {
+function LinkDate({ link }: { link: LinkIncludingShortenedCollectionAndTags }) {
   const formattedDate = new Date(
     (link.importDate || link.createdAt) as string
   ).toLocaleString("en-US", {
@@ -21,3 +17,5 @@ export default function LinkDate({
     </div>
   );
 }
+
+export default React.memo(LinkDate);
