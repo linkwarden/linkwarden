@@ -494,7 +494,7 @@
   "refresh_multiple_preserved_formats_confirmation_desc": "現在保存されている形式を削除し、 {{count}} リンクを再保存します。",
   "refresh_preserved_formats_confirmation_desc": "現在保存されている形式を削除し、このリンクを再保存します。",
   "tag_already_added": "このタグは既に追加されています。",
-  "all_tags": "All Tags",
+  "all_tags": "すべてのタグ",
   "new_tag": "New Tag",
   "create_new_tag": "Create New Tag",
   "tag_deletion_confirmation_message": "Are you sure you want to delete this Tag?",
