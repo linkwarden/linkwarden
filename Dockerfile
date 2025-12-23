@@ -28,8 +28,6 @@ RUN corepack enable
 
 COPY ./.yarnrc.yml ./
 
-COPY ./.yarn ./.yarn
-
 COPY ./apps/web/package.json ./apps/web/playwright.config.ts ./apps/web/
 
 COPY ./apps/worker/package.json ./apps/worker/
