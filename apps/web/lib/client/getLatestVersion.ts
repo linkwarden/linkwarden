@@ -12,8 +12,8 @@ export default async function getLatestVersion(setShowAnnouncement: Function) {
   const latestMessage = data.message;
 
   if (
-    announcementId !== latestAnnouncement ||
-    announcementMessage !== latestMessage
+    announcementId != latestAnnouncement ||
+    announcementMessage != latestMessage
   ) {
     setShowAnnouncement(true);
     if (latestAnnouncement)
