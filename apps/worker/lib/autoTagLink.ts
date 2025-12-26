@@ -5,16 +5,16 @@ import {
   predefinedTagsPrompt,
 } from "./prompts";
 import { prisma } from "@linkwarden/prisma";
-import { generateObject } from "ai";
-import { LanguageModelV2 } from "@ai-sdk/provider";
+import { generateText, LanguageModel, Output } from "ai";
 import {
   createOpenAICompatible,
   OpenAICompatibleProviderSettings,
 } from "@ai-sdk/openai-compatible";
-import { perplexity } from "@ai-sdk/perplexity";
-import { azure } from "@ai-sdk/azure";
+import { createPerplexity } from "@ai-sdk/perplexity";
+import { createAzure } from "@ai-sdk/azure";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { z } from "zod";
-import { anthropic } from "@ai-sdk/anthropic";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider-v2";
 import { titleCase } from "@linkwarden/lib";
@@ -23,7 +23,7 @@ import { titleCase } from "@linkwarden/lib";
 const ensureValidURL = (base: string, path: string) =>
   `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 
-const getAIModel = (): LanguageModelV2 => {
+const getAIModel = () => {
   if (process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) {
     let config: OpenAICompatibleProviderSettings = {
       baseURL:
@@ -40,10 +40,31 @@ const getAIModel = (): LanguageModelV2 => {
     process.env.AZURE_API_KEY &&
     process.env.AZURE_RESOURCE_NAME &&
     process.env.AZURE_MODEL
-  )
+  ) {
+    const azure = createAzure({
+      apiKey: process.env.AZURE_API_KEY,
+      resourceName: process.env.AZURE_RESOURCE_NAME,
+    });
     return azure(process.env.AZURE_MODEL);
-  if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL)
+  }
+  if (process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_MODEL) {
+    const anthropic = createAnthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
     return anthropic(process.env.ANTHROPIC_MODEL);
+  }
+  if (process.env.GOOGLE_AI_API_KEY && process.env.GOOGLE_AI_MODEL) {
+    const google = createGoogleGenerativeAI({
+      apiKey: process.env.GOOGLE_AI_API_KEY,
+    });
+    return google(process.env.GOOGLE_AI_MODEL);
+  }
+  if (process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_MODEL) {
+    const openrouter = createOpenRouter({
+      apiKey: process.env.OPENROUTER_API_KEY,
+    });
+    return openrouter.chat(process.env.OPENROUTER_MODEL);
+  }
   if (process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT_URL && process.env.OLLAMA_MODEL) {
     const ollama = createOllama({
       baseURL: ensureValidURL(
@@ -54,14 +75,10 @@ const getAIModel = (): LanguageModelV2 => {
 
     return ollama(process.env.OLLAMA_MODEL);
   }
-  if (process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_MODEL) {
-    const openrouter = createOpenRouter({
-      apiKey: process.env.OPENROUTER_API_KEY,
-    });
-
-    return openrouter(process.env.OPENROUTER_MODEL) as LanguageModelV2;
-  }
   if (process.env.PERPLEXITY_API_KEY) {
+    const perplexity = createPerplexity({
+      apiKey: process.env.PERPLEXITY_API_KEY,
+    });
     return perplexity(process.env.PERPLEXITY_MODEL || "sonar-pro");
   }
   throw new Error("No AI provider configured");
@@ -127,15 +144,18 @@ export default async function autoTagLink(
     return console.log("No predefined tags to auto tag for link: ", link.url);
   }
 
-  const { object } = await generateObject({
-    model: getAIModel(),
+  const { output } = await generateText({
+    model: getAIModel() as LanguageModel,
     prompt: prompt,
-    output: "array",
-    schema: z.string(),
+    output: Output.object({
+      schema: z.object({
+        tags: z.array(z.string()),
+      }),
+    }),
   });
 
   try {
-    let tags = object;
+    let tags = output.tags;
 
     if (!tags || tags.length === 0) {
       return;
