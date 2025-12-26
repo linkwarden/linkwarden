@@ -38,32 +38,49 @@ Linkwarden is also designed with collaboration in mind, enabling you to share li
 
 ## Features
 
-- 📸 Auto capture a screenshot, PDF, and single html file of each webpage.
-- 📖 Reader view of the webpage, with the ability to highlight and annotate text.
-- 🏛️ Send your webpage to Wayback Machine ([archive.org](https://archive.org)) for a snapshot. (Optional)
-- ✨ Local AI Tagging to automatically tag your links based on their content (Optional).
-- 📂 Organize links by collection, sub-collection, name, description and multiple tags.
-- 👥 Collaborate on gathering links in a collection.
-- 🎛️ Customize the permissions of each member.
-- 🌐 Share your collected links and preserved formats with the world.
-- 📌 Pin your favorite links to dashboard.
-- 🔍 Full text search, filter and sort for easy retrieval.
-- 📱 Responsive design and supports most modern browsers.
-- 🌓 Dark/Light mode support.
-- 🧩 Browser extension. [Star it here!](https://github.com/linkwarden/browser-extension)
+- 📸 Auto capture a screenshot, PDF, and single html file of each webpage
+- 📖 Reader view of the webpage, with the ability to highlight and annotate text
+- 🏛️ Send your webpage to Wayback Machine ([archive.org](https://archive.org)) for a snapshot (optional)
+- ✨ Local AI Tagging to automatically tag your links based on their content (optional)
+- 📂 Organize links by collection, sub-collection, name, description and multiple tags
+- 👥 Collaborate on gathering links in a collection
+- 🎛️ Customize the permissions of each member
+- 🌐 Share your collected links and preserved formats with the world
+- 📱 Native iOS and android mobile apps
+- 🔍 Full text search, filter and sort for easy retrieval
+- 🌓 Dark/Light mode support
+- 🧩 Browser extension (star it [here](https://github.com/linkwarden/browser-extension)!)
 - 🔄 Browser Synchronization (using [Floccus](https://floccus.org)!)
-- ⬇️ Import and export your bookmarks.
-- 🔐 SSO integration. (Enterprise and Self-hosted users only)
-- 📦 Installable Progressive Web App (PWA).
-- 🍎 iOS Shortcut to save Links to Linkwarden.
-- 🔑 API keys.
-- ✅ Bulk actions.
-- 👥 User administration.
-- 🌐 Support for Other Languages (i18n).
-- 📁 Image and PDF Uploads.
-- 🎨 Custom Icons for Links and Collections.
-- 🔔 RSS Feed Subscription.
-- ✨ And many more features. (Literally!)
+- ⬆️ Upload from SingleFile (check out the [guide](https://docs.linkwarden.app/Usage/upload-from-singlefile))
+- 🔐 SSO integration (Enterprise and Self-hosted users only)
+- 🍎 iOS Shortcut to save links to Linkwarden
+- 🔑 API keys
+- ✅ Bulk actions
+- 👥 User administration
+- 🌐 Support for other languages (i18n)
+- 📁 Image and PDF uploads
+- 🎨 Custom icons for links and collections
+- 🔔 RSS feed subscription
+- ✨ And many more features (literally!)
+
+## Get Our Official Mobile App
+
+<img src="./assets/mobile_apps.png" alt="Different screens (iPad, Pixel, and iPhone)" width="400" />
+
+> [!IMPORTANT]
+> To use the app you’ll first need a Linkwarden account.
+
+To create an account, you can choose between:
+
+- [**Linkwarden Cloud**](https://linkwarden.app/#pricing) – instant setup, and your subscription directly supports ongoing development.
+- [**Self-hosted Linkwarden**](https://docs.linkwarden.app/self-hosting/installation) – free, but you’ll need to deploy and maintain a Linkwarden instance on a server.
+
+After creating an account, download the app from your preferred store:
+
+[![Download on the App Store](./assets/app_store.png)](https://apps.apple.com/app/linkwarden/id6752550960)
+[![Get it on Google Play](./assets/google_play.png)](https://play.google.com/store/apps/details?id=app.linkwarden)
+
+(To get the app as an APK outside Google Play, check out our [builds](https://github.com/linkwarden/builds) repository.)
 
 ## Like what we're doing? Give us a Star ⭐
 
