@@ -5,7 +5,7 @@ import {
   predefinedTagsPrompt,
 } from "./prompts";
 import { prisma } from "@linkwarden/prisma";
-import { generateObject } from "ai";
+import { generateText } from "ai";
 import { LanguageModelV2 } from "@ai-sdk/provider";
 import {
   createOpenAICompatible,
@@ -13,7 +13,6 @@ import {
 } from "@ai-sdk/openai-compatible";
 import { perplexity } from "@ai-sdk/perplexity";
 import { azure } from "@ai-sdk/azure";
-import { z } from "zod";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider-v2";
@@ -127,15 +126,13 @@ export default async function autoTagLink(
     return console.log("No predefined tags to auto tag for link: ", link.url);
   }
 
-  const { object } = await generateObject({
+  const { text } = await generateText({
     model: getAIModel(),
     prompt: prompt,
-    output: "array",
-    schema: z.string(),
   });
 
   try {
-    let tags = object;
+    let tags: string[] = JSON.parse(text);
 
     if (!tags || tags.length === 0) {
       return;
