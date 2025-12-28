@@ -111,19 +111,12 @@ export default async function autoTagLink(
     );
   }
 
-  // remove commas from existing tags since commas are used as separators
-
-  let tagsWithoutComma = existingTagsNames.map((tag) => tag.replace(/,/g, " "));
-
   if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
     prompt = generateTagsPrompt(description);
   } else if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
-    prompt = existingTagsPrompt(description, tagsWithoutComma);
+    prompt = existingTagsPrompt(description, existingTagsNames);
   } else {
-    tagsWithoutComma = user.aiPredefinedTags.map((tag) =>
-      tag.replace(/,/g, " ")
-    );
-    prompt = predefinedTagsPrompt(description, tagsWithoutComma);
+    prompt = predefinedTagsPrompt(description, user.aiPredefinedTags);
   }
 
   if (
@@ -137,23 +130,16 @@ export default async function autoTagLink(
     model: getAIModel(),
     prompt: prompt,
   });
+
   try {
-    let tags = text.split(",").map((tag) => tag.trim());
+    let tags: string[] = JSON.parse(text);
 
     if (!tags || tags.length === 0) {
       return;
     } else if (user.aiTaggingMethod === AiTaggingMethod.EXISTING) {
-      tags = tags.filter((tag: string) => tagsWithoutComma.includes(tag));
-      tags = tags.map((tag: string) => {
-        const index = tagsWithoutComma.indexOf(tag);
-        return existingTagsNames[index];
-      });
+      tags = tags.filter((tag: string) => existingTagsNames.includes(tag));
     } else if (user.aiTaggingMethod === AiTaggingMethod.PREDEFINED) {
-      tags = tags.filter((tag: string) => tagsWithoutComma.includes(tag));
-      tags = tags.map((tag: string) => {
-        const index = tagsWithoutComma.indexOf(tag);
-        return existingTagsNames[index];
-      });
+      tags = tags.filter((tag: string) => user.aiPredefinedTags.includes(tag));
     } else if (user.aiTaggingMethod === AiTaggingMethod.GENERATE) {
       tags = tags.map((tag: string) =>
         tag.length > 3 ? titleCase(tag.toLowerCase()) : tag
