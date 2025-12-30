@@ -245,7 +245,7 @@ const Section = ({
     case DashboardSectionType.STATS:
       return (
         <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
-          <Link href="/links">
+          <Link href="/links" className="w-full">
             <DashboardItem
               name={numberOfLinks === 1 ? t("link") : t("links")}
               value={numberOfLinks}
@@ -253,7 +253,7 @@ const Section = ({
             />
           </Link>
 
-          <Link href="/collections">
+          <Link href="/collections" className="w-full">
             <DashboardItem
               name={collectionsLength === 1 ? t("collection") : t("collections")}
               value={collectionsLength}
@@ -261,7 +261,7 @@ const Section = ({
             />
           </Link>
 
-          <Link href="/tags">
+          <Link href="/tags" className="w-full">
             <DashboardItem
               name={tags.length === 1 ? t("tag") : t("tags")}
               value={tags.length}
@@ -269,7 +269,7 @@ const Section = ({
             />
           </Link>
 
-          <Link href="/links/pinned">
+          <Link href="/links/pinned" className="w-full">
             <DashboardItem
               name={t("pinned")}
               value={numberOfPinnedLinks}
