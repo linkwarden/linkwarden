@@ -20,6 +20,7 @@
       }
     },
     "production": {
+      "corepack": true,
       "distribution": "store",
       "autoIncrement": true,
       "channel": "production"

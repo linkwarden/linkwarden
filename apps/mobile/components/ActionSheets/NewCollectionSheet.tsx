@@ -1,4 +1,4 @@
-import { Alert, Platform, Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { useRef, useState } from "react";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import Input from "@/components/ui/Input";

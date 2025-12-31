@@ -42,7 +42,7 @@ export default function TagsScreen() {
       collapsableChildren={false}
     >
       {tags.isLoading ? (
-        <View className="flex justify-center h-full items-center">
+        <View className="flex justify-center h-screen items-center">
           <ActivityIndicator size="large" />
           <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
         </View>

@@ -23,10 +23,6 @@
     "format": "yarn workspaces run format",
     "postinstall": "yarn workspace @linkwarden/web run postinstall && patch-package"
   },
-  "resolutions": {
-    "@types/react": "18.3.1",
-    "@types/react-dom": "18.3.1"
-  },
   "devDependencies": {
     "dotenv-cli": "^8.0.0"
   },

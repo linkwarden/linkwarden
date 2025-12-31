@@ -27,8 +27,8 @@ export default function Layout() {
             Platform.OS === "ios"
               ? "transparent"
               : colorScheme === "dark"
-                ? rawTheme["dark"]["base-100"]
-                : "white",
+              ? rawTheme["dark"]["base-100"]
+              : "white",
         },
       }}
     >

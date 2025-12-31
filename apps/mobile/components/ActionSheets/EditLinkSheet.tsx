@@ -1,4 +1,4 @@
-import { View, Text, Alert, Platform } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
