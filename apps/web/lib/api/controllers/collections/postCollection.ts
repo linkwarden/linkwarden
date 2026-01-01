@@ -24,6 +24,8 @@ export default async function postCollection(
 
   const collection = dataValidation.data;
 
+  let parentCollectionMembers: UsersAndCollections[] = [];
+
   if (collection.parentId) {
     const findParentCollection = await prisma.collection.findUnique({
       where: {
@@ -31,8 +33,14 @@ export default async function postCollection(
       },
       select: {
         ownerId: true,
+        members: true,
       },
     });
+
+    if (findParentCollection) {
+      parentCollectionMembers =
+        findParentCollection.members as UsersAndCollections[];
+    }
     const collectionIsAccessible = await getPermission({
       userId: userId,
       collectionId: collection.parentId,
@@ -59,6 +67,14 @@ export default async function postCollection(
       color: collection.color,
       icon: collection.icon,
       iconWeight: collection.iconWeight,
+      members: {
+        create: parentCollectionMembers.map((member) => ({
+          userId: member.userId,
+          canCreate: member.canCreate,
+          canUpdate: member.canUpdate,
+          canDelete: member.canDelete,
+        })),
+      },
       parent: collection.parentId
         ? {
             connect: {
