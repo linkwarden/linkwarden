@@ -4,6 +4,8 @@ import {
   PostCollectionSchema,
   PostCollectionSchemaType,
 } from "@linkwarden/lib/schemaValidation";
+import getPermission from "@/lib/api/getPermission";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
 
 export default async function postCollection(
   body: PostCollectionSchemaType,
@@ -31,9 +33,17 @@ export default async function postCollection(
         ownerId: true,
       },
     });
+    const collectionIsAccessible = await getPermission({
+      userId: userId,
+      collectionId: collection.parentId,
+    });
+    const memberHasAccess = collectionIsAccessible?.members.some(
+      (e: UsersAndCollections) => e.userId === userId && e.canCreate && e.canUpdate && e.canDelete
+    );
+
 
     if (
-      findParentCollection?.ownerId !== userId ||
+      (findParentCollection?.ownerId !== userId && !memberHasAccess) ||
       typeof collection.parentId !== "number"
     )
       return {
