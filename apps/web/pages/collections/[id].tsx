@@ -190,7 +190,7 @@ const Page: NextPageWithLayout = () => {
                   : t("view_team")}
               </DropdownMenuItem>
 
-              {permissions === true && (
+              {(permissions === true || permissions?.canCreate) && (
                 <DropdownMenuItem onClick={() => setNewCollectionModal(true)}>
                   <i className="bi-folder-plus" />
                   {t("create_subcollection")}

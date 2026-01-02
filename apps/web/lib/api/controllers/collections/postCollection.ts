@@ -4,6 +4,8 @@ import {
   PostCollectionSchema,
   PostCollectionSchemaType,
 } from "@linkwarden/lib/schemaValidation";
+import getPermission from "@/lib/api/getPermission";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
 
 export default async function postCollection(
   body: PostCollectionSchemaType,
@@ -22,6 +24,8 @@ export default async function postCollection(
 
   const collection = dataValidation.data;
 
+  let parentCollectionMembers: UsersAndCollections[] = [];
+
   if (collection.parentId) {
     const findParentCollection = await prisma.collection.findUnique({
       where: {
@@ -29,11 +33,37 @@ export default async function postCollection(
       },
       select: {
         ownerId: true,
+        members: true,
       },
     });
 
+    if (findParentCollection) {
+      parentCollectionMembers = (
+        findParentCollection.members as UsersAndCollections[]
+      ).filter((member) => member.userId !== userId);
+
+      if (findParentCollection.ownerId !== userId) {
+        parentCollectionMembers.push({
+          userId: findParentCollection.ownerId,
+          canCreate: true,
+          canUpdate: true,
+          canDelete: true,
+        } as UsersAndCollections);
+      }
+
+      console.log("Parent collection members:", parentCollectionMembers);
+    }
+    const collectionIsAccessible = await getPermission({
+      userId: userId,
+      collectionId: collection.parentId,
+    });
+    const memberHasAccess = collectionIsAccessible?.members.some(
+      (e: UsersAndCollections) => e.userId === userId && e.canCreate && e.canUpdate && e.canDelete
+    );
+
+
     if (
-      findParentCollection?.ownerId !== userId ||
+      (findParentCollection?.ownerId !== userId && !memberHasAccess) ||
       typeof collection.parentId !== "number"
     )
       return {
@@ -49,6 +79,14 @@ export default async function postCollection(
       color: collection.color,
       icon: collection.icon,
       iconWeight: collection.iconWeight,
+      members: {
+        create: parentCollectionMembers.map((member) => ({
+          userId: member.userId,
+          canCreate: member.canCreate,
+          canUpdate: member.canUpdate,
+          canDelete: member.canDelete,
+        })),
+      },
       parent: collection.parentId
         ? {
             connect: {
