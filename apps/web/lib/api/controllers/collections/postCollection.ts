@@ -38,8 +38,20 @@ export default async function postCollection(
     });
 
     if (findParentCollection) {
-      parentCollectionMembers =
-        findParentCollection.members as UsersAndCollections[];
+      parentCollectionMembers = (
+        findParentCollection.members as UsersAndCollections[]
+      ).filter((member) => member.userId !== userId);
+
+      if (findParentCollection.ownerId !== userId) {
+        parentCollectionMembers.push({
+          userId: findParentCollection.ownerId,
+          canCreate: true,
+          canUpdate: true,
+          canDelete: true,
+        } as UsersAndCollections);
+      }
+
+      console.log("Parent collection members:", parentCollectionMembers);
     }
     const collectionIsAccessible = await getPermission({
       userId: userId,
