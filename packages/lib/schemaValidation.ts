@@ -236,6 +236,7 @@ export const UpdateCollectionSchema = z.object({
       canDelete: z.boolean(),
     })
   ),
+  propagateToSubcollections: z.boolean().optional(),
 });
 
 export type UpdateCollectionSchemaType = z.infer<typeof UpdateCollectionSchema>;
