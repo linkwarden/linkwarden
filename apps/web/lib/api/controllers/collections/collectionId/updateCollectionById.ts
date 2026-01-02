@@ -65,6 +65,46 @@ export default async function updateCollection(
   );
 
   const updatedCollection = await prisma.$transaction(async () => {
+    if (data.propagateToSubcollections) {
+      const getAllSubCollections = async (
+        parentId: number
+      ): Promise<{ id: number; ownerId: number }[]> => {
+        const children = await prisma.collection.findMany({
+          where: { parentId },
+          select: { id: true, ownerId: true },
+        });
+        let result = [...children];
+        for (const child of children) {
+          result = [...result, ...(await getAllSubCollections(child.id))];
+        }
+        return result;
+      };
+
+      const subCollections = await getAllSubCollections(collectionId);
+
+      for (const sub of subCollections) {
+        await prisma.usersAndCollections.deleteMany({
+          where: { collectionId: sub.id },
+        });
+
+        const subMembers = uniqueMembers.filter(
+          (m) => m.userId !== sub.ownerId
+        );
+
+        if (subMembers.length > 0) {
+          await prisma.usersAndCollections.createMany({
+            data: subMembers.map((e) => ({
+              userId: e.userId,
+              collectionId: sub.id,
+              canCreate: e.canCreate,
+              canUpdate: e.canUpdate,
+              canDelete: e.canDelete,
+            })),
+          });
+        }
+      }
+    }
+
     await prisma.usersAndCollections.deleteMany({
       where: {
         collection: {
