@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import s3Client from "./s3Client";
 import { PutObjectCommandInput, DeleteObjectCommand } from "@aws-sdk/client-s3";
@@ -24,8 +24,18 @@ export async function removeFile({ filePath }: { filePath: string }) {
       filePath
     );
 
-    fs.unlink(creationPath, (err) => {
-      if (err) console.log(err);
-    });
+    try {
+      await fs.unlink(creationPath);
+    } catch (err) {
+      // Ignore "File not found" errors as they are expected when 
+      // cleaning up multiple possible extensions, but log for debugging.
+      if ((err as NodeJS.ErrnoException)?.code === "ENOENT") {
+        console.debug(
+          `removeFile: file not found at path "${creationPath}", ` +
+            `skipping delete (code=${(err as NodeJS.ErrnoException).code})`
+        );
+        return;
+      }
+    }
   }
 }
