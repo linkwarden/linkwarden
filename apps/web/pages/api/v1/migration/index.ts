@@ -7,6 +7,7 @@ import verifyUser from "@/lib/api/verifyUser";
 import importFromWallabag from "@/lib/api/controllers/migration/importFromWallabag";
 import importFromOmnivore from "@/lib/api/controllers/migration/importFromOmnivore";
 import importFromPocket from "@/lib/api/controllers/migration/importFromPocket";
+import importFromReadwise from "@/lib/api/controllers/migration/importFromReadwise";
 
 export const config = {
   api: {
@@ -51,6 +52,8 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
       data = await importFromOmnivore(user.id, request.data);
     else if (request.format === MigrationFormat.pocket)
       data = await importFromPocket(user.id, request.data);
+    else if (request.format === MigrationFormat.readwise)
+      data = await importFromReadwise(user.id, request.data);
 
     if (data) return res.status(data.status).json({ response: data.response });
   }
