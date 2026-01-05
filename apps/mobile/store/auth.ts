@@ -3,12 +3,9 @@ import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
 import { MobileAuth } from "@linkwarden/types";
 import { Alert } from "react-native";
-import * as FileSystem from "expo-file-system";
 import { queryClient } from "@/lib/queryClient";
 import { mmkvPersister } from "@/lib/queryPersister";
 import { clearCache } from "@/lib/cache";
-
-const CACHE_DIR = FileSystem.documentDirectory + "archivedData/";
 
 type AuthStore = {
   auth: MobileAuth;
@@ -78,31 +75,42 @@ const useAuthStore = create<AuthStore>((set) => ({
         }
       });
     } else {
-      await fetch(instance + "/api/v1/session", {
-        method: "POST",
-        body: JSON.stringify({ username, password }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then(async (res) => {
+      try {
+        const res = await Promise.race([
+          fetch(`${instance}/api/v1/session`, {
+            method: "POST",
+            body: JSON.stringify({ username, password }),
+            headers: { "Content-Type": "application/json" },
+          }),
+          new Promise<Response>((_, reject) =>
+            setTimeout(() => reject(new Error("TIMEOUT")), 30000)
+          ),
+        ]);
+
         if (res.ok) {
           const data = await res.json();
           const session = (data as any).response.token;
+
           await SecureStore.setItemAsync("TOKEN", session);
           await SecureStore.setItemAsync("INSTANCE", instance);
-          set({
-            auth: {
-              session,
-              instance,
-              status: "authenticated",
-            },
-          });
-
+          set({ auth: { session, instance, status: "authenticated" } });
           router.replace("/(tabs)/dashboard");
         } else {
           Alert.alert("Error", "Invalid credentials");
         }
-      });
+      } catch (err: any) {
+        if (err?.message === "TIMEOUT") {
+          Alert.alert(
+            "Request timed out",
+            "Unable to reach the server in time. Please check your network configuration and try again."
+          );
+        } else {
+          Alert.alert(
+            "Network error",
+            "Could not connect to the server. Please check your network configuration and try again."
+          );
+        }
+      }
     }
   },
   signOut: async () => {

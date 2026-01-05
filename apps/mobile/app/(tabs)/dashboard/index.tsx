@@ -1,4 +1,11 @@
-import { Platform, ScrollView, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
 import useAuthStore from "@/store/auth";
@@ -53,22 +60,36 @@ export default function DashboardScreen() {
     });
   }, [dashboardSections]);
 
+  const [pullRefreshing, setPullRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setPullRefreshing(true);
+    try {
+      await Promise.all([
+        dashboardData.refetch(),
+        userData.refetch(),
+        collectionsData.refetch(),
+        tagsData.refetch(),
+      ]);
+    } finally {
+      setPullRefreshing(false);
+    }
+  };
+
+  if (orderedSections.length === 0 && dashboardData.isLoading)
+    return (
+      <View className="flex justify-center h-screen items-center bg-base-100">
+        <ActivityIndicator size="large" />
+        <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
+      </View>
+    );
+
   return (
     <ScrollView
       refreshControl={
         <Spinner
-          refreshing={
-            dashboardData.isRefetching ||
-            userData.isRefetching ||
-            collectionsData.isRefetching ||
-            tagsData.isRefetching
-          }
-          onRefresh={() => {
-            dashboardData.refetch();
-            userData.refetch();
-            collectionsData.refetch();
-            tagsData.refetch();
-          }}
+          refreshing={pullRefreshing}
+          onRefresh={onRefresh}
           progressBackgroundColor={
             rawTheme[colorScheme as ThemeName]["base-200"]
           }
