@@ -121,6 +121,7 @@ export enum MigrationFormat {
   wallabag = 2,
   omnivore = 3,
   pocket = 4,
+  readwise = 5,
 }
 
 export enum Plan {
