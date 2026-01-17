@@ -4,6 +4,9 @@ import {
   PostCollectionSchema,
   PostCollectionSchemaType,
 } from "@linkwarden/lib/schemaValidation";
+import getPermission from "@/lib/api/getPermission";
+import { UsersAndCollections } from "@linkwarden/prisma/client";
+import getCollectionRootOwnerAndMembers from "../../getCollectionRootOwnerAndMembers";
 
 export default async function postCollection(
   body: PostCollectionSchemaType,
@@ -22,24 +25,60 @@ export default async function postCollection(
 
   const collection = dataValidation.data;
 
+  let rootOwnerId = userId;
+  let dedupedUsers: {
+    userId: number;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+  }[] = [];
+
   if (collection.parentId) {
-    const findParentCollection = await prisma.collection.findUnique({
-      where: {
-        id: collection.parentId,
-      },
-      select: {
-        ownerId: true,
-      },
+    if (typeof collection.parentId !== "number") {
+      return {
+        response: "Invalid parentId.",
+        status: 400,
+      };
+    }
+
+    const permissionCheck = await getPermission({
+      userId,
+      collectionId: collection.parentId,
     });
 
-    if (
-      findParentCollection?.ownerId !== userId ||
-      typeof collection.parentId !== "number"
-    )
+    const memberHasAccess = permissionCheck?.members.some(
+      (e: UsersAndCollections) =>
+        e.userId === userId && e.canCreate && e.canUpdate && e.canDelete
+    );
+
+    if (!memberHasAccess && permissionCheck?.ownerId !== userId) {
       return {
         response: "You are not authorized to create a sub-collection here.",
         status: 403,
       };
+    }
+
+    const result = await getCollectionRootOwnerAndMembers(collection.parentId);
+
+    if (!result.rootOwnerId) {
+      return {
+        response: "Parent collection not found.",
+        status: 404,
+      };
+    }
+
+    rootOwnerId = result.rootOwnerId;
+    dedupedUsers = result.members;
+
+    const exists = dedupedUsers.some((u) => u.userId === userId);
+    if (!exists) {
+      dedupedUsers.push({
+        userId,
+        canCreate: true,
+        canUpdate: true,
+        canDelete: true,
+      });
+    }
   }
 
   const newCollection = await prisma.collection.create({
@@ -49,35 +88,32 @@ export default async function postCollection(
       color: collection.color,
       icon: collection.icon,
       iconWeight: collection.iconWeight,
-      parent: collection.parentId
-        ? {
-            connect: {
-              id: collection.parentId,
-            },
-          }
-        : undefined,
       owner: {
-        connect: {
-          id: userId,
-        },
+        connect: { id: rootOwnerId },
       },
       createdBy: {
-        connect: {
-          id: userId,
-        },
+        connect: { id: userId },
       },
+      members: {
+        create: dedupedUsers
+          .filter((u) => u.userId !== rootOwnerId)
+          .map((u) => ({
+            userId: u.userId,
+            canCreate: u.canCreate,
+            canUpdate: u.canUpdate,
+            canDelete: u.canDelete,
+          })),
+      },
+      parent: collection.parentId
+        ? { connect: { id: collection.parentId } }
+        : undefined,
     },
     include: {
-      _count: {
-        select: { links: true },
-      },
+      _count: { select: { links: true } },
       members: {
         include: {
           user: {
-            select: {
-              username: true,
-              name: true,
-            },
+            select: { username: true, name: true },
           },
         },
       },
@@ -85,13 +121,9 @@ export default async function postCollection(
   });
 
   await prisma.user.update({
-    where: {
-      id: userId,
-    },
+    where: { id: userId },
     data: {
-      collectionOrder: {
-        push: newCollection.id,
-      },
+      collectionOrder: { push: newCollection.id },
     },
   });
 
