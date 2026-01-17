@@ -21,6 +21,8 @@
     "prisma:generate": "yarn workspace @linkwarden/prisma generate",
     "prisma:studio": "yarn workspace @linkwarden/prisma studio",
     "format": "yarn workspaces run format",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
     "postinstall": "yarn workspace @linkwarden/web run postinstall && patch-package"
   },
   "resolutions": {
@@ -28,7 +30,8 @@
     "@types/react-dom": "18.3.1"
   },
   "devDependencies": {
-    "dotenv-cli": "^8.0.0"
+    "dotenv-cli": "^8.0.0",
+    "vitest": "^4.0.17"
   },
   "dependencies": {
     "concurrently": "^9.1.2",
