@@ -150,7 +150,7 @@ const Page: NextPageWithLayout = () => {
                 asChild
                 variant="ghost"
                 size="icon"
-                className="mt-2 text-neutral"
+                className="mt-2 text-neutral cursor-pointer"
                 onMouseDown={(e) => e.preventDefault()}
                 title={t("more")}
               >
@@ -190,7 +190,10 @@ const Page: NextPageWithLayout = () => {
                   : t("view_team")}
               </DropdownMenuItem>
 
-              {(permissions === true || permissions?.canCreate) && (
+              {(permissions === true ||
+                (permissions?.canCreate &&
+                  permissions?.canUpdate &&
+                  permissions?.canDelete)) && (
                 <DropdownMenuItem onClick={() => setNewCollectionModal(true)}>
                   <i className="bi-folder-plus" />
                   {t("create_subcollection")}
