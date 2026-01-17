@@ -245,29 +245,37 @@ const Section = ({
     case DashboardSectionType.STATS:
       return (
         <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
-          <DashboardItem
-            name={numberOfLinks === 1 ? t("link") : t("links")}
-            value={numberOfLinks}
-            icon={"bi-link-45deg"}
-          />
+          <Link href="/links" className="w-full">
+            <DashboardItem
+              name={numberOfLinks === 1 ? t("link") : t("links")}
+              value={numberOfLinks}
+              icon={"bi-link-45deg"}
+            />
+          </Link>
 
-          <DashboardItem
-            name={collectionsLength === 1 ? t("collection") : t("collections")}
-            value={collectionsLength}
-            icon={"bi-folder"}
-          />
+          <Link href="/collections" className="w-full">
+            <DashboardItem
+              name={collectionsLength === 1 ? t("collection") : t("collections")}
+              value={collectionsLength}
+              icon={"bi-folder"}
+            />
+          </Link>
 
-          <DashboardItem
-            name={tags.length === 1 ? t("tag") : t("tags")}
-            value={tags.length}
-            icon={"bi-hash"}
-          />
+          <Link href="/tags" className="w-full">
+            <DashboardItem
+              name={tags.length === 1 ? t("tag") : t("tags")}
+              value={tags.length}
+              icon={"bi-hash"}
+            />
+          </Link>
 
-          <DashboardItem
-            name={t("pinned")}
-            value={numberOfPinnedLinks}
-            icon={"bi-pin-angle"}
-          />
+          <Link href="/links/pinned" className="w-full">
+            <DashboardItem
+              name={t("pinned")}
+              value={numberOfPinnedLinks}
+              icon={"bi-pin-angle"}
+            />
+          </Link>
         </div>
       );
     case DashboardSectionType.RECENT_LINKS:
