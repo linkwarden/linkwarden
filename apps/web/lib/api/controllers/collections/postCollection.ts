@@ -88,22 +88,21 @@ export default async function postCollection(
       color: collection.color,
       icon: collection.icon,
       iconWeight: collection.iconWeight,
-      owner: {
-        connect: { id: rootOwnerId },
-      },
-      createdBy: {
-        connect: { id: userId },
-      },
-      members: {
-        create: dedupedUsers
-          .filter((u) => u.userId !== rootOwnerId)
-          .map((u) => ({
-            userId: u.userId,
-            canCreate: u.canCreate,
-            canUpdate: u.canUpdate,
-            canDelete: u.canDelete,
-          })),
-      },
+      owner: { connect: { id: rootOwnerId } },
+      createdBy: { connect: { id: userId } },
+      members:
+        userId !== rootOwnerId
+          ? {
+              create: [
+                {
+                  userId,
+                  canCreate: true,
+                  canUpdate: true,
+                  canDelete: true,
+                },
+              ],
+            }
+          : undefined,
       parent: collection.parentId
         ? { connect: { id: collection.parentId } }
         : undefined,
