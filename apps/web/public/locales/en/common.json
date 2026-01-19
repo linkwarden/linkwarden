@@ -157,6 +157,7 @@
   "select_theme": "Select Theme",
   "dark": "Dark",
   "light": "Light",
+  "auto": "System",
   "archive_settings": "Archive Settings",
   "formats_to_archive": "Formats to Archive/Preserve webpages:",
   "screenshot": "Screenshot",

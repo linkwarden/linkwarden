@@ -12,6 +12,9 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { Theme } from "@linkwarden/prisma/client";
+
+const themeOrder: Theme[] = ["light", "dark", "auto"];
 
 export default function ProfileDropdown() {
   const { t } = useTranslation();
@@ -23,9 +26,31 @@ export default function ProfileDropdown() {
 
   const isAdmin = user?.id === (config?.ADMIN || 1);
 
-  const handleToggle = () => {
-    const newTheme = user?.theme === "dark" ? "light" : "dark";
-    updateUserPreference.mutate({ theme: newTheme });
+  const handleCycleTheme = () => {
+    const currentIndex = themeOrder.indexOf(user?.theme || "dark");
+    const nextIndex = (currentIndex + 1) % themeOrder.length;
+    const nextTheme = themeOrder[nextIndex];
+    updateUserPreference.mutate({ theme: nextTheme });
+  };
+
+  const getNextThemeLabel = () => {
+    const currentIndex = themeOrder.indexOf(user?.theme || "dark");
+    const nextIndex = (currentIndex + 1) % themeOrder.length;
+    const nextTheme = themeOrder[nextIndex];
+    return t(nextTheme);
+  };
+
+  const getIcon = () => {
+    switch (user?.theme) {
+      case "light":
+        return "bi-sun-fill";
+      case "dark":
+        return "bi-moon-fill";
+      case "auto":
+        return "bi-circle-half";
+      default:
+        return "bi-moon-fill";
+    }
   };
 
   return (
@@ -48,16 +73,12 @@ export default function ProfileDropdown() {
 
         <DropdownMenuItem asChild>
           <div
-            onClick={() => handleToggle()}
+            onClick={() => handleCycleTheme()}
             className="whitespace-nowrap block sm:hidden"
           >
-            {user?.theme === "light" ? (
-              <i className="bi-moon-fill"></i>
-            ) : (
-              <i className="bi-sun-fill"></i>
-            )}
+            <i className={getIcon()}></i>
             {t("switch_to", {
-              theme: user?.theme === "light" ? t("dark") : t("light"),
+              theme: getNextThemeLabel(),
             })}
           </div>
         </DropdownMenuItem>

@@ -5,8 +5,27 @@ import {
   User,
 } from "@linkwarden/prisma/client";
 import { MobileAuth } from "@linkwarden/types";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+
+const getSystemTheme = (): "dark" | "light" => {
+  if (typeof window !== "undefined" && window.matchMedia) {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  }
+  return "dark";
+};
+
+const applyTheme = (theme: string) => {
+  const effectiveTheme = theme === "auto" ? getSystemTheme() : theme;
+  document.querySelector("html")?.setAttribute("data-theme", effectiveTheme);
+};
 
 const useUser = (auth?: MobileAuth) => {
   let status: "authenticated" | "loading" | "unauthenticated";
@@ -53,8 +72,7 @@ const useUser = (auth?: MobileAuth) => {
           dashboardSections: DashboardSection[];
         };
 
-      if (!auth)
-        document.querySelector("html")?.setAttribute("data-theme", data.theme);
+      if (!auth) applyTheme(data.theme);
 
       return data;
     },
@@ -138,15 +156,59 @@ const useUpdateUserPreference = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["user"], data);
-      document.querySelector("html")?.setAttribute("data-theme", data.theme);
+      applyTheme(data.theme);
     },
     onMutate: async (user) => {
       await queryClient.cancelQueries({ queryKey: ["user"] });
       queryClient.setQueryData(["user"], (oldData: any) => {
         return { ...oldData, ...user };
       });
+      if (user.theme) {
+        applyTheme(user.theme);
+      }
     },
   });
 };
 
-export { useUser, useUpdateUser, useUpdateUserPreference };
+const useSystemThemeListener = () => {
+  const { data: user } = useUser();
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    if (user?.theme !== "auto") return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const handleChange = () => {
+      applyTheme("auto");
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, [user?.theme]);
+};
+
+const useEffectiveTheme = (): "light" | "dark" | undefined => {
+  const { data: user } = useUser();
+
+  if (!user?.theme) return undefined;
+
+  if (user.theme === "auto") {
+    return getSystemTheme();
+  }
+
+  return user.theme as "light" | "dark";
+};
+
+export {
+  useUser,
+  useUpdateUser,
+  useUpdateUserPreference,
+  useSystemThemeListener,
+  useEffectiveTheme,
+  getSystemTheme,
+  applyTheme,
+};
