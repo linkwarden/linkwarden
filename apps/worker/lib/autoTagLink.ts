@@ -132,7 +132,10 @@ export default async function autoTagLink(
   });
 
   try {
-    let tags: string[] = JSON.parse(text);
+    // If text has an array inside a "```json ```" block, extract that
+    let tags: string[] = JSON.parse(
+      text.match(/```json\s*([\s\S]*?)\s*```/i)?.[1] ?? text
+    );
 
     if (!tags || tags.length === 0) {
       return;
