@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "concurrently": "^9.1.2",
-    "patch-package": "^8.0.0"
+    "patch-package": "^8.0.0",
+    "react-server-dom-webpack": "^19.0.2"
   }
 }

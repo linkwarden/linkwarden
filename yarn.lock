@@ -15326,6 +15326,7 @@ __metadata:
     concurrently: "npm:^9.1.2"
     dotenv-cli: "npm:^8.0.0"
     patch-package: "npm:^8.0.0"
+    react-server-dom-webpack: "npm:^19.0.2"
   languageName: unknown
   linkType: soft
 
@@ -18321,6 +18322,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-server-dom-webpack@npm:^19.0.2":
+  version: 19.2.4
+  resolution: "react-server-dom-webpack@npm:19.2.4"
+  dependencies:
+    acorn-loose: "npm:^8.3.0"
+    neo-async: "npm:^2.6.1"
+    webpack-sources: "npm:^3.2.0"
+  peerDependencies:
+    react: ^19.2.4
+    react-dom: ^19.2.4
+    webpack: ^5.59.0
+  checksum: 10c0/5f359bec49d3a0325616287bb8044253097b2d6e1260e8751f72fe0de01ea69de75053cdd4a64b6820ae1c194d504d3c57bc7877932332c25aec1e4107735fb6
+  languageName: node
+  linkType: hard
+
 "react-shallow-renderer@npm:^16.15.0":
   version: 16.15.0
   resolution: "react-shallow-renderer@npm:16.15.0"
@@ -21014,6 +21030,13 @@ __metadata:
   version: 7.0.0
   resolution: "webidl-conversions@npm:7.0.0"
   checksum: 10c0/228d8cb6d270c23b0720cb2d95c579202db3aaf8f633b4e9dd94ec2000a04e7e6e43b76a94509cdb30479bd00ae253ab2371a2da9f81446cc313f89a4213a2c4
+  languageName: node
+  linkType: hard
+
+"webpack-sources@npm:^3.2.0":
+  version: 3.3.3
+  resolution: "webpack-sources@npm:3.3.3"
+  checksum: 10c0/ab732f6933b513ba4d505130418995ddef6df988421fccf3289e53583c6a39e205c4a0739cee98950964552d3006604912679c736031337fb4a9d78d8576ed40
   languageName: node
   linkType: hard
 
