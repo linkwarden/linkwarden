@@ -525,5 +525,7 @@
   "expand_sidebar": "Expandir barra lateral",
   "shrink_sidebar": "Encolher barra lateral",
   "trial_left_plural": "O período de teste termina em {{count}} dias. Inscreva-se.",
-  "trial_left_singular": "O período de teste termina em 1 dia. Inscreva-se."
+  "trial_left_singular": "O período de teste termina em 1 dia. Inscreva-se.",
+  "apply_members_roles_to_subcollections": "Apply members and roles to subcollections",
+  "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections."
 }
