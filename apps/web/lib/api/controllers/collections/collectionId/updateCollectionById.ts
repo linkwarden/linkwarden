@@ -69,14 +69,29 @@ export default async function updateCollection(
       const getAllSubCollections = async (
         parentId: number
       ): Promise<{ id: number; ownerId: number }[]> => {
-        const children = await prisma.collection.findMany({
-          where: { parentId },
-          select: { id: true, ownerId: true },
-        });
-        let result = [...children];
-        for (const child of children) {
-          result = [...result, ...(await getAllSubCollections(child.id))];
+        const result: { id: number; ownerId: number }[] = [];
+
+        let frontier: number[] = [parentId];
+
+        const seen = new Set<number>(frontier);
+
+        while (frontier.length > 0) {
+          const children = await prisma.collection.findMany({
+            where: { parentId: { in: frontier } },
+            select: { id: true, ownerId: true },
+          });
+
+          if (children.length === 0) break;
+
+          for (const child of children) {
+            if (seen.has(child.id)) continue;
+            seen.add(child.id);
+            result.push(child);
+          }
+
+          frontier = children.map((c) => c.id);
         }
+
         return result;
       };
 

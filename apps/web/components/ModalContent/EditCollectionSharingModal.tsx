@@ -61,16 +61,17 @@ export default function EditCollectionSharingModal({
         {
           onSettled: (data, error) => {
             setSubmitLoader(false);
-          toast.dismiss(load);
+            toast.dismiss(load);
 
-          if (error) {
-            toast.error(error.message);
-          } else {
-            onClose();
-            toast.success(t("updated"));
-          }
-        },
-      });
+            if (error) {
+              toast.error(error.message);
+            } else {
+              onClose();
+              toast.success(t("updated"));
+            }
+          },
+        }
+      );
     }
   };
 
@@ -382,11 +383,11 @@ export default function EditCollectionSharingModal({
                 className="checkbox checkbox-primary"
               />
               <span className="label-text">
-                {t("propagate_to_subcollections")}
+                {t("apply_members_roles_to_subcollections")}
               </span>
             </label>
             <p className="text-neutral text-sm">
-              {t("propagate_to_subcollections_desc")}
+              {t("apply_members_roles_to_subcollections_desc")}
             </p>
           </div>
         )}
