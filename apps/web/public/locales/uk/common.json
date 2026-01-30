@@ -525,5 +525,7 @@
   "expand_sidebar": "Розгорнути бічну панель",
   "shrink_sidebar": "Згорнути бічну панель",
   "trial_left_plural": "Лишилося {{count}} днів пробного доступу. Підпишіться.",
-  "trial_left_singular": "Лишився 1 день пробного доступу. Підпишіться."
+  "trial_left_singular": "Лишився 1 день пробного доступу. Підпишіться.",
+  "apply_members_roles_to_subcollections": "Apply members and roles to subcollections",
+  "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections."
 }
