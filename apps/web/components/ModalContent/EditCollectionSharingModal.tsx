@@ -41,6 +41,9 @@ export default function EditCollectionSharingModal({
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
 
+  const [propagateToSubcollections, setPropagateToSubcollections] =
+    useState(false);
+
   const [submitLoader, setSubmitLoader] = useState(false);
   const updateCollection = useUpdateCollection();
 
@@ -53,19 +56,22 @@ export default function EditCollectionSharingModal({
 
       const load = toast.loading(t("updating_collection"));
 
-      await updateCollection.mutateAsync(collection, {
-        onSettled: (data, error) => {
-          setSubmitLoader(false);
-          toast.dismiss(load);
+      await updateCollection.mutateAsync(
+        { ...collection, propagateToSubcollections },
+        {
+          onSettled: (data, error) => {
+            setSubmitLoader(false);
+            toast.dismiss(load);
 
-          if (error) {
-            toast.error(error.message);
-          } else {
-            onClose();
-            toast.success(t("updated"));
-          }
-        },
-      });
+            if (error) {
+              toast.error(error.message);
+            } else {
+              onClose();
+              toast.success(t("updated"));
+            }
+          },
+        }
+      );
     }
   };
 
@@ -363,6 +369,27 @@ export default function EditCollectionSharingModal({
                 })}
             </div>
           </>
+        )}
+
+        {permissions === true && !isPublicRoute && (
+          <div>
+            <label className="label cursor-pointer justify-start gap-2">
+              <input
+                type="checkbox"
+                checked={propagateToSubcollections}
+                onChange={() =>
+                  setPropagateToSubcollections(!propagateToSubcollections)
+                }
+                className="checkbox checkbox-primary"
+              />
+              <span className="label-text">
+                {t("apply_members_roles_to_subcollections")}
+              </span>
+            </label>
+            <p className="text-neutral text-sm">
+              {t("apply_members_roles_to_subcollections_desc")}
+            </p>
+          </div>
         )}
 
         {permissions === true && !isPublicRoute && (
