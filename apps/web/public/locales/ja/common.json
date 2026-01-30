@@ -525,5 +525,7 @@
   "expand_sidebar": "サイドバーを展開",
   "shrink_sidebar": "サイドバーを縮小",
   "trial_left_plural": "お試し期間は {{count}} 日で終了します。登録してください。",
-  "trial_left_singular": "試用期間はあと 1 日で終了します。登録してください。"
+  "trial_left_singular": "試用期間はあと 1 日で終了します。登録してください。",
+  "apply_members_roles_to_subcollections": "Apply members and roles to subcollections",
+  "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections."
 }
