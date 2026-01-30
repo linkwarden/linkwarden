@@ -525,5 +525,7 @@
   "expand_sidebar": "Expandir barra lateral",
   "shrink_sidebar": "Contraer barra lateral",
   "trial_left_plural": "La prueba termina en {{count}} días. Suscríbete.",
-  "trial_left_singular": "La prueba termina en 1 día. Suscríbete."
+  "trial_left_singular": "La prueba termina en 1 día. Suscríbete.",
+  "apply_members_roles_to_subcollections": "Apply members and roles to subcollections",
+  "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections."
 }
