@@ -525,5 +525,7 @@
   "expand_sidebar": "Agrandir le panneau latéral",
   "shrink_sidebar": "Réduire le panneau latéral",
   "trial_left_plural": "La période d'essai se termine dans {{count}} jours. Abonnez-vous.",
-  "trial_left_singular": "La période d'essai se termine dans 1 jour."
+  "trial_left_singular": "La période d'essai se termine dans 1 jour.",
+  "apply_members_roles_to_subcollections": "Apply members and roles to subcollections",
+  "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections."
 }
