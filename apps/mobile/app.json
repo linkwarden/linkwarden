@@ -2,7 +2,7 @@
   "expo": {
     "name": "Linkwarden",
     "slug": "linkwarden",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "linkwarden",
@@ -53,7 +53,9 @@
       [
         "expo-share-intent",
         {
-          "iosAppGroupIdentifier": "group.app.linkwarden"
+          "iosAppGroupIdentifier": "group.app.linkwarden",
+          "iosActivationRules": "SUBQUERY (extensionItems, $extensionItem, SUBQUERY ($extensionItem.attachments, $attachment, (ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO \"public.url\" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO \"public.text\" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO \"public.plain-text\")).@count > 0).@count > 0",
+          "androidIntentFilters": ["text/*"]
         }
       ],
       [
