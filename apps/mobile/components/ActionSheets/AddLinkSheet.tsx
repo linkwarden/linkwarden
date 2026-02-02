@@ -23,7 +23,7 @@ export default function AddLinkSheet() {
       ref={actionSheetRef}
       gestureEnabled
       indicatorStyle={{
-        backgroundColor: rawTheme[colorScheme as ThemeName]["neutral-content"],
+        display: "none",
       }}
       containerStyle={{
         backgroundColor: rawTheme[colorScheme as ThemeName]["base-200"],
@@ -31,6 +31,8 @@ export default function AddLinkSheet() {
       safeAreaInsets={insets}
     >
       <View className="px-8 py-5">
+        <Text className="font-semibold text-lg mx-auto mb-5">New Link</Text>
+
         <Input
           placeholder="e.g. https://example.com"
           className="mb-4 bg-base-100"

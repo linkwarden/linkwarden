@@ -1,4 +1,4 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, TouchableOpacity } from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActionSheet, {
   FlatList,
@@ -20,7 +20,7 @@ import {
 import { useCollections } from "@linkwarden/router/collections";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { Folder, ChevronRight, Check } from "lucide-react-native";
+import { Folder, ChevronRight, ChevronLeft, Check } from "lucide-react-native";
 import useTmpStore from "@/store/tmp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTags } from "@linkwarden/router/tags";
@@ -47,6 +47,8 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
 
   return (
     <View className="px-8 py-5">
+      <Text className="font-semibold text-lg mx-auto mb-5">Edit Link</Text>
+
       <Input
         placeholder="Name"
         className="mb-4 bg-base-100"
@@ -221,6 +223,20 @@ const Collections = () => {
 
   return (
     <View className="py-5 max-h-[80vh]">
+      <TouchableOpacity
+        className="flex-row items-center gap-1 top-6 left-8 absolute"
+        onPress={() => {
+          router?.popToTop();
+          router?.navigate("main", { link: currentLink });
+        }}
+      >
+        <ChevronLeft
+          size={18}
+          color={rawTheme[colorScheme as ThemeName]["primary"]}
+        />
+        <Text className="text-primary">Back</Text>
+      </TouchableOpacity>
+      <Text className="font-semibold text-lg mx-auto mb-5">Collection</Text>
       <Input
         placeholder="Search collections"
         className="mb-4 bg-base-100 mx-8"
@@ -251,13 +267,11 @@ const Tags = () => {
   const addLink = useAddLink(auth);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
-  const { link: currentLink } = useSheetRouteParams<"edit-link-sheet", "tags">(
-    "edit-link-sheet",
-    "tags"
-  );
   const params = useSheetRouteParams("edit-link-sheet", "tags");
   const tags = useTags(auth);
   const { colorScheme } = useColorScheme();
+  const [updatedLink, setUpdatedLink] =
+    useState<LinkIncludingShortenedCollectionAndTags>(params.link);
 
   const filteredTags = useMemo(() => {
     if (!tags.data) return [];
@@ -269,20 +283,17 @@ const Tags = () => {
   const renderItem = useCallback(
     ({ item: tag }: { item: TagIncludingLinkCount }) => {
       const onSelect = () => {
-        const isSelected = (currentLink?.tags || []).some(
+        const isSelected = (updatedLink?.tags || []).some(
           (t) => t.id === tag.id
         );
         const nextTags = isSelected
-          ? (currentLink?.tags || []).filter((t) => t.id !== tag.id)
-          : [...(currentLink?.tags || []), tag];
+          ? (updatedLink?.tags || []).filter((t) => t.id !== tag.id)
+          : [...(updatedLink?.tags || []), tag];
 
-        const updatedLink = {
-          ...currentLink,
+        setUpdatedLink({
+          ...updatedLink,
           tags: nextTags,
-        };
-
-        router?.popToTop();
-        router?.navigate("main", { link: updatedLink });
+        });
       };
 
       return (
@@ -293,7 +304,7 @@ const Tags = () => {
             </Text>
           </View>
           <View className="flex-row items-center gap-2">
-            {params.link?.tags.find((e) => e.id === tag.id) && (
+            {updatedLink?.tags.find((e) => e.id === tag.id) && (
               <Check
                 size={16}
                 color={rawTheme[colorScheme as ThemeName].primary}
@@ -309,6 +320,20 @@ const Tags = () => {
 
   return (
     <View className="py-5 max-h-[80vh]">
+      <TouchableOpacity
+        className="flex-row items-center gap-1 top-6 left-8 absolute"
+        onPress={() => {
+          router?.popToTop();
+          router?.navigate("main", { link: updatedLink });
+        }}
+      >
+        <ChevronLeft
+          size={18}
+          color={rawTheme[colorScheme as ThemeName]["primary"]}
+        />
+        <Text className="text-primary">Back</Text>
+      </TouchableOpacity>
+      <Text className="font-semibold text-lg mx-auto mb-5">Tags</Text>
       <Input
         placeholder="Search tags"
         className="mb-4 bg-base-100 mx-8"
@@ -358,9 +383,8 @@ export default function EditLinkSheet() {
     <ActionSheet
       gestureEnabled
       indicatorStyle={{
-        backgroundColor: rawTheme[colorScheme as ThemeName]["neutral-content"],
+        display: "none",
       }}
-      enableRouterBackNavigation={true}
       routes={routes}
       initialRoute="main"
       containerStyle={{

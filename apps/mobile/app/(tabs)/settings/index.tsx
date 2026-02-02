@@ -16,7 +16,9 @@ import { useEffect, useState } from "react";
 import {
   AppWindowMac,
   Check,
+  ChevronRight,
   ExternalLink,
+  Folder,
   LogOut,
   Mail,
   Moon,
@@ -25,6 +27,7 @@ import {
 } from "lucide-react-native";
 import useDataStore from "@/store/data";
 import * as Clipboard from "expo-clipboard";
+import { useRouter } from "expo-router";
 
 export default function SettingsScreen() {
   const { signOut, auth } = useAuthStore();
@@ -39,6 +42,8 @@ export default function SettingsScreen() {
     setColorScheme(override);
     updateData({ theme: override });
   }, [override]);
+
+  const router = useRouter();
 
   return (
     <View
@@ -192,6 +197,33 @@ export default function SettingsScreen() {
                   color={rawTheme[colorScheme as ThemeName].primary}
                 />
               ) : null}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View>
+          <Text className="mb-4 mx-4 text-neutral">Save Shared Links To</Text>
+          <View className="bg-base-200 rounded-xl flex-col">
+            <TouchableOpacity
+              className="flex-row gap-2 items-center justify-between py-3 px-4"
+              onPress={() => router.navigate("/settings/preferredCollection")}
+            >
+              <View className="flex-row items-center gap-2">
+                <Folder
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].neutral}
+                />
+                <Text className="text-base-content">Preferred collection</Text>
+              </View>
+              <View className="flex-row items-center gap-2">
+                <Text numberOfLines={1} className="text-neutral max-w-[140px]">
+                  {data.preferredCollection?.name || "None"}
+                </Text>
+                <ChevronRight
+                  size={20}
+                  color={rawTheme[colorScheme as ThemeName].neutral}
+                />
+              </View>
             </TouchableOpacity>
           </View>
         </View>

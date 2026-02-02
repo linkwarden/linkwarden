@@ -19,6 +19,7 @@ export default function Layout() {
         headerLargeStyle: {
           backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
         },
+        headerBackTitle: "Back",
         headerStyle: {
           backgroundColor:
             Platform.OS === "ios"
@@ -28,6 +29,15 @@ export default function Layout() {
                 : "white",
         },
       }}
-    />
+    >
+      <Stack.Screen name="index" />
+      <Stack.Screen
+        name="preferredCollection"
+        options={{
+          headerTitle: "Preferred Collection",
+          headerLargeTitle: false,
+        }}
+      />
+    </Stack>
   );
 }
