@@ -34,7 +34,7 @@ export default function NewCollectionSheet() {
       safeAreaInsets={insets}
     >
       <View className="px-8 py-5">
-        <Text className="font-semibold text-lg mx-auto mb-5">
+        <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
           New Collection
         </Text>
 

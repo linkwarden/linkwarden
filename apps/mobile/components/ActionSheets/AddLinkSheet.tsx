@@ -31,7 +31,9 @@ export default function AddLinkSheet() {
       safeAreaInsets={insets}
     >
       <View className="px-8 py-5">
-        <Text className="font-semibold text-lg mx-auto mb-5">New Link</Text>
+        <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
+          New Link
+        </Text>
 
         <Input
           placeholder="e.g. https://example.com"

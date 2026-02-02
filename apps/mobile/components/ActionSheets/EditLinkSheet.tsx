@@ -47,7 +47,9 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
 
   return (
     <View className="px-8 py-5">
-      <Text className="font-semibold text-lg mx-auto mb-5">Edit Link</Text>
+      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
+        Edit Link
+      </Text>
 
       <Input
         placeholder="Name"
@@ -96,14 +98,16 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
             {link.tags.map((tag) => (
               <View
                 key={tag.id}
-                className="bg-gray-200 rounded-md h-7 px-2 py-1"
+                className="bg-neutral rounded-md h-7 px-2 py-1"
               >
-                <Text numberOfLines={1}>{tag.name}</Text>
+                <Text numberOfLines={1} className="text-base-100">
+                  {tag.name}
+                </Text>
               </View>
             ))}
           </View>
         ) : (
-          <Text className="text-gray-500">No tags</Text>
+          <Text className="text-neutral">No tags</Text>
         )}
         <ChevronRight size={16} color={"gray"} />
       </Button>
