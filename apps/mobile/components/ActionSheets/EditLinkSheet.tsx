@@ -15,6 +15,7 @@ import useAuthStore from "@/store/auth";
 import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
+  TagIncludingLinkCount,
 } from "@linkwarden/types";
 import { useCollections } from "@linkwarden/router/collections";
 import { rawTheme, ThemeName } from "@/lib/colors";
@@ -22,6 +23,7 @@ import { useColorScheme } from "nativewind";
 import { Folder, ChevronRight, Check } from "lucide-react-native";
 import useTmpStore from "@/store/tmp";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTags } from "@linkwarden/router/tags";
 
 const Main = (props: SheetProps<"edit-link-sheet">) => {
   const { auth } = useAuthStore();
@@ -82,7 +84,11 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
         />
       </Button>
 
-      {/* <Button variant="input" className="mb-4 h-auto">
+      <Button
+        variant="input"
+        className="mb-4 h-auto"
+        onPress={() => router?.navigate("tags", { link })}
+      >
         {link?.tags && link?.tags.length > 0 ? (
           <View className="flex-row flex-wrap items-center gap-2 w-[90%]">
             {link.tags.map((tag) => (
@@ -98,7 +104,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
           <Text className="text-gray-500">No tags</Text>
         )}
         <ChevronRight size={16} color={"gray"} />
-      </Button> */}
+      </Button>
 
       <Input
         multiline
@@ -175,13 +181,11 @@ const Collections = () => {
       item: CollectionIncludingMembersAndLinkCount;
     }) => {
       const onSelect = () => {
-        // 1. Create a brand-new link object with the new collection
         const updatedLink = {
-          ...currentLink!,
+          ...currentLink,
           collection,
         };
 
-        // 2. Navigate back to "main", passing the updated link as payload
         router?.popToTop();
         router?.navigate("main", { link: updatedLink });
       };
@@ -216,16 +220,16 @@ const Collections = () => {
   );
 
   return (
-    <View className="px-8 py-5 max-h-[80vh]">
+    <View className="py-5 max-h-[80vh]">
       <Input
         placeholder="Search collections"
-        className="mb-4 bg-base-100"
+        className="mb-4 bg-base-100 mx-8"
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
 
       <FlatList
-        data={filteredCollections}
+        data={[...filteredCollections, ...filteredCollections]}
         keyExtractor={(e, i) => i.toString()}
         renderItem={renderItem}
         ListEmptyComponent={
@@ -236,7 +240,95 @@ const Collections = () => {
             No collections match “{searchQuery}”
           </Text>
         }
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerClassName="px-8"
+      />
+    </View>
+  );
+};
+
+const Tags = () => {
+  const { auth } = useAuthStore();
+  const addLink = useAddLink(auth);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useSheetRouter("edit-link-sheet");
+  const { link: currentLink } = useSheetRouteParams<"edit-link-sheet", "tags">(
+    "edit-link-sheet",
+    "tags"
+  );
+  const params = useSheetRouteParams("edit-link-sheet", "tags");
+  const tags = useTags(auth);
+  const { colorScheme } = useColorScheme();
+
+  const filteredTags = useMemo(() => {
+    if (!tags.data) return [];
+    const q = searchQuery.trim().toLowerCase();
+    if (q === "") return tags.data;
+    return tags.data.filter((tag) => tag.name.toLowerCase().includes(q));
+  }, [tags.data, searchQuery]);
+
+  const renderItem = useCallback(
+    ({ item: tag }: { item: TagIncludingLinkCount }) => {
+      const onSelect = () => {
+        const isSelected = (currentLink?.tags || []).some(
+          (t) => t.id === tag.id
+        );
+        const nextTags = isSelected
+          ? (currentLink?.tags || []).filter((t) => t.id !== tag.id)
+          : [...(currentLink?.tags || []), tag];
+
+        const updatedLink = {
+          ...currentLink,
+          tags: nextTags,
+        };
+
+        router?.popToTop();
+        router?.navigate("main", { link: updatedLink });
+      };
+
+      return (
+        <Button variant="input" className="mb-2" onPress={onSelect}>
+          <View className="flex-row items-center gap-2 w-[75%]">
+            <Text numberOfLines={1} className="w-full text-base-content">
+              {tag.name}
+            </Text>
+          </View>
+          <View className="flex-row items-center gap-2">
+            {params.link?.tags.find((e) => e.id === tag.id) && (
+              <Check
+                size={16}
+                color={rawTheme[colorScheme as ThemeName].primary}
+              />
+            )}
+            <Text className="text-neutral">{tag._count?.links ?? 0}</Text>
+          </View>
+        </Button>
+      );
+    },
+    [addLink, params.link, router]
+  );
+
+  return (
+    <View className="py-5 max-h-[80vh]">
+      <Input
+        placeholder="Search tags"
+        className="mb-4 bg-base-100 mx-8"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      <FlatList
+        data={filteredTags}
+        keyExtractor={(e, i) => i.toString()}
+        renderItem={renderItem}
+        ListEmptyComponent={
+          <Text
+            style={{ textAlign: "center", marginTop: 20 }}
+            className="text-neutral"
+          >
+            No tags match “{searchQuery}”
+          </Text>
+        }
+        contentContainerClassName="px-8"
       />
     </View>
   );
@@ -250,6 +342,10 @@ const routes: Route[] = [
   {
     name: "collections",
     component: Collections,
+  },
+  {
+    name: "tags",
+    component: Tags,
   },
 ];
 

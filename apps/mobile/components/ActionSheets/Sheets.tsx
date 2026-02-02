@@ -29,6 +29,9 @@ declare module "react-native-actions-sheet" {
         collections: RouteDefinition<{
           link: LinkIncludingShortenedCollectionAndTags;
         }>;
+        tags: RouteDefinition<{
+          link: LinkIncludingShortenedCollectionAndTags;
+        }>;
       };
     }>;
     "new-collection-sheet": SheetDefinition;
