@@ -21,10 +21,7 @@ import {
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
 import { DashboardLinks } from "@/components/DashboardLinks";
-import {
-  LinkIncludingShortenedCollectionAndTags,
-  ViewMode,
-} from "@linkwarden/types";
+import { ViewMode } from "@linkwarden/types";
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
@@ -46,8 +43,6 @@ const Page: NextPageWithLayout = () => {
   const { data: user } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
-  const [activeLink, setActiveLink] =
-    useState<LinkIncludingShortenedCollectionAndTags | null>(null);
 
   const [dashboardSections, setDashboardSections] = useState<
     DashboardSection[]
