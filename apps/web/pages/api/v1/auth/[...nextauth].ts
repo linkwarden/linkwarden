@@ -247,6 +247,9 @@ if (process.env.NEXT_PUBLIC_APPLE_ENABLED === "true") {
     AppleProvider({
       clientId: process.env.APPLE_CLIENT_ID!,
       clientSecret: process.env.APPLE_CLIENT_SECRET!,
+      httpOptions: {
+        timeout: 10000,
+      },
       profile(profile) {
         return {
           id: profile.sub,
@@ -304,6 +307,9 @@ if (process.env.NEXT_PUBLIC_AUTH0_ENABLED === "true") {
       clientId: process.env.AUTH0_CLIENT_ID!,
       clientSecret: process.env.AUTH0_CLIENT_SECRET!,
       issuer: process.env.AUTH0_ISSUER,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -326,6 +332,9 @@ if (process.env.NEXT_PUBLIC_AUTHELIA_ENABLED === "true") {
     authorization: { params: { scope: "openid email profile" } },
     idToken: true,
     checks: ["pkce", "state"],
+    httpOptions: {
+      timeout: 10000,
+    },
     profile(profile) {
       return {
         id: profile.sub,
@@ -431,6 +440,9 @@ if (process.env.NEXT_PUBLIC_BATTLENET_ENABLED === "true") {
       clientId: process.env.BATTLENET_CLIENT_ID!,
       clientSecret: process.env.BATTLENET_CLIENT_SECRET!,
       issuer: process.env.BATTLENET_ISSUER as BattleNetIssuer,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -464,6 +476,9 @@ if (process.env.NEXT_PUBLIC_COGNITO_ENABLED === "true") {
       clientId: process.env.COGNITO_CLIENT_ID!,
       clientSecret: process.env.COGNITO_CLIENT_SECRET!,
       issuer: process.env.COGNITO_ISSUER,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -529,6 +544,9 @@ if (process.env.NEXT_PUBLIC_DUENDE_IDS6_ENABLED === "true") {
       clientId: process.env.DUENDE_IDS6_ID!,
       clientSecret: process.env.DUENDE_IDS6_SECRET!,
       issuer: process.env.DUENDE_IDS6_ISSUER,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -630,6 +648,9 @@ if (process.env.NEXT_PUBLIC_FUSIONAUTH_ENABLED === "true") {
       clientId: process.env.FUSIONAUTH_CLIENT_ID!,
       clientSecret: process.env.FUSIONAUTH_SECRET!,
       tenantId: process.env.FUSIONAUTH_TENANT_ID,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -646,6 +667,9 @@ if (process.env.NEXT_PUBLIC_GITHUB_ENABLED === "true") {
     GitHubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -662,6 +686,9 @@ if (process.env.NEXT_PUBLIC_GITLAB_ENABLED === "true") {
     GitlabProvider({
       clientId: process.env.GITLAB_CLIENT_ID!,
       clientSecret: process.env.GITLAB_CLIENT_SECRET!,
+      httpOptions: {
+        timeout: 10000,
+      },
       authorization: {
         url: `${
           process.env.GITLAB_AUTH_URL || "https://gitlab.com"
@@ -728,6 +755,9 @@ if (process.env.NEXT_PUBLIC_IDS4_ENABLED === "true") {
       issuer: process.env.IdentityServer4_Issuer,
       clientId: process.env.IdentityServer4_CLIENT_ID,
       clientSecret: process.env.IdentityServer4_CLIENT_SECRET,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -761,6 +791,9 @@ if (process.env.NEXT_PUBLIC_KEYCLOAK_ENABLED === "true") {
       clientId: process.env.KEYCLOAK_CLIENT_ID!,
       clientSecret: process.env.KEYCLOAK_CLIENT_SECRET!,
       issuer: process.env.KEYCLOAK_ISSUER,
+      httpOptions: {
+        timeout: 10000,
+      },
       profile: (profile) => {
         return {
           id: profile.sub,
@@ -883,6 +916,9 @@ if (process.env.NEXT_PUBLIC_OKTA_ENABLED === "true") {
       clientId: process.env.OKTA_CLIENT_ID!,
       clientSecret: process.env.OKTA_CLIENT_SECRET!,
       issuer: process.env.OKTA_ISSUER,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -900,6 +936,9 @@ if (process.env.NEXT_PUBLIC_ONELOGIN_ENABLED === "true") {
       clientId: process.env.ONELOGIN_CLIENT_ID,
       clientSecret: process.env.ONELOGIN_CLIENT_SECRET,
       issuer: process.env.ONELOGIN_ISSUER,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -917,6 +956,9 @@ if (process.env.NEXT_PUBLIC_OSSO_ENABLED === "true") {
       clientId: process.env.OSSO_CLIENT_ID,
       clientSecret: process.env.OSSO_CLIENT_SECRET,
       issuer: process.env.OSSO_ISSUER,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -1139,6 +1181,9 @@ if (process.env.NEXT_PUBLIC_UNITED_EFFECTS_ENABLED === "true") {
       clientId: process.env.UNITED_EFFECTS_CLIENT_ID!,
       clientSecret: process.env.UNITED_EFFECTS_CLIENT_SECRET!,
       issuer: process.env.UNITED_EFFECTS_ISSUER!,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
@@ -1220,6 +1265,9 @@ if (process.env.NEXT_PUBLIC_ZITADEL_ENABLED === "true") {
       issuer: process.env.ZITADEL_ISSUER,
       clientId: process.env.ZITADEL_CLIENT_ID!,
       clientSecret: process.env.ZITADEL_CLIENT_SECRET!,
+      httpOptions: {
+        timeout: 10000,
+      },
     })
   );
 
