@@ -28,12 +28,8 @@ import {
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
-import { DragEndEvent } from "@dnd-kit/core";
 import Droppable from "@/components/Droppable";
 import { useUpdateLink } from "@linkwarden/router/links";
-import usePinLink from "@/lib/client/pinLink";
-import { useQueryClient } from "@tanstack/react-query";
-import DragNDrop from "@/components/DragNDrop";
 import { NextPageWithLayout } from "./_app";
 
 const Page: NextPageWithLayout = () => {
@@ -245,37 +241,29 @@ const Section = ({
     case DashboardSectionType.STATS:
       return (
         <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
-          <Link href="/links" className="w-full">
-            <DashboardItem
-              name={numberOfLinks === 1 ? t("link") : t("links")}
-              value={numberOfLinks}
-              icon={"bi-link-45deg"}
-            />
-          </Link>
+          <DashboardItem
+            name={numberOfLinks === 1 ? t("link") : t("links")}
+            value={numberOfLinks}
+            icon={"bi-link-45deg"}
+          />
 
-          <Link href="/collections" className="w-full">
-            <DashboardItem
-              name={collectionsLength === 1 ? t("collection") : t("collections")}
-              value={collectionsLength}
-              icon={"bi-folder"}
-            />
-          </Link>
+          <DashboardItem
+            name={collectionsLength === 1 ? t("collection") : t("collections")}
+            value={collectionsLength}
+            icon={"bi-folder"}
+          />
 
-          <Link href="/tags" className="w-full">
-            <DashboardItem
-              name={tags.length === 1 ? t("tag") : t("tags")}
-              value={tags.length}
-              icon={"bi-hash"}
-            />
-          </Link>
+          <DashboardItem
+            name={tags.length === 1 ? t("tag") : t("tags")}
+            value={tags.length}
+            icon={"bi-hash"}
+          />
 
-          <Link href="/links/pinned" className="w-full">
-            <DashboardItem
-              name={t("pinned")}
-              value={numberOfPinnedLinks}
-              icon={"bi-pin-angle"}
-            />
-          </Link>
+          <DashboardItem
+            name={t("pinned")}
+            value={numberOfPinnedLinks}
+            icon={"bi-pin-angle"}
+          />
         </div>
       );
     case DashboardSectionType.RECENT_LINKS:
