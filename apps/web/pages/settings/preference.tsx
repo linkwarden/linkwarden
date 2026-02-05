@@ -194,7 +194,7 @@ const Page: NextPageWithLayout = () => {
       <Separator className="my-3" />
 
       <div className="flex flex-col gap-5">
-        <div>
+        <div className="max-w-screen-sm">
           <div className="flex gap-3 w-full">
             {[
               {
