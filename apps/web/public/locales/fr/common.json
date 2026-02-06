@@ -527,5 +527,6 @@
   "trial_left_plural": "La période d'essai se termine dans {{count}} jours. Abonnez-vous.",
   "trial_left_singular": "La période d'essai se termine dans 1 jour.",
   "apply_members_roles_to_subcollections": "Appliquer les membres et les rôles aux sous-collections",
-  "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections."
+  "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections.",
+  "back_to_dashboard": "Back to Dashboard"
 }
