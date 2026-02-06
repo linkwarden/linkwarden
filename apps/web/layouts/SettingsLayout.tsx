@@ -3,12 +3,15 @@ import Navbar from "@/components/Navbar";
 import React, { ReactNode } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "next-i18next";
 
 interface Props {
   children: ReactNode;
 }
 
 export default function SettingsLayout({ children }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex" data-testid="settings-wrapper">
       <div className="hidden lg:block">
@@ -22,7 +25,7 @@ export default function SettingsLayout({ children }: Props) {
             <Button asChild variant="ghost" size="sm" className="text-neutral">
               <Link href="/dashboard">
                 <i className="bi-chevron-left text-md" />
-                <p>Back to Dashboard</p>
+                <p>{t("back_to_dashboard")}</p>
               </Link>
             </Button>
           </div>
