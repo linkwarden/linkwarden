@@ -186,9 +186,12 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">
-        {t("accountSettings")}
-      </p>
+      <div className="flex items-center gap-2">
+        <i className="bi-person text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("accountSettings")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 
@@ -350,8 +353,9 @@ const Page: NextPageWithLayout = () => {
         </Button>
 
         <div>
-          <div className="flex items-center gap-2 w-full rounded-md h-8">
-            <p className="truncate w-full pr-7 text-3xl font-thin">
+          <div className="flex items-center gap-2">
+            <i className="bi-arrow-down-up text-primary text-2xl"></i>
+            <p className="capitalize text-3xl font-thin inline">
               {t("import_export")}
             </p>
           </div>

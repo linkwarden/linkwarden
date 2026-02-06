@@ -237,7 +237,12 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">{t("preference")}</p>
+      <div className="flex items-center gap-2">
+        <i className="bi-palette text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("preferences")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 
@@ -306,9 +311,12 @@ const Page: NextPageWithLayout = () => {
 
         {config?.AI_ENABLED && (
           <div>
-            <p className="capitalize text-3xl font-thin inline">
-              {t("ai_settings")}
-            </p>
+            <div className="flex items-center gap-2">
+              <i className="bi-cpu text-primary text-2xl"></i>
+              <p className="capitalize text-3xl font-thin inline">
+                {t("ai_settings")}
+              </p>
+            </div>
 
             <Separator className="my-3" />
 
@@ -436,9 +444,12 @@ const Page: NextPageWithLayout = () => {
         )}
 
         <div>
-          <p className="capitalize text-3xl font-thin inline">
-            {t("archive_settings")}
-          </p>
+          <div className="flex items-center gap-2">
+            <i className="bi-archive text-primary text-2xl"></i>
+            <p className="capitalize text-3xl font-thin inline">
+              {t("archive_settings")}
+            </p>
+          </div>
 
           <Separator className="my-3" />
 
@@ -550,9 +561,12 @@ const Page: NextPageWithLayout = () => {
         </div>
 
         <div>
-          <p className="capitalize text-3xl font-thin inline">
-            {t("link_settings")}
-          </p>
+          <div className="flex items-center gap-2">
+            <i className="bi-link-45deg text-primary text-2xl"></i>
+            <p className="capitalize text-3xl font-thin inline">
+              {t("link_settings")}
+            </p>
+          </div>
 
           <Separator className="my-3" />
 

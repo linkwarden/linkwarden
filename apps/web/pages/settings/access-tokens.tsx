@@ -31,9 +31,12 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">
-        {t("access_tokens")}
-      </p>
+      <div className="flex items-center gap-2">
+        <i className="bi-key text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("access_tokens")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 

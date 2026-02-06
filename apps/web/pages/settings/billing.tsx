@@ -76,9 +76,12 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <p className="capitalize text-3xl font-thin inline">
-        {t("billing_settings")}
-      </p>
+      <div className="flex items-center gap-2">
+        <i className="bi-credit-card text-primary text-2xl"></i>
+        <p className="capitalize text-3xl font-thin inline">
+          {t("billing_settings")}
+        </p>
+      </div>
 
       <Separator className="my-3" />
 
