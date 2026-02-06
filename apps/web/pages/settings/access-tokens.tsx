@@ -99,7 +99,7 @@ const Page: NextPageWithLayout = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="hover:text-error"
+                        className="hover:text-error ml-auto block"
                         onClick={() => openRevokeModal(token as AccessToken)}
                       >
                         <i className="bi-x text-lg"></i>

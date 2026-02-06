@@ -30,7 +30,6 @@ const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const { settings, updateSettings } = useLocalSettingsStore();
   const updateUserPreference = useUpdateUserPreference();
-  const [submitLoader, setSubmitLoader] = useState(false);
   const { data: account } = useUser() as any;
   const { data: tags } = useTags();
   const upsertTags = useUpsertTags();
@@ -43,7 +42,9 @@ const Page: NextPageWithLayout = () => {
     removeTag,
   } = useArchivalTags(tags ? tags : []);
   const updateUser = useUpdateUser();
-  const [user, setUser] = useState(account);
+  const [aiSubmitLoader, setAiSubmitLoader] = useState(false);
+  const [archiveSubmitLoader, setArchiveSubmitLoader] = useState(false);
+  const [linkSubmitLoader, setLinkSubmitLoader] = useState(false);
 
   const [preventDuplicateLinks, setPreventDuplicateLinks] = useState<boolean>(
     account.preventDuplicateLinks || false
@@ -60,9 +61,6 @@ const Page: NextPageWithLayout = () => {
   const [archiveAsReadable, setArchiveAsReadable] = useState<boolean>(false);
   const [archiveAsWaybackMachine, setArchiveAsWaybackMachine] =
     useState<boolean>(account.archiveAsWaybackMachine || false);
-  const [dashboardPinnedLinks, setDashboardPinnedLinks] = useState<boolean>(
-    account.dashboardPinnedLinks || false
-  );
   const [linksRouteTo, setLinksRouteTo] = useState(account.linksRouteTo);
   const [aiTaggingMethod, setAiTaggingMethod] = useState<AiTaggingMethod>(
     account.aiTaggingMethod
@@ -71,38 +69,8 @@ const Page: NextPageWithLayout = () => {
   const [aiTagExistingLinks, setAiTagExistingLinks] = useState<boolean>(
     account.aiTagExistingLinks ?? false
   );
-  const [hasAccountChanges, setHasAccountChanges] = useState(false);
-  const [hasTagChanges, setHasTagChanges] = useState(false);
+  const [hasArchiveTagChanges, setHasArchiveTagChanges] = useState(false);
   const { data: config } = useConfig();
-
-  useEffect(() => {
-    setUser({
-      ...account,
-      archiveAsScreenshot,
-      archiveAsMonolith,
-      archiveAsPDF,
-      archiveAsReadable,
-      archiveAsWaybackMachine,
-      linksRouteTo,
-      preventDuplicateLinks,
-      aiTaggingMethod,
-      aiPredefinedTags,
-      aiTagExistingLinks,
-      dashboardPinnedLinks,
-    });
-  }, [
-    account,
-    archiveAsScreenshot,
-    archiveAsMonolith,
-    archiveAsPDF,
-    archiveAsReadable,
-    archiveAsWaybackMachine,
-    linksRouteTo,
-    preventDuplicateLinks,
-    aiTaggingMethod,
-    aiPredefinedTags,
-    aiTagExistingLinks,
-  ]);
 
   function objectIsEmpty(obj: object) {
     return Object.keys(obj).length === 0;
@@ -110,37 +78,18 @@ const Page: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (!objectIsEmpty(account)) {
-      setArchiveAsScreenshot(account.archiveAsScreenshot);
-      setArchiveAsMonolith(account.archiveAsMonolith);
-      setArchiveAsPDF(account.archiveAsPDF);
-      setArchiveAsReadable(account.archiveAsReadable);
-      setArchiveAsWaybackMachine(account.archiveAsWaybackMachine);
+      setArchiveAsScreenshot(account.archiveAsScreenshot ?? false);
+      setArchiveAsMonolith(account.archiveAsMonolith ?? false);
+      setArchiveAsPDF(account.archiveAsPDF ?? false);
+      setArchiveAsReadable(account.archiveAsReadable ?? false);
+      setArchiveAsWaybackMachine(account.archiveAsWaybackMachine ?? false);
       setLinksRouteTo(account.linksRouteTo);
-      setPreventDuplicateLinks(account.preventDuplicateLinks);
+      setPreventDuplicateLinks(account.preventDuplicateLinks ?? false);
       setAiTaggingMethod(account.aiTaggingMethod);
       setAiPredefinedTags(account.aiPredefinedTags);
-      setAiTagExistingLinks(account.aiTagExistingLinks);
+      setAiTagExistingLinks(account.aiTagExistingLinks ?? false);
     }
   }, [account]);
-
-  useEffect(() => {
-    const relevantKeys = [
-      "archiveAsScreenshot",
-      "archiveAsMonolith",
-      "archiveAsPDF",
-      "archiveAsReadable",
-      "archiveAsWaybackMachine",
-      "linksRouteTo",
-      "preventDuplicateLinks",
-      "aiTaggingMethod",
-      "aiPredefinedTags",
-      "aiTagExistingLinks",
-    ];
-
-    const hasChanges = relevantKeys.some((key) => account[key] !== user[key]);
-
-    setHasAccountChanges(hasChanges);
-  }, [account, user]);
 
   useEffect(() => {
     if (!tags || !archivalTags) return;
@@ -161,28 +110,127 @@ const Page: NextPageWithLayout = () => {
       );
     });
 
-    setHasTagChanges(hasChanges);
+    setHasArchiveTagChanges(hasChanges);
   }, [archivalTags, tags]);
 
-  const submit = async () => {
-    setSubmitLoader(true);
+  const areStringArraysEqual = (a: string[] = [], b: string[] = []) =>
+    a.length === b.length && a.every((value, index) => value === b[index]);
 
+  const baseUserPayload = () => ({
+    id: account?.id,
+    username: account?.username,
+    email: account?.email,
+    whitelistedUsers: account?.whitelistedUsers || [],
+  });
+
+  const hasAiChanges =
+    !!account?.id &&
+    (aiTaggingMethod !== account.aiTaggingMethod ||
+      aiTagExistingLinks !== (account.aiTagExistingLinks ?? false) ||
+      !areStringArraysEqual(
+        aiPredefinedTags || [],
+        account.aiPredefinedTags || []
+      ));
+
+  const hasArchivePreferenceChanges =
+    !!account?.id &&
+    (archiveAsScreenshot !== (account.archiveAsScreenshot ?? false) ||
+      archiveAsMonolith !== (account.archiveAsMonolith ?? false) ||
+      archiveAsPDF !== (account.archiveAsPDF ?? false) ||
+      archiveAsReadable !== (account.archiveAsReadable ?? false) ||
+      archiveAsWaybackMachine !== (account.archiveAsWaybackMachine ?? false));
+
+  const hasArchiveChanges = hasArchivePreferenceChanges || hasArchiveTagChanges;
+
+  const hasLinkChanges =
+    !!account?.id &&
+    (preventDuplicateLinks !== (account.preventDuplicateLinks ?? false) ||
+      linksRouteTo !== account.linksRouteTo);
+
+  const saveAiSection = async () => {
+    if (!account?.id || !hasAiChanges) return;
+
+    setAiSubmitLoader(true);
+    const load = toast.loading(t("applying_settings"));
+
+    try {
+      const payload: any = {
+        ...baseUserPayload(),
+        aiTaggingMethod,
+        aiTagExistingLinks,
+      };
+
+      if (aiPredefinedTags !== undefined) {
+        payload.aiPredefinedTags = aiPredefinedTags;
+      }
+
+      await updateUser.mutateAsync(payload);
+      toast.success(t("settings_applied"));
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setAiSubmitLoader(false);
+      toast.dismiss(load);
+    }
+  };
+
+  const saveArchiveSection = async () => {
+    if (!account?.id || !hasArchiveChanges) return;
+
+    setArchiveSubmitLoader(true);
     const load = toast.loading(t("applying_settings"));
 
     try {
       const promises = [];
 
-      if (hasAccountChanges) promises.push(updateUser.mutateAsync({ ...user }));
-      if (hasTagChanges) promises.push(upsertTags.mutateAsync(archivalTags));
+      if (hasArchivePreferenceChanges) {
+        promises.push(
+          updateUser.mutateAsync({
+            ...baseUserPayload(),
+            archiveAsScreenshot,
+            archiveAsMonolith,
+            archiveAsPDF,
+            archiveAsReadable,
+            archiveAsWaybackMachine,
+          })
+        );
+      }
+
+      if (hasArchiveTagChanges) {
+        promises.push(upsertTags.mutateAsync(archivalTags));
+      }
 
       if (promises.length > 0) {
         await Promise.all(promises);
-        toast.success(t("settings_applied"));
       }
+
+      toast.success(t("settings_applied"));
     } catch (error: any) {
       toast.error(error.message);
     } finally {
-      setSubmitLoader(false);
+      setArchiveSubmitLoader(false);
+      toast.dismiss(load);
+    }
+  };
+
+  const saveLinkSection = async () => {
+    if (!account?.id || !hasLinkChanges) return;
+
+    setLinkSubmitLoader(true);
+    const load = toast.loading(t("applying_settings"));
+
+    try {
+      await updateUser.mutateAsync({
+        ...baseUserPayload(),
+        preventDuplicateLinks,
+        linksRouteTo,
+      });
+
+      toast.success(t("settings_applied"));
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLinkSubmitLoader(false);
       toast.dismiss(load);
     }
   };
@@ -266,7 +314,7 @@ const Page: NextPageWithLayout = () => {
 
             <p>{t("ai_tagging_method")}</p>
 
-            <div className="p-3">
+            <div className="p-3 max-w-screen-sm">
               <label
                 className="label cursor-pointer flex gap-2 justify-start w-fit"
                 tabIndex={0}
@@ -376,6 +424,14 @@ const Page: NextPageWithLayout = () => {
                 disabled={aiTaggingMethod === AiTaggingMethod.DISABLED}
               />
             </div>
+            <Button
+              onClick={saveAiSection}
+              disabled={aiSubmitLoader || !hasAiChanges}
+              className="mt-2 w-full sm:w-fit"
+              variant="accent"
+            >
+              {t("save_changes")}
+            </Button>
           </div>
         )}
 
@@ -423,7 +479,7 @@ const Page: NextPageWithLayout = () => {
           <div className="max-w-full">
             <p>{t("tag_preservation_rule_label")}</p>
           </div>
-          <div className="p-3">
+          <div className="p-3 max-w-screen-sm">
             <TagSelection
               isArchivalSelection
               onChange={addTags}
@@ -483,6 +539,14 @@ const Page: NextPageWithLayout = () => {
                 ))}
             </div>
           </div>
+          <Button
+            onClick={saveArchiveSection}
+            disabled={archiveSubmitLoader || !hasArchiveChanges}
+            className="mt-2 w-full sm:w-fit"
+            variant="accent"
+          >
+            {t("save_changes")}
+          </Button>
         </div>
 
         <div>
@@ -603,16 +667,15 @@ const Page: NextPageWithLayout = () => {
               </span>
             </label>
           </div>
+          <Button
+            onClick={saveLinkSection}
+            disabled={linkSubmitLoader || !hasLinkChanges}
+            className="mt-2 w-full sm:w-fit"
+            variant="accent"
+          >
+            {t("save_changes")}
+          </Button>
         </div>
-
-        <Button
-          onClick={submit}
-          disabled={submitLoader}
-          className="mt-2 w-full sm:w-fit"
-          variant="accent"
-        >
-          {t("save_changes")}
-        </Button>
       </div>
     </>
   );

@@ -222,6 +222,7 @@ const Page: NextPageWithLayout = () => {
                           size="icon"
                           onMouseDown={(e) => e.preventDefault()}
                           title={t("more")}
+                          className="ml-auto block"
                         >
                           <i
                             className={"bi bi-three-dots text-lg text-neutral"}

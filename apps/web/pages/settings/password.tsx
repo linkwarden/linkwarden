@@ -19,6 +19,8 @@ const Page: NextPageWithLayout = () => {
   const updateUser = useUpdateUser();
 
   const submit = async () => {
+    if (!account?.id) return;
+
     if (newPassword === "" || oldPassword === "") {
       return toast.error(t("fill_all_fields"));
     }
@@ -30,7 +32,10 @@ const Page: NextPageWithLayout = () => {
 
     await updateUser.mutateAsync(
       {
-        ...account,
+        id: account.id,
+        username: account.username,
+        email: account.email,
+        whitelistedUsers: account.whitelistedUsers || [],
         newPassword,
         oldPassword,
       },
@@ -61,7 +66,7 @@ const Page: NextPageWithLayout = () => {
       <Separator className="my-3" />
 
       <p className="mb-3">{t("password_change_instructions")}</p>
-      <div className="w-full flex flex-col gap-2 justify-between">
+      <div className="w-full flex flex-col gap-2 justify-between max-w-screen-lg">
         <p>{t("old_password")}</p>
 
         <TextInput
@@ -84,7 +89,7 @@ const Page: NextPageWithLayout = () => {
 
         <Button
           onClick={submit}
-          disabled={submitLoader}
+          disabled={submitLoader || !oldPassword || !newPassword}
           variant="accent"
           className="mt-3 w-full sm:w-fit"
         >

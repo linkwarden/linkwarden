@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, ReactElement } from "react";
+import { useState, useEffect, ChangeEvent, ReactElement, useMemo } from "react";
 import { AccountSettings } from "@linkwarden/types";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
@@ -63,9 +63,10 @@ const Page: NextPageWithLayout = () => {
 
     setUser({
       ...account,
-      whitelistedUsers: stringToArray(whitelistedUsersTextbox),
+      whitelistedUsers: account?.whitelistedUsers || [],
     });
-  }, [account, whitelistedUsersTextbox]);
+    setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", ") || "");
+  }, [account]);
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,6 +93,8 @@ const Page: NextPageWithLayout = () => {
   };
 
   const submit = async (password?: string) => {
+    if (!account?.id || !hasAccountChanges) return;
+
     if (!/^[a-z0-9_-]{3,50}$/.test(user.username || "")) {
       return toast.error(t("username_invalid_guide"));
     }
@@ -108,7 +111,14 @@ const Page: NextPageWithLayout = () => {
 
     await updateUser.mutateAsync(
       {
-        ...user,
+        id: account.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        locale: user.locale,
+        image: user.image,
+        isPrivate: user.isPrivate,
+        whitelistedUsers: stringToArray(whitelistedUsersTextbox),
         password: password ? password : undefined,
       },
       {
@@ -137,13 +147,42 @@ const Page: NextPageWithLayout = () => {
     }
   };
 
-  useEffect(() => {
-    setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", ") || "");
-  }, [account]);
-
   const stringToArray = (str: string) => {
     return str?.replace(/\s+/g, "").split(",");
   };
+
+  const normalizeUserList = (list: string[] = []) =>
+    list
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .sort();
+
+  const hasAccountChanges = useMemo(() => {
+    if (!account?.id) return false;
+
+    const currentWhitelist = normalizeUserList(
+      stringToArray(whitelistedUsersTextbox)
+    );
+    const originalWhitelist = normalizeUserList(
+      account?.whitelistedUsers || []
+    );
+
+    const whitelistChanged =
+      currentWhitelist.length !== originalWhitelist.length ||
+      currentWhitelist.some(
+        (value, index) => value !== originalWhitelist[index]
+      );
+
+    return (
+      (user.name || "") !== (account.name || "") ||
+      (user.username || "") !== (account.username || "") ||
+      (user.email || "") !== (account.email || "") ||
+      (user.locale || "") !== (account.locale || "") ||
+      (user.image || "") !== (account.image || "") ||
+      Boolean(user.isPrivate) !== Boolean(account.isPrivate) ||
+      whitelistChanged
+    );
+  }, [account, user, whitelistedUsersTextbox]);
 
   return (
     <>
@@ -154,7 +193,7 @@ const Page: NextPageWithLayout = () => {
       <Separator className="my-3" />
 
       <div className="flex flex-col gap-5">
-        <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto">
+        <div className="grid sm:grid-cols-2 gap-3 auto-rows-auto max-w-screen-lg">
           <div className="flex flex-col gap-3">
             <div>
               <p className="mb-2">{t("display_name")}</p>
@@ -282,7 +321,14 @@ const Page: NextPageWithLayout = () => {
                 className="w-full resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
                 placeholder={t("whitelisted_users_placeholder")}
                 value={whitelistedUsersTextbox}
-                onChange={(e) => setWhiteListedUsersTextbox(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setWhiteListedUsersTextbox(value);
+                  setUser((prev: AccountSettings) => ({
+                    ...prev,
+                    whitelistedUsers: stringToArray(value),
+                  }));
+                }}
               />
             </div>
           )}
@@ -297,7 +343,7 @@ const Page: NextPageWithLayout = () => {
               submit();
             }
           }}
-          disabled={submitLoader}
+          disabled={submitLoader || !hasAccountChanges}
           className="mt-2 w-full sm:w-fit"
         >
           {t("save_changes")}
