@@ -66,11 +66,7 @@ const getAIModel = (): LanguageModelV2 => {
   throw new Error("No AI provider configured");
 };
 
-export default async function autoTagLink(
-  user: User,
-  linkId: number,
-  metaDescription: string | undefined
-) {
+export default async function autoTagLink(user: User, linkId: number) {
   const link = await prisma.link.findUnique({
     where: { id: linkId },
   });
@@ -78,7 +74,7 @@ export default async function autoTagLink(
   if (!link) return console.log("Link not found for auto tagging.");
 
   const description =
-    metaDescription ||
+    (link.metaDescription ? link.metaDescription + "..." : undefined) ||
     (link.textContent ? link.textContent?.slice(0, 500) + "..." : undefined);
 
   if (!description) return;

@@ -147,6 +147,14 @@ export default async function archiveHandler(
             return description?.getAttribute("content") ?? undefined;
           });
 
+          await prisma.link.update({
+            where: { id: link.id },
+            data: {
+              metaDescription:
+                metaDescription?.trim().slice(0, 500) ?? undefined,
+            },
+          });
+
           const content = await page.content();
 
           // Preview
@@ -176,7 +184,7 @@ export default async function archiveHandler(
               process.env.OPENROUTER_API_KEY ||
               process.env.PERPLEXITY_API_KEY)
           ) {
-            await autoTagLink(user, link.id, metaDescription);
+            await autoTagLink(user, link.id);
           }
 
           // Monolith
