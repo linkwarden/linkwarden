@@ -94,7 +94,6 @@ export default async function Index(req: NextApiRequest, res: NextApiResponse) {
 
     return res
       .setHeader("Content-Type", contentType)
-      .setHeader("Cache-Control", "private, max-age=31536000, immutable")
       .status(status as number)
       .send(file);
   }
