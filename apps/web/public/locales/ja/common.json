@@ -528,5 +528,6 @@
   "trial_left_singular": "試用期間はあと 1 日で終了します。登録してください。",
   "apply_members_roles_to_subcollections": "Apply members and roles to subcollections",
   "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections.",
-  "back_to_dashboard": "Back to Dashboard"
+  "back_to_dashboard": "Back to Dashboard",
+  "worker_console": "Worker Console"
 }
