@@ -6,7 +6,7 @@
 <a href="https://trendshift.io/repositories/4006" target="_blank"><img src="https://trendshift.io/api/badge/repositories/4006" alt="linkwarden%2Flinkwarden | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
 <a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?logo=discord&style=flat" alt="Discord"></a>
-<a href="https://twitter.com/LinkwardenHQ"><img src="https://img.shields.io/twitter/follow/linkwarden" alt="Twitter"></a> <a href="https://news.ycombinator.com/item?id=36942308"><img src="https://img.shields.io/badge/Hacker%20News-280-%23FF6600"></img></a>
+<a href="https://twitter.com/LinkwardenHQ"><img src="https://img.shields.io/twitter/follow/linkwarden" alt="Twitter"></a> <a href="https://news.ycombinator.com/item?id=43856801"><img src="https://img.shields.io/badge/Hacker%20News-301-%23FF6600"></img></a>
 
 <a href="https://github.com/linkwarden/linkwarden/releases"><img alt="GitHub release" src="https://img.shields.io/github/v/release/linkwarden/linkwarden"></a>
 <a href="https://crowdin.com/project/linkwarden">
