@@ -321,7 +321,7 @@ const Page: NextPageWithLayout = () => {
                 {t("whitelisted_users_info")}
               </p>
               <textarea
-                className="w-full resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
+                className="w-full max-w-screen-sm resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
                 placeholder={t("whitelisted_users_placeholder")}
                 value={whitelistedUsersTextbox}
                 onChange={(e) => {
