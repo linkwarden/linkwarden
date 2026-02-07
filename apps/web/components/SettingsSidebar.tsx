@@ -126,22 +126,20 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        {isAdmin && (
-          <Link href="/settings/worker">
-            <div
-              className={`${
-                active === "/settings/worker"
-                  ? "bg-primary/20"
-                  : "hover:bg-neutral/20"
-              } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
-            >
-              <i className="bi-gear-wide-connected text-primary text-xl drop-shadow"></i>
-              <p className="truncate w-full font-semibold text-sm">
-                {t("worker")}
-              </p>
-            </div>
-          </Link>
-        )}
+        <Link href="/settings/worker-console">
+          <div
+            className={`${
+              active === "/settings/worker-console"
+                ? "bg-primary/20"
+                : "hover:bg-neutral/20"
+            } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
+          >
+            <i className="bi-gear-wide-connected text-primary text-xl drop-shadow"></i>
+            <p className="truncate w-full font-semibold text-sm">
+              {t("worker_console")}
+            </p>
+          </div>
+        </Link>
 
         {process.env.NEXT_PUBLIC_STRIPE && !user?.parentSubscriptionId && (
           <Link href="/settings/billing">
