@@ -25,7 +25,8 @@ export default function TagSelection({
   autoFocus,
   onBlur,
 }: Props) {
-  const { data: tags = [] } = useTags();
+  const { data: tagsData = { tags: [], total: 0 } } = useTags();
+  const tags = tagsData.tags;
   const { t } = useTranslation();
 
   const [tagOptions, setTagOptions] = useState<Option[]>([]);

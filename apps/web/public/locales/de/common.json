@@ -462,6 +462,7 @@
   "not_found_404": "404 - Nicht gefunden",
   "collection_publicly_shared": "Diese Sammlung wird öffentlich geteilt.",
   "search_for_links": "Nach Links suchen",
+  "search_for_tag_names": "Nach Tag-Namen suchen",
   "search_query_invalid_symbol": "Die Suchabfrage sollte nicht '%' enthalten.",
   "open_modal_new_tab": "Modal in einem neuen Tab öffnen",
   "file": "Datei",

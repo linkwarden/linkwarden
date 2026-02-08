@@ -23,10 +23,18 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+/.yarn/
+
 
 # env files
 .env*.local
 .env
+
+# log files
+*.log*
+
+# claude
+/.claude/settings.local.json
 
 # vercel
 .vercel

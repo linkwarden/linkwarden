@@ -7,6 +7,7 @@
     "@linkwarden/filesystem": "*",
     "@linkwarden/prisma": "*",
     "@linkwarden/types": "*",
+    "@types/nodemailer": "^6.4.8",
     "clsx": "^2.1.1",
     "jimp": "^0.22.10",
     "meilisearch": "^0.48.2",
