@@ -28,7 +28,9 @@ export default function DashboardScreen() {
   } = useDashboardData(auth);
   const { data: user, ...userData } = useUser(auth);
   const { data: collections = [], ...collectionsData } = useCollections(auth);
-  const { data: tags = [], ...tagsData } = useTags(auth);
+  const { data: tagsData = { tags: [], total: 0 }, ...tagsQueryData } = useTags(auth);
+  const tags = tagsData.tags;
+  const totalTagCount = tagsData.total || tags.length;
 
   const { colorScheme } = useColorScheme();
 
@@ -69,7 +71,7 @@ export default function DashboardScreen() {
         dashboardData.refetch(),
         userData.refetch(),
         collectionsData.refetch(),
-        tagsData.refetch(),
+        tagsQueryData.refetch(),
       ]);
     } finally {
       setPullRefreshing(false);
@@ -100,7 +102,7 @@ export default function DashboardScreen() {
       className="bg-base-100"
       contentInsetAdjustmentBehavior="automatic"
     >
-      {orderedSections.map((sectionData, i) => {
+      {orderedSections.map((sectionData) => {
         if (!collections || !collections[0]) return null;
 
         const collection = collections.find(
@@ -118,7 +120,7 @@ export default function DashboardScreen() {
                 : []
             }
             links={links}
-            tagsLength={tags.length}
+            tagsLength={totalTagCount}
             numberOfLinks={numberOfLinks}
             collectionsLength={collections.length}
             numberOfPinnedLinks={numberOfPinnedLinks}

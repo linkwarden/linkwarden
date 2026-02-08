@@ -49,6 +49,14 @@ export interface TagIncludingLinkCount extends Tag {
   _count?: { links: number };
 }
 
+export interface PaginatedResponse<T> {
+  items: T[];
+  nextCursor: number | null;
+  hasMore: boolean;
+}
+
+export type PaginatedTags = PaginatedResponse<TagIncludingLinkCount>;
+
 export interface AccountSettings extends User {
   newPassword?: string;
   oldPassword?: string;

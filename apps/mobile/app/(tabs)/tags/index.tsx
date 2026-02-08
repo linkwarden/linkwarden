@@ -21,18 +21,19 @@ export default function TagsScreen() {
   const { auth } = useAuthStore();
   const { search } = useLocalSearchParams<{ search?: string }>();
 
-  const tags = useTags(auth);
+  const tagsQuery = useTags(auth);
+  const tags = tagsQuery.data?.tags || [];
 
   const [filteredTags, setFilteredTags] = useState<TagIncludingLinkCount[]>([]);
 
   useEffect(() => {
     const filter =
-      tags.data?.filter((e) =>
+      tags?.filter((e) =>
         e.name.includes(decodeURIComponent(search || ""))
       ) || [];
 
     setFilteredTags(filter);
-  }, [search, tags.data]);
+  }, [search, tags]);
 
   return (
     <View
@@ -41,7 +42,7 @@ export default function TagsScreen() {
       collapsable={false}
       collapsableChildren={false}
     >
-      {tags.isLoading ? (
+      {tagsQuery.isLoading ? (
         <View className="flex justify-center h-screen items-center">
           <ActivityIndicator size="large" />
           <Text className="text-base mt-2.5 text-neutral">Loading...</Text>
@@ -53,15 +54,15 @@ export default function TagsScreen() {
           data={filteredTags}
           refreshControl={
             <Spinner
-              refreshing={tags.isRefetching}
-              onRefresh={() => tags.refetch()}
+              refreshing={tagsQuery.isRefetching}
+              onRefresh={() => tagsQuery.refetch()}
               progressBackgroundColor={
                 rawTheme[colorScheme as ThemeName]["base-200"]
               }
               colors={[rawTheme[colorScheme as ThemeName]["base-content"]]}
             />
           }
-          refreshing={tags.isRefetching}
+          refreshing={tagsQuery.isRefetching}
           initialNumToRender={4}
           keyExtractor={(item) => item.id?.toString() || ""}
           renderItem={({ item }) => <TagListing tag={item} />}

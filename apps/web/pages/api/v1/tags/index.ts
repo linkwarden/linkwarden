@@ -4,17 +4,32 @@ import verifyUser from "@/lib/api/verifyUser";
 import { PostTagSchema } from "@linkwarden/lib/schemaValidation";
 import createOrUpdateTags from "@/lib/api/controllers/tags/createOrUpdateTags";
 import bulkTagDelete from "@/lib/api/controllers/tags/bulkTagDelete";
+import { TagPaginationParams } from "@/lib/api/utils/types";
 
 export default async function tags(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });
   if (!user) return;
 
   if (req.method === "GET") {
-    const tags = await getTags({
+    // Parse pagination parameters from query
+    const params: TagPaginationParams = {
       userId: user.id,
-    });
+      cursor: req.query.cursor ? Number(req.query.cursor as string) : undefined,
+      limit: req.query.limit ? Number(req.query.limit as string) : undefined,
+      sort: req.query.sort as string,
+      dir: req.query.dir as string,
+      search: req.query.search as string,
+      collectionId: req.query.collectionId
+        ? Number(req.query.collectionId as string)
+        : undefined,
+    };
 
-    return res.status(tags?.status || 500).json({ response: tags?.response });
+    const tags = await getTags(params);
+
+    return res.status(tags?.status || 500).json({
+      success: true,
+      response: tags?.response,
+    });
   }
 
   if (req.method === "POST") {
