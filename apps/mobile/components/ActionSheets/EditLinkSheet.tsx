@@ -240,7 +240,9 @@ const Collections = () => {
         />
         <Text className="text-primary">Back</Text>
       </TouchableOpacity>
-      <Text className="font-semibold text-lg mx-auto mb-5">Collection</Text>
+      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
+        Collection
+      </Text>
       <Input
         placeholder="Search collections"
         className="mb-4 bg-base-100 mx-8"
@@ -249,7 +251,7 @@ const Collections = () => {
       />
 
       <FlatList
-        data={[...filteredCollections, ...filteredCollections]}
+        data={[...filteredCollections]}
         keyExtractor={(e, i) => i.toString()}
         renderItem={renderItem}
         ListEmptyComponent={
@@ -337,7 +339,9 @@ const Tags = () => {
         />
         <Text className="text-primary">Back</Text>
       </TouchableOpacity>
-      <Text className="font-semibold text-lg mx-auto mb-5">Tags</Text>
+      <Text className="font-semibold text-lg mx-auto mb-5 text-base-content">
+        Tags
+      </Text>
       <Input
         placeholder="Search tags"
         className="mb-4 bg-base-100 mx-8"
