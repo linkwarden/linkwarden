@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
-import { useConfig } from "@linkwarden/router/config";
 import Image from "next/image";
 
 export default function SettingsSidebar({ className }: { className?: string }) {
@@ -11,8 +10,6 @@ export default function SettingsSidebar({ className }: { className?: string }) {
   const LINKWARDEN_VERSION = process.env.version;
 
   const { data: user } = useUser();
-  const { data: config } = useConfig();
-  const isAdmin = user?.id === (config?.ADMIN || 1);
 
   const router = useRouter();
   const [active, setActive] = useState("");
@@ -126,17 +123,17 @@ export default function SettingsSidebar({ className }: { className?: string }) {
           </div>
         </Link>
 
-        <Link href="/settings/worker-console">
+        <Link href="/settings/background-jobs">
           <div
             className={`${
-              active === "/settings/worker-console"
+              active === "/settings/background-jobs"
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
           >
             <i className="bi-gear-wide-connected text-primary text-xl drop-shadow"></i>
             <p className="truncate w-full font-semibold text-sm">
-              {t("worker_console")}
+              {t("background_jobs")}
             </p>
           </div>
         </Link>

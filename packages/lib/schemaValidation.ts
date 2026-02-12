@@ -295,12 +295,19 @@ export const PostHighlightSchema = z.object({
 export type PostHighlightSchemaType = z.infer<typeof PostHighlightSchema>;
 
 export const LinkArchiveActionSchema = z.object({
-  action: z.enum(["allAndRePreserve", "allAndIgnore", "allBroken"]).optional(),
   linkIds: z.array(z.number()).optional(),
 });
 
 export type LinkArchiveActionSchemaType = z.infer<
   typeof LinkArchiveActionSchema
+>;
+
+export const DeletePreservationsSchema = z.object({
+  action: z.enum(["allAndRePreserve", "allBroken"]),
+});
+
+export type DeletePreservationsSchemaType = z.infer<
+  typeof DeletePreservationsSchema
 >;
 
 export const UpdateDashboardLayoutSchema = z.array(

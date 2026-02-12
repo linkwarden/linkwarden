@@ -69,7 +69,7 @@ const Page: NextPageWithLayout = () => {
       <Separator className="my-3" />
 
       <p className="mb-3">{t("password_change_instructions")}</p>
-      <div className="w-full flex flex-col gap-2 justify-between max-w-screen-lg">
+      <div className="w-full flex flex-col gap-2 justify-between max-w-screen-sm">
         <p>{t("old_password")}</p>
 
         <TextInput

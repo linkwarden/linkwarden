@@ -66,6 +66,8 @@ export async function startIndexing(interval = 10) {
   console.log("\x1b[34m%s\x1b[0m", "Starting link indexing...");
 
   const INDEX_VERSION = 1;
+  const TRIAL_PERIOD_DAYS = process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS || 14;
+  const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
   while (true) {
     const links = await getLinkBatch({
@@ -84,6 +86,30 @@ export async function startIndexing(interval = 10) {
                 url: null,
               },
             ],
+          },
+          {
+            ...(process.env.STRIPE_SECRET_KEY
+              ? {
+                  createdBy: {
+                    OR: [
+                      { subscriptions: { is: { active: true } } },
+                      { parentSubscription: { is: { active: true } } },
+                      ...(REQUIRE_CC
+                        ? []
+                        : [
+                            {
+                              createdAt: {
+                                gte: new Date(
+                                  new Date().getTime() -
+                                    Number(TRIAL_PERIOD_DAYS) * 86400000
+                                ),
+                              },
+                            },
+                          ]),
+                    ],
+                  },
+                }
+              : {}),
           },
         ],
       },

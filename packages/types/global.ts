@@ -189,3 +189,15 @@ export interface MobileData {
   preferredBrowser: "app" | "system";
   preferredCollection: CollectionIncludingMembersAndLinkCount | null;
 }
+
+export interface WorkerStats {
+  link: {
+    pending: number;
+    done: number;
+    failed: number;
+  };
+  search: {
+    pending: number;
+    done: number;
+  };
+}

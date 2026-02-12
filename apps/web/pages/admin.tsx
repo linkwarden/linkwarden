@@ -1,13 +1,16 @@
 import NewUserModal from "@/components/ModalContent/NewUserModal";
 import { User as U } from "@linkwarden/prisma/client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import UserListing from "@/components/UserListing";
 import { useUsers } from "@linkwarden/router/users";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useConfig } from "@linkwarden/router/config";
+import { useRouter } from "next/router";
+import { useUser } from "@linkwarden/router/user";
 
 interface User extends U {
   subscriptions: {
@@ -24,6 +27,17 @@ export default function Admin() {
   const { t } = useTranslation();
 
   const { data: users = [] } = useUsers();
+
+  const { data: user } = useUser();
+  const { data: config } = useConfig();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (config && user && user?.id !== (config?.ADMIN || 1)) {
+      console.log(config, user);
+      router.replace("/dashboard");
+    }
+  }, [config, user]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[] | null>(null);

@@ -538,7 +538,6 @@ const useArchiveAction = () => {
     mutationFn: async (payload: LinkArchiveActionSchemaType) => {
       const response = await fetch("/api/v1/links/archive", {
         body: JSON.stringify({
-          action: payload.action,
           linkIds: payload.linkIds,
         }),
         method: "DELETE",
