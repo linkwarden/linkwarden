@@ -1,7 +1,6 @@
 import NewUserModal from "@/components/ModalContent/NewUserModal";
 import { User as U } from "@linkwarden/prisma/client";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import UserListing from "@/components/UserListing";
@@ -11,6 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { useConfig } from "@linkwarden/router/config";
 import { useRouter } from "next/router";
 import { useUser } from "@linkwarden/router/user";
+import AdminLayout from "@/layouts/AdminLayout";
+import { NextPageWithLayout } from "../_app";
 
 interface User extends U {
   subscriptions: {
@@ -23,7 +24,7 @@ type UserModal = {
   userId: number | null;
 };
 
-export default function Admin() {
+const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
 
   const { data: users = [] } = useUsers();
@@ -63,14 +64,9 @@ export default function Admin() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-5">
+    <div>
       <div className="flex sm:flex-row flex-col justify-between gap-2">
         <div className="gap-2 inline-flex items-center">
-          <Button variant="ghost" size="icon">
-            <Link href="/dashboard" className="text-neutral">
-              <i className="bi-chevron-left text-xl"></i>
-            </Link>
-          </Button>
           <p className="capitalize text-3xl font-thin inline">
             {t("user_administration")}
           </p>
@@ -131,6 +127,12 @@ export default function Admin() {
       {newUserModal && <NewUserModal onClose={() => setNewUserModal(false)} />}
     </div>
   );
-}
+};
+
+Page.getLayout = function getLayout(page: ReactElement) {
+  return <AdminLayout>{page}</AdminLayout>;
+};
+
+export default Page;
 
 export { getServerSideProps };

@@ -27,12 +27,19 @@ import {
 import { useUser } from "@linkwarden/router/user";
 import Link from "next/link";
 import SettingsSidebar from "@/components/SettingsSidebar";
+import AdminSidebar from "@/components/AdminSidebar";
 
 const STRIPE_ENABLED = process.env.NEXT_PUBLIC_STRIPE === "true";
 const TRIAL_PERIOD_DAYS =
   Number(process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS) || 14;
 
-export default function Navbar({ settings }: { settings?: boolean }) {
+export default function Navbar({
+  settings,
+  admin,
+}: {
+  settings?: boolean;
+  admin?: boolean;
+}) {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: user } = useUser();
@@ -163,7 +170,13 @@ export default function Navbar({ settings }: { settings?: boolean }) {
           <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-10 backdrop-blur-sm flex items-center fade-in z-40">
             <ClickAwayHandler className="h-full" onClickOutside={toggleSidebar}>
               <div className="slide-right h-full shadow-lg">
-                {settings ? <SettingsSidebar /> : <Sidebar />}
+                {admin ? (
+                  <AdminSidebar />
+                ) : settings ? (
+                  <SettingsSidebar />
+                ) : (
+                  <Sidebar />
+                )}
               </div>
             </ClickAwayHandler>
           </div>

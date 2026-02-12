@@ -5,7 +5,7 @@ import { useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";
 import Image from "next/image";
 
-export default function SettingsSidebar({ className }: { className?: string }) {
+export default function AdminSidebar({ className }: { className?: string }) {
   const { t } = useTranslation();
   const LINKWARDEN_VERSION = process.env.version;
 
@@ -48,97 +48,35 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             />
           )}
         </div>
-        <Link href="/settings/account">
+        <Link href="/admin/user-administration">
           <div
             className={`${
-              active === "/settings/account"
+              active === "/admin/user-administration"
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
           >
-            <i className="bi-person text-primary text-xl drop-shadow"></i>
+            <i className="bi-people text-primary text-xl drop-shadow"></i>
             <p className="truncate w-full font-semibold text-sm">
-              {t("account")}
+              {t("user_administration")}
             </p>
           </div>
         </Link>
 
-        <Link href="/settings/preference">
+        <Link href="/admin/background-jobs">
           <div
             className={`${
-              active === "/settings/preference"
+              active === "/admin/background-jobs"
                 ? "bg-primary/20"
                 : "hover:bg-neutral/20"
             } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
           >
-            <i className="bi-sliders text-primary text-xl drop-shadow"></i>
+            <i className="bi-gear-wide-connected text-primary text-xl drop-shadow"></i>
             <p className="truncate w-full font-semibold text-sm">
-              {t("preference")}
+              {t("background_jobs")}
             </p>
           </div>
         </Link>
-
-        <Link href="/settings/rss-subscriptions">
-          <div
-            className={`${
-              active === "/settings/rss-subscriptions"
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
-          >
-            <i className="bi-rss text-primary text-xl drop-shadow"></i>
-            <p className="truncate w-full font-semibold text-sm">
-              RSS Subscriptions
-            </p>
-          </div>
-        </Link>
-
-        <Link href="/settings/access-tokens">
-          <div
-            className={`${
-              active === "/settings/access-tokens"
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
-          >
-            <i className="bi-key text-primary text-xl drop-shadow"></i>
-            <p className="truncate w-full font-semibold text-sm">
-              {t("access_tokens")}
-            </p>
-          </div>
-        </Link>
-
-        <Link href="/settings/password">
-          <div
-            className={`${
-              active === "/settings/password"
-                ? "bg-primary/20"
-                : "hover:bg-neutral/20"
-            } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
-          >
-            <i className="bi-lock text-primary text-xl drop-shadow"></i>
-            <p className="truncate w-full font-semibold text-sm">
-              {t("password")}
-            </p>
-          </div>
-        </Link>
-
-        {process.env.NEXT_PUBLIC_STRIPE && !user?.parentSubscriptionId && (
-          <Link href="/settings/billing">
-            <div
-              className={`${
-                active === "/settings/billing"
-                  ? "bg-primary/20"
-                  : "hover:bg-neutral/20"
-              } duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
-            >
-              <i className="bi-credit-card text-primary text-xl drop-shadow"></i>
-              <p className="truncate w-full font-semibold text-sm">
-                {t("billing")}
-              </p>
-            </div>
-          </Link>
-        )}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -162,9 +100,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             className={`hover:bg-neutral/20 duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
           >
             <i className="bi-github text-primary text-xl drop-shadow"></i>
-            <p className="truncate w-full font-semibold text-sm">
-              {t("github")}
-            </p>
+            <p className="truncate w-full font-semibold text-sm">{t("github")}</p>
           </div>
         </Link>
         <Link href="https://twitter.com/LinkwardenHQ" target="_blank">
@@ -172,9 +108,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             className={`hover:bg-neutral/20 duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
           >
             <i className="bi-twitter-x text-primary text-xl drop-shadow"></i>
-            <p className="truncate w-full font-semibold text-sm">
-              {t("twitter")}
-            </p>
+            <p className="truncate w-full font-semibold text-sm">{t("twitter")}</p>
           </div>
         </Link>
         <Link href="https://fosstodon.org/@linkwarden" target="_blank">
@@ -182,9 +116,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
             className={`hover:bg-neutral/20 duration-200 cursor-pointer flex items-center gap-2 rounded-lg px-3 py-1`}
           >
             <i className="bi-mastodon text-primary text-xl drop-shadow"></i>
-            <p className="truncate w-full font-semibold text-sm">
-              {t("mastodon")}
-            </p>
+            <p className="truncate w-full font-semibold text-sm">{t("mastodon")}</p>
           </div>
         </Link>
       </div>

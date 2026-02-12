@@ -65,7 +65,7 @@ export default function ProfileDropdown() {
         {isAdmin && (
           <DropdownMenuItem asChild>
             <Link
-              href="/admin"
+              href="/admin/user-administration"
               onClick={() => (document?.activeElement as HTMLElement)?.blur()}
               className="whitespace-nowrap"
             >
