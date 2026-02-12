@@ -1,5 +1,5 @@
 {
-  "user_administration": "ユーザー管理",
+  "user_administration": "User Administration",
   "search_users": "ユーザーを検索",
   "no_users_found": "ユーザーが見つかりません",
   "no_user_found_in_search": "指定された検索クエリでユーザーが見つかりませんでした。",
@@ -468,10 +468,6 @@
   "tag_preservation_rule_label": "タグごとの保存ルール（グローバル設定を上書き）：",
   "ai_tagging": "AIタグ付け",
   "worker": "ワーカー",
-  "regenerate_broken_preservations": "すべてのユーザーの壊れた保存または欠落している保存を再生成します。",
-  "delete_all_preservations": "すべての Web ページの保存を削除し、すべてのユーザーに適用されます。",
-  "delete_all_preservations_and_regenerate": "すべての Web ページを削除して再保存し、すべてのユーザーに適用されます。",
-  "delete_all_preservation_warning": "この操作は、サーバー上の既存のすべての保存を削除します。",
   "no_broken_preservations": "壊れた保存はありません。",
   "links_are_being_represerved": "リンクを再保存しています…",
   "cancel": "キャンセル",
@@ -529,5 +525,16 @@
   "apply_members_roles_to_subcollections": "Apply members and roles to subcollections",
   "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections.",
   "back_to_dashboard": "Back to Dashboard",
-  "worker_console": "Worker Console"
+  "background_jobs": "Background Jobs",
+  "background_jobs_desc": "Background jobs run 24/7 behind the scenes to process all queued links and tasks.",
+  "link_preservation_job": "Link Preservation Job",
+  "link_preservation_job_desc": "Crawls, preserves, and extracts text from your links.",
+  "search_indexing_job": "Search Indexing Job",
+  "search_indexing_job_desc": "Prepares links and documents for full-text search.",
+  "done": "Done",
+  "worker_pending_indexing_desc": "Pending items first need to be preserved before they can be indexed if they're a link.",
+  "regenerate_broken_links": "Regenerate Broken Links",
+  "regenerate_all_links": "Regenerate All Links",
+  "regenerate_broken_preserved_content_desc": "<0>Delete and re-preserve broken links with at least one missing preserved format.</0><0>This action will immediately delete any existing preserved format for {{count}} links.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
+  "delete_all_preserved_content_and_regenerate_desc": "<0>This action will immediately delete all your existing preserved formats.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>"
 }
