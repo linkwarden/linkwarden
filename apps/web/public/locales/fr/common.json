@@ -1,5 +1,5 @@
 {
-  "user_administration": "Administration des utilisateurs",
+  "user_administration": "User Administration",
   "search_users": "Rechercher des utilisateurs",
   "no_users_found": "Aucun utilisateur trouvé.",
   "no_user_found_in_search": "Aucun utilisateur trouvé avec la requête de recherche donnée.",
@@ -468,10 +468,6 @@
   "tag_preservation_rule_label": "Règles de préservation par étiquette (outrepasser les paramètres globaux) :",
   "ai_tagging": "Étiquetage par IA",
   "worker": "Worker",
-  "regenerate_broken_preservations": "Régénérer toutes les conservations cassées ou manquantes pour tous les utilisateurs.",
-  "delete_all_preservations": "Supprimer la conservation pour toutes les pages web, s'applique à tous les utilisateurs.",
-  "delete_all_preservations_and_regenerate": "Supprimer et conserver de nouveau toutes les pages web, s'applique à tous les utilisateurs.",
-  "delete_all_preservation_warning": "Cette action va supprimer toutes les conservations existantes sur le serveur.",
   "no_broken_preservations": "Aucune conservation cassée.",
   "links_are_being_represerved": "La conservation des liens est en cours de restauration...",
   "cancel": "Annuler",
@@ -529,5 +525,16 @@
   "apply_members_roles_to_subcollections": "Appliquer les membres et les rôles aux sous-collections",
   "apply_members_roles_to_subcollections_desc": "This will apply the members and their roles to all existing subcollections.",
   "back_to_dashboard": "Back to Dashboard",
-  "worker_console": "Worker Console"
+  "background_jobs": "Background Jobs",
+  "background_jobs_desc": "Background jobs run 24/7 behind the scenes to process all queued links and tasks.",
+  "link_preservation_job": "Link Preservation Job",
+  "link_preservation_job_desc": "Crawls, preserves, and extracts text from your links.",
+  "search_indexing_job": "Search Indexing Job",
+  "search_indexing_job_desc": "Prepares links and documents for full-text search.",
+  "done": "Done",
+  "worker_pending_indexing_desc": "Pending items first need to be preserved before they can be indexed if they're a link.",
+  "regenerate_broken_links": "Regenerate Broken Links",
+  "regenerate_all_links": "Regenerate All Links",
+  "regenerate_broken_preserved_content_desc": "<0>Delete and re-preserve broken links with at least one missing preserved format.</0><0>This action will immediately delete any existing preserved format for {{count}} links.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
+  "delete_all_preserved_content_and_regenerate_desc": "<0>This action will immediately delete all your existing preserved formats.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>"
 }
