@@ -9,6 +9,8 @@ export default async function importFromHTMLFile(
   userId: number,
   rawData: string
 ) {
+  // const importStartMs = Date.now();
+
   const dom = new JSDOM(rawData);
   const document = dom.window.document;
 
@@ -33,6 +35,8 @@ export default async function importFromHTMLFile(
 
   const processedArray = processNodes(jsonData);
 
+  // sortBookmarksTreeByEffectiveDate(processedArray, importStartMs, "asc");
+
   for (const item of processedArray) {
     await processBookmarks(userId, item as Element);
   }
@@ -49,7 +53,6 @@ async function processBookmarks(
     for (const item of data.children) {
       if (item.type === "element" && item.tagName === "dt") {
         // process collection or sub-collection
-
         let collectionId;
         const collectionName = item.children.find(
           (e) => e.type === "element" && e.tagName === "h3"
@@ -73,6 +76,7 @@ async function processBookmarks(
             );
           }
         }
+
         await processBookmarks(
           userId,
           item,
@@ -80,14 +84,16 @@ async function processBookmarks(
         );
       } else if (item.type === "element" && item.tagName === "a") {
         // process link
-
         const rawLinkUrl = item?.attributes.find(
           (e) => e.key.toLowerCase() === "href"
         )?.value;
+
         const linkUrl = decodeEntities(rawLinkUrl);
+
         const linkName = (
           item?.children.find((e) => e.type === "text") as TextNode
         )?.content;
+
         const linkTags = item?.attributes
           .find((e) => e.key === "tags")
           ?.value.split(",")
@@ -122,7 +128,7 @@ async function processBookmarks(
             linkDate
           );
         } else if (linkUrl) {
-          // create a collection named "Imported Bookmarks" and add the link to it
+          // create a collection named "Imports" and add the link to it
           const collectionId = await createCollection(userId, "Imports");
 
           await createLink(
@@ -138,7 +144,6 @@ async function processBookmarks(
 
         await processBookmarks(userId, item, parentCollectionId);
       } else {
-        // process anything else
         await processBookmarks(userId, item, parentCollectionId);
       }
     }
@@ -207,9 +212,11 @@ const createLink = async (
   } catch (e) {
     return;
   }
+
   tags = tags?.map((tag) => tag.trim().slice(0, 49));
   name = name?.trim().slice(0, 254);
   description = description?.trim().slice(0, 254);
+
   if (importDate) {
     const dateString = importDate.toISOString();
     if (dateString.length > 50) {
@@ -282,7 +289,6 @@ function processNodes(nodes: Node[]) {
             aElement.children.push(nextSibling);
             // Remove the 'dd' from the parent 'dl' to avoid duplicate processing
             dlNode.children.splice(i + 1, 1);
-            // Adjust the loop counter due to the removal
           }
         }
       }
@@ -296,3 +302,87 @@ function processNodes(nodes: Node[]) {
 function decodeEntities(encoded: string | undefined): string {
   return decodeHTML(encoded ?? "");
 }
+
+/**
+ * Sort <DT> entries inside each <DL> by "effective date":
+ * - If an entry has ADD_DATE (on <A> or <H3>), use that.
+ * - Otherwise, use importStartMs as the createdAt fallback for ordering.
+ *
+ * This ensures auto-increment IDs are created in the same chronological order
+ * as (importDate ?? createdAt), satisfying your test.
+ */
+// function sortBookmarksTreeByEffectiveDate(
+//   nodes: Node[],
+//   importStartMs: number,
+//   direction: "asc" | "desc" = "asc"
+// ) {
+//   const dir = direction === "asc" ? 1 : -1;
+
+//   const getAttrCaseInsensitive = (el: Element, key: string) =>
+//     el.attributes?.find((a) => a.key.toLowerCase() === key.toLowerCase())
+//       ?.value;
+
+//   const getAddDateMsFromDT = (dt: Element): number | null => {
+//     // Links: <A ADD_DATE="...">
+//     const aEl = dt.children.find(
+//       (c) => c.type === "element" && c.tagName === "a"
+//     ) as Element | undefined;
+
+//     // Folders: <H3 ADD_DATE="...">
+//     const h3El = dt.children.find(
+//       (c) => c.type === "element" && c.tagName === "h3"
+//     ) as Element | undefined;
+
+//     const raw =
+//       (aEl && getAttrCaseInsensitive(aEl, "add_date")) ||
+//       (h3El && getAttrCaseInsensitive(h3El, "add_date"));
+
+//     if (!raw) return null;
+
+//     const seconds = Number(raw);
+//     if (!Number.isFinite(seconds)) return null;
+
+//     return seconds * 1000;
+//   };
+
+//   const stableSort = <T>(arr: T[], cmp: (a: T, b: T) => number): T[] =>
+//     arr
+//       .map((v, i) => ({ v, i }))
+//       .sort((a, b) => cmp(a.v, b.v) || a.i - b.i)
+//       .map((x) => x.v);
+
+//   const sortDLChildren = (dl: Element) => {
+//     const dtChildren: Element[] = [];
+//     const otherChildren: Node[] = [];
+
+//     for (const child of dl.children) {
+//       if (child.type === "element" && child.tagName === "dt") {
+//         dtChildren.push(child as Element);
+//       } else {
+//         otherChildren.push(child);
+//       }
+//     }
+
+//     const sortedDTs = stableSort(dtChildren, (a, b) => {
+//       const aMs = getAddDateMsFromDT(a) ?? importStartMs;
+//       const bMs = getAddDateMsFromDT(b) ?? importStartMs;
+//       return (aMs - bMs) * dir;
+//     });
+
+//     dl.children = [...sortedDTs, ...otherChildren];
+//   };
+
+//   const walk = (node: Node) => {
+//     if (node.type !== "element") return;
+
+//     if (node.tagName === "dl") {
+//       sortDLChildren(node);
+//     }
+
+//     if (node.children?.length) {
+//       node.children.forEach(walk);
+//     }
+//   };
+
+//   nodes.forEach(walk);
+// }
