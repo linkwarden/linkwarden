@@ -13,8 +13,9 @@ const useUser = (auth?: MobileAuth) => {
   let userId: string = "";
 
   if (!auth) {
-    const { data, status: s } = useSession();
-    status = s;
+    const session = useSession();
+    const data = session?.data;
+    status = session?.status ?? "loading";
     userId = (data?.user as any)?.id;
   } else {
     status = auth.status;
@@ -107,7 +108,8 @@ const useUpdateUser = () => {
 
 const useUpdateUserPreference = () => {
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
+  const sessionResult = useSession();
+  const session = sessionResult?.data;
 
   return useMutation({
     mutationFn: async (preference: UpdateUserPreferenceSchemaType) => {

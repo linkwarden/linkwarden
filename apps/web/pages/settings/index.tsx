@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import getServerSideProps from "@/lib/client/getServerSideProps";
 
 export default function Settings() {
   const router = useRouter();
@@ -8,3 +9,5 @@ export default function Settings() {
     router.push("/settings/profile");
   }, []);
 }
+
+export { getServerSideProps };

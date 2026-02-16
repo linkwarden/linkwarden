@@ -1,4 +1,5 @@
 import type { GetServerSideProps } from "next";
+import getServerSideProps from "@/lib/client/getServerSideProps";
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
@@ -7,6 +8,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
       permanent: false,
     },
   };
+
+export { getServerSideProps };
 };
 
 export default function WorkerRedirect() {
