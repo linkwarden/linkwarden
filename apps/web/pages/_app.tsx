@@ -25,7 +25,6 @@ const queryClient = new QueryClient({
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
-  skipAuth?: boolean;
 };
 
 type PageProps = { session?: Session | null };
@@ -45,21 +44,6 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       document.getElementsByTagName("head")[0].appendChild(meta);
     }
   }, []);
-
-  // Skip SessionProvider and AuthRedirect for pages that opt out (e.g. 404/500)
-  // These pages are prerendered statically and don't have access to session/router
-  if (Component.skipAuth) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <Head>
-          <title>Linkwarden</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta name="theme-color" content="#ffffff" />
-        </Head>
-        {getLayout(<Component {...pageProps} />)}
-      </QueryClientProvider>
-    );
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
