@@ -9,7 +9,7 @@ interface RssSubscriptionWithCollectionName extends RssSubscription {
 }
 
 const useRssSubscriptions = () => {
-  const { status } = useSession();
+  const status = useSession()?.status ?? "loading";
 
   return useQuery({
     queryKey: ["rss-subscriptions"],

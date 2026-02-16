@@ -4,7 +4,7 @@ import { useTranslation } from "next-i18next";
 import { useSession } from "next-auth/react";
 
 const useUsers = () => {
-  const { status } = useSession();
+  const status = useSession()?.status ?? "loading";
 
   return useQuery({
     queryKey: ["users"],

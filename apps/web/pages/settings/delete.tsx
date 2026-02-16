@@ -15,7 +15,7 @@ export default function Delete() {
   const [comment, setComment] = useState<string>();
   const [feedback, setFeedback] = useState<string>();
   const [submitLoader, setSubmitLoader] = useState(false);
-  const { data } = useSession();
+  const data = useSession()?.data;
   const { t } = useTranslation();
   const { data: user } = useUser();
 

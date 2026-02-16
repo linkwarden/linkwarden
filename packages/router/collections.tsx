@@ -10,7 +10,7 @@ const useCollections = (auth?: MobileAuth) => {
 
   if (!auth) {
     const session = useSession();
-    status = session.status;
+    status = session?.status ?? "loading";
   } else {
     status = auth?.status;
   }

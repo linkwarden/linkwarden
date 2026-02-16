@@ -3,7 +3,7 @@ import { AccessToken } from "@linkwarden/prisma/client";
 import { useSession } from "next-auth/react";
 
 const useTokens = () => {
-  const { status } = useSession();
+  const status = useSession()?.status ?? "loading";
 
   return useQuery({
     queryKey: ["tokens"],

@@ -40,7 +40,7 @@ const useTags = (
 
   if (!auth) {
     const session = useSession();
-    status = session.status;
+    status = session?.status ?? "loading";
   } else {
     status = auth?.status;
   }
@@ -91,7 +91,7 @@ const useTagsPaginated = (
 
   if (!auth) {
     const session = useSession();
-    status = session.status;
+    status = session?.status ?? "loading";
   } else {
     status = auth?.status;
   }
@@ -291,7 +291,7 @@ const useTagsInfinite = (
       }
       return lastPage.nextCursor;
     },
-    enabled: session.status === "authenticated",
+    enabled: session?.status === "authenticated",
   });
 
   const tags = useMemo(() => {

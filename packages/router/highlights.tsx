@@ -11,7 +11,7 @@ import { PostHighlightSchemaType } from "@linkwarden/lib/schemaValidation";
 const useGetLinkHighlights = (
   linkId: number
 ): UseQueryResult<Highlight[], Error> => {
-  const { status } = useSession();
+  const status = useSession()?.status ?? "loading";
 
   return useQuery({
     queryKey: ["highlights", linkId],

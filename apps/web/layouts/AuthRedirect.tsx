@@ -14,7 +14,7 @@ const REQUIRE_CC = process.env.NEXT_PUBLIC_REQUIRE_CC === "true";
 
 export default function AuthRedirect({ children }: Props) {
   const router = useRouter();
-  const { status } = useSession();
+  const status = useSession()?.status ?? "loading";
   const [shouldRenderChildren, setShouldRenderChildren] = useState(false);
   const { data: user } = useUser();
 

@@ -33,7 +33,7 @@ export default function DeleteUserModal({ onClose, userId }: Props) {
     }
   };
 
-  const { data } = useSession();
+  const data = useSession()?.data;
 
   const { data: config } = useConfig();
 

@@ -23,7 +23,7 @@ const Page: NextPageWithLayout = () => {
   const { data: collections = [], isLoading } = useCollections();
   const [sortBy, setSortBy] = useState<Sort>(Sort.DateNewestFirst);
 
-  const { data } = useSession();
+  const data = useSession()?.data;
 
   const sortKey: Sort =
     typeof sortBy === "string" ? (Number(sortBy) as Sort) : sortBy;
