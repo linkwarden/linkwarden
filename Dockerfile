@@ -57,8 +57,46 @@ COPY . .
 
 ENV NODE_ENV=production
 
+# Diagnostic: check for duplicate React instances (remove after debugging)
+RUN node -e " \
+  const reactFromRoot = require('react'); \
+  const reactDomFromRoot = require('react-dom'); \
+  const nextDir = require.resolve('next/package.json').replace('/package.json', ''); \
+  const reactFromNext = require(require.resolve('react', { paths: [nextDir] })); \
+  const chunkDir = process.cwd() + '/apps/web'; \
+  const reactFromWeb = require(require.resolve('react', { paths: [chunkDir] })); \
+  console.log('=== React Instance Diagnostic ==='); \
+  console.log('react (root):', require.resolve('react')); \
+  console.log('react (next):', require.resolve('react', { paths: [nextDir] })); \
+  console.log('react (web) :', require.resolve('react', { paths: [chunkDir] })); \
+  console.log('react-dom   :', require.resolve('react-dom')); \
+  console.log('next        :', require.resolve('next')); \
+  console.log('same react (root === next):', reactFromRoot === reactFromNext); \
+  console.log('same react (root === web) :', reactFromRoot === reactFromWeb); \
+  console.log('same react (next === web) :', reactFromNext === reactFromWeb); \
+  console.log('================================='); \
+"
+
 RUN yarn prisma:generate && \
-    yarn web:build && \
+    yarn web:build; \
+    BUILD_EXIT=$?; \
+    echo "=== Post-Build Chunk Diagnostic ==="; \
+    echo "Build exit code: $BUILD_EXIT"; \
+    echo "--- Server chunks ---"; \
+    ls apps/web/.next/server/chunks/ 2>/dev/null; \
+    echo "--- Chunk 331 external requires ---"; \
+    grep -oP 'require\("[^"]+"\)' apps/web/.next/server/chunks/331.js 2>/dev/null | sort -u || echo "chunk 331 not found"; \
+    echo "--- html-context in chunks ---"; \
+    grep -l 'useHtmlContext\|html.context\|HtmlContext' apps/web/.next/server/chunks/*.js 2>/dev/null || echo "not found in any chunk"; \
+    echo "--- html-context as external in chunks ---"; \
+    grep -o 'require("[^"]*html-context[^"]*")' apps/web/.next/server/chunks/*.js 2>/dev/null || echo "not externalized"; \
+    echo "--- createContext count in document chunk ---"; \
+    for f in apps/web/.next/server/chunks/*.js; do \
+      count=$(grep -o 'createContext' "$f" 2>/dev/null | wc -l); \
+      [ "$count" -gt 0 ] && echo "$f: $count createContext calls"; \
+    done; \
+    echo "==================================="; \
+    if [ "$BUILD_EXIT" -ne 0 ]; then exit 1; fi; \
     rm -rf apps/web/.next/cache
 
 HEALTHCHECK --interval=30s \
