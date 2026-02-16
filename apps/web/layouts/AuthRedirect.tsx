@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/compat/router";
 import { useSession } from "next-auth/react";
 import useInitialData from "@/hooks/useInitialData";
 import { useUser } from "@linkwarden/router/user";
@@ -21,6 +21,8 @@ export default function AuthRedirect({ children }: Props) {
   useInitialData();
 
   useEffect(() => {
+    if (!router) return;
+
     const isLoggedIn = status === "authenticated";
     const isUnauthenticated = status === "unauthenticated";
     const isPublicPage = router.pathname.startsWith("/public");
@@ -78,10 +80,14 @@ export default function AuthRedirect({ children }: Props) {
         setShouldRenderChildren(true);
       }
     }
-  }, [status, user, router.pathname]);
+  }, [status, user, router?.pathname]);
 
   function redirectTo(destination: string) {
-    router.push(destination).then(() => setShouldRenderChildren(true));
+    router?.push(destination).then(() => setShouldRenderChildren(true));
+  }
+
+  if (!router) {
+    return <>{children}</>;
   }
 
   if (status !== "loading" && shouldRenderChildren) {
