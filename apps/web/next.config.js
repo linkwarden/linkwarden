@@ -24,24 +24,6 @@ const nextConfig = {
       fs: false,
     };
 
-    // Force Next.js shared-runtime modules to be externalized on the server.
-    // Without this, webpack may bundle html-context.shared-runtime inline,
-    // creating a separate HtmlContext object from the one in pages.runtime.prod.js.
-    // This causes "<Html> should not be imported outside of pages/_document"
-    // during static page generation in Docker builds.
-    if (isServer) {
-      const originalExternals = config.externals;
-      config.externals = [
-        ...(Array.isArray(originalExternals) ? originalExternals : []),
-        function ({ request }, callback) {
-          if (/shared-runtime/.test(request)) {
-            return callback(null, `commonjs ${request}`);
-          }
-          callback();
-        },
-      ];
-    }
-
     return config;
   },
 };
