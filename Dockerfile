@@ -55,6 +55,8 @@ RUN set -eux && \
 
 COPY . .
 
+ENV NODE_ENV=production
+
 RUN yarn prisma:generate && \
     yarn web:build && \
     rm -rf apps/web/.next/cache
