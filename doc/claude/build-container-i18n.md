@@ -117,17 +117,59 @@ same react (next === web) : true
 ```
 
 **Result: Duplicate React ruled out.** All resolve to the same instance at the root.
+All packages (`react`, `react-dom`, `next`) are hoisted to `/data/node_modules/`.
 
-**Remaining hypothesis:** The `HtmlContext` object (created via `React.createContext()`) is
-being duplicated via **chunk splitting** - inlined into both `pages.runtime.prod.js` (the
-Next.js compiled runtime) AND a server chunk (331). Two separate `createContext()` calls
-produce two different context objects, even with the same React. The provider uses one, the
-consumer uses the other, so the consumer sees `undefined`.
+### Diagnostic 2: Post-Build Chunk Inspection (in Docker)
 
-### Diagnostic 2: Post-Build Chunk Inspection (pending)
+```
+--- Server chunks ---
+2298.js 2752.js 331.js 3816.js 4175.js 4713.js 520.js 5329.js
+5632.js 5670.js 6135.js 6968.js 7249.js 7578.js 9006.js 92.js
+9202.js 9205.js 9257.js 9876.js   (20 chunks)
 
-Added to Dockerfile - will show whether `html-context.shared-runtime` is externalized
-(shared module) or bundled inline (duplicated) in the Docker chunks.
+--- Chunk 331 external requires ---
+require("@builder.io/partytown/integration")
+
+--- html-context in chunks ---
+apps/web/.next/server/chunks/331.js        (contains useHtmlContext/HtmlContext)
+
+--- html-context as external in chunks ---
+not externalized                            (bundled inline, NOT a runtime require)
+
+--- createContext count in document chunk ---
+apps/web/.next/server/chunks/2752.js: 1 createContext calls
+apps/web/.next/server/chunks/9257.js: 6 createContext calls
+```
+
+**Key findings:**
+
+1. `html-context.shared-runtime` is **bundled inline** into chunk 331 by webpack, NOT
+   externalized as a `require()` call. This means the chunk has its OWN `HtmlContext` object.
+2. `pages.runtime.prod.js` (pre-compiled Next.js runtime) also bundles its own copy of
+   `html-context.shared-runtime`. It creates a SEPARATE `HtmlContext` object.
+3. Chunk 331 has NO `createContext` calls itself. The `HtmlContext` is created in chunk 2752
+   and shared to 331 via webpack's module system.
+4. **Critically**: chunk IDs differ completely between local and Docker:
+   - Local: 1163, 1201, 1386, 2477, 3061, 3573, 3664, 3937, 4125, 4175, ... (20 chunks)
+   - Docker: 2298, 2752, 331, 3816, 4175, 4713, 520, 5329, ... (20 chunks)
+
+   Webpack generates entirely different chunk splits. This means module groupings and
+   potentially externalization decisions differ between environments.
+
+**Conclusion:** The `html-context.shared-runtime` module should be **externalized** by
+Next.js's webpack config (it's named `*.shared-runtime` for this exact reason). But in both
+environments, it's bundled inline. This creates two `HtmlContext` objects:
+
+- One in `pages.runtime.prod.js` (used by the Provider during document rendering)
+- One in the webpack chunks (used by `Html`/`Head` components via `useContext`)
+
+The Provider and Consumer use different context objects. The Consumer sees `undefined` and
+throws. **This should theoretically fail in both environments**, but somehow locally the
+prerendering code path avoids triggering the Document render. This could be due to:
+
+- Different static generation worker behavior (Node 20.19.2 vs 20.19.6)
+- Different webpack optimization (different module graph due to `yarn workspaces focus`)
+- Platform-specific differences in the rendering pipeline
 
 ## Relevant Next.js Issues
 
@@ -199,9 +241,41 @@ versions eliminates one variable. Change `FROM node:20.19.6-bullseye-slim` to ma
 Move i18n to client-side only (using `i18next` without Next.js integration). This removes
 the per-locale 404 prerendering entirely. Major refactor of how translations work.
 
+### Option F: Force externalization of `html-context.shared-runtime` via webpack config
+
+**Effort: small | Risk: low | Confidence: high (addresses root cause directly)**
+
+Add a webpack externals rule in `next.config.js` to force `html-context.shared-runtime`
+to be resolved at runtime rather than bundled inline. This ensures `pages.runtime.prod.js`
+and the chunks share the exact same `HtmlContext` object.
+
+```js
+webpack(config, { isServer }) {
+  if (isServer) {
+    const orig = config.externals;
+    config.externals = [
+      (ctx, callback) => {
+        if (/html-context\.shared-runtime/.test(ctx.request)) {
+          return callback(null, `commonjs ${ctx.request}`);
+        }
+        // delegate to original externals
+        if (typeof orig === 'function') return orig(ctx, callback);
+        if (Array.isArray(orig)) { /* iterate */ }
+        callback();
+      },
+    ];
+  }
+  return config;
+}
+```
+
 ## Recommended Approach
 
-**Start with Option B** (diagnostic) to confirm whether we're dealing with duplicate React
-instances or chunk splitting. Then apply **Option A** (full install) as the most likely fix.
-If Option A works but the image size increase is unacceptable, investigate why
-`yarn workspaces focus` produces different hoisting.
+Diagnostics confirmed: React is NOT duplicated, but `html-context.shared-runtime` is
+**bundled inline** instead of being externalized. This creates duplicate `HtmlContext` objects
+between the Next.js runtime and the webpack chunks.
+
+**Priority order:**
+1. **Option F** (force externalize) - directly addresses the root cause
+2. **Option A** (full `yarn install`) - may indirectly fix it by changing webpack's decisions
+3. **Option C** (`output: 'standalone'`) - changes the entire build pipeline
