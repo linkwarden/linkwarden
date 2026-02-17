@@ -274,7 +274,7 @@ export default function DashboardLayoutDropdown() {
       >
         <div className="flex flex-col gap-1">
           <div className="flex flex-col gap-1 mx-2">
-            <p className="text-sm text-neutral mb-1">
+            <p className="text-xs font-bold text-neutral mb-1">
               {t("display_on_dashboard")}
             </p>
 
