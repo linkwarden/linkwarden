@@ -1,42 +1,24 @@
 import { prisma } from "@linkwarden/prisma";
 import { Order } from "@linkwarden/types/global";
-import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 
 export default async function getDashboardData(userId: number) {
   const order: Order = { id: "desc" };
 
-  const [dashboardSections, numberOfPinnedLinks, hasUnIndexedLinks] =
-    await Promise.all([
-      prisma.dashboardSection.findMany({ where: { userId } }),
-      prisma.link.count({
-        where: {
-          AND: [
-            {
-              collection: {
-                OR: [{ ownerId: userId }, { members: { some: { userId } } }],
-              },
+  const [dashboardSections, numberOfPinnedLinks] = await Promise.all([
+    prisma.dashboardSection.findMany({ where: { userId } }),
+    prisma.link.count({
+      where: {
+        AND: [
+          {
+            collection: {
+              OR: [{ ownerId: userId }, { members: { some: { userId } } }],
             },
-            { pinnedBy: { some: { id: userId } } },
-          ],
-        },
-      }),
-      prisma.link.findFirst({
-        where: {
-          AND: [
-            {
-              collection: {
-                OR: [{ ownerId: userId }, { members: { some: { userId } } }],
-              },
-            },
-            {
-              NOT: {
-                indexVersion: MEILI_INDEX_VERSION,
-              },
-            },
-          ],
-        },
-      }),
-    ]);
+          },
+          { pinnedBy: { some: { id: userId } } },
+        ],
+      },
+    }),
+  ]);
 
   const viewPinned = dashboardSections.some(
     (section) => section.type === "PINNED_LINKS"
@@ -50,7 +32,7 @@ export default async function getDashboardData(userId: number) {
 
   if (!viewRecent && !viewPinned && collectionSections.length === 0) {
     return {
-      data: { links: [], numberOfPinnedLinks, hasUnIndexedLinks },
+      data: { links: [], numberOfPinnedLinks },
       message: "Dashboard data fetched successfully.",
       statusCode: 200,
       success: true,
@@ -161,7 +143,6 @@ export default async function getDashboardData(userId: number) {
       links: uniqueLinks,
       collectionLinks,
       numberOfPinnedLinks,
-      hasUnIndexedLinks,
     },
     message: "Dashboard data fetched successfully.",
     statusCode: 200,
