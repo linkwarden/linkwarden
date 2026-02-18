@@ -21,7 +21,7 @@ import {
   DashboardSectionType,
 } from "@linkwarden/prisma/client";
 import { DashboardLinks } from "@/components/DashboardLinks";
-import { ViewMode } from "@linkwarden/types";
+import { ViewMode } from "@linkwarden/types/global";
 import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";

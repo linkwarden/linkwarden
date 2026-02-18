@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
-import { TagIncludingLinkCount } from "@linkwarden/types";
+import { TagIncludingLinkCount } from "@linkwarden/types/global";
 import { useTags } from "@linkwarden/router/tags";
 
 export default function TagsScreen() {

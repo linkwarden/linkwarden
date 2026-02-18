@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import {
   LinkIncludingShortenedCollectionAndTags,
   LinkRequestQuery,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useRouter } from "next/router";
 
 const usePublicLinks = (params: LinkRequestQuery = {}) => {

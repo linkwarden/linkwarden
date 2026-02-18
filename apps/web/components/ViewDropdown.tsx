@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import useLocalSettingsStore from "@/store/localSettings";
-import { ViewMode } from "@linkwarden/types";
+import { ViewMode } from "@linkwarden/types/global";
 import { useTranslation } from "next-i18next";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";

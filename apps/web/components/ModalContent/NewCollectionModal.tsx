@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import TextInput from "@/components/TextInput";
 import { Collection } from "@linkwarden/prisma/client";
 import Modal from "../Modal";
-import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
 import { useTranslation } from "next-i18next";
 import { useCreateCollection } from "@linkwarden/router/collections";
 import toast from "react-hot-toast";

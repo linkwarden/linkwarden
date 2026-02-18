@@ -1,9 +1,9 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import useLocalSettingsStore from "@/store/localSettings";
 import {
   ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useEffect, useRef, useState } from "react";
 import unescapeString from "@/lib/client/unescapeString";
 import LinkActions from "@/components/LinkViews/LinkComponents/LinkActions";

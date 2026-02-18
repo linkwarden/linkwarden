@@ -9,8 +9,8 @@ import {
   Linking,
 } from "react-native";
 import { decode } from "html-entities";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
-import { ArchivedFormat } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
+import { ArchivedFormat } from "@linkwarden/types/global";
 import getFormatBasedOnPreference from "@linkwarden/lib/getFormatBasedOnPreference";
 import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
 import {

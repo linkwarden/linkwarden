@@ -1,5 +1,5 @@
 import { UpdateDashboardLayoutSchemaType } from "@linkwarden/lib/schemaValidation";
-import { MobileAuth } from "@linkwarden/types";
+import { MobileAuth } from "@linkwarden/types/global";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 

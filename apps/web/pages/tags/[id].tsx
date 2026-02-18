@@ -6,7 +6,7 @@ import {
   Sort,
   TagIncludingLinkCount,
   ViewMode,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useLinks } from "@linkwarden/router/links";
 import BulkDeleteLinksModal from "@/components/ModalContent/BulkDeleteLinksModal";
 import BulkEditLinksModal from "@/components/ModalContent/BulkEditLinksModal";

@@ -10,7 +10,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   LinkRequestQuery,
   MobileAuth,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useSession } from "next-auth/react";
 import {
   LinkArchiveActionSchemaType,

@@ -4,7 +4,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   Sort,
   ViewMode,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useRouter } from "next/router";
 import React, { ReactElement, useEffect, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";

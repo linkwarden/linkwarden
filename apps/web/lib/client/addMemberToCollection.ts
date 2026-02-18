@@ -1,7 +1,7 @@
 import {
   CollectionIncludingMembersAndLinkCount,
   Member,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import getPublicUserData from "./getPublicUserData";
 import { toast } from "react-hot-toast";
 import { TFunction } from "i18next";

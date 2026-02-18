@@ -15,7 +15,7 @@ import { useAddLink } from "@linkwarden/router/links";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { SheetManager } from "react-native-actions-sheet";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 
 export default function IncomingScreen() {
   const { auth } = useAuthStore();

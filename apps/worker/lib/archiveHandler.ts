@@ -11,9 +11,9 @@ import handleScreenshotAndPdf from "./preservationScheme/handleScreenshotAndPdf"
 import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
 import autoTagLink from "./autoTagLink";
-import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
+import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
 import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
-import { ArchivalSettings } from "@linkwarden/types";
+import { ArchivalSettings } from "@linkwarden/types/global";
 import { getDefaultContextOptions } from "./browser";
 
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;

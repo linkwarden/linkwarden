@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import useAuthStore from "@/store/auth";
 import useDataStore from "@/store/data";
 import { useCollections } from "@linkwarden/router/collections";
-import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
 import Input from "@/components/ui/Input";
 import { Folder, Check } from "lucide-react-native";
 import { useColorScheme } from "nativewind";

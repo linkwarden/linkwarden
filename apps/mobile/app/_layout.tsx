@@ -33,7 +33,7 @@ import useTmpStore from "@/store/tmp";
 import {
   LinkIncludingShortenedCollectionAndTags,
   MobileAuth,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useDeleteLink, useUpdateLink } from "@linkwarden/router/links";
 import { deleteLinkCache } from "@/lib/cache";
 import { queryClient } from "@/lib/queryClient";

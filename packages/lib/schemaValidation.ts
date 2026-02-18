@@ -1,4 +1,4 @@
-import { ArchivedFormat, TokenExpiry } from "@linkwarden/types";
+import { ArchivedFormat, TokenExpiry } from "@linkwarden/types/global";
 import {
   AiTaggingMethod,
   LinksRouteTo,

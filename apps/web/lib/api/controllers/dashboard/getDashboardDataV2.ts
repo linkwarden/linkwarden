@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { Order } from "@linkwarden/types";
+import { Order } from "@linkwarden/types/global";
 import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 
 export default async function getDashboardData(userId: number) {

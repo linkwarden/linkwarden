@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import Modal from "../Modal";
 import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";

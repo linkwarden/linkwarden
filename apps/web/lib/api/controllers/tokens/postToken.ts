@@ -3,7 +3,7 @@ import {
   PostTokenSchemaType,
   PostTokenSchema,
 } from "@linkwarden/lib/schemaValidation";
-import { TokenExpiry } from "@linkwarden/types";
+import { TokenExpiry } from "@linkwarden/types/global";
 import crypto from "crypto";
 import { decode, encode } from "next-auth/jwt";
 

@@ -1,7 +1,7 @@
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 
 const getOriginalFormat = (
   link: LinkIncludingShortenedCollectionAndTags

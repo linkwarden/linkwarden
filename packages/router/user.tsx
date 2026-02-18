@@ -4,7 +4,7 @@ import {
   Subscription,
   User,
 } from "@linkwarden/prisma/client";
-import { MobileAuth } from "@linkwarden/types";
+import { MobileAuth } from "@linkwarden/types/global";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, ReactElement, useMemo } from "react";
-import { AccountSettings } from "@linkwarden/types";
+import { AccountSettings } from "@linkwarden/types/global";
 import { toast } from "react-hot-toast";
 import SettingsLayout from "@/layouts/SettingsLayout";
 import TextInput from "@/components/TextInput";

@@ -17,7 +17,7 @@ import {
   Hash,
   Link,
 } from "lucide-react-native";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import LinkListing from "@/components/LinkListing";
 import { useColorScheme } from "nativewind";
 import { useRouter } from "expo-router";

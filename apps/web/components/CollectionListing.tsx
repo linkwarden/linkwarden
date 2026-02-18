@@ -11,7 +11,7 @@ import Tree, {
 } from "@atlaskit/tree";
 import { Collection } from "@linkwarden/prisma/client";
 import Link from "next/link";
-import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types";
+import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";

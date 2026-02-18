@@ -1,6 +1,6 @@
 import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 import { prisma } from "@linkwarden/prisma";
-import { WorkerStats } from "@linkwarden/types";
+import { WorkerStats } from "@linkwarden/types/global";
 
 export default async function getWorkerStats(userId: number) {
   const linkPending = await prisma.link.count({

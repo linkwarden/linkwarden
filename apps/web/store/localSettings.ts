@@ -1,4 +1,4 @@
-import { Sort } from "@linkwarden/types";
+import { Sort } from "@linkwarden/types/global";
 import { create } from "zustand";
 
 type LocalSettings = {

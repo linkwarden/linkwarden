@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
-import { MobileAuth } from "@linkwarden/types";
+import { MobileAuth } from "@linkwarden/types/global";
 import { Alert } from "react-native";
 import { queryClient } from "@/lib/queryClient";
 import { mmkvPersister } from "@/lib/queryPersister";

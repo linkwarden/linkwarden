@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { Backup } from "@linkwarden/types";
+import { Backup } from "@linkwarden/types/global";
 import { createFolder } from "@linkwarden/filesystem";
 import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 

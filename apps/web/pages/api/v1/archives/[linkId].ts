@@ -11,7 +11,7 @@ import { UsersAndCollections } from "@linkwarden/prisma/client";
 import { UploadFileSchema } from "@linkwarden/lib/schemaValidation";
 import isDemoMode from "@/lib/api/isDemoMode";
 import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
-import { ArchivedFormat } from "@linkwarden/types";
+import { ArchivedFormat } from "@linkwarden/types/global";
 
 export const config = {
   api: {

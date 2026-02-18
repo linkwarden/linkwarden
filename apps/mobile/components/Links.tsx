@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import LinkListing from "@/components/LinkListing";
 import React, { useState } from "react";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import Spinner from "@/components/ui/Spinner";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";

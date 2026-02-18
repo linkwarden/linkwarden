@@ -4,7 +4,7 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { MobileAuth, TagIncludingLinkCount } from "@linkwarden/types";
+import { MobileAuth, TagIncludingLinkCount } from "@linkwarden/types/global";
 import { useSession } from "next-auth/react";
 import { Tag } from "@linkwarden/prisma/client";
 import { ArchivalTagOption } from "@linkwarden/types/inputSelect";

@@ -3,7 +3,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
   ViewMode,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import LinkMasonry from "@/components/LinkViews/LinkComponents/LinkMasonry";

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   CollectionIncludingMembersAndLinkCount,
   MobileAuth,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useSession } from "next-auth/react";
 
 const useCollections = (auth?: MobileAuth) => {

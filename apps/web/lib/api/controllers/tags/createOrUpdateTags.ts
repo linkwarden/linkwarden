@@ -1,6 +1,6 @@
 import { prisma } from "@linkwarden/prisma";
 import { PostTagSchemaType } from "@linkwarden/lib/schemaValidation";
-import { TagIncludingLinkCount } from "@linkwarden/types";
+import { TagIncludingLinkCount } from "@linkwarden/types/global";
 
 export default async function createOrUpdateTags(
   userId: number,

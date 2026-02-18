@@ -1,7 +1,7 @@
 import MainLayout from "@/layouts/MainLayout";
 import React, { ReactElement, useState } from "react";
 import PageHeader from "@/components/PageHeader";
-import { Sort, ViewMode } from "@linkwarden/types";
+import { Sort, ViewMode } from "@linkwarden/types/global";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import LinkListOptions from "@/components/LinkListOptions";

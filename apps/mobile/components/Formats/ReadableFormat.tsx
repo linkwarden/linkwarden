@@ -11,7 +11,7 @@ import { decode } from "html-entities";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { CalendarDays, Link } from "lucide-react-native";
-import { ArchivedFormat } from "@linkwarden/types";
+import { ArchivedFormat } from "@linkwarden/types/global";
 import { Link as LinkType } from "@linkwarden/prisma/client";
 
 type Props = {

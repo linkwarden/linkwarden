@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { AccountSettings } from "@linkwarden/types";
+import { AccountSettings } from "@linkwarden/types/global";
 import bcrypt from "bcrypt";
 import { removeFile, createFile, createFolder } from "@linkwarden/filesystem";
 import sendChangeEmailVerificationRequest from "@/lib/api/sendChangeEmailVerificationRequest";
