@@ -23,7 +23,7 @@ import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import Icon from "./Icon";
 import { IconWeight } from "@phosphor-icons/react";
 import Droppable from "./Droppable";
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import { Active, useDndContext } from "@dnd-kit/core";
 
 interface ExtendedTreeItem extends TreeItem {

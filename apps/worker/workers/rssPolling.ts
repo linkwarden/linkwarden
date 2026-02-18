@@ -1,6 +1,7 @@
 import { prisma } from "@linkwarden/prisma";
 import Parser from "rss-parser";
-import { delay, rssHandler } from "@linkwarden/lib";
+import { delay } from "@linkwarden/lib/utils";
+import { rssHandler } from "@linkwarden/lib/rssHandler";
 
 const pollingIntervalInSeconds =
   (Number(process.env.NEXT_PUBLIC_RSS_POLLING_INTERVAL_MINUTES) || 60) * 60; // Default to one hour if not set

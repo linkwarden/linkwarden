@@ -15,7 +15,7 @@ import { useConfig } from "@linkwarden/router/config";
 import { useTags, useUpsertTags } from "@linkwarden/router/tags";
 import TagSelection from "@/components/InputSelect/TagSelection";
 import { useArchivalTags } from "@/hooks/useArchivalTags";
-import { isArchivalTag } from "@linkwarden/lib";
+import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,

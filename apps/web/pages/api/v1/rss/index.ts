@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { rssHandler } from "@linkwarden/lib";
+import { rssHandler } from "@linkwarden/lib/rssHandler";
 import setCollection from "@/lib/api/setCollection";
 import verifyUser from "@/lib/api/verifyUser";
 import { PostRssSubscriptionSchema } from "@linkwarden/lib/schemaValidation";

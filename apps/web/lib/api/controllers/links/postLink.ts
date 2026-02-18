@@ -6,7 +6,7 @@ import {
   PostLinkSchema,
   PostLinkSchemaType,
 } from "@linkwarden/lib/schemaValidation";
-import { hasPassedLimit } from "@linkwarden/lib";
+import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 
 export default async function postLink(
   body: PostLinkSchemaType,

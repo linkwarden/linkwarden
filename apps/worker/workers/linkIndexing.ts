@@ -1,4 +1,5 @@
-import { delay, meiliClient } from "@linkwarden/lib";
+import { meiliClient } from "@linkwarden/lib/meilisearchClient";
+import { delay } from "@linkwarden/lib/utils";
 import { prisma } from "@linkwarden/prisma";
 import getLinkBatch from "../lib/getLinkBatch";
 import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";

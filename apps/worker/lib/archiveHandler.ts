@@ -12,7 +12,7 @@ import imageHandler from "./preservationScheme/imageHandler";
 import pdfHandler from "./preservationScheme/pdfHandler";
 import autoTagLink from "./autoTagLink";
 import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
-import { isArchivalTag } from "@linkwarden/lib";
+import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
 import { ArchivalSettings } from "@linkwarden/types";
 import { getDefaultContextOptions } from "./browser";
 

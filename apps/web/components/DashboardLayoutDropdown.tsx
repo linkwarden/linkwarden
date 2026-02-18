@@ -29,7 +29,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import toast from "react-hot-toast";
 
 interface DashboardSectionOption {

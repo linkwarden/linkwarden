@@ -25,7 +25,7 @@ import openLink from "@/lib/client/openLink";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useDraggable } from "@dnd-kit/core";
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import { TFunction } from "i18next";
 
 type Props = {

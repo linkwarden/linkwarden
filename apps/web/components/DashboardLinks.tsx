@@ -26,7 +26,7 @@ import LinkTypeBadge from "./LinkViews/LinkComponents/LinkTypeBadge";
 import LinkPin from "./LinkViews/LinkComponents/LinkPin";
 import { Separator } from "./ui/separator";
 import { useDraggable } from "@dnd-kit/core";
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import { useTranslation } from "next-i18next";
 
 export function DashboardLinks({

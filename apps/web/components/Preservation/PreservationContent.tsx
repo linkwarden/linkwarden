@@ -9,10 +9,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
 } from "@linkwarden/types";
-import {
-  atLeastOneFormatAvailable,
-  formatAvailable,
-} from "@linkwarden/lib/formatStats";
+import { formatAvailable } from "@linkwarden/lib/formatStats";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
 type Props = {
