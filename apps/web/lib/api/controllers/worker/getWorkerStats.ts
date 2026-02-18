@@ -1,3 +1,4 @@
+import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 import { prisma } from "@linkwarden/prisma";
 import { WorkerStats } from "@linkwarden/types";
 
@@ -32,17 +33,18 @@ export default async function getWorkerStats(userId: number) {
     },
   });
 
-  const INDEX_VERSION = 1;
-
   const searchPending = await prisma.link.count({
     where: {
-      OR: [{ indexVersion: { not: INDEX_VERSION } }, { indexVersion: null }],
+      OR: [
+        { indexVersion: { not: MEILI_INDEX_VERSION } },
+        { indexVersion: null },
+      ],
     },
   });
 
   const searchDone = await prisma.link.count({
     where: {
-      indexVersion: INDEX_VERSION,
+      indexVersion: MEILI_INDEX_VERSION,
     },
   });
 
