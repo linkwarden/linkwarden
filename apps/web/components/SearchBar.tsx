@@ -91,7 +91,7 @@ export default function SearchBar({ placeholder }: Props) {
   };
 
   return (
-    <div className="flex items-center relative group z-50">
+    <div className="flex items-center relative group">
       <label
         htmlFor="search-box"
         className="inline-flex items-center w-fit absolute left-1 pointer-events-none rounded-md p-1 text-primary"
@@ -142,7 +142,7 @@ export default function SearchBar({ placeholder }: Props) {
       />
 
       {showSuggestions && (
-        <div className="absolute left-0 top-full mt-2 w-full">
+        <div className="absolute left-0 top-full mt-2 w-full z-50">
           <div
             className="border border-neutral-content bg-base-200 shadow-md rounded-md px-2 py-1 flex flex-col gap-1"
             onMouseDown={(e) => e.preventDefault()}
