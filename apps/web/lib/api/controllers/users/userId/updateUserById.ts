@@ -189,7 +189,6 @@ export default async function updateUserById(
     data: {
       name: data.name,
       username: data.username,
-      isPrivate: data.isPrivate,
       image:
         data.image && data.image.startsWith("http")
           ? data.image
@@ -218,7 +217,6 @@ export default async function updateUserById(
           : undefined,
     },
     include: {
-      whitelistedUsers: true,
       subscriptions: true,
       dashboardSections: true,
       parentSubscription: {
@@ -230,7 +228,6 @@ export default async function updateUserById(
   });
 
   const {
-    whitelistedUsers,
     password,
     subscriptions,
     dashboardSections,
@@ -238,48 +235,8 @@ export default async function updateUserById(
     ...userInfo
   } = updatedUser;
 
-  // If user.whitelistedUsers is not provided, we will assume the whitelistedUsers should be removed
-  const newWhitelistedUsernames: string[] = data.whitelistedUsers || [];
-
-  // Get the current whitelisted usernames
-  const currentWhitelistedUsernames: string[] = whitelistedUsers.map(
-    (data) => data.username
-  );
-
-  // Find the usernames to be deleted (present in current but not in new)
-  const usernamesToDelete: string[] = currentWhitelistedUsernames.filter(
-    (username) => !newWhitelistedUsernames.includes(username)
-  );
-
-  // Find the usernames to be created (present in new but not in current)
-  const usernamesToCreate: string[] = newWhitelistedUsernames.filter(
-    (username) =>
-      !currentWhitelistedUsernames.includes(username) && username.trim() !== ""
-  );
-
-  // Delete whitelistedUsers that are not present in the new list
-  await prisma.whitelistedUser.deleteMany({
-    where: {
-      userId: userId,
-      username: {
-        in: usernamesToDelete,
-      },
-    },
-  });
-
-  // Create new whitelistedUsers that are not in the current list, no create many ;(
-  for (const username of usernamesToCreate) {
-    await prisma.whitelistedUser.create({
-      data: {
-        username,
-        userId: userId,
-      },
-    });
-  }
-
   const response = {
     ...userInfo,
-    whitelistedUsers: newWhitelistedUsernames,
     image: userInfo.image ? `${userInfo.image}?${Date.now()}` : "",
     subscription: {
       active: subscriptions?.active,

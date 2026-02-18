@@ -35,7 +35,6 @@ const Page: NextPageWithLayout = () => {
         id: account.id,
         username: account.username,
         email: account.email,
-        whitelistedUsers: account.whitelistedUsers || [],
         newPassword,
         oldPassword,
       },

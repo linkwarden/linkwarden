@@ -49,7 +49,6 @@ const useUser = (auth?: MobileAuth) => {
             };
           };
         } & {
-          whitelistedUsers: string[];
           dashboardSections: DashboardSection[];
         };
 
@@ -70,7 +69,6 @@ const useUser = (auth?: MobileAuth) => {
           };
         };
       } & {
-        whitelistedUsers: string[];
         dashboardSections: DashboardSection[];
       },
   });
@@ -132,8 +130,6 @@ const useUpdateUserPreference = () => {
               email: string | null | undefined;
             };
           };
-        } & {
-          whitelistedUsers: string[];
         };
     },
     onSuccess: (data) => {

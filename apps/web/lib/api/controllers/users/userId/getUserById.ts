@@ -14,7 +14,6 @@ type GetUserByIdResponse = Omit<User, "password"> &
       };
     };
   } & {
-    whitelistedUsers: string[];
     dashboardSections: DashboardSection[];
   };
 
@@ -24,11 +23,6 @@ export default async function getUserById(userId: number) {
       id: userId,
     },
     include: {
-      whitelistedUsers: {
-        select: {
-          username: true,
-        },
-      },
       subscriptions: true,
       parentSubscription: {
         include: {
@@ -39,19 +33,13 @@ export default async function getUserById(userId: number) {
     },
   });
 
-  if (!user)
-    return { response: "User not found or profile is private.", status: 404 };
-
-  const whitelistedUsernames = user.whitelistedUsers?.map(
-    (usernames) => usernames.username
-  );
+  if (!user) return { response: "User not found.", status: 404 };
 
   const { password, subscriptions, parentSubscription, ...lessSensitiveInfo } =
     user;
 
   const data: GetUserByIdResponse = {
     ...lessSensitiveInfo,
-    whitelistedUsers: whitelistedUsernames,
     subscription: {
       active: subscriptions?.active ?? false,
       quantity: subscriptions?.quantity ?? 0,

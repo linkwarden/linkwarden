@@ -45,10 +45,8 @@ const Page: NextPageWithLayout = () => {
           emailVerified: null,
           password: undefined,
           image: "",
-          isPrivate: false,
           // @ts-ignore
           createdAt: null,
-          whitelistedUsers: [],
         } as unknown as AccountSettings)
   );
 
@@ -56,16 +54,12 @@ const Page: NextPageWithLayout = () => {
 
   const { t } = useTranslation();
 
-  const [whitelistedUsersTextbox, setWhiteListedUsersTextbox] = useState("");
-
   useEffect(() => {
     if (!account?.id) return;
 
     setUser({
       ...account,
-      whitelistedUsers: account?.whitelistedUsers || [],
     });
-    setWhiteListedUsersTextbox(account?.whitelistedUsers?.join(", ") || "");
   }, [account]);
 
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +112,6 @@ const Page: NextPageWithLayout = () => {
         locale: user.locale,
         image: user.image,
         isPrivate: user.isPrivate,
-        whitelistedUsers: stringToArray(whitelistedUsersTextbox),
         password: password ? password : undefined,
       },
       {
@@ -160,29 +153,14 @@ const Page: NextPageWithLayout = () => {
   const hasAccountChanges = useMemo(() => {
     if (!account?.id) return false;
 
-    const currentWhitelist = normalizeUserList(
-      stringToArray(whitelistedUsersTextbox)
-    );
-    const originalWhitelist = normalizeUserList(
-      account?.whitelistedUsers || []
-    );
-
-    const whitelistChanged =
-      currentWhitelist.length !== originalWhitelist.length ||
-      currentWhitelist.some(
-        (value, index) => value !== originalWhitelist[index]
-      );
-
     return (
       (user.name || "") !== (account.name || "") ||
       (user.username || "") !== (account.username || "") ||
       (user.email || "") !== (account.email || "") ||
       (user.locale || "") !== (account.locale || "") ||
-      (user.image || "") !== (account.image || "") ||
-      Boolean(user.isPrivate) !== Boolean(account.isPrivate) ||
-      whitelistChanged
+      (user.image || "") !== (account.image || "")
     );
-  }, [account, user, whitelistedUsersTextbox]);
+  }, [account, user]);
 
   return (
     <>
@@ -305,38 +283,6 @@ const Page: NextPageWithLayout = () => {
           </div>
         </div>
 
-        <div className="sm:-mt-3">
-          <Checkbox
-            label={t("make_profile_private")}
-            state={user.isPrivate}
-            onClick={() => setUser({ ...user, isPrivate: !user.isPrivate })}
-          />
-
-          <p className="text-neutral text-sm">{t("profile_privacy_info")}</p>
-
-          {user.isPrivate && (
-            <div className="pl-5">
-              <p className="mt-2">{t("whitelisted_users")}</p>
-              <p className="text-neutral text-sm mb-3">
-                {t("whitelisted_users_info")}
-              </p>
-              <textarea
-                className="w-full max-w-screen-sm resize-none border rounded-md duration-100 bg-base-200 p-2 outline-none border-neutral-content focus:border-primary"
-                placeholder={t("whitelisted_users_placeholder")}
-                value={whitelistedUsersTextbox}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setWhiteListedUsersTextbox(value);
-                  setUser((prev: AccountSettings) => ({
-                    ...prev,
-                    whitelistedUsers: stringToArray(value),
-                  }));
-                }}
-              />
-            </div>
-          )}
-        </div>
-
         <Button
           variant="accent"
           onClick={() => {
@@ -347,7 +293,7 @@ const Page: NextPageWithLayout = () => {
             }
           }}
           disabled={submitLoader || !hasAccountChanges}
-          className="mt-2 w-full sm:w-fit"
+          className="w-full sm:w-fit"
         >
           {t("save_changes")}
         </Button>

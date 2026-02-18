@@ -120,7 +120,6 @@ const Page: NextPageWithLayout = () => {
     id: account?.id,
     username: account?.username,
     email: account?.email,
-    whitelistedUsers: account?.whitelistedUsers || [],
   });
 
   const hasAiChanges =
