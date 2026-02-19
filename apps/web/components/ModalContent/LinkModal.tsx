@@ -43,7 +43,7 @@ export default function LinkModal({
 
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
-  const deleteLink = useDeleteLink();
+  const deleteLink = useDeleteLink({ toast, t });
 
   const [mode, setMode] = useState<"view" | "edit">(activeMode || "view");
 
@@ -51,13 +51,8 @@ export default function LinkModal({
     setTimeout(() => (document.body.style.pointerEvents = ""), 0);
 
     if (e.shiftKey && link.id) {
-      const loading = toast.loading(t("deleting"));
-      await deleteLink.mutateAsync(link.id, {
-        onSettled: (data, error) => {
-          toast.dismiss(loading);
-          error ? toast.error(error.message) : toast.success(t("deleted"));
-        },
-      });
+      deleteLink.mutateAsync(link.id);
+
       onClose();
     } else {
       onDelete();

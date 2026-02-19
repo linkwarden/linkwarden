@@ -45,7 +45,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
   const { colorScheme } = useColorScheme();
   const { data } = useDataStore();
 
-  const deleteLink = useDeleteLink(auth);
+  const deleteLink = useDeleteLink({ auth, Alert });
 
   const [url, setUrl] = useState("");
 
@@ -319,12 +319,10 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 {
                   text: "Delete",
                   style: "destructive",
-                  onPress: () => {
-                    deleteLink.mutate(link.id as number, {
-                      onSuccess: async () => {
-                        await deleteLinkCache(link.id as number);
-                      },
-                    });
+                  onPress: async () => {
+                    deleteLink.mutate(link.id as number);
+
+                    await deleteLinkCache(link.id as number);
                   },
                 },
               ]

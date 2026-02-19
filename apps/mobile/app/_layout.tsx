@@ -121,7 +121,7 @@ const RootComponent = ({
 }) => {
   const { colorScheme } = useColorScheme();
   const updateLink = useUpdateLink(auth);
-  const deleteLink = useDeleteLink(auth);
+  const deleteLink = useDeleteLink({ auth, Alert });
 
   const { tmp } = useTmpStore();
 
@@ -282,18 +282,15 @@ const RootComponent = ({
                                     {
                                       text: "Delete",
                                       style: "destructive",
-                                      onPress: () => {
+                                      onPress: async () => {
                                         deleteLink.mutate(
-                                          tmp.link?.id as number,
-                                          {
-                                            onSuccess: async () => {
-                                              await deleteLinkCache(
-                                                tmp.link?.id as number
-                                              );
-                                            },
-                                          }
+                                          tmp.link?.id as number
                                         );
-                                        // go back
+
+                                        await deleteLinkCache(
+                                          tmp.link?.id as number
+                                        );
+
                                         router.back();
                                       },
                                     },

@@ -54,7 +54,7 @@ export default function LinkActions({
   const [refreshPreservationsModal, setRefreshPreservationsModal] =
     useState(false);
 
-  const deleteLink = useDeleteLink();
+  const deleteLink = useDeleteLink({ toast, t });
 
   const updateArchive = async () => {
     const load = toast.loading(t("sending_request"));
@@ -131,13 +131,7 @@ export default function LinkActions({
                   onClick={async (e) => {
                     if (e.shiftKey) {
                       const load = toast.loading(t("deleting"));
-                      await deleteLink.mutateAsync(link.id as number, {
-                        onSettled: (data, error) => {
-                          toast.dismiss(load);
-                          if (error) toast.error(error.message);
-                          else toast.success(t("deleted"));
-                        },
-                      });
+                      await deleteLink.mutateAsync(link.id as number);
                     } else {
                       setDeleteLinkModal(true);
                     }

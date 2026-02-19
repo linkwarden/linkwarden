@@ -193,6 +193,48 @@ const upsertLinkInDashboardData = (
   };
 };
 
+const removeLinkFromInfiniteData = (oldData: any, linkId: number) => {
+  if (!oldData?.pages?.length) return oldData;
+
+  return {
+    ...oldData,
+    pages: oldData.pages.map((page: any) => ({
+      ...page,
+      links: (page.links ?? []).filter((item: any) => item.id !== linkId),
+    })),
+  };
+};
+
+const removeLinkFromDashboardData = (oldData: any, linkId: number) => {
+  if (!oldData) return oldData;
+
+  const removedLink = (oldData.links ?? []).find(
+    (item: any) => item.id === linkId
+  );
+  const numberOfPinnedLinks = removedLink?.pinnedBy?.length
+    ? Math.max(0, (oldData.numberOfPinnedLinks ?? 0) - 1)
+    : oldData.numberOfPinnedLinks;
+
+  const hasCollectionLinks = oldData.collectionLinks != null;
+  const collectionLinks = hasCollectionLinks
+    ? { ...oldData.collectionLinks }
+    : oldData.collectionLinks;
+  if (hasCollectionLinks) {
+    for (const [collectionId, links] of Object.entries(collectionLinks)) {
+      collectionLinks[Number(collectionId)] = (links as any[]).filter(
+        (item: any) => item.id !== linkId
+      );
+    }
+  }
+
+  return {
+    ...oldData,
+    links: (oldData.links ?? []).filter((item: any) => item.id !== linkId),
+    collectionLinks,
+    numberOfPinnedLinks,
+  };
+};
+
 const useAddLink = ({
   auth,
   Alert,
@@ -393,7 +435,17 @@ const useUpdateLink = (auth?: MobileAuth) => {
   });
 };
 
-const useDeleteLink = (auth?: MobileAuth) => {
+const useDeleteLink = ({
+  auth,
+  Alert,
+  toast,
+  t,
+}: {
+  auth?: MobileAuth;
+  Alert?: typeof Alert_;
+  toast?: typeof toaster;
+  t?: TFunction;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -415,6 +467,57 @@ const useDeleteLink = (auth?: MobileAuth) => {
       if (!response.ok) throw new Error(data.response);
 
       return data.response;
+    },
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["links"] });
+      await queryClient.cancelQueries({ queryKey: ["dashboardData"] });
+      await queryClient.cancelQueries({ queryKey: ["publicLinks"] });
+
+      const previousLinks = queryClient.getQueriesData({
+        queryKey: ["links"],
+      });
+      const previousPublicLinks = queryClient.getQueriesData({
+        queryKey: ["publicLinks"],
+      });
+      const previousDashboard = queryClient.getQueryData(["dashboardData"]);
+
+      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) =>
+        removeLinkFromInfiniteData(oldData, id)
+      );
+
+      queryClient.setQueriesData(
+        { queryKey: ["publicLinks"] },
+        (oldData: any) => removeLinkFromInfiniteData(oldData, id)
+      );
+
+      queryClient.setQueryData(["dashboardData"], (oldData: any) =>
+        removeLinkFromDashboardData(oldData, id)
+      );
+
+      return {
+        previousLinks,
+        previousPublicLinks,
+        previousDashboard,
+      };
+    },
+    onError: (error, _variables, context) => {
+      if (toast && t) toast.error(t(error.message));
+      else if (Alert)
+        Alert.alert("Error", "There was an error adding the link.");
+
+      if (!context) return;
+
+      context.previousLinks?.forEach(([queryKey, data]: [unknown, unknown]) => {
+        queryClient.setQueryData(queryKey as QueryKey, data);
+      });
+
+      context.previousPublicLinks?.forEach(
+        ([queryKey, data]: [unknown, unknown]) => {
+          queryClient.setQueryData(queryKey as QueryKey, data);
+        }
+      );
+
+      queryClient.setQueryData(["dashboardData"], context.previousDashboard);
     },
     onSuccess: (data) => {
       queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
