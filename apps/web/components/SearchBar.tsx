@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@linkwarden/router/user";
 
 type Props = {
   placeholder?: string;
@@ -71,9 +72,11 @@ export default function SearchBar({ placeholder }: Props) {
   const router = useRouter();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { data: user } = useUser();
+
+  const [dismissSearchNote, setDismissSearchNote] = useState(false);
 
   useEffect(() => {
     router.query.q
@@ -106,11 +109,9 @@ export default function SearchBar({ placeholder }: Props) {
         placeholder={placeholder || t("search_for_links")}
         value={searchQuery}
         onFocus={() => {
-          setIsFocused(true);
           setShowSuggestions(true);
         }}
         onBlur={() => {
-          setIsFocused(false);
           setShowSuggestions(false);
         }}
         onChange={(e) => {
@@ -157,7 +158,7 @@ export default function SearchBar({ placeholder }: Props) {
                 <button
                   key={entry.operator}
                   type="button"
-                  className="flex items-center gap-2 justify-between rounded-md px-2 py-1 text-left hover:bg-base-100 duration-100"
+                  className="flex items-center gap-2 justify-between rounded-md px-2 py-1 text-left hover:bg-neutral-content duration-100"
                   onClick={() => handleSuggestionClick(entry.operator)}
                 >
                   <div className="flex items-center gap-2">
@@ -173,7 +174,7 @@ export default function SearchBar({ placeholder }: Props) {
               ))}
             </div>
             <div className="flex justify-end">
-              <Button asChild variant="simple" size="sm" className="text-xs">
+              <Button asChild variant="ghost" size="sm" className="text-xs">
                 <Link
                   href="https://docs.linkwarden.app/Usage/advanced-search"
                   target="_blank"
@@ -184,6 +185,26 @@ export default function SearchBar({ placeholder }: Props) {
                 </Link>
               </Button>
             </div>
+
+            {user?.hasUnIndexedLinks && !dismissSearchNote ? (
+              <div
+                role="alert"
+                className="border border-neutral p-2 my-1 rounded flex flex-col gap-2"
+              >
+                <p className="text-xs text-neutral">
+                  <i className="bi-info-circle text-primary mr-1" />
+                  <b>{t("note")}:</b> {t("search_unindexed_links_in_bg_info")}
+                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => setDismissSearchNote(true)}
+                >
+                  Dismiss
+                </Button>
+              </div>
+            ) : undefined}
           </div>
         </div>
       )}

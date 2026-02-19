@@ -1,37 +1,35 @@
+import { MEILI_INDEX_VERSION } from "@linkwarden/lib/constants";
 import { prisma } from "@linkwarden/prisma";
-import {
-  DashboardSection,
-  Subscription,
-  User,
-} from "@linkwarden/prisma/client";
-
-type GetUserByIdResponse = Omit<User, "password"> &
-  Partial<{ subscription: Pick<Subscription, "active" | "quantity"> }> & {
-    parentSubscription: {
-      active: boolean | undefined;
-      user: {
-        email: string | null | undefined;
-      };
-    };
-  } & {
-    dashboardSections: DashboardSection[];
-  };
+import { GetUserByIdResponse } from "@linkwarden/types/global";
 
 export default async function getUserById(userId: number) {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-    include: {
-      subscriptions: true,
-      parentSubscription: {
-        include: {
-          user: true,
-        },
+  const [user, firstUnIndexedLinks] = await Promise.all([
+    prisma.user.findUnique({
+      where: {
+        id: userId,
       },
-      dashboardSections: true,
-    },
-  });
+      include: {
+        subscriptions: true,
+        parentSubscription: {
+          include: {
+            user: true,
+          },
+        },
+        dashboardSections: true,
+      },
+    }),
+    prisma.link.findFirst({
+      where: {
+        collection: {
+          OR: [{ ownerId: userId }, { members: { some: { userId } } }],
+        },
+        OR: [
+          { indexVersion: null },
+          { NOT: { indexVersion: MEILI_INDEX_VERSION } },
+        ],
+      },
+    }),
+  ]);
 
   if (!user) return { response: "User not found.", status: 404 };
 
@@ -50,6 +48,7 @@ export default async function getUserById(userId: number) {
         email: parentSubscription?.user.email,
       },
     },
+    hasUnIndexedLinks: !!firstUnIndexedLinks,
   };
 
   return { response: data, status: 200 };
