@@ -7,17 +7,20 @@ import { useRouter } from "next/router";
 import Modal from "../Modal";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
-import { useAddLink } from "@linkwarden/router/links";
 import toast from "react-hot-toast";
-import { PostLinkSchemaType } from "@linkwarden/lib/schemaValidation";
+import {
+  PostLinkSchema,
+  PostLinkSchemaType,
+} from "@linkwarden/lib/schemaValidation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "../ui/separator";
 
 type Props = {
-  onClose: Function;
+  onClose: () => void;
+  onSubmit: Function;
 };
 
-export default function NewLinkModal({ onClose }: Props) {
+export default function NewLinkModal({ onClose, onSubmit }: Props) {
   const { t } = useTranslation();
   const initial = {
     name: "",
@@ -33,8 +36,6 @@ export default function NewLinkModal({ onClose }: Props) {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [link, setLink] = useState<PostLinkSchemaType>(initial);
-  const addLink = useAddLink();
-  const [submitLoader, setSubmitLoader] = useState(false);
   const [optionsExpanded, setOptionsExpanded] = useState(false);
   const router = useRouter();
   const { data: collections = [] } = useCollections();
@@ -80,22 +81,17 @@ export default function NewLinkModal({ onClose }: Props) {
   }, []);
 
   const submit = async () => {
-    if (!submitLoader) {
-      setSubmitLoader(true);
-      const load = toast.loading(t("creating_link"));
-      await addLink.mutateAsync(link, {
-        onSettled: (data, error) => {
-          setSubmitLoader(false);
-          toast.dismiss(load);
-          if (error) {
-            toast.error(t(error.message));
-          } else {
-            onClose();
-            toast.success(t("link_created"));
-          }
-        },
-      });
-    }
+    const dataValidation = PostLinkSchema.safeParse(link);
+
+    if (!dataValidation.success)
+      return toast.error(
+        `Error: ${
+          dataValidation.error.issues[0].message
+        } [${dataValidation.error.issues[0].path.join(", ")}]`
+      );
+
+    onSubmit(link);
+    onClose();
   };
 
   return (

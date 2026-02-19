@@ -3,6 +3,7 @@ import {
   useQueryClient,
   useMutation,
   useQuery,
+  QueryKey,
 } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
@@ -111,6 +112,84 @@ const buildQueryString = (params: LinkRequestQuery) => {
     .join("&");
 };
 
+const upsertLinkInList = (
+  links: LinkIncludingShortenedCollectionAndTags[] = [],
+  link: LinkIncludingShortenedCollectionAndTags,
+  optimisticId?: number
+) => {
+  const existingIndex = links.findIndex(
+    (item) => item.id === optimisticId || item.id === link.id
+  );
+
+  if (existingIndex === -1) return [link, ...links];
+
+  const nextLinks = [...links];
+  nextLinks[existingIndex] = link;
+  return nextLinks;
+};
+
+const upsertLinkInInfiniteData = (
+  oldData: any,
+  link: LinkIncludingShortenedCollectionAndTags,
+  optimisticId?: number
+) => {
+  if (!oldData?.pages?.length) return oldData;
+
+  let replaced = false;
+  const pages = oldData.pages.map((page: any) => {
+    const links = page?.links?.map((item: any) => {
+      if (item.id === optimisticId || item.id === link.id) {
+        replaced = true;
+        return link;
+      }
+      return item;
+    });
+
+    return { ...page, links };
+  });
+
+  if (!replaced) {
+    const firstPage = pages[0];
+    pages[0] = {
+      ...firstPage,
+      links: upsertLinkInList(firstPage?.links ?? [], link, optimisticId),
+    };
+  }
+
+  return { ...oldData, pages };
+};
+
+const upsertLinkInDashboardData = (
+  oldData: any,
+  link: LinkIncludingShortenedCollectionAndTags,
+  optimisticId?: number
+) => {
+  if (!oldData) return oldData;
+
+  const updatedLinks = upsertLinkInList(
+    oldData.links ?? [],
+    link,
+    optimisticId
+  ).slice(0, 16);
+
+  const collectionLinks = { ...(oldData.collectionLinks ?? {}) };
+  const collectionId = link.collection?.id;
+
+  if (collectionId != null && collectionLinks[collectionId]) {
+    collectionLinks[collectionId] = upsertLinkInList(
+      collectionLinks[collectionId],
+      link,
+      optimisticId
+    ).slice(0, 16);
+  }
+
+  return {
+    ...oldData,
+    links: updatedLinks,
+    collectionLinks,
+  };
+};
+
 const useAddLink = (auth?: MobileAuth) => {
   const queryClient = useQueryClient();
 
@@ -144,20 +223,114 @@ const useAddLink = (auth?: MobileAuth) => {
 
       return data.response;
     },
-    onSuccess: (data: LinkIncludingShortenedCollectionAndTags[]) => {
-      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) => {
-        if (!oldData) return undefined;
-        return {
-          pages: [
-            {
-              links: [data, ...oldData?.pages?.[0]?.links],
-              nextCursor: oldData?.pages?.[0]?.nextCursor,
-            },
-            ...oldData?.pages?.slice(1),
-          ],
-          pageParams: oldData?.pageParams,
-        };
+    onMutate: async (link) => {
+      await queryClient.cancelQueries({ queryKey: ["links"] });
+      await queryClient.cancelQueries({ queryKey: ["dashboardData"] });
+
+      const previousLinks = queryClient.getQueriesData({
+        queryKey: ["links"],
       });
+      const previousDashboard = queryClient.getQueryData(["dashboardData"]);
+
+      const collections =
+        (queryClient.getQueryData(["collections"]) as any[]) ?? [];
+      const tags = (queryClient.getQueryData(["tags"]) as any[]) ?? [];
+      const user = queryClient.getQueryData(["user"]) as any;
+
+      const collectionFromId =
+        link.collection?.id != null
+          ? collections.find(
+              (collection) => collection.id === link.collection?.id
+            )
+          : undefined;
+      const collectionFromName =
+        !collectionFromId && link.collection?.name
+          ? collections.find(
+              (collection) => collection.name === link.collection?.name
+            )
+          : undefined;
+      const resolvedCollection = collectionFromId ?? collectionFromName;
+
+      const tempId = -Date.now();
+      const tempCollectionId = tempId - 1;
+      const collectionId =
+        resolvedCollection?.id ?? link.collection?.id ?? tempCollectionId;
+      const collectionName =
+        resolvedCollection?.name ?? link.collection?.name ?? "Unorganized";
+
+      const resolvedTags =
+        link.tags?.map((tag, index) => {
+          if (tag.id != null) {
+            return (
+              tags.find((existing) => existing.id === tag.id) ?? {
+                id: tag.id,
+                name: tag.name,
+              }
+            );
+          }
+
+          const existingTag = tags.find(
+            (existing) => existing.name === tag.name
+          );
+          return (
+            existingTag ?? {
+              id: tempId - 2 - index,
+              name: tag.name,
+            }
+          );
+        }) ?? [];
+
+      const optimisticLink = {
+        id: tempId,
+        name: link.name?.trim() || link.url || "",
+        url: link.url || "",
+        description: link.description || "",
+        type: link.type || "url",
+        preview: "",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        collectionId,
+        collection:
+          resolvedCollection ??
+          ({
+            id: collectionId,
+            name: collectionName,
+            ownerId: user?.id ?? 0,
+          } as any),
+        tags: resolvedTags,
+      } as LinkIncludingShortenedCollectionAndTags;
+
+      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) =>
+        upsertLinkInInfiniteData(oldData, optimisticLink, tempId)
+      );
+
+      queryClient.setQueryData(["dashboardData"], (oldData: any) =>
+        upsertLinkInDashboardData(oldData, optimisticLink, tempId)
+      );
+
+      return {
+        previousLinks,
+        previousDashboard,
+        optimisticId: tempId,
+      };
+    },
+    onError: (_error, _variables, context) => {
+      if (!context) return;
+
+      context.previousLinks?.forEach(([queryKey, data]: [unknown, unknown]) => {
+        queryClient.setQueryData(queryKey as QueryKey, data);
+      });
+
+      queryClient.setQueryData(["dashboardData"], context.previousDashboard);
+    },
+    onSuccess: (
+      data: LinkIncludingShortenedCollectionAndTags,
+      _link,
+      context
+    ) => {
+      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) =>
+        upsertLinkInInfiniteData(oldData, data, context?.optimisticId)
+      );
 
       queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
       queryClient.invalidateQueries({ queryKey: ["collections"] });

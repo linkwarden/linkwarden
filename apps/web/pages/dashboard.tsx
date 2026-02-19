@@ -26,7 +26,7 @@ import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
 import Droppable from "@/components/Droppable";
-import { useUpdateLink } from "@linkwarden/router/links";
+import { useAddLink, useUpdateLink } from "@linkwarden/router/links";
 import { NextPageWithLayout } from "./_app";
 
 const Page: NextPageWithLayout = () => {
@@ -129,6 +129,20 @@ const Page: NextPageWithLayout = () => {
     );
   };
 
+  const addLink = useAddLink();
+
+  const submitLink = (link: any) => {
+    addLink.mutateAsync(link, {
+      onSettled: (data, error) => {
+        if (error) {
+          toast.error(t(error.message));
+        } else {
+          toast.success(t("link_created"));
+        }
+      },
+    });
+  };
+
   return (
     <>
       <div className="p-5 flex flex-col gap-4">
@@ -192,7 +206,14 @@ const Page: NextPageWithLayout = () => {
           }}
         />
       )}
-      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
+      {newLinkModal && (
+        <NewLinkModal
+          onClose={() => {
+            setNewLinkModal(false);
+          }}
+          onSubmit={submitLink}
+        />
+      )}
     </>
   );
 };

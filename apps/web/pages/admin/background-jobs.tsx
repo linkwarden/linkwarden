@@ -158,7 +158,7 @@ const Page: NextPageWithLayout = () => {
           <ul className="px-5 list-disc">
             <Trans
               i18nKey="regenerate_broken_preserved_content_desc"
-              components={[<li />]}
+              components={[<li key={0} />]}
               values={{
                 count: workerStats.data?.link.failed,
               }}
@@ -181,7 +181,7 @@ const Page: NextPageWithLayout = () => {
           <ul className="px-5 list-disc">
             <Trans
               i18nKey="delete_all_preserved_content_and_regenerate_desc"
-              components={[<li />]}
+              components={[<li key={0} />]}
             />
           </ul>
           <div role="alert" className="alert alert-warning mt-3">
