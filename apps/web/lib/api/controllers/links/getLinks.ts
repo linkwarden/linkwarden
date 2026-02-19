@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { LinkRequestQuery, Order, Sort } from "@linkwarden/types";
+import { LinkRequestQuery, Order, Sort } from "@linkwarden/types/global";
 
 export default async function getLink(userId: number, query: LinkRequestQuery) {
   if (process.env.DISABLE_DEPRECATED_ROUTES === "true")

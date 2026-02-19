@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TagIncludingLinkCount } from "@linkwarden/types";
+import { TagIncludingLinkCount } from "@linkwarden/types/global";
 import Modal from "../Modal";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "next-i18next";

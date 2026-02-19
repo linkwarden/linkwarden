@@ -21,7 +21,7 @@ export default async function paymentCheckout(email: string, priceId: string) {
   });
 
   if (!user) {
-    return { response: "User not found", status: 404 };
+    return { response: "User not found.", status: 404 };
   }
 
   const trialEndTime =

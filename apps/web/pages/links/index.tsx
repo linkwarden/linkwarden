@@ -2,7 +2,7 @@ import NoLinksFound from "@/components/NoLinksFound";
 import { useLinks } from "@linkwarden/router/links";
 import MainLayout from "@/layouts/MainLayout";
 import React, { ReactElement, useEffect, useState } from "react";
-import { Sort, ViewMode } from "@linkwarden/types";
+import { Sort, ViewMode } from "@linkwarden/types/global";
 import { useRouter } from "next/router";
 import LinkListOptions from "@/components/LinkListOptions";
 import getServerSideProps from "@/lib/client/getServerSideProps";

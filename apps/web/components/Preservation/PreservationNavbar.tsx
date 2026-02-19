@@ -2,7 +2,7 @@ import {
   ArchivedFormat,
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import React, { useEffect, useState } from "react";
 import {
   DropdownMenu,

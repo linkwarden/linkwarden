@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 import CenteredForm from "@/components/CenteredForm";
-import { Plan } from "@linkwarden/types";
+import { Plan } from "@linkwarden/types/global";
 import { Button } from "@/components/ui/button";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { Trans, useTranslation } from "next-i18next";

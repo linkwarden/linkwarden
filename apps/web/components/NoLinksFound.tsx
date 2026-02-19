@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import NewLinkModal from "./ModalContent/NewLinkModal";
 import { useTranslation } from "next-i18next";
 import { Button } from "./ui/button";
+import { useAddLink } from "@linkwarden/router/links";
+import toast from "react-hot-toast";
 
 type Props = {
   text?: string;
@@ -10,6 +12,20 @@ type Props = {
 export default function NoLinksFound({ text }: Props) {
   const { t } = useTranslation();
   const [newLinkModal, setNewLinkModal] = useState(false);
+
+  const addLink = useAddLink();
+
+  const submitLink = (link: any) => {
+    addLink.mutateAsync(link, {
+      onSettled: (data, error) => {
+        if (error) {
+          toast.error(t(error.message));
+        } else {
+          toast.success(t("link_created"));
+        }
+      },
+    });
+  };
 
   return (
     <div className="w-full h-full flex flex-col justify-center p-3">
@@ -40,7 +56,14 @@ export default function NoLinksFound({ text }: Props) {
           </span>
         </Button>
       </div>
-      {newLinkModal && <NewLinkModal onClose={() => setNewLinkModal(false)} />}
+      {newLinkModal && (
+        <NewLinkModal
+          onClose={() => {
+            setNewLinkModal(false);
+          }}
+          onSubmit={submitLink}
+        />
+      )}
     </div>
   );
 }

@@ -464,6 +464,18 @@
   "search_for_links": "Search for Links",
   "search_for_tag_names": "Search for Tag Names",
   "search_query_invalid_symbol": "The search query should not contain '%'.",
+  "search_operators": "Search Operators",
+  "search_operator_name": "Title",
+  "search_operator_url": "URL",
+  "search_operator_tag": "Tag",
+  "search_operator_collection": "Collection",
+  "search_operator_before": "Before",
+  "search_operator_after": "After",
+  "search_operator_public": "Public",
+  "search_operator_description": "Description",
+  "search_operator_type": "Type",
+  "search_operator_pinned": "Pinned",
+  "search_operator_exclude": "Exclude",
   "open_modal_new_tab": "Open this modal in a new tab",
   "file": "File",
   "tag_preservation_rule_label": "Preservation rules by tag (override global settings):",
@@ -537,5 +549,7 @@
   "regenerate_broken_links": "Regenerate Broken Links",
   "regenerate_all_links": "Regenerate All Links",
   "regenerate_broken_preserved_content_desc": "<0>Delete and re-preserve broken links with at least one missing preserved format.</0><0>This action will immediately delete any existing preserved format for {{count}} links.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
-  "delete_all_preserved_content_and_regenerate_desc": "<0>This action will immediately delete all your existing preserved formats.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>"
+  "delete_all_preserved_content_and_regenerate_desc": "<0>This action will immediately delete all your existing preserved formats.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
+  "note": "Note",
+  "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed."
 }

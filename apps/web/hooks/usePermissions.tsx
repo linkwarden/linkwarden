@@ -1,4 +1,4 @@
-import { Member } from "@linkwarden/types";
+import { Member } from "@linkwarden/types/global";
 import { useEffect, useState } from "react";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";

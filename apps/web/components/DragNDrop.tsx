@@ -11,7 +11,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import toast from "react-hot-toast";
 import { useUpdateLink } from "@linkwarden/router/links";
 import { useTranslation } from "react-i18next";

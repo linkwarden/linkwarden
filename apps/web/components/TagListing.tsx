@@ -2,7 +2,7 @@ import { Tag } from "@linkwarden/prisma/client";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import Droppable from "./Droppable";
-import { cn } from "@linkwarden/lib";
+import { cn } from "@linkwarden/lib/utils";
 import { useDndContext } from "@dnd-kit/core";
 
 interface TagListingProps {

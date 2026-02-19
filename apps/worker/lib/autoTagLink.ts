@@ -16,7 +16,7 @@ import { azure } from "@ai-sdk/azure";
 import { anthropic } from "@ai-sdk/anthropic";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOllama } from "ollama-ai-provider-v2";
-import { titleCase } from "@linkwarden/lib";
+import { titleCase } from "@linkwarden/lib/utils";
 
 // Function to concat /api with the base URL properly
 const ensureValidURL = (base: string, path: string) =>

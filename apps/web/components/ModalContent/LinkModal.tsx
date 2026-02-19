@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import { useTranslation } from "next-i18next";
 import { useDeleteLink } from "@linkwarden/router/links";
 import Drawer from "../Drawer";

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import searchLinks from "@/lib/api/controllers/search/searchLinks";
-import { LinkRequestQuery } from "@linkwarden/types";
+import { LinkRequestQuery } from "@linkwarden/types/global";
 import verifyUser from "@/lib/api/verifyUser";
 
 export default async function search(

@@ -1,4 +1,11 @@
-import { Collection, Link, Tag, User } from "@linkwarden/prisma/client";
+import {
+  Collection,
+  Link,
+  Tag,
+  User,
+  DashboardSection,
+  Subscription,
+} from "@linkwarden/prisma/client";
 import Stripe from "stripe";
 
 type OptionalExcluding<T, TRequired extends keyof T> = Partial<T> &
@@ -32,7 +39,7 @@ export interface Member {
   canCreate: boolean;
   canUpdate: boolean;
   canDelete: boolean;
-  user: OptionalExcluding<User, "email" | "username" | "name" | "id">;
+  user: OptionalExcluding<User, "username" | "name" | "id">;
 }
 
 export interface CollectionIncludingMembersAndLinkCount
@@ -60,7 +67,6 @@ export type PaginatedTags = PaginatedResponse<TagIncludingLinkCount>;
 export interface AccountSettings extends User {
   newPassword?: string;
   oldPassword?: string;
-  whitelistedUsers: string[];
   subscription?: {
     active?: boolean;
   };
@@ -209,3 +215,16 @@ export interface WorkerStats {
     done: number;
   };
 }
+
+export type GetUserByIdResponse = Omit<User, "password"> &
+  Partial<{ subscription: Pick<Subscription, "active" | "quantity"> }> & {
+    parentSubscription: {
+      active: boolean | undefined;
+      user: {
+        email: string | null | undefined;
+      };
+    };
+  } & {
+    dashboardSections: DashboardSection[];
+    hasUnIndexedLinks: boolean;
+  };

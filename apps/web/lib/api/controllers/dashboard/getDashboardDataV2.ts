@@ -1,5 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
-import { Order } from "@linkwarden/types";
+import { Order } from "@linkwarden/types/global";
 
 export default async function getDashboardData(userId: number) {
   const order: Order = { id: "desc" };

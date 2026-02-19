@@ -1,6 +1,6 @@
 import React from "react";
 import importBookmarks from "@/lib/client/importBookmarks";
-import { MigrationFormat } from "@linkwarden/types";
+import { MigrationFormat } from "@linkwarden/types/global";
 import { useTranslation } from "next-i18next";
 import {
   DropdownMenu,

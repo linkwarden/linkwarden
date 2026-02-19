@@ -16,7 +16,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
   TagIncludingLinkCount,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useCollections } from "@linkwarden/router/collections";
 import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";

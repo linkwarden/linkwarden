@@ -1,7 +1,7 @@
 import {
   ArchivedFormat,
   LinkIncludingShortenedCollectionAndTags,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 
 // Don't use prisma client's LinksRouteTo, it'll crash in production (React Native)
 type LinksRouteTo =

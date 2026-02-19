@@ -8,11 +8,8 @@ import { PreservationSkeleton } from "../Skeletons";
 import {
   LinkIncludingShortenedCollectionAndTags,
   ArchivedFormat,
-} from "@linkwarden/types";
-import {
-  atLeastOneFormatAvailable,
-  formatAvailable,
-} from "@linkwarden/lib/formatStats";
+} from "@linkwarden/types/global";
+import { formatAvailable } from "@linkwarden/lib/formatStats";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 
 type Props = {

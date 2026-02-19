@@ -1,4 +1,5 @@
 import { prisma } from "@linkwarden/prisma";
+import { LinkRequestQuery } from "@linkwarden/types/global";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { paginate } from "@/lib/api/utils/pagination";
 import { TagPaginationParams } from "@/lib/api/utils/types";

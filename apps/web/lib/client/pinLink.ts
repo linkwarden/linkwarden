@@ -1,5 +1,5 @@
 import { useUpdateLink } from "@linkwarden/router/links";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import toast from "react-hot-toast";
 import { useTranslation } from "next-i18next";
 import { useUser } from "@linkwarden/router/user";

@@ -1,5 +1,5 @@
 import searchLinks from "@/lib/api/controllers/search/searchLinks";
-import { LinkRequestQuery } from "@linkwarden/types";
+import { LinkRequestQuery } from "@linkwarden/types/global";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function collections(

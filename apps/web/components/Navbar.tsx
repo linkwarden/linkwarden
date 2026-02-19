@@ -28,6 +28,8 @@ import { useUser } from "@linkwarden/router/user";
 import Link from "next/link";
 import SettingsSidebar from "@/components/SettingsSidebar";
 import AdminSidebar from "@/components/AdminSidebar";
+import { useAddLink } from "@linkwarden/router/links";
+import toast from "react-hot-toast";
 
 const STRIPE_ENABLED = process.env.NEXT_PUBLIC_STRIPE === "true";
 const TRIAL_PERIOD_DAYS =
@@ -86,6 +88,20 @@ export default function Navbar({
 
     setIsTrialing(Boolean(isTrialing));
   }, [user, daysLeft]);
+
+  const addLink = useAddLink();
+
+  const submitLink = (link: any) => {
+    addLink.mutateAsync(link, {
+      onSettled: (data, error) => {
+        if (error) {
+          toast.error(t(error.message));
+        } else {
+          toast.success(t("link_created"));
+        }
+      },
+    });
+  };
 
   return (
     <>
@@ -182,7 +198,12 @@ export default function Navbar({
           </div>
         )}
         {newLinkModal && (
-          <NewLinkModal onClose={() => setNewLinkModal(false)} />
+          <NewLinkModal
+            onClose={() => {
+              setNewLinkModal(false);
+            }}
+            onSubmit={submitLink}
+          />
         )}
         {newCollectionModal && (
           <NewCollectionModal onClose={() => setNewCollectionModal(false)} />

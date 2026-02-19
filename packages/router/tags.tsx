@@ -10,7 +10,7 @@ import {
   MobileAuth,
   TagIncludingLinkCount,
   PaginatedTags,
-} from "@linkwarden/types";
+} from "@linkwarden/types/global";
 import { useSession } from "next-auth/react";
 import { ArchivalTagOption } from "@linkwarden/types/inputSelect";
 import {

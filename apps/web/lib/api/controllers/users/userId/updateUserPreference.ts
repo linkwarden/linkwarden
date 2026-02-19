@@ -33,7 +33,6 @@ export default async function updateUserPreference(
       readableLineWidth: data.readableLineWidth,
     },
     include: {
-      whitelistedUsers: true,
       subscriptions: true,
       dashboardSections: true,
       parentSubscription: {
@@ -44,19 +43,13 @@ export default async function updateUserPreference(
     },
   });
 
-  if (!updatedUser)
-    return { response: "User not found or profile is private.", status: 404 };
-
-  const whitelistedUsernames = updatedUser.whitelistedUsers?.map(
-    (usernames) => usernames.username
-  );
+  if (!updatedUser) return { response: "User not found.", status: 404 };
 
   const { password, subscriptions, parentSubscription, ...lessSensitiveInfo } =
     updatedUser;
 
   const response = {
     ...lessSensitiveInfo,
-    whitelistedUsers: whitelistedUsernames,
     subscription: {
       active: subscriptions?.active,
       quantity: subscriptions?.quantity,

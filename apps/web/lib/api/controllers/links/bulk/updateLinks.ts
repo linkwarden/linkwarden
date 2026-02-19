@@ -1,4 +1,4 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import updateLinkById from "../linkId/updateLinkById";
 import { UpdateLinkSchemaType } from "@linkwarden/lib/schemaValidation";
 import { prisma } from "@linkwarden/prisma";

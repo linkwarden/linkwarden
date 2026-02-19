@@ -3,7 +3,7 @@ import { ReactElement, useMemo, useState } from "react";
 import MainLayout from "@/layouts/MainLayout";
 import { useSession } from "next-auth/react";
 import SortDropdown from "@/components/SortDropdown";
-import { Sort } from "@linkwarden/types";
+import { Sort } from "@linkwarden/types/global";
 import NewCollectionModal from "@/components/ModalContent/NewCollectionModal";
 import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";

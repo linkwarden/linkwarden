@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import { User } from "@linkwarden/prisma/client";
 
 type Tmp = {

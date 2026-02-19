@@ -3,7 +3,7 @@ import { createFolder } from "@linkwarden/filesystem";
 import { JSDOM } from "jsdom";
 import { decodeHTML } from "entities";
 import { parse, Node, Element, TextNode } from "himalaya";
-import { hasPassedLimit } from "@linkwarden/lib";
+import { hasPassedLimit } from "@linkwarden/lib/verifyCapacity";
 
 export default async function importFromHTMLFile(
   userId: number,

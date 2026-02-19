@@ -1,4 +1,4 @@
-import { ArchivedFormat, TokenExpiry } from "@linkwarden/types";
+import { ArchivedFormat, TokenExpiry } from "@linkwarden/types/global";
 import {
   AiTaggingMethod,
   LinksRouteTo,
@@ -90,7 +90,6 @@ export const UpdateUserSchema = () => {
     preventDuplicateLinks: z.boolean().optional(),
     collectionOrder: z.array(z.number()).optional(),
     linksRouteTo: z.enum(LinksRouteTo).optional(),
-    whitelistedUsers: z.array(z.string().max(50)).optional(),
     referredBy: z.string().max(100).nullish(),
   });
 };

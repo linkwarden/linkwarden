@@ -3,8 +3,8 @@ import verifyUser from "@/lib/api/verifyUser";
 import { prisma } from "@linkwarden/prisma";
 import { DeletePreservationsSchema } from "@linkwarden/lib/schemaValidation";
 import { removeFiles } from "@linkwarden/filesystem";
-import { ArchivalSettings } from "@linkwarden/types";
-import { isArchivalTag } from "@linkwarden/lib";
+import { ArchivalSettings } from "@linkwarden/types/global";
+import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
 
 export default async function links(req: NextApiRequest, res: NextApiResponse) {
   const user = await verifyUser({ req, res });

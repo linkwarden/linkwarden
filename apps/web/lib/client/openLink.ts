@@ -1,4 +1,4 @@
-import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types";
+import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
 import getFormatBasedOnPreference from "@linkwarden/lib/getFormatBasedOnPreference";
 import { LinksRouteTo } from "@linkwarden/prisma/client";
 
