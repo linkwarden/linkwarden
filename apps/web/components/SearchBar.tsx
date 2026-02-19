@@ -186,7 +186,7 @@ export default function SearchBar({ placeholder }: Props) {
               </Button>
             </div>
 
-            {user?.hasUnIndexedLinks && !dismissSearchNote ? (
+            {/* {user?.hasUnIndexedLinks && !dismissSearchNote ? (
               <div
                 role="alert"
                 className="border border-neutral p-2 my-1 rounded flex flex-col gap-2"
@@ -204,7 +204,7 @@ export default function SearchBar({ placeholder }: Props) {
                   Dismiss
                 </Button>
               </div>
-            ) : undefined}
+            ) : undefined} */}
           </div>
         </div>
       )}

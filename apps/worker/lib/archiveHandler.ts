@@ -50,6 +50,7 @@ export default async function archiveHandler(
             process.env.PERPLEXITY_API_KEY)
             ? true
             : undefined,
+        indexVersion: null,
       },
     });
     return;
@@ -227,6 +228,7 @@ export default async function archiveHandler(
             !finalLink.aiTagged
               ? true
               : undefined,
+          indexVersion: null,
         },
       });
     } else {

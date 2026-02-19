@@ -81,14 +81,6 @@ export async function startIndexing(interval = 10) {
             ],
           },
           {
-            OR: [
-              { lastPreserved: { not: null } },
-              {
-                url: null,
-              },
-            ],
-          },
-          {
             ...(process.env.STRIPE_SECRET_KEY
               ? {
                   createdBy: {
@@ -172,7 +164,6 @@ export async function startIndexing(interval = 10) {
           { indexVersion: { not: MEILI_INDEX_VERSION } },
           { indexVersion: null },
         ],
-        lastPreserved: { not: null },
       },
     });
 
