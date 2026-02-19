@@ -4,6 +4,9 @@ import {
   MobileAuth,
 } from "@linkwarden/types/global";
 import { useSession } from "next-auth/react";
+import type toaster from "react-hot-toast";
+import { TFunction } from "next-i18next";
+import type { Alert as Alert_ } from "react-native";
 
 const useCollections = (auth?: MobileAuth) => {
   let status: "loading" | "authenticated" | "unauthenticated";
@@ -109,7 +112,17 @@ const useUpdateCollection = () => {
   });
 };
 
-const useDeleteCollection = (auth?: MobileAuth) => {
+const useDeleteCollection = ({
+  auth,
+  Alert,
+  toast,
+  t,
+}: {
+  auth?: MobileAuth;
+  Alert?: typeof Alert_;
+  toast?: typeof toaster;
+  t?: TFunction;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -133,6 +146,44 @@ const useDeleteCollection = (auth?: MobileAuth) => {
 
       return data.response;
     },
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["collections"] });
+      await queryClient.cancelQueries({ queryKey: ["dashboardData"] });
+
+      const previousCollections = queryClient.getQueryData(["collections"]);
+      const previousDashboard = queryClient.getQueryData(["dashboardData"]);
+
+      queryClient.setQueryData(["collections"], (oldData: any) => {
+        return oldData?.filter((collection: any) => collection.id !== id);
+      });
+
+      queryClient.setQueryData(["dashboardData"], (oldData: any) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          links:
+            oldData.links?.filter((link: any) => link.collectionId !== id) ||
+            [],
+          numberOfPinnedLinks:
+            oldData.links?.filter(
+              (link: any) => link.collectionId !== id && link.isPinned
+            ).length || 0,
+        };
+      });
+
+      return { previousCollections, previousDashboard };
+    },
+    onError: (error, _variables, context) => {
+      if (toast && t) toast.error(t(error.message));
+      else if (Alert)
+        Alert.alert("Error", "There was an error adding the link.");
+
+      if (!context) return;
+
+      queryClient.setQueryData(["collections"], context.previousCollections);
+      queryClient.setQueryData(["dashboardData"], context.previousDashboard);
+    },
     onSuccess: (data, id) => {
       queryClient.setQueryData(["collections"], (oldData: any) => {
         return oldData.filter((collection: any) => collection.id !== id);
@@ -153,6 +204,9 @@ const useDeleteCollection = (auth?: MobileAuth) => {
             ).length || 0,
         };
       });
+
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
+      queryClient.invalidateQueries({ queryKey: ["links"] });
     },
   });
 };

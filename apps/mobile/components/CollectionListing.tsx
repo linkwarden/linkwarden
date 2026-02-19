@@ -19,7 +19,7 @@ const CollectionListing = ({ collection }: Props) => {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 
-  const deleteCollection = useDeleteCollection(auth);
+  const deleteCollection = useDeleteCollection({ auth, Alert });
 
   return (
     <ContextMenu.Root>
