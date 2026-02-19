@@ -50,7 +50,6 @@ const LinkListing = ({ link, dashboard }: Props) => {
   const [url, setUrl] = useState("");
 
   useEffect(() => {
-    console.log(link.url);
     try {
       if (link.url) {
         setUrl(new URL(link.url).host.toLowerCase());
