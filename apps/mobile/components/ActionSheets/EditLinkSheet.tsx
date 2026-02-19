@@ -162,7 +162,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
 
 const Collections = () => {
   const { auth } = useAuthStore();
-  const addLink = useAddLink(auth);
+  const addLink = useAddLink({ auth });
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const { link: currentLink } = useSheetRouteParams<
@@ -270,7 +270,7 @@ const Collections = () => {
 
 const Tags = () => {
   const { auth } = useAuthStore();
-  const addLink = useAddLink(auth);
+  const addLink = useAddLink({ auth });
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const params = useSheetRouteParams("edit-link-sheet", "tags");

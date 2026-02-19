@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function AddLinkSheet() {
   const actionSheetRef = useRef<ActionSheetRef>(null);
   const { auth } = useAuthStore();
-  const addLink = useAddLink(auth);
+  const addLink = useAddLink({ auth, Alert });
   const [link, setLink] = useState("");
   const { colorScheme } = useColorScheme();
 
@@ -43,21 +43,12 @@ export default function AddLinkSheet() {
         />
 
         <Button
-          onPress={() =>
-            addLink.mutate(
-              { url: link },
-              {
-                onSuccess: () => {
-                  actionSheetRef.current?.hide();
-                  setLink("");
-                },
-                onError: (error) => {
-                  Alert.alert("Error", "There was an error adding the link.");
-                  console.error("Error adding link:", error);
-                },
-              }
-            )
-          }
+          onPress={() => {
+            addLink.mutate({ url: link });
+
+            actionSheetRef.current?.hide();
+            setLink("");
+          }}
           isLoading={addLink.isPending}
           variant="accent"
           className="mb-2"

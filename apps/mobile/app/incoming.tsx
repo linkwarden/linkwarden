@@ -21,7 +21,7 @@ export default function IncomingScreen() {
   const { auth } = useAuthStore();
   const router = useRouter();
   const { data, updateData } = useDataStore();
-  const addLink = useAddLink(auth);
+  const addLink = useAddLink({ auth });
   const { colorScheme } = useColorScheme();
   const [showSuccess, setShowSuccess] = useState(false);
   const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>();

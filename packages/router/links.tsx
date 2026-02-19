@@ -19,6 +19,9 @@ import {
 } from "@linkwarden/lib/schemaValidation";
 import getFormatFromContentType from "@linkwarden/lib/getFormatFromContentType";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
+import type toaster from "react-hot-toast";
+import { TFunction } from "next-i18next";
+import type { Alert as Alert_ } from "react-native";
 
 const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
   const sort =
@@ -190,7 +193,17 @@ const upsertLinkInDashboardData = (
   };
 };
 
-const useAddLink = (auth?: MobileAuth) => {
+const useAddLink = ({
+  auth,
+  Alert,
+  toast,
+  t,
+}: {
+  auth?: MobileAuth;
+  Alert?: typeof Alert_;
+  toast?: typeof toaster;
+  t?: TFunction;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -314,7 +327,11 @@ const useAddLink = (auth?: MobileAuth) => {
         optimisticId: tempId,
       };
     },
-    onError: (_error, _variables, context) => {
+    onError: (error, _variables, context) => {
+      if (toast && t) toast.error(t(error.message));
+      else if (Alert)
+        Alert.alert("Error", "There was an error adding the link.");
+
       if (!context) return;
 
       context.previousLinks?.forEach(([queryKey, data]: [unknown, unknown]) => {

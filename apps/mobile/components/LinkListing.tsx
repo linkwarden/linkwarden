@@ -50,6 +50,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
   const [url, setUrl] = useState("");
 
   useEffect(() => {
+    console.log(link.url);
     try {
       if (link.url) {
         setUrl(new URL(link.url).host.toLowerCase());
@@ -57,7 +58,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
     } catch (error) {
       console.log(error);
     }
-  }, [link]);
+  }, [link.url]);
 
   return (
     <ContextMenu.Root>
@@ -122,8 +123,8 @@ const LinkListing = ({ link, dashboard }: Props) => {
               <View className="flex flex-row gap-1 items-center mt-1.5 pr-1.5 self-start rounded-md">
                 <Folder
                   size={16}
-                  fill={link.collection.color || ""}
-                  color={link.collection.color || ""}
+                  fill={link.collection.color || "#0ea5e9"}
+                  color={link.collection.color || "#0ea5e9"}
                 />
                 <Text
                   numberOfLines={1}
