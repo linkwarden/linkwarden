@@ -9,7 +9,7 @@
     "@linkwarden/types": "*",
     "@tanstack/react-query": "^5.51.15",
     "@tanstack/react-query-devtools": "^5.51.15",
-    "next": "14.2.35",
+    "next": "15.5.10",
     "next-auth": "^4.22.1",
     "next-i18next": "^15.3.0",
     "react-hot-toast": "^2.4.1"
