@@ -177,7 +177,7 @@ const useDeleteCollection = ({
     onError: (error, _variables, context) => {
       if (toast && t) toast.error(t(error.message));
       else if (Alert)
-        Alert.alert("Error", "There was an error adding the link.");
+        Alert.alert("Error", "There was an error deleting the collection.");
 
       if (!context) return;
 

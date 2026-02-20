@@ -120,7 +120,7 @@ const RootComponent = ({
   auth: MobileAuth;
 }) => {
   const { colorScheme } = useColorScheme();
-  const updateLink = useUpdateLink(auth);
+  const updateLink = useUpdateLink({ auth, Alert });
   const deleteLink = useDeleteLink({ auth, Alert });
 
   const { tmp } = useTmpStore();
@@ -229,12 +229,12 @@ const RootComponent = ({
                           {tmp.link && tmp.user && (
                             <DropdownMenu.Item
                               key="pin-link"
-                              onSelect={async () => {
+                              onSelect={() => {
                                 const isAlreadyPinned =
                                   tmp.link?.pinnedBy && tmp.link.pinnedBy[0]
                                     ? true
                                     : false;
-                                await updateLink.mutateAsync({
+                                updateLink.mutateAsync({
                                   ...(tmp.link as LinkIncludingShortenedCollectionAndTags),
                                   pinnedBy: (isAlreadyPinned
                                     ? [{ id: undefined }]

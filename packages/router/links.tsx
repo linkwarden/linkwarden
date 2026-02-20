@@ -235,6 +235,123 @@ const removeLinkFromDashboardData = (oldData: any, linkId: number) => {
   };
 };
 
+const isLinkPinned = (link?: LinkIncludingShortenedCollectionAndTags) => {
+  return Boolean(link?.pinnedBy && link.pinnedBy.length > 0);
+};
+
+const findLinkInInfiniteData = (data: any, linkId: number) => {
+  if (!data?.pages?.length) return undefined;
+  for (const page of data.pages) {
+    const match = page?.links?.find((item: any) => item.id === linkId);
+    if (match) return match;
+  }
+  return undefined;
+};
+
+const findLinkInQueriesData = (
+  queries: [QueryKey, unknown][],
+  linkId: number
+) => {
+  for (const [, data] of queries ?? []) {
+    const match = findLinkInInfiniteData(data as any, linkId);
+    if (match) return match;
+  }
+  return undefined;
+};
+
+const findLinkInDashboardData = (data: any, linkId: number) => {
+  const match = data?.links?.find((item: any) => item.id === linkId);
+  if (match) return match;
+
+  const collectionLinks = data?.collectionLinks;
+  if (!collectionLinks) return undefined;
+
+  for (const links of Object.values(collectionLinks)) {
+    const collectionMatch = (links as any[])?.find(
+      (item: any) => item.id === linkId
+    );
+    if (collectionMatch) return collectionMatch;
+  }
+
+  return undefined;
+};
+
+const replaceLinkInInfiniteData = (
+  oldData: any,
+  link: LinkIncludingShortenedCollectionAndTags
+) => {
+  if (!oldData?.pages?.length) return oldData;
+
+  let updated = false;
+  const pages = oldData.pages.map((page: any) => {
+    const links = (page.links ?? []).map((item: any) => {
+      if (item.id === link.id) {
+        updated = true;
+        return link;
+      }
+      return item;
+    });
+    return { ...page, links };
+  });
+
+  if (!updated) return oldData;
+
+  return { ...oldData, pages };
+};
+
+const replaceLinkInDashboardData = (
+  oldData: any,
+  link: LinkIncludingShortenedCollectionAndTags
+) => {
+  if (!oldData) return oldData;
+
+  let updated = false;
+  const links = (oldData.links ?? []).map((item: any) => {
+    if (item.id === link.id) {
+      updated = true;
+      return link;
+    }
+    return item;
+  });
+
+  let collectionLinks = oldData.collectionLinks;
+  if (oldData.collectionLinks != null) {
+    const nextCollectionLinks = { ...oldData.collectionLinks };
+    for (const [collectionId, linksForCollection] of Object.entries(
+      nextCollectionLinks
+    )) {
+      const linkList = linksForCollection as any[];
+      if (!Array.isArray(linkList)) continue;
+      if (!linkList.some((item) => item.id === link.id)) continue;
+      updated = true;
+      nextCollectionLinks[Number(collectionId)] = linkList.map((item) =>
+        item.id === link.id ? link : item
+      );
+    }
+    collectionLinks = nextCollectionLinks;
+  }
+
+  if (!updated) return oldData;
+
+  return {
+    ...oldData,
+    links,
+    collectionLinks,
+  };
+};
+
+const applyPinnedDelta = (oldData: any, delta: number) => {
+  if (!oldData || !delta) return oldData;
+
+  return {
+    ...oldData,
+    numberOfPinnedLinks: Math.max(
+      0,
+      (oldData.numberOfPinnedLinks ?? 0) + delta
+    ),
+  };
+};
+
 const useAddLink = ({
   auth,
   Alert,
@@ -399,7 +516,17 @@ const useAddLink = ({
   });
 };
 
-const useUpdateLink = (auth?: MobileAuth) => {
+const useUpdateLink = ({
+  auth,
+  Alert,
+  toast,
+  t,
+}: {
+  auth?: MobileAuth;
+  Alert?: typeof Alert_;
+  toast?: typeof toaster;
+  t?: TFunction;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -423,6 +550,117 @@ const useUpdateLink = (auth?: MobileAuth) => {
       if (!response.ok) throw new Error(data.response);
 
       return data.response;
+    },
+    onMutate: async (link) => {
+      const linkId = link.id;
+      if (linkId == null) {
+        return {};
+      }
+
+      await queryClient.cancelQueries({ queryKey: ["links"] });
+      await queryClient.cancelQueries({ queryKey: ["publicLinks"] });
+      await queryClient.cancelQueries({ queryKey: ["dashboardData"] });
+
+      const previousLinks = queryClient.getQueriesData({
+        queryKey: ["links"],
+      });
+      const previousPublicLinks = queryClient.getQueriesData({
+        queryKey: ["publicLinks"],
+      });
+      const previousDashboard = queryClient.getQueryData(["dashboardData"]);
+      const previousLinkQueries = queryClient.getQueriesData({
+        queryKey: ["link", linkId],
+      });
+
+      const cachedLink =
+        findLinkInQueriesData(previousLinks, linkId) ??
+        findLinkInDashboardData(previousDashboard, linkId);
+      const collections =
+        (queryClient.getQueryData(["collections"]) as any[]) ?? [];
+      const nextCollectionId =
+        link.collection?.id ?? cachedLink?.collection?.id;
+      const resolvedCollection =
+        nextCollectionId != null
+          ? collections.find((collection) => collection.id === nextCollectionId)
+          : undefined;
+      const optimisticCollection =
+        resolvedCollection ??
+        (link.collection?.id &&
+        cachedLink?.collection?.id === link.collection.id
+          ? { ...cachedLink.collection, ...link.collection }
+          : link.collection ?? cachedLink?.collection);
+
+      const previousPinned = isLinkPinned(cachedLink);
+      const nextPinned =
+        typeof link.pinnedBy === "undefined"
+          ? previousPinned
+          : isLinkPinned(link);
+      const pinnedDelta =
+        nextPinned === previousPinned ? 0 : nextPinned ? 1 : -1;
+
+      const optimisticLink = {
+        ...(cachedLink ?? {}),
+        ...link,
+        collection: optimisticCollection,
+        collectionId:
+          optimisticCollection?.id ??
+          link.collection?.id ??
+          cachedLink?.collectionId,
+        updatedAt: new Date().toISOString(),
+      } as LinkIncludingShortenedCollectionAndTags;
+
+      queryClient.setQueriesData({ queryKey: ["links"] }, (oldData: any) =>
+        replaceLinkInInfiniteData(oldData, optimisticLink)
+      );
+
+      queryClient.setQueriesData(
+        { queryKey: ["publicLinks"] },
+        (oldData: any) => replaceLinkInInfiniteData(oldData, optimisticLink)
+      );
+
+      queryClient.setQueriesData(
+        { queryKey: ["link", linkId] },
+        () => optimisticLink
+      );
+
+      queryClient.setQueryData(["dashboardData"], (oldData: any) =>
+        applyPinnedDelta(
+          replaceLinkInDashboardData(oldData, optimisticLink),
+          pinnedDelta
+        )
+      );
+
+      return {
+        previousLinks,
+        previousPublicLinks,
+        previousDashboard,
+        previousLinkQueries,
+      };
+    },
+    onError: (error, _variables, context) => {
+      if (toast && t) toast.error(t(error.message));
+      else if (Alert)
+        Alert.alert("Error", "There was an error updating the link.");
+
+      if (!context) return;
+
+      context.previousLinks?.forEach(([queryKey, data]: [unknown, unknown]) => {
+        queryClient.setQueryData(queryKey as QueryKey, data);
+      });
+
+      context.previousPublicLinks?.forEach(
+        ([queryKey, data]: [unknown, unknown]) => {
+          queryClient.setQueryData(queryKey as QueryKey, data);
+        }
+      );
+
+      context.previousLinkQueries?.forEach(
+        ([queryKey, data]: [unknown, unknown]) => {
+          queryClient.setQueryData(queryKey as QueryKey, data);
+        }
+      );
+
+      queryClient.setQueryData(["dashboardData"], context.previousDashboard);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["links"] });
@@ -503,7 +741,7 @@ const useDeleteLink = ({
     onError: (error, _variables, context) => {
       if (toast && t) toast.error(t(error.message));
       else if (Alert)
-        Alert.alert("Error", "There was an error adding the link.");
+        Alert.alert("Error", "There was an error deleting the link.");
 
       if (!context) return;
 

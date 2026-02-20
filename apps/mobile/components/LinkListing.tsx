@@ -40,7 +40,7 @@ type Props = {
 const LinkListing = ({ link, dashboard }: Props) => {
   const { auth } = useAuthStore();
   const router = useRouter();
-  const updateLink = useUpdateLink(auth);
+  const updateLink = useUpdateLink({ auth, Alert });
   const { data: user } = useUser(auth);
   const { colorScheme } = useColorScheme();
   const { data } = useDataStore();
@@ -215,11 +215,11 @@ const LinkListing = ({ link, dashboard }: Props) => {
 
         <ContextMenu.Item
           key="pin-link"
-          onSelect={async () => {
+          onSelect={() => {
             const isAlreadyPinned =
               link?.pinnedBy && link.pinnedBy[0] ? true : false;
 
-            await updateLink.mutateAsync({
+            updateLink.mutateAsync({
               ...link,
               pinnedBy: (isAlreadyPinned
                 ? [{ id: undefined }]
