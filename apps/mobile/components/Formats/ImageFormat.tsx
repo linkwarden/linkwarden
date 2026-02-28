@@ -123,12 +123,12 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
           `,
           }}
           scalesPageToFit
-          originWhitelist={["*"]}
-          mixedContentMode="always"
-          javaScriptEnabled={true}
+          originWhitelist={[
+            ...(auth.instance ? [auth.instance] : []),
+            "file://",
+          ]}
+          javaScriptEnabled={false}
           allowFileAccess={true}
-          allowFileAccessFromFileURLs={true}
-          allowUniversalAccessFromFileURLs={true}
           onLoadEnd={() => setIsLoading(false)}
         />
       )

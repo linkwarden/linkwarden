@@ -67,12 +67,9 @@ export default function WebpageFormat({ link, setIsLoading }: Props) {
           baseUrl: FileSystem.documentDirectory,
         }}
         scalesPageToFit
-        originWhitelist={["*"]}
-        mixedContentMode="always"
-        javaScriptEnabled={true}
+        originWhitelist={[...(auth.instance ? [auth.instance] : []), "file://"]}
+        javaScriptEnabled={false}
         allowFileAccess={true}
-        allowFileAccessFromFileURLs={true}
-        allowUniversalAccessFromFileURLs={true}
         onLoadEnd={() => setIsLoading(false)}
       />
     )
