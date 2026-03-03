@@ -7,7 +7,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "linkwarden",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.linkwarden",
@@ -23,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/maskable_logo.jpeg",
+        "foregroundImage": "./assets/images/maskable_logo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "app.linkwarden"
@@ -81,7 +80,9 @@
           }
         }
       ],
-      "./plugins/with-daynight-transparent-nav"
+      "./plugins/with-daynight-transparent-nav",
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
