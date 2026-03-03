@@ -24,6 +24,12 @@ export default function Layout() {
           },
           headerIconColor: colorScheme === "dark" ? "white" : "black",
         },
+        headerLargeTitleStyle: {
+          color: rawTheme[colorScheme as ThemeName]["base-content"], // or whatever token you want
+        },
+        headerTitleStyle: {
+          color: rawTheme[colorScheme as ThemeName]["base-content"],
+        },
         headerLargeStyle: {
           backgroundColor:
             Platform.OS === "ios"

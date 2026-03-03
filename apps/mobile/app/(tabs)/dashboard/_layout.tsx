@@ -16,6 +16,12 @@ export default function Layout() {
         headerLargeTitle: true,
         headerTransparent: Platform.OS === "ios",
         headerShadowVisible: false,
+        headerLargeTitleStyle: {
+          color: rawTheme[colorScheme as ThemeName]["base-content"], // or whatever token you want
+        },
+        headerTitleStyle: {
+          color: rawTheme[colorScheme as ThemeName]["base-content"],
+        },
         headerLargeStyle: {
           backgroundColor:
             Platform.OS === "ios"
