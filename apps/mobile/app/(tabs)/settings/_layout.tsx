@@ -11,13 +11,13 @@ export default function Layout() {
       screenOptions={{
         headerTitle: "Settings",
         headerLargeTitle: true,
-        headerTransparent: Platform.OS === "ios" ? true : false,
+        headerTransparent: Platform.OS === "ios",
         headerShadowVisible: false,
-        headerBlurEffect:
-          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
-        headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerLargeStyle: {
-          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+          backgroundColor:
+            Platform.OS === "ios"
+              ? "transparent"
+              : rawTheme[colorScheme as ThemeName]["base-100"],
         },
         headerBackTitle: "Back",
         headerStyle: {

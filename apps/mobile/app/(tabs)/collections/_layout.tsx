@@ -12,11 +12,8 @@ export default function Layout() {
       screenOptions={{
         headerTitle: "Collections",
         headerLargeTitle: true,
-        headerTransparent: Platform.OS === "ios" ? true : false,
+        headerTransparent: Platform.OS === "ios",
         headerShadowVisible: false,
-        headerBlurEffect:
-          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
-        headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerSearchBarOptions: {
           placeholder: "Search Collections",
           autoCapitalize: "none",
@@ -28,7 +25,10 @@ export default function Layout() {
           headerIconColor: colorScheme === "dark" ? "white" : "black",
         },
         headerLargeStyle: {
-          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+          backgroundColor:
+            Platform.OS === "ios"
+              ? "transparent"
+              : rawTheme[colorScheme as ThemeName]["base-100"],
         },
         headerStyle: {
           backgroundColor:
