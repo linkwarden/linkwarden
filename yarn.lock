@@ -5244,7 +5244,7 @@ __metadata:
     "@linkwarden/types": "npm:*"
     "@react-native-async-storage/async-storage": "npm:2.2.0"
     "@react-native-community/netinfo": "npm:11.4.1"
-    "@react-native-menu/menu": "npm:1.2.2"
+    "@react-native-menu/menu": "npm:2.0.0"
     "@react-navigation/bottom-tabs": "npm:^7.0.0"
     "@react-navigation/native": "npm:^7.0.0"
     "@tanstack/react-query": "npm:^5.51.15"
@@ -5277,7 +5277,7 @@ __metadata:
     jest: "npm:^29.2.1"
     jest-expo: "npm:~54.0.17"
     lucide-react-native: "npm:^0.536.0"
-    nativewind: "npm:^4.1.23"
+    nativewind: "npm:^4.2.1"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
     react-native: "npm:0.81.5"
@@ -5287,13 +5287,13 @@ __metadata:
     react-native-gesture-handler: "npm:~2.28.0"
     react-native-ios-context-menu: "npm:^3.2.0"
     react-native-ios-utilities: "npm:5.2.0"
-    react-native-keyboard-controller: "npm:1.18.5"
+    react-native-keyboard-controller: "npm:1.20.7"
     react-native-mmkv: "npm:^4.1.2"
     react-native-nitro-modules: "npm:^0.34.1"
     react-native-pdf: "npm:^7.0.3"
     react-native-reanimated: "npm:4.1.1"
     react-native-safe-area-context: "npm:^5.7.0"
-    react-native-screens: "npm:~4.21.0"
+    react-native-screens: "npm:~4.23.0"
     react-native-svg: "npm:15.12.1"
     react-native-web: "npm:^0.21.0"
     react-native-webview: "npm:13.15.0"
@@ -7077,13 +7077,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-menu/menu@npm:1.2.2":
-  version: 1.2.2
-  resolution: "@react-native-menu/menu@npm:1.2.2"
+"@react-native-menu/menu@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@react-native-menu/menu@npm:2.0.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/947e882524e7ee7c0ac77d81119c6eb0cb0c1f66156d61c1e1b50c46960a768f1b4e2149610a7a30a1f2a921c0694ecbbb401b5758785a0120f993006259d099
+  checksum: 10c0/1e88e1892730c70e28a654a8df6427f80f1b88880eaa62f2744072b9cebead4e834490d15ef7f0b91eadf9cb1ec9241b29f116ce7e94661685b41faf10af3fa3
   languageName: node
   linkType: hard
 
@@ -11401,6 +11401,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-libc@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "detect-libc@npm:1.0.3"
+  bin:
+    detect-libc: ./bin/detect-libc.js
+  checksum: 10c0/4da0deae9f69e13bc37a0902d78bf7169480004b1fed3c19722d56cff578d16f0e11633b7fbf5fb6249181236c72e90024cbd68f0b9558ae06e281f47326d50d
+  languageName: node
+  linkType: hard
+
 "detect-libc@npm:^2.0.0":
   version: 2.0.1
   resolution: "detect-libc@npm:2.0.1"
@@ -15606,9 +15615,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-darwin-arm64@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-darwin-arm64@npm:1.30.1"
+"lightningcss-darwin-arm64@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-darwin-arm64@npm:1.27.0"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
@@ -15620,9 +15629,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-darwin-x64@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-darwin-x64@npm:1.30.1"
+"lightningcss-darwin-x64@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-darwin-x64@npm:1.27.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
@@ -15634,9 +15643,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-freebsd-x64@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-freebsd-x64@npm:1.30.1"
+"lightningcss-freebsd-x64@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-freebsd-x64@npm:1.27.0"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
@@ -15648,9 +15657,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-linux-arm-gnueabihf@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-linux-arm-gnueabihf@npm:1.30.1"
+"lightningcss-linux-arm-gnueabihf@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-linux-arm-gnueabihf@npm:1.27.0"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
@@ -15662,9 +15671,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-linux-arm64-gnu@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-linux-arm64-gnu@npm:1.30.1"
+"lightningcss-linux-arm64-gnu@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-linux-arm64-gnu@npm:1.27.0"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
@@ -15676,9 +15685,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-linux-arm64-musl@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-linux-arm64-musl@npm:1.30.1"
+"lightningcss-linux-arm64-musl@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-linux-arm64-musl@npm:1.27.0"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
@@ -15690,9 +15699,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-linux-x64-gnu@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-linux-x64-gnu@npm:1.30.1"
+"lightningcss-linux-x64-gnu@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-linux-x64-gnu@npm:1.27.0"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
@@ -15704,9 +15713,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-linux-x64-musl@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-linux-x64-musl@npm:1.30.1"
+"lightningcss-linux-x64-musl@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-linux-x64-musl@npm:1.27.0"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
@@ -15718,9 +15727,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-win32-arm64-msvc@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-win32-arm64-msvc@npm:1.30.1"
+"lightningcss-win32-arm64-msvc@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-win32-arm64-msvc@npm:1.27.0"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
@@ -15732,9 +15741,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lightningcss-win32-x64-msvc@npm:1.30.1":
-  version: 1.30.1
-  resolution: "lightningcss-win32-x64-msvc@npm:1.30.1"
+"lightningcss-win32-x64-msvc@npm:1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss-win32-x64-msvc@npm:1.27.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -15743,46 +15752,6 @@ __metadata:
   version: 1.31.1
   resolution: "lightningcss-win32-x64-msvc@npm:1.31.1"
   conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"lightningcss@npm:^1.27.0":
-  version: 1.30.1
-  resolution: "lightningcss@npm:1.30.1"
-  dependencies:
-    detect-libc: "npm:^2.0.3"
-    lightningcss-darwin-arm64: "npm:1.30.1"
-    lightningcss-darwin-x64: "npm:1.30.1"
-    lightningcss-freebsd-x64: "npm:1.30.1"
-    lightningcss-linux-arm-gnueabihf: "npm:1.30.1"
-    lightningcss-linux-arm64-gnu: "npm:1.30.1"
-    lightningcss-linux-arm64-musl: "npm:1.30.1"
-    lightningcss-linux-x64-gnu: "npm:1.30.1"
-    lightningcss-linux-x64-musl: "npm:1.30.1"
-    lightningcss-win32-arm64-msvc: "npm:1.30.1"
-    lightningcss-win32-x64-msvc: "npm:1.30.1"
-  dependenciesMeta:
-    lightningcss-darwin-arm64:
-      optional: true
-    lightningcss-darwin-x64:
-      optional: true
-    lightningcss-freebsd-x64:
-      optional: true
-    lightningcss-linux-arm-gnueabihf:
-      optional: true
-    lightningcss-linux-arm64-gnu:
-      optional: true
-    lightningcss-linux-arm64-musl:
-      optional: true
-    lightningcss-linux-x64-gnu:
-      optional: true
-    lightningcss-linux-x64-musl:
-      optional: true
-    lightningcss-win32-arm64-msvc:
-      optional: true
-    lightningcss-win32-x64-msvc:
-      optional: true
-  checksum: 10c0/1e1ad908f3c68bf39d964a6735435a8dd5474fb2765076732d64a7b6aa2af1f084da65a9462443a9adfebf7dcfb02fb532fce1d78697f2a9de29c8f40f09aee3
   languageName: node
   linkType: hard
 
@@ -15826,6 +15795,46 @@ __metadata:
     lightningcss-win32-x64-msvc:
       optional: true
   checksum: 10c0/c6754b305d4a73652e472fc0d7d65384a6e16c336ea61068eca60de2a45bd5c30abbf012358b82eac56ee98b5d88028932cda5268ff61967cffa400b9e7ee2ba
+  languageName: node
+  linkType: hard
+
+"lightningcss@npm:~1.27.0":
+  version: 1.27.0
+  resolution: "lightningcss@npm:1.27.0"
+  dependencies:
+    detect-libc: "npm:^1.0.3"
+    lightningcss-darwin-arm64: "npm:1.27.0"
+    lightningcss-darwin-x64: "npm:1.27.0"
+    lightningcss-freebsd-x64: "npm:1.27.0"
+    lightningcss-linux-arm-gnueabihf: "npm:1.27.0"
+    lightningcss-linux-arm64-gnu: "npm:1.27.0"
+    lightningcss-linux-arm64-musl: "npm:1.27.0"
+    lightningcss-linux-x64-gnu: "npm:1.27.0"
+    lightningcss-linux-x64-musl: "npm:1.27.0"
+    lightningcss-win32-arm64-msvc: "npm:1.27.0"
+    lightningcss-win32-x64-msvc: "npm:1.27.0"
+  dependenciesMeta:
+    lightningcss-darwin-arm64:
+      optional: true
+    lightningcss-darwin-x64:
+      optional: true
+    lightningcss-freebsd-x64:
+      optional: true
+    lightningcss-linux-arm-gnueabihf:
+      optional: true
+    lightningcss-linux-arm64-gnu:
+      optional: true
+    lightningcss-linux-arm64-musl:
+      optional: true
+    lightningcss-linux-x64-gnu:
+      optional: true
+    lightningcss-linux-x64-musl:
+      optional: true
+    lightningcss-win32-arm64-msvc:
+      optional: true
+    lightningcss-win32-x64-msvc:
+      optional: true
+  checksum: 10c0/5292b277ebbefdd952cb7b9ccd20dd2c185a7eae9b4393960386b7b8c4d644492a413a91d05ca9dcb72c775bbb8d79b235a3415d66410c47464039394d022109
   languageName: node
   linkType: hard
 
@@ -16862,16 +16871,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nativewind@npm:^4.1.23":
-  version: 4.1.23
-  resolution: "nativewind@npm:4.1.23"
+"nativewind@npm:^4.2.1":
+  version: 4.2.2
+  resolution: "nativewind@npm:4.2.2"
   dependencies:
     comment-json: "npm:^4.2.5"
     debug: "npm:^4.3.7"
-    react-native-css-interop: "npm:0.1.22"
+    react-native-css-interop: "npm:0.2.2"
   peerDependencies:
     tailwindcss: ">3.3.0"
-  checksum: 10c0/135c9a07afdc59d9f9f5a9d0d80c97766694c39243dd0eb21b01001814447792d7eca358c276b89f62d4d060c30a1de9732a0bb676590ac3a194da15ef3dea5f
+  checksum: 10c0/3af8fc1951b634d8349b7527788fc90ac240c28af8dacb5c30701c39cfa3b9a6ded1017c6d3bdafafbe041cbc0e8f4b4103d97ce4bcae1a1c1e122cac493d6f9
   languageName: node
   linkType: hard
 
@@ -18568,15 +18577,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-css-interop@npm:0.1.22":
-  version: 0.1.22
-  resolution: "react-native-css-interop@npm:0.1.22"
+"react-native-css-interop@npm:0.2.2":
+  version: 0.2.2
+  resolution: "react-native-css-interop@npm:0.2.2"
   dependencies:
     "@babel/helper-module-imports": "npm:^7.22.15"
     "@babel/traverse": "npm:^7.23.0"
     "@babel/types": "npm:^7.23.0"
     debug: "npm:^4.3.7"
-    lightningcss: "npm:^1.27.0"
+    lightningcss: "npm:~1.27.0"
     semver: "npm:^7.6.3"
   peerDependencies:
     react: ">=18"
@@ -18588,7 +18597,7 @@ __metadata:
       optional: true
     react-native-svg:
       optional: true
-  checksum: 10c0/d6052499b8615b58e02ee43b7d2906fd2b5ef90410c26af94dd11d6d93ed116ab0c96f7228573734030f1d41b4e8e2878a63b2223eb86c797730df207ed0c2f0
+  checksum: 10c0/94fbbf0b0ecc7623be72c01272a966bc5d8a09c21f1c3979c20afad4eeea4ad91e5549b6a579aaa9bffe1163a4c82b6bc7a6f2ba18c9f7644a14a24fbdcb9b1b
   languageName: node
   linkType: hard
 
@@ -18659,16 +18668,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-keyboard-controller@npm:1.18.5":
-  version: 1.18.5
-  resolution: "react-native-keyboard-controller@npm:1.18.5"
+"react-native-keyboard-controller@npm:1.20.7":
+  version: 1.20.7
+  resolution: "react-native-keyboard-controller@npm:1.20.7"
   dependencies:
     react-native-is-edge-to-edge: "npm:^1.2.1"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-reanimated: ">=3.0.0"
-  checksum: 10c0/708b8c299fdfc11749db4d84238330a2f04a07a92f40a5f0aa2870ffedb9e47c05455d50c3441a321f5cd5cacf7c936d5706e74cfb234a132e6c6c9ebb0d5e57
+  checksum: 10c0/f3a1682552ed90f086f4442ba2eebfb2080451e4c9d686345ba92b8fbeca3498172e6b302a413406fabe9ab06cc19c67dbec22a7703b72342f89d39fce136db3
   languageName: node
   linkType: hard
 
@@ -18732,16 +18741,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-screens@npm:~4.21.0":
-  version: 4.21.0
-  resolution: "react-native-screens@npm:4.21.0"
+"react-native-screens@npm:~4.23.0":
+  version: 4.23.0
+  resolution: "react-native-screens@npm:4.23.0"
   dependencies:
     react-freeze: "npm:^1.0.0"
     warn-once: "npm:^0.1.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/59d44ddd3bb732c454f0a2dd574450d08ac7e7679ff57d5a8862ac09f69fdb8441dc688596ddbd3fba1b09d4341f34a67dca9bd4c3de9cd137aebb9115a5bb73
+  checksum: 10c0/91c0c9840d36923adc49cb0d463f4e6b63d63060245029d49f8b80d82a405fcecce2196695c993f214c5ecb945e1b0bfb8ec0b8b44845b1438b8fac0d9ed53a7
   languageName: node
   linkType: hard
 
