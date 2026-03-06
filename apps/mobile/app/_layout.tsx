@@ -160,7 +160,7 @@ const RootComponent = ({
                         : "white",
                   },
                   headerRight: () => (
-                    <View className="flex-row gap-5">
+                    <View className="flex-row gap-5 px-2">
                       <TouchableOpacity
                         onPress={() => {
                           if (tmp.link) {
