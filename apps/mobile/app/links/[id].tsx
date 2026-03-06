@@ -89,6 +89,9 @@ export default function LinkScreen() {
                 ? { Authorization: `Bearer ${auth.session}` }
                 : {},
           }}
+          contentInsetAdjustmentBehavior="automatic"
+          automaticallyAdjustContentInsets
+          automaticallyAdjustsScrollIndicatorInsets
           onLoadEnd={() => setIsLoading(false)}
         />
       ) : (

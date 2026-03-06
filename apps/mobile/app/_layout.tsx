@@ -125,6 +125,8 @@ const RootComponent = ({
 
   const { tmp } = useTmpStore();
 
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+
   return (
     <View
       style={[{ flex: 1 }, colorScheme === "dark" ? darkTheme : lightTheme]}
@@ -146,6 +148,7 @@ const RootComponent = ({
               }}
             >
               {/* <Stack.Screen name="(tabs)" /> */}
+
               <Stack.Screen
                 name="links/[id]"
                 options={{
@@ -153,160 +156,309 @@ const RootComponent = ({
                   headerBackTitle: "Back",
                   headerTitle: "",
                   headerTintColor: colorScheme === "dark" ? "white" : "black",
-                  headerStyle: {
-                    backgroundColor:
-                      colorScheme === "dark"
-                        ? rawTheme["dark"]["base-100"]
-                        : "white",
-                  },
-                  headerRight: () => (
-                    <View className="flex-row gap-5 px-2">
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (tmp.link) {
-                            if (tmp.link.url) {
-                              return Linking.openURL(tmp.link.url);
-                            } else {
-                              const format = getOriginalFormat(tmp.link);
+                  ...(isIOS26Plus
+                    ? {
+                        headerTransparent: true,
+                        headerLargeStyle: { backgroundColor: "transparent" },
+                        headerStyle: { backgroundColor: "transparent" },
+                        headerRightBackgroundVisible: true,
+                        unstable_headerRightItems: () => [
+                          {
+                            type: "button",
+                            label: "Open",
+                            icon: { type: "sfSymbol", name: "safari" },
+                            onPress: () => {
+                              if (tmp.link) {
+                                if (tmp.link.url) {
+                                  Linking.openURL(tmp.link.url);
+                                } else {
+                                  const format = getOriginalFormat(tmp.link);
 
-                              return Linking.openURL(
-                                format !== null
-                                  ? auth.instance +
-                                      `/preserved/${tmp.link.id}?format=${format}`
-                                  : tmp.link.url || ""
-                              );
-                            }
-                          }
-                        }}
-                      >
-                        {Platform.OS === "ios" ? (
-                          <Compass
-                            size={21}
-                            color={
-                              rawTheme[colorScheme as ThemeName]["base-content"]
-                            }
-                          />
-                        ) : (
-                          <Chromium
-                            stroke={
-                              rawTheme[colorScheme as ThemeName]["base-content"]
-                            }
-                          />
-                        )}
-                      </TouchableOpacity>
-                      <DropdownMenu.Root>
-                        <DropdownMenu.Trigger>
-                          <TouchableOpacity>
-                            <Ellipsis
-                              size={21}
-                              color={
-                                rawTheme[colorScheme as ThemeName][
-                                  "base-content"
-                                ]
+                                  Linking.openURL(
+                                    format !== null
+                                      ? `${auth.instance}/preserved/${tmp.link.id}?format=${format}`
+                                      : tmp.link.url || ""
+                                  );
+                                }
                               }
-                            />
-                          </TouchableOpacity>
-                        </DropdownMenu.Trigger>
-
-                        <DropdownMenu.Content>
-                          {tmp.link?.url && (
-                            <DropdownMenu.Item
-                              key="share"
-                              onSelect={async () => {
-                                await Share.share({
-                                  ...(Platform.OS === "android"
-                                    ? { message: tmp.link?.url as string }
-                                    : { url: tmp.link?.url as string }),
-                                });
-                              }}
-                            >
-                              <DropdownMenu.ItemTitle>
-                                Share
-                              </DropdownMenu.ItemTitle>
-                            </DropdownMenu.Item>
-                          )}
-
-                          {tmp.link && tmp.user && (
-                            <DropdownMenu.Item
-                              key="pin-link"
-                              onSelect={() => {
-                                const isAlreadyPinned =
-                                  tmp.link?.pinnedBy && tmp.link.pinnedBy[0]
-                                    ? true
-                                    : false;
-                                updateLink.mutateAsync({
-                                  ...(tmp.link as LinkIncludingShortenedCollectionAndTags),
-                                  pinnedBy: (isAlreadyPinned
-                                    ? [{ id: undefined }]
-                                    : [{ id: tmp.user?.id }]) as any,
-                                });
-                              }}
-                            >
-                              <DropdownMenu.ItemTitle>
-                                {tmp.link.pinnedBy && tmp.link.pinnedBy[0]
-                                  ? "Unpin Link"
-                                  : "Pin Link"}
-                              </DropdownMenu.ItemTitle>
-                            </DropdownMenu.Item>
-                          )}
-
-                          {tmp.link && (
-                            <DropdownMenu.Item
-                              key="edit-link"
-                              onSelect={() => {
-                                SheetManager.show("edit-link-sheet", {
-                                  payload: {
-                                    link: tmp.link as LinkIncludingShortenedCollectionAndTags,
-                                  },
-                                });
-                              }}
-                            >
-                              <DropdownMenu.ItemTitle>
-                                Edit Link
-                              </DropdownMenu.ItemTitle>
-                            </DropdownMenu.Item>
-                          )}
-
-                          {tmp.link && (
-                            <DropdownMenu.Item
-                              key="delete-link"
-                              onSelect={() => {
-                                return Alert.alert(
-                                  "Delete Link",
-                                  "Are you sure you want to delete this link? This action cannot be undone.",
-                                  [
-                                    {
-                                      text: "Cancel",
-                                      style: "cancel",
-                                    },
-                                    {
-                                      text: "Delete",
-                                      style: "destructive",
-                                      onPress: async () => {
-                                        deleteLink.mutate(
-                                          tmp.link?.id as number
-                                        );
-
-                                        await deleteLinkCache(
-                                          tmp.link?.id as number
-                                        );
-
-                                        router.back();
+                            },
+                            sharesBackground: true,
+                          },
+                          {
+                            type: "menu",
+                            label: "More",
+                            icon: { type: "sfSymbol", name: "ellipsis.circle" },
+                            sharesBackground: true,
+                            menu: {
+                              items: [
+                                ...(tmp.link?.url
+                                  ? [
+                                      {
+                                        type: "action",
+                                        label: "Share",
+                                        onPress: async () => {
+                                          await Share.share({
+                                            url: tmp.link!.url as string,
+                                          });
+                                        },
                                       },
-                                    },
-                                  ]
-                                );
+                                    ]
+                                  : []),
+
+                                ...(tmp.link && tmp.user
+                                  ? [
+                                      {
+                                        type: "action",
+                                        label:
+                                          tmp.link.pinnedBy &&
+                                          tmp.link.pinnedBy[0]
+                                            ? "Unpin Link"
+                                            : "Pin Link",
+                                        onPress: () => {
+                                          const isAlreadyPinned =
+                                            !!tmp.link?.pinnedBy?.[0];
+
+                                          updateLink.mutateAsync({
+                                            ...(tmp.link as LinkIncludingShortenedCollectionAndTags),
+                                            pinnedBy: (isAlreadyPinned
+                                              ? [{ id: undefined }]
+                                              : [{ id: tmp.user?.id }]) as any,
+                                          });
+                                        },
+                                      },
+                                    ]
+                                  : []),
+
+                                ...(tmp.link
+                                  ? [
+                                      {
+                                        type: "action" as any,
+                                        label: "Edit Link",
+                                        onPress: () => {
+                                          SheetManager.show("edit-link-sheet", {
+                                            payload: {
+                                              link: tmp.link as LinkIncludingShortenedCollectionAndTags,
+                                            },
+                                          });
+                                        },
+                                      },
+                                      {
+                                        type: "action" as any,
+                                        label: "Delete",
+                                        attributes: {
+                                          destructive: true,
+                                        },
+                                        onPress: () => {
+                                          Alert.alert(
+                                            "Delete Link",
+                                            "Are you sure you want to delete this link? This action cannot be undone.",
+                                            [
+                                              {
+                                                text: "Cancel",
+                                                style: "cancel",
+                                              },
+                                              {
+                                                text: "Delete",
+                                                style: "destructive",
+                                                onPress: async () => {
+                                                  deleteLink.mutate(
+                                                    tmp.link?.id as number
+                                                  );
+                                                  await deleteLinkCache(
+                                                    tmp.link?.id as number
+                                                  );
+                                                  router.back();
+                                                },
+                                              },
+                                            ]
+                                          );
+                                        },
+                                      },
+                                    ]
+                                  : []),
+                              ],
+                            },
+                          },
+                        ],
+                      }
+                    : {
+                        headerTransparent: Platform.OS === "ios",
+                        headerLargeTitleStyle: {
+                          color:
+                            rawTheme[colorScheme as ThemeName]["base-content"],
+                        },
+                        headerTitleStyle: {
+                          color:
+                            rawTheme[colorScheme as ThemeName]["base-content"],
+                        },
+                        headerLargeStyle: {
+                          backgroundColor:
+                            Platform.OS === "ios"
+                              ? "transparent"
+                              : rawTheme[colorScheme as ThemeName]["base-100"],
+                        },
+                        headerStyle: {
+                          backgroundColor:
+                            Platform.OS === "ios"
+                              ? "transparent"
+                              : colorScheme === "dark"
+                                ? rawTheme["dark"]["base-100"]
+                                : "white",
+                        },
+                        headerRight: () => (
+                          <View className="flex-row gap-5 px-2">
+                            <TouchableOpacity
+                              onPress={() => {
+                                if (tmp.link) {
+                                  if (tmp.link.url) {
+                                    return Linking.openURL(tmp.link.url);
+                                  } else {
+                                    const format = getOriginalFormat(tmp.link);
+
+                                    return Linking.openURL(
+                                      format !== null
+                                        ? auth.instance +
+                                            `/preserved/${tmp.link.id}?format=${format}`
+                                        : tmp.link.url || ""
+                                    );
+                                  }
+                                }
                               }}
                             >
-                              <DropdownMenu.ItemTitle>
-                                Delete
-                              </DropdownMenu.ItemTitle>
-                            </DropdownMenu.Item>
-                          )}
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Root>
-                    </View>
-                  ),
+                              {Platform.OS === "ios" ? (
+                                <Compass
+                                  size={21}
+                                  color={
+                                    rawTheme[colorScheme as ThemeName][
+                                      "base-content"
+                                    ]
+                                  }
+                                />
+                              ) : (
+                                <Chromium
+                                  stroke={
+                                    rawTheme[colorScheme as ThemeName][
+                                      "base-content"
+                                    ]
+                                  }
+                                />
+                              )}
+                            </TouchableOpacity>
+                            <DropdownMenu.Root>
+                              <DropdownMenu.Trigger>
+                                <TouchableOpacity>
+                                  <Ellipsis
+                                    size={21}
+                                    color={
+                                      rawTheme[colorScheme as ThemeName][
+                                        "base-content"
+                                      ]
+                                    }
+                                  />
+                                </TouchableOpacity>
+                              </DropdownMenu.Trigger>
+
+                              <DropdownMenu.Content>
+                                {tmp.link?.url && (
+                                  <DropdownMenu.Item
+                                    key="share"
+                                    onSelect={async () => {
+                                      await Share.share({
+                                        ...(Platform.OS === "android"
+                                          ? { message: tmp.link?.url as string }
+                                          : { url: tmp.link?.url as string }),
+                                      });
+                                    }}
+                                  >
+                                    <DropdownMenu.ItemTitle>
+                                      Share
+                                    </DropdownMenu.ItemTitle>
+                                  </DropdownMenu.Item>
+                                )}
+
+                                {tmp.link && tmp.user && (
+                                  <DropdownMenu.Item
+                                    key="pin-link"
+                                    onSelect={() => {
+                                      const isAlreadyPinned =
+                                        tmp.link?.pinnedBy &&
+                                        tmp.link.pinnedBy[0]
+                                          ? true
+                                          : false;
+                                      updateLink.mutateAsync({
+                                        ...(tmp.link as LinkIncludingShortenedCollectionAndTags),
+                                        pinnedBy: (isAlreadyPinned
+                                          ? [{ id: undefined }]
+                                          : [{ id: tmp.user?.id }]) as any,
+                                      });
+                                    }}
+                                  >
+                                    <DropdownMenu.ItemTitle>
+                                      {tmp.link.pinnedBy && tmp.link.pinnedBy[0]
+                                        ? "Unpin Link"
+                                        : "Pin Link"}
+                                    </DropdownMenu.ItemTitle>
+                                  </DropdownMenu.Item>
+                                )}
+
+                                {tmp.link && (
+                                  <DropdownMenu.Item
+                                    key="edit-link"
+                                    onSelect={() => {
+                                      SheetManager.show("edit-link-sheet", {
+                                        payload: {
+                                          link: tmp.link as LinkIncludingShortenedCollectionAndTags,
+                                        },
+                                      });
+                                    }}
+                                  >
+                                    <DropdownMenu.ItemTitle>
+                                      Edit Link
+                                    </DropdownMenu.ItemTitle>
+                                  </DropdownMenu.Item>
+                                )}
+
+                                {tmp.link && (
+                                  <DropdownMenu.Item
+                                    key="delete-link"
+                                    onSelect={() => {
+                                      return Alert.alert(
+                                        "Delete Link",
+                                        "Are you sure you want to delete this link? This action cannot be undone.",
+                                        [
+                                          {
+                                            text: "Cancel",
+                                            style: "cancel",
+                                          },
+                                          {
+                                            text: "Delete",
+                                            style: "destructive",
+                                            onPress: async () => {
+                                              deleteLink.mutate(
+                                                tmp.link?.id as number
+                                              );
+
+                                              await deleteLinkCache(
+                                                tmp.link?.id as number
+                                              );
+
+                                              router.back();
+                                            },
+                                          },
+                                        ]
+                                      );
+                                    }}
+                                  >
+                                    <DropdownMenu.ItemTitle>
+                                      Delete
+                                    </DropdownMenu.ItemTitle>
+                                  </DropdownMenu.Item>
+                                )}
+                              </DropdownMenu.Content>
+                            </DropdownMenu.Root>
+                          </View>
+                        ),
+                      }),
                 }}
               />
               <Stack.Screen name="login" />

@@ -15,6 +15,7 @@ export default function Layout() {
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: Platform.OS === "ios",
+        headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerShadowVisible: false,
         headerLargeTitleStyle: {
           color: rawTheme[colorScheme as ThemeName]["base-content"], // or whatever token you want

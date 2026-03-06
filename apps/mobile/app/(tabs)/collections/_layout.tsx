@@ -12,6 +12,7 @@ export default function Layout() {
       screenOptions={{
         headerTitle: "Collections",
         headerLargeTitle: true,
+        headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerTransparent: Platform.OS === "ios",
         headerShadowVisible: false,
         headerSearchBarOptions: {

@@ -78,6 +78,9 @@ export default function ReadableFormat({ link, setIsLoading }: Props) {
         className="flex-1 bg-base-100"
         contentContainerClassName="p-4"
         nestedScrollEnabled
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustContentInsets
+        automaticallyAdjustsScrollIndicatorInsets
       >
         <Text className="text-2xl font-bold mb-2.5 text-base-content">
           {decode(link.name || link.description || link.url || "")}

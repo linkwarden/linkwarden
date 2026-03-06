@@ -75,7 +75,12 @@ export default function ImageFormat({ link, setIsLoading, format }: Props) {
     return (
       content &&
       dimension && (
-        <ScrollView maximumZoomScale={10}>
+        <ScrollView
+          maximumZoomScale={10}
+          contentInsetAdjustmentBehavior="automatic"
+          automaticallyAdjustContentInsets
+          automaticallyAdjustsScrollIndicatorInsets
+        >
           <Image
             source={{ uri: content }}
             onLoadEnd={() => setIsLoading(false)}

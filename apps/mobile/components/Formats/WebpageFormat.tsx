@@ -71,6 +71,9 @@ export default function WebpageFormat({ link, setIsLoading }: Props) {
         javaScriptEnabled={false}
         allowFileAccess={true}
         onLoadEnd={() => setIsLoading(false)}
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustContentInsets
+        automaticallyAdjustsScrollIndicatorInsets
       />
     )
   );
