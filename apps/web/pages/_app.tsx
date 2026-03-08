@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
 });
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode;
+  getLayout?: (page: ReactElement<any>) => ReactNode;
 };
 
 type PageProps = { session?: Session | null };

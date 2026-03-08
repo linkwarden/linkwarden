@@ -24,7 +24,7 @@ export const PreservationContent: React.FC<Props> = ({ link, format }) => {
   const [pdfLoaded, setPdfLoaded] = useState(false);
   const [monolithLoaded, setMonolithLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const prevFormatRef = useRef<ArchivedFormat | undefined>();
+  const prevFormatRef = useRef<ArchivedFormat | undefined>(undefined);
 
   const [currentFormat, setCurrentFormat] = useState<ArchivedFormat>(
     format ?? ArchivedFormat.readability
