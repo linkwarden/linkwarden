@@ -8,6 +8,72 @@ import type toaster from "react-hot-toast";
 import { TFunction } from "next-i18next";
 import type { Alert as Alert_ } from "react-native";
 
+const getCollectionSubtreeIds = (collections: any[] = [], rootId: number) => {
+  const byParent = new Map<number, number[]>();
+
+  for (const collection of collections) {
+    if (collection?.id == null || collection?.parentId == null) continue;
+    const siblings = byParent.get(collection.parentId) ?? [];
+    siblings.push(collection.id);
+    byParent.set(collection.parentId, siblings);
+  }
+
+  const visited = new Set<number>([rootId]);
+  const stack = [rootId];
+
+  while (stack.length) {
+    const currentId = stack.pop() as number;
+    const children = byParent.get(currentId) ?? [];
+
+    for (const childId of children) {
+      if (visited.has(childId)) continue;
+      visited.add(childId);
+      stack.push(childId);
+    }
+  }
+
+  return Array.from(visited);
+};
+
+const removeCollectionsFromDashboard = (
+  oldData: any,
+  collectionIds: number[]
+) => {
+  if (!oldData) return oldData;
+
+  const deletedCollectionIds = new Set(collectionIds);
+  const nextLinks =
+    oldData.links?.filter(
+      (link: any) => !deletedCollectionIds.has(link.collectionId)
+    ) || [];
+
+  const nextCollectionLinks = oldData.collectionLinks
+    ? Object.fromEntries(
+        Object.entries(oldData.collectionLinks)
+          .filter(
+            ([collectionId]) => !deletedCollectionIds.has(Number(collectionId))
+          )
+          .map(([collectionId, links]) => [
+            collectionId,
+            (links as any[]).filter(
+              (link) => !deletedCollectionIds.has(link.collectionId)
+            ),
+          ])
+      )
+    : oldData.collectionLinks;
+
+  return {
+    ...oldData,
+    links: nextLinks,
+    collectionLinks: nextCollectionLinks,
+    numberOfPinnedLinks:
+      nextLinks.filter(
+        (link: any) =>
+          link.isPinned || (link.pinnedBy && link.pinnedBy.length > 0)
+      ).length || 0,
+  };
+};
+
 const useCollections = (auth?: MobileAuth) => {
   let status: "loading" | "authenticated" | "unauthenticated";
 
@@ -150,29 +216,34 @@ const useDeleteCollection = ({
       await queryClient.cancelQueries({ queryKey: ["collections"] });
       await queryClient.cancelQueries({ queryKey: ["dashboardData"] });
 
-      const previousCollections = queryClient.getQueryData(["collections"]);
+      const previousCollections =
+        (queryClient.getQueryData(["collections"]) as any[]) ?? [];
       const previousDashboard = queryClient.getQueryData(["dashboardData"]);
+      const user = queryClient.getQueryData(["user"]) as any;
+      const targetCollection = previousCollections.find(
+        (collection: any) => collection.id === id
+      );
+      const isOwner = Boolean(
+        targetCollection?.ownerId != null &&
+          user?.id != null &&
+          targetCollection.ownerId === user.id
+      );
+      const collectionIdsToRemove = isOwner
+        ? getCollectionSubtreeIds(previousCollections, id)
+        : [id];
+      const deletedCollectionIds = new Set(collectionIdsToRemove);
 
       queryClient.setQueryData(["collections"], (oldData: any) => {
-        return oldData?.filter((collection: any) => collection.id !== id);
+        return oldData?.filter(
+          (collection: any) => !deletedCollectionIds.has(collection.id)
+        );
       });
 
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return oldData;
-
-        return {
-          ...oldData,
-          links:
-            oldData.links?.filter((link: any) => link.collectionId !== id) ||
-            [],
-          numberOfPinnedLinks:
-            oldData.links?.filter(
-              (link: any) => link.collectionId !== id && link.isPinned
-            ).length || 0,
-        };
+        return removeCollectionsFromDashboard(oldData, collectionIdsToRemove);
       });
 
-      return { previousCollections, previousDashboard };
+      return { previousCollections, previousDashboard, collectionIdsToRemove };
     },
     onError: (error, _variables, context) => {
       if (toast && t) toast.error(t(error.message));
@@ -184,25 +255,18 @@ const useDeleteCollection = ({
       queryClient.setQueryData(["collections"], context.previousCollections);
       queryClient.setQueryData(["dashboardData"], context.previousDashboard);
     },
-    onSuccess: (data, id) => {
+    onSuccess: (data, id, context) => {
+      const collectionIdsToRemove = context?.collectionIdsToRemove ?? [id];
+      const deletedCollectionIds = new Set(collectionIdsToRemove);
+
       queryClient.setQueryData(["collections"], (oldData: any) => {
-        return oldData.filter((collection: any) => collection.id !== id);
+        return oldData?.filter(
+          (collection: any) => !deletedCollectionIds.has(collection.id)
+        );
       });
 
-      // Update dashboardData query data
       queryClient.setQueryData(["dashboardData"], (oldData: any) => {
-        if (!oldData) return oldData;
-
-        return {
-          ...oldData,
-          links:
-            oldData.links?.filter((link: any) => link.collectionId !== id) ||
-            [],
-          numberOfPinnedLinks:
-            oldData.links?.filter(
-              (link: any) => link.collectionId !== id && link.isPinned
-            ).length || 0,
-        };
+        return removeCollectionsFromDashboard(oldData, collectionIdsToRemove);
       });
 
       queryClient.invalidateQueries({ queryKey: ["tags"] });
