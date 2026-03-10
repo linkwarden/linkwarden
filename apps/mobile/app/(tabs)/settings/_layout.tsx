@@ -18,19 +18,19 @@ export default function Layout() {
         headerLargeTitle: true,
         headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerShadowVisible: false,
-        headerLargeTitleStyle: {
-          color: rawTheme[colorScheme as ThemeName]["base-content"],
-        },
-        headerTitleStyle: {
-          color: rawTheme[colorScheme as ThemeName]["base-content"],
-        },
-        headerLargeStyle: {
-          backgroundColor:
-            Platform.OS === "ios" ? "transparent" : themeBackgroundColor,
-        },
         headerBackTitle: "Back",
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
+        headerLargeStyle: {
+          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+        },
         headerStyle: {
-          backgroundColor: isIOS26Plus ? "transparent" : themeBackgroundColor,
+          backgroundColor:
+            Platform.OS === "ios"
+              ? "transparent"
+              : colorScheme === "dark"
+                ? rawTheme["dark"]["base-100"]
+                : "white",
         },
       }}
     >

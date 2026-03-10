@@ -16,7 +16,6 @@ export default function Layout() {
         headerLargeTitle: true,
         headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerTransparent: Platform.OS === "ios",
-        headerShadowVisible: false,
         headerSearchBarOptions: {
           placeholder: "Search Tags",
           autoCapitalize: "none",
@@ -30,21 +29,21 @@ export default function Layout() {
           },
           headerIconColor: colorScheme === "dark" ? "white" : "black",
         },
-        headerLargeTitleStyle: {
-          color: rawTheme[colorScheme as ThemeName]["base-content"],
-        },
-        headerTitleStyle: {
-          color: rawTheme[colorScheme as ThemeName]["base-content"],
-        },
+        headerShadowVisible: false,
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerLargeStyle: {
           backgroundColor: isIOS26Plus
             ? "transparent"
             : rawTheme[colorScheme as ThemeName]["base-100"],
         },
         headerStyle: {
-          backgroundColor: isIOS26Plus
-            ? "transparent"
-            : rawTheme[colorScheme as ThemeName]["base-100"],
+          backgroundColor:
+            Platform.OS === "ios"
+              ? "transparent"
+              : colorScheme === "dark"
+                ? rawTheme["dark"]["base-100"]
+                : "white",
         },
       }}
     />

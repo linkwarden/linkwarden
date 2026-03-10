@@ -2,7 +2,7 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { Stack, useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { Platform, TouchableOpacity, View } from "react-native";
+import { Platform, TouchableOpacity } from "react-native";
 import { SheetManager } from "react-native-actions-sheet";
 import * as DropdownMenu from "zeego/dropdown-menu";
 
@@ -17,24 +17,20 @@ export default function Layout() {
       screenOptions={{
         headerLargeTitle: true,
         headerTransparent: Platform.OS === "ios",
-        headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerShadowVisible: false,
-        headerLargeTitleStyle: {
-          color: rawTheme[colorScheme as ThemeName]["base-content"],
-        },
-        headerTitleStyle: {
-          color: rawTheme[colorScheme as ThemeName]["base-content"],
-        },
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
+        headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerLargeStyle: {
+          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+        },
+        headerStyle: {
           backgroundColor:
             Platform.OS === "ios"
               ? "transparent"
-              : rawTheme[colorScheme as ThemeName]["base-100"],
-        },
-        headerStyle: {
-          backgroundColor: isIOS26Plus
-            ? "transparent"
-            : rawTheme[colorScheme as ThemeName]["base-100"],
+              : colorScheme === "dark"
+                ? rawTheme["dark"]["base-100"]
+                : "white",
         },
       }}
     >
