@@ -1,10 +1,15 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 
 export default function Layout() {
   const { colorScheme } = useColorScheme();
+  const router = useRouter();
+
+  const isIOS26Plus =
+    Platform.OS === "ios" && parseInt(Platform.Version as string, 10) >= 26;
+  const themeBackgroundColor = rawTheme[colorScheme as ThemeName]["base-100"];
 
   return (
     <Stack
@@ -12,37 +17,53 @@ export default function Layout() {
         headerTitle: "Settings",
         headerLargeTitle: true,
         headerTintColor: colorScheme === "dark" ? "white" : "black",
-        headerTransparent: Platform.OS === "ios",
         headerShadowVisible: false,
         headerLargeTitleStyle: {
-          color: rawTheme[colorScheme as ThemeName]["base-content"], // or whatever token you want
+          color: rawTheme[colorScheme as ThemeName]["base-content"],
         },
         headerTitleStyle: {
           color: rawTheme[colorScheme as ThemeName]["base-content"],
         },
         headerLargeStyle: {
           backgroundColor:
-            Platform.OS === "ios"
-              ? "transparent"
-              : rawTheme[colorScheme as ThemeName]["base-100"],
+            Platform.OS === "ios" ? "transparent" : themeBackgroundColor,
         },
         headerBackTitle: "Back",
         headerStyle: {
-          backgroundColor:
-            Platform.OS === "ios"
-              ? "transparent"
-              : colorScheme === "dark"
-                ? rawTheme["dark"]["base-100"]
-                : "white",
+          backgroundColor: isIOS26Plus ? "transparent" : themeBackgroundColor,
         },
       }}
     >
-      <Stack.Screen name="index" />
+      <Stack.Screen
+        name="index"
+        options={{
+          headerTransparent: Platform.OS === "ios",
+        }}
+      />
       <Stack.Screen
         name="preferredCollection"
         options={{
           headerTitle: "Preferred Collection",
           headerLargeTitle: false,
+          headerTransparent: Platform.OS === "ios",
+          headerBackground: () => (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: themeBackgroundColor,
+              }}
+            />
+          ),
+          headerSearchBarOptions: {
+            placeholder: "Search Collections",
+            autoCapitalize: "none",
+            onChangeText: (e) => {
+              router.setParams({
+                search: encodeURIComponent(e.nativeEvent.text),
+              });
+            },
+            headerIconColor: colorScheme === "dark" ? "white" : "black",
+          },
         }}
       />
     </Stack>

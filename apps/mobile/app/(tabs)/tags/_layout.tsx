@@ -7,6 +7,8 @@ export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+
   return (
     <Stack
       screenOptions={{
@@ -26,24 +28,20 @@ export default function Layout() {
           headerIconColor: colorScheme === "dark" ? "white" : "black",
         },
         headerLargeTitleStyle: {
-          color: rawTheme[colorScheme as ThemeName]["base-content"], // or whatever token you want
+          color: rawTheme[colorScheme as ThemeName]["base-content"],
         },
         headerTitleStyle: {
           color: rawTheme[colorScheme as ThemeName]["base-content"],
         },
         headerLargeStyle: {
-          backgroundColor:
-            Platform.OS === "ios"
-              ? "transparent"
-              : rawTheme[colorScheme as ThemeName]["base-100"],
+          backgroundColor: isIOS26Plus
+            ? "transparent"
+            : rawTheme[colorScheme as ThemeName]["base-100"],
         },
         headerStyle: {
-          backgroundColor:
-            Platform.OS === "ios"
-              ? "transparent"
-              : colorScheme === "dark"
-                ? rawTheme["dark"]["base-100"]
-                : "white",
+          backgroundColor: isIOS26Plus
+            ? "transparent"
+            : rawTheme[colorScheme as ThemeName]["base-100"],
         },
       }}
     />

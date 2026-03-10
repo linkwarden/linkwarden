@@ -299,14 +299,10 @@ const RootComponent = ({
                         },
                         headerStyle: {
                           backgroundColor:
-                            Platform.OS === "ios"
-                              ? "transparent"
-                              : colorScheme === "dark"
-                                ? rawTheme["dark"]["base-100"]
-                                : "white",
+                            rawTheme[colorScheme as ThemeName]["base-100"],
                         },
                         headerRight: () => (
-                          <View className="flex-row gap-5 px-2">
+                          <View className="flex-row gap-5">
                             <TouchableOpacity
                               onPress={() => {
                                 if (tmp.link) {

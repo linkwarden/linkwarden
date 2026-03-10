@@ -1,27 +1,38 @@
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
-import React, { useCallback, useMemo, useState } from "react";
+import { View, Text, FlatList, TouchableOpacity, Platform } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import useAuthStore from "@/store/auth";
 import useDataStore from "@/store/data";
 import { useCollections } from "@linkwarden/router/collections";
 import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
-import Input from "@/components/ui/Input";
 import { Folder, Check } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { rawTheme, ThemeName } from "@/lib/colors";
+import { useLocalSearchParams } from "expo-router";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PreferredCollectionScreen = () => {
   const { auth } = useAuthStore();
   const { data, updateData } = useDataStore();
   const collections = useCollections(auth);
   const { colorScheme } = useColorScheme();
-  const [searchQuery, setSearchQuery] = useState("");
+  const { search } = useLocalSearchParams<{ search?: string }>();
+  const [filteredCollections, setFilteredCollections] = useState<
+    CollectionIncludingMembersAndLinkCount[]
+  >([]);
+  const headerHeight = useHeaderHeight();
+  const insets = useSafeAreaInsets();
 
-  const filteredCollections = useMemo(() => {
-    if (!collections.data) return [];
-    const q = searchQuery.trim().toLowerCase();
-    if (q === "") return collections.data;
-    return collections.data.filter((col) => col.name.toLowerCase().includes(q));
-  }, [collections.data, searchQuery]);
+  useEffect(() => {
+    const filter =
+      collections.data?.filter((e) =>
+        e.name
+          .toLowerCase()
+          .includes(decodeURIComponent(search?.toLowerCase() || ""))
+      ) || [];
+
+    setFilteredCollections(filter);
+  }, [search, collections.data]);
 
   const renderCollection = useCallback(
     ({
@@ -70,26 +81,19 @@ const PreferredCollectionScreen = () => {
         keyExtractor={(item) => item.id?.toString() || ""}
         renderItem={renderCollection}
         contentContainerStyle={{
-          paddingHorizontal: 20,
-          paddingTop: 20,
-          paddingBottom: 20,
+          paddingHorizontal: 16,
+          flexGrow: 1,
+          paddingTop: Platform.OS === "ios" ? headerHeight + 10 : 10,
+          paddingBottom: insets.bottom + 60,
         }}
-        contentInsetAdjustmentBehavior="automatic"
-        ListHeaderComponent={
-          <Input
-            placeholder="Search collections"
-            className="mb-4 bg-base-200 h-10"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        }
         ListEmptyComponent={
-          <Text
-            style={{ textAlign: "center", marginTop: 20 }}
-            className="text-neutral"
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            No collections match “{searchQuery}”
-          </Text>
+            <Text className="text-neutral text-center">
+              No collections match “{search}”
+            </Text>
+          </View>
         }
       />
     </View>
