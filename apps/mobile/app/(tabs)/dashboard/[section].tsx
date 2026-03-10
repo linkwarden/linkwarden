@@ -16,6 +16,7 @@ export default function LinksScreen() {
 
   const navigation = useNavigation();
   const collections = useCollections(auth);
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
 
   const title = useMemo(() => {
     if (section === "pinned-links") return "Pinned Links";
@@ -36,6 +37,9 @@ export default function LinksScreen() {
       headerTitle: title,
       headerSearchBarOptions: {
         placeholder: `Search ${title}`,
+        ...(isIOS26Plus && {
+          allowToolbarIntegration: false,
+        }),
       },
     });
   }, [title, navigation]);

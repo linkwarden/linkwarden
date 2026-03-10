@@ -6,7 +6,6 @@ import { Platform } from "react-native";
 export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
-
   const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
 
   return (

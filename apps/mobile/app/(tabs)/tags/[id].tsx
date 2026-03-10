@@ -25,6 +25,7 @@ export default function LinksScreen() {
   const tags = useTags(auth);
 
   const navigation = useNavigation();
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
 
   useEffect(() => {
     const activeTag = tags.data?.filter((e) => e.id === Number(id))[0];
@@ -34,6 +35,9 @@ export default function LinksScreen() {
         headerTitle: activeTag?.name,
         headerSearchBarOptions: {
           placeholder: `Search ${activeTag.name}`,
+          ...(isIOS26Plus && {
+            allowToolbarIntegration: false,
+          }),
         },
       });
   }, [navigation]);
