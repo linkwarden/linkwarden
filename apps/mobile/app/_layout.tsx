@@ -169,150 +169,144 @@ const RootComponent = ({
                             } else {
                               const format = getOriginalFormat(tmp.link);
 
-                                    return Linking.openURL(
-                                      format !== null
-                                        ? auth.instance +
-                                            `/preserved/${tmp.link.id}?format=${format}`
-                                        : tmp.link.url || ""
-                                    );
-                                  }
-                                }
+                              return Linking.openURL(
+                                format !== null
+                                  ? auth.instance +
+                                      `/preserved/${tmp.link.id}?format=${format}`
+                                  : tmp.link.url || ""
+                              );
+                            }
+                          }
+                        }}
+                      >
+                        {Platform.OS === "ios" ? (
+                          <Compass
+                            size={21}
+                            color={
+                              rawTheme[colorScheme as ThemeName]["base-content"]
+                            }
+                          />
+                        ) : (
+                          <Chromium
+                            stroke={
+                              rawTheme[colorScheme as ThemeName]["base-content"]
+                            }
+                          />
+                        )}
+                      </TouchableOpacity>
+                      <DropdownMenu.Root>
+                        <DropdownMenu.Trigger>
+                          <TouchableOpacity>
+                            <Ellipsis
+                              size={21}
+                              color={
+                                rawTheme[colorScheme as ThemeName][
+                                  "base-content"
+                                ]
+                              }
+                            />
+                          </TouchableOpacity>
+                        </DropdownMenu.Trigger>
+
+                        <DropdownMenu.Content>
+                          {tmp.link?.url && (
+                            <DropdownMenu.Item
+                              key="share"
+                              onSelect={async () => {
+                                await Share.share({
+                                  ...(Platform.OS === "android"
+                                    ? { message: tmp.link?.url as string }
+                                    : { url: tmp.link?.url as string }),
+                                });
                               }}
                             >
-                              {Platform.OS === "ios" ? (
-                                <Compass
-                                  size={21}
-                                  color={
-                                    rawTheme[colorScheme as ThemeName][
-                                      "base-content"
-                                    ]
-                                  }
-                                />
-                              ) : (
-                                <Chromium
-                                  stroke={
-                                    rawTheme[colorScheme as ThemeName][
-                                      "base-content"
-                                    ]
-                                  }
-                                />
-                              )}
-                            </TouchableOpacity>
-                            <DropdownMenu.Root>
-                              <DropdownMenu.Trigger>
-                                <TouchableOpacity>
-                                  <Ellipsis
-                                    size={21}
-                                    color={
-                                      rawTheme[colorScheme as ThemeName][
-                                        "base-content"
-                                      ]
-                                    }
-                                  />
-                                </TouchableOpacity>
-                              </DropdownMenu.Trigger>
+                              <DropdownMenu.ItemTitle>
+                                Share
+                              </DropdownMenu.ItemTitle>
+                            </DropdownMenu.Item>
+                          )}
 
-                              <DropdownMenu.Content>
-                                {tmp.link?.url && (
-                                  <DropdownMenu.Item
-                                    key="share"
-                                    onSelect={async () => {
-                                      await Share.share({
-                                        ...(Platform.OS === "android"
-                                          ? { message: tmp.link?.url as string }
-                                          : { url: tmp.link?.url as string }),
-                                      });
-                                    }}
-                                  >
-                                    <DropdownMenu.ItemTitle>
-                                      Share
-                                    </DropdownMenu.ItemTitle>
-                                  </DropdownMenu.Item>
-                                )}
+                          {tmp.link && tmp.user && (
+                            <DropdownMenu.Item
+                              key="pin-link"
+                              onSelect={() => {
+                                const isAlreadyPinned =
+                                  tmp.link?.pinnedBy && tmp.link.pinnedBy[0]
+                                    ? true
+                                    : false;
+                                updateLink.mutateAsync({
+                                  ...(tmp.link as LinkIncludingShortenedCollectionAndTags),
+                                  pinnedBy: (isAlreadyPinned
+                                    ? [{ id: undefined }]
+                                    : [{ id: tmp.user?.id }]) as any,
+                                });
+                              }}
+                            >
+                              <DropdownMenu.ItemTitle>
+                                {tmp.link.pinnedBy && tmp.link.pinnedBy[0]
+                                  ? "Unpin Link"
+                                  : "Pin Link"}
+                              </DropdownMenu.ItemTitle>
+                            </DropdownMenu.Item>
+                          )}
 
-                                {tmp.link && tmp.user && (
-                                  <DropdownMenu.Item
-                                    key="pin-link"
-                                    onSelect={() => {
-                                      const isAlreadyPinned =
-                                        tmp.link?.pinnedBy &&
-                                        tmp.link.pinnedBy[0]
-                                          ? true
-                                          : false;
-                                      updateLink.mutateAsync({
-                                        ...(tmp.link as LinkIncludingShortenedCollectionAndTags),
-                                        pinnedBy: (isAlreadyPinned
-                                          ? [{ id: undefined }]
-                                          : [{ id: tmp.user?.id }]) as any,
-                                      });
-                                    }}
-                                  >
-                                    <DropdownMenu.ItemTitle>
-                                      {tmp.link.pinnedBy && tmp.link.pinnedBy[0]
-                                        ? "Unpin Link"
-                                        : "Pin Link"}
-                                    </DropdownMenu.ItemTitle>
-                                  </DropdownMenu.Item>
-                                )}
+                          {tmp.link && (
+                            <DropdownMenu.Item
+                              key="edit-link"
+                              onSelect={() => {
+                                SheetManager.show("edit-link-sheet", {
+                                  payload: {
+                                    link: tmp.link as LinkIncludingShortenedCollectionAndTags,
+                                  },
+                                });
+                              }}
+                            >
+                              <DropdownMenu.ItemTitle>
+                                Edit Link
+                              </DropdownMenu.ItemTitle>
+                            </DropdownMenu.Item>
+                          )}
 
-                                {tmp.link && (
-                                  <DropdownMenu.Item
-                                    key="edit-link"
-                                    onSelect={() => {
-                                      SheetManager.show("edit-link-sheet", {
-                                        payload: {
-                                          link: tmp.link as LinkIncludingShortenedCollectionAndTags,
-                                        },
-                                      });
-                                    }}
-                                  >
-                                    <DropdownMenu.ItemTitle>
-                                      Edit Link
-                                    </DropdownMenu.ItemTitle>
-                                  </DropdownMenu.Item>
-                                )}
+                          {tmp.link && (
+                            <DropdownMenu.Item
+                              key="delete-link"
+                              onSelect={() => {
+                                return Alert.alert(
+                                  "Delete Link",
+                                  "Are you sure you want to delete this link? This action cannot be undone.",
+                                  [
+                                    {
+                                      text: "Cancel",
+                                      style: "cancel",
+                                    },
+                                    {
+                                      text: "Delete",
+                                      style: "destructive",
+                                      onPress: async () => {
+                                        deleteLink.mutate(
+                                          tmp.link?.id as number
+                                        );
 
-                                {tmp.link && (
-                                  <DropdownMenu.Item
-                                    key="delete-link"
-                                    onSelect={() => {
-                                      return Alert.alert(
-                                        "Delete Link",
-                                        "Are you sure you want to delete this link? This action cannot be undone.",
-                                        [
-                                          {
-                                            text: "Cancel",
-                                            style: "cancel",
-                                          },
-                                          {
-                                            text: "Delete",
-                                            style: "destructive",
-                                            onPress: async () => {
-                                              deleteLink.mutate(
-                                                tmp.link?.id as number
-                                              );
+                                        await deleteLinkCache(
+                                          tmp.link?.id as number
+                                        );
 
-                                              await deleteLinkCache(
-                                                tmp.link?.id as number
-                                              );
-
-                                              router.back();
-                                            },
-                                          },
-                                        ]
-                                      );
-                                    }}
-                                  >
-                                    <DropdownMenu.ItemTitle>
-                                      Delete
-                                    </DropdownMenu.ItemTitle>
-                                  </DropdownMenu.Item>
-                                )}
-                              </DropdownMenu.Content>
-                            </DropdownMenu.Root>
-                          </View>
-                        ),
-                      }),
+                                        router.back();
+                                      },
+                                    },
+                                  ]
+                                );
+                              }}
+                            >
+                              <DropdownMenu.ItemTitle>
+                                Delete
+                              </DropdownMenu.ItemTitle>
+                            </DropdownMenu.Item>
+                          )}
+                        </DropdownMenu.Content>
+                      </DropdownMenu.Root>
+                    </View>
+                  ),
                 }}
               />
               <Stack.Screen name="login" />
