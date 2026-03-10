@@ -81,6 +81,9 @@ export default function Layout() {
           headerSearchBarOptions: {
             placeholder: "Search",
             autoCapitalize: "none",
+            ...(isIOS26Plus && {
+              allowToolbarIntegration: false,
+            }),
             headerIconColor: colorScheme === "dark" ? "white" : "black",
             onChangeText: (e) => {
               router.setParams({

@@ -20,6 +20,9 @@ export default function Layout() {
         headerSearchBarOptions: {
           placeholder: "Search Links",
           autoCapitalize: "none",
+          ...(isIOS26Plus && {
+            allowToolbarIntegration: false,
+          }),
           onChangeText: (e) => {
             router.setParams({
               search: encodeURIComponent(e.nativeEvent.text),
