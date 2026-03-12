@@ -81,6 +81,7 @@ export default function Layout() {
             autoCapitalize: "none",
             ...(isIOS26Plus && {
               allowToolbarIntegration: false,
+              placement: "integratedButton",
             }),
             headerIconColor: colorScheme === "dark" ? "white" : "black",
             onChangeText: (e) => {

@@ -60,6 +60,7 @@ export default function Layout() {
             autoCapitalize: "none",
             ...(isIOS26Plus && {
               allowToolbarIntegration: false,
+              placement: "integratedButton",
             }),
             onChangeText: (e) => {
               router.setParams({

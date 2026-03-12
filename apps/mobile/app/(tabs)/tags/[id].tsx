@@ -37,6 +37,7 @@ export default function LinksScreen() {
           placeholder: `Search ${activeTag.name}`,
           ...(isIOS26Plus && {
             allowToolbarIntegration: false,
+            placement: "integratedButton",
           }),
         },
       });
