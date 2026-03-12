@@ -40,8 +40,15 @@ import { queryClient } from "@/lib/queryClient";
 import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
 import { StatusBar } from "expo-status-bar";
 import { cn } from "@linkwarden/lib/utils";
+import * as Sentry from "@sentry/react-native";
 
-export default function RootLayout() {
+Sentry.init({
+  dsn: "https://00d7eed9e810cbbf91a7ed3547e37100@o4510998442475520.ingest.us.sentry.io/4511033679609856",
+  sendDefaultPii: false,
+  enableLogs: true,
+});
+
+export default Sentry.wrap(function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const { hasShareIntent, shareIntent, error, resetShareIntent } =
     useShareIntent();
@@ -111,7 +118,7 @@ export default function RootLayout() {
       <RootComponent isLoading={isLoading} auth={auth} />
     </PersistQueryClientProvider>
   );
-}
+});
 
 const RootComponent = ({
   isLoading,
