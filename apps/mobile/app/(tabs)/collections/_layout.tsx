@@ -33,7 +33,9 @@ export default function Layout() {
         headerBlurEffect:
           colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerLargeStyle: {
-          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+          backgroundColor: isIOS26Plus
+            ? "transparent"
+            : rawTheme[colorScheme as ThemeName]["base-100"],
         },
         headerStyle: {
           backgroundColor:

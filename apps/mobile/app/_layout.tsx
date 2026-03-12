@@ -39,6 +39,7 @@ import { deleteLinkCache } from "@/lib/cache";
 import { queryClient } from "@/lib/queryClient";
 import getOriginalFormat from "@linkwarden/lib/getOriginalFormat";
 import { StatusBar } from "expo-status-bar";
+import { cn } from "@linkwarden/lib/utils";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -125,6 +126,8 @@ const RootComponent = ({
 
   const { tmp } = useTmpStore();
 
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+
   return (
     <KeyboardProvider>
       <View
@@ -160,7 +163,9 @@ const RootComponent = ({
                         : "white",
                   },
                   headerRight: () => (
-                    <View className="flex-row gap-5">
+                    <View
+                      className={cn("flex-row gap-5", isIOS26Plus && "px-2")}
+                    >
                       <TouchableOpacity
                         onPress={() => {
                           if (tmp.link) {

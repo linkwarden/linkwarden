@@ -22,7 +22,9 @@ export default function Layout() {
           colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerLargeStyle: {
-          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+          backgroundColor: isIOS26Plus
+            ? "transparent"
+            : rawTheme[colorScheme as ThemeName]["base-100"],
         },
         headerStyle: {
           backgroundColor:
