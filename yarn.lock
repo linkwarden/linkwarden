@@ -5283,7 +5283,7 @@ __metadata:
     react-native: "npm:0.81.5"
     react-native-actions-sheet: "npm:^0.9.7"
     react-native-blob-util: "npm:^0.23.2"
-    react-native-edge-to-edge: "npm:1.6.0"
+    react-native-edge-to-edge: "npm:^1.8.1"
     react-native-gesture-handler: "npm:~2.28.0"
     react-native-ios-context-menu: "npm:^3.2.0"
     react-native-ios-utilities: "npm:5.2.0"
@@ -18548,13 +18548,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-edge-to-edge@npm:1.6.0":
-  version: 1.6.0
-  resolution: "react-native-edge-to-edge@npm:1.6.0"
+"react-native-edge-to-edge@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "react-native-edge-to-edge@npm:1.8.1"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/6373cc1b447eae31689a9b62e38b15621e9273626e2324700c4c3eb58c02ce489236a4b9e3e0dc1187e062defd8316195c5b1213facd718706b79b92127a05a3
+  checksum: 10c0/c51244f93d2b65fb1e09bcc780be36e7fc7fd05d56de80d22fe90c07b0045666fb2ab719ad799230affdce9ae565a0ae2f703f72c501fe4f98c6c33b2880e609
   languageName: node
   linkType: hard
 

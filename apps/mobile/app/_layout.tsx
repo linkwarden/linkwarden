@@ -126,10 +126,10 @@ const RootComponent = ({
   const { tmp } = useTmpStore();
 
   return (
-    <View
-      style={[{ flex: 1 }, colorScheme === "dark" ? darkTheme : lightTheme]}
-    >
-      <KeyboardProvider>
+    <KeyboardProvider>
+      <View
+        style={[{ flex: 1 }, colorScheme === "dark" ? darkTheme : lightTheme]}
+      >
         <SheetProvider>
           <StatusBar
             style={colorScheme === "dark" ? "light" : "dark"}
@@ -316,7 +316,7 @@ const RootComponent = ({
             </Stack>
           )}
         </SheetProvider>
-      </KeyboardProvider>
-    </View>
+      </View>
+    </KeyboardProvider>
   );
 };
