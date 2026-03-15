@@ -12,10 +12,12 @@ const Index = () => {
   const { data } = useGetLink({
     id: Number(id) as number,
     isPublicRoute,
+    enabled: true,
   });
 
   return (
     <div className="flex h-screen">
+      {JSON.stringify(isPublicRoute)}
       {data?.id ? (
         <LinkDetails
           activeLink={data}
