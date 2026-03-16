@@ -14,13 +14,13 @@ import {
 } from "@linkwarden/lib/schemaValidation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "../ui/separator";
+import { useAddLink } from "@linkwarden/router/links";
 
 type Props = {
   onClose: () => void;
-  onSubmit: Function;
 };
 
-export default function NewLinkModal({ onClose, onSubmit }: Props) {
+export default function NewLinkModal({ onClose }: Props) {
   const { t } = useTranslation();
   const initial = {
     name: "",
@@ -33,6 +33,11 @@ export default function NewLinkModal({ onClose, onSubmit }: Props) {
       name: "",
     },
   } as PostLinkSchemaType;
+
+  const addLink = useAddLink({
+    toast,
+    t,
+  });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [link, setLink] = useState<PostLinkSchemaType>(initial);
@@ -90,7 +95,7 @@ export default function NewLinkModal({ onClose, onSubmit }: Props) {
         } [${dataValidation.error.issues[0].path.join(", ")}]`
       );
 
-    onSubmit(link);
+    addLink.mutateAsync(link);
     onClose();
   };
 

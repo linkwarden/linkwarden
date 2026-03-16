@@ -26,7 +26,6 @@ import ViewDropdown from "@/components/ViewDropdown";
 import clsx from "clsx";
 import Icon from "@/components/Icon";
 import Droppable from "@/components/Droppable";
-import { useAddLink, useUpdateLink } from "@linkwarden/router/links";
 import { NextPageWithLayout } from "./_app";
 
 const Page: NextPageWithLayout = () => {
@@ -97,7 +96,6 @@ const Page: NextPageWithLayout = () => {
   const [showSurveyModal, setShowsSurveyModal] = useState(false);
 
   const updateUser = useUpdateUser();
-  const updateLink = useUpdateLink();
 
   const [submitLoader, setSubmitLoader] = useState(false);
 
@@ -129,20 +127,6 @@ const Page: NextPageWithLayout = () => {
         },
       }
     );
-  };
-
-  const addLink = useAddLink();
-
-  const submitLink = (link: any) => {
-    addLink.mutateAsync(link, {
-      onSettled: (data, error) => {
-        if (error) {
-          toast.error(t(error.message));
-        } else {
-          toast.success(t("link_created"));
-        }
-      },
-    });
   };
 
   return (
@@ -214,14 +198,13 @@ const Page: NextPageWithLayout = () => {
           onClose={() => {
             setNewLinkModal(false);
           }}
-          onSubmit={submitLink}
         />
       )}
     </>
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <MainLayout>{page}</MainLayout>;
 };
 

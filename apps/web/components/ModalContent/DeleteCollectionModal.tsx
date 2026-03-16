@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import TextInput from "@/components/TextInput";
 import { CollectionIncludingMembersAndLinkCount } from "@linkwarden/types/global";
 import { useRouter } from "next/router";
 import usePermissions from "@/hooks/usePermissions";
@@ -22,7 +21,6 @@ export default function DeleteCollectionModal({
   const { t } = useTranslation();
   const [collection, setCollection] =
     useState<CollectionIncludingMembersAndLinkCount>(activeCollection);
-  const [submitLoader, setSubmitLoader] = useState(false);
   const router = useRouter();
   const permissions = usePermissions(collection.id as number);
 
@@ -30,32 +28,15 @@ export default function DeleteCollectionModal({
     setCollection(activeCollection);
   }, []);
 
-  const deleteCollection = useDeleteCollection();
+  const deleteCollection = useDeleteCollection({ toast, t });
 
   const submit = async () => {
-    if (!submitLoader) {
-      setSubmitLoader(true);
-      if (!collection) return null;
+    if (!collection) return null;
 
-      setSubmitLoader(true);
+    deleteCollection.mutateAsync(collection.id as number);
 
-      const load = toast.loading(t("deleting_collection"));
-
-      deleteCollection.mutateAsync(collection.id as number, {
-        onSettled: (data, error) => {
-          setSubmitLoader(false);
-          toast.dismiss(load);
-
-          if (error) {
-            toast.error(error.message);
-          } else {
-            onClose();
-            toast.success(t("deleted"));
-            router.push("/collections");
-          }
-        },
-      });
-    }
+    onClose();
+    router.push("/collections");
   };
 
   return (

@@ -40,12 +40,12 @@ type Props = {
 const LinkListing = ({ link, dashboard }: Props) => {
   const { auth } = useAuthStore();
   const router = useRouter();
-  const updateLink = useUpdateLink(auth);
+  const updateLink = useUpdateLink({ auth, Alert });
   const { data: user } = useUser(auth);
   const { colorScheme } = useColorScheme();
   const { data } = useDataStore();
 
-  const deleteLink = useDeleteLink(auth);
+  const deleteLink = useDeleteLink({ auth, Alert });
 
   const [url, setUrl] = useState("");
 
@@ -57,7 +57,7 @@ const LinkListing = ({ link, dashboard }: Props) => {
     } catch (error) {
       console.log(error);
     }
-  }, [link]);
+  }, [link.url]);
 
   return (
     <ContextMenu.Root>
@@ -122,8 +122,8 @@ const LinkListing = ({ link, dashboard }: Props) => {
               <View className="flex flex-row gap-1 items-center mt-1.5 pr-1.5 self-start rounded-md">
                 <Folder
                   size={16}
-                  fill={link.collection.color || ""}
-                  color={link.collection.color || ""}
+                  fill={link.collection.color || "#0ea5e9"}
+                  color={link.collection.color || "#0ea5e9"}
                 />
                 <Text
                   numberOfLines={1}
@@ -215,11 +215,11 @@ const LinkListing = ({ link, dashboard }: Props) => {
 
         <ContextMenu.Item
           key="pin-link"
-          onSelect={async () => {
+          onSelect={() => {
             const isAlreadyPinned =
               link?.pinnedBy && link.pinnedBy[0] ? true : false;
 
-            await updateLink.mutateAsync({
+            updateLink.mutateAsync({
               ...link,
               pinnedBy: (isAlreadyPinned
                 ? [{ id: undefined }]
@@ -319,12 +319,10 @@ const LinkListing = ({ link, dashboard }: Props) => {
                 {
                   text: "Delete",
                   style: "destructive",
-                  onPress: () => {
-                    deleteLink.mutate(link.id as number, {
-                      onSuccess: async () => {
-                        await deleteLinkCache(link.id as number);
-                      },
-                    });
+                  onPress: async () => {
+                    deleteLink.mutate(link.id as number);
+
+                    await deleteLinkCache(link.id as number);
                   },
                 },
               ]

@@ -10,25 +10,29 @@ export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+
   return (
     <Stack
       screenOptions={{
         headerLargeTitle: true,
-        headerTransparent: Platform.OS === "ios" ? true : false,
+        headerTransparent: Platform.OS === "ios",
         headerShadowVisible: false,
         headerBlurEffect:
           colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerTintColor: colorScheme === "dark" ? "white" : "black",
         headerLargeStyle: {
-          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+          backgroundColor: isIOS26Plus
+            ? "transparent"
+            : rawTheme[colorScheme as ThemeName]["base-100"],
         },
         headerStyle: {
           backgroundColor:
             Platform.OS === "ios"
               ? "transparent"
               : colorScheme === "dark"
-              ? rawTheme["dark"]["base-100"]
-              : "white",
+                ? rawTheme["dark"]["base-100"]
+                : "white",
         },
       }}
     >
@@ -75,6 +79,10 @@ export default function Layout() {
           headerSearchBarOptions: {
             placeholder: "Search",
             autoCapitalize: "none",
+            ...(isIOS26Plus && {
+              allowToolbarIntegration: false,
+              placement: "integratedButton",
+            }),
             headerIconColor: colorScheme === "dark" ? "white" : "black",
             onChangeText: (e) => {
               router.setParams({

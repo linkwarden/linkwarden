@@ -7,7 +7,6 @@ import { resizeImage } from "@/lib/client/resizeImage";
 import ProfilePhoto from "@/components/ProfilePhoto";
 import React from "react";
 import Link from "next/link";
-import Checkbox from "@/components/Checkbox";
 import EmailChangeVerificationModal from "@/components/ModalContent/EmailChangeVerificationModal";
 import { Button } from "@/components/ui/button";
 import { i18n } from "next-i18next.config";
@@ -359,7 +358,7 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-Page.getLayout = function getLayout(page: ReactElement) {
+Page.getLayout = function getLayout(page: ReactElement<any>) {
   return <SettingsLayout>{page}</SettingsLayout>;
 };
 

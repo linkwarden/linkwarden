@@ -33,7 +33,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
   const [link, setLink] = useState<
     LinkIncludingShortenedCollectionAndTags | undefined
   >(props.payload?.link);
-  const editLink = useUpdateLink(auth);
+  const updateLink = useUpdateLink({ auth, Alert });
   const router = useSheetRouter("edit-link-sheet");
   const { colorScheme } = useColorScheme();
 
@@ -124,23 +124,15 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
       />
 
       <Button
-        onPress={() =>
-          editLink.mutate(link as LinkIncludingShortenedCollectionAndTags, {
-            onSuccess: () => {
-              if (link && tmp.link)
-                updateTmp({
-                  link,
-                });
-
-              SheetManager.hide("edit-link-sheet");
-            },
-            onError: (error) => {
-              Alert.alert("Error", "There was an error editing the link.");
-              console.error("Error editing link:", error);
-            },
-          })
-        }
-        isLoading={editLink.isPending}
+        onPress={() => {
+          updateLink.mutate(link as LinkIncludingShortenedCollectionAndTags);
+          if (link && tmp.link)
+            updateTmp({
+              link,
+            });
+          SheetManager.hide("edit-link-sheet");
+        }}
+        isLoading={updateLink.isPending}
         variant="accent"
         className="mb-2"
       >
@@ -162,7 +154,7 @@ const Main = (props: SheetProps<"edit-link-sheet">) => {
 
 const Collections = () => {
   const { auth } = useAuthStore();
-  const addLink = useAddLink(auth);
+  const addLink = useAddLink({ auth });
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const { link: currentLink } = useSheetRouteParams<
@@ -270,7 +262,7 @@ const Collections = () => {
 
 const Tags = () => {
   const { auth } = useAuthStore();
-  const addLink = useAddLink(auth);
+  const addLink = useAddLink({ auth });
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const params = useSheetRouteParams("edit-link-sheet", "tags");

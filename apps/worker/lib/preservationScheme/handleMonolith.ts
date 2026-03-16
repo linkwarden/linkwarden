@@ -25,16 +25,9 @@ export default async function handleMonolith(
 
     const child = spawn("monolith", args, {
       stdio: ["pipe", "pipe", "inherit"],
-      detached: true,
+      signal,
+      killSignal: "SIGKILL",
     });
-
-    const abortListener = () => {
-      try {
-        if (child.pid) killProcess(child.pid);
-      } catch {}
-      reject(new Error("Monolith aborted"));
-    };
-    signal?.addEventListener("abort", abortListener);
 
     child.stdin.write(htmlFromPage);
     child.stdin.end();
@@ -43,14 +36,11 @@ export default async function handleMonolith(
     child.stdout.on("data", (c) => chunks.push(c));
 
     child.on("error", (err) => {
-      cleanup();
       reject(err);
     });
 
     child.on("close", async (code) => {
-      cleanup();
-
-      if (code !== 0) {
+      if (code !== 0 && code !== null) {
         return reject(new Error(`Monolith exited with code ${code}`));
       }
 
@@ -64,29 +54,21 @@ export default async function handleMonolith(
         return reject(new Error("Monolith output exceeded buffer limit"));
       }
 
-      await createFile({
-        data: html,
-        filePath: `archives/${link.collectionId}/${link.id}.html`,
-      });
+      try {
+        await createFile({
+          data: html,
+          filePath: `archives/${link.collectionId}/${link.id}.html`,
+        });
 
-      await prisma.link.update({
-        where: { id: link.id },
-        data: { monolith: `archives/${link.collectionId}/${link.id}.html` },
-      });
+        await prisma.link.update({
+          where: { id: link.id },
+          data: { monolith: `archives/${link.collectionId}/${link.id}.html` },
+        });
 
-      resolve();
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
     });
-
-    function cleanup() {
-      signal?.removeEventListener("abort", abortListener);
-    }
   });
 }
-
-const killProcess = async (PID: number) => {
-  if (process.platform === "win32") {
-    process.kill(PID, "SIGKILL");
-  } else {
-    process.kill(-PID, "SIGKILL");
-  }
-};

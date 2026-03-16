@@ -17,7 +17,7 @@ import {
 import useOnScreen from "@/hooks/useOnScreen";
 import { useCollections } from "@linkwarden/router/collections";
 import { useUser } from "@linkwarden/router/user";
-import { useGetLink, useLinks } from "@linkwarden/router/links";
+import { useGetLink } from "@linkwarden/router/links";
 import { useRouter } from "next/router";
 import openLink from "@/lib/client/openLink";
 import LinkIcon from "./LinkViews/LinkComponents/LinkIcon";
@@ -82,8 +82,6 @@ export function Card({ link, editMode, dashboardType }: Props) {
     settings: { show },
   } = useLocalSettingsStore();
 
-  const { links } = useLinks();
-
   const router = useRouter();
   const isPublicRoute = router.pathname.startsWith("/public") ? true : false;
 
@@ -102,7 +100,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
         (e) => e.id === link.collection.id
       ) as CollectionIncludingMembersAndLinkCount
     );
-  }, [collections, links]);
+  }, [collections, link]);
 
   const ref = useRef<HTMLDivElement>(null);
   const isVisible = useOnScreen(ref);
@@ -110,7 +108,7 @@ export function Card({ link, editMode, dashboardType }: Props) {
   const [linkModal, setLinkModal] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     if (
       isVisible &&

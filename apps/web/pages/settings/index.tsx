@@ -6,7 +6,7 @@ export default function Settings() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/settings/profile");
+    router.push("/settings/account");
   }, []);
 }
 

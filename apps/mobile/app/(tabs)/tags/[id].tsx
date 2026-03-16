@@ -26,6 +26,7 @@ export default function LinksScreen() {
   const tags = tagsQuery.data?.tags || [];
 
   const navigation = useNavigation();
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
 
   useEffect(() => {
     const activeTag = tags?.filter((e) => e.id === Number(id))[0];
@@ -35,6 +36,10 @@ export default function LinksScreen() {
         headerTitle: activeTag?.name,
         headerSearchBarOptions: {
           placeholder: `Search ${activeTag.name}`,
+          ...(isIOS26Plus && {
+            allowToolbarIntegration: false,
+            placement: "integratedButton",
+          }),
         },
       });
   }, [navigation, tags, id]);

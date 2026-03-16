@@ -10,12 +10,39 @@ import importFromPocket from "@/lib/api/controllers/migration/importFromPocket";
 
 export const config = {
   api: {
-    bodyParser: {
-      sizeLimit: process.env.IMPORT_LIMIT
-        ? process.env.IMPORT_LIMIT + "mb"
-        : "10mb",
-    },
+    bodyParser: false,
   },
+};
+
+const parseJsonStream = (
+  req: NextApiRequest,
+  limitMb: number
+): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    let totalLength = 0;
+    const limitBytes = limitMb * 1024 * 1024;
+
+    req.on("data", (chunk: Buffer) => {
+      chunks.push(chunk);
+      totalLength += chunk.length;
+
+      if (totalLength > limitBytes) {
+        reject(new Error("Payload Too Large"));
+      }
+    });
+
+    req.on("end", () => {
+      try {
+        const bodyString = Buffer.concat(chunks as any).toString("utf8");
+        resolve(bodyString ? JSON.parse(bodyString) : {});
+      } catch (error) {
+        reject(new Error("Invalid JSON"));
+      }
+    });
+
+    req.on("error", (err) => reject(err));
+  });
 };
 
 export default async function users(req: NextApiRequest, res: NextApiResponse) {
@@ -38,7 +65,26 @@ export default async function users(req: NextApiRequest, res: NextApiResponse) {
           "This action is disabled because this is a read-only demo of Linkwarden.",
       });
 
-    const request: MigrationRequest = JSON.parse(req.body);
+    let request: MigrationRequest;
+
+    try {
+      const limitMb = process.env.IMPORT_LIMIT
+        ? parseInt(process.env.IMPORT_LIMIT, 10)
+        : 10;
+
+      request = await parseJsonStream(req, limitMb);
+    } catch (error: any) {
+      if (error.message === "Payload Too Large") {
+        return res.status(413).json({
+          response: `Import file exceeds the ${
+            process.env.IMPORT_LIMIT || 10
+          }MB size limit.`,
+        });
+      }
+      return res
+        .status(400)
+        .json({ response: "Invalid request body provided." });
+    }
 
     let data;
     if (request.format === MigrationFormat.htmlFile)

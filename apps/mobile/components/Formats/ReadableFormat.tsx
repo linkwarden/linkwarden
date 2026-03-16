@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import NetInfo from "@react-native-community/netinfo";
 import useAuthStore from "@/store/auth";
 import { useRouter } from "expo-router";
@@ -78,6 +78,9 @@ export default function ReadableFormat({ link, setIsLoading }: Props) {
         className="flex-1 bg-base-100"
         contentContainerClassName="p-4"
         nestedScrollEnabled
+        contentInsetAdjustmentBehavior="automatic"
+        automaticallyAdjustContentInsets
+        automaticallyAdjustsScrollIndicatorInsets
       >
         <Text className="text-2xl font-bold mb-2.5 text-base-content">
           {decode(link.name || link.description || link.url || "")}

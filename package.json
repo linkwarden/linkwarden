@@ -29,10 +29,6 @@
     "coverage": "vitest run --coverage",
     "postinstall": "yarn workspace @linkwarden/web run postinstall && patch-package"
   },
-  "resolutions": {
-    "@types/react": "18.3.1",
-    "@types/react-dom": "18.3.1"
-  },
   "devDependencies": {
     "dotenv-cli": "^8.0.0",
     "vitest": "^4.0.17"
@@ -40,5 +36,11 @@
   "dependencies": {
     "concurrently": "^9.1.2",
     "patch-package": "^8.0.0"
+  },
+  "resolutions": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native-mmkv": "4.1.2",
+    "react-native-nitro-modules": "0.34.1"
   }
 }

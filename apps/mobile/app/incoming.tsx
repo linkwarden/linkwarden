@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  SafeAreaView,
   View,
   Text,
   ActivityIndicator,
@@ -16,12 +15,13 @@ import { rawTheme, ThemeName } from "@/lib/colors";
 import { useColorScheme } from "nativewind";
 import { SheetManager } from "react-native-actions-sheet";
 import { LinkIncludingShortenedCollectionAndTags } from "@linkwarden/types/global";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function IncomingScreen() {
   const { auth } = useAuthStore();
   const router = useRouter();
   const { data, updateData } = useDataStore();
-  const addLink = useAddLink(auth);
+  const addLink = useAddLink({ auth });
   const { colorScheme } = useColorScheme();
   const [showSuccess, setShowSuccess] = useState(false);
   const [link, setLink] = useState<LinkIncludingShortenedCollectionAndTags>();

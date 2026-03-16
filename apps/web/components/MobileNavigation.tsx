@@ -13,8 +13,6 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { useAddLink } from "@linkwarden/router/links";
-import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -23,20 +21,6 @@ export default function MobileNavigation({}: Props) {
   const [newLinkModal, setNewLinkModal] = useState(false);
   const [newCollectionModal, setNewCollectionModal] = useState(false);
   const [uploadFileModal, setUploadFileModal] = useState(false);
-
-  const addLink = useAddLink();
-
-  const submitLink = (link: any) => {
-    addLink.mutateAsync(link, {
-      onSettled: (data, error) => {
-        if (error) {
-          toast.error(t(error.message));
-        } else {
-          toast.success(t("link_created"));
-        }
-      },
-    });
-  };
 
   return (
     <>
@@ -87,7 +71,6 @@ export default function MobileNavigation({}: Props) {
           onClose={() => {
             setNewLinkModal(false);
           }}
-          onSubmit={submitLink}
         />
       )}
       {newCollectionModal && (

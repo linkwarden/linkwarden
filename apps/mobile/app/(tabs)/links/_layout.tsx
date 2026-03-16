@@ -7,19 +7,22 @@ export default function Layout() {
   const router = useRouter();
   const { colorScheme } = useColorScheme();
 
+  const isIOS26Plus = Platform.OS === "ios" && Number(Platform.Version) >= 26;
+
   return (
     <Stack
       screenOptions={{
         headerTitle: "Links",
         headerLargeTitle: true,
-        headerTransparent: Platform.OS === "ios" ? true : false,
-        headerShadowVisible: false,
-        headerBlurEffect:
-          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerTintColor: colorScheme === "dark" ? "white" : "black",
+        headerTransparent: Platform.OS === "ios",
         headerSearchBarOptions: {
           placeholder: "Search Links",
           autoCapitalize: "none",
+          ...(isIOS26Plus && {
+            allowToolbarIntegration: false,
+            placement: "integratedButton",
+          }),
           onChangeText: (e) => {
             router.setParams({
               search: encodeURIComponent(e.nativeEvent.text),
@@ -27,8 +30,13 @@ export default function Layout() {
           },
           headerIconColor: colorScheme === "dark" ? "white" : "black",
         },
+        headerShadowVisible: false,
+        headerBlurEffect:
+          colorScheme === "dark" ? "systemMaterialDark" : "systemMaterial",
         headerLargeStyle: {
-          backgroundColor: rawTheme[colorScheme as ThemeName]["base-100"],
+          backgroundColor: isIOS26Plus
+            ? "transparent"
+            : rawTheme[colorScheme as ThemeName]["base-100"],
         },
         headerStyle: {
           backgroundColor:

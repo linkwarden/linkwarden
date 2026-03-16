@@ -57,8 +57,10 @@ export default async function archiveHandler(
   }
 
   const abortController = new AbortController();
+  let timeoutId: NodeJS.Timeout | undefined;
+
   const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
       abortController.abort();
       reject(
         new Error(
@@ -209,6 +211,10 @@ export default async function archiveHandler(
     console.log("Reason:", err);
     throw err;
   } finally {
+    if (timeoutId !== undefined) {
+      clearTimeout(timeoutId);
+    }
+
     const finalLink = await prisma.link.findUnique({
       where: { id: link.id },
     });

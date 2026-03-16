@@ -113,7 +113,7 @@ export default function LinkDetails({
     );
   };
 
-  const updateLink = useUpdateLink();
+  const updateLink = useUpdateLink({ toast, t });
   const updateFile = useUpdateFile();
 
   const submit = async (e?: any) => {
@@ -126,21 +126,9 @@ export default function LinkDetails({
       return;
     }
 
-    const load = toast.loading(t("updating"));
+    updateLink.mutateAsync(link);
 
-    await updateLink.mutateAsync(link, {
-      onSettled: (data, error) => {
-        toast.dismiss(load);
-
-        if (error) {
-          toast.error(error.message);
-        } else {
-          toast.success(t("updated"));
-          setMode && setMode("view");
-          setLink(data);
-        }
-      },
-    });
+    setMode && setMode("view");
   };
 
   const setCollection = (e: any) => {
