@@ -40,6 +40,7 @@
     "expo-font": "~14.0.11",
     "expo-haptics": "~15.0.8",
     "expo-linking": "~8.0.11",
+    "expo-navigation-bar": "~5.0.10",
     "expo-router": "~6.0.23",
     "expo-secure-store": "~15.0.8",
     "expo-share-intent": "^5.1.1",
