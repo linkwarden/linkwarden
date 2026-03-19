@@ -30,7 +30,7 @@ type UseTagsOptions = {
   enabled?: boolean;
 };
 
-const MIN_TAG_PAGINATION_VERSION = "2.13.5";
+const MIN_TAG_PAGINATION_VERSION = "2.14.0";
 
 const buildQueryString = (params: TagRequestQuery) => {
   return Object.keys(params)

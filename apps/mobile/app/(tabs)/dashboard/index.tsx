@@ -19,7 +19,7 @@ import { useColorScheme } from "nativewind";
 import Spinner from "@/components/ui/Spinner";
 import DashboardSection from "@/components/DashboardSection";
 
-const DASHBOARD_TAG_COUNT_VERSION = "2.13.5";
+const DASHBOARD_TAG_COUNT_VERSION = "2.14.0";
 
 export default function DashboardScreen() {
   const { auth } = useAuthStore();
