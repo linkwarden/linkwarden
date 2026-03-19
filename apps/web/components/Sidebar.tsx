@@ -271,20 +271,21 @@ export default function Sidebar({
             >
               <Disclosure.Panel className="flex flex-col gap-1">
                 {isLoading ? (
-                  <div className="flex flex-col gap-1">
-                    {Array.from({ length: 3 }).map((_, index) => (
-                      <div
-                        key={index}
-                        className="skeleton h-8 w-full rounded-md"
-                      ></div>
-                    ))}
+                  <div className="flex flex-col gap-4">
+                    <div className="skeleton h-4 w-full"></div>
+                    <div className="skeleton h-4 w-full"></div>
+                    <div className="skeleton h-4 w-full"></div>
                   </div>
                 ) : (
                   <>
                     <TagListing tags={tags} active={active} />
                     {hasNextPage && <div ref={ref} className="h-1 w-full" />}
                     {isFetchingNextPage && (
-                      <div className="skeleton h-7 w-full rounded-lg"></div>
+                      <div className="flex flex-col gap-4 mt-3">
+                        <div className="skeleton h-4 w-full"></div>
+                        <div className="skeleton h-4 w-full"></div>
+                        <div className="skeleton h-4 w-full"></div>
+                      </div>
                     )}
                   </>
                 )}
