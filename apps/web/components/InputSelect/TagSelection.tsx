@@ -4,6 +4,7 @@ import { styles } from "./styles";
 import { ArchivalTagOption, Option } from "@linkwarden/types/inputSelect";
 import { useTags } from "@linkwarden/router/tags";
 import { useTranslation } from "next-i18next";
+import { TagSort } from "@linkwarden/types/global";
 
 type Props = {
   onChange: (e: any) => void;
@@ -25,7 +26,14 @@ export default function TagSelection({
   autoFocus,
   onBlur,
 }: Props) {
-  const { data: tags = [] } = useTags();
+  const {
+    data: tags = [],
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useTags(undefined, {
+    sort: TagSort.NameAZ,
+  });
   const { t } = useTranslation();
 
   const [tagOptions, setTagOptions] = useState<Option[]>([]);
@@ -52,6 +60,11 @@ export default function TagSelection({
       isMulti
       autoFocus={autoFocus}
       onBlur={onBlur}
+      isLoading={isFetchingNextPage}
+      onMenuScrollToBottom={() => {
+        if (!hasNextPage || isFetchingNextPage) return;
+        fetchNextPage();
+      }}
     />
   );
 }

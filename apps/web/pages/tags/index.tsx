@@ -12,7 +12,7 @@ import {
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ReactElement, useMemo, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import NewTagModal from "@/components/ModalContent/NewTagModal";
 import {
   Tooltip,
@@ -23,54 +23,37 @@ import {
 import BulkDeleteTagsModal from "@/components/ModalContent/BulkDeleteTagsModal";
 import MergeTagsModal from "@/components/ModalContent/MergeTagsModal";
 import { NextPageWithLayout } from "../_app";
-
-enum TagSort {
-  DateNewestFirst = 0,
-  DateOldestFirst = 1,
-  NameAZ = 2,
-  NameZA = 3,
-  LinkCountHighLow = 4,
-  LinkCountLowHigh = 5,
-}
+import { TagSort } from "@linkwarden/types/global";
+import { useInView } from "react-intersection-observer";
 
 const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
-  const { data: tags = [], isLoading } = useTags();
-
   const [sortBy, setSortBy] = useState<TagSort>(TagSort.DateNewestFirst);
+  const { ref, inView } = useInView();
+  const {
+    data: tags = [],
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useTags(undefined, {
+    sort: sortBy,
+  });
+
   const [newTagModal, setNewTagModal] = useState(false);
   const [bulkDeleteModal, setBulkDeleteModal] = useState(false);
   const [mergeTagsModal, setMergeTagsModal] = useState(false);
 
-  const tagTime = (tag: any) => {
-    if (tag?.createdAt) return new Date(tag.createdAt as string).getTime();
-    return typeof tag?.id === "number" ? tag.id : 0;
-  };
-  const linkCount = (tag: any) =>
-    tag?.linkCount ?? tag?.linksCount ?? tag?._count?.links ?? 0;
-
-  const compare = useMemo(() => {
-    switch (sortBy) {
-      case TagSort.NameAZ:
-        return (a: any, b: any) => (a?.name ?? "").localeCompare(b?.name ?? "");
-      case TagSort.NameZA:
-        return (a: any, b: any) => (b?.name ?? "").localeCompare(a?.name ?? "");
-      case TagSort.DateOldestFirst:
-        return (a: any, b: any) => tagTime(a) - tagTime(b);
-      case TagSort.LinkCountHighLow:
-        return (a: any, b: any) => linkCount(b) - linkCount(a);
-      case TagSort.LinkCountLowHigh:
-        return (a: any, b: any) => linkCount(a) - linkCount(b);
-      case TagSort.DateNewestFirst:
-      default:
-        return (a: any, b: any) => tagTime(b) - tagTime(a);
-    }
-  }, [sortBy]);
-
-  const sortedTags = useMemo(() => tags.slice().sort(compare), [tags, compare]);
-
   const [editMode, setEditMode] = useState(false);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!inView) return;
+    if (!hasNextPage) return;
+    if (isFetchingNextPage) return;
+
+    fetchNextPage();
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="p-5 flex flex-col gap-5 w-full h-full">
@@ -223,7 +206,7 @@ const Page: NextPageWithLayout = () => {
       )}
 
       <div className="grid 2xl:grid-cols-6 xl:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-5">
-        {sortedTags.map((tag: any) => (
+        {tags.map((tag: any) => (
           <TagCard
             key={tag.id}
             tag={tag}
@@ -237,7 +220,11 @@ const Page: NextPageWithLayout = () => {
             }}
           />
         ))}
+        {isLoading && !tags.length && <TagCardSkeleton />}
+        {isFetchingNextPage && <TagCardSkeleton />}
       </div>
+
+      {hasNextPage && <div ref={ref} className="h-1 w-full" />}
 
       {!isLoading && tags && !tags[0] && (
         <div
@@ -291,3 +278,16 @@ Page.getLayout = function getLayout(page: ReactElement<any>) {
 export default Page;
 
 export { getServerSideProps };
+
+const TagCardSkeleton = () => {
+  return (
+    <div className="rounded-xl p-2">
+      <div className="flex gap-3 flex-col">
+        <div className="skeleton h-5 w-3/4"></div>
+        <div className="flex justify-between items-center mt-auto">
+          <div className="skeleton h-4 w-24"></div>
+        </div>
+      </div>
+    </div>
+  );
+};

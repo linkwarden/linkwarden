@@ -11,6 +11,7 @@ import {
   LinkIncludingShortenedCollectionAndTags,
   LinkRequestQuery,
   MobileAuth,
+  TagIncludingLinkCount,
 } from "@linkwarden/types/global";
 import { useSession } from "next-auth/react";
 import {
@@ -113,6 +114,34 @@ const buildQueryString = (params: LinkRequestQuery) => {
         )}`
     )
     .join("&");
+};
+
+const extractTagsFromQueryData = (data: unknown): TagIncludingLinkCount[] => {
+  if (Array.isArray(data)) return data as TagIncludingLinkCount[];
+
+  if (
+    data &&
+    typeof data === "object" &&
+    "pages" in data &&
+    Array.isArray((data as any).pages)
+  ) {
+    return (data as any).pages.flatMap((page: any) => page?.tags ?? []);
+  }
+
+  return [];
+};
+
+const mergeTagsFromQueriesData = (queries: [QueryKey, unknown][]) => {
+  const tagsById = new Map<number, TagIncludingLinkCount>();
+
+  for (const [, data] of queries ?? []) {
+    for (const tag of extractTagsFromQueryData(data)) {
+      if (tag.id == null || tagsById.has(tag.id)) continue;
+      tagsById.set(tag.id, tag);
+    }
+  }
+
+  return Array.from(tagsById.values());
 };
 
 const upsertLinkInList = (
@@ -406,7 +435,11 @@ const useAddLink = ({
 
       const collections =
         (queryClient.getQueryData(["collections"]) as any[]) ?? [];
-      const tags = (queryClient.getQueryData(["tags"]) as any[]) ?? [];
+      const tags = mergeTagsFromQueriesData(
+        queryClient.getQueriesData({
+          queryKey: ["tags"],
+        })
+      );
       const user = queryClient.getQueryData(["user"]) as any;
 
       const collectionFromId =

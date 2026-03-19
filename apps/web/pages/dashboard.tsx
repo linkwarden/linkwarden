@@ -9,7 +9,6 @@ import PageHeader from "@/components/PageHeader";
 import getServerSideProps from "@/lib/client/getServerSideProps";
 import { useTranslation } from "next-i18next";
 import { useCollections } from "@linkwarden/router/collections";
-import { useTags } from "@linkwarden/router/tags";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
 import { useUpdateUser, useUser } from "@linkwarden/router/user";
 import SurveyModal from "@/components/ModalContent/SurveyModal";
@@ -32,13 +31,17 @@ const Page: NextPageWithLayout = () => {
   const { t } = useTranslation();
   const { data: collections = [] } = useCollections();
   const {
-    data: { links = [], numberOfPinnedLinks, collectionLinks = {} } = {
+    data: {
+      links = [],
+      numberOfPinnedLinks,
+      numberOfTags = 0,
+      collectionLinks = {},
+    } = {
       links: [],
     },
     ...dashboardData
   } = useDashboardData();
 
-  const { data: tags = [] } = useTags();
   const { data: user } = useUser();
 
   const [numberOfLinks, setNumberOfLinks] = useState(0);
@@ -159,7 +162,7 @@ const Page: NextPageWithLayout = () => {
                   : []
               }
               links={links}
-              tags={tags}
+              numberOfTags={numberOfTags}
               numberOfLinks={numberOfLinks}
               collectionsLength={collections.length}
               numberOfPinnedLinks={numberOfPinnedLinks}
@@ -215,7 +218,7 @@ type SectionProps = {
   collection: any;
   collectionsLength: number;
   links: any[];
-  tags: any[];
+  numberOfTags: number;
   numberOfLinks: number;
   numberOfPinnedLinks: number;
   dashboardData: any;
@@ -228,7 +231,7 @@ const Section = ({
   t,
   collection,
   links,
-  tags,
+  numberOfTags,
   numberOfLinks,
   collectionsLength,
   numberOfPinnedLinks,
@@ -253,8 +256,8 @@ const Section = ({
           />
 
           <DashboardItem
-            name={tags.length === 1 ? t("tag") : t("tags")}
-            value={tags.length}
+            name={numberOfTags === 1 ? t("tag") : t("tags")}
+            value={numberOfTags}
             icon={"bi-hash"}
           />
 

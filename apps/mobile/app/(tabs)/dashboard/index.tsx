@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDashboardData } from "@linkwarden/router/dashboardData";
+import { isAtLeastInstanceVersion, useConfig } from "@linkwarden/router/config";
 import useAuthStore from "@/store/auth";
 import { DashboardSection as DashboardSectionType } from "@linkwarden/prisma/client";
 import { useUser } from "@linkwarden/router/user";
@@ -18,17 +19,33 @@ import { useColorScheme } from "nativewind";
 import Spinner from "@/components/ui/Spinner";
 import DashboardSection from "@/components/DashboardSection";
 
+const DASHBOARD_TAG_COUNT_VERSION = "2.13.5";
+
 export default function DashboardScreen() {
   const { auth } = useAuthStore();
   const {
-    data: { links = [], numberOfPinnedLinks, collectionLinks = {} } = {
+    data: {
+      links = [],
+      numberOfPinnedLinks,
+      numberOfTags = 0,
+      collectionLinks = {},
+    } = {
       links: [],
     },
     ...dashboardData
   } = useDashboardData(auth);
   const { data: user, ...userData } = useUser(auth);
   const { data: collections = [], ...collectionsData } = useCollections(auth);
-  const { data: tags = [], ...tagsData } = useTags(auth);
+  const config = useConfig(auth);
+  const supportsDashboardTagCount = isAtLeastInstanceVersion(
+    config.data?.INSTANCE_VERSION,
+    DASHBOARD_TAG_COUNT_VERSION
+  );
+  const shouldUseLegacyTagsCount =
+    config.isError || (config.isSuccess && !supportsDashboardTagCount);
+  const legacyTags = useTags(auth, {
+    enabled: shouldUseLegacyTagsCount,
+  });
 
   const { colorScheme } = useColorScheme();
 
@@ -61,6 +78,9 @@ export default function DashboardScreen() {
   }, [dashboardSections]);
 
   const [pullRefreshing, setPullRefreshing] = useState(false);
+  const resolvedNumberOfTags = shouldUseLegacyTagsCount
+    ? legacyTags.data.length
+    : numberOfTags;
 
   const onRefresh = async () => {
     setPullRefreshing(true);
@@ -69,7 +89,7 @@ export default function DashboardScreen() {
         dashboardData.refetch(),
         userData.refetch(),
         collectionsData.refetch(),
-        tagsData.refetch(),
+        ...(shouldUseLegacyTagsCount ? [legacyTags.refetch()] : []),
       ]);
     } finally {
       setPullRefreshing(false);
@@ -118,7 +138,7 @@ export default function DashboardScreen() {
                 : []
             }
             links={links}
-            tagsLength={tags.length}
+            numberOfTags={resolvedNumberOfTags}
             numberOfLinks={numberOfLinks}
             collectionsLength={collections.length}
             numberOfPinnedLinks={numberOfPinnedLinks}

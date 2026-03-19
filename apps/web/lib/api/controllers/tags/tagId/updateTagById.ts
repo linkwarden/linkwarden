@@ -60,6 +60,11 @@ export default async function updateTagById(
           id: true,
         },
       },
+      _count: {
+        select: {
+          links: true,
+        },
+      },
     },
   });
 

@@ -91,6 +91,15 @@ export enum Sort {
   NameZA = 3,
 }
 
+export enum TagSort {
+  DateNewestFirst = 0,
+  DateOldestFirst = 1,
+  NameAZ = 2,
+  NameZA = 3,
+  LinkCountHighLow = 4,
+  LinkCountLowHigh = 5,
+}
+
 export type Order = { [key: string]: "asc" | "desc" };
 
 export type LinkRequestQuery = {
@@ -100,6 +109,11 @@ export type LinkRequestQuery = {
   tagId?: number;
   pinnedOnly?: boolean;
   searchQueryString?: string;
+};
+
+export type TagRequestQuery = {
+  sort?: TagSort;
+  cursor?: number;
 };
 
 export type PublicLinkRequestQuery = {

@@ -37,6 +37,8 @@ export default async function collections(
       collectionId: collection.id,
     });
 
-    return res.status(tags?.status || 500).json({ response: tags?.response });
+    const { statusCode, ...data } = tags;
+
+    return res.status(statusCode).json(data);
   }
 }

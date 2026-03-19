@@ -3,22 +3,42 @@ import { Order } from "@linkwarden/types/global";
 
 export default async function getDashboardData(userId: number) {
   const order: Order = { id: "desc" };
-
-  const [dashboardSections, numberOfPinnedLinks] = await Promise.all([
-    prisma.dashboardSection.findMany({ where: { userId } }),
-    prisma.link.count({
-      where: {
-        AND: [
-          {
+  const accessibleTagsWhere = {
+    OR: [
+      { ownerId: userId },
+      {
+        links: {
+          some: {
             collection: {
-              OR: [{ ownerId: userId }, { members: { some: { userId } } }],
+              members: {
+                some: { userId },
+              },
             },
           },
-          { pinnedBy: { some: { id: userId } } },
-        ],
+        },
       },
-    }),
-  ]);
+    ],
+  };
+
+  const [dashboardSections, numberOfPinnedLinks, numberOfTags] =
+    await Promise.all([
+      prisma.dashboardSection.findMany({ where: { userId } }),
+      prisma.link.count({
+        where: {
+          AND: [
+            {
+              collection: {
+                OR: [{ ownerId: userId }, { members: { some: { userId } } }],
+              },
+            },
+            { pinnedBy: { some: { id: userId } } },
+          ],
+        },
+      }),
+      prisma.tag.count({
+        where: accessibleTagsWhere,
+      }),
+    ]);
 
   const viewPinned = dashboardSections.some(
     (section) => section.type === "PINNED_LINKS"
@@ -32,7 +52,7 @@ export default async function getDashboardData(userId: number) {
 
   if (!viewRecent && !viewPinned && collectionSections.length === 0) {
     return {
-      data: { links: [], numberOfPinnedLinks },
+      data: { links: [], numberOfPinnedLinks, numberOfTags },
       message: "Dashboard data fetched successfully.",
       statusCode: 200,
       success: true,
@@ -143,6 +163,7 @@ export default async function getDashboardData(userId: number) {
       links: uniqueLinks,
       collectionLinks,
       numberOfPinnedLinks,
+      numberOfTags,
     },
     message: "Dashboard data fetched successfully.",
     statusCode: 200,

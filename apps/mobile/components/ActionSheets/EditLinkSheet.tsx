@@ -16,6 +16,7 @@ import {
   CollectionIncludingMembersAndLinkCount,
   LinkIncludingShortenedCollectionAndTags,
   TagIncludingLinkCount,
+  TagSort,
 } from "@linkwarden/types/global";
 import { useCollections } from "@linkwarden/router/collections";
 import { rawTheme, ThemeName } from "@/lib/colors";
@@ -266,17 +267,29 @@ const Tags = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useSheetRouter("edit-link-sheet");
   const params = useSheetRouteParams("edit-link-sheet", "tags");
-  const tags = useTags(auth);
+  const tags = useTags(auth, {
+    sort: TagSort.NameAZ,
+  });
   const { colorScheme } = useColorScheme();
   const [updatedLink, setUpdatedLink] =
     useState<LinkIncludingShortenedCollectionAndTags>(params.link);
 
   const filteredTags = useMemo(() => {
-    if (!tags.data) return [];
+    const tagsById = new Map<number, TagIncludingLinkCount>();
+
+    for (const tag of updatedLink?.tags || []) {
+      tagsById.set(tag.id, tag as TagIncludingLinkCount);
+    }
+
+    for (const tag of tags.data || []) {
+      tagsById.set(tag.id, tag);
+    }
+
+    const availableTags = Array.from(tagsById.values());
     const q = searchQuery.trim().toLowerCase();
-    if (q === "") return tags.data;
-    return tags.data.filter((tag) => tag.name.toLowerCase().includes(q));
-  }, [tags.data, searchQuery]);
+    if (q === "") return availableTags;
+    return availableTags.filter((tag) => tag.name.toLowerCase().includes(q));
+  }, [updatedLink?.tags, tags.data, searchQuery]);
 
   const renderItem = useCallback(
     ({ item: tag }: { item: TagIncludingLinkCount }) => {
@@ -345,6 +358,21 @@ const Tags = () => {
         data={filteredTags}
         keyExtractor={(e, i) => i.toString()}
         renderItem={renderItem}
+        onEndReached={() => {
+          if (!tags.hasNextPage || tags.isFetchingNextPage) return;
+          tags.fetchNextPage();
+        }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          tags.isFetchingNextPage ? (
+            <Text
+              style={{ textAlign: "center", marginTop: 20 }}
+              className="text-neutral"
+            >
+              Loading...
+            </Text>
+          ) : null
+        }
         ListEmptyComponent={
           <Text
             style={{ textAlign: "center", marginTop: 20 }}

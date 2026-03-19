@@ -33,7 +33,7 @@ type DashboardSectionProps = {
   sectionData: { type: DashboardSectionType };
   collection?: any;
   links?: any[];
-  tagsLength: number;
+  numberOfTags: number;
   numberOfLinks: number;
   collectionsLength: number;
   numberOfPinnedLinks: number;
@@ -49,7 +49,7 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
   sectionData,
   collection,
   links = [],
-  tagsLength,
+  numberOfTags,
   numberOfLinks,
   collectionsLength,
   numberOfPinnedLinks,
@@ -80,8 +80,8 @@ const DashboardSection: React.FC<DashboardSectionProps> = ({
           </View>
           <View className="flex-row gap-4">
             <DashboardItem
-              name={tagsLength === 1 ? "Tag" : "Tags"}
-              value={tagsLength}
+              name={numberOfTags === 1 ? "Tag" : "Tags"}
+              value={numberOfTags}
               icon={<Hash size={23} color="white" />}
               color="#00cc99"
             />

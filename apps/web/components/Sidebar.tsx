@@ -17,6 +17,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { TagSort } from "@linkwarden/types/global";
+import { useInView } from "react-intersection-observer";
 
 export default function Sidebar({
   className,
@@ -28,6 +30,7 @@ export default function Sidebar({
   sidebarIsCollapsed?: boolean;
 }) {
   const { t } = useTranslation();
+  const { ref, inView } = useInView();
   const [tagDisclosure, setTagDisclosure] = useState<boolean>(() => {
     const storedValue = localStorage.getItem("tagDisclosure");
     return storedValue ? storedValue === "true" : true;
@@ -42,7 +45,15 @@ export default function Sidebar({
 
   const { data: collections } = useCollections();
 
-  const { data: tags = [], isLoading } = useTags();
+  const {
+    data: tags = [],
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useTags(undefined, {
+    sort: TagSort.NameAZ,
+  });
   const [active, setActive] = useState("");
 
   const router = useRouter();
@@ -63,6 +74,14 @@ export default function Sidebar({
   useEffect(() => {
     setActive(router.asPath);
   }, [router, collections]);
+
+  useEffect(() => {
+    if (!inView) return;
+    if (!hasNextPage) return;
+    if (isFetchingNextPage) return;
+
+    fetchNextPage();
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div
@@ -252,13 +271,22 @@ export default function Sidebar({
             >
               <Disclosure.Panel className="flex flex-col gap-1">
                 {isLoading ? (
-                  <div className="flex flex-col gap-4">
-                    <div className="skeleton h-4 w-full"></div>
-                    <div className="skeleton h-4 w-full"></div>
-                    <div className="skeleton h-4 w-full"></div>
+                  <div className="flex flex-col gap-1">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div
+                        key={index}
+                        className="skeleton h-8 w-full rounded-md"
+                      ></div>
+                    ))}
                   </div>
                 ) : (
-                  <TagListing tags={tags} active={active} />
+                  <>
+                    <TagListing tags={tags} active={active} />
+                    {hasNextPage && <div ref={ref} className="h-1 w-full" />}
+                    {isFetchingNextPage && (
+                      <div className="skeleton h-7 w-full rounded-lg"></div>
+                    )}
+                  </>
                 )}
               </Disclosure.Panel>
             </Transition>

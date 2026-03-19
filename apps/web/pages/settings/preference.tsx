@@ -5,6 +5,7 @@ import Checkbox from "@/components/Checkbox";
 import useLocalSettingsStore from "@/store/localSettings";
 import { useTranslation } from "next-i18next";
 import getServerSideProps from "@/lib/client/getServerSideProps";
+import { TagSort } from "@linkwarden/types/global";
 import { AiTaggingMethod, LinksRouteTo } from "@linkwarden/prisma/client";
 import {
   useUpdateUser,
@@ -31,7 +32,9 @@ const Page: NextPageWithLayout = () => {
   const { settings, updateSettings } = useLocalSettingsStore();
   const updateUserPreference = useUpdateUserPreference();
   const { data: account } = useUser() as any;
-  const { data: tags } = useTags();
+  const { data: tags } = useTags(undefined, {
+    sort: TagSort.NameAZ,
+  });
   const upsertTags = useUpsertTags();
   const {
     ARCHIVAL_OPTIONS,
