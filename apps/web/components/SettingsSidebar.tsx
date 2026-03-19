@@ -25,7 +25,7 @@ export default function SettingsSidebar({ className }: { className?: string }) {
       }`}
     >
       <div className="flex flex-col gap-1">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           {user?.theme === "light" ? (
             <Image
               src={"/linkwarden_light.png"}

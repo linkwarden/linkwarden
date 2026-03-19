@@ -100,7 +100,7 @@ export default function Sidebar({
             : "gap-1"
         )}
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           {sidebarIsCollapsed ? (
             <Image
               src={"/icon.png"}
@@ -225,7 +225,7 @@ export default function Sidebar({
               onClick={() => {
                 setCollectionDisclosure(!collectionDisclosure);
               }}
-              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
+              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-4"
             >
               <p className="text-sm">{t("collections")}</p>
               <i
@@ -252,7 +252,7 @@ export default function Sidebar({
               onClick={() => {
                 setTagDisclosure(!tagDisclosure);
               }}
-              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-5"
+              className="flex items-center justify-between w-full text-left mb-2 pl-2 font-bold text-neutral mt-4"
             >
               <p className="text-sm">{t("tags")}</p>
               <i

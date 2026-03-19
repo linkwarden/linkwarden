@@ -132,7 +132,7 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="p-5 flex flex-col gap-4">
+      <div className="p-3 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <i className="bi-house-fill text-primary" />
@@ -242,7 +242,7 @@ const Section = ({
   switch (sectionData.type) {
     case DashboardSectionType.STATS:
       return (
-        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-4 xl:flex-row xl:justify-evenly xl:w-full">
+        <div className="xl:flex flex flex-col sm:grid grid-cols-2 gap-3 xl:flex-row xl:justify-evenly xl:w-full">
           <DashboardItem
             name={numberOfLinks === 1 ? t("link") : t("links")}
             value={numberOfLinks}

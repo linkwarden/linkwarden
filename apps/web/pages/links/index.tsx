@@ -34,7 +34,7 @@ const Page: NextPageWithLayout = () => {
   }, [router]);
 
   return (
-    <div className="p-5 flex flex-col gap-5 w-full h-full">
+    <div className="p-3 flex flex-col gap-5 w-full h-full">
       <LinkListOptions
         t={t}
         viewMode={viewMode}

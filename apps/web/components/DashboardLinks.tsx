@@ -40,7 +40,7 @@ export function DashboardLinks({
 }) {
   return (
     <div
-      className={`flex gap-5 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit`}
+      className={`flex gap-3 overflow-x-auto overflow-y-hidden hide-scrollbar w-full min-h-fit`}
     >
       {isLoading ? (
         <div className="flex flex-col gap-4 min-w-60 w-60">
