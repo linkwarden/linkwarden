@@ -545,10 +545,10 @@
   "search_indexing_job_desc": "全文検索用のリンクやドキュメントを準備します。",
   "done": "完了",
   "worker_pending_indexing_desc": "保留中の項目がリンクである場合、インデックスを作成する前にまず保存する必要があります。",
-  "regenerate_broken_links": "Regenerate Broken Links",
-  "regenerate_all_links": "Regenerate All Links",
-  "regenerate_broken_preserved_content_desc": "<0>Delete and re-preserve broken links with at least one missing preserved format.</0><0>This action will immediately delete any existing preserved format for {{count}} links.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
-  "delete_all_preserved_content_and_regenerate_desc": "<0>This action will immediately delete all your existing preserved formats.</0><0>Affected links will be scheduled to have their preserved formats rebuilt.</0>",
-  "note": "Note",
-  "search_unindexed_links_in_bg_info": "Search may be less accurate because some links are still being processed."
+  "regenerate_broken_links": "リンク切れのリンクを再生成する",
+  "regenerate_all_links": "すべてのリンクを再生成する",
+  "regenerate_broken_preserved_content_desc": "<0>少なくとも1つの保存形式が欠落している壊れたリンクを削除し、再度保存します。</0><0>このアクションは、{{count}}リンクの既存の保存された形式を直ちに削除します。</0><0>影響を受けるリンクは、保存された形式を再構築するようにスケジュールされます。</0>",
+  "delete_all_preserved_content_and_regenerate_desc": "<0>この操作により、保存されている既存のすべての形式が直ちに削除されます。</0><0>影響を受けるリンクは、保存された形式を再構築するようにスケジュールされます。</0>",
+  "note": "メモ",
+  "search_unindexed_links_in_bg_info": "一部のリンクはまだ処理中のため、検索結果の精度が低下する可能性があります。"
 }
