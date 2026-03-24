@@ -22,6 +22,11 @@ const ADVANCED_SEARCH_OPERATORS = [
     icon: "bi-tag",
   },
   {
+    operator: "pinned:true",
+    labelKey: "pinned",
+    icon: "bi-pin-angle",
+  },
+  {
     operator: "before:",
     labelKey: "before",
     icon: "bi-calendar-minus",
@@ -30,11 +35,6 @@ const ADVANCED_SEARCH_OPERATORS = [
     operator: "after:",
     labelKey: "after",
     icon: "bi-calendar-plus",
-  },
-  {
-    operator: "pinned:true",
-    labelKey: "pinned",
-    icon: "bi-pin-angle",
   },
 ] as const;
 
@@ -149,7 +149,7 @@ export default function SearchBar({ placeholder }: Props) {
                 <Link
                   href="https://docs.linkwarden.app/Usage/advanced-search"
                   target="_blank"
-                  className="flex items-center gap-1 w-full"
+                  className="flex items-center gap-1"
                 >
                   {t("learn_more")}
                   <i className="bi-box-arrow-up-right text-xs" />
