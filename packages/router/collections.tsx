@@ -6,7 +6,6 @@ import {
 import { useSession } from "next-auth/react";
 import type toaster from "react-hot-toast";
 import { TFunction } from "next-i18next";
-import type { Alert as Alert_ } from "react-native";
 
 const getCollectionSubtreeIds = (collections: any[] = [], rootId: number) => {
   const byParent = new Map<number, number[]>();
@@ -185,7 +184,7 @@ const useDeleteCollection = ({
   t,
 }: {
   auth?: MobileAuth;
-  Alert?: typeof Alert_;
+  Alert?: any;
   toast?: typeof toaster;
   t?: TFunction;
 }) => {

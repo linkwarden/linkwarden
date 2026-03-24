@@ -22,7 +22,6 @@ import getFormatFromContentType from "@linkwarden/lib/getFormatFromContentType";
 import getLinkTypeFromFormat from "@linkwarden/lib/getLinkTypeFromFormat";
 import type toaster from "react-hot-toast";
 import { TFunction } from "next-i18next";
-import type { Alert as Alert_ } from "react-native";
 
 const useLinks = (params: LinkRequestQuery = {}, auth?: MobileAuth) => {
   const sort =
@@ -388,7 +387,7 @@ const useAddLink = ({
   t,
 }: {
   auth?: MobileAuth;
-  Alert?: typeof Alert_;
+  Alert?: any;
   toast?: typeof toaster;
   t?: TFunction;
 }) => {
@@ -556,7 +555,7 @@ const useUpdateLink = ({
   t,
 }: {
   auth?: MobileAuth;
-  Alert?: typeof Alert_;
+  Alert?: any;
   toast?: typeof toaster;
   t?: TFunction;
 }) => {
@@ -713,7 +712,7 @@ const useDeleteLink = ({
   t,
 }: {
   auth?: MobileAuth;
-  Alert?: typeof Alert_;
+  Alert?: any;
   toast?: typeof toaster;
   t?: TFunction;
 }) => {
