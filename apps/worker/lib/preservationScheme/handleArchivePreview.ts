@@ -3,6 +3,10 @@ import { Page } from "playwright";
 import { generatePreview } from "@linkwarden/lib/generatePreview";
 import { createFile } from "@linkwarden/filesystem";
 import { prisma } from "@linkwarden/prisma";
+import {
+  assertUrlIsSafeForServerSideFetch,
+  UnsafeUrlError,
+} from "@linkwarden/lib/ssrf";
 
 type LinksAndCollectionAndOwner = Link & {
   collection: Collection & {
@@ -31,18 +35,25 @@ const handleArchivePreview = async (
         origin + (ogImageUrl.startsWith("/") ? ogImageUrl : "/" + ogImageUrl);
     }
 
-    const imageResponse = await page.goto(ogImageUrl);
+    try {
+      await assertUrlIsSafeForServerSideFetch(ogImageUrl);
+      const imageResponse = await page.goto(ogImageUrl);
 
-    if (imageResponse && !link.preview?.startsWith("archive")) {
-      const buffer = await imageResponse.body();
-      previewGenerated = await generatePreview(
-        buffer,
-        link.collectionId,
-        link.id
-      );
+      if (imageResponse && !link.preview?.startsWith("archive")) {
+        const buffer = await imageResponse.body();
+        previewGenerated = await generatePreview(
+          buffer,
+          link.collectionId,
+          link.id
+        );
+      }
+
+      await page.goBack();
+    } catch (error) {
+      if (!(error instanceof UnsafeUrlError)) {
+        throw error;
+      }
     }
-
-    await page.goBack();
   }
 
   if (!previewGenerated && !link.preview?.startsWith("archive")) {

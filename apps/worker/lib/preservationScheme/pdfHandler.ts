@@ -1,11 +1,10 @@
 import { Link } from "@linkwarden/prisma/client";
 import { prisma } from "@linkwarden/prisma";
 import { createFile } from "@linkwarden/filesystem";
+import { safeFetch } from "@linkwarden/lib/safeFetch";
 
 const pdfHandler = async ({ url, id }: Link) => {
-  const pdf = await fetch(url as string).then((res) => res.blob());
-
-  const buffer = Buffer.from(await pdf.arrayBuffer());
+  const buffer = await safeFetch(url as string).then((res) => res.buffer());
 
   if (
     Buffer.byteLength(buffer) >

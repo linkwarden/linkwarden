@@ -5,6 +5,8 @@ import verifyUser from "@/lib/api/verifyUser";
 import { PostRssSubscriptionSchema } from "@linkwarden/lib/schemaValidation";
 import { NextApiRequest, NextApiResponse } from "next";
 import Parser from "rss-parser";
+import { assertUrlIsSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
+import { safeFetch } from "@linkwarden/lib/safeFetch";
 
 export default async function handler(
   req: NextApiRequest,
@@ -65,6 +67,14 @@ export default async function handler(
 
     const { name, url, collectionId, collectionName } = dataValidation.data;
 
+    try {
+      await assertUrlIsSafeForServerSideFetch(url);
+    } catch (error: any) {
+      return res.status(400).json({
+        response: error?.message || "RSS URL is not allowed.",
+      });
+    }
+
     const linkCollection = await setCollection({
       userId: user.id,
       collectionId: collectionId,
@@ -104,8 +114,10 @@ export default async function handler(
     });
 
     const parser = new Parser();
+    const xml = await safeFetch(response.url).then((res) => res.text());
+    const feed = await parser.parseString(xml);
 
-    await rssHandler(response, parser);
+    await rssHandler(response, feed);
 
     return res.status(200).json({ response });
   }

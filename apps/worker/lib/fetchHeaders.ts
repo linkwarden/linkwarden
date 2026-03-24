@@ -1,41 +1,10 @@
-import fetch from "node-fetch";
-import https from "https";
-import http from "http";
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import { SocksProxyAgent } from "socks-proxy-agent";
+import { safeFetch } from "@linkwarden/lib/safeFetch";
 
 export default async function fetchHeaders(url: string) {
   if (process.env.IGNORE_URL_SIZE_LIMIT === "true") return null;
 
   try {
-    const httpsAgent = url.startsWith("http://")
-      ? new http.Agent({})
-      : new https.Agent({
-          rejectUnauthorized:
-            process.env.IGNORE_UNAUTHORIZED_CA === "true" ? false : true,
-        });
-
-    let fetchOpts = {
-      method: "HEAD",
-      agent: httpsAgent,
-    };
-
-    if (process.env.PROXY) {
-      let proxy = new URL(process.env.PROXY);
-      if (process.env.PROXY_USERNAME) {
-        proxy.username = process.env.PROXY_USERNAME;
-        proxy.password = process.env.PROXY_PASSWORD || "";
-      }
-
-      const proxyAgent = proxy.protocol.includes("http") ? HttpsProxyAgent : SocksProxyAgent;
-
-      fetchOpts = {
-        method: "HEAD",
-        agent: new proxyAgent(proxy.toString()),
-      };
-    }
-
-    const responsePromise = fetch(url, fetchOpts);
+    const responsePromise = safeFetch(url, { method: "HEAD" });
 
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {

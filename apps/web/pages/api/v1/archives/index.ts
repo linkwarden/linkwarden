@@ -11,6 +11,7 @@ import isDemoMode from "@/lib/api/isDemoMode";
 import getSuffixFromFormat from "@/lib/shared/getSuffixFromFormat";
 import setCollection from "@/lib/api/setCollection";
 import fetchTitleAndHeaders from "@/lib/shared/fetchTitleAndHeaders";
+import { isUrlSafeForServerSideFetch } from "@linkwarden/lib/ssrf";
 
 export const config = {
   api: {
@@ -112,6 +113,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       }
 
       const url = typeof fields.url === "string" ? fields.url : fields.url?.[0];
+      const shouldFetchUrl = url
+        ? await isUrlSafeForServerSideFetch(url)
+        : false;
 
       // Validate input against Zod schema
       const dataValidation = UploadFileSchema.safeParse({
@@ -153,7 +157,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       const isImage = mimetype?.includes("image");
       const isHTML = mimetype === "text/html";
 
-      const { title = "" } = url
+      const { title = "" } = url && (shouldFetchUrl || isHTML)
         ? await fetchTitleAndHeaders(
             url,
             isHTML && !isPreview ? fileBuffer.toString("utf-8") : undefined

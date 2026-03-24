@@ -15,6 +15,11 @@ import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
 import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
 import { ArchivalSettings } from "@linkwarden/types/global";
 import { getDefaultContextOptions } from "./browser";
+import {
+  assertUrlIsSafeForServerSideFetch,
+  UnsafeUrlError,
+} from "@linkwarden/lib/ssrf";
+import protectPageRequests from "./protectPageRequests";
 
 const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
 
@@ -23,9 +28,22 @@ export default async function archiveHandler(
   browser: Browser
 ) {
   const user = link.collection?.owner;
+  let skipPreservation = process.env.DISABLE_PRESERVATION === "true";
+
+  if (!skipPreservation && link.url) {
+    try {
+      await assertUrlIsSafeForServerSideFetch(link.url);
+    } catch (error) {
+      if (error instanceof UnsafeUrlError) {
+        skipPreservation = true;
+      } else {
+        throw error;
+      }
+    }
+  }
 
   if (
-    process.env.DISABLE_PRESERVATION === "true" ||
+    skipPreservation ||
     (!link.url?.startsWith("http://") && !link.url?.startsWith("https://"))
   ) {
     await prisma.link.update({
@@ -72,6 +90,7 @@ export default async function archiveHandler(
 
   const contextOptions = getDefaultContextOptions();
   const context = await browser.newContext(contextOptions);
+  await protectPageRequests(context);
   const page = await context.newPage();
 
   createFolder({ filePath: `archives/preview/${link.collectionId}` });
