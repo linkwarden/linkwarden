@@ -69,6 +69,13 @@ export default function Links({ links, data }: Props) {
           </Text>
         </View>
       }
+      ListFooterComponent={
+        data.isFetchingNextPage ? (
+          <View className="py-4 items-center">
+            <ActivityIndicator size="small" />
+          </View>
+        ) : null
+      }
       onViewableItemsChanged={({
         viewableItems,
       }: {
